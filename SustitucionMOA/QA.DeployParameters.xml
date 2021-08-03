@@ -81,11 +81,11 @@
 	<setParameter name="SI_MPMF_MOAOP_DET_FLETE_PROC Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_FLETE_PROC&amp;interfaceNamespace=urn%3AOPERACIONES" />" />
 	<setParameter name="SI_MPMF_MOAOP_OBTENER_PEND_USD Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_OBTENER_PEND_USD&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="SI_MPMF_MOAOP_GUARDAR_PESIF Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_GUARDAR_PESIF&amp;interfaceNamespace=urn%3AOPERACIONES" />
-
+	<setParameter name="SI_MPMF_MOAOP_PDF_PROFORMA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PDF_PROFORMA&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="http://test.dataagro.com.ar/services/AuthService.svc" />
 	<setParameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address" value="http://test.dataagro.com.ar/services/DataAgroServices.svc" />
 
 	<setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
-
+	
 
 </parameters>

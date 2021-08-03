@@ -186,6 +186,31 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\ObtenerCecoSolpWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ObtenerCuentasSolpWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ObtenerOrdenSolpWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ObtenerServiciosSolpWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ObtenerSolpWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\PagoComprobantesWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -314,6 +339,7 @@
     <Compile Include="WSConsumers\ContactoMailCategoriasConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContactoMailConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContratoDetalleConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ObtenerSolpConsumerMOA.cs" />
     <Compile Include="WSConsumers\PDFProformaFinalConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContratoPDFConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContratosConsumerMOA.cs" />
@@ -697,6 +723,11 @@
     <None Include="Service References\NoticiasDetalleWebServiceMOA\SustitucionMOAWS.NoticiasDetalleWebServiceMOA.ZMPES4920.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\ObtenerCecoSolpWebServiceMOA\SI_MMRFC_OBTENER_CECO.wsdl" />
+    <None Include="Service References\ObtenerCuentasSolpWebServiceMOA\SI_MMRFC_OBTENER_CUENTAS.wsdl" />
+    <None Include="Service References\ObtenerOrdenSolpWebServiceMOA\SI_MMRFC_OBTENER_ORDEN.wsdl" />
+    <None Include="Service References\ObtenerServiciosSolpWebServiceMOA\SI_MMRFC_OBTENER_SERVICIOS.wsdl" />
+    <None Include="Service References\ObtenerSolpWebServiceMOA\SI_MMRFC_OBTENER_SOLPED.wsdl" />
     <None Include="Service References\PagoComprobantesWebServiceMOA\SI_MPMF_MOAOP_DET_PAGOS_NG.wsdl" />
     <None Include="Service References\PagoComprobantesWebServiceMOA\SustitucionMOAWS.PagoComprobantesWebServiceMOA.SI_MPMF_MOAOP_DET_PAGOS_NGResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -2045,6 +2076,11 @@
     <WCFMetadataStorage Include="Service References\LoginWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\MovimientoBalanzaWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\NoticiasDetalleWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ObtenerCecoSolpWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ObtenerCuentasSolpWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ObtenerOrdenSolpWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ObtenerServiciosSolpWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ObtenerSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PagoComprobantesWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PagoDetalleWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PagosNGWebServiceMOA\" />
@@ -2700,6 +2736,66 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ScatoComandosWebService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerSolpWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerSolpWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerSolpWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerOrdenSolpWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerOrdenSolpWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerOrdenSolpWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerCuentasSolpWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerCuentasSolpWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerCuentasSolpWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerServiciosSolpWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerServiciosSolpWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerServiciosSolpWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerCecoSolpWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerCecoSolpWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerCecoSolpWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

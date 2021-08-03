@@ -515,14 +515,14 @@
                         </a>
                     </div>
                 </div>
-                <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
+                <!-- <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/contacto')"
                             href="#" data-parent="#accordionMenu">
-                            <!--data-toggle="tab">-->Contacto
+                            <data-toggle="tab">Contacto
                         </a>
                     </div>
-                </div>
+                </div> -->
                 <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
                     <div class="panel-heading seccion" role="tab" id="faq">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/faq')" href="#"
@@ -590,6 +590,25 @@
                             <div>
                                 <a (click)="goToSeccion('/compras/dashboard')" href="#">
                                     DASHBOARD
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" *ngIf="!isAmbos() || isNoGranosSelected()">
+                    <div class="panel-heading seccion" role="tab" id="apikey" *ngIf="isAuthorized('APIKEY')">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                            href="#collapseApikey" aria-expanded="false" aria-controls="collapseApikey">
+                            API <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseApikey" class="collapse" aria-labelledby="apikey" role="tabpanel"
+                        *ngIf="isAuthorized('APIKEY')">
+                        <div class="panel-body">
+                            <div>
+                                <a (click)="goToSeccion('/apikey')" href="#">
+                                    Gestionar ApiKey
                                 </a>
                             </div>
                         </div>

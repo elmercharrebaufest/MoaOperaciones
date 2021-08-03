@@ -167,6 +167,12 @@
     <Property Name="ParentElementName" Value="[dbo].[ComentarioRecordado]" />
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="[FK_dbo.ComentarioRecordado_dbo.Comentario_Comentario_Id]" />
+  <Operation Name="Rename Refactor" Key="d4944060-e6a0-45ab-97e8-d38247dd5cdc" ChangeDateTime="06/30/2021 17:58:04">
+    <Property Name="ElementName" Value="[dbo].[Solp].[FechaDeBorrado]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Solp]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="FechaBorrado" />
   </Operation>
   <Operation Name="Rename Refactor" Key="9156debd-f625-4672-8ed3-ea03c5df0554" ChangeDateTime="06/29/2021 16:44:25">
     <Property Name="ElementName" Value="[dbo].[ImpuestoIngresosBrutosCoeficienteUnificadoDetalle].[Coeficiente]" />

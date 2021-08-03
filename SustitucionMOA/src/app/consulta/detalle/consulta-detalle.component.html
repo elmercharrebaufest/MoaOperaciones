@@ -104,7 +104,7 @@
 
         <!--MENU LATERAL-->
         <div class="col-xs-4 col-sm-4 col-md-4">
-            <div class="rounded shadow col-xs-12 col-sm-12 col-md-12 menuLateralConsulta">
+            <div class="rounded shadow col-xs-12 col-sm-12 col-md-12" [ngClass]="this.MostrarDatosAdicionales ? 'menuLateralConsulta' : 'menuLateralConsultaOverflow'">
                 <div class="col-xs-12 col-md-12 center pillVerdeMenu">
                     <ul class="nav nav-pills center" role="tablist">
                         <li *ngIf="esInterno" role="presentation"><a href="#Administracion" aria-controls="Administracion"
@@ -164,7 +164,7 @@
                     </div>
                     <div *ngIf="tieneSubcategorias">
                         <p class="bold" style="margin: 7px;">Subcategorias</p>
-                        <p-dropdown [options]="subcategoriasList" [(ngModel)]="this.subcategoriaId" 
+                        <p-dropdown [options]="subcategoriasList" [(ngModel)]="subcategoriaId" 
                         name="subcategoriaId" [maxSelectedLabels]="1" autoWidth="false">
                         </p-dropdown>
                     </div>

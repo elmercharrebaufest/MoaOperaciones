@@ -8,10 +8,10 @@ BEGIN
 	VALUES ('INI', 'Iniciado', '#d63838')
 
 	INSERT INTO EstadoConsulta(Code, Descripcion, Color)
-	VALUES ('GES', 'En Gestion', '#ec8b3b')
+	VALUES ('GES', 'En gestión', '#ec8b3b')
 
 	INSERT INTO EstadoConsulta(Code, Descripcion, Color)
-	VALUES ('GESRTA', 'En Gestion Rta', '#ec8b3b')
+	VALUES ('GESRTA', 'En gestión Rta', '#ec8b3b')
 
 	INSERT INTO EstadoConsulta(Code, Descripcion, Color)
 	VALUES ('DOC', 'Solicitud de información', '#9e9604')

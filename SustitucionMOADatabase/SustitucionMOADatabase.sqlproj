@@ -115,6 +115,7 @@
     <None Include="scripts\SP_ActualizarToneladasAprobadasCampo.sql" />
     <Build Include="DBO\Tables\ConflictoCampoSustentable.sql" />
     <None Include="scripts\CreacionRolSolp.sql" />
+    <None Include="scripts\CreacionRolApiKey.sql" />
     <None Include="scripts\UpdateAltaFisicaProveedores.sql" />
     <Build Include="DBO\Tables\Pliego.sql" />
     <Build Include="DBO\Tables\TablaSap.sql" />
@@ -129,6 +130,7 @@
     <Build Include="DBO\Tables\PliegoVisita.sql" />
     <None Include="scripts\PermisoAltaInternaGranos.sql" />
     <Build Include="DBO\Tables\ComentarioRecordado.sql" />
+    <Build Include="DBO\Tables\Material.sql" />
     <Build Include="DBO\Tables\IngresosBrutosCoeficienteUnificado.sql" />
     <Build Include="DBO\Tables\IngresosBrutosCoeficienteUnificadoDetalle.sql" />
     <Build Include="DBO\Tables\EstadoIngresosBrutosCoeficienteUnificado.sql" />
@@ -140,9 +142,6 @@
     <None Include="SustitucionMOADatabase.publish.xml" />
     <None Include="scripts\CargaInicialSolp.sql" />
     <None Include="scripts\Insert EstadoIngresosBrutosCoeficienteUnificado.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <RefactorLog Include="SustitucionMOADatabase.refactorlog" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

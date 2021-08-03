@@ -22,6 +22,7 @@ import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
 import { SolpComponent } from "./compras/solp.component";
 import { DashboardComponent } from './compras/dashboard/dashboard.component' 
 import { GestionCM05Component } from "./gestionCM05/gestionCM05.component";
+import { ApikeyComponent } from "./apikey/apikey.component";
 
 
 const appRoutes: Routes = [
@@ -149,6 +150,7 @@ const appRoutes: Routes = [
       },
       { path: "logPesificacion",  loadChildren: "./log-pesificacion/log-pesificacion.module#LogPesificacionModule" },
       { path: "compras", loadChildren:"./compras/compras.module#ComprasModule" },
+      { path: "apikey", component: ApikeyComponent },
     ],
   },
   { path: "**", component: HomeComponent },

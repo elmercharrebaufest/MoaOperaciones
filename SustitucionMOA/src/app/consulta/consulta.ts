@@ -7,7 +7,9 @@ export interface Consulta {
     CategoriaId;
     SubCategoriaId?;
     Asunto;
+    Material;
     EstadoConsultaId;
+    Material_Id;
     FechaCreacion;
     FechaUltimaModificacion;
     UsuarioId;
@@ -57,6 +59,11 @@ export interface Subcategoria {
 export interface Causa {
     Id;
     Nombre;
+}
+
+export interface Materiales {
+    MaterialId;
+    Descripcion;
 }
 
 export class Comentario{

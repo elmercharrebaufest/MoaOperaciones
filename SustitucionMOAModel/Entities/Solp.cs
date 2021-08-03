@@ -21,6 +21,9 @@ namespace SustitucionMOAModel.Entities
         public string NroSolp { get; set; }
         public int? EstadoSolpSap_Id { get; set; }
         public int? EstadoDocumento_Id { get; set; }
+        public DateTime? FechaBorrado { get; set; }
+        public DateTime? FechaCreacionSap { get; set; }
+        public DateTime? FechaLiberacionSap { get; set; }
 
         [ForeignKey("UsuarioCreacion_Id")]
         public virtual Usuario UsuarioCreacion { get; set; }

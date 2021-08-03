@@ -14,7 +14,7 @@ export class ValidadorPasoSolpService
     
     //devuelve el valor si el formulario es valido
     esPasoInvalido(): boolean {
-        return this._formulario.invalid;
+        return this._formulario.touched && this._formulario.invalid;
     }
 
     //aplica las validaciones para los controles 

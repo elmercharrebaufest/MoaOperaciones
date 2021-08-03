@@ -8,7 +8,7 @@
         <div class="col-xs-12">
             <div class="row">
                 <!--Cards-->
-                <div class="col-md-3" *ngFor="let card of cards" (click)="goToSeccion(card.path)">
+                <div class="col-md-4" *ngFor="let card of cards" (click)="card.class === 'disabled' ? disabled : goToSeccion(card.path)">
                     <div class="card cardCompra">
                         <h3 class="cardText">{{card.nombre}}</h3>
                     </div>
@@ -16,7 +16,178 @@
                 <!--End Cards-->
             </div>
         </div>
+        <spinner></spinner>
+        <div>
+            <div class="row titleSection" >
+                <div class="col-xs-12 col-sm-10" style="margin-top: 60px;"> <strong>Estado de solicitudes</strong></div>
+            </div>
+                
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="row myRow col-xs-12 col-sm-12 col-md-12 col-lg-12 " style="margin-top: 1em; margin-bottom: 15px;">
+
+                    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8" style="margin-left: -46px;">
+                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText  type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')"  placeholder="Buscar">
+                        </div>
+
+                        
+                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" > 
+                            <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp" defaultLabel="Estado SOLP" (onChange)="tabla.filter($event.value, 'EstadoSolpSap.Id', 'in')"></p-multiSelect>
+
+                        </div>
+
+                        <div >
+                            <p-overlayPanel appendTo="body" #op [showCloseIcon]="true">
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            Desde
+                                        </div>
+                                        <div class="col-md-9">
+                                            <p-calendar [(ngModel)]="desdeDashboard" [locale]="locale" dateFormat="dd-M-yy" [showIcon]="true"  [selectOtherMonths]="true" [(ngModel)]="rangeDates" selectionMode="single" readonlyInput="true"></p-calendar>
+                                        </div>        
+                                    </div>
+                                    <div class="row" style="margin-top: 1em;">
+                                        <div class="col-md-2">
+                                            Hasta  
+                                        </div>
+                                        <div class="col-md-9" >
+                                            <p-calendar [(ngModel)]="hastaDashboard" [locale]="locale" dateFormat="dd-M-yy" [showIcon]="true"  [selectOtherMonths]="true" [(ngModel)]="rangeDates" selectionMode="single" readonlyInput="true"></p-calendar>
+                                        </div>      
+                                    </div>
+                                    <div class="row" style="margin-top: 1em; padding-left: 5px; margin-right:-39px">
+                                        <div class="col-md-4">
+                                            <button class="btn" (click)="setUltimoMes()">Ultimo mes</button>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn" (click)="setUltimoAnio()">Ultimo año</button>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-success" style="height: 32px;" (click)="filtrarPorFecha() && op.toggle($event)"><i class="pi pi-check"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p-overlayPanel>
+                        </div>
+                        
+                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                            <button class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura botonFechaDashboard " type="text" pButton (click)="op.toggle($event, actualTarget)">Fecha <span class="pull-right fa fa-calendar-o"></span></button>
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 inputAltura" style="margin-top: 10px;"> -->
+                        <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"> -->
+                            <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="color: rgb(209, 199, 199)">
+                                <p-radioButton name="dashboard" value="Materiales" label="Materiales" inputId="materialesDashboard" disabled></p-radioButton>
+                            </div> -->
+                            <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                <p-radioButton name="dashboard" value="Servicios" label="Servicios" [(ngModel)]="serviciosDashboard" inputId="serviciosDashboard"></p-radioButton>
+                            </div>
+                        </div> -->
+
+                        <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="border-left: 1px solid black;"> -->
+                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="border-left: 1px solid black; margin-top: 8px;">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <p-checkbox class="checkboxFechas" binary="true" label="SAP" (onChange)="tabla.filter($event.value, 'VincularPliego', 'in')"></p-checkbox>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p-checkbox class="checkboxFechas" binary="true" label="Mantenimiento"></p-checkbox>
+                            </div>
+                        </div>
+                    <!-- </div>     -->
+                </div>
+
+            </div>
+        </div>
     </section>
+
+    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
+        <p-table #tabla [value]="tablaSolp" [globalFilterFields]="['NroSolp']" sortMode="multiple">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th data-toggle="tooltip" title="Acciones SOLP"></th>
+                    <th [pSortableColumn]="'NroSolp'"  data-toggle="tooltip" title="Numero SOLP">
+                        Numero SOLP
+                        <p-sortIcon [field]="'NroSolp'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                    </th>
+
+                    <th [pSortableColumn]="'NombreDeObra'"  data-toggle="tooltip" title="Nombre de pedido">
+                        Nombre de pedido
+                        <p-sortIcon [field]="'NombreDeObra'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                    </th>
+    
+                    <th [pSortableColumn]="'FechaCreacion'"  data-toggle="tooltip" title="Fecha de creacion de SOLP">
+                        Fecha creacion
+                        <p-sortIcon [field]="'FechaCreacion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                    </th>
+    
+                    <th [pSortableColumn]="'EstadoDocumento'"  data-toggle="tooltip" title="Estado de documento">
+                        Estado Doc
+                        <p-sortIcon [field]="'EstadoDocumento.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                    </th>
+    
+                    <th [pSortableColumn]="'EstadoSolpSap'"  data-toggle="tooltip" title="Estado SOLP">
+                        Estado Solp
+                        <p-sortIcon [field]="'EstadoSolpSap.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                    </th>
+    
+                    <th data-toggle="tooltip" title="Tipo de  SOLP">
+                        Tipo
+                        <!-- <p-sortIcon [field]="tipoSolp" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon> -->
+                    </th>
+                    <th data-toggle="tooltip" title="Vincular a pliego">
+                        Vincular Pliego
+                    </th>
+                </tr>
+            </ng-template>
+                    
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                    <td>
+                        <div class="col-md-2">
+                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada'"><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash" (click)="eliminarPosicionDashboard(rowData.Id)" /></span>
+                        </div>
+                        <div class="col-md-2">
+                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" (click)="goToSeccionParam('/compras/solp', rowData.Id)"/></span>
+                        </div>
+                        <div class="col-md-2">
+                            <span ><img  class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="generarZipPliego(rowData.Id)"/></span>
+                        </div>       
+                    </td>
+                    <td>
+                        {{rowData.NroSolp}}
+                    </td>
+                    <td>
+                        {{rowData.NombreDeObra || "" }}
+                    </td>
+                    <td>
+                        {{rowData.FechaCreacion | date:'dd/MM/yyyy'}}
+                    </td>
+                    <td>
+                       <span [style.color]="rowData.EstadoDocumento.Color">
+                           {{rowData.EstadoDocumento.Descripcion}}
+                        </span>
+                    </td>
+                    <td>
+                        {{ rowData.EstadoSolpSap.Descripcion || "" }}
+                    </td>
+                    <td>
+                        {{ rowData.tipoSolp || "" }}
+                    </td>
+                    <td>
+                        <button class="btn btn-success botonesComprasColor" *ngIf="rowData.VincularPliego">Vincular a Pliego</button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>   
 </div>
 
-
+<!-- Modal eliminacion de SOLP-->
+<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+    <p-footer>
+        <button type="button" pButton  label="Cancelar" class="ui-button-info" (click)="dialogo.reject()"></button>
+        <button type="button" pButton  label="Aceptar" class="ui-button-success" (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+<!--fin modal eliminacion de SOLP-->

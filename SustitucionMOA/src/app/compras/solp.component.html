@@ -37,6 +37,10 @@
                     <div  *ngSwitchCase="enumSolp.SolpCabecera" [@fadeInOut] >
                         <cabecera #cabecera [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" ></cabecera>
                     </div>
+                    <div  *ngSwitchCase="enumSolp.SolpSubposiciones" [@fadeInOut] >
+                        <subPosicion [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" ></subPosicion>
+                    </div>
+                    
                     <div *ngSwitchDefault [@fadeInOut] >
                         Paso en construccion
                     </div>
@@ -45,17 +49,34 @@
         </div>
         <p-sidebar visible="true" position="bottom" [modal]="false" [showCloseIcon]="false" dismissible="false" appendTo="body">
             <div class="row" >
-                <div class="col-xs-2"></div>
-                <div class="col-xs-3" style="margin-left: 3em;">
-                    <!-- <button class="btn btn-danger" (click)="salir()"><i class="fa fa-reply"></i>&nbsp; SALIR</button> -->
+                <div class="col-xs-1 col-md-1">
+                </div>  
+                <div class="col-xs-3 col-md-3" style="text-align: center;">
+                    <!-- <button class="btn btn-danger" (click)="cancelarSolp()"><i class="fa fa-reply"></i>&nbsp; CANCELAR</button> -->
+                    <button class="btn btn-defaut btn-secondary botonesCompras" (click)="cancelarSolp()"><i class="fa fa-arrow-left"></i>&nbsp; VOLVER</button>&nbsp;
                 </div>
-                <div class="col-xs-6">
-                    <button class="btn btn-defaut btn-secondary botonesCompras" (click)="navegar(pasoAnterior())"><i class="fa fa-arrow-left"></i>&nbsp; {{pasoAnterior().descripcion}}</button>&nbsp;
-                    <button class="btn btn-primary botonesComprasColor" (click)="guardarCambios()" >GUARDAR</button>&nbsp;
-                    <button class="btn btn-primary botonesComprasColor" *ngIf="pasoActual.Preview" (click)="mostrarPreview = false">PREVIEW</button>&nbsp;
-                    <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())">{{pasoSiguiente().descripcion}} &nbsp;<i class="fa fa-arrow-right"></i></button>
-                    <button class="btn btn-success botonesCompras" *ngIf="!pasoSiguiente().paso" (click)="finalizar()" >{{pasoSiguiente().descripcion}}</button>
-                    <button class="btn btn-secondary botonAgregarPosicion botonesCompras" *ngIf="pasoActual.Codigo == 'SolpCabecera'" (click)="agregarPosicion(headerCompras)" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
+                <div class="col-xs-8 col-md-8">
+                    <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0; text-align: right;">
+                        <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoAnterior().paso" (click)="navegar(pasoAnterior())"><i class="fa fa-arrow-left"></i>&nbsp; {{pasoAnterior().descripcion}}</button>&nbsp;
+                    </div>
+                    <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0; text-align: center;">   
+                        <button class="btn btn-primary botonesComprasColor" (click)="guardarCambios()" >GUARDAR</button>&nbsp;
+                    </div>     
+                    <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0;">
+                        <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())">{{pasoSiguiente().descripcion}} &nbsp;<i class="fa fa-arrow-right"></i></button>
+                        <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="showDialog()" style="cursor: auto;">{{pasoSiguiente().descripcion}}</button>
+                    </div>   
+                    <div class="col-xs-1 col-md-1">
+                    </div>    
+                    <div class="col-xs-4 col-md-4">
+                        <div class="col-xs-6 col-md-6" style="text-align: left;">
+                            <button class="btn btn-primary botonesComprasColor" *ngIf="pasoActual.Preview" (click)="preview()">PREVIEW</button>&nbsp;
+                        </div>
+                        <div class="col-xs-6 col-md-6" style="text-align: right;">
+                            <button class="btn btn-secondary botonAgregarPosicion botonesCompras" *ngIf="pasoActual.Codigo == enumSolp.SolpSubposiciones" (click)="navegar(pasoAnterior())" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
+                            <!-- <button class="btn btn-secondary botonAgregarPosicion botonesCompras" *ngIf="pasoActual.Codigo == 'SolpCabecera'" (click)="agregarPosicion(headerCompras)" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button> -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </p-sidebar>
@@ -65,10 +86,149 @@
 </div>
 <p-dialog header="Previsualización" 
         [(visible)]="mostrarPreview" 
-        [width]="800" 
-        draggable="false"
+        [width]="1000" 
         blockScroll="true"
         modal="modal"
-        appendTo="body">
-    <pliego-preview [(model)]="solpActual"></pliego-preview>
+        appendTo="body"
+        positionTop="30"
+        [contentStyle]="{'overflow':'visible', 'max-height':'1000px', 'min-height':'500px'}">
+    <pliego-preview [src]="pdfPreview"></pliego-preview>
 </p-dialog>
+
+<!-- Modal cancelar SOLP-->
+<p-confirmDialog #dialogo key="cancelarSolp" header="Cancelar SOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" pButton  label="Cancelar" class="ui-button-info" (click)="dialogo.reject()"></button>
+        <button type="button" pButton  label="Aceptar" class="ui-button-success" (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+<!--fin modal cancelar SOLP-->
+
+
+<div>
+    <p-dialog [(visible)]="display" [width]="800">
+        <p-header>
+            ¡Último paso!
+        </p-header>
+    
+        <div>
+            <p><b>¿Desea editar las fechas?</b></p>
+        </div>
+        <div class="col-md-12">
+
+            <div class="col-md-12 row myRow">
+                <div class="col-md-6">
+                    <div class="col-md-12 inputRightModal margenInput">
+                        <div class="col-md-12">
+                            Fecha tentativa de entrega de ofertas:
+                        </div>
+                        <div class="col-md-6"  style="margin-right: 1em;">
+                            <p-calendar [locale]="es" class="styled-select"
+                                [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true"
+                                [minDate]="hoy" [(ngModel)]="solpActual.fechaEntrega"></p-calendar>
+                        </div>
+                        <div class="col-md-5">
+                            <p-calendar [locale]="es" [showIcon]="true" class="styled-select" appendTo="body" disabled="false" [(ngModel)]="solpActual.horaEntrega"
+                            icon="fa fa-clock-o" [timeOnly]="true" [readonlyInput]="true"></p-calendar>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="col-md-12 inputRightModal margenInput">
+                        <div class="col-md-12">
+                            Fecha límite de consulta:
+                        </div>
+                        <div class="col-md-6"  style="margin-right: 1em;">
+                            <p-calendar [locale]="es" class="styled-select"
+                            [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true"
+                            [minDate]="hoy" [(ngModel)]="solpActual.fechaLimiteFecha"></p-calendar>
+                        </div>
+                        <div class="col-md-5">
+                            <p-calendar [locale]="es" [showIcon]="true" class="styled-select" appendTo="body"
+                            icon="fa fa-clock-o" [timeOnly]="true" [readonlyInput]="true" [(ngModel)]="solpActual.fechaLimiteHora"></p-calendar>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-12 row myRow">
+                <div class="col-md-6">        
+                    <div class="col-md-12 inputRightModal margenInput">
+                        <div class="col-md-12">
+                            Fecha de entrega previsto: 
+                        </div>
+                        <!-- //mayor fecha de entrega de todas las posiciones. -->
+                        <div class="col-md-6" style="margin-right: 1em;">
+                            <p-calendar [locale]="es" class="styled-select" 
+                                [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true"
+                                [minDate]="hoy" [(ngModel)]="solpActual.posicionActual.fechaEntregaServicio"></p-calendar>
+
+                        </div>  
+                        <div class="col-md-5">    
+                            <p-calendar [locale]="es" [showIcon]="true" class="styled-select" appendTo="body"
+                            icon="fa fa-clock-o" [timeOnly]="true" disabled="false" [readonlyInput]="true" [(ngModel)]="solpActual.fechaEntrega"></p-calendar>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 row myRow">
+                <div class="col-md-6">    
+                    <div class="col-md-12 inputRightModal margenInput">
+                        <div class="col-md-12">
+                            Fecha visita de obra masiva:
+                        </div>
+                        <div class="col-md-12">
+                            <p-dropdown [options]="solpActual.listaVisitas" dataKey="Id"
+                            optionLabel="solpActual.listaVisitas" autoDisplayFirst="true" placeholder="Seleccionar"
+                            [showClear]="true" [filter]="true"
+                            filterBy="label"></p-dropdown>
+
+                            <!-- <div class="col-md-12 inputRightModal margenInput">
+                                <div class="col-md-12">
+                                    Fecha límite de consulta:
+                                </div>
+                                <div class="col-md-6"  style="margin-right: 1em;">
+                                    <p-calendar [locale]="es" class="styled-select"
+                                    [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true"
+                                    [minDate]="hoy" [(ngModel)]="visitaMasiva"></p-calendar>
+                                </div>
+                                <div class="col-md-5">
+                                    <p-calendar [locale]="es" [showIcon]="true" class="styled-select" appendTo="body"
+                                    icon="fa fa-clock-o" [timeOnly]="true" [readonlyInput]="true"></p-calendar>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>   
+            </div> 
+        </div>
+        <p-footer>
+            <button type="button" pButton  label="CANCELAR" class="ui-button-info" (click)="cancelarSolp()"></button>
+            <button type="button" pButton  label="FINALIZAR" class="ui-button-success" (click)="finalizar()"></button>
+        </p-footer>
+    </p-dialog>
+</div>
+
+<!-- Modal ultimo paso SOLP--> -->
+<!-- <p-confirmDialog #dialo key="ultimoPasoSolp" header="¡Último paso!" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+    <p-footer>
+        <button type="button" pButton  label="VOLVER" class="ui-button-info" (click)="dialo.reject()"></button>
+        <button type="button" pButton  label="SÍ, CONFIRMAR" class="ui-button-success" (click)="dialo.accept()"></button>
+
+
+    </p-footer>
+</p-confirmDialog> -->
+<!--fin modal cancelar SOLP -->
+
+
+<!-- Modal finalizar SOLP-->
+<!-- <p-confirmDialog #dialog key="finalizarSolp" header="¡Felicitaciones!" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+    <p-footer>
+        <button type="button" pButton  label="Descargar SOLP" class="ui-button-success" (click)="dialog.descargarPdf(Id)"></button>
+        <button type="button" pButton  label="Volver a la home" class="ui-button-info" (click)="dialog.reject()"></button>
+
+    </p-footer>
+</p-confirmDialog> -->
+<!--fin modal cancelar SOLP -->

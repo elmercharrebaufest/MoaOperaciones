@@ -49,7 +49,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.EDICION_CAMPOS_CREADOS)]
-        [HttpPut]
+        [HttpPost]
         public JsonResult CampoProveedorEditar(string campoProveedorJson, HttpPostedFileBase archivoKmz)
         {
             try

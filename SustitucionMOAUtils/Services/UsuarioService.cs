@@ -73,6 +73,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 var ret = new UsuarioDto(usuario);
                 ret.Permisos = usuario.ObtenerPermisos();
+                ret.NuevoUsuario = usuario.EsNuevoUsuario();
 
                 return ret;
             }
@@ -153,7 +154,7 @@ namespace SustitucionMOAUtils.Services
         {
             List<string> interno = new List<string>
             {
-                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP"
+                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP", "APIKEY", "AIGRAN"
             };
 
             List<string> contacto = new List<string>
@@ -187,6 +188,14 @@ namespace SustitucionMOAUtils.Services
                 usuario.AgregarRol(rolAAgregar);
             }
 
+            List<string> contacto = new List<string>
+            {
+                "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
+                "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
+                "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
+                "FINDIR", "FINCOR", "FLE"
+            };
+
             var esAdministradorMolinos = usuario
                                             .Roles
                                             .Where(
@@ -195,7 +204,8 @@ namespace SustitucionMOAUtils.Services
                                                 || r.Codigo == "OPE"
                                                 || r.Codigo == "APRO"
                                                 || r.Codigo == "COMPRAS"
-                                                || r.Codigo == "COMERCIAL")
+                                                || r.Codigo == "COMERCIAL"
+                                                || contacto.Contains(r.Codigo))
                                             .Any();
 
             //Si es usuario de molinos, buscamos todos los proveedores que tiene, lo aprobamos y le sacamos el historial de aprobación. 
@@ -252,6 +262,22 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == email);
+                return usuario.Roles.ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<Rol> GetRolesApiKey(string apikey)
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.ApiKey == apikey);
+                if (usuario == null)
+                    return new List<Rol>();
+
                 return usuario.Roles.ToList();
             }
             catch (Exception)
@@ -331,6 +357,17 @@ namespace SustitucionMOAUtils.Services
             var ret = new ProveedorDto(proveedor);
 
             return ret;
+        }
+
+        public string ObtenerNuevoApiKey(string usuario)
+        {
+            Entidades.Usuario usuarioEntity = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == usuario);
+            var apikey = SustitucionMOACrypting.CryptoServiceProvider.GetNewApiKey();
+
+            usuarioEntity.ApiKey = apikey;
+
+            repositorio.GuardarCambios();
+            return apikey;
         }
     }
 }

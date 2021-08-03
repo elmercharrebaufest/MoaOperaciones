@@ -12,11 +12,12 @@ import { DropdownComponent } from './../../common/view-child/dropdown/dropdown.c
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { SelectItem } from 'primeng/components/common/selectitem';
-import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo} from '../consulta';
+import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo, Materiales} from '../consulta';
 import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 declare var $: any;
+
 
 @Component({
     selector: 'crear-consulta',
@@ -50,7 +51,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
-
+    private selectUndefinedOptionValue: any;
     mensajeError: string;
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     proveedor: string;
@@ -91,7 +92,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
     comprobanteExtra: any;
 
     caratula: any;
-    material: string;
     comentario: string;
     contrato: any;
     razonSocial: string;
@@ -104,6 +104,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
     impuesto: any;
     bolsaEmisoraOblea: string;
     files: FileList = null;
+    listaMateriales: Materiales[];
+    material: Materiales;
+    material_Id: any;
 
     fechaPagoDP: any;
     visibleButton: boolean = true;
@@ -191,6 +194,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         if(!this.esCorredor){
                             this.proveedorId = result.proveedorId
                         }
+                        this.listaMateriales = result.materiales;
+                        //result.materiales.forEach(x => this.listaMateriales.push({ label: x.Descripcion, value: x.MaterialId }));
                     }
                 },
                 error => {
@@ -211,11 +216,20 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.proveedorId = proveedor.proveedorId;
     }
 
+    setMaterial(material){
+        debugger
+        this.listaMateriales.forEach(x => {
+            if(x.MaterialId == material){
+                this.comprobanteExtra = x.Descripcion;
+            }
+        })
+    }
+
     validarConsulta() {
         this.mensajeComponent.setMsgsEmpty();
         if (this.codigoProveedor == "" || !this.codigoProveedor) {
             if(this.esCorredor){
-                this.mensajeComponent.setErrorMsg("Seleccione razón social vendedor");
+                this.mensajeComponent.setErrorMsg("Vendedor no asociado a su perfil de corredor. Intente nuevamente");
                 return true;
             }
             this.mensajeComponent.setErrorMsg("El campo proveedor esta vacio.");
@@ -358,16 +372,15 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.mensajeComponent.setErrorMsg("El campo Material esta vacio.");
                 return true;
             }
+
+            if ((this.comprobante == "" || !this.comprobante) && (this.contrato == "" || !this.contrato)) {
+                this.mensajeComponent.setErrorMsg("Debe completar Campo N° de contrato o CCPP.");
+                return true;
+            }
         }
         if (this.categoriaCode == 'PES') {
             if (this.contrato == "" || !this.contrato) {
                 this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
-                return true;
-            }
-        }
-        if ((this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'VENC') || (this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'POTR')) {
-            if (this.comprobante == "" || !this.comprobante) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Factura esta vacio.");
                 return true;
             }
         }
@@ -407,6 +420,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.blockUI.start('Generando Consulta');
         this.spinnerComponent.showIt();
 
+        debugger
         if (this.esCorredor) {
             if(this.proveedorSelected)
             {
@@ -431,7 +445,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         } 
     
         this.Detalle = {Consulta_Id: 0, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra, 
-            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea
+            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, Material_Id: this.material? this.material.MaterialId : null
         }
 
         this.consulta = {
@@ -509,10 +523,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     Avisos(categoriaCode) {
         this.mensajeComponent.setMsgsEmpty();
-        if (categoriaCode == "PROVG") {
-            this.mensajeComponent.setInfoMsg("Texto a definir");
-            return true;
-        }
         if (categoriaCode == "BOL" && this.subcategoriaCode == "OPC") {
             this.mensajeComponent.setInfoMsg("Recuerde Adjuntar liquidación y la oblea emitida por bolsa");
             return true;

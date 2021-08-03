@@ -25,7 +25,7 @@ namespace SustitucionMOAModel.Entities
         public virtual ICollection<Rol> Roles { get; set; }
         public bool AceptoTyC { get; set; }
         public DateTime? AceptoTyCFecha { get; set; }
-
+        public string ApiKey { get; set; }
         //public virtual ICollection<Archivo> Archivos { get; set; }
 
         public Rol ObtenerRolPrincipal()

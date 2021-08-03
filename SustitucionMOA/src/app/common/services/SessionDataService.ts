@@ -17,6 +17,7 @@ export class SessionDataService {
     public permisos = new Subject<any>();
     public noticias = new Subject<any>();
     public seccionesVisitadas = new Subject<string>();
+    public apikey = new Subject<string>();
 
     username$ = this.username.asObservable();
     nombre$ = this.nombre.asObservable();
@@ -27,6 +28,7 @@ export class SessionDataService {
     permisos$ = this.permisos.asObservable();
     noticias$ = this.noticias.asObservable();
     seccionesVisitadas$ = this.seccionesVisitadas.asObservable();
+    apikey$ = this.apikey.asObservable();
 
     setUsername(value: string) {
         this.username.next(value);
@@ -64,6 +66,10 @@ export class SessionDataService {
         this.noticias.next(value);
     }
 
+    setApikey(value: string) {
+        this.apikey.next(value);
+    }
+
     logout() {
         this.setUsername("");
         this.setNombre("");
@@ -74,6 +80,7 @@ export class SessionDataService {
         this.setPermisos(null);
         this.setNoticias(null);
         this.setSeccionesVisitadas("");
+        this.setApikey("");
         sessionStorage.clear();
 
         let logoutURL = window.location.origin;

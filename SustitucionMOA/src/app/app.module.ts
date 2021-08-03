@@ -59,6 +59,10 @@ import { ConsultaService } from "./consulta/consulta.service";
 import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustentable.component';
 import { LogPesificacionModule } from './log-pesificacion/log-pesificacion.module';
 import { ComprasModule } from "./compras/compras.module";
+import { ApikeyComponent } from "./apikey/apikey.component";
+import { ApikeyService } from "./apikey/apikey.service";
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 import { GestionCM05Component } from "./gestionCM05/gestionCM05.component";
 import { GestionCM05Service } from "./gestionCM05/gestionCM05.service";
 import { TableModule } from "primeng/table";
@@ -86,6 +90,7 @@ import { InputTextModule } from 'primeng/inputtext';
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
     ComprasModule,
+    ConfirmDialogModule
     TableModule,
     DialogModule,
     ButtonModule,
@@ -117,6 +122,7 @@ import { InputTextModule } from 'primeng/inputtext';
     TicketPesadaComponent,
     ConsultaBaseComponent,
     VentaSustentableBaseComponent,
+    ApikeyComponent,
     GestionCM05Component,
     ],
   providers: [
@@ -138,6 +144,8 @@ import { InputTextModule } from 'primeng/inputtext';
     NotificacionesService,
     TicketPesadaService,
     ConsultaService,
+    ConfirmationService,
+    ApikeyService
     GestionCM05Service
   ],
   bootstrap: [AppComponent],

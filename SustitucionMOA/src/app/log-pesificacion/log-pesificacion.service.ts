@@ -11,7 +11,7 @@ export class LogPesificacionService extends BaseService {
     public getLogPesificaciones(): Observable<any> {
         return this.http
             .get('/api/logPesificacion/Listar')
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
             .pipe(map(this.extractData));
     }
 
@@ -28,13 +28,13 @@ export class LogPesificacionService extends BaseService {
                 headers: this.headers,
             }
             )
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
             .pipe(map(this.extractData));
     }
     public getLogPesificacionesAutomaticas(): Observable<any> {
         return this.http
             .get('/api/logPesificacion/ListarAutomatica')
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
             .pipe(map(this.extractData));
     }
 
@@ -49,7 +49,7 @@ export class LogPesificacionService extends BaseService {
                 headers: this.headers,
             }
             )
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
             .pipe(map(this.extractData));
     }
 
@@ -62,7 +62,7 @@ export class LogPesificacionService extends BaseService {
                 headers: this.headers,
             }
             )
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
             .pipe(map(this.extractData));
     }
 }

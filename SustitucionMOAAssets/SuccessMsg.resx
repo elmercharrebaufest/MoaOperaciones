@@ -213,6 +213,9 @@
   <data name="NotificacionHabilitada" xml:space="preserve">
     <value>La notificación se ha habilitado correctamente</value>
   </data>
+  <data name="ObservacionAgregadaOK" xml:space="preserve">
+    <value>La observación se ha guardado correctamente.</value>
+  </data>
   <data name="OlvideContraniaOk" xml:space="preserve">
     <value>Se le enviará un mail con una nueva contraseña</value>
   </data>

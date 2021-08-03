@@ -99,14 +99,6 @@ export class DetalleConsultaComponent extends BaseComponent {
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
-
-        if (this.securityService.tienePermiso("CARGAR CONSULTA")) {
-            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
-        }
-        else {
-            this.navService.setSeccionList([new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
-        }
-
         this.jqueryOnInit();
         this.getDetalleConsulta();
         this.getCombos();
@@ -163,6 +155,8 @@ export class DetalleConsultaComponent extends BaseComponent {
         if (this.causaConsulta != undefined) {
             this.causaConsultaId = this.causaConsulta.Id;
         }
+
+        debugger
 
         this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId
             , this.causaConsultaId).subscribe(
@@ -384,7 +378,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     getCombos() {
         try {
-            this.subscription = this.service.getCombos(false).subscribe(
+            this.subscription = this.service.getCombos(true).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -488,6 +482,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         }
 
         if (this.subcategoriasList.length > 0) {
+            this.subcategoriaId = this.subcategoriasList[0].value;
             this.tieneSubcategorias = true;
         }
         else {

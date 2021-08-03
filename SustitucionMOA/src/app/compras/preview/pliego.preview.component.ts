@@ -2,6 +2,13 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { jsPDF } from "jspdf";
 import { Solp } from '../Solp';
+import { ComprasService } from '../compras.service';
+import { NavService } from '../../common/services/NavService';
+import { SecurityService } from '../../common/services/SecurityService';
+import { FloatMsgService } from '../../common/services/FloatMsgService';
+import { ModalService } from '../../common/services/ModalService';
+import { SessionDataService } from '../../common/services/SessionDataService';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'pliego-preview',
@@ -10,22 +17,19 @@ import { Solp } from '../Solp';
 })
 export class PliegoPreviewComponent extends BaseComponent implements OnInit {
 
-    @Input('model') 
-    model: Solp;
+    _pdf;
 
-    @ViewChild('pdfContent')
-    protected pdfContent: ElementRef;
-    
-    ngOnInit() {
-        
+    @Input('src')
+    set pdf (value) {
+        this._pdf = this.sanitizer.bypassSecurityTrustResourceUrl(value);
     }
 
-    generarPdf(){
-        var doc = new jsPDF();
-        
-        doc.html(this.pdfContent.nativeElement.innerHTML).then(function(){
-            //console.log(doc.output('dataurlstring'));
-            doc.save("pliego.pdf");
-        });
+    constructor(protected service: ComprasService, protected navService: NavService, protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService, protected modalService: ModalService, 
+        protected sessionDataService: SessionDataService, private sanitizer: DomSanitizer) {
+        super(navService, securityService, floatMsgService, modalService);
+    }
+    
+    ngOnInit() {
     }
 }

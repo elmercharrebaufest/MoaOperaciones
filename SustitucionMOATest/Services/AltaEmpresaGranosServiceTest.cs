@@ -114,6 +114,140 @@ namespace SustitucionMOATest.Services
         }
 
         [Test]
+        public void GrabarProveedorAltaInternaGranosTest()
+        {
+            var infoDataAgro = new ResultadoValidarProveedorComercial
+            {
+                ProveedorCBU = "1234",
+                ProveedorClasificacion = "Productor",
+                ProveedorSISAEstadoCuit = "1"
+            };
+
+            var mailUsuario = "existente@mail.com";
+
+            int proveedorId = 1;
+
+            var proveedorOk = new Proveedor
+            {
+                Id = proveedorId,
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                RazonSocial = "test",
+                CUIT = "333333333333",
+                Archivos = new List<Archivo>(),
+            };
+
+            var proveedorOk2 = new Proveedor
+            {
+                Id = 2,
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                RazonSocial = "test",
+                CUIT = "233333333333",
+                Archivos = new List<Archivo>(),
+            };
+
+            var usuarioGranosOk = new Usuario
+            {
+                Mail = mailUsuario,
+                CUITRegistro = "233333333333",
+                Proveedores = new List<Proveedor>() { proveedorOk2 }
+            };
+
+            var tipoUsuarioMock = new TipoUsuario { Id = 1, Nombre = "Granos", NombreCorto = "G" }; 
+
+            repositorioMock
+                .Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                .Returns(usuarioGranosOk);
+
+            repositorioMock
+              .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
+              .Returns(proveedorOk);
+
+            repositorioMock
+              .Setup(x => x.Obtener(It.IsAny<Expression<Func<TipoUsuario, bool>>>()))
+                .Returns(tipoUsuarioMock);
+
+            dataAgroServiceMock.Setup(s => s.ObtenerValidarCUITProveedorGranos(It.IsAny<string>(), It.IsAny<bool>())).Returns(infoDataAgro);
+
+            var result = target.GrabarProveedorAltaInternaGranos("333333333333", mailUsuario);
+            var expected = SuccessMsg.AltaVendedorOK;
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void NotificarSolicitudTest()
+        {
+            var infoDataAgro = new ResultadoValidarProveedorComercial
+            {
+                ProveedorCBU = "1234",
+                ProveedorClasificacion = "Productor",
+                ProveedorSISAEstadoCuit = "1"
+            };
+
+            var mailUsuario = "existente@mail.com";
+
+            int proveedorId = 1;
+
+            var proveedorOk = new Proveedor
+            {
+                Id = proveedorId,
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                RazonSocial = "test",
+                CUIT = "333333333333",
+                Archivos = new List<Archivo>(),
+                TipoProveedor = new TipoUsuario() { Id = 1, Nombre = "Granos", NombreCorto = "Granos" },
+                AltaInterna = true
+            };
+
+            var proveedorOk2 = new Proveedor
+            {
+                Id = 2,
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                RazonSocial = "test",
+                CUIT = "233333333333",
+                Archivos = new List<Archivo>(),
+                TipoProveedor = new TipoUsuario() { Id = 1, Nombre = "Granos", NombreCorto = "Granos" },
+                AltaInterna = true
+            };
+
+            var usuarioGranosOk = new Usuario
+            {
+                Mail = mailUsuario,
+                CUITRegistro = "233333333333",
+                Proveedores = new List<Proveedor>() { proveedorOk2 },
+                TipoUsuario = new TipoUsuario() { Id = 1, Nombre = "Granos", NombreCorto = "Granos"}
+            };
+
+            proveedorOk.Archivos.Add(new Archivo { FileKey = FileKeys.InformeComercialFirmado });
+            proveedorOk.Archivos.Add(new Archivo { FileKey = FileKeys.ConstanciaCBU });
+            proveedorOk.Archivos.Add(new Archivo { FileKey = FileKeys.DDJJ });
+            proveedorOk.Archivos.Add(new Archivo { FileKey = FileKeys.SIPER });
+
+            AltaEmpresaViewModel altaempresaMock = new AltaEmpresaViewModel() { VinculoConEmpleadosDeMolinos = false, VinculoConFuncionariosPublicos = false};
+
+            var tipoUsuarioMock = new TipoUsuario { Id = 1, Nombre = "Granos", NombreCorto = "G" };
+
+            repositorioMock
+                .Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                .Returns(usuarioGranosOk);
+
+            repositorioMock
+              .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
+              .Returns(proveedorOk);
+
+            repositorioMock
+              .Setup(x => x.Obtener(It.IsAny<Expression<Func<TipoUsuario, bool>>>()))
+                .Returns(tipoUsuarioMock);          
+
+            dataAgroServiceMock.Setup(s => s.ObtenerValidarCUITProveedorGranos(It.IsAny<string>(), It.IsAny<bool>())).Returns(infoDataAgro);
+
+            var result = target.SolicitudAltaInterna(mailUsuario, proveedorId, altaempresaMock);
+            var expected = SuccessMsg.ValidacionPendienteOK;
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
         public void ValidarEstadoSolicitudHabilitadoTest()
         {
             var proveedor = new Proveedor { EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente };

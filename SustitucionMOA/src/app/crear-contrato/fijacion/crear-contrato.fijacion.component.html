@@ -255,8 +255,8 @@
 
             <div class="row">
                 <div class="form-group col-md-4">
-                    <label for="cantidad">Cantidad (Kg.)</label>
-                    <input type="text" class="form-control" numeric decimals="0" [(ngModel)]="contrato.Cantidad">
+                    <label for="cantidad">Cantidad <b style="color: blue;font-size: x-large;position: absolute;top: -12px;left: 69px;">(Kg.)</b></label>
+                    <input type="text" class="form-control" numeric decimals="0" [(ngModel)]="contrato.Cantidad" placeholder="La cantidad expresada en Kg">
                 </div>
                 <div class="form-group col-md-2">
                     <label for="moneda">Moneda</label>
@@ -408,7 +408,7 @@
                 <h4 class="modal-title" id="myModalLabel">Seleccione el precio disponible</h4>
             </div>
             <div class="modal-body modal-notificacion">
-                <table class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-ampliacion-table" id="preciosMateriales">
+                <table class="display nowrap dataTable no-footer dtr-inline rounded shadow animate" id="preciosMateriales">
                     <thead>
                         <tr role="row">
                             <td><b>Material</b></td>

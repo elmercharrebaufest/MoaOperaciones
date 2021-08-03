@@ -15,7 +15,7 @@ import { element } from '@angular/core/src/render3/instructions';
 import { Seccion } from '../../common/models/seccion';
 import { ConsultaService } from '../consulta.service';
 import { Table } from 'primeng/table';
-import { Categoria, Consulta, EstadoConsulta, Subcategoria } from '../consulta';
+import { Categoria, Consulta, EstadoConsulta, Subcategoria, Materiales } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import { formatDate } from '@angular/common';
 
@@ -57,6 +57,8 @@ export class MisConsultasComponent extends ListBaseComponent {
     estadosSummary: EstadoConsulta[];
     categorias: Categoria[];
     subcategorias: Subcategoria[];
+    materiales: Materiales[];
+    materialesList: SelectItem[];
     consultaId: any = 1;
     paraInnerHtml: string = "";
     subcategoriasList: SelectItem[];
@@ -99,15 +101,14 @@ export class MisConsultasComponent extends ListBaseComponent {
             clear: 'Borrar'
         }
 
-        this.table.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
-
+        this.table.filterConstraints['DateRangeFilter'] = (value, filter): boolean => {
             if (filter[0] != null && filter[1] != null)
-                return value.getDate() >= filter[0].getDate() &&
-                    value.getDate() <= filter[1].getDate();
-            else if (filter[0] != null && filter[1] == null)
-                return value.getDate() >= filter[0].getDate()
+                return value >= filter[0] &&
+                    value <= filter[1];
+            else if (filter[0] != null && filter[1] == null){
+                return value >= filter[0];}
             else if (filter[0] == null && filter[1] != null)
-                return value.getDate() <= filter[1].getDate()
+                return value <= filter[1]
             else
                 return true;
         }
@@ -140,7 +141,8 @@ export class MisConsultasComponent extends ListBaseComponent {
             { field: 'SubCategoria',            header: 'Subcategoria', filterType: 'custom',   visibleExternal: false, width: 12, size: 2, sortdropdown: 'SubCategoria.Nombre'},
             { field: 'Asunto',                  header: 'Asunto',       filterType: 'text',     visibleExternal: true,  width: 16, size: 0 },
             { field: 'EstadoConsulta',          header: 'Estado',       filterType: 'custom',   visibleExternal: true,  width: 10, size: 1, sortdropdown: 'EstadoConsulta.Descripcion' },
-            { field: 'FechaCreacion',           header: 'Fecha Inicio', filterType: 'date',     visibleExternal: false, width: 12, size: 2, selectionMode : 'single' },
+            { field: 'Material',                header: 'Material',     filterType: 'custom',   visibleExternal: true,  width: 10, size: 3, sortdropdown: 'Material' },
+            { field: 'FechaCreacion',           header: 'Fecha Inicio', filterType: 'date',     visibleExternal: false, width: 12, size: 3, selectionMode : 'single' },
             { field: 'FechaUltimaModificacion', header: 'Ult. Modif.',  filterType: 'date',     visibleExternal: true,  width: 12, size: 3, selectionMode : 'single' },
             { field: 'DiasReclamo',             header: 'Días',         filterType: 'text',     visibleExternal: false, width: 6,  size: 4 },
         ];
@@ -190,7 +192,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         return this.subcategoriasList;
     }
 
-    onFechaChange(dt, col) {
+    onFechaChange(dt: any, col: { selectedRange: string; field: any; fecha: any; }) {
         let desde = col.selectedRange == 'desde' || col.selectedRange == 'rango';
         let hasta = col.selectedRange == 'hasta' || col.selectedRange == 'rango';
 
@@ -211,7 +213,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     filtrarFecha(dt, field, desde, hasta) {
-        dt.filter([desde, hasta], field, 'dateRangeFilter');
+        dt.filter([desde, hasta], field, 'DateRangeFilter');
     }
 
     cambiarCalendar(dt, col) {
@@ -240,10 +242,11 @@ export class MisConsultasComponent extends ListBaseComponent {
                         this.subcategorias = result.subcategorias;
                         this.subcategoriasList = [];
                         this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id }));
-
+                        this.materiales = result.materiales;
+                        this.materialesList = [];
+                        this.materiales.forEach(x => this.materialesList.push({ label: x.Descripcion, value: x.MaterialId }))
                         this.isExternal = result.isExternal;
                         this.setColumnas();
-
                     }
                 },
                 error => {
@@ -324,6 +327,15 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     getIds(options) {
         return options.map(x => x.Id);
+    }
+
+    getLabel(option) {
+        this.materialesList.forEach(element => {
+            if(element.value == option){
+                console.log(element);
+                return element.label;
+            }
+        });
     }
 
     exportConsultas() {

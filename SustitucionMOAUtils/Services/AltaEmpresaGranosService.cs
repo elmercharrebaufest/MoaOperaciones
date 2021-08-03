@@ -345,21 +345,35 @@ namespace SustitucionMOAUtils.Services
                 infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
             }
 
+            //Para contemplar validar los archivos, tenemos que verificar el usuario del proveedor. Esto es necesario hacerlo así para cuando se hacen altas internas
+            var usuarioDeProveedor = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
+
+            var tipoDeProveedor = "";
+
+            //Si le están haciendo el alta interna, y todavía no se registró el usuario, lo tenemos en cuenta
+            if (usuarioDeProveedor == null)
+            {
+                tipoDeProveedor = proveedor.TipoProveedor.Nombre;
+            }
+            else
+            {
+                tipoDeProveedor = usuarioDeProveedor.TipoUsuario.Nombre;
+            }
+
             Log.Info("ValidarEstadoSolicitud");
 
             ValidarEstadoSolicitud(proveedor);
 
-
             Log.Info("If para validar archivos. Tipo: " + proveedor.TipoProveedor.Nombre);
 
-            if (usuario.TipoUsuario.Nombre == "Corredor")
+            if (tipoDeProveedor == "Corredor")
             {
                 if (!ValidarArchivosSubidosCorredor(proveedor, infoProveedor))
                 {
                     return ErrorMsg.ErrorCompleteCampo;
                 }
             }
-            else if (usuario.TipoUsuario.Nombre == "No Granos")
+            else if (tipoDeProveedor == "No Granos")
             {
                 if (!ValidarArchivosSubidosNoGranos(proveedor, altaEmpresa))
                 {
@@ -373,7 +387,6 @@ namespace SustitucionMOAUtils.Services
                     return ErrorMsg.ErrorCompleteCampo;
                 }
             }
-
 
             if (!esGuardarYNotificar)
             {
@@ -518,7 +531,9 @@ namespace SustitucionMOAUtils.Services
                     Vinculofuncionarios.AppendLine($"<tr><td>{funcionario.NombreFirma}</td><td>{funcionario.CargoFirma}</td><td>{funcionario.NombreFuncionario}</td><td>{funcionario.CargoFuncionario}</td><td>{funcionario.Vinculo}</td></tr>");
                 }
 
-                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, vinculoEmpleadoMolinos, Vinculofuncionarios);
+                var cuit = ReformatearCUIT(proveedor.CUIT);
+
+                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.TipoProveedor.Nombre, proveedor.RazonSocial, cuit, vinculoEmpleadoMolinos, Vinculofuncionarios);
                 var Destinatario = ConfigurationManager.AppSettings["EmailToAuditoria"];
 
                 EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
@@ -582,6 +597,11 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
             }
 
+            if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.DDJJ) && (proveedor.AltaInterna.HasValue && proveedor.AltaInterna == true) && proveedor.TipoProveedor.Nombre == "Granos")
+            {
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "DDJJ"));
+            }
+
             return true;
         }
 
@@ -642,6 +662,64 @@ namespace SustitucionMOAUtils.Services
 
             return true;
         }
+
+        public string GrabarProveedorAltaInternaGranos(string cuit, string mailUsuario)
+        {
+            var usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
+            if (usuario == null) throw new InfoCustomException(InfoMsg.ElementoNoExiste);
+
+            if (cuit == null || cuit == "") throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
+            if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any()) throw new ValidationCustomException(ErrorMsg.ErrorVendedorRepetido);
+
+            var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit, false);
+            if (infoDA.HayError) throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
+
+            var proveedorComercial = usuario.ObtenerProveedor();
+
+            var proveedor = new Proveedor
+            {
+                CUIT = cuit,
+                Mail = usuario.Mail,
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                CodigoProveedor = FormatearCodigoProveedor(cuit),
+                TipoProveedor = ObtenerTipoPorNombreCorto("G"),
+                FechaSolicitud = DateTime.Now,
+                Comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido),
+                AltaInterna = true
+            };
+
+            var hist = new ProveedorHistorialAprobacion
+            {
+                Fecha = DateTime.Now,
+                Usuario_Id = usuario.Id,
+                EstadoAprobacion = proveedor.EstadoAprobacion,
+                Observacion = "Alta interna - Proveedor habilitado en DataAgro"
+            };
+
+            proveedor.RazonSocial = infoDA.ProveedorRazonSocial;
+            proveedor.IdComercialDataAgro = infoDA.ComercialId;
+            proveedor.IdDataAgro = infoDA.ProveedorId;
+            proveedor.Comercial = proveedorComercial.RazonSocial;
+            proveedor.IdDataAgro = infoDA.ProveedorId;
+
+            proveedor.HistorialAprobaciones.Add(hist);
+            
+            repositorio.Agregar(proveedor);
+
+            usuario.Proveedores.Add(proveedor);
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.AltaVendedorOK;
+        }
+
+        private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto) => repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
+
+        private string FormatearCodigoProveedor(string CUIT)
+        {
+            return string.Concat("00", CUIT.Substring(2, 8));
+        }
+
+
 
         public List<ArchivoDto> ObtenerArchivosSubidos(string mailUsuario, int proveedorId, bool esOperador)
         {
@@ -717,7 +795,8 @@ namespace SustitucionMOAUtils.Services
                 ProveedorClasificacion = result.ProveedorClasificacion,
                 EstadoSISA = result.ProveedorSISAEstadoCuit,
                 ProveedorCUIT = CUITProveedor,
-                RazonSocial = proveedor.RazonSocial
+                RazonSocial = proveedor.RazonSocial,
+                AltaInterna = proveedor.AltaInterna ?? false,
             };
 
             return info;
@@ -839,10 +918,10 @@ namespace SustitucionMOAUtils.Services
             return filePath;
         }
 
-        public string NotificarSolicitud(string mailUsuario, int proveedorId)
+        public string SolicitudAltaInterna(string mailUsuario, int proveedorId, AltaEmpresaViewModel altaEmpresa)
         {
+            InfoProveedorDataAgroDto infoProveedor = null;
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-
             var proveedor = proveedorId > 0 ? repositorio.Obtener<Proveedor>(proveedorId) : usuario.ObtenerProveedorPorId(proveedorId);
 
             if (proveedor.TipoProveedor.Nombre != "Granos" || usuario.TipoUsuario.Nombre == "Corredor")
@@ -850,27 +929,41 @@ namespace SustitucionMOAUtils.Services
                 return ErrorMsg.ErrorSinPermiso;
             }
 
-            string mensaje = "Alta en proceso. Ya puede ingresar a aceptar el código de conducta.";
+            ValidarEstadoSolicitud(proveedor);
+            infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
+
+            if (!ValidarArchivosSubidos(proveedor, infoProveedor))
+            {
+                return ErrorMsg.ErrorCompleteCampo;
+            };
 
             if (proveedor.HistorialAprobaciones == null)
             {
                 proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
             }
 
+            proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
+            proveedor.VinculoConEmpleadosDeMolinos = altaEmpresa.VinculoConEmpleadosDeMolinos;
+            proveedor.VinculoConFuncionariosPublicos = altaEmpresa.VinculoConFuncionariosPublicos;
+
             proveedor.HistorialAprobaciones.Add(
                 new ProveedorHistorialAprobacion
                 {
                     Fecha = DateTime.Now,
-                    EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
-                    Observacion = "Notificado al proveedor",
+                    EstadoAprobacion = EstadoAprobacion.AprobacionPendiente,
+                    Observacion = "Envía solicitud",
                     Proveedor_Id = proveedorId,
-                    Usuario_Id = usuario.Id
+                    Usuario_Id = usuario.Id,
                 }
             );
+            
+            repositorio.GuardarCambios();
 
+            if (ValidarDDJJ(altaEmpresa))
+            {
+                EnviarMailAuditoria(altaEmpresa, proveedor);
+            }
 
-            EnviarMailEdicionRequerida(proveedor, mensaje, null);
-       
             return SuccessMsg.ValidacionPendienteOK;
         }
     }
