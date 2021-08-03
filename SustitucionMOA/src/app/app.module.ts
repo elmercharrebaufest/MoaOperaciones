@@ -90,7 +90,7 @@ import { InputTextModule } from 'primeng/inputtext';
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
     ComprasModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
     TableModule,
     DialogModule,
     ButtonModule,
