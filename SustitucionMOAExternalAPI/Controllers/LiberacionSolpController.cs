@@ -11,7 +11,7 @@ namespace SustitucionMOAExternalAPI.Controllers
     public class LiberacionSolpController : ApiController
     {
         [Authorize(Roles = "ABM SOLP")]
-        public IHttpActionResult Put(string nrosolp, [FromBody]DateTime fechaLiberacion)
+        public IHttpActionResult Post(string nrosolp, [FromBody]DateTime fechaLiberacion)
         {
             Log.ExternalAPIInfo(string.Format("Se informó la liberacion de la SOLP: {0} en la fecha {1}", nrosolp, fechaLiberacion));
 
