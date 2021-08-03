@@ -418,9 +418,10 @@ namespace SustitucionMOATest.Services
                     return entidadModificada;
                 });
 
-            string result = target.EditarIngresosBrutosCoeficienteUnificadoDetalle(ingresosBrutosCoeficienteUnificadoDetalleDtoTest);
+            EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto result = target.EditarIngresosBrutosCoeficienteUnificadoDetalle(ingresosBrutosCoeficienteUnificadoDetalleDtoTest);
 
-            Assert.AreEqual("El detalle de ingresos brutos se ha actualizado correctamente.", result);
+            Assert.AreEqual("El detalle de ingresos brutos se ha actualizado correctamente.", result.Mensaje);
+            Assert.AreEqual(hoy, result.FechaUltimaModificacion);
 
             this.repositorioMock.Verify(repo => repo.Obtener<IngresosBrutosCoeficienteUnificadoDetalle>(It.IsAny<int>()), Times.Once);
             this.repositorioMock.Verify(repo => repo.GuardarCambios(), Times.Once);
@@ -524,7 +525,7 @@ namespace SustitucionMOATest.Services
 
             try
             {
-                string result = target.EditarIngresosBrutosCoeficienteUnificadoDetalle(ingresosBrutosCoeficienteUnificadoDetalleDtoTest);
+                var result = target.EditarIngresosBrutosCoeficienteUnificadoDetalle(ingresosBrutosCoeficienteUnificadoDetalleDtoTest);
                 Assert.Fail("Debió lanzar una excepción");
             }
             catch(InfoCustomException icex)

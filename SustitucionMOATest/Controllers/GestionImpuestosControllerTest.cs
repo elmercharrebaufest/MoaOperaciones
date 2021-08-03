@@ -218,15 +218,22 @@ namespace SustitucionMOATest.Controllers
                 Id = 1,
             };
 
+            DateTime hoy = new DateTime(2021, 8, 2);
+
             gestionImpuestosServiceMock
                 .Setup(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.Is<IngresosBrutosCoeficienteUnificadoDetalleDto>(x => x.Id == 1)))
-                .Returns("Se edito ok");
+                .Returns(new EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto { Mensaje = "Se edito ok", FechaUltimaModificacion = hoy });
             
             string parametroJson = JsonConvert.SerializeObject(ingresosBrutosCoeficienteUnificadoDetalleDtoTest);
 
             var result = target.EditarIngresosBrutosCoeficienteUnificadoDetalle(parametroJson);
 
-            Assert.AreEqual("Se edito ok", result.Data);
+            Assert.IsInstanceOf<EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto>(result.Data);
+
+            var resultData = (EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto)result.Data;
+
+            Assert.AreEqual("Se edito ok", resultData.Mensaje);
+            Assert.AreEqual(hoy, resultData.FechaUltimaModificacion);
 
             gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.Is<IngresosBrutosCoeficienteUnificadoDetalleDto>(x => x.Id == 1)), Times.Once);
         }

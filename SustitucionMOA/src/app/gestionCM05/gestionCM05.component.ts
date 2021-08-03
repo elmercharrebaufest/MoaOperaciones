@@ -141,6 +141,8 @@ export class GestionCM05Component extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
+                        this.floatMsgService.setSuccessMsg(result.Mensaje);
+                        rowData.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(result.FechaUltimaModificacion));
                         rowData.Editar = false;
                         this.editandoDetalle = false;
                         this.detalleEditando = null;

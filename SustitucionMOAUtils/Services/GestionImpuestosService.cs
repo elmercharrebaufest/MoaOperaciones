@@ -71,7 +71,7 @@ namespace SustitucionMOAUtils.Services
             x => x.IngresosBrutosCoeficienteUnificado_Id == idCabecera);
         }
 
-        public string EditarIngresosBrutosCoeficienteUnificadoDetalle(IngresosBrutosCoeficienteUnificadoDetalleDto ingresosBrutosCoeficienteUnificadoDetalleDto)
+        public EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto EditarIngresosBrutosCoeficienteUnificadoDetalle(IngresosBrutosCoeficienteUnificadoDetalleDto ingresosBrutosCoeficienteUnificadoDetalleDto)
         {
             var ingresosBrutosCoeficienteUnificadoDetalle = repositorio.Obtener<IngresosBrutosCoeficienteUnificadoDetalle>(ingresosBrutosCoeficienteUnificadoDetalleDto.Id);
 
@@ -89,7 +89,11 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
-            return (SuccessMsg.IngresosBrutosCoeficienteUnificadoDetalleActualizadoOK);
+            return new EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto 
+            {
+                Mensaje = SuccessMsg.IngresosBrutosCoeficienteUnificadoDetalleActualizadoOK,
+                FechaUltimaModificacion = ingresosBrutosCoeficienteUnificadoDetalle.FechaUltimaModificacion
+            };
         }
         
         public string AutorizarCabecera(int idCabecera)
