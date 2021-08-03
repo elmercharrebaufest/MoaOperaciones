@@ -18,7 +18,7 @@
           <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
           </div>
         </strong>
-        <strong *ngIf="!esInterno"> Orden de carga #{{ordenDeCarga.Id}} - {{ordenDeCarga.DescripcionEstado}}
+        <strong *ngIf="!esInterno"> Orden de carga #{{ordenDeCarga.Id}} - {{ordenDeCarga.DescripcionEstadoUsuarioFinal}}
         </strong>
       </div>
       <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
@@ -83,7 +83,7 @@
                 </div>
 
                 <div class="col-xs-12 col-md-6">
-                  <p class="blue"><strong>Chasis acoplado</strong></p>
+                  <p class="blue"><strong>Patente chasis</strong></p>
                   <p style="width:100%">{{ordenDeCarga.ChasisAcoplado}}</p>
                 </div>
                 <div class="col-xs-12 col-md-6">

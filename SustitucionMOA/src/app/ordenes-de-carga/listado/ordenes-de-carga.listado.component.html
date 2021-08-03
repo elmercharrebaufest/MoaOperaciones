@@ -21,7 +21,7 @@
           <title-caps>Refinar resultados</title-caps>
         </div>
         <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-5 ">
-          Nombre:
+          Contrato:
           <div class="styled-select">
             <input type="search" class="" placeholder="" [value]="" aria-controls="tableModal" [(ngModel)]="filtroAlta">
           </div>
@@ -68,6 +68,7 @@
           </thead>
           <tbody *ngIf="esInterno">
             <tr *ngFor="let ordenDeCarga of data 
+                                | customFilter : 'Contrato' : filtroAlta
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
                                 ; let odd = odd" role="row" [class.odd]="!odd">

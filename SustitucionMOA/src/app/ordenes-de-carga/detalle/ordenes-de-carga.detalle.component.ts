@@ -165,8 +165,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.mensajeComponent.setSuccessMsg(result.data);
-                        this.mostrarBotonNotificarTransporte = false;
-                        this.mostrarBotonVerificarTransporte = false;
+                        // this.mostrarBotonNotificarTransporte = false;
+                        // this.mostrarBotonVerificarTransporte = false;
+                        this.obtenerOrdenDeCarga();
 
                     }
                 },
@@ -195,7 +196,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
+                        this.obtenerOrdenDeCarga();
                         this.mensajeComponent.setSuccessMsg(result.data);
+
                     }
                 },
                 error => {
@@ -237,37 +240,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
-
-    // abrirModalCorredoresYContratos() {
-    //     this.mensajeComponent.setMsgsEmpty();
-    //     this.spinnerComponent.showIt();
-    //     this.unsubscribe();
-
-    //     try {
-    //         this.subscriptionDropDowns = this.service.obtenerContratosYCorredores(this.ordenDeCargaId).subscribe(
-    //             result => {
-    //                 this.spinnerComponent.hideIt();
-    //                 if (result.logout == true) {
-    //                     this.sessionDataService.logout();
-    //                 } else if (result.error != undefined && result.error != "") {
-    //                     this.mensajeComponent.setErrorMsg(result.error);
-    //                 } else if (result.info != undefined) {
-    //                     this.mensajeComponent.setInfoMsg(result.info);
-    //                 } else {
-    //                     this.corredorContratoList = result.data;
-    //                     document.getElementById("openSeleccionarContratoYCorredor").click();
-
-    //                 }
-    //             },
-    //             error => {
-    //                 this.mensajeComponent.setErrorMsg(error.message);
-    //             }
-    //         );
-    //     } catch (e) {
-    //         this.mensajeComponent.setErrorMsg(e);
-    //     }
-    // }
-
     seleccionarContrato() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -287,6 +259,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.ordenDeCarga.ContratoSAP = this.contratoSeleccionado;
                         this.mostrarBotonContratos = false;
                         document.getElementById("closemodalSeleccionarContrato").click();
+                        this.obtenerOrdenDeCarga();
                         this.mensajeComponent.setSuccessMsg(result.data);
                     }
                 },
@@ -298,9 +271,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mensajeComponent.setErrorMsg(e);
         }
     }
-
-
-
 
     abrirModalContratos() {
         this.mensajeComponent.setMsgsEmpty();
