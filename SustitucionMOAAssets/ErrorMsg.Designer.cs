@@ -311,5 +311,14 @@ namespace SustitucionMOAAssets {
                 return ResourceManager.GetString("EstadoIncorrectoSolicitud", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El mail ingresado corresponde a molinos agro. Ingrese el mail del vendedor.
+        /// </summary>
+        public static string MailMolinosAgro {
+            get {
+                return ResourceManager.GetString("MailMolinosAgro", resourceCulture);
+            }
+        }
     }
 }
