@@ -66,6 +66,7 @@ export class Solp {
 
     public centroPorDefecto: any;
     public monedaPorDefecto: any;
+    public enviarSap: boolean;
     
 
     // // dashboard

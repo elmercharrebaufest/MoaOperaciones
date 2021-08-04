@@ -47,7 +47,7 @@
                                 Desde *
                                 <p-calendar formControlName="comienzoJornadaLaboral" name="hora1"
                                     [style]="{'width': '45%'}" class="styled-select"
-                                    [(ngModel)]="model.comienzoJornadaLaboral" [locale]="locale" [showIcon]="true"
+                                    [(ngModel)]="model.comienzoJornadaLaboral" [locale]="locale" appendTo="body" [showIcon]="true"
                                     icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
 
                                 <div *ngIf="mostrarError('comienzoJornadaLaboral')">
@@ -58,7 +58,7 @@
                                 Hasta *
                                 <p-calendar formControlName="terminoJornadaLaboral" name="hora2"
                                     [style]="{'width': '45%'}" class="styled-select"
-                                    [(ngModel)]="model.terminoJornadaLaboral" [locale]="locale" [showIcon]="true"
+                                    [(ngModel)]="model.terminoJornadaLaboral" [locale]="locale" appendTo="body" [showIcon]="true"
                                     icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
 
                                 <div *ngIf="mostrarError('terminoJornadaLaboral')">

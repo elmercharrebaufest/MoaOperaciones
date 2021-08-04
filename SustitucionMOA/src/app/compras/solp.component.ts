@@ -96,6 +96,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
     combos: any;
     solpId: number = 0;
 
+    visitasFinalizar: SelectItem[];
+
+    finalizarOk: boolean;
+
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -411,6 +415,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             this.solpActual.setearPosicionPorDefecto();
             // this.cabecera.solpActual = this.solpActual;
+            // this.actualizarPasoCompleto();
         }
     }
 
@@ -461,11 +466,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     
 
-    guardarCambios(mostrarPreview = false, finalizar = false){
+    guardarCambios(mostrarPreview = false, enviarSap = false){
         try {
             this.blockUI.start('Guardando...');
             this.spinnerComponent.showIt();
 
+            this.solpActual.enviarSap = enviarSap;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
                 result => {
                     if (result.logout == true) {
@@ -500,6 +506,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.pdfPreview = "data:application/pdf;base64," + result.Pdf;
                             this.mostrarPreview = true;
                         }
+
+                        if(enviarSap){
+                            if(result.NroSolp) {
+                                this.finalizarOk = true;
+                            } else {
+                                this.messageService.add({severity:'error', detail:'Hubo un error al generar la SOLP en SAP, intente de nuevo mas tarde o comuniquese con el administrador'});
+                            }
+                        } 
+
                     }
                 },
                 error => {
@@ -644,10 +659,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
         });
     }
 
-    // finalizar() {
+    
 
-    // }
-
+    
     // finalizarSolp() {
     //     this.confirmationService.confirm({
     //         key: 'finalizarSolp',
@@ -679,10 +693,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     display: boolean = false;
 
-    showDialog() {
-        this.display = true;
+    finalizar() {
+        this.guardarCambios();
     }
 
+    showDialog() {
+        this.display = true;        
+    }
+
+    
+   
 
 
 }
