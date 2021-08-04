@@ -91,15 +91,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
     solpActual: Solp = new Solp();
     _pasoActual: Paso;
     es: any;
-
     enumSolp: typeof EnumPasoSolp = EnumPasoSolp;
     combos: any;
     solpId: number = 0;
-
     visitasFinalizar: SelectItem[];
-
     finalizarOk: boolean;
-
+    displayFinalizar: boolean = false;
+    displaySAP: boolean;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -256,7 +254,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             
         }
     }
-
 
     traerSolpId(idSolp){
         try {
@@ -532,8 +529,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    
-
     actualizarPasoCompleto(paso: Paso) {
         if (paso) {
             switch (paso.Codigo) {
@@ -659,24 +654,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         });
     }
 
-    
-
-    
-    // finalizarSolp() {
-    //     this.confirmationService.confirm({
-    //         key: 'finalizarSolp',
-    //         message: 'Ha cargado con éxito una solicitud de pedido en SAP y se ha enviado para su liberación',
-    //         accept: () => {
-    //             this.dashboard.descargarPdf(this.solpId);
-    //             this.finalizar();
-    //         },
-    //         reject: () => {
-    //             this.salir();  
-    //         }
-    //     });
-    // }
-
-
     ultimoPasoSolp() {
         this.confirmationService.confirm({
                     key: 'ultimoPasoSolp',
@@ -691,18 +668,69 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     }
 
-    display: boolean = false;
-
     finalizar() {
         this.guardarCambios();
+        this.displayFinalizar = false;
+        this.displaySAP = true; 
     }
 
     showDialog() {
-        this.display = true;        
+        this.displayFinalizar = true;             
     }
 
-    
-   
+    // private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
+    //     if (window.navigator.msSaveOrOpenBlob) {
+    //         // IE11
+    //         window.navigator.msSaveOrOpenBlob(
+    //             blob,
+    //             nombreArchivo
+    //         );
+    //     } else {
+    //         var url = window.URL.createObjectURL(blob);
+    //         var link = document.createElement("a");
+    //         document.body.appendChild(link);
+    //         link.href = url;
+    //         link.download = nombreArchivo;
+    //         link.click();
+    //         setTimeout(function () {
+    //             window.URL.revokeObjectURL(url);
+    //         }, 0);
+    //         return;
+    //     }
+    // }
+
+    // descargarPdf(idSolp): void {
+    //     if (idSolp != undefined) {
+
+    //         this.service.getPdf(idSolp)
+    //             .subscribe(
+    //                 (result) => {
+    //                     if (result.logout == true) {
+    //                         this.sessionDataService.logout();
+    //                     }
+    //                     else {
+    //                         var byteArray = new Uint8Array(result.FileContents);
+    //                         var blob = new Blob([byteArray], {
+    //                             type: "application/octet-stream",
+    //                         });
+
+    //                         this.downloadArchivoLocal(blob, result.FileDownloadName);
+    //                     }
+    //                 },
+    //                 (error) => {
+    //                     this.mensajeComponent.setErrorMsg(error.message);
+    //                 }
+    //             )
+    //     }
+
+    // }
+
+
+    // descargarSolp(idSolp) {
+    //     this.descargarPdf(idSolp);
+    // }
+
+
 
 
 }

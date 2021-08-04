@@ -450,3 +450,25 @@
 ::ng-deep .ui-autocomplete-input {
   width: calc(100% - 33px) !important;
 }
+
+.headerModal {
+  top: 106px;
+  left: 381px;
+  width: 119px;
+  height: 26px;
+  text-align: left;
+  font: normal normal bold 20px/26px Roboto Regular;
+  letter-spacing: 0px;
+  color: #5CB85C;
+  opacity: 1;
+}
+
+.titulosModal {
+  text-align: left;
+  font: normal normal bold 16px/24px Roboto Regular;
+  letter-spacing: 0px;
+  color: #1A1A1A;
+  opacity: 1;
+  margin: 0;
+}
+
