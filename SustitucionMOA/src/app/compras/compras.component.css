@@ -116,9 +116,19 @@
   }
  
   ::ng-deep .ui-calendar .ui-button{
-    background-color:#5B5B5B !important;
-    border-color: #5B5B5B !important;
-} 
+    background-color: #FFFFFF !important;
+    border-color: #DDDDDD !important;
+  } 
+
+  ::ng-deep .ui-button {
+    color: #666666 !important;
+  } 
+
+  ::ng-deep .botonModal.ui-button {
+    color: #ffffff !important;
+    font-family: Roboto Regular !important;
+    font-weight:bold;
+  } 
 
   .widthCompras {
     width: 75%;
