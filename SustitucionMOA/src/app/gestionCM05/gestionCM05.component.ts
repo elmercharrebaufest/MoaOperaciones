@@ -36,8 +36,6 @@ export class GestionCM05Component extends ListBaseComponent {
     detalleEditandoBackup: DetalleCM05;
     editandoDetalle: boolean;
 
-    cabeceraText: string;
-
     constructor(protected service: GestionCM05Service,
                 protected navService: NavService,
                 protected sessionDataService: SessionDataService,
@@ -51,7 +49,7 @@ export class GestionCM05Component extends ListBaseComponent {
     }
 
     ngOnInit() {
-        this.cabeceraText = 'Leyenda loca';
+        this.navService.setSeccionList([]);
 
         this.estados = [
             { label: 'Pendiente',  value: 'Pendiente',   },
