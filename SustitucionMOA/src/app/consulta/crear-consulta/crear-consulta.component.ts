@@ -117,7 +117,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     reclamoImpositivo: ReclamoImpositivo = new ReclamoImpositivo();
     fechaFactura: string;
-
+    nombreDisabled: boolean = false;
 
     setTabs() {
         this.setMenuSeccionTab("consulta", "crear-consulta");
@@ -139,6 +139,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
         $(".adjuntarArchivo").click(function () {
             $(".adjuntarArchivo1").click();
         });
+
+        this.validarNombre();
     }
 
     ngAfterViewInit(): void {
@@ -174,6 +176,13 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
         let $formInput = $('input[type=file]');
         $formInput.val(null);
+    }
+
+    validarNombre(){
+        if(this.nombre == "" || !this.nombre || this.nombre == 'No definido') 
+            this.nombreDisabled = false;
+        
+        this.nombreDisabled = true;
     }
 
     getCombos() {
@@ -247,7 +256,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.mensajeComponent.setErrorMsg("El campo Asunto esta vacio.");
             return true;
         }
-        if (this.nombre == "" || !this.nombre) {
+        if (this.nombre == "" || !this.nombre || this.nombre == 'No definido') {
             this.mensajeComponent.setErrorMsg("El campo Nombre esta vacio.");
             return true;
         }
