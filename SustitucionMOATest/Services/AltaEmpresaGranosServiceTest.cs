@@ -168,7 +168,7 @@ namespace SustitucionMOATest.Services
 
             dataAgroServiceMock.Setup(s => s.ObtenerValidarCUITProveedorGranos(It.IsAny<string>(), It.IsAny<bool>())).Returns(infoDataAgro);
 
-            var result = target.GrabarProveedorAltaInternaGranos("333333333333", mailUsuario);
+            var result = target.GrabarProveedorAltaInternaGranos("333333333333", mailUsuario, mailUsuario);
             var expected = SuccessMsg.AltaVendedorOK;
 
             Assert.AreEqual(expected, result);
