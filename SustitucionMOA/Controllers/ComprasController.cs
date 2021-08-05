@@ -9,6 +9,7 @@ using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -238,6 +239,29 @@ namespace SustitucionMOA.Controllers
             catch (ValidationCustomException e)
             {
                 return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult DescargarZipPliego(int solpId)
+        {
+            try
+            {
+                var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+                Directory.CreateDirectory(path);
+
+                string rutaZip = service.GenerarZipPliego(solpId, path);
+                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
+                string fileName = Path.GetFileName(rutaZip);
+
+                //Para evitar sobrecargar el server con zips, una vez cargado lo borro
+                Directory.Delete(path, true);
+
+                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
             }
             catch (Exception e)
             {
