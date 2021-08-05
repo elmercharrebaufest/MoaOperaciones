@@ -79,5 +79,9 @@ namespace SustitucionMOAModel.Entities
         //public virtual ICollection<DeclaracionCampoSustentable> DeclaracionesCamposSustentables { get; set; }
 
         public bool? ContieneDocumentacionFisica { get; set; }
+
+        public int? IdSolicitanteInternoAltaGranos { get; set; }
+        [ForeignKey("IdSolicitanteInternoAltaGranos")]
+        public virtual Usuario SolicitanteInternoAltaGranos { get; set; }
     }
 }

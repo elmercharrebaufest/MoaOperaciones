@@ -33,10 +33,11 @@ CREATE TABLE [dbo].[Proveedor](
     [SiperObligatorio] BIT NULL, 
    
     [ContieneDocumentacionFisica] BIT NULL, 
+    [IdSolicitanteInternoAltaGranos] INT NULL, 
     CONSTRAINT [PK_dbo.Proveedor] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY], 
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
@@ -45,6 +46,13 @@ REFERENCES [dbo].[Proveedor] ([Id])
 GO
 
 ALTER TABLE [dbo].[Proveedor] CHECK CONSTRAINT [FK_Proveedor_ProveedorCorredor]
+GO
+
+ALTER TABLE [dbo].[Proveedor]  WITH CHECK ADD  CONSTRAINT [FK_Proveedor_SolicitanteInternoAltaGranos] FOREIGN KEY([IdSolicitanteInternoAltaGranos])
+REFERENCES [dbo].[Usuario] ([Id])
+GO
+
+ALTER TABLE [dbo].[Proveedor] CHECK CONSTRAINT [FK_Proveedor_SolicitanteInternoAltaGranos]
 GO
 
 ALTER TABLE [dbo].[Proveedor]  WITH CHECK ADD  CONSTRAINT [FK_Proveedor_Rubro] FOREIGN KEY([IdRubro])
