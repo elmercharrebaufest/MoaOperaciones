@@ -87,20 +87,12 @@
     <p-table [columns]="detalleCols" [value]="detalles" dataKey="Id" editMode="row" [scrollable]="true" scrollHeight="flex" [frozenColumns]="frozenCols" frozenWidth="min-width">
         <ng-template pTemplate="header" let-columns>
             <tr>
-                <th class="col-md-3 th-detalle" rowspan="2" colspan="2">Jurisdicción</th>
-                <!--<th class="th-detalle" rowspan="2">Nro. Jurisdicción</th>-->
-                <th class="col-md-1 th-detalle" rowspan="2">Fecha Inicio</th>
-                <th class="col-md-1 th-detalle" rowspan="2">Fecha Cese</th>
-                <th class="col-md-4 th-detalle" colspan="3">Coeficientes</th>
-                <!--<th class="th-detalle" rowspan="2">Coef. Gastos</th>
-                <th class="th-detalle" rowspan="2">Coef. Unificado</th>-->
-                <th class="col-md-2 th-detalle" rowspan="2">Última modificación</th>
-                <th class="col-md-1 th-detalle" rowspan="2" *ngIf="selectedCabecera.Estado=='Pendiente'"></th>
-            </tr>
-            <tr>
-                <th class="th-detalle">Ingresos</th>
-                <th class="th-detalle">Gastos</th>
-                <th class="th-detalle">Unificado</th>
+                <th class="col-md-3 th-detalle" colspan="2">Jurisdicción</th>
+                <th class="col-md-1 th-detalle">Fecha Inicio</th>
+                <th class="col-md-1 th-detalle">Fecha Cese</th>
+                <th class="col-md-4 th-detalle">Coeficiente Unificado</th>
+                <th class="col-md-2 th-detalle">Última modificación</th>
+                <th class="col-md-1 th-detalle" *ngIf="selectedCabecera.Estado=='Pendiente'"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex" let-columns="columns">
@@ -116,12 +108,6 @@
                 </td>
                 <td class="td-detalle">
                     {{rowData.FechaCese | date:'dd/MM/yyyy'}}
-                </td>
-                <td class="td-detalle">
-                    {{rowData.CoeficienteIngresos}}
-                </td>
-                <td class="td-detalle">
-                    {{rowData.CoeficienteGastos}}
                 </td>
                 <td class="td-detalle">
                     {{rowData.CoeficienteUnificado}}
@@ -146,12 +132,6 @@
                     </td>
                     <td class="td-detalle">
                         <p-calendar [(ngModel)]="rowData.FechaCese" name="rowData.FechaCese" dateFormat="dd/mm/yy"></p-calendar>
-                    </td>
-                    <td class="td-detalle">
-                        <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.CoeficienteIngresos" name="rowData.CoeficienteIngresos" required>
-                    </td>
-                    <td class="td-detalle">
-                        <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.CoeficienteGastos" name="rowData.CoeficienteGastos" required>
                     </td>
                     <td class="td-detalle">
                         <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.CoeficienteUnificado" name="rowData.CoeficienteUnificado" required>
