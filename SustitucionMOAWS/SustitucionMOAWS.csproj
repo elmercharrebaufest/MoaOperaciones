@@ -339,6 +339,7 @@
     <Compile Include="WSConsumers\ContactoMailCategoriasConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContactoMailConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContratoDetalleConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ObtenerCuentasSolpConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerSolpConsumerMOA.cs" />
     <Compile Include="WSConsumers\PDFProformaFinalConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContratoPDFConsumerMOA.cs" />
