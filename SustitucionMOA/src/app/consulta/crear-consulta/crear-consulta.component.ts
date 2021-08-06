@@ -179,8 +179,12 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     validarNombre(){
-        if(this.nombre == "" || !this.nombre || this.nombre == 'No definido') 
+        if(this.nombre == "" || !this.nombre || this.nombre == 'No definido' || this.nombre == undefined || this.nombre == null)
+        {
             this.nombreDisabled = false;
+            this.nombre = ""
+            return true
+        }
         
         this.nombreDisabled = true;
     }
