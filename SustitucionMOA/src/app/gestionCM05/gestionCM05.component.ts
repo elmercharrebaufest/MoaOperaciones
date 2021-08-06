@@ -32,9 +32,7 @@ export class GestionCM05Component extends ListBaseComponent {
 
     estados: SelectItem[];
 
-    detalleEditando: DetalleCM05;
-    detalleEditandoBackup: DetalleCM05;
-    editandoDetalle: boolean;
+    detallesEditando: DetalleCM05[];
 
     constructor(protected service: GestionCM05Service,
                 protected navService: NavService,
@@ -49,6 +47,8 @@ export class GestionCM05Component extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.detallesEditando = [];
+
         this.navService.setSeccionList([]);
 
         this.estados = [
@@ -81,8 +81,8 @@ export class GestionCM05Component extends ListBaseComponent {
             { field: 'Jurisdiccion', header: 'Jurisdicción', },
             { field: 'FechaInicio', header: 'Fecha inicio', },
             { field: 'FechaCese', header: 'Fecha cese', },
-            { field: 'CoeficienteIngresos', header: 'Coef. ingresos', },
-            { field: 'CoeficienteGastos', header: 'Coef. gastos', },
+            //{ field: 'CoeficienteIngresos', header: 'Coef. ingresos', },
+            //{ field: 'CoeficienteGastos', header: 'Coef. gastos', },
             { field: 'CoeficienteUnificado', header: 'Coef. unificado', },
             { field: 'FechaUltimaModificacion', header: 'Última modificación', },
         ];
@@ -120,8 +120,7 @@ export class GestionCM05Component extends ListBaseComponent {
 
     editarRow(rowData) {
         rowData.Editar = true;
-        this.editandoDetalle = true;
-        this.detalleEditando = { ...rowData };
+        this.detallesEditando.push({ ...rowData });
     }
 
     guardarRow(rowData){
@@ -144,11 +143,11 @@ export class GestionCM05Component extends ListBaseComponent {
                     } else {
                         this.messageService.add({ severity: 'success', summary: 'Detalle actualizado', detail: result.Mensaje });
                         this.floatMsgService.setSuccessMsg(result.Mensaje);
+
                         rowData.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(result.FechaUltimaModificacion));
                         rowData.Editar = false;
-                        this.editandoDetalle = false;
-                        this.detalleEditando = null;
-                        this.detalleEditandoBackup = null;
+
+                        this.eliminarDe(rowData, this.detallesEditando);
                     }
                 },
                 error => {
@@ -165,19 +164,18 @@ export class GestionCM05Component extends ListBaseComponent {
     }
 
     cancelarGuardarRow(rowData) {
-        rowData.Id = this.detalleEditando.Id;
-        rowData.Jurisdiccion = this.detalleEditando.Jurisdiccion;
-        rowData.NumeroJurisdiccion = this.detalleEditando.NumeroJurisdiccion;
-        rowData.FechaInicio = this.detalleEditando.FechaInicio;
-        rowData.FechaCese = this.detalleEditando.FechaCese;
-        rowData.CoeficienteIngresos = this.detalleEditando.CoeficienteIngresos;
-        rowData.CoeficienteGastos = this.detalleEditando.CoeficienteGastos;
-        rowData.CoeficienteUnificado = this.detalleEditando.CoeficienteUnificado;
-        rowData.FechaUltimaModificacion = this.detalleEditando.FechaUltimaModificacion;
+        var backupDetalle = this.detallesEditando.filter(x => x.Id == rowData.Id)[0];
+
+        rowData.Id = backupDetalle.Id;
+        rowData.Jurisdiccion = backupDetalle.Jurisdiccion;
+        rowData.NumeroJurisdiccion = backupDetalle.NumeroJurisdiccion;
+        rowData.FechaInicio = backupDetalle.FechaInicio;
+        rowData.FechaCese = backupDetalle.FechaCese;
+        rowData.CoeficienteUnificado = backupDetalle.CoeficienteUnificado;
+        rowData.FechaUltimaModificacion = backupDetalle.FechaUltimaModificacion;
 
         rowData.Editar = false;
-        this.editandoDetalle = false;
-        this.detalleEditando = null;
+        this.eliminarDe(rowData, this.detallesEditando);
     }
 
     validarRow(rowData){
@@ -194,19 +192,19 @@ export class GestionCM05Component extends ListBaseComponent {
             return
         }
 
-        if(!(regexNumerosDecimales.test(rowData.CoeficienteIngresos))){
+        /*if(!(regexNumerosDecimales.test(rowData.CoeficienteIngresos))){
             this.messageService.add({severity:'error', summary:'Coef. Ingresos', detail:'Debe ser un numero entero o decimal.'});
             return
-        }/*
+        }
         if(rowData.CoeficienteIngresos == null || rowData.CoeficienteIngresos == ""){
             this.messageService.add({severity:'error', summary:'Coef. Ingresos', detail:'Esta vacio.'});
             return
-        }*/
+        }
 
         if(!(regexNumerosDecimales.test(rowData.CoeficienteGastos))){
             this.messageService.add({severity:'error', summary:'Coef. Gastos', detail:'Debe ser un numero entero o decimal.'});
             return
-        }/*
+        }
         if(rowData.CoeficienteGastos == null || rowData.CoeficienteGastos == ""){
             this.messageService.add({severity:'error', summary:'Coef. Gastos', detail:'Esta vacio.'});
             return
@@ -253,4 +251,10 @@ export class GestionCM05Component extends ListBaseComponent {
         return false;
     }
 
+    eliminarDe(elemento: DetalleCM05, array: DetalleCM05[]) {
+        var indiceDelElemento = array.findIndex(x => x.Id == elemento.Id);
+        if (indiceDelElemento > -1) {
+            array.splice(indiceDelElemento, 1);
+        }
+    }
 }
