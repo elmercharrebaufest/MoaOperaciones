@@ -170,12 +170,11 @@ namespace SustitucionMOAUtils.Services
             {
                 Comentario primerComentario = repositorio.Obtener<Comentario>(c => c.Consulta_Id == consulta.Id);
                 AgregarAdjuntoComentario(consulta.Id, primerComentario.Id, files);
-
+                
                 if (categoria.Code == Categorias.Actualizacion && subcatecategoria.Code == SubCategorias.CM05)
                 {
-                    ProcesarCM05(files);
+                    this.ProcesarCM05(files, comentario.Id);
                 }
-
             }
 
             return ObtenerConsulta(consulta.Id);
@@ -849,22 +848,28 @@ namespace SustitucionMOAUtils.Services
             return string.Format("{0}/{1}/{2}", rutaArchivosConsulta, comentario.Consulta.Usuario_Id, comentario.Consulta_Id);
         }
 
-        public void ProcesarCM05(HttpFileCollectionBase archivos)
+        public void ProcesarCM05(HttpFileCollectionBase archivos, int comentario_Id)
         {
             bool existeArchivoConCoeficientes = false;
-            for (int i = 0; i < archivos.Count ; i++)
+            for (int i = 0; i < archivos.Count; i++)
             {
                 HttpPostedFileBase archivo = archivos[i];
-             
+
                 var operacionOCRId = Task.Run(async () => await azureService.AnalizarImagenAsync(archivo)).Result;
 
                 Thread.Sleep(2000);
 
                 var elementosLeidos = Task.Run(async () => await azureService.ObtenerResultadoOCRAsync(operacionOCRId)).Result;
 
-                if(elementosLeidos.Any(str => str == "Determinación del Coeficiente Unificado"))
+                if (elementosLeidos.Any(str => str == "Determinación del Coeficiente Unificado"))
                 {
-                    ProcesarArchivoCoeficientesImpuestosIngresosBrutos(elementosLeidos);
+                    Comentario comentario = repositorio.Obtener<Comentario>(comentario_Id);
+                    
+                    int consulta_Id = comentario.Consulta_Id;
+                    var nombreArchivo = string.Format("{0}_{1}", comentario_Id, Path.GetFileName(archivo.FileName));
+                    int archivo_Id = comentario.Archivos.Single(file => file.ObtenerNombre() == nombreArchivo).Id;
+
+                    ProcesarArchivoCoeficientesImpuestosIngresosBrutos(elementosLeidos, consulta_Id, archivo_Id);
                     existeArchivoConCoeficientes = true;
                     break;
                 }
@@ -876,7 +881,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void ProcesarArchivoCoeficientesImpuestosIngresosBrutos(IList<string> elementosLeidos)
+        private void ProcesarArchivoCoeficientesImpuestosIngresosBrutos(IList<string> elementosLeidos, int consulta_Id, int archivo_Id)
         {
             int indiceDeterminacionDelCoeficienteUnificado = elementosLeidos.IndexOf("Determinación del Coeficiente Unificado");
             string encabezadoFormulario = "OSIRIS";
@@ -890,7 +895,9 @@ namespace SustitucionMOAUtils.Services
                 Anticipo = Int32.Parse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Anticipo:")[0]),
                 Sede = Int32.Parse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Sede:")[0]),
                 FechaCarga = timeProvider.Now(),
-                FechaUltimaModificacion = timeProvider.Now()
+                FechaUltimaModificacion = timeProvider.Now(),
+                Consulta_Id = consulta_Id,
+                Archivo_Id = archivo_Id,
             };
 
             List<IngresosBrutosCoeficienteUnificadoDetalle> ingresosBrutosCoeficienteUnificadoDetalles = new List<IngresosBrutosCoeficienteUnificadoDetalle>();

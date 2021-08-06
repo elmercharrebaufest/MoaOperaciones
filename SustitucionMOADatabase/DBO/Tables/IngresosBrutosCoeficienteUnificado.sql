@@ -7,6 +7,8 @@
     [Sede] INT NOT NULL,
 	[FechaCarga] DATETIME NOT NULL, 
     [FechaUltimaModificacion] DATETIME NOT NULL, 
+    [Consulta_Id] INT NULL, 
+    [Archivo_Id] INT NULL, 
     CONSTRAINT [PK_dbo.IngresosBrutosCoeficienteUnificado] PRIMARY KEY CLUSTERED
 	(
 		[Id] ASC
