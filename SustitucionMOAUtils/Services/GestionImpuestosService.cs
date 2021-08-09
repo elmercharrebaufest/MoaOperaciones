@@ -110,5 +110,12 @@ namespace SustitucionMOAUtils.Services
 
             return (SuccessMsg.IngresosBrutosCoeficienteUnificadoAutorizado);
         }
+
+        public string ObtenerRutaArchivoFormularioCM05(int idCabecera)
+        {
+            IngresosBrutosCoeficienteUnificado cabecera = repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(idCabecera);
+
+            return cabecera.Archivo.Ruta;
+        }
     }
 }

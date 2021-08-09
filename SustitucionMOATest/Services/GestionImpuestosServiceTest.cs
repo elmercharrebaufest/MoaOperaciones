@@ -638,5 +638,53 @@ namespace SustitucionMOATest.Services
             }
 
         }
+
+        [Test]
+        public void ObtenerRutaArchivoFormularioCM05Ok()
+        {
+            int idCabeceraTest = 1332;
+
+            var ingresosBrutosCoeficienteUnificadoList = new List<IngresosBrutosCoeficienteUnificado>
+            {
+                new IngresosBrutosCoeficienteUnificado { Id = 1331, Archivo = new Archivo { Ruta = "ruta1331" } },
+                new IngresosBrutosCoeficienteUnificado { Id = 1332, Archivo = new Archivo { Ruta = "ruta1332" } },
+                new IngresosBrutosCoeficienteUnificado { Id = 1333, Archivo = new Archivo { Ruta = "ruta1333" } },
+                new IngresosBrutosCoeficienteUnificado { Id = 1334, Archivo = new Archivo { Ruta = "ruta1334" } },
+            };
+            repositorioMock
+                .Setup(repo => repo.Obtener<IngresosBrutosCoeficienteUnificado>(It.IsAny<int>()))
+                .Returns<int>(idCabecera => ingresosBrutosCoeficienteUnificadoList.SingleOrDefault(x => x.Id == idCabecera));
+
+            var result = target.ObtenerRutaArchivoFormularioCM05(idCabeceraTest);
+
+            Assert.AreEqual("ruta1332", result);
+            this.repositorioMock.Verify(repo => repo.Obtener<IngresosBrutosCoeficienteUnificado>(It.IsAny<int>()), Times.Once);
+        }
+
+        [Test]
+        public void ObtenerRutaArchivoFormularioCM05Exception()
+        {
+            int idCabeceraTest = 1332;
+
+            Exception exceptionTest = new NullReferenceException("random exception");
+            repositorioMock
+                .Setup(repo => repo.Obtener<IngresosBrutosCoeficienteUnificado>(It.IsAny<int>()))
+                .Throws(exceptionTest);
+
+            try
+            {
+                var result = target.ObtenerRutaArchivoFormularioCM05(idCabeceraTest);
+                Assert.Fail("Debió lanzar una excepción");
+            }
+            catch(NullReferenceException nrex)
+            {
+                Assert.AreEqual(exceptionTest, nrex);
+                this.repositorioMock.Verify(repo => repo.Obtener<IngresosBrutosCoeficienteUnificado>(It.IsAny<int>()), Times.Once);
+            }
+            catch(Exception)
+            {
+                Assert.Fail("Debió lanzar una NullReferenceException");
+            }
+        }
     }
 }
