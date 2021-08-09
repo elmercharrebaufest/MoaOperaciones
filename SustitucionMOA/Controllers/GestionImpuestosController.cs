@@ -111,5 +111,22 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        public JsonResult DescargarFormularioCM05(int idCabecera)
+        {
+            try
+            {
+                string rutaArchivo = gestionImpuestosService.ObtenerRutaArchivoFormularioCM05(idCabecera);
+
+                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivo);
+                string fileName = Path.GetFileName(rutaArchivo);
+                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

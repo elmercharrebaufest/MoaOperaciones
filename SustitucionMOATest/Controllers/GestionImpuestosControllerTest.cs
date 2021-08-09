@@ -1,15 +1,18 @@
-﻿using Moq;
+﻿using Microsoft.QualityTools.Testing.Fakes;
+using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SustitucionMOA.Controllers;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Principal;
+using System.Web;
+using System.Web.Mvc;
 
 namespace SustitucionMOATest.Controllers
 {
@@ -284,6 +287,66 @@ namespace SustitucionMOATest.Controllers
 
             Assert.AreEqual("Error de validacion", errorResultData);
             this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.Is<IngresosBrutosCoeficienteUnificadoDetalleDto>(x => x.Id == 1)), Times.Once);
+        }
+
+        [Test]
+        public void DescargarFormularioCM05Ok()
+        {
+            int idCabeceraTest = 123;
+
+            List<IngresosBrutosCoeficienteUnificado> ingresosBrutosCoeficienteUnificadoList = new List<IngresosBrutosCoeficienteUnificado>
+            {
+                new IngresosBrutosCoeficienteUnificado { Id = 1,    Archivo = new Archivo { Ruta = "C:/ArchivosProveedores/Consultas/5776/47/46323061565409 CM05.jpg" }, },
+                new IngresosBrutosCoeficienteUnificado { Id = 12,   Archivo = new Archivo { Ruta = "C:/CarpetaLoca/Consultas/5776/47/46_3061565409 CM05.pdf" }, },
+                new IngresosBrutosCoeficienteUnificado { Id = 123,  Archivo = new Archivo { Ruta = "C:/ArchivosProveedores/Consultas/5776/47/46_3061565409 CM05.pdf" }, },
+                new IngresosBrutosCoeficienteUnificado { Id = 1234, Archivo = new Archivo { Ruta = "C:/ArchivosProveedores/Consultas/5776/47/46_3061565409 CM07.pdf" }, },
+            };
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ObtenerRutaArchivoFormularioCM05(It.IsAny<int>()))
+                .Returns<int>(idCabecera => ingresosBrutosCoeficienteUnificadoList.SingleOrDefault(x => x.Id == idCabecera).Archivo.Ruta);
+            
+            var result = target.DescargarFormularioCM05(idCabeceraTest);
+
+            Assert.IsNotNull(result.Data);
+            Assert.IsInstanceOf<FileContentResult>(result.Data);
+            
+            FileContentResult resultData = (FileContentResult)result.Data;
+            Assert.AreEqual("46_3061565409 CM05.pdf", resultData.FileDownloadName);
+
+            this.gestionImpuestosServiceMock.Verify(g => g.ObtenerRutaArchivoFormularioCM05(It.IsAny<int>()), Times.Once);
+            this.gestionImpuestosServiceMock.Verify(g => g.ObtenerRutaArchivoFormularioCM05(123), Times.Once);
+        }
+
+        [Test]
+        public void DescargarFormularioCM05Exception()
+        {
+            int idCabeceraTest = 123;
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ObtenerRutaArchivoFormularioCM05(It.IsAny<int>()))
+                .Throws(new Exception("exploto molinos"));
+
+            Exception excepcionResultante = null;
+
+            JsonResult result;
+            using (ShimsContext.Create())
+            {
+                HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(null));
+                HttpContext.Current.User = new GenericPrincipal(new GenericIdentity("username"), new string[0]);
+
+                SustitucionMOAUtils.Logger.Fakes.ShimLog.ErrorStringStringStringStringException = (s1, s2, s3, s4, ex) => { excepcionResultante = ex; };
+
+                result = target.DescargarFormularioCM05(idCabeceraTest);
+            }
+
+            Assert.IsNotNull(result.Data);
+
+            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+            Assert.AreEqual("exploto molinos", excepcionResultante.Message);
+
+            this.gestionImpuestosServiceMock.Verify(g => g.ObtenerRutaArchivoFormularioCM05(It.IsAny<int>()), Times.Once);
+            this.gestionImpuestosServiceMock.Verify(g => g.ObtenerRutaArchivoFormularioCM05(123), Times.Once);
         }
     }
 }
