@@ -193,12 +193,14 @@ namespace SustitucionMOAUtils.Services
                         return true;
 
                     case "CC-01":
-                        ordenDeCarga.CorredorSeleccionado = false;
-                        break;
+                        //ordenDeCarga.CorredorSeleccionado = false;
+                        //break;
+                        throw new ValidationCustomException("No se encontró ningun contrato con ese producto.");
+
 
                     case "CC-02":
                         ordenDeCarga.TransporteExiste = false;
-                        break;
+                        return true;
 
                     case "CC-03":
                         throw new ValidationCustomException("El pedido informado no existe.");
@@ -342,21 +344,6 @@ namespace SustitucionMOAUtils.Services
         }
 
         #region Etapa1
-        private void VerificarContrato(OrdenDeCarga orden)
-        {
-            var contratosSAP = ObtenerContratos(orden.CUITCliente);
-
-            if (contratosSAP.Count == 1)
-            {
-                orden.ContratoSAP = contratosSAP.First().Value;
-            }
-            else
-            {
-                orden.ContratoSAP = "";
-            }
-
-            orden.ActualizarEstado();
-        }
 
         public string SeleccionarContrato(int ordenId, string contratoSAP)
         {
@@ -381,36 +368,6 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.OrdenDeCargaActualizada;
         }
 
-        public string SeleccionarCorredor(int ordenId, string corredor)
-        {
-            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-
-            orden.Corredor = corredor;
-            orden.CorredorSeleccionado = true;
-
-            orden.ActualizarEstado();
-
-            repositorio.GuardarCambios();
-
-            return SuccessMsg.OrdenDeCargaActualizada;
-        }
-
-
-        public string SeleccionarCorredorContrato(int ordenId, CorredorContratoDto corredorContrato)
-        {
-            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-
-            orden.Corredor = corredorContrato.Corredor; ;
-            orden.ContratoSAP = corredorContrato.Contrato;
-            orden.CorredorSeleccionado = true;
-
-            orden.ActualizarEstado();
-
-            repositorio.GuardarCambios();
-
-            return SuccessMsg.OrdenDeCargaActualizada;
-        }
-
         public List<string> ObtenerContratos(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
@@ -425,36 +382,7 @@ namespace SustitucionMOAUtils.Services
             return listadoContratos;
         }
 
-        public List<CorredorContratoDto> ObtenerContratosYCorredores(int ordenID)
-        {
-            var listado = new List<CorredorContratoDto>
-            {
-                new CorredorContratoDto(1, 1, "Pepe", "123"),
-                new CorredorContratoDto(1, 2, "Pepe", "456"),
-                new CorredorContratoDto(2, 3, "Luis", "789"),
-                new CorredorContratoDto(2, 4, "Luis", "234")
-            };
-
-            return listado;
-        }
-
-        public Dictionary<string, string> ObtenerContratos(string CUIT)
-        {
-            return new Dictionary<string, string> { { "1", "1231231" }, { "2", "515121" } };
-        }
-
-        public Dictionary<string, string> ObtenerCorredores(int ordenId)
-        {
-            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-
-            return ObtenerCorredores(orden.CUITCliente);
-        }
-
-        public Dictionary<string, string> ObtenerCorredores(string CUIT)
-        {
-            return new Dictionary<string, string> { { "1", "PEPE" }, { "2", "LUIS" } };
-        }
-
+       
         public string VerificarTransporte(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);

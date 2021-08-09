@@ -73,7 +73,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        //[CustomPermisoAuthorizeAttribute(Roles = Permiso.c)]
         [HttpGet]
         public ActionResult GetListado()
         {
@@ -213,54 +212,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [HttpGet]
-        public ActionResult ObtenerCorredores(int ordenId)
-        {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-
-                return JsonCustom(new { data = ordenDeCargaService.ObtenerCorredores(ordenId) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        public ActionResult ObtenerContratosYCorredores(int ordenId)
-        {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-
-                return JsonCustom(new { data = ordenDeCargaService.ObtenerContratosYCorredores(ordenId) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
         [HttpPost]
         public ActionResult SeleccionarContrato(int ordenId, string contratoSAP)
         {
@@ -269,56 +220,6 @@ namespace SustitucionMOA.Controllers
                 var mailUsuario = SessionPersister.getUsername();
 
                 return JsonCustom(new { data = ordenDeCargaService.SeleccionarContrato(ordenId, contratoSAP) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpPost]
-        public ActionResult SeleccionarCorredorContrato(int ordenId, string corredorContratoJson)
-        {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-
-                var ordenDeCarga = JsonConvert.DeserializeObject<CorredorContratoDto>(corredorContratoJson);
-
-                return JsonCustom(new { data = ordenDeCargaService.SeleccionarCorredorContrato(ordenId, ordenDeCarga) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        public ActionResult SeleccionarCorredor(int ordenId, string corredor)
-        {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-
-                return JsonCustom(new { data = ordenDeCargaService.SeleccionarCorredor(ordenId, corredor) });
             }
             catch (InfoCustomException e)
             {

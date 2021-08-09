@@ -17,13 +17,9 @@ namespace SustitucionMOAUtils.Interfaces
         string AnularOrden(int ordenId);
         string NotificarTransporte(int ordenId);
         List<string> ObtenerContratos(int ordenId);
-        Dictionary<string, string> ObtenerCorredores(int ordenId);
         string SeleccionarContrato(int ordenId, string contratoSAP);
-        string SeleccionarCorredor(int ordenId, string corredor);
         string VerificarSituacionCrediticia(int ordenId);
         string VerificarTransporte(int ordenId);
-        List<CorredorContratoDto> ObtenerContratosYCorredores(int ordenID);
-        string SeleccionarCorredorContrato(int ordenId, CorredorContratoDto corredorContrato);
         void VerificarTransporteBulk();
         Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario);
     }

@@ -15,7 +15,8 @@ namespace SustitucionMOAModel.Enums
         Anulada,
         Entregada,
         Vencida,
-        EntregaPendiente
+        EntregaPendiente,
+        AnuladaPorVencimiento
     }
 
     public static class EstadoOrdenDeCargaExtensions
