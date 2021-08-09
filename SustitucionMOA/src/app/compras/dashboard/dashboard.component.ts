@@ -135,36 +135,6 @@ export class DashboardComponent extends ListBaseComponent {
 
     }
 
-    test(){
-        try {
-            this.spinnerComponent.showIt();
-
-            this.subscription = this.service.test().subscribe(
-                result => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else { 
-                        console.log(result)
-                    }
-                },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                    this.spinnerComponent.hideIt();
-                }
-
-            );
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
-
-        return false; //<-- Prevent Refresh
-    }
-
     getListarSolp(){
             try {
                 this.spinnerComponent.showIt();

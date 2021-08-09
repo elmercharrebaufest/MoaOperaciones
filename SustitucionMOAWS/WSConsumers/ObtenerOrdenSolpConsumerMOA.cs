@@ -1,0 +1,63 @@
+﻿using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.ObtenerOrdenSolpWebServiceMOA;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SustitucionMOAWS.WSConsumers
+{
+    public class ObtenerOrdenSolpConsumerMOA
+    {
+        SI_MMRFC_OBTENER_ORDENClient service = new SI_MMRFC_OBTENER_ORDENClient();
+        private const string COMP_CODE = "MOA";
+        public object request()
+        {
+            try
+            {
+                service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+                service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+                string IM_NAME = "";
+                string IM_ORDER = "";
+                string IM_TYPE = "";
+                ZMPES5650[] EX_ORDER_LIST = new ZMPES5650[] { };
+                BAPIRETURN[] EX_RETURN = new BAPIRETURN[] { };
+
+                string error = service.SI_MMRFC_OBTENER_ORDEN(COMP_CODE, IM_NAME, IM_ORDER, IM_TYPE, out EX_ORDER_LIST, out EX_RETURN);
+
+                return map(error, EX_ORDER_LIST, EX_RETURN);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        protected virtual object map(string error, ZMPES5650[] EX_ORDER_LIST, BAPIRETURN[] EX_RETURN)
+        {
+            OrdenWSMOAResponse result = new OrdenWSMOAResponse();
+            result.Ordenes = new List<Orden> { };
+
+            if (error == "200")
+            {
+                foreach (ZMPES5650 orden in EX_ORDER_LIST)
+                {
+                    result.Ordenes.Add(new Orden()
+                    {
+                        Descripcion = orden.NAME,
+                        Tipo = orden.TYPE,
+                        Clase = orden.CLASS,
+                        CompCode = orden.COMP_CODE,
+                        ORDER = orden.ORDER
+                    });
+                }
+            }
+            result.Error = error;
+
+            return result;
+        }
+    }
+}

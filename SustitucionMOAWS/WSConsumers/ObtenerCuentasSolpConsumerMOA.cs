@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using System.Net;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -40,17 +41,20 @@ namespace SustitucionMOAWS.WSConsumers
         protected virtual object map(string error, ZMPES5760[] EX_GL_ACCOUNT_LIST, BAPIRETURN[] EX_RETURN)
         {
             CuentaWSMOAResponse result = new CuentaWSMOAResponse();
+            result.Cuentas = new List<Cuenta> { };
 
-            foreach (ZMPES5760 cuentaSolp in EX_GL_ACCOUNT_LIST)
+            if(error == "200")
             {
-                result.cuentas.Add(new Cuenta()
+                foreach (ZMPES5760 cuentaSolp in EX_GL_ACCOUNT_LIST)
                 {
-                    Comp = cuentaSolp.COMP_CODE,
-                    Id = cuentaSolp.GL_ACCOUNT,
-                    Descripcion = cuentaSolp.SHORT_TEXT
-                });
+                    result.Cuentas.Add(new Cuenta()
+                    {
+                        Id = cuentaSolp.GL_ACCOUNT,
+                        Descripcion = cuentaSolp.SHORT_TEXT
+                    });
+                }
+                result.error = error;
             }
-            result.error = error;
 
             return result;
         }

@@ -4,6 +4,7 @@ using SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,21 +38,26 @@ namespace SustitucionMOAWS.WSConsumers
         protected virtual object map(string error, ZMPES5710[] IM_SERVICELIST, BAPIRET2[] IM_RETURN)
         {
             ServicioWSMOAResponse result = new ServicioWSMOAResponse();
+            result.Servicios = new List<Servicio> { };
 
-            foreach (ZMPES5710 servicioSolp in IM_SERVICELIST)
+            if (error == "200")
             {
-                result.Servicios.Add(new Servicio()
+                foreach (ZMPES5710 servicioSolp in IM_SERVICELIST)
                 {
-                    Id = servicioSolp.SERVICE,
-                    Descripcion = servicioSolp.SHORT_TEXT,
-                    NroGrupo = servicioSolp.MATL_GROUP,
-                    Serv = servicioSolp.SERV_CAT,
-                    Ser = servicioSolp.SERV_TYPE,
-                    Edit = servicioSolp.EDITION,
-                    Bas = servicioSolp.BASE_UOM,
-                    SSCItem = servicioSolp.SSC_ITEM
-                });
+                    result.Servicios.Add(new Servicio()
+                    {
+                        Id = servicioSolp.SERVICE,
+                        Descripcion = servicioSolp.SHORT_TEXT,
+                        NroGrupo = servicioSolp.MATL_GROUP,
+                        Serv = servicioSolp.SERV_CAT,
+                        Ser = servicioSolp.SERV_TYPE,
+                        Edit = servicioSolp.EDITION,
+                        Bas = servicioSolp.BASE_UOM,
+                        SSCItem = servicioSolp.SSC_ITEM
+                    });
+                }
             }
+
             result.error = error;
 
             return result;

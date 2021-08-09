@@ -29,6 +29,7 @@ using Image = iTextSharp.text.Image;
 using SustitucionMOAAssets;
 using System.IO.Compression;
 using SustitucionMOAWS.WSConsumers;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -780,11 +781,68 @@ namespace SustitucionMOAUtils.Services
              return ret.ToString();
          }
 
-        public ObtenerServiciosSolpConsumerMOA test()
+        public List<TablaSapDto> ObtenerServiciosSap()
         {
-            var a = (ObtenerServiciosSolpConsumerMOA)new ObtenerServiciosSolpConsumerMOA().request();
+            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)new ObtenerServiciosSolpConsumerMOA().request();
 
-            return a;
+            return resultSap.Servicios.Select(s => new TablaSapDto()
+            {
+                Tabla = "Servicios",
+                Descripcion = s.Descripcion,
+                CodigoSap = s.Id,
+                //Tendriamos que cambiar este codigo por otro. A lo mejor hacerle el cast y guardarlo en Id_padre
+                Codigo = s.NroGrupo,
+            }).ToList();
+        }
+
+        public List<TablaSapDto> ObtenerCuentasSap()
+        {
+            CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)new ObtenerCuentasSolpConsumerMOA().request();
+
+            return resultSap.Cuentas.Select(c => new TablaSapDto()
+            {
+                Tabla = "CuentasSolpSap",
+                Descripcion = c.Descripcion,
+                CodigoSap = c.Id,
+            }).ToList();
+        }
+
+        
+        public List<TablaSapDto> ObtenerOrdenesSap()
+        {
+            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)new ObtenerOrdenSolpConsumerMOA().request();
+
+            return resultSap.Ordenes.Select(c => new TablaSapDto()
+            {
+                Tabla = "OrdenSolpSap",
+                Descripcion = c.Descripcion,
+                CodigoSap = c.ORDER,
+            }).ToList();
+        }
+
+        public List<TablaSapDto> ObtenerCecoSap()
+        {
+            CecoWSMOAResponse resultSap = (CecoWSMOAResponse)new ObtenerCecoSolpConsumerMOA().request();
+
+            return resultSap.Cecos.Select(c => new TablaSapDto()
+            {
+                Tabla = "CecoSolpSap",
+                Descripcion = c.Descripcion,
+                CodigoSap = c.CostCenter,
+            }).ToList();
+        }
+
+        public List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor)
+        {
+            return repositorio.Listar<TablaSap>(x => x.Tabla == tabla && (x.Descripcion == valor || x.CodigoSap == valor))
+                .Select(s => new TablaSapDto
+                {
+                    Id = s.Id,
+                    Descripcion = s.Descripcion,
+                    CodigoSap = s.CodigoSap,
+                    Codigo = s.Codigo,
+                    Tabla = s.Tabla
+                }).ToList();
         }
     }
 

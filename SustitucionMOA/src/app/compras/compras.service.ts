@@ -4,9 +4,15 @@ import { Observable } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './Solp';
 import { Http, Response, URLSearchParams } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class ComprasService extends BaseService {
+
+    public constructor(private http2: HttpClient, protected http: Http)
+    {
+        super(http);
+    }
 
     public getCombos(): Observable<any> {
         return this.http
@@ -233,20 +239,12 @@ export class ComprasService extends BaseService {
             .pipe(map(this.extractData));
     }
 
-    test(){
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
-        let params: URLSearchParams = new URLSearchParams();
-        return this.http
-            .get("/api/compras/test", {
-                search: params,
-                headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+    autocompleteSap(tabla: string, valor: string){
+        let params: HttpParams = new HttpParams()
+            .append('tabla', tabla)
+            .append('valor', valor)
+
+        return this.http2
+            .get<any[]>("/api/compras/AutocompleteTablaSap", { params: params })
     }
 }

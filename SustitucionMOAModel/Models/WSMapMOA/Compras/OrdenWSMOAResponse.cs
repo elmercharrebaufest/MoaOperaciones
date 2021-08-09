@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Models.WSMapMOA.Compras
 {
-    public class CuentaWSMOAResponse
+    public class OrdenWSMOAResponse
     {
-        public string error { get; set; }
-        public List<Cuenta> Cuentas { get; set; }
+        public List<Orden> Ordenes { get; set; }
+        public string Error { get; set; }
     }
 }
