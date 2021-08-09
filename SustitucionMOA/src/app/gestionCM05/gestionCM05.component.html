@@ -149,6 +149,7 @@
     </p-table>
     <p-footer [minHeight]="'auto'">
         <button pButton label="Autorizar" (click)="autorizarCabecera()" [disabled]="selectedCabecera.Estado!='Pendiente'" type="button" icon="fa fa-check-circle" iconPos="right" style="float: right"></button>
+        <button pButton label="Descargar PDF" (click)="descargarFormularioCM05()" type="button" icon="fa fa-file" iconPos="right" style="float: right"></button>
     </p-footer>
 <p-toast></p-toast>
 </p-dialog>

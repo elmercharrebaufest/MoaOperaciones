@@ -33,4 +33,20 @@ export class GestionCM05Service extends BaseService {
             .get('/api/GestionImpuestos/AutorizarCabecera?idCabecera=' + idCabecera, { headers: this.headers })
             .pipe(map(this.extractData));
     }
+
+    public DescargarArchivoFormularioCM05(idCabecera: number): Observable<any> {
+        this.headers = new Headers();
+        this.headers.append("Content-Type", "application/json");
+        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
+        this.headers.append("Cache-control", "no-cache");
+        this.headers.append("Cache-control", "no-store");
+        this.headers.append("Expires", "0");
+        this.headers.append("Pragma", "no-cache");
+        let params: URLSearchParams = new URLSearchParams();
+        params.set("idCabecera", idCabecera.toString());
+        return this.http
+            .get('/api/GestionImpuestos/DescargarFormularioCM05?idCabecera=' + idCabecera, { headers: this.headers })
+            .pipe(map(this.extractData));
+    }
+
 }
