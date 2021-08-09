@@ -5,11 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    class ObtenerCuentasSolpConsumerMOA
+    public class ObtenerCuentasSolpConsumerMOA
     {
+        private const string COMP_CODE = "MOA";
+
         SI_MMRFC_OBTENER_CUENTASClient service = new SI_MMRFC_OBTENER_CUENTASClient();
 
         public object request()
@@ -18,11 +22,37 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+                string IM_COMP_CODE = COMP_CODE;
+                string IM_GL_ACCOUNT = "";
+                ZMPES5760[] EX_GL_ACCOUNT_LIST = new ZMPES5760[] { };
+                BAPIRETURN[] EX_RETURN = new BAPIRETURN[] { };
+
+                string error = service.SI_MMRFC_OBTENER_CUENTAS(IM_COMP_CODE, IM_GL_ACCOUNT, out EX_GL_ACCOUNT_LIST, out EX_RETURN);
+
+                return map(error, EX_GL_ACCOUNT_LIST, EX_RETURN);
             }
             catch (Exception e)
             {
                 throw e;
             }
+        }
+
+        protected virtual object map(string error, ZMPES5760[] EX_GL_ACCOUNT_LIST, BAPIRETURN[] EX_RETURN)
+        {
+            CuentaWSMOAResponse result = new CuentaWSMOAResponse();
+
+            foreach (ZMPES5760 cuentaSolp in EX_GL_ACCOUNT_LIST)
+            {
+                result.cuentas.Add(new Cuenta()
+                {
+                    Comp = cuentaSolp.COMP_CODE,
+                    Id = cuentaSolp.GL_ACCOUNT,
+                    Descripcion = cuentaSolp.SHORT_TEXT
+                });
+            }
+            result.error = error;
+
+            return result;
         }
     }
 }

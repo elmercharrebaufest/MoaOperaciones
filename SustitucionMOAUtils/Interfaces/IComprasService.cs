@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         string GenerarZipPliego(int idSolp, string pathBase);
 
+        ObtenerServiciosSolpConsumerMOA test();
 
     }
 }

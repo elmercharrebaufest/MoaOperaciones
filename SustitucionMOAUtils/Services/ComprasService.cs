@@ -28,6 +28,7 @@ using iTextSharp.tool.xml.html;
 using Image = iTextSharp.text.Image;
 using SustitucionMOAAssets;
 using System.IO.Compression;
+using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -778,7 +779,14 @@ namespace SustitucionMOAUtils.Services
 
              return ret.ToString();
          }
+
+        public ObtenerServiciosSolpConsumerMOA test()
+        {
+            var a = (ObtenerServiciosSolpConsumerMOA)new ObtenerServiciosSolpConsumerMOA().request();
+
+            return a;
         }
+    }
 
     public static class SolpTemplateKeys
     {
