@@ -92,6 +92,37 @@ namespace SustitucionMOATest.Controllers
         }
 
         [Test]
+        public void ListarCabecerasException()
+        {
+            var excepcionTest = new NullReferenceException("exploto molinos");
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarCabeceras())
+                .Throws(excepcionTest);
+
+            Exception excepcionResultante = null;
+
+            JsonResult result;
+            using (ShimsContext.Create())
+            {
+                HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(null));
+                HttpContext.Current.User = new GenericPrincipal(new GenericIdentity("username"), new string[0]);
+
+                SustitucionMOAUtils.Logger.Fakes.ShimLog.ErrorStringStringStringStringException = (s1, s2, s3, s4, ex) => { excepcionResultante = ex; };
+
+                result = target.ListarCabeceras();
+            }
+
+            Assert.IsNotNull(result.Data);
+
+            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+            Assert.AreEqual("exploto molinos", excepcionResultante.Message);
+
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarCabeceras(), Times.Once);
+        }
+
+        [Test]
         public void ListarDetallesOk()
         {
             int idCabeceraTest = 3;
@@ -159,6 +190,40 @@ namespace SustitucionMOATest.Controllers
         }
 
         [Test]
+        public void ListarDetallesException()
+        {
+            int idCabeceraTest = 1;
+
+            var excepcionTest = new NullReferenceException("exploto molinos");
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarDetalles(1))
+                .Throws(excepcionTest);
+
+            Exception excepcionResultante = null;
+
+            JsonResult result;
+            using (ShimsContext.Create())
+            {
+                HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(null));
+                HttpContext.Current.User = new GenericPrincipal(new GenericIdentity("username"), new string[0]);
+
+                SustitucionMOAUtils.Logger.Fakes.ShimLog.ErrorStringStringStringStringException = (s1, s2, s3, s4, ex) => { excepcionResultante = ex; };
+
+                result = target.ListarDetalles(idCabeceraTest);
+            }
+
+            Assert.IsNotNull(result.Data);
+
+            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+            Assert.AreEqual("exploto molinos", excepcionResultante.Message);
+
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarDetalles(It.IsAny<int>()), Times.Once);
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarDetalles(1), Times.Once);
+        }
+
+        [Test]
         public void AutorizarCabeceraOk()
         {
             int idCabeceraTest = 3;
@@ -211,6 +276,40 @@ namespace SustitucionMOATest.Controllers
 
             Assert.AreEqual("Error de validacion", errorResultData);
             this.gestionImpuestosServiceMock.Verify(g => g.AutorizarCabecera(idCabeceraTest), Times.Once);
+        }
+
+        [Test]
+        public void AutorizarCabeceraException()
+        {
+            int idCabeceraTest = 3;
+
+            var excepcionTest = new NullReferenceException("exploto molinos");
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.AutorizarCabecera(3))
+                .Throws(excepcionTest);
+
+            Exception excepcionResultante = null;
+
+            JsonResult result;
+            using (ShimsContext.Create())
+            {
+                HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(null));
+                HttpContext.Current.User = new GenericPrincipal(new GenericIdentity("username"), new string[0]);
+
+                SustitucionMOAUtils.Logger.Fakes.ShimLog.ErrorStringStringStringStringException = (s1, s2, s3, s4, ex) => { excepcionResultante = ex; };
+
+                result = target.AutorizarCabecera(idCabeceraTest);
+            }
+
+            Assert.IsNotNull(result.Data);
+
+            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+            Assert.AreEqual("exploto molinos", excepcionResultante.Message);
+
+            this.gestionImpuestosServiceMock.Verify(g => g.AutorizarCabecera(It.IsAny<int>()), Times.Once);
+            this.gestionImpuestosServiceMock.Verify(g => g.AutorizarCabecera(3), Times.Once);
         }
 
         [Test]
@@ -286,6 +385,44 @@ namespace SustitucionMOATest.Controllers
             string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
 
             Assert.AreEqual("Error de validacion", errorResultData);
+            this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.Is<IngresosBrutosCoeficienteUnificadoDetalleDto>(x => x.Id == 1)), Times.Once);
+        }
+
+        [Test]
+        public void EditarIngresosBrutosCoeficienteUnificadoDetalleException()
+        {
+            var ingresosBrutosCoeficienteUnificadoDetalleDtoTest = new IngresosBrutosCoeficienteUnificadoDetalleDto
+            {
+                Id = 1,
+            };
+
+            var excepcionTest = new NullReferenceException("exploto molinos");
+
+            gestionImpuestosServiceMock
+                .Setup(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.Is<IngresosBrutosCoeficienteUnificadoDetalleDto>(x => x.Id == 1)))
+                .Throws(excepcionTest);
+
+            string parametroJson = JsonConvert.SerializeObject(ingresosBrutosCoeficienteUnificadoDetalleDtoTest);
+            Exception excepcionResultante = null;
+
+            JsonResult result;
+            using (ShimsContext.Create())
+            {
+                HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(null));
+                HttpContext.Current.User = new GenericPrincipal(new GenericIdentity("username"), new string[0]);
+
+                SustitucionMOAUtils.Logger.Fakes.ShimLog.ErrorStringStringStringStringException = (s1, s2, s3, s4, ex) => { excepcionResultante = ex; };
+
+                result = target.EditarIngresosBrutosCoeficienteUnificadoDetalle(parametroJson);
+            }
+
+            Assert.IsNotNull(result.Data);
+
+            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+            Assert.AreEqual("exploto molinos", excepcionResultante.Message);
+
+            this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.IsAny<IngresosBrutosCoeficienteUnificadoDetalleDto>()), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.Is<IngresosBrutosCoeficienteUnificadoDetalleDto>(x => x.Id == 1)), Times.Once);
         }
 
