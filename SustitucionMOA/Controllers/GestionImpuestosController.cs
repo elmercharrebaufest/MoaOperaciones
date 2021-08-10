@@ -72,8 +72,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                string mailUusario = SessionPersister.getUsername();
-                return JsonCustom(gestionImpuestosService.AutorizarCabecera(idCabecera, mailUusario));
+                return JsonCustom(gestionImpuestosService.AutorizarCabecera(idCabecera));
             }
             catch (InfoCustomException e)
             {
