@@ -6,6 +6,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Helpers;
 using SustitucionMOAUtils.Services;
 using System;
@@ -23,14 +24,16 @@ namespace SustitucionMOATest.Services
         private GestionImpuestosService target;
         private Mock<IRepositorio> repositorioMock;
         private Mock<ITimeProvider> timeProviderMock;
+        private Mock<IConsultaService> consultaServiceMock;
 
         [SetUp]
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
             timeProviderMock = new Mock<ITimeProvider>();
+            consultaServiceMock = new Mock<IConsultaService>();
 
-            target = new GestionImpuestosService(repositorioMock.Object, timeProviderMock.Object);
+            target = new GestionImpuestosService(repositorioMock.Object, timeProviderMock.Object, consultaServiceMock.Object);
         }
 
         [Test]
@@ -545,6 +548,7 @@ namespace SustitucionMOATest.Services
         public void AutorizarCabeceraOk()
         {
             int idCabeceraTest = 221;
+            string mailTest = "mail";
 
             DateTime hoy = new DateTime(2021, 8, 2);
             DateTime ayer = new DateTime(2021, 8, 1);
@@ -557,10 +561,10 @@ namespace SustitucionMOATest.Services
 
             var ingresosBrutosCoeficienteUnificadoList = new List<IngresosBrutosCoeficienteUnificado>
             {
-                new IngresosBrutosCoeficienteUnificado { Id = 221, EstadoIngresosBrutosCoeficienteUnificado_Id = pendiente, FechaUltimaModificacion = ayer, Anticipo = 1, CUIT = "1", FechaCarga = ayer, Sede = 912 },
-                new IngresosBrutosCoeficienteUnificado { Id = 222, EstadoIngresosBrutosCoeficienteUnificado_Id = pendiente, FechaUltimaModificacion = hoy, Anticipo = 2, CUIT = "2", FechaCarga = ayer, Sede = 913 },
-                new IngresosBrutosCoeficienteUnificado { Id = 223, EstadoIngresosBrutosCoeficienteUnificado_Id = autorizado, FechaUltimaModificacion = ayer, Anticipo = 3, CUIT = "3", FechaCarga = ayer, Sede = 914 },
-                new IngresosBrutosCoeficienteUnificado { Id = 224, EstadoIngresosBrutosCoeficienteUnificado_Id = completado, FechaUltimaModificacion = ayer, Anticipo = 4, CUIT = "4", FechaCarga = ayer, Sede = 915 },
+                new IngresosBrutosCoeficienteUnificado { Id = 221, EstadoIngresosBrutosCoeficienteUnificado_Id = pendiente, Consulta_Id = 132, FechaUltimaModificacion = ayer, Anticipo = 1, CUIT = "1", FechaCarga = ayer, Sede = 912 },
+                new IngresosBrutosCoeficienteUnificado { Id = 222, EstadoIngresosBrutosCoeficienteUnificado_Id = pendiente, Consulta_Id = 244, FechaUltimaModificacion = hoy, Anticipo = 2, CUIT = "2", FechaCarga = ayer, Sede = 913 },
+                new IngresosBrutosCoeficienteUnificado { Id = 223, EstadoIngresosBrutosCoeficienteUnificado_Id = autorizado, Consulta_Id = 323, FechaUltimaModificacion = ayer, Anticipo = 3, CUIT = "3", FechaCarga = ayer, Sede = 914 },
+                new IngresosBrutosCoeficienteUnificado { Id = 224, EstadoIngresosBrutosCoeficienteUnificado_Id = completado, Consulta_Id = 466, FechaUltimaModificacion = ayer, Anticipo = 4, CUIT = "4", FechaCarga = ayer, Sede = 915 },
             };
 
             IngresosBrutosCoeficienteUnificado ingresosBrutosCoeficienteUnificadoAModificar = new IngresosBrutosCoeficienteUnificado();
@@ -572,12 +576,30 @@ namespace SustitucionMOATest.Services
                     return ingresosBrutosCoeficienteUnificadoAModificar;
                 });
 
-            string result = target.AutorizarCabecera(idCabeceraTest);
+            List<Usuario> usuarioList = new List<Usuario>
+            {
+                new Usuario { Id = 1, Mail = "mail2" },
+                new Usuario { Id = 2, Mail = null },
+                new Usuario { Id = 3, Mail = "mail" },
+            };
+            this.repositorioMock
+                .Setup(repo => repo.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                .Returns<Expression<Func<Usuario, bool>>>(q => usuarioList.SingleOrDefault(q.Compile()));
+
+            string result = target.AutorizarCabecera(idCabeceraTest, mailTest);
 
             Assert.AreEqual("Se autorizaron correctamente los coeficientes unificados de ingresos brutos", result);
 
             this.repositorioMock.Verify(repo => repo.Obtener<IngresosBrutosCoeficienteUnificado>(It.IsAny<int>()), Times.Once);
+            this.repositorioMock.Verify(repo => repo.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
             this.repositorioMock.Verify(repo => repo.GuardarCambios(), Times.Once);
+
+            this.consultaServiceMock.Verify(c => c.AgregarComentario(It.IsAny<int>(), It.IsAny<ComentarioDto>(), It.IsAny<System.Web.HttpFileCollectionBase>()), Times.Once);
+            this.consultaServiceMock.Verify(c => c.AgregarComentario(
+                132,
+                It.Is<ComentarioDto>(comentarioDto => comentarioDto.Detalle == "Autorizado" && comentarioDto.Fecha == hoy && comentarioDto.UsuarioId == 3),
+                null),
+                Times.Once);
 
             Assert.AreEqual(221, ingresosBrutosCoeficienteUnificadoAModificar.Id);
             Assert.AreEqual(1, ingresosBrutosCoeficienteUnificadoAModificar.Anticipo);
@@ -593,22 +615,14 @@ namespace SustitucionMOATest.Services
         public void AutorizarCabeceraErrorSinRegistros()
         {
             int idCabeceraTest = 229;
-
-            DateTime hoy = new DateTime(2021, 8, 2);
-            DateTime ayer = new DateTime(2021, 8, 1);
-
-            timeProviderMock.Setup(t => t.Now()).Returns(hoy);
-
-            int pendiente = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente;
-            int autorizado = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado;
-            int completado = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Completado;
+            string mailTest = "mail";
 
             var ingresosBrutosCoeficienteUnificadoList = new List<IngresosBrutosCoeficienteUnificado>
             {
-                new IngresosBrutosCoeficienteUnificado { Id = 221, EstadoIngresosBrutosCoeficienteUnificado_Id = pendiente, FechaUltimaModificacion = ayer, Anticipo = 1, CUIT = "1", FechaCarga = ayer, Sede = 912 },
-                new IngresosBrutosCoeficienteUnificado { Id = 222, EstadoIngresosBrutosCoeficienteUnificado_Id = pendiente, FechaUltimaModificacion = hoy, Anticipo = 2, CUIT = "2", FechaCarga = ayer, Sede = 913 },
-                new IngresosBrutosCoeficienteUnificado { Id = 223, EstadoIngresosBrutosCoeficienteUnificado_Id = autorizado, FechaUltimaModificacion = ayer, Anticipo = 3, CUIT = "3", FechaCarga = ayer, Sede = 914 },
-                new IngresosBrutosCoeficienteUnificado { Id = 224, EstadoIngresosBrutosCoeficienteUnificado_Id = completado, FechaUltimaModificacion = ayer, Anticipo = 4, CUIT = "4", FechaCarga = ayer, Sede = 915 },
+                new IngresosBrutosCoeficienteUnificado { Id = 221, },
+                new IngresosBrutosCoeficienteUnificado { Id = 222, },
+                new IngresosBrutosCoeficienteUnificado { Id = 223, },
+                new IngresosBrutosCoeficienteUnificado { Id = 224, },
             };
 
             IngresosBrutosCoeficienteUnificado ingresosBrutosCoeficienteUnificadoAModificar = new IngresosBrutosCoeficienteUnificado();
@@ -622,7 +636,7 @@ namespace SustitucionMOATest.Services
 
             try
             {
-                string result = target.AutorizarCabecera(idCabeceraTest);
+                string result = target.AutorizarCabecera(idCabeceraTest, mailTest);
                 Assert.Fail("Debió lanzar una excepción");
             }
             catch(InfoCustomException icex)
