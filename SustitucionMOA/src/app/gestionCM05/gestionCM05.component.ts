@@ -20,6 +20,9 @@ import { MessageService } from 'primeng/api';
 })
 export class GestionCM05Component extends ListBaseComponent {
 
+    @ViewChild("dt")
+    protected table: Table;
+
     displayDialog: boolean;
 
     cabeceraCols: any[];
@@ -33,6 +36,11 @@ export class GestionCM05Component extends ListBaseComponent {
     estados: SelectItem[];
 
     detallesEditando: DetalleCM05[];
+
+    cuitFiltro: string;
+
+    fechaDesde: Date;
+    fechaHasta: Date;
 
     constructor(protected service: GestionCM05Service,
                 protected navService: NavService,
@@ -295,5 +303,15 @@ export class GestionCM05Component extends ListBaseComponent {
         if (indiceDelElemento > -1) {
             array.splice(indiceDelElemento, 1);
         }
+    }
+
+    filtrarCuit(dt) {
+        var cuitFiltroMasked = this.cuitFiltro.substr(0, 2);
+        if (this.cuitFiltro.length > 2)
+            cuitFiltroMasked += "-" + this.cuitFiltro.substr(2, 8);
+        if (this.cuitFiltro.length > 10)
+            cuitFiltroMasked += "-" + this.cuitFiltro.substr(10, 1);
+
+        dt.filter(cuitFiltroMasked, 'CUIT', 'contains');
     }
 }
