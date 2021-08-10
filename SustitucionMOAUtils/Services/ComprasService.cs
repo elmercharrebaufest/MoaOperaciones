@@ -29,6 +29,10 @@ using Image = iTextSharp.text.Image;
 using SustitucionMOAAssets;
 using System.IO.Compression;
 using SustitucionMOAUtils.Email;
+using SustitucionMOAUtils.Helpers;
+using System.Web.UI.WebControls;
+using System.Data;
+
 
 namespace SustitucionMOAUtils.Services
 {
@@ -109,6 +113,7 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.TieneVisitaObraMasiva = solp.TieneVisitaObraMasiva;
                 pliegoEntity.TieneObradores = solp.TieneObradores;
                 pliegoEntity.TieneMedioElevacion = solp.TieneMedioElevacion;
+                pliegoEntity.TieneAndamio = solp.TieneAndamio;
                 pliegoEntity.TieneTecnicoSeguridad = solp.TieneTecnicoSeguridad;
                 pliegoEntity.TieneDescripcionTecnica = solp.TieneDescripcionTecnica;
                 pliegoEntity.TieneDocumentacionTecnica = solp.TieneDocumentacionTecnica;
@@ -459,6 +464,7 @@ namespace SustitucionMOAUtils.Services
                 TieneVisitaObraMasiva = x.Pliego.TieneVisitaObraMasiva ?? false,
                 TieneObradores = x.Pliego.TieneObradores ?? false,
                 TieneMedioElevacion = x.Pliego.TieneMedioElevacion ?? false,
+                TieneAndamio = x.Pliego.TieneAndamio ?? false,
                 TieneTecnicoSeguridad = x.Pliego.TieneTecnicoSeguridad ?? false,
                 TieneDescripcionTecnica = x.Pliego.TieneDescripcionTecnica ?? false,
                 TieneDocumentacionTecnica = x.Pliego.TieneDocumentacionTecnica ?? false,
@@ -684,6 +690,28 @@ namespace SustitucionMOAUtils.Services
                     image.SetAbsolutePosition(180, 700);
                     PdfWriter.DirectContent.AddImage(image, false);
 
+                    TwoColumnHeaderFooter PageEventHandler = new TwoColumnHeaderFooter();
+                    PdfWriter.PageEvent = PageEventHandler;
+
+                    PageEventHandler.Title = "Solp";
+                    PageEventHandler.HeaderFont = FontFactory.GetFont(BaseFont.COURIER_BOLD, 10, Font.BOLD);
+                    //PageEventHandler.HeaderLeft = "Group";
+                    //PageEventHandler.HeaderRight = "1";
+
+                    //for (int i = 1; i <= 2; i++)
+                    //{
+                    //    // Define the page header
+                    //    PageEventHandler.HeaderRight = i.ToString();
+                    //    if (i != 1)
+                    //    {
+                    //        document.NewPage();
+                    //    }
+                    
+                    //    // New outline must be created after the page is added
+                    //    //AddOutline(PdfWriter, "Group " + i.ToString(), document.PageSize.Height);
+           
+                    //}
+                  
                     // instantiate custom tag processor and add to `HtmlPipelineContext`.
                     var tagProcessorFactory = Tags.GetHtmlTagProcessorFactory();
                     //tagProcessorFactory.AddProcessor(
@@ -718,6 +746,14 @@ namespace SustitucionMOAUtils.Services
                 }
 
             }
+
+        }
+
+        public void AddOutline(PdfWriter writer, string Title, float Position)
+        {
+            PdfDestination destination = new PdfDestination(PdfDestination.FITH, Position);
+            PdfOutline outline = new PdfOutline(writer.DirectContent.RootOutline, destination, Title);
+            writer.DirectContent.AddOutline(outline, "Name = " + Title);
         }
 
         public string GenerarZipPliego(int idSolp, string pathBase)
@@ -770,7 +806,27 @@ namespace SustitucionMOAUtils.Services
 
             return ret.ToString();
         }
+
+        private void EnviarMailSolp(Solp solp, Usuario usuario)
+        {
+            try
+            {
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_SOLP);
+                string asunto = "MOA COMPRAS - Solp finalizada";
+
+                var cuerpo = string.Format(cuerpoTemplate, usuario.Mail);
+                var Destinatario = usuario.Mail;
+
+
+                EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
+            }
+            catch (Exception e)
+            {
+            }
+        }
     }
+
+
 
     public static class SolpTemplateKeys
     {
@@ -792,31 +848,6 @@ namespace SustitucionMOAUtils.Services
         public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
         public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
     }
-
-    private void EnviarMailSolp(Solp solp, Usuario usuario)
-    {
-        try
-        {
-
-            var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_SOLP);
-            string asunto = "MOA COMPRAS - Solp finalizada";
-
-            var cuit = ReformatearCUIT(proveedor.CUIT);
-
-            var cuerpo = string.Format(cuerpoTemplate, usuario.Mail);
-            var Destinatario = ConfigurationManager.AppSettings["EmailToAuditoria"];
-
-            EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
-        }
-        catch (Exception e)
-        {
-        }
-    }
-    
-
-
-
-        
 
 
         //Attachment archivoExcel;

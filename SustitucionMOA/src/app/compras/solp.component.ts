@@ -315,6 +315,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.visitaDeObra = solp.TieneVisitaObra;
         this.solpActual.obradores = solp.TieneObradores;
         this.solpActual.modoElevacion = solp.TieneMedioElevacion;
+        this.solpActual.andamio = solp.TieneAndamio; // Agregada 
         this.solpActual.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
         this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;        
         this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;          

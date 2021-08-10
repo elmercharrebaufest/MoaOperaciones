@@ -30,6 +30,7 @@ export class Solp {
     public obradores: boolean;
     public descripcionTecnica: boolean;
     public modoElevacion: boolean;
+    public andamio: boolean;
     public entregaDocumentacion: boolean;
     public tecnicoSeguridad: boolean;
     public fechaLimiteFecha: Date;
