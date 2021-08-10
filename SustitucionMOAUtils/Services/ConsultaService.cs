@@ -56,9 +56,20 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
-        public ComentarioDto AgregarComentario(int consultaId, Comentario comentario, HttpFileCollectionBase files)
+        public ComentarioDto AgregarComentario(int consultaId, ComentarioDto comentarioDto, HttpFileCollectionBase files)
         {
             var consulta = GetConsulta(consultaId);
+
+            Comentario comentario = new Comentario
+            {
+                Consulta_Id = consultaId,
+                Detalle = comentarioDto.Detalle,
+                Fecha = comentarioDto.Fecha,
+                Recordado = comentarioDto.Recordado,
+                FechaRecordado = comentarioDto.FechaRecordado,
+                Usuario_Id = comentarioDto.UsuarioId
+            };
+
             var usuario = repositorio.Obtener<Usuario>(u => u.Id == comentario.Usuario_Id);
             var esInterno = usuario.TienePermiso("CONSULTA ABM");
 
@@ -84,7 +95,7 @@ namespace SustitucionMOAUtils.Services
             consulta.FechaUltimaModificacion = DateTime.Now;
             repositorio.GuardarCambios();
 
-            if (files.Count > 0)
+            if (files != null && files.Count > 0)
             {
                 AgregarAdjuntoComentario(consulta.Id, comentario.Id, files);
             }

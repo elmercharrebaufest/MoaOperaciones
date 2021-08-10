@@ -18,7 +18,8 @@ namespace SustitucionMOAModel.Dto
         public DateTime FechaRecordado { get; set; }
         public IList<ArchivoDto> Archivos { get; set; }
         public IList<ComentarioRecordadoDto> ComentarioRecordados { get; set; }
-
+        public int Consulta_Id { get; set; }
+        
         public ComentarioDto() { }
 
         public ComentarioDto(Comentario comentario)
