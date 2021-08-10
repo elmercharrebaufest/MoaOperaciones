@@ -20,7 +20,7 @@ namespace SustitucionMOAModel.Entities
 
         public int EstadoIngresosBrutosCoeficienteUnificado_Id { get; set; }
 
-        public int? Consulta_Id { get; set; }
+        public int Consulta_Id { get; set; }
         
         public int Archivo_Id { get; set; }
 
