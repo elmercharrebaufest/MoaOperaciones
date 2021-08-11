@@ -8,7 +8,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Compras
 {
     public class Cuenta
     {
-        public string Id { get; set; }
+        public string Codigo { get; set; }
         public string Descripcion { get; set; }
         public string Comp { get; set; }
     }

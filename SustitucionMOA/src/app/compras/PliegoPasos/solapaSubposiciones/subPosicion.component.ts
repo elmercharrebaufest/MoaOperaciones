@@ -13,6 +13,7 @@ import { SubPosicionViewModel } from './subPosicionViewModel';
 import { EnumTipoImputacion } from '../../enum-tipo-imputacion'
 import { EnumColumnaSubPosicion } from '../../enum-columna-subPosiciones'
 import { ConfirmationService } from 'primeng/api';
+import { type } from 'jquery';
 
 
 @Component({
@@ -37,6 +38,9 @@ export class SubPosicionComponent extends ListBaseComponent {
     enumColumnaSubPosicion: typeof EnumColumnaSubPosicion = EnumColumnaSubPosicion;
     total: number = 0;
     unidades: any[];
+
+    tablaAFiltrar: any;
+    autocomplete: any[];
 
     // array de columnas en la grilla
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
@@ -229,12 +233,32 @@ export class SubPosicionComponent extends ListBaseComponent {
         }
     }
 
-    autocompleteSap(){
+    autocompleteSap(event, type){
         try {
-            this.spinnerComponent.showIt();
-            this.subscription = this.service.autocompleteSap("a", "ok").subscribe(
-                result => {
-                    /*
+            switch (type){
+                case 'ESTADO':
+                    this.tablaAFiltrar = 'EstadoSolpSap'
+                    break;
+
+                case 'ORDEN':
+                    this.tablaAFiltrar = 'OrdenSolpSap'
+                    break;
+
+                case 'CECO':
+                    this.tablaAFiltrar = 'CecoSolpSap'
+                    break;
+
+                case 'CUENTA':
+                    this.tablaAFiltrar = 'CuentasSolpSap'
+                    break;
+
+                default:
+                    this.tablaAFiltrar = ''
+                    break;                   
+            }
+
+            this.subscription = this.service.autocompleteSap(this.tablaAFiltrar, event.query.toLowerCase()).subscribe(
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -242,14 +266,8 @@ export class SubPosicionComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else { 
-                        this.tablaSolp = result.data;
-                        this.tablaSolp.forEach(x => {
-                            x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
-                        });
-                        this.spinnerComponent.hideIt();
-                    }*/
-
-                    console.log("x");
+                        this.autocomplete = result;
+                    }
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);

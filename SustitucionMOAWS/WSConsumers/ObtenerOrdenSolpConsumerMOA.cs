@@ -51,7 +51,7 @@ namespace SustitucionMOAWS.WSConsumers
                         Tipo = orden.TYPE,
                         Clase = orden.CLASS,
                         CompCode = orden.COMP_CODE,
-                        ORDER = orden.ORDER
+                        Codigo = orden.ORDER
                     });
                 }
             }

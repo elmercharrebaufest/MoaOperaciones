@@ -281,7 +281,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = service.ObtenerServiciosSap() });
+                return JsonCustom( service.AutocompleteTablaSap(tabla, valor) );
             }
             catch (InfoCustomException e)
             {

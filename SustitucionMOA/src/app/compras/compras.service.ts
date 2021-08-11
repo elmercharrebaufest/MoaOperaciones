@@ -135,7 +135,7 @@ export class ComprasService extends BaseService {
                                 sp.cuentaTd || 
                                 sp.precioBruto > 0 || 
                                 (sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo) ||
-                                sp.tipoImputacion);
+                                (sp.tipoImputacion && sp.tipoImputacion.Codigo));
                     }).map(sp => {
                         return {
                             Codigo: sp.id,
@@ -146,7 +146,7 @@ export class ComprasService extends BaseService {
                             Cantidad: sp.cuentaTd,
                             PrecioBruto: sp.precioBruto,
                             Unidad: this.getObjetoCodigo(sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo),
-                            TipoImputacionValor: sp.tipoImputacion
+                            TipoImputacionValor: this.getObjetoCodigo(sp.tipoImputacion && sp.tipoImputacion.Codigo,  sp.tipoImputacion.Tabla)
                         }
                     }) : null,
                     Proveedores: [
@@ -199,9 +199,14 @@ export class ComprasService extends BaseService {
         return [];
     }
 
-    getObjetoCodigo(codigo){
-        if(codigo)
+    getObjetoCodigo(codigo, tabla = null){
+        if(codigo){
+            if(tabla){
+                return { Codigo: codigo, Tabla: tabla}
+            }
+            
             return { Codigo: codigo }
+        }
         
         return null;
     }

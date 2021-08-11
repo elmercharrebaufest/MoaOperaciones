@@ -49,7 +49,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     result.Cuentas.Add(new Cuenta()
                     {
-                        Id = cuentaSolp.GL_ACCOUNT,
+                        Codigo = cuentaSolp.GL_ACCOUNT,
                         Descripcion = cuentaSolp.SHORT_TEXT
                     });
                 }

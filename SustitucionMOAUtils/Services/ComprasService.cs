@@ -255,7 +255,10 @@ namespace SustitucionMOAUtils.Services
 
                                 subposEntity.Codigo = subpos.Codigo;
                                 subposEntity.Cantidad = subpos.Cantidad;
-                                subposEntity.CentroCosto = subpos.TipoImputacionValor; //cambiar campo en base
+
+                                if(subpos.TipoImputacionValor != null)
+                                    subposEntity.TipoImputacionSap = repositorio.Obtener<TablaSap>(x => x.Tabla == subpos.TipoImputacionValor.Tabla && x.Codigo == subpos.TipoImputacionValor.Codigo);
+
                                 subposEntity.CuentaMayor = subpos.CuentaMayor;
                                 subposEntity.Numero = subpos.Numero;
                                 subposEntity.PrecioBruto = subpos.PrecioBruto;
@@ -787,11 +790,9 @@ namespace SustitucionMOAUtils.Services
 
             return resultSap.Servicios.Select(s => new TablaSapDto()
             {
-                Tabla = "Servicios",
+                Tabla = TablasSap.CodigoServicioSap,
                 Descripcion = s.Descripcion,
-                CodigoSap = s.Id,
-                //Tendriamos que cambiar este codigo por otro. A lo mejor hacerle el cast y guardarlo en Id_padre
-                Codigo = s.NroGrupo,
+                CodigoSap = s.Codigo,
             }).ToList();
         }
 
@@ -801,9 +802,9 @@ namespace SustitucionMOAUtils.Services
 
             return resultSap.Cuentas.Select(c => new TablaSapDto()
             {
-                Tabla = "CuentasSolpSap",
+                Tabla = TablasSap.CuentasSolpSap,
                 Descripcion = c.Descripcion,
-                CodigoSap = c.Id,
+                CodigoSap = c.Codigo,
             }).ToList();
         }
 
@@ -814,9 +815,9 @@ namespace SustitucionMOAUtils.Services
 
             return resultSap.Ordenes.Select(c => new TablaSapDto()
             {
-                Tabla = "OrdenSolpSap",
+                Tabla = TablasSap.OrdenSolpSap,
                 Descripcion = c.Descripcion,
-                CodigoSap = c.ORDER,
+                CodigoSap = c.Codigo,
             }).ToList();
         }
 
@@ -826,7 +827,7 @@ namespace SustitucionMOAUtils.Services
 
             return resultSap.Cecos.Select(c => new TablaSapDto()
             {
-                Tabla = "CecoSolpSap",
+                Tabla = TablasSap.CecoSolpSap,
                 Descripcion = c.Descripcion,
                 CodigoSap = c.CostCenter,
             }).ToList();
@@ -834,7 +835,8 @@ namespace SustitucionMOAUtils.Services
 
         public List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor)
         {
-            return repositorio.Listar<TablaSap>(x => x.Tabla == tabla && (x.Descripcion == valor || x.CodigoSap == valor))
+            var lista = repositorio.Listar<TablaSap>(x => x.Tabla == tabla)
+                .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToLower().Contains(valor.ToLower()))
                 .Select(s => new TablaSapDto
                 {
                     Id = s.Id,
@@ -843,6 +845,8 @@ namespace SustitucionMOAUtils.Services
                     Codigo = s.Codigo,
                     Tabla = s.Tabla
                 }).ToList();
+
+            return lista;
         }
     }
 

@@ -46,7 +46,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     result.Servicios.Add(new Servicio()
                     {
-                        Id = servicioSolp.SERVICE,
+                        Codigo = servicioSolp.SERVICE,
                         Descripcion = servicioSolp.SHORT_TEXT,
                         NroGrupo = servicioSolp.MATL_GROUP,
                         Serv = servicioSolp.SERV_CAT,
