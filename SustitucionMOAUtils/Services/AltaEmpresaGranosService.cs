@@ -25,6 +25,8 @@ using System.Threading.Tasks;
 using System.IO.Compression;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Email;
+using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -552,6 +554,15 @@ namespace SustitucionMOAUtils.Services
                 var cuerpo = string.Format(cuerpoTemplate, proveedor.RazonSocial, "observada", !string.IsNullOrWhiteSpace(observacionParaElProveedor) ? observacionParaElProveedor : "-");
                 string asunto = "Molinos Agro - Edición Requerida";
 
+                if (proveedor.AltaInterna ?? false)
+                {
+                    if (proveedor.TipoProveedor.NombreCorto == "G")
+                    {
+                        var usuario = repositorio.Obtener<Usuario>(U => U.Id == proveedor.IdSolicitanteInternoAltaGranos);
+                        copia.Add(usuario.Mail);
+                    }
+                }
+
                 EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, copia, null, null, null);
             }
             catch (Exception ex)
@@ -663,13 +674,17 @@ namespace SustitucionMOAUtils.Services
             return true;
         }
 
-        public string GrabarProveedorAltaInternaGranos(string cuit, string mailUsuario)
+        public string GrabarProveedorAltaInternaGranos(string cuit, string mailUsuario, string mailVendedor)
         {
             var usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
             if (usuario == null) throw new InfoCustomException(InfoMsg.ElementoNoExiste);
 
             if (cuit == null || cuit == "") throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
             if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any()) throw new ValidationCustomException(ErrorMsg.ErrorVendedorRepetido);
+
+            if (mailVendedor == null || mailVendedor == "") throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Mail"));
+            if (!IsValidEmail(mailVendedor)) throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorIncorrecto, "Mail"));
+            if (mailVendedor.ToLower().Contains("@molinosagro.com.ar")) throw new ValidationCustomException(string.Format(ErrorMsg.MailMolinosAgro));
 
             var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit, false);
             if (infoDA.HayError) throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
@@ -678,14 +693,15 @@ namespace SustitucionMOAUtils.Services
 
             var proveedor = new Proveedor
             {
-                CUIT = cuit,
-                Mail = usuario.Mail,
+                CUIT = cuit.Trim(),
+                Mail = mailVendedor.Trim(),
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
                 CodigoProveedor = FormatearCodigoProveedor(cuit),
                 TipoProveedor = ObtenerTipoPorNombreCorto("G"),
                 FechaSolicitud = DateTime.Now,
                 Comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido),
-                AltaInterna = true
+                AltaInterna = true,
+                IdSolicitanteInternoAltaGranos = usuario.Id
             };
 
             var hist = new ProveedorHistorialAprobacion
@@ -699,13 +715,12 @@ namespace SustitucionMOAUtils.Services
             proveedor.RazonSocial = infoDA.ProveedorRazonSocial;
             proveedor.IdComercialDataAgro = infoDA.ComercialId;
             proveedor.IdDataAgro = infoDA.ProveedorId;
-            proveedor.Comercial = proveedorComercial.RazonSocial;
-            proveedor.IdDataAgro = infoDA.ProveedorId;
-
+            proveedor.IdSolicitanteInternoAltaGranos = usuario.Id;
             proveedor.HistorialAprobaciones.Add(hist);
             
             repositorio.Agregar(proveedor);
 
+            //Le agrego el proveedor al comercial
             usuario.Proveedores.Add(proveedor);
             repositorio.GuardarCambios();
 
@@ -965,6 +980,50 @@ namespace SustitucionMOAUtils.Services
             }
 
             return SuccessMsg.ValidacionPendienteOK;
+        }
+
+        public static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            try
+            {
+                // Normalize the domain
+                email = Regex.Replace(email, @"(@)(.+)$", DomainMapper,
+                                      RegexOptions.None, TimeSpan.FromMilliseconds(200));
+
+                // Examines the domain part of the email and normalizes it.
+                string DomainMapper(Match match)
+                {
+                    // Use IdnMapping class to convert Unicode domain names.
+                    var idn = new IdnMapping();
+
+                    // Pull out and process domain name (throws ArgumentException on invalid)
+                    string domainName = idn.GetAscii(match.Groups[2].Value);
+
+                    return match.Groups[1].Value + domainName;
+                }
+            }
+            catch (RegexMatchTimeoutException e)
+            {
+                return false;
+            }
+            catch (ArgumentException e)
+            {
+                return false;
+            }
+
+            try
+            {
+                return Regex.IsMatch(email,
+                    @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                    RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
         }
     }
 }
