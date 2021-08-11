@@ -68,11 +68,13 @@ import { GestionCM05Service } from "./gestionCM05/gestionCM05.service";
 import { TableModule } from "primeng/table";
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
-import { CalendarModule} from 'primeng/calendar';
+import { CalendarModule } from 'primeng/calendar';
 import { PaginatorModule } from 'primeng/paginator';
-import { ToastModule} from 'primeng/toast';
+import { ToastModule } from 'primeng/toast';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { InputTextModule } from 'primeng/inputtext';
+import { InputTextModule } from 'primeng/inputtext';;
+import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
+import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
 
 @NgModule({
   imports: [
@@ -124,7 +126,9 @@ import { InputTextModule } from 'primeng/inputtext';
     VentaSustentableBaseComponent,
     ApikeyComponent,
     GestionCM05Component,
-    ],
+    PesificacionesGuardadasComponent,
+    PesificacionBaseComponent
+  ],
   providers: [
     DatePipe,
     SessionDataService,
