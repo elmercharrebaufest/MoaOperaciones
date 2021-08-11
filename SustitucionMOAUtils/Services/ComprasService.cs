@@ -681,7 +681,7 @@ namespace SustitucionMOAUtils.Services
         {
             using (var stream = new MemoryStream())
             {
-                using (var document = new Document(PageSize.A4, 70f, 70f, 60f, 40f))
+                using (var document = new Document(PageSize.A4, 70f, 70f, 60f, 60f))
                 {
                     var PdfWriter = iTextSharp.text.pdf.PdfWriter.GetInstance(document, stream);
                     document.Open();
@@ -693,7 +693,7 @@ namespace SustitucionMOAUtils.Services
                     TwoColumnHeaderFooter PageEventHandler = new TwoColumnHeaderFooter();
                     PdfWriter.PageEvent = PageEventHandler;
 
-                    PageEventHandler.Title = "Solp";
+                    //PageEventHandler.Title = "Solp";
                     PageEventHandler.HeaderFont = FontFactory.GetFont(BaseFont.COURIER_BOLD, 10, Font.BOLD);
                     //PageEventHandler.HeaderLeft = "Group";
                     //PageEventHandler.HeaderRight = "1";
