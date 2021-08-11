@@ -198,7 +198,7 @@ export class PosicionSolp {
 
     constructor(numeroPosicion, fiscalContrato) {
         this.id = uuid.v4();
-        this.plazoDeEntrega = "0";
+        this.plazoDeEntrega = "10";
         this.numeroPosicion = numeroPosicion;
         this.fechaEntregaServicio = new Date();
         this.fechaDeLiberacion = new Date();

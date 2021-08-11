@@ -166,16 +166,15 @@
         <div class="col-md-12 row myRow">
             <p-panel *ngIf="solpActual.visitaDeObraMasiva" header="Visita de obra masiva" [toggleable]="true" >
                 <div *ngFor="let visita of solpActual.listaVisitas; let indice = index" class="ui-helper-clearfix">
-                    <!-- <div class="titulosModal" style="margin-left: 19px;">
+                    <div class="col-xs-12 col-sm-12 col-md-2 titulosModal" style="margin-left: 19px; font-size: 12px; margin-top: 8px;">
                         Visita #{{indice + 1}}
-                    </div> -->
-                    <div class="col-xs-12 col-sm-12 col-md-5"> 
-                        Visita #{{indice + 1}}
-                        <p-calendar [(ngModel)]="visita.visitaDeObraFecha" class="styled-select" [style]="{'width': '75%'}"
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-4"> 
+                        <p-calendar [(ngModel)]="visita.visitaDeObraFecha" class="styled-select" [style]="{'width': '85%'}"
                             [locale]="es" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true"
                             [minDate]="hoy"></p-calendar>   
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-4 prime-hora margenInput" >
+                    <div class="col-xs-12 col-sm-12 col-md-3 margenInput" >
                         <p-calendar class="styled-select" [(ngModel)]="visita.visitaDeObraHora" [style]="{'width': '75%'}"
                             [locale]="es" [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true" appendTo="body"></p-calendar>
                     </div>
