@@ -99,7 +99,7 @@ namespace SustitucionMOAUtils.Helpers
                 HeaderRightCell.PaddingBottom = 8;
                 HeaderRightCell.BorderWidthLeft = 0;
                 //HeaderTable.AddCell(HeaderRightCell);
-                cb.SetRGBColorFill(0, 0, 0);
+                cb.SetRGBColorFill(100, 100, 100);
                 //HeaderTable.WriteSelectedRows(0, -1, pageSize.GetLeft(40), pageSize.GetTop(50), cb);
             }
         }
@@ -111,7 +111,7 @@ namespace SustitucionMOAUtils.Helpers
             base.OnEndPage(writer, document);
             int pageN = writer.PageNumber;
 
-            String text = "Pagina " + pageN + " de ";
+            String text = "Pagina " + pageN; //+" de "
             float len = bf.GetWidthPoint(text, 8);
             Rectangle pageSize = document.PageSize;
             cb.SetRGBColorFill(100, 100, 100);
@@ -136,7 +136,7 @@ namespace SustitucionMOAUtils.Helpers
             template.BeginText();
             template.SetFontAndSize(bf, 8);
             template.SetTextMatrix(0, 0);
-            template.ShowText("" + (writer.PageNumber));
+            //template.ShowText("" + (writer.PageNumber));
             template.EndText();
         }
     }
