@@ -84,6 +84,7 @@ export class ComprasService extends BaseService {
             TieneVisitaObraMasiva: solp.visitaDeObraMasiva,
             TieneObradores: solp.obradores,
             TieneMedioElevacion: solp.modoElevacion,
+            TieneAndamio: solp.andamio, // Agregada
             TieneTecnicoSeguridad: solp.tecnicoSeguridad,
             TieneDescripcionTecnica: solp.descripcionTecnica,
             TieneDocumentacionTecnica: solp.entregaDocumentacion,

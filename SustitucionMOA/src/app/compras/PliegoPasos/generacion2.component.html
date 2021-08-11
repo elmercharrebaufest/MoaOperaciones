@@ -99,7 +99,11 @@
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.modoElevacion" label="Medio de elevación o andamios"
+                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.modoElevacion" label="Medio de elevación"
+                                    binary="true"></p-checkbox>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
+                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.andamios" label="Andamios"
                                     binary="true"></p-checkbox>
                             </div>
 

@@ -30,6 +30,7 @@ export class Solp {
     public obradores: boolean;
     public descripcionTecnica: boolean;
     public modoElevacion: boolean;
+    public andamio: boolean;
     public entregaDocumentacion: boolean;
     public tecnicoSeguridad: boolean;
     public fechaLimiteFecha: Date;
@@ -53,6 +54,7 @@ export class Solp {
 
     public posiciones: PosicionSolp[];
     public posicionActual: PosicionSolp;
+    public ultimaPosicion: PosicionSolp;
     // fin cabecera
 
 
@@ -66,6 +68,7 @@ export class Solp {
 
     public centroPorDefecto: any;
     public monedaPorDefecto: any;
+    public enviarSap: boolean;
     
 
     // // dashboard
@@ -76,7 +79,6 @@ export class Solp {
     constructor() {
         this.posiciones = [];
         this.agregarNuevaPosicion();
-
     }
 
     agregarNuevaPosicion() {
@@ -106,6 +108,15 @@ export class Solp {
         if(this.posiciones && this.posiciones.length > 0){
             this.posicionActual = this.posiciones[0];
         }
+    }
+
+    ordenarPosicionesPorFecha(){
+        debugger
+        let ultimaPosicion = this.posiciones.sort((a, b) => {
+            return (b.fechaEntregaServicio.getTime() - a.fechaEntregaServicio.getTime())
+        });
+        this.ultimaPosicion = ultimaPosicion[0];
+        this.posicionActual = this.ultimaPosicion;
     }
 }
 
@@ -182,9 +193,11 @@ export class PosicionSolp {
     //subPosiciones
     listadoSubPosiciones :  Array<SubPosicionViewModel>;
 
+
+
     constructor(numeroPosicion, fiscalContrato) {
         this.id = uuid.v4();
-        this.plazoDeEntrega = "0";
+        this.plazoDeEntrega = "10";
         this.numeroPosicion = numeroPosicion;
         this.fechaEntregaServicio = new Date();
         this.fechaDeLiberacion = new Date();
@@ -193,6 +206,7 @@ export class PosicionSolp {
         this.listadoSubPosiciones.push(new SubPosicionViewModel(1));
         this.servicio = 'SERVICIO';
         this.selectSolicitanteCompras = fiscalContrato;
+    
     }
 }
 
