@@ -79,7 +79,6 @@ export class Solp {
     constructor() {
         this.posiciones = [];
         this.agregarNuevaPosicion();
-
     }
 
     agregarNuevaPosicion() {
@@ -207,6 +206,7 @@ export class PosicionSolp {
         this.listadoSubPosiciones.push(new SubPosicionViewModel(1));
         this.servicio = 'SERVICIO';
         this.selectSolicitanteCompras = fiscalContrato;
+    
     }
 }
 
