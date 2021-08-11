@@ -1,68 +1,64 @@
 
 import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams, Headers } from '@angular/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class LoginService {
 
-    constructor(private http: Http) { }
+    constructor(private http: HttpClient) { }
 
     public login(username: string, pass: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('username', username);
-        params.set('pass', pass);
-        let headers = new Headers();
-        headers.append('Cache-control', 'no-cache');
-        headers.append('Cache-control', 'no-store');
-        headers.append('Expires', '0');
-        headers.append('Pragma', 'no-cache');
+        let params: HttpParams = new HttpParams();
+        params = params.append('username', username);
+        params = params.append('pass', pass);
+
+        let headers = new HttpHeaders();
+        headers = headers.append('Cache-control', 'no-cache');
+        headers = headers.append('Cache-control', 'no-store');
+        headers = headers.append('Expires', '0');
+        headers = headers.append('Pragma', 'no-cache');
+
         return this.http
-            .get('/api/login/login', { search: params, headers: headers }).pipe(
-            map(this.extractData));
+            .get('/api/login/login', { params: params, headers: headers });
     }
 
     public validarLoginAzure(): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        let headers = new Headers();
-        headers.append('Cache-control', 'no-cache');
-        headers.append('Cache-control', 'no-store');
-        headers.append('Expires', '0');
-        headers.append('Pragma', 'no-cache');
+        let headers = new HttpHeaders();
+
+        headers = headers.append('Cache-control', 'no-cache');
+        headers = headers.append('Cache-control', 'no-store');
+        headers = headers.append('Expires', '0');
+        headers = headers.append('Pragma', 'no-cache');
+        
         return this.http
-            .get('/api/login/ValidarLoginAzure', { search: params, headers: headers }).pipe(
-                map(this.extractData));
+            .get('/api/login/ValidarLoginAzure', { headers: headers });
     }
 
 
     public registrar(numeroProveedor: string, claveActivacion: string, username: string, contrasenia: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('numeroProveedor', numeroProveedor);
-        params.set('claveActivacion', claveActivacion);
-        params.set('username', username);
-        params.set('contrasenia', contrasenia);
-        let headers = new Headers();
-        headers.append('Cache-control', 'no-cache');
-        headers.append('Cache-control', 'no-store');
-        headers.append('Expires', '0');
-        headers.append('Pragma', 'no-cache');
+        let params: HttpParams = new HttpParams();
+        params = params.append('numeroProveedor', numeroProveedor);
+        params = params.append('claveActivacion', claveActivacion);
+        params = params.append('username', username);
+        params = params.append('contrasenia', contrasenia);
+
+        let headers = new HttpHeaders();
+        headers = headers.append('Cache-control', 'no-cache');
+        headers = headers.append('Cache-control', 'no-store');
+        headers = headers.append('Expires', '0');
+        headers = headers.append('Pragma', 'no-cache');
+
         return this.http
-            .get('/api/usuario/registrar', { search: params, headers: headers }).pipe(
-            map(this.extractData));
+            .get('/api/usuario/registrar', { params: params, headers: headers });
     }
 
     public recuperarContrasenia(username: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('username', username);
+        let params: HttpParams = new HttpParams();
+        params = params.append('username', username);
+
         return this.http
-            .get('/api/usuario/recuperarContrasenia', { search: params }).pipe(
-            map(this.extractData));
+            .get('/api/usuario/recuperarContrasenia', { params: params });
     }
-
-    private extractData(res: Response) {
-        return res.json();
-    }
-
 }

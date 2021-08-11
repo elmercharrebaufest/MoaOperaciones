@@ -1,56 +1,51 @@
 
 import {throwError as observableThrowError,  Observable } from 'rxjs';
-
 import {timeoutWith, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
 
-
-
-import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
-import { environment } from '../../environments/environment';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class CuentaCorrienteService extends BaseService {
 
     getData(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string, pago: string, retencion: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
-        params.set('contrato', contrato);
-        params.set('pago', pago);
-        params.set('retencion', retencion);
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
+        params = params.append('contrato', contrato);
+        params = params.append('pago', pago);
+        params = params.append('retencion', retencion);
+
         return this.http
-            .get('/api/CuentaCorriente/getCuentasCorrientes', { search: params, headers: this.headers }).pipe(
-            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),
-            map(this.extractData),);
+            .get('/api/CuentaCorriente/getCuentasCorrientes', { params: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
 
     }
 
     exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string, pago: string, retencion: string ): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
-        params.set('contrato', contrato);
-        params.set('pago', pago);
-        params.set('retencion', retencion);
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
+        params = params.append('contrato', contrato);
+        params = params.append('pago', pago);
+        params = params.append('retencion', retencion);
+
         return this.http
-            .get('/api/CuentaCorriente/downloadCuentasCorrientes', { search: params, headers: this.headers }).pipe(
-            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),
-            map(this.extractData),);
+            .get('/api/CuentaCorriente/downloadCuentasCorrientes', { params: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
     }
 
     descargarDocumentoPDF(documento: string, ejercicio: string ): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('documento', documento);
-        params.set('ejercicio', ejercicio);
+        let params: HttpParams = new HttpParams();
+        params = params.append('documento', documento);
+        params = params.append('ejercicio', ejercicio);
+
         return this.http
-            .get('/api/PDF/downloadDocumentPDF', { search: params, headers: this.headers }).pipe(
-            timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))),
-            map(this.extractData),);
+            .get('/api/PDF/downloadDocumentPDF', { params: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
 
 }
@@ -59,67 +54,64 @@ export class CuentaCorrienteService extends BaseService {
 export class CuentaCorrienteAgrupadaService extends CuentaCorrienteService {
 
     getData(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string, pago: string, retencion: string ): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
-        params.set('contrato', contrato);
-        params.set('pago', pago);
-        params.set('retencion', retencion);
-        return this.http
-            .get('/api/CuentaCorriente/getCuentasCorrientesAgrupadas', { search: params, headers: this.headers }).pipe(
-            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),
-            map(this.extractData),);
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
+        params = params.append('contrato', contrato);
+        params = params.append('pago', pago);
+        params = params.append('retencion', retencion);
 
+        return this.http
+            .get('/api/CuentaCorriente/getCuentasCorrientesAgrupadas', { params: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
     }
 
     exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string, pago: string, retencion: string ): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
-        params.set('contrato', contrato);
-        params.set('pago', pago);
-        params.set('retencion', retencion);
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
+        params = params.append('contrato', contrato);
+        params = params.append('pago', pago);
+        params = params.append('retencion', retencion);
+
         return this.http
-            .get('/api/CuentaCorriente/downloadCuentasCorrientesAgrupadas', { search: params, headers: this.headers }).pipe(
-            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),
-            map(this.extractData),);
+            .get('/api/CuentaCorriente/downloadCuentasCorrientesAgrupadas', { params: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
     }
-
 }
-
 
 @Injectable()
 export class CuentaCorrientePartidasAbiertasService extends CuentaCorrienteService {
 
     getData(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string, pago: string, retencion: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
-        params.set('contrato', contrato);
-        params.set('pago', pago);
-        params.set('retencion', retencion);
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
+        params = params.append('contrato', contrato);
+        params = params.append('pago', pago);
+        params = params.append('retencion', retencion);
+
         return this.http
-            .get('/api/CuentaCorriente/getCuentasCorrientesAgrupadas', { search: params, headers: this.headers }).pipe(
-                timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),
-                map(this.extractData));
+            .get('/api/CuentaCorriente/getCuentasCorrientesAgrupadas', { params: params, headers: this.headers }).pipe(
+                timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
 
     }
 
     exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string, pago: string, retencion: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
-        params.set('contrato', contrato);
-        params.set('pago', pago);
-        params.set('retencion', retencion);
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
+        params = params.append('contrato', contrato);
+        params = params.append('pago', pago);
+        params = params.append('retencion', retencion);
+
         return this.http
-            .get('/api/CuentaCorriente/downloadCuentasCorrientesPartidasAbiertas', { search: params, headers: this.headers }).pipe(
-                timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),
-                map(this.extractData));
+            .get('/api/CuentaCorriente/downloadCuentasCorrientesPartidasAbiertas', { params: params, headers: this.headers }).pipe(
+                timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
     }
 
 }

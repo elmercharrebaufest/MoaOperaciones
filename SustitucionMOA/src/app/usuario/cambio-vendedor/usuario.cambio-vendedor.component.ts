@@ -53,7 +53,7 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
         try {
             this.unsubscribe();
             this.subscription = this.service.getVendedores().subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -99,7 +99,7 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
         try {
             this.unsubscribe();
             this.subscription = this.service.seleccionarVendedor(vendedor, descripcion).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();

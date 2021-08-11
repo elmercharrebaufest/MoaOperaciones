@@ -1,17 +1,11 @@
 import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs';
 
-
-
-import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
-import { environment } from '../../environments/environment';
 
 @Injectable()
 export class FaqService extends BaseService {
-
 
     public sendContactoMail(
         proveedor: string,
@@ -44,7 +38,6 @@ export class FaqService extends BaseService {
             .post('/api/contactoMail/sendContactoMail', payload, this.headersPost).pipe(
             map(this.extractData));
     }
-
 
     public getCategorias(): Observable<any> {
         return this.http

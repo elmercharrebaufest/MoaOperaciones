@@ -1,9 +1,6 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs';
-
-
-
 
 import "rxjs/add/observable/defer";
 import { Formatter } from './../formatter/Formatter';
@@ -11,12 +8,12 @@ import { Formatter } from './../formatter/Formatter';
 @Injectable()
 export class BaseService {
 
-    headers: any;
-    headersPost: any;
+    headers: HttpHeaders;
+    headersPost: HttpHeaders;
     //options: any;
 
-    constructor(protected http: Http) {
-        this.headers = new Headers();
+    constructor(protected http: HttpClient) {
+        this.headers = new HttpHeaders();
         this.headers.append('Content-Type', 'application/json');
         this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
         this.headers.append('Cache-control', 'no-cache');
@@ -24,7 +21,7 @@ export class BaseService {
         this.headers.append('Expires', '0');
         this.headers.append('Pragma', 'no-cache');
 
-        this.headersPost = new Headers();
+        this.headersPost = new HttpHeaders();
         this.headersPost.append('Content-Type', 'application/json; charset=utf-8');
         this.headersPost.append('Cache-control', 'no-cache');
         this.headersPost.append('Cache-control', 'no-store');
@@ -33,9 +30,9 @@ export class BaseService {
         //this.options = new RequestOptions({ headers: this.headers });
     }
 
-    protected extractData(res: any) {
-        return res.json();
-    }
+    // protected extractData(res: any) {
+    //     return res.json();
+    // }
 
     getData(periodo?: string, fecha_inicio?: string, fecha_fin?: string, contrato?: string, pago?:string, retencion?:string): Observable<any>{
         return null;

@@ -94,7 +94,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     getRubrosOptions() {
         try {
             this.subscriptionDropDowns = this.service.getRubros().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -118,7 +118,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     getTipoCambiario() {
         try {
             this.subscriptionDropDowns = this.service.getTipoCambiario().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -144,7 +144,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
             //Lo comento hasta que podamos usar otro servicio que funcione en QA
             return true;
             this.subscriptionDropDowns = this.service.getRazonSocial(this.CUIT).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -184,7 +184,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
                 this.observacionesParaElProveedor, this.RequiereVerificacionCompras, this.ingresoAPlanta, this.altaInterna, this.siperObligatorio,
                 this.observacionInterna
             ).subscribe(
-                    result => {
+                    (result:any) => {
                         this.spinnerComponent.hideIt();
                         if (result.logout == true) {
                             this.sessionDataService.logout();
@@ -224,7 +224,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         }
         try {
             this.service.rechazarNuevoProveedorNoGranos(this.proveedorId, this.observacionesParaElProveedor).subscribe(
-                    result => {
+                    (result:any) => {
                         this.spinnerComponent.hideIt();
                         if (result.logout == true) {
                             this.sessionDataService.logout();

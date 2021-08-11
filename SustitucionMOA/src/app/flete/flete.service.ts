@@ -1,15 +1,9 @@
 
 import {throwError as observableThrowError,  Observable } from 'rxjs';
-
 import {map, timeoutWith} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
-
-
-
-import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
-import { environment } from '../../environments/environment';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class FleteService extends BaseService {
@@ -17,26 +11,26 @@ export class FleteService extends BaseService {
     public getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> { return null; }
 
     public getDataCommon(periodo: string, fecha_inicio: string, fecha_fin: string, method: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
+
         return this.http
-            .get('/api/flete/' + method, { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/flete/' + method, { params: params, headers: this.headers });
     }
 
     public exportPDF(periodo?: string, fecha_inicio?: string, fecha_fin?: string, proforma?: string): Observable<any> { return null }
 
     public exportPDFCommon(periodo?: string, fecha_inicio?: string, fecha_fin?: string, proforma?: string, method?: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
-        params.set('proforma', proforma);
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
+        params = params.append('proforma', proforma);
+
         return this.http
-            .get('/api/flete/' + method, { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/flete/' + method, { params: params, headers: this.headers });
     }
 
     public validarImporte(importe: string, proforma: string): Observable<any> { return null }
@@ -45,9 +39,9 @@ export class FleteService extends BaseService {
         var payload = new FormData();
         payload.append("proforma", JSON.stringify(data));
         payload.append("file", file);
+
         return this.http
-            .post('/api/flete/guardarDatosProforma', payload, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/flete/guardarDatosProforma', payload, { headers: this.headersPost });
     }
 
     exportExcel(periodo?: string, fecha_inicio?: string, fecha_fin?: string, contrato?: string, pago?: string, retencion?: string): Observable<any> {
@@ -55,20 +49,17 @@ export class FleteService extends BaseService {
     }
 
     exportExcelCommon(periodo?: string, fecha_inicio?: string, fecha_fin?: string, method?: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
+
         return this.http
-            .get('/api/flete/' + method, { search: params, headers: this.headers }).pipe(
-            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),
-            map(this.extractData),);
+            .get('/api/flete/' + method, { params: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
     }
 
 }
-
-
-
 
 @Injectable()
 export class FletePendienteService extends FleteService {
@@ -80,7 +71,6 @@ export class FletePendienteService extends FleteService {
     public exportExcel(periodo?: string, fecha_inicio?: string, fecha_fin?: string): Observable<any> {
         return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, "downloadViajesPendientes")
     }
-
 }
 
 @Injectable()
@@ -95,18 +85,17 @@ export class FleteAFacturarService extends FleteService {
     }
 
     public validarImporte(importe: string, proforma: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('importe', importe);
-        params.set('proforma', proforma);
+        let params: HttpParams = new HttpParams();
+        params = params.append('importe', importe);
+        params = params.append('proforma', proforma);
+
         return this.http
-            .get('/api/flete/validarImporte', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/flete/validarImporte', { params: params, headers: this.headers });
     }
 
     public exportExcel(periodo?: string, fecha_inicio?: string, fecha_fin?: string): Observable<any> {
         return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, "downloadViajesAFacturar")
     }
-
 }
 
 @Injectable()

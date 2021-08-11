@@ -85,7 +85,7 @@ export class PesadaHistoricaComponent extends AduanaBaseComponent {
         this.spinnerComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.getPesada("1029", this.fechaInicio, this.fechaFin).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();

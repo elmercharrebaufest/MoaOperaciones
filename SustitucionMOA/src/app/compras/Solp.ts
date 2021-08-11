@@ -7,9 +7,12 @@ import { EspecificacionesViewModel } from "./PliegoPasos/solapaTres/especificaci
 import { CampoObligatorioViewModel } from "./campo-obligatorio-viewModel";
 import { FormGroup } from "@angular/forms";
 import { SubPosicionViewModel } from "./PliegoPasos/solapaSubposiciones/subPosicionViewModel";
+import { CommonResponse } from "../common/models/common-response";
 
-export class Solp {
+export class Solp extends CommonResponse {
     public id: number;
+    public Id?: number;
+    public Pdf:string;
 
     //paso 1
     public nombreDePedido: string;
@@ -40,6 +43,7 @@ export class Solp {
 
     //paso 3
     public especificacionesViewModel: EspecificacionesViewModel = new EspecificacionesViewModel();
+    public Adjuntos?: {Id:number, Nombre:string}[];
 
     // paso 4
     public ejecucion: any;

@@ -59,7 +59,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   verificarDeclaracion() {
     this.mensajeComponent.setMsgsEmpty();
     this.subscription = this.service.verificarDeclaracion(this.proveedorId, this.cosechaId, this.CUITDeclaracion).subscribe(
-      result => {
+      (result:any) => {
         if (result.logout == true) {
           this.sessionDataService.logout();
         } else if (result.error != undefined && result.error != "") {
@@ -173,7 +173,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
     this.mensajeComponent.setMsgsEmpty();
     this.subscription = this.service.adjuntarDeclaracionFirmada(this.proveedorId, this.cosechaId, this.CUITDeclaracion, this.file).subscribe(
-      result => {
+      (result:any) => {
         if (result.logout == true) {
           this.sessionDataService.logout();
         } else if (result.error != undefined && result.error != "") {

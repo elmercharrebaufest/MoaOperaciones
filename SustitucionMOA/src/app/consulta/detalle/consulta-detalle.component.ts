@@ -160,7 +160,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
         this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId
             , this.causaConsultaId).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     this.spinnerSmallComponent.hideIt();
                     if (result.logout == true) {
@@ -199,7 +199,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.mensajeComponent.setMsgsEmpty();
         let comentario: Comentario = { consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date(), Recordado: false, FechaRecordado: new Date() };
         this.subscription = this.service.agregarComentario(this.consultaId, comentario, this.listaArchivos).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                     this.blockUI.stop();
@@ -288,7 +288,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         });
         this.mensajeComponent.setMsgsEmpty();
         this.subscription = this.service.actualizarEstado(estadoIdGestion, this.consultaId).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -318,7 +318,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     recordarComentario(){
         this.mensajeComponent.setMsgsEmpty();
         this.subscription = this.service.recordarComentario(this.consultaId).subscribe(
-            result => {
+            (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -379,7 +379,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     getCombos() {
         try {
             this.subscription = this.service.getCombos(true).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -418,7 +418,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     getDetalleConsulta() {
         this.subscription = this.service.getDetalleConsulta(this.consultaId).subscribe(
-            result => {
+            (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {

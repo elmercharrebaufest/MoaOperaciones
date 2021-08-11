@@ -80,7 +80,7 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.getVinculacion(contrato, secuencia).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -105,7 +105,7 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.descargarDocumentoPDF(documento, ejercicio).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();

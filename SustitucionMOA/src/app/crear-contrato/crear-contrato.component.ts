@@ -143,7 +143,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
         this.blockUI.start('');
         this.unsubscribe();
         this.subscription = this.service.traerPrecioMoaMateriales(contrato.TipoNegocioId).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -224,7 +224,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     obteneDatosContrato(contrato) {
         this.unsubscribe();
         this.subscription = this.service.obteneDatosContrato(contrato.TipoNegocioId).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -325,7 +325,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     validarDirecto(contrato) {
         this.unsubscribe();
         this.subscription = this.service.validarDirecto().subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -401,7 +401,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
         this.blockUI.start('');
         this.unsubscribe();
         this.subscription = this.service.habilitaciones(contrato.MaterialId, contrato.TipoNegocioId).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.blockUI.stop();
                     this.sessionDataService.logout();
@@ -482,7 +482,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
         this.blockUI.start('');
         this.unsubscribe();
         this.subscription = this.service.obtenerDatosCompraNet(idProveedorDataAgro).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -592,7 +592,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     obtenerFijacionesAutomaticas(materialId, filtro) {
         this.unsubscribe();
         this.subscription = this.service.obtenerFijacionesAutomaticas(this.esCorredorEnDataAgro, this.cuitProveedorSeleccionado, materialId, filtro).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -676,7 +676,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
 
     validarProveedor(proveedorId, contrato) {
         this.subscription = this.service.validarProveedor(proveedorId).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -830,7 +830,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     traerContratoCompleto(contrato) {
         this.unsubscribe();
         this.subscription = this.service.traerContratoCompleto(contrato.Id, contrato.TipoNegocioId).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                     this.blockUI.stop();

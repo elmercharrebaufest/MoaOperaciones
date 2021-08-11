@@ -1,5 +1,5 @@
-﻿import { Injectable } from "@angular/core";
-import { URLSearchParams } from "@angular/http";
+﻿import { HttpHeaders, HttpParams } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
 import "rxjs/add/observable/throw";
 import "rxjs/add/operator/catch";
@@ -8,7 +8,6 @@ import { map, timeoutWith } from "rxjs/operators";
 import { CartaPresentacion } from "../../common/models/cartaPresentacion";
 import { InformeComercial } from "../../common/models/informeComercial";
 import { BaseService } from "./../../common/services/BaseService";
-import { Empresa } from "./../altas/Empresa";
 
 @Injectable()
 export class EmpresaGranosService extends BaseService {
@@ -28,28 +27,26 @@ export class EmpresaGranosService extends BaseService {
         formData.append("proveedorId", proveedorId.toString());
 
         return this.http
-            .post("/api/AltaEmpresaGranos/GuardarArchivo", formData)
-            .pipe(map(this.extractData));
+            .post("/api/AltaEmpresaGranos/GuardarArchivo", formData);
     }
 
     searchLocalidad(term): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
+        let headers = new HttpHeaders();
+        headers = headers.append("Content-Type", "application/json");
+        headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
+        headers = headers.append("Cache-control", "no-cache");
+        headers = headers.append("Cache-control", "no-store");
+        headers = headers.append("Expires", "0");
+        headers = headers.append("Pragma", "no-cache");
 
-        let params: URLSearchParams = new URLSearchParams();
+        let params: HttpParams = new HttpParams();
         params.set("localidad", term);
 
         return this.http
             .get("/api/AltaEmpresaGranos/GetLocalidadCombo", {
-                search: params,
-                headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+                params: params,
+                headers: headers,
+            });
     }
 
     generarInformeComercial(
@@ -76,8 +73,7 @@ export class EmpresaGranosService extends BaseService {
                         )
                     )
                 )
-            )
-            .pipe(map(this.extractData));
+            );
     }
 
     generarCartaPresentacion(
@@ -102,97 +98,92 @@ export class EmpresaGranosService extends BaseService {
                         )
                     )
                 )
-            )
-            .pipe(map(this.extractData));
+            );
     }
 
     obtenerMateriales(): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
+        let headers = new HttpHeaders();
+        headers = headers.append("Content-Type", "application/json");
+        headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
+        headers = headers.append("Cache-control", "no-cache");
+        headers = headers.append("Cache-control", "no-store");
+        headers = headers.append("Expires", "0");
+        headers = headers.append("Pragma", "no-cache");
 
         return this.http
             .get("/api/AltaEmpresaGranos/GetMateriales", {
-                headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+                headers: headers,
+            });
     }
 
     obtenerCampanias(): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
+        let headers = new HttpHeaders();
+        headers = headers.append("Content-Type", "application/json");
+        headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
+        headers = headers.append("Cache-control", "no-cache");
+        headers = headers.append("Cache-control", "no-store");
+        headers = headers.append("Expires", "0");
+        headers = headers.append("Pragma", "no-cache");
 
         return this.http
             .get("/api/AltaEmpresaGranos/GetCampanias", {
-                headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+                headers: headers,
+            });
     }
 
     obtenerArchivosSubidos(
         mail?: string,
         proveedorId?: number
     ): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
-        let params: URLSearchParams = new URLSearchParams();
-        params.set("mail", mail);
-        params.set("proveedorId", proveedorId.toString());
+        let headers = new HttpHeaders();
+        headers = headers.append("Content-Type", "application/json");
+        headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
+        headers = headers.append("Cache-control", "no-cache");
+        headers = headers.append("Cache-control", "no-store");
+        headers = headers.append("Expires", "0");
+        headers = headers.append("Pragma", "no-cache");
+        let params: HttpParams = new HttpParams();
+        params = params.append("mail", mail);
+        params = params.append("proveedorId", proveedorId.toString());
         return this.http
             .get("/api/AltaEmpresaGranos/ObtenerArchivosSubidos", {
-                search: params,
-                headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+                params: params,
+                headers: headers,
+            });
     }
 
     descargarArchivosSubidos(
         mail: string,
         proveedorId: number
     ): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
-        let params: URLSearchParams = new URLSearchParams();
-        params.set("mail", mail);
-        params.set("proveedorId", proveedorId.toString());
+        let headers = new HttpHeaders();
+        headers = headers.append("Content-Type", "application/json");
+        headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
+        headers = headers.append("Cache-control", "no-cache");
+        headers = headers.append("Cache-control", "no-store");
+        headers = headers.append("Expires", "0");
+        headers = headers.append("Pragma", "no-cache");
+
+        let params: HttpParams = new HttpParams();
+        params = params.append("mail", mail);
+        params = params.append("proveedorId", proveedorId.toString());
         return this.http
             .get("/api/AltaEmpresaGranos/DescargarArchivos", {
-                search: params,
-                headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+                params: params,
+                headers: headers,
+            });
     }
 
     obtenerInfoProveedor(proveedorId: number): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set("mail", "");
-        params.set("proveedorId", proveedorId.toString());
+        let params: HttpParams = new HttpParams();
+        params = params.append("mail", "");
+        params = params.append("proveedorId", proveedorId.toString());
 
         return this.http
             .get("/api/AltaEmpresaGranos/ObtenerInfoProveedor", {
-                search: params,
+                params: params,
                 headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+            });
     }
 
     descargarArchivoSubido(
@@ -200,25 +191,17 @@ export class EmpresaGranosService extends BaseService {
         archivoID?: number,
         proveedorId?: number
     ): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set("mail", "");
-        params.set("archivoID", archivoID.toString());
-        params.set("proveedorId", proveedorId.toString());
+        let params: HttpParams = new HttpParams();
+        params = params.append("mail", "");
+        params = params.append("archivoID", archivoID.toString());
+        params = params.append("proveedorId", proveedorId.toString());
 
         return this.http
             .get("/api/AltaEmpresaGranos/DescargarArchivo", {
-                search: params,
+                params: params,
                 headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+            });
     }
-
-    //enviarSolicitud(): Observable<any> {
-    //    let params: URLSearchParams = new URLSearchParams();
-    //    return this.http
-    //        .get('/api/AltaEmpresaGranos/EnviarSolicitudUsuario', { search: params, headers: this.headers })
-    //        .pipe(map(this.extractData));
-    //}
 
     enviarSolicitud(datos: any, proveedorId: number): Observable<any> {
         let payload = new FormData();
@@ -236,51 +219,48 @@ export class EmpresaGranosService extends BaseService {
                         )
                     )
                 )
-            )
-            .pipe(map(this.extractData));
+            );
     }
 
     eliminarArchivoSubido(
         archivoID?: number,
         proveedorId?: number
     ): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set("archivoID", archivoID.toString());
-        params.set("proveedorId", proveedorId.toString());
+        let params: HttpParams = new HttpParams();
+        params = params.append("archivoID", archivoID.toString());
+        params = params.append("proveedorId", proveedorId.toString());
 
         return this.http
             .get("/api/AltaEmpresaGranos/EliminarArchivo", {
-                search: params,
+                params: params,
                 headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+            });
     }
 
     cargarSolicitudUsuario(
         mail?: string,
         proveedorId?: number
     ): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
-        let params: URLSearchParams = new URLSearchParams();
-        params.set("mail", mail);
+        let headers = new HttpHeaders();
+        headers = headers.append("Content-Type", "application/json");
+        headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
+        headers = headers.append("Cache-control", "no-cache");
+        headers = headers.append("Cache-control", "no-store");
+        headers = headers.append("Expires", "0");
+        headers = headers.append("Pragma", "no-cache");
+        let params: HttpParams = new HttpParams();
+        params = params.append("mail", mail);
 
         if (proveedorId)
-            params.set("proveedorId", proveedorId.toString());
+            params = params.append("proveedorId", proveedorId.toString());
         else    
-            params.set("proveedorId", "0");
+            params = params.append("proveedorId", "0");
 
         return this.http
             .get("/api/AltaEmpresaGranos/CargarSolicitudUsuario", {
-                search: params,
+                params: params,
                 headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+            });
     }
 
     descargarFormularioNG(empresaId: number) : Observable < any > {
@@ -299,57 +279,53 @@ export class EmpresaGranosService extends BaseService {
                         )
                     )
                 )
-            )
-            .pipe(map(this.extractData));
+            );
     }
     
     public getRubros(): Observable<any> {
         return this.http
-            .get('/api/usuario/getRubros', { headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/getRubros', { headers: this.headers });
     }
 
     public getTipoCambiario(): Observable<any> {
         return this.http
-            .get('/api/dataagro/GetTipoCambiario', { headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/dataagro/GetTipoCambiario', { headers: this.headers });
     }
 
     public editarProveedorNoGranos(razonSocial: any, cuit: any, email: any, telefono: any, 
         realizarAnalisisNOSIS: any, IdRubro: any, condicionDePago: any, servicioPrestado: any, 
         organizacionDeCompra: any, razonDeEleccion: any, facturacionAnual: any, idProveedor: any,
         requiereVerificacionCompras: any, ingresoAPlanta: any, altaInterna: any, siperObligatorio: any) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('razonSocial', razonSocial);
-        params.set('cuit', cuit);
-        params.set('email', email);
-        params.set('telefono', telefono);
-        params.set('realizarAnalisisNOSIS', realizarAnalisisNOSIS);
-        params.set('IdRubro', IdRubro);
-        params.set('condicionDePago', condicionDePago);
-        params.set('servicioPrestado', servicioPrestado);
-        params.set('organizacionDeCompra', organizacionDeCompra);
-        params.set('razonDeEleccion', razonDeEleccion);
-        params.set('facturacionAnual', facturacionAnual);
-        params.set('proveedorId', idProveedor);
-        params.set('requiereVerificacionCompras', requiereVerificacionCompras);
-        params.set('ingresoAPlanta', ingresoAPlanta);
-        params.set('altaInterna', altaInterna);
-        params.set('siperObligatorio', siperObligatorio);
 
-        return this.http.get('/api/AltaEmpresaNoGranos/EditarProveedorNoGranos', { search: params, headers: this.headers }).pipe(
-            map(this.extractData))   
+        let params: HttpParams = new HttpParams();
+        params = params.append('razonSocial', razonSocial);
+        params = params.append('cuit', cuit);
+        params = params.append('email', email);
+        params = params.append('telefono', telefono);
+        params = params.append('realizarAnalisisNOSIS', realizarAnalisisNOSIS);
+        params = params.append('IdRubro', IdRubro);
+        params = params.append('condicionDePago', condicionDePago);
+        params = params.append('servicioPrestado', servicioPrestado);
+        params = params.append('organizacionDeCompra', organizacionDeCompra);
+        params = params.append('razonDeEleccion', razonDeEleccion);
+        params = params.append('facturacionAnual', facturacionAnual);
+        params = params.append('proveedorId', idProveedor);
+        params = params.append('requiereVerificacionCompras', requiereVerificacionCompras);
+        params = params.append('ingresoAPlanta', ingresoAPlanta);
+        params = params.append('altaInterna', altaInterna);
+        params = params.append('siperObligatorio', siperObligatorio);
+
+        return this.http.get('/api/AltaEmpresaNoGranos/EditarProveedorNoGranos', { params: params, headers: this.headers });  
     }
 
     public registrarDocumentacionFisica(proveedorId: number , contieneDocumentacionFisica : boolean)
     {
         let params = {
-            proveedorId : proveedorId ,
-            contieneDocumentacionFisica : contieneDocumentacionFisica
+            proveedorId : proveedorId.toString() ,
+            contieneDocumentacionFisica : contieneDocumentacionFisica ? 'true' : 'false'
         }
 
-        return this.http.get('/api/AltaEmpresaNoGranos/RegistrarDocumentacionFisica', { search: params, headers: this.headers }).pipe(
-            map(this.extractData))   
+        return this.http.get('/api/AltaEmpresaNoGranos/RegistrarDocumentacionFisica', { params: params, headers: this.headers }); 
     }
 
     SolicitudAltaInterna( proveedorId: number, datos: any): Observable<any> {
@@ -360,7 +336,7 @@ export class EmpresaGranosService extends BaseService {
         payload.append('proveedorId', proveedorId.toString());
 
         return this.http
-            .post("/api/AltaEmpresaGranos/SolicitudAltaInterna",  payload, this.headers)
+            .post("/api/AltaEmpresaGranos/SolicitudAltaInterna",  payload, { headers: this.headers })
             .pipe(
                 timeoutWith(
                     30000,
@@ -370,7 +346,6 @@ export class EmpresaGranosService extends BaseService {
                         )
                     )
                 )
-            )
-            .pipe(map(this.extractData));
+            );
     }
 }

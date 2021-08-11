@@ -145,7 +145,7 @@ export class ContactoMailComponent extends ListBaseComponent {
                 this.motivo,
                 this.file
             ).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerSmallComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -230,7 +230,7 @@ export class ContactoMailComponent extends ListBaseComponent {
         this.unsubscribe();
         try {
             this.subscription = this.service.getCategorias().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {

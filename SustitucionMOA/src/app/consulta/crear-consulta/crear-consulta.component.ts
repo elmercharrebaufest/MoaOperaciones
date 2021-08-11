@@ -180,7 +180,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.unsubscribe();
         try {
             this.subscription = this.service.getCombos(true).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -459,7 +459,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
         try {
             this.subscription = this.service.AgregarConsulta(this.consulta, comentario, this.listaArchivos).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                         this.blockUI.stop();
@@ -613,7 +613,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
         try {
             this.subscription = this.service.generarReclamoImpositivo(this.reclamoImpositivo).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                         this.blockUI.stop();

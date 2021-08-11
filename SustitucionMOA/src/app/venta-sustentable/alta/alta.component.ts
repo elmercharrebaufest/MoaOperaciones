@@ -225,7 +225,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     try {
       this.unsubscribe();
       this.subscription = this.service.campoProveedorAgregar(campoProveedor, this.file).subscribe(
-        result => {
+        (result:any) => {
           this.spinnerComponent.hideIt();
           this.blockUI.stop();
 
@@ -273,7 +273,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     this.spinnerComponent.showIt();
     try {
       this.subscription = this.service.getCosechas().subscribe(
-        result => {
+        (result:any) => {
           this.spinnerComponent.hideIt();
           if (result.logout == true) {
             this.sessionDataService.logout();
