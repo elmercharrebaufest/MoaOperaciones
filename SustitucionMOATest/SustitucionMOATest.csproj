@@ -58,6 +58,9 @@
     <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="SustitucionMOA.Fakes">
+      <HintPath>FakesAssemblies\SustitucionMOA.Fakes.dll</HintPath>
+    </Reference>
     <Reference Include="SustitucionMOAUtils.Fakes">
       <HintPath>FakesAssemblies\SustitucionMOAUtils.Fakes.dll</HintPath>
     </Reference>
@@ -125,6 +128,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <Fakes Include="Fakes\SustitucionMOAUtils.fakes" />
+    <Fakes Include="Fakes\SustitucionMOA.fakes" />
     <None Include="packages.config" />
     <None Include="TestFiles\Example.kmz">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
