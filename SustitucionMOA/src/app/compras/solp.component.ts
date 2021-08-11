@@ -5,7 +5,7 @@ import { BaseComponent } from '../common/base-components/base-component';
 import { Paso } from '../common/models/paso';
 import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
-import { Solp } from './Solp';
+import { PosicionSolp, Solp } from './Solp';
 import * as uuid from 'uuid';
 import { ComprasService } from './compras.service';
 import { NavService } from '../common/services/NavService';
@@ -98,6 +98,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     finalizarOk: boolean;
     displayFinalizar: boolean = false;
     displaySAP: boolean;
+    
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -217,10 +218,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     selected: false
                 }
             ];
-
-            this.solpActual.fechaEntrega = new Date();
+            let fechaEntrega = new Date();
+            let fechaLimiteFecha = new Date();
+            this.solpActual.fechaEntrega = this.sumarDias(fechaEntrega, 7);
             this.solpActual.horaEntrega = new Date(1, 1, 1, 10, 0, 0, 0);
-            this.solpActual.fechaLimiteFecha = new Date();
+            this.solpActual.fechaLimiteFecha = this.sumarDias(fechaLimiteFecha, 6);
             this.solpActual.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
             this.solpActual.visitaDeObraFecha = new Date();
             this.solpActual.visitaDeObraHora = new Date(1, 1, 1, 10, 0, 0, 0);
@@ -253,6 +255,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             
         }
+    }
+
+    sumarDias(fecha, dias){
+        fecha.setDate(fecha.getDate() + dias);
+        return fecha;
     }
 
     traerSolpId(idSolp){
@@ -298,8 +305,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
         this.solpActual.telefono = solp.Telefono || '';
         this.solpActual.mail = solp.Email || '';
-        this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
-        this.solpActual.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+        // this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+        // this.solpActual.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
 
         // Paso 2
         this.solpActual.supervisorSector = solp.SupervisorSector || '';
@@ -315,7 +322,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.visitaDeObra = solp.TieneVisitaObra;
         this.solpActual.obradores = solp.TieneObradores;
         this.solpActual.modoElevacion = solp.TieneMedioElevacion;
-        this.solpActual.andamio = solp.TieneAndamio; // Agregada 
+        this.solpActual.andamio = solp.TieneAndamio; 
         this.solpActual.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
         this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;        
         this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;          
@@ -415,6 +422,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             // this.cabecera.solpActual = this.solpActual;
             // this.actualizarPasoCompleto();
         }
+
     }
 
     cambioPaso(paso) {
@@ -676,7 +684,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     showDialog() {
-        this.displayFinalizar = true;             
+        this.displayFinalizar = true;   
+        this.solpActual.ordenarPosicionesPorFecha();          
     }
 
     generarZipPliego(idSolp){

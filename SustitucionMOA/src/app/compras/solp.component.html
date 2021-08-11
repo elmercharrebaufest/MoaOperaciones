@@ -166,10 +166,11 @@
         <div class="col-md-12 row myRow">
             <p-panel *ngIf="solpActual.visitaDeObraMasiva" header="Visita de obra masiva" [toggleable]="true" >
                 <div *ngFor="let visita of solpActual.listaVisitas; let indice = index" class="ui-helper-clearfix">
-                    <div class="titulosModal" style="margin-left: 19px;">
+                    <!-- <div class="titulosModal" style="margin-left: 19px;">
                         Visita #{{indice + 1}}
-                    </div>
+                    </div> -->
                     <div class="col-xs-12 col-sm-12 col-md-5"> 
+                        Visita #{{indice + 1}}
                         <p-calendar [(ngModel)]="visita.visitaDeObraFecha" class="styled-select" [style]="{'width': '75%'}"
                             [locale]="es" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true"
                             [minDate]="hoy"></p-calendar>   

@@ -54,6 +54,7 @@ export class Solp {
 
     public posiciones: PosicionSolp[];
     public posicionActual: PosicionSolp;
+    public ultimaPosicion: PosicionSolp;
     // fin cabecera
 
 
@@ -108,6 +109,15 @@ export class Solp {
         if(this.posiciones && this.posiciones.length > 0){
             this.posicionActual = this.posiciones[0];
         }
+    }
+
+    ordenarPosicionesPorFecha(){
+        debugger
+        let ultimaPosicion = this.posiciones.sort((a, b) => {
+            return (b.fechaEntregaServicio.getTime() - a.fechaEntregaServicio.getTime())
+        });
+        this.ultimaPosicion = ultimaPosicion[0];
+        this.posicionActual = this.ultimaPosicion;
     }
 }
 
@@ -183,6 +193,8 @@ export class PosicionSolp {
 
     //subPosiciones
     listadoSubPosiciones :  Array<SubPosicionViewModel>;
+
+
 
     constructor(numeroPosicion, fiscalContrato) {
         this.id = uuid.v4();
