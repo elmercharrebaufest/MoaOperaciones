@@ -218,9 +218,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     selected: false
                 }
             ];
-            let fechaEntrega = new Date();
+            //let fechaEntrega = new Date();
             let fechaLimiteFecha = new Date();
-            this.solpActual.fechaEntrega = this.sumarDias(fechaEntrega, 7);
+            //this.solpActual.fechaEntrega = this.sumarDias(fechaEntrega, 7);
             this.solpActual.horaEntrega = new Date(1, 1, 1, 10, 0, 0, 0);
             this.solpActual.fechaLimiteFecha = this.sumarDias(fechaLimiteFecha, 6);
             this.solpActual.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
@@ -252,7 +252,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 this.traerSolpId(this.solpId);
                 }
             }
-
             
         }
     }
@@ -684,8 +683,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     showDialog() {
-        this.displayFinalizar = true;   
-        this.solpActual.ordenarPosicionesPorFecha();          
+        this.displayFinalizar = true;           
     }
 
     generarZipPliego(idSolp){
