@@ -51,7 +51,7 @@ namespace SustitucionMOAUtils.Services
                 FechaCarga = x.FechaCarga,
                 FechaUltimaModificacion = x.FechaUltimaModificacion,
                 Sede = x.Sede
-            });
+            },null,0,"Id",SustitucionMOAModel.Consultas.DirOrden.Desc);
         }
         
         public IList<IngresosBrutosCoeficienteUnificadoDetalleDto> ListarDetalles(int idCabecera)
