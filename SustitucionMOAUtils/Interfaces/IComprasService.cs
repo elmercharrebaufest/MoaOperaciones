@@ -26,5 +26,8 @@ namespace SustitucionMOAUtils.Interfaces
         string GenerarZipPliego(int idSolp, string pathBase);
         List<TablaSapDto> ObtenerServiciosSap();
         List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor);
+        List<TablaSapDto> ObtenerCecoSap();
+        List<TablaSapDto> ObtenerCuentasSap();
+        List<TablaSapDto> ObtenerOrdenesSap();
     }
 }

@@ -96,16 +96,20 @@ export class SubPosicionComponent extends ListBaseComponent {
     actualizarTipoDeImputacion(): void {
         switch (this.model.posicionActual.tipoImputacion) {
             case this.enumTipoImputacion.CentroDeCosto:
-                this.tituloColumnaTipoDeImputacion = "Centro de costo"
+                this.tituloColumnaTipoDeImputacion = "Centro de costo";
+                this.tablaAFiltrar = 'CecoSolpSap';
                 break;
             case this.enumTipoImputacion.OrdenDeOt:
-                this.tituloColumnaTipoDeImputacion = "Orden de OT"
+                this.tituloColumnaTipoDeImputacion = "Orden de OT";
+                this.tablaAFiltrar = 'OrdenSolpSap';
                 break;
             case this.enumTipoImputacion.OrdenInversion:
                 this.tituloColumnaTipoDeImputacion = "Orden de inversión"
+                this.tablaAFiltrar = 'OrdenSolpSap';
                 break;
             case this.enumTipoImputacion.Siniestro:
                 this.tituloColumnaTipoDeImputacion = "Siniestro / Centro de beneficio"
+                this.tablaAFiltrar = '';
                 break;
         }
     }
@@ -233,30 +237,8 @@ export class SubPosicionComponent extends ListBaseComponent {
         }
     }
 
-    autocompleteSap(event, type){
-        try {
-            switch (type){
-                case 'ESTADO':
-                    this.tablaAFiltrar = 'EstadoSolpSap'
-                    break;
-
-                case 'ORDEN':
-                    this.tablaAFiltrar = 'OrdenSolpSap'
-                    break;
-
-                case 'CECO':
-                    this.tablaAFiltrar = 'CecoSolpSap'
-                    break;
-
-                case 'CUENTA':
-                    this.tablaAFiltrar = 'CuentasSolpSap'
-                    break;
-
-                default:
-                    this.tablaAFiltrar = ''
-                    break;                   
-            }
-
+    autocompleteSap(event){
+        try{
             this.subscription = this.service.autocompleteSap(this.tablaAFiltrar, event.query.toLowerCase()).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
@@ -281,7 +263,6 @@ export class SubPosicionComponent extends ListBaseComponent {
         }
 
         return false; //<-- Prevent Refresh
-    
-}
+    }
 
 }
