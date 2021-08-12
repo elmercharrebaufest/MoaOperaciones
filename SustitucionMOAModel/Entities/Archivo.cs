@@ -39,6 +39,10 @@ namespace SustitucionMOAModel.Entities
 
             return "";
         }
+        public string ObtenerNombre()
+        {
+            return this.ObtenerNombre(this.Ruta);
+        }
 
         public override int GetHashCode()
         {

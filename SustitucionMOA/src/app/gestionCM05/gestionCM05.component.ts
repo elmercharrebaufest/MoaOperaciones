@@ -20,6 +20,9 @@ import { MessageService } from 'primeng/api';
 })
 export class GestionCM05Component extends ListBaseComponent {
 
+    @ViewChild("dt")
+    protected table: Table;
+
     displayDialog: boolean;
 
     cabeceraCols: any[];
@@ -33,6 +36,11 @@ export class GestionCM05Component extends ListBaseComponent {
     estados: SelectItem[];
 
     detallesEditando: DetalleCM05[];
+
+    cuitFiltro: string;
+
+    fechaDesde: Date;
+    fechaHasta: Date;
 
     constructor(protected service: GestionCM05Service,
                 protected navService: NavService,
@@ -241,7 +249,7 @@ export class GestionCM05Component extends ListBaseComponent {
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
-                    }
+                }
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
@@ -251,10 +259,59 @@ export class GestionCM05Component extends ListBaseComponent {
         return false;
     }
 
+    descargarFormularioCM05() {
+        this.service.DescargarArchivoFormularioCM05(this.selectedCabecera.Id).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: "application/octet-stream",
+                    });
+
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(
+                            blob,
+                            result.FileDownloadName
+                        );
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
+                        return false;
+                    }
+                }
+            },
+            (error) => {
+                //this.spinnerSmallComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        )
+    }
+
     eliminarDe(elemento: DetalleCM05, array: DetalleCM05[]) {
         var indiceDelElemento = array.findIndex(x => x.Id == elemento.Id);
         if (indiceDelElemento > -1) {
             array.splice(indiceDelElemento, 1);
         }
+    }
+
+    filtrarCuit(dt) {
+        var cuitFiltroMasked = this.cuitFiltro.substr(0, 2);
+        if (this.cuitFiltro.length > 2)
+            cuitFiltroMasked += "-" + this.cuitFiltro.substr(2, 8);
+        if (this.cuitFiltro.length > 10)
+            cuitFiltroMasked += "-" + this.cuitFiltro.substr(10, 1);
+
+        dt.filter(cuitFiltroMasked, 'CUIT', 'contains');
     }
 }

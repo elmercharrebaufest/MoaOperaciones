@@ -11,7 +11,7 @@
                         <th class="col-md-3 th-cabecera" style="border-bottom:none">
                             Estado
                         </th>
-                        <th class="col-md-2 th-cabecera" rowspan="2">CUIT</th>
+                        <th class="col-md-2 th-cabecera">CUIT</th>
                         <th class="col-md-1 th-cabecera" rowspan="2">Anticipo</th>
                         <th class="col-md-1 th-cabecera" rowspan="2">Sede</th>
                         <th class="col-md-2 th-cabecera" rowspan="2">Fecha Carga</th>
@@ -24,6 +24,9 @@
                                     <span>{{estado.label}}</span>
                                 </ng-template>
                             </p-multiSelect>
+                        </th>
+                        <th>
+                            <input [(ngModel)]="cuitFiltro" mask="00-00000000-0" (input)="filtrarCuit(dt)" unmask="false">
                         </th>
                     </tr>
                 </ng-template>
@@ -149,6 +152,7 @@
     </p-table>
     <p-footer [minHeight]="'auto'">
         <button pButton label="Autorizar" (click)="autorizarCabecera()" [disabled]="selectedCabecera.Estado!='Pendiente'" type="button" icon="fa fa-check-circle" iconPos="right" style="float: right"></button>
+        <button pButton label="Descargar PDF" (click)="descargarFormularioCM05()" type="button" icon="fa fa-file" iconPos="right" style="float: right"></button>
     </p-footer>
 <p-toast></p-toast>
 </p-dialog>

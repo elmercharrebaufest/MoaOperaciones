@@ -46,6 +46,7 @@ namespace SustitucionMOATest.Services
             var archivos = new Mock<HttpFileCollectionBase>();
             var archivo1 = new Mock<HttpPostedFileBase>();
             var archivo2 = new Mock<HttpPostedFileBase>();
+            archivo2.Setup(a => a.FileName).Returns("C:/ArchivosProveedores/Consultas/CM05.pdf");
             var archivo3 = new Mock<HttpPostedFileBase>();
 
             archivos.Setup(x => x.Count).Returns(3);
@@ -86,7 +87,26 @@ namespace SustitucionMOATest.Services
                 .Setup(repo => repo.Agregar(It.IsAny<IngresosBrutosCoeficienteUnificado>()))
                 .Callback<IngresosBrutosCoeficienteUnificado>(x => ingresosBrutosCoeficienteUnificadosInsertados.Add(x));
 
-            target.ProcesarCM05(archivos.Object);
+            List<Archivo> archivoList = new List<Archivo>
+            {
+                new Archivo { Id = 1, Ruta = "C:/ArchivosProveedores/Consultas/CM05.pdf" },
+                new Archivo { Id = 2, Ruta = "C:/ArchivosProveedores/Consultas/324_CM05.pdf" },
+                new Archivo { Id = 3, Ruta = "C:/ArchivosProveedores/Consultas/324_CM06.pdf" },
+            };
+
+            List<Comentario> comentarioList = new List<Comentario>
+            {
+                new Comentario { Id = 322, Archivos = archivoList, Consulta_Id = 1 },
+                new Comentario { Id = 323, Archivos = archivoList, Consulta_Id = 2 },
+                new Comentario { Id = 324, Archivos = archivoList, Consulta_Id = 3 },
+            };
+            repositorioMock
+                .Setup(repo => repo.Obtener<Comentario>(It.IsAny<int>()))
+                .Returns<int>((id) => comentarioList.SingleOrDefault(c => c.Id == id));
+
+            int idComentarioTest = 324;
+
+            target.ProcesarCM05(archivos.Object, idComentarioTest);
 
             azureServiceMock.Verify(x => x.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>()), Times.Exactly(2));
             azureServiceMock.Verify(x => x.AnalizarImagenAsync(archivo1.Object), Times.Once);
@@ -137,6 +157,8 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(901, ingresosBrutosCoeficienteUnificadosInsertados[0].Sede);
             Assert.AreEqual(hoy, ingresosBrutosCoeficienteUnificadosInsertados[0].FechaCarga);
             Assert.AreEqual(hoy, ingresosBrutosCoeficienteUnificadosInsertados[0].FechaUltimaModificacion);
+            Assert.AreEqual(3, ingresosBrutosCoeficienteUnificadosInsertados[0].Consulta_Id);
+            Assert.AreEqual(2, ingresosBrutosCoeficienteUnificadosInsertados[0].Archivo_Id);
         }
 
         [Test]
@@ -168,7 +190,7 @@ namespace SustitucionMOATest.Services
 
             try
             {
-                target.ProcesarCM05(archivos.Object);
+                target.ProcesarCM05(archivos.Object, 32);
                 Assert.Fail("Debió lanzar una excepción");
             }
             catch (ValidationCustomException vex)
