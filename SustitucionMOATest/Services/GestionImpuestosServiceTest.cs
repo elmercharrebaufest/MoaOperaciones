@@ -54,10 +54,15 @@ namespace SustitucionMOATest.Services
             };
 
             this.repositorioMock
-                .Setup(repo => repo.Listar(It.IsAny<Expression<Func<IngresosBrutosCoeficienteUnificado, IngresosBrutosCoeficienteUnificadoDto>>>(), null, 0, null, DirOrden.Asc))
+                .Setup(repo => repo.Listar(
+                    It.IsAny<Expression<Func<IngresosBrutosCoeficienteUnificado, IngresosBrutosCoeficienteUnificadoDto>>>(), 
+                    It.IsAny<Expression<Func<IngresosBrutosCoeficienteUnificado, bool>>>(),
+                    0,
+                    "Id",
+                    DirOrden.Desc))
                 .Returns<Expression<Func<IngresosBrutosCoeficienteUnificado, IngresosBrutosCoeficienteUnificadoDto>>, Expression<Func<IngresosBrutosCoeficienteUnificado, bool>>, int, string, DirOrden>
-                    ((proy, filtro, maxResultados, orden, dirOrden) => 
-                    cabeceras.Select(x => proy.Compile().Invoke(x)).ToList());
+                    ((proy, filtro, maxResult, prop, dirOrden) => 
+                    cabeceras.Select(x => proy.Compile().Invoke(x)).OrderByDescending(x => x.Id).ToList());
 
             var result = target.ListarCabeceras();
 
@@ -72,13 +77,13 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(3, result.Count);
 
-            Assert.AreEqual(1, result[0].Id);
-            Assert.AreEqual(1, result[0].EstadoId);
-            Assert.AreEqual(1, result[0].Anticipo);
-            Assert.AreEqual("1", result[0].CUIT);
-            Assert.AreEqual(hoy, result[0].FechaCarga);
-            Assert.AreEqual(ayer, result[0].FechaUltimaModificacion);
-            Assert.AreEqual(1, result[0].Sede);
+            Assert.AreEqual(1, result[2].Id);
+            Assert.AreEqual(1, result[2].EstadoId);
+            Assert.AreEqual(1, result[2].Anticipo);
+            Assert.AreEqual("1", result[2].CUIT);
+            Assert.AreEqual(hoy, result[2].FechaCarga);
+            Assert.AreEqual(ayer, result[2].FechaUltimaModificacion);
+            Assert.AreEqual(1, result[2].Sede);
 
             Assert.AreEqual(2, result[1].Id);
             Assert.AreEqual(2, result[1].EstadoId);
@@ -88,13 +93,13 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(ayer, result[1].FechaUltimaModificacion);
             Assert.AreEqual(2, result[1].Sede);
 
-            Assert.AreEqual(3, result[2].Id);
-            Assert.AreEqual(3, result[2].EstadoId);
-            Assert.AreEqual(23, result[2].Anticipo);
-            Assert.AreEqual("33", result[2].CUIT);
-            Assert.AreEqual(ayer, result[2].FechaCarga);
-            Assert.AreEqual(hoy, result[2].FechaUltimaModificacion);
-            Assert.AreEqual(3, result[2].Sede);
+            Assert.AreEqual(3, result[0].Id);
+            Assert.AreEqual(3, result[0].EstadoId);
+            Assert.AreEqual(23, result[0].Anticipo);
+            Assert.AreEqual("33", result[0].CUIT);
+            Assert.AreEqual(ayer, result[0].FechaCarga);
+            Assert.AreEqual(hoy, result[0].FechaUltimaModificacion);
+            Assert.AreEqual(3, result[0].Sede);
         }
 
         [Test]
@@ -103,10 +108,10 @@ namespace SustitucionMOATest.Services
             List<IngresosBrutosCoeficienteUnificado> cabeceras = new List<IngresosBrutosCoeficienteUnificado> {};
 
             this.repositorioMock
-                .Setup(repo => repo.Listar(It.IsAny<Expression<Func<IngresosBrutosCoeficienteUnificado, IngresosBrutosCoeficienteUnificadoDto>>>(), null, 0, null, DirOrden.Asc))
+                .Setup(repo => repo.Listar(It.IsAny<Expression<Func<IngresosBrutosCoeficienteUnificado, IngresosBrutosCoeficienteUnificadoDto>>>(), null, 0, "Id", DirOrden.Desc))
                 .Returns<Expression<Func<IngresosBrutosCoeficienteUnificado, IngresosBrutosCoeficienteUnificadoDto>>, Expression<Func<IngresosBrutosCoeficienteUnificado, bool>>, int, string, DirOrden>
                     ((proy, filtro, maxResultados, orden, dirOrden) =>
-                    cabeceras.Select(x => proy.Compile().Invoke(x)).ToList());
+                    cabeceras.Select(x => proy.Compile().Invoke(x)).OrderByDescending(x => x.Id).ToList());
 
             var result = target.ListarCabeceras();
 
