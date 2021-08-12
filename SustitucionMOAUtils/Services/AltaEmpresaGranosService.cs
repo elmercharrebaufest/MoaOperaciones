@@ -715,7 +715,7 @@ namespace SustitucionMOAUtils.Services
             proveedor.RazonSocial = infoDA.ProveedorRazonSocial;
             proveedor.IdComercialDataAgro = infoDA.ComercialId;
             proveedor.IdDataAgro = infoDA.ProveedorId;
-
+            proveedor.IdSolicitanteInternoAltaGranos = usuario.Id;
             proveedor.HistorialAprobaciones.Add(hist);
             
             repositorio.Agregar(proveedor);
