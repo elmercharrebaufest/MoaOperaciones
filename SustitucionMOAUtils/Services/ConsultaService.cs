@@ -865,24 +865,26 @@ namespace SustitucionMOAUtils.Services
             for (int i = 0; i < archivos.Count; i++)
             {
                 HttpPostedFileBase archivo = archivos[i];
-
-                var operacionOCRId = Task.Run(async () => await azureService.AnalizarImagenAsync(archivo)).Result;
-
-                Thread.Sleep(2000);
-
-                var elementosLeidos = Task.Run(async () => await azureService.ObtenerResultadoOCRAsync(operacionOCRId)).Result;
-
-                if (elementosLeidos.Any(str => str == "Determinación del Coeficiente Unificado"))
+                if(archivo.ContentType == "application/pdf")
                 {
-                    Comentario comentario = repositorio.Obtener<Comentario>(comentario_Id);
-                    
-                    int consulta_Id = comentario.Consulta_Id;
-                    var nombreArchivo = string.Format("{0}_{1}", comentario_Id, Path.GetFileName(archivo.FileName));
-                    int archivo_Id = comentario.Archivos.Single(file => file.ObtenerNombre() == nombreArchivo).Id;
+                    var operacionOCRId = Task.Run(async () => await azureService.AnalizarImagenAsync(archivo)).Result;
 
-                    ProcesarArchivoCoeficientesImpuestosIngresosBrutos(elementosLeidos, consulta_Id, archivo_Id);
-                    existeArchivoConCoeficientes = true;
-                    break;
+                    Thread.Sleep(2000);
+
+                    var elementosLeidos = Task.Run(async () => await azureService.ObtenerResultadoOCRAsync(operacionOCRId)).Result;
+
+                    if (elementosLeidos.Any(str => str == "Determinación del Coeficiente Unificado"))
+                    {
+                        Comentario comentario = repositorio.Obtener<Comentario>(comentario_Id);
+
+                        int consulta_Id = comentario.Consulta_Id;
+                        var nombreArchivo = string.Format("{0}_{1}", comentario_Id, Path.GetFileName(archivo.FileName));
+                        int archivo_Id = comentario.Archivos.Single(file => file.ObtenerNombre() == nombreArchivo).Id;
+
+                        ProcesarArchivoCoeficientesImpuestosIngresosBrutos(elementosLeidos, consulta_Id, archivo_Id);
+                        existeArchivoConCoeficientes = true;
+                        break;
+                    }
                 }
             }
 
