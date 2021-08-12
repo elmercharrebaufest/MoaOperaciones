@@ -482,3 +482,6 @@
   margin: 0;
 }
 
+.disabled {
+  color: grey !important;
+}
