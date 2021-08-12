@@ -184,10 +184,10 @@
 </div>
 
 <!-- Modal eliminacion de SOLP-->
-<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+<p-confirmDialog #dialogo header="Eliminar SOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
     <p-footer>
-        <button type="button" pButton  label="Cancelar" class="ui-button-info" (click)="dialogo.reject()"></button>
-        <button type="button" pButton  label="Aceptar" class="ui-button-success" (click)="dialogo.accept()"></button>
+        <button type="button" pButton  label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+        <button type="button" pButton  label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
     </p-footer>
 </p-confirmDialog>
 <!--fin modal eliminacion de SOLP-->
