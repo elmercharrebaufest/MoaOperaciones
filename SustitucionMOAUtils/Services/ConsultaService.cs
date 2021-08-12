@@ -899,12 +899,20 @@ namespace SustitucionMOAUtils.Services
             int indiceComienzoPaginaCoeficientesBrutos = elementosLeidos.Take(indiceDeterminacionDelCoeficienteUnificado).ToList().LastIndexOf(encabezadoFormulario);
             List<string> info_DeterminacionCoeficienteUnificado = elementosLeidos.Skip(indiceComienzoPaginaCoeficientesBrutos).ToList();
 
+            string cuit = SacarHasta(info_DeterminacionCoeficienteUnificado, "CUIT:")[0];
+
+            int anticipoAux;
+            int anticipo = Int32.TryParse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Anticipo:")[0], out anticipoAux) ? anticipoAux : 0;
+
+            int sedeAux;
+            int sede = Int32.TryParse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Sede:")[0], out sedeAux) ? sedeAux : 0;
+
             var ingresosBrutosCoeficienteUnificado = new IngresosBrutosCoeficienteUnificado
             {
                 EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
-                CUIT = SacarHasta(info_DeterminacionCoeficienteUnificado, "CUIT:")[0],
-                Anticipo = Int32.Parse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Anticipo:")[0]),
-                Sede = Int32.Parse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Sede:")[0]),
+                CUIT = cuit,
+                Anticipo = anticipo,
+                Sede = sede,
                 FechaCarga = timeProvider.Now(),
                 FechaUltimaModificacion = timeProvider.Now(),
                 Consulta_Id = consulta_Id,
@@ -917,21 +925,27 @@ namespace SustitucionMOAUtils.Services
 
             for (int i = 0; i < listadoCoeficientes.Count; i++)
             {
-                int numeroJurisdiccion = Convert.ToInt32(listadoCoeficientes[i]);
+                int numeroJurisdiccionAux;
+                int? numeroJurisdiccion = int.TryParse(listadoCoeficientes[i], out numeroJurisdiccionAux) ? numeroJurisdiccionAux : (int?)null;
+
                 string jurisdiccion = listadoCoeficientes[i + 1];
 
-                decimal coeficienteIngresos = -1;
-                bool hayFechaInicio = !decimal.TryParse(listadoCoeficientes[i + 2], out coeficienteIngresos);
-                DateTime? fechaInicio = hayFechaInicio ? DateTime.ParseExact(listadoCoeficientes[i + 2], "dd/MM/yyyy", CultureInfo.InvariantCulture) : (DateTime?)null;
+                DateTime fechaInicioAux;
+                DateTime? fechaInicio = DateTime.TryParseExact(listadoCoeficientes[i + 2], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicioAux) ? fechaInicioAux: (DateTime?)null;
 
-                bool hayFechaCese = !decimal.TryParse(listadoCoeficientes[i + 3], out coeficienteIngresos);
-                DateTime? fechaCese = hayFechaCese ? DateTime.ParseExact(listadoCoeficientes[i + 3], "dd/MM/yyyy", CultureInfo.InvariantCulture) : (DateTime?)null;
+                DateTime fechaCeseAux;
+                DateTime? fechaCese = DateTime.TryParseExact(listadoCoeficientes[i + 3], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaCeseAux) ? fechaCeseAux : (DateTime?)null;
 
-                i += (hayFechaInicio ? hayFechaCese ? 4 : 3 : 2);
+                i += (fechaInicio.HasValue ? fechaCese.HasValue ? 4 : 3 : 2);
 
-                coeficienteIngresos = decimal.Parse(listadoCoeficientes[i++]);
-                decimal coeficienteGastos = decimal.Parse(listadoCoeficientes[i++]);
-                decimal coeficienteUnificado = decimal.Parse(listadoCoeficientes[i]);
+                decimal coeficienteIngresosAux;
+                decimal? coeficienteIngresos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteIngresosAux) ? coeficienteIngresosAux : (decimal?)null;
+
+                decimal coeficienteGastosAux;
+                decimal? coeficienteGastos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteGastosAux) ? coeficienteGastosAux : (decimal?)null;
+
+                decimal coeficienteUnificadoAux;
+                decimal? coeficienteUnificado = decimal.TryParse(listadoCoeficientes[i], out coeficienteUnificadoAux) ? coeficienteUnificadoAux : (decimal?)null;
 
                 IngresosBrutosCoeficienteUnificadoDetalle detalleGenerado = new IngresosBrutosCoeficienteUnificadoDetalle
                 {
