@@ -4,9 +4,15 @@ import { Observable } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './Solp';
 import { Http, Response, URLSearchParams } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class ComprasService extends BaseService {
+
+    public constructor(private http2: HttpClient, protected http: Http)
+    {
+        super(http);
+    }
 
     public getCombos(): Observable<any> {
         return this.http
@@ -130,7 +136,7 @@ export class ComprasService extends BaseService {
                                 sp.cuentaTd || 
                                 sp.precioBruto > 0 || 
                                 (sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo) ||
-                                sp.tipoImputacion);
+                                (sp.tipoImputacion && sp.tipoImputacion.Codigo));
                     }).map(sp => {
                         return {
                             Codigo: sp.id,
@@ -141,7 +147,7 @@ export class ComprasService extends BaseService {
                             Cantidad: sp.cuentaTd,
                             PrecioBruto: sp.precioBruto,
                             Unidad: this.getObjetoCodigo(sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo),
-                            TipoImputacionValor: sp.tipoImputacion
+                            TipoImputacionValor: this.getObjetoCodigo(sp.tipoImputacion && sp.tipoImputacion.Codigo,  sp.tipoImputacion.Tabla)
                         }
                     }) : null,
                     Proveedores: [
@@ -199,9 +205,14 @@ export class ComprasService extends BaseService {
         return [];
     }
 
-    getObjetoCodigo(codigo){
-        if(codigo)
+    getObjetoCodigo(codigo, tabla = null){
+        if(codigo){
+            if(tabla){
+                return { Codigo: codigo, Tabla: tabla}
+            }
+            
             return { Codigo: codigo }
+        }
         
         return null;
     }
@@ -237,5 +248,14 @@ export class ComprasService extends BaseService {
                 headers: this.headers,
             })
             .pipe(map(this.extractData));
+    }
+
+    autocompleteSap(tabla: string, valor: string){
+        let params: HttpParams = new HttpParams()
+            .append('tabla', tabla)
+            .append('valor', valor)
+
+        return this.http2
+            .get<any[]>("/api/compras/AutocompleteTablaSap", { params: params })
     }
 }
