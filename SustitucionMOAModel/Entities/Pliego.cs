@@ -24,6 +24,7 @@ namespace SustitucionMOAModel.Entities
         public bool? TieneVisitaObraMasiva { get; set; }
         public bool? TieneObradores { get; set; }
         public bool? TieneMedioElevacion { get; set; }
+        public bool? TieneAndamio { get; set; }
         public bool? TieneTecnicoSeguridad { get; set; }
         public bool? TieneDescripcionTecnica { get; set; }
         public bool? TieneDocumentacionTecnica { get; set; }

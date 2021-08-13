@@ -84,6 +84,7 @@ export class ComprasService extends BaseService {
             TieneVisitaObraMasiva: solp.visitaDeObraMasiva,
             TieneObradores: solp.obradores,
             TieneMedioElevacion: solp.modoElevacion,
+            TieneAndamio: solp.andamio, // Agregada
             TieneTecnicoSeguridad: solp.tecnicoSeguridad,
             TieneDescripcionTecnica: solp.descripcionTecnica,
             TieneDocumentacionTecnica: solp.entregaDocumentacion,
@@ -171,7 +172,12 @@ export class ComprasService extends BaseService {
     }
 
     getFechaHora(fecha: Date, hora: Date){
-        return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDay(), hora.getHours(), hora.getMinutes(), hora.getSeconds(), 0);
+        let fechaHora = new Date(fecha);
+        fechaHora.setHours(hora.getHours());
+        fecha.setMinutes(hora.getMinutes());
+        fecha.setSeconds(hora.getSeconds());
+
+        return fechaHora;
     }
 
     getCodigosProveedores(electrico, consultoria, civil, ingenieria, mecanico){
