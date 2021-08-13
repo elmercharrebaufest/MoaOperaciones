@@ -227,7 +227,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     eliminarPosicion()
     {
-        console.log("eliminar");
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar la posición?',
             accept: () => {

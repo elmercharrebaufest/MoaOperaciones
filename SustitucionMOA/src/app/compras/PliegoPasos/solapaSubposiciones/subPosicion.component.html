@@ -48,14 +48,14 @@
                                     <th style="width: 5%;"><img (click)="eliminarSubPosicion()"
                                             src="../../../../../Content/images/icons/trashWhite.svg" alt="trashWhite"
                                             style="padding: 8px;" class="pointer" /></th>
-                                    <th style="width: 8%;" data-toggle="tooltip" title="Servicio">Servicio</th>
+                                    <th style="width: 5%;" data-toggle="tooltip" title="Servicio">#</th>
                                     <th style="width: 9%;" data-toggle="tooltip" title="Código de Servicio">Cód. Servicio</th>
                                     <th style="width: 30%;">Tarea a sub contratar</th>
                                     <th style="width: 8%;" data-toggle="tooltip" title="Cantidad">Ctd.</th>
                                     <th style="width: 10%;" data-toggle="tooltip" title="Unidad de Medida">UM</th>
                                     <th style="width: 10%;">Precio bruto</th>
                                     <th style="width: 9%;" data-toggle="tooltip" title="Cuenta de mayor">Cta. de mayor</th>
-                                    <th style="width: 9%;">{{tituloColumnaTipoDeImputacion}}</th>
+                                    <th style="width: 12%;">{{tituloColumnaTipoDeImputacion}}</th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-posicion let-rowIndex="rowIndex">
@@ -63,7 +63,7 @@
                                     <td style="width: 5%;">
                                         <p-checkbox [(ngModel)]="posicion.eliminar" binary="true"></p-checkbox>
                                     </td>
-                                    <td style="width: 8%;">
+                                    <td style="width: 5%;">
                                         {{posicion.subPosicion}}
                                     </td>
                                     <td [pEditableColumn]="posicion" style="width: 9%;">
@@ -144,13 +144,13 @@
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 9%;">
+                                    <td [pEditableColumn]="posicion" style="width: 12%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <td [pEditableColumn]="posicion" style="width: 9%;">
                                                     <p-autoComplete [(ngModel)]="posicion.tipoImputacion" [suggestions]="autocomplete" 
                                                             dataKey="Id" ariaLabel="Descripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage=""
-                                                            [minLength]="2" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true" 
+                                                            [minLength]="2" [forceSelection]="true" 
                                                             (completeMethod)="autocompleteSap($event, '')" (onFocus)=" $event.target.select()">
                                                     </p-autoComplete>
                                                 </td>
