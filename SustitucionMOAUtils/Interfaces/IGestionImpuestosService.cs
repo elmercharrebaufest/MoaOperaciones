@@ -12,6 +12,8 @@ namespace SustitucionMOAUtils.Interfaces
 
         EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto EditarIngresosBrutosCoeficienteUnificadoDetalle(IngresosBrutosCoeficienteUnificadoDetalleDto ingresosBrutosCoeficienteUnificadoDetalleDto);
 
-        string AutorizarCabecera(int idCabecera);
+        string AutorizarCabecera(int idCabecera, string mailUsuario);
+
+        string ObtenerRutaArchivoFormularioCM05(int idCabecera);
     }
 }

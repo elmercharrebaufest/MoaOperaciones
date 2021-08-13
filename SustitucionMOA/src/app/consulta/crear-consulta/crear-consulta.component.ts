@@ -362,6 +362,12 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
+        if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'CM05') {
+            if (this.listaArchivos == null || this.listaArchivos.length < 1 || this.listaArchivos.filter(x => x.type == "application/pdf").length < 1) {
+                this.mensajeComponent.setErrorMsg("Falta adjuntar el formulario del CM05, el mismo debe estar en formato PDF.");
+                return true;
+            }
+        }
         if ((this.categoriaCode == 'PAR' && this.subcategoriaCode == 'NROR') || (this.categoriaCode == 'FIN' && this.subcategoriaCode)) {
             if (this.contrato == "" || !this.contrato) {
                 this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
@@ -545,7 +551,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
             return true;
         }
         if (categoriaCode == "ACT" && this.subcategoriaCode == "CM05") {
-            this.mensajeComponent.setInfoMsg("Recuerde adjuntar el formulario CM05");
+            this.mensajeComponent.setInfoMsg("Recuerde adjuntar un único formulario CM05.");
             return true;
         }
         this.mensajeComponent.setMsgsEmpty();

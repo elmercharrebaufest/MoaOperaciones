@@ -72,7 +72,8 @@ import { CalendarModule } from 'primeng/calendar';
 import { PaginatorModule } from 'primeng/paginator';
 import { ToastModule } from 'primeng/toast';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { InputTextModule } from 'primeng/inputtext';;
+import { InputTextModule } from 'primeng/inputtext';
+import { InputMaskModule } from 'primeng/inputmask';
 import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
 import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
 
@@ -100,6 +101,7 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     CalendarModule,
     ToastModule,
     MultiSelectModule,
+    InputMaskModule,
   ],
   declarations: [
     AppComponent,

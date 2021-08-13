@@ -56,9 +56,20 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
-        public ComentarioDto AgregarComentario(int consultaId, Comentario comentario, HttpFileCollectionBase files)
+        public ComentarioDto AgregarComentario(int consultaId, ComentarioDto comentarioDto, HttpFileCollectionBase files)
         {
             var consulta = GetConsulta(consultaId);
+
+            Comentario comentario = new Comentario
+            {
+                Consulta_Id = consultaId,
+                Detalle = comentarioDto.Detalle,
+                Fecha = comentarioDto.Fecha,
+                Recordado = comentarioDto.Recordado,
+                FechaRecordado = comentarioDto.FechaRecordado,
+                Usuario_Id = comentarioDto.UsuarioId
+            };
+
             var usuario = repositorio.Obtener<Usuario>(u => u.Id == comentario.Usuario_Id);
             var esInterno = usuario.TienePermiso("CONSULTA ABM");
 
@@ -84,7 +95,7 @@ namespace SustitucionMOAUtils.Services
             consulta.FechaUltimaModificacion = DateTime.Now;
             repositorio.GuardarCambios();
 
-            if (files.Count > 0)
+            if (files != null && files.Count > 0)
             {
                 AgregarAdjuntoComentario(consulta.Id, comentario.Id, files);
             }
@@ -170,12 +181,11 @@ namespace SustitucionMOAUtils.Services
             {
                 Comentario primerComentario = repositorio.Obtener<Comentario>(c => c.Consulta_Id == consulta.Id);
                 AgregarAdjuntoComentario(consulta.Id, primerComentario.Id, files);
-
+                
                 if (categoria.Code == Categorias.Actualizacion && subcatecategoria.Code == SubCategorias.CM05)
                 {
-                    ProcesarCM05(files);
+                    this.ProcesarCM05(files, comentario.Id);
                 }
-
             }
 
             return ObtenerConsulta(consulta.Id);
@@ -849,24 +859,32 @@ namespace SustitucionMOAUtils.Services
             return string.Format("{0}/{1}/{2}", rutaArchivosConsulta, comentario.Consulta.Usuario_Id, comentario.Consulta_Id);
         }
 
-        public void ProcesarCM05(HttpFileCollectionBase archivos)
+        public void ProcesarCM05(HttpFileCollectionBase archivos, int comentario_Id)
         {
             bool existeArchivoConCoeficientes = false;
-            for (int i = 0; i < archivos.Count ; i++)
+            for (int i = 0; i < archivos.Count; i++)
             {
                 HttpPostedFileBase archivo = archivos[i];
-             
-                var operacionOCRId = Task.Run(async () => await azureService.AnalizarImagenAsync(archivo)).Result;
-
-                Thread.Sleep(2000);
-
-                var elementosLeidos = Task.Run(async () => await azureService.ObtenerResultadoOCRAsync(operacionOCRId)).Result;
-
-                if(elementosLeidos.Any(str => str == "Determinación del Coeficiente Unificado"))
+                if(archivo.ContentType == "application/pdf")
                 {
-                    ProcesarArchivoCoeficientesImpuestosIngresosBrutos(elementosLeidos);
-                    existeArchivoConCoeficientes = true;
-                    break;
+                    var operacionOCRId = Task.Run(async () => await azureService.AnalizarImagenAsync(archivo)).Result;
+
+                    Thread.Sleep(2000);
+
+                    var elementosLeidos = Task.Run(async () => await azureService.ObtenerResultadoOCRAsync(operacionOCRId)).Result;
+
+                    if (elementosLeidos.Any(str => str == "Determinación del Coeficiente Unificado"))
+                    {
+                        Comentario comentario = repositorio.Obtener<Comentario>(comentario_Id);
+
+                        int consulta_Id = comentario.Consulta_Id;
+                        var nombreArchivo = string.Format("{0}_{1}", comentario_Id, Path.GetFileName(archivo.FileName));
+                        int archivo_Id = comentario.Archivos.Single(file => file.ObtenerNombre() == nombreArchivo).Id;
+
+                        ProcesarArchivoCoeficientesImpuestosIngresosBrutos(elementosLeidos, consulta_Id, archivo_Id);
+                        existeArchivoConCoeficientes = true;
+                        break;
+                    }
                 }
             }
 
@@ -876,21 +894,31 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void ProcesarArchivoCoeficientesImpuestosIngresosBrutos(IList<string> elementosLeidos)
+        private void ProcesarArchivoCoeficientesImpuestosIngresosBrutos(IList<string> elementosLeidos, int consulta_Id, int archivo_Id)
         {
             int indiceDeterminacionDelCoeficienteUnificado = elementosLeidos.IndexOf("Determinación del Coeficiente Unificado");
             string encabezadoFormulario = "OSIRIS";
             int indiceComienzoPaginaCoeficientesBrutos = elementosLeidos.Take(indiceDeterminacionDelCoeficienteUnificado).ToList().LastIndexOf(encabezadoFormulario);
             List<string> info_DeterminacionCoeficienteUnificado = elementosLeidos.Skip(indiceComienzoPaginaCoeficientesBrutos).ToList();
 
+            string cuit = SacarHasta(info_DeterminacionCoeficienteUnificado, "CUIT:")[0];
+
+            int anticipoAux;
+            int anticipo = Int32.TryParse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Anticipo:")[0], out anticipoAux) ? anticipoAux : 0;
+
+            int sedeAux;
+            int sede = Int32.TryParse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Sede:")[0], out sedeAux) ? sedeAux : 0;
+
             var ingresosBrutosCoeficienteUnificado = new IngresosBrutosCoeficienteUnificado
             {
                 EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
-                CUIT = SacarHasta(info_DeterminacionCoeficienteUnificado, "CUIT:")[0],
-                Anticipo = Int32.Parse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Anticipo:")[0]),
-                Sede = Int32.Parse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Sede:")[0]),
+                CUIT = cuit,
+                Anticipo = anticipo,
+                Sede = sede,
                 FechaCarga = timeProvider.Now(),
-                FechaUltimaModificacion = timeProvider.Now()
+                FechaUltimaModificacion = timeProvider.Now(),
+                Consulta_Id = consulta_Id,
+                Archivo_Id = archivo_Id,
             };
 
             List<IngresosBrutosCoeficienteUnificadoDetalle> ingresosBrutosCoeficienteUnificadoDetalles = new List<IngresosBrutosCoeficienteUnificadoDetalle>();
@@ -899,21 +927,27 @@ namespace SustitucionMOAUtils.Services
 
             for (int i = 0; i < listadoCoeficientes.Count; i++)
             {
-                int numeroJurisdiccion = Convert.ToInt32(listadoCoeficientes[i]);
+                int numeroJurisdiccionAux;
+                int? numeroJurisdiccion = int.TryParse(listadoCoeficientes[i], out numeroJurisdiccionAux) ? numeroJurisdiccionAux : (int?)null;
+
                 string jurisdiccion = listadoCoeficientes[i + 1];
 
-                decimal coeficienteIngresos = -1;
-                bool hayFechaInicio = !decimal.TryParse(listadoCoeficientes[i + 2], out coeficienteIngresos);
-                DateTime? fechaInicio = hayFechaInicio ? DateTime.ParseExact(listadoCoeficientes[i + 2], "dd/MM/yyyy", CultureInfo.InvariantCulture) : (DateTime?)null;
+                DateTime fechaInicioAux;
+                DateTime? fechaInicio = DateTime.TryParseExact(listadoCoeficientes[i + 2], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicioAux) ? fechaInicioAux: (DateTime?)null;
 
-                bool hayFechaCese = !decimal.TryParse(listadoCoeficientes[i + 3], out coeficienteIngresos);
-                DateTime? fechaCese = hayFechaCese ? DateTime.ParseExact(listadoCoeficientes[i + 3], "dd/MM/yyyy", CultureInfo.InvariantCulture) : (DateTime?)null;
+                DateTime fechaCeseAux;
+                DateTime? fechaCese = DateTime.TryParseExact(listadoCoeficientes[i + 3], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaCeseAux) ? fechaCeseAux : (DateTime?)null;
 
-                i += (hayFechaInicio ? hayFechaCese ? 4 : 3 : 2);
+                i += (fechaInicio.HasValue ? fechaCese.HasValue ? 4 : 3 : 2);
 
-                coeficienteIngresos = decimal.Parse(listadoCoeficientes[i++]);
-                decimal coeficienteGastos = decimal.Parse(listadoCoeficientes[i++]);
-                decimal coeficienteUnificado = decimal.Parse(listadoCoeficientes[i]);
+                decimal coeficienteIngresosAux;
+                decimal? coeficienteIngresos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteIngresosAux) ? coeficienteIngresosAux : (decimal?)null;
+
+                decimal coeficienteGastosAux;
+                decimal? coeficienteGastos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteGastosAux) ? coeficienteGastosAux : (decimal?)null;
+
+                decimal coeficienteUnificadoAux;
+                decimal? coeficienteUnificado = decimal.TryParse(listadoCoeficientes[i], out coeficienteUnificadoAux) ? coeficienteUnificadoAux : (decimal?)null;
 
                 IngresosBrutosCoeficienteUnificadoDetalle detalleGenerado = new IngresosBrutosCoeficienteUnificadoDetalle
                 {

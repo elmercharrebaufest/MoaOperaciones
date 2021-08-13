@@ -7,6 +7,8 @@
     [Sede] INT NOT NULL,
 	[FechaCarga] DATETIME NOT NULL, 
     [FechaUltimaModificacion] DATETIME NOT NULL, 
+    [Consulta_Id] INT NOT NULL, 
+    [Archivo_Id] INT NOT NULL, 
     CONSTRAINT [PK_dbo.IngresosBrutosCoeficienteUnificado] PRIMARY KEY CLUSTERED
 	(
 		[Id] ASC
@@ -18,6 +20,20 @@ ALTER TABLE [dbo].[IngresosBrutosCoeficienteUnificado]  WITH CHECK
 	ADD CONSTRAINT [FK_dbo.IngresosBrutosCoeficienteUnificado_dbo.EstadoIngresosBrutosCoeficienteUnificado] 
 	FOREIGN KEY([EstadoIngresosBrutosCoeficienteUnificado_Id])
 	REFERENCES [dbo].[EstadoIngresosBrutosCoeficienteUnificado]([Id])
+	ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[IngresosBrutosCoeficienteUnificado]  WITH CHECK 
+	ADD CONSTRAINT [FK_dbo.IngresosBrutosCoeficienteUnificado_dbo.Consulta] 
+	FOREIGN KEY([Consulta_Id])
+	REFERENCES [dbo].[Consulta]([Id])
+	ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[IngresosBrutosCoeficienteUnificado]  WITH CHECK 
+	ADD CONSTRAINT [FK_dbo.IngresosBrutosCoeficienteUnificado_dbo.Archivo] 
+	FOREIGN KEY([Archivo_Id])
+	REFERENCES [dbo].[Archivo]([Id])
 	ON DELETE CASCADE
 GO
 

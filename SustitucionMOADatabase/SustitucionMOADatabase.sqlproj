@@ -134,6 +134,8 @@
     <Build Include="DBO\Tables\IngresosBrutosCoeficienteUnificado.sql" />
     <Build Include="DBO\Tables\IngresosBrutosCoeficienteUnificadoDetalle.sql" />
     <Build Include="DBO\Tables\EstadoIngresosBrutosCoeficienteUnificado.sql" />
+    <Build Include="scripts\Create Procedure ActualizarIngresosBrutosCoeficienteUnificado.sql" />
+    <Build Include="scripts\Create View viewIngresosBrutosCoeficienteUnificado.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
