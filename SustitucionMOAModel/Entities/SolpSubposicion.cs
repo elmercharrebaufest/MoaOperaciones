@@ -25,6 +25,7 @@ namespace SustitucionMOAModel.Entities
         public string OrdenOT { get; set; }
         public string OrdenInversion { get; set; }
         public string Siniestro { get; set; }
+        public int? TipoImputacion_Id { get; set; }
 
         [ForeignKey("SolpPosicion_Id")]
         public virtual SolpPosicion SolpPosicion { get; set; }
@@ -32,5 +33,7 @@ namespace SustitucionMOAModel.Entities
         public virtual TablaSap CodigoServicioSap { get; set; }
         [ForeignKey("Unidad_Id")]
         public virtual TablaSap Unidad { get; set; }
+        [ForeignKey("TipoImputacion_Id")]
+        public virtual TablaSap TipoImputacionSap { get; set; }
     }
 }

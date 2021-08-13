@@ -3,6 +3,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.ViewModel;
+using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Web;

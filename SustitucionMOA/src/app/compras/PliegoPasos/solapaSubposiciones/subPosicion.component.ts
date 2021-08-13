@@ -13,6 +13,7 @@ import { SubPosicionViewModel } from './subPosicionViewModel';
 import { EnumTipoImputacion } from '../../enum-tipo-imputacion'
 import { EnumColumnaSubPosicion } from '../../enum-columna-subPosiciones'
 import { ConfirmationService } from 'primeng/api';
+import { type } from 'jquery';
 
 
 @Component({
@@ -37,6 +38,9 @@ export class SubPosicionComponent extends ListBaseComponent {
     enumColumnaSubPosicion: typeof EnumColumnaSubPosicion = EnumColumnaSubPosicion;
     total: number = 0;
     unidades: any[];
+
+    tablaAFiltrar: any;
+    autocomplete: any[];
 
     // array de columnas en la grilla
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
@@ -92,16 +96,20 @@ export class SubPosicionComponent extends ListBaseComponent {
     actualizarTipoDeImputacion(): void {
         switch (this.model.posicionActual.tipoImputacion) {
             case this.enumTipoImputacion.CentroDeCosto:
-                this.tituloColumnaTipoDeImputacion = "Centro de costo"
+                this.tituloColumnaTipoDeImputacion = "Centro de costo";
+                this.tablaAFiltrar = 'CecoSolpSap';
                 break;
             case this.enumTipoImputacion.OrdenDeOt:
-                this.tituloColumnaTipoDeImputacion = "Orden de OT"
+                this.tituloColumnaTipoDeImputacion = "Orden de OT";
+                this.tablaAFiltrar = 'OrdenSolpSap';
                 break;
             case this.enumTipoImputacion.OrdenInversion:
                 this.tituloColumnaTipoDeImputacion = "Orden de inversión"
+                this.tablaAFiltrar = 'OrdenSolpSap';
                 break;
             case this.enumTipoImputacion.Siniestro:
                 this.tituloColumnaTipoDeImputacion = "Siniestro / Centro de beneficio"
+                this.tablaAFiltrar = '';
                 break;
         }
     }
@@ -227,6 +235,34 @@ export class SubPosicionComponent extends ListBaseComponent {
             default:
                 break;
         }
+    }
+
+    autocompleteSap(event){
+        try{
+            this.subscription = this.service.autocompleteSap(this.tablaAFiltrar, event.query.toLowerCase()).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else { 
+                        this.autocomplete = result;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
     }
 
 }

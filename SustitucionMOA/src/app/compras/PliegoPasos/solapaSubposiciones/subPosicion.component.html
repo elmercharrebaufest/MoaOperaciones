@@ -147,13 +147,21 @@
                                     <td [pEditableColumn]="posicion" style="width: 9%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <input type="text" [(ngModel)]="posicion.tipoImputacion"
-                                                    (paste)="onPaste($event,enumColumnaSubPosicion.TipoImputacion,rowIndex)">
+                                                <td [pEditableColumn]="posicion" style="width: 9%;">
+                                                    <p-autoComplete [(ngModel)]="posicion.tipoImputacion" [suggestions]="autocomplete" 
+                                                            dataKey="Id" ariaLabel="Descripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage=""
+                                                            [minLength]="2" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true" 
+                                                            (completeMethod)="autocompleteSap($event, '')" (onFocus)=" $event.target.select()">
+                                                    </p-autoComplete>
+                                                </td>
                                             </ng-template>
+
                                             <ng-template pTemplate="output">
-                                                {{posicion.tipoImputacion}}
-                                            </ng-template>
+                                                {{posicion.tipoImputacion.CodigoDescripcion}}
+                                                <!-- <p-dropdown [options]="unidades" [(ngModel)]="posicion.unidadSeleccionada" placeholder="Seleccione" optionLabel="Descripcion" [showClear]="true" appendTo="body"></p-dropdown> -->
+                                            </ng-template>                                 
                                         </p-cellEditor>
+                                        <!--(paste)="onPaste($event,enumColumnaSubPosicion.TipoImputacion,rowIndex)">-->
                                     </td>
                                 </tr>
                             </ng-template>
