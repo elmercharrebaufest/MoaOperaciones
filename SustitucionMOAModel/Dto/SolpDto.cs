@@ -23,6 +23,7 @@ namespace SustitucionMOAModel.Dto
         public bool TieneVisitaObraMasiva { get; set; }
         public bool TieneObradores { get; set; }
         public bool TieneMedioElevacion { get; set; }
+        public bool TieneAndamio { get; set; }
         public bool TieneTecnicoSeguridad { get; set; }
         public bool TieneDescripcionTecnica { get; set; }
         public bool TieneDocumentacionTecnica { get; set; }
@@ -66,6 +67,7 @@ namespace SustitucionMOAModel.Dto
             this.TieneVisitaObraMasiva = entity.Pliego.TieneVisitaObraMasiva.HasValue && entity.Pliego.TieneVisitaObraMasiva.Value;
             this.TieneObradores = entity.Pliego.TieneObradores.HasValue && entity.Pliego.TieneObradores.Value;
             this.TieneMedioElevacion = entity.Pliego.TieneMedioElevacion.HasValue && entity.Pliego.TieneMedioElevacion.Value;
+            this.TieneAndamio = entity.Pliego.TieneAndamio.HasValue && entity.Pliego.TieneAndamio.Value;
             this.TieneTecnicoSeguridad = entity.Pliego.TieneTecnicoSeguridad.HasValue && entity.Pliego.TieneTecnicoSeguridad.Value;
             this.TieneDescripcionTecnica = entity.Pliego.TieneDescripcionTecnica.HasValue && entity.Pliego.TieneDescripcionTecnica.Value;
             this.TieneDocumentacionTecnica = entity.Pliego.TieneDocumentacionTecnica.HasValue && entity.Pliego.TieneDocumentacionTecnica.Value;
@@ -208,7 +210,7 @@ namespace SustitucionMOAModel.Dto
         public decimal? Cantidad { get; set; }
         public int? UnidadId { get; set; }
         public decimal? PrecioBruto { get; set; }
-        public string TipoImputacionValor { get; set; }
+        public TablaSapDto TipoImputacionValor { get; set; }
 
         public TablaSapDto CodigoServicioSap { get; set; }
         public TablaSapDto Unidad { get; set; }
@@ -227,7 +229,7 @@ namespace SustitucionMOAModel.Dto
                 this.Cantidad = entity.Cantidad;
                 this.UnidadId = entity.Unidad_Id;
                 this.PrecioBruto = entity.PrecioBruto;
-                this.TipoImputacionValor = entity.CentroCosto; //se corregira luego el campo en base
+                this.TipoImputacionValor = new TablaSapDto(entity.TipoImputacionSap); //se corregira luego el campo en base
                 this.CodigoServicioSap = new TablaSapDto(entity.CodigoServicioSap);
                 this.Unidad = new TablaSapDto(entity.Unidad);
             }

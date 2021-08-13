@@ -230,7 +230,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     setMaterial(material){
-        debugger
         this.listaMateriales.forEach(x => {
             if(x.MaterialId == material){
                 this.comprobanteExtra = x.Descripcion;
@@ -439,7 +438,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.blockUI.start('Generando Consulta');
         this.spinnerComponent.showIt();
 
-        debugger
         if (this.esCorredor) {
             if(this.proveedorSelected)
             {

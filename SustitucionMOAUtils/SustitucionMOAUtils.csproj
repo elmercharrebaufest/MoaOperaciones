@@ -123,6 +123,7 @@
     <Compile Include="Export\ExcelImport.cs" />
     <Compile Include="Export\ExcelValidator.cs" />
     <Compile Include="Export\PDFExport.cs" />
+    <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\IAltaEmpresaNoGranosService.cs" />
     <Compile Include="Interfaces\IComprasService.cs" />

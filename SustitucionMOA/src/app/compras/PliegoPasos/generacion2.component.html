@@ -48,7 +48,8 @@
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 <div>
                                     <span (click)="model.visitaDeObraMasiva ? agregarNuevaVisita() : null"
-                                        [class.pointer]="model.visitaDeObraMasiva" class="enlaceVisita"><i
+                                        [class.pointer]="model.visitaDeObraMasiva" class="enlaceVisita"
+                                        [class.disabled]="!model.visitaDeObraMasiva"><i
                                             class="fa fa-plus-square"></i>&nbsp; Agregar nueva visita de obra</span>
                                 </div>
                             </div>
@@ -99,7 +100,11 @@
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.modoElevacion" label="Medio de elevación o andamios"
+                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.modoElevacion" label="Medio de elevación"
+                                    binary="true"></p-checkbox>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
+                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.andamio" label="Andamios"
                                     binary="true"></p-checkbox>
                             </div>
 
