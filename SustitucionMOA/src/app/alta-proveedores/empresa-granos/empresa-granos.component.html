@@ -389,7 +389,7 @@
             <div class="container-fluid">
                 <div class="col-xs-12">
                     <div class="accordion" id="accordionExample">
-                        <div class="card z-depth-0 bordered">
+                        <div class="card z-depth-0 bordered" *ngIf="!puedeAltaInterna">
                             <div class="card-header" id="headingOne">
                                 <h5 class="mb-0">
                                     <button class="titulos " type="button" data-toggle="collapse"
@@ -495,7 +495,7 @@
                             </div>
                         </div>
 
-                        <div class="card z-depth-0 bordered">
+                        <div class="card z-depth-0 bordered" *ngIf="!puedeAltaInterna">
                             <div class="card-header" id="headingTwo">
                                 <h5 class="mb-0">
                                     <button class="collapsed titulos" type="button" data-toggle="collapse"
