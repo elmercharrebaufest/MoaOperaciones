@@ -648,7 +648,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                string mail = SessionPersister.getUsername();
                 var altaEmpresa = JsonConvert.DeserializeObject<AltaEmpresaViewModel>(datosJson);
 
                 return JsonCustom(altaEmpresaService.SolicitudAltaInterna(mail, proveedorId, altaEmpresa));
