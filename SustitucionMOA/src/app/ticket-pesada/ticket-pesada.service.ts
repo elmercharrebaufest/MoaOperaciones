@@ -22,7 +22,6 @@ export class TicketPesadaService extends BaseService {
 
         return this.http
             .post('/api/TicketPesada/Obtener', payload)
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
-            .pipe(map(this.extractData));
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 }

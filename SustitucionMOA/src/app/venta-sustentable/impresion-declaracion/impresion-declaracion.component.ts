@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BaseComponent } from '../../common/base-components/base-component';
+import { CommonResponse } from '../../common/models/common-response';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -47,7 +48,7 @@ export class ImpresionDeclaracionComponent extends BaseComponent {
     this.subscription = this.service
       .imprimirDeclaracion(this.proveedorId, this.cosechaId, this.CUIT)
       .subscribe(
-        (result) => {
+        (result:CommonResponse) => {
           if (result.error) {
             this.descargando = false;
             this.floatMessage.setErrorMsg(result.error)
