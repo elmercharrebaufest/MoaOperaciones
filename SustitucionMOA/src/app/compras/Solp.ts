@@ -214,7 +214,7 @@ export class PosicionSolp {
     constructor(numeroPosicion, fiscalContrato, fechaEntrega, posicionADuplicar) {
         this.id = uuid.v4();
         this.numeroPosicion = numeroPosicion;
-        this.plazoDeEntrega = 30;
+        this.plazoDeEntrega = 10;
         this.fechaEntregaServicio = new Date(fechaEntrega);
         this.fechaEntregaServicio.setDate(fechaEntrega.getDate() + parseInt(this.plazoDeEntrega.toString()));  
 
