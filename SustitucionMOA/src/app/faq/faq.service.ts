@@ -35,14 +35,12 @@ export class FaqService extends BaseService {
         payload.append("contacto", JSON.stringify(data));
         payload.append("file", archivo);
         return this.http
-            .post('/api/contactoMail/sendContactoMail', payload, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/contactoMail/sendContactoMail', payload, {headers: this.headersPost});
     }
 
     public getCategorias(): Observable<any> {
         return this.http
-            .get('/api/contactoMail/getCategorias', { headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/contactoMail/getCategorias', { headers: this.headers });
     }
 
 }

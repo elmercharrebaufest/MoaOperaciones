@@ -78,9 +78,9 @@ export class Solp extends CommonResponse {
     
 
     constructor() {
+        super();
         this.posiciones = [];
         this.agregarNuevaPosicion();
-
     }
 
     agregarNuevaPosicion() {

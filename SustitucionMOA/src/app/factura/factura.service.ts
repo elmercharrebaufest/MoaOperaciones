@@ -14,7 +14,6 @@ export class FacturaService extends BaseService {
         payload.append("factura", "");
         payload.append("file", archivo);
         return this.http
-            .post('/api/factura/subirPDF', payload, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/factura/subirPDF', payload, {headers: this.headersPost});
     }   
 }

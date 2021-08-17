@@ -426,7 +426,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
     obtenerMateriales() {
 
         this.subscription = this.service.obtenerMateriales().subscribe(
-            (result) => {
+            (result:any) => {
                 let obj = JSON.parse(result);
 
                 obj.Datos.forEach(element => {
@@ -452,7 +452,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
         }
         this.mensajeComponent.setMsgsEmpty();
         this.subscription = this.service.anularNegocio(this.negocioParAanular.Id, this.negocioParAanular.TipoNegocioId, this.motivoAnulacion).subscribe(
-            (result) => {
+            (result:any) => {
                 this.obteneContratos();
                 let obj = JSON.parse(result);
                 if (obj.HayError) {
