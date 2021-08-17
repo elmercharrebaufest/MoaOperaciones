@@ -758,7 +758,6 @@ namespace SustitucionMOAUtils.Services
                         return bytes;
                     }
 
-
                 }
 
             }
@@ -893,9 +892,9 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_SOLP);
-                string asunto = "MOA COMPRAS - Solp finalizada";
+                string asunto = "MOA COMPRAS - Solp Liberada";
 
-                var cuerpo = string.Format(cuerpoTemplate, usuario.Mail);
+                var cuerpo = string.Format(cuerpoTemplate, solp.NroSolp, usuario.Mail);
                 var Destinatario = usuario.Mail;
 
 

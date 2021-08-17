@@ -241,7 +241,7 @@ export class PosicionSolp {
             this.selectCentroEntrega = posicionADuplicar.selectCentroEntrega;
             this.selectAlmacenEntrega = posicionADuplicar.selectAlmacenEntrega;
             this.centroPorDefecto = posicionADuplicar.centroPorDefecto;
-            this.monedaPorDefecto = posicionADuplicar.monedaPorDefecto;
+            //this.monedaPorDefecto = posicionADuplicar.monedaPorDefecto;
             this.nombreEntrega = posicionADuplicar.nombreEntrega;
             this.calleEntrega = posicionADuplicar.calleEntrega;
             this.numeroEntrega = posicionADuplicar.numeroEntrega;
@@ -260,7 +260,7 @@ export class PosicionSolp {
             this.proveedoresValidos = posicionADuplicar.proveedoresValidos;
             this.proveedoresInvalidos = posicionADuplicar.proveedoresInvalidos;
             this.proveedoresNoSugeridos = posicionADuplicar.proveedoresNoSugeridos;
-            this.selectMonedaCompras = posicionADuplicar.selectMonedaCompras;
+            //this.selectMonedaCompras = posicionADuplicar.selectMonedaCompras;
             this.monedaSeleccionada = posicionADuplicar.monedaSeleccionada;
         }
 
