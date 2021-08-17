@@ -102,12 +102,12 @@ export class Solp {
     }
 
     eliminarPosicion() {
-        this.posicionActual = this.posiciones[0];
         this.posiciones = this.posiciones.filter(x => x.id != this.posicionActual.id);
         if (this.posiciones.length == 0) {
             this.agregarNuevaPosicion();
         }
         this.ordenarPosiciones();
+        this.posicionActual = this.posiciones[0];
     }
 
     ordenarPosiciones() {
