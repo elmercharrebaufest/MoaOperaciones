@@ -31,12 +31,12 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 result.Pesificaciones.Add(new PesificacionSapDto
                 {
-                    FechaCarga = DateTime.ParseExact(pesificacion.FECHA_CARGA, "yyyy-mm-dd", null),
+                    FechaCarga = DateTime.ParseExact(pesificacion.FECHA_CARGA, "yyyy-mm-dd", null).ToString(),
                     Contrato = pesificacion.CONTRATO,
                     Fijacion = pesificacion.FIJACION,
                     Kilos = pesificacion.KILOS,
                     Precio = pesificacion.PRECIO,
-                    FechaPesificacion = DateTime.ParseExact(pesificacion.FECHA_PESIFICACION, "yyyy-mm-dd", null),
+                    FechaPesificacion = DateTime.ParseExact(pesificacion.FECHA_PESIFICACION, "yyyy-mm-dd", null).ToString(),
                     TipoCambio = pesificacion.TIPO_CAMBIO
                 });
             }

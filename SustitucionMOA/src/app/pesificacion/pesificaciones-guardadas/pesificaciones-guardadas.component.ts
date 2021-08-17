@@ -36,13 +36,39 @@ export class PesificacionesGuardadasComponent extends PesificacionBaseComponent 
     super.ngOnInit();
     this.setMenuSeccionTab("pesificacion", "Listado");
 
-    this.pesificaciones = [
-      { Contrato: "100", Fijacion: "100", FechaCarga: new Date('Jul 12 2021'), FechaPesificacion: new Date('Jul 12 2021'), Kilos: 100, Precio: 200, TipoCambio: 50 },
-      { Contrato: "200", Fijacion: "200", FechaCarga: new Date('Jul 12 2021'), FechaPesificacion: new Date('Jul 12 2021'), Kilos: 200, Precio: 200, TipoCambio: 60 },
-    ];
+    // this.pesificaciones = [
+    //   { Contrato: "100", Fijacion: "100", FechaCarga: new Date('Jul 12 2021'), FechaPesificacion: new Date('Jul 12 2021'), Kilos: 100, Precio: 200, TipoCambio: 50 },
+    //   { Contrato: "200", Fijacion: "200", FechaCarga: new Date('Jul 12 2021'), FechaPesificacion: new Date('Jul 12 2021'), Kilos: 200, Precio: 200, TipoCambio: 60 },
+    // ];
+
+    this.getPesificaciones()
+
+  }
 
 
+  getPesificaciones() {
+    this.mensajeComponent.setMsgsEmpty();
+    this.unsubscribe();
+    this.subscription = this.service.getPesificacionesSap().subscribe(
+      result => {
+        if (result.logout == true) {
+          this.sessionDataService.logout();
+        } else if (result.error != undefined && result.error != "") {
+          this.mensajeComponent.setErrorMsg(result.error);
+        } else if (result.info != undefined) {
+          this.mensajeComponent.setInfoMsg(result.info);
+        } else {
+          // this.data = result;
 
+          this.pesificaciones = result.data;
+        }
+      },
+      error => {
+        this.mensajeComponent.setErrorMsg(error.message);
+      }
+    );
+
+    return false;
   }
 
 }

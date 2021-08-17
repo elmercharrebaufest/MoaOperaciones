@@ -99,7 +99,6 @@ namespace SustitucionMOA.App_Start
 
             kernel.Bind<ITicketPesadaService>().To(typeof(TicketPesadaService)).InScope(ctx => OperationContext.Current);
 
-
             kernel.Bind<IReporteLiquidacionesInformadasJob>().To(typeof(ReporteLiquidacionesInformadasJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteCamposSustentablesTSAJob>().To(typeof(ReporteCamposSustentablesTSAJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteConflictosCamposSustentablesJob>().To(typeof(ReporteConflictosCamposSustentablesJob)).InScope(ctx => OperationContext.Current);
@@ -113,6 +112,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<ITimeProvider>().To(typeof(CurrentTimeProvider)).InScope(ctx => OperationContext.Current);
             
             kernel.Bind<IGestionImpuestosService>().To(typeof(GestionImpuestosService)).InScope(ctx => OperationContext.Current);
+
+            kernel.Bind<IPesificacionService>().To(typeof(PesificacionService)).InScope(ctx => OperationContext.Current);
 
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);
