@@ -577,7 +577,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 case EnumPasoSolp.SolpCabecera:
                     console.log(this.solpActual)
                     paso.Completo = this.listaStringCompleta([
-                        this.solpActual.selectClaseDocumento,
+                        //this.solpActual.selectClaseDocumento,
                         this.solpActual.posicionActual.servicio,
                         this.solpActual.posicionActual.textoGenerico,
                         this.solpActual.posicionActual.fechaEntregaServicio,
