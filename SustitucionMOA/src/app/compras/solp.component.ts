@@ -252,6 +252,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 this.traerSolpId(this.solpId);
                 }
             }
+
+            
             
         }
     }
@@ -573,8 +575,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     ]);
                     break;
                 case EnumPasoSolp.SolpCabecera:
+                    console.log(this.solpActual)
                     paso.Completo = this.listaStringCompleta([
-                        this.solpActual.selectClaseDocumento,
+                        //this.solpActual.selectClaseDocumento,
                         this.solpActual.posicionActual.servicio,
                         this.solpActual.posicionActual.textoGenerico,
                         this.solpActual.posicionActual.fechaEntregaServicio,
@@ -585,7 +588,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.posicionActual.numeroEntrega,
                         this.solpActual.posicionActual.selectGrupoCompras,
                         this.solpActual.posicionActual.selectArticuloCompras,
-                        this.solpActual.posicionActual.selectMonedaCompras
+                        this.solpActual.posicionActual.monedaSeleccionada
                     ]);
                     
                     break;
