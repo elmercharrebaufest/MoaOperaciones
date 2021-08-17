@@ -79,7 +79,7 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     validarDatosMinimosPosicionActual(): void {
         if ((this.model.posicionActual.textoGenerico == undefined || this.model.posicionActual.textoGenerico == "")
-            && (this.model.posicionActual.tipoImputacion == undefined || this.model.posicionActual.tipoImputacion == "")) {
+            || (this.model.posicionActual.tipoImputacion == undefined || this.model.posicionActual.tipoImputacion == "")) {
             this.posicionInvalida = true;
         }
         else
