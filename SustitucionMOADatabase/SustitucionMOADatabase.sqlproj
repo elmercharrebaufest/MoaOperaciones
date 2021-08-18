@@ -131,6 +131,11 @@
     <None Include="scripts\PermisoAltaInternaGranos.sql" />
     <Build Include="DBO\Tables\ComentarioRecordado.sql" />
     <Build Include="DBO\Tables\Material.sql" />
+    <Build Include="DBO\Tables\IngresosBrutosCoeficienteUnificado.sql" />
+    <Build Include="DBO\Tables\IngresosBrutosCoeficienteUnificadoDetalle.sql" />
+    <Build Include="DBO\Tables\EstadoIngresosBrutosCoeficienteUnificado.sql" />
+    <Build Include="scripts\Create Procedure ActualizarIngresosBrutosCoeficienteUnificado.sql" />
+    <Build Include="scripts\Create View viewIngresosBrutosCoeficienteUnificado.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -138,6 +143,7 @@
     <None Include="scripts\Rol_NuevoNoGranos.sql" />
     <None Include="SustitucionMOADatabase.publish.xml" />
     <None Include="scripts\CargaInicialSolp.sql" />
+    <None Include="scripts\Insert EstadoIngresosBrutosCoeficienteUnificado.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

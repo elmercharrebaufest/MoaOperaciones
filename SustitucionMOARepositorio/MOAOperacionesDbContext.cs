@@ -26,6 +26,10 @@ namespace SustitucionMOARepositorio
                 incluir: x => x.Namespace == typeof(TestEntity).Namespace,
                 excluir: null);
 
+            modelBuilder.Entity<IngresosBrutosCoeficienteUnificadoDetalle>().Property(x => x.CoeficienteGastos).HasPrecision(10, 4);
+            modelBuilder.Entity<IngresosBrutosCoeficienteUnificadoDetalle>().Property(x => x.CoeficienteIngresos).HasPrecision(10, 4);
+            modelBuilder.Entity<IngresosBrutosCoeficienteUnificadoDetalle>().Property(x => x.CoeficienteUnificado).HasPrecision(10, 4);
+
             Database.SetInitializer<MOAOperacionesDbContext>(null);
             base.OnModelCreating(modelBuilder);
 

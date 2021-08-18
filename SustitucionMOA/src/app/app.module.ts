@@ -63,6 +63,17 @@ import { ApikeyComponent } from "./apikey/apikey.component";
 import { ApikeyService } from "./apikey/apikey.service";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { GestionCM05Component } from "./gestionCM05/gestionCM05.component";
+import { GestionCM05Service } from "./gestionCM05/gestionCM05.service";
+import { TableModule } from "primeng/table";
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { CalendarModule} from 'primeng/calendar';
+import { PaginatorModule } from 'primeng/paginator';
+import { ToastModule} from 'primeng/toast';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputMaskModule } from 'primeng/inputmask';
 
 @NgModule({
   imports: [
@@ -80,7 +91,15 @@ import { ConfirmationService } from 'primeng/api';
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
     ComprasModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    TableModule,
+    DialogModule,
+    ButtonModule,
+    PaginatorModule,
+    CalendarModule,
+    ToastModule,
+    MultiSelectModule,
+    InputMaskModule,
   ],
   declarations: [
     AppComponent,
@@ -105,7 +124,9 @@ import { ConfirmationService } from 'primeng/api';
     TicketPesadaComponent,
     ConsultaBaseComponent,
     VentaSustentableBaseComponent,
-    ApikeyComponent],
+    ApikeyComponent,
+    GestionCM05Component,
+    ],
   providers: [
     DatePipe,
     SessionDataService,
@@ -126,7 +147,8 @@ import { ConfirmationService } from 'primeng/api';
     TicketPesadaService,
     ConsultaService,
     ConfirmationService,
-    ApikeyService
+    ApikeyService,
+    GestionCM05Service
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]

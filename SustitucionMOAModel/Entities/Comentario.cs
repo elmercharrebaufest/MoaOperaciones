@@ -16,8 +16,8 @@ namespace SustitucionMOAModel.Entities
         public DateTime Fecha { get; set; }
         public int Consulta_Id { get; set; }
         public int Usuario_Id { get; set; }
-        public bool Recordado { get; set; }
-        public DateTime FechaRecordado { get; set; }
+        public bool? Recordado { get; set; }
+        public DateTime? FechaRecordado { get; set; }
 
         [ForeignKey("Consulta_Id")]
         public virtual Consulta Consulta { get; set; }

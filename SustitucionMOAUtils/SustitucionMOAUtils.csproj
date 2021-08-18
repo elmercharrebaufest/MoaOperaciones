@@ -123,6 +123,8 @@
     <Compile Include="Export\ExcelImport.cs" />
     <Compile Include="Export\ExcelValidator.cs" />
     <Compile Include="Export\PDFExport.cs" />
+    <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
+    <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\IAltaEmpresaNoGranosService.cs" />
     <Compile Include="Interfaces\IComprasService.cs" />
     <Compile Include="Interfaces\IContactoMailService.cs" />
@@ -136,6 +138,7 @@
     <Compile Include="Interfaces\IAltaEmpresaGranosService.cs" />
     <Compile Include="Interfaces\IAzureB2CService.cs" />
     <Compile Include="Interfaces\IDataAgroService.cs" />
+    <Compile Include="Interfaces\IGestionImpuestosService.cs" />
     <Compile Include="Interfaces\IHangfireJob.cs" />
     <Compile Include="Interfaces\ILiquidacionService.cs" />
     <Compile Include="Interfaces\INotificacionService.cs" />
@@ -143,6 +146,7 @@
     <Compile Include="Interfaces\ITicketPesadaService.cs" />
     <Compile Include="Interfaces\ILogPesificacionService.cs" />
     <Compile Include="Interfaces\IExternalApiService.cs" />
+    <Compile Include="Interfaces\Helpers\ITimeProvider.cs" />
     <Compile Include="Interfaces\IUsuarioService.cs" />
     <Compile Include="Interfaces\IVendedorService.cs" />
     <Compile Include="Interfaces\Validadores\IValidadorPesificacion.cs" />
@@ -167,6 +171,7 @@
     <Compile Include="Services\DataAgroService.cs" />
     <Compile Include="Services\FacturaService.cs" />
     <Compile Include="Services\FleteService.cs" />
+    <Compile Include="Services\GestionImpuestosService.cs" />
     <Compile Include="Services\HomeService.cs" />
     <Compile Include="Interfaces\ICartaPorteService.cs" />
     <Compile Include="Services\LiquidacionService.cs" />

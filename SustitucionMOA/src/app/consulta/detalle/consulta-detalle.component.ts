@@ -156,8 +156,6 @@ export class DetalleConsultaComponent extends BaseComponent {
             this.causaConsultaId = this.causaConsulta.Id;
         }
 
-        debugger
-
         this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId
             , this.causaConsultaId).subscribe(
                 (result:any) => {

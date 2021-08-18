@@ -87,11 +87,11 @@ export class AltaEmpresaService extends BaseService {
             .post('/api/AltaEmpresa/AgregarObservacion', params, {headers: this.headersPost});
     }
 
-    public grabarAltaInternaGranos(cuit: string){
+    public grabarAltaInternaGranos(cuit: string, mailVendedor: string){
         let params: HttpParams = new HttpParams();
         params = params.append('cuit', cuit);
-
-        return this.http
+      params = params.append('mailVendedor', mailVendedor);  
+      return this.http
              .get('/api/AltaEmpresaGranos/GrabarNuevoProveedorGranos', { params: params, headers: this.headers });   
     }
 }

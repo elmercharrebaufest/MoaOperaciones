@@ -8,6 +8,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 @Injectable()
 export class ComprasService extends BaseService {
 
+
     public getCombos(): Observable<any> {
         return this.http
             .get('/api/compras/Combos', { headers: this.headers });
@@ -79,6 +80,7 @@ export class ComprasService extends BaseService {
             TieneVisitaObraMasiva: solp.visitaDeObraMasiva,
             TieneObradores: solp.obradores,
             TieneMedioElevacion: solp.modoElevacion,
+            TieneAndamio: solp.andamio, // Agregada
             TieneTecnicoSeguridad: solp.tecnicoSeguridad,
             TieneDescripcionTecnica: solp.descripcionTecnica,
             TieneDocumentacionTecnica: solp.entregaDocumentacion,
@@ -124,7 +126,7 @@ export class ComprasService extends BaseService {
                                 sp.cuentaTd || 
                                 sp.precioBruto > 0 || 
                                 (sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo) ||
-                                sp.tipoImputacion);
+                                (sp.tipoImputacion && sp.tipoImputacion.Codigo));
                     }).map(sp => {
                         return {
                             Codigo: sp.id,
@@ -135,7 +137,7 @@ export class ComprasService extends BaseService {
                             Cantidad: sp.cuentaTd,
                             PrecioBruto: sp.precioBruto,
                             Unidad: this.getObjetoCodigo(sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo),
-                            TipoImputacionValor: sp.tipoImputacion
+                            TipoImputacionValor: this.getObjetoCodigo(sp.tipoImputacion && sp.tipoImputacion.Codigo,  sp.tipoImputacion.Tabla)
                         }
                     }) : null,
                     Proveedores: [
@@ -165,7 +167,12 @@ export class ComprasService extends BaseService {
     }
 
     getFechaHora(fecha: Date, hora: Date){
-        return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDay(), hora.getHours(), hora.getMinutes(), hora.getSeconds(), 0);
+        let fechaHora = new Date(fecha);
+        fechaHora.setHours(hora.getHours());
+        fecha.setMinutes(hora.getMinutes());
+        fecha.setSeconds(hora.getSeconds());
+
+        return fechaHora;
     }
 
     getCodigosProveedores(electrico, consultoria, civil, ingenieria, mecanico){
@@ -187,9 +194,14 @@ export class ComprasService extends BaseService {
         return [];
     }
 
-    getObjetoCodigo(codigo){
-        if(codigo)
+    getObjetoCodigo(codigo, tabla = null){
+        if(codigo){
+            if(tabla){
+                return { Codigo: codigo, Tabla: tabla}
+            }
+            
             return { Codigo: codigo }
+        }
         
         return null;
     }
@@ -226,5 +238,14 @@ export class ComprasService extends BaseService {
                 params: params,
                 headers: headers,
             });
+    }
+
+    autocompleteSap(tabla: string, valor: string){
+        let params: HttpParams = new HttpParams()
+            .append('tabla', tabla)
+            .append('valor', valor)
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteTablaSap", { params: params })
     }
 }
