@@ -65,14 +65,7 @@ export class GestionCM05Component extends ListBaseComponent {
             { label: 'Completado', value: 'Completado', },
         ];
 
-        this.service.listarCabeceras().subscribe(result => {
-            this.cabeceras = result;
-            this.cabeceras.forEach(x => {
-                x.Estado = x.EstadoId == 1 ? 'Pendiente' : x.EstadoId == 2 ? 'Autorizado' : x.EstadoId == 3 ? 'Completado' : '';
-                x.FechaCarga = x.FechaCarga == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaCarga));
-                x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
-            });
-        });
+        this.listarCabeceras();
 
         this.cabeceraCols = [
             { field: 'Id', header: 'Id' },
@@ -243,8 +236,8 @@ export class GestionCM05Component extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.selectedCabecera.Estado = 'Autorizado';
-                        this.cabeceras.find(c => c.Id == this.selectedCabecera).Estado = 'Autorizado';
-                        this.floatMsgService.setErrorMsg("Registro autorizado correctamente");
+                        this.listarCabeceras();
+                        this.floatMsgService.setSuccessMsg("Registro autorizado correctamente");
                     }
                 },
                 error => {
@@ -313,5 +306,38 @@ export class GestionCM05Component extends ListBaseComponent {
             cuitFiltroMasked += "-" + this.cuitFiltro.substr(10, 1);
 
         dt.filter(cuitFiltroMasked, 'CUIT', 'contains');
+    }
+
+    listarCabeceras() {
+        this.unsubscribe();
+        try {
+            this.subscription = this.service.listarCabeceras().subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.cabeceras = result;
+                        this.cabeceras.forEach(x => {
+                            x.Estado = x.EstadoId == 1 ? 'Pendiente' : x.EstadoId == 2 ? 'Autorizado' : x.EstadoId == 3 ? 'Completado' : '';
+                            x.FechaCarga = x.FechaCarga == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaCarga));
+                            x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
+                        });
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
     }
 }

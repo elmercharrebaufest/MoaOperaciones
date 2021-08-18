@@ -1,7 +1,10 @@
 ﻿<div class="content-wraper">
     <section class="container-fluid clearfix">
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>Gestión de CM05</strong></div>
+            <div class="col-xs-12 col-sm-10 ">
+                <strong>Gestión de CM05</strong>
+                <button type="button" pButton icon="fa fa-refresh" (click)="listarCabeceras()" style="background-color: #067935; float: right"></button>
+            </div>
         </div>
         <div>
             <p-table #dt [columns]="cabeceraCols" [value]="cabeceras" selectionMode="single" [(selection)]="selectedCabecera" [paginator]="true" [rows]="10">
