@@ -2,9 +2,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import "rxjs/add/observable/defer";
-import { Formatter } from './../formatter/Formatter';
-
 @Injectable()
 export class BaseService {
 

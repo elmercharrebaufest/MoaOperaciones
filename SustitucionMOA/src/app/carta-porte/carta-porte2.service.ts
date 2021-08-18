@@ -4,7 +4,6 @@ import {throwError as observableThrowError,  Observable } from 'rxjs';
 import {map, timeoutWith} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 
-import "rxjs/add/observable/defer";
 import { BaseService } from './../common/services/BaseService';
 import { HttpParams } from '@angular/common/http';
 import { CommonResponse } from '../common/models/common-response';

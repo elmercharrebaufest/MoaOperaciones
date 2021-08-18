@@ -1,9 +1,6 @@
 ﻿import { HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
-import "rxjs/add/observable/throw";
-import "rxjs/add/operator/catch";
-import "rxjs/add/operator/map";
 import { map, timeoutWith } from "rxjs/operators";
 import { CartaPresentacion } from "../../common/models/cartaPresentacion";
 import { InformeComercial } from "../../common/models/informeComercial";
