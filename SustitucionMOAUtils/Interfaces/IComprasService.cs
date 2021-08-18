@@ -1,4 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +23,11 @@ namespace SustitucionMOAUtils.Interfaces
         SolpDto TraerSolpId(int idSolp);
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
         byte[] GenerarSolpPdf(int idSolp);
-
         string GenerarZipPliego(int idSolp, string pathBase);
-
-
+        List<TablaSapDto> ObtenerServiciosSap();
+        List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor);
+        List<TablaSapDto> ObtenerCecoSap();
+        List<TablaSapDto> ObtenerCuentasSap();
+        List<TablaSapDto> ObtenerOrdenesSap();
     }
 }

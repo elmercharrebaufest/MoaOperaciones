@@ -201,7 +201,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-
         [HttpGet]
         public ActionResult BorrarSolp(int idSolp)
         {
@@ -239,6 +238,50 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(File(service.GenerarSolpPdf(idSolp), System.Net.Mime.MediaTypeNames.Application.Octet, "PliegoSolp" + idSolp + ".pdf"));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerServiciosSap()
+        {
+            try
+            {
+                return JsonCustom(new { data = service.ObtenerServiciosSap() });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult AutocompleteTablaSap(string tabla, string valor)
+        {
+            try
+            {
+                return JsonCustom( service.AutocompleteTablaSap(tabla, valor) );
             }
             catch (InfoCustomException e)
             {

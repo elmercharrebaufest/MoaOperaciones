@@ -970,6 +970,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJob.cs" />
     <Compile Include="Jobs\ReporteCamposSustentablesTSAJob.cs" />
     <Compile Include="Jobs\ReporteConflictosCamposSustentablesJob.cs" />
     <Compile Include="Jobs\ReporteLiquidacionesInformadasJob.cs" />

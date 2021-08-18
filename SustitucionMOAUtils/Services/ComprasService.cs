@@ -28,6 +28,8 @@ using iTextSharp.tool.xml.html;
 using Image = iTextSharp.text.Image;
 using SustitucionMOAAssets;
 using System.IO.Compression;
+using SustitucionMOAWS.WSConsumers;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Helpers;
 using System.Web.UI.WebControls;
@@ -261,7 +263,10 @@ namespace SustitucionMOAUtils.Services
 
                                 subposEntity.Codigo = subpos.Codigo;
                                 subposEntity.Cantidad = subpos.Cantidad;
-                                subposEntity.CentroCosto = subpos.TipoImputacionValor; //cambiar campo en base
+
+                                if(subpos.TipoImputacionValor != null)
+                                    subposEntity.TipoImputacionSap = repositorio.Obtener<TablaSap>(x => x.Tabla == subpos.TipoImputacionValor.Tabla && x.Codigo == subpos.TipoImputacionValor.Codigo);
+
                                 subposEntity.CuentaMayor = subpos.CuentaMayor;
                                 subposEntity.Numero = subpos.Numero;
                                 subposEntity.PrecioBruto = subpos.PrecioBruto;
@@ -814,9 +819,74 @@ namespace SustitucionMOAUtils.Services
                 ret.Append(value);
             }
 
-            return ret.ToString();
+             return ret.ToString();
+         }
+
+        public List<TablaSapDto> ObtenerServiciosSap()
+        {
+            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)new ObtenerServiciosSolpConsumerMOA().request();
+
+            return resultSap.Servicios.Select(s => new TablaSapDto()
+            {
+                Tabla = TablasSap.CodigoServicioSap,
+                Descripcion = s.Descripcion,
+                CodigoSap = s.Codigo,
+            }).ToList();
         }
 
+        public List<TablaSapDto> ObtenerCuentasSap()
+        {
+            CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)new ObtenerCuentasSolpConsumerMOA().request();
+
+            return resultSap.Cuentas.Select(c => new TablaSapDto()
+            {
+                Tabla = TablasSap.CuentasSolpSap,
+                Descripcion = c.Descripcion,
+                CodigoSap = c.Codigo,
+            }).ToList();
+        }
+
+        
+        public List<TablaSapDto> ObtenerOrdenesSap()
+        {
+            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)new ObtenerOrdenSolpConsumerMOA().request();
+
+            return resultSap.Ordenes.Select(c => new TablaSapDto()
+            {
+                Tabla = TablasSap.OrdenSolpSap,
+                Descripcion = c.Descripcion,
+                CodigoSap = c.Codigo,
+            }).ToList();
+        }
+
+        public List<TablaSapDto> ObtenerCecoSap()
+        {
+            CecoWSMOAResponse resultSap = (CecoWSMOAResponse)new ObtenerCecoSolpConsumerMOA().request();
+
+            return resultSap.Cecos.Select(c => new TablaSapDto()
+            {
+                Tabla = TablasSap.CecoSolpSap,
+                Descripcion = c.Descripcion,
+                CodigoSap = c.CostCenter,
+            }).ToList();
+        }
+
+        public List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor)
+        {
+            var lista = repositorio.Listar<TablaSap>(x => x.Tabla == tabla)
+                .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToLower().Contains(valor.ToLower()))
+                .Select(s => new TablaSapDto
+                {
+                    Id = s.Id,
+                    Descripcion = s.Descripcion,
+                    CodigoSap = s.CodigoSap,
+                    Codigo = s.Codigo,
+                    Tabla = s.Tabla
+                }).ToList();
+
+            return lista;
+        }
+ 
         private void EnviarMailSolp(Solp solp, Usuario usuario)
         {
             try
@@ -836,8 +906,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
     }
-
-
 
     public static class SolpTemplateKeys
     {
@@ -859,31 +927,4 @@ namespace SustitucionMOAUtils.Services
         public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
         public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
     }
-
-
-        //Attachment archivoExcel;
-        //        MemoryStream streamExcel = new MemoryStream();
-        //        var sw = new StreamWriter(streamExcel);
-
-        //        sw.Write(excelFile);
-        //        sw.Flush();
-        //        streamExcel.Seek(0, SeekOrigin.Begin);
-
-        //        archivoExcel = new Attachment(streamExcel, nombreArchivoXls);
-
-        //        EmailSender.SendReporte(new ReporteCamposSustentables()
-        //        {
-        //        Asunto = $"Reporte de Altas de Campos Sustentables - Cosecha {camposAReportar[0].NombreCosecha} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
-        //                    CantidadCampos = camposAReportar.Count(),
-        //                    Destinatario = ConfigurationManager.AppSettings["EmailToReporteCamposSustentables"],
-        //                    Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
-        //                    Adjuntos = new List<Attachment>
-        //                {
-        //                    archivoExcel
-        //                    ,
-        //                    archivoZip
-        //                }
-        //                });
-        //}
-
-    }
+}
