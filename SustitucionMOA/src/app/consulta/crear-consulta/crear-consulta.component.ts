@@ -408,17 +408,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
-        if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'PDF') {
-            if (this.comprobante == "" || !this.comprobante) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
-                return true;
-            }
-        }
         if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'CCP') {
-            if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
-                return true;
-            }
             if (this.comprobante == "" || !this.comprobante) {
                 this.mensajeComponent.setErrorMsg("El campo CCPP esta vacio.");
                 return true;
