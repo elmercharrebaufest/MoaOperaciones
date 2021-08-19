@@ -24,6 +24,8 @@ namespace SustitucionMOAModel.Entities
         
         public int Archivo_Id { get; set; }
 
+        public bool MalCargada { get; set; }
+
         public DateTime FechaUltimaModificacion { get; set; }
 
         [ForeignKey("EstadoIngresosBrutosCoeficienteUnificado_Id")]

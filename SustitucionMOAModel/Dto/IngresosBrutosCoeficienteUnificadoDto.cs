@@ -17,5 +17,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime FechaCarga { get; set; }
 
         public DateTime FechaUltimaModificacion { get; set; }
+
+        public bool MalCargada { get; set; }
     }
 }

@@ -50,10 +50,11 @@ namespace SustitucionMOAUtils.Services
                 CUIT = x.CUIT,
                 FechaCarga = x.FechaCarga,
                 FechaUltimaModificacion = x.FechaUltimaModificacion,
-                Sede = x.Sede
+                Sede = x.Sede,
+                MalCargada = x.MalCargada
             },null,0,"Id",SustitucionMOAModel.Consultas.DirOrden.Desc);
         }
-        
+
         public IList<IngresosBrutosCoeficienteUnificadoDetalleDto> ListarDetalles(int idCabecera)
         {
             return repositorio.Listar<IngresosBrutosCoeficienteUnificadoDetalle, IngresosBrutosCoeficienteUnificadoDetalleDto>(
