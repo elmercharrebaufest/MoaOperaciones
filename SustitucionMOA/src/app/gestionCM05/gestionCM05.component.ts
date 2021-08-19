@@ -76,6 +76,7 @@ export class GestionCM05Component extends ListBaseComponent {
             { field: 'Sede', header: 'Sede' },
             { field: 'FechaCarga', header: 'Fecha carga' },
             { field: 'FechaUltimaModificacion', header: 'Última modificación' },
+            { field: 'MalCargada', header: 'MalCargada' },
         ];
 
         this.detalleCols = [
@@ -99,6 +100,7 @@ export class GestionCM05Component extends ListBaseComponent {
             Sede: data.Sede,
             FechaCarga: data.FechaCarga,
             FechaUltimaModificacion: data.FechaUltimaModificacion,
+            MalCargada: data.MalCargada
         };
         this.service.listarDetalles(this.selectedCabecera.Id).subscribe(result => {
             this.detalles = result;

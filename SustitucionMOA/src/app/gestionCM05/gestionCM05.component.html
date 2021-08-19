@@ -34,7 +34,7 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
-                    <tr (click)="onCabeceraClick(rowData)">
+                    <tr [ngClass]="rowData.MalCargada ? 'tr-cabecera-error' : null" (click)="onCabeceraClick(rowData)">
                         <td class="td-cabecera">
                             {{rowData.Id}}
                         </td>
