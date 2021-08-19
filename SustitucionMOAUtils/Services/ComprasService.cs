@@ -30,18 +30,28 @@ using SustitucionMOAAssets;
 using System.IO.Compression;
 using SustitucionMOAWS.WSConsumers;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAWS.Interfaces;
 
 namespace SustitucionMOAUtils.Services
 {
     public class ComprasService : IComprasService
     {
         private readonly IRepositorio repositorio;
+        private readonly IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA;
+        private readonly IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA;
+        private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
+        private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
 
-        public ComprasService(IRepositorio repositorio)
+        public ComprasService(IRepositorio repositorio, IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA, 
+            IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA, IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA, IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA)
         {
             this.repositorio = repositorio;
+            this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
+            this.cuentasSolpConsumerMOA = cuentasSolpConsumerMOA;
+            this.ordenesSolpConsumerMOA = ordenesSolpConsumerMOA;
+            this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
         }
 
         public SolpDto GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -786,7 +796,7 @@ namespace SustitucionMOAUtils.Services
 
         public List<TablaSapDto> ObtenerServiciosSap()
         {
-            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)new ObtenerServiciosSolpConsumerMOA().request();
+            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
 
             return resultSap.Servicios.Select(s => new TablaSapDto()
             {
@@ -798,7 +808,7 @@ namespace SustitucionMOAUtils.Services
 
         public List<TablaSapDto> ObtenerCuentasSap()
         {
-            CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)new ObtenerCuentasSolpConsumerMOA().request();
+            CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)cuentasSolpConsumerMOA.request();
 
             return resultSap.Cuentas.Select(c => new TablaSapDto()
             {
@@ -811,7 +821,7 @@ namespace SustitucionMOAUtils.Services
         
         public List<TablaSapDto> ObtenerOrdenesSap()
         {
-            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)new ObtenerOrdenSolpConsumerMOA().request();
+            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)ordenesSolpConsumerMOA.request();
 
             return resultSap.Ordenes.Select(c => new TablaSapDto()
             {
@@ -823,7 +833,7 @@ namespace SustitucionMOAUtils.Services
 
         public List<TablaSapDto> ObtenerCecoSap()
         {
-            CecoWSMOAResponse resultSap = (CecoWSMOAResponse)new ObtenerCecoSolpConsumerMOA().request();
+            CecoWSMOAResponse resultSap = (CecoWSMOAResponse)CecoSolpConsumerMOA.request();
 
             return resultSap.Cecos.Select(c => new TablaSapDto()
             {
