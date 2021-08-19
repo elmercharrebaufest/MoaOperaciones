@@ -1,5 +1,4 @@
-﻿using Microsoft.QualityTools.Testing.Fakes;
-using Moq;
+﻿using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SustitucionMOA.Controllers;
