@@ -48,9 +48,9 @@ namespace SustitucionMOATest.Services
 
             List<IngresosBrutosCoeficienteUnificado> cabeceras = new List<IngresosBrutosCoeficienteUnificado>
             {
-                new IngresosBrutosCoeficienteUnificado { Id = 1, Anticipo = 1, CUIT = "1", Sede = 1, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = pendiente },
-                new IngresosBrutosCoeficienteUnificado { Id = 2, Anticipo = 2, CUIT = "2", Sede = 2, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = autorizado },
-                new IngresosBrutosCoeficienteUnificado { Id = 3, Anticipo = 23, CUIT = "33", Sede = 3, FechaCarga = ayer, FechaUltimaModificacion = hoy, EstadoIngresosBrutosCoeficienteUnificado = completado },
+                new IngresosBrutosCoeficienteUnificado { Id = 1, Anticipo = 1, CUIT = "1", Sede = 1, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = pendiente, MalCargada = false },
+                new IngresosBrutosCoeficienteUnificado { Id = 2, Anticipo = 2, CUIT = "2", Sede = 2, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = autorizado, MalCargada = false },
+                new IngresosBrutosCoeficienteUnificado { Id = 3, Anticipo = 23, CUIT = "33", Sede = 3, FechaCarga = ayer, FechaUltimaModificacion = hoy, EstadoIngresosBrutosCoeficienteUnificado = completado, MalCargada = true },
             };
 
             this.repositorioMock
@@ -84,6 +84,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(hoy, result[2].FechaCarga);
             Assert.AreEqual(ayer, result[2].FechaUltimaModificacion);
             Assert.AreEqual(1, result[2].Sede);
+            Assert.IsFalse(result[2].MalCargada);
 
             Assert.AreEqual(2, result[1].Id);
             Assert.AreEqual(2, result[1].EstadoId);
@@ -92,6 +93,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(hoy, result[1].FechaCarga);
             Assert.AreEqual(ayer, result[1].FechaUltimaModificacion);
             Assert.AreEqual(2, result[1].Sede);
+            Assert.IsFalse(result[1].MalCargada);
 
             Assert.AreEqual(3, result[0].Id);
             Assert.AreEqual(3, result[0].EstadoId);
@@ -100,6 +102,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(ayer, result[0].FechaCarga);
             Assert.AreEqual(hoy, result[0].FechaUltimaModificacion);
             Assert.AreEqual(3, result[0].Sede);
+            Assert.IsTrue(result[0].MalCargada);
         }
 
         [Test]
