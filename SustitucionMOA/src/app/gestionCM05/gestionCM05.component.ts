@@ -42,6 +42,9 @@ export class GestionCM05Component extends ListBaseComponent {
     fechaDesde: Date;
     fechaHasta: Date;
 
+    editandoCabecera: boolean;
+    cabeceraEditando: CabeceraCM05;
+
     constructor(protected service: GestionCM05Service,
                 protected navService: NavService,
                 protected sessionDataService: SessionDataService,
@@ -88,6 +91,9 @@ export class GestionCM05Component extends ListBaseComponent {
             { field: 'CoeficienteUnificado', header: 'Coef. unificado', },
             { field: 'FechaUltimaModificacion', header: 'Última modificación', },
         ];
+
+        this.editandoCabecera = false;
+        this.cabeceraEditando = null;
     }
 
     onCabeceraClick(data) {
@@ -150,7 +156,7 @@ export class GestionCM05Component extends ListBaseComponent {
                         rowData.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(result.FechaUltimaModificacion));
                         rowData.Editar = false;
 
-                        this.eliminarDe(rowData, this.detallesEditando);
+                        this.eliminarDetalleDe(rowData, this.detallesEditando);
                     }
                 },
                 error => {
@@ -178,7 +184,7 @@ export class GestionCM05Component extends ListBaseComponent {
         rowData.FechaUltimaModificacion = backupDetalle.FechaUltimaModificacion;
 
         rowData.Editar = false;
-        this.eliminarDe(rowData, this.detallesEditando);
+        this.eliminarDetalleDe(rowData, this.detallesEditando);
     }
 
     validarRow(rowData){
@@ -293,7 +299,7 @@ export class GestionCM05Component extends ListBaseComponent {
         )
     }
 
-    eliminarDe(elemento: DetalleCM05, array: DetalleCM05[]) {
+    eliminarDetalleDe(elemento: DetalleCM05, array: DetalleCM05[]) {
         var indiceDelElemento = array.findIndex(x => x.Id == elemento.Id);
         if (indiceDelElemento > -1) {
             array.splice(indiceDelElemento, 1);
@@ -341,5 +347,66 @@ export class GestionCM05Component extends ListBaseComponent {
         }
 
         return false; //<-- Prevent Refresh
+    }
+
+    editarCabecera() {
+        this.editandoCabecera = true;
+        this.cabeceraEditando = { ...this.selectedCabecera };
+    }
+
+    guardarCabeceraEditada() {
+        this.messageService.clear();
+        try {
+            if (this.validarCabeceraEditada()) {
+                return
+            }
+
+            this.subscription = this.service.editarCabecera(this.selectedCabecera).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo editar', detail: result.error });
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.messageService.add({ severity: 'info', summary: 'No se pudo editar', detail: result.info });
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.messageService.add({ severity: 'success', summary: 'Cabecera actualizada', detail: result.Mensaje });
+                        this.floatMsgService.setSuccessMsg(result.Mensaje);
+
+                        this.selectedCabecera.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(result.FechaUltimaModificacion));
+                        this.editandoCabecera = false;
+                        this.cabeceraEditando = null;
+
+                        this.listarCabeceras();
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+    validarCabeceraEditada() {
+        return false;
+    }
+
+    cancelarEditarCabecera() {
+        var backupCabecera = this.cabeceraEditando;
+
+        this.selectedCabecera.CUIT = backupCabecera.CUIT;
+        this.selectedCabecera.Anticipo = backupCabecera.Anticipo;
+        this.selectedCabecera.Sede = backupCabecera.Sede;
+
+        this.editandoCabecera = false;
+        this.cabeceraEditando = null;
     }
 }

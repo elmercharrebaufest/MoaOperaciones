@@ -59,6 +59,7 @@
     <Compile Include="Dto\CampoSustentableExportDTO.cs" />
     <Compile Include="Dto\ComentarioRecordadoDto.cs" />
     <Compile Include="Dto\CentroDireccionDto.cs" />
+    <Compile Include="Dto\EditarIngresosBrutosCoeficienteUnificadoResponseDto.cs" />
     <Compile Include="Dto\EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto.cs" />
     <Compile Include="Dto\EstadoDeclaracionSustentableDto.cs" />
     <Compile Include="Dto\CausaConsultaDto.cs" />

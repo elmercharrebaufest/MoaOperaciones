@@ -333,6 +333,7 @@ namespace SustitucionMOATest.Controllers
             Assert.AreEqual("Se edito ok", resultData.Mensaje);
             Assert.AreEqual(hoy, resultData.FechaUltimaModificacion);
 
+            gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.IsAny<IngresosBrutosCoeficienteUnificadoDetalleDto>()), Times.Once);
             gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.Is<IngresosBrutosCoeficienteUnificadoDetalleDto>(x => x.Id == 1)), Times.Once);
         }
 
@@ -462,5 +463,112 @@ namespace SustitucionMOATest.Controllers
             this.gestionImpuestosServiceMock.Verify(g => g.ObtenerRutaArchivoFormularioCM05(It.IsAny<int>()), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.ObtenerRutaArchivoFormularioCM05(123), Times.Once);
         }
+
+        [Test]
+        public void EditarIngresosBrutosCoeficienteUnificadoOk()
+        {
+            var ingresosBrutosCoeficienteUnificadoDetalleDtoTest = new IngresosBrutosCoeficienteUnificadoDto
+            {
+                Id = 1,
+            };
+
+            DateTime hoy = new DateTime(2021, 8, 2);
+
+            gestionImpuestosServiceMock
+                .Setup(g => g.EditarIngresosBrutosCoeficienteUnificado(It.Is<IngresosBrutosCoeficienteUnificadoDto>(x => x.Id == 1)))
+                .Returns(new EditarIngresosBrutosCoeficienteUnificadoResponseDto { Mensaje = "Se edito ok", FechaUltimaModificacion = hoy });
+
+            string parametroJson = JsonConvert.SerializeObject(ingresosBrutosCoeficienteUnificadoDetalleDtoTest);
+
+            var result = target.EditarIngresosBrutosCoeficienteUnificado(parametroJson);
+
+            Assert.IsInstanceOf<EditarIngresosBrutosCoeficienteUnificadoResponseDto>(result.Data);
+
+            var resultData = (EditarIngresosBrutosCoeficienteUnificadoResponseDto)result.Data;
+
+            Assert.AreEqual("Se edito ok", resultData.Mensaje);
+            Assert.AreEqual(hoy, resultData.FechaUltimaModificacion);
+
+            gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificado(It.IsAny<IngresosBrutosCoeficienteUnificadoDto>()), Times.Once);
+            gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificado(It.Is<IngresosBrutosCoeficienteUnificadoDto>(x => x.Id == 1)), Times.Once);
+        }
+
+        [Test]
+        public void EditarIngresosBrutosCoeficienteUnificadoInfoCustomException()
+        {
+            var ingresosBrutosCoeficienteUnificadoDtoTest = new IngresosBrutosCoeficienteUnificadoDto
+            {
+                Id = 1,
+            };
+
+            var excepcionTest = new InfoCustomException("Algo");
+
+            gestionImpuestosServiceMock
+                .Setup(g => g.EditarIngresosBrutosCoeficienteUnificado(It.Is<IngresosBrutosCoeficienteUnificadoDto>(x => x.Id == 1)))
+                .Throws(excepcionTest);
+
+            string parametroJson = JsonConvert.SerializeObject(ingresosBrutosCoeficienteUnificadoDtoTest);
+
+            var result = target.EditarIngresosBrutosCoeficienteUnificado(parametroJson);
+
+            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Algo", infoResultData);
+            this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificado(It.Is<IngresosBrutosCoeficienteUnificadoDto>(x => x.Id == 1)), Times.Once);
+        }
+
+        [Test]
+        public void EditarIngresosBrutosCoeficienteUnificadoValidationCustomException()
+        {
+            var ingresosBrutosCoeficienteUnificadoDtoTest = new IngresosBrutosCoeficienteUnificadoDto
+            {
+                Id = 1,
+            };
+
+            var excepcionTest = new ValidationCustomException("Error de validacion");
+
+            gestionImpuestosServiceMock
+                .Setup(g => g.EditarIngresosBrutosCoeficienteUnificado(It.Is<IngresosBrutosCoeficienteUnificadoDto>(x => x.Id == 1)))
+                .Throws(excepcionTest);
+
+            string parametroJson = JsonConvert.SerializeObject(ingresosBrutosCoeficienteUnificadoDtoTest);
+
+            var result = target.EditarIngresosBrutosCoeficienteUnificado(parametroJson);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Error de validacion", errorResultData);
+            this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificado(It.Is<IngresosBrutosCoeficienteUnificadoDto>(x => x.Id == 1)), Times.Once);
+        }
+
+        [Test]
+        public void EditarIngresosBrutosCoeficienteUnificadoException()
+        {
+            var ingresosBrutosCoeficienteUnificadoDtoTest = new IngresosBrutosCoeficienteUnificadoDto
+            {
+                Id = 1,
+            };
+
+            var excepcionTest = new NullReferenceException("exploto molinos");
+
+            gestionImpuestosServiceMock
+                .Setup(g => g.EditarIngresosBrutosCoeficienteUnificado(It.Is<IngresosBrutosCoeficienteUnificadoDto>(x => x.Id == 1)))
+                .Throws(excepcionTest);
+
+            string parametroJson = JsonConvert.SerializeObject(ingresosBrutosCoeficienteUnificadoDtoTest);
+
+            HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
+
+            JsonResult result = target.EditarIngresosBrutosCoeficienteUnificado(parametroJson);
+
+            Assert.IsNotNull(result.Data);
+
+            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+
+            this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificado(It.IsAny<IngresosBrutosCoeficienteUnificadoDto>()), Times.Once);
+            this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificado(It.Is<IngresosBrutosCoeficienteUnificadoDto>(x => x.Id == 1)), Times.Once);
+        }
+
     }
 }

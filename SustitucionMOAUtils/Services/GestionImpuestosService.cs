@@ -98,7 +98,30 @@ namespace SustitucionMOAUtils.Services
                 FechaUltimaModificacion = ingresosBrutosCoeficienteUnificadoDetalle.FechaUltimaModificacion
             };
         }
-        
+
+        public EditarIngresosBrutosCoeficienteUnificadoResponseDto EditarIngresosBrutosCoeficienteUnificado(IngresosBrutosCoeficienteUnificadoDto ingresosBrutosCoeficienteUnificadoDto)
+        {
+            var ingresosBrutosCoeficienteUnificado = repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(ingresosBrutosCoeficienteUnificadoDto.Id);
+
+            if (ingresosBrutosCoeficienteUnificado == null)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de coeficientes unificados"));
+
+            ingresosBrutosCoeficienteUnificado.CUIT = ingresosBrutosCoeficienteUnificadoDto.CUIT;
+            ingresosBrutosCoeficienteUnificado.Anticipo = ingresosBrutosCoeficienteUnificadoDto.Anticipo;
+            ingresosBrutosCoeficienteUnificado.Sede = ingresosBrutosCoeficienteUnificadoDto.Sede;
+            ingresosBrutosCoeficienteUnificado.MalCargada = ingresosBrutosCoeficienteUnificadoDto.MalCargada;
+
+            ingresosBrutosCoeficienteUnificado.FechaUltimaModificacion = timeProvider.Now();
+
+            repositorio.GuardarCambios();
+
+            return new EditarIngresosBrutosCoeficienteUnificadoResponseDto
+            {
+                Mensaje = SuccessMsg.IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK,
+                FechaUltimaModificacion = ingresosBrutosCoeficienteUnificado.FechaUltimaModificacion
+            };
+        }
+
         public string AutorizarCabecera(int idCabecera, string mailUsuario)
         {
             var cabecera = this.repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(idCabecera);

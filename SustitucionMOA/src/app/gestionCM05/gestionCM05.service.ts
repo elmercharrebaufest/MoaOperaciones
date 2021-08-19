@@ -49,4 +49,13 @@ export class GestionCM05Service extends BaseService {
             .pipe(map(this.extractData));
     }
 
+    public editarCabecera(cabecera) {
+        let cabeceraJson = JSON.stringify(cabecera);
+        var payload = new FormData();
+
+        payload.append('cabeceraJson', cabeceraJson);
+
+        return this.http
+            .post('/api/GestionImpuestos/EditarIngresosBrutosCoeficienteUnificado', payload, this.headers).map(this.extractData);
+    }
 }
