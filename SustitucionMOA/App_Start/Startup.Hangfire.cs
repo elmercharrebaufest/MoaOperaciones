@@ -36,6 +36,11 @@ namespace SustitucionMOA
                 "ReporteConflictosCamposSustentablesJob",
                 j => j.Execute(),
                 "30 6 * * *", tz);
+
+            RecurringJob.AddOrUpdate<Jobs.IActualizarBaseDeDatosSolpSapJob>(
+                "ActualizarBaseDeDatosSolpSapJob",
+                j => j.Execute(),
+                "0 23 * * *", tz);
         }
     }
 }

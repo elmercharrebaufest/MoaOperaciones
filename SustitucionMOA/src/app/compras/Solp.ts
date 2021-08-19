@@ -19,7 +19,7 @@ export class Solp {
     public fechaDeEntregaDeOfertasFecha: Date;
     public fechaDeEntregaDeOfertasHora: Time;
     public horaEntrega: any;
-    public fechaEntrega: any;
+    public fechaEntrega: Date;
 
     //paso 2
     public visitaDeObra: boolean;
@@ -30,6 +30,7 @@ export class Solp {
     public obradores: boolean;
     public descripcionTecnica: boolean;
     public modoElevacion: boolean;
+    public andamio: boolean;
     public entregaDocumentacion: boolean;
     public tecnicoSeguridad: boolean;
     public fechaLimiteFecha: Date;
@@ -53,7 +54,17 @@ export class Solp {
 
     public posiciones: PosicionSolp[];
     public posicionActual: PosicionSolp;
+
+    public get ultimaPosicion(): PosicionSolp{
+        this.setearPosicionMasFutura();
+        return this._ultimaPosicion;
+    }
+
+    private _ultimaPosicion: PosicionSolp;
+
+
     // fin cabecera
+
 
 
     //variables auxiliares de inicio de solp
@@ -66,6 +77,7 @@ export class Solp {
 
     public centroPorDefecto: any;
     public monedaPorDefecto: any;
+    public enviarSap: boolean;
     
 
     // // dashboard
@@ -75,22 +87,27 @@ export class Solp {
 
     constructor() {
         this.posiciones = [];
+        this.fechaEntrega = new Date();
+        this.fechaEntrega.setDate(this.fechaEntrega.getDate() + 7);
         this.agregarNuevaPosicion();
+        this._ultimaPosicion = this.posicionActual;
 
+        
+       
     }
 
     agregarNuevaPosicion() {
-        this.posiciones = [...this.posiciones, new PosicionSolp(this.posiciones.length + 1, this.fiscalContrato)]
+        this.posiciones = [...this.posiciones, new PosicionSolp(this.posiciones.length + 1, this.fiscalContrato, this.fechaEntrega, this.posicionActual)]
         this.posicionActual = this.posiciones[this.posiciones.length - 1];
     }
 
     eliminarPosicion() {
-        this.posicionActual = this.posiciones[0];
         this.posiciones = this.posiciones.filter(x => x.id != this.posicionActual.id);
         if (this.posiciones.length == 0) {
             this.agregarNuevaPosicion();
         }
         this.ordenarPosiciones();
+        this.posicionActual = this.posiciones[0];
     }
 
     ordenarPosiciones() {
@@ -107,6 +124,15 @@ export class Solp {
             this.posicionActual = this.posiciones[0];
         }
     }
+
+    setearPosicionMasFutura(){
+        let posicionesOrdenadas = this.posiciones.sort((a, b) => {
+            return (b.fechaEntregaServicio.getTime() - a.fechaEntregaServicio.getTime())
+        });
+        this._ultimaPosicion = posicionesOrdenadas[0];
+    }
+
+    
 }
 
 
@@ -125,7 +151,7 @@ export class PosicionSolp {
     // fechas
     public fechaEntregaServicio: Date;
     public fechaDeLiberacion: Date;
-    public plazoDeEntrega: string;
+    public plazoDeEntrega: number;
     public concluido: boolean;
     public indiceFijacion: boolean;
 
@@ -163,6 +189,7 @@ export class PosicionSolp {
     // Moneda
     public selectMonedaCompras: any;
     public monedaSeleccionada: any;
+
     public totalPosicion() {
 
         if(this.listadoSubPosiciones && this.listadoSubPosiciones.length > 0){
@@ -182,17 +209,63 @@ export class PosicionSolp {
     //subPosiciones
     listadoSubPosiciones :  Array<SubPosicionViewModel>;
 
-    constructor(numeroPosicion, fiscalContrato) {
+
+
+    constructor(numeroPosicion, fiscalContrato, fechaEntrega, posicionADuplicar) {
         this.id = uuid.v4();
-        this.plazoDeEntrega = "0";
         this.numeroPosicion = numeroPosicion;
-        this.fechaEntregaServicio = new Date();
+        this.plazoDeEntrega = 10;
+        this.fechaEntregaServicio = new Date(fechaEntrega);
+        this.fechaEntregaServicio.setDate(fechaEntrega.getDate() + parseInt(this.plazoDeEntrega.toString()));  
+
         this.fechaDeLiberacion = new Date();
         this.listadoSubPosiciones = new Array<SubPosicionViewModel>();
         //agrega un fila por defecto
         this.listadoSubPosiciones.push(new SubPosicionViewModel(1));
         this.servicio = 'SERVICIO';
         this.selectSolicitanteCompras = fiscalContrato;
+
+        if(posicionADuplicar){
+            //this.campo = posicionADuplicar.campo
+            this.servicio = posicionADuplicar.servicio;
+            this.centroDeCosto = posicionADuplicar.centroDeCosto;
+            this.ordenDeOt = posicionADuplicar.ordenDeOt;
+            this.ordenDeInversion = posicionADuplicar.ordenDeInversion;
+            this.siniestroBeneficio = posicionADuplicar.siniestroBeneficio;
+            // this.textoGenerico = posicionADuplicar.textoGenerico;
+            this.fechaEntregaServicio = posicionADuplicar.fechaEntregaServicio;
+            this.fechaDeLiberacion = posicionADuplicar.fechaDeLiberacion;
+            this.plazoDeEntrega = posicionADuplicar.plazoDeEntrega;
+            this.concluido = posicionADuplicar.concluido;
+            this.indiceFijacion = posicionADuplicar.indiceFijacion;
+            this.selectCentroEntrega = posicionADuplicar.selectCentroEntrega;
+            this.selectAlmacenEntrega = posicionADuplicar.selectAlmacenEntrega;
+            this.centroPorDefecto = posicionADuplicar.centroPorDefecto;
+            //this.monedaPorDefecto = posicionADuplicar.monedaPorDefecto;
+            this.nombreEntrega = posicionADuplicar.nombreEntrega;
+            this.calleEntrega = posicionADuplicar.calleEntrega;
+            this.numeroEntrega = posicionADuplicar.numeroEntrega;
+            this.codigoPostalEntrega = posicionADuplicar.codigoPostalEntrega;
+            this.paisEntrega = posicionADuplicar.paisEntrega;
+            this.selectGrupoCompras = posicionADuplicar.selectGrupoCompras;
+            this.selectSolicitanteCompras = posicionADuplicar.selectSolicitanteCompras;
+            this.necesidadCompras = posicionADuplicar.necesidadCompras;
+            this.selectArticuloCompras = posicionADuplicar.selectArticuloCompras;
+            this.rubroElectrico = posicionADuplicar.rubroElectrico;
+            this.rubroCivil = posicionADuplicar.rubroCivil;
+            this.rubroMecanico = posicionADuplicar.rubroMecanico;
+            this.rubroIngenieria = posicionADuplicar.rubroIngenieria;
+            this.rubroConsultoria = posicionADuplicar.rubroConsultoria;
+            this.tipoImputacion = posicionADuplicar.tipoImputacion;
+            this.proveedoresValidos = posicionADuplicar.proveedoresValidos;
+            this.proveedoresInvalidos = posicionADuplicar.proveedoresInvalidos;
+            this.proveedoresNoSugeridos = posicionADuplicar.proveedoresNoSugeridos;
+            //this.selectMonedaCompras = posicionADuplicar.selectMonedaCompras;
+            this.monedaSeleccionada = posicionADuplicar.monedaSeleccionada;
+        }
+
+
+    
     }
 }
 

@@ -2,13 +2,13 @@
 (
 	[Id] INT IDENTITY(1,1) NOT NULL, 
 	[IngresosBrutosCoeficienteUnificado_Id] INT NOT NULL, 
-    [NumeroJurisdiccion] INT NOT NULL, 
-    [Jurisdiccion] VARCHAR(MAX) NOT NULL, 
+    [NumeroJurisdiccion] INT NULL, 
+    [Jurisdiccion] VARCHAR(MAX) NULL, 
     [FechaInicio] DATETIME NULL, 
     [FechaCese] DATETIME NULL, 
-    [CoeficienteIngresos] DECIMAL(10, 4) NOT NULL, 
-    [CoeficienteGastos] DECIMAL(10, 4) NOT NULL, 
-    [CoeficienteUnificado] DECIMAL(10, 4) NOT NULL,
+    [CoeficienteIngresos] DECIMAL(10, 4) NULL, 
+    [CoeficienteGastos] DECIMAL(10, 4) NULL, 
+    [CoeficienteUnificado] DECIMAL(10, 4) NULL,
     [FechaUltimaModificacion] DATETIME NOT NULL, 
 	CONSTRAINT [PK_dbo.IngresosBrutosCoeficienteUnificadoDetalle] PRIMARY KEY CLUSTERED 
     (

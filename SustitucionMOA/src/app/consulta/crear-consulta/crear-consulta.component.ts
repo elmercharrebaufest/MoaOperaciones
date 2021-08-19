@@ -179,8 +179,12 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     validarNombre(){
-        if(this.nombre == "" || !this.nombre || this.nombre == 'No definido') 
+        if(this.nombre == "" || !this.nombre || this.nombre == 'No definido' || this.nombre == undefined || this.nombre == null)
+        {
             this.nombreDisabled = false;
+            this.nombre = ""
+            return true
+        }
         
         this.nombreDisabled = true;
     }
@@ -226,7 +230,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     setMaterial(material){
-        debugger
         this.listaMateriales.forEach(x => {
             if(x.MaterialId == material){
                 this.comprobanteExtra = x.Descripcion;
@@ -435,7 +438,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.blockUI.start('Generando Consulta');
         this.spinnerComponent.showIt();
 
-        debugger
         if (this.esCorredor) {
             if(this.proveedorSelected)
             {

@@ -16,13 +16,14 @@
 	[OrdenInversion] [nvarchar](max) NULL,
 	[Siniestro] [nvarchar](max) NULL,
 
-CONSTRAINT [PK_dbo.SolpSubposicion] PRIMARY KEY CLUSTERED 
+[TipoImputacion_Id] INT NULL, 
+    CONSTRAINT [PK_dbo.SolpSubposicion] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
 	CONSTRAINT [FK_SolpSubposicion_SolpPosicion] FOREIGN KEY (SolpPosicion_Id) REFERENCES [SolpPosicion]([Id]),
 	CONSTRAINT [FK_SolpSubposicion_TablaSap_CodigoServicioSap] FOREIGN KEY (CodigoServicioSap_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_SolpSubposicion_TablaSap_Unidad] FOREIGN KEY (Unidad_Id) REFERENCES [TablaSap]([Id]),
-
+	CONSTRAINT [FK_SolpSubposicion_TablaSap_TipoImputacionSap] FOREIGN KEY (TipoImputacion_Id) REFERENCES [TablaSap]([Id]),
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 

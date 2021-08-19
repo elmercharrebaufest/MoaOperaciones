@@ -227,7 +227,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     eliminarPosicion()
     {
-        console.log("eliminar");
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar la posición?',
             accept: () => {
@@ -272,5 +271,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.validarPosicionActual();
         this.model.agregarNuevaPosicion();
         el.scrollIntoView();
+    }
+
+    calcularFechaEntrega(){
+        let fechaNueva = new Date(this.model.fechaEntrega);
+        fechaNueva.setDate(fechaNueva.getDate() + parseInt(this.model.posicionActual.plazoDeEntrega.toString()));
+        this.model.posicionActual.fechaEntregaServicio = fechaNueva;  
     }
 }

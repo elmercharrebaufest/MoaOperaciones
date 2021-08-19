@@ -12,7 +12,6 @@ export class SubPosicionViewModel {
       this.cuentaTd = "";
       this.unidadMedida = "";
       this.precioBruto = 0;
-      this.tipoImputacion = "";
    }
 
 
@@ -26,6 +25,6 @@ export class SubPosicionViewModel {
    cuentaTd: string;
    unidadMedida: string;
    precioBruto: number;
-   tipoImputacion: string;
-   unidadSeleccionada : any ={};
+   tipoImputacion: any = {};
+   unidadSeleccionada : any = {};
 }

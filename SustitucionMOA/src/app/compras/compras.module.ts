@@ -37,6 +37,7 @@ import { SubPosicionComponent } from './PliegoPasos/solapaSubposiciones/subPosic
 import {ConfirmationService, SortEvent} from 'primeng/api';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
+import {PanelModule} from 'primeng/panel';
 
     
 @NgModule({
@@ -65,8 +66,8 @@ import {OverlayPanelModule} from 'primeng/overlaypanel';
         MultiSelectModule,
         OverlayPanelModule,
         TableModule,
-        ConfirmDialogModule
-        
+        ConfirmDialogModule,
+        PanelModule
     ],
     declarations: [
         SolpComponent,
