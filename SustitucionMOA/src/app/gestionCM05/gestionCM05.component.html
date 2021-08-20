@@ -29,7 +29,7 @@
                             </p-multiSelect>
                         </th>
                         <th>
-                            <input [(ngModel)]="cuitFiltro" mask="00-00000000-0" (input)="dt.filter(cuitFiltro, 'CUIT', 'startsWith')" unmask="true">
+                            <input [(ngModel)]="cuitFiltro" placeholder="00-00000000-0" mask="00-00000000-0" (input)="dt.filter(cuitFiltro, 'CUIT', 'startsWith')" unmask="true">
                         </th>
                     </tr>
                 </ng-template>
