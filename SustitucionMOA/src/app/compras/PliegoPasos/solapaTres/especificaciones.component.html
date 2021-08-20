@@ -30,6 +30,8 @@
                             <div>
                                 <label class="labelCompras" for="editorTexto"> Anexos agregados</label>
                             </div>
+
+                            
                             <!--Archivos que ya fueron guardados-->
                             <div class="row col-xs-3 justify-content-start"
                                 *ngFor="let archivo of viewModel.archivosGuardadosEspecificaciones">
@@ -45,10 +47,12 @@
                                 *ngFor="let archivo of this.viewModel.archivosAdjuntosNuevos">
                                 <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
                                     (click)="eliminarArchivo(true,archivo)" style="width: 26px;" />
-                                <a class="link-archivo pointer" (click)="descargarArchivo(archivo)">
+                                <a class="link-archivo pointer" (click)="descargarArchivo(archivo)" style="font-weight: lighter;">
                                     {{archivo.name}}</a>
                             </div>
                             <!--Fin Archivos nuevos-->
+
+
                         </div>
                     </div>
                     <!--border: 1px solid #a80000;-->
@@ -124,8 +128,8 @@
 <!-- Modal eliminacion de posicion-->
 <p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
     <p-footer>
-        <button type="button" pButton  label="Cancelar" class="ui-button-info" (click)="dialogo.reject()"></button>
-        <button type="button" pButton  label="Aceptar" class="ui-button-success" (click)="dialogo.accept()"></button>
+        <button type="button" pButton  label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+        <button type="button" pButton  label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
     </p-footer>
 </p-confirmDialog>
 <!--fin modal eliminacion de posicion-->

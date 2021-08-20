@@ -96,10 +96,10 @@
 </p-dialog>
 
 <!-- Modal cancelar SOLP-->
-<p-confirmDialog #dialogo key="cancelarSolp" header="Cancelar SOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+<p-confirmDialog #dialogo key="cancelarSolp" header="Advertencia" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
     <p-footer>
-        <button type="button" pButton  label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
-        <button type="button" pButton  label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+        <button type="button" pButton  label="No" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+        <button type="button" pButton  label="Si" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
     </p-footer>
 </p-confirmDialog>
 <!--fin modal cancelar SOLP-->
