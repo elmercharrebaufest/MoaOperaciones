@@ -825,24 +825,28 @@ namespace SustitucionMOAUtils.Services
         public List<TablaSapDto> ObtenerServiciosSap()
         {
             ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)new ObtenerServiciosSolpConsumerMOA().request();
+            var codigoNum = 0;
 
             return resultSap.Servicios.Select(s => new TablaSapDto()
             {
                 Tabla = TablasSap.CodigoServicioSap,
                 Descripcion = s.Descripcion,
-                CodigoSap = s.Codigo,
+                CodigoSap = int.TryParse(s.Codigo, out codigoNum) ? codigoNum.ToString() : s.Codigo,
+                Codigo = s.Codigo
             }).ToList();
         }
 
         public List<TablaSapDto> ObtenerCuentasSap()
         {
             CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)new ObtenerCuentasSolpConsumerMOA().request();
+            var codigoNum = 0;
 
             return resultSap.Cuentas.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CuentasSolpSap,
                 Descripcion = c.Descripcion,
-                CodigoSap = c.Codigo,
+                CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
+                Codigo = c.Codigo
             }).ToList();
         }
 
@@ -850,24 +854,28 @@ namespace SustitucionMOAUtils.Services
         public List<TablaSapDto> ObtenerOrdenesSap()
         {
             OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)new ObtenerOrdenSolpConsumerMOA().request();
+            var codigoNum = 0;
 
             return resultSap.Ordenes.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.OrdenSolpSap,
                 Descripcion = c.Descripcion,
-                CodigoSap = c.Codigo,
+                CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
+                Codigo = c.Codigo
             }).ToList();
         }
 
         public List<TablaSapDto> ObtenerCecoSap()
         {
             CecoWSMOAResponse resultSap = (CecoWSMOAResponse)new ObtenerCecoSolpConsumerMOA().request();
+            var codigoNum = 0;
 
             return resultSap.Cecos.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CecoSolpSap,
                 Descripcion = c.Descripcion,
-                CodigoSap = c.CostCenter,
+                CodigoSap = int.TryParse(c.CostCenter, out codigoNum) ? codigoNum.ToString() : c.CostCenter,
+                Codigo = c.CostCenter
             }).ToList();
         }
 
