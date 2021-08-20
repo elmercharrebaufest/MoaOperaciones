@@ -386,6 +386,34 @@ export class GestionCM05Component extends ListBaseComponent {
     }
 
     validarCabeceraEditada() {
+        this.messageService.clear();
+        var regexNumerosEnteros = /^[0-9]*$/
+
+        if (this.selectedCabecera.Anticipo == null || this.selectedCabecera.Anticipo == "") {
+            this.messageService.add({ severity: 'error', summary: 'Anticipo', detail: 'Esta vacio.' });
+            return
+        }
+
+        if (!(regexNumerosEnteros.test(this.selectedCabecera.Anticipo))) {
+            this.messageService.add({ severity: 'error', summary: 'Anticipo', detail: 'Debe ser un número entero.' });
+            return
+        }
+
+        if (this.selectedCabecera.Sede == null || this.selectedCabecera.Sede == "") {
+            this.messageService.add({ severity: 'error', summary: 'Sede', detail: 'Esta vacio.' });
+            return
+        }
+
+        if (!(regexNumerosEnteros.test(this.selectedCabecera.Sede))) {
+            this.messageService.add({ severity: 'error', summary: 'Sede', detail: 'Debe ser un número entero.' });
+            return
+        }
+
+        if (!(regexNumerosEnteros.test(this.selectedCabecera.CUIT))) {
+            this.messageService.add({ severity: 'error', summary: 'Cuit', detail: 'Debe ser un número.' });
+            return
+        }
+
         return false;
     }
 
