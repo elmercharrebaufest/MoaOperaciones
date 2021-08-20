@@ -29,7 +29,7 @@
                             </p-multiSelect>
                         </th>
                         <th>
-                            <input [(ngModel)]="cuitFiltro" mask="00-00000000-0" (input)="filtrarCuit(dt)" unmask="false">
+                            <input [(ngModel)]="cuitFiltro" mask="00-00000000-0" (input)="dt.filter(cuitFiltro, 'CUIT', 'startsWith')" unmask="true">
                         </th>
                     </tr>
                 </ng-template>
@@ -42,7 +42,7 @@
                             {{rowData.Estado}}
                         </td>
                         <td class="td-cabecera">
-                            {{rowData.CUIT}}
+                            {{rowData.CUIT | mask: '00-00000000-0'}}
                         </td>
                         <td class="td-cabecera">
                             {{rowData.Anticipo}}
@@ -70,10 +70,10 @@
                 CUIT:
             </label>
             <label *ngIf="!editandoCabecera; else elseCUITBlock">
-                {{selectedCabecera.CUIT}}
+                {{selectedCabecera.CUIT | mask: '00-00000000-0'}}
             </label>
             <ng-template #elseCUITBlock>
-                <input style="width:max-content" type="text" [(ngModel)]="selectedCabecera.CUIT" name="selectedCabecera.CUIT" required>
+                <input style="width:max-content" type="text" mask="00-00000000-0" [(ngModel)]="selectedCabecera.CUIT" name="selectedCabecera.CUIT" required>
             </ng-template>
         </div>
         <div class="col-md-3">

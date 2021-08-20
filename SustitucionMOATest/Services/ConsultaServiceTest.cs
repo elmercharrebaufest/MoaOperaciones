@@ -175,7 +175,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(1, ingresosBrutosCoeficienteUnificadosInsertados.Count);
             Assert.AreEqual(ingresosBrutosCoeficienteUnificadoDetallesInsertados, ingresosBrutosCoeficienteUnificadosInsertados[0].Detalle);
             Assert.AreEqual((int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente, ingresosBrutosCoeficienteUnificadosInsertados[0].EstadoIngresosBrutosCoeficienteUnificado_Id);
-            Assert.AreEqual("20-12312312-1", ingresosBrutosCoeficienteUnificadosInsertados[0].CUIT);
+            Assert.AreEqual("20123123121", ingresosBrutosCoeficienteUnificadosInsertados[0].CUIT);
             Assert.AreEqual(1234, ingresosBrutosCoeficienteUnificadosInsertados[0].Anticipo);
             Assert.AreEqual(901, ingresosBrutosCoeficienteUnificadosInsertados[0].Sede);
             Assert.AreEqual(hoy, ingresosBrutosCoeficienteUnificadosInsertados[0].FechaCarga);
@@ -323,7 +323,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(1, ingresosBrutosCoeficienteUnificadosInsertados.Count);
             Assert.AreEqual(ingresosBrutosCoeficienteUnificadoDetallesInsertados, ingresosBrutosCoeficienteUnificadosInsertados[0].Detalle);
             Assert.AreEqual((int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente, ingresosBrutosCoeficienteUnificadosInsertados[0].EstadoIngresosBrutosCoeficienteUnificado_Id);
-            Assert.AreEqual("20-12312312-1", ingresosBrutosCoeficienteUnificadosInsertados[0].CUIT);
+            Assert.AreEqual("20123123121", ingresosBrutosCoeficienteUnificadosInsertados[0].CUIT);
             Assert.AreEqual(1234, ingresosBrutosCoeficienteUnificadosInsertados[0].Anticipo);
             Assert.AreEqual(901, ingresosBrutosCoeficienteUnificadosInsertados[0].Sede);
             Assert.AreEqual(hoy, ingresosBrutosCoeficienteUnificadosInsertados[0].FechaCarga);

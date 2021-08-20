@@ -306,16 +306,6 @@ export class GestionCM05Component extends ListBaseComponent {
         }
     }
 
-    filtrarCuit(dt) {
-        var cuitFiltroMasked = this.cuitFiltro.substr(0, 2);
-        if (this.cuitFiltro.length > 2)
-            cuitFiltroMasked += "-" + this.cuitFiltro.substr(2, 8);
-        if (this.cuitFiltro.length > 10)
-            cuitFiltroMasked += "-" + this.cuitFiltro.substr(10, 1);
-
-        dt.filter(cuitFiltroMasked, 'CUIT', 'contains');
-    }
-
     listarCabeceras() {
         this.unsubscribe();
         try {
