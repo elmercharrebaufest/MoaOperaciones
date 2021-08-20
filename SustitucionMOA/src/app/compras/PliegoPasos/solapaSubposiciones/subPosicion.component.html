@@ -41,25 +41,25 @@
                              >
                             <ng-template pTemplate="header">
                                 <tr>
-                                    <th style="width: 5%;"><img (click)="eliminarSubPosicion()"
+                                    <th style="width: 4%;"><img (click)="eliminarSubPosicion()"
                                             src="../../../../../Content/images/icons/trashWhite.svg" alt="trashWhite"
-                                            style="padding: 8px;" class="pointer" /></th>
-                                    <th style="width: 5%;" data-toggle="tooltip" title="Servicio">#</th>
+                                         class="pointer" /></th>
+                                    <th style="width: 3%;" data-toggle="tooltip" title="Servicio">#</th>
                                     <th style="width: 11%;" data-toggle="tooltip" title="Código de Servicio">Cód. Servicio</th>
                                     <th style="width: 30%;">Tarea a sub contratar</th>
                                     <th style="width: 8%;" data-toggle="tooltip" title="Cantidad">Ctd.</th>
                                     <th style="width: 10%;" data-toggle="tooltip" title="Unidad de Medida">UM</th>
                                     <th style="width: 10%;">Precio bruto</th>
-                                    <th style="width: 9%;" data-toggle="tooltip" title="Cuenta de mayor">Cta. de mayor</th>
+                                    <th style="width: 12%;" data-toggle="tooltip" title="Cuenta de mayor">Cta. de mayor</th>
                                     <th style="width: 12%;">{{tituloColumnaTipoDeImputacion}}</th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-posicion let-rowIndex="rowIndex">
                                 <tr>
-                                    <td style="width: 5%;">
+                                    <td style="width: 4%;">
                                         <p-checkbox [(ngModel)]="posicion.eliminar" binary="true"></p-checkbox>
                                     </td>
-                                    <td style="width: 5%;">
+                                    <td style="width: 3%;">
                                         {{posicion.subPosicion}}
                                     </td>
                                     <td [pEditableColumn]="posicion" style="width: 11%;">
@@ -78,12 +78,12 @@
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.tareaSubcontratar" [suggestions]="autocomplete" 
-                                                    dataKey="Id" ariaLabel="Tarea" field="Descripcion" appendTo="body" [autoHighlight]="true" emptyMessage="" [minLength]="2" [forceSelection]="true" 
+                                                    dataKey="Id" ariaLabel="Tarea" field="Descripcion" appendTo="body" [autoHighlight]="false" emptyMessage="" [minLength]="2" [forceSelection]="false" 
                                                     (completeMethod)="autocompleteSap($event, '')" (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{posicion.codigoServicio.Descripcion}}
+                                                {{posicion.codigoServicio.Descripcion || posicion.tareaSubcontratar}}
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
@@ -125,14 +125,20 @@
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 9%;">
+                                    <td [pEditableColumn]="posicion" style="width: 12%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <input type="text" pKeyFilter="int"  [(ngModel)]="posicion.cuentaMayor"
+                                                <!-- <input type="text" pKeyFilter="int"  [(ngModel)]="posicion.cuentaMayor"
+                                                    (paste)="onPaste($event,enumColumnaSubPosicion.CuentaMayor,rowIndex)"> -->
+
+                                                    <p-autoComplete [(ngModel)]="posicion.cuentaMayor" [suggestions]="autocomplete" 
+                                                    dataKey="Id" ariaLabel="CuentaMayor" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="" [minLength]="2" [forceSelection]="true" 
+                                                    (completeMethod)="autocompleteSap($event, '')" (onFocus)=" $event.target.select()"
                                                     (paste)="onPaste($event,enumColumnaSubPosicion.CuentaMayor,rowIndex)">
+                                            </p-autoComplete>    
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{posicion.cuentaMayor}}
+                                                {{posicion.cuentaMayor.CodigoDescripcion}}
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
@@ -147,7 +153,6 @@
                                                     </p-autoComplete>
                                                 </td>
                                             </ng-template>
-
                                             <ng-template pTemplate="output">
                                                 {{posicion.tipoImputacion.CodigoDescripcion}}
                                             </ng-template>                                 
