@@ -915,6 +915,7 @@ namespace SustitucionMOAUtils.Services
                 var Destinatario = usuario.Mail;
 
 
+
                 EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
             }
             catch (Exception e)
