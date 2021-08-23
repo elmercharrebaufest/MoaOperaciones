@@ -35,20 +35,29 @@ using SustitucionMOAUtils.Helpers;
 using System.Web.UI.WebControls;
 using System.Data;
 
+using SustitucionMOAWS.Interfaces;
 
 namespace SustitucionMOAUtils.Services
 {
     public class ComprasService : IComprasService
     {
         private readonly IRepositorio repositorio;
+        private readonly IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA;
+        private readonly IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA;
+        private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
+        private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
+		private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
-        private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
-
-        public ComprasService(IRepositorio repositorio)
+        public ComprasService(IRepositorio repositorio, IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA, 
+            IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA, IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA, IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA)
         {
             this.repositorio = repositorio;
+            this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
+            this.cuentasSolpConsumerMOA = cuentasSolpConsumerMOA;
+            this.ordenesSolpConsumerMOA = ordenesSolpConsumerMOA;
+            this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
         }
 
         public SolpDto GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -824,10 +833,10 @@ namespace SustitucionMOAUtils.Services
 
         public List<TablaSapDto> ObtenerServiciosSap()
         {
-            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)new ObtenerServiciosSolpConsumerMOA().request();
-            var codigoNum = 0;
+            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
+          	var codigoNum = 0;
 
-            return resultSap.Servicios.Select(s => new TablaSapDto()
+  			return resultSap.Servicios.Select(s => new TablaSapDto()
             {
                 Tabla = TablasSap.CodigoServicioSap,
                 Descripcion = s.Descripcion,
@@ -838,9 +847,9 @@ namespace SustitucionMOAUtils.Services
 
         public List<TablaSapDto> ObtenerCuentasSap()
         {
-            CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)new ObtenerCuentasSolpConsumerMOA().request();
-            var codigoNum = 0;
-
+            CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)cuentasSolpConsumerMOA.request();
+			var codigoNum = 0;
+			
             return resultSap.Cuentas.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CuentasSolpSap,
@@ -853,9 +862,9 @@ namespace SustitucionMOAUtils.Services
         
         public List<TablaSapDto> ObtenerOrdenesSap()
         {
-            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)new ObtenerOrdenSolpConsumerMOA().request();
-            var codigoNum = 0;
-
+            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)ordenesSolpConsumerMOA.request();
+			var codigoNum = 0;
+			
             return resultSap.Ordenes.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.OrdenSolpSap,
@@ -867,9 +876,9 @@ namespace SustitucionMOAUtils.Services
 
         public List<TablaSapDto> ObtenerCecoSap()
         {
-            CecoWSMOAResponse resultSap = (CecoWSMOAResponse)new ObtenerCecoSolpConsumerMOA().request();
-            var codigoNum = 0;
-
+            CecoWSMOAResponse resultSap = (CecoWSMOAResponse)CecoSolpConsumerMOA.request();
+			var codigoNum = 0;
+			
             return resultSap.Cecos.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CecoSolpSap,

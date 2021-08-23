@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ObtenerCecoSolpWebServiceMOA;
 using System;
 using System.Collections.Generic;
@@ -10,17 +11,22 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    public class ObtenerCecoSolpConsumerMOA
+    public class ObtenerCecoSolpConsumerMOA : IObtenerCecoSolpConsumerMOA
     {
-        SI_MMRFC_OBTENER_CECOClient service = new SI_MMRFC_OBTENER_CECOClient();
+        SI_MMRFC_OBTENER_CECOClient service;
         private const string COMP_CODE = "MOA";
+
+        public ObtenerCecoSolpConsumerMOA()
+        {
+            service = new SI_MMRFC_OBTENER_CECOClient();
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+        }
 
         public object request()
         {
             try
             {
-                service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-                service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
                 string IM_COMP_CODE = COMP_CODE;
                 string IM_COSTCENTER = "";
                 string EX_EXITO = "";
@@ -39,7 +45,7 @@ namespace SustitucionMOAWS.WSConsumers
         protected virtual object map(BAPI0012_2[] error, string EX_EXITO)
         {
             CecoWSMOAResponse result = new CecoWSMOAResponse();
-            result.Cecos = new List<Ceco>{ };
+            result.Cecos = new List<Ceco> { };
 
             if (EX_EXITO == "200")
             {
