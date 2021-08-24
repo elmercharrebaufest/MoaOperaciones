@@ -73,7 +73,7 @@
                             <button class="btn btn-primary botonesComprasColor" *ngIf="pasoActual.Preview" (click)="preview()">PREVIEW</button>&nbsp;
                         </div>
                         <div class="col-xs-6 col-md-6" style="text-align: right;">
-                            <button class="btn btn-secondary botonAgregarPosicion botonesCompras" *ngIf="pasoActual.Codigo == enumSolp.SolpSubposiciones" (click)="navegar(pasoAnterior())" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
+                            <button class="btn btn-secondary botonAgregarPosicion botonesCompras" *ngIf="pasoActual.Codigo == enumSolp.SolpSubposiciones" (click)="pasoAnterior(agregarPosicion())" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
                             <!-- <button class="btn btn-secondary botonAgregarPosicion botonesCompras" *ngIf="pasoActual.Codigo == 'SolpCabecera'" (click)="agregarPosicion(headerCompras)" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button> -->
                         </div>
                     </div>
