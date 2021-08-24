@@ -206,7 +206,7 @@ namespace SustitucionMOAModel.Dto
         public int Numero { get; set; }
         public int? CodigoServicioSapId { get; set; }
         public string Tarea { get; set; }
-        public string CuentaMayor { get; set; }
+        public TablaSapDto CuentaMayor { get; set; }
         public decimal? Cantidad { get; set; }
         public int? UnidadId { get; set; }
         public decimal? PrecioBruto { get; set; }
@@ -225,7 +225,7 @@ namespace SustitucionMOAModel.Dto
                 this.Numero = entity.Numero;
                 this.CodigoServicioSapId = entity.CodigoServicioSap_Id;
                 this.Tarea = entity.Tarea;
-                this.CuentaMayor = entity.CuentaMayor;
+                this.CuentaMayor = new TablaSapDto(entity.CuentaMayorSap);
                 this.Cantidad = entity.Cantidad;
                 this.UnidadId = entity.Unidad_Id;
                 this.PrecioBruto = entity.PrecioBruto;

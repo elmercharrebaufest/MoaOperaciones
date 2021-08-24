@@ -399,7 +399,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         let subpos = new SubPosicionViewModel(i);
 
                         subpos.id = sp.Codigo;
-                        subpos.codigoServicio = (sp.CodigoServicioSap && sp.CodigoServicioSap.Descripcion) || '';
+                        subpos.codigoServicio = sp.CodigoServicioSap;
                         subpos.tareaSubcontratar = sp.Tarea;
                         subpos.cuentaMayor = sp.CuentaMayor;
                         subpos.cuentaTd = sp.Cantidad;
@@ -668,6 +668,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
         });
     }
+
+    cancelarFinalizar() {
+        this.displayFinalizar = false;
+    }
+
 
     ultimoPasoSolp() {
         this.confirmationService.confirm({

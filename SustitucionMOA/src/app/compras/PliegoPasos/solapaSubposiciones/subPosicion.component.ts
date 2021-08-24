@@ -64,9 +64,9 @@ export class SubPosicionComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
 
-        let primeraPosicion = this.model.posiciones[0]
-        this.listadoPosicionActul = primeraPosicion.listadoSubPosiciones;
-        this.model.posicionActual = primeraPosicion;
+        // let primeraPosicion = this.model.posiciones[0]
+        this.listadoPosicionActul = this.model.posicionActual.listadoSubPosiciones;
+        // this.model.posicionActual = primeraPosicion;
 
         if(this.listadoPosicionActul.length == 0){
             this.nuevaPosicion(null);
@@ -237,9 +237,9 @@ export class SubPosicionComponent extends ListBaseComponent {
         }
     }
 
-    autocompleteSap(event){
+    autocompleteSap(event, tablaAFiltrar){
         try{
-            this.subscription = this.service.autocompleteSap(this.tablaAFiltrar, event.query.toLowerCase()).subscribe(
+            this.subscription = this.service.autocompleteSap(tablaAFiltrar || this.tablaAFiltrar, event.query.toLowerCase()).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();

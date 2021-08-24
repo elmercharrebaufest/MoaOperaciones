@@ -20,8 +20,8 @@ export class SubPosicionViewModel {
    eliminar: boolean;
    subPosicion: number;
    codigoServicio: any;
-   tareaSubcontratar: string;
-   cuentaMayor: string;
+   tareaSubcontratar: any;
+   cuentaMayor: any;
    cuentaTd: string;
    unidadMedida: string;
    precioBruto: number;
