@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Pesificacion } from '../../common/models/pesificacion';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
@@ -11,7 +11,9 @@ import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spi
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { PesificacionBaseComponent } from '../pesificacion-base.component';
 import { PesificacionService } from '../pesificacion.service';
-import { formatDate } from '@angular/common';
+import { DatePipe, formatDate } from '@angular/common';
+import { FiltroFechaComponent } from '../../common/view-child/filtro-fecha/filtro-fecha.component';
+import { overrideProvider } from '@angular/core/src/view';
 
 @Component({
   selector: 'app-pesificaciones-guardadas',
@@ -22,6 +24,10 @@ import { formatDate } from '@angular/common';
 })
 export class PesificacionesGuardadasComponent extends PesificacionBaseComponent implements OnInit {
 
+
+  @ViewChild("filtroFechaPesificacion")
+  protected filtroFechaPesificacionComponent: FiltroFechaComponent;
+
   constructor(protected service: PesificacionService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     this.mensajeComponent = new MensajeComponent();
@@ -30,19 +36,14 @@ export class PesificacionesGuardadasComponent extends PesificacionBaseComponent 
   }
 
   filtroContrato: string = "";
-  pesificaciones: Pesificacion[]
+  tipoFiltroFecha: number = 1;
+  pesificaciones: Pesificacion[] = new Array<Pesificacion>();
+  filteredPesificaciones: Pesificacion[]
 
   ngOnInit() {
     super.ngOnInit();
     this.setMenuSeccionTab("pesificacion", "Listado");
-
-    // this.pesificaciones = [
-    //   { Contrato: "100", Fijacion: "100", FechaCarga: new Date('Jul 12 2021'), FechaPesificacion: new Date('Jul 12 2021'), Kilos: 100, Precio: 200, TipoCambio: 50 },
-    //   { Contrato: "200", Fijacion: "200", FechaCarga: new Date('Jul 12 2021'), FechaPesificacion: new Date('Jul 12 2021'), Kilos: 200, Precio: 200, TipoCambio: 60 },
-    // ];
-
     this.getPesificaciones()
-
   }
 
 
@@ -58,9 +59,10 @@ export class PesificacionesGuardadasComponent extends PesificacionBaseComponent 
         } else if (result.info != undefined) {
           this.mensajeComponent.setInfoMsg(result.info);
         } else {
-          // this.data = result;
 
           this.pesificaciones = result.data;
+          this.filteredPesificaciones = this.pesificaciones;
+          this.actualizarFiltroFecha();
         }
       },
       error => {
@@ -69,6 +71,45 @@ export class PesificacionesGuardadasComponent extends PesificacionBaseComponent 
     );
 
     return false;
+  }
+
+  actualizarFiltroFecha() {
+    console.log("Aplicado el filtro");
+    console.log("filtroFechaInicio:", this.filtroFechaComponent.fecha_inicio)
+    console.log("filtroFechaInicio:", new Date(this.filtroFechaComponent.fecha_inicio))
+    console.log("filtroFechaFin:", this.filtroFechaComponent.fecha_fin)
+    console.log("filtroFechaPesificacionInicio:", this.filtroFechaPesificacionComponent.fecha_inicio)
+    console.log("filtroFechaPesificacionFin:", this.filtroFechaPesificacionComponent.fecha_fin)
+
+    console.log(this.pesificaciones);
+
+    this.pesificaciones.forEach(x => {
+      console.log("x.FechaCarga:", x.FechaCarga)
+      console.log("x.FechaCargaDate:", x.FechaCargaDate)
+      console.log("x.FechaCargaDateDate:", new Date(x.FechaCargaDate))
+      console.log("x.FechaCargaDateDate:", new Date(Date.parse(x.FechaCargaDate)))
+    }
+    )
+
+
+
+    this.filteredPesificaciones =
+      this.pesificaciones
+        .filter(x =>
+          new Date(Date.parse(this.tipoFiltroFecha == 1 ? x.FechaCargaDate : x.FechaPesificacionDate)) >= new Date(this.filtroFechaComponent.fecha_inicio) &&
+          new Date(Date.parse(this.tipoFiltroFecha == 1 ? x.FechaCargaDate : x.FechaPesificacionDate)) <= new Date(this.filtroFechaComponent.fecha_fin)
+          // new Date(Date.parse(x.FechaPesificacionDate)) >= new Date(this.filtroFechaPesificacionComponent.fecha_inicio) &&
+          // new Date(Date.parse(x.FechaPesificacionDate)) <= new Date(this.filtroFechaPesificacionComponent.fecha_fin)
+        )
+
+    console.log("filteredPesificaciones:", this.filteredPesificaciones)
+
+    if (this.filteredPesificaciones.length == 0) {
+      this.mensajeComponent.setInfoMsg("No se encontraron pesificaciones")
+    }
+    else {
+      this.mensajeComponent.setMsgsEmpty();
+    }
   }
 
 }
