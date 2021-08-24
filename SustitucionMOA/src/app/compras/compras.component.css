@@ -485,3 +485,26 @@
 .disabled {
   color: grey !important;
 }
+
+.inline-flex {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+.col-flex {
+  display: flex;
+  margin-left: 1em;
+  justify-content: flex-start;
+  flex: 1;
+}
+
+@media only screen and (max-width: 768px){
+  .inline-flex {
+    flex-direction: column;
+  }
+
+  .col-flex {
+    margin-top: 0.5em;
+  }
+}
