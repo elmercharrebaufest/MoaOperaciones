@@ -267,7 +267,10 @@ namespace SustitucionMOAUtils.Services
                                 if(subpos.TipoImputacionValor != null)
                                     subposEntity.TipoImputacionSap = repositorio.Obtener<TablaSap>(x => x.Tabla == subpos.TipoImputacionValor.Tabla && x.Codigo == subpos.TipoImputacionValor.Codigo);
 
-                                subposEntity.CuentaMayor = subpos.CuentaMayor;
+                                if (subpos.CuentaMayor != null)
+                                    subposEntity.CuentaMayorSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CuentasSolpSap && x.Codigo == subpos.CuentaMayor.Codigo);
+
+                             
                                 subposEntity.Numero = subpos.Numero;
                                 subposEntity.PrecioBruto = subpos.PrecioBruto;
                                 subposEntity.Tarea = subpos.Tarea;

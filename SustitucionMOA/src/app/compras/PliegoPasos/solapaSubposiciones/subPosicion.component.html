@@ -66,20 +66,20 @@
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.codigoServicio" [suggestions]="autocomplete" 
-                                                    dataKey="Id" ariaLabel="Codigo" field="CodigoSap" appendTo="body" [autoHighlight]="true" emptyMessage="" [width]="400" [minLength]="2" [forceSelection]="true" (completeMethod)="autocompleteSap($event, '')" (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio,rowIndex)">
+                                                    dataKey="Id" ariaLabel="Codigo" field="CodigoSap" appendTo="body" [autoHighlight]="true" emptyMessage="" [width]="400" [minLength]="2" [forceSelection]="true" (completeMethod)="autocompleteSap($event, 'CodigoServicioSap')" (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio,rowIndex)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{posicion.codigoServicio.CodigoSap}}
+                                                {{posicion.codigoServicio.CodigoSap || posicion.tareaSubcontratar.CodigoSap}}
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
                                     <td [pEditableColumn]="posicion" style="width: 30%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <p-autoComplete [(ngModel)]="posicion.tareaSubcontratar" [suggestions]="autocomplete" 
-                                                    dataKey="Id" ariaLabel="Tarea" field="Descripcion" appendTo="body" [autoHighlight]="false" emptyMessage="" [minLength]="2" [forceSelection]="false" 
-                                                    (completeMethod)="autocompleteSap($event, '')" (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex)">
+                                                <p-autoComplete [(ngModel)]="posicion.codigoServicio" [suggestions]="autocomplete" 
+                                                    dataKey="Id" ariaLabel="Tarea" field="Descripcion" appendTo="body" [autoHighlight]="tru" emptyMessage="" [minLength]="2" [forceSelection]="false" 
+                                                    (completeMethod)="autocompleteSap($event, 'CodigoServicioSap')" (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar.Descripcion,rowIndex)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
@@ -128,12 +128,9 @@
                                     <td [pEditableColumn]="posicion" style="width: 12%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <!-- <input type="text" pKeyFilter="int"  [(ngModel)]="posicion.cuentaMayor"
-                                                    (paste)="onPaste($event,enumColumnaSubPosicion.CuentaMayor,rowIndex)"> -->
-
                                                     <p-autoComplete [(ngModel)]="posicion.cuentaMayor" [suggestions]="autocomplete" 
                                                     dataKey="Id" ariaLabel="CuentaMayor" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="" [minLength]="2" [forceSelection]="true" 
-                                                    (completeMethod)="autocompleteSap($event, '')" (onFocus)=" $event.target.select()"
+                                                    (completeMethod)="autocompleteSap($event, 'CuentasSolpSap')" (onFocus)=" $event.target.select()"
                                                     (paste)="onPaste($event,enumColumnaSubPosicion.CuentaMayor,rowIndex)">
                                             </p-autoComplete>    
                                             </ng-template>
@@ -160,14 +157,13 @@
                                     </td>
                                 </tr>
                             </ng-template>
-                        </p-table>
 
+                        </p-table>
                     </div>
                 </div>
                 <!-- End Row posiciones -->
                 <div class="row">
-                    <div class="margenInput col-xs-10 col-sm-8 col-md-9 col-lg-9"></div>
-                    <div *ngIf="model.posicionActual.totalPosicion()" class="margenInput col-xs-2 col-sm-2 col-md-2 col-lg-2 ">
+                    <div *ngIf="!posicionInvalida" style="float: right; margin-right: 2em">
                         <button class="btn marginButton buttonTotalCompras" >Valor Total:  {{model.posicionActual.monedaSeleccionada?.Codigo}} {{model.posicionActual.totalPosicion()}}</button>
                     </div>
                 </div>
