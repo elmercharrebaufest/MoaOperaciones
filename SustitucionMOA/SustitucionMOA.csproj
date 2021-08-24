@@ -365,6 +365,8 @@
     <Content Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.html" />
     <Content Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.css" />
     <Content Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.html" />
+    <Content Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.css" />
+    <Content Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.html" />
     <Content Include="src\app\reporte\contrato\reporte.contrato.component.html" />
     <Content Include="src\app\reporte\cupo\reporte.cupo.component.html" />
     <Content Include="src\app\contrato\ampliacion\contrato.ampliacion.component.html" />
@@ -1058,6 +1060,9 @@
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\notificaciones.service.ts" />
+    <TypeScriptCompile Include="src\app\pesificacion\pesificacion-base.component.ts" />
+    <TypeScriptCompile Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte-routing.module.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.component.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.module.ts" />
