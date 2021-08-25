@@ -651,7 +651,7 @@ namespace SustitucionMOAUtils.Services
                     subposiciones.AppendLine(string.Format(templateSubposiciones,
                         pos.TextoGenerico,
                         subpos.Numero,
-                        subpos.CodigoServicioSap?.Codigo,
+                        subpos.CodigoServicioSap?.CodigoSap,
                         subpos.Tarea,
                         subpos.Cantidad,
                         subpos.Unidad?.Descripcion

@@ -120,10 +120,12 @@
     border-color: #DDDDDD !important;
   } 
 
-  ::ng-deep .ui-clickable {
+  /* ::ng-deep .ui-clickable {
     background-color: #FFFFFF !important;
     border-color: #DDDDDD !important;
-  } 
+  }  */
+
+
 
   ::ng-deep .ui-state-default  {
     border-color: #DDDDDD !important
