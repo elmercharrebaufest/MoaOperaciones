@@ -28,7 +28,7 @@ namespace SustitucionMOA.Controllers
             this.usuarioService = usuarioService;
         }
 
-        public ActionResult GetFechaPesificacion()
+        public JsonResult GetFechaPesificacion()
         {
             try
             {
@@ -154,7 +154,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult PesificacionesSAP()
+        public JsonResult PesificacionesSAP()
         {
             try
             {
