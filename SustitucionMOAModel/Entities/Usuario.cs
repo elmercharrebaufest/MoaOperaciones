@@ -10,7 +10,7 @@ namespace SustitucionMOAModel.Entities
     {
         [Key]
         public int Id { get; set; }
-        public string Mail { get; set; }
+        public virtual string Mail { get; set; }
         public string CUITRegistro { get; set; }
         public bool Habilitado { get; set; }
         public string SeccionesVisitadas { get; set; }
@@ -170,7 +170,7 @@ namespace SustitucionMOAModel.Entities
         }
 
 
-        public bool TienePermiso(string permiso)
+        public virtual bool TienePermiso(string permiso)
         {
             var permisosUsuario = ObtenerPermisos();
 
