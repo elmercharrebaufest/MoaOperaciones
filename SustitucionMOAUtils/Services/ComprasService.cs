@@ -289,7 +289,7 @@ namespace SustitucionMOAUtils.Services
                                     subposEntity.Unidad = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Unidad && x.Codigo == subpos.Unidad.Codigo);
 
                                 if (subpos.CodigoServicioSap != null)
-                                    subposEntity.CodigoServicioSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CodigoServicioSap && x.Codigo == subpos.Unidad.Codigo);
+                                    subposEntity.CodigoServicioSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CodigoServicioSap && x.Codigo == subpos.CodigoServicioSap.Codigo);
 
                                 posEntity.Subposiciones.Add(subposEntity);
                             }

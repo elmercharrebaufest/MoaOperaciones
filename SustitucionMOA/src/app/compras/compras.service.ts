@@ -141,7 +141,7 @@ export class ComprasService extends BaseService {
                         return {
                             Codigo: sp.id,
                             Numero: sp.subPosicion,
-                            CodigoServicioSap_Id: this.getObjetoCodigo(sp.codigoServicio && sp.codigoServicio.Codigo),
+                            CodigoServicioSap: this.getObjetoCodigo(sp.codigoServicio && sp.codigoServicio.Codigo),
                             Tarea: sp.codigoServicio && sp.codigoServicio.Descripcion,
                             CuentaMayor: this.getObjetoCodigo(sp.cuentaMayor && sp.cuentaMayor.Codigo),
                             Cantidad: sp.cuentaTd,
