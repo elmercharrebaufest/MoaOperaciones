@@ -2967,4 +2967,42 @@ BEGIN
 	VALUES ('CamposObligatoriosCabeceraSolp','unidadSeleccionada','', @idPadre)
 END
 
+-- Tabla TipoSolp
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoSolp' and Codigo = 'CON_PLIEGO')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoSolp','CON_PLIEGO','C/Doc. Pliego',null)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoSolp' and Codigo = 'SIN_PLIEGO')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoSolp','SIN_PLIEGO','Sin Doc.',null)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoSolp' and Codigo = 'GENERAR')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoSolp','GENERAR','Generar pliego',null)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoSolp' and Codigo = 'EMERGENCIA')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoSolp','EMERGENCIA','Emerg.',null)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoSolp' and Codigo = 'ADICIONAL')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoSolp','ADICIONAL','Adicional',null)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoSolp' and Codigo = 'REQUERIMIENTOS')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoSolp','REQUERIMIENTOS','C/Doc. Req',null)
+END
+
 COMMIT TRAN
