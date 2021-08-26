@@ -10,6 +10,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -17,6 +18,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Mvc;
 
 namespace SustitucionMOATest.Controllers
 {
@@ -500,6 +502,83 @@ namespace SustitucionMOATest.Controllers
 
             Assert.NotNull(result);
             Assert.AreEqual(expectedJson, resultJson);
+        }
+
+        [Test]
+        public void CampoProveedorBorrarOk()
+        {
+            int campoCosechaIdTest = 32;
+            int proveedorIdTest = 92;
+
+            this.campoSustentableServiceMock.Setup(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest)).Returns("resultado");
+
+            JsonResult result = target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
+
+            Assert.AreEqual("resultado", result.Data);
+
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest), Times.Once);
+        }
+
+        [Test]
+        public void CampoProveedorBorrarInfoCustomException()
+        {
+            int campoCosechaIdTest = 32;
+            int proveedorIdTest = 92;
+
+            InfoCustomException infoCustomExceptionTest = new InfoCustomException("mensaje excepcion");
+
+            this.campoSustentableServiceMock.Setup(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest)).Throws(infoCustomExceptionTest);
+
+            JsonResult result = target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
+
+            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("mensaje excepcion", infoResultData);
+
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest), Times.Once);
+        }
+
+        [Test]
+        public void CampoProveedorBorrarValidationCustomException()
+        {
+            int campoCosechaIdTest = 32;
+            int proveedorIdTest = 92;
+
+            ValidationCustomException infoCustomExceptionTest = new ValidationCustomException("mensaje excepcion");
+
+            this.campoSustentableServiceMock.Setup(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest)).Throws(infoCustomExceptionTest);
+
+            JsonResult result = target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("mensaje excepcion", errorResultData);
+
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest), Times.Once);
+        }
+
+        [Test]
+        public void CampoProveedorBorrarException()
+        {
+            int campoCosechaIdTest = 32;
+            int proveedorIdTest = 92;
+
+            Exception infoCustomExceptionTest = new Exception("mensaje excepcion");
+
+            this.campoSustentableServiceMock.Setup(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest)).Throws(infoCustomExceptionTest);
+            HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
+
+            JsonResult result = target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", errorResultData);
+
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest), Times.Once);
         }
     }
 }

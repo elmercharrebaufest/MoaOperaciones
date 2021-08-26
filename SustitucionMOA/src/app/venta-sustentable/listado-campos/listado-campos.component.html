@@ -141,9 +141,17 @@
                                     href="#">Editar</a>
                             </td>
                             <td>
-                                <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
-                                    [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId">
-                                </app-impresion-declaracion>
+                                <div class="col-md-4">
+                                    <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
+                                        [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId">
+                                    </app-impresion-declaracion>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn-custom btn-mediano btn-borrar" 
+                                            [disabled]="campo.ToneladasAprobadas > 0" (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
+                                        Borrar
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

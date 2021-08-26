@@ -461,6 +461,7 @@
     <Content Include="src\app\venta-sustentable\edicion\edicion.component.html" />
     <Content Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.css" />
     <Content Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.html" />
+    <Content Include="src\app\venta-sustentable\listado-campos\listado-campos.component.css" />
     <Content Include="src\app\venta-sustentable\listado-campos\listado-campos.component.html" />
     <Content Include="src\assets\css\MolinosForms.css" />
     <Content Include="src\assets\css\MolinosGeneral.css" />

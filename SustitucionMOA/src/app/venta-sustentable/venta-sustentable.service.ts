@@ -136,8 +136,18 @@ export class VentaSustentableService extends BaseService {
 
     exportExcel() {
         return this.http
-            .get('/api/CampoSustentable/ExportarCamposProveedores').pipe(
-                map(this.extractData)
-            );
+        .get('/api/CampoSustentable/ExportarCamposProveedores').pipe(
+            map(this.extractData)
+        );
+    }
+
+    borrarCampoSustentable(proveedorId: number, cosechaId: number) {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set("proveedorId", proveedorId.toString());
+        params.set("cosechaId", cosechaId.toString());
+        return this.http
+            .get('/api/CampoSustentable/BorrarCampoSustentable', { search: params, headers: this.headers }).pipe(
+            map(this.extractData)
+        );
     }
 }

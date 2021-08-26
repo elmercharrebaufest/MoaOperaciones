@@ -15,7 +15,8 @@ import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spi
 @Component({
     selector: 'app-listado-campos',
     templateUrl: './listado-campos.component.html',
-    providers: [VentaSustentableService]
+    providers: [VentaSustentableService],
+    styleUrls: ['./listado-campos.component.css']
 })
 export class ListadoCamposComponent extends BaseComponent implements OnInit {
 
@@ -89,29 +90,25 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     }
 
     eliminarCampo(campoCosechaId: number, proveedorId: number) {
-        this.floatMsgService.setMsgsEmpty();
+        this.mensajeComponent.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.campoProveedorBorrar(campoCosechaId, proveedorId).subscribe(
             result => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
-                    this.floatMsgService.setErrorMsg(result.error);
+                    this.mensajeComponent.setErrorMsg(result.error);
                 } else if (result.info != undefined) {
-                    this.floatMsgService.setInfoMsg(result.info);
+                    this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    this.mensajeComponent.setSuccessMsg("se elimino el campo " + campoCosechaId + " correctamente.");
-                    setTimeout(() => {
-                        this.getCamposSustentables();
-                    }, 200);
+                    this.getCamposSustentables();
+                    this.mensajeComponent.setSuccessMsg("Se elimino el campo " + campoCosechaId + " correctamente.");
                 }
             },
             error => {
-                this.floatMsgService.setErrorMsg(error.message);
+                this.mensajeComponent.setErrorMsg(error.message);
             }
         );
-
-        return false;
     }
 
     proveedorSeleccionado(event: string) {
