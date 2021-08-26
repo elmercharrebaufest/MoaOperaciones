@@ -1,9 +1,4 @@
-﻿using SustitucionMOAWS.ObtenerCecoSolpWebServiceMOA;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAWS.Interfaces
 {
@@ -25,5 +20,10 @@ namespace SustitucionMOAWS.Interfaces
     public interface IObtenerServiciosSolpConsumerMOA
     {
         object request();
+    }
+
+    public interface IObtenerSolpConsumerMOA
+    {
+        object request(ObtenerSolpRequest req);
     }
 }
