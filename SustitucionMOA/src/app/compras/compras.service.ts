@@ -147,7 +147,7 @@ export class ComprasService extends BaseService {
                             Cantidad: sp.cuentaTd,
                             PrecioBruto: sp.precioBruto,
                             Unidad: this.getObjetoCodigo(sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo),
-                            TipoImputacionValor: this.getObjetoCodigo(sp.tipoImputacion && sp.tipoImputacion.Codigo,  sp.tipoImputacion.Tabla)
+                            TipoImputacionValor: this.getObjetoCodigo(sp.tipoImputacion && sp.tipoImputacion.Codigo, sp.tipoImputacion && sp.tipoImputacion.Tabla)
                         }
                     }) : null,
                     Proveedores: [

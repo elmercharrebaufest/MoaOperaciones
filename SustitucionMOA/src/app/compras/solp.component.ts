@@ -278,24 +278,20 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.cargarSolpActual(result.data);
-
                         this.spinnerComponent.hideIt();
                         this.blockUI.stop();
-                }
+                    }   
+                },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
                     this.spinnerComponent.hideIt();
                     this.blockUI.stop();
+                });
+            } catch (e) {
+                this.floatMsgService.setErrorMsg(e);
+                return false; //<-- Prevent Refresh
                 }
-                
-            });
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-            }
- 
-            return false; //<-- Prevent Refresh
-
+                return false; //<-- Prevent Refresh
     } 
 
     cargarSolpActual(solp){

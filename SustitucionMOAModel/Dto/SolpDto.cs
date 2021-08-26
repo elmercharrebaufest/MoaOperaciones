@@ -223,7 +223,7 @@ namespace SustitucionMOAModel.Dto
             {
                 this.Codigo = entity.Codigo;
                 this.Numero = entity.Numero;
-                this.CodigoServicioSapId = entity.CodigoServicioSap_Id;
+                this.CodigoServicioSap = new TablaSapDto(entity.CodigoServicioSap);
                 this.Tarea = entity.Tarea;
                 this.CuentaMayor = new TablaSapDto(entity.CuentaMayorSap);
                 this.Cantidad = entity.Cantidad;

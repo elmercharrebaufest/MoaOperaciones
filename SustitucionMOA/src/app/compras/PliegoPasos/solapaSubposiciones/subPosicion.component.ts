@@ -144,12 +144,12 @@ export class SubPosicionComponent extends ListBaseComponent {
         }
     }
 
-    eliminarSubPosicion()
+    eliminarSubPosicion(idSubpo)
     {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar la subposición?',
-            accept: () => {
-                this.eliminarSubposiciones()
+            accept: () => {              
+                    this.eliminarSubposiciones();                  
             },
             reject: () => {
                 

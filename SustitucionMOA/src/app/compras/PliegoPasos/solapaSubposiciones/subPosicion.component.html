@@ -55,7 +55,7 @@
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-posicion let-rowIndex="rowIndex">
-                                <tr>
+                                <tr style="text-align: center;">
                                     <td style="width: 4%;">
                                         <p-checkbox [(ngModel)]="posicion.eliminar" binary="true"></p-checkbox>
                                     </td>
@@ -70,7 +70,7 @@
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{posicion.codigoServicio.CodigoSap || posicion.tareaSubcontratar.CodigoSap}}
+                                                {{posicion.codigoServicio?.CodigoSap}}
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
@@ -78,12 +78,12 @@
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.codigoServicio" [suggestions]="autocomplete" 
-                                                    dataKey="Id" ariaLabel="Tarea" field="Descripcion" appendTo="body" [autoHighlight]="tru" emptyMessage="" [minLength]="2" [forceSelection]="false" 
+                                                    dataKey="Id" ariaLabel="Tarea" field="Descripcion" appendTo="body" [autoHighlight]="true" emptyMessage="" [minLength]="2" [forceSelection]="false" 
                                                     (completeMethod)="autocompleteSap($event, 'CodigoServicioSap')" (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar.Descripcion,rowIndex)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{posicion.codigoServicio.Descripcion || posicion.tareaSubcontratar}}
+                                                {{posicion.codigoServicio?.Descripcion}}
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
@@ -135,7 +135,7 @@
                                             </p-autoComplete>    
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{posicion.cuentaMayor.CodigoDescripcion}}
+                                                {{posicion.cuentaMayor?.CodigoDescripcion}}
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
@@ -151,7 +151,7 @@
                                                 </td>
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{posicion.tipoImputacion.CodigoDescripcion}}
+                                                {{posicion.tipoImputacion?.CodigoDescripcion}}
                                             </ng-template>                                 
                                         </p-cellEditor>
                                     </td>
