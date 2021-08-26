@@ -258,4 +258,12 @@ export class ComprasService extends BaseService {
         return this.http2
             .get<any[]>("/api/compras/AutocompleteTablaSap", { params: params })
     }
+
+    obtenerDatosPorCodigosSap(codigos :any[]){
+        var payload = new FormData();
+        payload.append('codigosSap', JSON.stringify(codigos));
+
+        return this.http2
+            .post('/api/compras/ObtenerDatosPorCodigosSap',  payload , this.headers);
+    }
 }

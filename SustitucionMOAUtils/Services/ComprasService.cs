@@ -925,6 +925,31 @@ namespace SustitucionMOAUtils.Services
             {
             }
         }
+
+        public List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos)
+        {
+            var ret = new List<TablaSapDto>();
+            var codigosPorTabla = new Dictionary<string, List<string>>();
+
+            foreach (var cod in codigos)
+            {
+                if (!codigosPorTabla.ContainsKey(cod.Tabla))
+                {
+                    codigosPorTabla.Add(cod.Tabla, new List<string>());
+                }
+                
+                codigosPorTabla[cod.Tabla].Add(cod.CodigoSap);
+            }
+
+            foreach (var tabla in codigosPorTabla)
+            {
+                var lista = repositorio.Listar<TablaSap>(x => x.Tabla == tabla.Key && tabla.Value.Contains(x.CodigoSap))
+                    .Select(x=> new TablaSapDto(x)).ToList();
+                ret.AddRange(lista);
+            }
+
+            return ret;
+        }
     }
 
     public static class SolpTemplateKeys
