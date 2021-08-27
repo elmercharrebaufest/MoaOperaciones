@@ -56,9 +56,12 @@
                             </div>
                         </div>
                         <div [ngClass]="esCorredor ? 'col-md-6' : 'col-md-12' " class="col-xs-12 col-sm-6">
-                            <p class="crearConsultaTitulos">Nombre<span class="requerido">*</span></p>
+                            <p *ngIf="nombreDisabled;else razonSocial" class="crearConsultaTitulos">Nombre<span class="requerido">*</span></p>
+                            <ng-template #razonSocial>
+                            <p class="crearConsultaTitulos">Raz&oacute;n social<span class="requerido">*</span></p>
+                            </ng-template>
                             <div class="styled-select ">
-                                <input type="search" [(ngModel)]="nombre" class="fourRounded" aria-controls="tableModal" disabled>
+                                <input type="search" [(ngModel)]="nombre" class="fourRounded" aria-controls="tableModal" [disabled]="nombreDisabled">
                             </div>
                         </div>
                     </div>

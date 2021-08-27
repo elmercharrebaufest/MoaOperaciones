@@ -189,6 +189,15 @@
   <data name="FleteImporteOK" xml:space="preserve">
     <value>El importe ingresado fue validado</value>
   </data>
+  <data name="IngresosBrutosCoeficienteUnificadoAutorizado" xml:space="preserve">
+    <value>Se autorizaron correctamente los coeficientes unificados de ingresos brutos</value>
+  </data>
+  <data name="IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK" xml:space="preserve">
+    <value>El detalle de coeficientes unificados de ingresos brutos se ha actualizado correctamente.</value>
+  </data>
+  <data name="IngresosBrutosCoeficienteUnificadoDetalleActualizadoOK" xml:space="preserve">
+    <value>El detalle de coeficientes unificados de ingresos brutos se ha actualizado correctamente.</value>
+  </data>
   <data name="LoginOk" xml:space="preserve">
     <value>Login exitoso</value>
   </data>

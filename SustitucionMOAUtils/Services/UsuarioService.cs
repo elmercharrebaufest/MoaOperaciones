@@ -154,7 +154,7 @@ namespace SustitucionMOAUtils.Services
         {
             List<string> interno = new List<string>
             {
-                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP", "APIKEY"
+                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP", "APIKEY", "AIGRAN"
             };
 
             List<string> contacto = new List<string>
@@ -188,6 +188,14 @@ namespace SustitucionMOAUtils.Services
                 usuario.AgregarRol(rolAAgregar);
             }
 
+            List<string> contacto = new List<string>
+            {
+                "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
+                "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
+                "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
+                "FINDIR", "FINCOR", "FLE"
+            };
+
             var esAdministradorMolinos = usuario
                                             .Roles
                                             .Where(
@@ -196,7 +204,8 @@ namespace SustitucionMOAUtils.Services
                                                 || r.Codigo == "OPE"
                                                 || r.Codigo == "APRO"
                                                 || r.Codigo == "COMPRAS"
-                                                || r.Codigo == "COMERCIAL")
+                                                || r.Codigo == "COMERCIAL"
+                                                || contacto.Contains(r.Codigo))
                                             .Any();
 
             //Si es usuario de molinos, buscamos todos los proveedores que tiene, lo aprobamos y le sacamos el historial de aprobación. 

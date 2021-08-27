@@ -522,14 +522,14 @@
                         </a>
                     </div>
                 </div>
-                <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
+                <!-- <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/contacto')"
                             href="#" data-parent="#accordionMenu">
-                            <!--data-toggle="tab">-->Contacto
+                            <data-toggle="tab">Contacto
                         </a>
                     </div>
-                </div>
+                </div> -->
                 <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
                     <div class="panel-heading seccion" role="tab" id="faq">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/faq')" href="#"
@@ -572,6 +572,12 @@
                             <div *ngIf="isAuthorized('GUARDADO Y CONSULTA DE LOG PESIFICACIONES')">
                                 <a (click)="goToSeccion('/logPesificacion')" href="#">
                                     Administración de pesificaciones
+                                </a>
+                            </div>
+                            <div>
+                                <!--*ngIf="isAuthorized('GUARDADO Y CONSULTA DE LOG PESIFICACIONES')"-->
+                                <a (click)="goToSeccion('/gestionCM05')" href="#">
+                                    Gestion de Impuestos
                                 </a>
                             </div>
                         </div>

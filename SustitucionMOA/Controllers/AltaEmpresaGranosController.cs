@@ -140,6 +140,32 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        public ActionResult GrabarNuevoProveedorGranos(string cuit, string mailVendedor)
+        {
+            try
+            {
+                var userMail = SessionPersister.getUsername();
+
+                return JsonCustom(new
+                {
+                    data = altaEmpresaService.GrabarProveedorAltaInternaGranos(cuit, userMail, mailVendedor)
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
 
         public ActionResult GenerarCartaPresentacion(string cartaPresentacionJson, int proveedorId)
         {
@@ -618,13 +644,14 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult NotificarSolicitud(int proveedorId)
+        public ActionResult SolicitudAltaInterna(int proveedorId, string datosJson)
         {
             try
             {
-                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                string mail = SessionPersister.getUsername();
+                var altaEmpresa = JsonConvert.DeserializeObject<AltaEmpresaViewModel>(datosJson);
 
-                return JsonCustom(altaEmpresaService.NotificarSolicitud(mail, proveedorId));
+                return JsonCustom(altaEmpresaService.SolicitudAltaInterna(mail, proveedorId, altaEmpresa));
             }
             catch (InfoCustomException e)
             {

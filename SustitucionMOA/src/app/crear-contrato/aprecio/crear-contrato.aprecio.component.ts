@@ -326,6 +326,9 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                                 if (element.Message == "Proveedor No Operable por Riesgo Comercial Alto") {
                                     element.Message = "Proveedor no operable, contactese con la mesa comercial";
                                 }
+                                if (element.Message.indexOf("Precio fuera de Rango") != -1) {
+                                    element.Message = "Precio fuera de Rango";
+                                }
                                 errores = errores + element.Message + " - ";
                             });
 

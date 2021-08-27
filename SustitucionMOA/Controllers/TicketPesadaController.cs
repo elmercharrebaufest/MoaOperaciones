@@ -28,7 +28,6 @@ namespace SustitucionMOA.Controllers
                 var listadoArchivos = ticketPesadaService.ObtenerTicket(consultaTicketPesada);
 
                 return JsonCustom(new { data = listadoArchivos });
-
             }
             catch (InfoCustomException e)
             {

@@ -1,4 +1,5 @@
-﻿using SustitucionMOAWS.Interfaces;
+﻿using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ScatoComandosWebService;
 using System;
 using System.Collections.Generic;
@@ -91,12 +92,13 @@ namespace SustitucionMOAExternalAPI.Controllers
                 if(result.Errores.Count > 0)
                 {
                     var ex = new Exception(string.Format("Se dieron los siguientes errores al procesar los elementos: {0}", string.Join(" | ", result.Errores.ToArray())));
+                    Log.ExternalAPIError(ex);
                     return InternalServerError(ex);
                 }
             }
             catch(Exception ex)
             {
-                //loguear error
+                Log.ExternalAPIError(ex);
                 return InternalServerError(new Exception("Hubo un error al procesar los elementos"));
             }
 

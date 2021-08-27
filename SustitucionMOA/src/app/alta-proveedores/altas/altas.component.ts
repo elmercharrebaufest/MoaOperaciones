@@ -74,11 +74,14 @@ export class AltasComponent extends BaseComponent implements OnInit {
     funcionarios: Array<RelacionConFuncionarios> = [];
     relacionConEmpleados: string = "";
     relacionConFuncionarios: string = "";
+    cuit: string = "";
+    mailVendedor: string = "";
     razonSocial: string = "";
     codigoCliente: string;
 
 
     contieneDocumentacionFisica: number = 0;
+    puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
 
     ngOnInit(): void {
         this.getEstados();
@@ -482,7 +485,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.unsubscribe();
 
         if (this.validarNoGranosOperando()) return
-        debugger
         this.subscription = this.altaEmpresaService
             .proveedorNoGranosOperando(this.empresaSeleccionada.Id, this.empresaSeleccionada.RazonSocial).subscribe(
                 result => {
@@ -834,6 +836,28 @@ export class AltasComponent extends BaseComponent implements OnInit {
                 }
             );
     }
+
+    grabarAltaInternaGranos(){
+        this.mensajeComponent.setMsgsEmpty();
+            this.subscription = this.altaEmpresaService.grabarAltaInternaGranos(this.cuit, this.mailVendedor).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else {
+                        this.mensajeComponent.setSuccessMsg(result.info);
+                        this.getEmpresa();
+                        document.getElementById("hidemyModalAltaInterna").click();
+                    }
+                },
+                error => {
+                }
+            );
+      }
 
 
     cambiarFiltroTipoProveedor(tipoProveedor: number) {

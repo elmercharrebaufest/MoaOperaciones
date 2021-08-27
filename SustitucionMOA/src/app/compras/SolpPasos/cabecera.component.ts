@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -14,6 +14,7 @@ import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 import {FormBuilder, FormControl, Validators } from '@angular/forms';
 import { EnumPasoSolp } from '../enum-paso-solp';
 
+
 declare var $: any;
 
 @Component({
@@ -21,7 +22,7 @@ declare var $: any;
     templateUrl: `cabecera.component.html`,
     styleUrls: ['../compras.component.css'],
 })
-export class CabeceraComponent extends ListBaseComponent {
+export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     @Input('combos') 
     protected combos:any;
@@ -31,6 +32,8 @@ export class CabeceraComponent extends ListBaseComponent {
 
     @Input('locale') 
     protected locale:any;
+
+
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
          protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -55,6 +58,8 @@ export class CabeceraComponent extends ListBaseComponent {
     hoy: Date = new Date();
     selectPosicion: any; 
 
+    // solpActual: Solp;
+
     formularioPosicion: [FormGroup];
     formularioActual: FormGroup;
 
@@ -67,9 +72,9 @@ export class CabeceraComponent extends ListBaseComponent {
         { campo: 'siniestroBeneficio',          esObligatorio: false,   esFijo: true },
         { campo: 'tipoImputacion',              esObligatorio: true,    esFijo: true },
         { campo: 'textoGenerico',               esObligatorio: true,    esFijo: true },
-        { campo: 'fechaEntregaServicio',        esObligatorio: false,    esFijo: false },
+        { campo: 'fechaEntregaServicio',        esObligatorio: true,    esFijo: false },
         { campo: 'fechaDeLiberacion',           esObligatorio: false,    esFijo: false },
-        { campo: 'plazoDeEntrega',              esObligatorio: false,   esFijo: true },
+        { campo: 'plazoDeEntrega',              esObligatorio: true,   esFijo: true },
         { campo: 'concluido',                   esObligatorio: false,   esFijo: true },
         { campo: 'indiceFijacion',              esObligatorio: false,   esFijo: true },
         { campo: 'selectCentroEntrega',         esObligatorio: false,    esFijo: false },
@@ -96,50 +101,10 @@ export class CabeceraComponent extends ListBaseComponent {
     
     @Output() onEstCompleto = new EventEmitter<any>();
 
-    
-    // Funcion que crea el chips y setea el evento
-    // onKeyUp(event: KeyboardEvent, texts: string[]) {
-    //   if (event.key == "Enter") {
-    //    let tokenInput = event.srcElement as any;
-    //    if (tokenInput.value) {
-    //     texts.push(tokenInput.value);
-    //     tokenInput.value = "";
-    //    }
-    //   }
-    // }  
-
-    
-    // onKeyUp(event: KeyboardEvent, texts: string[]) {
-    //     debugger
-    //     var charCode = event.which || event.keyCode;
-        
-    //     if (event.key == "Enter" || event.key == "Tab" ) {
-    //       if(event.key == "Tab" && this.proveedoresAutocomplete){
-    //         texts.push(this.proveedoresAutocomplete);
-    //         this.proveedoresAutocomplete = "";
-    //         let tokenInput = event.srcElement as any;
-    //         tokenInput.value = "";
-    //       } 
-    //       else {
-    //         let tokenInput = event.srcElement as any;
-    //             if (tokenInput.value) {
-    //                 texts.push(tokenInput.value);
-    //                 tokenInput.value = "";
-    //             }
-    //         }    
-    //     }
-    // }
-
-    // // Funcion que hace la lista para el autocomplete
-    // search(event){
-    //     let query = event.query;
-    //     this.resultadoProveedores = [];
-    // }
-
-
     setTabs() {
         this.setMenuSeccionTab("Cabecera", "Cabecera");
     }
+
 
     ngOnInit() {
         this.setTabs();
@@ -150,6 +115,8 @@ export class CabeceraComponent extends ListBaseComponent {
         this.articuloCompras = this.combos.GrupoArticulo;
         this.monedaCompras = this.combos.Moneda;
 
+    
+
         this.setControlesObligatorios(this.model.selectClaseDocumento || this.claseDocumento[0]);
         this.validadorPasoSolpService.formulario = this.formularioActual;
         
@@ -159,27 +126,13 @@ export class CabeceraComponent extends ListBaseComponent {
 
         this.centroSeleccionado();
 
-        this.model.cargoPasoCinco = true;
+        if(this.model.monedaPorDefecto)
+            this.model.posicionActual.monedaSeleccionada = this.combos.Moneda.find(x=>x.Codigo == this.model.monedaPorDefecto)
 
-        // document.getElementById("proveedoresValidos").addEventListener('keydown', function (e) {
-        //     if (e.which == 9) {
-        //         e.preventDefault();
-        //     }
-        // });
+        if(!this.model.posicionActual.selectSolicitanteCompras)
+            this.model.posicionActual.selectSolicitanteCompras = this.model.fiscalContrato;
 
-        // document.getElementById("proveedoresInvalidos").addEventListener('keydown', function (e) {
-        //     if (e.which == 9) {
-        //         e.preventDefault();
-        //     }
-        // });
-
-        // document.getElementById("proveedoresNoSugeridos").addEventListener('keydown', function (e) {
-        //     if (e.which == 9) {
-        //         e.preventDefault();
-        //     }
-        // });
-        
- 
+        this.model.cargoPasoCinco = true;        
     }
 
     setControlesObligatorios(claseDocumento){
@@ -224,15 +177,14 @@ export class CabeceraComponent extends ListBaseComponent {
     }
 
     mostrarError(nombreCampo: string): boolean {
-        if (this.formularioActual && this.formularioActual.controls) {
-            let campoObligatorio = this.camposObligatorios.find(x=>x.campo == nombreCampo);
-            if(campoObligatorio){
-                let control = this.formularioActual.controls[nombreCampo];
-                return (control.invalid || (control.errors && control.errors.required))
-                    && (control.dirty || control.touched)
+            if (this.formularioActual && this.formularioActual.controls) {
+                let campoObligatorio = this.camposObligatorios.find(x=>x.campo == nombreCampo);
+                if(campoObligatorio){
+                    let control = this.formularioActual.controls[nombreCampo];
+                    return (control.invalid || (control.errors && control.errors.required))
+                        && (control.dirty || control.touched)
+                }
             }
-        }
-
         return false;
     }
 
@@ -253,27 +205,28 @@ export class CabeceraComponent extends ListBaseComponent {
 
     centroSeleccionado(){
         let direccionCentro: any;
-        if (this.model.posicionActual.selectCentroEntrega == undefined) {
-            this.almacenEntrega = [];
-        }
-        else {
-            this.almacenEntrega = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
-            direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
+
+        if(!this.model.posicionActual.selectCentroEntrega && this.model.centroPorDefecto){
+            this.model.posicionActual.selectCentroEntrega = this.combos.Centro.find(x=>x.Codigo == this.model.centroPorDefecto);
         }
 
+        if (this.model.posicionActual.selectCentroEntrega) {
+            direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
+        }
 
         this.model.posicionActual.nombreEntrega =  this.model.posicionActual.nombreEntrega
             || (this.model.posicionActual.selectCentroEntrega == undefined ? "" :this.model.posicionActual.selectCentroEntrega.Descripcion);
 
-        this.model.posicionActual.codigoPostalEntrega =  this.model.posicionActual.codigoPostalEntrega || (direccionCentro == undefined ? "" :direccionCentro.Cp);
-        this.model.posicionActual.calleEntrega = this.model.posicionActual.calleEntrega || (direccionCentro == undefined ? "" :  direccionCentro.Direccion);
-        this.model.posicionActual.numeroEntrega =  this.model.posicionActual.numeroEntrega || (direccionCentro == undefined ? "" :direccionCentro.Numero);
-        this.model.posicionActual.paisEntrega =  this.model.posicionActual.paisEntrega || (direccionCentro == undefined ? "" : direccionCentro.Pais);
+        if(direccionCentro !== undefined){
+            this.model.posicionActual.codigoPostalEntrega = direccionCentro.Cp;
+            this.model.posicionActual.calleEntrega = direccionCentro.Direccion;
+            this.model.posicionActual.numeroEntrega =  direccionCentro.Numero;
+            this.model.posicionActual.paisEntrega =  direccionCentro.Pais;
+        }
     }
 
     eliminarPosicion()
     {
-        console.log("eliminar");
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar la posición?',
             accept: () => {
@@ -283,7 +236,46 @@ export class CabeceraComponent extends ListBaseComponent {
                 
             }
         });
+    }
+    
 
+    buscarCombo(event, type){
+        switch (type) {
+            case 'CENTRO':
+                this.centroEntrega = this.combos.Centro.filter(x=> x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
+                break;
+            case 'ALMACEN':
+                if (this.model.posicionActual.selectCentroEntrega == undefined) {
+                    this.almacenEntrega = [];
+                }
+                else {
+                    this.almacenEntrega = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id && 
+                        x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
+                }
+                break;
+            case 'GRUPO COMPRAS':
+                this.grupoCompras = this.combos.GrupoCompras.filter(x=> x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
+                break;
+            case 'ARTICULO COMPRAS':
+                this.articuloCompras = this.combos.GrupoArticulo.filter(x=> x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
+                break;
+            case 'MONEDA COMPRAS':
+                this.monedaCompras = this.combos.Moneda.filter(x=> x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
+                break;    
+            default:
+                break;
+        }
     }
 
+    agregarPosicion(el: HTMLElement){
+        this.validarPosicionActual();
+        this.model.agregarNuevaPosicion();
+        el.scrollIntoView();
+    }
+
+    calcularFechaEntrega(){
+        let fechaNueva = new Date(this.model.fechaEntrega);
+        fechaNueva.setDate(fechaNueva.getDate() + parseInt(this.model.posicionActual.plazoDeEntrega.toString()));
+        this.model.posicionActual.fechaEntregaServicio = fechaNueva;  
+    }
 }

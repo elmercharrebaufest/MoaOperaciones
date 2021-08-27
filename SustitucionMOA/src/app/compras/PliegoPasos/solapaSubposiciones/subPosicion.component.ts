@@ -13,6 +13,7 @@ import { SubPosicionViewModel } from './subPosicionViewModel';
 import { EnumTipoImputacion } from '../../enum-tipo-imputacion'
 import { EnumColumnaSubPosicion } from '../../enum-columna-subPosiciones'
 import { ConfirmationService } from 'primeng/api';
+import { type } from 'jquery';
 
 
 @Component({
@@ -36,17 +37,25 @@ export class SubPosicionComponent extends ListBaseComponent {
     enumTipoImputacion: typeof EnumTipoImputacion = EnumTipoImputacion;
     enumColumnaSubPosicion: typeof EnumColumnaSubPosicion = EnumColumnaSubPosicion;
     total: number = 0;
+    unidades: any[];
+
+    tablaAFiltrar: any;
+    autocomplete: any[];
+    autocompletePaste: {Tabla:string, CodigoSap:string}[] = [];
 
     // array de columnas en la grilla
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
-    columnasGrilla: any = [{ nombre: "codigoServicio", tipo: "numerico" }, { nombre: "tareaSubcontratar", tipo: "string" }, { nombre: "cuentaMayor", tipo: "numerico" }, { nombre: "cuentaTd", tipo: "numerico" },
-    { nombre: "unidadMedida", tipo: "combo" }, { nombre: "precioBruto", tipo: "decimal" }, { nombre: "tipoImputacion", tipo: "numerico" }];
+    columnasGrilla: any = [
+            { nombre: "codigoServicio", tipo: "codigoSap", tabla:"CodigoServicioSap" }, 
+            { nombre: "tareaSubcontratar", tipo: "tarea" }, 
+            { nombre: "cuentaTd", tipo: "numerico" }, 
+            { nombre: "unidadMedida", tipo: "combo" }, 
+            { nombre: "precioBruto", tipo: "decimal" }, 
+            { nombre: "cuentaMayor", tipo: "codigoSap", tabla:"CuentasSolpSap" }, 
+            { nombre: "tipoImputacion", tipo: "codigoSap" }];
 
     //variable para verificar si la posicion no fue dada de alta con los datos minimos
     posicionInvalida: boolean = false;
-
-    //cambiar por el objeto que venga del back
-    unidades : any[] = [{id: 1 , nombre: "metros"},{id: 1 , nombre: "centrimetros"}]
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -63,20 +72,22 @@ export class SubPosicionComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
 
-        let primeraPosicion = this.model.posiciones[0]
-        this.listadoPosicionActul = primeraPosicion.listadoSubPosiciones;
-        this.model.posicionActual = primeraPosicion;
+        // let primeraPosicion = this.model.posiciones[0]
+        this.listadoPosicionActul = this.model.posicionActual.listadoSubPosiciones;
+        // this.model.posicionActual = primeraPosicion;
+
+        if(this.listadoPosicionActul.length == 0){
+            this.nuevaPosicion(null);
+        }
 
         this.validarDatosMinimosPosicionActual();
         this.calcularTotalSubPosicion();
         this.actualizarTipoDeImputacion();
-
-        this.unidades = this.combos.Unidades;
     }
 
     validarDatosMinimosPosicionActual(): void {
         if ((this.model.posicionActual.textoGenerico == undefined || this.model.posicionActual.textoGenerico == "")
-            && (this.model.posicionActual.tipoImputacion == undefined || this.model.posicionActual.tipoImputacion == "")) {
+            || (this.model.posicionActual.tipoImputacion == undefined || this.model.posicionActual.tipoImputacion == "")) {
             this.posicionInvalida = true;
         }
         else
@@ -93,36 +104,51 @@ export class SubPosicionComponent extends ListBaseComponent {
     actualizarTipoDeImputacion(): void {
         switch (this.model.posicionActual.tipoImputacion) {
             case this.enumTipoImputacion.CentroDeCosto:
-                this.tituloColumnaTipoDeImputacion = "Centro de costo"
+                this.tituloColumnaTipoDeImputacion = "Centro de costo";
+                this.tablaAFiltrar = 'CecoSolpSap';
                 break;
             case this.enumTipoImputacion.OrdenDeOt:
-                this.tituloColumnaTipoDeImputacion = "Orden de OT"
+                this.tituloColumnaTipoDeImputacion = "Orden de OT";
+                this.tablaAFiltrar = 'OrdenSolpSap';
                 break;
             case this.enumTipoImputacion.OrdenInversion:
                 this.tituloColumnaTipoDeImputacion = "Orden de inversión"
+                this.tablaAFiltrar = 'OrdenSolpSap';
                 break;
             case this.enumTipoImputacion.Siniestro:
                 this.tituloColumnaTipoDeImputacion = "Siniestro / Centro de beneficio"
+                this.tablaAFiltrar = '';
                 break;
         }
     }
 
     nuevaPosicion(rowSeleccionada: any): void {
-        let ultimoRegistroEnListado = this.listadoPosicionActul[this.listadoPosicionActul.length - 1]
-        if (ultimoRegistroEnListado.id == rowSeleccionada.data.id) {
-            ultimoRegistroEnListado.seleccionado = true;
-            this.listadoPosicionActul.push(new SubPosicionViewModel(this.listadoPosicionActul.length));
+        if(rowSeleccionada){
+            let ultimoRegistroEnListado = this.listadoPosicionActul[this.listadoPosicionActul.length - 1]
+            if (ultimoRegistroEnListado.id == rowSeleccionada.data.id) {
+                ultimoRegistroEnListado.seleccionado = true;
+                this.listadoPosicionActul.push(new SubPosicionViewModel(ultimoRegistroEnListado.subPosicion + 1));
+            }
+        }else{
+            this.listadoPosicionActul.push(new SubPosicionViewModel(1));
         }
     }
 
     eliminarSubposiciones(): void {
-        if (this.listadoPosicionActul.length > 1) {
+        if (this.listadoPosicionActul.length > 0) {
+            
             let subPosicionesAgregadas = this.listadoPosicionActul.filter(x => !x.eliminar);
             subPosicionesAgregadas.forEach((element, index, array) => {
-                element.subPosicion = index;
+                element.subPosicion = index + 1;
             });
             this.listadoPosicionActul = subPosicionesAgregadas;
+            this.model.posicionActual.listadoSubPosiciones = this.listadoPosicionActul;
             this.calcularTotalSubPosicion();
+        }
+
+        if(this.listadoPosicionActul.length == 0){
+            this.nuevaPosicion(null);
+            this.model.posicionActual.listadoSubPosiciones = this.listadoPosicionActul;
         }
     }
 
@@ -130,20 +156,20 @@ export class SubPosicionComponent extends ListBaseComponent {
     {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar la subposición?',
-            accept: () => {
-                this.eliminarSubposiciones()
+            accept: () => {              
+                    this.eliminarSubposiciones();                  
             },
             reject: () => {
                 
             }
         });
-
     }
 
-    onPaste(evento: any, indexColumna: number, rowIndex: number): void {
+    onPaste(evento: any, indexColumna: number, rowIndex: number, dt): void {
 
         let datos = evento.clipboardData.getData("text");
         if (!datos.includes("Recuperando datos")) {
+            this.spinnerComponent.showIt();
             //separo la informacion por filas 
             let filas = datos.split("\n");
             filas.forEach(element => {
@@ -154,6 +180,8 @@ export class SubPosicionComponent extends ListBaseComponent {
                 rowIndex++;
             });
             this.calcularTotalSubPosicion();
+            this.completarCodigosSapOnPaste();
+            this.endEditCell(dt);
         }
     }
 
@@ -173,7 +201,7 @@ export class SubPosicionComponent extends ListBaseComponent {
             esEdicion = true;
         } else {
             fila = new SubPosicionViewModel(this.listadoPosicionActul.length);
-        }
+        }       
 
         for (let index = 0; index < columnas.length && index < this.columnasGrilla.length; index++) {
             let columna = this.columnasGrilla[indexColumn + index]
@@ -187,8 +215,20 @@ export class SubPosicionComponent extends ListBaseComponent {
                     fila[columna.nombre] = Number.isNaN(valorDecimal) ?  undefined:valorDecimal;
                     break;
                 case "combo":
-                    let seleccion = this.unidades.find( x => x.nombre.toLowerCase() == columnas[index].toLowerCase())
-                    fila["unidadSeleccionada"]  = seleccion;
+                    let seleccion = this.combos.Unidades.find( x => x.Codigo.toLowerCase() == columnas[index].toLowerCase()) || {};
+                    fila.unidadSeleccionada = seleccion;
+                    break;
+                case "codigoSap":
+                    fila[columna.nombre] = { CodigoSap: columnas[index] }
+       
+                    this.autocompletePaste.push({
+                        CodigoSap: columnas[index],
+                        Tabla: columna.tabla || this.tablaAFiltrar
+                    });
+                    break;
+                case "tarea":
+                    fila[columna.nombre] = columnas[index];
+                    fila.tareaSubcontratarObj = { Descripcion: columnas[index] }
                     break;
                 default:
                     fila[columna.nombre] = columnas[index];
@@ -200,16 +240,117 @@ export class SubPosicionComponent extends ListBaseComponent {
             listado.push(fila);
             listado.push(new SubPosicionViewModel(this.listadoPosicionActul.length));
         }
-
     }
 
-
     calcularTotalSubPosicion() {
-        this.total = 0;
+        this.total = 1;
         this.listadoPosicionActul.forEach(posicion => {
             this.total = this.total + (+posicion.precioBruto);
         });
-
     }
 
+    buscarCombo(event, type){
+        switch (type) {
+            case 'UNIDAD MEDIDA':
+                this.unidades = this.combos.Unidades.filter(x=> x.Descripcion.toLowerCase().includes(event.query.toLowerCase()));
+                break;   
+                
+            default:
+                break;
+        }
+    }
+
+    completarCodigosSapOnPaste(){
+        try{
+            this.subscription = this.service.obtenerDatosPorCodigosSap(this.autocompletePaste).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else { 
+                        if(result){
+                            this.listadoPosicionActul.forEach(c => {
+                                if(c.codigoServicio && c.codigoServicio.CodigoSap && !c.codigoServicio.Codigo){
+                                    c.codigoServicio = result.find(x=>x.Tabla == 'CodigoServicioSap' && x.CodigoSap == c.codigoServicio.CodigoSap);
+                                    c.tareaSubcontratarObj = {...c.codigoServicio};
+                                    c.tareaSubcontratar = c.codigoServicio.Descripcion;
+                                }
+
+                                if(c.cuentaMayor && c.cuentaMayor.CodigoSap && !c.cuentaMayor.Codigo){
+                                    c.cuentaMayor = result.find(x=>x.Tabla == 'CuentasSolpSap' && x.CodigoSap == c.cuentaMayor.CodigoSap);
+                                }
+
+                                if(c.tipoImputacion && c.tipoImputacion.CodigoSap && !c.tipoImputacion.Codigo){
+                                    c.tipoImputacion = result.find(x=>x.Tabla == this.tablaAFiltrar && x.CodigoSap == c.tipoImputacion.CodigoSap);
+                                }
+                            });
+                        }
+                    }
+
+                    this.spinnerComponent.hideIt();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.spinnerComponent.hideIt();
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+    autocompleteSap(event, tablaAFiltrar, soloDescripcion = false){
+        try{
+            this.subscription = this.service.autocompleteSap(tablaAFiltrar || this.tablaAFiltrar, event.query.toLowerCase()).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else { 
+                        this.autocomplete = soloDescripcion ? result.map(x=> x.Descripcion.trim()) : result;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+    onSelectServicio(posicion:SubPosicionViewModel, dt){
+        posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
+        posicion.tareaSubcontratarObj = {...posicion.codigoServicio};
+        this.endEditCell(dt);
+    }
+
+    onSelectTarea(posicion:SubPosicionViewModel, dt){
+        posicion.tareaSubcontratar = posicion.tareaSubcontratarObj.Descripcion;
+        posicion.codigoServicio = {...posicion.tareaSubcontratarObj};
+        this.endEditCell(dt);
+    }
+
+    onBlueTarea(event, posicion:SubPosicionViewModel){
+        posicion.tareaSubcontratar = event.target.value;
+        posicion.tareaSubcontratarObj = {Descripcion:event.target.value}
+    }
+
+    endEditCell(dt){
+        dt.closeCellEdit();
+    }
 }

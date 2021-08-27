@@ -14,7 +14,8 @@ import { CrearContratoModule } from '../../crear-contrato/crear-contrato.module'
 import { formatDate } from '@angular/common';
 import { SortEvent } from 'primeng/api';
 import { Table } from 'primeng/table';
-
+import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 
 
@@ -33,9 +34,14 @@ export class DashboardComponent extends ListBaseComponent {
     
     @ViewChild("tabla")
     protected tabla: Table;
+
+    @BlockUI() blockUI: NgBlockUI;
     
     @Input('model') 
     protected model:Solp;
+
+    @ViewChild(SpinnerComponent)
+    protected spinnerComponent: SpinnerComponent;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -74,7 +80,7 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     cards = [
-        { nombre: "Con documento de pliego", path: "/compras/solp/0" },
+        { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
         // { nombre: "Con documentos requerimientos", path: ""},
         // { nombre: "Sin documento", path: ""},
         // { nombre: "Emergencia", path: ""},
@@ -104,23 +110,6 @@ export class DashboardComponent extends ListBaseComponent {
     ngOnInit() {
         this.navService.setSeccionList([]);
 
-        
-
-        // this.tablaSolp = [
-        // {
-        //     numeroSolp: "372872",
-        //     nombreDePedido: ""
-        //     fechaCreacion: "17/12/2021",
-        //     estadoDoc: "Incompleto",
-        //     estadoSolp: "Finalizada",
-        //     tipoSolp: "Sin Doc.",
-        //     estadoDocCodigo: "Incompleto",
-        //     estadoSolpCodigo: "Finalizada",
-        //     esSap: "Si",
-        //     vincularPliego: "" 
-        // }
-        // ];
-
         this.getListarSolp();
         this.desdeDashboard = new Date();
         this.hastaDashboard = new Date();
@@ -148,6 +137,8 @@ export class DashboardComponent extends ListBaseComponent {
 
     getListarSolp(){
             try {
+                this.spinnerComponent.showIt();
+
                 this.subscription = this.service.getListarSolp().subscribe(
                     result => {
                         if (result.logout == true) {
@@ -161,10 +152,12 @@ export class DashboardComponent extends ListBaseComponent {
                             this.tablaSolp.forEach(x => {
                                 x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
                             });
+                            this.spinnerComponent.hideIt();
                         }
                     },
                     error => {
                         this.floatMsgService.setErrorMsg(error.message);
+                        this.spinnerComponent.hideIt();
                     }
     
                 );
@@ -271,53 +264,94 @@ export class DashboardComponent extends ListBaseComponent {
         });
     }
 
-        descargarPdf(idSolp): void {
-            if (idSolp != undefined) {
+    generarZipPliego(idSolp){
+        this.blockUI.start('Generando ')
+        this.service.descargarZipPliego(idSolp)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
 
-                this.service.getPdf(idSolp)
-                    .subscribe(
-                        (result) => {
-                            if (result.logout == true) {
-                                this.sessionDataService.logout();
-                            }
-                            else {
-                                var byteArray = new Uint8Array(result.FileContents);
-                                var blob = new Blob([byteArray], {
-                                    type: "application/octet-stream",
-                                });
-
-                                this.downloadArchivoLocal(blob, result.FileDownloadName);
-                            }
-                        },
-                        (error) => {
-                            this.spinnerSmallComponent.hideIt();
-                            this.mensajeComponent.setErrorMsg(error.message);
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            this.blockUI.stop();
+                            return false;
                         }
-                    )
-            }
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
 
-        }
+    descargarPdf(idSolp): void {
+        if (idSolp != undefined) {
+            this.service.getPdf(idSolp)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        }
+                        else {
+                            var byteArray = new Uint8Array(result.FileContents);
+                            var blob = new Blob([byteArray], {
+                                type: "application/octet-stream",
+                            });
 
-        private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
-            if (window.navigator.msSaveOrOpenBlob) {
-                // IE11
-                window.navigator.msSaveOrOpenBlob(
-                    blob,
-                    nombreArchivo
-                );
-            } else {
-                var url = window.URL.createObjectURL(blob);
-                var link = document.createElement("a");
-                document.body.appendChild(link);
-                link.href = url;
-                link.download = nombreArchivo;
-                link.click();
-                setTimeout(function () {
-                    window.URL.revokeObjectURL(url);
-                }, 0);
-                return;
-            }
+                            this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        }
+                    },
+                    (error) => {
+                        this.spinnerSmallComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                )
         }
+    }
+
+    private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
+        if (window.navigator.msSaveOrOpenBlob) {
+            // IE11
+            window.navigator.msSaveOrOpenBlob(
+                blob,
+                nombreArchivo
+            );
+        } else {
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            document.body.appendChild(link);
+            link.href = url;
+            link.download = nombreArchivo;
+            link.click();
+            setTimeout(function () {
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            return;
+        }
+    }
 
 }
 

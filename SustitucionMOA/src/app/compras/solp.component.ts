@@ -5,7 +5,7 @@ import { BaseComponent } from '../common/base-components/base-component';
 import { Paso } from '../common/models/paso';
 import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
-import { Solp } from './Solp';
+import { PosicionSolp, Solp } from './Solp';
 import * as uuid from 'uuid';
 import { ComprasService } from './compras.service';
 import { NavService } from '../common/services/NavService';
@@ -24,6 +24,10 @@ import { CabeceraComponent } from './SolpPasos/cabecera.component';
 import { ActivatedRoute, Params } from '@angular/router';
 import { EspecificacionesViewModel } from './PliegoPasos/solapaTres/especificacionesViewModel';
 import { SubPosicionViewModel } from './PliegoPasos/solapaSubposiciones/subPosicionViewModel';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import {DialogModule} from 'primeng/dialog';
+import { FormGroup } from '@angular/forms';
+
 
 
 
@@ -77,15 +81,24 @@ export class SolpComponent extends BaseComponent implements OnInit {
     @ViewChild(CabeceraComponent)
     protected cabecera: CabeceraComponent;
 
+    @ViewChild(DashboardComponent)
+    protected dashboard: DashboardComponent;
+
     cambiosGuardados: boolean = false;
     mostrarPreview: boolean = false;
+    pdfPreview: any;
+    urlPdf: any;
     solpActual: Solp = new Solp();
     _pasoActual: Paso;
     es: any;
-
     enumSolp: typeof EnumPasoSolp = EnumPasoSolp;
     combos: any;
     solpId: number = 0;
+    visitasFinalizar: SelectItem[];
+    finalizarOk: boolean;
+    displayFinalizar: boolean = false;
+    displaySAP: boolean;
+    
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -143,7 +156,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     },
     {
         Codigo: EnumPasoSolp.SolpSubposiciones,
-        Nombre: 'Subposiciones',
+        Nombre: 'Servicios',
         Activo: false,
         Completo: false,
         Iniciado: false,
@@ -205,10 +218,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     selected: false
                 }
             ];
-
-            this.solpActual.fechaEntrega = new Date();
+            //let fechaEntrega = new Date();
+            let fechaLimiteFecha = new Date();
+            //this.solpActual.fechaEntrega = this.sumarDias(fechaEntrega, 7);
             this.solpActual.horaEntrega = new Date(1, 1, 1, 10, 0, 0, 0);
-            this.solpActual.fechaLimiteFecha = new Date();
+            this.solpActual.fechaLimiteFecha = this.sumarDias(fechaLimiteFecha, 6);
             this.solpActual.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
             this.solpActual.visitaDeObraFecha = new Date();
             this.solpActual.visitaDeObraHora = new Date(1, 1, 1, 10, 0, 0, 0);
@@ -224,20 +238,31 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.ejecucion = "30";
             this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
             
+            this.solpActual.centroPorDefecto = 1029;
+            this.solpActual.monedaPorDefecto = "ARP";
+
             this.getCombos();
 
             if(this.route.params){
                 this.route.params.forEach((params: Params) => {
                     if (params["id"] > 0) this.solpId = params["id"];
+                    if (params["tipoSolp"]) this.solpActual.tipoSolp = params["tipoSolp"];
                 });
 
                 if(this.solpId > 0){
                 this.traerSolpId(this.solpId);
                 }
             }
+
+            
+            
         }
     }
 
+    sumarDias(fecha, dias){
+        fecha.setDate(fecha.getDate() + dias);
+        return fecha;
+    }
 
     traerSolpId(idSolp){
         try {
@@ -254,36 +279,33 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.cargarSolpActual(result.data);
-
                         this.spinnerComponent.hideIt();
                         this.blockUI.stop();
-                }
+                    }   
+                },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
                     this.spinnerComponent.hideIt();
                     this.blockUI.stop();
+                });
+            } catch (e) {
+                this.floatMsgService.setErrorMsg(e);
+                return false; //<-- Prevent Refresh
                 }
-                
-            });
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-            }
- 
-            return false; //<-- Prevent Refresh
-
+                return false; //<-- Prevent Refresh
     } 
 
     cargarSolpActual(solp){
 
         // Paso 1
         this.solpActual.id = solp.Id;
+        this.solpActual.tipoSolp = solp.TipoSolp;
         this.solpActual.nombreDePedido = solp.NombreDeObra || '';
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
         this.solpActual.telefono = solp.Telefono || '';
         this.solpActual.mail = solp.Email || '';
-        this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
-        this.solpActual.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+        // this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+        // this.solpActual.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
 
         // Paso 2
         this.solpActual.supervisorSector = solp.SupervisorSector || '';
@@ -299,6 +321,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.visitaDeObra = solp.TieneVisitaObra;
         this.solpActual.obradores = solp.TieneObradores;
         this.solpActual.modoElevacion = solp.TieneMedioElevacion;
+        this.solpActual.andamio = solp.TieneAndamio; 
         this.solpActual.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
         this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;        
         this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;          
@@ -332,7 +355,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
             let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
             
             let posActual = this.solpActual.posicionActual;
-
+            let solpActual = this.solpActual;
+            
             solp.Posiciones.forEach(x => {
                 posActual.id = x.Codigo;
                 posActual.textoGenerico = x.TextoGenerico;
@@ -367,31 +391,38 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                 if(x.Subposiciones){
                     posActual.listadoSubPosiciones = [];
-                    let i = 0;
+                    let i = 1;
 
                     x.Subposiciones.forEach(sp => {
                         let subpos = new SubPosicionViewModel(i);
 
                         subpos.id = sp.Codigo;
-                        subpos.codigoServicio = (sp.CodigoServicioSap && sp.CodigoServicioSap.Descripcion) || '';
+                        subpos.codigoServicio = sp.CodigoServicioSap;
+                        subpos.tareaSubcontratarObj = sp.CodigoServicioSap;
                         subpos.tareaSubcontratar = sp.Tarea;
                         subpos.cuentaMayor = sp.CuentaMayor;
                         subpos.cuentaTd = sp.Cantidad;
                         subpos.unidadSeleccionada = sp.Unidad;
                         subpos.tipoImputacion = sp.TipoImputacionValor;
                         subpos.precioBruto = sp.PrecioBruto;
+                        subpos.subPosicion = sp.Numero;
 
-                        this.solpActual.posicionActual.listadoSubPosiciones.push(subpos);
+                        posActual.listadoSubPosiciones.push(subpos);
                         i++;
                     });
                 }
                 
-                if(ultimaPos.Codigo != x.Codigo)
-                    this.solpActual.agregarNuevaPosicion();
+                if(ultimaPos.Codigo != x.Codigo){
+                    solpActual.agregarNuevaPosicion();
+                    posActual = solpActual.posicionActual;
+                }
             });
 
             this.solpActual.setearPosicionPorDefecto();
+            // this.cabecera.solpActual = this.solpActual;
+            // this.actualizarPasoCompleto();
         }
+
     }
 
     cambioPaso(paso) {
@@ -439,27 +470,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    salir() {
-        this.navService.navegarSeccion('/compras');
-    }
+    
 
-    cancelarSolp() {
-        this.confirmationService.confirm({
-            key: 'cancelarSolp',
-            message: '¿Está seguro que desea volver a la pantalla principal?',
-            accept: () => {
-                this.salir()
-            },
-            reject: () => {  
-            }
-        });
-    }
-
-    guardarCambios(){
+    guardarCambios(mostrarPreview = false, enviarSap = false){
         try {
             this.blockUI.start('Guardando...');
             this.spinnerComponent.showIt();
 
+            this.solpActual.enviarSap = enviarSap;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
                 result => {
                     if (result.logout == true) {
@@ -474,7 +492,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else {
                         this.spinnerComponent.hideIt();
                         this.blockUI.stop();
-                        this.messageService.add({severity:'success', detail:'Los datos se guardaron correctamente'});
+                        if(!mostrarPreview){
+                            this.messageService.add({severity:'success', detail:'Los datos se guardaron correctamente'});
+                        }
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
                         
                         this.solpActual.id = result.Id;
@@ -487,6 +507,24 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         });
                         
                         this.cambiosGuardados = true;
+
+                        if(mostrarPreview){
+                            if(result.Pdf){
+                                this.pdfPreview = "data:application/pdf;base64," + result.Pdf;
+                                this.mostrarPreview = true;
+                            } else {
+                                this.messageService.add({severity:'error', detail:'Hubo un error al generar el preview. Por favor contacte con el administrador de sistemas.'});
+                            }
+                        }
+
+                        if(enviarSap){
+                            if(result.NroSolp) {
+                                this.finalizarOk = true;
+                            } else {
+                                this.messageService.add({severity:'error', detail:'Hubo un error al generar la SOLP en SAP, intente de nuevo mas tarde o comuniquese con el administrador'});
+                            }
+                        } 
+
                     }
                 },
                 error => {
@@ -502,10 +540,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
-    }
-
-    finalizar() {
-
     }
 
     actualizarPasoCompleto(paso: Paso) {
@@ -540,8 +574,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     ]);
                     break;
                 case EnumPasoSolp.SolpCabecera:
+                    console.log(this.solpActual)
                     paso.Completo = this.listaStringCompleta([
-                        this.solpActual.selectClaseDocumento,
+                        //this.solpActual.selectClaseDocumento,
                         this.solpActual.posicionActual.servicio,
                         this.solpActual.posicionActual.textoGenerico,
                         this.solpActual.posicionActual.fechaEntregaServicio,
@@ -552,8 +587,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.posicionActual.numeroEntrega,
                         this.solpActual.posicionActual.selectGrupoCompras,
                         this.solpActual.posicionActual.selectArticuloCompras,
-                        this.solpActual.posicionActual.selectMonedaCompras
+                        this.solpActual.posicionActual.monedaSeleccionada
                     ]);
+                    
                     break;
                     case EnumPasoSolp.SolpSubposiciones:
                         paso.Completo = this.listaStringCompleta([
@@ -610,6 +646,98 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
 
         return false; //<-- Prevent Refresh
+    }
+
+    preview(){
+        this.guardarCambios(true);
+    }
+
+    salir() {
+        this.navService.navegarSeccion('/compras');
+    }
+
+    cancelarSolp() {
+        this.confirmationService.confirm({
+            key: 'cancelarSolp',
+            message: '¿Está seguro que desea volver a la pantalla principal? No se conservaran los cambios no guardados.',
+            accept: () => {
+                this.salir();
+            },
+            reject: () => {  
+            }
+        });
+    }
+
+    cancelarFinalizar() {
+        this.displayFinalizar = false;
+    }
+
+
+    ultimoPasoSolp() {
+        this.confirmationService.confirm({
+                    key: 'ultimoPasoSolp',
+                    message: 'Está a punto de enviar a SOLP sin documento a xxxx ¿Desea continuar?', 
+                    accept: () => {
+            
+                    },
+                    reject: () => {
+                        this.salir();  
+                    }
+                });
+
+    }
+
+    finalizar() {
+        this.guardarCambios();
+        this.displayFinalizar = false;
+        this.displaySAP = true; 
+    }
+
+    showDialog() {
+        this.displayFinalizar = true;           
+    }
+
+    generarZipPliego(idSolp){
+        this.blockUI.start('Generando ')
+        this.service.descargarZipPliego(idSolp)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            this.blockUI.stop();
+                            return false;
+                        }
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    // this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
     }
 
 }

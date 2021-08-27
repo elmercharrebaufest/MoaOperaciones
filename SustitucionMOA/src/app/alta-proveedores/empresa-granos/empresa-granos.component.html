@@ -7,7 +7,7 @@
 
             <div>
                 <div class="col-xs-12 col-sm-6">
-                    <div class="step-container shadow" name="Step 1" label="Informe comercial" *ngIf="!esCorredor">
+                    <div class="step-container shadow" name="Step 1" label="Informe comercial" *ngIf="!esCorredor || puedeAltaInterna">
                         <div class="col-xs-12 col-md-12 step-container-header">
                             Informe comercial
                         </div>
@@ -49,7 +49,7 @@
                         </div>
                     </div>
 
-                    <div class="step-container shadow" name="Step 1" label="Carta de presentación" *ngIf="esCorredor">
+                    <div class="step-container shadow" name="Step 1" label="Carta de presentación" *ngIf="esCorredor && !puedeAltaInterna">
                         <div class="col-xs-12 col-md-12 step-container-header">
                             Carta de presentación
                         </div>
@@ -355,13 +355,41 @@
                         </div>
                     </div>
 
+                    <div *ngIf="altaInterna" class="step-container shadow" name="Step 3" label="VínculosconMolinos">
+                        <div class="col-xs-12 col-md-12 step-container-header">
+                            V&iacute;nculos con Molinos
+                        </div>
+                        <div class="container-fluid">
+                            <div class="col-xs-12">
+
+                                <label for="DDJJ">
+                                    <span class="link-adjuntar">Adjuntar</span> Archivo DDJJ
+                                    <span class="requerido">*</span>
+                                </label>
+                                <input style="display:none" type="file" class="form-control-file" id="DDJJ"
+                                    (change)="handleFileInput($event.target.files, 'DDJJ')">
+
+                                <div class="container-archivos">
+                                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'DDJJ'">
+                                        <a class="link-archivo" (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+
+                                        <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
+                                            title="Eliminar Adjunto">Eliminar</a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
 
             <div class="container-fluid">
                 <div class="col-xs-12">
                     <div class="accordion" id="accordionExample">
-                        <div class="card z-depth-0 bordered">
+                        <div class="card z-depth-0 bordered" *ngIf="!puedeAltaInterna">
                             <div class="card-header" id="headingOne">
                                 <h5 class="mb-0">
                                     <button class="titulos " type="button" data-toggle="collapse"
@@ -467,7 +495,7 @@
                             </div>
                         </div>
 
-                        <div class="card z-depth-0 bordered">
+                        <div class="card z-depth-0 bordered" *ngIf="!puedeAltaInterna">
                             <div class="card-header" id="headingTwo">
                                 <h5 class="mb-0">
                                     <button class="collapsed titulos" type="button" data-toggle="collapse"
@@ -668,17 +696,27 @@
                 <div class="step-actions enviar">
 
                     <!--  MISMO BOTON QUE EL DE LA LINEA 720 *ngIf="!esAltaInternaGranos"-->
-                    <button *ngIf="esGuardarYNotificar" type="button" id="openModalNotificacion" data-toggle="modal"
+                    <button *ngIf="!puedeAltaInterna" type="button" id="openModalNotificacion" data-toggle="modal"
                         style="display:none" data-target="#modalNotificación" class="btn-custom btn-azul"></button>
-                    <input *ngIf="esGuardarYNotificar" type="submit" (click)="onSubmit()"
+                    <input *ngIf="!puedeAltaInterna" type="submit" (click)="onSubmit()"
                         class="btn-custom btn-guardar btn-mediano" value="Enviar">
 
                     <!--Granos-->
                     <!-- empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) -->
-                    <!--si viene de listado de altas pendientes -->
-                    <input type="submit" *ngIf="!esGuardarYNotificar" (click)="onNotificar()"
-                        class="btn-custom btn-guardar btn-mediano" value="Notificar">
-                    <!--Fin altas pendientes -->
+                    <!--si viene de listado de altas pendientes-->
+                    <input type="submit" *ngIf="puedeAltaInterna" (click)="onNotificar()"
+                        class="btn-custom btn-guardar btn-mediano" value="Enviar">
+
+                    <!--
+                    <button *ngIf="altaInterna" type="button" 
+                        style="display:none" class="btn-custom btn-azul"></button>
+                    <input *ngIf="altaInterna" type="submit" (click)="onSubmit()"
+                        class="btn-custom btn-guardar btn-mediano" value="Enviar">
+                    
+                    <button *ngIf="!altaInterna" type="button" id="openModalNotificacion" data-toggle="modal"
+                        style="display:none" data-target="#modalNotificación" class="btn-custom btn-azul"></button>
+                    <input *ngIf="!altaInterna" type="submit" (click)="onSubmit()"
+                        class="btn-custom btn-guardar btn-mediano" value="Enviar">-->
                 </div>
             </div>
         </div>

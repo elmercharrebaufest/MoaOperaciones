@@ -535,6 +535,15 @@ namespace SustitucionMOAUtils.Services
             var cuerpo = string.Format(cuerpoTemplate, proveedor.RazonSocial, "observada", !string.IsNullOrWhiteSpace(observacionParaElProveedor) ? observacionParaElProveedor : "-");
             string asunto = "Molinos Agro - Edición Requerida";
 
+            if (proveedor.AltaInterna ?? false)
+            {
+                if(proveedor.TipoProveedor.NombreCorto == "G")
+                {
+                    var usuario = repositorio.Obtener<Usuario>(U => U.Id == proveedor.IdSolicitanteInternoAltaGranos);
+                    copia.Add(usuario.Mail);
+                }
+            }
+
             EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, copia, null, null, null);
         }
 
@@ -543,6 +552,16 @@ namespace SustitucionMOAUtils.Services
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
             var cuerpo = string.Format(cuerpoTemplate, proveedor.RazonSocial, "rechazada", !string.IsNullOrWhiteSpace(observacionParaElProveedor) ? observacionParaElProveedor : "-");
             string asunto = "Molinos Agro - Solicitud Rechazada";
+
+            if (proveedor.AltaInterna ?? false)
+            {
+                if (proveedor.TipoProveedor.NombreCorto == "G")
+                {
+                    var usuario = repositorio.Obtener<Usuario>(U => U.Id == proveedor.IdSolicitanteInternoAltaGranos);
+                    copia.Add(usuario.Mail);
+                }
+            }
+
             EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, copia, null, null, null);
         }
 
@@ -559,6 +578,15 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 asunto = "Molinos Agro – Alta generada pendiente de envío documentación original.";
+            }
+
+            if (proveedor.AltaInterna ?? false)
+            {
+                if (proveedor.TipoProveedor.NombreCorto == "G")
+                {
+                    var usuario = repositorio.Obtener<Usuario>(U => U.Id == proveedor.IdSolicitanteInternoAltaGranos);
+                    copia.Add(usuario.Mail);
+                }
             }
 
             EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, copia, null, null, null);

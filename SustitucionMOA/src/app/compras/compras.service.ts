@@ -4,9 +4,15 @@ import { Observable } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './Solp';
 import { Http, Response, URLSearchParams } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class ComprasService extends BaseService {
+
+    public constructor(private http2: HttpClient, protected http: Http)
+    {
+        super(http);
+    }
 
     public getCombos(): Observable<any> {
         return this.http
@@ -52,10 +58,27 @@ export class ComprasService extends BaseService {
             .pipe(map(this.extractData));
     }
 
+    getEncodedPdf(idSolp): Observable<any> {
+        this.headers = new Headers();
+        this.headers.append("Content-Type", "application/json");
+        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
+        this.headers.append("Cache-control", "no-cache");
+        this.headers.append("Cache-control", "no-store");
+        this.headers.append("Expires", "0");
+        this.headers.append("Pragma", "no-cache");
+        let params: URLSearchParams = new URLSearchParams();
+        return this.http
+            .get("/api/compras/PreviewSolpPdf?idSolp=" + idSolp.toString(), {
+                headers: this.headers,
+            })
+            .pipe(map(this.extractData));
+    }
+
 
     public GuardarSolp(solp: Solp) {
         let solpJson = JSON.stringify({
             Id: solp.id,
+            TipoSolp: this.getObjetoCodigo(solp.tipoSolp),
             NombreDeObra: solp.nombreDePedido,
             FiscalContrato: solp.fiscalContrato,
             Telefono: solp.telefono,
@@ -68,6 +91,7 @@ export class ComprasService extends BaseService {
             TieneVisitaObraMasiva: solp.visitaDeObraMasiva,
             TieneObradores: solp.obradores,
             TieneMedioElevacion: solp.modoElevacion,
+            TieneAndamio: solp.andamio, // Agregada
             TieneTecnicoSeguridad: solp.tecnicoSeguridad,
             TieneDescripcionTecnica: solp.descripcionTecnica,
             TieneDocumentacionTecnica: solp.entregaDocumentacion,
@@ -106,17 +130,25 @@ export class ComprasService extends BaseService {
                     TipoImputacion: this.getObjetoCodigo(x.tipoImputacion),
                     TipoPosicion: this.getObjetoCodigo('SERVICIO'),
 
-                    Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.map(sp => {
+                    Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.filter(sp => {
+                        return !!((sp.codigoServicio && sp.codigoServicio.Codigo) || 
+                                sp.tareaSubcontratar || 
+                                (sp.cuentaMayor && sp.cuentaMayor.Codigo) || 
+                                sp.cuentaTd || 
+                                sp.precioBruto > 0 || 
+                                (sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo) ||
+                                (sp.tipoImputacion && sp.tipoImputacion.Codigo));
+                    }).map(sp => {
                         return {
                             Codigo: sp.id,
                             Numero: sp.subPosicion,
                             CodigoServicioSap: this.getObjetoCodigo(sp.codigoServicio && sp.codigoServicio.Codigo),
                             Tarea: sp.tareaSubcontratar,
-                            CuentaMayor: sp.cuentaMayor,
+                            CuentaMayor: this.getObjetoCodigo(sp.cuentaMayor && sp.cuentaMayor.Codigo),
                             Cantidad: sp.cuentaTd,
                             PrecioBruto: sp.precioBruto,
                             Unidad: this.getObjetoCodigo(sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo),
-                            TipoImputacionValor: sp.tipoImputacion
+                            TipoImputacionValor: this.getObjetoCodigo(sp.tipoImputacion && sp.tipoImputacion.Codigo, sp.tipoImputacion && sp.tipoImputacion.Tabla)
                         }
                     }) : null,
                     Proveedores: [
@@ -147,7 +179,12 @@ export class ComprasService extends BaseService {
     }
 
     getFechaHora(fecha: Date, hora: Date){
-        return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDay(), hora.getHours(), hora.getMinutes(), hora.getSeconds(), 0);
+        let fechaHora = new Date(fecha);
+        fechaHora.setHours(hora.getHours());
+        fecha.setMinutes(hora.getMinutes());
+        fecha.setSeconds(hora.getSeconds());
+
+        return fechaHora;
     }
 
     getCodigosProveedores(electrico, consultoria, civil, ingenieria, mecanico){
@@ -169,9 +206,14 @@ export class ComprasService extends BaseService {
         return [];
     }
 
-    getObjetoCodigo(codigo){
-        if(codigo)
+    getObjetoCodigo(codigo, tabla = null){
+        if(codigo){
+            if(tabla){
+                return { Codigo: codigo, Tabla: tabla}
+            }
+            
             return { Codigo: codigo }
+        }
         
         return null;
     }
@@ -189,5 +231,40 @@ export class ComprasService extends BaseService {
                 headers: this.headers,
             })
             .pipe(map(this.extractData));
+    }
+
+    descargarZipPliego(idSolp: number): Observable<any> {
+        this.headers = new Headers();
+        this.headers.append("Content-Type", "application/json");
+        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
+        this.headers.append("Cache-control", "no-cache");
+        this.headers.append("Cache-control", "no-store");
+        this.headers.append("Expires", "0");
+        this.headers.append("Pragma", "no-cache");
+        let params: URLSearchParams = new URLSearchParams();
+        params.set("solpId", idSolp.toString());
+        return this.http
+            .get("/api/compras/DescargarZipPliego", {
+                search: params,
+                headers: this.headers,
+            })
+            .pipe(map(this.extractData));
+    }
+
+    autocompleteSap(tabla: string, valor: string){
+        let params: HttpParams = new HttpParams()
+            .append('tabla', tabla)
+            .append('valor', valor)
+
+        return this.http2
+            .get<any[]>("/api/compras/AutocompleteTablaSap", { params: params })
+    }
+
+    obtenerDatosPorCodigosSap(codigos :any[]){
+        var payload = new FormData();
+        payload.append('codigosSap', JSON.stringify(codigos));
+
+        return this.http2
+            .post('/api/compras/ObtenerDatosPorCodigosSap',  payload , this.headers);
     }
 }

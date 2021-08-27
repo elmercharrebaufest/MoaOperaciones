@@ -1,0 +1,71 @@
+﻿body {
+    font-family: Cambria;
+    font-size: 14px;
+    text-align: justify;
+}
+
+
+.tablaPrimeraPagina
+{
+    border: 2px solid #4f81bd;
+    width: 600px;
+    height: 150px;
+
+}
+
+.fechaLugar 
+{
+    padding-top: 150px;
+    padding-bottom: 10px;
+    text-align: right;
+}
+
+.margenPrimeraTabla 
+{
+    margin-left: 10px;
+}
+
+.titulos 
+{
+    text-decoration: underline;
+}
+
+p 
+{
+    text-indent: 1em;
+    text-align: left;
+}
+
+.anexos 
+{
+    text-align: center;
+}
+
+th 
+{
+    text-align: center;
+}
+
+table.tablaPosiciones {
+    width: 100%;
+}
+
+/*table.tablaPosiciones,
+.tablaPosiciones td,
+.tablaPosiciones tr {
+    border: 1px solid black;
+}*/
+
+.tablaPosiciones,
+.tablaPosiciones td,
+.tablaPosiciones th,
+.tablaPosiciones tr,
+.tablaPosiciones table {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+/*table, td, th {
+    border: 1px none black;
+    border-collapse: collapse;
+}*/

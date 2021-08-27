@@ -10,8 +10,11 @@
 	[NroSolp] [nvarchar](max) NULL,
 	[EstadoSolpSap_Id] [int] NULL,
 	[EstadoDocumento_Id] [int] NULL,
+	[FechaBorrado] [datetime2] NULL, 
+	[FechaCreacionSap] [datetime2] NULL,
+	[FechaLiberacionSap] [datetime2] NULL,
+	[TipoSolp_Id] [int] NULL,
 
-[FechaBorrado] [datetime2] NULL, 
     CONSTRAINT [PK_dbo.Solp] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -20,4 +23,5 @@
 	CONSTRAINT [FK_Solp_TablaSap_ClaseDocumento] FOREIGN KEY (ClaseDocumento_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_Solp_TablaSap_EstadoSolpSap] FOREIGN KEY (EstadoSolpSap_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_Solp_TablaEstado_EstadoDocumento] FOREIGN KEY (EstadoDocumento_Id) REFERENCES [TablaEstado]([Id]),
+	CONSTRAINT [FK_Solp_TablaGeneral_TipoSolp] FOREIGN KEY (TipoSolp_Id) REFERENCES [TablaGeneral]([Id]),
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]

@@ -74,7 +74,7 @@ export class CrearContratoService extends BaseService {
         payload.append("contrato", JSON.stringify(contrato));
         return this.http
             .post('/api/CrearContrato/CrearContratoAPrecio', payload)
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
             .pipe(map(this.extractData));
     }
 
@@ -83,7 +83,7 @@ export class CrearContratoService extends BaseService {
         payload.append("contrato", JSON.stringify(contrato));
         return this.http
             .post('/api/CrearContrato/CrearContratoAFijar', payload)
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
             .pipe(map(this.extractData));
     }
 
@@ -122,7 +122,7 @@ export class CrearContratoService extends BaseService {
         payload.append("contrato", JSON.stringify(contrato));
         return this.http
             .post('/api/CrearContrato/CrearContratoFijacion', payload)
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
             .pipe(map(this.extractData));
     }
 
@@ -221,7 +221,7 @@ export class CrearContratoService extends BaseService {
 
         return this.http
             .post("/api/CrearContrato/AltaMasivaAcuerdo", formData)
-            .pipe(timeoutWith(120000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(120000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
             .pipe(map(this.extractData));
     }
 

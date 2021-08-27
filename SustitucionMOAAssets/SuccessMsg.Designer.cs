@@ -277,6 +277,33 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Se autorizaron correctamente los coeficientes unificados de ingresos brutos.
+        /// </summary>
+        public static string IngresosBrutosCoeficienteUnificadoAutorizado {
+            get {
+                return ResourceManager.GetString("IngresosBrutosCoeficienteUnificadoAutorizado", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El detalle de coeficientes unificados de ingresos brutos se ha actualizado correctamente..
+        /// </summary>
+        public static string IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK {
+            get {
+                return ResourceManager.GetString("IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El detalle de coeficientes unificados de ingresos brutos se ha actualizado correctamente..
+        /// </summary>
+        public static string IngresosBrutosCoeficienteUnificadoDetalleActualizadoOK {
+            get {
+                return ResourceManager.GetString("IngresosBrutosCoeficienteUnificadoDetalleActualizadoOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login exitoso.
         /// </summary>
         public static string LoginOk {

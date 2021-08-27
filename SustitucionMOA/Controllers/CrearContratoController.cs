@@ -845,23 +845,23 @@ namespace SustitucionMOA.Controllers
                             contrato.ContratoAcuerdoId = acuerdo.ContratoId;
                             contrato.CorredorId = acuerdo.CorredorId;
 
-                            contrato.ContratoCorredor = rows.ElementAt(ii)[0].ToString();
-                            contrato.ContratoVendedor = rows.ElementAt(ii)[1].ToString();
-                            contrato.MaterialId = materiales.Where(a => a.Descripcion.ToLower() == rows.ElementAt(ii)[2].ToString().ToLower()).Single().MaterialId;
-                            contrato.CampanaId = campanias.Where(a => a.Descripcion.Replace("-", "").ToLower() == rows.ElementAt(ii)[3].ToString().ToLower()).Single().CampaniaId;
-                            contrato.FechaOperacion = DateTime.Parse(rows.ElementAt(ii)[4].ToString());
-                            contrato.FechaDesde = DateTime.Parse(rows.ElementAt(ii)[5].ToString());
-                            contrato.FechaHasta = DateTime.Parse(rows.ElementAt(ii)[6].ToString());
-                            contrato.FechaEntrega = DateTime.Parse(rows.ElementAt(ii)[6].ToString());
-                            contrato.Cantidad = int.Parse(rows.ElementAt(ii)[7].ToString()) * 1000;
-                            contrato.Cuit = rows.ElementAt(ii)[8].ToString();
-                            contrato.ClasificacionId = rows.ElementAt(ii)[9].ToString().ToLower() == "productor" ? 1 : rows.ElementAt(ii)[9].ToString().ToLower() == "acopiador" ? 2 : 3;
-                            contrato.PlanCanje = rows.ElementAt(ii)[10].ToString() == "X";
-                            contrato.Consignatario = rows.ElementAt(ii)[11].ToString() == "X";
-                            contrato.DestinoId = centros.Where(a => a.Descripcion.ToLower() == rows.ElementAt(ii)[12].ToString().ToLower()).Single().Id;
-                            contrato.LocalidadId = int.Parse(rows.ElementAt(ii)[13].ToString());
-                            contrato.ProvinciaId = int.Parse(rows.ElementAt(ii)[14].ToString());
-                            contrato.Observacion = ii.ToString();
+                            contrato.ContratoCorredor = rows.ElementAt(ii)[0].ToString().Trim();
+                            contrato.ContratoVendedor = rows.ElementAt(ii)[1].ToString().Trim();
+                            contrato.MaterialId = materiales.Where(a => a.Descripcion.ToLower() == rows.ElementAt(ii)[2].ToString().Trim().ToLower()).Single().MaterialId;
+                            contrato.CampanaId = campanias.Where(a => a.Descripcion.Replace("-", "").ToLower() == rows.ElementAt(ii)[3].ToString().Trim().ToLower()).Single().CampaniaId;
+                            contrato.FechaOperacion = DateTime.Parse(rows.ElementAt(ii)[4].ToString().Trim());
+                            contrato.FechaDesde = DateTime.Parse(rows.ElementAt(ii)[5].ToString().Trim());
+                            contrato.FechaHasta = DateTime.Parse(rows.ElementAt(ii)[6].ToString().Trim());
+                            contrato.FechaEntrega = DateTime.Parse(rows.ElementAt(ii)[6].ToString().Trim());
+                            contrato.Cantidad = int.Parse(rows.ElementAt(ii)[7].ToString().Trim()) * 1000;
+                            contrato.Cuit = rows.ElementAt(ii)[8].ToString().Trim();
+                            contrato.ClasificacionId = rows.ElementAt(ii)[9].ToString().Trim().ToLower() == "productor" ? 1 : rows.ElementAt(ii)[9].ToString().Trim().ToLower() == "acopiador" ? 2 : 3;
+                            contrato.PlanCanje = rows.ElementAt(ii)[10].ToString().Trim().ToUpper() == "X";
+                            contrato.Consignatario = rows.ElementAt(ii)[11].ToString().Trim().ToUpper() == "X";
+                            contrato.DestinoId = centros.Where(a => a.Descripcion.ToLower() == rows.ElementAt(ii)[12].ToString().Trim().ToLower()).Single().Id;
+                            contrato.LocalidadId = int.Parse(rows.ElementAt(ii)[13].ToString().Trim());
+                            contrato.ProvinciaId = int.Parse(rows.ElementAt(ii)[14].ToString().Trim());
+                            contrato.Observacion = ii.ToString().Trim();
                             contrato.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
 
@@ -1196,6 +1196,7 @@ namespace SustitucionMOA.Controllers
             string vendedor = SessionPersister.Proveedor;
             string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
+
             if (!usuario.EsAdmin() && !usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
             {
                 if (!usuario.TieneProveedor(vendedor))

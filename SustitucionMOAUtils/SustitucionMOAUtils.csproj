@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.6.1\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -48,6 +51,9 @@
     <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itextsharp.xmlworker.5.5.13\lib\itextsharp.xmlworker.dll</HintPath>
     </Reference>
     <Reference Include="Kendo.DynamicLinq, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Kendo.DynamicLinq.1.1.2.0\lib\net40\Kendo.DynamicLinq.dll</HintPath>
@@ -117,6 +123,8 @@
     <Compile Include="Export\ExcelImport.cs" />
     <Compile Include="Export\ExcelValidator.cs" />
     <Compile Include="Export\PDFExport.cs" />
+    <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
+    <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\IAltaEmpresaNoGranosService.cs" />
     <Compile Include="Interfaces\IComprasService.cs" />
     <Compile Include="Interfaces\IContactoMailService.cs" />
@@ -130,6 +138,7 @@
     <Compile Include="Interfaces\IAltaEmpresaGranosService.cs" />
     <Compile Include="Interfaces\IAzureB2CService.cs" />
     <Compile Include="Interfaces\IDataAgroService.cs" />
+    <Compile Include="Interfaces\IGestionImpuestosService.cs" />
     <Compile Include="Interfaces\IHangfireJob.cs" />
     <Compile Include="Interfaces\ILiquidacionService.cs" />
     <Compile Include="Interfaces\INotificacionService.cs" />
@@ -138,6 +147,7 @@
     <Compile Include="Interfaces\ITicketPesadaService.cs" />
     <Compile Include="Interfaces\ILogPesificacionService.cs" />
     <Compile Include="Interfaces\IExternalApiService.cs" />
+    <Compile Include="Interfaces\Helpers\ITimeProvider.cs" />
     <Compile Include="Interfaces\IUsuarioService.cs" />
     <Compile Include="Interfaces\IVendedorService.cs" />
     <Compile Include="Interfaces\Validadores\IValidadorPesificacion.cs" />
@@ -162,8 +172,10 @@
     <Compile Include="Services\DataAgroService.cs" />
     <Compile Include="Services\FacturaService.cs" />
     <Compile Include="Services\FleteService.cs" />
+    <Compile Include="Services\GestionImpuestosService.cs" />
     <Compile Include="Services\HomeService.cs" />
     <Compile Include="Interfaces\ICartaPorteService.cs" />
+    <Compile Include="Interfaces\IPesificacionService.cs" />
     <Compile Include="Services\LiquidacionService.cs" />
     <Compile Include="Services\LoginService.cs" />
     <Compile Include="Services\NotificacionService.cs" />
@@ -225,6 +237,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Templates\PliegoSolpTemplate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\PliegoSolpTemplate.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
