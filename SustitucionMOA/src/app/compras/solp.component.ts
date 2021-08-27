@@ -396,6 +396,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                         subpos.id = sp.Codigo;
                         subpos.codigoServicio = sp.CodigoServicioSap;
+                        subpos.tareaSubcontratarObj = sp.CodigoServicioSap;
                         subpos.tareaSubcontratar = sp.Tarea;
                         subpos.cuentaMayor = sp.CuentaMayor;
                         subpos.cuentaTd = sp.Cantidad;

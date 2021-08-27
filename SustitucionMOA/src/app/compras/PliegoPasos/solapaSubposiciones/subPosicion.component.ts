@@ -47,7 +47,7 @@ export class SubPosicionComponent extends ListBaseComponent {
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
     columnasGrilla: any = [
             { nombre: "codigoServicio", tipo: "codigoSap", tabla:"CodigoServicioSap" }, 
-            { nombre: "tareaSubcontratar", tipo: "string" }, 
+            { nombre: "tareaSubcontratar", tipo: "tarea" }, 
             { nombre: "cuentaTd", tipo: "numerico" }, 
             { nombre: "unidadMedida", tipo: "combo" }, 
             { nombre: "precioBruto", tipo: "decimal" }, 
@@ -165,7 +165,7 @@ export class SubPosicionComponent extends ListBaseComponent {
         });
     }
 
-    onPaste(evento: any, indexColumna: number, rowIndex: number): void {
+    onPaste(evento: any, indexColumna: number, rowIndex: number, dt): void {
 
         let datos = evento.clipboardData.getData("text");
         if (!datos.includes("Recuperando datos")) {
@@ -181,6 +181,7 @@ export class SubPosicionComponent extends ListBaseComponent {
             });
             this.calcularTotalSubPosicion();
             this.completarCodigosSapOnPaste();
+            this.endEditCell(dt);
         }
     }
 
@@ -224,6 +225,10 @@ export class SubPosicionComponent extends ListBaseComponent {
                         CodigoSap: columnas[index],
                         Tabla: columna.tabla || this.tablaAFiltrar
                     });
+                    break;
+                case "tarea":
+                    fila[columna.nombre] = columnas[index];
+                    fila.tareaSubcontratarObj = { Descripcion: columnas[index] }
                     break;
                 default:
                     fila[columna.nombre] = columnas[index];
@@ -270,6 +275,8 @@ export class SubPosicionComponent extends ListBaseComponent {
                             this.listadoPosicionActul.forEach(c => {
                                 if(c.codigoServicio && c.codigoServicio.CodigoSap && !c.codigoServicio.Codigo){
                                     c.codigoServicio = result.find(x=>x.Tabla == 'CodigoServicioSap' && x.CodigoSap == c.codigoServicio.CodigoSap);
+                                    c.tareaSubcontratarObj = {...c.codigoServicio};
+                                    c.tareaSubcontratar = c.codigoServicio.Descripcion;
                                 }
 
                                 if(c.cuentaMayor && c.cuentaMayor.CodigoSap && !c.cuentaMayor.Codigo){
@@ -299,7 +306,7 @@ export class SubPosicionComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    autocompleteSap(event, tablaAFiltrar){
+    autocompleteSap(event, tablaAFiltrar, soloDescripcion = false){
         try{
             this.subscription = this.service.autocompleteSap(tablaAFiltrar || this.tablaAFiltrar, event.query.toLowerCase()).subscribe(
                 (result: any) => {
@@ -310,7 +317,7 @@ export class SubPosicionComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else { 
-                        this.autocomplete = result;
+                        this.autocomplete = soloDescripcion ? result.map(x=> x.Descripcion.trim()) : result;
                     }
                 },
                 error => {
@@ -326,4 +333,24 @@ export class SubPosicionComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
+    onSelectServicio(posicion:SubPosicionViewModel, dt){
+        posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
+        posicion.tareaSubcontratarObj = {...posicion.codigoServicio};
+        this.endEditCell(dt);
+    }
+
+    onSelectTarea(posicion:SubPosicionViewModel, dt){
+        posicion.tareaSubcontratar = posicion.tareaSubcontratarObj.Descripcion;
+        posicion.codigoServicio = {...posicion.tareaSubcontratarObj};
+        this.endEditCell(dt);
+    }
+
+    onBlueTarea(event, posicion:SubPosicionViewModel){
+        posicion.tareaSubcontratar = event.target.value;
+        posicion.tareaSubcontratarObj = {Descripcion:event.target.value}
+    }
+
+    endEditCell(dt){
+        dt.closeCellEdit();
+    }
 }

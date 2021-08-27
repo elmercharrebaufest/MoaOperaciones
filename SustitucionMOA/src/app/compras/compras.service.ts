@@ -130,9 +130,9 @@ export class ComprasService extends BaseService {
                     TipoPosicion: this.getObjetoCodigo('SERVICIO'),
 
                     Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.filter(sp => {
-                        return !!(sp.codigoServicio || 
+                        return !!((sp.codigoServicio && sp.codigoServicio.Codigo) || 
                                 sp.tareaSubcontratar || 
-                                sp.cuentaMayor || 
+                                (sp.cuentaMayor && sp.cuentaMayor.Codigo) || 
                                 sp.cuentaTd || 
                                 sp.precioBruto > 0 || 
                                 (sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo) ||
@@ -142,7 +142,7 @@ export class ComprasService extends BaseService {
                             Codigo: sp.id,
                             Numero: sp.subPosicion,
                             CodigoServicioSap: this.getObjetoCodigo(sp.codigoServicio && sp.codigoServicio.Codigo),
-                            Tarea: sp.codigoServicio && sp.codigoServicio.Descripcion,
+                            Tarea: sp.tareaSubcontratar,
                             CuentaMayor: this.getObjetoCodigo(sp.cuentaMayor && sp.cuentaMayor.Codigo),
                             Cantidad: sp.cuentaTd,
                             PrecioBruto: sp.precioBruto,
