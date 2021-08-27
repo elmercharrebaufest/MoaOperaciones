@@ -479,7 +479,7 @@ namespace SustitucionMOAUtils.Services
                 FechaCreacion = x.FechaCreacion,
                 EstadoDocumento = new TablaEstadoDto(x.EstadoDocumento),
                 EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
-                //TipoSolp
+                TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                 VincularPliego = !x.Pliego_Id.HasValue,
 
 
