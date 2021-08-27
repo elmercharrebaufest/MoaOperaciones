@@ -377,7 +377,7 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'Centro' and Codig
 
 -- centro direccion
 
-IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1001') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1001', 'Uruguay', '4075', 'B1644HKG', 'AR') END
+IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1001') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1001', 'Uruguay 4075', '', 'B1644HKG', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1029') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1029', 'Benielli 398', '408411', '2200', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1030') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1030', 'Felipe Valetti 247', '22392', '2671', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1034') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1034', 'Ruta N° 5 Km.160', '22396', '6620', 'AR') END
@@ -391,26 +391,27 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1071') BEG
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1072') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1072', 'Est Gral Pinedo', '401153', '3732', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1073') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1073', '', '22400', '', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1074') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1074', 'Calle 11 y Scapigliatti', '', '2200', 'AR') END
-IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1086') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1086', 'Uruguay', '4075', 'B1644HKG', 'AR') END
+IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1086') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1086', 'Uruguay 4075', '', 'B1644HKG', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1087') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1087', 'Héroes de Malvinas 8608', '', '2202', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1126') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1126', 'Continuación de calle Córdoba', '198761', '6142', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1127') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1127', 'Ruta Nacional N° 98 Km 224,5', '193001', '3064', 'AR') END
-IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1164') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1164', 'Av San Martin', '2500', '', 'AR') END
+IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1164') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1164', 'Av San Martin 2500', '', '', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1165') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1165', '', '', '', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1166') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1166', '', '', '', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1167') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1167', '', '', '', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1168') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1168', '', '', '', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1169') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1169', '', '', '', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1170') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1170', 'Av. Belgrano 2015', '12699', '3064', 'AR') END
-IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1500') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1500', 'Uruguay', '4075', 'B1644HKG', 'AR') END
+IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1500') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1500', 'Uruguay 4075', '', 'B1644HKG', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '1600') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('1600', 'Benielli 398', '22400', '2200', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '2000') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('2000', 'Benielli 398', '404189', '2200', 'AR') END
-IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '2001') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('2001', 'Uruguay', '4075', 'B1644HKG', 'AR') END
+IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '2001') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('2001', 'Uruguay 4075', '', 'B1644HKG', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '5000') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('5000', 'Benielli 523', '404189', '2200', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '6000') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('6000', 'Colectora Ruta 12 y Autopista', '404189', '2200', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '8107') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('8107', 'Benielli 398', '404189', '2200', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '8118') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('8118', 'Av. Las Rosas 190', '', 'B2900FVN', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '9000') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('9000', 'Uriburu 3364', '22387', '2000', 'AR') END
+
 
 -- Alamacen
 
