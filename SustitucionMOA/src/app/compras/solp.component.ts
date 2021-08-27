@@ -299,7 +299,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         // Paso 1
         this.solpActual.id = solp.Id;
-        this.solpActual.tipoSolp = solp.TipoSolp;
+        this.solpActual.tipoSolp = solp.TipoSolp && solp.TipoSolp.Codigo || '';
         this.solpActual.nombreDePedido = solp.NombreDeObra || '';
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
         this.solpActual.telefono = solp.Telefono || '';
