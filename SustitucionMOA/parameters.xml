@@ -122,14 +122,6 @@
                            /@value" />
 	</parameter>
 
-	<parameter name="EmailToUsuariosCompras Config">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/appSettings/add[@key='EmailToUsuariosCompras']
-                           /@value" />
-	</parameter>
-
-
-
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client

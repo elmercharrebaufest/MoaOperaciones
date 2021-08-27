@@ -10,6 +10,7 @@ import { SubPosicionViewModel } from "./PliegoPasos/solapaSubposiciones/subPosic
 
 export class Solp {
     public id: number;
+    public tipoSolp: string;
 
     //paso 1
     public nombreDePedido: string;

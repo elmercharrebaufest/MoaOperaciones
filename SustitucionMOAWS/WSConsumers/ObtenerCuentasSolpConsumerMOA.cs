@@ -8,21 +8,27 @@ using System.Threading.Tasks;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using System.Net;
+using SustitucionMOAWS.Interfaces;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    public class ObtenerCuentasSolpConsumerMOA
+    public class ObtenerCuentasSolpConsumerMOA : IObtenerCuentasSolpConsumerMOA
     {
         private const string COMP_CODE = "MOA";
 
-        SI_MMRFC_OBTENER_CUENTASClient service = new SI_MMRFC_OBTENER_CUENTASClient();
+        SI_MMRFC_OBTENER_CUENTASClient service;
+
+        public ObtenerCuentasSolpConsumerMOA()
+        {
+            service = new SI_MMRFC_OBTENER_CUENTASClient();
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+        }
 
         public object request()
         {
             try
             {
-                service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-                service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
                 string IM_COMP_CODE = COMP_CODE;
                 string IM_GL_ACCOUNT = "";
                 ZMPES5760[] EX_GL_ACCOUNT_LIST = new ZMPES5760[] { };

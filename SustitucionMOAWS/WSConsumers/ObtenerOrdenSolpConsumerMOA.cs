@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ObtenerOrdenSolpWebServiceMOA;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,23 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    public class ObtenerOrdenSolpConsumerMOA
+    public class ObtenerOrdenSolpConsumerMOA : IObtenerOrdenSolpConsumerMOA
     {
-        SI_MMRFC_OBTENER_ORDENClient service = new SI_MMRFC_OBTENER_ORDENClient();
+        SI_MMRFC_OBTENER_ORDENClient service;
         private const string COMP_CODE = "MOA";
+
+        public ObtenerOrdenSolpConsumerMOA()
+        {
+            service = new SI_MMRFC_OBTENER_ORDENClient();
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+        }
+
+
         public object request()
         {
             try
              {
-                service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-                service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
                 string IM_NAME = "";
                 string IM_ORDER = "";
                 string IM_TYPE = "";
