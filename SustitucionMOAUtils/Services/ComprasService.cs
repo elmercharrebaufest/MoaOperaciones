@@ -112,6 +112,9 @@ namespace SustitucionMOAUtils.Services
                 if (solp.ClaseDocumento != null)
                     solpEntity.ClaseDocumento = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.ClaseDocumento && x.Codigo == solp.ClaseDocumento.Codigo);
 
+                if (solp.TipoSolp != null)
+                    solpEntity.TipoSolp = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoSolp && x.Codigo == solp.TipoSolp.Codigo);
+
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
@@ -438,7 +441,7 @@ namespace SustitucionMOAUtils.Services
                     EstadoDocumento = new TablaEstadoDto(x.EstadoDocumento),
                     EstadoSolpSapId = x.EstadoSolpSap_Id,
                     EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
-                    //TipoSolp
+                    TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                     VincularPliego = !x.Pliego_Id.HasValue,
                 });
 

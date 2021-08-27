@@ -246,6 +246,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             if(this.route.params){
                 this.route.params.forEach((params: Params) => {
                     if (params["id"] > 0) this.solpId = params["id"];
+                    if (params["tipoSolp"]) this.solpActual.tipoSolp = params["tipoSolp"];
                 });
 
                 if(this.solpId > 0){
@@ -298,6 +299,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         // Paso 1
         this.solpActual.id = solp.Id;
+        this.solpActual.tipoSolp = solp.TipoSolp;
         this.solpActual.nombreDePedido = solp.NombreDeObra || '';
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
         this.solpActual.telefono = solp.Telefono || '';

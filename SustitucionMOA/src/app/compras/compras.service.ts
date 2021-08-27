@@ -78,6 +78,7 @@ export class ComprasService extends BaseService {
     public GuardarSolp(solp: Solp) {
         let solpJson = JSON.stringify({
             Id: solp.id,
+            TipoSolp: this.getObjetoCodigo(solp.tipoSolp),
             NombreDeObra: solp.nombreDePedido,
             FiscalContrato: solp.fiscalContrato,
             Telefono: solp.telefono,

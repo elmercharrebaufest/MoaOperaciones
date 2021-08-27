@@ -45,6 +45,7 @@ namespace SustitucionMOAModel.Dto
         public TablaEstadoDto EstadoDocumento { get; set; }
         public bool VincularPliego { get; set; }
         public TablaSapDto EstadoSolpSap { get; set; }
+        public TablaGeneralDto TipoSolp { get; set; }
 
         public List<SolpPosicionDto> Posiciones { get; set; }
         public string Pdf { get; set; }
@@ -86,9 +87,8 @@ namespace SustitucionMOAModel.Dto
             this.EstadoDocumento = new TablaEstadoDto(entity.EstadoDocumento);
             //this.VincularPliego = entity.VincularPliego.HasValue && entity.VincularPliego.Value;
             this.EstadoSolpSap = new TablaSapDto(entity.EstadoSolpSap);
+            this.TipoSolp = new TablaGeneralDto(entity.TipoSolp);
             this.Posiciones = new List<SolpPosicionDto>();
-
-
         }
     }
 
