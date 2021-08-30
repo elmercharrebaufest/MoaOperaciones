@@ -1,3 +1,15 @@
 ﻿.btn-borrar {
-    background-color: #dd4040
+    background-color: #009688
+}
+
+.btn-sin-fondo {
+    background: none;
+    border: none;
+}
+
+.btn-descargar {
+    font-size: 22px;
+    color: #009688;
+    margin-right: 5px;
+    height: 15px
 }
