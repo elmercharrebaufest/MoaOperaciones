@@ -31,6 +31,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 
     getListado() {
         this.mensajeComponent.setMsgsEmpty();
+
         this.spinnerComponent.showIt();
         this.data = null;
         try {
