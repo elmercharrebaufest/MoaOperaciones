@@ -165,7 +165,6 @@ export class VentaSustentableService extends BaseService {
         params.set("proveedorId", proveedorId.toString());
 
         return this.http
-            //.get('/api/GestionImpuestos/DescargarFormularioCM05?idCabecera=' + idCabecera, { headers: this.headers })
             .get('/api/CampoSustentable/DescargarArchivoKMZ', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     }

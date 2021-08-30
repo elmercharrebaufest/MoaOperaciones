@@ -118,17 +118,15 @@
                             <td>{{campo.NombreCampo}}</td>
                             <td>{{campo.CUITProveedor}}</td>
                             <td [ngClass]="{'estadoRechazado': campo.ToneladasAprobadas === 0,
-                                'estadoAprobado' : campo.ToneladasAprobadas>
-                                0,
-                                'estadoEnGestion': campo.ToneladasAprobadas === -1}">{{campo.Estado}}
-                            </td>
+                                            'estadoAprobado': campo.ToneladasAprobadas > 0,
+                                            'estadoEnGestion': campo.ToneladasAprobadas === -1}">{{campo.Estado}}</td>
 
                             <td style="text-align: center;">
                                 <span *ngIf="(campo.MotivoRechazo || '').length < 50">
                                     {{campo.MotivoRechazo || ''}}
                                 </span>
                                 <span *ngIf="(campo.MotivoRechazo || '').length >= 50" class="fa fa-info-circle"
-                                      toggle="tooltip" title="{{campo.MotivoRechazo3 || ''}}"></span>
+                                      toggle="tooltip" title="{{campo.MotivoRechazo || ''}}"></span>
 
 
                             </td>

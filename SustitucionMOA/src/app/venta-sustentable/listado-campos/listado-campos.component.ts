@@ -194,7 +194,6 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
                 }
             },
             (error) => {
-                //this.spinnerSmallComponent.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         )
