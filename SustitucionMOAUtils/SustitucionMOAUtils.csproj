@@ -150,6 +150,7 @@
     <Compile Include="Interfaces\IUsuarioService.cs" />
     <Compile Include="Interfaces\IVendedorService.cs" />
     <Compile Include="Interfaces\Validadores\IValidadorPesificacion.cs" />
+    <Compile Include="Interfaces\Wrappers\IFileWrapper.cs" />
     <Compile Include="Interfaces\Wrappers\IExcelExportWrapper.cs" />
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -191,6 +192,7 @@
     <Compile Include="Services\VendedorService.cs" />
     <Compile Include="Validadores\ResultadoValidacionPesificacion.cs" />
     <Compile Include="Validadores\ValidadorPesificacion.cs" />
+    <Compile Include="Wrappers\FileWrapper.cs" />
     <Compile Include="Wrappers\ExcelExportWrapper.cs" />
   </ItemGroup>
   <ItemGroup>

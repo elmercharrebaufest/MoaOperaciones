@@ -590,5 +590,12 @@ namespace SustitucionMOAUtils.Services
                 return repositorio.Listar(proyeccion, p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc);
             }
         }
+
+        public string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId)
+        {
+            CampoProveedor campoProveedor = repositorio.Obtener<CampoProveedor>(x => x.Proveedor_Id == proveedorId && x.CampoCosecha_Id == campoCosechaId);
+
+            return campoProveedor.Archivo.Ruta;
+        }
     }
 }

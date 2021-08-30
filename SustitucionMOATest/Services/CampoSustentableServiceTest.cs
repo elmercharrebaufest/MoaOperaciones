@@ -1107,5 +1107,32 @@ namespace SustitucionMOATest.Services
             this.repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoSustentableExportBaseDTO>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
             this.repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoSustentableExportBaseDTO>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), 0, "FechaCreacion", DirOrden.Desc), Times.Once);
         }
+
+        [Test]
+        public void ObtenerRutaArchivoKMZOk()
+        {
+            int campoCosechaIdTest = 3;
+            int proveedorIdTest = 2;
+
+            var campoProveedorList = new List<CampoProveedor>
+            {
+                new CampoProveedor { CampoCosecha_Id = 1, Proveedor_Id = 1, Archivo = new Archivo { Ruta = "ruta1" } },
+                new CampoProveedor { CampoCosecha_Id = 2, Proveedor_Id = 1, Archivo = new Archivo { Ruta = "ruta2" } },
+                new CampoProveedor { CampoCosecha_Id = 3, Proveedor_Id = 1, Archivo = new Archivo { Ruta = "ruta3" } },
+                new CampoProveedor { CampoCosecha_Id = 1, Proveedor_Id = 2, Archivo = new Archivo { Ruta = "ruta4" } },
+                new CampoProveedor { CampoCosecha_Id = 2, Proveedor_Id = 2, Archivo = new Archivo { Ruta = "ruta5" } },
+                new CampoProveedor { CampoCosecha_Id = 3, Proveedor_Id = 2, Archivo = new Archivo { Ruta = "ruta6" } },
+            };
+
+            this.repositorioMock
+                .Setup(r => r.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>()))
+                .Returns<Expression<Func<CampoProveedor, bool>>>(q => campoProveedorList.SingleOrDefault(q.Compile()));
+
+            string result = target.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest);
+
+            Assert.AreEqual("ruta6", result);
+
+            this.repositorioMock.Verify(r => r.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>()), Times.Once);
+        }
     }
 }
