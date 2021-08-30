@@ -3,9 +3,9 @@
     <!-- Contiene todo -->
     <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <mensaje></mensaje>
+        <spinner></spinner>
         <div class="inputCompras">
             <div class="row myRow" style="padding-top: 2px;">
-
 
                 <!-- Row posiciones -->
                 <div class="row">
@@ -24,75 +24,85 @@
                                     <i *ngIf="item.value.posicionValida === false" class="fa fa-exclamation"
                                         style="color:red"></i>
                                 </ng-template>
-                            </p-dropdown>
-
-                           
+                            </p-dropdown>   
                         </div>
-
+                        <div *ngIf="posicionInvalida" class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 margenInput">
+                            * Posición invalida, revise el paso 5 (completar Texto Genérico y Tipo de Imputación).
+                        </div> 
+                    </div>
                     </div>
                 </div>
 
                 <div class="row"> 
-                    <div *ngIf="posicionInvalida" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 margenInput">
-                            * Posición invalida, revise el paso 5 (completar Texto Genérico y Tipo de Imputación).
-                        </div> 
-                    </div>
                     <div *ngIf="!posicionInvalida" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <!-- [scrollable]="true" -->
-                        <p-table [value]="listadoPosicionActul"  [rows]="20" [scrollable]="true" scrollHeight="400px" frozenWidth="20px"
+                        <p-table #dt [value]="listadoPosicionActul"  [rows]="20" [scrollable]="true" scrollHeight="400px" frozenWidth="20px"
                             (onEditInit)="nuevaPosicion($event)"
                              >
                             <ng-template pTemplate="header">
                                 <tr>
-                                    <th style="width: 5%;"><img (click)="eliminarSubPosicion()"
+                                    <th style="width: 4%;"><img (click)="eliminarSubPosicion()"
                                             src="../../../../../Content/images/icons/trashWhite.svg" alt="trashWhite"
-                                            style="padding: 8px;" class="pointer" /></th>
-                                    <th style="width: 5%;" data-toggle="tooltip" title="Servicio">#</th>
-                                    <th style="width: 9%;" data-toggle="tooltip" title="Código de Servicio">Cód. Servicio</th>
+                                         class="pointer" /></th>
+                                    <th style="width: 3%;" data-toggle="tooltip" title="Servicio">#</th>
+                                    <th style="width: 11%;" data-toggle="tooltip" title="Código de Servicio">Cód. Servicio</th>
                                     <th style="width: 30%;">Tarea a sub contratar</th>
                                     <th style="width: 8%;" data-toggle="tooltip" title="Cantidad">Ctd.</th>
                                     <th style="width: 10%;" data-toggle="tooltip" title="Unidad de Medida">UM</th>
                                     <th style="width: 10%;">Precio bruto</th>
-                                    <th style="width: 9%;" data-toggle="tooltip" title="Cuenta de mayor">Cta. de mayor</th>
+                                    <th style="width: 12%;" data-toggle="tooltip" title="Cuenta de mayor">Cta. de mayor</th>
                                     <th style="width: 12%;">{{tituloColumnaTipoDeImputacion}}</th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-posicion let-rowIndex="rowIndex">
-                                <tr>
-                                    <td style="width: 5%;">
+                                <tr style="text-align: center;">
+                                    <td style="width: 4%;">
                                         <p-checkbox [(ngModel)]="posicion.eliminar" binary="true"></p-checkbox>
                                     </td>
-                                    <td style="width: 5%;">
+                                    <td style="width: 3%;">
                                         {{posicion.subPosicion}}
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 9%;">
-                                        <p-cellEditor>
+                                    <td [pEditableColumn]="posicion" style="width: 11%; word-break: break-all;" >
+                                        <p-cellEditor >
                                             <ng-template pTemplate="input">
-                                                <input type="text"  [(ngModel)]="posicion.codigoServicio" pKeyFilter="int"
-                                                    (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio,rowIndex)">
+                                                <p-autoComplete [(ngModel)]="posicion.codigoServicio" [suggestions]="autocomplete" 
+                                                    dataKey="Id" ariaLabel="Codigo" field="CodigoSap" appendTo="body" [autoHighlight]="true" 
+                                                    emptyMessage="" [width]="400" [minLength]="2" [forceSelection]="true" 
+                                                    (completeMethod)="autocompleteSap($event, 'CodigoServicioSap')" 
+                                                    (onFocus)="$event.target.select()" 
+                                                    (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio,rowIndex,dt)"
+                                                    (onSelect)="onSelectServicio(posicion, dt)">
+                                                </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{posicion.codigoServicio}}
+                                                {{posicion.codigoServicio?.CodigoSap}}
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
                                     <td [pEditableColumn]="posicion" style="width: 30%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <input type="text" [(ngModel)]="posicion.tareaSubcontratar"
-                                                    (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex)">
+                                                <p-autoComplete [(ngModel)]="posicion.tareaSubcontratarObj" [suggestions]="autocomplete" 
+                                                    dataKey="Id" field="Descripcion"
+                                                    ariaLabel="Tarea" appendTo="body" [autoHighlight]="true" emptyMessage="" [minLength]="2" [forceSelection]="false" 
+                                                    (completeMethod)="autocompleteSap($event, 'CodigoServicioSap')" 
+                                                    (onFocus)=" $event.target.select()" 
+                                                    (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)"
+                                                    (onSelect)="onSelectTarea(posicion)"
+                                                    (onBlur)="onBlueTarea($event, posicion)">
+                                                </p-autoComplete>
                                             </ng-template>
-                                            <ng-template pTemplate="output">
+                                            <ng-template pTemplate="output" style="text-align: left;">
                                                 {{posicion.tareaSubcontratar}}
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 8%;">
+                                    <td [pEditableColumn]="posicion" style="width: 8%; word-break: break-all;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <input type="text" pKeyFilter="num"  [(ngModel)]="posicion.cuentaTd"
-                                                    (paste)="onPaste($event,enumColumnaSubPosicion.CuentaTd,rowIndex)">
+                                                    (paste)="onPaste($event,enumColumnaSubPosicion.CuentaTd,rowIndex,dt)">
                                             </ng-template>
                                             <ng-template pTemplate="output">
                                                 {{posicion.cuentaTd}}
@@ -102,29 +112,23 @@
                                     <td [pEditableColumn]="posicion" style="width: 10%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <!-- <p-dropdown [options]="combos.Unidades" [(ngModel)]="posicion.unidadSeleccionada" placeholder="Seleccione" optionLabel="Descripcion" [showClear]="true" appendTo="body"></p-dropdown> -->
-
-
                                                 <p-autoComplete [(ngModel)]="posicion.unidadSeleccionada" [suggestions]="unidades" 
                                                 dataKey="Id" ariaLabel="Descripcion" field="Descripcion" appendTo="body" [autoHighlight]="true" emptyMessage="Ningúna unidad encontrada"
                                                 [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true" 
-                                                (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')" (onFocus)=" $event.target.select()" >
+                                                (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')" (onFocus)=" $event.target.select()"
+                                                (onSelect)="endEditCell(dt)" >
                                                 </p-autoComplete>    
-
-
                                             </ng-template>
                                             <ng-template pTemplate="output">
                                                 {{posicion.unidadSeleccionada.Descripcion}}
-                                                <!-- <p-dropdown [options]="unidades" [(ngModel)]="posicion.unidadSeleccionada" placeholder="Seleccione" optionLabel="Descripcion" [showClear]="true" appendTo="body"></p-dropdown> -->
                                             </ng-template>
-                                           
                                         </p-cellEditor>
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 10%;">
+                                    <td [pEditableColumn]="posicion" style="width: 10%; word-break: break-all;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <input type="text" pKeyFilter="num"  [(ngModel)]="posicion.precioBruto"
-                                                    (paste)="onPaste($event,enumColumnaSubPosicion.PrecioBruto,rowIndex)"
+                                                    (paste)="onPaste($event,enumColumnaSubPosicion.PrecioBruto,rowIndex,dt)"
                                                     (change)="calcularTotalSubPosicion()">
                                             </ng-template>
                                             <ng-template pTemplate="output">
@@ -133,14 +137,18 @@
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 9%;">
+                                    <td [pEditableColumn]="posicion" style="width: 12%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <input type="text" pKeyFilter="int"  [(ngModel)]="posicion.cuentaMayor"
-                                                    (paste)="onPaste($event,enumColumnaSubPosicion.CuentaMayor,rowIndex)">
+                                                    <p-autoComplete [(ngModel)]="posicion.cuentaMayor" [suggestions]="autocomplete" 
+                                                    dataKey="Id" ariaLabel="CuentaMayor" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="" [minLength]="2" [forceSelection]="true" 
+                                                    (completeMethod)="autocompleteSap($event, 'CuentasSolpSap')" (onFocus)=" $event.target.select()"
+                                                    (paste)="onPaste($event,enumColumnaSubPosicion.CuentaMayor,rowIndex,dt)"
+                                                    (onSelect)="endEditCell(dt)">
+                                            </p-autoComplete>    
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{posicion.cuentaMayor}}
+                                                {{posicion.cuentaMayor?.CodigoDescripcion}}
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
@@ -151,29 +159,26 @@
                                                     <p-autoComplete [(ngModel)]="posicion.tipoImputacion" [suggestions]="autocomplete" 
                                                             dataKey="Id" ariaLabel="Descripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage=""
                                                             [minLength]="2" [forceSelection]="true" 
-                                                            (completeMethod)="autocompleteSap($event, '')" (onFocus)=" $event.target.select()">
+                                                            (completeMethod)="autocompleteSap($event, '')" 
+                                                            (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.TipoImputacion,rowIndex,dt)"
+                                                            (onSelect)="endEditCell(dt)">
                                                     </p-autoComplete>
                                                 </td>
                                             </ng-template>
-
                                             <ng-template pTemplate="output">
-                                                {{posicion.tipoImputacion.CodigoDescripcion}}
-                                                <!-- <p-dropdown [options]="unidades" [(ngModel)]="posicion.unidadSeleccionada" placeholder="Seleccione" optionLabel="Descripcion" [showClear]="true" appendTo="body"></p-dropdown> -->
+                                                {{posicion.tipoImputacion?.CodigoDescripcion}}
                                             </ng-template>                                 
                                         </p-cellEditor>
-                                        <!--(paste)="onPaste($event,enumColumnaSubPosicion.TipoImputacion,rowIndex)">-->
                                     </td>
                                 </tr>
                             </ng-template>
-                        </p-table>
 
+                        </p-table>
                     </div>
                 </div>
                 <!-- End Row posiciones -->
-
                 <div class="row">
-                    <div class="margenInput col-xs-10 col-sm-10 col-md-10 col-lg-10"></div>
-                    <div class="margenInput col-xs-2 col-sm-2 col-md-2 col-lg-2 ">
+                    <div *ngIf="!posicionInvalida" style="float: right; margin-right: 2em">
                         <button class="btn marginButton buttonTotalCompras" >Valor Total:  {{model.posicionActual.monedaSeleccionada?.Codigo}} {{model.posicionActual.totalPosicion()}}</button>
                     </div>
                 </div>

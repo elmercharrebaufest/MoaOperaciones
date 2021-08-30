@@ -29,5 +29,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerCecoSap();
         List<TablaSapDto> ObtenerCuentasSap();
         List<TablaSapDto> ObtenerOrdenesSap();
+        List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos);
     }
 }

@@ -78,6 +78,7 @@ export class ComprasService extends BaseService {
     public GuardarSolp(solp: Solp) {
         let solpJson = JSON.stringify({
             Id: solp.id,
+            TipoSolp: this.getObjetoCodigo(solp.tipoSolp),
             NombreDeObra: solp.nombreDePedido,
             FiscalContrato: solp.fiscalContrato,
             Telefono: solp.telefono,
@@ -130,9 +131,9 @@ export class ComprasService extends BaseService {
                     TipoPosicion: this.getObjetoCodigo('SERVICIO'),
 
                     Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.filter(sp => {
-                        return !!(sp.codigoServicio || 
+                        return !!((sp.codigoServicio && sp.codigoServicio.Codigo) || 
                                 sp.tareaSubcontratar || 
-                                sp.cuentaMayor || 
+                                (sp.cuentaMayor && sp.cuentaMayor.Codigo) || 
                                 sp.cuentaTd || 
                                 sp.precioBruto > 0 || 
                                 (sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo) ||
@@ -143,11 +144,11 @@ export class ComprasService extends BaseService {
                             Numero: sp.subPosicion,
                             CodigoServicioSap: this.getObjetoCodigo(sp.codigoServicio && sp.codigoServicio.Codigo),
                             Tarea: sp.tareaSubcontratar,
-                            CuentaMayor: sp.cuentaMayor,
+                            CuentaMayor: this.getObjetoCodigo(sp.cuentaMayor && sp.cuentaMayor.Codigo),
                             Cantidad: sp.cuentaTd,
                             PrecioBruto: sp.precioBruto,
                             Unidad: this.getObjetoCodigo(sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo),
-                            TipoImputacionValor: this.getObjetoCodigo(sp.tipoImputacion && sp.tipoImputacion.Codigo,  sp.tipoImputacion.Tabla)
+                            TipoImputacionValor: this.getObjetoCodigo(sp.tipoImputacion && sp.tipoImputacion.Codigo, sp.tipoImputacion && sp.tipoImputacion.Tabla)
                         }
                     }) : null,
                     Proveedores: [
@@ -257,5 +258,13 @@ export class ComprasService extends BaseService {
 
         return this.http2
             .get<any[]>("/api/compras/AutocompleteTablaSap", { params: params })
+    }
+
+    obtenerDatosPorCodigosSap(codigos :any[]){
+        var payload = new FormData();
+        payload.append('codigosSap', JSON.stringify(codigos));
+
+        return this.http2
+            .post('/api/compras/ObtenerDatosPorCodigosSap',  payload , this.headers);
     }
 }

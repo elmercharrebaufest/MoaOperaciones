@@ -20,9 +20,10 @@ import { FaqComponent } from "./faq/faq.component"
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
 import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
 import { SolpComponent } from "./compras/solp.component";
-import { DashboardComponent } from './compras/dashboard/dashboard.component' 
+import { DashboardComponent } from './compras/dashboard/dashboard.component'
 import { GestionCM05Component } from "./gestionCM05/gestionCM05.component";
 import { ApikeyComponent } from "./apikey/apikey.component";
+import { PesificacionesGuardadasComponent } from "./pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component";
 
 
 const appRoutes: Routes = [
@@ -116,6 +117,7 @@ const appRoutes: Routes = [
         loadChildren: "./factura/factura.module#FacturaModule",
       },
       { path: "pesificacion", component: PesificacionComponent },
+      { path: "pesificacion/listado", component: PesificacionesGuardadasComponent },
       { path: "alta-empresa-granos", component: EmpresaGranosComponent },
       {
         path: "alta-empresa-granos/:id",
@@ -148,8 +150,8 @@ const appRoutes: Routes = [
         path: "consulta",
         loadChildren: "./consulta/consulta.module#ConsultaModule",
       },
-      { path: "logPesificacion",  loadChildren: "./log-pesificacion/log-pesificacion.module#LogPesificacionModule" },
-      { path: "compras", loadChildren:"./compras/compras.module#ComprasModule" },
+      { path: "logPesificacion", loadChildren: "./log-pesificacion/log-pesificacion.module#LogPesificacionModule" },
+      { path: "compras", loadChildren: "./compras/compras.module#ComprasModule" },
       { path: "apikey", component: ApikeyComponent },
     ],
   },

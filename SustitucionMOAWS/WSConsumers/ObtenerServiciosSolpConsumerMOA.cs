@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,21 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    public class ObtenerServiciosSolpConsumerMOA
+    public class ObtenerServiciosSolpConsumerMOA : IObtenerServiciosSolpConsumerMOA
     {
-        SI_MMRFC_OBTENER_SERVICIOSClient service = new SI_MMRFC_OBTENER_SERVICIOSClient();
+        SI_MMRFC_OBTENER_SERVICIOSClient service;
+
+        public ObtenerServiciosSolpConsumerMOA()
+        {
+            service = new SI_MMRFC_OBTENER_SERVICIOSClient();
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+        }
 
         public object request()
         {
             try
             {
-                service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-                service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
                 BAPIASNRAN[] EX_SERVICESELECTION = new BAPIASNRAN[] { };
                 BAPIASKRAN[] EX_SRVSHORTTEXTSELECTION = new BAPIASKRAN[] { };
                 BAPIRET2[] IM_RETURN = new BAPIRET2[] { };

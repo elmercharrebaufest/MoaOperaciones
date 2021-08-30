@@ -8,7 +8,7 @@
         <div class="col-xs-12">
             <div class="row">
                 <!--Cards-->
-                <div class="col-md-4" *ngFor="let card of cards" (click)="card.class === 'disabled' ? disabled : goToSeccion(card.path)">
+                <div class="col-md-4" *ngFor="let card of cards" (click)="goToSeccionParam(card.path, card.tipoSolp)">
                     <div class="card cardCompra">
                         <h3 class="cardText">{{card.nombre}}</h3>
                     </div>
@@ -131,9 +131,9 @@
                         <p-sortIcon [field]="'EstadoSolpSap.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
     
-                    <th data-toggle="tooltip" title="Tipo de  SOLP">
+                    <th [pSortableColumn]="'TipoSolp'" data-toggle="tooltip" title="Tipo de  SOLP">
                         Tipo
-                        <!-- <p-sortIcon [field]="tipoSolp" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon> -->
+                        <p-sortIcon [field]="'TipoSolp.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
                     <th data-toggle="tooltip" title="Vincular a pliego">
                         Vincular Pliego
@@ -172,7 +172,7 @@
                         {{ rowData.EstadoSolpSap.Descripcion || "" }}
                     </td>
                     <td>
-                        {{ rowData.tipoSolp || "" }}
+                        {{ rowData.TipoSolp.Descripcion || "" }}
                     </td>
                     <td>
                         <button class="btn btn-success botonesComprasColor" *ngIf="rowData.VincularPliego">Vincular a Pliego</button>
