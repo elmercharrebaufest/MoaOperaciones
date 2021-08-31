@@ -100,20 +100,49 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado && !v.CodigoProveedor.Contains("C"))
+            var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado || v.EstadoAprobacion == EstadoAprobacion.Deshabilitado)
                 .Select(v => new Vendedor()
                 {
                     descVendedor = v.RazonSocial,
-                    estado = "-",
-                    //estado = (v.ContieneDocumentacionFisica.HasValue && v.ContieneDocumentacionFisica == true)? "Alta definitiva aceptada" : "Pendiente de envío documentación original",
+                    estado = "",
                     estadoMoa = v.EstadoAprobacion == EstadoAprobacion.Aprobado ? (
-                        (v.ContieneDocumentacionFisica.HasValue && v.ContieneDocumentacionFisica == true) ? "Alta definitiva aceptada" 
+                        (v.ContieneDocumentacionFisica.HasValue && v.ContieneDocumentacionFisica == true) ? "Habilitado"
                         : "Pendiente de envío documentación original") : v.EstadoAprobacionDescripcion,
                     idVendedor = v.CodigoProveedor
                 });
             response.vendedores.AddRange(vendedoresAprobados);
 
-            response.vendedores = response.vendedores.Distinct().ToList();
+            response.vendedores = response.vendedores.GroupBy(i => new 
+                {
+                    i.idVendedor,
+                    i.descVendedor
+                })
+                .Select(vendedor => vendedor.Skip(1)
+                .Aggregate(
+                    vendedor.First(), (a, o) => 
+                    {
+                        if(a.estado == "Habilitado")
+                        {
+                            a.estado = "Habilitado";
+                        }
+                        else if(a.estado == "")
+                        {
+                            a.estado = (o.estadoMoa != "" || o.estadoMoa == null) ? o.estadoMoa : a.estadoMoa;
+                        }
+                        else if (a.estado.Length >= 1 && !a.estadoMoa.Contains("Pendiente de envío documentación original") 
+                                && !o.estadoMoa.Contains("Pendiente de envío documentación original"))
+                        {
+                            a.estado = a.estado;
+                        }
+                        else
+                        {
+                            a.estado = a.estado.Contains("Pendiente de envío documentación original") ?
+                                a.estado : a.estado + " - Pendiente de envío documentación original";
+                        }
+                        
+                        return a; 
+                    }))
+                .ToList();
             return response;
         }
      
