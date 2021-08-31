@@ -94,7 +94,8 @@
                                 <label *ngIf="!isCorredor()">{{vendedor.descVendedor}}</label>
                             </td>
                             <td>{{vendedor.idVendedor}}</td>
-                            <td>{{vendedor.estado}}</td>
+                            <td *ngIf="vendedor.estado == '';else elseBlock">{{vendedor.estadoMoa}}</td>
+                            <ng-template #elseBlock><td>{{vendedor.estado}}</td></ng-template>
                         </tr>
                     </tbody>
                 </table>
