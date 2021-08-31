@@ -127,7 +127,7 @@ namespace SustitucionMOAUtils.Services
                         }
                         else if(a.estado == "")
                         {
-                            a.estado = (o.estadoMoa != "" || o.estadoMoa == null) ? o.estadoMoa : a.estadoMoa;
+                            a.estado = (o.estadoMoa == "" || o.estadoMoa == null) ? a.estadoMoa : o.estadoMoa;
                         }
                         else if (a.estado.Length >= 1 && !a.estadoMoa.Contains("Pendiente de envío documentación original") 
                                 && !o.estadoMoa.Contains("Pendiente de envío documentación original"))
