@@ -120,10 +120,10 @@
         <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex" let-columns="columns">
             <tr *ngIf="!rowData.Editar; else elseBlock">
                 <td class="td-detalle">
-                    {{rowData.Jurisdiccion}}
+                    {{rowData.NumeroJurisdiccion}}
                 </td>
                 <td class="td-detalle">
-                    {{rowData.NumeroJurisdiccion}}
+                    {{rowData.Jurisdiccion}}
                 </td>
                 <td class="td-detalle">
                     {{rowData.FechaInicio | date:'dd/MM/yyyy'}}
@@ -144,10 +144,10 @@
             <ng-template #elseBlock>
                 <tr>
                     <td class="td-detalle">
-                        <input type="text" [(ngModel)]="rowData.Jurisdiccion" name="rowData.Jurisdiccion" required>
+                        <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.NumeroJurisdiccion" name="rowData.NumeroJurisdiccion" required>
                     </td>
                     <td class="td-detalle">
-                        <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.NumeroJurisdiccion" name="rowData.NumeroJurisdiccion" required>
+                        <input type="text" [(ngModel)]="rowData.Jurisdiccion" name="rowData.Jurisdiccion" required>
                     </td>
                     <td class="td-detalle">
                         <p-calendar [(ngModel)]="rowData.FechaInicio" name="rowData.FechaInicio" dateFormat="dd/mm/yy"></p-calendar>
