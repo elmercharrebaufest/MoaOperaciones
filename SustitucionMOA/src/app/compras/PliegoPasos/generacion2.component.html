@@ -74,15 +74,7 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 ui-fluid">
-                              
-                                <p-chips [(ngModel)]="model.supervisorSector"
-                                formControlName="supervisorSector"
-                                    name="model.supervisorSector" styleClass="widthAutocomplete" placeholder="Ingrese supervisor de sector"
-                                    id="proveedoresValidos" [suggestions]="resultadoResponsableSector"
-                                    (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorSector')"></p-chips>
-
-                            </div> -->
+            
 
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
@@ -92,6 +84,8 @@
                                     (blur)="onBlur('supervisorTrabajo')"  formControlName="supervisorTrabajo" class="" 
                                     placeholder="Ingrese responsable de trabajo"
                                         [(ngModel)]="model.supervisorTrabajo" maxlength="100">
+                                    <!-- <p-chips [(ngModel)]="model.supervisorSector" styleClass="widthAutocomplete"
+                                    formControlName="supervisorSector" name="model.supervisorSector" placeholder="Ingrese responsable de sector" id="supervisorSector" [suggestions]="resultadoSupervisorSector" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorSector')"></p-chips> -->
                                 </div>
                                 <div *ngIf="mostrarError('supervisorTrabajo')">
                                     <p class="text-danger">campo obligatorio</p>

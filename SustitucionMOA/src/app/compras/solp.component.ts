@@ -236,7 +236,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.comienzoJornadaLaboral = new Date(1, 1, 1, 7, 0, 0, 0);
             this.solpActual.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
             this.solpActual.ejecucion = "30";
-            this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
+            // this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
             
             this.solpActual.centroPorDefecto = 1029;
             this.solpActual.monedaPorDefecto = "ARP";
