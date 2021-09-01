@@ -121,23 +121,12 @@ namespace SustitucionMOAUtils.Services
                 .Aggregate(
                     vendedor.First(), (a, o) => 
                     {
-                        if(a.estado == "Habilitado")
+                        if(!a.estado.Contains("Pendiente de envío documentación original") 
+                        && (a.estadoMoa.Contains("Pendiente de envío documentación original") || o.estadoMoa.Contains("Pendiente de envío documentación original"))
+                        && a.estado != ""
+                        && !a.estado.Contains("Habilitado"))
                         {
-                            a.estado = "Habilitado";
-                        }
-                        else if(a.estado == "")
-                        {
-                            a.estado = (o.estadoMoa == "" || o.estadoMoa == null) ? a.estadoMoa : o.estadoMoa;
-                        }
-                        else if (a.estado.Length >= 1 && !a.estadoMoa.Contains("Pendiente de envío documentación original") 
-                                && !o.estadoMoa.Contains("Pendiente de envío documentación original"))
-                        {
-                            a.estado = a.estado;
-                        }
-                        else
-                        {
-                            a.estado = a.estado.Contains("Pendiente de envío documentación original") ?
-                                a.estado : a.estado + " - Pendiente de envío documentación original";
+                            a.estado = a.estado + " - Pendiente de envío documentación original";
                         }
                         
                         return a; 
