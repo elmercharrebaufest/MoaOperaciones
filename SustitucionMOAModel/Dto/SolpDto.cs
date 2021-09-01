@@ -23,6 +23,7 @@ namespace SustitucionMOAModel.Dto
         public bool TieneVisitaObraMasiva { get; set; }
         public bool TieneObradores { get; set; }
         public bool TieneMedioElevacion { get; set; }
+        public bool TieneAndamio { get; set; }
         public bool TieneTecnicoSeguridad { get; set; }
         public bool TieneDescripcionTecnica { get; set; }
         public bool TieneDocumentacionTecnica { get; set; }
@@ -44,6 +45,7 @@ namespace SustitucionMOAModel.Dto
         public TablaEstadoDto EstadoDocumento { get; set; }
         public bool VincularPliego { get; set; }
         public TablaSapDto EstadoSolpSap { get; set; }
+        public TablaGeneralDto TipoSolp { get; set; }
 
         public List<SolpPosicionDto> Posiciones { get; set; }
         public string Pdf { get; set; }
@@ -66,6 +68,7 @@ namespace SustitucionMOAModel.Dto
             this.TieneVisitaObraMasiva = entity.Pliego.TieneVisitaObraMasiva.HasValue && entity.Pliego.TieneVisitaObraMasiva.Value;
             this.TieneObradores = entity.Pliego.TieneObradores.HasValue && entity.Pliego.TieneObradores.Value;
             this.TieneMedioElevacion = entity.Pliego.TieneMedioElevacion.HasValue && entity.Pliego.TieneMedioElevacion.Value;
+            this.TieneAndamio = entity.Pliego.TieneAndamio.HasValue && entity.Pliego.TieneAndamio.Value;
             this.TieneTecnicoSeguridad = entity.Pliego.TieneTecnicoSeguridad.HasValue && entity.Pliego.TieneTecnicoSeguridad.Value;
             this.TieneDescripcionTecnica = entity.Pliego.TieneDescripcionTecnica.HasValue && entity.Pliego.TieneDescripcionTecnica.Value;
             this.TieneDocumentacionTecnica = entity.Pliego.TieneDocumentacionTecnica.HasValue && entity.Pliego.TieneDocumentacionTecnica.Value;
@@ -84,9 +87,8 @@ namespace SustitucionMOAModel.Dto
             this.EstadoDocumento = new TablaEstadoDto(entity.EstadoDocumento);
             //this.VincularPliego = entity.VincularPliego.HasValue && entity.VincularPliego.Value;
             this.EstadoSolpSap = new TablaSapDto(entity.EstadoSolpSap);
+            this.TipoSolp = new TablaGeneralDto(entity.TipoSolp);
             this.Posiciones = new List<SolpPosicionDto>();
-
-
         }
     }
 
@@ -204,11 +206,11 @@ namespace SustitucionMOAModel.Dto
         public int Numero { get; set; }
         public int? CodigoServicioSapId { get; set; }
         public string Tarea { get; set; }
-        public string CuentaMayor { get; set; }
+        public TablaSapDto CuentaMayor { get; set; }
         public decimal? Cantidad { get; set; }
         public int? UnidadId { get; set; }
         public decimal? PrecioBruto { get; set; }
-        public string TipoImputacionValor { get; set; }
+        public TablaSapDto TipoImputacionValor { get; set; }
 
         public TablaSapDto CodigoServicioSap { get; set; }
         public TablaSapDto Unidad { get; set; }
@@ -221,13 +223,13 @@ namespace SustitucionMOAModel.Dto
             {
                 this.Codigo = entity.Codigo;
                 this.Numero = entity.Numero;
-                this.CodigoServicioSapId = entity.CodigoServicioSap_Id;
+                this.CodigoServicioSap = new TablaSapDto(entity.CodigoServicioSap);
                 this.Tarea = entity.Tarea;
-                this.CuentaMayor = entity.CuentaMayor;
+                this.CuentaMayor = new TablaSapDto(entity.CuentaMayorSap);
                 this.Cantidad = entity.Cantidad;
                 this.UnidadId = entity.Unidad_Id;
                 this.PrecioBruto = entity.PrecioBruto;
-                this.TipoImputacionValor = entity.CentroCosto; //se corregira luego el campo en base
+                this.TipoImputacionValor = new TablaSapDto(entity.TipoImputacionSap); //se corregira luego el campo en base
                 this.CodigoServicioSap = new TablaSapDto(entity.CodigoServicioSap);
                 this.Unidad = new TablaSapDto(entity.Unidad);
             }

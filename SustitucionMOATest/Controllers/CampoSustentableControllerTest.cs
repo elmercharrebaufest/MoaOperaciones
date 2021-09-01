@@ -8,8 +8,10 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Interfaces.Wrappers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -17,6 +19,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Mvc;
 
 namespace SustitucionMOATest.Controllers
 {
@@ -26,6 +29,7 @@ namespace SustitucionMOATest.Controllers
 
         private CampoSustentableController target;
         private Mock<ICampoSustentableService> campoSustentableServiceMock;
+        private Mock<IFileWrapper> fileWrapperMock;
         private string expectedJson;
         private string resultJson;
         private string mailUsuario = "mail@mail.com";
@@ -34,6 +38,7 @@ namespace SustitucionMOATest.Controllers
         public void SetUp()
         {
             campoSustentableServiceMock = new Mock<ICampoSustentableService>();
+            fileWrapperMock = new Mock<IFileWrapper>();
 
             var fakeIdentity = new GenericIdentity("User");
 
@@ -46,9 +51,8 @@ namespace SustitucionMOATest.Controllers
 
             Thread.CurrentPrincipal = principal;
 
-            target = new CampoSustentableController(campoSustentableServiceMock.Object);
+            target = new CampoSustentableController(campoSustentableServiceMock.Object, fileWrapperMock.Object);
         }
-
 
         [Test()]
         public void CampoProveedorAgregarTest()
@@ -500,6 +504,168 @@ namespace SustitucionMOATest.Controllers
 
             Assert.NotNull(result);
             Assert.AreEqual(expectedJson, resultJson);
+        }
+
+        [Test]
+        public void CampoProveedorBorrarOk()
+        {
+            int campoCosechaIdTest = 32;
+            int proveedorIdTest = 92;
+
+            this.campoSustentableServiceMock.Setup(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest)).Returns("resultado");
+
+            JsonResult result = target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
+
+            Assert.AreEqual("resultado", result.Data);
+
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest), Times.Once);
+        }
+
+        [Test]
+        public void CampoProveedorBorrarInfoCustomException()
+        {
+            int campoCosechaIdTest = 32;
+            int proveedorIdTest = 92;
+
+            InfoCustomException infoCustomExceptionTest = new InfoCustomException("mensaje excepcion");
+
+            this.campoSustentableServiceMock.Setup(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest)).Throws(infoCustomExceptionTest);
+
+            JsonResult result = target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
+
+            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("mensaje excepcion", infoResultData);
+
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest), Times.Once);
+        }
+
+        [Test]
+        public void CampoProveedorBorrarValidationCustomException()
+        {
+            int campoCosechaIdTest = 32;
+            int proveedorIdTest = 92;
+
+            ValidationCustomException infoCustomExceptionTest = new ValidationCustomException("mensaje excepcion");
+
+            this.campoSustentableServiceMock.Setup(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest)).Throws(infoCustomExceptionTest);
+
+            JsonResult result = target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("mensaje excepcion", errorResultData);
+
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest), Times.Once);
+        }
+
+        [Test]
+        public void CampoProveedorBorrarException()
+        {
+            int campoCosechaIdTest = 32;
+            int proveedorIdTest = 92;
+
+            Exception infoCustomExceptionTest = new Exception("mensaje excepcion");
+
+            this.campoSustentableServiceMock.Setup(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest)).Throws(infoCustomExceptionTest);
+            HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
+
+            JsonResult result = target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", errorResultData);
+
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            this.campoSustentableServiceMock.Verify(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest), Times.Once);
+        }
+
+        [Test]
+        public void DescargarArchivoKMZOk()
+        {
+            int campoCosechaIdTest = 123;
+            int proveedorIdTest = 33;
+
+            string rutaArchivoTest = "ruta/archivo.pdf";
+            this.campoSustentableServiceMock.Setup(x => x.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest)).Returns(rutaArchivoTest);
+
+            byte[] byteArrayTest = { 1, 2, 3 };
+            this.fileWrapperMock.Setup(x => x.ReadAllBytes(rutaArchivoTest)).Returns(byteArrayTest);
+
+            JsonResult result = target.DescargarArchivoKMZ(campoCosechaIdTest, proveedorIdTest);
+
+            Assert.IsInstanceOf<FileContentResult>(result.Data);
+
+            FileContentResult fileContentResultData = (FileContentResult)result.Data;
+
+            Assert.AreEqual("application/octet-stream", fileContentResultData.ContentType);
+            Assert.AreEqual(byteArrayTest, fileContentResultData.FileContents);
+            Assert.AreEqual("archivo.pdf", fileContentResultData.FileDownloadName);
+
+            this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest), Times.Once);
+        }
+
+        [Test]
+        public void DescargarArchivoKMZInfoCustomException()
+        {
+            int campoCosechaIdTest = 123;
+            int proveedorIdTest = 33;
+
+            InfoCustomException infoCustomExceptionTest = new InfoCustomException("excepcion");
+            this.campoSustentableServiceMock.Setup(x => x.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest)).Throws(infoCustomExceptionTest);
+
+            JsonResult result = target.DescargarArchivoKMZ(campoCosechaIdTest, proveedorIdTest);
+
+            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("excepcion", infoResultData);
+
+            this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest), Times.Once);
+        }
+
+        [Test]
+        public void DescargarArchivoKMZValidationCustomException()
+        {
+            int campoCosechaIdTest = 123;
+            int proveedorIdTest = 33;
+
+            ValidationCustomException validationCustomExceptionTest = new ValidationCustomException("excepcion");
+            this.campoSustentableServiceMock.Setup(x => x.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest)).Throws(validationCustomExceptionTest);
+
+            JsonResult result = target.DescargarArchivoKMZ(campoCosechaIdTest, proveedorIdTest);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("excepcion", errorResultData);
+
+            this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest), Times.Once);
+        }
+
+        [Test]
+        public void DescargarArchivoKMZException()
+        {
+            int campoCosechaIdTest = 123;
+            int proveedorIdTest = 33;
+
+            Exception validationCustomExceptionTest = new Exception("excepcion");
+            this.campoSustentableServiceMock.Setup(x => x.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest)).Throws(validationCustomExceptionTest);
+
+            HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
+
+            JsonResult result = target.DescargarArchivoKMZ(campoCosechaIdTest, proveedorIdTest);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", errorResultData);
+
+            this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest), Times.Once);
         }
     }
 }

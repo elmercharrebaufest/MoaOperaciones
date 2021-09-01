@@ -20,10 +20,22 @@ namespace SustitucionMOAModel.Entities
 
         public int EstadoIngresosBrutosCoeficienteUnificado_Id { get; set; }
 
+        public int Consulta_Id { get; set; }
+        
+        public int Archivo_Id { get; set; }
+
+        public bool MalCargada { get; set; }
+
         public DateTime FechaUltimaModificacion { get; set; }
 
         [ForeignKey("EstadoIngresosBrutosCoeficienteUnificado_Id")]
         public virtual EstadoIngresosBrutosCoeficienteUnificado EstadoIngresosBrutosCoeficienteUnificado { get; set; }
+
+        [ForeignKey("Consulta_Id")]
+        public virtual Consulta Consulta { get; set; }
+
+        [ForeignKey("Archivo_Id")]
+        public virtual Archivo Archivo { get; set; }
 
         [InverseProperty("IngresosBrutosCoeficienteUnificado")]
         public virtual ICollection<IngresosBrutosCoeficienteUnificadoDetalle> Detalle { get; set; }

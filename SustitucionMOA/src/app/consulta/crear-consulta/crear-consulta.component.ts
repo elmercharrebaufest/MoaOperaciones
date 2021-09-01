@@ -230,7 +230,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     setMaterial(material){
-        debugger
         this.listaMateriales.forEach(x => {
             if(x.MaterialId == material){
                 this.comprobanteExtra = x.Descripcion;
@@ -362,6 +361,12 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
+        if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'CM05') {
+            if (this.listaArchivos == null || this.listaArchivos.length < 1 || this.listaArchivos.filter(x => x.type == "application/pdf").length < 1) {
+                this.mensajeComponent.setErrorMsg("Falta adjuntar el formulario del CM05, el mismo debe estar en formato PDF.");
+                return true;
+            }
+        }
         if ((this.categoriaCode == 'PAR' && this.subcategoriaCode == 'NROR') || (this.categoriaCode == 'FIN' && this.subcategoriaCode)) {
             if (this.contrato == "" || !this.contrato) {
                 this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
@@ -403,17 +408,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
-        if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'PDF') {
-            if (this.comprobante == "" || !this.comprobante) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
-                return true;
-            }
-        }
         if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'CCP') {
-            if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
-                return true;
-            }
             if (this.comprobante == "" || !this.comprobante) {
                 this.mensajeComponent.setErrorMsg("El campo CCPP esta vacio.");
                 return true;
@@ -433,7 +428,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.blockUI.start('Generando Consulta');
         this.spinnerComponent.showIt();
 
-        debugger
         if (this.esCorredor) {
             if(this.proveedorSelected)
             {
@@ -545,7 +539,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
             return true;
         }
         if (categoriaCode == "ACT" && this.subcategoriaCode == "CM05") {
-            this.mensajeComponent.setInfoMsg("Recuerde adjuntar el formulario CM05");
+            this.mensajeComponent.setInfoMsg("Recuerde adjuntar un único formulario CM05.");
             return true;
         }
         this.mensajeComponent.setMsgsEmpty();

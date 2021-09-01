@@ -6,6 +6,7 @@ import {
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
+import { HttpClientModule } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AutocompleteLibModule } from "angular-ng-autocomplete";
@@ -68,17 +69,21 @@ import { GestionCM05Service } from "./gestionCM05/gestionCM05.service";
 import { TableModule } from "primeng/table";
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
-import { CalendarModule} from 'primeng/calendar';
+import { CalendarModule } from 'primeng/calendar';
 import { PaginatorModule } from 'primeng/paginator';
-import { ToastModule} from 'primeng/toast';
+import { ToastModule } from 'primeng/toast';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputMaskModule } from 'primeng/inputmask';
+import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
+import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
 
 @NgModule({
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpModule,
+    HttpClientModule,
     AppRoutingModule,
     FormsModule,
     NgxPaginationModule,
@@ -98,6 +103,7 @@ import { InputTextModule } from 'primeng/inputtext';
     CalendarModule,
     ToastModule,
     MultiSelectModule,
+    InputMaskModule,
   ],
   declarations: [
     AppComponent,
@@ -124,7 +130,9 @@ import { InputTextModule } from 'primeng/inputtext';
     VentaSustentableBaseComponent,
     ApikeyComponent,
     GestionCM05Component,
-    ],
+    PesificacionesGuardadasComponent,
+    PesificacionBaseComponent
+  ],
   providers: [
     DatePipe,
     SessionDataService,

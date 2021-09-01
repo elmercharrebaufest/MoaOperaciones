@@ -677,7 +677,7 @@ namespace SustitucionMOAUtils.Services
         public string GrabarProveedorAltaInternaGranos(string cuit, string mailUsuario, string mailVendedor)
         {
             var usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
-            if (usuario == null) throw new InfoCustomException(InfoMsg.ElementoNoExiste);
+            if (usuario == null) throw new InfoCustomException(string.Format(InfoMsg.ElementoNoExiste, "Usuario", mailUsuario));
 
             if (cuit == null || cuit == "") throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
             if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any()) throw new ValidationCustomException(ErrorMsg.ErrorVendedorRepetido);
@@ -689,42 +689,49 @@ namespace SustitucionMOAUtils.Services
             var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit, false);
             if (infoDA.HayError) throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
 
-            var proveedorComercial = usuario.ObtenerProveedor();
-
-            var proveedor = new Proveedor
+            if (infoDA.ProveedorMails.Contains(mailVendedor, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
             {
-                CUIT = cuit.Trim(),
-                Mail = mailVendedor.Trim(),
-                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
-                CodigoProveedor = FormatearCodigoProveedor(cuit),
-                TipoProveedor = ObtenerTipoPorNombreCorto("G"),
-                FechaSolicitud = DateTime.Now,
-                Comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido),
-                AltaInterna = true,
-                IdSolicitanteInternoAltaGranos = usuario.Id
-            };
+                var proveedorComercial = usuario.ObtenerProveedor();
 
-            var hist = new ProveedorHistorialAprobacion
+                var proveedor = new Proveedor
+                {
+                    CUIT = cuit.Trim(),
+                    Mail = mailVendedor.Trim(),
+                    EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                    CodigoProveedor = FormatearCodigoProveedor(cuit),
+                    TipoProveedor = ObtenerTipoPorNombreCorto("G"),
+                    FechaSolicitud = DateTime.Now,
+                    Comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido),
+                    AltaInterna = true,
+                    IdSolicitanteInternoAltaGranos = usuario.Id
+                };
+
+                var hist = new ProveedorHistorialAprobacion
+                {
+                    Fecha = DateTime.Now,
+                    Usuario_Id = usuario.Id,
+                    EstadoAprobacion = proveedor.EstadoAprobacion,
+                    Observacion = "Alta interna - Proveedor habilitado en DataAgro"
+                };
+
+                proveedor.RazonSocial = infoDA.ProveedorRazonSocial;
+                proveedor.IdComercialDataAgro = infoDA.ComercialId;
+                proveedor.IdDataAgro = infoDA.ProveedorId;
+                proveedor.IdSolicitanteInternoAltaGranos = usuario.Id;
+                proveedor.HistorialAprobaciones.Add(hist);
+
+                repositorio.Agregar(proveedor);
+
+                //Le agrego el proveedor al comercial
+                usuario.Proveedores.Add(proveedor);
+                repositorio.GuardarCambios();
+
+                return SuccessMsg.AltaVendedorOK;
+            }
+            else
             {
-                Fecha = DateTime.Now,
-                Usuario_Id = usuario.Id,
-                EstadoAprobacion = proveedor.EstadoAprobacion,
-                Observacion = "Alta interna - Proveedor habilitado en DataAgro"
-            };
-
-            proveedor.RazonSocial = infoDA.ProveedorRazonSocial;
-            proveedor.IdComercialDataAgro = infoDA.ComercialId;
-            proveedor.IdDataAgro = infoDA.ProveedorId;
-            proveedor.IdSolicitanteInternoAltaGranos = usuario.Id;
-            proveedor.HistorialAprobaciones.Add(hist);
-            
-            repositorio.Agregar(proveedor);
-
-            //Le agrego el proveedor al comercial
-            usuario.Proveedores.Add(proveedor);
-            repositorio.GuardarCambios();
-
-            return SuccessMsg.AltaVendedorOK;
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorIncorrecto, "Mail"));
+            }
         }
 
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto) => repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
@@ -939,7 +946,7 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var proveedor = proveedorId > 0 ? repositorio.Obtener<Proveedor>(proveedorId) : usuario.ObtenerProveedorPorId(proveedorId);
 
-            if (proveedor.TipoProveedor.Nombre != "Granos" || usuario.TipoUsuario.Nombre == "Corredor")
+            if (proveedor.TipoProveedor.Nombre != "Granos")
             {
                 return ErrorMsg.ErrorSinPermiso;
             }
@@ -958,8 +965,10 @@ namespace SustitucionMOAUtils.Services
             }
 
             proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
-            proveedor.VinculoConEmpleadosDeMolinos = altaEmpresa.VinculoConEmpleadosDeMolinos;
-            proveedor.VinculoConFuncionariosPublicos = altaEmpresa.VinculoConFuncionariosPublicos;
+            proveedor.VinculoConEmpleadosDeMolinos = (altaEmpresa.VinculoConEmpleadosDeMolinos.HasValue 
+                && altaEmpresa.VinculoConEmpleadosDeMolinos == true) ? true : false;
+            proveedor.VinculoConFuncionariosPublicos = (altaEmpresa.VinculoConFuncionariosPublicos.HasValue
+                && altaEmpresa.VinculoConFuncionariosPublicos == true) ? true : false;
 
             proveedor.HistorialAprobaciones.Add(
                 new ProveedorHistorialAprobacion

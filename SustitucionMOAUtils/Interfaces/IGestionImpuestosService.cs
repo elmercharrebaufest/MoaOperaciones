@@ -11,7 +11,11 @@ namespace SustitucionMOAUtils.Interfaces
         IList<IngresosBrutosCoeficienteUnificadoDetalleDto> ListarDetalles(int idCabecera);
 
         EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto EditarIngresosBrutosCoeficienteUnificadoDetalle(IngresosBrutosCoeficienteUnificadoDetalleDto ingresosBrutosCoeficienteUnificadoDetalleDto);
+        
+        EditarIngresosBrutosCoeficienteUnificadoResponseDto EditarIngresosBrutosCoeficienteUnificado(IngresosBrutosCoeficienteUnificadoDto ingresosBrutosCoeficienteUnificadoDto);
 
-        string AutorizarCabecera(int idCabecera);
+        string AutorizarCabecera(int idCabecera, string mailUsuario);
+
+        string ObtenerRutaArchivoFormularioCM05(int idCabecera);
     }
 }

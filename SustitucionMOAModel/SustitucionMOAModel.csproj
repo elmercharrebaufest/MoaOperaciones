@@ -59,6 +59,7 @@
     <Compile Include="Dto\CampoSustentableExportDTO.cs" />
     <Compile Include="Dto\ComentarioRecordadoDto.cs" />
     <Compile Include="Dto\CentroDireccionDto.cs" />
+    <Compile Include="Dto\EditarIngresosBrutosCoeficienteUnificadoResponseDto.cs" />
     <Compile Include="Dto\EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto.cs" />
     <Compile Include="Dto\EstadoDeclaracionSustentableDto.cs" />
     <Compile Include="Dto\CausaConsultaDto.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaMasicoDto.cs" />
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaDto.cs" />
     <Compile Include="Dto\LogPesificacion\LogPesificacionDto.cs" />
+    <Compile Include="Dto\PesificacionSapDto.cs" />
     <Compile Include="Dto\SolpDto.cs" />
     <Compile Include="Dto\SubCategoriaDto.cs" />
     <Compile Include="Dto\CategoriaDto.cs" />
@@ -136,6 +138,14 @@
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\Ceco.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\CecoWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\Cuenta.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\CuentaWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\Orden.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\OrdenWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\Servicio.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\ServicioWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\ConsultaVM.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\EstadoConsultaVM.cs" />
     <Compile Include="Models\ConsultaTicketPesada.cs" />
@@ -287,6 +297,7 @@
     <Compile Include="Models\WSMapMOA\Pesificacion\Contrato.cs" />
     <Compile Include="Models\WSMapMOA\Pesificacion\Fecha.cs" />
     <Compile Include="Models\WSMapMOA\Pesificacion\Item.cs" />
+    <Compile Include="Models\WSMapMOA\Pesificacion\ListarPesificacionesWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Pesificacion\PesificacionSetContratosWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Pesificacion\PesificacionGetContratosWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Proforma\Cabecera.cs" />

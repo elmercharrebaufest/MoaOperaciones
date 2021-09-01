@@ -19,6 +19,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { InformeComercialComponent } from '../alta-proveedores/informe-comercial/informe-comercial.component';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {DialogModule} from 'primeng/dialog';
+import {TooltipModule} from 'primeng/tooltip';
 
 @NgModule({
   imports: [
@@ -36,7 +37,8 @@ import {DialogModule} from 'primeng/dialog';
     SpinnerModule,
     SelectButtonModule,
     OverlayPanelModule,
-    DialogModule
+    DialogModule,
+    TooltipModule
   ],
     declarations: [
       MisConsultasComponent,

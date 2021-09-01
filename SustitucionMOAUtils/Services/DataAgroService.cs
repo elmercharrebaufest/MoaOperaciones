@@ -71,10 +71,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var mail = usuario.Mail;
 
-                if (repositorio.Existe<Proveedor>(x => x.CUIT == proveedor.CUIT 
-                && x.Mail == mail 
-                && (x.AltaInterna.HasValue && x.AltaInterna == true)
-                && x.EstadoAprobacion == EstadoAprobacion.Aprobado))
+                if (repositorio.Existe<Proveedor>(x => x.CUIT == proveedor.CUIT && x.Mail == mail))
                 {
                     var proveedorExistente = repositorio.Obtener<Proveedor>(x => x.CUIT == proveedor.CUIT && x.Mail == mail && (x.AltaInterna.HasValue && x.AltaInterna == true));
 
@@ -83,30 +80,11 @@ namespace SustitucionMOAUtils.Services
                     usuario.Roles = new List<Rol>();
                     usuario.Proveedores = new List<Proveedor>();
                     usuario.TipoUsuario = tipoUsuarioGranos;
-                    proveedor.EstadoAprobacion = proveedorExistente.EstadoAprobacion;
-                    proveedor.Mail = proveedorExistente.Mail;
-                    proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
-                    proveedor.RazonSocial = proveedorExistente.RazonSocial;
-                    proveedor.IdComercialDataAgro = proveedorExistente.IdComercialDataAgro;
-                    proveedor.IdDataAgro = proveedorExistente.IdDataAgro;
-                    proveedor.Comercial = proveedorExistente.Comercial;
-                    proveedor.EstadoSIPER = proveedorExistente.EstadoSIPER;
 
-                    proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>
-                    {
-                        new ProveedorHistorialAprobacion()
-                        {
-                            Fecha = DateTime.Now,
-                            EstadoAprobacion = proveedorExistente.EstadoAprobacion,
-                            Observacion = "Registro de usuario",
-                            Usuario_Id = usuario.Id
-                        }
-                    };
-
-                    Rol rolGranos = ObtenerRolPorCodigo("GRAN");
+                    Rol rolGranos = proveedorExistente.EstadoAprobacion == EstadoAprobacion.Aprobado ? ObtenerRolPorCodigo("GRAN") : ObtenerRolPorCodigo("NUEG");
 
                     usuario.Roles.Add(rolGranos);
-                    usuario.Proveedores.Add(proveedor);
+                    usuario.Proveedores.Add(proveedorExistente);
                     usuario.Habilitado = true;
 
                     repositorio.Agregar(usuario);

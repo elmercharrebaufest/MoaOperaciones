@@ -6,13 +6,13 @@ export class SubPosicionViewModel {
       this.seleccionado = false;
       this.eliminar = false;
       this.subPosicion = subposicion;
-      this.codigoServicio = "";
+      this.codigoServicio = {};
       this.tareaSubcontratar = "";
-      this.cuentaMayor = "";
+      this.tareaSubcontratarObj = {};
+      this.cuentaMayor = {};
       this.cuentaTd = "";
       this.unidadMedida = "";
       this.precioBruto = 0;
-      this.tipoImputacion = "";
    }
 
 
@@ -22,10 +22,11 @@ export class SubPosicionViewModel {
    subPosicion: number;
    codigoServicio: any;
    tareaSubcontratar: string;
-   cuentaMayor: string;
+   tareaSubcontratarObj: any;
+   cuentaMayor: any;
    cuentaTd: string;
    unidadMedida: string;
    precioBruto: number;
-   tipoImputacion: string;
-   unidadSeleccionada : any ={};
+   tipoImputacion: any = {};
+   unidadSeleccionada : any = {};
 }

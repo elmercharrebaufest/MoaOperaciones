@@ -201,7 +201,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-
         [HttpGet]
         public ActionResult BorrarSolp(int idSolp)
         {
@@ -255,6 +254,50 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpGet]
+        public JsonResult ObtenerServiciosSap()
+        {
+            try
+            {
+                return JsonCustom(new { data = service.ObtenerServiciosSap() });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult AutocompleteTablaSap(string tabla, string valor)
+        {
+            try
+            {
+                return JsonCustom( service.AutocompleteTablaSap(tabla, valor) );
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public ActionResult DescargarZipPliego(int solpId)
         {
             try
@@ -270,6 +313,30 @@ namespace SustitucionMOA.Controllers
                 Directory.Delete(path, true);
 
                 return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [ValidateInput(false)]
+        public JsonResult ObtenerDatosPorCodigosSap(string codigosSap)
+        {
+            try
+            {
+                var codigos = JsonConvert.DeserializeObject<List<TablaSapDto>>(codigosSap);
+
+                return JsonCustom(service.ObtenerDatosPorCodigosSap(codigos));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

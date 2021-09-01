@@ -116,9 +116,30 @@
   }
  
   ::ng-deep .ui-calendar .ui-button{
-    background-color:#5B5B5B !important;
-    border-color: #5B5B5B !important;
-} 
+    background-color: #FFFFFF !important;
+    border-color: #DDDDDD !important;
+  } 
+
+  /* ::ng-deep .ui-clickable {
+    background-color: #FFFFFF !important;
+    border-color: #DDDDDD !important;
+  }  */
+
+
+
+  ::ng-deep .ui-state-default  {
+    border-color: #DDDDDD !important
+  } 
+
+  ::ng-deep .ui-button {
+    color: #666666 !important;
+  } 
+
+  ::ng-deep .botonModal.ui-button {
+    color: #ffffff !important;
+    font-family: Roboto Regular !important;
+    font-weight:bold;
+  } 
 
   .widthCompras {
     width: 75%;
@@ -449,4 +470,52 @@
 
 ::ng-deep .ui-autocomplete-input {
   width: calc(100% - 33px) !important;
+}
+
+.headerModal {
+  top: 106px;
+  left: 381px;
+  width: 119px;
+  height: 26px;
+  text-align: left;
+  font: normal normal bold 20px/26px Roboto Regular;
+  letter-spacing: 0px;
+  color: #5CB85C;
+  opacity: 1;
+}
+
+.titulosModal {
+  text-align: left;
+  font: normal normal bold 16px/24px Roboto Regular;
+  letter-spacing: 0px;
+  color: #1A1A1A;
+  opacity: 1;
+  margin: 0;
+}
+
+.disabled {
+  color: grey !important;
+}
+
+.inline-flex {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+.col-flex {
+  display: flex;
+  margin-left: 1em;
+  justify-content: flex-start;
+  flex: 1;
+}
+
+@media only screen and (max-width: 768px){
+  .inline-flex {
+    flex-direction: column;
+  }
+
+  .col-flex {
+    margin-top: 0.5em;
+  }
 }

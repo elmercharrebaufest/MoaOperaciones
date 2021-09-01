@@ -30,11 +30,13 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IRepositorio repositorio;
         private readonly ITimeProvider timeProvider;
+        private readonly IConsultaService consultaService;
 
-        public GestionImpuestosService(IRepositorio repositorio, ITimeProvider timeProvider)
+        public GestionImpuestosService(IRepositorio repositorio, ITimeProvider timeProvider, IConsultaService consultaService)
         {
             this.repositorio = repositorio;
             this.timeProvider = timeProvider;
+            this.consultaService = consultaService;
         }
 
         public IList<IngresosBrutosCoeficienteUnificadoDto> ListarCabeceras()
@@ -48,10 +50,11 @@ namespace SustitucionMOAUtils.Services
                 CUIT = x.CUIT,
                 FechaCarga = x.FechaCarga,
                 FechaUltimaModificacion = x.FechaUltimaModificacion,
-                Sede = x.Sede
-            });
+                Sede = x.Sede,
+                MalCargada = x.MalCargada
+            },null,0,"Id",SustitucionMOAModel.Consultas.DirOrden.Desc);
         }
-        
+
         public IList<IngresosBrutosCoeficienteUnificadoDetalleDto> ListarDetalles(int idCabecera)
         {
             return repositorio.Listar<IngresosBrutosCoeficienteUnificadoDetalle, IngresosBrutosCoeficienteUnificadoDetalleDto>(
@@ -95,8 +98,31 @@ namespace SustitucionMOAUtils.Services
                 FechaUltimaModificacion = ingresosBrutosCoeficienteUnificadoDetalle.FechaUltimaModificacion
             };
         }
-        
-        public string AutorizarCabecera(int idCabecera)
+
+        public EditarIngresosBrutosCoeficienteUnificadoResponseDto EditarIngresosBrutosCoeficienteUnificado(IngresosBrutosCoeficienteUnificadoDto ingresosBrutosCoeficienteUnificadoDto)
+        {
+            var ingresosBrutosCoeficienteUnificado = repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(ingresosBrutosCoeficienteUnificadoDto.Id);
+
+            if (ingresosBrutosCoeficienteUnificado == null)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de coeficientes unificados"));
+
+            ingresosBrutosCoeficienteUnificado.CUIT = ingresosBrutosCoeficienteUnificadoDto.CUIT;
+            ingresosBrutosCoeficienteUnificado.Anticipo = ingresosBrutosCoeficienteUnificadoDto.Anticipo;
+            ingresosBrutosCoeficienteUnificado.Sede = ingresosBrutosCoeficienteUnificadoDto.Sede;
+            ingresosBrutosCoeficienteUnificado.MalCargada = ingresosBrutosCoeficienteUnificadoDto.MalCargada;
+
+            ingresosBrutosCoeficienteUnificado.FechaUltimaModificacion = timeProvider.Now();
+
+            repositorio.GuardarCambios();
+
+            return new EditarIngresosBrutosCoeficienteUnificadoResponseDto
+            {
+                Mensaje = SuccessMsg.IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK,
+                FechaUltimaModificacion = ingresosBrutosCoeficienteUnificado.FechaUltimaModificacion
+            };
+        }
+
+        public string AutorizarCabecera(int idCabecera, string mailUsuario)
         {
             var cabecera = this.repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(idCabecera);
 
@@ -106,9 +132,27 @@ namespace SustitucionMOAUtils.Services
             cabecera.EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado;
             cabecera.FechaUltimaModificacion = timeProvider.Now();
 
+            Usuario usuario = repositorio.Obtener<Usuario>(usr => usr.Mail == mailUsuario);
+
+            ComentarioDto comentarioDto = new ComentarioDto
+            {
+                Detalle = "Autorizado",
+                Fecha = timeProvider.Now(),
+                UsuarioId = usuario.Id,
+            };
+
+            this.consultaService.AgregarComentario(cabecera.Consulta_Id, comentarioDto, null);
+
             repositorio.GuardarCambios();
 
             return (SuccessMsg.IngresosBrutosCoeficienteUnificadoAutorizado);
+        }
+
+        public string ObtenerRutaArchivoFormularioCM05(int idCabecera)
+        {
+            IngresosBrutosCoeficienteUnificado cabecera = repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(idCabecera);
+
+            return cabecera.Archivo.Ruta;
         }
     }
 }

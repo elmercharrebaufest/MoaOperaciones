@@ -319,6 +319,7 @@
     <Content Include="src\app\alta-proveedores\estado-solicitud\estado-solicitud.component.html" />
     <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.css" />
     <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.html" />
+    <Content Include="src\app\apikey\apikey.component.html" />
     <Content Include="src\app\app.component.html" />
     <Content Include="src\app\carta-porte\aplicacion\carta-porte.aplicacion.component.html" />
     <Content Include="src\app\carta-porte\carta-porte-modal\carta-porte-modal.component.css" />
@@ -327,6 +328,8 @@
     <Content Include="src\app\carta-porte\detalle\carta-porte.detalle.component.html" />
     <Content Include="src\app\carta-porte\formulario\carta-porte.formulario.component.html" />
     <TypeScriptCompile Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.service.ts" />
+    <TypeScriptCompile Include="src\app\apikey\apikey.component.ts" />
+    <TypeScriptCompile Include="src\app\apikey\apikey.service.ts" />
     <TypeScriptCompile Include="src\app\common\models\fijacionesAutomaticas.ts" />
     <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.css" />
     <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.html" />
@@ -362,6 +365,8 @@
     <Content Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.html" />
     <Content Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.css" />
     <Content Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.html" />
+    <Content Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.css" />
+    <Content Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.html" />
     <Content Include="src\app\reporte\contrato\reporte.contrato.component.html" />
     <Content Include="src\app\reporte\cupo\reporte.cupo.component.html" />
     <Content Include="src\app\contrato\ampliacion\contrato.ampliacion.component.html" />
@@ -458,6 +463,7 @@
     <Content Include="src\app\venta-sustentable\edicion\edicion.component.html" />
     <Content Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.css" />
     <Content Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.html" />
+    <Content Include="src\app\venta-sustentable\listado-campos\listado-campos.component.css" />
     <Content Include="src\app\venta-sustentable\listado-campos\listado-campos.component.html" />
     <Content Include="src\assets\css\MolinosForms.css" />
     <Content Include="src\assets\css\MolinosGeneral.css" />
@@ -888,6 +894,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Template\RespuestaConsulta.html" />
+    <Content Include="Template\Solp.html" />
     <Content Include="tsconfig.json" />
     <Content Include="package.json" />
     <Content Include="Views\Shared\Error.cshtml" />
@@ -972,6 +979,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJob.cs" />
     <Compile Include="Jobs\ReporteCamposSustentablesTSAJob.cs" />
     <Compile Include="Jobs\ReporteConflictosCamposSustentablesJob.cs" />
     <Compile Include="Jobs\ReporteLiquidacionesInformadasJob.cs" />
@@ -1040,6 +1048,7 @@
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.module.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />
+    <TypeScriptCompile Include="src\app\directivas\drag-and-drop.directive.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.component.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.service.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.ts" />
@@ -1052,6 +1061,9 @@
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\notificaciones.service.ts" />
+    <TypeScriptCompile Include="src\app\pesificacion\pesificacion-base.component.ts" />
+    <TypeScriptCompile Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte-routing.module.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.component.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.module.ts" />

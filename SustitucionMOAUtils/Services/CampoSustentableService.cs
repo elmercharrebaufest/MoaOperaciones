@@ -8,8 +8,8 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
-using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAWS.CredentialService;
 using System;
 using System.Collections.Generic;
@@ -29,11 +29,13 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IRepositorio repositorio;
         private readonly string DataAgroURL;
+        private readonly IExcelExportWrapper excelExport;
 
-        public CampoSustentableService(IRepositorio repositorio)
+        public CampoSustentableService(IRepositorio repositorio, IExcelExportWrapper excelExport)
         {
             this.repositorio = repositorio;
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
+            this.excelExport = excelExport;
         }
 
         public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
@@ -500,6 +502,7 @@ namespace SustitucionMOAUtils.Services
                 RazonSocialProveedor = cp.RazonSocial,
                 CosechaId = cp.CampoCosecha.Cosecha_Id,
                 MotivoRechazo = cp.CampoCosecha.MotivoRechazo,
+                FechaCreacion = cp.FechaCreacion
             });
         }
 
@@ -534,7 +537,7 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var esAdminCampos = usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE");
-            var headersBase = new List<string>() { "Cosecha", "Campo", "Proveedor", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas" };
+            var headersBase = new List<string>() { "Cosecha", "Campo", "Proveedor", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas", "Razon Social", "Fecha Creacion" };
             dynamic listado;
 
             if (esAdminCampos)
@@ -549,7 +552,9 @@ namespace SustitucionMOAUtils.Services
                     HectareasTotales = cp.HectareasTotales,
                     IdScato = cp.CampoCosecha.Campo.IdScato,
                     Motivo = cp.CampoCosecha.MotivoRechazo,
-                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas
+                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
+                    RazonSocial = cp.RazonSocial,
+                    FechaCreacion = cp.FechaCreacion
                 });
             }
             else
@@ -562,25 +567,35 @@ namespace SustitucionMOAUtils.Services
                     HectareasSoja = cp.HectareasSoja,
                     HectareasTotales = cp.HectareasTotales,
                     Motivo = cp.CampoCosecha.MotivoRechazo,
-                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas
+                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
+                    RazonSocial = cp.RazonSocial,
+                    FechaCreacion = cp.FechaCreacion
                 });
-
             }
 
-            return ExcelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
+            return excelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
+            //return ExcelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
         }
 
         private List<TProyeccion> ListarCampos<TProyeccion>(Usuario usuario, Expression<Func<CampoProveedor, TProyeccion>> proyeccion) where TProyeccion : class
         {
             if (usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE"))
             {
-                return repositorio.Listar(proyeccion, p => !p.Borrado);
+                return repositorio.Listar(proyeccion, p => !p.Borrado, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc);
             }
             else
             {
                 var proveedoresIds = usuario.Proveedores.Select(pr => pr.Id);
-                return repositorio.Listar(proyeccion, p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado);
+
+                return repositorio.Listar(proyeccion, p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc);
             }
+        }
+
+        public string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId)
+        {
+            CampoProveedor campoProveedor = repositorio.Obtener<CampoProveedor>(x => x.Proveedor_Id == proveedorId && x.CampoCosecha_Id == campoCosechaId);
+
+            return campoProveedor.Archivo.Ruta;
         }
     }
 }
