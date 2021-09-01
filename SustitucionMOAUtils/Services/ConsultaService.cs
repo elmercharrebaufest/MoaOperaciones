@@ -64,7 +64,7 @@ namespace SustitucionMOAUtils.Services
             {
                 Consulta_Id = consultaId,
                 Detalle = comentarioDto.Detalle,
-                Fecha = comentarioDto.Fecha,
+                Fecha = DateTime.Now,
                 Recordado = comentarioDto.Recordado,
                 FechaRecordado = comentarioDto.FechaRecordado,
                 Usuario_Id = comentarioDto.UsuarioId
