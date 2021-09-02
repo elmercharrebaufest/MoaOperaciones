@@ -217,6 +217,10 @@ namespace SustitucionMOAFotmatter
             }
         }
 
+        public static string FormatearBooleano(bool value)
+        {
+            return value ? "X" : string.Empty;
+        }
         #endregion
     }
 }
