@@ -59,26 +59,33 @@
 
 
                         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                                Supervisor sector *
-                                  <div class="styled-select widthCompras">
-                                    <input pInputText type="text" class="" placeholder="Ingrese supervisor de sector"
+                                Responsable sector *
+                                <div class="styled-select widthCompras">
+                                    <input pInputText type="text" class="" placeholder="Ingrese responsable de sector"
                                     (blur)="onBlur('supervisorSector')" formControlName="supervisorSector"
                                         [(ngModel)]="model.supervisorSector" maxlength="100">
+                                    <!-- <p-chips [(ngModel)]="model.supervisorSector" styleClass="widthAutocomplete"
+                                    formControlName="supervisorSector" name="model.supervisorSector" placeholder="Ingrese responsable de sector" id="supervisorSector" [suggestions]="resultadoSupervisorSector" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorSector')"></p-chips> -->
                                 </div>
+                                
                                 <div  *ngIf="mostrarError('supervisorSector')">
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
 
+            
+
+
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                                Supervisor de trabajo *
+                                Responsable de trabajo *
                                 <div class="styled-select widthCompras">
                                     <input pInputText type="text"
                                     (blur)="onBlur('supervisorTrabajo')"  formControlName="supervisorTrabajo" class="" 
-                                    placeholder="Ingrese supervisor de trabajo"
+                                    placeholder="Ingrese responsable de trabajo"
                                         [(ngModel)]="model.supervisorTrabajo" maxlength="100">
+                                    <!-- <p-chips [(ngModel)]="model.supervisorSector" styleClass="widthAutocomplete"
+                                    formControlName="supervisorSector" name="model.supervisorSector" placeholder="Ingrese responsable de sector" id="supervisorSector" [suggestions]="resultadoSupervisorSector" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorSector')"></p-chips> -->
                                 </div>
                                 <div *ngIf="mostrarError('supervisorTrabajo')">
                                     <p class="text-danger">campo obligatorio</p>
