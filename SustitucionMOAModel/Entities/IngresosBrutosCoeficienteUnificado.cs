@@ -24,6 +24,8 @@ namespace SustitucionMOAModel.Entities
         
         public int Archivo_Id { get; set; }
 
+        public int? SecuenciaIngresosBrutosCoeficienteUnificado_Id { get; set; }
+        
         public bool MalCargada { get; set; }
 
         public DateTime FechaUltimaModificacion { get; set; }
@@ -39,5 +41,8 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("IngresosBrutosCoeficienteUnificado")]
         public virtual ICollection<IngresosBrutosCoeficienteUnificadoDetalle> Detalle { get; set; }
+
+        [ForeignKey("SecuenciaIngresosBrutosCoeficienteUnificado_Id")]
+        public virtual SecuenciaIngresosBrutosCoeficienteUnificado SecuenciaIngresosBrutosCoeficienteUnificado { get; set; }
     }
 }

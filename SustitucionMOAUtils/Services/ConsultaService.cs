@@ -919,6 +919,12 @@ namespace SustitucionMOAUtils.Services
             int sedeAux;
             int sede = Int32.TryParse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Sede:")[0], out sedeAux) ? sedeAux : 0;
 
+            string secuencia = SacarHasta(info_DeterminacionCoeficienteUnificado, "Secuencia:")[0];
+            int? idSecuencia =
+                secuencia == "Original" ? (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original :
+                secuencia.Contains("Rectificativa") ? (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Rectificativa :
+                (int?)null;
+
             var ingresosBrutosCoeficienteUnificado = new IngresosBrutosCoeficienteUnificado
             {
                 EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
@@ -929,6 +935,7 @@ namespace SustitucionMOAUtils.Services
                 FechaUltimaModificacion = timeProvider.Now(),
                 Consulta_Id = consulta_Id,
                 Archivo_Id = archivo_Id,
+                SecuenciaIngresosBrutosCoeficienteUnificado_Id = idSecuencia,
             };
 
             List<IngresosBrutosCoeficienteUnificadoDetalle> ingresosBrutosCoeficienteUnificadoDetalles = new List<IngresosBrutosCoeficienteUnificadoDetalle>();
