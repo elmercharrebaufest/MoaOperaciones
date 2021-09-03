@@ -48,9 +48,9 @@ namespace SustitucionMOATest.Services
 
             List<IngresosBrutosCoeficienteUnificado> cabeceras = new List<IngresosBrutosCoeficienteUnificado>
             {
-                new IngresosBrutosCoeficienteUnificado { Id = 1, Anticipo = 1, CUIT = "1", Sede = 1, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = pendiente, MalCargada = false },
-                new IngresosBrutosCoeficienteUnificado { Id = 2, Anticipo = 2, CUIT = "2", Sede = 2, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = autorizado, MalCargada = false },
-                new IngresosBrutosCoeficienteUnificado { Id = 3, Anticipo = 23, CUIT = "33", Sede = 3, FechaCarga = ayer, FechaUltimaModificacion = hoy, EstadoIngresosBrutosCoeficienteUnificado = completado, MalCargada = true },
+                new IngresosBrutosCoeficienteUnificado { Id = 1, SecuenciaIngresosBrutosCoeficienteUnificado_Id = 1, Anticipo = 1, CUIT = "1", Sede = 1, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = pendiente, MalCargada = false },
+                new IngresosBrutosCoeficienteUnificado { Id = 2, SecuenciaIngresosBrutosCoeficienteUnificado_Id = 2, Anticipo = 2, CUIT = "2", Sede = 2, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = autorizado, MalCargada = false },
+                new IngresosBrutosCoeficienteUnificado { Id = 3, SecuenciaIngresosBrutosCoeficienteUnificado_Id = null, Anticipo = 23, CUIT = "33", Sede = 3, FechaCarga = ayer, FechaUltimaModificacion = hoy, EstadoIngresosBrutosCoeficienteUnificado = completado, MalCargada = true },
             };
 
             this.repositorioMock
@@ -84,6 +84,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(hoy, result[2].FechaCarga);
             Assert.AreEqual(ayer, result[2].FechaUltimaModificacion);
             Assert.AreEqual(1, result[2].Sede);
+            Assert.AreEqual(1, result[2].SecuenciaId);
             Assert.IsFalse(result[2].MalCargada);
 
             Assert.AreEqual(2, result[1].Id);
@@ -93,6 +94,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(hoy, result[1].FechaCarga);
             Assert.AreEqual(ayer, result[1].FechaUltimaModificacion);
             Assert.AreEqual(2, result[1].Sede);
+            Assert.AreEqual(2, result[1].SecuenciaId);
             Assert.IsFalse(result[1].MalCargada);
 
             Assert.AreEqual(3, result[0].Id);
@@ -102,6 +104,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(ayer, result[0].FechaCarga);
             Assert.AreEqual(hoy, result[0].FechaUltimaModificacion);
             Assert.AreEqual(3, result[0].Sede);
+            Assert.IsNull(result[0].SecuenciaId);
             Assert.IsTrue(result[0].MalCargada);
         }
 
@@ -725,6 +728,7 @@ namespace SustitucionMOATest.Services
                 EstadoId = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
                 FechaCarga = ayer,
                 Sede = 123,
+                SecuenciaId = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original,
                 MalCargada = false,
                 FechaUltimaModificacion = hoy,
             };
@@ -741,6 +745,7 @@ namespace SustitucionMOATest.Services
                     EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
                     FechaCarga = ayer,
                     Sede = 123,
+                    SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Rectificativa,
                     MalCargada = true,
                     FechaUltimaModificacion = hoy,
                 },
@@ -754,6 +759,7 @@ namespace SustitucionMOATest.Services
                     EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
                     FechaCarga = ayer,
                     Sede = 123,
+                    SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Rectificativa,
                     MalCargada = false,
                     FechaUltimaModificacion = ayer,
                 },
@@ -767,6 +773,7 @@ namespace SustitucionMOATest.Services
                     EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
                     FechaCarga = ayer,
                     Sede = 123,
+                    SecuenciaIngresosBrutosCoeficienteUnificado_Id = null,
                     MalCargada = true,
                     FechaUltimaModificacion = ayer,
                 },
@@ -780,6 +787,7 @@ namespace SustitucionMOATest.Services
                     EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Completado,
                     FechaCarga = ayer,
                     Sede = 123,
+                    SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original,
                     MalCargada = false,
                     FechaUltimaModificacion = hoy,
                 }
@@ -813,6 +821,120 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(201, entidadModificada.Anticipo);
             Assert.AreEqual("cuitcuilt", entidadModificada.CUIT);
             Assert.AreEqual(123, entidadModificada.Sede);
+            Assert.AreEqual((int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original, entidadModificada.SecuenciaIngresosBrutosCoeficienteUnificado_Id);
+            Assert.IsFalse(entidadModificada.MalCargada);
+        }
+
+        [Test]
+        public void EditarIngresosBrutosCoeficienteUnificadoSecuenciaNulaOk()
+        {
+            DateTime hoy = new DateTime(2021, 07, 28);
+            DateTime ayer = new DateTime(2021, 07, 27);
+
+            timeProviderMock.Setup(t => t.Now()).Returns(hoy);
+
+            var ingresosBrutosCoeficienteUnificadoDtoTest = new IngresosBrutosCoeficienteUnificadoDto
+            {
+                Id = 3,
+                Anticipo = 201,
+                CUIT = "cuitcuilt",
+                EstadoId = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                FechaCarga = ayer,
+                Sede = 123,
+                SecuenciaId = null,
+                MalCargada = false,
+                FechaUltimaModificacion = hoy,
+            };
+
+            var ingresosBrutosCoeficienteUnificadoList = new List<IngresosBrutosCoeficienteUnificado>
+            {
+                new IngresosBrutosCoeficienteUnificado
+                {
+                    Id = 1,
+                    Archivo_Id = 12,
+                    Consulta_Id = 3,
+                    Anticipo = 202,
+                    CUIT = "cuit",
+                    EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
+                    FechaCarga = ayer,
+                    Sede = 123,
+                    SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Rectificativa,
+                    MalCargada = true,
+                    FechaUltimaModificacion = hoy,
+                },
+                new IngresosBrutosCoeficienteUnificado
+                {
+                    Id = 2,
+                    Archivo_Id = 12,
+                    Consulta_Id = 663,
+                    Anticipo = 2012,
+                    CUIT = "cuit",
+                    EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                    FechaCarga = ayer,
+                    Sede = 123,
+                    SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original,
+                    MalCargada = false,
+                    FechaUltimaModificacion = ayer,
+                },
+                new IngresosBrutosCoeficienteUnificado
+                {
+                    Id = 3,
+                    Archivo_Id = 62,
+                    Consulta_Id = 334,
+                    Anticipo = 2012,
+                    CUIT = "cuit",
+                    EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                    FechaCarga = ayer,
+                    Sede = 123,
+                    SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Rectificativa,
+                    MalCargada = true,
+                    FechaUltimaModificacion = ayer,
+                },
+                new IngresosBrutosCoeficienteUnificado
+                {
+                    Id = 4,
+                    Archivo_Id = 122,
+                    Consulta_Id = 4,
+                    Anticipo = 201,
+                    CUIT = "cuit",
+                    EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Completado,
+                    FechaCarga = ayer,
+                    Sede = 123,
+                    SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original,
+                    MalCargada = false,
+                    FechaUltimaModificacion = hoy,
+                }
+            };
+
+            IngresosBrutosCoeficienteUnificado entidadModificada = new IngresosBrutosCoeficienteUnificado();
+            this.repositorioMock
+                .Setup(repo => repo.Obtener<IngresosBrutosCoeficienteUnificado>(It.IsAny<int>()))
+                .Returns<object>(id =>
+                {
+                    entidadModificada = ingresosBrutosCoeficienteUnificadoList.SingleOrDefault(x => x.Id == (int)id);
+                    return entidadModificada;
+                });
+
+            EditarIngresosBrutosCoeficienteUnificadoResponseDto result = target.EditarIngresosBrutosCoeficienteUnificado(ingresosBrutosCoeficienteUnificadoDtoTest);
+
+            Assert.AreEqual("El detalle de coeficientes unificados de ingresos brutos se ha actualizado correctamente.", result.Mensaje);
+            Assert.AreEqual(hoy, result.FechaUltimaModificacion);
+
+            this.repositorioMock.Verify(repo => repo.Obtener<IngresosBrutosCoeficienteUnificado>(It.IsAny<int>()), Times.Once);
+            this.repositorioMock.Verify(repo => repo.GuardarCambios(), Times.Once);
+
+            Assert.AreEqual(3, entidadModificada.Id);
+            Assert.AreEqual(62, entidadModificada.Archivo_Id);
+            Assert.AreEqual(334, entidadModificada.Consulta_Id);
+            Assert.AreEqual(ayer, entidadModificada.FechaCarga);
+            Assert.AreEqual((int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente, entidadModificada.EstadoIngresosBrutosCoeficienteUnificado_Id);
+
+            Assert.AreEqual(hoy, entidadModificada.FechaUltimaModificacion);
+
+            Assert.AreEqual(201, entidadModificada.Anticipo);
+            Assert.AreEqual("cuitcuilt", entidadModificada.CUIT);
+            Assert.AreEqual(123, entidadModificada.Sede);
+            Assert.IsNull(entidadModificada.SecuenciaIngresosBrutosCoeficienteUnificado_Id);
             Assert.IsFalse(entidadModificada.MalCargada);
         }
 
