@@ -64,17 +64,6 @@ import { ApikeyComponent } from "./apikey/apikey.component";
 import { ApikeyService } from "./apikey/apikey.service";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
-import { GestionCM05Component } from "./gestionCM05/gestionCM05.component";
-import { GestionCM05Service } from "./gestionCM05/gestionCM05.service";
-import { TableModule } from "primeng/table";
-import { DialogModule } from 'primeng/dialog';
-import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
-import { PaginatorModule } from 'primeng/paginator';
-import { ToastModule } from 'primeng/toast';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputMaskModule } from 'primeng/inputmask';
 import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
 import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
 
@@ -96,14 +85,6 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     BlockUIModule.forRoot(),
     ComprasModule,
     ConfirmDialogModule,
-    TableModule,
-    DialogModule,
-    ButtonModule,
-    PaginatorModule,
-    CalendarModule,
-    ToastModule,
-    MultiSelectModule,
-    InputMaskModule,
   ],
   declarations: [
     AppComponent,
@@ -129,7 +110,6 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     ConsultaBaseComponent,
     VentaSustentableBaseComponent,
     ApikeyComponent,
-    GestionCM05Component,
     PesificacionesGuardadasComponent,
     PesificacionBaseComponent
   ],
@@ -154,7 +134,6 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     ConsultaService,
     ConfirmationService,
     ApikeyService,
-    GestionCM05Service
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
