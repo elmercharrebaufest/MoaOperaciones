@@ -14,6 +14,7 @@
                         <th class="col-md-3 th-cabecera" style="border-bottom:none">
                             Estado
                         </th>
+                        <th class="col-md-1 th-cabecera" rowspan="2">Secuencia</th>
                         <th class="col-md-2 th-cabecera">CUIT</th>
                         <th class="col-md-1 th-cabecera" rowspan="2">Anticipo</th>
                         <th class="col-md-1 th-cabecera" rowspan="2">Sede</th>
@@ -42,6 +43,9 @@
                             {{rowData.Estado}}
                         </td>
                         <td class="td-cabecera">
+                            {{rowData.Secuencia}}
+                        </td>
+                        <td class="td-cabecera">
                             {{rowData.CUIT | mask: '00-00000000-0'}}
                         </td>
                         <td class="td-cabecera">
@@ -63,40 +67,78 @@
     </section>
 </div>
 
-<p-dialog *ngIf="selectedCabecera" [(visible)]="displayDialog" [maximizable]="true" [responsive]="true" showEffect="fade" [modal]="true" [width]="900" appendTo="body">
+<p-dialog *ngIf="selectedCabecera" [(visible)]="displayDialog" [maximizable]="true" [responsive]="true" showEffect="fade" [modal]="true" [width]="900" appendTo="body" (onHide)="closeDialogDetalles()">
     <p-header>
-        <div class="col-md-3">
-            <label class="headerDetalle">
-                CUIT:
-            </label>
-            <label *ngIf="!editandoCabecera; else elseCUITBlock">
-                {{selectedCabecera.CUIT | mask: '00-00000000-0'}}
-            </label>
-            <ng-template #elseCUITBlock>
-                <input style="width:max-content" type="text" mask="00-00000000-0" [(ngModel)]="selectedCabecera.CUIT" name="selectedCabecera.CUIT" required>
-            </ng-template>
-        </div>
-        <div class="col-md-3">
-            <label class="headerDetalle">
-                Anticipo:
-            </label>
-            <label *ngIf="!editandoCabecera; else elseAnticipoBlock">
-                {{selectedCabecera.Anticipo}}
-            </label>
-            <ng-template #elseAnticipoBlock>
-                <input style="width:max-content" type="text" [(ngModel)]="selectedCabecera.Anticipo" name="selectedCabecera.Anticipo" required>
-            </ng-template>
-        </div>
-        <div class="col-md-3">
-            <label class="headerDetalle">
-                Sede:
-            </label>
-            <label *ngIf="!editandoCabecera; else elseSedeBlock">
-                {{selectedCabecera.Sede}}
-            </label>
-            <ng-template #elseSedeBlock>
-                <input style="width:max-content" type="text" [(ngModel)]="selectedCabecera.Sede" name="selectedCabecera.Sede" required>
-            </ng-template>
+        <label class="headerDetalle">
+            Id:
+        </label>
+        <label>
+            {{selectedCabecera.Id}}
+        </label>
+    </p-header>
+    <div class="row">
+        <div class="col-md-10 ">
+            <div class="col-6 col-sm-6">
+                <div class="col-4 col-sm-4">
+                    <label class="headerDetalle">
+                        CUIT:
+                    </label>
+                </div>
+                <div class="col-8 col-sm-8">
+                    <label *ngIf="!editandoCabecera; else elseCUITBlock">
+                        {{selectedCabecera.CUIT | mask: '00-00000000-0'}}
+                    </label>
+                    <ng-template #elseCUITBlock>
+                        <input style="width:max-content" type="text" mask="00-00000000-0" [(ngModel)]="selectedCabecera.CUIT" name="selectedCabecera.CUIT" required>
+                    </ng-template>
+                </div>
+            </div>
+            <div class="col-6 col-sm-6">
+                <div class="col-4 col-sm-4">
+                    <label class="headerDetalle">
+                        Anticipo:
+                    </label>
+                </div>
+                <div class="col-8 col-sm-8">
+                    <label *ngIf="!editandoCabecera; else elseAnticipoBlock">
+                        {{selectedCabecera.Anticipo}}
+                    </label>
+                    <ng-template #elseAnticipoBlock>
+                        <input style="width:max-content" type="text" [(ngModel)]="selectedCabecera.Anticipo" name="selectedCabecera.Anticipo" required>
+                    </ng-template>
+                </div>
+            </div>
+            <div class="col-6 col-sm-6">
+                <div class="col-4 col-sm-4">
+                    <label class="headerDetalle">
+                        Sede:
+                    </label>
+                </div>
+                <div class="col-8 col-sm-8">
+                    <label *ngIf="!editandoCabecera; else elseSedeBlock">
+                        {{selectedCabecera.Sede}}
+                    </label>
+                    <ng-template #elseSedeBlock>
+                        <input style="width:max-content" type="text" [(ngModel)]="selectedCabecera.Sede" name="selectedCabecera.Sede" required>
+                    </ng-template>
+                </div>
+            </div>
+            <div class="col-6 col-sm-6">
+                <div class="col-4 col-sm-4">
+                    <label class="headerDetalle">
+                        Secuencia:
+                    </label>
+                </div>
+                <div class="col-8 col-sm-8">
+                    <label *ngIf="!editandoCabecera; else elseSecuenciaBlock">
+                        {{selectedCabecera.Secuencia}}
+                    </label>
+                    <ng-template #elseSecuenciaBlock>
+                        <p-dropdown [options]="secuencias" [(ngModel)]="selectedCabecera.SecuenciaId" [style]="{'width':'75% !important'}" 
+                                    [showClear]="true" [autoDisplayFirst]="false"></p-dropdown>
+                    </ng-template>
+                </div>
+            </div>
         </div>
         <div class="col-md-2" *ngIf="selectedCabecera.Estado=='Pendiente'">
             <button *ngIf="!editandoCabecera; else elseBotonesBlock" pButton type="button" (click)="editarCabecera()" class="p-button-secondary" style="background-color: #075088;" icon="fa fa-edit"></button>
@@ -105,7 +147,7 @@
                 <button pButton type="button" (click)="cancelarEditarCabecera()" class="p-button-secondary" style="background-color: #ff4343;" icon="fa fa-times"></button>
             </ng-template>
         </div>
-    </p-header>
+    </div>
     <p-table [columns]="detalleCols" [value]="detalles" dataKey="Id" editMode="row" [scrollable]="true" scrollHeight="flex" [frozenColumns]="frozenCols" frozenWidth="min-width">
         <ng-template pTemplate="header" let-columns>
             <tr>
@@ -173,5 +215,5 @@
         <button pButton label="Autorizar" (click)="autorizarCabecera()" [disabled]="selectedCabecera.Estado!='Pendiente'" type="button" icon="fa fa-check-circle" iconPos="right" style="float: right"></button>
         <button pButton label="Descargar PDF" (click)="descargarFormularioCM05()" type="button" icon="fa fa-file" iconPos="right" style="float: right"></button>
     </p-footer>
-<p-toast></p-toast>
+    <p-toast></p-toast>
 </p-dialog>

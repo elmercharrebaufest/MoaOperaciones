@@ -34,6 +34,7 @@ export class GestionCM05Component extends ListBaseComponent {
     detalles: DetalleCM05[];
 
     estados: SelectItem[];
+    secuencias: SelectItem[];
 
     detallesEditando: DetalleCM05[];
 
@@ -63,9 +64,14 @@ export class GestionCM05Component extends ListBaseComponent {
         this.navService.setSeccionList([]);
 
         this.estados = [
-            { label: 'Pendiente',  value: 'Pendiente',   },
+            { label: 'Pendiente',  value: 'Pendiente',  },
             { label: 'Autorizado', value: 'Autorizado', },
             { label: 'Completado', value: 'Completado', },
+        ];
+
+        this.secuencias = [
+            { label: 'Original', value: 1, },
+            { label: 'Rectificativa', value: 2, },
         ];
 
         this.listarCabeceras();
@@ -73,12 +79,12 @@ export class GestionCM05Component extends ListBaseComponent {
         this.cabeceraCols = [
             { field: 'Id', header: 'Id' },
             { field: 'Estado', header: 'Estado' },
-            { field: 'Estado_Id', header: 'Estado_Id' },
             { field: 'CUIT', header: 'CUIT' },
             { field: 'Anticipo', header: 'Anticipo' },
             { field: 'Sede', header: 'Sede' },
             { field: 'FechaCarga', header: 'Fecha carga' },
             { field: 'FechaUltimaModificacion', header: 'Última modificación' },
+            { field: 'SecuienciaId', header: 'SecuenciaId' },
             { field: 'MalCargada', header: 'MalCargada' },
         ];
 
@@ -106,7 +112,9 @@ export class GestionCM05Component extends ListBaseComponent {
             Sede: data.Sede,
             FechaCarga: data.FechaCarga,
             FechaUltimaModificacion: data.FechaUltimaModificacion,
-            MalCargada: data.MalCargada
+            MalCargada: data.MalCargada,
+            Secuencia: data.Secuencia,
+            SecuenciaId: data.SecuenciaId,
         };
         this.service.listarDetalles(this.selectedCabecera.Id).subscribe(result => {
             this.detalles = result;
@@ -121,9 +129,11 @@ export class GestionCM05Component extends ListBaseComponent {
         }, 600);
     }
      
-    close() {
+    closeDialogDetalles() {
         this.selectedCabecera = null;
         this.detalles = null;
+        this.editandoCabecera = false;
+        this.cabeceraEditando = null;
         this.displayDialog = false;
     }
 
@@ -320,7 +330,15 @@ export class GestionCM05Component extends ListBaseComponent {
                     } else {
                         this.cabeceras = result;
                         this.cabeceras.forEach(x => {
-                            x.Estado = x.EstadoId == 1 ? 'Pendiente' : x.EstadoId == 2 ? 'Autorizado' : x.EstadoId == 3 ? 'Completado' : '';
+                            x.Estado =
+                                x.EstadoId == 1 ? 'Pendiente' :
+                                x.EstadoId == 2 ? 'Autorizado' :
+                                x.EstadoId == 3 ? 'Completado' :
+                                '';
+                            x.Secuencia =
+                                x.SecuenciaId == 1 ? 'Original' :
+                                x.SecuenciaId == 2 ? 'Rectificativa' :
+                                '';
                             x.FechaCarga = x.FechaCarga == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaCarga));
                             x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
                         });
@@ -347,36 +365,35 @@ export class GestionCM05Component extends ListBaseComponent {
     guardarCabeceraEditada() {
         this.messageService.clear();
         try {
-            if (this.validarCabeceraEditada()) {
-                return
-            }
+            if (!this.validarCabeceraEditada()) {
+                this.subscription = this.service.editarCabecera(this.selectedCabecera).subscribe(
+                    result => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.messageService.add({ severity: 'error', summary: 'No se pudo editar', detail: result.error });
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.messageService.add({ severity: 'info', summary: 'No se pudo editar', detail: result.info });
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            this.messageService.add({ severity: 'success', summary: 'Cabecera actualizada', detail: result.Mensaje });
+                            this.floatMsgService.setSuccessMsg(result.Mensaje);
 
-            this.subscription = this.service.editarCabecera(this.selectedCabecera).subscribe(
-                result => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.messageService.add({ severity: 'error', summary: 'No se pudo editar', detail: result.error });
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.messageService.add({ severity: 'info', summary: 'No se pudo editar', detail: result.info });
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        this.messageService.add({ severity: 'success', summary: 'Cabecera actualizada', detail: result.Mensaje });
-                        this.floatMsgService.setSuccessMsg(result.Mensaje);
+                            this.selectedCabecera.Secuencia = this.selectedCabecera.SecuenciaId ? this.secuencias.find(s => s.value == this.selectedCabecera.SecuenciaId).label : '';
+                            this.selectedCabecera.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(result.FechaUltimaModificacion));
 
-                        this.selectedCabecera.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(result.FechaUltimaModificacion));
-                        this.editandoCabecera = false;
-                        this.cabeceraEditando = null;
+                            this.editandoCabecera = false;
+                            this.cabeceraEditando = null;
 
-                        this.listarCabeceras();
+                            this.listarCabeceras();
+                        }
+                    },
+                    error => {
+                        this.floatMsgService.setErrorMsg(error.message);
                     }
-                },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                }
-
-            );
+                );
+            }
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
@@ -391,27 +408,27 @@ export class GestionCM05Component extends ListBaseComponent {
 
         if (this.selectedCabecera.Anticipo == null || this.selectedCabecera.Anticipo == "") {
             this.messageService.add({ severity: 'error', summary: 'Anticipo', detail: 'Esta vacio.' });
-            return
+            return true;
         }
 
         if (!(regexNumerosEnteros.test(this.selectedCabecera.Anticipo))) {
             this.messageService.add({ severity: 'error', summary: 'Anticipo', detail: 'Debe ser un número entero.' });
-            return
+            return true;
         }
 
         if (this.selectedCabecera.Sede == null || this.selectedCabecera.Sede == "") {
             this.messageService.add({ severity: 'error', summary: 'Sede', detail: 'Esta vacio.' });
-            return
+            return true;
         }
 
         if (!(regexNumerosEnteros.test(this.selectedCabecera.Sede))) {
             this.messageService.add({ severity: 'error', summary: 'Sede', detail: 'Debe ser un número entero.' });
-            return
+            return true;
         }
 
         if (!(regexNumerosEnteros.test(this.selectedCabecera.CUIT))) {
             this.messageService.add({ severity: 'error', summary: 'Cuit', detail: 'Debe ser un número.' });
-            return
+            return true;
         }
 
         return false;
