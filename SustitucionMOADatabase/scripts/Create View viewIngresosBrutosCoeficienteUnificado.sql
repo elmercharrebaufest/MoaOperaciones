@@ -18,7 +18,7 @@ id.FechaCese,
 id.CoeficienteUnificado
 FROM IngresosBrutosCoeficienteUnificado i
 JOIN EstadoIngresosBrutosCoeficienteUnificado ei ON i.EstadoIngresosBrutosCoeficienteUnificado_Id = ei.Id
-JOIN SecuenciaIngresosBrutosCoeficienteUnificado si ON i.SecuenciaIngresosBrutosCoeficienteUnificado_Id = si.Id
+LEFT JOIN SecuenciaIngresosBrutosCoeficienteUnificado si ON i.SecuenciaIngresosBrutosCoeficienteUnificado_Id = si.Id
 JOIN IngresosBrutosCoeficienteUnificadoDetalle id ON i.Id = id.IngresosBrutosCoeficienteUnificado_Id
 WHERE i.EstadoIngresosBrutosCoeficienteUnificado_Id = 2
 GO
