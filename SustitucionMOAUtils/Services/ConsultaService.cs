@@ -987,7 +987,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             ingresosBrutosCoeficienteUnificado.Detalle = ingresosBrutosCoeficienteUnificadoDetalles;
-            ingresosBrutosCoeficienteUnificado.MalCargada = string.IsNullOrWhiteSpace(cuit) || anticipo == 0 || sede == 0 ||
+            ingresosBrutosCoeficienteUnificado.MalCargada = string.IsNullOrWhiteSpace(cuit) || anticipo == 0 || sede == 0 || !idSecuencia.HasValue ||
                 ingresosBrutosCoeficienteUnificadoDetalles.Any(i => !i.CoeficienteUnificado.HasValue || !i.NumeroJurisdiccion.HasValue || string.IsNullOrWhiteSpace(i.Jurisdiccion));
 
             repositorio.Agregar(ingresosBrutosCoeficienteUnificado);
