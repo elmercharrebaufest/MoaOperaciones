@@ -13,11 +13,9 @@ id.NumeroJurisdiccion,
 id.Jurisdiccion, 
 id.FechaInicio, 
 id.FechaCese, 
-id.CoeficienteIngresos, 
-id.CoeficienteGastos, 
 id.CoeficienteUnificado
 FROM IngresosBrutosCoeficienteUnificado i
 JOIN EstadoIngresosBrutosCoeficienteUnificado ei ON i.EstadoIngresosBrutosCoeficienteUnificado_Id = ei.Id
-JOIN IngresosBrutosCoeficienteUnificadoDetalle id ON i.Id = id.Id
+JOIN IngresosBrutosCoeficienteUnificadoDetalle id ON i.Id = id.IngresosBrutosCoeficienteUnificado_Id
 WHERE i.EstadoIngresosBrutosCoeficienteUnificado_Id = 2
 GO
