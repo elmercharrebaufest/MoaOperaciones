@@ -819,6 +819,7 @@ namespace SustitucionMOAUtils.Services
                 ProveedorCUIT = CUITProveedor,
                 RazonSocial = proveedor.RazonSocial,
                 AltaInterna = proveedor.AltaInterna ?? false,
+                Observacion = proveedor.Observaciones,
             };
 
             return info;
