@@ -72,24 +72,13 @@
                                 </div>
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('estado')">
-                                Estado Interno
+                                Estado
                                 <div>
                                     <span>
                                         <i
                                             [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'estado' && orderDirection > 0 }"></i>
                                         <i
                                             [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'estado' && orderDirection < 0 }"></i>
-                                    </span>
-                                </div>
-                            </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('estadoMoa')">
-                                Estado
-                                <div>
-                                    <span>
-                                        <i
-                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'estadoMoa' && orderDirection > 0 }"></i>
-                                        <i
-                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'estadoMoa' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -105,8 +94,8 @@
                                 <label *ngIf="!isCorredor()">{{vendedor.descVendedor}}</label>
                             </td>
                             <td>{{vendedor.idVendedor}}</td>
-                            <td>{{vendedor.estado}}</td>
-                            <td>{{vendedor.estadoMoa}}</td>
+                            <td *ngIf="vendedor.estado == '';else elseBlock">{{vendedor.estadoMoa}}</td>
+                            <ng-template #elseBlock><td>{{vendedor.estado}}</td></ng-template>
                         </tr>
                     </tbody>
                 </table>
