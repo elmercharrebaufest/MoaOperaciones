@@ -7,6 +7,8 @@ import { NavService } from '../../common/services/NavService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
+import { Material } from '../../common/models/material';
+import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 
 @Component({
     selector: 'app-ordenes-de-carga.listado',
@@ -19,7 +21,22 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
+    listaMateriales: Material[];
+    ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
+
+    filtroEstado: any = null;
+    filtroProducto: any = null;
+    
+    estadoSelected: string = "";
+    productoSelected: string = "";
+
+
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+    esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS');
+    esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
+    esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
+    esPuerto: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA PUERTO');
+
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
 
     ngOnInit() {
@@ -27,6 +44,28 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         this.checkPermisos();
         this.navService.setSeccionList([]);
         this.getListado();
+
+        this.obtenerMateriales();
+    }
+
+    setFiltroEstado(estado: string) {
+        this.estadoSelected = estado;
+    }
+
+    setFiltroProducto(producto: string) {
+        this.productoSelected = producto;
+    }
+
+    obtenerMateriales() {
+        //Sacamos lo de la lista de campaña, ya que ahora son independientes
+        this.subscription = this.service.getMateriales().subscribe(
+            (result) => {
+                this.listaMateriales = result.data;
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
     }
 
     getListado() {

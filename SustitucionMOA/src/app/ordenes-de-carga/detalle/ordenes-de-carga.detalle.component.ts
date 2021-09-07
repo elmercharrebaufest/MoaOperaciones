@@ -48,7 +48,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonVerificarSituacionCrediticia: boolean = false;
     mostrarBotonAnular: boolean = false;
 
+    // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+    esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS');
+    esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
+    esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
+    esPuerto: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA PUERTO');
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
 
     constructor(protected service: OrdenesDeCargaService,
@@ -58,6 +63,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         public datepipe: DatePipe) {
         super(navService, securytiService, floatMsgService, modalService);
+
+        // this.esInterno = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     }
 
     ngOnInit() {
