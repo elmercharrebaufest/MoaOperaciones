@@ -17,77 +17,63 @@
 
                             <div class="col-xs-12 col-sm-6 col-md-6 margenInput">
                                 <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.visitaDeObraMasiva" label="Visita de obra masiva"
-                                    binary="true"></p-checkbox>
+                                binary="true"></p-checkbox>
                             </div>
 
                             <div *ngFor="let visita of model.listaVisitas">
                                 <div class="col-xs-12 col-sm-12 col-md-7 margenInput">
                                     <div class="styled-select">
                                         <p-calendar [ngModelOptions]="{standalone:true}" [style]="{'width': '75%'}" [(ngModel)]="visita.visitaDeObraFecha"
-                                            [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body"
-                                            [disabled]="!model.visitaDeObraMasiva" [readonlyInput]="true"
-                                            [minDate]="hoy"></p-calendar>
+                                        [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body"
+                                        [disabled]="!model.visitaDeObraMasiva" [readonlyInput]="true"
+                                        [minDate]="hoy"></p-calendar>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-12 col-sm-12 col-md-4 prime-hora margenInput">
                                     <div>
                                         <p-calendar [ngModelOptions]="{standalone:true}" class="styled-select" [(ngModel)]="visita.visitaDeObraHora"
-                                            [locale]="locale" [showIcon]="true" icon="fa fa-clock-o"
-                                            [disabled]="!model.visitaDeObraMasiva" [timeOnly]="true"></p-calendar>
+                                        [locale]="locale" [showIcon]="true" icon="fa fa-clock-o"
+                                        [disabled]="!model.visitaDeObraMasiva" [timeOnly]="true"></p-calendar>
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-1" style="right: 20px;">
                                     <span (click)="model.visitaDeObraMasiva ? eliminarVisita(visita.id) : null"><img
-                                            [class.pointer]="model.visitaDeObraMasiva"
-                                            src="./Content/images/icons/trash.svg" alt="trash"
-                                            style="padding: 8px;" /></span>
+                                    [class.pointer]="model.visitaDeObraMasiva"
+                                    src="./Content/images/icons/trash.svg" alt="trash"
+                                    style="padding: 8px;" /></span>
                                 </div>
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 <div>
                                     <span (click)="model.visitaDeObraMasiva ? agregarNuevaVisita() : null"
-                                        [class.pointer]="model.visitaDeObraMasiva" class="enlaceVisita"
-                                        [class.disabled]="!model.visitaDeObraMasiva"><i
-                                            class="fa fa-plus-square"></i>&nbsp; Agregar nueva visita de obra</span>
+                                    [class.pointer]="model.visitaDeObraMasiva" class="enlaceVisita"
+                                    [class.disabled]="!model.visitaDeObraMasiva"><i
+                                    class="fa fa-plus-square"></i>&nbsp; Agregar nueva visita de obra</span>
                                 </div>
                             </div>
-
                         </div>
-
-
 
                         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 Responsable sector *
-                                <div class="styled-select widthCompras">
-                                    <input pInputText type="text" class="" placeholder="Ingrese responsable de sector"
-                                    (blur)="onBlur('supervisorSector')" formControlName="supervisorSector"
-                                        [(ngModel)]="model.supervisorSector" maxlength="100">
-                                    <!-- <p-chips [(ngModel)]="model.supervisorSector" styleClass="widthAutocomplete"
-                                    formControlName="supervisorSector" name="model.supervisorSector" placeholder="Ingrese responsable de sector" id="supervisorSector" [suggestions]="resultadoSupervisorSector" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorSector')"></p-chips> -->
+                                <div class="col-md-12 ui-fluid" style="padding-left: 0em;">
+                                    <p-chips [(ngModel)]="model.supervisorSector" formControlName="supervisorSector" name="model.supervisorSector" placeholder="Ingrese responsable" id="supervisorSector" [suggestions]="resultadoSupervisorSector" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorSector')"></p-chips>
                                 </div>
-                                
                                 <div  *ngIf="mostrarError('supervisorSector')">
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 Responsable de trabajo *
-                                <div class="styled-select widthCompras">
-                                    <input pInputText type="text"
-                                    (blur)="onBlur('supervisorTrabajo')"  formControlName="supervisorTrabajo" class="" 
-                                    placeholder="Ingrese responsable de trabajo"
-                                        [(ngModel)]="model.supervisorTrabajo" maxlength="100">
-                                    <!-- <p-chips [(ngModel)]="model.supervisorTrabajo" styleClass="widthAutocomplete"
-                                    formControlName="supervisorTrabajo" name="model.supervisorTrabajo" placeholder="Ingrese responsable de trabajo" id="supervisorTrabajo" [suggestions]="resultadoSupervisorSector" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorTrabajo')"></p-chips> -->
+                                <div class="col-md-12 ui-fluid" style="padding-left: 0em;">
+                                    <p-chips [(ngModel)]="model.supervisorTrabajo" formControlName="supervisorTrabajo" name="model.supervisorTrabajo" placeholder="Ingrese responsable" id="supervisorTrabajo" [suggestions]="resultadoSupervisorSector" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorTrabajo')"></p-chips>
                                 </div>
                                 <div *ngIf="mostrarError('supervisorTrabajo')">
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
-
                         </div>
 
                     </div>
