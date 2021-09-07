@@ -22,6 +22,15 @@
                                 </ng-template>
                             </p-fileUpload>
                         </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <label class="labelCompras" for="editorTexto"> Usar template de condiciones generales</label>
+                            <div class="ui-g" style="width:250px;margin-bottom:10px">
+                                <div class="ui-g-12"><p-radioButton name="group1" value="Si" label="Si" [(ngModel)]="val1" inputId="opt1"></p-radioButton></div>
+                                <div class="ui-g-12"><p-radioButton name="group1" value="No" label="No" [(ngModel)]="val1" inputId="opt2"></p-radioButton></div>
+                                <div class="ui-fluid" style="font-size: 12px;">(En caso de seleccionar esta opcion puede cargarlo como archivo adjunto)</div>
+                            </div>
+
+                        </div>
                     </div>
 
                     <!-- <div class="row myRow"
