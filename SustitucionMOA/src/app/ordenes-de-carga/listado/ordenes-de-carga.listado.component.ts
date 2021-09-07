@@ -9,6 +9,7 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { Material } from '../../common/models/material';
 import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { Formatter } from '../../common/formatter/Formatter';
 
 @Component({
     selector: 'app-ordenes-de-carga.listado',
@@ -27,8 +28,9 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     filtroEstado: any = null;
     filtroProducto: any = null;
     
-    estadoSelected: string = "";
+    estadoSelected: string = "Todos";
     productoSelected: string = "";
+    listaProductos: any = null;
 
 
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -39,17 +41,25 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
 
+    descripcionEstadoOrdenCarga = [
+        { label: "Todos", value: 0 },
+        { label: "Pendiente", value: 1 },
+        { label: "Confirmado", value: 2 },
+        { label: "Pendiente aprobación crédito", value: 3 },
+        { label: "Entrega generada", value: 4 },
+        { label: "Anulada", value: 5 },
+        { label: "Entregada", value: 6 },
+        { label: "Vencida", value: 7 },
+        { label: "Entrega pendiente", value: 8 },
+        { label: "Anulada por vencimiento", value: 9 }
+    ] 
+
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([]);
         this.getListado();
-
         this.obtenerMateriales();
-    }
-
-    setFiltroEstado(estado: string) {
-        this.estadoSelected = estado;
     }
 
     setFiltroProducto(producto: string) {
@@ -67,6 +77,43 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
             }
         );
     }
+
+    filtroFechasOrdenCarga() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.data = null;
+        try {
+            this.unsubscribe();
+            this.subscription = this.service.getListadoFiltradoOrdenCarga(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.data = result.data;
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+
+    
 
     getListado() {
         this.mensajeComponent.setMsgsEmpty();

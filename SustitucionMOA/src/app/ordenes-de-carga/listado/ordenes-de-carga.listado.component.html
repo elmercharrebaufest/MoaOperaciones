@@ -39,12 +39,12 @@
           <p>Por Estado:</p>
           <div class="styled-select">
               <!-- <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroEstado" (select)="setFiltroEstado($event)"></dropdown> -->
-              <select name="estado" [(ngModel)]="ordenDeCarga.Estado">
+              <select name="estado" [(ngModel)]="estadoSelected">
                 <option disabled hidden [value]="selectUndefinedOptionValue">
                   Estado
                 </option>
-                <option *ngFor="let estados of Estado" value="{{ordenDeCarga.Estado}}">
-                  {{ordenDeCarga.DescripcionEstado}}
+                <option *ngFor="let estado of descripcionEstadoOrdenCarga" value="{{estado.label}}">
+                  {{estado.label}}
                 </option>
               </select>
           </div>
@@ -53,11 +53,11 @@
         <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
             <p>Por Producto:</p>
             <div class="styled-select">
-              <select name="product" [(ngModel)]="ordenDeCarga.Producto_Id">
+              <select name="product" [(ngModel)]="productoSelected">
                 <option disabled hidden [value]="selectUndefinedOptionValue">
                   Grano
                 </option>
-                <option *ngFor="let material of listaMateriales" value="{{material.MaterialId}}">
+                <option *ngFor="let material of listaMateriales" value="{{material.Descripcion}}">
                   {{material.Descripcion}}
                 </option>
               </select>
@@ -66,7 +66,7 @@
 
         <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
           <p>Ver:</p>
-          <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
+          <filtro-fecha (ClickEvent)="filtroFechasOrdenCarga()"></filtro-fecha>
         </div>
       </div>
     </div>
@@ -173,11 +173,11 @@
 
               
               <tbody *ngIf="esInterno">
-                <tr *ngFor="let ordenDeCarga of data 
+                <tr *ngFor="let ordenDeCarga of data
                                     | customFilter : 'Contrato' : filtroAlta | 
                                     customFilter : 'Material' : productoSelected |
                                     customFilter : 'Cliente' : filtroCliente |
-                                    customFilter : 'DescripcionEstado' : estadoSelected
+                                    customFilter : 'DescripcionEstado' : (estadoSelected  == 'Todos' ? '' : estadoSelected ) 
                                     | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
                                     | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
                                     ; let odd = odd" role="row" [class.odd]="!odd">
