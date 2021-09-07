@@ -73,10 +73,6 @@
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
-
-            
-
-
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 Responsable de trabajo *
                                 <div class="styled-select widthCompras">
@@ -84,8 +80,8 @@
                                     (blur)="onBlur('supervisorTrabajo')"  formControlName="supervisorTrabajo" class="" 
                                     placeholder="Ingrese responsable de trabajo"
                                         [(ngModel)]="model.supervisorTrabajo" maxlength="100">
-                                    <!-- <p-chips [(ngModel)]="model.supervisorSector" styleClass="widthAutocomplete"
-                                    formControlName="supervisorSector" name="model.supervisorSector" placeholder="Ingrese responsable de sector" id="supervisorSector" [suggestions]="resultadoSupervisorSector" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorSector')"></p-chips> -->
+                                    <!-- <p-chips [(ngModel)]="model.supervisorTrabajo" styleClass="widthAutocomplete"
+                                    formControlName="supervisorTrabajo" name="model.supervisorTrabajo" placeholder="Ingrese responsable de trabajo" id="supervisorTrabajo" [suggestions]="resultadoSupervisorSector" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorTrabajo')"></p-chips> -->
                                 </div>
                                 <div *ngIf="mostrarError('supervisorTrabajo')">
                                     <p class="text-danger">campo obligatorio</p>

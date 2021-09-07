@@ -218,9 +218,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     selected: false
                 }
             ];
-            //let fechaEntrega = new Date();
             let fechaLimiteFecha = new Date();
-            //this.solpActual.fechaEntrega = this.sumarDias(fechaEntrega, 7);
             this.solpActual.horaEntrega = new Date(1, 1, 1, 10, 0, 0, 0);
             this.solpActual.fechaLimiteFecha = this.sumarDias(fechaLimiteFecha, 6);
             this.solpActual.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
@@ -236,7 +234,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.comienzoJornadaLaboral = new Date(1, 1, 1, 7, 0, 0, 0);
             this.solpActual.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
             this.solpActual.ejecucion = "30";
-            // this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
+            this.solpActual.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
             
             this.solpActual.centroPorDefecto = 1029;
             this.solpActual.monedaPorDefecto = "ARP";
@@ -467,8 +465,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    
-
     guardarCambios(mostrarPreview = false, enviarSap = false){
         try {
             this.blockUI.start('Guardando...');
@@ -602,14 +598,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return lista.filter(x => !x || x.length == 0).length == 0;
     }
 
-    scrollTo(el: HTMLElement){
-        el.scrollIntoView();
-    }
+    
     //evento que se activa cuando se deja uno de los paso de la solp
     //infomacionSolp : { codigo : string , esPasoInvalido : bool}
     actualizarEstadoSolp(infomacionSolp: any) {
         var pasoSolp = this.pasos.find(x => x.Codigo == infomacionSolp.codigo);
         pasoSolp.Completo = !infomacionSolp.esPasoInvalido;
+    }
+
+    // funcion para que cuando agregues una posicion, vuelva a la altura posiciones
+    scrollTo(el: HTMLElement){
+        el.scrollIntoView();
     }
 
     agregarPosicion(el: HTMLElement){
@@ -653,47 +652,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.navService.navegarSeccion('/compras');
     }
 
-    cancelarSolp() {
-        this.confirmationService.confirm({
-            key: 'cancelarSolp',
-            message: '¿Está seguro que desea volver a la pantalla principal? No se conservaran los cambios no guardados.',
-            accept: () => {
-                this.salir();
-            },
-            reject: () => {  
-            }
-        });
-    }
-
-    cancelarFinalizar() {
-        this.displayFinalizar = false;
-    }
-
-
-    ultimoPasoSolp() {
-        this.confirmationService.confirm({
-                    key: 'ultimoPasoSolp',
-                    message: 'Está a punto de enviar a SOLP sin documento a xxxx ¿Desea continuar?', 
-                    accept: () => {
-            
-                    },
-                    reject: () => {
-                        this.salir();  
-                    }
-                });
-
-    }
-
-    finalizar() {
-        this.guardarCambios();
-        this.displayFinalizar = false;
-        this.displaySAP = true; 
-    }
-
-    showDialog() {
-        this.displayFinalizar = true;           
-    }
-
+    
     generarZipPliego(idSolp){
         this.blockUI.start('Generando ')
         this.service.descargarZipPliego(idSolp)
@@ -737,5 +696,60 @@ export class SolpComponent extends BaseComponent implements OnInit {
             )
     }
 
+    // Todos los Modal
+    finalizar() {
+        this.guardarCambios();
+        this.displayFinalizar = false;
+        this.displaySAP = true; 
+    }
+
+    // Abre el modal del boton finalizar
+    showDialog() {
+        this.displayFinalizar = true;           
+    }
+
+    cancelarFinalizar() {
+        this.displayFinalizar = false;
+    }
+
+    cancelarSolp() {
+        this.confirmationService.confirm({
+            key: 'cancelarSolp',
+            message: '¿Está seguro que desea volver a la pantalla principal? No se conservaran los cambios no guardados.',
+            accept: () => {
+                this.salir();
+            },
+            reject: () => {  
+            }
+        });
+    }
+
+    solpFinalizadaVolverHome() {
+        this.confirmationService.confirm({
+            key: 'solpFinalizadaVolverHome',
+            message: '¿Desea volver a la pantalla principal?',
+            accept: () => {
+                this.salir();
+            },
+            reject: () => {  
+            }
+        });
+    }
+
+    ultimoPasoSolp() {
+        this.confirmationService.confirm({
+                    key: 'ultimoPasoSolp',
+                    message: 'Está a punto de enviar a SOLP sin documento a xxxx ¿Desea continuar?', 
+                    accept: () => {
+            
+                    },
+                    reject: () => {
+                        this.salir();  
+                    }
+                });
+
+    }
+
+    
 }
 
