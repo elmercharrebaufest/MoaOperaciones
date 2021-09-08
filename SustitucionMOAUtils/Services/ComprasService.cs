@@ -46,18 +46,21 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA;
         private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
         private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
+        private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
-		private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
+        private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
-        public ComprasService(IRepositorio repositorio, IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA, 
-            IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA, IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA, IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA)
+        public ComprasService(IRepositorio repositorio, IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
+            IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA, IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA, IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA,
+            IObtenerSolpConsumerMOA obtenerSolpConsumerMOA)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
             this.cuentasSolpConsumerMOA = cuentasSolpConsumerMOA;
             this.ordenesSolpConsumerMOA = ordenesSolpConsumerMOA;
             this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
+            this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
         }
 
         public SolpDto GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -273,13 +276,13 @@ namespace SustitucionMOAUtils.Services
                                 subposEntity.Codigo = subpos.Codigo;
                                 subposEntity.Cantidad = subpos.Cantidad;
 
-                                if(subpos.TipoImputacionValor != null)
+                                if (subpos.TipoImputacionValor != null)
                                     subposEntity.TipoImputacionSap = repositorio.Obtener<TablaSap>(x => x.Tabla == subpos.TipoImputacionValor.Tabla && x.Codigo == subpos.TipoImputacionValor.Codigo);
 
                                 if (subpos.CuentaMayor != null)
                                     subposEntity.CuentaMayorSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CuentasSolpSap && x.Codigo == subpos.CuentaMayor.Codigo);
 
-                             
+
                                 subposEntity.Numero = subpos.Numero;
                                 subposEntity.PrecioBruto = subpos.PrecioBruto;
                                 subposEntity.Tarea = subpos.Tarea;
@@ -734,12 +737,12 @@ namespace SustitucionMOAUtils.Services
                     //    {
                     //        document.NewPage();
                     //    }
-                    
+
                     //    // New outline must be created after the page is added
                     //    //AddOutline(PdfWriter, "Group " + i.ToString(), document.PageSize.Height);
-           
+
                     //}
-                  
+
                     // instantiate custom tag processor and add to `HtmlPipelineContext`.
                     var tagProcessorFactory = Tags.GetHtmlTagProcessorFactory();
                     //tagProcessorFactory.AddProcessor(
@@ -831,15 +834,15 @@ namespace SustitucionMOAUtils.Services
                 ret.Append(value);
             }
 
-             return ret.ToString();
-         }
+            return ret.ToString();
+        }
 
         public List<TablaSapDto> ObtenerServiciosSap()
         {
             ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
-          	var codigoNum = 0;
+            var codigoNum = 0;
 
-  			return resultSap.Servicios.Select(s => new TablaSapDto()
+            return resultSap.Servicios.Select(s => new TablaSapDto()
             {
                 Tabla = TablasSap.CodigoServicioSap,
                 Descripcion = s.Descripcion,
@@ -851,8 +854,8 @@ namespace SustitucionMOAUtils.Services
         public List<TablaSapDto> ObtenerCuentasSap()
         {
             CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)cuentasSolpConsumerMOA.request();
-			var codigoNum = 0;
-			
+            var codigoNum = 0;
+
             return resultSap.Cuentas.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CuentasSolpSap,
@@ -862,12 +865,12 @@ namespace SustitucionMOAUtils.Services
             }).ToList();
         }
 
-        
+
         public List<TablaSapDto> ObtenerOrdenesSap()
         {
             OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)ordenesSolpConsumerMOA.request();
-			var codigoNum = 0;
-			
+            var codigoNum = 0;
+
             return resultSap.Ordenes.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.OrdenSolpSap,
@@ -880,8 +883,8 @@ namespace SustitucionMOAUtils.Services
         public List<TablaSapDto> ObtenerCecoSap()
         {
             CecoWSMOAResponse resultSap = (CecoWSMOAResponse)CecoSolpConsumerMOA.request();
-			var codigoNum = 0;
-			
+            var codigoNum = 0;
+
             return resultSap.Cecos.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CecoSolpSap,
@@ -906,7 +909,7 @@ namespace SustitucionMOAUtils.Services
 
             return lista;
         }
- 
+
         private void EnviarMailSolp(Solp solp, Usuario usuario)
         {
             try
@@ -924,6 +927,33 @@ namespace SustitucionMOAUtils.Services
             catch (Exception e)
             {
             }
+        }
+
+        public ObtenerSolpSAPResponse ObtenerSolpsSAP(DateTime fechaDesde, DateTime fechaHasta, string numeroSolp,
+                                    string centroLogistico, string filtroTipoPosicion, string indicadorDeLiberacion, string origenCreacion, List<string> creadoPorUsuarios,
+                                    string tipoDeImputacion, bool ObtenerDireccionDeEntrega, bool ObtenerImputacion, bool ObtenerServicios, bool MostrarItemsBorrados
+                                    )
+        {
+            var filtros = new ObtenerSolpRequest
+            {
+                FechaDesde = fechaDesde,
+                FechaHasta = fechaHasta,
+                NumeroSolp = numeroSolp,
+                CentroLogistico = centroLogistico,
+                FiltroTipoPosicion = filtroTipoPosicion,
+                IndicadorDeLiberacion = indicadorDeLiberacion,
+                OrigenCreacion = origenCreacion,
+                CreadoPorUsuarios = creadoPorUsuarios,
+                TipoDeImputacion = tipoDeImputacion,
+                ObtenerDireccionDeEntrega = ObtenerDireccionDeEntrega,
+                ObtenerImputacion = ObtenerImputacion,
+                ObtenerServicios = ObtenerServicios,
+                MostrarItemsBorrados = MostrarItemsBorrados,
+
+            };
+            var solps = obtenerSolpConsumerMOA.Request(filtros);
+
+            return solps;
         }
     }
 

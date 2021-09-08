@@ -52,7 +52,7 @@ namespace SustitucionMOAWS.WSConsumers
                 //Tipo de Posición (serv/material)
                 //Indica filtro de tipo de posición (" " = compra de materiales/"9"= servicio)
                 string IM_ITEM_CAT = req.FiltroTipoPosicion;
-                
+
                 //Centro Logístico
                 string IM_PLANT = req.CentroLogistico;
 
@@ -80,8 +80,8 @@ namespace SustitucionMOAWS.WSConsumers
 
                 //Esta entrada devuelve todas las posiciones que fueron creadas por ciertos usuarios.
                 //Para ello, se ingresa el nombre de 1 o mas usuarios que han creado solicitudes de pedido.
-                ZMPES5640[] IM_USUARIOS = new ZMPES5640[req.CreadoPorUsuarios.Count]; 
-                
+                ZMPES5640[] IM_USUARIOS = new ZMPES5640[req.CreadoPorUsuarios.Count];
+
                 foreach (var item in req.CreadoPorUsuarios.Select((value, i) => new { i, value }))
                 {
                     IM_USUARIOS[item.i] = new ZMPES5640 { ERNAM = item.value };
@@ -138,6 +138,19 @@ namespace SustitucionMOAWS.WSConsumers
         {
             var result = new ObtenerSolpSAPResponse();
 
+            if (mensajes != null)
+            {
+                if (mensajes.Length > 0)
+                {
+                    result.Error = new ErrorObtenerSOLP
+                    {
+                        Codigo = mensajes[0].CODE,
+                        Mensaje = mensajes[0].MESSAGE,
+                        rTipo = mensajes[0].TYPE
+                    };
+                }
+            }
+
             /*
              PREQ_NO: número de Solicitud. 
                 PREQ_ITEM: Numero de Posición
@@ -158,7 +171,7 @@ namespace SustitucionMOAWS.WSConsumers
                 Todos estos objetos van a venir completos segun el tipo de imputación. Por ejemplo, si la imputación es del tipo (EX_PREITEM-ACCTASSCAT) = "K", la tabla va a pasar como parámetro el campo COSTCENTER. 
                 Resto de campos solo a nivel informativo.
              */
-            foreach (ZMPES5740 tipoImputacion in tipoImputaciones)
+            foreach (var tipoImputacion in tipoImputaciones)
             {
                 result.TipoImputaciones.Add(new TipoImputacionSAP
                 {
@@ -167,8 +180,11 @@ namespace SustitucionMOAWS.WSConsumers
                     NumeroDeSerie = tipoImputacion.SERIAL_NO,
                     ImputacionActiva = tipoImputacion.DELETE_IND,
                     CantidadesImputadas = tipoImputacion.QUANTITY,
+                    CantidadesImputadasString = SAPFormatter.FormatearCantidad(tipoImputacion.QUANTITY, ""),
                     PorcentajeDistribucion = tipoImputacion.DISTR_PERC,
+                    PorcentajeDistribucionString = SAPFormatter.FormatearPorcentaje(tipoImputacion.DISTR_PERC),
                     PrecioNetoImputado = tipoImputacion.NET_VALUE,
+                    PrecioNetoImputadoString = SAPFormatter.FormatearMonto(tipoImputacion.NET_VALUE, "ARP"),
                     CuentaContableImputada = tipoImputacion.GL_ACCOUNT,
                     DivisionImputada = tipoImputacion.BUS_AREA,
                     CentroDeCosto = tipoImputacion.COSTCENTER,
@@ -192,7 +208,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             */
 
-            foreach (ZMPES5750 direccionPosicion in direccionesPosicion)
+            foreach (var direccionPosicion in direccionesPosicion)
             {
                 result.Direcciones.Add(new DireccionSolpSAP
                 {
@@ -249,9 +265,9 @@ namespace SustitucionMOAWS.WSConsumers
                 REQ_BLOCKED: indica que la Posición bloqueada.
 
             */
-      
 
-            foreach (ZMPES5670 posicion in posiciones)
+
+            foreach (var posicion in posiciones)
             {
                 result.Posiciones.Add(new PosicionSolpSAP
                 {
@@ -274,12 +290,15 @@ namespace SustitucionMOAWS.WSConsumers
                     GrupoArticulo = posicion.MATL_GROUP,
                     Cantidad = posicion.QUANTITY,
                     UnidadMedida = posicion.UNIT,
-                    FechaSolicitud = posicion.PREQ_DATE,
-                    FechaEntrega = posicion.DELIV_DATE,
-                    FechaEstimadaLiberacion = posicion.REL_DATE,
+                    CantidadString = SAPFormatter.FormatearCantidad(posicion.QUANTITY, posicion.UNIT),
+                    FechaSolicitud = SAPFormatter.FormatearFecha(posicion.PREQ_DATE),
+                    FechaEntrega = SAPFormatter.FormatearFecha(posicion.DELIV_DATE),
+                    FechaEstimadaLiberacion = SAPFormatter.FormatearFecha(posicion.REL_DATE),
                     DiasTratamientoEntrada = posicion.GR_PR_TIME,
                     PrecioSolp = posicion.PREQ_PRICE,
                     MonedaPrecio = posicion.PRICE_UNIT,
+                    MonedaPrecioString = SAPFormatter.FormatearMonto(posicion.PRICE_UNIT, posicion.CURRENCY),
+                    PrecioSolpString = SAPFormatter.FormatearMonto(posicion.PREQ_PRICE, posicion.CURRENCY),
                     Tipo = posicion.ITEM_CAT,
                     TipoImputacion = posicion.ACCTASSCAT,
                     ProveedorDeseado = posicion.DES_VENDOR,
@@ -291,6 +310,7 @@ namespace SustitucionMOAWS.WSConsumers
                     PosicionPedido = posicion.PO_ITEM,
                     FechaPedido = posicion.PO_DATE,
                     EsPosicionConcluida = posicion.CLOSED,
+                    //VER
                     Moneda = posicion.CURRENCY,
                     CantidadDiasEntrega = posicion.PLND_DELRY,
                     EstaBloqueada = posicion.REQ_BLOCKED,
@@ -315,20 +335,23 @@ namespace SustitucionMOAWS.WSConsumers
 
              */
 
-            foreach (ZMPES5770 imputacionSuposicion in imputacionesSuposiciones)
+            foreach (var imputacionSuposicion in imputacionesSuposiciones)
             {
                 result.ImputacionesSuposiciones.Add(new ImputacionSuposicionSAP
                 {
                     NumeroSolicitud = imputacionSuposicion.PREQ_NO,
                     NumeroPosicion = imputacionSuposicion.DOC_ITEM,
                     NumeroEstructuracion = imputacionSuposicion.OUTLINE,
-                    SumeroSubPosicion = imputacionSuposicion.SRV_LINE,
+                    NumeroSubPosicion = imputacionSuposicion.SRV_LINE,
                     ImputacionLineaServicio = imputacionSuposicion.SERIAL_NO,
                     NumeroActualImputacion = imputacionSuposicion.SERIAL_NO_ITEM,
                     EstaBorrado = imputacionSuposicion.DEL_IND,
                     Cantidad = imputacionSuposicion.QUANTITY,
+                    CantidadString = SAPFormatter.FormatearCantidad(imputacionSuposicion.QUANTITY, ""),
                     PorcentajeReparticionImputacion = imputacionSuposicion.PERCENT,
+                    PorcentajeReparticionImputacionString = SAPFormatter.FormatearPorcentaje(imputacionSuposicion.PERCENT),
                     ValorNetoPosicion = imputacionSuposicion.NET_VALUE,
+                    ValorNetoPosicionString = SAPFormatter.FormatearMonto(imputacionSuposicion.NET_VALUE, "ARP"),
                 });
             }
 
@@ -352,7 +375,7 @@ namespace SustitucionMOAWS.WSConsumers
 
              
              */
-            foreach (ZMPES5730 suposicionServicio in suposicionesServicios)
+            foreach (var suposicionServicio in suposicionesServicios)
             {
                 result.ServiciosSuposiciones.Add(new SuposicionServicioSAP
                 {
@@ -364,11 +387,14 @@ namespace SustitucionMOAWS.WSConsumers
                     CodigoServicio = suposicionServicio.SERVICE,
                     DescripcionServicio = suposicionServicio.SHORT_TEXT,
                     Cantidad = suposicionServicio.QUANTITY,
+                    CantidadString = SAPFormatter.FormatearCantidad(suposicionServicio.QUANTITY, suposicionServicio.UOM),
                     UnidadDeMedida = suposicionServicio.UOM,
                     PrecioUnitario = suposicionServicio.GROSS_PRICE,
+                    PrecioUnitarioString = SAPFormatter.FormatearMonto(suposicionServicio.GROSS_PRICE, suposicionServicio.CURRENCY),
                     Moneda = suposicionServicio.CURRENCY,
                     GrupoDeArticulo = suposicionServicio.MATL_GROUP,
                     ValorTotalNeto = suposicionServicio.NET_PRICE,
+                    ValorTotalNetoString = SAPFormatter.FormatearMonto(suposicionServicio.NET_PRICE, suposicionServicio.CURRENCY),
                 });
             }
 
@@ -391,6 +417,9 @@ namespace SustitucionMOAWS.WSConsumers
         public string Moneda { get; set; }
         public string GrupoDeArticulo { get; set; }
         public decimal ValorTotalNeto { get; set; }
+        public string CantidadString { get; internal set; }
+        public string PrecioUnitarioString { get; internal set; }
+        public string ValorTotalNetoString { get; internal set; }
     }
 
     public class ImputacionSuposicionSAP
@@ -398,13 +427,16 @@ namespace SustitucionMOAWS.WSConsumers
         public string NumeroSolicitud { get; set; }
         public string NumeroPosicion { get; set; }
         public string NumeroEstructuracion { get; set; }
-        public string SumeroSubPosicion { get; set; }
+        public string NumeroSubPosicion { get; set; }
         public string ImputacionLineaServicio { get; set; }
         public string NumeroActualImputacion { get; set; }
         public string EstaBorrado { get; set; }
         public decimal Cantidad { get; set; }
         public decimal PorcentajeReparticionImputacion { get; set; }
         public decimal ValorNetoPosicion { get; set; }
+        public string CantidadString { get; internal set; }
+        public string PorcentajeReparticionImputacionString { get; internal set; }
+        public string ValorNetoPosicionString { get; internal set; }
     }
 
     public class PosicionSolpSAP
@@ -448,6 +480,9 @@ namespace SustitucionMOAWS.WSConsumers
         public string Moneda { get; set; }
         public decimal CantidadDiasEntrega { get; set; }
         public string EstaBloqueada { get; set; }
+        public string PrecioSolpString { get; internal set; }
+        public string CantidadString { get; internal set; }
+        public string MonedaPrecioString { get; internal set; }
     }
 
     public class DireccionSolpSAP
@@ -478,10 +513,15 @@ namespace SustitucionMOAWS.WSConsumers
         public string ImputacionActiva { get; set; }
         public string NumeroDeSerie { get; set; }
         public string NumeroPosicion { get; set; }
+        public string CantidadesImputadasString { get; internal set; }
+        public string PorcentajeDistribucionString { get; internal set; }
+        public string PrecioNetoImputadoString { get; internal set; }
     }
 
     public class ObtenerSolpSAPResponse
     {
+        internal object Error;
+
         public IList<TipoImputacionSAP> TipoImputaciones { get; set; }
         public IList<DireccionSolpSAP> Direcciones { get; set; }
         public IList<PosicionSolpSAP> Posiciones { get; set; }
@@ -505,4 +545,12 @@ namespace SustitucionMOAWS.WSConsumers
         public bool ObtenerServicios { get; set; }
         public List<string> CreadoPorUsuarios { get; set; }
     }
+
+    public class ErrorObtenerSOLP
+    {
+        public string Codigo { get; set; }
+        public string Mensaje { get; set; }
+        public string rTipo { get; set; }
+    }
 }
+
