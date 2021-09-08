@@ -592,6 +592,10 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     }
 
+    trackListadoAlta(index: number, empresa: any){
+        return empresa
+    }
+
     cargarSolicitudUsuario(mail: string, proveedorId: number) {
         this.subscription = this.service.cargarSolicitudUsuario(mail, proveedorId).subscribe(
             result => {

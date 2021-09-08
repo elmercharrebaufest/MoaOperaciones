@@ -204,7 +204,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     this.razonSocial = result.RazonSocial;
                     this.altaInterna = result.AltaInterna;
 
-                    if(this.puedeAltaInterna){
+                    if(this.puedeAltaInterna && result.Observacion != null){
                         this.mensajeComponent.setInfoMsg("Observación: " + result.Observacion);
                     }
                 },
