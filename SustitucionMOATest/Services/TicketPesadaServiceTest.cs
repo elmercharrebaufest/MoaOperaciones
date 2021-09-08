@@ -114,6 +114,7 @@ namespace SustitucionMOATest.Services
             var expected = new List<ArchivoDescargaDto>
             {
                 new ArchivoDescargaDto { Nombre = "Ticket Pesada 1234.pdf", Datos = bytes},
+                new ArchivoDescargaDto { Nombre = "Certificado CP 1234.pdf", Datos = bytes},
                 new ArchivoDescargaDto { Nombre = "Ticket Recibo Municipal 1234.pdf", Datos = bytes},
                 new ArchivoDescargaDto { Nombre = "Foto CCPP 1234 - 1.jpg", Datos = bytes},
                 new ArchivoDescargaDto { Nombre = "Foto CCPP 1234 - 2.jpg", Datos = bytes},

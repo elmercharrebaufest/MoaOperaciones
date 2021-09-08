@@ -463,6 +463,7 @@
     <Content Include="src\app\venta-sustentable\edicion\edicion.component.html" />
     <Content Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.css" />
     <Content Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.html" />
+    <Content Include="src\app\venta-sustentable\listado-campos\listado-campos.component.css" />
     <Content Include="src\app\venta-sustentable\listado-campos\listado-campos.component.html" />
     <Content Include="src\assets\css\MolinosForms.css" />
     <Content Include="src\assets\css\MolinosGeneral.css" />
@@ -1050,6 +1051,8 @@
     <TypeScriptCompile Include="src\app\directivas\drag-and-drop.directive.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.component.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.service.ts" />
+    <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.module.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.component.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.service.ts" />

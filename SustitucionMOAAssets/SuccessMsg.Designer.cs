@@ -61,6 +61,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recuerde que el formulario cargado corresponde a un CUIT diferente al suyo..
+        /// </summary>
+        public static string AltaFormularioCM05DistintoCUITOK {
+            get {
+                return ResourceManager.GetString("AltaFormularioCM05DistintoCUITOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Se ha generado el usuario correctamente.
         /// </summary>
         public static string AltaUsuarioOK {
@@ -286,7 +295,16 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to El detalle de ingresos brutos se ha actualizado correctamente..
+        ///   Looks up a localized string similar to El detalle de coeficientes unificados de ingresos brutos se ha actualizado correctamente..
+        /// </summary>
+        public static string IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK {
+            get {
+                return ResourceManager.GetString("IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El detalle de coeficientes unificados de ingresos brutos se ha actualizado correctamente..
         /// </summary>
         public static string IngresosBrutosCoeficienteUnificadoDetalleActualizadoOK {
             get {

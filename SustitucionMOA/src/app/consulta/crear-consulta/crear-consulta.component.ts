@@ -15,9 +15,9 @@ import { SelectItem } from 'primeng/components/common/selectitem';
 import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo, Materiales} from '../consulta';
 import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { ConfirmationService } from 'primeng/api';
 
 declare var $: any;
-
 
 @Component({
     selector: 'crear-consulta',
@@ -44,7 +44,17 @@ export class CrearConsultaComponent extends ListBaseComponent {
     @ViewChild('recaptchaComponent')
     protected captcha: ReCaptchaComponent;
 
-    constructor(protected service: ConsultaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    constructor(
+        protected service: ConsultaService,
+        protected navService: NavService,
+        protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService,
+        protected route: ActivatedRoute,
+        protected router: Router,
+        private confirmationService: ConfirmationService)
+    {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.categoriaDropdownComponent = new DropdownComponent();
         this.spinnerSmallComponent = new SpinnerSmallComponent();
@@ -408,17 +418,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
-        if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'PDF') {
-            if (this.comprobante == "" || !this.comprobante) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
-                return true;
-            }
-        }
         if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'CCP') {
-            if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
-                return true;
-            }
             if (this.comprobante == "" || !this.comprobante) {
                 this.mensajeComponent.setErrorMsg("El campo CCPP esta vacio.");
                 return true;
@@ -489,7 +489,17 @@ export class CrearConsultaComponent extends ListBaseComponent {
                     } else {
                         this.spinnerComponent.hideIt();
                         this.blockUI.stop();
-                        this.goToSeccion('/consulta/mis-consultas');
+                        if (result.Mensaje != undefined && result.Mensaje != "") {
+                           this.confirmationService.confirm({
+                               message: result.Mensaje,
+                               accept: () => {
+                                   this.goToSeccion('/consulta/mis-consultas');
+                               }
+                           });
+                        }
+                        else {
+                            this.goToSeccion('/consulta/mis-consultas');
+                        }
                     }
                 },
                 error => {

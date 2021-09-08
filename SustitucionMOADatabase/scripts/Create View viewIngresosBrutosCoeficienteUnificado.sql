@@ -8,16 +8,17 @@ i.Sede,
 i.FechaCarga, 
 i.EstadoIngresosBrutosCoeficienteUnificado_Id AS EstadoId, 
 ei.Descripcion AS Estado,
+i.SecuenciaIngresosBrutosCoeficienteUnificado_Id AS SecuenciaId, 
+si.Descripcion AS Secuencia,
 id.Id AS DetalleId, 
 id.NumeroJurisdiccion, 
 id.Jurisdiccion, 
 id.FechaInicio, 
 id.FechaCese, 
-id.CoeficienteIngresos, 
-id.CoeficienteGastos, 
 id.CoeficienteUnificado
 FROM IngresosBrutosCoeficienteUnificado i
 JOIN EstadoIngresosBrutosCoeficienteUnificado ei ON i.EstadoIngresosBrutosCoeficienteUnificado_Id = ei.Id
-JOIN IngresosBrutosCoeficienteUnificadoDetalle id ON i.Id = id.Id
+LEFT JOIN SecuenciaIngresosBrutosCoeficienteUnificado si ON i.SecuenciaIngresosBrutosCoeficienteUnificado_Id = si.Id
+JOIN IngresosBrutosCoeficienteUnificadoDetalle id ON i.Id = id.IngresosBrutosCoeficienteUnificado_Id
 WHERE i.EstadoIngresosBrutosCoeficienteUnificado_Id = 2
 GO

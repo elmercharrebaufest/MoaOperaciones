@@ -140,7 +140,7 @@ const appRoutes: Routes = [
       { path: "notificaciones", component: ListadoNotificacionesComponent },
       { path: "notificaciones/alta", component: AltaNotificacionesComponent },
       { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent },
-      { path: "gestionCM05", component: GestionCM05Component },
+      { path: "gestionCM05", loadChildren: "./gestionCM05/gestionCM05.module#GestionCM05Module" },
       {
         path: "faq",
         component: FaqComponent

@@ -677,7 +677,7 @@ namespace SustitucionMOAUtils.Services
         public string GrabarProveedorAltaInternaGranos(string cuit, string mailUsuario, string mailVendedor)
         {
             var usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
-            if (usuario == null) throw new InfoCustomException(InfoMsg.ElementoNoExiste);
+            if (usuario == null) throw new InfoCustomException(string.Format(InfoMsg.ElementoNoExiste, "Usuario", mailUsuario));
 
             if (cuit == null || cuit == "") throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
             if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any()) throw new ValidationCustomException(ErrorMsg.ErrorVendedorRepetido);
@@ -689,7 +689,7 @@ namespace SustitucionMOAUtils.Services
             var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit, false);
             if (infoDA.HayError) throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
 
-            if (infoDA.ProveedorMails.Contains(mailUsuario, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
+            if (infoDA.ProveedorMails.Contains(mailVendedor, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
             {
                 var proveedorComercial = usuario.ObtenerProveedor();
 
@@ -819,6 +819,7 @@ namespace SustitucionMOAUtils.Services
                 ProveedorCUIT = CUITProveedor,
                 RazonSocial = proveedor.RazonSocial,
                 AltaInterna = proveedor.AltaInterna ?? false,
+                Observacion = proveedor.Observaciones,
             };
 
             return info;

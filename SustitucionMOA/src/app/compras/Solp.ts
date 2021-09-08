@@ -10,6 +10,7 @@ import { SubPosicionViewModel } from "./PliegoPasos/solapaSubposiciones/subPosic
 
 export class Solp {
     public id: number;
+    public tipoSolp: string;
 
     //paso 1
     public nombreDePedido: string;
@@ -214,7 +215,7 @@ export class PosicionSolp {
     constructor(numeroPosicion, fiscalContrato, fechaEntrega, posicionADuplicar) {
         this.id = uuid.v4();
         this.numeroPosicion = numeroPosicion;
-        this.plazoDeEntrega = 30;
+        this.plazoDeEntrega = 10;
         this.fechaEntregaServicio = new Date(fechaEntrega);
         this.fechaEntregaServicio.setDate(fechaEntrega.getDate() + parseInt(this.plazoDeEntrega.toString()));  
 
@@ -241,7 +242,7 @@ export class PosicionSolp {
             this.selectCentroEntrega = posicionADuplicar.selectCentroEntrega;
             this.selectAlmacenEntrega = posicionADuplicar.selectAlmacenEntrega;
             this.centroPorDefecto = posicionADuplicar.centroPorDefecto;
-            this.monedaPorDefecto = posicionADuplicar.monedaPorDefecto;
+            //this.monedaPorDefecto = posicionADuplicar.monedaPorDefecto;
             this.nombreEntrega = posicionADuplicar.nombreEntrega;
             this.calleEntrega = posicionADuplicar.calleEntrega;
             this.numeroEntrega = posicionADuplicar.numeroEntrega;
@@ -260,7 +261,7 @@ export class PosicionSolp {
             this.proveedoresValidos = posicionADuplicar.proveedoresValidos;
             this.proveedoresInvalidos = posicionADuplicar.proveedoresInvalidos;
             this.proveedoresNoSugeridos = posicionADuplicar.proveedoresNoSugeridos;
-            this.selectMonedaCompras = posicionADuplicar.selectMonedaCompras;
+            //this.selectMonedaCompras = posicionADuplicar.selectMonedaCompras;
             this.monedaSeleccionada = posicionADuplicar.monedaSeleccionada;
         }
 

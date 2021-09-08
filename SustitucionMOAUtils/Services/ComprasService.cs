@@ -35,20 +35,29 @@ using SustitucionMOAUtils.Helpers;
 using System.Web.UI.WebControls;
 using System.Data;
 
+using SustitucionMOAWS.Interfaces;
 
 namespace SustitucionMOAUtils.Services
 {
     public class ComprasService : IComprasService
     {
         private readonly IRepositorio repositorio;
+        private readonly IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA;
+        private readonly IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA;
+        private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
+        private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
+		private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
-        private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
-
-        public ComprasService(IRepositorio repositorio)
+        public ComprasService(IRepositorio repositorio, IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA, 
+            IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA, IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA, IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA)
         {
             this.repositorio = repositorio;
+            this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
+            this.cuentasSolpConsumerMOA = cuentasSolpConsumerMOA;
+            this.ordenesSolpConsumerMOA = ordenesSolpConsumerMOA;
+            this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
         }
 
         public SolpDto GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -102,6 +111,9 @@ namespace SustitucionMOAUtils.Services
             {
                 if (solp.ClaseDocumento != null)
                     solpEntity.ClaseDocumento = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.ClaseDocumento && x.Codigo == solp.ClaseDocumento.Codigo);
+
+                if (solp.TipoSolp != null)
+                    solpEntity.TipoSolp = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoSolp && x.Codigo == solp.TipoSolp.Codigo);
 
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
@@ -267,7 +279,10 @@ namespace SustitucionMOAUtils.Services
                                 if(subpos.TipoImputacionValor != null)
                                     subposEntity.TipoImputacionSap = repositorio.Obtener<TablaSap>(x => x.Tabla == subpos.TipoImputacionValor.Tabla && x.Codigo == subpos.TipoImputacionValor.Codigo);
 
-                                subposEntity.CuentaMayor = subpos.CuentaMayor;
+                                if (subpos.CuentaMayor != null)
+                                    subposEntity.CuentaMayorSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CuentasSolpSap && x.Codigo == subpos.CuentaMayor.Codigo);
+
+                             
                                 subposEntity.Numero = subpos.Numero;
                                 subposEntity.PrecioBruto = subpos.PrecioBruto;
                                 subposEntity.Tarea = subpos.Tarea;
@@ -277,7 +292,7 @@ namespace SustitucionMOAUtils.Services
                                     subposEntity.Unidad = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Unidad && x.Codigo == subpos.Unidad.Codigo);
 
                                 if (subpos.CodigoServicioSap != null)
-                                    subposEntity.CodigoServicioSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CodigoServicioSap && x.Codigo == subpos.Unidad.Codigo);
+                                    subposEntity.CodigoServicioSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CodigoServicioSap && x.Codigo == subpos.CodigoServicioSap.Codigo);
 
                                 posEntity.Subposiciones.Add(subposEntity);
                             }
@@ -426,7 +441,7 @@ namespace SustitucionMOAUtils.Services
                     EstadoDocumento = new TablaEstadoDto(x.EstadoDocumento),
                     EstadoSolpSapId = x.EstadoSolpSap_Id,
                     EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
-                    //TipoSolp
+                    TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                     VincularPliego = !x.Pliego_Id.HasValue,
                 });
 
@@ -464,7 +479,7 @@ namespace SustitucionMOAUtils.Services
                 FechaCreacion = x.FechaCreacion,
                 EstadoDocumento = new TablaEstadoDto(x.EstadoDocumento),
                 EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
-                //TipoSolp
+                TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                 VincularPliego = !x.Pliego_Id.HasValue,
 
 
@@ -639,7 +654,7 @@ namespace SustitucionMOAUtils.Services
                     subposiciones.AppendLine(string.Format(templateSubposiciones,
                         pos.TextoGenerico,
                         subpos.Numero,
-                        subpos.CodigoServicioSap?.Codigo,
+                        subpos.CodigoServicioSap?.CodigoSap,
                         subpos.Tarea,
                         subpos.Cantidad,
                         subpos.Unidad?.Descripcion
@@ -758,7 +773,6 @@ namespace SustitucionMOAUtils.Services
                         return bytes;
                     }
 
-
                 }
 
             }
@@ -825,50 +839,58 @@ namespace SustitucionMOAUtils.Services
 
         public List<TablaSapDto> ObtenerServiciosSap()
         {
-            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)new ObtenerServiciosSolpConsumerMOA().request();
+            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
+          	var codigoNum = 0;
 
-            return resultSap.Servicios.Select(s => new TablaSapDto()
+  			return resultSap.Servicios.Select(s => new TablaSapDto()
             {
                 Tabla = TablasSap.CodigoServicioSap,
                 Descripcion = s.Descripcion,
-                CodigoSap = s.Codigo,
+                CodigoSap = int.TryParse(s.Codigo, out codigoNum) ? codigoNum.ToString() : s.Codigo,
+                Codigo = s.Codigo
             }).ToList();
         }
 
         public List<TablaSapDto> ObtenerCuentasSap()
         {
-            CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)new ObtenerCuentasSolpConsumerMOA().request();
-
+            CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)cuentasSolpConsumerMOA.request();
+			var codigoNum = 0;
+			
             return resultSap.Cuentas.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CuentasSolpSap,
                 Descripcion = c.Descripcion,
-                CodigoSap = c.Codigo,
+                CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
+                Codigo = c.Codigo
             }).ToList();
         }
 
         
         public List<TablaSapDto> ObtenerOrdenesSap()
         {
-            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)new ObtenerOrdenSolpConsumerMOA().request();
-
+            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)ordenesSolpConsumerMOA.request();
+			var codigoNum = 0;
+			
             return resultSap.Ordenes.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.OrdenSolpSap,
                 Descripcion = c.Descripcion,
-                CodigoSap = c.Codigo,
+                CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
+                Codigo = c.Codigo
             }).ToList();
         }
 
         public List<TablaSapDto> ObtenerCecoSap()
         {
-            CecoWSMOAResponse resultSap = (CecoWSMOAResponse)new ObtenerCecoSolpConsumerMOA().request();
-
+            CecoWSMOAResponse resultSap = (CecoWSMOAResponse)CecoSolpConsumerMOA.request();
+			var codigoNum = 0;
+			
             return resultSap.Cecos.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CecoSolpSap,
                 Descripcion = c.Descripcion,
-                CodigoSap = c.CostCenter,
+                CodigoSap = int.TryParse(c.CostCenter, out codigoNum) ? codigoNum.ToString() : c.CostCenter,
+                Codigo = c.CostCenter
             }).ToList();
         }
 
@@ -893,10 +915,11 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_SOLP);
-                string asunto = "MOA COMPRAS - Solp finalizada";
+                string asunto = "MOA COMPRAS - Solp Liberada";
 
-                var cuerpo = string.Format(cuerpoTemplate, usuario.Mail);
+                var cuerpo = string.Format(cuerpoTemplate, solp.NroSolp, usuario.Mail);
                 var Destinatario = usuario.Mail;
+
 
 
                 EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
@@ -904,6 +927,31 @@ namespace SustitucionMOAUtils.Services
             catch (Exception e)
             {
             }
+        }
+
+        public List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos)
+        {
+            var ret = new List<TablaSapDto>();
+            var codigosPorTabla = new Dictionary<string, List<string>>();
+
+            foreach (var cod in codigos)
+            {
+                if (!codigosPorTabla.ContainsKey(cod.Tabla))
+                {
+                    codigosPorTabla.Add(cod.Tabla, new List<string>());
+                }
+                
+                codigosPorTabla[cod.Tabla].Add(cod.CodigoSap);
+            }
+
+            foreach (var tabla in codigosPorTabla)
+            {
+                var lista = repositorio.Listar<TablaSap>(x => x.Tabla == tabla.Key && tabla.Value.Contains(x.CodigoSap))
+                    .Select(x=> new TablaSapDto(x)).ToList();
+                ret.AddRange(lista);
+            }
+
+            return ret;
         }
     }
 

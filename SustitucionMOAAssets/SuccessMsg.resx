@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AltaFormularioCM05DistintoCUITOK" xml:space="preserve">
+    <value>Recuerde que el formulario cargado corresponde a un CUIT diferente al suyo.</value>
+  </data>
   <data name="AltaUsuarioOK" xml:space="preserve">
     <value>Se ha generado el usuario correctamente</value>
   </data>
@@ -192,8 +195,11 @@
   <data name="IngresosBrutosCoeficienteUnificadoAutorizado" xml:space="preserve">
     <value>Se autorizaron correctamente los coeficientes unificados de ingresos brutos</value>
   </data>
+  <data name="IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK" xml:space="preserve">
+    <value>El detalle de coeficientes unificados de ingresos brutos se ha actualizado correctamente.</value>
+  </data>
   <data name="IngresosBrutosCoeficienteUnificadoDetalleActualizadoOK" xml:space="preserve">
-    <value>El detalle de ingresos brutos se ha actualizado correctamente.</value>
+    <value>El detalle de coeficientes unificados de ingresos brutos se ha actualizado correctamente.</value>
   </data>
   <data name="LoginOk" xml:space="preserve">
     <value>Login exitoso</value>

@@ -1,3 +1,3 @@
-<div class="col">
+<div>
     <p-toggleButton (onChange)="handleChange($event, day.weekDay)" [ngClass]="'weekDayBtn'" *ngFor="let day of days" [onLabel]="day.dayNameMin" [offLabel]="day.dayNameMin" [(ngModel)]="day.selected"></p-toggleButton>
 </div>

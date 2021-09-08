@@ -30,6 +30,9 @@ export class AltasComponent extends BaseComponent implements OnInit {
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
+    @ViewChild("mensajeModalComponent")
+    protected mensajeModalComponent: MensajeComponent;
+
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
@@ -820,18 +823,18 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
 
     grabarAltaInternaGranos(){
-        this.mensajeComponent.setMsgsEmpty();
+        this.mensajeModalComponent.setMsgsEmpty();
             this.subscription = this.altaEmpresaService.grabarAltaInternaGranos(this.cuit, this.mailVendedor).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
+                        this.mensajeModalComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
+                        this.mensajeModalComponent.setInfoMsg(result.info);
                     }
                     else {
-                        this.mensajeComponent.setSuccessMsg(result.info);
+                        this.mensajeModalComponent.setSuccessMsg(result.info);
                         this.getEmpresa();
                         document.getElementById("hidemyModalAltaInterna").click();
                     }

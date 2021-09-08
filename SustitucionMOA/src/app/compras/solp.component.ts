@@ -246,12 +246,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
             if(this.route.params){
                 this.route.params.forEach((params: Params) => {
                     if (params["id"] > 0) this.solpId = params["id"];
+                    if (params["tipoSolp"]) this.solpActual.tipoSolp = params["tipoSolp"];
                 });
 
                 if(this.solpId > 0){
                 this.traerSolpId(this.solpId);
                 }
             }
+
+            
             
         }
     }
@@ -276,30 +279,27 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.cargarSolpActual(result.data);
-
                         this.spinnerComponent.hideIt();
                         this.blockUI.stop();
-                }
+                    }   
+                },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
                     this.spinnerComponent.hideIt();
                     this.blockUI.stop();
+                });
+            } catch (e) {
+                this.floatMsgService.setErrorMsg(e);
+                return false; //<-- Prevent Refresh
                 }
-                
-            });
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-            }
- 
-            return false; //<-- Prevent Refresh
-
+                return false; //<-- Prevent Refresh
     } 
 
     cargarSolpActual(solp){
 
         // Paso 1
         this.solpActual.id = solp.Id;
+        this.solpActual.tipoSolp = solp.TipoSolp && solp.TipoSolp.Codigo || '';
         this.solpActual.nombreDePedido = solp.NombreDeObra || '';
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
         this.solpActual.telefono = solp.Telefono || '';
@@ -397,7 +397,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         let subpos = new SubPosicionViewModel(i);
 
                         subpos.id = sp.Codigo;
-                        subpos.codigoServicio = (sp.CodigoServicioSap && sp.CodigoServicioSap.Descripcion) || '';
+                        subpos.codigoServicio = sp.CodigoServicioSap;
+                        subpos.tareaSubcontratarObj = sp.CodigoServicioSap;
                         subpos.tareaSubcontratar = sp.Tarea;
                         subpos.cuentaMayor = sp.CuentaMayor;
                         subpos.cuentaTd = sp.Cantidad;
@@ -573,8 +574,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     ]);
                     break;
                 case EnumPasoSolp.SolpCabecera:
+                    console.log(this.solpActual)
                     paso.Completo = this.listaStringCompleta([
-                        this.solpActual.selectClaseDocumento,
+                        //this.solpActual.selectClaseDocumento,
                         this.solpActual.posicionActual.servicio,
                         this.solpActual.posicionActual.textoGenerico,
                         this.solpActual.posicionActual.fechaEntregaServicio,
@@ -585,7 +587,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.posicionActual.numeroEntrega,
                         this.solpActual.posicionActual.selectGrupoCompras,
                         this.solpActual.posicionActual.selectArticuloCompras,
-                        this.solpActual.posicionActual.selectMonedaCompras
+                        this.solpActual.posicionActual.monedaSeleccionada
                     ]);
                     
                     break;
@@ -657,7 +659,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     cancelarSolp() {
         this.confirmationService.confirm({
             key: 'cancelarSolp',
-            message: '¿Está seguro que desea volver a la pantalla principal?',
+            message: '¿Está seguro que desea volver a la pantalla principal? No se conservaran los cambios no guardados.',
             accept: () => {
                 this.salir();
             },
@@ -665,6 +667,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
         });
     }
+
+    cancelarFinalizar() {
+        this.displayFinalizar = false;
+    }
+
 
     ultimoPasoSolp() {
         this.confirmationService.confirm({
