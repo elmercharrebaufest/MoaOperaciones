@@ -26,7 +26,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" id="CUITCliente" [(ngModel)]="ordenDeCarga.CUITCliente" mask="00-00000000-0">
+                <input type="text" id="CUITCliente" [disabled]="ordenDeCargaId > 0" [(ngModel)]="ordenDeCarga.CUITCliente" mask="00-00000000-0">
               </div>
             </div>
             <div class="col-xs-12 col-md-6">
