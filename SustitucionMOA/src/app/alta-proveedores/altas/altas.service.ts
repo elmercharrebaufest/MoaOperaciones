@@ -25,13 +25,16 @@ export class AltaEmpresaService extends BaseService {
     }
 
 
-    public setEstadoAprobacion(empresaId: number, estadoId: number, observacion: string, observacionesProveedor: string, estadoSIPER: string): Observable<any> {
+    public setEstadoAprobacion(empresaId: number, estadoId: number, observacion: string, observacionesProveedor: string, estadoSIPER: string, razonSocial:string, codigoCliente:string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('empresaId', empresaId.toString());
         params.set('estado', estadoId.toString());
         params.set('observacion', encodeURIComponent(observacion));
         params.set('observacionParaElProveedor', encodeURIComponent(observacionesProveedor));
         params.set('estadoSIPER', estadoSIPER);
+        params.set('razonSocial', razonSocial);
+        params.set('codigoCliente', codigoCliente.toString());
+        
         return this.http
             .post('/api/AltaEmpresa/setEstadoAprobacion', params, this.headersPost).map(this.extractData);
     }

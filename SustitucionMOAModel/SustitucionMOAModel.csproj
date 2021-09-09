@@ -52,6 +52,7 @@
     <Compile Include="Dto\AgregarConsultaResponseDto.cs" />
     <Compile Include="Dto\ArchivoDescargaDto.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
+    <Compile Include="Dto\CorredorContratoDto.cs" />
     <Compile Include="Dto\CampoProveedorDto.cs" />
     <Compile Include="Dto\CampoProveedorListadoDto.cs" />
     <Compile Include="Dto\CampoReporteDTO.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Dto\InfoProveedorDataAgroDto.cs" />
     <Compile Include="Dto\InfoProveedorNoGranosDto.cs" />
     <Compile Include="Dto\NotificacionDto.cs" />
+    <Compile Include="Dto\OrdenDeCargaDto.cs" />
     <Compile Include="Dto\DeclaracionCampoSustentableDto.cs" />
     <Compile Include="Dto\Resultado.cs" />
     <Compile Include="Dto\TablaEstadoDto.cs" />
@@ -108,10 +110,12 @@
     <Compile Include="Entities\Notificacion.cs" />
     <Compile Include="Dto\ProveedorAltaDto.cs" />
     <Compile Include="Dto\RubroDto.cs" />
+    <Compile Include="Entities\OrdenDeCarga.cs" />
     <Compile Include="Entities\Pliego.cs" />
     <Compile Include="Entities\PliegoVisita.cs" />
     <Compile Include="Entities\Rubro.cs" />
     <Compile Include="Entities\SecuenciaIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Enums\EstadoOrdenDeCarga.cs" />
     <Compile Include="Entities\Solp.cs" />
     <Compile Include="Entities\SolpPosicion.cs" />
     <Compile Include="Entities\SolpProveedor.cs" />
