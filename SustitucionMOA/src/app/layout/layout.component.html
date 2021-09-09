@@ -567,8 +567,7 @@
                                     Administración de pesificaciones
                                 </a>
                             </div>
-                            <div>
-                                <!--*ngIf="isAuthorized('GUARDADO Y CONSULTA DE LOG PESIFICACIONES')"-->
+                            <div *ngIf="isAuthorized('GESTION IMPUESTOS CM05')">
                                 <a (click)="goToSeccion('/gestionCM05')" href="#">
                                     Gestion de Impuestos
                                 </a>
