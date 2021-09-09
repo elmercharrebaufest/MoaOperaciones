@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Enums;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -69,6 +70,8 @@ namespace SustitucionMOAModel.Entities
         public string ContratosRespuesta { get; set; }
         public string NumeroPedidoIngresado { get; set; }
 
+        [InverseProperty("OrdenDeCarga")]
+        public virtual ICollection<HistorialCambiosOrdenDeCarga> HistorialCambios { get; set; } = new List<HistorialCambiosOrdenDeCarga>();
 
         public void ActualizarEstado()
         {

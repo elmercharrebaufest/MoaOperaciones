@@ -101,6 +101,7 @@
     <Compile Include="Entities\CampoSustentable.cs" />
     <Compile Include="Entities\DeclaracionCampoSustentable.cs" />
     <Compile Include="Entities\EstadoIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Entities\HistorialCambiosOrdenDeCarga.cs" />
     <Compile Include="Entities\IngresosBrutosCoeficienteUnificadoDetalle.cs" />
     <Compile Include="Entities\IngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Entities\LiquidacionInformada.cs" />
