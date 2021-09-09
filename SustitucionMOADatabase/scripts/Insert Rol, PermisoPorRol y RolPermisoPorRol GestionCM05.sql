@@ -1,13 +1,20 @@
-DECLARE @IdRol TABLE (idRol INT)
+IF NOT EXISTS (SELECT TOP 1 1 FROM Rol WHERE Codigo = 'ADMCM05') 
+BEGIN
+    INSERT Rol (Codigo, Nombre, EsEditable) VALUES ('ADMCM05', 'Gestion CM05', 1)
+END
+GO
 
-INSERT Rol (Codigo, Nombre, EsEditable)
-OUTPUT INSERTED.Id INTO @IdRol
-VALUES ('ADMCM05', 'Gestion CM05', 1)
+IF NOT EXISTS (SELECT TOP 1 1 FROM PermisoPorRol WHERE Permiso = 'GESTION IMPUESTOS CM05') 
+BEGIN
+    INSERT PermisoPorRol (Permiso) VALUES ('GESTION IMPUESTOS CM05')
+END
+GO
 
-DECLARE @IdPermisoPorRol TABLE (idPermisoPorRol INT)
+DECLARE @IdRol INT = (SELECT TOP 1 Id FROM Rol WHERE Codigo = 'ADMCM05')
+DECLARE @IdPermisoPorRol INT = (SELECT TOP 1 Id FROM PermisoPorRol WHERE Permiso = 'GESTION IMPUESTOS CM05')
 
-INSERT PermisoPorRol (Permiso) 
-OUTPUT INSERTED.Id INTO @IdPermisoPorRol
-VALUES ('GESTION IMPUESTOS CM05')
-
-INSERT RolPermisoPorRol (Rol_Id, PermisoPorRol_Id) VALUES ((SELECT TOP 1 idRol FROM @IdRol), (SELECT TOP 1 idPermisoPorRol FROM @IdPermisoPorRol))
+IF NOT EXISTS (SELECT TOP 1 1 FROM RolPermisoPorRol WHERE Rol_Id = @IdRol AND PermisoPorRol_Id = @IdPermisoPorRol) 
+BEGIN
+    INSERT RolPermisoPorRol (Rol_Id, PermisoPorRol_Id) VALUES (@IdRol, @IdPermisoPorRol)
+END
+GO
