@@ -74,13 +74,13 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetListado()
+        public ActionResult GetListado(string fechaInicio, string fechaFin)
         {
             try
             {
                 var mailUsuario = SessionPersister.getUsername();
 
-                return JsonCustom(new { data = ordenDeCargaService.Listar(mailUsuario) });
+                return JsonCustom(new { data = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin) });
             }
             catch (InfoCustomException e)
             {

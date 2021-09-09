@@ -27,10 +27,11 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 
     filtroEstado: any = null;
     filtroProducto: any = null;
-    
+
     estadoSelected: string = "Todos";
-    productoSelected: string = "";
+    productoSelected: string = "Todos";
     listaProductos: any = null;
+    private selectUndefinedOptionValue: any;
 
 
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -52,7 +53,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         { label: "Vencida", value: 7 },
         { label: "Entrega pendiente", value: 8 },
         { label: "Anulada por vencimiento", value: 9 }
-    ] 
+    ]
 
     ngOnInit() {
         this.setTabs();
@@ -112,9 +113,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-
-    
-
     getListado() {
         this.mensajeComponent.setMsgsEmpty();
 
@@ -122,7 +120,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         this.data = null;
         try {
             this.unsubscribe();
-            this.subscription = this.service.getListado().subscribe(
+            this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {

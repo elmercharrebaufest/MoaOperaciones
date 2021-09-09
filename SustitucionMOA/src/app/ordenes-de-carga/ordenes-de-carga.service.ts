@@ -36,9 +36,13 @@ export class OrdenesDeCargaService extends BaseService {
             .pipe(map(this.extractData));
     }
 
-    public getListado(): Observable<any> {
+    public getListado(fechaInicio: string, fechaFin: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('fechaInicio', fechaInicio.toString());
+        params.set('fechaFin', fechaFin.toString());
+
         return this.http
-            .get('/api/OrdenDeCarga/GetListado')
+            .get('/api/OrdenDeCarga/GetListado', { search: params, headers: this.headers })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
@@ -186,7 +190,7 @@ export class OrdenesDeCargaService extends BaseService {
         params.set('fechaFin', fechaFin.toString());
 
         return this.http
-            .get('/api/OrdenDeCarga/GetListadoFiltradoOrdenCarga',  { search: params, headers: this.headers })
+            .get('/api/OrdenDeCarga/GetListadoFiltradoOrdenCarga', { search: params, headers: this.headers })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }

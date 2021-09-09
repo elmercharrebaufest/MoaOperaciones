@@ -11,7 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
     public interface IOrdenDeCargaService
     {
         Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
-        List<OrdenDeCargaDto> Listar(string mailUsuario);
+        List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin);
         OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId);
         OrdenDeCargaEditarDto ObtenerEditar(string mailUsuario, int ordenId);
         string AnularOrden(int ordenId);
