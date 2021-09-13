@@ -465,27 +465,39 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    guardarCambios(mostrarPreview = false, enviarSap = false){
+    guardarCambios(mostrarPreview = false, enviarSap = false, guardarPorPaso = false){
         try {
-            this.blockUI.start('Guardando...');
-            this.spinnerComponent.showIt();
+
+            if(guardarPorPaso = false){
+                this.blockUI.start('Guardando...');
+                this.spinnerComponent.showIt();
+            }
 
             this.solpActual.enviarSap = enviarSap;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
-                        this.blockUI.stop();
+                        if(guardarPorPaso = false){
+                            this.blockUI.stop();
+                        } 
                     } else if (result.error != undefined && result.error != "") {
                         this.floatMsgService.setErrorMsg(result.error);
-                        this.blockUI.stop();
+                        if(guardarPorPaso = false){
+                            this.blockUI.stop();
+                        } 
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
-                        this.blockUI.stop();
+                        if(guardarPorPaso = false){
+                            this.blockUI.stop();
+                        } 
                     } else {
                         this.spinnerComponent.hideIt();
-                        this.blockUI.stop();
-                        if(!mostrarPreview){
+                        if(guardarPorPaso = false){
+                            this.blockUI.stop();
+                        } 
+
+                        if(!mostrarPreview && !guardarPorPaso){
                             this.messageService.add({severity:'success', detail:'Los datos se guardaron correctamente'});
                         }
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
@@ -518,19 +530,24 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             }
                         } 
 
+
                     }
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
                     this.spinnerComponent.hideIt();
-                    this.blockUI.stop();
+                    if(guardarPorPaso = false){
+                        this.blockUI.stop();
+                    } 
                 }
 
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             this.spinnerComponent.hideIt();
-            this.blockUI.stop();
+            if(guardarPorPaso = false){
+                this.blockUI.stop();
+            } 
             return false; //<-- Prevent Refresh
         }
     }
