@@ -32,6 +32,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     productoSelected: string = "Todos";
     listaProductos: any = null;
     private selectUndefinedOptionValue: any;
+    pedidoAnticipado: number = 0;
+
 
 
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -54,6 +56,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         { label: "Entrega pendiente", value: 8 },
         { label: "Anulada por vencimiento", value: 9 }
     ]
+
+
 
     ngOnInit() {
         this.setTabs();
@@ -114,5 +118,4 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 
         return false; //<-- Prevent Refresh
     }
-
 }

@@ -70,8 +70,23 @@
           <p>Ver:</p>
           <filtro-fecha (ClickEvent)="getListado()"></filtro-fecha>
         </div>
+
+        <div id="searchPedido" class="col-xs-12 col-sm-6 col-md-15" style="margin-top: 10px;">
+          Factura anticipada:
+          <div class="styled-select ">
+              <select [(ngModel)]="pedidoAnticipado">
+                  <option value="0" selected>Todos</option>
+                  <option value="1" selected>Con pedido anticipado</option>
+                  <option value="2" selected>Sin pedido anticipado</option>
+              </select>
+          </div>
+        </div>
       </div>
     </div>
+
+    
+      
+ 
 
     <!-- End Search-->
     <!-- Tables-->
@@ -179,7 +194,8 @@
                                     | customFilter : 'Contrato' : filtroAlta |
                                     customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected)  |
                                     customFilter : 'Cliente' : filtroCliente |
-                                    customFilter : 'DescripcionEstado' : (estadoSelected  == 'Todos' ? '' : estadoSelected ) 
+                                    customFilter : 'DescripcionEstado' : (estadoSelected  == 'Todos' ? '' : estadoSelected ) |
+                                    customFilterBoolean : 'EsFacturaAnticipada' : (pedidoAnticipado == 0 ? null:  (pedidoAnticipado != 2)) : true
                                     | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
                                     | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
                                     ; let odd = odd" role="row" [class.odd]="!odd">
