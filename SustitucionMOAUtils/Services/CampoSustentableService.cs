@@ -10,6 +10,7 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.CredentialService;
 using System;
 using System.Collections.Generic;
@@ -212,6 +213,9 @@ namespace SustitucionMOAUtils.Services
                 Credentials = new NetworkCredential(userName, password, dominio),
             };
             var content = JsonConvert.SerializeObject(datos);
+
+            Log.Error("", "", "CampoSustentableService", "GenerarPDFDeclaracion", content);
+
             var buffer = Encoding.UTF8.GetBytes(content);
             var byteContent = new ByteArrayContent(buffer);
             byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
