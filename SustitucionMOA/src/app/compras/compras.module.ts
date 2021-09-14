@@ -31,6 +31,14 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { ChipsModule } from 'primeng/chips';
+import { TableModule } from 'primeng/table';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { SubPosicionComponent } from './PliegoPasos/solapaSubposiciones/subPosicion.component';
+import {ConfirmationService, SortEvent} from 'primeng/api';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {OverlayPanelModule} from 'primeng/overlaypanel';
+import {PanelModule} from 'primeng/panel';
+
     
 @NgModule({
     imports: [
@@ -54,7 +62,12 @@ import { ChipsModule } from 'primeng/chips';
         DropdownModule,
         AutoCompleteModule,
         ReactiveFormsModule,
-        ChipsModule
+        ChipsModule,
+        MultiSelectModule,
+        OverlayPanelModule,
+        TableModule,
+        ConfirmDialogModule,
+        PanelModule
     ],
     declarations: [
         SolpComponent,
@@ -65,11 +78,13 @@ import { ChipsModule } from 'primeng/chips';
         EspecificacionesComponent,
         CotizacionComponent,
         DragAndDropDirective,
-        CabeceraComponent
+        CabeceraComponent,
+        SubPosicionComponent
     ],
     providers: [
         ComprasService,
-        ValidadorPasoSolpService
+        ValidadorPasoSolpService,
+        ConfirmationService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

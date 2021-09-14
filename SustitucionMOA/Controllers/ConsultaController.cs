@@ -34,10 +34,10 @@ namespace SustitucionMOA.Controllers
             try
             {
                 if (consultaId <= 0) return Json(new { info = "Id de consulta inválido" }, JsonRequestBehavior.AllowGet);
-                var comentario = JsonConvert.DeserializeObject<Comentario>(comentarioJson);
-                comentario.Usuario_Id = ObtenerUsuarioActual().Id;
+                var comentarioDto = JsonConvert.DeserializeObject<ComentarioDto>(comentarioJson);
+                comentarioDto.UsuarioId = ObtenerUsuarioActual().Id;
 
-                return JsonCustom(consultaService.AgregarComentario(consultaId, comentario, Request.Files));
+                return JsonCustom(consultaService.AgregarComentario(consultaId, comentarioDto, Request.Files));
             }
             catch (InfoCustomException e)
             {
@@ -68,11 +68,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

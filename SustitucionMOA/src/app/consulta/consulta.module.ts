@@ -17,7 +17,11 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { SpinnerModule } from 'primeng/spinner';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { InformeComercialComponent } from '../alta-proveedores/informe-comercial/informe-comercial.component';
-import {OverlayPanelModule} from 'primeng/overlaypanel';
+import { TooltipModule } from 'primeng/tooltip';
+import { OverlayPanelModule} from 'primeng/overlaypanel';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   imports: [
@@ -34,15 +38,19 @@ import {OverlayPanelModule} from 'primeng/overlaypanel';
     ToggleButtonModule,
     SpinnerModule,
     SelectButtonModule,
-    OverlayPanelModule
+    OverlayPanelModule,
+    DialogModule,
+    TooltipModule,
+    ConfirmDialogModule,
   ],
     declarations: [
-      MisConsultasComponent,
-      CrearConsultaComponent,
-      DetalleConsultaComponent
+        MisConsultasComponent,
+        CrearConsultaComponent,
+        DetalleConsultaComponent
     ],
     providers: [
-      ConsultaService
+        ConsultaService,
+        ConfirmationService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

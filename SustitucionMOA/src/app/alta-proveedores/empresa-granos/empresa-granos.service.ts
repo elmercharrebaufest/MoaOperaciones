@@ -72,7 +72,7 @@ export class EmpresaGranosService extends BaseService {
                     30000,
                     throwError(
                         new Error(
-                            "Se exedio el tiempo de espera, por favor intentelo mas tarde"
+                            "Se excedió el tiempo de espera, por favor inténtelo más tarde "
                         )
                     )
                 )
@@ -98,7 +98,7 @@ export class EmpresaGranosService extends BaseService {
                     30000,
                     throwError(
                         new Error(
-                            "Se exedio el tiempo de espera, por favor intentelo mas tarde"
+                            "Se excedió el tiempo de espera, por favor inténtelo más tarde "
                         )
                     )
                 )
@@ -232,7 +232,7 @@ export class EmpresaGranosService extends BaseService {
                     30000,
                     throwError(
                         new Error(
-                            "Se exedio el tiempo de espera, por favor intentelo mas tarde"
+                            "Se excedió el tiempo de espera, por favor inténtelo más tarde "
                         )
                     )
                 )
@@ -295,7 +295,7 @@ export class EmpresaGranosService extends BaseService {
                     30000,
                     throwError(
                         new Error(
-                            "Se exedio el tiempo de espera, por favor intentelo mas tarde"
+                            "Se excedió el tiempo de espera, por favor inténtelo más tarde "
                         )
                     )
                 )
@@ -352,15 +352,21 @@ export class EmpresaGranosService extends BaseService {
             map(this.extractData))   
     }
 
-    notificarSolicitud( proveedorId: number): Observable<any> {
+    SolicitudAltaInterna( proveedorId: number, datos: any): Observable<any> {
+        let datosJson = JSON.stringify(datos);
+        var payload = new FormData();
+        
+        payload.append('datosJson', datosJson);
+        payload.append('proveedorId', proveedorId.toString());
+
         return this.http
-            .post("/api/AltaEmpresaGranos/NotificarSolicitud", {proveedorId : proveedorId})
+            .post("/api/AltaEmpresaGranos/SolicitudAltaInterna",  payload, this.headers)
             .pipe(
                 timeoutWith(
                     30000,
                     throwError(
                         new Error(
-                            "Se exedio el tiempo de espera, por favor intentelo mas tarde"
+                            "Se excedió el tiempo de espera, por favor inténtelo más tarde "
                         )
                     )
                 )

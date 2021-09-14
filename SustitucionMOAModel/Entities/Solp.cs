@@ -21,6 +21,10 @@ namespace SustitucionMOAModel.Entities
         public string NroSolp { get; set; }
         public int? EstadoSolpSap_Id { get; set; }
         public int? EstadoDocumento_Id { get; set; }
+        public DateTime? FechaBorrado { get; set; }
+        public DateTime? FechaCreacionSap { get; set; }
+        public DateTime? FechaLiberacionSap { get; set; }
+        public int? TipoSolp_Id { get; set; }
 
         [ForeignKey("UsuarioCreacion_Id")]
         public virtual Usuario UsuarioCreacion { get; set; }
@@ -34,6 +38,8 @@ namespace SustitucionMOAModel.Entities
         public virtual TablaSap EstadoSolpSap { get; set; }
         [ForeignKey("EstadoDocumento_Id")]
         public virtual TablaEstado EstadoDocumento { get; set; }
+        [ForeignKey("TipoSolp_Id")]
+        public virtual TablaGeneral TipoSolp { get; set; }
 
         public virtual ICollection<SolpPosicion> Posiciones { get; set; }
 

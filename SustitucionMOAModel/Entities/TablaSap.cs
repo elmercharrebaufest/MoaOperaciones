@@ -20,6 +20,31 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("Padre_Id")]
         public TablaSap Padre { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is TablaSap sap &&
+                   Id == sap.Id &&
+                   Tabla == sap.Tabla &&
+                   Codigo == sap.Codigo &&
+                   CodigoSap == sap.CodigoSap &&
+                   Descripcion == sap.Descripcion &&
+                   Padre_Id == sap.Padre_Id &&
+                   EqualityComparer<TablaSap>.Default.Equals(Padre, sap.Padre);
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 2000866701;
+            hashCode = hashCode * -1521134295 + Id.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Tabla);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Codigo);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CodigoSap);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Descripcion);
+            hashCode = hashCode * -1521134295 + Padre_Id.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<TablaSap>.Default.GetHashCode(Padre);
+            return hashCode;
+        }
         //public virtual ICollection<TablaSap> Hijos { get; set; }
     }
 }

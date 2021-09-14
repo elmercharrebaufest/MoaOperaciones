@@ -24,6 +24,7 @@ namespace SustitucionMOAUtils.Interfaces
         AltaEmpresaViewModel CargarSolicitudUsuario(string mailUsuario, int proveedorId);
         Task<string> ObtenerCampañasDataAgroAsync();
 
-        string NotificarSolicitud(string mailUsuario, int proveedorId);
+        string SolicitudAltaInterna(string mailUsuario, int proveedorId, AltaEmpresaViewModel altaEmpresa);
+        string GrabarProveedorAltaInternaGranos(string cuit, string mailUsuario, string mailVendedor);
     }
 }

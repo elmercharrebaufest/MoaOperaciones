@@ -79,6 +79,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     monedasTodas: any = new Array();
     destinos: any = new Array();
     campanias: any = new Array();
+    sustentables: any = new Array();
     campaniasTodas: any = new Array();
     zona: any = new Array();
     bolsasSelect: any = new Array();
@@ -106,7 +107,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     ObservacionTercero: string = "";
     pagosDiferidos: any = new Array();
     maximoDiasDiferimiento: number = 0;
-    costoFinanciero: string ;
+    costoFinanciero: string;
     placeholderDolarizado: string = this.placeHoldeDolarizado();
     ngOnInit() {
 
@@ -135,7 +136,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
         let mm = String(today.getMonth() + 1); //January is 0!
         let yyyy = today.getFullYear();
         let text = dd + '/' + mm + '/' + yyyy;
-        return "ej: " + text ;
+        return "ej: " + text;
     }
 
     negocioHabilitado(contrato) {
@@ -274,7 +275,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                         this.zona.push(el);
                     });
                     obj.Datos.Destino.forEach(element => {
-                        if (element.Id != 10) {
+                        if (element.Id != 9 && element.Id != 10 && element.Id != 13) {
                             let el = {
                                 Id: element.Id,
                                 Descripcion: element.Descripcion
@@ -421,7 +422,23 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                             }
                             this.campanias.push(el);
                         });
-
+                        this.sustentables = new Array();
+                        JSON.parse(obj.TraerHabilitarSustentable).forEach(element => {
+                            if (element.TipoNegocioId == contrato.TipoNegocioId) {
+                                let el = {
+                                    Id: element.Id,
+                                    Precio: element.Precio,
+                                    MonedaId: element.MonedaId,
+                                    DesdeVigencia: new Date(parseInt(element.DesdeVigencia.substr(6))),
+                                    HastaVigencia: new Date(parseInt(element.HastaVigencia.substr(6))),
+                                    TipoNegocio: element.TipoNegocio,
+                                    TipoNegocioId: element.TipoNegocioId,
+                                    HastaEntrega: new Date(parseInt(element.HastaEntrega.substr(6))),
+                                    DesdeEntrega: new Date(parseInt(element.DesdeEntrega.substr(6))),
+                                }
+                                this.sustentables.push(el);
+                            }
+                        });
                         this.pagosDiferidos = new Array();
                         if (obj.TraerPagosDiferido) {
                             JSON.parse(obj.TraerPagosDiferido).forEach(element => {
@@ -772,6 +789,11 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
             //entregadesde hasta
             contrato.FechaDesde = precio.DesdeEntrega;
             contrato.FechaHasta = precio.HastaEntrega;
+            if (precio.DestinoId == null) {
+                contrato.DestinoId = 1;
+            } else {
+                contrato.DestinoId = precio.DestinoId;
+            }
             this.fechaInicio = contrato.FechaDesde.toLocaleDateString('en-GB');
             this.fechaFin = contrato.FechaHasta.toLocaleDateString('en-GB');
             $("#noCursor").val(contrato.FechaDesde.toLocaleDateString("en-GB"));

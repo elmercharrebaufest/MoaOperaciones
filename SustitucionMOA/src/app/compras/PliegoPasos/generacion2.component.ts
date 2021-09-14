@@ -115,6 +115,10 @@ export class Generacion2Component extends ListBaseComponent  {
         }
 
         this.model.cargoPasoDos = true;
+
+        if(!this.model.supervisorTrabajo){
+            this.model.supervisorTrabajo = this.model.fiscalContrato;
+        }
         
     }
 
