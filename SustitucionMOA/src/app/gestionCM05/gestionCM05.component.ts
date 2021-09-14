@@ -67,6 +67,7 @@ export class GestionCM05Component extends ListBaseComponent {
             { label: 'Pendiente',  value: 'Pendiente',  },
             { label: 'Autorizado', value: 'Autorizado', },
             { label: 'Completado', value: 'Completado', },
+            { label: 'Rechazado por usuario', value: 'Rechazado por usuario', },
         ];
 
         this.secuencias = [
@@ -334,6 +335,7 @@ export class GestionCM05Component extends ListBaseComponent {
                                 x.EstadoId == 1 ? 'Pendiente' :
                                 x.EstadoId == 2 ? 'Autorizado' :
                                 x.EstadoId == 3 ? 'Completado' :
+                                x.EstadoId == 4 ? 'Rechazado por usuario' :
                                 '';
                             x.Secuencia =
                                 x.SecuenciaId == 1 ? 'Original' :
