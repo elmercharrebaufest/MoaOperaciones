@@ -883,6 +883,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="src\styles.css" />
+    <Content Include="Template\AvisoEdicionOrdenDeCarga.html" />
     <Content Include="Template\ReporteCamposSustentables.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1282,8 +1283,8 @@
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />
     <Folder Include="Views\LogPesificacion\" />
-    <Folder Include="Views\TicketPesada\" />
     <Folder Include="Views\OrdenDeCarga\" />
+    <Folder Include="Views\TicketPesada\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SustitucionMOAAssets\SustitucionMOAAsset.csproj">

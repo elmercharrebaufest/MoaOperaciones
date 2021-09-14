@@ -1,8 +1,10 @@
-﻿using SustitucionMOAAssets;
+﻿using NLog.Fluent;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Util;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
@@ -10,7 +12,9 @@ using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -18,6 +22,8 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IOrdenCargaConsumerMOA consumer;
+
+        private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
 
         public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer)
         {
@@ -86,31 +92,29 @@ namespace SustitucionMOAUtils.Services
         public Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-
+            var valoresAEditar = new List<string> { "NombreChofer", "ApellidoChofer", "CUITChofer", "PatenteAcoplado", "ChasisAcoplado", "ContratoIngresado",
+            "NumeroPedido", "Observacion", "Cantidad", "RazonSocialTransporte", "CUITTransporte", "Producto_Id", "NumeroPedidoIngresado", 
+            ""};
             var ordenEditar = repositorio.Obtener<OrdenDeCarga>(ordenDeCarga.Id);
+            var listaValoresDiferentes = ordenEditar.Compare(ordenDeCarga);
+            var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
 
-            if (ordenEditar.FechaEntregaGenerada != null)
-            {
-                ordenEditar.NombreChofer = ordenDeCarga.NombreChofer;
-                ordenEditar.ApellidoChofer = ordenDeCarga.ApellidoChofer;
-                ordenEditar.CUITChofer = ordenDeCarga.CUITChofer;
-                ordenEditar.PatenteAcoplado = ordenDeCarga.PatenteAcoplado;
-                ordenEditar.ChasisAcoplado = ordenDeCarga.ChasisAcoplado;
-            }
 
-            if (!ordenEditar.TransporteExiste)
-            {
-                ordenEditar.RazonSocialTransporte = ordenDeCarga.RazonSocialTransporte;
-                ordenEditar.CUITTransporte = ordenDeCarga.CUITTransporte;
-            }
+            ordenEditar.NombreChofer = ordenDeCarga.NombreChofer;  
+            ordenEditar.ApellidoChofer = ordenDeCarga.ApellidoChofer;
+            ordenEditar.CUITChofer = ordenDeCarga.CUITChofer;
+            ordenEditar.PatenteAcoplado = ordenDeCarga.PatenteAcoplado;
+            ordenEditar.ChasisAcoplado = ordenDeCarga.ChasisAcoplado;
+            ordenEditar.RazonSocialTransporte = ordenDeCarga.RazonSocialTransporte;
+            ordenEditar.CUITTransporte = ordenDeCarga.CUITTransporte;
+
+            ordenEditar.ContratoIngresado = ordenDeCarga.ContratoIngresado;
+            ordenEditar.Cantidad = ordenDeCarga.Cantidad;
+            ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
+            ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
 
             if (!ordenEditar.InformadaSAP)
             {
-                ordenEditar.ContratoIngresado = ordenDeCarga.ContratoIngresado;
-                ordenEditar.Cantidad = ordenDeCarga.Cantidad;
-                ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
-                ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
-
                 var crearPedido = VerificarOrden(ordenEditar, ordenEditar.Cliente);
 
                 if (crearPedido)
@@ -128,9 +132,59 @@ namespace SustitucionMOAUtils.Services
 
             ordenEditar.Observacion = ordenDeCarga.Observacion;
 
+            foreach (var prop in listaValoresDiferentes)
+            {
+
+                if (valoresAEditar.Contains(prop.PropertyName))
+                {
+                    historialCambios.Add(new OrdenDeCargaCambiosHistorial
+                    {
+                        Id = 0,
+                        Antes = prop.valA.ToString(),
+                        Despues = prop.valB.ToString(),
+                        NombreColumnaCambio = prop.PropertyName,
+                        FechaCambio = DateTime.Now,
+                        Usuario_Id = usuario.Id,
+                        OrdenDeCarga_Id = ordenDeCarga.Id
+                    });
+                }
+            }
+
+            ordenEditar.HistorialCambios.Concat(historialCambios);
+
             repositorio.GuardarCambios();
 
+            if(historialCambios.Count > 0)
+            {
+                var mailProveedor = repositorio.Obtener<Proveedor>(ordenDeCarga.Cliente_Id);
+                EnviarMailEdicionOrdenDeCarga(historialCambios, mailProveedor.Mail);
+            }
+
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
+        }
+
+        private void EnviarMailEdicionOrdenDeCarga(List<OrdenDeCargaCambiosHistorial> ordenDeCargaHistorial, string mailUsuario)
+        {
+            try
+            {
+                var cambios = new StringBuilder();
+
+                foreach (var cambio in ordenDeCargaHistorial)
+                {
+                    cambios.AppendLine($"<tr><td>{cambio.NombreColumnaCambio}</td><td>{cambio.Antes}</td><td>{cambio.Despues}</td><td>{cambio.FechaCambio}</td></tr>");
+                }
+
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
+                var cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, cambios);
+                string asunto = "Molinos Agro - Edición en su orden de carga n°: " + ordenDeCargaHistorial[0].OrdenDeCarga_Id;
+                var copia = new List<string>() { };
+
+                EmailSender.EnviarMail(new List<string> { "evilliate@baufest.com" }, asunto, cuerpo, copia, null, null, null);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToString());
+            }
         }
 
         private bool CrearOrdenEnSAP(OrdenDeCarga orden, Proveedor cliente)
