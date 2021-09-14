@@ -47,7 +47,7 @@ namespace SustitucionMOAWS.WSConsumers
                     PrecioString = SAPFormatter.FormatearMonto(pesificacion.PRECIO, "USD"),
                     FechaPesificacion = SAPFormatter.FormatearFecha(pesificacion.FECHA_PESIFICACION),
                     FechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_PESIFICACION, "yyyy-MM-dd", null).ToString("yyyy-MM-ddTHH:mm:ss"),
-                    TipoCambio = SAPFormatter.FormatearMonto(pesificacion.TIPO_CAMBIO, "USD"),
+                    TipoCambio = SAPFormatter.FormatearMonto(pesificacion.TIPO_CAMBIO, "ARP"),
                 });
             }
 
