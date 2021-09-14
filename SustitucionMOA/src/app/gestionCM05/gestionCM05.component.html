@@ -13,6 +13,7 @@
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th class="col-md-1 th-cabecera" rowspan="2">Id</th>
+                        <th class="col-md-1 th-cabecera" rowspan="2">Id Consulta</th>
                         <th class="col-md-3 th-cabecera" style="border-bottom:none">
                             Estado
                         </th>
@@ -40,6 +41,9 @@
                     <tr [ngClass]="rowData.MalCargada ? 'tr-cabecera-error' : null" (click)="onCabeceraClick(rowData)">
                         <td class="td-cabecera">
                             {{rowData.Id}}
+                        </td>
+                        <td class="td-cabecera">
+                            {{rowData.ConsultaId}}
                         </td>
                         <td class="td-cabecera">
                             {{rowData.Estado}}
@@ -71,12 +75,22 @@
 
 <p-dialog *ngIf="selectedCabecera" [(visible)]="displayDialog" [maximizable]="true" [responsive]="true" showEffect="fade" [modal]="true" [width]="900" appendTo="body" (onHide)="closeDialogDetalles()">
     <p-header>
-        <label class="headerDetalle">
-            Id:
-        </label>
-        <label>
-            {{selectedCabecera.Id}}
-        </label>
+        <div class="col-md-3">
+            <label class="headerDetalle">
+                Id:
+            </label>
+            <label>
+                {{selectedCabecera.Id}}
+            </label>
+        </div>
+        <div class="col-md-3">
+            <label class="headerDetalle">
+                Id Consulta:
+            </label>
+            <label>
+                {{selectedCabecera.ConsultaId}}
+            </label>
+        </div>
     </p-header>
     <div class="row">
         <div class="col-md-10 ">

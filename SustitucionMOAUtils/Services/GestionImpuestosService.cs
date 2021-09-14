@@ -53,6 +53,7 @@ namespace SustitucionMOAUtils.Services
                 Sede = x.Sede,
                 MalCargada = x.MalCargada,
                 SecuenciaId = x.SecuenciaIngresosBrutosCoeficienteUnificado_Id,
+                ConsultaId = x.Consulta_Id
             },null,0,"Id",SustitucionMOAModel.Consultas.DirOrden.Desc);
         }
 

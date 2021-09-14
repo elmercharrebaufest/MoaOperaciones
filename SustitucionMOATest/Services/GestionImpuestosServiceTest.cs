@@ -48,9 +48,9 @@ namespace SustitucionMOATest.Services
 
             List<IngresosBrutosCoeficienteUnificado> cabeceras = new List<IngresosBrutosCoeficienteUnificado>
             {
-                new IngresosBrutosCoeficienteUnificado { Id = 1, SecuenciaIngresosBrutosCoeficienteUnificado_Id = 1, Anticipo = 1, CUIT = "1", Sede = 1, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = pendiente, MalCargada = false },
-                new IngresosBrutosCoeficienteUnificado { Id = 2, SecuenciaIngresosBrutosCoeficienteUnificado_Id = 2, Anticipo = 2, CUIT = "2", Sede = 2, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = autorizado, MalCargada = false },
-                new IngresosBrutosCoeficienteUnificado { Id = 3, SecuenciaIngresosBrutosCoeficienteUnificado_Id = null, Anticipo = 23, CUIT = "33", Sede = 3, FechaCarga = ayer, FechaUltimaModificacion = hoy, EstadoIngresosBrutosCoeficienteUnificado = completado, MalCargada = true },
+                new IngresosBrutosCoeficienteUnificado { Id = 1, Consulta_Id = 3, SecuenciaIngresosBrutosCoeficienteUnificado_Id = 1, Anticipo = 1, CUIT = "1", Sede = 1, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = pendiente, MalCargada = false },
+                new IngresosBrutosCoeficienteUnificado { Id = 2, Consulta_Id = 3, SecuenciaIngresosBrutosCoeficienteUnificado_Id = 2, Anticipo = 2, CUIT = "2", Sede = 2, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = autorizado, MalCargada = false },
+                new IngresosBrutosCoeficienteUnificado { Id = 3, Consulta_Id = 3, SecuenciaIngresosBrutosCoeficienteUnificado_Id = null, Anticipo = 23, CUIT = "33", Sede = 3, FechaCarga = ayer, FechaUltimaModificacion = hoy, EstadoIngresosBrutosCoeficienteUnificado = completado, MalCargada = true },
             };
 
             this.repositorioMock
@@ -86,6 +86,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(1, result[2].Sede);
             Assert.AreEqual(1, result[2].SecuenciaId);
             Assert.IsFalse(result[2].MalCargada);
+            Assert.AreEqual(3, result[2].ConsultaId);
 
             Assert.AreEqual(2, result[1].Id);
             Assert.AreEqual(2, result[1].EstadoId);
@@ -96,6 +97,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(2, result[1].Sede);
             Assert.AreEqual(2, result[1].SecuenciaId);
             Assert.IsFalse(result[1].MalCargada);
+            Assert.AreEqual(3, result[1].ConsultaId);
 
             Assert.AreEqual(3, result[0].Id);
             Assert.AreEqual(3, result[0].EstadoId);
@@ -106,6 +108,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(3, result[0].Sede);
             Assert.IsNull(result[0].SecuenciaId);
             Assert.IsTrue(result[0].MalCargada);
+            Assert.AreEqual(3, result[0].ConsultaId);
         }
 
         [Test]

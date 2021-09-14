@@ -10,6 +10,7 @@
     MalCargada;
     Secuencia;
     SecuenciaId;
+    ConsultaId;
 };
 
 export interface DetalleCM05 {

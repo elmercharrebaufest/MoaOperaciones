@@ -116,6 +116,7 @@ export class GestionCM05Component extends ListBaseComponent {
             MalCargada: data.MalCargada,
             Secuencia: data.Secuencia,
             SecuenciaId: data.SecuenciaId,
+            ConsultaId: data.ConsultaId,
         };
         this.service.listarDetalles(this.selectedCabecera.Id).subscribe(result => {
             this.detalles = result;
