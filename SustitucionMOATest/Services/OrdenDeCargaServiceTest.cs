@@ -239,6 +239,57 @@ namespace SustitucionMOATest.Services
         }
 
         [Test()]
+        public void EditarOrdenDeCargaInformadaTest()
+        {
+            int orderId = 1;
+            var orden = new OrdenDeCarga
+            {
+                Id = orderId,
+                Estado = EstadoOrdenDeCarga.Confirmado,
+                InformadaSAP = true
+            };
+
+            string mailUsuario = "usuario@test.com";
+
+            var proveedor = new Proveedor
+            {
+                Id = 1,
+                EstadoAprobacion = EstadoAprobacion.Aprobado,
+                Observaciones = "Test",
+                RazonSocial = "RS",
+                Mail = mailUsuario,
+                CUIT = "233333333333",
+                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
+            };
+
+            var usuario = new Usuario
+            {
+                Id = 1,
+                Mail = mailUsuario,
+                CUITRegistro = "233333333333",
+                Proveedores = new List<Proveedor>()
+                {
+                    proveedor
+                },
+                Roles = new List<Rol>()
+            };
+
+            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(orden);
+            repositorioMock.Setup(x => x.Obtener<Usuario>(It.IsAny<string>())).Returns(usuario);
+
+            var expected = "La orden no puede anularse debido a que ya fue informada.";
+
+            var ex = Assert.Throws<ValidationCustomException>(() => target.AnularOrden(orderId));
+
+            var result = ex.Message;
+
+            Assert.AreEqual(expected, result);
+            Assert.AreEqual(EstadoOrdenDeCarga.Confirmado, orden.Estado);
+            repositorioMock.Verify(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Never);
+        }
+
+        [Test()]
         public void ObtenerOrdenPorComercialTest()
         {
             string mailUsuario = "usuario@test.com";

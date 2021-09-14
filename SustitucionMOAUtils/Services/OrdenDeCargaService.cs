@@ -93,12 +93,10 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var valoresAEditar = new List<string> { "NombreChofer", "ApellidoChofer", "CUITChofer", "PatenteAcoplado", "ChasisAcoplado", "ContratoIngresado",
-            "NumeroPedido", "Observacion", "Cantidad", "RazonSocialTransporte", "CUITTransporte", "Producto_Id", "NumeroPedidoIngresado", 
-            ""};
+            "NumeroPedido", "Observacion", "Cantidad", "RazonSocialTransporte", "CUITTransporte", "Producto_Id", "NumeroPedidoIngresado" };
             var ordenEditar = repositorio.Obtener<OrdenDeCarga>(ordenDeCarga.Id);
             var listaValoresDiferentes = ordenEditar.Compare(ordenDeCarga);
             var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
-
 
             ordenEditar.NombreChofer = ordenDeCarga.NombreChofer;  
             ordenEditar.ApellidoChofer = ordenDeCarga.ApellidoChofer;
@@ -156,14 +154,13 @@ namespace SustitucionMOAUtils.Services
 
             if(historialCambios.Count > 0)
             {
-                var mailProveedor = repositorio.Obtener<Proveedor>(ordenDeCarga.Cliente_Id);
-                EnviarMailEdicionOrdenDeCarga(historialCambios, mailProveedor.Mail);
+                EnviarMailEdicionOrdenDeCarga(historialCambios);
             }
 
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
         }
 
-        private void EnviarMailEdicionOrdenDeCarga(List<OrdenDeCargaCambiosHistorial> ordenDeCargaHistorial, string mailUsuario)
+        private void EnviarMailEdicionOrdenDeCarga(List<OrdenDeCargaCambiosHistorial> ordenDeCargaHistorial)
         {
             try
             {
@@ -178,8 +175,9 @@ namespace SustitucionMOAUtils.Services
                 var cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, cambios);
                 string asunto = "Molinos Agro - Edición en su orden de carga n°: " + ordenDeCargaHistorial[0].OrdenDeCarga_Id;
                 var copia = new List<string>() { };
+                var Destinatario = ConfigurationManager.AppSettings["EmailToComerciales"];
 
-                EmailSender.EnviarMail(new List<string> { "evilliate@baufest.com" }, asunto, cuerpo, copia, null, null, null);
+                EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, copia, null, null, null);
             }
             catch (Exception ex)
             {
