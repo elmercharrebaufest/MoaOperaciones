@@ -364,6 +364,13 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
     selectEventContratoId(item: FijacionesAutomaticas) {
         if (item && item.ContratoId) {
             console.log("a fijar", item);
+            if (item.Pase == true) {
+                this.mensajeComponent.setErrorMsg("Negocio no disponible para Fijar, contactarse con el Comercial.");
+                this.contrato.ContratoSAP = "";
+                this.pendienteFijarContrato = "";
+                return;
+            }
+            this.mensajeComponent.setErrorMsg("");
             this.pendienteFijar = item;
             this.contrato.ContratoSAP = item.ContratoId;
             this.contrato.Posicion = item.Posicion;
@@ -386,7 +393,6 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.contrato.DestinoId = item.Centro;
             this.contrato.TrigoEspecial = item.Calidad;
         }
-
 
     }
 
