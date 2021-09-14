@@ -208,4 +208,14 @@ export class ConsultaService extends BaseService {
             })
             .pipe(map(this.extractData));
     }
+
+    AnularConsulta(consultaId: number, motivoRechazo: string) {
+        var payload = new FormData();
+        payload.append('consultaId', consultaId.toString());
+        payload.append('motivoRechazo', motivoRechazo);
+
+        return this.http
+            .post('/api/consulta/AnularConsulta', payload, this.headersPost).pipe(
+                map(this.extractData));
+    }
 }

@@ -1,0 +1,9 @@
+﻿.dialog-accept-button {
+    background-color: #0b880b;
+    width: 33px !important;
+}
+
+.dialog-reject-button {
+    background-color: #e33030;
+    width: 33px !important;
+}
