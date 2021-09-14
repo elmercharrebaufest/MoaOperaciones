@@ -61,7 +61,7 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recuerde que el formulario cargado corresponde a un CUIT diferente al suyo..
+        ///   Looks up a localized string similar to El formulario cargado corresponde a un CUIT diferente.
         /// </summary>
         public static string AltaFormularioCM05DistintoCUITOK {
             get {
@@ -201,6 +201,15 @@ namespace SustitucionMOAAssets {
         public static string CommodityGuardadoOK {
             get {
                 return ResourceManager.GetString("CommodityGuardadoOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Se ha anulado la consulta correctamente..
+        /// </summary>
+        public static string ConsultaRechazadaOK {
+            get {
+                return ResourceManager.GetString("ConsultaRechazadaOK", resourceCulture);
             }
         }
         

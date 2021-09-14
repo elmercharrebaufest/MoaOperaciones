@@ -1,3 +1,4 @@
 ﻿IF NOT EXISTS (SELECT TOP 1 1 FROM EstadoIngresosBrutosCoeficienteUnificado WHERE Descripcion = 'Pendiente') BEGIN INSERT EstadoIngresosBrutosCoeficienteUnificado (Descripcion) VALUES ('Pendiente') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM EstadoIngresosBrutosCoeficienteUnificado WHERE Descripcion = 'Autorizado') BEGIN INSERT EstadoIngresosBrutosCoeficienteUnificado (Descripcion) VALUES ('Autorizado') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM EstadoIngresosBrutosCoeficienteUnificado WHERE Descripcion = 'Completado') BEGIN INSERT EstadoIngresosBrutosCoeficienteUnificado (Descripcion) VALUES ('Completado') END
+IF NOT EXISTS (SELECT TOP 1 1 FROM EstadoIngresosBrutosCoeficienteUnificado WHERE Descripcion = 'Rechazado por usuario') BEGIN INSERT EstadoIngresosBrutosCoeficienteUnificado (Descripcion) VALUES ('Rechazado por usuario') END

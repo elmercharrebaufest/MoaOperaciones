@@ -550,5 +550,113 @@ namespace SustitucionMOATest.Services
                 Assert.Fail("Debió lanzar una ValidationCustomException");
             }
         }
+
+        [Test]
+        public void AnularConsultaOk()
+        {
+            int consultaIdTest = 332;
+            int usuarioIdTest = 98;
+            string motivoRechazoTest = "rechazada pa";
+
+            DateTime hoy = new DateTime(2021, 9, 14);
+            timeProviderMock.Setup(x => x.Now()).Returns(hoy);
+
+            Mock<ConsultaService> targetMock = new Mock<ConsultaService>(this.repositorioMock.Object, this.azureServiceMock.Object, this.timeProviderMock.Object) { CallBase = true, };
+            targetMock.Setup(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<ComentarioDto>(), It.IsAny<HttpFileCollectionBase>())).Returns(new ComentarioDto());
+            targetMock.Setup(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>())).Callback(() => { });
+
+            Categoria actualizacion = new Categoria { Code = Categorias.Actualizacion };
+            Categoria boletos = new Categoria { Code = Categorias.Boletos };
+
+            SubCategoria cm05 = new SubCategoria { Code = SubCategorias.CM05 };
+            SubCategoria contratos = new SubCategoria { Code = SubCategorias.Contratos };
+
+            List<Consulta> consultaList = new List<Consulta>
+            {
+                new Consulta { Id = 248, Categoria = actualizacion, SubCategoria = contratos },
+                new Consulta { Id = 332, Categoria = boletos, SubCategoria = cm05 },
+            };
+
+            this.repositorioMock
+                .Setup(x => x.Obtener<Consulta>(It.IsAny<int>()))
+                .Returns<int>(id => consultaList.SingleOrDefault(x => x.Id == id));
+
+            var result = targetMock.Object.AnularConsulta(consultaIdTest, usuarioIdTest, motivoRechazoTest);
+
+            targetMock.Verify(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            targetMock.Verify(x => x.ActualizarEstadoConsulta(consultaIdTest, (int)EstadosConsulta.Finalizado), Times.Once);
+
+            targetMock.Verify(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<ComentarioDto>(), It.IsAny<HttpFileCollectionBase>()), Times.Once);
+            targetMock.Verify(x => x.AgregarComentario(
+                consultaIdTest,
+                It.Is<ComentarioDto>(comentario => comentario.Detalle == motivoRechazoTest + ", consulta cerrada." && comentario.Fecha == hoy && comentario.UsuarioId == usuarioIdTest),
+                It.IsAny<HttpFileCollectionBase>()), Times.Once);
+
+            this.repositorioMock.Verify(x => x.Obtener<Consulta>(It.IsAny<int>()), Times.Once);
+            this.repositorioMock.Verify(x => x.Obtener<Consulta>(consultaIdTest), Times.Once);
+         
+            this.repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<IngresosBrutosCoeficienteUnificado, bool>>>()), Times.Never);
+        }
+
+        [Test]
+        public void AnularConsultaCM05Ok()
+        {
+            int consultaIdTest = 332;
+            int usuarioIdTest = 98;
+            string motivoRechazoTest = "rechazada pa";
+
+            DateTime hoy = new DateTime(2021, 9, 14);
+            timeProviderMock.Setup(x => x.Now()).Returns(hoy);
+
+            Mock<ConsultaService> targetMock = new Mock<ConsultaService>(this.repositorioMock.Object, this.azureServiceMock.Object, this.timeProviderMock.Object) { CallBase = true, };
+            targetMock.Setup(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<ComentarioDto>(), It.IsAny<HttpFileCollectionBase>())).Returns(new ComentarioDto());
+            targetMock.Setup(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>())).Callback(() => { });
+
+            Categoria actualizacion = new Categoria { Code = Categorias.Actualizacion };
+            Categoria boletos = new Categoria { Code = Categorias.Boletos };
+
+            SubCategoria cm05 = new SubCategoria { Code = SubCategorias.CM05 };
+            SubCategoria contratos = new SubCategoria { Code = SubCategorias.Contratos };
+
+            List<Consulta> consultaList = new List<Consulta>
+            {
+                new Consulta { Id = 248, Categoria = boletos, SubCategoria = contratos },
+                new Consulta { Id = 332, Categoria = actualizacion, SubCategoria = cm05 },
+            };
+
+            this.repositorioMock
+                .Setup(x => x.Obtener<Consulta>(It.IsAny<int>()))
+                .Returns<int>(id => consultaList.SingleOrDefault(x => x.Id == id));
+
+            List<IngresosBrutosCoeficienteUnificado> ingresosBrutosCoeficienteUnificadosList = new List<IngresosBrutosCoeficienteUnificado>
+            {
+                new IngresosBrutosCoeficienteUnificado { Id = 1, Consulta_Id = 332, EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente },
+                new IngresosBrutosCoeficienteUnificado { Id = 2, Consulta_Id = 248, EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente },
+            };
+
+            this.repositorioMock
+                .Setup(x => x.Obtener(It.IsAny<Expression<Func<IngresosBrutosCoeficienteUnificado, bool>>>()))
+                .Returns<Expression<Func<IngresosBrutosCoeficienteUnificado, bool>>>(q => ingresosBrutosCoeficienteUnificadosList.SingleOrDefault(q.Compile()));
+
+            var result = targetMock.Object.AnularConsulta(consultaIdTest, usuarioIdTest, motivoRechazoTest);
+
+            targetMock.Verify(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            targetMock.Verify(x => x.ActualizarEstadoConsulta(consultaIdTest, (int)EstadosConsulta.Finalizado), Times.Once);
+
+            targetMock.Verify(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<ComentarioDto>(), It.IsAny<HttpFileCollectionBase>()), Times.Once);
+            targetMock.Verify(x => x.AgregarComentario(
+                consultaIdTest,
+                It.Is<ComentarioDto>(comentario => comentario.Detalle == motivoRechazoTest + ", consulta cerrada." && comentario.Fecha == hoy && comentario.UsuarioId == usuarioIdTest),
+                It.IsAny<HttpFileCollectionBase>()), Times.Once);
+
+            this.repositorioMock.Verify(x => x.Obtener<Consulta>(It.IsAny<int>()), Times.Once);
+            this.repositorioMock.Verify(x => x.Obtener<Consulta>(consultaIdTest), Times.Once);
+
+            this.repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<IngresosBrutosCoeficienteUnificado, bool>>>()), Times.Once);
+
+            Assert.AreEqual((int)EnumEstadoIngresosBrutosCoeficienteUnificado.RechazadoPorUsuario, ingresosBrutosCoeficienteUnificadosList[0].EstadoIngresosBrutosCoeficienteUnificado_Id);
+
+            this.repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+        }
     }
 }

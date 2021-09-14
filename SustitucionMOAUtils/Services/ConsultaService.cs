@@ -43,7 +43,7 @@ namespace SustitucionMOAUtils.Services
             this.timeProvider = timeProvider;
         }
 
-        public void ActualizarEstadoConsulta(int consultaId, int estadoConsultaId)
+        public virtual void ActualizarEstadoConsulta(int consultaId, int estadoConsultaId)
         {
             var estado = repositorio.Obtener<EstadoConsulta>(c => c.Id == estadoConsultaId);
 
@@ -56,7 +56,7 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
-        public ComentarioDto AgregarComentario(int consultaId, ComentarioDto comentarioDto, HttpFileCollectionBase files)
+        public virtual ComentarioDto AgregarComentario(int consultaId, ComentarioDto comentarioDto, HttpFileCollectionBase files)
         {
             var consulta = GetConsulta(consultaId);
 
@@ -1001,6 +1001,32 @@ namespace SustitucionMOAUtils.Services
         private List<string> SacarHasta(IList<string> listaStrings, string elemento)
         {
             return listaStrings.Skip(1 + listaStrings.IndexOf(elemento)).ToList();
+        }
+
+        public string AnularConsulta(int consultaId, int usuarioId, string motivoRechazo)
+        {
+            this.ActualizarEstadoConsulta(consultaId, (int)EstadosConsulta.Finalizado);
+
+            ComentarioDto comentarioDto = new ComentarioDto
+            {
+                Detalle = motivoRechazo + ", consulta cerrada.",
+                Fecha = timeProvider.Now(),
+                UsuarioId = usuarioId,
+            };
+
+            this.AgregarComentario(consultaId, comentarioDto, null);
+
+            Consulta consulta = repositorio.Obtener<Consulta>(consultaId);
+            if (consulta.Categoria.Code == Categorias.Actualizacion && consulta.SubCategoria.Code == SubCategorias.CM05)
+            {
+                IngresosBrutosCoeficienteUnificado ingresosBrutosCoeficienteUnificado =
+                    repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(x => x.Consulta_Id == consultaId);
+
+                ingresosBrutosCoeficienteUnificado.EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.RechazadoPorUsuario;
+                repositorio.GuardarCambios();
+            }
+
+            return SuccessMsg.ConsultaRechazadaOK;
         }
     }
 }

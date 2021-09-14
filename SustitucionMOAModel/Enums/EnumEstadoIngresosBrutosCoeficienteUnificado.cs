@@ -10,6 +10,7 @@ namespace SustitucionMOAModel.Enums
     {
         Pendiente = 1,
         Autorizado = 2,
-        Completado = 3
+        Completado = 3,
+        RechazadoPorUsuario = 4,
     }
 }
