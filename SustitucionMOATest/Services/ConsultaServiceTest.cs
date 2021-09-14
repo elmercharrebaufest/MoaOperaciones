@@ -86,7 +86,7 @@ namespace SustitucionMOATest.Services
             IList<string> resultOCR3 = new List<string> {
                 "1", "2", "", "", "OSIRIS",
                 "CUIT:", "20-12312312-1", "Anticipo:", "1234", "Sede:", "901", "Secuencia:", "Original",
-                "Determinación del Coeficiente Unificado",
+                "Determinación del Coeficiente Unificado", "Contribuyente:", "razon social",
                 "Coeficiente Unificado",
                 "901", "Capital Federal", "15/05/2021", "18/06/2021", "0,2134", "0,0000", "0,9999",
                 "903", "Catamarca", "0,0000", "0,0000", "0,0000",
@@ -188,6 +188,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(2, ingresosBrutosCoeficienteUnificadosInsertados[0].Archivo_Id);
             Assert.IsFalse(ingresosBrutosCoeficienteUnificadosInsertados[0].MalCargada);
             Assert.AreEqual((int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original, ingresosBrutosCoeficienteUnificadosInsertados[0].SecuenciaIngresosBrutosCoeficienteUnificado_Id);
+            Assert.AreEqual("razon social", ingresosBrutosCoeficienteUnificadosInsertados[0].RazonSocial);
         }
 
         [Test]
@@ -239,7 +240,7 @@ namespace SustitucionMOATest.Services
             IList<string> resultOCR3 = new List<string> {
                 "1", "2", "", "", "OSIRIS",
                 "CUIT:", "20-12312312-1", "Anticipo:", "1234", "Sede:", "901", "Secuencia:", "Rectificativa 324",
-                "Determinación del Coeficiente Unificado",
+                "Determinación del Coeficiente Unificado", "Contribuyente:", "razon social",
                 "Coeficiente Unificado",
                 "901", "Capital Federal", "15/05/2021", "18/06/2021", "0,2134", "0,0000", "0,9999",
                 "903", "Catamarca", "0,0000", "0,0000", "0,0000",
@@ -341,6 +342,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(2, ingresosBrutosCoeficienteUnificadosInsertados[0].Archivo_Id);
             Assert.IsFalse(ingresosBrutosCoeficienteUnificadosInsertados[0].MalCargada);
             Assert.AreEqual((int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Rectificativa, ingresosBrutosCoeficienteUnificadosInsertados[0].SecuenciaIngresosBrutosCoeficienteUnificado_Id);
+            Assert.AreEqual("razon social", ingresosBrutosCoeficienteUnificadosInsertados[0].RazonSocial);
         }
 
         [Test]
@@ -392,7 +394,7 @@ namespace SustitucionMOATest.Services
             IList<string> resultOCR3 = new List<string> {
                 "1", "2", "", "", "OSIRIS",
                 "CUIT:", "20-12312312-1", "Anticipo:", "1234", "Sede:", "901",
-                "Determinación del Coeficiente Unificado",
+                "Determinación del Coeficiente Unificado", "Contribuyente:", "razon social",
                 "Coeficiente Unificado",
                 "901", "Capital Federal", "15/05/2021", "18/06/2021", "0,2134", "0,0000", "......",
                 "903", "Catamarca", "0,0000", "0,0000", "0,0000",
@@ -494,6 +496,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(2, ingresosBrutosCoeficienteUnificadosInsertados[0].Archivo_Id);
             Assert.IsTrue(ingresosBrutosCoeficienteUnificadosInsertados[0].MalCargada);
             Assert.IsNull(ingresosBrutosCoeficienteUnificadosInsertados[0].SecuenciaIngresosBrutosCoeficienteUnificado_Id);
+            Assert.AreEqual("razon social", ingresosBrutosCoeficienteUnificadosInsertados[0].RazonSocial);
         }
 
         [Test]

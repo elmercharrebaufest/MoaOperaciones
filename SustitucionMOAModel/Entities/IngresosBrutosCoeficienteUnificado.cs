@@ -30,6 +30,8 @@ namespace SustitucionMOAModel.Entities
 
         public DateTime FechaUltimaModificacion { get; set; }
 
+        public string RazonSocial { get; set; }
+
         [ForeignKey("EstadoIngresosBrutosCoeficienteUnificado_Id")]
         public virtual EstadoIngresosBrutosCoeficienteUnificado EstadoIngresosBrutosCoeficienteUnificado { get; set; }
 

@@ -925,6 +925,8 @@ namespace SustitucionMOAUtils.Services
                 secuencia.Contains("Rectificativa") ? (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Rectificativa :
                 (int?)null;
 
+            string razonSocial = SacarHasta(info_DeterminacionCoeficienteUnificado, "Contribuyente:")[0];
+
             var ingresosBrutosCoeficienteUnificado = new IngresosBrutosCoeficienteUnificado
             {
                 EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
@@ -936,6 +938,7 @@ namespace SustitucionMOAUtils.Services
                 Consulta_Id = consulta_Id,
                 Archivo_Id = archivo_Id,
                 SecuenciaIngresosBrutosCoeficienteUnificado_Id = idSecuencia,
+                RazonSocial = razonSocial,
             };
 
             List<IngresosBrutosCoeficienteUnificadoDetalle> ingresosBrutosCoeficienteUnificadoDetalles = new List<IngresosBrutosCoeficienteUnificadoDetalle>();
@@ -987,7 +990,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             ingresosBrutosCoeficienteUnificado.Detalle = ingresosBrutosCoeficienteUnificadoDetalles;
-            ingresosBrutosCoeficienteUnificado.MalCargada = string.IsNullOrWhiteSpace(cuit) || anticipo == 0 || sede == 0 || !idSecuencia.HasValue ||
+            ingresosBrutosCoeficienteUnificado.MalCargada = string.IsNullOrWhiteSpace(cuit) || anticipo == 0 || sede == 0 || !idSecuencia.HasValue || string.IsNullOrWhiteSpace(razonSocial) ||
                 ingresosBrutosCoeficienteUnificadoDetalles.Any(i => !i.CoeficienteUnificado.HasValue || !i.NumeroJurisdiccion.HasValue || string.IsNullOrWhiteSpace(i.Jurisdiccion));
 
             repositorio.Agregar(ingresosBrutosCoeficienteUnificado);
@@ -1000,7 +1003,13 @@ namespace SustitucionMOAUtils.Services
 
         private List<string> SacarHasta(IList<string> listaStrings, string elemento)
         {
-            return listaStrings.Skip(1 + listaStrings.IndexOf(elemento)).ToList();
+            try
+            {
+                return listaStrings.Skip(1 + listaStrings.IndexOf(elemento)).ToList();
+            }
+            catch (Exception) { }
+
+            return new List<string>();
         }
 
         public string AnularConsulta(int consultaId, int usuarioId, string motivoRechazo)
