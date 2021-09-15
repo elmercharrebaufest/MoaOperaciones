@@ -446,6 +446,8 @@ export class GestionCM05Component extends ListBaseComponent {
         this.selectedCabecera.CUIT = backupCabecera.CUIT;
         this.selectedCabecera.Anticipo = backupCabecera.Anticipo;
         this.selectedCabecera.Sede = backupCabecera.Sede;
+        this.selectedCabecera.SecuenciaId = backupCabecera.SecuenciaId;
+        this.selectedCabecera.RazonSocial = backupCabecera.RazonSocial;
 
         this.editandoCabecera = false;
         this.cabeceraEditando = null;
