@@ -218,55 +218,8 @@ namespace SustitucionMOAUtils.Services
             return false;
         }
 
-        public List<OrdenDeCargaDto> Listar(string mailUsuario)
+        public List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin)
         {
-
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var mostrarListadoCompleto = usuario.TienePermiso("VER TODAS ORDENES DE CARGA");
-
-            List<OrdenDeCargaDto> listado = new List<OrdenDeCargaDto>();
-            if (mostrarListadoCompleto)
-            {
-                listado = repositorio.Listar<OrdenDeCarga>().Select(x => new OrdenDeCargaDto
-                {
-                    Id = x.Id,
-                    Cliente = x.Cliente.CodigoProveedor,
-                    Corredor = x.Corredor,
-                    Contrato = x.ContratoSAP ?? "-",
-                    Pedido = x.NumeroPedido ?? "-",
-                    Entrega = x.NumeroEntrega ?? "-",
-                    Material = x.Producto.Nombre,
-                    DescripcionEstado = x.Estado.ToFriendlyString(),
-                    ColorSemaforo = x.Estado.ObtenerSemaforo(),
-
-
-                }).ToList();
-            }
-            else
-            {
-                var clientes = usuario.Proveedores.Select(c => c.Id);
-                listado = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id)).Select(x => new OrdenDeCargaDto
-                {
-                    Id = x.Id,
-                    Contrato = x.ContratoSAP ?? "-",
-                    Pedido = x.NumeroPedido ?? "-",
-                    Entrega = x.NumeroEntrega ?? "-",
-                    Material = x.Producto.Nombre,
-                    DescripcionEstado = x.Estado.ToUserFriendlyString(),
-                }).ToList();
-            }
-
-            if (listado == null || listado.Count == 0)
-            {
-                throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "órdenes de cargas"));
-            }
-
-            return listado;
-        }
-
-        public List<OrdenDeCargaDto> ListadoFiltradoOrdenCarga(string mailUsuario, string fechaInicio, string fechaFin)
-        {
-
             DateTime fechaIncioDateTime, fechaFinDateTime;
 
             try
@@ -301,45 +254,46 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "fin"), e);
                 }
-
             }
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var mostrarListadoCompleto = usuario.TienePermiso("VER TODAS ORDENES DE CARGA");
+
+            fechaFinDateTime = fechaFinDateTime.AddDays(1);
 
             List<OrdenDeCargaDto> listado = new List<OrdenDeCargaDto>();
             if (mostrarListadoCompleto)
             {
                 listado = repositorio.Listar<OrdenDeCarga>(o => o.FechaCarga <= fechaFinDateTime && o.FechaCarga >= fechaIncioDateTime)
                     .Select(x => new OrdenDeCargaDto
-                {
-                    Id = x.Id,
-                    Cliente = x.Cliente.CodigoProveedor,
-                    Corredor = x.Corredor,
-                    Contrato = x.ContratoSAP ?? "-",
-                    Pedido = x.NumeroPedido ?? "-",
-                    Entrega = x.NumeroEntrega ?? "-",
-                    Material = x.Producto.Nombre,
-                    DescripcionEstado = x.Estado.ToFriendlyString(),
-                    ColorSemaforo = x.Estado.ObtenerSemaforo(),
-
-
-                }).ToList();
+                    {
+                        Id = x.Id,
+                        Cliente = x.Cliente.CodigoProveedor,
+                        Corredor = x.Corredor,
+                        Contrato = x.ContratoSAP ?? "-",
+                        Pedido = x.NumeroPedido ?? "-",
+                        Entrega = x.NumeroEntrega ?? "-",
+                        Material = x.Producto.Nombre,
+                        DescripcionEstado = x.Estado.ToFriendlyString(),
+                        ColorSemaforo = x.Estado.ObtenerSemaforo(),
+                        EsFacturaAnticipada = (x.NumeroPedidoIngresado != null)
+                    }).ToList();
             }
             else
             {
                 var clientes = usuario.Proveedores.Select(c => c.Id);
-                listado = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id) && n.FechaCarga <= fechaFinDateTime 
+                listado = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id) && n.FechaCarga <= fechaFinDateTime
                     && n.FechaCarga >= fechaIncioDateTime)
                     .Select(x => new OrdenDeCargaDto
-                {
-                    Id = x.Id,
-                    Contrato = x.ContratoSAP ?? "-",
-                    Pedido = x.NumeroPedido ?? "-",
-                    Entrega = x.NumeroEntrega ?? "-",
-                    Material = x.Producto.Nombre,
-                    DescripcionEstado = x.Estado.ToUserFriendlyString(),
-                }).ToList();
+                    {
+                        Id = x.Id,
+                        Contrato = x.ContratoSAP ?? "-",
+                        Pedido = x.NumeroPedido ?? "-",
+                        Entrega = x.NumeroEntrega ?? "-",
+                        Material = x.Producto.Nombre,
+                        DescripcionEstado = x.Estado.ToUserFriendlyString(),
+                        EsFacturaAnticipada = (x.NumeroPedidoIngresado != null)
+                    }).ToList();
             }
 
             if (listado == null || listado.Count == 0)
@@ -347,13 +301,8 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "órdenes de cargas"));
             }
 
-
-
             return listado;
         }
-
-
-
 
         public OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId)
         {

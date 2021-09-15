@@ -27,10 +27,13 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 
     filtroEstado: any = null;
     filtroProducto: any = null;
-    
+
     estadoSelected: string = "Todos";
-    productoSelected: string = "";
+    productoSelected: string = "Todos";
     listaProductos: any = null;
+    private selectUndefinedOptionValue: any;
+    pedidoAnticipado: number = 0;
+
 
 
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -52,7 +55,9 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         { label: "Vencida", value: 7 },
         { label: "Entrega pendiente", value: 8 },
         { label: "Anulada por vencimiento", value: 9 }
-    ] 
+    ]
+
+
 
     ngOnInit() {
         this.setTabs();
@@ -78,50 +83,15 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         );
     }
 
-    filtroFechasOrdenCarga() {
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.data = null;
-        try {
-            this.unsubscribe();
-            this.subscription = this.service.getListadoFiltradoOrdenCarga(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.data = result.data;
-                    }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-
-            );
-        } catch (e) {
-            this.spinnerComponent.hideIt();
-            this.mensajeComponent.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
-
-        return false; //<-- Prevent Refresh
-    }
-
-
-    
 
     getListado() {
         this.mensajeComponent.setMsgsEmpty();
+
         this.spinnerComponent.showIt();
         this.data = null;
         try {
             this.unsubscribe();
-            this.subscription = this.service.getListado().subscribe(
+            this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -148,5 +118,4 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 
         return false; //<-- Prevent Refresh
     }
-
 }
