@@ -73,37 +73,16 @@ export class PesificacionesGuardadasComponent extends PesificacionBaseComponent 
     return false;
   }
 
-    actualizarFiltroFecha() {
+  actualizarFiltroFecha() {
     var fechaDesde = this.filtroFechaComponent.fecha_inicio;
     var fechaHasta = this.filtroFechaComponent.fecha_fin + " 23:59:59";
-
-    console.log("Aplicado el filtro");
-    console.log("filtroFechaInicio:", fechaDesde)
-    console.log("filtroFechaInicio:", new Date(fechaDesde))
-    console.log("filtroFechaFin:", fechaHasta)
-    console.log("filtroFechaPesificacionInicio:", this.filtroFechaPesificacionComponent.fecha_inicio)
-    console.log("filtroFechaPesificacionFin:", this.filtroFechaPesificacionComponent.fecha_fin)
-
-    console.log(this.pesificaciones);
-
-    this.pesificaciones.forEach(x => {
-      console.log("x.FechaCarga:", x.FechaCarga)
-      console.log("x.FechaCargaDate:", x.FechaCargaDate)
-      console.log("x.FechaCargaDateDate:", new Date(x.FechaCargaDate))
-      console.log("x.FechaCargaDateDate:", new Date(Date.parse(x.FechaCargaDate)))
-    }
-    )
 
     this.filteredPesificaciones =
       this.pesificaciones
         .filter(x =>
           new Date(Date.parse(this.tipoFiltroFecha == 1 ? x.FechaCargaDate : x.FechaPesificacionDate)) >= new Date(fechaDesde) &&
           new Date(Date.parse(this.tipoFiltroFecha == 1 ? x.FechaCargaDate : x.FechaPesificacionDate)) <= new Date(fechaHasta)
-          // new Date(Date.parse(x.FechaPesificacionDate)) >= new Date(this.filtroFechaPesificacionComponent.fecha_inicio) &&
-          // new Date(Date.parse(x.FechaPesificacionDate)) <= new Date(this.filtroFechaPesificacionComponent.fecha_fin)
         )
-
-    console.log("filteredPesificaciones:", this.filteredPesificaciones)
 
     if (this.filteredPesificaciones.length == 0) {
       this.mensajeComponent.setInfoMsg("No se encontraron pesificaciones")
