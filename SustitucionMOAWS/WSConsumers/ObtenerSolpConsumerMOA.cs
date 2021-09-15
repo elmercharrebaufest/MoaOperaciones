@@ -23,109 +23,103 @@ namespace SustitucionMOAWS.WSConsumers
         //"Brinda información de solicitudes de Pedidos"
         public ObtenerSolpSAPResponse Request(ObtenerSolpRequest req)
         {
-            try
+            //Devolver Imputación
+            //con una "X" indica si el sistema debe devolver la tabla (EX_PRACCOUNT)
+            string IM_ACCOUNT_ASSIGNMENT = SAPFormatter.FormatearBooleano(req.ObtenerImputacion);
+
+            //Tipo de Imputación
+            //Indica un filtro de tipo de Imputación.Ver valores posibles en ACCTASSCAT.
+            // A: Activo FIJO
+            // K: Centro de coste
+            // O: Orden PM - Campos PR
+            string IM_ACCTASSCAT = req.TipoDeImputacion;
+
+            //Indicador de creación
+            //Permite buscar SOLPED que han sido creada desde una Orden de Inversión o Mantenimiento. Si es igual a "F", la solepd se creó desde una Orden y la misma no se puede editar.
+            //**Se pueden enviar distintos valores. Cual iria?
+            string IM_CREATE_IND = req.OrigenCreacion;
+
+            //Mostrar items borrado
+            //con una "X" indica si el sistema debe incluir las posiciones borradas
+            string IM_DELETE_IND = SAPFormatter.FormatearBooleano(req.MostrarItemsBorrados);
+
+            //Devolver Delivery address
+            //con una "X" indica si debe devolver la tabla (EX_PRADDRDELIVERY)
+            string IM_DELIVERY_ADDRESS = SAPFormatter.FormatearBooleano(req.ObtenerDireccionDeEntrega);
+
+            //Tipo de Posición (serv/material)
+            //Indica filtro de tipo de posición (" " = compra de materiales/"9"= servicio)
+            string IM_ITEM_CAT = req.FiltroTipoPosicion;
+
+            //Centro Logístico
+            string IM_PLANT = req.CentroLogistico;
+
+            //Fecha Solicitud Fin
+            //IM_PREQ_DATE_F: Actúa como filtro de Fecha de SOLPED (desde....)
+            // la fecha fin es desde????????????????????????????
+            string IM_PREQ_DATE_F = SAPFormatter.PrepararFecha(req.FechaDesde);
+
+            //Fecha Solicitud Inicio
+            //IM_PREQ_DATE_I: Actúa como filtro de Fecha de SOLPED (hasta....)
+            string IM_PREQ_DATE_I = SAPFormatter.PrepararFecha(req.FechaHasta);
+
+            //Numero de SOLPED
+            //IM_PREQ_NO: Permite buscar 1 solo número de SOLPED a la vez. Sino se introduce el campo, el sistema devuevle todo lo existente
+            //            en el periodo de tiempo ingresado en IM_PREQ_DATE_I y IM_PREQ_DATE_F.
+            string IM_PREQ_NO = req.NumeroSolp;
+
+            //Indicador de liberación
+            //Indicador de Liberación = "2" = Liberado, sino tiene valor, devuelve 100% de registros. 
+            string IM_REL_IND = req.IndicadorDeLiberacion;
+
+            //Devolver External Services
+            //con una "X" indica si debe devolver las tablas (EX_SERVICELINES) y (EX_SERVICEACCOUNT)
+            string IM_SERVICES = SAPFormatter.FormatearBooleano(req.ObtenerServicios);
+
+            //Esta entrada devuelve todas las posiciones que fueron creadas por ciertos usuarios.
+            //Para ello, se ingresa el nombre de 1 o mas usuarios que han creado solicitudes de pedido.
+            ZMPES5640[] IM_USUARIOS = new ZMPES5640[req.CreadoPorUsuarios.Count];
+
+            foreach (var item in req.CreadoPorUsuarios.Select((value, i) => new { i, value }))
             {
-                //Devolver Imputación
-                //con una "X" indica si el sistema debe devolver la tabla (EX_PRACCOUNT)
-                string IM_ACCOUNT_ASSIGNMENT = SAPFormatter.FormatearBooleano(req.ObtenerImputacion);
-
-                //Tipo de Imputación
-                //Indica un filtro de tipo de Imputación.Ver valores posibles en ACCTASSCAT.
-                // A: Activo FIJO
-                // K: Centro de coste
-                // O: Orden PM - Campos PR
-                string IM_ACCTASSCAT = req.TipoDeImputacion;
-
-                //Indicador de creación
-                //Permite buscar SOLPED que han sido creada desde una Orden de Inversión o Mantenimiento. Si es igual a "F", la solepd se creó desde una Orden y la misma no se puede editar.
-                //**Se pueden enviar distintos valores. Cual iria?
-                string IM_CREATE_IND = req.OrigenCreacion;
-
-                //Mostrar items borrado
-                //con una "X" indica si el sistema debe incluir las posiciones borradas
-                string IM_DELETE_IND = SAPFormatter.FormatearBooleano(req.MostrarItemsBorrados);
-
-                //Devolver Delivery address
-                //con una "X" indica si debe devolver la tabla (EX_PRADDRDELIVERY)
-                string IM_DELIVERY_ADDRESS = SAPFormatter.FormatearBooleano(req.ObtenerDireccionDeEntrega);
-
-                //Tipo de Posición (serv/material)
-                //Indica filtro de tipo de posición (" " = compra de materiales/"9"= servicio)
-                string IM_ITEM_CAT = req.FiltroTipoPosicion;
-
-                //Centro Logístico
-                string IM_PLANT = req.CentroLogistico;
-
-                //Fecha Solicitud Fin
-                //IM_PREQ_DATE_F: Actúa como filtro de Fecha de SOLPED (desde....)
-                // la fecha fin es desde????????????????????????????
-                string IM_PREQ_DATE_F = SAPFormatter.PrepararFecha(req.FechaDesde);
-
-                //Fecha Solicitud Inicio
-                //IM_PREQ_DATE_I: Actúa como filtro de Fecha de SOLPED (hasta....)
-                string IM_PREQ_DATE_I = SAPFormatter.PrepararFecha(req.FechaHasta);
-
-                //Numero de SOLPED
-                //IM_PREQ_NO: Permite buscar 1 solo número de SOLPED a la vez. Sino se introduce el campo, el sistema devuevle todo lo existente
-                //            en el periodo de tiempo ingresado en IM_PREQ_DATE_I y IM_PREQ_DATE_F.
-                string IM_PREQ_NO = req.NumeroSolp;
-
-                //Indicador de liberación
-                //Indicador de Liberación = "2" = Liberado, sino tiene valor, devuelve 100% de registros. 
-                string IM_REL_IND = req.IndicadorDeLiberacion;
-
-                //Devolver External Services
-                //con una "X" indica si debe devolver las tablas (EX_SERVICELINES) y (EX_SERVICEACCOUNT)
-                string IM_SERVICES = SAPFormatter.FormatearBooleano(req.ObtenerServicios);
-
-                //Esta entrada devuelve todas las posiciones que fueron creadas por ciertos usuarios.
-                //Para ello, se ingresa el nombre de 1 o mas usuarios que han creado solicitudes de pedido.
-                ZMPES5640[] IM_USUARIOS = new ZMPES5640[req.CreadoPorUsuarios.Count];
-
-                foreach (var item in req.CreadoPorUsuarios.Select((value, i) => new { i, value }))
-                {
-                    IM_USUARIOS[item.i] = new ZMPES5640 { ERNAM = item.value };
-                }
-
-                //200 exito - 400 error
-                var result = service.SI_MMRFC_OBTENER_SOLPED(
-                            IM_ACCOUNT_ASSIGNMENT,
-                            IM_ACCTASSCAT,
-                            IM_CREATE_IND,
-                            IM_DELETE_IND,
-                            IM_DELIVERY_ADDRESS,
-                            IM_ITEM_CAT,
-                            IM_PLANT,
-                            IM_PREQ_DATE_F,
-                            IM_PREQ_DATE_I,
-                            IM_PREQ_NO,
-                            IM_REL_IND,
-                            IM_SERVICES,
-                            IM_USUARIOS,
-                            out ZMPES5740[] EX_PRACCOUNT,
-                            out ZMPES5750[] EX_PRADDRDELIVERY,
-                            out BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS,
-                            out ZMPES5670[] EX_PRITEM,
-                            out BAPIRETURN[] EX_RETURN,
-                            out ZMPES5770[] EX_SERVICEACCOUNT,
-                            out ZMPES5730[] EX_SERVICELINES);
-
-
-                /*  •	Datos a nivel posición de SOLPED (EX_PRITEM)
-                    •	Datos de dirección de la posición de la SOLPED (EX_PRADDRDELIVERY)
-                    •	Datos de imputación a nivel posición de la SOLPED (EX_PRACCOUNT)
-                    •	Datos de suposiciones de Servicios (EX_SERVICELINES). Esto se da cuando EX_PRITEM-ITEM_CAT = "9"
-                    •	Datos de imputación a nivel suposiciones (EX_SERVICEACCOUNT). Involucra solo porcentajes y montos.
-                    •	Mensajes del WS, procesados por SAP (EX_RETURN)
-                    •	Variable de status de ws (EX_EXITO)
-                */
-
-                return Map(EX_PRACCOUNT, EX_PRADDRDELIVERY, EX_PRCOMPONENTS, EX_PRITEM, EX_RETURN, EX_SERVICEACCOUNT, EX_SERVICELINES);
+                IM_USUARIOS[item.i] = new ZMPES5640 { ERNAM = item.value };
             }
-            catch (Exception e)
-            {
-                throw e;
-            }
+
+            //200 exito - 400 error
+            var result = service.SI_MMRFC_OBTENER_SOLPED(
+                        IM_ACCOUNT_ASSIGNMENT,
+                        IM_ACCTASSCAT,
+                        IM_CREATE_IND,
+                        IM_DELETE_IND,
+                        IM_DELIVERY_ADDRESS,
+                        IM_ITEM_CAT,
+                        IM_PLANT,
+                        IM_PREQ_DATE_F,
+                        IM_PREQ_DATE_I,
+                        IM_PREQ_NO,
+                        IM_REL_IND,
+                        IM_SERVICES,
+                        IM_USUARIOS,
+                        out ZMPES5740[] EX_PRACCOUNT,
+                        out ZMPES5750[] EX_PRADDRDELIVERY,
+                        out BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS,
+                        out ZMPES5670[] EX_PRITEM,
+                        out BAPIRETURN[] EX_RETURN,
+                        out ZMPES5770[] EX_SERVICEACCOUNT,
+                        out ZMPES5730[] EX_SERVICELINES);
+
+
+            /*  •	Datos a nivel posición de SOLPED (EX_PRITEM)
+                •	Datos de dirección de la posición de la SOLPED (EX_PRADDRDELIVERY)
+                •	Datos de imputación a nivel posición de la SOLPED (EX_PRACCOUNT)
+                •	Datos de suposiciones de Servicios (EX_SERVICELINES). Esto se da cuando EX_PRITEM-ITEM_CAT = "9"
+                •	Datos de imputación a nivel suposiciones (EX_SERVICEACCOUNT). Involucra solo porcentajes y montos.
+                •	Mensajes del WS, procesados por SAP (EX_RETURN)
+                •	Variable de status de ws (EX_EXITO)
+            */
+
+            return Map(EX_PRACCOUNT, EX_PRADDRDELIVERY, EX_PRCOMPONENTS, EX_PRITEM, EX_RETURN, EX_SERVICEACCOUNT, EX_SERVICELINES);
+           
         }
 
         private ObtenerSolpSAPResponse Map(ZMPES5740[] tipoImputaciones, //EX_PRACCOUNT
