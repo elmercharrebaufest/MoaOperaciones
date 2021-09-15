@@ -79,6 +79,8 @@ export class GestionCM05Component extends ListBaseComponent {
 
         this.cabeceraCols = [
             { field: 'Id', header: 'Id' },
+            { field: 'IdConsulta', header: 'Id consulta' },
+            { field: 'RazonSocial', header: 'Razón Social' },
             { field: 'Estado', header: 'Estado' },
             { field: 'CUIT', header: 'CUIT' },
             { field: 'Anticipo', header: 'Anticipo' },
@@ -117,6 +119,7 @@ export class GestionCM05Component extends ListBaseComponent {
             Secuencia: data.Secuencia,
             SecuenciaId: data.SecuenciaId,
             ConsultaId: data.ConsultaId,
+            RazonSocial: data.RazonSocial,
         };
         this.service.listarDetalles(this.selectedCabecera.Id).subscribe(result => {
             this.detalles = result;

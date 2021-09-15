@@ -48,9 +48,9 @@ namespace SustitucionMOATest.Services
 
             List<IngresosBrutosCoeficienteUnificado> cabeceras = new List<IngresosBrutosCoeficienteUnificado>
             {
-                new IngresosBrutosCoeficienteUnificado { Id = 1, Consulta_Id = 3, SecuenciaIngresosBrutosCoeficienteUnificado_Id = 1, Anticipo = 1, CUIT = "1", Sede = 1, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = pendiente, MalCargada = false },
-                new IngresosBrutosCoeficienteUnificado { Id = 2, Consulta_Id = 3, SecuenciaIngresosBrutosCoeficienteUnificado_Id = 2, Anticipo = 2, CUIT = "2", Sede = 2, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = autorizado, MalCargada = false },
-                new IngresosBrutosCoeficienteUnificado { Id = 3, Consulta_Id = 3, SecuenciaIngresosBrutosCoeficienteUnificado_Id = null, Anticipo = 23, CUIT = "33", Sede = 3, FechaCarga = ayer, FechaUltimaModificacion = hoy, EstadoIngresosBrutosCoeficienteUnificado = completado, MalCargada = true },
+                new IngresosBrutosCoeficienteUnificado { Id = 1, RazonSocial = "razon social 1", Consulta_Id = 1, SecuenciaIngresosBrutosCoeficienteUnificado_Id = 1, Anticipo = 1, CUIT = "1", Sede = 1, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = pendiente, MalCargada = false },
+                new IngresosBrutosCoeficienteUnificado { Id = 2, RazonSocial = "razon social 2", Consulta_Id = 2, SecuenciaIngresosBrutosCoeficienteUnificado_Id = 2, Anticipo = 2, CUIT = "2", Sede = 2, FechaCarga = hoy, FechaUltimaModificacion = ayer, EstadoIngresosBrutosCoeficienteUnificado = autorizado, MalCargada = false },
+                new IngresosBrutosCoeficienteUnificado { Id = 3, RazonSocial = "razon social 3", Consulta_Id = 3, SecuenciaIngresosBrutosCoeficienteUnificado_Id = null, Anticipo = 23, CUIT = "33", Sede = 3, FechaCarga = ayer, FechaUltimaModificacion = hoy, EstadoIngresosBrutosCoeficienteUnificado = completado, MalCargada = true },
             };
 
             this.repositorioMock
@@ -86,7 +86,8 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(1, result[2].Sede);
             Assert.AreEqual(1, result[2].SecuenciaId);
             Assert.IsFalse(result[2].MalCargada);
-            Assert.AreEqual(3, result[2].ConsultaId);
+            Assert.AreEqual(1, result[2].ConsultaId);
+            Assert.AreEqual("razon social 1", result[2].RazonSocial);
 
             Assert.AreEqual(2, result[1].Id);
             Assert.AreEqual(2, result[1].EstadoId);
@@ -97,7 +98,8 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(2, result[1].Sede);
             Assert.AreEqual(2, result[1].SecuenciaId);
             Assert.IsFalse(result[1].MalCargada);
-            Assert.AreEqual(3, result[1].ConsultaId);
+            Assert.AreEqual(2, result[1].ConsultaId);
+            Assert.AreEqual("razon social 2", result[1].RazonSocial);
 
             Assert.AreEqual(3, result[0].Id);
             Assert.AreEqual(3, result[0].EstadoId);
@@ -109,6 +111,7 @@ namespace SustitucionMOATest.Services
             Assert.IsNull(result[0].SecuenciaId);
             Assert.IsTrue(result[0].MalCargada);
             Assert.AreEqual(3, result[0].ConsultaId);
+            Assert.AreEqual("razon social 3", result[0].RazonSocial);
         }
 
         [Test]
@@ -732,8 +735,10 @@ namespace SustitucionMOATest.Services
                 FechaCarga = ayer,
                 Sede = 123,
                 SecuenciaId = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original,
+                RazonSocial = "razon social numero 3",
                 MalCargada = false,
                 FechaUltimaModificacion = hoy,
+                ConsultaId = 333,
             };
 
             var ingresosBrutosCoeficienteUnificadoList = new List<IngresosBrutosCoeficienteUnificado>
@@ -746,6 +751,7 @@ namespace SustitucionMOATest.Services
                     Anticipo = 202,
                     CUIT = "cuit",
                     EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
+                    RazonSocial = "razon social 1",
                     FechaCarga = ayer,
                     Sede = 123,
                     SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Rectificativa,
@@ -760,6 +766,7 @@ namespace SustitucionMOATest.Services
                     Anticipo = 2012,
                     CUIT = "cuit",
                     EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                    RazonSocial = "razon social 2",
                     FechaCarga = ayer,
                     Sede = 123,
                     SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Rectificativa,
@@ -774,6 +781,7 @@ namespace SustitucionMOATest.Services
                     Anticipo = 2012,
                     CUIT = "cuit",
                     EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                    RazonSocial = "razon social 3",
                     FechaCarga = ayer,
                     Sede = 123,
                     SecuenciaIngresosBrutosCoeficienteUnificado_Id = null,
@@ -788,6 +796,7 @@ namespace SustitucionMOATest.Services
                     Anticipo = 201,
                     CUIT = "cuit",
                     EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Completado,
+                    RazonSocial = "razon social 4",
                     FechaCarga = ayer,
                     Sede = 123,
                     SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original,
@@ -825,6 +834,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual("cuitcuilt", entidadModificada.CUIT);
             Assert.AreEqual(123, entidadModificada.Sede);
             Assert.AreEqual((int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original, entidadModificada.SecuenciaIngresosBrutosCoeficienteUnificado_Id);
+            Assert.AreEqual("razon social numero 3", entidadModificada.RazonSocial);
             Assert.IsFalse(entidadModificada.MalCargada);
         }
 
@@ -842,6 +852,7 @@ namespace SustitucionMOATest.Services
                 Anticipo = 201,
                 CUIT = "cuitcuilt",
                 EstadoId = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                RazonSocial = "razon social 3",
                 FechaCarga = ayer,
                 Sede = 123,
                 SecuenciaId = null,
@@ -859,6 +870,7 @@ namespace SustitucionMOATest.Services
                     Anticipo = 202,
                     CUIT = "cuit",
                     EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
+                    RazonSocial = "razon social 1",
                     FechaCarga = ayer,
                     Sede = 123,
                     SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Rectificativa,
@@ -873,6 +885,7 @@ namespace SustitucionMOATest.Services
                     Anticipo = 2012,
                     CUIT = "cuit",
                     EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                    RazonSocial = "razon social 2",
                     FechaCarga = ayer,
                     Sede = 123,
                     SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original,
@@ -887,6 +900,7 @@ namespace SustitucionMOATest.Services
                     Anticipo = 2012,
                     CUIT = "cuit",
                     EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                    RazonSocial = "razon social 3",
                     FechaCarga = ayer,
                     Sede = 123,
                     SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Rectificativa,
@@ -901,6 +915,7 @@ namespace SustitucionMOATest.Services
                     Anticipo = 201,
                     CUIT = "cuit",
                     EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Completado,
+                    RazonSocial = "razon social 4",
                     FechaCarga = ayer,
                     Sede = 123,
                     SecuenciaIngresosBrutosCoeficienteUnificado_Id = (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original,

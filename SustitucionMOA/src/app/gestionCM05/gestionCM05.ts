@@ -11,6 +11,7 @@
     Secuencia;
     SecuenciaId;
     ConsultaId;
+    RazonSocial;
 };
 
 export interface DetalleCM05 {
