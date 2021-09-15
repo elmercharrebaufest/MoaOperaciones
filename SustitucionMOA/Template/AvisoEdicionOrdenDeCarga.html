@@ -6,10 +6,25 @@
 <body style="width: 100%; font-family: Helvetica; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
     <p>Buenos d&iacute;as,</p>
     <br />
-    <p>Se informa que el dia {0} se han realizado las siguientes modificaciones para la orden de carga {1}:</p>
+    <p>Se informa que el día {0} se han realizado las siguientes modificaciones para la orden de carga {1}:</p>
     <br />
 
-    {2}
+    <table>
+        <caption>Cambios:</caption>
+
+        <thead style="background-color: #adacac;">
+            <tr>
+                <td scope="col">Nombre de la Columna</td>
+                <td scope="col">Antes del cambio</td>
+                <td scope="col">Despues del cambio</td>
+                <td scope="col">Fecha</td>
+            </tr>
+        </thead>
+
+        <tbody>
+            {2}
+        </tbody>
+    </table>
 
     <br />
     <p>Saludos,</p>
