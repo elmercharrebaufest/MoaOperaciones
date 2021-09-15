@@ -64,5 +64,11 @@ namespace SustitucionMOATest.Controllers
         {
             throw new NotImplementedException();
         }
+
+        [Test()]
+        public void EditarTest()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

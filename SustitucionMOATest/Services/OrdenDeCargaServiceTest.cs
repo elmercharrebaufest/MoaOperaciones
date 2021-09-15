@@ -31,6 +31,7 @@ namespace SustitucionMOATest.Services
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
+            consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object);
         }
 
@@ -130,7 +131,6 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
 
-            /*
             repositorioMock
                .Setup(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()))
                .Returns(ordenesDeCarga);
@@ -139,7 +139,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
             repositorioMock.Verify(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
-            Assert.IsTrue(result.Count == 2);*/
+            Assert.IsTrue(result.Count == 2);
         }
 
 
@@ -181,7 +181,7 @@ namespace SustitucionMOATest.Services
                 .Returns(usuario);
 
             repositorioMock.Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
-            /*
+            
             repositorioMock
                .Setup(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()))
                .Returns(ordenesDeCarga);
@@ -190,7 +190,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
             repositorioMock.Verify(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
-            Assert.IsTrue(result.Count == 1);*/
+            Assert.IsTrue(result.Count == 1);
         }
 
         [Test()]
@@ -249,7 +249,10 @@ namespace SustitucionMOATest.Services
             {
                 Id = orderId,
                 Estado = EstadoOrdenDeCarga.Confirmado,
-                InformadaSAP = true
+                InformadaSAP = true,
+                ContratoIngresado = "1111111",
+                NombreChofer = "Enzo V.",
+                HistorialCambios = new List<OrdenDeCargaCambiosHistorial> {}
             };
 
             var orden2 = new OrdenDeCarga
@@ -259,6 +262,7 @@ namespace SustitucionMOATest.Services
                 InformadaSAP = true,
                 ContratoIngresado = "212121",
                 NombreChofer = "Enzo",
+                HistorialCambios = new List<OrdenDeCargaCambiosHistorial> { }
             };
 
             string mailUsuario = "usuario@test.com";
@@ -287,17 +291,17 @@ namespace SustitucionMOATest.Services
             };
 
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(orden);
-            repositorioMock.Setup(x => x.Obtener<Usuario>(It.IsAny<string>())).Returns(usuario);
+            repositorioMock.Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
 
-            var expected = "La orden no puede anularse debido a que ya fue informada.";
+            var expected = new Resultado { IdEntidad = orden.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada }; ;
 
             var result = target.Editar(orden2, mailUsuario);
 
             Assert.AreEqual(expected, result);
             Assert.AreEqual(EstadoOrdenDeCarga.Confirmado, orden.Estado);
             repositorioMock.Verify(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()), Times.Once);
-            repositorioMock.Verify(x => x.Obtener<Usuario>(It.IsAny<string>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Never);
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
         }
 
         [Test()]
@@ -396,7 +400,7 @@ namespace SustitucionMOATest.Services
                 .Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
                 .Returns(usuario);
 
-            /*
+            
             repositorioMock
                .Setup(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()))
                .Returns(ordenesDeCarga);
@@ -408,7 +412,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.Obtener<Proveedor>(It.IsAny<int>()), Times.Once);
             
             Assert.AreEqual(expected.Id, result.Id);
-            Assert.AreEqual(expected.CUITCliente, result.CUITCliente);*/
+            Assert.AreEqual(expected.CUITCliente, result.CUITCliente);
         }
     }
 }
