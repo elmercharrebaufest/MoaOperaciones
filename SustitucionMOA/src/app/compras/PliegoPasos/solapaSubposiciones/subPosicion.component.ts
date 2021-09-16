@@ -134,14 +134,13 @@ export class SubPosicionComponent extends ListBaseComponent {
         }
     }
 
-    eliminarSubposiciones(): void {
+    eliminarSubposiciones(indice = -1): void {
         if (this.listadoPosicionActul.length > 0) {
-            
-            let subPosicionesAgregadas = this.listadoPosicionActul.filter(x => !x.eliminar);
-            subPosicionesAgregadas.forEach((element, index, array) => {
-                element.subPosicion = index + 1;
-            });
-            this.listadoPosicionActul = subPosicionesAgregadas;
+            if(indice >= 0) {
+                this.listadoPosicionActul.splice(indice, 1);
+            } else {
+                this.listadoPosicionActul =  [];
+            }
             this.model.posicionActual.listadoSubPosiciones = this.listadoPosicionActul;
             this.calcularTotalSubPosicion();
         }
@@ -152,10 +151,22 @@ export class SubPosicionComponent extends ListBaseComponent {
         }
     }
 
+    eliminarSubPosicionIndividual(indice: number): void {
+        this.confirmationService.confirm({
+            message: '¿Está seguro que desea eliminar la subposición?',
+            accept: () => {              
+                    this.eliminarSubposiciones(indice);                  
+            },
+            reject: () => {
+                
+            }
+        });
+    }
+
     eliminarSubPosicion()
     {
         this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar la subposición?',
+            message: '¿Está seguro que desea eliminar todas las subposiciones?',
             accept: () => {              
                     this.eliminarSubposiciones();                  
             },
