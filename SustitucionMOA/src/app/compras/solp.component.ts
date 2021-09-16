@@ -229,7 +229,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.listaVisitas = [
                 {
                     id: uuid.v4(),
-                    visitaDeObraFecha: new Date(),
+                    visitaDeObraFecha: this.solpActual.fechaEntrega,
                     visitaDeObraHora: new Date(1, 1, 1, 10, 0, 0, 0)
                 }];
 

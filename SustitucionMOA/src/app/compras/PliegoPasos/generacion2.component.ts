@@ -80,7 +80,7 @@ export class Generacion2Component extends ListBaseComponent  {
         this.model.listaVisitas.push (
             {
                 id: uuid.v4(),
-                visitaDeObraFecha: new Date(),
+                visitaDeObraFecha: this.model.fechaEntrega,
                 visitaDeObraHora: new Date(1,1,1,10,0,0,0)
             }
         )
