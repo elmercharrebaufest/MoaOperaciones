@@ -357,6 +357,19 @@ namespace SustitucionMOAUtils.Services
             return ordenDto;
         }
 
+        public void verificarVencimientoOrdenDeCarga()
+        {
+            var fechaActualMenos72Horas = DateTime.Today.AddDays(-3);
+            var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaCarga <= fechaActualMenos72Horas);
+
+            foreach (var orden in ordenes)
+            {
+                orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
+            }
+
+            repositorio.GuardarCambios();
+        }
+
         public OrdenDeCargaEditarDto ObtenerEditar(string mailUsuario, int ordenId)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);

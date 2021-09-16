@@ -22,7 +22,9 @@ namespace SustitucionMOAUtils.Interfaces
         string VerificarTransporte(int ordenId);
         void VerificarTransporteBulk();
         Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario);
-      
+        void verificarVencimientoOrdenDeCarga();
+
+
     }
 
 }
