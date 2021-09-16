@@ -85,7 +85,7 @@
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.tareaSubcontratarObj" [suggestions]="autocomplete" 
                                                     dataKey="Id" field="Descripcion"
-                                                    ariaLabel="Tarea" appendTo="body" [autoHighlight]="true" emptyMessage="" [minLength]="2" [forceSelection]="false" 
+                                                    ariaLabel="Tarea" appendTo="body" [autoHighlight]="false" emptyMessage="" [minLength]="2" [forceSelection]="false" 
                                                     (completeMethod)="autocompleteSap($event, 'CodigoServicioSap')" 
                                                     (onFocus)=" $event.target.select()" 
                                                     (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)"

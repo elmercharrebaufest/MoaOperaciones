@@ -102,9 +102,8 @@ namespace SustitucionMOA.Controllers
                     Moneda = service.ObtenerTablaSap(TablasSap.Moneda),
                     Unidades = service.ObtenerTablaSap(TablasSap.Unidad),
                     EstadosSolpSap = service.ObtenerTablaSap(TablasSap.EstadoSolpSap),
-
-                    EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),  //rocio
-
+                    CentroBeneficio = service.ObtenerTablaSap(TablasSap.CentroBeneficio),
+                    EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),
                     CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
                     {
                         ClaseDocumentoCodigo = x.Padre.Codigo,
@@ -143,7 +142,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = service.ListarSolp() });
+                return JsonCustom(new { data = service.ListarSolp(ObtenerUsuarioActual()) });
             }
             catch (InfoCustomException e)
             {
