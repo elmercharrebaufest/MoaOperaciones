@@ -30,6 +30,9 @@ export class AltasComponent extends BaseComponent implements OnInit {
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
+    @ViewChild("mensajeModalComponent")
+    protected mensajeModalComponent: MensajeComponent;
+
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
@@ -74,8 +77,11 @@ export class AltasComponent extends BaseComponent implements OnInit {
     funcionarios: Array<RelacionConFuncionarios> = [];
     relacionConEmpleados: string = "";
     relacionConFuncionarios: string = "";
+    cuit: string = "";
+    mailVendedor: string = "";
 
     contieneDocumentacionFisica: number = 0;
+    puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
 
     ngOnInit(): void {
         this.getEstados();
@@ -464,7 +470,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.unsubscribe();
 
         if (this.validarNoGranosOperando()) return
-        debugger
         this.subscription = this.altaEmpresaService
             .proveedorNoGranosOperando(this.empresaSeleccionada.Id, this.empresaSeleccionada.RazonSocial).subscribe(
                 result => {
@@ -585,6 +590,10 @@ export class AltasComponent extends BaseComponent implements OnInit {
         //     this.dataFiltered = this.data;
         // }
 
+    }
+
+    trackListadoAlta(index: number, empresa: any){
+        return empresa
     }
 
     cargarSolicitudUsuario(mail: string, proveedorId: number) {
@@ -816,6 +825,28 @@ export class AltasComponent extends BaseComponent implements OnInit {
                 }
             );
     }
+
+    grabarAltaInternaGranos(){
+        this.mensajeModalComponent.setMsgsEmpty();
+            this.subscription = this.altaEmpresaService.grabarAltaInternaGranos(this.cuit, this.mailVendedor).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeModalComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeModalComponent.setInfoMsg(result.info);
+                    }
+                    else {
+                        this.mensajeModalComponent.setSuccessMsg(result.info);
+                        this.getEmpresa();
+                        document.getElementById("hidemyModalAltaInterna").click();
+                    }
+                },
+                error => {
+                }
+            );
+      }
 
 
     cambiarFiltroTipoProveedor(tipoProveedor: number) {

@@ -47,6 +47,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     proveedorCUIT: string = "";
     razonSocial: string = "";
     proveedorClasificacion: string = "";
+    altaInterna: boolean = false;
+    observacion: string = "";
 
     nombreArchivoSeleccionado: string = "";
     fileKeySeleccionado: string = "";
@@ -78,6 +80,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     esGuardarYNotificar: boolean = false;
     esUsuarioComercial: boolean = false;
+    puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
 
     constructor(
         protected service: EmpresaGranosService,
@@ -109,7 +112,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     protected spinnerModal: SpinnerSmallComponent;
 
     checkPermisos() {
-        this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS")
+        this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS");
     }
 
     setTabs() {
@@ -199,6 +202,11 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     this.proveedorClasificacion = result.ProveedorClasificacion;
                     this.proveedorCUIT = result.ProveedorCUIT;
                     this.razonSocial = result.RazonSocial;
+                    this.altaInterna = result.AltaInterna;
+
+                    if(this.puedeAltaInterna && result.Observacion != null){
+                        this.mensajeComponent.setInfoMsg("Observación: " + result.Observacion);
+                    }
                 },
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
@@ -615,12 +623,18 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
 
 
-    onNotificar() {
+    submitAltaInterna() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
+        var datos = {
+            Empleados: this.empleados,
+            Funcionarios: this.funcionarios,
+            VinculoConEmpleadosDeMolinos: this.relacionConEmpleadosChecked,
+            VinculoConFuncionariosPublicos: this.relacionConFuncionariosChecked,
+        };
         this.unsubscribe();
         this.subscription = this.service
-            .notificarSolicitud(this.proveedorId)
+            .SolicitudAltaInterna(this.proveedorId, datos)
             .subscribe(
                 (result) => {
                     this.spinnerSmallComponent.hideIt();
@@ -635,7 +649,9 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.mensajeComponent.setMsgsEmpty();
-                        this.redirigirAEstado();
+                        this.navService.navegarSeccion(
+                            "/altas"
+                        );            
                     }
                 },
                 (error) => {

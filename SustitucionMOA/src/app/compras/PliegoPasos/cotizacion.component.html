@@ -3,37 +3,68 @@
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="inputCompras">
                 <div class="row myRow alinearTitulo" style="padding-top: 2px;">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
+                    <!-- <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         <div class="styled-select1 col-xs-6 col-sm-12 col-md-3 col-lg-3">
                             <span class="ejecucionCompras">Ejecuci&oacute;n en &nbsp;</span>
                             <input formControlName="ejecucion" pInputText type="text" pKeyFilter="pnum"
-                                [(ngModel)]="model.ejecucion" class="fourRounded widthInputDias" aria-controls="tableModal"
-                                placeholder="">
-                            d&iacute;as corridos
+                                [(ngModel)]="model.ultimaPosicion.plazoDeEntrega" class="fourRounded widthInputDias" aria-controls="tableModal"
+                                placeholder="" readonly disabled>
+                            d&iacute;as corridos *
 
                             <div *ngIf="mostrarError('ejecucion')">
                                 <p class="text-danger">campo obligatorio</p>
                             </div>
                         </div>
 
-                    </div>
+                    </div> -->
 
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
-                        <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
                             Observaciones
                             <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacion"
                                 name="observaciones" id="observaciones" cols="30" rows="5" placeholder=""></textarea>
-                        </div>
                     </div>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
+                        <div class="inline-flex">
+                            <div class="col-flex">
+                                <span style="line-height: 2em; margin-right: 0.7em;"><strong>Jornada laboral * </strong></span>
+                                <weekday-select id="jornadaLaboral" [class.errorDias]="mostrarError('dias')" formControlName="dias" 
+                                [(model)]="model.jornadaLaboralDias"></weekday-select>
+    
+                                <div *ngIf="mostrarError('dias')">
+                                    <p class="text-danger">campo obligatorio</p>
+                                </div>
+                            </div>
+                            <div class="col-flex">
+                                <div>
+                                    Desde * 
+                                    <p-calendar formControlName="comienzoJornadaLaboral" name="hora1"
+                                        [style]="{'width': '45%'}" class="styled-select"
+                                        [(ngModel)]="model.comienzoJornadaLaboral" [locale]="locale" appendTo="body" [showIcon]="true"
+                                        icon="fa fa-clock-o" [timeOnly]="true"></p-calendar> 
+    
+                                    <div *ngIf="mostrarError('comienzoJornadaLaboral')">
+                                        <p class="text-danger">campo obligatorio</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    Hasta * 
+                                    <p-calendar formControlName="terminoJornadaLaboral" name="hora2"
+                                        [style]="{'width': '45%'}" class="styled-select"
+                                        [(ngModel)]="model.terminoJornadaLaboral" [locale]="locale" appendTo="body" [showIcon]="true"
+                                        icon="fa fa-clock-o" [timeOnly]="true"></p-calendar> 
 
+                                    <div *ngIf="mostrarError('terminoJornadaLaboral')">
+                                        <p class="text-danger">campo obligatorio</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ">
+                        <!-- <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 ">
                             <span class="col-xs-12 col-sm-12 col-md-4 col-lg-4"
-                                style="line-height: 2em; right: 10px;"><strong>Jornada laboral </strong></span>
+                                style="line-height: 2em; right: 10px;"><strong>Jornada laboral * </strong></span>
                             <weekday-select id="jornadaLaboral" [class.errorDias]="mostrarError('dias')" formControlName="dias" class="col-xs-12 col-sm-12 col-md-8 col-lg-8" style="right: 40px"
                                 [(model)]="model.jornadaLaboralDias"></weekday-select>
 
@@ -42,12 +73,12 @@
                             </div>
                         </div>
 
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="right: 7em;">
-                                Desde
+                        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                            <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" style="right: 7em;">
+                                Desde *
                                 <p-calendar formControlName="comienzoJornadaLaboral" name="hora1"
                                     [style]="{'width': '45%'}" class="styled-select"
-                                    [(ngModel)]="model.comienzoJornadaLaboral" [locale]="locale" [showIcon]="true"
+                                    [(ngModel)]="model.comienzoJornadaLaboral" [locale]="locale" appendTo="body" [showIcon]="true"
                                     icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
 
                                 <div *ngIf="mostrarError('comienzoJornadaLaboral')">
@@ -55,17 +86,17 @@
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="right: 10em;">
-                                Hasta
+                                Hasta *
                                 <p-calendar formControlName="terminoJornadaLaboral" name="hora2"
                                     [style]="{'width': '45%'}" class="styled-select"
-                                    [(ngModel)]="model.terminoJornadaLaboral" [locale]="locale" [showIcon]="true"
+                                    [(ngModel)]="model.terminoJornadaLaboral" [locale]="locale" appendTo="body" [showIcon]="true"
                                     icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
 
                                 <div *ngIf="mostrarError('terminoJornadaLaboral')">
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 alinearTitulo">

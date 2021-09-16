@@ -29,6 +29,7 @@
 
 	<setParameter name="EmailToReporteCamposSustentables Config" value="mpfeiffer@baufest.com,martin.pfe@gmail.com,evilliate@baufest.com,jyon@baufest.com" />
 
+
 	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
 	<setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=webopdevstorage;AccountKey=degh9HC+9hXxFOEU/2HqhP1ZusanUvm9X31YqPQIT68DNsU+GuVnphhYa7Okoexu4R1X5s7xiH5/X3ouTXURew==;EndpointSuffix=core.windows.net" />
@@ -81,11 +82,12 @@
 	<setParameter name="SI_MPMF_MOAOP_DET_FLETE_PROC Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_FLETE_PROC&amp;interfaceNamespace=urn%3AOPERACIONES" />" />
 	<setParameter name="SI_MPMF_MOAOP_OBTENER_PEND_USD Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_OBTENER_PEND_USD&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="SI_MPMF_MOAOP_GUARDAR_PESIF Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_GUARDAR_PESIF&amp;interfaceNamespace=urn%3AOPERACIONES" />
-
+	<setParameter name="SI_MPMF_MOAOP_PDF_PROFORMA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PDF_PROFORMA&amp;interfaceNamespace=urn%3AOPERACIONES" />
+	<setParameter name="SI_MPMF_MOAOP_LISTAR_PESIF Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LISTAR_PESIF&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="http://test.dataagro.com.ar/services/AuthService.svc" />
 	<setParameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address" value="http://test.dataagro.com.ar/services/DataAgroServices.svc" />
 
 	<setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
-
+	
 
 </parameters>

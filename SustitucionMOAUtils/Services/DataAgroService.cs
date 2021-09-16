@@ -69,43 +69,87 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(proveedor.CUIT, null);
+                var mail = usuario.Mail;
 
-                var tipoUsuarioGranos = ObtenerTipoPorNombreCorto("G");
-
-                usuario.Roles = new List<Rol>();
-                usuario.Proveedores = new List<Proveedor>();
-                usuario.TipoUsuario = tipoUsuarioGranos;
-                proveedor.Mail = usuario.Mail;
-                proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
-                proveedor.TipoProveedor = tipoUsuarioGranos;
-
-                if (respuesta != null)
+                if (repositorio.Existe<Proveedor>(x => x.CUIT == proveedor.CUIT && x.Mail == mail))
                 {
-                    if (!respuesta.HayError)
+                    var proveedorExistente = repositorio.Obtener<Proveedor>(x => x.CUIT == proveedor.CUIT && x.Mail == mail && (x.AltaInterna.HasValue && x.AltaInterna == true));
+
+                    var tipoUsuarioGranos = ObtenerTipoPorNombreCorto("G");
+
+                    usuario.Roles = new List<Rol>();
+                    usuario.Proveedores = new List<Proveedor>();
+                    usuario.TipoUsuario = tipoUsuarioGranos;
+
+                    Rol rolGranos = proveedorExistente.EstadoAprobacion == EstadoAprobacion.Aprobado ? ObtenerRolPorCodigo("GRAN") : ObtenerRolPorCodigo("NUEG");
+
+                    usuario.Roles.Add(rolGranos);
+                    usuario.Proveedores.Add(proveedorExistente);
+                    usuario.Habilitado = true;
+
+                    repositorio.Agregar(usuario);
+                    repositorio.GuardarCambios();
+
+                    return true;
+                }
+                else
+                {
+                    ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(proveedor.CUIT, null);
+
+                    var tipoUsuarioGranos = ObtenerTipoPorNombreCorto("G");
+
+                    usuario.Roles = new List<Rol>();
+                    usuario.Proveedores = new List<Proveedor>();
+                    usuario.TipoUsuario = tipoUsuarioGranos;
+                    proveedor.Mail = usuario.Mail;
+                    proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
+                    proveedor.TipoProveedor = tipoUsuarioGranos;
+
+                    if (respuesta != null)
                     {
-                        if (respuesta.ProveedorMails.Contains(usuario.Mail, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
+                        if (!respuesta.HayError)
                         {
-                            proveedor.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
+                            if (respuesta.ProveedorMails.Contains(usuario.Mail, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
+                            {
+                                proveedor.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
 
-                            proveedor.IdComercialDataAgro = respuesta.ComercialId;
-                            proveedor.IdDataAgro = respuesta.ProveedorId;
-                            proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
-                           
-                            proveedor.FechaSolicitud = DateTime.Now;
+                                proveedor.IdComercialDataAgro = respuesta.ComercialId;
+                                proveedor.IdDataAgro = respuesta.ProveedorId;
+                                proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
 
-                            Rol rolUsuario = ObtenerRolPorCodigo(respuesta.ProveedorOperando ? "GRAN" : "NUEG");
+                                proveedor.FechaSolicitud = DateTime.Now;
 
-                            proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
+                                Rol rolUsuario = ObtenerRolPorCodigo(respuesta.ProveedorOperando ? "GRAN" : "NUEG");
 
-                            usuario.Roles.Add(rolUsuario);
+                                proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
+
+                                usuario.Roles.Add(rolUsuario);
+                            }
+                            else
+                            {
+                                Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
+                                usuario.Roles.Add(rolDesabilitado);
+
+                                proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+
+                                var hist = new ProveedorHistorialAprobacion
+                                {
+                                    Fecha = DateTime.Now,
+                                    Proveedor_Id = proveedor.Id,
+                                    Usuario_Id = usuario.Id,
+                                    EstadoAprobacion = proveedor.EstadoAprobacion,
+                                    Observacion = "El mail del registro no coincide con el del proveedor."
+                                };
+                                repositorio.Agregar(hist);
+
+                                proveedor.Observaciones = "El mail del registro no coincide con el del proveedor. Comunicarse con su comercial.";
+                            }
                         }
                         else
                         {
                             Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                             usuario.Roles.Add(rolDesabilitado);
-
-                            proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                            proveedor.EstadoAprobacion = EstadoAprobacion.SinAlta;
 
                             var hist = new ProveedorHistorialAprobacion
                             {
@@ -113,11 +157,11 @@ namespace SustitucionMOAUtils.Services
                                 Proveedor_Id = proveedor.Id,
                                 Usuario_Id = usuario.Id,
                                 EstadoAprobacion = proveedor.EstadoAprobacion,
-                                Observacion = "El mail del registro no coincide con el del proveedor."
+                                Observacion = respuesta.ListaErrores.First().Message
                             };
                             repositorio.Agregar(hist);
 
-                            proveedor.Observaciones = "El mail del registro no coincide con el del proveedor. Comunicarse con su comercial.";
+                            proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
                         }
                     }
                     else
@@ -132,40 +176,22 @@ namespace SustitucionMOAUtils.Services
                             Proveedor_Id = proveedor.Id,
                             Usuario_Id = usuario.Id,
                             EstadoAprobacion = proveedor.EstadoAprobacion,
-                            Observacion = respuesta.ListaErrores.First().Message
+                            Observacion = "Ocurrió un error comunicandose con Data Agro"
                         };
                         repositorio.Agregar(hist);
 
                         proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
                     }
+
+                    usuario.Proveedores.Add(proveedor);
+                    usuario.Habilitado = true;
+
+                    repositorio.Agregar(usuario);
+
+                    repositorio.GuardarCambios();
+
+                    return respuesta.HayError;
                 }
-                else
-                {
-                    Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
-                    usuario.Roles.Add(rolDesabilitado);
-                    proveedor.EstadoAprobacion = EstadoAprobacion.SinAlta;
-
-                    var hist = new ProveedorHistorialAprobacion
-                    {
-                        Fecha = DateTime.Now,
-                        Proveedor_Id = proveedor.Id,
-                        Usuario_Id = usuario.Id,
-                        EstadoAprobacion = proveedor.EstadoAprobacion,
-                        Observacion = "Ocurrió un error comunicandose con Data Agro"
-                    };
-                    repositorio.Agregar(hist);
-
-                    proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
-                }
-
-                usuario.Proveedores.Add(proveedor);
-                usuario.Habilitado = true;
-
-                repositorio.Agregar(usuario);
-
-                repositorio.GuardarCambios();
-
-                return respuesta.HayError;
             }
             catch (InfoCustomException e)
             {

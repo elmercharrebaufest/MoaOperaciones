@@ -54,7 +54,7 @@ namespace SustitucionMOA.Controllers
                 {
                     proveedorId = usuario.ObtenerProveedor().Id;
                 }
-                var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+                var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
                 proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
@@ -69,7 +69,7 @@ namespace SustitucionMOA.Controllers
                 }
 
 
-                informeComercial.ContactoComercial.Email1 = userMail;
+                informeComercial.ContactoComercial.Email1 = proveedor.Mail;
 
                 //Para los proveedores que hicieron el alta con los flujos, tenemos el IDDataAgro y IDComercial. Para los migrados no. Por esto, lo vamos a buscar
                 if (proveedor.IdDataAgro == null)
@@ -132,6 +132,32 @@ namespace SustitucionMOA.Controllers
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult GrabarNuevoProveedorGranos(string cuit, string mailVendedor)
+        {
+            try
+            {
+                var userMail = SessionPersister.getUsername();
+
+                return JsonCustom(new
+                {
+                    data = altaEmpresaService.GrabarProveedorAltaInternaGranos(cuit, userMail, mailVendedor)
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -618,13 +644,14 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult NotificarSolicitud(int proveedorId)
+        public ActionResult SolicitudAltaInterna(int proveedorId, string datosJson)
         {
             try
             {
-                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                string mail = SessionPersister.getUsername();
+                var altaEmpresa = JsonConvert.DeserializeObject<AltaEmpresaViewModel>(datosJson);
 
-                return JsonCustom(altaEmpresaService.NotificarSolicitud(mail, proveedorId));
+                return JsonCustom(altaEmpresaService.SolicitudAltaInterna(mail, proveedorId, altaEmpresa));
             }
             catch (InfoCustomException e)
             {

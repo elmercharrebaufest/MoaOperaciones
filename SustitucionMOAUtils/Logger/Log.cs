@@ -13,6 +13,7 @@ namespace SustitucionMOAUtils.Logger
 
         private static readonly NLog.Logger DefaultLogger = NLog.LogManager.GetLogger("defaultLogger");
         private static readonly NLog.Logger AzureLogger = NLog.LogManager.GetLogger("azureLogger");
+        private static readonly NLog.Logger ExternalAPILogger = NLog.LogManager.GetLogger("externalApiLogger");
 
         public static void Error(string ip, string usuario, string controller, string method, string error)
         {
@@ -88,6 +89,30 @@ namespace SustitucionMOAUtils.Logger
             catch (Exception e)
             {
                 Console.WriteLine("ERROR en LogService:" + e.Message);
+            }
+        }
+
+        public static void ExternalAPIError(Exception exception)
+        {
+            try
+            {
+                ExternalAPILogger.Error(exception);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en API:" + e.Message);
+            }
+        }
+
+        public static void ExternalAPIInfo(string message)
+        {
+            try
+            {
+                ExternalAPILogger.Info(message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en API:" + e.Message);
             }
         }
 

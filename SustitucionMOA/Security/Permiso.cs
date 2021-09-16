@@ -131,6 +131,9 @@
         /* COMPRAS SOLP */
         public const string ABM_SOLP = "ABM SOLP";
         /*Alta interna Granos*/
-        public const string NOTIFICAR_ALTA_INTERNA_GRANOS = "NOTIFICAR ALTA INTERNA GRANOS";
+        public const string ALTA_INTERNA_GRANOS = "ALTA INTERNA GRANOS";
+
+        /*Gestion CM05*/
+        public const string GESTION_IMPUESTOS_CM05 = "GESTION IMPUESTOS CM05";
     }
 }

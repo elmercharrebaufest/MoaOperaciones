@@ -32,5 +32,6 @@ namespace SustitucionMOAModel.Enums
         public const string AdjuntoSolp = "adjuntoSolp";
         public const string EspecificacionesTecnicasPliego = "especificacionesTecnicasPliego";
         public const string ArchivoPliego = "archivoPliego";
+        public const string DDJJ = "DDJJ";
     }
 }

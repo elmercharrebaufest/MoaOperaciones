@@ -175,10 +175,10 @@
                 <div class="form-group col-md-6">
                     <label for="hasta">Entrega Hasta</label>
                     <div class="styled-select input-group date form_datetime_Fin" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_input_fin">
-                        <input type="text" value="{{fechaFin}}" id="noCursor2" readonly />
+                        <input type="text" value="{{fechaFin}}" id="noCursor2" readonly  />
                         <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
                     </div>
-                    <input type="hidden" #dtp_input_fin id="dtp_input_fin" value="{{fechaFin}}" />
+                    <input type="hidden" #dtp_input_fin id="dtp_input_fin" value="{{fechaFin}}"/>
                 </div>
             </div>
             <div class="row">
@@ -199,8 +199,8 @@
             </div>
             <div class="row">
                 <div class="form-group col-md-6">
-                    <label for="cantidad">Cantidad (Kg.)</label>
-                    <input type="text" class="form-control" numeric decimals="0" [(ngModel)]="contrato.Cantidad">
+                    <label for="cantidad">Cantidad <b style="color: blue;font-size: x-large;position: absolute;top: -12px;left: 69px;">(Kg.)</b></label>
+                    <input type="text" class="form-control" numeric decimals="0" [(ngModel)]="contrato.Cantidad" placeholder="La cantidad expresada en Kg">
                 </div>
 
                 <div class="form-group col-md-2">
@@ -215,10 +215,10 @@
                 </div>
             </div>
             <div class="row" *ngIf="isVisibleProveedor()">
-                <div class="form-group col-md-6">
+                <!--<div class="form-group col-md-6">
                     <label for="cantidad">Cantidad Camiones</label>
                     <input type="number" class="form-control" numeric decimals="0" [(ngModel)]="contrato.CantidadCamiones">
-                </div>
+                </div>-->
                 <div class="form-group col-md-6">
                     <label for="cantidad">Zona </label>
                     <select class="form-control" name="zona" [(ngModel)]="contrato.ComercialId">
@@ -364,14 +364,14 @@
                 </div>
             </div>
             <div class="row">
-                <div class="form-group col-md-4" *ngIf="isSoja()">
+                <div class="form-group col-md-4" *ngIf="isSustentableHabilitado()">
                     <label class="switch">
-                        <input type="checkbox" [(ngModel)]="contrato.SustentableTercero">
+                        <input type="checkbox" [(ngModel)]="contrato.SustentableTercero" (change)="changeSustentable($event)" id="SustentableTerceroID">
                         <span class="slider round"></span>
                     </label><label class="labelSwitch"> Sustentable</label>
                 </div>
-                <div class="form-group col-md-8" *ngIf="contrato.SustentableTercero == true">
-                    <input type="text" [(ngModel)]="ObservacionSustentableTercero" class="form-control" placeholder="ej: tarifa 2 USDM" />
+                <div class="form-group col-md-8" *ngIf="isSustentableHabilitado() && contrato.SustentableTercero == true">
+                    <input type="text" [(ngModel)]="ObservacionSustentableTercero" class="form-control" readonly="readonly" />
                 </div>
 
             </div>
@@ -461,7 +461,7 @@
                 <h4 class="modal-title" id="myModalLabel">Seleccione el precio disponible</h4>
             </div>
             <div class="modal-body modal-notificacion">
-                <table class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-ampliacion-table" id="preciosMateriales">
+                <table class="display nowrap dataTable no-footer dtr-inline rounded shadow animate" id="preciosMateriales">
                     <thead>
                         <tr role="row">
                             <td><b>Material</b></td>
@@ -469,6 +469,8 @@
                             <td><b>Precio</b></td>
                             <td><b>Entrega Desde</b></td>
                             <td><b>Entrega Hasta</b></td>
+                            <td><b>Destino</b></td>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -478,6 +480,8 @@
                             <td>{{item.Precio}}</td>
                             <td>{{item.DesdeEntrega | date: 'dd/MM/yyyy'}}</td>
                             <td>{{item.HastaEntrega | date: 'dd/MM/yyyy'}}</td>
+                            <td>{{item.Destino}}</td>
+
                         </tr>
                     </tbody>
                 </table>

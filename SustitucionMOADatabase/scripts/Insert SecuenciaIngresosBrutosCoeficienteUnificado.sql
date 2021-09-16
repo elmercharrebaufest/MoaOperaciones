@@ -1,0 +1,2 @@
+﻿IF NOT EXISTS (SELECT TOP 1 1 FROM SecuenciaIngresosBrutosCoeficienteUnificado WHERE Descripcion = 'Original') BEGIN INSERT SecuenciaIngresosBrutosCoeficienteUnificado (Descripcion) VALUES ('Original') END
+IF NOT EXISTS (SELECT TOP 1 1 FROM SecuenciaIngresosBrutosCoeficienteUnificado WHERE Descripcion = 'Rectificativa') BEGIN INSERT SecuenciaIngresosBrutosCoeficienteUnificado (Descripcion) VALUES ('Rectificativa') END

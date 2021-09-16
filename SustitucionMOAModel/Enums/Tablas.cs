@@ -22,12 +22,17 @@ namespace SustitucionMOAModel.Enums
         public const string Centro = "Centro";
         public const string CodigoServicioSap = "CodigoServicioSap";
         public const string EstadoSolpSap = "EstadoSolpSap";
+        public const string CecoSolpSap = "CecoSolpSap";
+        public const string OrdenSolpSap = "OrdenSolpSap";
+        public const string CuentasSolpSap = "CuentasSolpSap";
     }
 
     public static class TablasGenerales
     {
         public const string TipoImputacionSolp = "TipoImputacionSolp";
+        public const string TipoPosicionSolp = "TipoPosicionSolp";
         public const string TipoFiltroSolpProveedor = "TipoFiltroSolpProveedor";
         public const string CamposObligatoriosCabeceraSolp = "CamposObligatoriosCabeceraSolp";
+        public const string TipoSolp = "TipoSolp";
     }
 }

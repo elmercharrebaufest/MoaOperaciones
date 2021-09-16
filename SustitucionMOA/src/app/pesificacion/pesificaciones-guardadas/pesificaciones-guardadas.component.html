@@ -1,0 +1,180 @@
+<div class="content-wraper">
+  <!-- CONTENT-->
+  <section class="container-fluid clearfix">
+    <!--Title-->
+    <div class="row titleSection">
+      <div class="col-xs-12 col-sm-10 "><strong>Pesificaciones</strong> </div>
+      <div class="col-xs-12 col-sm-2">
+        <spinner-small></spinner-small>
+        <!-- <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
+          *ngIf="!this.spinnerSmallComponent.visible">
+          <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg" /></div>
+        </a> -->
+      </div>
+    </div>
+    <!--End Title-->
+    <!--Search-->
+    <div class="row myRow firstSection mySearch">
+      <div class="col-xs-12 col-md-12 rounded shadow animate">
+        <div class="col-xs-12 col-md-12 search-header">
+          <title-caps>Refinar resultados</title-caps>
+        </div>
+        <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
+          <p>Contrato</p>
+          <div class="styled-select">
+            <input type="search" placeholder="" [(ngModel)]="filtroContrato" aria-controls="tableModal">
+          </div>
+        </div>
+        <div id="searchVerCarga" class="col-xs-12 col-sm-6 col-md-15">
+          <p>Filtro fecha</p>
+          <div class="styled-select">
+            <select [(ngModel)]="tipoFiltroFecha">
+              <option value="1">
+                Fecha de carga
+              </option>
+              <option value="2">
+                Fecha de pesificación
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div id="searchVerPesificacion" class="col-xs-12 col-sm-6 col-md-15">
+          <p>Fecha</p>
+          <filtro-fecha #filtroFechaPesificacion (ClickEvent)="actualizarFiltroFecha()"></filtro-fecha>
+        </div>
+      </div>
+    </div>
+    <!-- End Search-->
+    <!-- Tables-->
+
+    <div class="row myRow">
+      <div class="clearfix myTables">
+
+        <mensaje></mensaje>
+        <spinner></spinner>
+
+        <table id="tableModal"
+          class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-anulaciones-table"
+          *ngIf="filteredPesificaciones && filteredPesificaciones.length > 0" cellspacing="0" role="grid"
+          aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+          <thead>
+            <tr role="row">
+              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('FechaCargaDate')">
+                Fecha de carga
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaCarga' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaCarga' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Contrato')">
+                Contrato
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Contrato' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Contrato' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Fijacion')">
+                Fijación
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Fijacion' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Fijacion' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Kilos')">
+                Kilos
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Kilos' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Kilos' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Precio')">
+                Precio
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Precio' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Precio' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('FechaPesificacionDate')">
+                Fecha de pesificación
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaPesificacion' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaPesificacion' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+              <th tabindex="0" rowspan="1" colspan="1">
+                Tipo cambiario
+                <div>
+
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let pesificacion of filteredPesificaciones 
+                | customFilter : 'Contrato' : filtroContrato
+                | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
+                | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row"
+              [class.odd]="!odd">
+              <td>
+                {{ pesificacion.FechaCarga }}
+              </td>
+              <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', pesificacion.Contrato)"
+                  href="#">{{pesificacion.Contrato}}</a></td>
+              <td>{{pesificacion.Fijacion == '' ? '-' : pesificacion.Fijacion}}</td>
+              <td>{{pesificacion.KilosString}}</td>
+              <td>{{pesificacion.PrecioString}}</td>
+              <td>
+                {{ pesificacion.FechaPesificacion}}
+
+              </td>
+              <td>{{pesificacion.TipoCambio}}</td>
+
+            </tr>
+          </tbody>
+        </table>
+
+        <pagination-template #pT="paginationApi" (pageChange)="p = $event">
+          <div class="dataTables_paginate paging_simple_numbers"
+            *ngIf="filteredPesificaciones && filteredPesificaciones.length > 0">
+            <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
+              [class.disabled]="pT.isFirstPage()"> Anterior </a>
+            <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+              <a class="paginate_button" (click)="pT.setCurrent(page.value)" *ngIf="pT.getCurrent() !== page.value">{{
+                page.label }}</a>
+              <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+            </span>
+            <a id="tableModal_next" class="paginate_button next" (click)="pT.next()" [class.disabled]="pT.isLastPage()">
+              Siguiente </a>
+          </div>
+        </pagination-template>
+      </div>
+    </div>
+    <!-- END tables-->
+  </section>
+  <!--End CONTENT-->
+</div>

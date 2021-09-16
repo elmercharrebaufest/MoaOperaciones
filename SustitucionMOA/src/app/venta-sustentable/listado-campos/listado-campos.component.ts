@@ -15,7 +15,8 @@ import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spi
 @Component({
     selector: 'app-listado-campos',
     templateUrl: './listado-campos.component.html',
-    providers: [VentaSustentableService]
+    providers: [VentaSustentableService],
+    styleUrls: ['./listado-campos.component.css']
 })
 export class ListadoCamposComponent extends BaseComponent implements OnInit {
 
@@ -38,6 +39,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     data: any;
     esInterno: boolean = this.isAuthorized('VER TODOS CAMPOS SUSTENTABLE');
     editarCampos: boolean = this.isAuthorized('EDICION CAMPOS CREADOS')
+    borrarCampos: boolean = this.isAuthorized('EDICION CAMPOS CREADOS')
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     opcionesProveedores: any;
 
@@ -89,29 +91,25 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     }
 
     eliminarCampo(campoCosechaId: number, proveedorId: number) {
-        this.floatMsgService.setMsgsEmpty();
+        this.mensajeComponent.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.campoProveedorBorrar(campoCosechaId, proveedorId).subscribe(
             result => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
-                    this.floatMsgService.setErrorMsg(result.error);
+                    this.mensajeComponent.setErrorMsg(result.error);
                 } else if (result.info != undefined) {
-                    this.floatMsgService.setInfoMsg(result.info);
+                    this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    this.mensajeComponent.setSuccessMsg("se elimino el campo " + campoCosechaId + " correctamente.");
-                    setTimeout(() => {
-                        this.getCamposSustentables();
-                    }, 200);
+                    this.getCamposSustentables();
+                    this.mensajeComponent.setSuccessMsg("Se elimino el campo " + campoCosechaId + " correctamente.");
                 }
             },
             error => {
-                this.floatMsgService.setErrorMsg(error.message);
+                this.mensajeComponent.setErrorMsg(error.message);
             }
         );
-
-        return false;
     }
 
     proveedorSeleccionado(event: string) {
@@ -161,5 +159,43 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         );
 
         return false;
+    }
+
+    descargarKMZ(campoCosechaId: number, proveedorId: number) {
+        this.service.descargarArchivoKMZ(campoCosechaId, proveedorId).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: "application/octet-stream",
+                    });
+
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(
+                            blob,
+                            result.FileDownloadName
+                        );
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
+                        return false;
+                    }
+                }
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        )
     }
 }

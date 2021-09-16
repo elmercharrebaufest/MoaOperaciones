@@ -14,6 +14,7 @@ import Quill from 'quill';
 import { FormBuilder, FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ValidadorPasoSolpService } from '../../validadorPasoSolpService';
 import { EnumPasoSolp } from '../../enum-paso-solp';
+import { ConfirmationService } from 'primeng/api';
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -44,7 +45,7 @@ export class EspecificacionesComponent extends ListBaseComponent {
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private formBuilder: FormBuilder,
-        private validadorPasoSolpService: ValidadorPasoSolpService) {
+        private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
         this.modulesEditor = {
@@ -105,8 +106,6 @@ export class EspecificacionesComponent extends ListBaseComponent {
 
 
     descargarArchivo(archivo): void {
-        debugger
-        var a = this.viewModel;
         if (archivo.id != undefined) {
 
             this.service.DescargarArchivo(archivo.id)
@@ -204,6 +203,21 @@ export class EspecificacionesComponent extends ListBaseComponent {
             }, 0);
             return;
         }
+    }
+
+    
+    eliminarArchivo(esAdjuntoNuevo : boolean, archivo : any)
+    {
+        this.confirmationService.confirm({
+            message: '¿Está seguro que desea eliminar el archivo?',
+            accept: () => {
+                esAdjuntoNuevo ? this.eliminarAdjuntoNuevo(archivo) : this.eliminarAdjuntoGuardado(archivo)
+            },
+            reject: () => {
+                
+            }
+        });
+
     }
 
 }
