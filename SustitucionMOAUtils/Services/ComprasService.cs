@@ -428,9 +428,9 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        public List<SolpDto> ListarSolp()
+        public List<SolpDto> ListarSolp(UsuarioDto usuarioActual)
         {
-            var todasLasSolp = repositorio.Listar<Solp>(x => x.FechaBorrado == null)
+            var todasLasSolp = repositorio.Listar<Solp>(x => x.FechaBorrado == null && x.UsuarioCreacion_Id == usuarioActual.Id)
                 .Select(x => new SolpDto
                 {
                     UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
@@ -952,6 +952,17 @@ namespace SustitucionMOAUtils.Services
             }
 
             return ret;
+        }
+
+        public void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion)
+        {
+            var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nrosolp);
+
+            if(solp != null)
+            {
+                solp.FechaLiberacionSap = fechaLiberacion;
+                repositorio.GuardarCambios();
+            }
         }
     }
 
