@@ -50,7 +50,8 @@ namespace SustitucionMOA
             RecurringJob.AddOrUpdate<Jobs.IVencimientoOrdenesDeCargaSapJob>(
                 "VencimientoOrdenesDeCargaSapJob",
                 j => j.Execute(),
-                "30 6 * * *", tz);
+                "0 * * * *", tz);
+            //Actualmente corre cada 1 Hora, para ponerlo una vez al dia "0 0 * * *"
         }
     }
 }

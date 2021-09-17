@@ -359,8 +359,10 @@ namespace SustitucionMOAUtils.Services
 
         public void verificarVencimientoOrdenDeCarga()
         {
-            var fechaActualMenos72Horas = DateTime.Today.AddDays(-3);
-            var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaCarga <= fechaActualMenos72Horas);
+            //TODO: Validar 72 horas exactas en cada momento.
+            var fechaActualMenos72Horas = DateTime.Now.AddHours(-72);
+
+            var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaCarga <= fechaActualMenos72Horas && o.Estado == EstadoOrdenDeCarga.EntregaGenerada);
 
             foreach (var orden in ordenes)
             {
