@@ -39,7 +39,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     data: any;
     esInterno: boolean = this.isAuthorized('VER TODOS CAMPOS SUSTENTABLE');
     editarCampos: boolean = this.isAuthorized('EDICION CAMPOS CREADOS')
-    borrarCampos: boolean = this.isAuthorized('EDICION CAMPOS CREADOS')
+    borrarCampos: boolean = this.isAuthorized('BORRAR CAMPOS CREADOS')
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     opcionesProveedores: any;
 

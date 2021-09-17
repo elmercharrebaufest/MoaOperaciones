@@ -73,11 +73,12 @@ export class VentaSustentableService extends BaseService {
     }
 
     campoProveedorBorrar(campoCosechaId: number, proveedorId: number) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('campoCosechaId', campoCosechaId.toString());
-        params.set('proveedorId', proveedorId.toString());
+        var payload = new FormData();
+
+        payload.append('proveedorId', proveedorId.toString());
+        payload.append('campoCosechaId', campoCosechaId.toString());
         return this.http
-            .delete('/api/CampoSustentable/CampoProveedorBorrar', { search: params, headers: this.headers, }).pipe(
+            .post('/api/CampoSustentable/CampoProveedorBorrar', payload, this.headersPost).pipe(
                 map(this.extractData));
     }
 
