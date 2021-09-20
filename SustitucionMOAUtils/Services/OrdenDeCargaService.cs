@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 
 namespace SustitucionMOAUtils.Services
@@ -409,19 +410,21 @@ namespace SustitucionMOAUtils.Services
             return ordenDto;
         }
 
-        public void verificarVencimientoOrdenDeCarga()
+        public List<OrdenDeCarga> verificarVencimientoOrdenDeCarga()
         {
             //TODO: Validar 72 horas exactas en cada momento.
             var fechaActualMenos72Horas = DateTime.Now.AddHours(-72);
 
-            var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaCarga <= fechaActualMenos72Horas && o.Estado == EstadoOrdenDeCarga.EntregaGenerada);
+            var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaEntregaGenerada <= fechaActualMenos72Horas && o.Estado == EstadoOrdenDeCarga.EntregaGenerada);
 
             foreach (var orden in ordenes)
             {
                 orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
             }
 
-            repositorio.GuardarCambios();
+            if(ordenes.Count > 0) repositorio.GuardarCambios();
+
+            return ordenes;
         }
 
         public OrdenDeCargaEditarDto ObtenerEditar(string mailUsuario, int ordenId)

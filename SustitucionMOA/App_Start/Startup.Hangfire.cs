@@ -47,11 +47,11 @@ namespace SustitucionMOA
                 j => j.Execute(),
                 "0 23 * * *", tz);
 
+            //Actualmente corre a las 12 1 vez al dia. Si se quiere que corra cada 1 hora usar: "0 * * * *"
             RecurringJob.AddOrUpdate<Jobs.IVencimientoOrdenesDeCargaSapJob>(
                 "VencimientoOrdenesDeCargaSapJob",
                 j => j.Execute(),
                 "0 * * * *", tz);
-            //Actualmente corre cada 1 Hora, para ponerlo una vez al dia "0 0 * * *"
         }
     }
 }

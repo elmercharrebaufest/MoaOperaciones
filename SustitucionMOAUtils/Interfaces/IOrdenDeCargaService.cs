@@ -3,6 +3,7 @@ using SustitucionMOAModel.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,7 +23,7 @@ namespace SustitucionMOAUtils.Interfaces
         string VerificarTransporte(int ordenId);
         void VerificarTransporteBulk();
         Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario);
-        void verificarVencimientoOrdenDeCarga();
+        List<OrdenDeCarga> verificarVencimientoOrdenDeCarga();
 
 
     }
