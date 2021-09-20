@@ -29,9 +29,12 @@ export class GestionCM05Service extends BaseService {
     }
 
     public autorizarCabecera(idCabecera): Observable<any> {
+        var payload = new FormData();
+        payload.append('idCabecera', idCabecera.toString());
+
         return this.http
-            .get('/api/GestionImpuestos/AutorizarCabecera?idCabecera=' + idCabecera, { headers: this.headers })
-            .pipe(map(this.extractData));
+            .post('/api/GestionImpuestos/AutorizarCabecera', payload, this.headers)
+            .map(this.extractData);
     }
 
     public DescargarArchivoFormularioCM05(idCabecera: number): Observable<any> {
