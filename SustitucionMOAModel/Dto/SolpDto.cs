@@ -130,7 +130,7 @@ namespace SustitucionMOAModel.Dto
         public int? GrupoArticuloId { get; set; }
         public string CodigosProveedores { get; set; }
         public int? MonedaId { get; set; }
-
+        public bool Estado { get; set; }
         public TablaGeneralDto TipoPosicion { get; set; }
         public TablaGeneralDto TipoImputacion { get; set; }
         public TablaSapDto Centro { get; set; }
@@ -179,6 +179,7 @@ namespace SustitucionMOAModel.Dto
                 this.Moneda = new TablaSapDto(entity.Moneda);
                 this.Subposiciones = new List<SolpSubposicionDto>();
                 this.Proveedores = new List<SolpProveedorDto>();
+                this.Estado = entity.Estado;
 
                 if (entity.Subposiciones != null)
                 {

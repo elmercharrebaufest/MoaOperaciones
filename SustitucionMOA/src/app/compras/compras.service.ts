@@ -76,6 +76,7 @@ export class ComprasService extends BaseService {
 
 
     public GuardarSolp(solp: Solp) {
+        console.log('solp 1', solp);
         let solpJson = JSON.stringify({
             Id: solp.id,
             TipoSolp: this.getObjetoCodigo(solp.tipoSolp),
@@ -129,7 +130,7 @@ export class ComprasService extends BaseService {
                     Moneda: this.getObjetoCodigo(x.monedaSeleccionada && x.monedaSeleccionada.Codigo),
                     TipoImputacion: this.getObjetoCodigo(x.tipoImputacion),
                     TipoPosicion: this.getObjetoCodigo('SERVICIO'),
-
+                    Estado: x.estado,
                     Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.filter(sp => {
                         return !!((sp.codigoServicio && sp.codigoServicio.Codigo) || 
                                 sp.tareaSubcontratar || 

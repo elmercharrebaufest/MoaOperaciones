@@ -62,6 +62,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     formularioPosicion: [FormGroup];
     formularioActual: FormGroup;
+    validFormEliminarPosicion = true;
 
     proveedoresAutocomplete: any;
     camposObligatorios: any[] = [
@@ -200,6 +201,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     validarPosicionActual() {
+        this.validFormEliminarPosicion = this.model.posicionActual.estado;
         this.model.posicionActual.posicionValida = !this.validadorPasoSolpService.esPasoInvalido();
     }
 
@@ -236,6 +238,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 
             }
         });
+    }
+
+    recuperarPosicion()
+    {
+        this.model.recuperarPosicion()
     }
     
 
