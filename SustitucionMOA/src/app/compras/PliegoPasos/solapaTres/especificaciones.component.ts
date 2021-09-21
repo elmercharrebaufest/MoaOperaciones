@@ -40,8 +40,6 @@ export class EspecificacionesComponent extends ListBaseComponent {
 
     formularioEspecificaciones: FormGroup;
 
-    checkCondicionesGenerales: boolean;
-
     @Output() onEstCompleto = new EventEmitter<any>();
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
