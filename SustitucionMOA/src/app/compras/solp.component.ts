@@ -238,6 +238,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             
             this.solpActual.centroPorDefecto = 1029;
             this.solpActual.monedaPorDefecto = "ARP";
+            
 
             this.getCombos();
 
@@ -334,6 +335,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
         }),
         this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas || this.solpActual.especificacionesViewModel.valorPorDefecto; 
+        
+        this.solpActual.tieneCondicionesGenerales = solp.TieneCondicionesGenerales;
 
         // Paso 4
         this.solpActual.jornadaLaboralDias.forEach(k => {
@@ -385,6 +388,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.proveedoresNoSugeridos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial);
                 posActual.proveedoresInvalidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'INVALIDO').map(p => p.RazonSocial);
 
+
+
                 if(x.Subposiciones){
                     posActual.listadoSubPosiciones = [];
                     let i = 1;
@@ -414,8 +419,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             });
 
             this.solpActual.setearPosicionPorDefecto();
-            // this.cabecera.solpActual = this.solpActual;
-            // this.actualizarPasoCompleto();
         }
 
     }

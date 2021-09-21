@@ -120,8 +120,10 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.Telefono = solp.Telefono;
                 pliegoEntity.Email = solp.Email;
                 pliegoEntity.FechaHoraEntrega = solp.FechaHoraEntrega?.ToLocalTime();
-                pliegoEntity.SupervisorSector = solp.SupervisorSector;
-                pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo;
+                //pliegoEntity.SupervisorSector = solp.SupervisorSector;
+                //pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo;
+                pliegoEntity.SupervisorSector = solp.SupervisorSector != null ? string.Join(",", solp.SupervisorSector.Select(x => x)) : string.Empty;
+                pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo != null ? string.Join(",", solp.SupervisorTrabajo.Select(x => x)) : string.Empty;
 
                 pliegoEntity.TieneVisitaObra = solp.TieneVisitaObra;
                 pliegoEntity.TieneVisitaObraMasiva = solp.TieneVisitaObraMasiva;
@@ -138,6 +140,8 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.JornadaLaboralDias = solp.JornadaLaboral != null ? string.Join(",", solp.JornadaLaboral.Select(x => (int)x)) : string.Empty;
                 pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
                 pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
+
+                pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
 
                 if (solp.TieneVisitaObraMasiva && solp.VisitasObraMasiva != null)
                 {
@@ -186,6 +190,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     solpEntity.Posiciones = new List<SolpPosicion>();
                 }
+
+
 
                 //posiciones eliminadas
                 if (solpEntity.Posiciones.Count > 0)
@@ -443,6 +449,7 @@ namespace SustitucionMOAUtils.Services
                     EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
                     //TipoSolp
                     VincularPliego = !x.Pliego_Id.HasValue,
+                    TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales
                 });
 
             return todasLasSolp.ToList();
@@ -488,8 +495,8 @@ namespace SustitucionMOAUtils.Services
                 Telefono = x.Pliego.Telefono,
                 Email = x.Pliego.Email,
                 FechaHoraEntrega = x.Pliego.FechaHoraEntrega,
-                SupervisorSector = x.Pliego.SupervisorSector,
-                SupervisorTrabajo = x.Pliego.SupervisorTrabajo,
+                SupervisorSector = x.Pliego.SupervisorSector.Split(',').ToList(),
+                SupervisorTrabajo = x.Pliego.SupervisorTrabajo.Split(',').ToList(),
                 VisitasObraMasiva = x.Pliego.VisitasMasivas.Select(a => new VisitaObraDto(a)).ToList(),
                 TieneVisitaObra = x.Pliego.TieneVisitaObra ?? false,
                 TieneVisitaObraMasiva = x.Pliego.TieneVisitaObraMasiva ?? false,
@@ -515,6 +522,8 @@ namespace SustitucionMOAUtils.Services
                 }).ToList(),
 
                 EspecificacionesTecnicas = x.Pliego.Archivos.FirstOrDefault(a => a.FileKey == FileKeys.EspecificacionesTecnicasPliego)?.Ruta,
+
+                TieneCondicionesGenerales = x.Pliego.TieneCondicionesGenerales ?? true,
 
                 EstadoSolpSapId = x.EstadoSolpSap_Id,
                 EstadoDocumentoId = x.EstadoDocumento_Id,
@@ -556,17 +565,20 @@ namespace SustitucionMOAUtils.Services
 
         public byte[] GenerarSolpPdf(int idSolp)
         {
-            var templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html");
+            var solp = TraerSolpId(idSolp);
+
+
+            var templateFilePath = solp.TieneCondicionesGenerales ?? true ? Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html") :
+               Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
+            //, "Templates/PliegoSolpSinCondicionesTemplate.html"
+
 
             var templateCssFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.css");
             var templateCssString = System.IO.File.ReadAllText(templateCssFilePath);
 
             var solpValores = new Dictionary<string, string>();
 
-
-
-            var solp = TraerSolpId(idSolp);
 
             //aca va la asignacion de valores de la solp que se van a reemplazar en el documento
             solpValores.Add(SolpTemplateKeys.FECHA_LIBERACION, ""); //crear campo fecha de liberacion en tabla

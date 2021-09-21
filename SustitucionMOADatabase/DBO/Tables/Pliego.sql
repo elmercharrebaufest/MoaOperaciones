@@ -25,6 +25,7 @@
 	[JornadaLaboralHorasHasta] [datetime2] NULL,
 
 [TieneAndamio] BIT NULL, 
+    [TieneCondicionesGenerales] BIT NULL, 
     CONSTRAINT [PK_dbo.Pliego] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
