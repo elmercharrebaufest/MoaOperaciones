@@ -47,13 +47,14 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
         private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
+        private readonly ICrearSolpConsumerMOA crearSolpConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
         public ComprasService(IRepositorio repositorio, IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
             IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA, IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA, IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA,
-            IObtenerSolpConsumerMOA obtenerSolpConsumerMOA)
+            IObtenerSolpConsumerMOA obtenerSolpConsumerMOA, ICrearSolpConsumerMOA crearSolpConsumerMOA)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -61,6 +62,7 @@ namespace SustitucionMOAUtils.Services
             this.ordenesSolpConsumerMOA = ordenesSolpConsumerMOA;
             this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
+            this.crearSolpConsumerMOA = crearSolpConsumerMOA;
         }
 
         public SolpDto GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -369,6 +371,10 @@ namespace SustitucionMOAUtils.Services
                 FileKey = x.FileKey,
                 Nombre = x.ObtenerNombre(x.Ruta)
             }).ToList();
+
+
+            crearSolpConsumerMOA.Request(solpEntity);
+
 
             return solp;
         }

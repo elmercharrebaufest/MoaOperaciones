@@ -116,6 +116,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IObtenerOrdenSolpConsumerMOA>().To(typeof(ObtenerOrdenSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerServiciosSolpConsumerMOA>().To(typeof(ObtenerServiciosSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerSolpConsumerMOA>().To(typeof(ObtenerSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<ICrearSolpConsumerMOA>().To(typeof(CrearSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
             #endregion
 
 
