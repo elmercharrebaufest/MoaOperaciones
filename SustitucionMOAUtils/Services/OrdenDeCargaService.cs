@@ -216,6 +216,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        private void LogearVerificarOrdenyGuardar(OrdenDeCarga ordenDeCarga, string codigo)
+        {
+
+        }
+
 
         private bool VerificarOrden(OrdenDeCarga ordenDeCarga, Proveedor cliente)
         {
@@ -229,6 +234,8 @@ namespace SustitucionMOAUtils.Services
             */
             var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoSAP, ordenDeCarga.Corredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
 
+            //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
+            //cual es el contrato correcto que le quiere entregar.
             if (result.Contains(','))
             {
                 ordenDeCarga.ContratosRespuesta = result;
@@ -243,27 +250,47 @@ namespace SustitucionMOAUtils.Services
                         ordenDeCarga.TransporteExiste = true;
                         ordenDeCarga.CorredorSeleccionado = true;
                         ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
+                        ordenDeCarga.CodigoVerificacionSap = "CC-00";
+                        ordenDeCarga.DescripcionCodigoVerificacionSap = "OK";
                         return true;
 
                     case "CC-01":
                         //ordenDeCarga.CorredorSeleccionado = false;
                         //break;
+                        ordenDeCarga.CodigoVerificacionSap = "CC-01";
+                        ordenDeCarga.DescripcionCodigoVerificacionSap = "Más de un contrato vigente para Cliente/Corredor";
+                        repositorio.Agregar(ordenDeCarga);
+                        repositorio.GuardarCambios();
                         throw new ValidationCustomException("No se encontró ningun contrato con ese producto.");
 
 
                     case "CC-02":
                         ordenDeCarga.TransporteExiste = false;
+                        ordenDeCarga.CodigoVerificacionSap = "CC-02";
+                        ordenDeCarga.DescripcionCodigoVerificacionSap = "Transportista no dado de alta";
+                        repositorio.Agregar(ordenDeCarga);
+                        repositorio.GuardarCambios();
                         return true;
 
                     case "CC-03":
+                        ordenDeCarga.CodigoVerificacionSap = "CC-03";
+                        ordenDeCarga.DescripcionCodigoVerificacionSap = "Verificar Pedido";
+                        repositorio.Agregar(ordenDeCarga);
+                        repositorio.GuardarCambios();
                         throw new ValidationCustomException("El pedido informado no existe.");
 
                     case "CC-04":
                         ordenDeCarga.TransporteExiste = true;
                         ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
+                        ordenDeCarga.CodigoVerificacionSap = "CC-04";
+                        ordenDeCarga.DescripcionCodigoVerificacionSap = "Verificar Crédito de pedido";
                         break;
 
                     case "CC-05":
+                        ordenDeCarga.CodigoVerificacionSap = "CC-05";
+                        ordenDeCarga.DescripcionCodigoVerificacionSap = "Pedido entregado completamente";
+                        repositorio.Agregar(ordenDeCarga);
+                        repositorio.GuardarCambios();
                         throw new ValidationCustomException("El pedido ingresado ya fue entregado completamente.");
                 }
             }

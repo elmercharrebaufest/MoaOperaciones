@@ -69,6 +69,8 @@ namespace SustitucionMOAModel.Entities
 
         public string ContratosRespuesta { get; set; }
         public string NumeroPedidoIngresado { get; set; }
+        public string CodigoVerificacionSap { get; set; }
+        public string DescripcionCodigoVerificacionSap { get; set; }
 
         [InverseProperty("OrdenDeCarga")]
         public virtual ICollection<OrdenDeCargaCambiosHistorial> HistorialCambios { get; set; } = new List<OrdenDeCargaCambiosHistorial>();
@@ -77,7 +79,7 @@ namespace SustitucionMOAModel.Entities
         {
             if (Estado != EstadoOrdenDeCarga.Entregada)
             {
-                if (string.IsNullOrEmpty(ContratoSAP) || !TransporteExiste)
+                if (string.IsNullOrEmpty(ContratoSAP))
                 {
                     Estado = EstadoOrdenDeCarga.Pendiente;
                 }
@@ -87,8 +89,7 @@ namespace SustitucionMOAModel.Entities
                     {
                         Estado = EstadoOrdenDeCarga.Confirmado;
                     }
-
-                    if (!AprobadoCredito)
+                    if (!AprobadoCredito || !TransporteExiste)
                     {
                         Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
                     }
