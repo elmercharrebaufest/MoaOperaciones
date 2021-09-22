@@ -64,12 +64,9 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
         autocompletesLocalidad[i].setAttribute("autocomplete", "chrome-off");
       }
     }, 1000);
-
-    this.iniciarForm();
   }
 
   iniciarForm() {
-    debugger
     /*if (this.proveedorId > 0) {*/
       document.getElementById("openModalHiddenButton").click();
       this.obtenerCampanias();
