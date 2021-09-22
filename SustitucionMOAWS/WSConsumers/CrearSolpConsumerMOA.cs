@@ -109,7 +109,7 @@ namespace SustitucionMOAWS.WSConsumers
                     CREATED_BY = solpActual.UsuarioCreacion.Mail,
                     PREQ_NAME = posicion.Solicitante,
                     SHORT_TEXT = posicion.TextoGenerico,
-                    MATERIAL = "",
+                    MATERIAL = "", //Esto es para el MVP2 ,porque los materiales no tienen sub posiciones
                     PLANT = posicion.Centro.CodigoSap.ToString(),
                     STORE_LOC = posicion.Almacen.CodigoSap.ToString(),
                     TRACKINGNO = posicion.NroNecesidad,
@@ -153,7 +153,7 @@ namespace SustitucionMOAWS.WSConsumers
                     //PLND_DELRY PLIFZ   Plazo de entrega previsto en días
                     //PCKG_NO PACKNO  Nº paquete
 
-                    DES_VENDOR = vendedoresDeseados, //Preguntar
+                    DES_VENDOR = vendedoresDeseados, //Preguntar a Ulises
                     FIXED_VEND = "", //Preguntar
                     PURCH_ORG = posicion.GrupoCompras.CodigoSap,
                     AGREEMENT = "", //Contrato marco? No está en este MVP
@@ -189,8 +189,8 @@ namespace SustitucionMOAWS.WSConsumers
                     var serviceLine = new ZMPES5780
                     {
                         DOC_ITEM = numeroPosicion.ToString(),
-                        OUTLINE = subPosicion.Numero.ToString(),
-                        SRV_LINE = subPosicion.Numero.ToString(),
+                        OUTLINE = subPosicion.Numero.ToString(), //Preguntar a Ulises
+                        SRV_LINE = subPosicion.Numero.ToString(), //Preguntar a Ulises
                         DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
                         SERVICE = subPosicion.CodigoServicioSap.ToString(),
                         SHORT_TEXT = subPosicion.Tarea,
@@ -203,6 +203,25 @@ namespace SustitucionMOAWS.WSConsumers
                     };
 
                     solpSAP.IM_SERVICELINESList.Add(serviceLine);
+
+                    //Agrupar por subposición?
+                    //Valido con Ulises
+                    numeroImputacion++;
+                    solpSAP.IM_PRACCOUNTList.Add(new ZMPES5690
+                    {
+                        PREQ_ITEM = numeroPosicion.ToString(),
+                        SERIAL_NO = numeroImputacion.ToString(),
+                        QUANTITY = 0,
+                        GL_ACCOUNT = "",
+                        BUS_AREA = "",
+                        COSTCENTER = "",
+                        ASSET_NO = "",
+                        SUB_NUMBER = "",
+                        ORDERID = "",
+                        CO_AREA = "",
+                        COSTOBJECT = "",
+                        PROFIT_CTR = "",
+                    });
                 }
 
 
@@ -231,7 +250,7 @@ namespace SustitucionMOAWS.WSConsumers
                         POSTL_COD1 = posicion.CpEntrega,
                         CITY = posicion.Centro.Descripcion,
                         STREET = posicion.CalleEntrega,
-                        HOUSE_NO = posicion.NumeroEntrega,
+                        HOUSE_NO = posicion.NumeroEntrega, // Validar con Ulises el tema del telefono/número
                         TEL1_NUMBR = "", //Validar si es el numero entrega o de donde lo sacamos
                     }
                 );
@@ -254,22 +273,8 @@ namespace SustitucionMOAWS.WSConsumers
                    PROFIT_CTR	PRCTR	Centro de beneficio
                */
 
-                numeroImputacion++;
-                solpSAP.IM_PRACCOUNTList.Add(new ZMPES5690
-                {
-                    PREQ_ITEM = numeroPosicion.ToString(),
-                    SERIAL_NO = numeroImputacion.ToString(),
-                    QUANTITY = 0,
-                    GL_ACCOUNT = "",
-                    BUS_AREA = "",
-                    COSTCENTER = "",
-                    ASSET_NO = "",
-                    SUB_NUMBER = "",
-                    ORDERID = "",
-                    CO_AREA = "",
-                    COSTOBJECT = "",
-                    PROFIT_CTR = "",
-                });
+
+                
                 
             }
 
