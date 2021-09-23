@@ -16,8 +16,8 @@ namespace SustitucionMOAModel.Dto
         public string Telefono { get; set; }
         public string Email { get; set; }
         public DateTime? FechaHoraEntrega { get; set; }
-        public string SupervisorSector { get; set; }
-        public string SupervisorTrabajo { get; set; }
+        public List<string> SupervisorSector { get; set; }
+        public List<string> SupervisorTrabajo { get; set; }
         public List<VisitaObraDto> VisitasObraMasiva { get; set; }
         public bool TieneVisitaObra { get; set; }
         public bool TieneVisitaObraMasiva { get; set; }
@@ -49,6 +49,7 @@ namespace SustitucionMOAModel.Dto
         public List<SolpPosicionDto> Posiciones { get; set; }
         public string Pdf { get; set; }
         public bool Finalizar { get; set; }
+        public bool? TieneCondicionesGenerales { get; set; }
 
         public SolpDto() {}
         public SolpDto(Solp entity) 
@@ -60,8 +61,8 @@ namespace SustitucionMOAModel.Dto
             this.Telefono = entity.Pliego.Telefono;
             this.Email = entity.Pliego.Email;
             this.FechaHoraEntrega = entity.Pliego.FechaHoraEntrega;
-            this.SupervisorSector = entity.Pliego.SupervisorSector;
-            this.SupervisorTrabajo = entity.Pliego.SupervisorTrabajo;
+            this.SupervisorSector = entity.Pliego.SupervisorSector.Split(',').ToList(); 
+            this.SupervisorTrabajo = entity.Pliego.SupervisorTrabajo.Split(',').ToList();
             this.VisitasObraMasiva = new List<VisitaObraDto>();
             this.TieneVisitaObra = entity.Pliego.TieneVisitaObra.HasValue && entity.Pliego.TieneVisitaObra.Value;
             this.TieneVisitaObraMasiva = entity.Pliego.TieneVisitaObraMasiva.HasValue && entity.Pliego.TieneVisitaObraMasiva.Value;
@@ -87,6 +88,7 @@ namespace SustitucionMOAModel.Dto
             //this.VincularPliego = entity.VincularPliego.HasValue && entity.VincularPliego.Value;
             this.EstadoSolpSap = new TablaSapDto(entity.EstadoSolpSap);
             this.Posiciones = new List<SolpPosicionDto>();
+            this.TieneCondicionesGenerales = entity.Pliego.TieneCondicionesGenerales.HasValue ? entity.Pliego.TieneCondicionesGenerales : true;
 
 
         }

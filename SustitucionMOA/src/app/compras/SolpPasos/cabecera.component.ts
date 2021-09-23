@@ -64,6 +64,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     formularioActual: FormGroup;
 
     proveedoresAutocomplete: any;
+    
     camposObligatorios: any[] = [
         { campo: 'servicio',                    esObligatorio: true,    esFijo: true },
         { campo: 'centroDeCosto',               esObligatorio: false,   esFijo: true },

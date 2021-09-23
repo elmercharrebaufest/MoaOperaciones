@@ -23,10 +23,10 @@ export class Solp {
 
     //paso 2
     public visitaDeObra: boolean;
-    public supervisorSector: string;
+    public supervisorSector: string[] = [];
     public visitaDeObraFecha: Date;
     public visitaDeObraHora: Date;
-    public supervisorTrabajo: string;
+    public supervisorTrabajo: string[] = [];
     public obradores: boolean;
     public descripcionTecnica: boolean;
     public modoElevacion: boolean;
@@ -41,6 +41,7 @@ export class Solp {
 
     //paso 3
     public especificacionesViewModel: EspecificacionesViewModel = new EspecificacionesViewModel();
+    public tieneCondicionesGenerales: boolean;
 
     // paso 4
     public ejecucion: any;
@@ -91,9 +92,6 @@ export class Solp {
         this.fechaEntrega.setDate(this.fechaEntrega.getDate() + 7);
         this.agregarNuevaPosicion();
         this._ultimaPosicion = this.posicionActual;
-
-        
-       
     }
 
     agregarNuevaPosicion() {

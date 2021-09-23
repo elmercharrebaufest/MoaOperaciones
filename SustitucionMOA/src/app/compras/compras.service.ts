@@ -97,6 +97,7 @@ export class ComprasService extends BaseService {
             FechaHoraLimiteConsulta: this.getFechaHora(solp.fechaLimiteFecha, solp.fechaLimiteHora),
             ObservacionesGeneracion: solp.observacionesGeneracion,
             EspecificacionesTecnicas: solp.especificacionesViewModel.observaciones,
+            TieneCondicionesGenerales: solp.tieneCondicionesGenerales,
             DiasEjecucion: solp.ejecucion,
             ObservacionesCotizacion: solp.observacionesCotizacion,
             JornadaLaboral: solp.jornadaLaboralDias.filter(x=>x.selected).map(x=>x.weekDay),
