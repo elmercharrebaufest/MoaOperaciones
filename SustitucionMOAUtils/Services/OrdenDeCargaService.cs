@@ -216,12 +216,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void LogearVerificarOrdenyGuardar(OrdenDeCarga ordenDeCarga, string codigo)
-        {
-
-        }
-
-
         private bool VerificarOrden(OrdenDeCarga ordenDeCarga, Proveedor cliente)
         {
             /* 
@@ -258,26 +252,20 @@ namespace SustitucionMOAUtils.Services
                         //ordenDeCarga.CorredorSeleccionado = false;
                         //break;
                         ordenDeCarga.CodigoVerificacionSap = "CC-01";
-                        ordenDeCarga.DescripcionCodigoVerificacionSap = "Más de un contrato vigente para Cliente/Corredor";
-                        repositorio.Agregar(ordenDeCarga);
-                        repositorio.GuardarCambios();
-                        throw new ValidationCustomException("No se encontró ningun contrato con ese producto.");
+                        ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
+                        break;
 
 
                     case "CC-02":
                         ordenDeCarga.TransporteExiste = false;
                         ordenDeCarga.CodigoVerificacionSap = "CC-02";
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "Transportista no dado de alta";
-                        repositorio.Agregar(ordenDeCarga);
-                        repositorio.GuardarCambios();
                         return true;
 
                     case "CC-03":
                         ordenDeCarga.CodigoVerificacionSap = "CC-03";
-                        ordenDeCarga.DescripcionCodigoVerificacionSap = "Verificar Pedido";
-                        repositorio.Agregar(ordenDeCarga);
-                        repositorio.GuardarCambios();
-                        throw new ValidationCustomException("El pedido informado no existe.");
+                        ordenDeCarga.DescripcionCodigoVerificacionSap = "El pedido informado no existe.";
+                        break;
 
                     case "CC-04":
                         ordenDeCarga.TransporteExiste = true;
@@ -288,13 +276,12 @@ namespace SustitucionMOAUtils.Services
 
                     case "CC-05":
                         ordenDeCarga.CodigoVerificacionSap = "CC-05";
-                        ordenDeCarga.DescripcionCodigoVerificacionSap = "Pedido entregado completamente";
-                        repositorio.Agregar(ordenDeCarga);
-                        repositorio.GuardarCambios();
-                        throw new ValidationCustomException("El pedido ingresado ya fue entregado completamente.");
+                        ordenDeCarga.DescripcionCodigoVerificacionSap = "El pedido ingresado ya fue entregado completamente.";
+                        break;
                 }
             }
 
+            ordenDeCarga.ActualizarEstado();
             return false;
         }
 
