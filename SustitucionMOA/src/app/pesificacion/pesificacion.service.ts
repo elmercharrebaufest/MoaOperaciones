@@ -38,7 +38,7 @@ export class PesificacionService extends BaseService {
         let payload = new FormData();
         payload.append("file", file);
         return this.http
-            .post('/api/pesificacion/setComprobantes', payload, {headers: this.headersPost})
+            .post('/api/pesificacion/setComprobantes', payload, { headers: this.headersPost })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 
@@ -52,6 +52,6 @@ export class PesificacionService extends BaseService {
         return this.http
             .get('/api/pesificacion/PesificacionesSap')
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
-            .pipe(map(this.extractData));
+        // .pipe(map(this.extractData));
     }
 }

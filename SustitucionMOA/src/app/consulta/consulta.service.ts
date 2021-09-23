@@ -7,7 +7,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class ConsultaService extends BaseService {
-    
+
     public sendContactoMail(
         proveedor: string,
         nombre: string,
@@ -39,13 +39,12 @@ export class ConsultaService extends BaseService {
             .post('/api/contactoMail/sendContactoMail', payload, { headers: this.headersPost });
     }
 
-    public AgregarConsulta(consulta: object, comentario: Comentario, archivo: any  = null) {
+    public AgregarConsulta(consulta: object, comentario: Comentario, archivo: any = null) {
         let consultaJson = JSON.stringify(consulta);
         let comentarioJson = JSON.stringify(comentario);
         var payload = new FormData();
 
-        if(archivo != null)
-        {
+        if (archivo != null) {
             for (let i = 0; i < archivo.length; i++) {
                 let fileToUpload = archivo[i];
                 payload.append("file", fileToUpload, fileToUpload.name);
@@ -55,9 +54,9 @@ export class ConsultaService extends BaseService {
         payload.append('consultaJson', consultaJson);
         payload.append('comentarioJson', comentarioJson);
         payload.append("file", archivo);
-        
+
         return this.http
-            .post('/api/consulta/Consulta',  payload , {headers: this.headers});
+            .post('/api/consulta/Consulta', payload, { headers: this.headers });
     }
 
     public recordarComentario(consultaId: any): Observable<any> {
@@ -86,12 +85,11 @@ export class ConsultaService extends BaseService {
             .get('/api/consulta/Detalle?consultaId=' + idConsulta, { headers: this.headers });
     }
 
-    public agregarComentario(consultaId: string, comentario: Comentario, archivo: any = null): Observable<any>{
+    public agregarComentario(consultaId: string, comentario: Comentario, archivo: any = null): Observable<any> {
         let comentarioJson = JSON.stringify(comentario);
         var payload = new FormData();
-        
-        if(archivo != null)
-        {
+
+        if (archivo != null) {
             for (let i = 0; i < archivo.length; i++) {
                 let fileToUpload = archivo[i];
                 payload.append("file", fileToUpload, fileToUpload.name);
@@ -106,7 +104,7 @@ export class ConsultaService extends BaseService {
             .post('/api/consulta/Comentarios', payload, { headers: this.headers });
     }
 
-    public getDetalleConsulta(consultaId: string){
+    public getDetalleConsulta(consultaId: string) {
         let params: HttpParams = new HttpParams();
         params = params.set('consultaId', consultaId.toString());
 
@@ -114,13 +112,13 @@ export class ConsultaService extends BaseService {
             .get(`/api/Consulta/Detalle`, { params: params, headers: this.headers });
     }
 
-    public actualizarCombos(consultaId: string, estadoId: number, categoriaId: number, subcategoriaId: number = null, causaConsultaId: number = null): Observable<any>{
+    public actualizarCombos(consultaId: string, estadoId: number, categoriaId: number, subcategoriaId: number = null, causaConsultaId: number = null): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.append('consultaId', consultaId.toString());
         params = params.append('estadoConsultaId', estadoId.toString());
         params = params.append('categoriaId', categoriaId.toString());
         params = params.append('causaConsultaId', causaConsultaId.toString())
-        if(subcategoriaId != null){
+        if (subcategoriaId != null) {
             params = params.append('subcategoriaId', subcategoriaId.toString());
         }
         return this.http
@@ -181,7 +179,7 @@ export class ConsultaService extends BaseService {
             });
     }
 
-    generarReclamoImpositivo(reclamoImpositivo: any){
+    generarReclamoImpositivo(reclamoImpositivo: any) {
         let headers = new HttpHeaders();
         headers = headers.append("Content-Type", "application/json");
         headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
@@ -193,7 +191,7 @@ export class ConsultaService extends BaseService {
         let params: HttpParams = new HttpParams();
         let reclamoImpositivoJson = JSON.stringify(reclamoImpositivo);
         params = params.append("reclamoImpositivoJson", reclamoImpositivoJson);
-        
+
         return this.http
             .get("/api/consulta/GenerarReclamoImpositivoPdf", {
                 params: params,
@@ -207,7 +205,6 @@ export class ConsultaService extends BaseService {
         payload.append('motivoRechazo', motivoRechazo);
 
         return this.http
-            .post('/api/consulta/AnularConsulta', payload, this.headersPost).pipe(
-                map(this.extractData));
+            .post('/api/consulta/AnularConsulta', payload, { headers: this.headersPost })
     }
 }

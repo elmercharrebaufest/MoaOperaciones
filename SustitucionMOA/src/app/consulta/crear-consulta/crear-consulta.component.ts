@@ -12,7 +12,7 @@ import { DropdownComponent } from './../../common/view-child/dropdown/dropdown.c
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { SelectItem } from 'primeng/components/common/selectitem';
-import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo, Materiales} from '../consulta';
+import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo, Materiales } from '../consulta';
 import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
@@ -201,7 +201,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.unsubscribe();
         try {
             this.subscription = this.service.getCombos(true).subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -473,7 +473,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
         try {
             this.subscription = this.service.AgregarConsulta(this.consulta, comentario, this.listaArchivos).subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                         this.blockUI.stop();
@@ -517,7 +517,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     anularConsulta(motivoRechazo: string) {
         try {
             this.subscription = this.service.AnularConsulta(this.consulta.Id, motivoRechazo).subscribe(
-                result => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                         this.blockUI.stop();
@@ -678,7 +678,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
         try {
             this.subscription = this.service.generarReclamoImpositivo(this.reclamoImpositivo).subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                         this.blockUI.stop();
@@ -695,26 +695,17 @@ export class CrearConsultaComponent extends ListBaseComponent {
                             type: "application/octet-stream",
                         });
 
-                        if (window.navigator.msSaveOrOpenBlob) {
-                            // IE11
-                            window.navigator.msSaveOrOpenBlob(
-                                blob,
-                                result.FileDownloadName
-                            );
-                        } else {
-                            var url = window.URL.createObjectURL(blob);
-                            var link = document.createElement("a");
-                            document.body.appendChild(link);
-                            link.href = url;
-                            link.download = result.FileDownloadName;
-                            link.click();
-                            setTimeout(function () {
-                                window.URL.revokeObjectURL(url);
-                            }, 0);
-                            this.blockUI.stop();
-                            return false;
-                        }
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
                         this.blockUI.stop();
+                        return false;
                     }
                 },
                 error => {
