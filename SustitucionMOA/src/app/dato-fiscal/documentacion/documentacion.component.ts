@@ -52,7 +52,7 @@ export class DocumentacionComponent extends BaseComponent implements OnInit {
         this.unsubscribe();
         try {
             this.subscription = this.service.getDocumento(nombre).subscribe(
-                result => {
+                (result:any) => {
                     //this.spinnerComponent.hideIt();
                     var tipoArchivo = 'application/octet-stream';
                     try {

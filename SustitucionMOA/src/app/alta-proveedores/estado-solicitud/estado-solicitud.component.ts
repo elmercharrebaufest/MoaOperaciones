@@ -29,7 +29,7 @@ export class EstadoSolicitudComponent extends ListBaseComponent {
 
     obtenerEstado() {
         this.subscription = this.service.getEstadoAprobacion().subscribe(
-            result => {
+            (result:any) => {
                 this.estadoSolicitud = result.data.EstadoDescripcion;
                 this.observaciones = result.data.Observaciones;
             },

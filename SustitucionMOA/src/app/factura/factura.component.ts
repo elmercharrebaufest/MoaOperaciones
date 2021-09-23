@@ -86,7 +86,7 @@ export class FacturaComponent extends ListBaseComponent{
         this.unsubscribe();
         try {
             this.subscription = this.service.subirPDF(this.file).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerSmallComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();

@@ -12,6 +12,7 @@ import { FloatMsgService } from '../common/services/FloatMsgService';
 import { ListBaseComponent } from '../common/base-components/list-base-component';
 import { SelectItem } from 'primeng/api';
 import { MessageService } from 'primeng/api';
+import { CommonResponse } from '../common/models/common-response';
 
 @Component({
     templateUrl: './gestionCM05.component.html',
@@ -155,7 +156,7 @@ export class GestionCM05Component extends ListBaseComponent {
             }
 
             this.subscription = this.service.editarRow(rowData).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {

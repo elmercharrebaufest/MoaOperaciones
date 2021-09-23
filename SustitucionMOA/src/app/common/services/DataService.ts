@@ -1,14 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
-import { Observable } from 'rxjs';
-
-
-
-
-import "rxjs/add/observable/defer";
-import { Formatter } from './../formatter/Formatter';
 import { BaseService } from './BaseService';
-
 
 @Injectable()
 export class DataService extends BaseService {

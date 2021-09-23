@@ -229,7 +229,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     getCombos() {
         try {
             this.subscription = this.service.getCombos(false).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -279,7 +279,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         this.unsubscribe();
         try {
             this.subscription = this.service.listarConsultas().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {

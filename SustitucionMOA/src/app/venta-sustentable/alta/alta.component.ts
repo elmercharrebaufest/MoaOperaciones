@@ -11,6 +11,7 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { CampoProveedor, CampoSustentable, CampoCosecha } from './../sustentable'
 import { DeclaracionConformidadComponent } from '../declaracion-conformidad/declaracion-conformidad.component';
+import { CommonResponse } from '../../common/models/common-response';
 
 @Component({
   selector: 'app-alta',
@@ -108,7 +109,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   getProveedorId(codigo: string) {
     this.subscription = this.service.getProveedor(codigo).subscribe(
-      (result) => {
+      (result:any) => {
         this.spinnerComponent.hideIt();
         if (result.logout == true) {
           this.sessionDataService.logout();
@@ -225,7 +226,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     try {
       this.unsubscribe();
       this.subscription = this.service.campoProveedorAgregar(campoProveedor, this.file).subscribe(
-        result => {
+        (result:any) => {
           this.spinnerComponent.hideIt();
           this.blockUI.stop();
 
@@ -273,7 +274,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     this.spinnerComponent.showIt();
     try {
       this.subscription = this.service.getCosechas().subscribe(
-        result => {
+        (result:any) => {
           this.spinnerComponent.hideIt();
           if (result.logout == true) {
             this.sessionDataService.logout();

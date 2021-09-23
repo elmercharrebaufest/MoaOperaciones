@@ -71,7 +71,7 @@ export class AltaUsuarioComponent extends BaseComponent implements OnInit {
         this.unsubscribe();
         try {
             this.subscription = this.service.alta(usuario).subscribe(
-                result => {
+                (result:any) => {
                     this.visibleButton = true;
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -105,7 +105,7 @@ export class AltaUsuarioComponent extends BaseComponent implements OnInit {
     getPerfilesOptions() {
         try {
             this.subscriptionDropDowns = this.service.getPerfiles().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Router } from "@angular/router";
-import "rxjs/add/observable/defer";
 
 @Injectable()
 export class SecurityService {

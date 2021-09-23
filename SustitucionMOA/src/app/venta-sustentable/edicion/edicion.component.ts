@@ -95,7 +95,7 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     try {
       this.unsubscribe();
       this.subscription = this.service.getCampoProveedor(this.proveedorId, this.campoCosechaId).subscribe(
-        result => {
+        (result:any) => {
           this.spinnerComponent.hideIt();
           if (result.logout == true) {
             this.sessionDataService.logout();
@@ -157,7 +157,7 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     try {
       this.unsubscribe();
       this.subscription = this.service.campoProveedorEditar(campoProveedor, this.file).subscribe(
-        result => {
+        (result:any) => {
           this.spinnerComponent.hideIt();
           if (result.logout == true) {
             this.sessionDataService.logout();
@@ -198,7 +198,7 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     try {
       this.unsubscribe();
       this.subscription = this.service.getCosechas().subscribe(
-        result => {
+        (result:any) => {
           this.spinnerComponent.hideIt();
           if (result.logout == true) {
             this.sessionDataService.logout();

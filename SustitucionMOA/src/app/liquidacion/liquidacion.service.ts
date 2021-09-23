@@ -1,14 +1,10 @@
 
 import { throwError as observableThrowError, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
 
-
-
-import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class LiquidacionService extends BaseService {
@@ -18,27 +14,26 @@ export class LiquidacionService extends BaseService {
     }
 
     getLiquidacionesCommon(periodo: string, fecha_inicio: string, fecha_fin: string, method: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
-        return this.http
-            .get('/api/liquidacion/' + method, { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))))
-            .pipe(map(this.extractData));
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
 
+        return this.http
+            .get('/api/liquidacion/' + method, { params: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
     }
 
     getVinculacion(contrato: string, secuencia: string) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('contrato', contrato);
-        params.set('secuencia', secuencia);
+        let params: HttpParams = new HttpParams();
+        params = params.append('contrato', contrato);
+        params = params.append('secuencia', secuencia);
+
         return this.http
-            .get('/api/liquidacion/getVinculacion', { search: params, headers: this.headers })
+            .get('/api/liquidacion/getVinculacion', { params: params, headers: this.headers })
             .pipe(
                 timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente")))
-            )
-            .pipe(map(this.extractData));
+            );
     }
 
     exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
@@ -46,32 +41,30 @@ export class LiquidacionService extends BaseService {
     }
 
     exportExcelCommon(periodo: string, fecha_inicio: string, fecha_fin: string, method: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
+
         return this.http
-            .get('/api/liquidacion/' + method, { search: params, headers: this.headers })
+            .get('/api/liquidacion/' + method, { params: params, headers: this.headers })
             .pipe(
                 timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas")))
-            )
-            .pipe(map(this.extractData));
+            );
     }
 
     descargarDocumentoPDF(documento: string, ejercicio: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('documento', documento);
-        params.set('ejercicio', ejercicio);
+        let params: HttpParams = new HttpParams();
+        params = params.append('documento', documento);
+        params = params.append('ejercicio', ejercicio);
+
         return this.http
-            .get('/api/PDF/downloadDocumentPDF', { search: params, headers: this.headers })
+            .get('/api/PDF/downloadDocumentPDF', { params: params, headers: this.headers })
             .pipe(
                 timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente")))
-            )
-            .pipe(map(this.extractData));
+            );
     }
-
 }
-
 
 @Injectable()
 export class LiquidacionAprobadaService extends LiquidacionService {
@@ -85,7 +78,6 @@ export class LiquidacionAprobadaService extends LiquidacionService {
     }
 }
 
-
 @Injectable()
 export class LiquidacionObservadaService extends LiquidacionService {
 
@@ -96,9 +88,7 @@ export class LiquidacionObservadaService extends LiquidacionService {
     exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
         return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadObservadas');
     }
-
 }
-
 
 @Injectable()
 export class LiquidacionPagaService extends LiquidacionService {
@@ -110,9 +100,7 @@ export class LiquidacionPagaService extends LiquidacionService {
     exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
         return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadPagas');
     }
-
 }
-
 
 @Injectable()
 export class LiquidacionNGAprobadaService extends LiquidacionService {
@@ -124,9 +112,7 @@ export class LiquidacionNGAprobadaService extends LiquidacionService {
     exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
         return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadAprobadasNG');
     }
-
 }
-
 
 @Injectable()
 export class LiquidacionNGObservadaService extends LiquidacionService {
@@ -138,9 +124,7 @@ export class LiquidacionNGObservadaService extends LiquidacionService {
     exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
         return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadObservadasNG');
     }
-
 }
-
 
 @Injectable()
 export class LiquidacionNGPagaService extends LiquidacionService {
@@ -152,49 +136,46 @@ export class LiquidacionNGPagaService extends LiquidacionService {
     exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
         return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadPagasNG');
     }
-
 }
-
 
 @Injectable()
 export class LiquidacionProformaService extends LiquidacionService {
 
     getDataProforma(fijacion: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('fijacion', fijacion);
+        let params: HttpParams = new HttpParams();
+        params = params.append('fijacion', fijacion);
+
         return this.http
-            .get('/api/liquidacion/getProforma', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .pipe(map(this.extractData));
+            .get('/api/liquidacion/getProforma', { params: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
 
     exportExcelProforma(fijacion: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('fijacion', fijacion);
+        let params: HttpParams = new HttpParams();
+        params = params.append('fijacion', fijacion);
+
         return this.http
-            .get('/api/liquidacion/descargarProforma', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .pipe(map(this.extractData));
+            .get('/api/liquidacion/descargarProforma', { params: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
 
     descargarProformaFinal(fijacion: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('fijacion', fijacion);
+        let params: HttpParams = new HttpParams();
+        params = params.append('fijacion', fijacion);
+
         return this.http
-            .get('/api/liquidacion/descargarProformaFinal', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .pipe(map(this.extractData));
+            .get('/api/liquidacion/descargarProformaFinal', { params: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
 
     getFleteProcedencia(contrato: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('contrato', contrato);
-        return this.http
-            .get('/api/liquidacion/getFleteProcedencia', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .pipe(map(this.extractData));
-    }
+        let params: HttpParams = new HttpParams();
+        params = params.append('contrato', contrato);
 
+        return this.http
+            .get('/api/liquidacion/getFleteProcedencia', { params: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
+    }
 }
 
 @Injectable()
@@ -209,8 +190,7 @@ export class LiquidacionInformarService extends LiquidacionService{
         }
 
         return this.http
-            .post('/api/liquidacion/notificar', payload, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/liquidacion/notificar', payload, { headers: this.headersPost });
     }   
 }
 

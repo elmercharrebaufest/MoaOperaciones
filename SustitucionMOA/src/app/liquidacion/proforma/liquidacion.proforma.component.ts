@@ -61,7 +61,7 @@ export class LiquidacionProformaComponent extends BaseComponent implements OnIni
             this.fijacion = params['id'];
             this.unsubscribe();
             this.subscription = this.service.getDataProforma(this.fijacion).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -87,7 +87,7 @@ export class LiquidacionProformaComponent extends BaseComponent implements OnIni
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.exportExcelProforma(this.fijacion).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -126,7 +126,7 @@ export class LiquidacionProformaComponent extends BaseComponent implements OnIni
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.descargarProformaFinal(this.fijacion).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 if(result.pdf){
                     var byteArray = new Uint8Array(result.pdf.data);
@@ -191,7 +191,7 @@ export class LiquidacionProformaComponent extends BaseComponent implements OnIni
         
         this.unsubscribe();
         this.subscription = this.service.getFleteProcedencia(contrato).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {

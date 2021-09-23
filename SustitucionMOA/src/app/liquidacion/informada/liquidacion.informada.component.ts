@@ -57,7 +57,7 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
         try {
             this.unsubscribe();
             this.subscription = this.service.getData(null, null, null).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();

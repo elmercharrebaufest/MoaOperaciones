@@ -1,79 +1,69 @@
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './Solp';
-import { Http, Response, URLSearchParams } from '@angular/http';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class ComprasService extends BaseService {
 
-    public constructor(private http2: HttpClient, protected http: Http)
-    {
-        super(http);
-    }
 
     public getCombos(): Observable<any> {
         return this.http
-            .get('/api/compras/Combos', { headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/compras/Combos', { headers: this.headers });
     }
 
     public getListarSolp(): Observable<any> {
         return this.http
-            .get('/api/compras/ListarSolp', { headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/compras/ListarSolp', { headers: this.headers });
     }
 
     public borrarSolp(idSolp: number): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('idSolp', idSolp.toString());
+        let params: HttpParams = new HttpParams();
+        params = params.set('idSolp', idSolp.toString());
+
         return this.http
-            .get('/api/compras/BorrarSolp', {  search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/compras/BorrarSolp', {  params: params, headers: this.headers });
     }
 
     public traerSolpId(idSolp: number): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('idSolp', idSolp.toString());
+        let params: HttpParams = new HttpParams();
+        params = params.set('idSolp', idSolp.toString());
+
         return this.http
-            .get('/api/compras/TraerSolpId', {  search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/compras/TraerSolpId', {  params: params, headers: this.headers });
     }
 
     getPdf(idSolp): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
-        let params: URLSearchParams = new URLSearchParams();
+        let headers = new HttpHeaders();
+        headers = headers.append("Content-Type", "application/json");
+        headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
+        headers = headers.append("Cache-control", "no-cache");
+        headers = headers.append("Cache-control", "no-store");
+        headers = headers.append("Expires", "0");
+        headers = headers.append("Pragma", "no-cache");
+
         return this.http
             .get("/api/compras/GenerarSolpPdf?idSolp=" + idSolp.toString(), {
-                headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+                headers: headers,
+            });
     }
 
     getEncodedPdf(idSolp): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
-        let params: URLSearchParams = new URLSearchParams();
+        let headers = new HttpHeaders();
+        headers = headers.append("Content-Type", "application/json");
+        headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
+        headers = headers.append("Cache-control", "no-cache");
+        headers = headers.append("Cache-control", "no-store");
+        headers = headers.append("Expires", "0");
+        headers = headers.append("Pragma", "no-cache");
+
         return this.http
             .get("/api/compras/PreviewSolpPdf?idSolp=" + idSolp.toString(), {
-                headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+                headers: headers,
+            });
     }
-
 
     public GuardarSolp(solp: Solp) {
         let solpJson = JSON.stringify({
@@ -174,8 +164,7 @@ export class ComprasService extends BaseService {
         payload.append('solpJson', solpJson);
         
         return this.http
-            .post('/api/compras/GuardarSolp',  payload , this.headers).pipe(
-                map(this.extractData));
+            .post<Solp>('/api/compras/GuardarSolp',  payload , {headers : this.headers});
     }
 
     getFechaHora(fecha: Date, hora: Date){
@@ -219,36 +208,37 @@ export class ComprasService extends BaseService {
     }
 
     DescargarArchivo(archivoId: number): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
+        let headers = new HttpHeaders();
+        headers = headers.append("Content-Type", "application/json");
+        headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
+        headers = headers.append("Cache-control", "no-cache");
+        headers = headers.append("Cache-control", "no-store");
+        headers = headers.append("Expires", "0");
+        headers = headers.append("Pragma", "no-cache");
+
         return this.http
             .get("/api/compras/DescargarArchivo?archivoId=" + archivoId.toString(), {
-                headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+                headers: headers,
+            });
     }
 
     descargarZipPliego(idSolp: number): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
-        let params: URLSearchParams = new URLSearchParams();
-        params.set("solpId", idSolp.toString());
+        let headers = new HttpHeaders();
+        headers = headers.append("Content-Type", "application/json");
+        headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
+        headers = headers.append("Cache-control", "no-cache");
+        headers = headers.append("Cache-control", "no-store");
+        headers = headers.append("Expires", "0");
+        headers = headers.append("Pragma", "no-cache");
+
+        let params: HttpParams = new HttpParams();
+        params = params.set("solpId", idSolp.toString());
+
         return this.http
             .get("/api/compras/DescargarZipPliego", {
-                search: params,
-                headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+                params: params,
+                headers: headers,
+            });
     }
 
     autocompleteSap(tabla: string, valor: string){
@@ -256,7 +246,7 @@ export class ComprasService extends BaseService {
             .append('tabla', tabla)
             .append('valor', valor)
 
-        return this.http2
+        return this.http
             .get<any[]>("/api/compras/AutocompleteTablaSap", { params: params })
     }
 
