@@ -78,7 +78,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.descargarFotos(cartaPorteIDStr).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -119,7 +119,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         this.unsubscribe();
         this.subscription = this.service.getFotos(cartaDePorteNumero).subscribe(
 
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();

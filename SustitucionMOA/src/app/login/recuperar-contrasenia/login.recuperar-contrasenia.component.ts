@@ -40,7 +40,7 @@ export class RecuperarContraseniaComponent extends BaseComponent implements OnDe
         this.unsubscribe();
         try {
             this.subscription = this.service.recuperarContrasenia(this.username).subscribe(
-                result => {
+                (result:any) => {
                     this.visibleButton = true;
                     this.spinnerComponent.hideIt();
                     if (result.error != undefined && result.error != "") {

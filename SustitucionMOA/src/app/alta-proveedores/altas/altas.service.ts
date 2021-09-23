@@ -1,117 +1,97 @@
 
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs';
-import { Empresa } from './Empresa'
-import { HistorialAprobaciones } from './Empresa'
 
-
-
-import { Formatter } from './../../common/formatter/Formatter';
 import { BaseService } from './../../common/services/BaseService';
-import { environment } from '../../../environments/environment';
+import { HttpParams } from '@angular/common/http';
+import { CommonResponse } from '../../common/models/common-response';
 
 @Injectable()
 export class AltaEmpresaService extends BaseService {
 
     public getEmpresas(idTipoProveedor): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('idTipoProveedor', idTipoProveedor.toString());
+        let params: HttpParams = new HttpParams();
+        params = params.append('idTipoProveedor', idTipoProveedor.toString());
 
         return this.http
-            .get('/api/AltaEmpresa/getEmpresas', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/AltaEmpresa/getEmpresas', { params: params, headers: this.headers });
     }
 
-
     public setEstadoAprobacion(empresaId: number, estadoId: number, observacion: string, observacionesProveedor: string, estadoSIPER: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('empresaId', empresaId.toString());
-        params.set('estado', estadoId.toString());
-        params.set('observacion', encodeURIComponent(observacion));
-        params.set('observacionParaElProveedor', encodeURIComponent(observacionesProveedor));
-        params.set('estadoSIPER', estadoSIPER);
+        let params: HttpParams = new HttpParams();
+        params = params.append('empresaId', empresaId.toString());
+        params = params.append('estado', estadoId.toString());
+        params = params.append('observacion', encodeURIComponent(observacion));
+        params = params.append('observacionParaElProveedor', encodeURIComponent(observacionesProveedor));
+        params = params.append('estadoSIPER', estadoSIPER);
         return this.http
-            .post('/api/AltaEmpresa/setEstadoAprobacion', params, this.headersPost).map(this.extractData);
+            .post('/api/AltaEmpresa/setEstadoAprobacion', params, {headers: this.headersPost});
     }
 
     public solicitarInformacion(empresaId: number): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('empresaId', empresaId.toString());
+        let params: HttpParams = new HttpParams();
+        params = params.append('empresaId', empresaId.toString());
         return this.http
-            .get('/api/AltaEmpresa/solicitarInformacion', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/AltaEmpresa/solicitarInformacion', { params: params, headers: this.headers });
     }
-
-
 
     public getEstados(): Observable<any> {
         return this.http
-            .get('/api/AltaEmpresa/getEstados', { headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/AltaEmpresa/getEstados', { headers: this.headers });
     }
 
     cargarSolicitudUsuario(): Observable<any> {
         return this.http
-            .get('/api/AltaEmpresaGranos/CargarSolicitudUsuario')
-            .pipe(map(this.extractData));
+            .get('/api/AltaEmpresaGranos/CargarSolicitudUsuario');
     }
 
     public VerificarEstadoDataAgro(empresaId: number): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('proveedorID', empresaId.toString());
+        let params: HttpParams = new HttpParams();
+        params = params.append('proveedorID', empresaId.toString());
         return this.http
-            .get('/api/AltaEmpresa/VerificarEstadoDataAgro', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/AltaEmpresa/VerificarEstadoDataAgro', { params: params, headers: this.headers });
     }
 
     public GuardarSIPER(proveedorId: number, estadoSIPER: string) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('proveedorId', proveedorId.toString());
-        params.set('estadoSIPER', estadoSIPER);
+        let params: HttpParams = new HttpParams();
+        params = params.append('proveedorId', proveedorId.toString());
+        params = params.append('estadoSIPER', estadoSIPER);
         return this.http
-            .get('/api/AltaEmpresa/GuardarSIPER', { search: params, headers: this.headers })
-            .pipe(map(this.extractData));
+            .get<CommonResponse>('/api/AltaEmpresa/GuardarSIPER', { params: params, headers: this.headers });
     }
 
     public getRubros(): Observable<any> {
         return this.http
-            .get('/api/usuario/getRubros', { headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/getRubros', { headers: this.headers });
     }
 
     public getTipoCambiario(): Observable<any> {
         return this.http
-            .get('/api/dataagro/GetTipoCambiario', { headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/dataagro/GetTipoCambiario', { headers: this.headers });
     }
 
     public proveedorNoGranosOperando(proveedorId: number, razonSocial: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('proveedorId', proveedorId.toString())
-        params.set('razonSocial', razonSocial)
+        let params: HttpParams = new HttpParams();
+        params = params.append('proveedorId', proveedorId.toString())
+        params = params.append('razonSocial', razonSocial)
         return this.http
-            .get('/api/AltaEmpresaNoGranos/HabilitarNoGranosOperando', { search: params, headers: this.headers })
-            .pipe(map(this.extractData))
+            .get('/api/AltaEmpresaNoGranos/HabilitarNoGranosOperando', { params: params, headers: this.headers });
     }
 
-
     public agregarObservacion(empresaId: number, observacion: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('empresaId', empresaId.toString());
-        params.set('observacion', encodeURIComponent(observacion));
+        let params: HttpParams = new HttpParams();
+        params = params.append('empresaId', empresaId.toString());
+        params = params.append('observacion', encodeURIComponent(observacion));
         return this.http
-            .post('/api/AltaEmpresa/AgregarObservacion', params, this.headersPost).map(this.extractData);
+            .post('/api/AltaEmpresa/AgregarObservacion', params, {headers: this.headersPost});
     }
 
     public grabarAltaInternaGranos(cuit: string, mailVendedor: string){
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('cuit', cuit);
-        params.set('mailVendedor', mailVendedor);
-
-        return this.http
-             .get('/api/AltaEmpresaGranos/GrabarNuevoProveedorGranos', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));   
+        let params: HttpParams = new HttpParams();
+        params = params.append('cuit', cuit);
+      params = params.append('mailVendedor', mailVendedor);  
+      return this.http
+             .get('/api/AltaEmpresaGranos/GrabarNuevoProveedorGranos', { params: params, headers: this.headers });   
     }
 }

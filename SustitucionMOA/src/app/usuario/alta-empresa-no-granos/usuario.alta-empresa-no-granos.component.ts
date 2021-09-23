@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { e } from '@angular/core/src/render3';
-import { Router, ActivatedRoute, Params } from "@angular/router";
-import { DropdownOption, DropdownComponent } from '../../common/view-child/dropdown/dropdown.component';
+import { ActivatedRoute, Params } from "@angular/router";
+import { DropdownComponent } from '../../common/view-child/dropdown/dropdown.component';
 import { BaseComponent } from './../../common/base-components/base-component';
-import { Seccion } from './../../common/models/seccion';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { NavService } from './../../common/services/NavService';
@@ -12,7 +10,6 @@ import { SessionDataService } from './../../common/services/SessionDataService';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { UsuarioService } from './../usuario.service';
-
 
 @Component({
     selector: 'app-usuario-alta-empresa-no-granos',
@@ -94,7 +91,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     getRubrosOptions() {
         try {
             this.subscriptionDropDowns = this.service.getRubros().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -118,7 +115,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     getTipoCambiario() {
         try {
             this.subscriptionDropDowns = this.service.getTipoCambiario().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -144,7 +141,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
             //Lo comento hasta que podamos usar otro servicio que funcione en QA
             return true;
             this.subscriptionDropDowns = this.service.getRazonSocial(this.CUIT).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -184,7 +181,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
                 this.observacionesParaElProveedor, this.RequiereVerificacionCompras, this.ingresoAPlanta, this.altaInterna, this.siperObligatorio,
                 this.observacionInterna
             ).subscribe(
-                    result => {
+                    (result:any) => {
                         this.spinnerComponent.hideIt();
                         if (result.logout == true) {
                             this.sessionDataService.logout();
@@ -224,7 +221,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         }
         try {
             this.service.rechazarNuevoProveedorNoGranos(this.proveedorId, this.observacionesParaElProveedor).subscribe(
-                    result => {
+                    (result:any) => {
                         this.spinnerComponent.hideIt();
                         if (result.logout == true) {
                             this.sessionDataService.logout();

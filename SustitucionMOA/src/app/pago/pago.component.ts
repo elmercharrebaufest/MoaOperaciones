@@ -46,7 +46,7 @@ export class PagoComponent extends ListBaseComponent {
         this.unsubscribe();
         this.floatMsgService.setMsgsEmpty();
         this.subscription = this.service.getComprobantes(documento, fecha, fiscYear).subscribe(
-            result => {
+            (result:any) => {
                 //this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -73,7 +73,7 @@ export class PagoComponent extends ListBaseComponent {
         this.unsubscribe();
         this.mensajeComponent.setMsgsEmpty();
         this.subscription = this.service.descargarDocumentoPDF(documento, ejercicio).subscribe(
-            result => {
+            (result:any) => {
                 //this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();

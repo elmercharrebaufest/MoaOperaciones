@@ -115,7 +115,7 @@ export class LoginComponent extends LoginCommonComponent implements OnInit, OnDe
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.login(this.username, this.pass).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 this.loginButtonEnable = true;
                 if (result.error != undefined && result.error != "") {
@@ -143,7 +143,7 @@ export class LoginComponent extends LoginCommonComponent implements OnInit, OnDe
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.validarLoginAzure().subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 this.loginButtonEnable = true;
                 if (result.error != undefined && result.error != "") {

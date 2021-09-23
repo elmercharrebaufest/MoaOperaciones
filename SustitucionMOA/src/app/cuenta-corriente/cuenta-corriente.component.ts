@@ -67,7 +67,7 @@ export class CuentaCorrienteBaseComponent extends ListBaseComponent {
             this.getInfoParam(params['id']);
             this.unsubscribe();
             this.subscription = this.service.getData(this.filtroFechaComponent.periodo, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.contrato, this.pago, this.retencion).subscribe(
-                result => {
+                (result:any) => {
                     this.data = null;
                     this.mensajeComponent.setMsgsEmpty();
                     this.spinnerComponent.hideIt();
@@ -99,7 +99,7 @@ export class CuentaCorrienteBaseComponent extends ListBaseComponent {
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.descargarDocumentoPDF(documento, ejercicio).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();

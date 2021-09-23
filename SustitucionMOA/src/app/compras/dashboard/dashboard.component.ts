@@ -140,7 +140,7 @@ export class DashboardComponent extends ListBaseComponent {
                 this.spinnerComponent.showIt();
 
                 this.subscription = this.service.getListarSolp().subscribe(
-                    result => {
+                    (result:any) => {
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
@@ -173,7 +173,7 @@ export class DashboardComponent extends ListBaseComponent {
     borrarSolp(idSolp){
         try {
             this.subscription = this.service.borrarSolp(idSolp).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -203,7 +203,7 @@ export class DashboardComponent extends ListBaseComponent {
     getCombos(){
         try {
             this.subscription = this.service.getCombos().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {

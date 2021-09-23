@@ -52,7 +52,7 @@ export class CambioContraseniaComponent extends BaseComponent implements OnInit{
             this.validarContrasenias();
             this.unsubscribe();
             this.subscription = this.service.cambiarContrasenia(this.contraseniaActual, this.contraseniaNueva).subscribe(
-                result => {
+                (result:any) => {
                     this.visibleButton = true;
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {

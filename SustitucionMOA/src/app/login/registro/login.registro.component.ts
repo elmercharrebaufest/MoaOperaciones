@@ -48,7 +48,7 @@ export class RegistroUsuarioComponent extends LoginCommonComponent implements On
         try {
             this.validarContrasenias();
             this.subscription = this.service.registrar(this.numeroProveedor, this.claveActivacion, this.username, this.contrasenia).subscribe(
-                result => {
+                (result:any) => {
                     this.visibleButton = true;
                     this.spinnerComponent.hideIt();
                     if (result.error != undefined && result.error != "") {
