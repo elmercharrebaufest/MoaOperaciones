@@ -180,13 +180,13 @@ namespace SustitucionMOA.Controllers
 
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_VENDEDOR_PENDIENTES)]
-        public ActionResult AgregarVendedor(string cuit)
+        public ActionResult AgregarVendedor(string cuit, int tipoProveedor)
         {
             try
             {
                 string mailUsuario = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                return JsonCustom(new { data = _vendedorService.AgregarVendedor(mailUsuario, cuit) });
+                return JsonCustom(new { data = _vendedorService.AgregarVendedor(mailUsuario, cuit, tipoProveedor) });
             }
             catch (InfoCustomException e)
             {

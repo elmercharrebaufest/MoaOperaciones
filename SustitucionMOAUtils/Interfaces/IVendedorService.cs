@@ -16,7 +16,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProveedorDto> GetVendedoresPendientes(string mailUsuario, string codigoProveedor);
         List<EstadoVendedorDto> GetVariosVendedoresStatus(List<string> cuitsVendedores, string user);
 
-        string AgregarVendedor(string mailUsuario, string cuit);
+        string AgregarVendedor(string mailUsuario, string cuit, int tipoProveedor);
 
         string EliminarVendedor(string mailUsuario, int proveedorId);
     }

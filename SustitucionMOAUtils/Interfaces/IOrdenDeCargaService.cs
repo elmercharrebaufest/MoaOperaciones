@@ -1,0 +1,29 @@
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SustitucionMOAUtils.Interfaces
+{
+    public interface IOrdenDeCargaService
+    {
+        Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
+        List<OrdenDeCargaDto> Listar(string mailUsuario);
+        OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId);
+        OrdenDeCargaEditarDto ObtenerEditar(string mailUsuario, int ordenId);
+        string AnularOrden(int ordenId);
+        string NotificarTransporte(int ordenId);
+        List<string> ObtenerContratos(int ordenId);
+        string SeleccionarContrato(int ordenId, string contratoSAP);
+        string VerificarSituacionCrediticia(int ordenId);
+        string VerificarTransporte(int ordenId);
+        void VerificarTransporteBulk();
+        Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario);
+        List<OrdenDeCargaDto> ListadoFiltradoOrdenCarga(string mailUsuario, string fechaInicio, string fechaFin);
+
+    }
+
+}
