@@ -3006,4 +3006,35 @@ BEGIN
 	VALUES('TipoSolp','REQUERIMIENTOS','C/Doc. Req',null)
 END
 
+-- Tabla CentroBeneficio
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'AC01') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'AC01', 'AC01', 'ACOPIOS GRANELES', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'AC32') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'AC32', 'AC32', 'ACOPIOS MRP', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'AG10') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'AG10', 'AG10', 'AGROINSUMOS', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'AG32') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'AG32', 'AG32', 'Insumos MRP', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'BIF0') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'BIF0', 'BIF0', 'BIODIESEL FAZON', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'BIF3') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'BIF3', 'BIF3', 'BIODIESEL FAZON', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'BIR0') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'BIR0', 'BIR0', 'BIO RENOVA', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'BIR3') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'BIR3', 'BIR3', 'BIO RENOVA', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'FT40') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'FT40', 'FT40', 'TRIGO EXPORTACION', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'GX00') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'GX00', 'GX00', 'DIRECCION GENERAL', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'GX02') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'GX02', 'GX02', 'CORPORATE', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'GX10') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'GX10', 'GX10', 'CORPORATE', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'GX32') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'GX32', 'GX32', 'Estructura MRP', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'GX70') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'GX70', 'GX70', 'BCE LEGAL - GRANELES', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'GX71') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'GX71', 'GX71', 'AJUSTE X INFL LEGAL', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'GX99') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'GX99', 'GX99', 'C. BENEFICIO RESID', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'MZ32') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'MZ32', 'MZ32', 'Maiz MRP', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'MZ40') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'MZ40', 'MZ40', 'MAIZ EXPORTACION', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'OC21') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'OC21', 'OC21', 'GIRASOL', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'OC23') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'OC23', 'OC23', 'SAN LORENZO', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'OC24') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'OC24', 'OC24', 'GIRASOL OLEICO', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'OC25') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'OC25', 'OC25', 'TURBINA SAN LORENZO', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'OC32') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'OC32', 'OC32', 'Soja MRP', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'PY00') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'PY00', 'PY00', 'PROYECTOS GRANELES', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'PY01') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'PY01', 'PY01', 'PROYECTO KECLON', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'SB15') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'SB15', 'SB15', 'PUERTO SAN BENITO', null) END
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'SB32') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'SB32', 'SB32', 'SAN BENITO MRP', null) END
+
+
 COMMIT TRAN

@@ -1,4 +1,5 @@
-﻿using SustitucionMOAUtils.Logger;
+﻿using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,25 @@ namespace SustitucionMOAExternalAPI.Controllers
 {
     public class LiberacionSolpController : ApiController
     {
+        private readonly IComprasService comprasSvc;
+
+        public LiberacionSolpController(IComprasService comprasSvc)
+        {
+            this.comprasSvc = comprasSvc;
+        }
+
         [Authorize(Roles = "ABM SOLP")]
         public IHttpActionResult Post(string nrosolp, [FromBody]DateTime fechaLiberacion)
         {
-            Log.ExternalAPIInfo(string.Format("Se informó la liberacion de la SOLP: {0} en la fecha {1}", nrosolp, fechaLiberacion));
+            try
+            {
+                Log.ExternalAPIInfo(string.Format("Se informó la liberacion de la SOLP: {0} en la fecha {1}", nrosolp, fechaLiberacion));
+                comprasSvc.ActualizarFechaLiberacion(nrosolp, fechaLiberacion);
+            }
+            catch(Exception ex)
+            {
+                Log.ExternalAPIError(ex);
+            }
 
             return Ok();
         }

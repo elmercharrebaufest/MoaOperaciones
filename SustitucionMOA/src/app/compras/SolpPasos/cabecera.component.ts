@@ -64,6 +64,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     formularioActual: FormGroup;
 
     proveedoresAutocomplete: any;
+    
     camposObligatorios: any[] = [
         { campo: 'servicio',                    esObligatorio: true,    esFijo: true },
         { campo: 'centroDeCosto',               esObligatorio: false,   esFijo: true },
@@ -126,7 +127,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
         this.centroSeleccionado();
 
-        if(this.model.monedaPorDefecto)
+        if(this.model.monedaPorDefecto && !this.model.posicionActual.monedaSeleccionada)
             this.model.posicionActual.monedaSeleccionada = this.combos.Moneda.find(x=>x.Codigo == this.model.monedaPorDefecto)
 
         if(!this.model.posicionActual.selectSolicitanteCompras)
