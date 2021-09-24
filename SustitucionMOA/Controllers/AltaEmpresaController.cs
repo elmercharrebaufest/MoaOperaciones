@@ -50,8 +50,6 @@ namespace SustitucionMOA.Controllers
                         idTiposProveedor.Add(2);
                         //Corredor
                         idTiposProveedor.Add(4);
-                        //Cliente
-                        idTiposProveedor.Add(5);
                     }
 
                     if (SessionPersister.User.permisos.Contains("VER ALTAS NO GRANOS"))
@@ -90,11 +88,11 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
         [HttpPost]
-        public ActionResult SetEstadoAprobacion(int empresaId, EstadoAprobacion estado, string observacion, string observacionParaElProveedor, string estadoSIPER, string razonSocial, string codigoCliente)
+        public ActionResult SetEstadoAprobacion(int empresaId, EstadoAprobacion estado, string observacion, string observacionParaElProveedor, string estadoSIPER)
         {
             try
             {
-                return JsonCustom(new { data = altaEmpresaService.SetEstadoAprobacion(empresaId, estado, observacion, ClaimsPrincipalExtension.GetClaimValue("emails"), observacionParaElProveedor, estadoSIPER, true, razonSocial, codigoCliente) });
+                return JsonCustom(new { data = altaEmpresaService.SetEstadoAprobacion(empresaId, estado, observacion, ClaimsPrincipalExtension.GetClaimValue("emails"), observacionParaElProveedor, estadoSIPER, true) });
             }
             catch (InfoCustomException e)
             {

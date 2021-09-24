@@ -51,7 +51,7 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
     filtroVendedor: string = "";
     filtroNroVendedor: string = "";
     nuevoVendedorCUIT: string = "";
-    tipoProveedor: number = 2;
+
     mostrarNuevoVendedor: boolean = false;
 
     setTabs() {
@@ -76,20 +76,20 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
                 new Seccion("/dato-fiscal/vendedor", "dato-fiscal", "Mis Vendedores")
             );
 
-        if (this.isAuthorized("CONSULTAR VENDEDOR PENDIENTES"))
-            secciones.push(
-                new Seccion(
-                    "/dato-fiscal/vendedores-pendientes",
-                    "dato-fiscal",
-                    "Vendedores pendientes"
-                )
-            );
+    if (this.isAuthorized("CONSULTAR VENDEDOR PENDIENTES"))
+      secciones.push(
+        new Seccion(
+          "/dato-fiscal/vendedores-pendientes",
+          "dato-fiscal",
+          "Vendedores pendientes"
+        )
+      );
 
         this.navService.setSeccionList(secciones);
         this.getUsuario();
 
 
-        if (this.isAuthorized('NUEVO VENDEDOR') && (sessionStorage.getItem("granosFlag") == "G" || sessionStorage.getItem("granosFlag") == "A")) {
+        if (this.isAuthorized('NUEVO VENDEDOR') && (sessionStorage.getItem("granosFlag") == "G" || sessionStorage.getItem("granosFlag") == "A" )) {
             this.mostrarNuevoVendedor = true;
         }
     }
@@ -148,8 +148,7 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
         try {
             this.subscription = this.service
                 .agregarVendedor(
-                    this.nuevoVendedorCUIT,
-                    this.tipoProveedor
+                    this.nuevoVendedorCUIT
                 )
                 .subscribe(
                     (result) => {

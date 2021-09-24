@@ -6,7 +6,7 @@
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10 ">Dato Fiscal: <strong>Vendedores</strong> </div>
 
-
+            
         </div>
         <!--End Title-->
         <div class="row myRow firstSection mySearch">
@@ -59,8 +59,7 @@
                                 <button (click)="goToSeccionParam('/alta-empresa-granos', vendedor.Id)" *ngIf="vendedor.EstadoAprobacion != 3 && 
                                 vendedor.EstadoAprobacion != 5 &&
                                 vendedor.EstadoAprobacion != 6 &&
-                                vendedor.EstadoAprobacion != 9 &&
-                                vendedor.IdTipoProveedor != 5" class="btn btn-custom btn-add">
+                                vendedor.EstadoAprobacion != 9 " class="btn btn-custom btn-add">
                                     Ver alta
                                 </button>
                                 <br>
@@ -81,8 +80,8 @@
                         <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
                             <a class="paginate_button" (click)="pT.setCurrent(page.value)"
                                 *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
-                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label
-                                }}</a>
+                            <a class="paginate_button current"
+                                *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
                         </span>
                         <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
                             [class.disabled]="pT.isLastPage()"> Siguiente </a>
@@ -92,7 +91,7 @@
         </div>
         <!-- END tables-->
         <!-- END form-->
-
+        
 
     </section>
     <!--End CONTENT-->

@@ -79,9 +79,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
     relacionConFuncionarios: string = "";
     cuit: string = "";
     mailVendedor: string = "";
-    razonSocial: string = "";
-    codigoCliente: string;
-
 
     contieneDocumentacionFisica: number = 0;
     puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
@@ -269,21 +266,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.mensajeError = "Debe ingresar Estado en SIPER.";
             return false;
         }
-
-
-        if (this.empresaSeleccionada.IdTipoUsuario == 5)
-        {
-            if (this.razonSocial == "") {
-                this.mensajeError = "Debe ingresar la razón social del cliente.";
-                return false;
-            }
-
-            if (this.codigoCliente == "") {
-                this.mensajeError = "Debe ingresar el código SAP del cliente.";
-                return false;
-            }
-        }
-
         /*
         this.observacionesProveedor = this.observacionesProveedor.replace("<", "esSignoMenor");
         this.observaciones = this.observaciones.replace("<", "esSignoMenor");
@@ -291,7 +273,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.spinnerModal.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {
-            this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor, this.empresaSeleccionada.EstadoSIPER, this.razonSocial, this.codigoCliente).subscribe(
+            this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor, this.empresaSeleccionada.EstadoSIPER).subscribe(
                 (result:any) => {
                     this.getEmpresa();
                     this.spinnerModal.hideIt();

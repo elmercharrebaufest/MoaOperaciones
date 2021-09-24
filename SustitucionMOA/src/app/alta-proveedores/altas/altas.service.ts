@@ -25,8 +25,6 @@ export class AltaEmpresaService extends BaseService {
         params = params.append('observacion', encodeURIComponent(observacion));
         params = params.append('observacionParaElProveedor', encodeURIComponent(observacionesProveedor));
         params = params.append('estadoSIPER', estadoSIPER);
-        params = params.append('razonSocial', razonSocial);
-        params = params.append('codigoCliente', codigoCliente.toString());
         return this.http
             .post('/api/AltaEmpresa/setEstadoAprobacion', params, {headers: this.headersPost});
     }

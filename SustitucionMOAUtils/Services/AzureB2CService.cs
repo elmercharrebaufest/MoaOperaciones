@@ -84,7 +84,7 @@ namespace SustitucionMOAUtils.Services
 
                     usuarioCliente.TipoUsuario = ObtenerTipoPorNombreCorto("CLI");
 
-                    RegistrarUsuarioCliente(ref usuarioCliente);
+                    RegistrarUsuarioGenerico(ref usuarioCliente);
 
                     usuario = usuarioCliente;
                     break;
@@ -317,45 +317,6 @@ namespace SustitucionMOAUtils.Services
 
             usuario.Proveedores.Add(proveedor);
 
-            usuario.Habilitado = true;
-
-            repositorio.Agregar(usuario);
-            return repositorio.GuardarCambios() == 1;
-        }
-
-        public bool RegistrarUsuarioCliente(ref Usuario usuario)
-        {
-            var rolNuevoCliente = ObtenerRolPorCodigo("NUECLI");
-
-            usuario.Roles = new List<Rol>
-            {
-                rolNuevoCliente
-            };
-
-            usuario.Proveedores = new List<Proveedor>();
-
-            Proveedor proveedor = new Proveedor
-            {
-                CUIT = usuario.CUITRegistro,
-                Mail = usuario.Mail,
-                EstadoAprobacion = EstadoAprobacion.EtapaFinal,
-                Observaciones = "Esperando aprobación.",
-                TipoProveedor = ObtenerTipoPorNombreCorto("CLI")
-            };
-
-            proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>
-            {
-                new ProveedorHistorialAprobacion()
-                {
-                    Fecha = DateTime.Now,
-                    Proveedor_Id = proveedor.Id,
-                    EstadoAprobacion = EstadoAprobacion.EtapaFinal,
-                    Observacion = "Registro de usuario cliente",
-                    Usuario_Id = usuario.Id
-                }
-            };
-
-            usuario.Proveedores.Add(proveedor);
             usuario.Habilitado = true;
 
             repositorio.Agregar(usuario);

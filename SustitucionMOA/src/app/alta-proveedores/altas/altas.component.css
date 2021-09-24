@@ -106,15 +106,6 @@ thead tr th{
   padding: 15px 35px !important;
 }
 
-.historialContainer {
-  padding-top: 10px;
-}
-
-.infoClienteContainer{
-  display: flex;
-  flex-direction: column;
-}
-
 .tableContainer {
   width: 100%; 
   overflow-x: auto;
