@@ -70,11 +70,12 @@ export class DatoFiscalService extends BaseService {
   }
 
   public agregarVendedor(
-    nuevoVendedorCUIT: string
+    nuevoVendedorCUIT: string,
+    tipoProveedor: number
   ): Observable<any> {
     let params: HttpParams = new HttpParams();
     params = params.append("cuit", nuevoVendedorCUIT);
-
+    params = params.append("tipoProveedor", tipoProveedor.toString());
     return this.http
       .get("/api/vendedor/agregarVendedor", { params: params })
       .pipe(
