@@ -396,7 +396,7 @@ namespace SustitucionMOATest.Services
                 "CUIT:", "20-12312312-1", "Anticipo:", "1234", "Sede:", "901",
                 "Determinación del Coeficiente Unificado", "Contribuyente:", "razon social",
                 "Coeficiente Unificado",
-                "901", "Capital Federal", "15/05/2021", "18/06/2021", "0,2134", "0,0000", "......",
+                "901", "Capital Federal", "15/05/2021", "18/06/2021", "0,2134", "0,0000", "aas",
                 "903", "Catamarca", "0,0000", "0,0000", "0,0000",
                 "904", "Cordoba", "23/12/2018", "0,0000", "0,7548", "0,3477",
             };
@@ -547,6 +547,35 @@ namespace SustitucionMOATest.Services
                 azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync("2"), Times.Never);
 
                 repositorioMock.Verify(repo => repo.GuardarCambios(), Times.Never);
+            }
+            catch (Exception)
+            {
+                Assert.Fail("Debió lanzar una ValidationCustomException");
+            }
+        }
+
+        [Test]
+        public void ProcesarCM05Excepcion()
+        {
+            int idComentarioTest = 324;
+            string cuitProveedorTest = "20123123121";
+
+            var archivos = new Mock<HttpFileCollectionBase>();
+
+            Exception exceptionTest = new Exception("excepcion loca");
+
+            archivos.Setup(x => x.Count).Throws(exceptionTest);
+
+            try
+            {
+                target.ProcesarCM05(archivos.Object, idComentarioTest, cuitProveedorTest);
+                Assert.Fail("Debió lanzar una excepción");
+            }
+            catch (ValidationCustomException vex)
+            {
+                Assert.AreEqual(vex.Message, ErrorMsg.ErrorCargaCM05);
+                Assert.AreEqual(vex.InnerException, exceptionTest);
+                Assert.IsTrue(vex.LoguearExcepcion);
             }
             catch (Exception)
             {
