@@ -4,7 +4,6 @@
     <spinner-small></spinner-small>
     <div class="myRow firstSection roundedInfo" id="container">
         <div>
-
             <div>
                 <div class="col-xs-12 col-sm-6">
                     <div class="step-container shadow" name="Step 1" label="Informe comercial" *ngIf="!esCorredor || puedeAltaInterna">
@@ -389,7 +388,7 @@
             <div class="container-fluid">
                 <div class="col-xs-12">
                     <div class="accordion" id="accordionExample">
-                        <div class="card z-depth-0 bordered">
+                        <div class="card z-depth-0 bordered" *ngIf="!puedeAltaInterna">
                             <div class="card-header" id="headingOne">
                                 <h5 class="mb-0">
                                     <button class="titulos " type="button" data-toggle="collapse"
@@ -495,7 +494,7 @@
                             </div>
                         </div>
 
-                        <div class="card z-depth-0 bordered">
+                        <div class="card z-depth-0 bordered" *ngIf="!puedeAltaInterna">
                             <div class="card-header" id="headingTwo">
                                 <h5 class="mb-0">
                                     <button class="collapsed titulos" type="button" data-toggle="collapse"
@@ -631,8 +630,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card z-depth-0 bordered">
-                            <div class="card-header" id="headingThree">
+                        <div *ngIf="!puedeAltaInterna" class="card z-depth-0 bordered">
+                            <div *ngIf="!puedeAltaInterna" class="card-header" id="headingThree">
                                 <h5 class="mb-0" (click)="abrirCodigoConducta()">
                                     <button class="titulos collapsed" type="button" data-toggle="collapse"
                                         data-target="#collapseThree" aria-expanded="false"
@@ -641,7 +640,7 @@
                                     </button>
                                 </h5>
                             </div>
-                            <div id="collapseThree" class="collapse  card-container " aria-labelledby="headingThree"
+                            <div *ngIf="!puedeAltaInterna" id="collapseThree" class="collapse  card-container " aria-labelledby="headingThree"
                                 data-parent="#accordionExample">
                                 <div class="card-body">
                                     <div class="col-xs-12">
@@ -704,7 +703,7 @@
                     <!--Granos-->
                     <!-- empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) -->
                     <!--si viene de listado de altas pendientes-->
-                    <input type="submit" *ngIf="puedeAltaInterna" (click)="onNotificar()"
+                    <input type="submit" *ngIf="puedeAltaInterna" (click)="submitAltaInterna()"
                         class="btn-custom btn-guardar btn-mediano" value="Enviar">
 
                     <!--

@@ -10,6 +10,7 @@ import { ModalService } from './../common/services/ModalService';
 import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
 import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
+import { PesificacionBaseComponent } from './pesificacion-base.component';
 declare var $: any;
 
 
@@ -19,7 +20,7 @@ declare var $: any;
     providers: [PesificacionService]
 })
 
-export class PesificacionComponent extends ListBaseComponent implements OnInit, OnDestroy {
+export class PesificacionComponent extends PesificacionBaseComponent implements OnInit, OnDestroy {
 
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
@@ -49,15 +50,17 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
     permitirCarga: boolean = false;
 
     ngOnInit() {
+        super.ngOnInit();
         this.setTabs();
         this.checkPermisos();
         this.initForm();
+        this.setMenuSeccionTab("pesificacion", "Carga");
     }
 
-    setTabs() {
-        this.navService.setSeccionList([]);
-        this.setMenuSeccionTab("pesificacion", "Pesificacion");
-    }
+    // setTabs() {
+    //     // this.navService.setSeccionList([]);
+    //     this.setMenuSeccionTab("pesificacion", "Pesificacion");
+    // }
 
     checkPermisos() {
         //La diferencia entre VER PESIFICACION es que es read only, mientras que PESIFICACION te permite cargar pesificaciones masivas e individuales
@@ -73,7 +76,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
         try {
             this.unsubscribe();
             this.subscription = this.service.getContratos().subscribe(
-                result => {
+                (result:any) => {
                     //this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -121,7 +124,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
         this.unsubscribe();
 
         this.subscription = this.service.getData().subscribe(
-            result => {
+            (result:any) => {
                 this.fecha = null;
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
@@ -196,7 +199,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
 
         this.unsubscribe();
         this.subscription = this.service.setData(this.contrato, this.fijacion, this.cantidad).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -244,7 +247,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
 
         this.unsubscribe();
         this.subscription = this.service.setMassiveData(this.file).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 this.visibleEnviar = true;
                 if (result.logout == true) {

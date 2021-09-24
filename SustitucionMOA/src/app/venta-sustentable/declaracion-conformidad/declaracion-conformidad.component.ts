@@ -9,6 +9,7 @@ import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.compon
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { VentaSustentableService } from '../venta-sustentable.service';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { CommonResponse } from '../../common/models/common-response';
 
 @Component({
   selector: 'app-declaracion-conformidad',
@@ -59,7 +60,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   verificarDeclaracion() {
     this.mensajeComponent.setMsgsEmpty();
     this.subscription = this.service.verificarDeclaracion(this.proveedorId, this.cosechaId, this.CUITDeclaracion).subscribe(
-      result => {
+      (result:any) => {
         if (result.logout == true) {
           this.sessionDataService.logout();
         } else if (result.error != undefined && result.error != "") {
@@ -107,7 +108,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
       this.subscription = this.service
         .generarDeclaracionProveedor(this.proveedorId, this.cosechaId, this.hectareasTotales, this.CUITDeclaracion, this.razonSocialDeclaracion)
         .subscribe(
-          (result) => {
+          (result:CommonResponse) => {
             if (result.error) {
               this.floatMessage.setErrorMsg(result.error)
             } else {
@@ -173,7 +174,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
     this.mensajeComponent.setMsgsEmpty();
     this.subscription = this.service.adjuntarDeclaracionFirmada(this.proveedorId, this.cosechaId, this.CUITDeclaracion, this.file).subscribe(
-      result => {
+      (result:any) => {
         if (result.logout == true) {
           this.sessionDataService.logout();
         } else if (result.error != undefined && result.error != "") {

@@ -98,7 +98,7 @@ export class RYDMantenimientoBalanzaComponent extends RYDMantenimientoBaseCompon
     getDataInputs() {
         this.mensajeComponent.setMsgsEmpty();
         this.subscriptionDropDowns = this.service.getInputDropDown().subscribe(
-            result => {
+            (result:any) => {
                 //this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -128,7 +128,7 @@ export class RYDMantenimientoBalanzaComponent extends RYDMantenimientoBaseCompon
         this.spinnerComponent.showIt();
         this.filtroNroPuesto = null;
         this.service.getNroPuesto(this.itcSelected).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -165,7 +165,7 @@ export class RYDMantenimientoBalanzaComponent extends RYDMantenimientoBaseCompon
         this.spinnerComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.aplicar(this.codigo).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -227,7 +227,7 @@ export class RYDMantenimientoBalanzaComponent extends RYDMantenimientoBaseCompon
         this.unsubscribe();
         try {
             this.subscription = this.service.buscarBalanza(this.descripcionBusqueda, this.tipoBusqueda, this.cabezalBusqueda, this.numeroSAPBusqueda).subscribe(
-                result => {
+                (result:any) => {
                     this.visibleButton = true;
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -264,7 +264,7 @@ export class RYDMantenimientoBalanzaComponent extends RYDMantenimientoBaseCompon
         this.unsubscribe();
         try {
             this.subscription = this.service.guardarBalanza(this.codigo, this.descripcion, this.automatico, this.toleria, this.centroEmisor, this.tolerX, this.tipoSelected, this.pesoMaximo, this.codigoSAP, this.codigoCabezalSelected, this.itcSelected, this.nroPuestoSelected, this.tipoAccesoSelected).subscribe(
-                result => {
+                (result:any) => {
                     this.visibleButton = true;
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -302,7 +302,7 @@ export class RYDMantenimientoBalanzaComponent extends RYDMantenimientoBaseCompon
         this.unsubscribe();
         try {
             this.subscription = this.service.actualizarBalanza(this.codigo, this.descripcion, this.automatico, this.toleria, this.centroEmisor, this.tolerX, this.tipoSelected, this.pesoMaximo, this.codigoSAP, this.codigoCabezalSelected, this.itcSelected, this.nroPuestoSelected, this.tipoAccesoSelected).subscribe(
-                result => {
+                (result:any) => {
                     this.visibleButton = true;
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -340,7 +340,7 @@ export class RYDMantenimientoBalanzaComponent extends RYDMantenimientoBaseCompon
         this.unsubscribe();
         try {
             this.subscription = this.service.borrarBalanza(this.codigo).subscribe(
-                result => {
+                (result:any) => {
                     this.visibleButton = true;
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {

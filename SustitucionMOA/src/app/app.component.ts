@@ -1,21 +1,21 @@
 ﻿declare let ga: Function;
-import { Component, Injector, ViewChild } from '@angular/core';
+import { Component, Injector, OnDestroy, ViewChild } from '@angular/core';
 import { Router, NavigationEnd } from "@angular/router";
 import { ServiceLocator } from './common/services/ServiceLocator';
 import { SessionDataService } from './common/services/SessionDataService';
 import { NavService } from './common/services/NavService';
 import { MensajeComponent } from './common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from './common/view-child/spinner-small/spinner-small.component';
-import { map } from 'rxjs/operators';
-import { Http, Response, URLSearchParams, Headers } from '@angular/http';
-import { environment } from '../environments/environment';
 import { Location } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { UsuarioLogueado } from './common/models/usuario-logueado';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'my-app',
     templateUrl: `app.component.html`
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
 
     @ViewChild(MensajeComponent)
     private mensajeComponent: MensajeComponent;
@@ -23,7 +23,10 @@ export class AppComponent {
     @ViewChild(SpinnerSmallComponent)
     private spinnerSmallComponent: SpinnerSmallComponent;
 
-    constructor(protected sessionDataService: SessionDataService, protected navService: NavService, private injector: Injector, public router: Router, private http: Http, private location: Location) {
+    private validarLoginSub: Subscription;
+    private aceptarTyCSub: Subscription;
+
+    constructor(protected sessionDataService: SessionDataService, protected navService: NavService, private injector: Injector, public router: Router, private http: HttpClient, private location: Location) {
         ServiceLocator.injector = this.injector;
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
@@ -49,25 +52,17 @@ export class AppComponent {
         }
     }
 
-    private extractData(res: Response) {
-        return res.json();
-    }
-
     validarLoginAzure() {
-        let params: URLSearchParams = new URLSearchParams();
-        let headers = new Headers();
+        let headers = new HttpHeaders();
         headers.append('Access-Control-Allow-Origin', '*');
         headers.append('Cache-control', 'no-cache');
         headers.append('Cache-control', 'no-store');
         headers.append('Expires', '0');
         headers.append('Pragma', 'no-cache');
 
-        let observable = this.http
-            .get('/api/Home/ValidarLoginAzure', { search: params, headers: headers })
-            .pipe(map(this.extractData));
-
-        observable.subscribe(
-            result => {
+        this.validarLoginSub = this.http
+            .get<UsuarioLogueado>('/api/Home/ValidarLoginAzure', { headers: headers }).subscribe(
+            (result:any) => {
                 if (result.tipoUsuario == "DATAAGROLOGIN") {
                     if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
@@ -111,64 +106,33 @@ export class AppComponent {
 
         sessionStorage.setItem("granosSelected", result.granosFlag == 'A' ? 'G' : result.granosFlag);
 
-
-
-        //this.navService.navegarSeccion("notificaciones/alta");
         this.navService.navegarSeccion(result.redirectURL);
 
-        //La URL a donde direccionamos ahora la traemos del controller. Esto es para no tener que estan pasando tantas variables que no nos interesan acá
-        //if (result.esNuevoUsuario) {
-        //    if (result.granosFlag == "A") {
-        //        sessionStorage.setItem("granosSelected", "G");
-        //        this.navService.navegarSeccion('/dato-fiscal/documentacion');
-        //    } else {
-        //        sessionStorage.setItem("granosSelected", result.granosFlag);
-        //        if (result.granosFlag == "G") {
-        //            this.navService.navegarSeccion('/alta-empresa-granos');
-        //        } else {
-        //            this.navService.navegarSeccion('/dato-fiscal/documentacion');
-        //        }
-        //    }
-        //} else {
-
-        //    if (result.tipoUsuario == "ADMP" || result.tipoUsuario == "ADNA" || result.tipoUsuario == "RYDD") {
-        //        this.navService.navegarSeccion('/aduana/pesada-online');
-        //    } else if (result.tipoUsuario == "CLIE") {
-        //        this.navService.navegarSeccion('/cuenta-corriente/simple');
-        //    } else {
-        //        if (result.granosFlag == "A") {
-        //            sessionStorage.setItem("granosSelected", "G");
-        //            this.navService.navegarSeccion('/home');
-        //        } else {
-        //            sessionStorage.setItem("granosSelected", result.granosFlag);
-        //            if (result.granosFlag == "G") {
-        //                this.navService.navegarSeccion('/home');
-        //            } else {
-        //                this.navService.navegarSeccion('/home-ngs');
-        //            }
-        //        }
-        //    }
-        //}
         if (result.aceptoTyC != true) {
             document.getElementById("openModalaceptoTyCModal").click();
-
         }
     }
     aceptarTyC() {
-        let observable = this.http
-            .get('/api/Home/AceptarTyC', {})
-            .pipe(map(this.extractData));
-
-        observable.subscribe(result => {
+        this.aceptarTyCSub = this.http
+            .get<{error:string, data:boolean}>('/api/Home/AceptarTyC', {})
+        .subscribe((result:any) => {
             if (result.error != undefined && result.error != "") {
                 this.mensajeComponent.setErrorMsg(result.error);
             } else {
                 document.getElementById("openModalaceptoTyCModal").click();
             }
-        })
+        });
     }
 
     checkTyCChecked(event) {
         this.disabledAgreement = !event.target.checked;
+    }
+
+    ngOnDestroy(){
+        if(this.validarLoginSub)
+            this.validarLoginSub.unsubscribe();
+            
+        if(this.aceptarTyCSub)
+        this.aceptarTyCSub.unsubscribe();   
     }
 }

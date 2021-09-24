@@ -12,8 +12,8 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IConsultaService
     {
-        ConsultaDto AgregarConsulta(Consulta consulta, Comentario comentario, HttpFileCollectionBase files);
-        ComentarioDto AgregarComentario(int consultaId, Comentario comentario, HttpFileCollectionBase files);
+        AgregarConsultaResponseDto AgregarConsulta(Consulta consulta, Comentario comentario, HttpFileCollectionBase files);
+        ComentarioDto AgregarComentario(int consultaId, ComentarioDto comentario, HttpFileCollectionBase files);
         string AgregarAdjuntoComentario(int consultaId, int comentarioId, HttpFileCollectionBase files);
         ConsultaDto ObtenerConsulta(int consultaId);
         void ActualizarEstadoConsulta(int consultaId, int estadoConsultaId);
@@ -29,5 +29,6 @@ namespace SustitucionMOAUtils.Interfaces
         string RecordarComentario(int consultaId);
         string GenerarReclamoImpositivoPdf(ReclamoImpositivo reclamoImpositivo);
         List<MaterialDto> ObtenerMaterial();
+        string AnularConsulta(int consultaId, int usuarioId, string motivoRechazo);
     }
 }

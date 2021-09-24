@@ -78,7 +78,7 @@ export class ContratoDetalleFijacionComponent extends BaseComponent implements O
             this.fijacion = params['id2']; 
             this.unsubscribe();
             this.subscription = this.service.getDetalleFijacion(this.numeroContratoId, this.fijacion).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -105,7 +105,7 @@ export class ContratoDetalleFijacionComponent extends BaseComponent implements O
         this.spinnerSmallExportComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.exportExcelDetalleFijacion(this.numeroContratoId, this.fijacion).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallExportComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();

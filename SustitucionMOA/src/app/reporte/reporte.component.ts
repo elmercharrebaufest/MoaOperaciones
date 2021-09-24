@@ -72,7 +72,7 @@ export class ReporteBaseComponent extends ListBaseComponent {
         if (term.length > 2) {
             this.unsubscribe();
             this.subscription = this.service.buscarProveedoresConCorredor(term).subscribe(
-                result => {
+                (result:any) => {
                     var resultlist = JSON.parse(result);
 
                     this.proveedores = resultlist.map(prov => {

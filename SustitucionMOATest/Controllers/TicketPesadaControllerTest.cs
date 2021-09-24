@@ -86,5 +86,24 @@ namespace SustitucionMOATest.Controllers
 
             Assert.AreEqual(expected, resultado.Data.ToString());
         }
+
+        [Test()]
+        public void ObtenerTestException()
+        {
+            var ticketPesadaJson = "{'NumeroCartaPorte':'12345678910','PatenteCamion':'ABC123','Mail':'mail@mail.com'}";
+
+            HttpContext.Current = new HttpContext(
+                new HttpRequest("", "http://tempuri.org", ""),
+                new HttpResponse(new StringWriter())
+                );
+
+            ticketPesadaServiceMock.Setup(s => s.ObtenerTicket(It.IsAny<ConsultaTicketPesada>())).Throws(new Exception());
+
+            var resultado = target.Obtener(ticketPesadaJson);
+
+            var expected = @"{ error = Ha ocurrido un error, por favor intente nuevamente }";
+
+            Assert.AreEqual(expected, resultado.Data.ToString());
+        }
     }
 }

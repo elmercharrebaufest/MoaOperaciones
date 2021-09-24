@@ -12,6 +12,7 @@ import { ModalService } from '../../common/services/ModalService';
 import { Seccion } from '../../common/models/seccion';
 import { forEach } from '@angular/router/src/utils/collection';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
+import { CommonResponse } from '../../common/models/common-response';
 declare var $: any;
 
 @Component({
@@ -160,7 +161,7 @@ export class CrearContratoAltaMasivaComponent extends CrearContratoBaseComponent
         this.subscription = this.service
             .excelModeloAltaMasiva()
             .subscribe(
-                (result) => {
+                (result:CommonResponse) => {
                     if (result.error) {
 
                     } else {

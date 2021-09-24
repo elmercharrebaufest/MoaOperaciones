@@ -7,8 +7,9 @@ import { EspecificacionesViewModel } from "./PliegoPasos/solapaTres/especificaci
 import { CampoObligatorioViewModel } from "./campo-obligatorio-viewModel";
 import { FormGroup } from "@angular/forms";
 import { SubPosicionViewModel } from "./PliegoPasos/solapaSubposiciones/subPosicionViewModel";
+import { CommonResponse } from "../common/models/common-response";
 
-export class Solp {
+export class Solp extends CommonResponse {
     public id: number;
     public tipoSolp: string;
 
@@ -43,6 +44,7 @@ export class Solp {
     //paso 3
     public especificacionesViewModel: EspecificacionesViewModel = new EspecificacionesViewModel();
     public tieneCondicionesGenerales: boolean;
+    public Adjuntos?: {Id:number, Nombre:string}[];
 
     // paso 4
     public ejecucion: any;
@@ -88,6 +90,7 @@ export class Solp {
     
 
     constructor() {
+        super();
         this.posiciones = [];
         this.fechaEntrega = new Date();
         this.fechaEntrega.setDate(this.fechaEntrega.getDate() + 7);

@@ -12,18 +12,18 @@ import { DropdownComponent } from './../../common/view-child/dropdown/dropdown.c
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { SelectItem } from 'primeng/components/common/selectitem';
-import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo, Materiales} from '../consulta';
+import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo, Materiales } from '../consulta';
 import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { ConfirmationService } from 'primeng/api';
 
 declare var $: any;
-
 
 @Component({
     selector: 'crear-consulta',
     templateUrl: `crear-consulta.component.html`,
-    providers: [{ provide: ConsultaService, useClass: ConsultaService }]
-
+    providers: [{ provide: ConsultaService, useClass: ConsultaService }],
+    styleUrls: ['./crear-consulta.component.css'],
 })
 export class CrearConsultaComponent extends ListBaseComponent {
 
@@ -44,7 +44,16 @@ export class CrearConsultaComponent extends ListBaseComponent {
     @ViewChild('recaptchaComponent')
     protected captcha: ReCaptchaComponent;
 
-    constructor(protected service: ConsultaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    constructor(
+        protected service: ConsultaService,
+        protected navService: NavService,
+        protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService,
+        protected route: ActivatedRoute,
+        protected router: Router,
+        private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.categoriaDropdownComponent = new DropdownComponent();
         this.spinnerSmallComponent = new SpinnerSmallComponent();
@@ -117,7 +126,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     reclamoImpositivo: ReclamoImpositivo = new ReclamoImpositivo();
     fechaFactura: string;
-
+    nombreDisabled: boolean = false;
 
     setTabs() {
         this.setMenuSeccionTab("consulta", "crear-consulta");
@@ -139,6 +148,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
         $(".adjuntarArchivo").click(function () {
             $(".adjuntarArchivo1").click();
         });
+
+        this.validarNombre();
     }
 
     ngAfterViewInit(): void {
@@ -176,11 +187,21 @@ export class CrearConsultaComponent extends ListBaseComponent {
         $formInput.val(null);
     }
 
+    validarNombre() {
+        if (this.nombre == "" || !this.nombre || this.nombre == 'No definido' || this.nombre == undefined || this.nombre == null) {
+            this.nombreDisabled = false;
+            this.nombre = ""
+            return true
+        }
+
+        this.nombreDisabled = true;
+    }
+
     getCombos() {
         this.unsubscribe();
         try {
             this.subscription = this.service.getCombos(true).subscribe(
-                result => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -191,7 +212,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         this.categorias = result.categorias;
                         this.subcategorias = result.subcategorias;
                         this.causas = result.causas;
-                        if(!this.esCorredor){
+                        if (!this.esCorredor) {
                             this.proveedorId = result.proveedorId
                         }
                         this.listaMateriales = result.materiales;
@@ -210,15 +231,14 @@ export class CrearConsultaComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-
     onProveedorSeleccionado(proveedor: any) {
         this.proveedorSelected = proveedor;
         this.proveedorId = proveedor.proveedorId;
     }
 
-    setMaterial(material){
+    setMaterial(material) {
         this.listaMateriales.forEach(x => {
-            if(x.MaterialId == material){
+            if (x.MaterialId == material) {
                 this.comprobanteExtra = x.Descripcion;
             }
         })
@@ -227,7 +247,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     validarConsulta() {
         this.mensajeComponent.setMsgsEmpty();
         if (this.codigoProveedor == "" || !this.codigoProveedor) {
-            if(this.esCorredor){
+            if (this.esCorredor) {
                 this.mensajeComponent.setErrorMsg("Vendedor no asociado a su perfil de corredor. Intente nuevamente");
                 return true;
             }
@@ -246,7 +266,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.mensajeComponent.setErrorMsg("El campo Asunto esta vacio.");
             return true;
         }
-        if (this.nombre == "" || !this.nombre) {
+        if (this.nombre == "" || !this.nombre || this.nombre == 'No definido') {
             this.mensajeComponent.setErrorMsg("El campo Nombre esta vacio.");
             return true;
         }
@@ -348,6 +368,12 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
+        if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'CM05') {
+            if (this.listaArchivos == null || this.listaArchivos.length < 1 || this.listaArchivos.filter(x => x.type == "application/pdf").length < 1) {
+                this.mensajeComponent.setErrorMsg("Falta adjuntar el formulario del CM05, el mismo debe estar en formato PDF.");
+                return true;
+            }
+        }
         if ((this.categoriaCode == 'PAR' && this.subcategoriaCode == 'NROR') || (this.categoriaCode == 'FIN' && this.subcategoriaCode)) {
             if (this.contrato == "" || !this.contrato) {
                 this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
@@ -389,17 +415,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
-        if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'PDF') {
-            if (this.comprobante == "" || !this.comprobante) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
-                return true;
-            }
-        }
         if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'CCP') {
-            if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
-                return true;
-            }
             if (this.comprobante == "" || !this.comprobante) {
                 this.mensajeComponent.setErrorMsg("El campo CCPP esta vacio.");
                 return true;
@@ -408,7 +424,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         if (this.categoriaCode == 'PAG') {
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
             if ((this.comprobanteExtra == "" || !this.comprobanteExtra) && (this.comprobante == "" || !this.comprobante)
-            && (this.contrato == "" || !this.contrato) && (this.fechaPago == "" || !this.fechaPago)) {
+                && (this.contrato == "" || !this.contrato) && (this.fechaPago == "" || !this.fechaPago)) {
                 this.mensajeComponent.setErrorMsg("Debe completar uno de los campos obligatorios.");
                 return true;
             }
@@ -420,8 +436,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.spinnerComponent.showIt();
 
         if (this.esCorredor) {
-            if(this.proveedorSelected)
-            {
+            if (this.proveedorSelected) {
                 this.codigoProveedor = this.proveedorSelected.idVendedor;
                 this.razonSocialProveedor = this.proveedorSelected.descVendedor;
             }
@@ -437,13 +452,14 @@ export class CrearConsultaComponent extends ListBaseComponent {
             return;
         }
 
-        if(this.fechaPago != '' && this.fechaPago != null){
-        var dateParts = this.fechaPago.split("-");
-        this.fecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
-        } 
-    
-        this.Detalle = {Consulta_Id: 0, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra, 
-            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, Material_Id: this.material? this.material.MaterialId : null
+        if (this.fechaPago != '' && this.fechaPago != null) {
+            var dateParts = this.fechaPago.split("-");
+            this.fecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
+        }
+
+        this.Detalle = {
+            Consulta_Id: 0, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra,
+            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, Material_Id: this.material ? this.material.MaterialId : null
         }
 
         this.consulta = {
@@ -453,11 +469,11 @@ export class CrearConsultaComponent extends ListBaseComponent {
             SubCategoria_Id: this.subcategoria.Id, Asunto: this.asunto
         }
 
-        let comentario: Comentario = {consulta_Id: 0, Detalle: this.nuevoComentario, Fecha: new Date(), Recordado: false, FechaRecordado: new Date()};
+        let comentario: Comentario = { consulta_Id: 0, Detalle: this.nuevoComentario, Fecha: new Date(), Recordado: false, FechaRecordado: new Date() };
 
         try {
             this.subscription = this.service.AgregarConsulta(this.consulta, comentario, this.listaArchivos).subscribe(
-                result => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                         this.blockUI.stop();
@@ -470,7 +486,21 @@ export class CrearConsultaComponent extends ListBaseComponent {
                     } else {
                         this.spinnerComponent.hideIt();
                         this.blockUI.stop();
-                        this.goToSeccion('/consulta/mis-consultas');
+                        this.consulta.Id = result.ConsultaDto.Id;
+                        if (result.Mensaje != undefined && result.Mensaje != "") {
+                            this.confirmationService.confirm({
+                                message: result.Mensaje + '\n¿Desea proceder con la carga?',
+                                accept: () => {
+                                    this.goToSeccion('/consulta/mis-consultas');
+                                },
+                                reject: () => {
+                                    this.anularConsulta(result.Mensaje);
+                                }
+                            });
+                        }
+                        else {
+                            this.goToSeccion('/consulta/mis-consultas');
+                        }
                     }
                 },
                 error => {
@@ -484,7 +514,42 @@ export class CrearConsultaComponent extends ListBaseComponent {
         }
     }
 
-    setSubcategorias(categoria){
+    anularConsulta(motivoRechazo: string) {
+        try {
+            this.subscription = this.service.AnularConsulta(this.consulta.Id, motivoRechazo).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                        this.blockUI.stop();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                        this.blockUI.stop();
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                        this.blockUI.stop();
+                    } else {
+                        this.spinnerComponent.hideIt();
+                        this.blockUI.stop();
+                        if (result.Mensaje != undefined && result.Mensaje != "") {
+                            this.floatMsgService.setSuccessMsg(result.Mensaje);
+                        }
+                        else {
+                            this.goToSeccion('/consulta/mis-consultas');
+                        }
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+    }
+
+    setSubcategorias(categoria) {
         this.categoriaCount = 1;
         this.subcategoriaCode = null;
         this.categoria = categoria;
@@ -494,13 +559,12 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.Avisos(this.categoriaCode);
 
         this.subcategorias.forEach(x => {
-            if(x.CategoriaId == categoria.Id){
-                if(x.Code == "INF" && this.esCorredor){
+            if (x.CategoriaId == categoria.Id) {
+                if (x.Code == "INF" && this.esCorredor) {
                 }
-                else if(x.Code == "CAP" && !this.esCorredor){
+                else if (x.Code == "CAP" && !this.esCorredor) {
                 }
-                else
-                {
+                else {
                     this.subcategoriasList.push(x);
                 }
             }
@@ -514,8 +578,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         }
     }
 
-    borrarArchivo(i: number)
-    {
+    borrarArchivo(i: number) {
         this.listaArchivos.splice(i, 1);
     }
 
@@ -527,6 +590,10 @@ export class CrearConsultaComponent extends ListBaseComponent {
         }
         if (categoriaCode == "ACT" && this.subcategoriaCode == "IMP") {
             this.mensajeComponent.setInfoMsg("Recuerde Adjuntar Constancia");
+            return true;
+        }
+        if (categoriaCode == "ACT" && this.subcategoriaCode == "CM05") {
+            this.mensajeComponent.setInfoMsg("Recuerde adjuntar un único formulario CM05.");
             return true;
         }
         this.mensajeComponent.setMsgsEmpty();
@@ -545,25 +612,25 @@ export class CrearConsultaComponent extends ListBaseComponent {
     generarVariable() {
         this.reclamoImpositivo.RazonSocialEmpresa = this.nombre;
         this.reclamoImpositivo.Reclamos = [
-            {Fecha: "", Importe: "", Certificado:""}
+            { Fecha: "", Importe: "", Certificado: "" }
         ]
     }
 
     agregarReclamo() {
-        this.reclamoImpositivo.Reclamos.push({Fecha: "", Importe: "", Certificado:""});
+        this.reclamoImpositivo.Reclamos.push({ Fecha: "", Importe: "", Certificado: "" });
     }
 
     eliminarReclamo(numeroReclamo: number) {
-        this.reclamoImpositivo.Reclamos.forEach((value,index)=>{
-            if(this.reclamoImpositivo.Reclamos.indexOf(value) == numeroReclamo) this.reclamoImpositivo.Reclamos.splice(index,1);
+        this.reclamoImpositivo.Reclamos.forEach((value, index) => {
+            if (this.reclamoImpositivo.Reclamos.indexOf(value) == numeroReclamo) this.reclamoImpositivo.Reclamos.splice(index, 1);
         });
     }
 
-    setFechaReclamo(numeroReclamo: number, event: Event){
+    setFechaReclamo(numeroReclamo: number, event: Event) {
         this.reclamoImpositivo.Reclamos[numeroReclamo].Fecha = event
     }
 
-    validarReclamo(){
+    validarReclamo() {
         this.mensajeComponent.setMsgsEmpty();
         if (this.reclamoImpositivo.RazonSocialProveedor == "" || !this.reclamoImpositivo.RazonSocialProveedor) {
             this.mensajeComponent.setErrorMsg("El campo razón social proveedor esta vacío.");
@@ -582,15 +649,15 @@ export class CrearConsultaComponent extends ListBaseComponent {
             return true;
         }
         this.reclamoImpositivo.Reclamos.forEach(reclamo => {
-            if(reclamo.Certificado == "" || !reclamo.Certificado){
+            if (reclamo.Certificado == "" || !reclamo.Certificado) {
                 this.mensajeComponent.setErrorMsg("El campo N° certificado esta vacío.");
                 return true;
             }
-            if(reclamo.Fecha == "" || !reclamo.Fecha){
+            if (reclamo.Fecha == "" || !reclamo.Fecha) {
                 this.mensajeComponent.setErrorMsg("El campo fecha esta vacío.");
                 return true;
             }
-            if(reclamo.Importe == "" || !reclamo.Importe){
+            if (reclamo.Importe == "" || !reclamo.Importe) {
                 this.mensajeComponent.setErrorMsg("El campo importe esta vacío.");
                 return true;
             }
@@ -599,7 +666,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         return false;
     }
 
-    generarReclamoImpositivo(){
+    generarReclamoImpositivo() {
         this.blockUI.start('Generando documento.');
         this.spinnerComponent.showIt();
 
@@ -611,7 +678,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
         try {
             this.subscription = this.service.generarReclamoImpositivo(this.reclamoImpositivo).subscribe(
-                result => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                         this.blockUI.stop();
@@ -628,26 +695,17 @@ export class CrearConsultaComponent extends ListBaseComponent {
                             type: "application/octet-stream",
                         });
 
-                        if (window.navigator.msSaveOrOpenBlob) {
-                            // IE11
-                            window.navigator.msSaveOrOpenBlob(
-                                blob,
-                                result.FileDownloadName
-                            );
-                        } else {
-                            var url = window.URL.createObjectURL(blob);
-                            var link = document.createElement("a");
-                            document.body.appendChild(link);
-                            link.href = url;
-                            link.download = result.FileDownloadName;
-                            link.click();
-                            setTimeout(function () {
-                                window.URL.revokeObjectURL(url);
-                            }, 0);
-                            this.blockUI.stop();
-                            return false;
-                        }
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
                         this.blockUI.stop();
+                        return false;
                     }
                 },
                 error => {

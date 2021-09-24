@@ -54,7 +54,7 @@ namespace SustitucionMOA.Controllers
                 {
                     proveedorId = usuario.ObtenerProveedor().Id;
                 }
-                var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+                var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
                 proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
@@ -69,7 +69,7 @@ namespace SustitucionMOA.Controllers
                 }
 
 
-                informeComercial.ContactoComercial.Email1 = userMail;
+                informeComercial.ContactoComercial.Email1 = proveedor.Mail;
 
                 //Para los proveedores que hicieron el alta con los flujos, tenemos el IDDataAgro y IDComercial. Para los migrados no. Por esto, lo vamos a buscar
                 if (proveedor.IdDataAgro == null)
@@ -140,7 +140,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult GrabarNuevoProveedorGranos(string cuit)
+        public ActionResult GrabarNuevoProveedorGranos(string cuit, string mailVendedor)
         {
             try
             {
@@ -148,7 +148,7 @@ namespace SustitucionMOA.Controllers
 
                 return JsonCustom(new
                 {
-                    data = altaEmpresaService.GrabarProveedorAltaInternaGranos(cuit, userMail)
+                    data = altaEmpresaService.GrabarProveedorAltaInternaGranos(cuit, userMail, mailVendedor)
                 });
             }
             catch (InfoCustomException e)
@@ -648,7 +648,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                string mail = SessionPersister.getUsername();
                 var altaEmpresa = JsonConvert.DeserializeObject<AltaEmpresaViewModel>(datosJson);
 
                 return JsonCustom(altaEmpresaService.SolicitudAltaInterna(mail, proveedorId, altaEmpresa));

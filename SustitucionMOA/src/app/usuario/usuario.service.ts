@@ -1,174 +1,152 @@
 
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs';
 import { Usuario } from './usuario'
-
-
-
-import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
-import { environment } from '../../environments/environment';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class UsuarioService extends BaseService {
 
     guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any) {
-        let params: URLSearchParams = new URLSearchParams();
+        let params: HttpParams = new HttpParams();
 
         var idUsuario = usuarioSeleccionado.Id;
 
-        params.set('idRoles', idRoles);
-        params.set('idUsuario', idUsuario);
+        params = params.append('idRoles', idRoles);
+        params = params.append('idUsuario', idUsuario);
+
         return this.http
-            .get('/api/usuario/GuardarRoles', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/GuardarRoles', { params: params, headers: this.headers });
     }
 
     public cambiarContrasenia(contraseniaActual: string, contraseniaNueva: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('contraseniaActual', contraseniaActual);
-        params.set('contraseniaNueva', contraseniaNueva);
+        let params: HttpParams = new HttpParams();
+        params = params.append('contraseniaActual', contraseniaActual);
+        params = params.append('contraseniaNueva', contraseniaNueva);
+
         return this.http
-            .get('/api/usuario/cambiarContrasenia', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/cambiarContrasenia', { params: params, headers: this.headers });
     }
 
     public alta(usuario: Usuario): Observable<any> {
         let body = JSON.stringify(usuario);
         return this.http
-            .post('/api/usuario/alta', body, this.headersPost).pipe(
-                map(this.extractData));
+            .post('/api/usuario/alta', body, {headers: this.headersPost});
     }
 
     public getPerfiles(): Observable<any> {
         return this.http
-            .get('/api/usuario/getPerfiles', { headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/getPerfiles', { headers: this.headers });
     }
 
     public getUsuarios(): Observable<any> {
         return this.http
-            .get('/api/usuario/getUsuarios', { headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/getUsuarios', { headers: this.headers });
     }
 
     public getVendedores(): Observable<any> {
         return this.http
-            .get('/api/usuario/getVendedores', { headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/getVendedores', { headers: this.headers });
     }
 
     public desbloquearUsuario(usuario: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('usuario', usuario);
+        let params: HttpParams = new HttpParams();
+        params = params.append('usuario', usuario);
         return this.http
-            .get('/api/usuario/desbloquear', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/desbloquear', { params: params, headers: this.headers });
     }
 
     public deshabilitarUsuario(mailUsuario: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('mailUsuario', mailUsuario);
+        let params: HttpParams = new HttpParams();
+        params = params.append('mailUsuario', mailUsuario);
         return this.http
-            .get('/api/usuario/deshabilitar', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/deshabilitar', { params: params, headers: this.headers });
     }
 
     public habilitarUsuario(mailUsuario: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('mailUsuario', mailUsuario);
+        let params: HttpParams = new HttpParams();
+        params = params.append('mailUsuario', mailUsuario);
         return this.http
-            .get('/api/usuario/habilitar', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/habilitar', { params: params, headers: this.headers });
     }
 
     public seleccionarVendedor(vendedor: string, descripcion: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('vendedor', vendedor);
-        params.set('descripcion', descripcion);
+        let params: HttpParams = new HttpParams();
+        params = params.append('vendedor', vendedor);
+        params = params.append('descripcion', descripcion);
         return this.http
-            .get('/api/usuario/seleccionarVendedor', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/seleccionarVendedor', { params: params, headers: this.headers });
     }
 
     public getRoles(): Observable<any> {
         return this.http
-            .get('/api/usuario/getRoles', { headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/getRoles', { headers: this.headers });
     }
 
     public obtenerRolesUsuario(usuarioSeleccionado: any) {
-        let params: URLSearchParams = new URLSearchParams();
+        let params: HttpParams = new HttpParams();
         var idUsuario = usuarioSeleccionado.Id;
 
-        params.set('idUsuario', idUsuario);
+        params = params.append('idUsuario', idUsuario);
         return this.http
-            .get('/api/usuario/ObtenerRolesUsuario', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/ObtenerRolesUsuario', { params: params, headers: this.headers });
     }
 
     public getRubros(): Observable<any> {
         return this.http
-            .get('/api/usuario/getRubros', { headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/getRubros', { headers: this.headers });
     }
 
     grabarNuevoProveedorNoGranos(razonSocial: any, cuit: any, email: any, telefono: any, realizarAnalisisNOSIS: any, IdRubro: any, condicionDePago: any,
         servicioPrestado: any, organizacionDeCompra: any, razonDeEleccion: any, facturacionAnual: any, solicitanteInterno: any, idProveedor: any,
         observacionesParaElProveedor: any, requiereVerificacionCompras: any, ingresoAPlanta: any, altaInterna: any, siperObligatorio: any,
         observacionInterna: any) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('razonSocial', razonSocial);
-        params.set('cuit', cuit);
-        params.set('email', email);
-        params.set('telefono', telefono);
-        params.set('realizarAnalisisNOSIS', realizarAnalisisNOSIS);
-        params.set('IdRubro', IdRubro);
-        params.set('condicionDePago', condicionDePago);
-        params.set('servicioPrestado', servicioPrestado);
-        params.set('organizacionDeCompra', organizacionDeCompra);
-        params.set('razonDeEleccion', razonDeEleccion);
-        params.set('facturacionAnual', facturacionAnual);
-        params.set('solicitanteInterno', solicitanteInterno);
-        params.set('idProveedor', idProveedor);
-        params.set('observacionesParaElProveedor', observacionesParaElProveedor);
-        params.set('requiereVerificacionCompras', requiereVerificacionCompras);
-        params.set('ingresoAPlanta', ingresoAPlanta);
-        params.set('altaInterna', altaInterna);
-        params.set('siperObligatorio', siperObligatorio);
-        params.set('observacionInterna', observacionInterna);
+        let params: HttpParams = new HttpParams();
+        params = params.append('razonSocial', razonSocial);
+        params = params.append('cuit', cuit);
+        params = params.append('email', email);
+        params = params.append('telefono', telefono);
+        params = params.append('realizarAnalisisNOSIS', realizarAnalisisNOSIS);
+        params = params.append('IdRubro', IdRubro);
+        params = params.append('condicionDePago', condicionDePago);
+        params = params.append('servicioPrestado', servicioPrestado);
+        params = params.append('organizacionDeCompra', organizacionDeCompra);
+        params = params.append('razonDeEleccion', razonDeEleccion);
+        params = params.append('facturacionAnual', facturacionAnual);
+        params = params.append('solicitanteInterno', solicitanteInterno);
+        params = params.append('idProveedor', idProveedor);
+        params = params.append('observacionesParaElProveedor', observacionesParaElProveedor);
+        params = params.append('requiereVerificacionCompras', requiereVerificacionCompras);
+        params = params.append('ingresoAPlanta', ingresoAPlanta);
+        params = params.append('altaInterna', altaInterna);
+        params = params.append('siperObligatorio', siperObligatorio);
+        params = params.append('observacionInterna', observacionInterna);
 
         return this.http
-            .get('/api/usuario/GrabarNuevoProveedorNoGranos', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/GrabarNuevoProveedorNoGranos', { params: params, headers: this.headers });
     }
 
     rechazarNuevoProveedorNoGranos(proveedorId: any, observacionesParaElProveedor: any) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('idProveedor', proveedorId);
-        params.set('observacionesParaElProveedor', observacionesParaElProveedor)
+        let params: HttpParams = new HttpParams();
+        params = params.append('idProveedor', proveedorId);
+        params = params.append('observacionesParaElProveedor', observacionesParaElProveedor)
 
         return this.http
-            .get('/api/usuario/RechazarProveedorNoGranos', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/usuario/RechazarProveedorNoGranos', { params: params, headers: this.headers });
     }
 
     public getTipoCambiario(): Observable<any> {
         return this.http
-            .get('/api/dataagro/GetTipoCambiario', { headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/dataagro/GetTipoCambiario', { headers: this.headers });
     }
 
     public getRazonSocial(cuit: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('cuit', cuit);
+        let params: HttpParams = new HttpParams();
+        params = params.append('cuit', cuit);
 
         return this.http
-             .get('/api/AltaEmpresaNoGranos/GetRazonSocial', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
-        
+             .get('/api/AltaEmpresaNoGranos/GetRazonSocial', { params: params, headers: this.headers });
     }
-
 }

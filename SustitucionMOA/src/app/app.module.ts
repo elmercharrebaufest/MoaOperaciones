@@ -5,7 +5,6 @@ import {
   NO_ERRORS_SCHEMA,
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { HttpModule } from "@angular/http";
 import { HttpClientModule } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -64,12 +63,13 @@ import { ApikeyComponent } from "./apikey/apikey.component";
 import { ApikeyService } from "./apikey/apikey.service";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
+import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
 
 @NgModule({
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpModule,
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
@@ -82,7 +82,7 @@ import { ConfirmationService } from 'primeng/api';
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
     ComprasModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
   ],
   declarations: [
     AppComponent,
@@ -107,7 +107,10 @@ import { ConfirmationService } from 'primeng/api';
     TicketPesadaComponent,
     ConsultaBaseComponent,
     VentaSustentableBaseComponent,
-    ApikeyComponent],
+    ApikeyComponent,
+    PesificacionesGuardadasComponent,
+    PesificacionBaseComponent
+  ],
   providers: [
     DatePipe,
     SessionDataService,
@@ -128,7 +131,7 @@ import { ConfirmationService } from 'primeng/api';
     TicketPesadaService,
     ConsultaService,
     ConfirmationService,
-    ApikeyService
+    ApikeyService,
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]

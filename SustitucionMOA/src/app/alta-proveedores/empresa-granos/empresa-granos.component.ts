@@ -48,6 +48,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     razonSocial: string = "";
     proveedorClasificacion: string = "";
     altaInterna: boolean = false;
+    observacion: string = "";
 
     nombreArchivoSeleccionado: string = "";
     fileKeySeleccionado: string = "";
@@ -201,7 +202,11 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     this.proveedorClasificacion = result.ProveedorClasificacion;
                     this.proveedorCUIT = result.ProveedorCUIT;
                     this.razonSocial = result.RazonSocial;
-                    this.altaInterna = result.AltaInterna
+                    this.altaInterna = result.AltaInterna;
+
+                    if(this.puedeAltaInterna && result.Observacion != null){
+                        this.mensajeComponent.setInfoMsg("Observación: " + result.Observacion);
+                    }
                 },
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
@@ -618,7 +623,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
 
 
-    onNotificar() {
+    submitAltaInterna() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         var datos = {
@@ -644,7 +649,9 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.mensajeComponent.setMsgsEmpty();
-                        this.redirigirAEstado();               
+                        this.navService.navegarSeccion(
+                            "/altas"
+                        );            
                     }
                 },
                 (error) => {

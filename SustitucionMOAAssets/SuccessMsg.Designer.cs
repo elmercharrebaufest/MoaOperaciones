@@ -61,6 +61,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El formulario cargado corresponde a un CUIT diferente.
+        /// </summary>
+        public static string AltaFormularioCM05DistintoCUITOK {
+            get {
+                return ResourceManager.GetString("AltaFormularioCM05DistintoCUITOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Se ha generado el usuario correctamente.
         /// </summary>
         public static string AltaUsuarioOK {
@@ -196,6 +205,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Se ha anulado la consulta correctamente..
+        /// </summary>
+        public static string ConsultaRechazadaOK {
+            get {
+                return ResourceManager.GetString("ConsultaRechazadaOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Los datos de las Pesadas se han guardado correctamente.
         /// </summary>
         public static string DatosPesadasGuardadosOK {
@@ -273,6 +291,33 @@ namespace SustitucionMOAAssets {
         public static string FleteImporteOK {
             get {
                 return ResourceManager.GetString("FleteImporteOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Se autorizaron correctamente los coeficientes unificados de ingresos brutos.
+        /// </summary>
+        public static string IngresosBrutosCoeficienteUnificadoAutorizado {
+            get {
+                return ResourceManager.GetString("IngresosBrutosCoeficienteUnificadoAutorizado", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El detalle de coeficientes unificados de ingresos brutos se ha actualizado correctamente..
+        /// </summary>
+        public static string IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK {
+            get {
+                return ResourceManager.GetString("IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El detalle de coeficientes unificados de ingresos brutos se ha actualizado correctamente..
+        /// </summary>
+        public static string IngresosBrutosCoeficienteUnificadoDetalleActualizadoOK {
+            get {
+                return ResourceManager.GetString("IngresosBrutosCoeficienteUnificadoDetalleActualizadoOK", resourceCulture);
             }
         }
         

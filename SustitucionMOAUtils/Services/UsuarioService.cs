@@ -321,8 +321,8 @@ namespace SustitucionMOAUtils.Services
         /// <returns></returns>
         public ProveedorDto VerificarYObtenerProveedor(string mailUsuario, string codigoCorredor, string codigoProveedor)
         {
-            var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor);
             var usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == mailUsuario);
+            var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor && x.Mail == mailUsuario);
             var corredor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoCorredor && x.Mail == mailUsuario);
 
             if (proveedor == null)

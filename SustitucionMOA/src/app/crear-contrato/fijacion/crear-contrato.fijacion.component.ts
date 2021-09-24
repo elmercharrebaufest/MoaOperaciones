@@ -140,7 +140,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         if (term.length > 2) {
             this.unsubscribe();
             this.subscription = this.service.buscarProveedoresConCorredor(term).subscribe(
-                result => {
+                (result:any) => {
                     var resultlist = JSON.parse(result);
 
                     this.proveedores = resultlist.map(prov => {
@@ -215,7 +215,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         try {
             this.unsubscribe();
             this.subscription = this.service.grabarContratoFijacion(this.contrato).subscribe(
-                result => {
+                (result:any) => {
                     this.blockUI.stop();
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -232,6 +232,9 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
                             obj.Errores.forEach(element => {
                                 if (element.Message == "Proveedor No Operable por Riesgo Comercial Alto") {
                                     element.Message = "Proveedor no operable, contactese con la mesa comercial";
+                                }
+                                if (element.Message.indexOf("Precio fuera de Rango") != -1) {
+                                    element.Message = "Precio fuera de Rango";
                                 }
                                 errores = errores + element.Message + " - ";
                             });
@@ -391,7 +394,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         //if (term.length > 2) {
         //    this.unsubscribe();
         //    this.subscription = this.service.searchLocalidad(term).subscribe(
-        //        result => {
+        //        (result:any) => {
         //            this.localidades = result;
         //        },
         //        error => {

@@ -319,6 +319,7 @@
     <Content Include="src\app\alta-proveedores\estado-solicitud\estado-solicitud.component.html" />
     <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.css" />
     <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.html" />
+    <Content Include="src\app\apikey\apikey.component.html" />
     <Content Include="src\app\app.component.html" />
     <Content Include="src\app\carta-porte\aplicacion\carta-porte.aplicacion.component.html" />
     <Content Include="src\app\carta-porte\carta-porte-modal\carta-porte-modal.component.css" />
@@ -327,6 +328,8 @@
     <Content Include="src\app\carta-porte\detalle\carta-porte.detalle.component.html" />
     <Content Include="src\app\carta-porte\formulario\carta-porte.formulario.component.html" />
     <TypeScriptCompile Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.service.ts" />
+    <TypeScriptCompile Include="src\app\apikey\apikey.component.ts" />
+    <TypeScriptCompile Include="src\app\apikey\apikey.service.ts" />
     <TypeScriptCompile Include="src\app\common\models\fijacionesAutomaticas.ts" />
     <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.css" />
     <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.html" />
@@ -346,6 +349,7 @@
     <Content Include="src\app\compras\preview\pliego.preview.component.html" />
     <Content Include="src\app\compras\solp.component.html" />
     <Content Include="src\app\compras\SolpPasos\cabecera.component.html" />
+    <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.css" />
     <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.html" />
     <Content Include="src\app\consulta\detalle\consulta-detalle.component.html" />
     <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.html" />
@@ -354,12 +358,16 @@
     <Content Include="src\app\crear-contrato\cargarnegocio\crear-contrato.cargarnegocio.component.html" />
     <Content Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.html" />
     <Content Include="src\app\faq\faq.component.html" />
+    <Content Include="src\app\gestionCM05\gestionCM05.component.css" />
+    <Content Include="src\app\gestionCM05\gestionCM05.component.html" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.css" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.html" />
     <Content Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.css" />
     <Content Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.html" />
     <Content Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.css" />
     <Content Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.html" />
+    <Content Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.css" />
+    <Content Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.html" />
     <Content Include="src\app\reporte\contrato\reporte.contrato.component.html" />
     <Content Include="src\app\reporte\cupo\reporte.cupo.component.html" />
     <Content Include="src\app\contrato\ampliacion\contrato.ampliacion.component.html" />
@@ -456,6 +464,7 @@
     <Content Include="src\app\venta-sustentable\edicion\edicion.component.html" />
     <Content Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.css" />
     <Content Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.html" />
+    <Content Include="src\app\venta-sustentable\listado-campos\listado-campos.component.css" />
     <Content Include="src\app\venta-sustentable\listado-campos\listado-campos.component.html" />
     <Content Include="src\assets\css\MolinosForms.css" />
     <Content Include="src\assets\css\MolinosGeneral.css" />
@@ -950,6 +959,7 @@
     <Compile Include="Controllers\ContratoController.cs" />
     <Compile Include="Controllers\CuentaCorrienteController.cs" />
     <Compile Include="Controllers\DataAgroController.cs" />
+    <Compile Include="Controllers\GestionImpuestosController.cs" />
     <Compile Include="Controllers\LogPesificacionController.cs" />
     <Compile Include="Controllers\DocumentosController.cs" />
     <Compile Include="Controllers\FacturaController.cs" />
@@ -1039,8 +1049,14 @@
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.module.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />
+    <TypeScriptCompile Include="src\app\directivas\drag-and-drop.directive.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.component.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.service.ts" />
+    <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.module.ts" />
+    <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.ts" />
+    <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.component.ts" />
+    <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.service.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.spec.ts" />
@@ -1048,6 +1064,9 @@
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\notificaciones.service.ts" />
+    <TypeScriptCompile Include="src\app\pesificacion\pesificacion-base.component.ts" />
+    <TypeScriptCompile Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte-routing.module.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.component.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.module.ts" />

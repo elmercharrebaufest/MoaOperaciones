@@ -1,16 +1,10 @@
 
 import {throwError as observableThrowError,  Observable } from 'rxjs';
-
 import {map, timeoutWith} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
-import { Balanza, Commodity, BalanzaBusqueda, BalanzaAplicar } from './ryd-mantenimiento'
-
-
-
-import { Formatter } from './../common/formatter/Formatter';
+import { BalanzaBusqueda } from './ryd-mantenimiento'
 import { BaseService } from './../common/services/BaseService';
-import { environment } from '../../environments/environment';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class RYDMantenimientoService extends BaseService{
@@ -18,115 +12,102 @@ export class RYDMantenimientoService extends BaseService{
     getFiltros(method: string): Observable<any> {
         return this.http
             .get('/api/RYDMantenimiento/getFiltros' + method, { headers: this.headers })
-            .pipe(timeoutWith(300000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .pipe(map(this.extractData));
+            .pipe(timeoutWith(300000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
 
     getInputDropDown(): Observable<any> {
         return this.http
             .get('/api/RYDMantenimiento/getInputDropDown', { headers: this.headers })
-            .pipe(timeoutWith(300000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .pipe(map(this.extractData));
+            .pipe(timeoutWith(300000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
 
     getNroPuesto(itcId: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('itcID', itcId);
+        let params: HttpParams = new HttpParams();
+        params = params.append('itcID', itcId);
         return this.http
-            .get('/api/RYDMantenimiento/getFiltrosNroPuesto', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .pipe(map(this.extractData));
+            .get('/api/RYDMantenimiento/getFiltrosNroPuesto', { params: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
 
     public buscarBalanza(descripcion: string, tipoSelected: string, codigoCabezalSelected: string, codigoSAP: string ): Observable<any> {
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('descripcion', descripcion);
-        params.set('tipoId', tipoSelected);
-        params.set('codigoSAP', codigoSAP);
-        params.set('codigoCabezalId', codigoCabezalSelected);
+        let params: HttpParams = new HttpParams();
+        params = params.append('descripcion', descripcion);
+        params = params.append('tipoId', tipoSelected);
+        params = params.append('codigoSAP', codigoSAP);
+        params = params.append('codigoCabezalId', codigoCabezalSelected);
+
         return this.http
-            .post('/api/RYDMantenimiento/buscarBalanza', params, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/RYDMantenimiento/buscarBalanza', params, {headers:this.headersPost});
     }
 
     public guardarBalanza(codigo: string, descripcion: string, automatico: string, toleria: string, centroEmisor: string, tolerX: string, tipoSelected: string, pesoMaximo : string, codigoSAP: string, codigoCabezalSelected: string, itcSelected: string, nroPuestoSelected: string, tipoAccesoSelected: string): Observable<any> {
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('codigo', codigo);
-        params.set('descripcion', descripcion);
-        params.set('automatico', automatico);
-        params.set('toleria', toleria);
-        params.set('centroEmisor', centroEmisor);
-        params.set('tolerX', tolerX);
-        params.set('tipoId', tipoSelected);
-        params.set('pesoMaximo', pesoMaximo);
-        params.set('codigoSAP', codigoSAP);
-        params.set('codigoCabezalId', codigoCabezalSelected);
-        params.set('itcId', itcSelected);
-        params.set('nroPuestoId', nroPuestoSelected);
-        params.set('tipoAccesoId', tipoAccesoSelected);
+        let params: HttpParams = new HttpParams();
+        params = params.append('codigo', codigo);
+        params = params.append('descripcion', descripcion);
+        params = params.append('automatico', automatico);
+        params = params.append('toleria', toleria);
+        params = params.append('centroEmisor', centroEmisor);
+        params = params.append('tolerX', tolerX);
+        params = params.append('tipoId', tipoSelected);
+        params = params.append('pesoMaximo', pesoMaximo);
+        params = params.append('codigoSAP', codigoSAP);
+        params = params.append('codigoCabezalId', codigoCabezalSelected);
+        params = params.append('itcId', itcSelected);
+        params = params.append('nroPuestoId', nroPuestoSelected);
+        params = params.append('tipoAccesoId', tipoAccesoSelected);
 
         return this.http
-            .post('/api/RYDMantenimiento/guardarBalanza', params, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/RYDMantenimiento/guardarBalanza', params, {headers:this.headersPost});
     }
 
     public actualizarBalanza(codigo: string, descripcion: string, automatico: string, toleria: string, centroEmisor: string, tolerX: string, tipoSelected: string, pesoMaximo: string, codigoSAP: string, codigoCabezalSelected: string, itcSelected: string, nroPuestoSelected: string, tipoAccesoSelected: string): Observable<any> {
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('codigo', codigo);
-        params.set('descripcion', descripcion);
-        params.set('automatico', automatico);
-        params.set('toleria', toleria);
-        params.set('centroEmisor', centroEmisor);
-        params.set('tolerX', tolerX);
-        params.set('tipoId', tipoSelected);
-        params.set('pesoMaximo', pesoMaximo);
-        params.set('codigoSAP', codigoSAP);
-        params.set('codigoCabezalId', codigoCabezalSelected);
-        params.set('itcId', itcSelected);
-        params.set('nroPuestoId', nroPuestoSelected);
-        params.set('tipoAccesoId', tipoAccesoSelected);
+        let params: HttpParams = new HttpParams();
+        params = params.append('codigo', codigo);
+        params = params.append('descripcion', descripcion);
+        params = params.append('automatico', automatico);
+        params = params.append('toleria', toleria);
+        params = params.append('centroEmisor', centroEmisor);
+        params = params.append('tolerX', tolerX);
+        params = params.append('tipoId', tipoSelected);
+        params = params.append('pesoMaximo', pesoMaximo);
+        params = params.append('codigoSAP', codigoSAP);
+        params = params.append('codigoCabezalId', codigoCabezalSelected);
+        params = params.append('itcId', itcSelected);
+        params = params.append('nroPuestoId', nroPuestoSelected);
+        params = params.append('tipoAccesoId', tipoAccesoSelected);
 
         return this.http
-            .post('/api/RYDMantenimiento/actualizarBalanza', params, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/RYDMantenimiento/actualizarBalanza', params, {headers:this.headersPost});
     }
 
     public borrarBalanza(codigo: string): Observable<any> {
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('codigo', codigo);
+        let params: HttpParams = new HttpParams();
+        params = params.append('codigo', codigo);
         return this.http
-            .post('/api/RYDMantenimiento/borrarBalanza', params, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/RYDMantenimiento/borrarBalanza', params, {headers:this.headersPost});
     }
-
-    /*public extractData(res: Response) {
-        return res.json();
-    }*/
 
     public busqueda(busquedas: Array<BalanzaBusqueda>): Observable<any> {
         let body = JSON.stringify(busquedas);
         return this.http
-            .post('/api/RYDMantenimiento/busqueda', body, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/RYDMantenimiento/busqueda', body, {headers:this.headersPost});
     }
 
     aplicar(codigo: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('codigoId', codigo);
+        let params: HttpParams = new HttpParams();
+        params = params.append('codigoId', codigo);
         return this.http
-            .get('/api/RYDMantenimiento/aplicar', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .pipe(map(this.extractData));
+            .get('/api/RYDMantenimiento/aplicar', { params: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
 }
 
 @Injectable()
 export class RYDMantenimientoBalanzaService extends RYDMantenimientoService {
-
 }
 
 @Injectable()
@@ -137,51 +118,43 @@ export class RYDMantenimientoCommoditiesService extends RYDMantenimientoService 
     }
 
     getCommodities(commoditie: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('commoditie', commoditie);
+        let params: HttpParams = new HttpParams();
+        params = params.append('commoditie', commoditie);
         return this.http
-            .get('/api/RYDMantenimiento/getFiltrosCommodities', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .pipe(map(this.extractData));
+            .get('/api/RYDMantenimiento/getFiltrosCommodities', { params: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
 
     getInputCommodities(): Observable<any> {
         return this.http
             .get('/api/RYDMantenimiento/getCommodities', { headers: this.headers })
-            .pipe(timeoutWith(300000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .pipe(map(this.extractData));
+            .pipe(timeoutWith(300000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
 
     public guardarCommodity(materialSAP: string, almacenOrigen: string, descripcion: string): Observable<any> {
-        //let body = JSON.stringify(commodity);
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('materialSAP', materialSAP);
-        params.set('almacenOrigen', almacenOrigen);
-        params.set('descripcion', descripcion);
+        let params: HttpParams = new HttpParams();
+        params = params.append('materialSAP', materialSAP);
+        params = params.append('almacenOrigen', almacenOrigen);
+        params = params.append('descripcion', descripcion);
         return this.http
-            .post('/api/RYDMantenimiento/guardarCommodity', params, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/RYDMantenimiento/guardarCommodity', params, {headers:this.headersPost});
     }
 
     public actualizarCommodity(materialSAP: string, almacenOrigen: string, descripcion: string, commoditieSelected: string): Observable<any> {
-        //let body = JSON.stringify(commodity);
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('materialSAP', materialSAP);
-        params.set('almacenOrigen', almacenOrigen);
-        params.set('descripcion', descripcion);
-        params.set('commodityId', commoditieSelected);
+        let params: HttpParams = new HttpParams();
+        params = params.append('materialSAP', materialSAP);
+        params = params.append('almacenOrigen', almacenOrigen);
+        params = params.append('descripcion', descripcion);
+        params = params.append('commodityId', commoditieSelected);
         return this.http
-            .post('/api/RYDMantenimiento/actualizarCommodity', params, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/RYDMantenimiento/actualizarCommodity', params, {headers:this.headersPost});
     }
 
     public borrarCommodity(commoditieSelected: string): Observable<any> {
-        //let body = JSON.stringify(commodity);
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('commodityId', commoditieSelected);
+        let params: HttpParams = new HttpParams();
+        params = params.append('commodityId', commoditieSelected);
         return this.http
-            .post('/api/RYDMantenimiento/borrarCommodity', params, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/RYDMantenimiento/borrarCommodity', params, {headers:this.headersPost});
     }
     
 }
@@ -194,49 +167,40 @@ export class RYDMantenimientoExportadorService extends RYDMantenimientoService {
     }
 
     getExportador(exportador: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('exportador', exportador);
+        let params: HttpParams = new HttpParams();
+        params = params.append('exportador', exportador);
         return this.http
-            .get('/api/RYDMantenimiento/getFiltrosExportador', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .pipe(map(this.extractData));
+            .get('/api/RYDMantenimiento/getFiltrosExportador', { params: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
 
     getInputExportador(): Observable<any> {
         return this.http
             .get('/api/RYDMantenimiento/getExportador', { headers: this.headers })
-            .pipe(timeoutWith(300000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .pipe(map(this.extractData));
+            .pipe(timeoutWith(300000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
 
     public guardarExportador(almacenSAP: string, descripcion: string): Observable<any> {
-        //let body = JSON.stringify(commodity);
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('almacenSAP', almacenSAP);
-        params.set('descripcion', descripcion);
+        let params: HttpParams = new HttpParams();
+        params = params.append('almacenSAP', almacenSAP);
+        params = params.append('descripcion', descripcion);
         return this.http
-            .post('/api/RYDMantenimiento/guardarExportador', params, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/RYDMantenimiento/guardarExportador', params, {headers:this.headersPost});
     }
 
     public actualizarExportador(almacenSAP: string, descripcion: string, exportadorSelected: string): Observable<any> {
-        //let body = JSON.stringify(commodity);
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('almacenSAP', almacenSAP);
-        params.set('descripcion', descripcion);
-        params.set('exportadorId', exportadorSelected);
+        let params: HttpParams = new HttpParams();
+        params = params.append('almacenSAP', almacenSAP);
+        params = params.append('descripcion', descripcion);
+        params = params.append('exportadorId', exportadorSelected);
         return this.http
-            .post('/api/RYDMantenimiento/actualizarExportador', params, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/RYDMantenimiento/actualizarExportador', params, {headers:this.headersPost});
     }
 
     public borrarExportador(exportadorSelected: string): Observable<any> {
-        //let body = JSON.stringify(commodity);
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('exportadorId', exportadorSelected);
+        let params: HttpParams = new HttpParams();
+        params = params.append('exportadorId', exportadorSelected);
         return this.http
-            .post('/api/RYDMantenimiento/borrarExportador', params, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/RYDMantenimiento/borrarExportador', params, {headers:this.headersPost});
     }
-
 }

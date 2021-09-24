@@ -61,7 +61,7 @@ export class PagoDetalleComponent extends BaseComponent implements OnInit, After
             this.numeroPagoId = params['id'];
             this.unsubscribe();
             this.subscription = this.service.getDetalle(this.numeroPagoId).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -88,7 +88,7 @@ export class PagoDetalleComponent extends BaseComponent implements OnInit, After
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.exportExcelDetalle(this.numeroPagoId).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();

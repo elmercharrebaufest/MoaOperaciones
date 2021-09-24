@@ -269,7 +269,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.spinnerComponent.showIt();
 
             this.subscription = this.service.traerSolpId(idSolp).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -481,7 +481,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             this.solpActual.enviarSap = enviarSap;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                         if(guardarPorPaso = false){
@@ -513,7 +513,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = result.Adjuntos.map(x=> {
                             return {
                                 id: x.Id,
-                                nombreArchivo: x.Nombre
+                                nombreArchivo: x.Nombre,
+                                rutaDeAcceso: ''
                             }
                         });
                         
@@ -643,7 +644,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     getCombos() {
         try {
             this.subscription = this.service.getCombos().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {

@@ -1,16 +1,14 @@
 ﻿import { CanActivate, CanActivateChild } from "@angular/router";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import { SessionDataService } from "../services/SessionDataService";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Injectable()
 export class LoginGuard implements CanActivate, CanActivateChild {
 
 
-    constructor(private router: Router, private http: Http, private sessionDataService: SessionDataService) {
-
-    }
+    constructor(private router: Router, private http: HttpClient, private sessionDataService: SessionDataService) {}
 
     canActivate() {
         return this.checkIfLoggedIn();
@@ -21,9 +19,7 @@ export class LoginGuard implements CanActivate, CanActivateChild {
     }
 
     public async getEstado(): Promise<any> {
-        let params: URLSearchParams = new URLSearchParams();
-
-        let headers = new Headers();
+        let headers = new HttpHeaders();
         headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'q=0.8;application/json;q=0.9')
         headers.append('Cache-control', 'no-cache');
@@ -31,9 +27,8 @@ export class LoginGuard implements CanActivate, CanActivateChild {
         headers.append('Expires', '0');
         headers.append('Pragma', 'no-cache');
 
-        await this.http.get('/api/Home/VerificarEstadoSesion', { headers: headers }).subscribe(
-            res => {
-                let result = res.json()
+        await this.http.get<{tieneSesion:boolean}>('/api/Home/VerificarEstadoSesion', { headers: headers }).subscribe(
+            (result:any) => {
                 if (!result.tieneSesion) {
                     this.sessionDataService.logout();
                     window.location.href = window.location.origin + '/SignOut';

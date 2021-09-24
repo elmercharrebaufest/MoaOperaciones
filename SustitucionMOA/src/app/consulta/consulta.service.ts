@@ -1,16 +1,13 @@
-import { throwError as observableThrowError, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
-import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
-import { timeoutWith, map } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
 import { Comentario } from './consulta';
-import { identifierModuleUrl } from '@angular/compiler';
-import { getLocaleDateTimeFormat } from '@angular/common';
+import { map } from 'rxjs/operators';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class ConsultaService extends BaseService {
+
     public sendContactoMail(
         proveedor: string,
         nombre: string,
@@ -39,17 +36,15 @@ export class ConsultaService extends BaseService {
         payload.append("contacto", JSON.stringify(data));
         payload.append("file", archivo);
         return this.http
-            .post('/api/contactoMail/sendContactoMail', payload, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/contactoMail/sendContactoMail', payload, { headers: this.headersPost });
     }
 
-    public AgregarConsulta(consulta: object, comentario: Comentario, archivo: any  = null) {
+    public AgregarConsulta(consulta: object, comentario: Comentario, archivo: any = null) {
         let consultaJson = JSON.stringify(consulta);
         let comentarioJson = JSON.stringify(comentario);
         var payload = new FormData();
 
-        if(archivo != null)
-        {
+        if (archivo != null) {
             for (let i = 0; i < archivo.length; i++) {
                 let fileToUpload = archivo[i];
                 payload.append("file", fileToUpload, fileToUpload.name);
@@ -59,47 +54,42 @@ export class ConsultaService extends BaseService {
         payload.append('consultaJson', consultaJson);
         payload.append('comentarioJson', comentarioJson);
         payload.append("file", archivo);
-        
+
         return this.http
-            .post('/api/consulta/Consulta',  payload , this.headers).pipe(
-                map(this.extractData));
+            .post('/api/consulta/Consulta', payload, { headers: this.headers });
     }
 
     public recordarComentario(consultaId: any): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('consultaId', consultaId.toString());
+        let params: HttpParams = new HttpParams();
+        params = params.set('consultaId', consultaId.toString());
+
         return this.http
-            .get(`/api/Consulta/RecordarComentario`, { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get(`/api/Consulta/RecordarComentario`, { params: params, headers: this.headers });
     }
 
     public getCombos(excluir: boolean): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('excluir', excluir.toString());
+        let params: HttpParams = new HttpParams();
+        params = params.set('excluir', excluir.toString());
 
         return this.http
-            .get('/api/consulta/Combos', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/consulta/Combos', { params: params, headers: this.headers });
     }
 
     public listarConsultas(): Observable<any> {
         return this.http
-            .get('/api/consulta/Consultas', { headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/consulta/Consultas', { headers: this.headers });
     }
 
     public getConsultaDetalle(idConsulta): Observable<any> {
         return this.http
-            .get('/api/consulta/Detalle?consultaId=' + idConsulta, { headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/consulta/Detalle?consultaId=' + idConsulta, { headers: this.headers });
     }
 
-    public agregarComentario(consultaId: string, comentario: Comentario, archivo: any = null): Observable<any>{
+    public agregarComentario(consultaId: string, comentario: Comentario, archivo: any = null): Observable<any> {
         let comentarioJson = JSON.stringify(comentario);
         var payload = new FormData();
-        
-        if(archivo != null)
-        {
+
+        if (archivo != null) {
             for (let i = 0; i < archivo.length; i++) {
                 let fileToUpload = archivo[i];
                 payload.append("file", fileToUpload, fileToUpload.name);
@@ -111,29 +101,28 @@ export class ConsultaService extends BaseService {
         payload.append("file", archivo);
 
         return this.http
-            .post('/api/consulta/Comentarios', payload, this.headers).map(this.extractData);
+            .post('/api/consulta/Comentarios', payload, { headers: this.headers });
     }
 
-    public getDetalleConsulta(consultaId: string){
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('consultaId', consultaId.toString());
+    public getDetalleConsulta(consultaId: string) {
+        let params: HttpParams = new HttpParams();
+        params = params.set('consultaId', consultaId.toString());
+
         return this.http
-            .get(`/api/Consulta/Detalle`, { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get(`/api/Consulta/Detalle`, { params: params, headers: this.headers });
     }
 
-    public actualizarCombos(consultaId: string, estadoId: number, categoriaId: number, subcategoriaId: number = null, causaConsultaId: number = null): Observable<any>{
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('consultaId', consultaId.toString());
-        params.set('estadoConsultaId', estadoId.toString());
-        params.set('categoriaId', categoriaId.toString());
-        params.set('causaConsultaId', causaConsultaId.toString())
-        if(subcategoriaId != null){
-            params.set('subcategoriaId', subcategoriaId.toString());
+    public actualizarCombos(consultaId: string, estadoId: number, categoriaId: number, subcategoriaId: number = null, causaConsultaId: number = null): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.append('consultaId', consultaId.toString());
+        params = params.append('estadoConsultaId', estadoId.toString());
+        params = params.append('categoriaId', categoriaId.toString());
+        params = params.append('causaConsultaId', causaConsultaId.toString())
+        if (subcategoriaId != null) {
+            params = params.append('subcategoriaId', subcategoriaId.toString());
         }
         return this.http
-            .get(`/api/consulta/ActualizarCombos`, { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get(`/api/consulta/ActualizarCombos`, { params: params, headers: this.headers });
 
     }
 
@@ -142,70 +131,80 @@ export class ConsultaService extends BaseService {
         payload.append('consultaId', consultaId);
         payload.append('comentarioId', comentarioId.toString());
         payload.append("file", archivo);
+
         return this.http
-            .post('/api/consulta/Adjuntos', payload, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/consulta/Adjuntos', payload, { headers: this.headersPost });
     }
 
     public actualizarEstado(estadoId: number, consultaId: string) {
         var payload = new FormData();
         payload.append('consultaId', consultaId);
         payload.append('estadoConsultaId', estadoId.toString());
+
         return this.http
-            .post('/api/consulta/ActualizarEstado', payload, this.headersPost).pipe(
-            map(this.extractData));
+            .post('/api/consulta/ActualizarEstado', payload, { headers: this.headersPost });
     }
 
     DescargarArchivo(archivoId: number): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
-        let params: URLSearchParams = new URLSearchParams();
-        params.set("archivoId", archivoId.toString());
+        let headers = new HttpHeaders();
+        headers = headers.append("Content-Type", "application/json");
+        headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
+        headers = headers.append("Cache-control", "no-cache");
+        headers = headers.append("Cache-control", "no-store");
+        headers = headers.append("Expires", "0");
+        headers = headers.append("Pragma", "no-cache");
+
+        let params: HttpParams = new HttpParams();
+        params = params.append("archivoId", archivoId.toString());
+
         return this.http
             .get("/api/consulta/DescargarArchivo", {
-                search: params,
-                headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+                params: params,
+                headers: headers,
+            });
     }
 
     obtenerMateriales(): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
+        let headers = new HttpHeaders();
+        headers = headers.append("Content-Type", "application/json");
+        headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
+        headers = headers.append("Cache-control", "no-cache");
+        headers = headers.append("Cache-control", "no-store");
+        headers = headers.append("Expires", "0");
+        headers = headers.append("Pragma", "no-cache");
 
         return this.http
             .get("/api/AltaEmpresaGranos/GetMateriales", {
-                headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+                headers: headers,
+            });
     }
 
-    generarReclamoImpositivo(reclamoImpositivo: any){
-        this.headers = new Headers();
-        this.headers.append("Content-Type", "application/json");
-        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
-        this.headers.append("Cache-control", "no-cache");
-        this.headers.append("Cache-control", "no-store");
-        this.headers.append("Expires", "0");
-        this.headers.append("Pragma", "no-cache");
-        let params: URLSearchParams = new URLSearchParams();
+    generarReclamoImpositivo(reclamoImpositivo: any) {
+        let headers = new HttpHeaders();
+        headers = headers.append("Content-Type", "application/json");
+        headers = headers.append("Accept", "q=0.8;application/json;q=0.9");
+        headers = headers.append("Cache-control", "no-cache");
+        headers = headers.append("Cache-control", "no-store");
+        headers = headers.append("Expires", "0");
+        headers = headers.append("Pragma", "no-cache");
+
+        let params: HttpParams = new HttpParams();
         let reclamoImpositivoJson = JSON.stringify(reclamoImpositivo);
-        params.set("reclamoImpositivoJson", reclamoImpositivoJson);
+        params = params.append("reclamoImpositivoJson", reclamoImpositivoJson);
+
         return this.http
             .get("/api/consulta/GenerarReclamoImpositivoPdf", {
-                search: params,
-                headers: this.headers,
-            })
-            .pipe(map(this.extractData));
+                params: params,
+                headers: headers,
+            });
+    }
+
+    AnularConsulta(consultaId: number, motivoRechazo: string) {
+        var payload = new FormData();
+        payload.append('consultaId', consultaId.toString());
+        payload.append('motivoRechazo', motivoRechazo);
+
+        return this.http
+            .post('/api/consulta/AnularConsulta', payload, { headers: this.headersPost })
     }
 }

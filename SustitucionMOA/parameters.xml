@@ -444,6 +444,13 @@
                            /@address" />
 	</parameter>
 
+	<parameter name="SI_MPMF_MOAOP_LISTAR_PESIF Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_LISTAR_PESIF']
+                           /@address" />
+	</parameter>
+	
 	<parameter name="BasicHttpBinding_IAuthService Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client

@@ -91,7 +91,7 @@ export class VendedorStatusComponent extends BaseComponent implements OnInit {
         this.unsubscribe();
 
         this.subscription = this.service.getVariosVendedoresStatus(this.cuit).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -141,7 +141,7 @@ export class VendedorStatusComponent extends BaseComponent implements OnInit {
         this.statusObservado = false;
 
         this.subscription = this.service.getVendedorStatus(this.cuit).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();

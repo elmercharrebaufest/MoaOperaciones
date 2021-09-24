@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from "@angular/router";
 import { Subject } from 'rxjs';
-import { Http, Response, URLSearchParams } from '@angular/http';
+import { Response, URLSearchParams } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class SessionDataService {
 
-    constructor(protected http: Http, private router: Router) { }
+    constructor(protected http: HttpClient) { }
 
     public username = new Subject<string>();
     public nombre = new Subject<string>();

@@ -194,7 +194,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
             this.unsubscribe();
             this.subscription = this.service.obteneContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId,
                 this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero, this.contratoCorredor).subscribe(
-                    result => {
+                    (result:any) => {
                         this.spinnerComponent.hideIt();
                         var resultlist = JSON.parse(result);
                         this.data = resultlist.Data;
@@ -228,15 +228,13 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
                                 Id: x.Id,
                                 ObservacionTercero: x.ObservacionTercero,
                                 Acuerdo: x.Acuerdo,
-                                Contrato: x.ContratoSAP
+                                Contrato: x.ContratoSAP,
+                                Dias_Pesificado: x.Dias_Pesificado,
+                                ImporteFinanciero: x.ImporteFinanciero,
                             };
                             return item;
                         });
-                        for (var i = 0; i < this.data.length; i++) {
-                            if (this.data[i].PagoDiferidoTercero == "Si") {
-                                this.data[i].PagoDiferidoTercero = this.obtenerPagoDiferido(this.data[i].ObservacionTercero);
-                            }
-                        }
+                        
                         console.log(this.data);
                     },
                     error => {
@@ -276,7 +274,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
         this.unsubscribe();
         this.subscription = this.service.exportContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId,
             this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero, this.contratoCorredor).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerSmallComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -312,7 +310,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
     getDatosCombos() {
         this.unsubscribe();
         this.subscription = this.service.getDatosCombos().subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -392,7 +390,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
 
     validarDirecto() {
         this.subscription = this.service.validarDirecto().subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -426,7 +424,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
     obtenerMateriales() {
 
         this.subscription = this.service.obtenerMateriales().subscribe(
-            (result) => {
+            (result:any) => {
                 let obj = JSON.parse(result);
 
                 obj.Datos.forEach(element => {
@@ -452,7 +450,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
         }
         this.mensajeComponent.setMsgsEmpty();
         this.subscription = this.service.anularNegocio(this.negocioParAanular.Id, this.negocioParAanular.TipoNegocioId, this.motivoAnulacion).subscribe(
-            (result) => {
+            (result:any) => {
                 this.obteneContratos();
                 let obj = JSON.parse(result);
                 if (obj.HayError) {

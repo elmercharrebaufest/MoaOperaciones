@@ -10,7 +10,6 @@ export class ApikeyService extends BaseService {
 
     public generarApikey(): Observable<any> {
         return this.http
-            .get('/api/usuario/ObtenerNuevaApiKey', { headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/usuario/ObtenerNuevaApiKey', { headers: this.headers });
     }
 }
