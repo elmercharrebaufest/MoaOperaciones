@@ -220,4 +220,6 @@ export class EspecificacionesComponent extends ListBaseComponent {
 
     }
 
+    
+
 }

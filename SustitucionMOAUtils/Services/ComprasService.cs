@@ -46,18 +46,23 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA;
         private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
         private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
+        private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
+        private readonly ICrearSolpConsumerMOA crearSolpConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
-		private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
+        private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
-        public ComprasService(IRepositorio repositorio, IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA, 
-            IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA, IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA, IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA)
+        public ComprasService(IRepositorio repositorio, IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
+            IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA, IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA, IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA,
+            IObtenerSolpConsumerMOA obtenerSolpConsumerMOA, ICrearSolpConsumerMOA crearSolpConsumerMOA)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
             this.cuentasSolpConsumerMOA = cuentasSolpConsumerMOA;
             this.ordenesSolpConsumerMOA = ordenesSolpConsumerMOA;
             this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
+            this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
+            this.crearSolpConsumerMOA = crearSolpConsumerMOA;
         }
 
         public SolpDto GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -120,8 +125,10 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.Telefono = solp.Telefono;
                 pliegoEntity.Email = solp.Email;
                 pliegoEntity.FechaHoraEntrega = solp.FechaHoraEntrega?.ToLocalTime();
-                pliegoEntity.SupervisorSector = solp.SupervisorSector;
-                pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo;
+                //pliegoEntity.SupervisorSector = solp.SupervisorSector;
+                //pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo;
+                pliegoEntity.SupervisorSector = solp.SupervisorSector != null ? string.Join(",", solp.SupervisorSector.Select(x => x)) : string.Empty;
+                pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo != null ? string.Join(",", solp.SupervisorTrabajo.Select(x => x)) : string.Empty;
 
                 pliegoEntity.TieneVisitaObra = solp.TieneVisitaObra;
                 pliegoEntity.TieneVisitaObraMasiva = solp.TieneVisitaObraMasiva;
@@ -138,6 +145,8 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.JornadaLaboralDias = solp.JornadaLaboral != null ? string.Join(",", solp.JornadaLaboral.Select(x => (int)x)) : string.Empty;
                 pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
                 pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
+
+                pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
 
                 if (solp.TieneVisitaObraMasiva && solp.VisitasObraMasiva != null)
                 {
@@ -186,6 +195,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     solpEntity.Posiciones = new List<SolpPosicion>();
                 }
+
+
 
                 //posiciones eliminadas
                 if (solpEntity.Posiciones.Count > 0)
@@ -276,13 +287,13 @@ namespace SustitucionMOAUtils.Services
                                 subposEntity.Codigo = subpos.Codigo;
                                 subposEntity.Cantidad = subpos.Cantidad;
 
-                                if(subpos.TipoImputacionValor != null)
+                                if (subpos.TipoImputacionValor != null)
                                     subposEntity.TipoImputacionSap = repositorio.Obtener<TablaSap>(x => x.Tabla == subpos.TipoImputacionValor.Tabla && x.Codigo == subpos.TipoImputacionValor.Codigo);
 
                                 if (subpos.CuentaMayor != null)
                                     subposEntity.CuentaMayorSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CuentasSolpSap && x.Codigo == subpos.CuentaMayor.Codigo);
 
-                             
+
                                 subposEntity.Numero = subpos.Numero;
                                 subposEntity.PrecioBruto = subpos.PrecioBruto;
                                 subposEntity.Tarea = subpos.Tarea;
@@ -370,6 +381,10 @@ namespace SustitucionMOAUtils.Services
                 Nombre = x.ObtenerNombre(x.Ruta)
             }).ToList();
 
+
+            crearSolpConsumerMOA.Request(solpEntity);
+
+
             return solp;
         }
 
@@ -443,6 +458,7 @@ namespace SustitucionMOAUtils.Services
                     EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
                     TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                     VincularPliego = !x.Pliego_Id.HasValue,
+                    TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales
                 });
 
             return todasLasSolp.ToList();
@@ -488,8 +504,8 @@ namespace SustitucionMOAUtils.Services
                 Telefono = x.Pliego.Telefono,
                 Email = x.Pliego.Email,
                 FechaHoraEntrega = x.Pliego.FechaHoraEntrega,
-                SupervisorSector = x.Pliego.SupervisorSector,
-                SupervisorTrabajo = x.Pliego.SupervisorTrabajo,
+                SupervisorSector = x.Pliego.SupervisorSector.Split(',').ToList(),
+                SupervisorTrabajo = x.Pliego.SupervisorTrabajo.Split(',').ToList(),
                 VisitasObraMasiva = x.Pliego.VisitasMasivas.Select(a => new VisitaObraDto(a)).ToList(),
                 TieneVisitaObra = x.Pliego.TieneVisitaObra ?? false,
                 TieneVisitaObraMasiva = x.Pliego.TieneVisitaObraMasiva ?? false,
@@ -515,6 +531,8 @@ namespace SustitucionMOAUtils.Services
                 }).ToList(),
 
                 EspecificacionesTecnicas = x.Pliego.Archivos.FirstOrDefault(a => a.FileKey == FileKeys.EspecificacionesTecnicasPliego)?.Ruta,
+
+                TieneCondicionesGenerales = x.Pliego.TieneCondicionesGenerales ?? true,
 
                 EstadoSolpSapId = x.EstadoSolpSap_Id,
                 EstadoDocumentoId = x.EstadoDocumento_Id,
@@ -556,17 +574,19 @@ namespace SustitucionMOAUtils.Services
 
         public byte[] GenerarSolpPdf(int idSolp)
         {
-            var templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html");
+            var solp = TraerSolpId(idSolp);
+
+            var templateFilePath = solp.TieneCondicionesGenerales ?? true ? Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html") :
+               Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
+            //, "Templates/PliegoSolpSinCondicionesTemplate.html"
+
 
             var templateCssFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.css");
             var templateCssString = System.IO.File.ReadAllText(templateCssFilePath);
 
             var solpValores = new Dictionary<string, string>();
 
-
-
-            var solp = TraerSolpId(idSolp);
 
             //aca va la asignacion de valores de la solp que se van a reemplazar en el documento
             solpValores.Add(SolpTemplateKeys.FECHA_LIBERACION, ""); //crear campo fecha de liberacion en tabla
@@ -577,6 +597,7 @@ namespace SustitucionMOAUtils.Services
 
             solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
             solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioActual.Mail);
+
 
             //ESPECIFICACION TECNICA DE TAREAS
             if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
@@ -644,15 +665,19 @@ namespace SustitucionMOAUtils.Services
                 solpValores.Add(SolpTemplateKeys.INICIO_FINAL_HS_JORNADA_LABORAL, " ");
             }
 
-            string templateSubposiciones = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td></td><td></td></tr>";
+            string templateSubposiciones = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td></td></tr>";
+
             StringBuilder subposiciones = new StringBuilder();
+
+            StringBuilder texto = new StringBuilder();
 
             solp.Posiciones.ForEach(pos =>
             {
+                //subposiciones.AppendLine();
+
                 pos.Subposiciones.ForEach(subpos =>
                 {
-                    subposiciones.AppendLine(string.Format(templateSubposiciones,
-                        pos.TextoGenerico,
+                    texto.AppendLine(string.Format(templateSubposiciones,
                         subpos.Numero,
                         subpos.CodigoServicioSap?.CodigoSap,
                         subpos.Tarea,
@@ -661,9 +686,15 @@ namespace SustitucionMOAUtils.Services
                         ));
 
                 });
+
+                subposiciones.AppendLine($"<tr><td colspan='2'></td><td colspan='6'> # {pos.TextoGenerico}</td></tr>{texto}");
             });
 
             solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, subposiciones.ToString());
+            
+
+
+
 
             //ADJUNTOS
             solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "");
@@ -737,12 +768,12 @@ namespace SustitucionMOAUtils.Services
                     //    {
                     //        document.NewPage();
                     //    }
-                    
+
                     //    // New outline must be created after the page is added
                     //    //AddOutline(PdfWriter, "Group " + i.ToString(), document.PageSize.Height);
-           
+
                     //}
-                  
+
                     // instantiate custom tag processor and add to `HtmlPipelineContext`.
                     var tagProcessorFactory = Tags.GetHtmlTagProcessorFactory();
                     //tagProcessorFactory.AddProcessor(
@@ -834,15 +865,15 @@ namespace SustitucionMOAUtils.Services
                 ret.Append(value);
             }
 
-             return ret.ToString();
-         }
+            return ret.ToString();
+        }
 
         public List<TablaSapDto> ObtenerServiciosSap()
         {
             ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
-          	var codigoNum = 0;
+            var codigoNum = 0;
 
-  			return resultSap.Servicios.Select(s => new TablaSapDto()
+            return resultSap.Servicios.Select(s => new TablaSapDto()
             {
                 Tabla = TablasSap.CodigoServicioSap,
                 Descripcion = s.Descripcion,
@@ -854,8 +885,8 @@ namespace SustitucionMOAUtils.Services
         public List<TablaSapDto> ObtenerCuentasSap()
         {
             CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)cuentasSolpConsumerMOA.request();
-			var codigoNum = 0;
-			
+            var codigoNum = 0;
+
             return resultSap.Cuentas.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CuentasSolpSap,
@@ -865,12 +896,12 @@ namespace SustitucionMOAUtils.Services
             }).ToList();
         }
 
-        
+
         public List<TablaSapDto> ObtenerOrdenesSap()
         {
             OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)ordenesSolpConsumerMOA.request();
-			var codigoNum = 0;
-			
+            var codigoNum = 0;
+
             return resultSap.Ordenes.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.OrdenSolpSap,
@@ -883,8 +914,8 @@ namespace SustitucionMOAUtils.Services
         public List<TablaSapDto> ObtenerCecoSap()
         {
             CecoWSMOAResponse resultSap = (CecoWSMOAResponse)CecoSolpConsumerMOA.request();
-			var codigoNum = 0;
-			
+            var codigoNum = 0;
+
             return resultSap.Cecos.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CecoSolpSap,
@@ -909,7 +940,7 @@ namespace SustitucionMOAUtils.Services
 
             return lista;
         }
- 
+
         private void EnviarMailSolp(Solp solp, Usuario usuario)
         {
             try
@@ -927,6 +958,33 @@ namespace SustitucionMOAUtils.Services
             catch (Exception e)
             {
             }
+        }
+
+        public ObtenerSolpSAPResponse ObtenerSolpsSAP(DateTime fechaDesde, DateTime fechaHasta, string numeroSolp,
+                                    string centroLogistico, string filtroTipoPosicion, string indicadorDeLiberacion, string origenCreacion, List<string> creadoPorUsuarios,
+                                    string tipoDeImputacion, bool ObtenerDireccionDeEntrega, bool ObtenerImputacion, bool ObtenerServicios, bool MostrarItemsBorrados
+                                    )
+        {
+            var filtros = new ObtenerSolpRequest
+            {
+                FechaDesde = fechaDesde,
+                FechaHasta = fechaHasta,
+                NumeroSolp = numeroSolp,
+                CentroLogistico = centroLogistico,
+                FiltroTipoPosicion = filtroTipoPosicion,
+                IndicadorDeLiberacion = indicadorDeLiberacion,
+                OrigenCreacion = origenCreacion,
+                CreadoPorUsuarios = creadoPorUsuarios,
+                TipoDeImputacion = tipoDeImputacion,
+                ObtenerDireccionDeEntrega = ObtenerDireccionDeEntrega,
+                ObtenerImputacion = ObtenerImputacion,
+                ObtenerServicios = ObtenerServicios,
+                MostrarItemsBorrados = MostrarItemsBorrados,
+
+            };
+            var solps = obtenerSolpConsumerMOA.Request(filtros);
+
+            return solps;
         }
 
         public List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos)
@@ -985,5 +1043,7 @@ namespace SustitucionMOAUtils.Services
 
         public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
         public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
+
+        public const string TEXTO_GENERICO = "TEXTO_GENERICO";
     }
 }

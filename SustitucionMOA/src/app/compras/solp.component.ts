@@ -218,9 +218,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     selected: false
                 }
             ];
-            //let fechaEntrega = new Date();
             let fechaLimiteFecha = new Date();
-            //this.solpActual.fechaEntrega = this.sumarDias(fechaEntrega, 7);
             this.solpActual.horaEntrega = new Date(1, 1, 1, 10, 0, 0, 0);
             this.solpActual.fechaLimiteFecha = this.sumarDias(fechaLimiteFecha, 6);
             this.solpActual.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
@@ -236,10 +234,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.comienzoJornadaLaboral = new Date(1, 1, 1, 7, 0, 0, 0);
             this.solpActual.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
             this.solpActual.ejecucion = "30";
-            this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
+            this.solpActual.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
             
             this.solpActual.centroPorDefecto = 1029;
             this.solpActual.monedaPorDefecto = "ARP";
+            
 
             this.getCombos();
 
@@ -338,6 +337,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
         }),
         this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas || this.solpActual.especificacionesViewModel.valorPorDefecto; 
+        
+        this.solpActual.tieneCondicionesGenerales = solp.TieneCondicionesGenerales;
 
         // Paso 4
         this.solpActual.jornadaLaboralDias.forEach(k => {
@@ -389,6 +390,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.proveedoresNoSugeridos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial);
                 posActual.proveedoresInvalidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'INVALIDO').map(p => p.RazonSocial);
 
+
+
                 if(x.Subposiciones){
                     posActual.listadoSubPosiciones = [];
                     let i = 1;
@@ -419,8 +422,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             });
 
             this.solpActual.setearPosicionPorDefecto();
-            // this.cabecera.solpActual = this.solpActual;
-            // this.actualizarPasoCompleto();
         }
 
     }
@@ -470,29 +471,39 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    
-
-    guardarCambios(mostrarPreview = false, enviarSap = false){
+    guardarCambios(mostrarPreview = false, enviarSap = false, guardarPorPaso = false){
         try {
-            this.blockUI.start('Guardando...');
-            this.spinnerComponent.showIt();
+
+            if(guardarPorPaso = false){
+                this.blockUI.start('Guardando...');
+                this.spinnerComponent.showIt();
+            }
 
             this.solpActual.enviarSap = enviarSap;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
-                        this.blockUI.stop();
+                        if(guardarPorPaso = false){
+                            this.blockUI.stop();
+                        } 
                     } else if (result.error != undefined && result.error != "") {
                         this.floatMsgService.setErrorMsg(result.error);
-                        this.blockUI.stop();
+                        if(guardarPorPaso = false){
+                            this.blockUI.stop();
+                        } 
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
-                        this.blockUI.stop();
+                        if(guardarPorPaso = false){
+                            this.blockUI.stop();
+                        } 
                     } else {
                         this.spinnerComponent.hideIt();
-                        this.blockUI.stop();
-                        if(!mostrarPreview){
+                        if(guardarPorPaso = false){
+                            this.blockUI.stop();
+                        } 
+
+                        if(!mostrarPreview && !guardarPorPaso){
                             this.messageService.add({severity:'success', detail:'Los datos se guardaron correctamente'});
                         }
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
@@ -525,19 +536,24 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             }
                         } 
 
+
                     }
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
                     this.spinnerComponent.hideIt();
-                    this.blockUI.stop();
+                    if(guardarPorPaso = false){
+                        this.blockUI.stop();
+                    } 
                 }
 
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             this.spinnerComponent.hideIt();
-            this.blockUI.stop();
+            if(guardarPorPaso = false){
+                this.blockUI.stop();
+            } 
             return false; //<-- Prevent Refresh
         }
     }
@@ -605,14 +621,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return lista.filter(x => !x || x.length == 0).length == 0;
     }
 
-    scrollTo(el: HTMLElement){
-        el.scrollIntoView();
-    }
+    
     //evento que se activa cuando se deja uno de los paso de la solp
     //infomacionSolp : { codigo : string , esPasoInvalido : bool}
     actualizarEstadoSolp(infomacionSolp: any) {
         var pasoSolp = this.pasos.find(x => x.Codigo == infomacionSolp.codigo);
         pasoSolp.Completo = !infomacionSolp.esPasoInvalido;
+    }
+
+    // funcion para que cuando agregues una posicion, vuelva a la altura posiciones
+    scrollTo(el: HTMLElement){
+        el.scrollIntoView();
     }
 
     agregarPosicion(el: HTMLElement){
@@ -656,47 +675,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.navService.navegarSeccion('/compras');
     }
 
-    cancelarSolp() {
-        this.confirmationService.confirm({
-            key: 'cancelarSolp',
-            message: '¿Está seguro que desea volver a la pantalla principal? No se conservaran los cambios no guardados.',
-            accept: () => {
-                this.salir();
-            },
-            reject: () => {  
-            }
-        });
-    }
-
-    cancelarFinalizar() {
-        this.displayFinalizar = false;
-    }
-
-
-    ultimoPasoSolp() {
-        this.confirmationService.confirm({
-                    key: 'ultimoPasoSolp',
-                    message: 'Está a punto de enviar a SOLP sin documento a xxxx ¿Desea continuar?', 
-                    accept: () => {
-            
-                    },
-                    reject: () => {
-                        this.salir();  
-                    }
-                });
-
-    }
-
-    finalizar() {
-        this.guardarCambios();
-        this.displayFinalizar = false;
-        this.displaySAP = true; 
-    }
-
-    showDialog() {
-        this.displayFinalizar = true;           
-    }
-
+    
     generarZipPliego(idSolp){
         this.blockUI.start('Generando ')
         this.service.descargarZipPliego(idSolp)
@@ -740,5 +719,60 @@ export class SolpComponent extends BaseComponent implements OnInit {
             )
     }
 
+    // Todos los Modal
+    finalizar() {
+        this.guardarCambios();
+        this.displayFinalizar = false;
+        this.displaySAP = true; 
+    }
+
+    // Abre el modal del boton finalizar
+    showDialog() {
+        this.displayFinalizar = true;           
+    }
+
+    cancelarFinalizar() {
+        this.displayFinalizar = false;
+    }
+
+    cancelarSolp() {
+        this.confirmationService.confirm({
+            key: 'cancelarSolp',
+            message: '¿Está seguro que desea volver a la pantalla principal? No se conservaran los cambios no guardados.',
+            accept: () => {
+                this.salir();
+            },
+            reject: () => {  
+            }
+        });
+    }
+
+    solpFinalizadaVolverHome() {
+        this.confirmationService.confirm({
+            key: 'solpFinalizadaVolverHome',
+            message: '¿Desea volver a la pantalla principal?',
+            accept: () => {
+                this.salir();
+            },
+            reject: () => {  
+            }
+        });
+    }
+
+    ultimoPasoSolp() {
+        this.confirmationService.confirm({
+                    key: 'ultimoPasoSolp',
+                    message: 'Está a punto de enviar a SOLP sin documento a xxxx ¿Desea continuar?', 
+                    accept: () => {
+            
+                    },
+                    reject: () => {
+                        this.salir();  
+                    }
+                });
+
+    }
+
+    
 }
 
