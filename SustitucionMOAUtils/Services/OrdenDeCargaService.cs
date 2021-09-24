@@ -418,7 +418,8 @@ namespace SustitucionMOAUtils.Services
                 TransporteExiste = orden.TransporteExiste,
                 Producto = orden.Producto.Nombre,
                 NumeroEntrega = string.IsNullOrEmpty(orden.NumeroEntrega) ? "-" : orden.NumeroEntrega,
-                NumeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? "-" : orden.NumeroPedido
+                NumeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? "-" : orden.NumeroPedido,
+                MensajeValidacionSAP = string.IsNullOrEmpty(orden.DescripcionCodigoVerificacionSap) ? "" : orden.DescripcionCodigoVerificacionSap
             };
 
             return ordenDto;
