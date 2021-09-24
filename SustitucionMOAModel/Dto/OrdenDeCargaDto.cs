@@ -20,6 +20,7 @@ namespace SustitucionMOAModel.Dto
         public string Contrato { get; set; }
         public string Pedido { get; set; }
         public string Entrega { get; set; }
+        public bool EsFacturaAnticipada { get; set; }
     }
 
     public class OrdenDeCargaEditarDto
