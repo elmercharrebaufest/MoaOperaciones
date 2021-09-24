@@ -382,7 +382,7 @@ namespace SustitucionMOAUtils.Services
             }).ToList();
 
 
-            crearSolpConsumerMOA.Request(solpEntity);
+            //crearSolpConsumerMOA.Request(solpEntity);
 
 
             return solp;
