@@ -573,7 +573,6 @@ namespace SustitucionMOAUtils.Services
         {
             var solp = TraerSolpId(idSolp);
 
-
             var templateFilePath = solp.TieneCondicionesGenerales ?? true ? Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html") :
                Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
@@ -595,6 +594,7 @@ namespace SustitucionMOAUtils.Services
 
             solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
             solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioActual.Mail);
+
 
             //ESPECIFICACION TECNICA DE TAREAS
             if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
@@ -662,15 +662,19 @@ namespace SustitucionMOAUtils.Services
                 solpValores.Add(SolpTemplateKeys.INICIO_FINAL_HS_JORNADA_LABORAL, " ");
             }
 
-            string templateSubposiciones = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td></td><td></td></tr>";
+            string templateSubposiciones = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td></td></tr>";
+
             StringBuilder subposiciones = new StringBuilder();
+
+            StringBuilder texto = new StringBuilder();
 
             solp.Posiciones.ForEach(pos =>
             {
+                //subposiciones.AppendLine();
+
                 pos.Subposiciones.ForEach(subpos =>
                 {
-                    subposiciones.AppendLine(string.Format(templateSubposiciones,
-                        pos.TextoGenerico,
+                    texto.AppendLine(string.Format(templateSubposiciones,
                         subpos.Numero,
                         subpos.CodigoServicioSap?.CodigoSap,
                         subpos.Tarea,
@@ -679,9 +683,15 @@ namespace SustitucionMOAUtils.Services
                         ));
 
                 });
+
+                subposiciones.AppendLine($"<tr><td colspan='2'></td><td colspan='6'> # {pos.TextoGenerico}</td></tr>{texto}");
             });
 
             solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, subposiciones.ToString());
+            
+
+
+
 
             //ADJUNTOS
             solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "");
@@ -994,5 +1004,7 @@ namespace SustitucionMOAUtils.Services
 
         public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
         public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
+
+        public const string TEXTO_GENERICO = "TEXTO_GENERICO";
     }
 }
