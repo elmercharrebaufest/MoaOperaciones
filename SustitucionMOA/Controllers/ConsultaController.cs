@@ -72,6 +72,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (ValidationCustomException e)
             {
+                if (e.LoguearExcepcion)
+                {
+                    Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.InnerException ?? e);
+                }
+
                 return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
