@@ -235,7 +235,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 catch (Exception e)
                 {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "incio"), e);
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "inicio"), e);
                 }
             }
 

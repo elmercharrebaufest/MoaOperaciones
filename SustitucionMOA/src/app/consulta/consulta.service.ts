@@ -8,37 +8,6 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 @Injectable()
 export class ConsultaService extends BaseService {
 
-    public sendContactoMail(
-        proveedor: string,
-        nombre: string,
-        email: string,
-        telefono: string,
-        categoria: string,
-        camposAdicionales: string,
-        comentario: string,
-        contrato: string,
-        razonSocial: string,
-        cuit: string,
-        nombreVendedor: string,
-        comprobante: string,
-        fechaPago: string,
-        importe: string,
-        impuesto: string,
-        inscripcion: string,
-        motivo: string,
-        archivo: any
-    ): Observable<any> {
-        var payload = new FormData();
-        var data = {
-            proveedor: proveedor, nombre: nombre, email: email, telefono: telefono, categoria: categoria, camposAdicionales: camposAdicionales, comentario: comentario, contrato: contrato, razonSocial: razonSocial,
-            cuit: cuit, nombreVendedor: nombreVendedor, comprobante: comprobante, fechaPago: fechaPago, importe: importe, importeDecimal: 0, impuesto: impuesto, inscripcion: inscripcion, motivo: motivo
-        }
-        payload.append("contacto", JSON.stringify(data));
-        payload.append("file", archivo);
-        return this.http
-            .post('/api/contactoMail/sendContactoMail', payload, { headers: this.headersPost });
-    }
-
     public AgregarConsulta(consulta: object, comentario: Comentario, archivo: any = null) {
         let consultaJson = JSON.stringify(consulta);
         let comentarioJson = JSON.stringify(comentario);
