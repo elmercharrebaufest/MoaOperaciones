@@ -154,5 +154,6 @@
   <ItemGroup>
     <PostDeploy Include="scripts\PermisosNotificaciones.sql" />
     <None Include="scripts\CrearHanfireDBSchema.sql" />
+    <None Include="scripts\Permiso Borrar Campo Sustentable.sql" />
   </ItemGroup>
 </Project>

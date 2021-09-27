@@ -58,7 +58,7 @@ export class FleteBaseComponent extends ListBaseComponent implements OnDestroy {
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.exportPDF(this.filtroFechaComponent.periodo, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, proforma).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -107,7 +107,7 @@ export class FleteBaseComponent extends ListBaseComponent implements OnDestroy {
         let file = viajeProforma.pdf;
         viajeProforma.pdf = null;
         this.subscription = this.service.guardarDatosProforma(viajeProforma, file).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {

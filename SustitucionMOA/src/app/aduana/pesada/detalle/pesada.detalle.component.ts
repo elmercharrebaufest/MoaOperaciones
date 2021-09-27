@@ -58,7 +58,7 @@ export class PesadaDetalleComponent extends AduanaBaseComponent {
             let nroOrden = params['nroOrden'];
             this.unsubscribe();
             this.subscription = this.service.getPesadaDetalle(centro, nroOrden).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();

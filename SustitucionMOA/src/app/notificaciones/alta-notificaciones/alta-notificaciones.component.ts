@@ -157,7 +157,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
     obtenerNotificacion() {
         try {
             this.subscriptionDropDowns = this.service.getNotificacion(this.notificacionId).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -191,7 +191,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
     getRolesOptions() {
         try {
             this.subscriptionDropDowns = this.usuarioService.getRoles().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {

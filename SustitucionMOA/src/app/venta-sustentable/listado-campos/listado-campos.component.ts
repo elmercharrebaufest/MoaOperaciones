@@ -39,7 +39,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     data: any;
     esInterno: boolean = this.isAuthorized('VER TODOS CAMPOS SUSTENTABLE');
     editarCampos: boolean = this.isAuthorized('EDICION CAMPOS CREADOS')
-    borrarCampos: boolean = this.isAuthorized('EDICION CAMPOS CREADOS')
+    borrarCampos: boolean = this.isAuthorized('BORRAR CAMPOS CREADOS')
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     opcionesProveedores: any;
 
@@ -62,7 +62,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.getCamposProveedores().subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -94,7 +94,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.campoProveedorBorrar(campoCosechaId, proveedorId).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -122,7 +122,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         this.unsubscribe();
 
         this.subscription = this.service.exportExcel().subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.spinnerSmallComponent.hideIt();
                     this.sessionDataService.logout();

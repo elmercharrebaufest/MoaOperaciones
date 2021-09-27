@@ -61,7 +61,7 @@ export class RYDMantenimientoExportadorComponent extends RYDMantenimientoBaseCom
     getFiltros() {
         this.mensajeComponent.setMsgsEmpty();
         this.service.getFiltros().subscribe(
-            result => {
+            (result:any) => {
                 //this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -88,7 +88,7 @@ export class RYDMantenimientoExportadorComponent extends RYDMantenimientoBaseCom
     getDataInputs() {
         this.mensajeComponent.setMsgsEmpty();
         this.subscriptionDropDowns = this.service.getInputExportador().subscribe(
-            result => {
+            (result:any) => {
                 //this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -114,7 +114,7 @@ export class RYDMantenimientoExportadorComponent extends RYDMantenimientoBaseCom
         this.spinnerComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.getExportador(this.exportadorSelected).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -143,7 +143,7 @@ export class RYDMantenimientoExportadorComponent extends RYDMantenimientoBaseCom
         try {
             this.unsubscribe();
             this.subscription = this.service.guardarExportador(this.almacenSAP, this.descripcion).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -179,7 +179,7 @@ export class RYDMantenimientoExportadorComponent extends RYDMantenimientoBaseCom
         try {
             this.unsubscribe();
             this.subscription = this.service.actualizarExportador(this.almacenSAP, this.descripcion, this.exportadorSelected).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -215,7 +215,7 @@ export class RYDMantenimientoExportadorComponent extends RYDMantenimientoBaseCom
         try {
             this.unsubscribe();
             this.subscription = this.service.borrarExportador(this.exportadorSelected).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {

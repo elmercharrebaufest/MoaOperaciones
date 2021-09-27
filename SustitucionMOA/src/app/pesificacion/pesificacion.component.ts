@@ -76,7 +76,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
         try {
             this.unsubscribe();
             this.subscription = this.service.getContratos().subscribe(
-                result => {
+                (result:any) => {
                     //this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -124,7 +124,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
         this.unsubscribe();
 
         this.subscription = this.service.getData().subscribe(
-            result => {
+            (result:any) => {
                 this.fecha = null;
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
@@ -199,7 +199,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
 
         this.unsubscribe();
         this.subscription = this.service.setData(this.contrato, this.fijacion, this.cantidad).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -247,7 +247,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
 
         this.unsubscribe();
         this.subscription = this.service.setMassiveData(this.file).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 this.visibleEnviar = true;
                 if (result.logout == true) {

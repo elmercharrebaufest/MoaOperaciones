@@ -52,7 +52,7 @@ export class CamaraConsolidacionComponent extends AduanaBaseComponent {
         this.cambiandoCamara = true;
         this.unsubscribe();
         this.subscription = this.service.getImagenCamaraConsolidacion(url, nombre).subscribe(
-            result => {
+            (result:any) => {
                 if (this.camaraActualNombre == result.nombre) {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -79,7 +79,7 @@ export class CamaraConsolidacionComponent extends AduanaBaseComponent {
         if (!this.cambiandoCamara) {
             this.unsubscribe();
             this.subscription = this.service.getImagenCamaraConsolidacion(this.camaraUrlActual, this.camaraActualNombre).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     }else if (this.camaraActualNombre == result.nombre && result.img != undefined && result.img != "") {

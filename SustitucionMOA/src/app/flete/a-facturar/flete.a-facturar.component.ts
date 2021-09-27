@@ -90,7 +90,7 @@ export class FleteAFacturarComponent extends FleteBaseComponent {
         let file = viajeProforma.pdf;
         viajeProforma.pdf = null;
         this.subscription = this.service.guardarTarifas(viajeProforma, file).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -112,7 +112,7 @@ export class FleteAFacturarComponent extends FleteBaseComponent {
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.validarImporte(proforma.totalImporte.toString(), proforma.proforma).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {

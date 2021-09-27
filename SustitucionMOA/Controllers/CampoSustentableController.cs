@@ -75,8 +75,8 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CONTRATO)]
-        [HttpDelete]
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.BORRAR_CAMPOS_CREADOS)]
+        [HttpPost]
         public JsonResult CampoProveedorBorrar(int campoCosechaId, int proveedorId)
         {
             try

@@ -2,10 +2,12 @@
 
 SELECT
 i.Id, 
+i.Consulta_Id as ConsultaId,
 i.Anticipo, 
 i.Cuit, 
 i.Sede, 
 i.FechaCarga, 
+i.RazonSocial, 
 i.EstadoIngresosBrutosCoeficienteUnificado_Id AS EstadoId, 
 ei.Descripcion AS Estado,
 i.SecuenciaIngresosBrutosCoeficienteUnificado_Id AS SecuenciaId, 

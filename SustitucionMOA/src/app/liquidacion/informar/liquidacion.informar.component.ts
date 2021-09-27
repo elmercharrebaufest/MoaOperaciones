@@ -62,7 +62,7 @@ export class LiquidacionInformarComponent extends LiquidacionBaseComponent{
         this.unsubscribe();
         try {
             this.subscription = this.service.notificarLiquidaciones(this.files).subscribe(
-                result => {
+                (result:any) => {
                     this.blockUI.stop();
                     if (result.logout == true) {
                         this.sessionDataService.logout();

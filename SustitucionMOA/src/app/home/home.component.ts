@@ -88,7 +88,7 @@ export class HomeComponent extends BaseComponent implements OnInit, OnDestroy {
         this.mensajeCtaCte = undefined;
         this.unsubscribe();
         this.subscription = this.service.getHomeInfo(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -128,7 +128,7 @@ export class HomeComponent extends BaseComponent implements OnInit, OnDestroy {
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.descargarDocumentoPDF(documento, ejercicio).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {

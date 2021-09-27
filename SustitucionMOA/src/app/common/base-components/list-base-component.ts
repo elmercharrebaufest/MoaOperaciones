@@ -81,7 +81,7 @@ export class ListBaseComponent extends BaseComponent implements OnInit {
         this.spinnerComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.getData(this.filtroFechaComponent.periodo, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
-            result => {
+            (result:any) => {
                 this.data = null;
                 this.mensajeComponent.setMsgsEmpty();
                 this.spinnerComponent.hideIt();
@@ -110,7 +110,7 @@ export class ListBaseComponent extends BaseComponent implements OnInit {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.exportExcel(this.filtroFechaComponent.periodo, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
