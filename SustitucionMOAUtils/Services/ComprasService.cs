@@ -382,8 +382,10 @@ namespace SustitucionMOAUtils.Services
             }).ToList();
 
 
-            //crearSolpConsumerMOA.Request(solpEntity);
-
+            if (solp.Finalizar)
+            {
+                crearSolpConsumerMOA.Request(solpEntity);
+            }
 
             return solp;
         }
@@ -691,7 +693,7 @@ namespace SustitucionMOAUtils.Services
             });
 
             solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, subposiciones.ToString());
-            
+
 
 
 
@@ -998,14 +1000,14 @@ namespace SustitucionMOAUtils.Services
                 {
                     codigosPorTabla.Add(cod.Tabla, new List<string>());
                 }
-                
+
                 codigosPorTabla[cod.Tabla].Add(cod.CodigoSap);
             }
 
             foreach (var tabla in codigosPorTabla)
             {
                 var lista = repositorio.Listar<TablaSap>(x => x.Tabla == tabla.Key && tabla.Value.Contains(x.CodigoSap))
-                    .Select(x=> new TablaSapDto(x)).ToList();
+                    .Select(x => new TablaSapDto(x)).ToList();
                 ret.AddRange(lista);
             }
 
@@ -1016,7 +1018,7 @@ namespace SustitucionMOAUtils.Services
         {
             var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nrosolp);
 
-            if(solp != null)
+            if (solp != null)
             {
                 solp.FechaLiberacionSap = fechaLiberacion;
                 repositorio.GuardarCambios();

@@ -83,16 +83,30 @@ namespace SustitucionMOAWS.WSConsumers
             */
             #region posiciones y servicios
             int numeroPosicion = 0;
+            string outlineNumber = "";
+            string numeroPaquete = "";
+            string preqItem = "";
+            string serialNumber = "";
             int numeroDireccion = 0;
-            int numeroImputacion = 0;
+
+            /* Algunas cuestiones con los números que se mandan:
+             * DOC_ITEM, PREQ_ITEM, OUTLINE, SERIAL_NO, PCKG_NO, corresponden al número de la posicion pero formateados de distintas formas
+             * SRV_LINE y SERIAL_NO_ITEM, son de la SUBPOSICION, pero también formatodo de distintas formas
+             * 
+             */
+
+            solpSAP.IM_PR_TYPE = "NB";
+
+
             foreach (var posicion in solpActual.Posiciones.OrderBy(x => x.Id))
             {
                 numeroPosicion++;
-                var vendedoresDeseados = posicion.Proveedores.Where(x => x.TipoFiltroProveedorSolp_Id == 1).FirstOrDefault().RazonSocial;
-                var vendedoresNoSugeridos = posicion.Proveedores.Where(x => x.TipoFiltroProveedorSolp_Id == 2).FirstOrDefault().RazonSocial;
-                var vendedoresNoInvalidos = posicion.Proveedores.Where(x => x.TipoFiltroProveedorSolp_Id == 3).FirstOrDefault().RazonSocial;
 
-                var posicionSAP = new ZMPES5700
+                preqItem = $"{numeroPosicion:0000}0";
+                numeroPaquete = $"{numeroPosicion:0000000000}";
+                serialNumber = $"{numeroPosicion:00}";
+
+                solpSAP.IM_PRITEMList.Add(new ZMPES5700
                 {
                     //PREQ_ITEM BNFPO Número de posición de la solicitud de pedido
                     //PUR_GROUP EKGRP Grupo de compras
@@ -104,12 +118,12 @@ namespace SustitucionMOAWS.WSConsumers
                     //STORE_LOC   LGORT_D Almacén
                     //TRACKINGNO BEDNR   Número de necesidad
 
-                    PREQ_ITEM = numeroPosicion.ToString(),
+                    PREQ_ITEM = preqItem,
                     PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(),
                     CREATED_BY = solpActual.UsuarioCreacion.Mail,
                     PREQ_NAME = posicion.Solicitante,
                     SHORT_TEXT = posicion.TextoGenerico,
-                    MATERIAL = "", //Esto es para el MVP2 ,porque los materiales no tienen sub posiciones
+                    MATERIAL = null, //Esto es para el MVP2 ,porque los materiales no tienen sub posiciones
                     PLANT = posicion.Centro.CodigoSap.ToString(),
                     STORE_LOC = posicion.Almacen.CodigoSap.ToString(),
                     TRACKINGNO = posicion.NroNecesidad,
@@ -129,15 +143,15 @@ namespace SustitucionMOAWS.WSConsumers
                     //ACCTASSCAT  KNTTP Tipo de imputación
 
                     MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString(),
-                    QUANTITY = 0,
-                    UNIT = "",
-                    PREQ_UNIT_ISO = "",
+                    //QUANTITY = null,
+                    UNIT = null,
+                    PREQ_UNIT_ISO = null,
                     PREQ_DATE = DateTime.Now.ToString(),
                     DELIV_DATE = posicion.FechaEntregaServicio.ToString(),
-                    REL_DATE = "", //Calculan ellos ?
-                    GR_PR_TIME = posicion.PlazoEntrega??0, //Validar con ellos
-                    PREQ_PRICE = 0, //Calcular el precio de todas las subposiciones?
-                    PRICE_UNIT = 0,
+                    REL_DATE = null, //Calculan ellos ?
+                   // GR_PR_TIME = null, 
+                   // PREQ_PRICE = 0, //Calcular el precio de todas las subposiciones?
+                   // PRICE_UNIT = 0,
                     ITEM_CAT = posicion.TipoPosicion.Codigo,
                     ACCTASSCAT = posicion.TipoImputacion.Codigo,
 
@@ -153,17 +167,41 @@ namespace SustitucionMOAWS.WSConsumers
                     //PLND_DELRY PLIFZ   Plazo de entrega previsto en días
                     //PCKG_NO PACKNO  Nº paquete
 
-                    DES_VENDOR = vendedoresDeseados, //Preguntar a Ulises
-                    FIXED_VEND = "", //Preguntar
+                    DES_VENDOR = null, //Preguntar a Ulises
+                    FIXED_VEND = null, //Preguntar
                     PURCH_ORG = posicion.GrupoCompras.CodigoSap,
-                    AGREEMENT = "", //Contrato marco? No está en este MVP
-                    AGMT_ITEM = "", //Contrato marco? No está en este MVP
-                    CLOSED = "", //Contrato marco? No está en este MVP
+                    AGREEMENT = null, //Contrato marco? No está en este MVP
+                    AGMT_ITEM = null, //Contrato marco? No está en este MVP
+                    CLOSED = null, //Contrato marco? No está en este MVP
                     CURRENCY = posicion.Moneda.CodigoSap,
                     CURRENCY_ISO = posicion.Moneda.CodigoSap,
                     PLND_DELRY = (decimal)posicion.PlazoEntrega,
-                    PCKG_NO = "", //Otro MVP?
-                };
+                    PCKG_NO = numeroPaquete
+                });
+
+                solpSAP.IM_PRITEMXList.Add(new ZMPES5660 {
+                    PREQ_ITEM = preqItem,
+                    PREQ_ITEMX = "X",
+                    PUR_GROUP = "X",
+                    CREATED_BY = "X",
+                    PREQ_NAME = "X",
+                    SHORT_TEXT = "X",
+                    PLANT = "X",
+                    STORE_LOC = "X",
+                    TRACKINGNO = "X",
+                    MATL_GROUP = "X",
+                    PREQ_DATE = "X",
+                    DELIV_DATE = "X",
+                    ITEM_CAT = posicion.TipoPosicion.Codigo,
+                    ACCTASSCAT = posicion.TipoImputacion.Codigo,
+                    PURCH_ORG = "X",
+                    CURRENCY = "X",
+                    CURRENCY_ISO = "X",
+                    PLND_DELRY = "X",
+                    PCKG_NO = "X"
+
+                });
+
 
                 /*
                 DOC_ITEM	EBELP	Número de posición de la solicitud de pedido = PREQ_ITEM
@@ -178,20 +216,25 @@ namespace SustitucionMOAWS.WSConsumers
                 GROSS_PRICE	SBRTWR	Precio bruto Unitario
                 CURRENCY	WAERS	Clave de moneda
                 MATL_GROUP	MATKL_SRV	Grupo artículos
-
                  */
-                solpSAP.IM_PRITEMList.Add(posicionSAP);
 
-                var numSubPosicion = 0;
+                var numeroSubPosicion = 0;
+                string serviceLineNumber = "";
+                string serialNumberItem = "";
                 foreach (var subPosicion in posicion.Subposiciones.OrderBy(x => x.Id))
                 {
-                    numSubPosicion++;
-                    var serviceLine = new ZMPES5780
+                    numeroSubPosicion++;
+                    serviceLineNumber = $"{numeroSubPosicion:000000000}0";
+                   
+                    serialNumberItem = $"{numeroSubPosicion:00}";
+
+                    //SUBPOSICION
+                    solpSAP.IM_SERVICELINESList.Add(new ZMPES5780
                     {
                         DOC_ITEM = numeroPosicion.ToString(),
-                        OUTLINE = subPosicion.Numero.ToString(), //Preguntar a Ulises
-                        SRV_LINE = subPosicion.Numero.ToString(), //Preguntar a Ulises
-                        DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
+                        OUTLINE = outlineNumber, //Preguntar a Ulises
+                        SRV_LINE = serviceLineNumber,
+                        //DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
                         SERVICE = subPosicion.CodigoServicioSap.ToString(),
                         SHORT_TEXT = subPosicion.Tarea,
                         QUANTITY = subPosicion.Cantidad??0,
@@ -200,29 +243,96 @@ namespace SustitucionMOAWS.WSConsumers
                         GROSS_PRICE = subPosicion.PrecioBruto??0,
                         CURRENCY = posicion.Moneda.CodigoSap,
                         MATL_GROUP = subPosicion.CuentaMayorSap.CodigoSap,
-                    };
+                    });
 
-                    solpSAP.IM_SERVICELINESList.Add(serviceLine);
+                    solpSAP.IM_SERVICELINESXList.Add(new ZMPES5720
+                    {
+                        DOC_ITEM = numeroPosicion.ToString(),
+                        OUTLINE = outlineNumber, //Preguntar a Ulises
+                        SRV_LINE = serviceLineNumber,
+                        //DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
+                        SERVICE = "X",
+                        SHORT_TEXT = "X",
+                        QUANTITY = "X",
+                        UOM = "X",
+                        UOM_ISO = "X",
+                        GROSS_PRICE = "X",
+                        CURRENCY = "X",
+                        MATL_GROUP = "X",
+                    });
+
+
+                    //IMPUTACION SUBPOSICION
+                    solpSAP.IM_SERVICEACCOUNTList.Add(new ZMPES5790
+                    {
+                        DOC_ITEM = numeroPosicion.ToString(),
+                        OUTLINE = outlineNumber, //Preguntar a Ulises
+                        SRV_LINE = serviceLineNumber, //Preguntar a Ulises
+                        SERIAL_NO = serialNumber,
+                        SERIAL_NO_ITEM = serialNumberItem,
+                        //Siempre mandar esto en 100. Lo autocalcula SAP
+                        PERCENT = 100
+                    });
+
+
+                    solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
+                    {
+                        DOC_ITEM = numeroPosicion.ToString(),
+                        OUTLINE = outlineNumber, //Preguntar a Ulises
+                        SRV_LINE = serviceLineNumber, //Preguntar a Ulises
+                        SERIAL_NO = serialNumber,
+                        SERIAL_NO_ITEM = "X",
+                        //Siempre mandar esto en 100. Lo autocalcula SAP
+                        PERCENT = "X"
+                    });
+
+
+
+                    /*
+                       Nombre: ZBAPIMEREQACCOUNT		Denominación:	Imputación
+                       Nombre	Dominio / Tipo	Denominación
+                       PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
+                       SERIAL_NO	DZEKKN	Número actual de la imputación
+                       QUANTITY	MENGE_D	Cantidad
+                       GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
+                       BUS_AREA	GSBER	División
+                       COSTCENTER	KOSTL	Centro de coste
+                       ASSET_NO	ANLN1	Número principal de activo fijo
+                       SUB_NUMBER	ANLN2	Subnúmero de activo fijo
+                       ORDERID	AUFNR	Número de orden
+                       CO_AREA	KOKRS	Sociedad CO
+                       COSTOBJECT	KSTRG	Objeto de coste
+                       PROFIT_CTR	PRCTR	Centro de beneficio
+                   */
 
                     //Agrupar por subposición?
                     //Valido con Ulises
-                    numeroImputacion++;
-                    solpSAP.IM_PRACCOUNTList.Add(new ZMPES5690
+
+                    if (!solpSAP.IM_PRACCOUNTList.Any(x => 
+                            x.PREQ_ITEM == preqItem &&
+                            x.SERIAL_NO == serialNumber &&
+                            x.GL_ACCOUNT == subPosicion.CuentaMayorSap.CodigoSap &&
+                            x.COSTCENTER == posicion.Centro.CodigoSap
+                        ))
                     {
-                        PREQ_ITEM = numeroPosicion.ToString(),
-                        SERIAL_NO = numeroImputacion.ToString(),
-                        QUANTITY = 0,
-                        GL_ACCOUNT = "",
-                        BUS_AREA = "",
-                        COSTCENTER = "",
-                        ASSET_NO = "",
-                        SUB_NUMBER = "",
-                        ORDERID = "",
-                        CO_AREA = "",
-                        COSTOBJECT = "",
-                        PROFIT_CTR = "",
-                    });
+                        solpSAP.IM_PRACCOUNTList.Add(new ZMPES5690
+                        {
+                            PREQ_ITEM = preqItem,
+                            SERIAL_NO = serialNumber,
+                            GL_ACCOUNT = subPosicion.CuentaMayorSap.CodigoSap,
+                            COSTCENTER = posicion.Centro.CodigoSap,
+                        });
+
+                        solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
+                        {
+                            PREQ_ITEM = preqItem,
+                            SERIAL_NO = serialNumber,
+                            GL_ACCOUNT = "X",
+                            COSTCENTER = "X"
+                        });
+                    }
                 }
+
 
 
 
@@ -244,43 +354,21 @@ namespace SustitucionMOAWS.WSConsumers
                     new ZMPES5750
                     {
                         PREQ_NO = solpActual.NroSolp,
-                        PREQ_ITEM = numeroPosicion.ToString(),
+                        PREQ_ITEM = preqItem,
                         ADDR_NO = numeroDireccion.ToString(),
                         NAME = posicion.NombreEntrega,
                         POSTL_COD1 = posicion.CpEntrega,
                         CITY = posicion.Centro.Descripcion,
                         STREET = posicion.CalleEntrega,
-                        HOUSE_NO = posicion.NumeroEntrega, // Validar con Ulises el tema del telefono/número
-                        TEL1_NUMBR = "", //Validar si es el numero entrega o de donde lo sacamos
+                        HOUSE_NO = "", // Validar con Ulises el tema del telefono/número
+                        TEL1_NUMBR = posicion.NumeroEntrega, //Validar si es el numero entrega o de donde lo sacamos
                     }
                 );
-
-
-                /*
-                   Nombre: ZBAPIMEREQACCOUNT		Denominación:	Imputación
-                   Nombre	Dominio / Tipo	Denominación
-                   PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                   SERIAL_NO	DZEKKN	Número actual de la imputación
-                   QUANTITY	MENGE_D	Cantidad
-                   GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                   BUS_AREA	GSBER	División
-                   COSTCENTER	KOSTL	Centro de coste
-                   ASSET_NO	ANLN1	Número principal de activo fijo
-                   SUB_NUMBER	ANLN2	Subnúmero de activo fijo
-                   ORDERID	AUFNR	Número de orden
-                   CO_AREA	KOKRS	Sociedad CO
-                   COSTOBJECT	KSTRG	Objeto de coste
-                   PROFIT_CTR	PRCTR	Centro de beneficio
-               */
-
-
-                
-                
             }
 
             #endregion
 
-            return null;
+            return solpSAP;
         }
     }
 
@@ -289,13 +377,13 @@ namespace SustitucionMOAWS.WSConsumers
         public List<ZMPES5690> IM_PRACCOUNTList { get; set; } //OK
         public List<ZMPES5680> IM_PRACCOUNTXList { get; set; } //OK
         public List<ZMPES5750> IM_PRADDRDELIVERYList { get; set; } //OK
-        public List<BAPIMEREQHEADTEXT> IM_PRHEADERTEXTList { get; set; }
+        public List<BAPIMEREQHEADTEXT> IM_PRHEADERTEXTList { get; set; } //OK
         public List<ZMPES5700> IM_PRITEMList { get; set; } //OK
-        public List<BAPIMEREQITEMTEXT> IM_PRITEMTEXTList { get; set; } //OK?
+        public List<BAPIMEREQITEMTEXT> IM_PRITEMTEXTList { get; set; } 
         public List<ZMPES5660> IM_PRITEMXList { get; set; } //OK?
-        public string IM_PR_TYPE { get; set; }
-        public List<ZMPES5790> IM_SERVICEACCOUNTList { get; set; }
-        public List<BAPI_SRV_ACC_DATAX> IM_SERVICEACCOUNTXList { get; set; }
+        public string IM_PR_TYPE { get; set; } //OK
+        public List<ZMPES5790> IM_SERVICEACCOUNTList { get; set; } //OK
+        public List<BAPI_SRV_ACC_DATAX> IM_SERVICEACCOUNTXList { get; set; } //OK
         public List<ZMPES5780> IM_SERVICELINESList { get; set; } //OK
         public List<ZMPES5720> IM_SERVICELINESXList { get; set; } //OK?
     }
