@@ -115,6 +115,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else {
                         this.ordenDeCarga = result.data;
                         this.verificarBotones()
+                        if(this.ordenDeCarga.MensajeValidacionSAP != ""){
+                            this.mensajeComponent.setInfoMsg(this.ordenDeCarga.MensajeValidacionSAP)
+                        }
                     }
                 },
                 error => {

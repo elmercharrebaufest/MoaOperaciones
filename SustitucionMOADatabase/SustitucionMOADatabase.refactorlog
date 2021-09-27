@@ -217,4 +217,25 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="NumeroEntrega" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="ae8ba4ea-9a1e-4ab6-89ed-73a1695500c5" ChangeDateTime="09/09/2021 14:04:32">
+    <Property Name="ElementName" Value="[dbo].[OrdenDeCargaCambiosHistorial].[Cambio]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[OrdenDeCargaCambiosHistorial]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Antes" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="7b291e79-5a2a-411f-a1ce-56703c2111a6" ChangeDateTime="09/09/2021 19:04:33">
+    <Property Name="ElementName" Value="[dbo].[OrdenDeCargaCambiosHistorial].[Cliente_Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[OrdenDeCargaCambiosHistorial]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Usuario_Id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="4720840a-dd10-4052-9cbf-a468b268b7d8" ChangeDateTime="09/09/2021 19:14:24">
+    <Property Name="ElementName" Value="[dbo].[OrdenDeCargaCambiosHistorial].[Antes]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[OrdenDeCargaCambiosHistorial]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="NombreColumnaCambio" />
+  </Operation>
 </Operations>
