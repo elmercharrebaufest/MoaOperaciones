@@ -77,7 +77,7 @@ export class ContratoDetalleComponent extends BaseComponent implements OnInit, A
             this.numeroContratoId = params['id'];
             this.unsubscribe();
             this.subscription = this.service.getDetalle(this.numeroContratoId).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -104,7 +104,7 @@ export class ContratoDetalleComponent extends BaseComponent implements OnInit, A
         this.spinnerSmallPDFComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.downloadBoletoFisico(this.numeroContratoId).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallPDFComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -143,7 +143,7 @@ export class ContratoDetalleComponent extends BaseComponent implements OnInit, A
         this.spinnerSmallExportComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.exportExcelDetalle(this.numeroContratoId).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallExportComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -181,7 +181,7 @@ export class ContratoDetalleComponent extends BaseComponent implements OnInit, A
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.exportPDFCalidad(this.numeroContratoId).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {

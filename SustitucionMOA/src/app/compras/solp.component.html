@@ -63,7 +63,7 @@
                         <button class="btn btn-primary botonesComprasColor" (click)="guardarCambios()" >GUARDAR</button>&nbsp;
                     </div>     
                     <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0;">
-                        <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())">{{pasoSiguiente().descripcion}} &nbsp;<i class="fa fa-arrow-right"></i></button>
+                        <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente()); guardarCambios(false, false, true)">{{pasoSiguiente().descripcion}} &nbsp;<i class="fa fa-arrow-right"></i></button>
                         <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="showDialog()" style="cursor: auto;">{{pasoSiguiente().descripcion}}</button>
                     </div>   
                     <div class="col-xs-1 col-md-1">
@@ -104,7 +104,14 @@
 </p-confirmDialog>
 <!--fin modal cancelar SOLP-->
 
-
+<!-- Modal Volver a home SOLP-->
+<p-confirmDialog #dialo key="solpFinalizadaVolverHome" header="Confirmacion" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" pButton  label="No" class="ui-button-info botonModal" (click)="dialo.reject()"></button>
+        <button type="button" pButton  label="Si" class="ui-button-success botonModal" (click)="dialo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+<!--fin modal Volver a home SOLP-->
 
 <p-dialog [(visible)]="displayFinalizar" [width]="650" [draggable]="false"
     modal="modal" appendTo="body" positionTop="30" [contentStyle]="{ 'max-height':'1500px', 'min-height':'500px'}">
@@ -199,6 +206,6 @@
     <br>
     <p-footer>
         <button type="button" pButton  label="Descargar SOLP" class="btn btn-defaut btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)"></button>
-        <button type="button" pButton  label="Volver a la home" class="btn btn-primary botonesComprasColor botonModal" (click)="cancelarSolp()"></button>
+        <button type="button" pButton  label="Volver a la home" class="btn btn-primary botonesComprasColor botonModal" (click)="solpFinalizadaVolverHome()()"></button>
     </p-footer>
 </p-dialog>

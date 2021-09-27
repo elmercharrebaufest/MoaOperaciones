@@ -385,7 +385,7 @@ export class LayoutComponent implements OnDestroy {
         this.seccionesVisitadas += this.seccionActive;
         
         this.subscription = this.service.seccionVisitada(this.auxiliarSeccionesVisitadas).subscribe(
-            result => {
+            (result:any) => {
                 if (result.status)
                     return result.status;
                 else
@@ -515,7 +515,7 @@ export class LayoutComponent implements OnDestroy {
         this.setMsjErrorModal("");
         this.unsubscribe();
         this.subscription = this.service.downloadVinculacion(contrato, secuencia).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -550,7 +550,7 @@ export class LayoutComponent implements OnDestroy {
         this.setMsjErrorModal("");
         this.unsubscribe();
         this.subscription = this.service.downloadProcedencia(contrato).subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -623,7 +623,7 @@ export class LayoutComponent implements OnDestroy {
         this.setMsjErrorModal("");
         this.unsubscribe();
         this.subscription = this.service.goToDataAgro().subscribe(
-            result => {
+            (result:any) => {
                 this.setMsjErrorModal("");
                 if (result.logout == true) {
                     this.sessionDataService.logout();

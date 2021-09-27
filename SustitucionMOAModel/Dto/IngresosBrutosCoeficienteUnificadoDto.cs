@@ -19,5 +19,11 @@ namespace SustitucionMOAModel.Dto
         public DateTime FechaUltimaModificacion { get; set; }
 
         public bool MalCargada { get; set; }
+
+        public int? SecuenciaId { get; set; }
+
+        public int? ConsultaId { get; set; }
+
+        public string RazonSocial { get; set; }
     }
 }

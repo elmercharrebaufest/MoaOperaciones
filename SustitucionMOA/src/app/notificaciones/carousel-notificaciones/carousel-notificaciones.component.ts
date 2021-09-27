@@ -41,7 +41,7 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
     try {
       this.unsubscribe();
       this.subscription = this.service.getNotificaciones().subscribe(
-        result => {
+        (result:any) => {
           if (result.logout == true) {
             this.sessionDataService.logout();
           } else if (result.error != undefined && result.error != "") {

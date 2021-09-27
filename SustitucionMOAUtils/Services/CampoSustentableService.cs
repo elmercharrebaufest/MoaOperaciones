@@ -10,6 +10,7 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
+using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.CredentialService;
 using System;
 using System.Collections.Generic;
@@ -177,7 +178,7 @@ namespace SustitucionMOAUtils.Services
 
                 PdfReader pdfReaderCampos = new PdfReader(pdfCampos);
 
-                pdfReaderCampos.SelectPages("2");
+                pdfReaderCampos.SelectPages(string.Concat("2-",pdfReaderCampos.NumberOfPages));
 
                 //var fileKey = string.Concat(FileKeys.DeclaracionCampoSustentable, "-", cosechaId);
 
@@ -214,6 +215,9 @@ namespace SustitucionMOAUtils.Services
                 Credentials = new NetworkCredential(userName, password, dominio),
             };
             var content = JsonConvert.SerializeObject(datos);
+
+            Log.Error("", "", "CampoSustentableService", "GenerarPDFDeclaracion", content);
+
             var buffer = Encoding.UTF8.GetBytes(content);
             var byteContent = new ByteArrayContent(buffer);
             byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -482,7 +486,7 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            return ListarCampos(usuario, cp => new CampoProveedorListadoDto()
+            var resultado = ListarCampos(usuario, cp => new CampoProveedorListadoDto()
             {
                 IdScato = cp.CampoCosecha.Campo.IdScato,
                 NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
@@ -504,6 +508,8 @@ namespace SustitucionMOAUtils.Services
                 MotivoRechazo = cp.CampoCosecha.MotivoRechazo,
                 FechaCreacion = cp.FechaCreacion
             });
+
+            return resultado;
         }
 
         public CampoProveedorDto ObtenerCampo(string mailUsuario, int proveedorId, int campoCosechaId)

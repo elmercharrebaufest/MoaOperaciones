@@ -38,6 +38,7 @@ import {ConfirmationService, SortEvent} from 'primeng/api';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {PanelModule} from 'primeng/panel';
+import {InputSwitchModule} from 'primeng/inputswitch';
 
     
 @NgModule({
@@ -67,7 +68,8 @@ import {PanelModule} from 'primeng/panel';
         OverlayPanelModule,
         TableModule,
         ConfirmDialogModule,
-        PanelModule
+        PanelModule,
+        InputSwitchModule
     ],
     declarations: [
         SolpComponent,

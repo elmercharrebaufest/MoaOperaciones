@@ -8,6 +8,10 @@
     FechaCarga;
     FechaUltimaModificacion;
     MalCargada;
+    Secuencia;
+    SecuenciaId;
+    ConsultaId;
+    RazonSocial;
 };
 
 export interface DetalleCM05 {

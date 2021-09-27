@@ -106,6 +106,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ocurrió un error en la carga del CM05..
+        /// </summary>
+        public static string ErrorCargaCM05 {
+            get {
+                return ResourceManager.GetString("ErrorCargaCM05", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ha ocurrido un error con la carga de las opciones, por favor intente nuevamente..
         /// </summary>
         public static string ErrorCargaDropdown {

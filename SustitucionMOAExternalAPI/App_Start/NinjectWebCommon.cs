@@ -73,6 +73,7 @@ namespace SustitucionMOAExternalAPI.App_Start
         private static void RegisterServices(IKernel kernel)
         {
             kernel.Bind<IExternalApiService>().To(typeof(ExternalApiService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IComprasService>().To(typeof(ComprasService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IScatoConsumer>().To(typeof(ScatoConsumer)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IScatoComandosConsumer>().To(typeof(ScatoComandosConsumer)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAuthenticationManager>().To(typeof(AuthenticationManager)).InSingletonScope();

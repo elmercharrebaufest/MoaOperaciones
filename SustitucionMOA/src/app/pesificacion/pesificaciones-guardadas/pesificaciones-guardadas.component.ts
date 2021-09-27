@@ -74,35 +74,15 @@ export class PesificacionesGuardadasComponent extends PesificacionBaseComponent 
   }
 
   actualizarFiltroFecha() {
-    console.log("Aplicado el filtro");
-    console.log("filtroFechaInicio:", this.filtroFechaComponent.fecha_inicio)
-    console.log("filtroFechaInicio:", new Date(this.filtroFechaComponent.fecha_inicio))
-    console.log("filtroFechaFin:", this.filtroFechaComponent.fecha_fin)
-    console.log("filtroFechaPesificacionInicio:", this.filtroFechaPesificacionComponent.fecha_inicio)
-    console.log("filtroFechaPesificacionFin:", this.filtroFechaPesificacionComponent.fecha_fin)
-
-    console.log(this.pesificaciones);
-
-    this.pesificaciones.forEach(x => {
-      console.log("x.FechaCarga:", x.FechaCarga)
-      console.log("x.FechaCargaDate:", x.FechaCargaDate)
-      console.log("x.FechaCargaDateDate:", new Date(x.FechaCargaDate))
-      console.log("x.FechaCargaDateDate:", new Date(Date.parse(x.FechaCargaDate)))
-    }
-    )
-
-
+    var fechaDesde = this.filtroFechaComponent.fecha_inicio;
+    var fechaHasta = this.filtroFechaComponent.fecha_fin + " 23:59:59";
 
     this.filteredPesificaciones =
       this.pesificaciones
         .filter(x =>
-          new Date(Date.parse(this.tipoFiltroFecha == 1 ? x.FechaCargaDate : x.FechaPesificacionDate)) >= new Date(this.filtroFechaComponent.fecha_inicio) &&
-          new Date(Date.parse(this.tipoFiltroFecha == 1 ? x.FechaCargaDate : x.FechaPesificacionDate)) <= new Date(this.filtroFechaComponent.fecha_fin)
-          // new Date(Date.parse(x.FechaPesificacionDate)) >= new Date(this.filtroFechaPesificacionComponent.fecha_inicio) &&
-          // new Date(Date.parse(x.FechaPesificacionDate)) <= new Date(this.filtroFechaPesificacionComponent.fecha_fin)
+          new Date(Date.parse(this.tipoFiltroFecha == 1 ? x.FechaCargaDate : x.FechaPesificacionDate)) >= new Date(fechaDesde) &&
+          new Date(Date.parse(this.tipoFiltroFecha == 1 ? x.FechaCargaDate : x.FechaPesificacionDate)) <= new Date(fechaHasta)
         )
-
-    console.log("filteredPesificaciones:", this.filteredPesificaciones)
 
     if (this.filteredPesificaciones.length == 0) {
       this.mensajeComponent.setInfoMsg("No se encontraron pesificaciones")

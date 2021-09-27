@@ -60,7 +60,7 @@ export class InformeComponent extends RYDBaseComponent {
     getFiltros() {
         this.mensajeComponent.setMsgsEmpty();
         this.subscriptionDropDowns = this.service.getFiltros().subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -91,7 +91,7 @@ export class InformeComponent extends RYDBaseComponent {
         this.data = undefined;
         this.unsubscribe();
         this.subscription = this.service.getInforme(this.balanzaSelected).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -117,7 +117,7 @@ export class InformeComponent extends RYDBaseComponent {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.exportExcel(this.balanzaSelected).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();

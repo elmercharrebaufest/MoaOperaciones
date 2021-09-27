@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { e } from '@angular/core/src/render3';
-import { Router, ActivatedRoute, Params } from "@angular/router";
-import { DropdownOption, DropdownComponent } from '../../common/view-child/dropdown/dropdown.component';
+import { ActivatedRoute, Params } from "@angular/router";
+import { DropdownComponent } from '../../common/view-child/dropdown/dropdown.component';
 import { BaseComponent } from './../../common/base-components/base-component';
-import { Seccion } from './../../common/models/seccion';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { NavService } from './../../common/services/NavService';
@@ -12,7 +10,6 @@ import { SessionDataService } from './../../common/services/SessionDataService';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { UsuarioService } from './../usuario.service';
-
 
 @Component({
     selector: 'app-usuario-alta-empresa-no-granos',
@@ -33,7 +30,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     @ViewChild('dropdown_rol')
     protected rolDropdownComponent: DropdownComponent;
 
-    constructor(protected service: UsuarioService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private route: ActivatedRoute, ) {
+    constructor(protected service: UsuarioService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private route: ActivatedRoute,) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
@@ -67,7 +64,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     observacionInterna: string = "";
     mensajeSuccess: string = "";
     IdProveedorResultado: number = 0;
-    
+
     observacionesParaElProveedor: string = "";
 
     ngOnInit() {
@@ -94,7 +91,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     getRubrosOptions() {
         try {
             this.subscriptionDropDowns = this.service.getRubros().subscribe(
-                result => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -118,7 +115,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     getTipoCambiario() {
         try {
             this.subscriptionDropDowns = this.service.getTipoCambiario().subscribe(
-                result => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -144,7 +141,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
             //Lo comento hasta que podamos usar otro servicio que funcione en QA
             return true;
             this.subscriptionDropDowns = this.service.getRazonSocial(this.CUIT).subscribe(
-                result => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -184,29 +181,29 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
                 this.observacionesParaElProveedor, this.RequiereVerificacionCompras, this.ingresoAPlanta, this.altaInterna, this.siperObligatorio,
                 this.observacionInterna
             ).subscribe(
-                    result => {
-                        this.spinnerComponent.hideIt();
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.mensajeComponent.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.mensajeComponent.setInfoMsg(result.info);
-                        } else {
-                            //this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
-                            this.mensajeSuccess = result.data.Mensaje;
+                (result: any) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        //this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+                        this.mensajeSuccess = result.data.Mensaje;
 
-                            this.IdProveedorResultado = result.data.IdEntidad;
+                        this.IdProveedorResultado = result.data.IdEntidad;
 
-                            document
+                        document
                             .getElementById("openModalNotificacion")
-                            .click();   
-                        }
-                    },
-                    error => {
-                        this.mensajeComponent.setErrorMsg(error.message);
+                            .click();
                     }
-                );
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
@@ -223,24 +220,25 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
             this.facturacionAnual = 0;
         }
         try {
+
             this.service.rechazarNuevoProveedorNoGranos(this.proveedorId, this.observacionesParaElProveedor).subscribe(
-                    result => {
-                        this.spinnerComponent.hideIt();
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.mensajeComponent.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.mensajeComponent.setInfoMsg(result.info);
-                        } else {
-                            this.mensajeComponent.setSuccessMsg(result.data);
-                            this.limpiarCampos();
-                        }
-                    },
-                    error => {
-                        this.mensajeComponent.setErrorMsg(error.message);
+                (result: any) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                        this.limpiarCampos();
                     }
-                );
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
@@ -256,13 +254,11 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         let facturacionDolares = this.facturacionAnual / this.tipoCambiario
 
 
-        if (facturacionDolares > 15000)
-        {
+        if (facturacionDolares > 15000) {
             this.nosisObligatorio = true;
             this.RealizarAnalisisNOSIS = true;
         }
-        else
-        {
+        else {
             this.nosisObligatorio = false;
         }
     }
@@ -310,5 +306,5 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
             this.limpiarCampos();
         }
     }
-    
+
 }

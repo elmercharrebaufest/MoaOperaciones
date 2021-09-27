@@ -53,7 +53,7 @@ export class ApikeyComponent extends BaseComponent implements OnInit {
                 this.unsubscribe();
                 try {
                     this.subscription = this.service.generarApikey().subscribe(
-                        result => {
+                        (result:any) => {
                             this.spinnerSmallComponent.hideIt();
                             if (result.logout == true) {
                                 this.sessionDataService.logout();

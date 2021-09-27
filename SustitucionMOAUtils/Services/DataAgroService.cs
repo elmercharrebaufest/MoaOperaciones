@@ -279,7 +279,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "Empresas"));
             }
             int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
-            var respuesta = ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+            var respuesta = ObtenerValidarCUITProveedorGranos(proveedor.CUIT, null);
 
             var hist = new ProveedorHistorialAprobacion
             {

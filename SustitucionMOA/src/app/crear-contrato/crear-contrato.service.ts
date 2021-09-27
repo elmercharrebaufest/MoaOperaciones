@@ -1,72 +1,54 @@
 
 import {throwError as observableThrowError,  Observable } from 'rxjs';
-
 import {timeoutWith, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
 
-
-import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
 import { ContratoAPrecio } from '../common/models/contratoAPrecio';
 import { ContratoAFijar } from '../common/models/contratoAFijar';
 import { ContratoFijacion } from '../common/models/contratoFijacion';
-
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class CrearContratoService extends BaseService {
-    //grabarContratoAltaMasiva(contratoAcuerdo: string, adjunto: FileList) {
-    //    throw new Error("Method not implemented.");
-    //}
+
+    private setHeaders(){
+        this.headers = new HttpHeaders();
+        this.headers = this.headers.append('Content-Type', 'application/json');
+        this.headers = this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
+        this.headers = this.headers.append('Cache-control', 'no-cache');
+        this.headers = this.headers.append('Cache-control', 'no-store');
+        this.headers = this.headers.append('Expires', '0');
+        this.headers = this.headers.append('Pragma', 'no-cache');
+    }
 
     obteneDatosContrato(tiponegocio: number): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append('Content-Type', 'application/json');
-        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
-        this.headers.append('Cache-control', 'no-cache');
-        this.headers.append('Cache-control', 'no-store');
-        this.headers.append('Expires', '0');
-        this.headers.append('Pragma', 'no-cache');
+        this.setHeaders();
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('tiponegocio', tiponegocio.toString());
+        let params: HttpParams = new HttpParams();
+        params = params.append('tiponegocio', tiponegocio.toString());
 
         return this.http
-            .get('/api/CrearContrato/ObteneDatosContrato', { search: params,  headers: this.headers })
-            .pipe(map(this.extractData));
+            .get('/api/CrearContrato/ObteneDatosContrato', { params: params,  headers: this.headers });
     }
 
     obtenerDatosCompraNet(idProveedorDataAgro): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append('Content-Type', 'application/json');
-        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
-        this.headers.append('Cache-control', 'no-cache');
-        this.headers.append('Cache-control', 'no-store');
-        this.headers.append('Expires', '0');
-        this.headers.append('Pragma', 'no-cache');
+        this.setHeaders();
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('idProveedorDataAgro', idProveedorDataAgro);
+        let params: HttpParams = new HttpParams();
+        params = params.append('idProveedorDataAgro', idProveedorDataAgro);
 
         return this.http
-            .get('/api/CrearContrato/ObtenerDatosCompraNet', { search: params, headers: this.headers })
-            .pipe(map(this.extractData));
+            .get('/api/CrearContrato/ObtenerDatosCompraNet', { params: params, headers: this.headers });
     }
 
     searchLocalidad(term): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append('Content-Type', 'application/json');
-        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
-        this.headers.append('Cache-control', 'no-cache');
-        this.headers.append('Cache-control', 'no-store');
-        this.headers.append('Expires', '0');
-        this.headers.append('Pragma', 'no-cache');
+        this.setHeaders();
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('localidad', term);
+        let params: HttpParams = new HttpParams();
+        params = params.append('localidad', term);
 
-        return this.http.get('/api/CrearContrato/GetLocalidadCombo', { search: params, headers: this.headers })
-            .pipe(map(this.extractData));
+        return this.http.get('/api/CrearContrato/GetLocalidadCombo', { params: params, headers: this.headers });
     }
 
     grabarContratoAPrecio(contrato: ContratoAPrecio): Observable<any> {
@@ -74,8 +56,7 @@ export class CrearContratoService extends BaseService {
         payload.append("contrato", JSON.stringify(contrato));
         return this.http
             .post('/api/CrearContrato/CrearContratoAPrecio', payload)
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
-            .pipe(map(this.extractData));
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 
     grabarContratoAFijar(contrato: ContratoAFijar): Observable<any> {
@@ -83,38 +64,23 @@ export class CrearContratoService extends BaseService {
         payload.append("contrato", JSON.stringify(contrato));
         return this.http
             .post('/api/CrearContrato/CrearContratoAFijar', payload)
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
-            .pipe(map(this.extractData));
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 
     buscarProveedoresConCorredor(term): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append('Content-Type', 'application/json');
-        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
-        this.headers.append('Cache-control', 'no-cache');
-        this.headers.append('Cache-control', 'no-store');
-        this.headers.append('Expires', '0');
-        this.headers.append('Pragma', 'no-cache');
+        this.setHeaders();
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('filtro', term);
+        let params: HttpParams = new HttpParams();
+        params = params.append('filtro', term);
 
-        return this.http.get('/api/CrearContrato/BuscarProveedoresConCorredor', { search: params, headers: this.headers })
-            .pipe(map(this.extractData));
+        return this.http.get('/api/CrearContrato/BuscarProveedoresConCorredor', { params: params, headers: this.headers });
     }
 
     validarDirecto(): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append('Content-Type', 'application/json');
-        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
-        this.headers.append('Cache-control', 'no-cache');
-        this.headers.append('Cache-control', 'no-store');
-        this.headers.append('Expires', '0');
-        this.headers.append('Pragma', 'no-cache');
+        this.setHeaders();
 
         return this.http
-            .get('/api/CrearContrato/ValidarDirecto', { headers: this.headers })
-            .pipe(map(this.extractData));
+            .get('/api/CrearContrato/ValidarDirecto', { headers: this.headers });
     }
 
     grabarContratoFijacion(contrato: ContratoFijacion): Observable<any> {
@@ -122,88 +88,52 @@ export class CrearContratoService extends BaseService {
         payload.append("contrato", JSON.stringify(contrato));
         return this.http
             .post('/api/CrearContrato/CrearContratoFijacion', payload)
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
-            .pipe(map(this.extractData));
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 
     habilitaciones(material: number, tiponegocio: number): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append('Content-Type', 'application/json');
-        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
-        this.headers.append('Cache-control', 'no-cache');
-        this.headers.append('Cache-control', 'no-store');
-        this.headers.append('Expires', '0');
-        this.headers.append('Pragma', 'no-cache');
+        this.setHeaders();
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('material', material.toString());
-        params.set('tiponegocio', tiponegocio.toString());
+        let params: HttpParams = new HttpParams();
+        params = params.append('material', material.toString());
+        params = params.append('tiponegocio', tiponegocio.toString());
 
         return this.http
-            .get('/api/CrearContrato/Habilitaciones', { search: params, headers: this.headers })
-            .pipe(map(this.extractData));
+            .get('/api/CrearContrato/Habilitaciones', { params: params, headers: this.headers });
     }
 
     obtenerFijacionesAutomaticas(esCorredorEnDataAgro, cuitProveedor, materialId, filtro): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append('Content-Type', 'application/json');
-        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
-        this.headers.append('Cache-control', 'no-cache');
-        this.headers.append('Cache-control', 'no-store');
-        this.headers.append('Expires', '0');
-        this.headers.append('Pragma', 'no-cache');
+        this.setHeaders();
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('esCorredorEnDataAgro', esCorredorEnDataAgro);
-        params.set('cuitProveedor', cuitProveedor);
-        params.set('materialId', materialId);
-        params.set('filtro', filtro);
+        let params: HttpParams = new HttpParams();
+        params = params.append('esCorredorEnDataAgro', esCorredorEnDataAgro);
+        params = params.append('cuitProveedor', cuitProveedor);
+        params = params.append('materialId', materialId);
+        params = params.append('filtro', filtro);
 
-        return this.http.get('/api/CrearContrato/ObtenerFijacionesAutomaticas', { search: params, headers: this.headers })
-            .pipe(map(this.extractData));
+        return this.http.get('/api/CrearContrato/ObtenerFijacionesAutomaticas', { params: params, headers: this.headers });
     }
 
     validarProveedor(proveedorId): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append('Content-Type', 'application/json');
-        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
-        this.headers.append('Cache-control', 'no-cache');
-        this.headers.append('Cache-control', 'no-store');
-        this.headers.append('Expires', '0');
-        this.headers.append('Pragma', 'no-cache');
+        this.setHeaders();
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('proveedorId', proveedorId);
-        return this.http.get('/api/CrearContrato/ValidarProveedor', { search: params, headers: this.headers })
-            .pipe(map(this.extractData));
+        let params: HttpParams = new HttpParams();
+        params = params.append('proveedorId', proveedorId);
+        return this.http.get('/api/CrearContrato/ValidarProveedor', { params: params, headers: this.headers });
     }
 
     traerPrecioMoaMateriales(tipoNegocioId): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append('Content-Type', 'application/json');
-        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
-        this.headers.append('Cache-control', 'no-cache');
-        this.headers.append('Cache-control', 'no-store');
-        this.headers.append('Expires', '0');
-        this.headers.append('Pragma', 'no-cache');
+        this.setHeaders();
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('tipoNegocioId', tipoNegocioId);
-        return this.http.get('/api/CrearContrato/TraerPrecioMoaMateriales', { search: params, headers: this.headers })
-            .pipe(map(this.extractData));
+        let params: HttpParams = new HttpParams();
+        params = params.append('tipoNegocioId', tipoNegocioId);
+        return this.http.get('/api/CrearContrato/TraerPrecioMoaMateriales', { params: params, headers: this.headers });
     }
     ObteneContratosAcuerdo(): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append('Content-Type', 'application/json');
-        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
-        this.headers.append('Cache-control', 'no-cache');
-        this.headers.append('Cache-control', 'no-store');
-        this.headers.append('Expires', '0');
-        this.headers.append('Pragma', 'no-cache');
+        this.setHeaders();
 
         return this.http
-            .get('/api/CrearContrato/ObteneContratosAcuerdo', { headers: this.headers })
-            .pipe(map(this.extractData));
+            .get('/api/CrearContrato/ObteneContratosAcuerdo', { headers: this.headers });
     }
 
     AltaMasivaAcuerdo(
@@ -221,43 +151,28 @@ export class CrearContratoService extends BaseService {
 
         return this.http
             .post("/api/CrearContrato/AltaMasivaAcuerdo", formData)
-            .pipe(timeoutWith(120000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
-            .pipe(map(this.extractData));
+            .pipe(timeoutWith(120000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 
     traerContratoCompleto(negocioId, tipoNegocioId): Observable<any> {
-        this.headers = new Headers();
-        this.headers.append('Content-Type', 'application/json');
-        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
-        this.headers.append('Cache-control', 'no-cache');
-        this.headers.append('Cache-control', 'no-store');
-        this.headers.append('Expires', '0');
-        this.headers.append('Pragma', 'no-cache');
+        this.setHeaders();
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('negocioId', negocioId);
-        params.set('tipoNegocioId', tipoNegocioId);
+        let params: HttpParams = new HttpParams();
+        params = params.append('negocioId', negocioId);
+        params = params.append('tipoNegocioId', tipoNegocioId);
 
-        return this.http.get('/api/CrearContrato/TraerContratoCompleto', { search: params, headers: this.headers })
-            .pipe(map(this.extractData));
+        return this.http.get('/api/CrearContrato/TraerContratoCompleto', { params: params, headers: this.headers });
     }
 
     excelModeloAltaMasiva() {
-        let params: URLSearchParams = new URLSearchParams();
         return this.http
-            .get('/api/CrearContrato/ExcelModeloAltaMasiva', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
+            .get('/api/CrearContrato/ExcelModeloAltaMasiva', { headers: this.headers });
     }
 }
 
 @Injectable()
 export class CrearContratoAPrecioService extends CrearContratoService {
 
-    //public grabarContrato(contrato: ContratoAPrecio): Observable<any> {
-    //    return this.grabarContratoAPrecio(contrato);
-    //}
-
-    
 }
 
 @Injectable()
@@ -276,6 +191,5 @@ export class CrearContratoCargarNegocioService extends CrearContratoService {
 
 @Injectable()
 export class CrearContratoAltaMasivaService extends CrearContratoService {
-
    
 }

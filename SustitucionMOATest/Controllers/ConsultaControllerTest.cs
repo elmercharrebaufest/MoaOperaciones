@@ -521,5 +521,302 @@ namespace SustitucionMOATest.Controllers
 
             target.ControllerContext = new ControllerContext(fakeHttpContext.Object, new System.Web.Routing.RouteData(), target);
         }
+
+        [Test]
+        public void ConsultaOk()
+        {
+            var consultaTest = new Consulta
+            {
+                Id = 13232,
+            };
+            string consultaJsonTest = JsonConvert.SerializeObject(consultaTest);
+
+            var comentarioTest = new Comentario
+            {
+                Id = 423,
+            };
+            string comentarioJsonTest = JsonConvert.SerializeObject(comentarioTest);
+
+            var httpFileCollectionMock = new Mock<HttpFileCollectionBase>();
+
+            var httpRequestMock = new Mock<HttpRequestBase>();
+            httpRequestMock.Setup(x => x.Files).Returns(httpFileCollectionMock.Object);
+            
+            var httpContextMock = new Mock<HttpContextBase>();
+            httpContextMock.Setup(x => x.Request).Returns(httpRequestMock.Object);
+
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
+            target.ControllerContext = new ControllerContext(httpContextMock.Object, new System.Web.Routing.RouteData(), target);
+
+            consultaServiceMock
+            .Setup(x => x.AgregarConsulta(It.IsAny<Consulta>(), It.IsAny<Comentario>(), It.IsAny<HttpFileCollectionBase>()))
+            .Returns<Consulta, Comentario, HttpFileCollectionBase>((cons, com, files) => 
+            {
+                return new AgregarConsultaResponseDto 
+                {
+                    Mensaje = "ok",
+                    ConsultaDto = new ConsultaDto { 
+                        Id = cons.Id, 
+                        Comentarios = new List<ComentarioDto> { 
+                            new ComentarioDto { Id = com.Id } 
+                        },
+                    },
+                };
+            });
+
+            var result = target.Consulta(consultaJsonTest, comentarioJsonTest);
+
+            Assert.IsInstanceOf<AgregarConsultaResponseDto>(result.Data);
+
+            var resultData = (AgregarConsultaResponseDto)result.Data;
+
+            Assert.AreEqual("ok", resultData.Mensaje);
+            Assert.AreEqual(13232, resultData.ConsultaDto.Id);
+            Assert.AreEqual(1, resultData.ConsultaDto.Comentarios.Count);
+            Assert.AreEqual(423, resultData.ConsultaDto.Comentarios[0].Id);
+
+            this.usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
+            this.usuarioServiceMock.Verify(x => x.GetUsuario("mail@mail.com"), Times.Once);
+
+            this.consultaServiceMock.Verify(x => x.AgregarConsulta(It.IsAny<Consulta>(), It.IsAny<Comentario>(), It.IsAny<HttpFileCollectionBase>()), Times.Once);
+            //this.consultaServiceMock.Verify(x => x.AgregarConsulta(consultaTest, comentarioTest, httpFileCollectionMock.Object), Times.Once);
+        }
+
+        [Test]
+        public void ConsultaInfoCustomException()
+        {
+            var consultaTest = new Consulta
+            {
+                Id = 13232,
+            };
+            string consultaJsonTest = JsonConvert.SerializeObject(consultaTest);
+
+            var comentarioTest = new Comentario
+            {
+                Id = 423,
+            };
+            string comentarioJsonTest = JsonConvert.SerializeObject(comentarioTest);
+
+            InfoCustomException exceptionTest = new InfoCustomException("excepcion");
+
+            this.usuarioServiceMock.Setup(x => x.GetUsuario("mail@mail.com")).Throws(exceptionTest);
+            
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
+
+            var result = target.Consulta(consultaJsonTest, comentarioJsonTest);
+
+            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
+
+            Assert.AreEqual(exceptionTest.Message, infoResultData);
+
+            this.usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
+            this.usuarioServiceMock.Verify(x => x.GetUsuario("mail@mail.com"), Times.Once);
+
+            this.consultaServiceMock.Verify(x => x.AgregarConsulta(It.IsAny<Consulta>(), It.IsAny<Comentario>(), It.IsAny<HttpFileCollectionBase>()), Times.Never);
+        }
+
+        [Test]
+        public void ConsultaValidationCustomException()
+        {
+            var consultaTest = new Consulta
+            {
+                Id = 13232,
+            };
+            string consultaJsonTest = JsonConvert.SerializeObject(consultaTest);
+
+            var comentarioTest = new Comentario
+            {
+                Id = 423,
+            };
+            string comentarioJsonTest = JsonConvert.SerializeObject(comentarioTest);
+
+            ValidationCustomException exceptionTest = new ValidationCustomException("excepcion");
+
+            this.usuarioServiceMock.Setup(x => x.GetUsuario("mail@mail.com")).Throws(exceptionTest);
+
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
+
+            var result = target.Consulta(consultaJsonTest, comentarioJsonTest);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual(exceptionTest.Message, errorResultData);
+
+            this.usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
+            this.usuarioServiceMock.Verify(x => x.GetUsuario("mail@mail.com"), Times.Once);
+
+            this.consultaServiceMock.Verify(x => x.AgregarConsulta(It.IsAny<Consulta>(), It.IsAny<Comentario>(), It.IsAny<HttpFileCollectionBase>()), Times.Never);
+        }
+
+        [Test]
+        public void ConsultaValidationCustomExceptionLoguearMensaje()
+        {
+            var consultaTest = new Consulta
+            {
+                Id = 13232,
+            };
+            string consultaJsonTest = JsonConvert.SerializeObject(consultaTest);
+
+            var comentarioTest = new Comentario
+            {
+                Id = 423,
+            };
+            string comentarioJsonTest = JsonConvert.SerializeObject(comentarioTest);
+
+            Exception innerExceptionTest = new Exception("excepcion interna");
+            ValidationCustomException exceptionTest = new ValidationCustomException("excepcion", innerExceptionTest, true);
+
+            this.usuarioServiceMock.Setup(x => x.GetUsuario("mail@mail.com")).Throws(exceptionTest);
+
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
+            HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new System.IO.StringWriter()));
+
+            var result = target.Consulta(consultaJsonTest, comentarioJsonTest);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual(exceptionTest.Message, errorResultData);
+
+            this.usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
+            this.usuarioServiceMock.Verify(x => x.GetUsuario("mail@mail.com"), Times.Once);
+
+            this.consultaServiceMock.Verify(x => x.AgregarConsulta(It.IsAny<Consulta>(), It.IsAny<Comentario>(), It.IsAny<HttpFileCollectionBase>()), Times.Never);
+        }
+
+        [Test]
+        public void ConsultaException()
+        {
+            var consultaTest = new Consulta
+            {
+                Id = 13232,
+            };
+            string consultaJsonTest = JsonConvert.SerializeObject(consultaTest);
+
+            var comentarioTest = new Comentario
+            {
+                Id = 423,
+            };
+            string comentarioJsonTest = JsonConvert.SerializeObject(comentarioTest);
+
+            Exception exceptionTest = new Exception("excepcion");
+
+            this.usuarioServiceMock.Setup(x => x.GetUsuario("mail@mail.com")).Throws(exceptionTest);
+
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
+            HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new System.IO.StringWriter()));
+
+            var result = target.Consulta(consultaJsonTest, comentarioJsonTest);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", errorResultData);
+
+            this.usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
+            this.usuarioServiceMock.Verify(x => x.GetUsuario("mail@mail.com"), Times.Once);
+
+            this.consultaServiceMock.Verify(x => x.AgregarConsulta(It.IsAny<Consulta>(), It.IsAny<Comentario>(), It.IsAny<HttpFileCollectionBase>()), Times.Never);
+        }
+
+        [Test]
+        public void AnularConsultaOk()
+        {
+            int consultaIdTest = 123;
+            string motivoRechazoTest = "Prueba loca";
+
+            this.consultaServiceMock
+                .Setup(x => x.AnularConsulta(consultaIdTest, 0, motivoRechazoTest))
+                .Returns("Anulada ok");
+
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
+            var result = target.AnularConsulta(consultaIdTest, motivoRechazoTest);
+
+            string mensajeResultData = result.Data.GetType().GetProperty("Mensaje").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Anulada ok", mensajeResultData);
+
+            this.usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
+            this.usuarioServiceMock.Verify(x => x.GetUsuario("mail@mail.com"), Times.Once);
+
+            this.consultaServiceMock.Verify(x => x.AnularConsulta(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()), Times.Once);
+            this.consultaServiceMock.Verify(x => x.AnularConsulta(consultaIdTest, 0, motivoRechazoTest), Times.Once);
+        }
+
+        [Test]
+        public void AnularConsultaInfoCustomException()
+        {
+            int consultaIdTest = 123;
+            string motivoRechazoTest = "Prueba loca";
+
+            InfoCustomException exceptionTest = new InfoCustomException("excepcion");
+
+            this.consultaServiceMock
+                .Setup(x => x.AnularConsulta(consultaIdTest, 0, motivoRechazoTest))
+                .Throws(exceptionTest);
+
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
+            var result = target.AnularConsulta(consultaIdTest, motivoRechazoTest);
+
+            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
+
+            Assert.AreEqual(exceptionTest.Message, infoResultData);
+
+            this.usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
+            this.usuarioServiceMock.Verify(x => x.GetUsuario("mail@mail.com"), Times.Once);
+
+            this.consultaServiceMock.Verify(x => x.AnularConsulta(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()), Times.Once);
+            this.consultaServiceMock.Verify(x => x.AnularConsulta(consultaIdTest, 0, motivoRechazoTest), Times.Once);
+        }
+
+        [Test]
+        public void AnularConsultaValidationCustomException()
+        {
+            int consultaIdTest = 123;
+            string motivoRechazoTest = "Prueba loca";
+
+            ValidationCustomException exceptionTest = new ValidationCustomException("excepcion");
+
+            this.consultaServiceMock
+                .Setup(x => x.AnularConsulta(consultaIdTest, 0, motivoRechazoTest))
+                .Throws(exceptionTest);
+
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
+            var result = target.AnularConsulta(consultaIdTest, motivoRechazoTest);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual(exceptionTest.Message, errorResultData);
+
+            this.usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
+            this.usuarioServiceMock.Verify(x => x.GetUsuario("mail@mail.com"), Times.Once);
+
+            this.consultaServiceMock.Verify(x => x.AgregarConsulta(It.IsAny<Consulta>(), It.IsAny<Comentario>(), It.IsAny<HttpFileCollectionBase>()), Times.Never);
+        }
+
+        [Test]
+        public void AnularConsultaException()
+        {
+            int consultaIdTest = 123;
+            string motivoRechazoTest = "Prueba loca";
+
+            Exception exceptionTest = new NullReferenceException("excepcion random");
+
+            this.consultaServiceMock
+                .Setup(x => x.AnularConsulta(consultaIdTest, 0, motivoRechazoTest))
+                .Throws(exceptionTest);
+
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
+            HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new System.IO.StringWriter()));
+            
+            var result = target.AnularConsulta(consultaIdTest, motivoRechazoTest);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", errorResultData);
+
+            this.usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
+            this.usuarioServiceMock.Verify(x => x.GetUsuario("mail@mail.com"), Times.Once);
+
+            this.consultaServiceMock.Verify(x => x.AgregarConsulta(It.IsAny<Consulta>(), It.IsAny<Comentario>(), It.IsAny<HttpFileCollectionBase>()), Times.Never);
+        }
     }
 }

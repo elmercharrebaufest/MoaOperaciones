@@ -72,6 +72,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (ValidationCustomException e)
             {
+                if (e.LoguearExcepcion)
+                {
+                    Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.InnerException ?? e);
+                }
+
                 return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
@@ -398,6 +403,30 @@ namespace SustitucionMOA.Controllers
         {
             string userMail = SessionPersister.getUsername();
             return usuarioService.GetUsuario(userMail);
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        [HttpPost]
+        public JsonResult AnularConsulta(int consultaId, string motivoRechazo)
+        {
+            try
+            {
+                int usuarioId = ObtenerUsuarioActual().Id;
+                return JsonCustom(new { Mensaje = consultaService.AnularConsulta(consultaId, usuarioId, motivoRechazo) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

@@ -44,7 +44,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Kilos = pesificacion.KILOS,
                     KilosString = SAPFormatter.FormatearCantidad(pesificacion.KILOS, "KG"),
                     Precio = pesificacion.PRECIO,
-                    PrecioString = SAPFormatter.FormatearMonto(pesificacion.PRECIO, "ARP"),
+                    PrecioString = SAPFormatter.FormatearMonto(pesificacion.PRECIO, "USD"),
                     FechaPesificacion = SAPFormatter.FormatearFecha(pesificacion.FECHA_PESIFICACION),
                     FechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_PESIFICACION, "yyyy-MM-dd", null).ToString("yyyy-MM-ddTHH:mm:ss"),
                     TipoCambio = SAPFormatter.FormatearMonto(pesificacion.TIPO_CAMBIO, "ARP"),

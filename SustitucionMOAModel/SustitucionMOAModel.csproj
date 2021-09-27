@@ -49,6 +49,7 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\AgregarConsultaResponseDto.cs" />
     <Compile Include="Dto\ArchivoDescargaDto.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
     <Compile Include="Dto\CampoProveedorDto.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="Entities\Pliego.cs" />
     <Compile Include="Entities\PliegoVisita.cs" />
     <Compile Include="Entities\Rubro.cs" />
+    <Compile Include="Entities\SecuenciaIngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Entities\Solp.cs" />
     <Compile Include="Entities\SolpPosicion.cs" />
     <Compile Include="Entities\SolpProveedor.cs" />
@@ -118,6 +120,7 @@
     <Compile Include="Entities\TablaEstado.cs" />
     <Compile Include="Entities\TablaGeneral.cs" />
     <Compile Include="Entities\TablaSap.cs" />
+    <Compile Include="Enums\EnumSecuenciaEstadoIngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Enums\SubCategorias.cs" />
     <Compile Include="Enums\ComprasEnums.cs" />
     <Compile Include="Enums\Categorias.cs" />
