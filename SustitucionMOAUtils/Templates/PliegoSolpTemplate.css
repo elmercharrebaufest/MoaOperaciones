@@ -46,6 +46,10 @@ th
     text-align: center;
 }
 
+.posicion {
+    padding-left: 20px;
+}
+
 table.tablaPosiciones {
     width: 100%;
 }
@@ -63,6 +67,8 @@ table.tablaPosiciones {
 .tablaPosiciones table {
     border: 1px solid black;
     border-collapse: collapse;
+    font-size: 12px;
+    font-family: Cambria;
 }
 
 /*table, td, th {

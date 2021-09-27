@@ -664,7 +664,7 @@ namespace SustitucionMOAUtils.Services
 
             solp.Posiciones.ForEach(pos =>
             {
-                //subposiciones.AppendLine();
+                texto = new StringBuilder();
 
                 pos.Subposiciones.ForEach(subpos =>
                 {
@@ -678,7 +678,7 @@ namespace SustitucionMOAUtils.Services
 
                 });
 
-                subposiciones.AppendLine($"<tr><td colspan='2'></td><td colspan='6'> # {pos.TextoGenerico}</td></tr>{texto}");
+                subposiciones.AppendLine($"<tr><th bgcolor='grey' class='posicion' colspan='6'> # {pos.TextoGenerico}</th></tr>{texto}<tr><td colspan='6'>&nbsp;</td></tr>");
             });
 
             solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, subposiciones.ToString());
