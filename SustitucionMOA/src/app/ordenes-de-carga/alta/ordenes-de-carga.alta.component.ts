@@ -37,6 +37,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     listaMateriales: Material[];
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
 
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,

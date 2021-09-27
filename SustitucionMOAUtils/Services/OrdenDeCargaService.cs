@@ -363,6 +363,11 @@ namespace SustitucionMOAUtils.Services
 
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
+            if (usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES"))
+            {
+                var contratos = VerificarOrden(orden, orden.Cliente);
+            }
+
             var ordenDto = new OrdenDeCargaEditarDto(orden);
 
             return ordenDto;
