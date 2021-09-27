@@ -192,7 +192,17 @@ namespace SustitucionMOAUtils.Services
                     }
                     catch(ValidationCustomException vex)
                     {
-                        AgregarComentario(consulta.Id, new ComentarioDto { UsuarioId = usuario.Id, Detalle = vex.Message }, null);
+                        consulta.Comentarios.Add(new Comentario
+                        {
+                            Consulta_Id = consulta.Id,
+                            Detalle = vex.Message,
+                            Fecha = DateTime.Now,
+                            Usuario_Id = usuario.Id
+                        });
+
+                        consulta.FechaUltimaModificacion = DateTime.Now;
+                        
+                        repositorio.GuardarCambios();
                     }
                 }
             }
