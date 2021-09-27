@@ -18,7 +18,7 @@ export class AltaEmpresaService extends BaseService {
             .get('/api/AltaEmpresa/getEmpresas', { params: params, headers: this.headers });
     }
 
-    public setEstadoAprobacion(empresaId: number, estadoId: number, observacion: string, observacionesProveedor: string, estadoSIPER: string): Observable<any> {
+    public setEstadoAprobacion(empresaId: number, estadoId: number, observacion: string, observacionesProveedor: string, estadoSIPER: string, razonSocial: string, codigoCliente: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.append('empresaId', empresaId.toString());
         params = params.append('estado', estadoId.toString());
@@ -26,9 +26,9 @@ export class AltaEmpresaService extends BaseService {
         params = params.append('observacionParaElProveedor', encodeURIComponent(observacionesProveedor));
         params = params.append('estadoSIPER', estadoSIPER);
         params = params.append('razonSocial', razonSocial);
-        params = params.append('codigoCliente', codigoCliente.toString());
+        params = params.append('codigoCliente', codigoCliente);
         return this.http
-            .post('/api/AltaEmpresa/setEstadoAprobacion', params, {headers: this.headersPost});
+            .post('/api/AltaEmpresa/setEstadoAprobacion', params, { headers: this.headersPost });
     }
 
     public solicitarInformacion(empresaId: number): Observable<any> {
@@ -86,14 +86,14 @@ export class AltaEmpresaService extends BaseService {
         params = params.append('empresaId', empresaId.toString());
         params = params.append('observacion', encodeURIComponent(observacion));
         return this.http
-            .post('/api/AltaEmpresa/AgregarObservacion', params, {headers: this.headersPost});
+            .post('/api/AltaEmpresa/AgregarObservacion', params, { headers: this.headersPost });
     }
 
-    public grabarAltaInternaGranos(cuit: string, mailVendedor: string){
+    public grabarAltaInternaGranos(cuit: string, mailVendedor: string) {
         let params: HttpParams = new HttpParams();
         params = params.append('cuit', cuit);
-      params = params.append('mailVendedor', mailVendedor);  
-      return this.http
-             .get('/api/AltaEmpresaGranos/GrabarNuevoProveedorGranos', { params: params, headers: this.headers });   
+        params = params.append('mailVendedor', mailVendedor);
+        return this.http
+            .get('/api/AltaEmpresaGranos/GrabarNuevoProveedorGranos', { params: params, headers: this.headers });
     }
 }
