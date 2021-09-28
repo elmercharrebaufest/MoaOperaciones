@@ -41,6 +41,7 @@ namespace SustitucionMOAModel.Dto
             ContratoIngresado = orden.ContratoIngresado;
             Cantidad = orden.Cantidad;
             NumeroPedidoIngresado = orden.NumeroPedidoIngresado;
+            ColorSemaforo = orden.Estado.ObtenerSemaforo();
         }
 
         public int Id { get; set; }
@@ -57,6 +58,7 @@ namespace SustitucionMOAModel.Dto
         public string ContratoIngresado { get; set; }
         public int Cantidad { get; set; }
         public string NumeroPedidoIngresado { get; set; }
+        public string ColorSemaforo { get; set; }
 
     }
 

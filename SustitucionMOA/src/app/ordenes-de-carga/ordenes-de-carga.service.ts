@@ -97,8 +97,8 @@ export class OrdenesDeCargaService extends BaseService {
     }
 
     // public obtenerContratosYCorredores(ordenId: Number): Observable<any> {
-    //     let params: HttpParams = new HttpParams();
-    //     params.append('ordenId', ordenId.toString());
+    //     let params: HttpParams = new HttpParams()
+            //.append('ordenId', ordenId.toString());
 
     //     return this.http
     //         .get('/api/OrdenDeCarga/ObtenerContratosYCorredores', { params: params, headers: this.headers })

@@ -112,7 +112,7 @@ namespace SustitucionMOAUtils.Services
             ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
             ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
 
-            if (!ordenEditar.InformadaSAP)
+            if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
             {
                 var crearPedido = VerificarOrden(ordenEditar, ordenEditar.Cliente);
 
@@ -447,11 +447,6 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-
-            if (usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES"))
-            {
-                var contratos = VerificarOrden(orden, orden.Cliente);
-            }
 
             var ordenDto = new OrdenDeCargaEditarDto(orden);
 
