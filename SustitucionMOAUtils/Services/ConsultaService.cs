@@ -186,7 +186,24 @@ namespace SustitucionMOAUtils.Services
                 if (categoria.Code == Categorias.Actualizacion && subcatecategoria.Code == SubCategorias.CM05)
                 {
                     Proveedor proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == consulta.CodigoProveedor);
-                    mensajeResultado = this.ProcesarCM05(files, comentario.Id, proveedor.CUIT);
+                    try
+                    {
+                        mensajeResultado = this.ProcesarCM05(files, comentario.Id, proveedor.CUIT);
+                    }
+                    catch(ValidationCustomException vex)
+                    {
+                        consulta.Comentarios.Add(new Comentario
+                        {
+                            Consulta_Id = consulta.Id,
+                            Detalle = vex.Message,
+                            Fecha = DateTime.Now,
+                            Usuario_Id = usuario.Id
+                        });
+
+                        consulta.FechaUltimaModificacion = DateTime.Now;
+                        
+                        repositorio.GuardarCambios();
+                    }
                 }
             }
 
@@ -867,50 +884,66 @@ namespace SustitucionMOAUtils.Services
 
         public string ProcesarCM05(HttpFileCollectionBase archivos, int comentario_Id, string cuitProveedor)
         {
-            string resultado = string.Empty;
-            
-            bool existeArchivoConCoeficientes = false; 
-            for (int i = 0; i < archivos.Count; i++)
+            try
             {
-                HttpPostedFileBase archivo = archivos[i];
-                if(archivo.ContentType == "application/pdf")
+                string resultado = string.Empty;
+
+                bool existeArchivoConCoeficientes = false;
+                for (int i = 0; i < archivos.Count; i++)
                 {
-                    var operacionOCRId = Task.Run(async () => await azureService.AnalizarImagenAsync(archivo)).Result;
-
-                    Thread.Sleep(2000);
-
-                    var elementosLeidos = Task.Run(async () => await azureService.ObtenerResultadoOCRAsync(operacionOCRId)).Result;
-
-                    if (elementosLeidos.Any(str => str == "Determinación del Coeficiente Unificado"))
+                    HttpPostedFileBase archivo = archivos[i];
+                    if(archivo.ContentType == "application/pdf")
                     {
-                        Comentario comentario = repositorio.Obtener<Comentario>(comentario_Id);
+                        var operacionOCRId = Task.Run(async () => await azureService.AnalizarImagenAsync(archivo)).Result;
 
-                        int consulta_Id = comentario.Consulta_Id;
-                        var nombreArchivo = string.Format("{0}_{1}", comentario_Id, Path.GetFileName(archivo.FileName));
-                        int archivo_Id = comentario.Archivos.Single(file => file.ObtenerNombre() == nombreArchivo).Id;
+                        Thread.Sleep(2000);
 
-                        resultado = ProcesarArchivoCoeficientesImpuestosIngresosBrutos(elementosLeidos, consulta_Id, archivo_Id, cuitProveedor);
-                        existeArchivoConCoeficientes = true;
-                        break;
+                        var elementosLeidos = Task.Run(async () => await azureService.ObtenerResultadoOCRAsync(operacionOCRId)).Result;
+
+                        if (elementosLeidos.Any(str => str == "Determinación del Coeficiente Unificado"))
+                        {
+                            Comentario comentario = repositorio.Obtener<Comentario>(comentario_Id);
+
+                            int consulta_Id = comentario.Consulta_Id;
+                            var nombreArchivo = string.Format("{0}_{1}", comentario_Id, Path.GetFileName(archivo.FileName));
+                            int archivo_Id = comentario.Archivos.Single(file => file.ObtenerNombre() == nombreArchivo).Id;
+
+                            resultado = ProcesarArchivoCoeficientesImpuestosIngresosBrutos(elementosLeidos.ToList(), consulta_Id, archivo_Id, cuitProveedor);
+                            existeArchivoConCoeficientes = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (!existeArchivoConCoeficientes)
+                if (!existeArchivoConCoeficientes)
+                {
+                    throw new ValidationCustomException("No se pudieron obtener los coeficientes. Por favor, asegúrese de adjuntar el documento correspondiente.");
+                }
+
+                return resultado;
+            }
+            catch(ValidationCustomException ex)
             {
-                throw new ValidationCustomException("No se pudieron obtener los coeficientes. Por favor, asegúrese de adjuntar el documento correspondiente.");
+                throw;
             }
-
-            return resultado;
+            catch(Exception ex)
+            {
+                throw new ValidationCustomException(ErrorMsg.ErrorCargaCM05, ex, true);
+            }
         }
 
-        private string ProcesarArchivoCoeficientesImpuestosIngresosBrutos(IList<string> elementosLeidos, int consulta_Id, int archivo_Id, string cuitProveedor)
+        private string ProcesarArchivoCoeficientesImpuestosIngresosBrutos(List<string> elementosLeidos, int consulta_Id, int archivo_Id, string cuitProveedor)
         {
+            //Descarto palabras que ya se que son "basura"
+            elementosLeidos
+                .RemoveAll(elemento => elemento.StartsWith("..") && elemento.EndsWith("..") ||
+                                       elemento.All(caracter => caracter == '.'));
+
             int indiceDeterminacionDelCoeficienteUnificado = elementosLeidos.IndexOf("Determinación del Coeficiente Unificado");
             string encabezadoFormulario = "OSIRIS";
             int indiceComienzoPaginaCoeficientesBrutos = elementosLeidos.Take(indiceDeterminacionDelCoeficienteUnificado).ToList().LastIndexOf(encabezadoFormulario);
             List<string> info_DeterminacionCoeficienteUnificado = elementosLeidos.Skip(indiceComienzoPaginaCoeficientesBrutos).ToList();
-
+                        
             string cuit = SacarHasta(info_DeterminacionCoeficienteUnificado, "CUIT:")[0].Replace("-","");
 
             int anticipoAux;

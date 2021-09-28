@@ -10,6 +10,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -33,6 +34,8 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerCuentasSolpConsumerMOA> cuentasConsumerMock;
         private Mock<IObtenerOrdenSolpConsumerMOA> ordenesConsumerMock;
         private Mock<IObtenerServiciosSolpConsumerMOA> serviciosConsumerMock;
+        private Mock<IObtenerSolpConsumerMOA> obtenerSolpConsumerMOAMock;
+        private Mock<ICrearSolpConsumerMOA> crearSolpConsumerMOAMock;
 
         [SetUp]
         public void SetUp()
@@ -42,7 +45,9 @@ namespace SustitucionMOATest.Services
             cuentasConsumerMock = new Mock<IObtenerCuentasSolpConsumerMOA>();
             ordenesConsumerMock = new Mock<IObtenerOrdenSolpConsumerMOA>();
             serviciosConsumerMock = new Mock<IObtenerServiciosSolpConsumerMOA>();
-            target = new ComprasService(repositorioMock.Object, cecoConsumerMock.Object, cuentasConsumerMock.Object, ordenesConsumerMock.Object, serviciosConsumerMock.Object);
+            obtenerSolpConsumerMOAMock = new Mock<IObtenerSolpConsumerMOA>();
+            crearSolpConsumerMOAMock = new Mock<ICrearSolpConsumerMOA>();
+            target = new ComprasService(repositorioMock.Object, cecoConsumerMock.Object, cuentasConsumerMock.Object, ordenesConsumerMock.Object, serviciosConsumerMock.Object, obtenerSolpConsumerMOAMock.Object, crearSolpConsumerMOAMock.Object);
         }
 
 

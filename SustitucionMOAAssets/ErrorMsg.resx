@@ -201,7 +201,10 @@
   <data name="ErrorVendedorRepetido" xml:space="preserve">
     <value>Ya existe un vendedor con el mismo CUIT</value>
   </data>
-    <data name="MailMolinosAgro" xml:space="preserve">
+  <data name="MailMolinosAgro" xml:space="preserve">
     <value>El mail ingresado corresponde a molinos agro. Ingrese el mail del vendedor</value>
+  </data>
+  <data name="ErrorCargaCM05" xml:space="preserve">
+    <value>Ocurrió un error en la carga del CM05.</value>
   </data>
 </root>

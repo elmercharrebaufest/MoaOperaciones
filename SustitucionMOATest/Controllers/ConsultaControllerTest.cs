@@ -649,6 +649,41 @@ namespace SustitucionMOATest.Controllers
         }
 
         [Test]
+        public void ConsultaValidationCustomExceptionLoguearMensaje()
+        {
+            var consultaTest = new Consulta
+            {
+                Id = 13232,
+            };
+            string consultaJsonTest = JsonConvert.SerializeObject(consultaTest);
+
+            var comentarioTest = new Comentario
+            {
+                Id = 423,
+            };
+            string comentarioJsonTest = JsonConvert.SerializeObject(comentarioTest);
+
+            Exception innerExceptionTest = new Exception("excepcion interna");
+            ValidationCustomException exceptionTest = new ValidationCustomException("excepcion", innerExceptionTest, true);
+
+            this.usuarioServiceMock.Setup(x => x.GetUsuario("mail@mail.com")).Throws(exceptionTest);
+
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
+            HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new System.IO.StringWriter()));
+
+            var result = target.Consulta(consultaJsonTest, comentarioJsonTest);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual(exceptionTest.Message, errorResultData);
+
+            this.usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
+            this.usuarioServiceMock.Verify(x => x.GetUsuario("mail@mail.com"), Times.Once);
+
+            this.consultaServiceMock.Verify(x => x.AgregarConsulta(It.IsAny<Consulta>(), It.IsAny<Comentario>(), It.IsAny<HttpFileCollectionBase>()), Times.Never);
+        }
+
+        [Test]
         public void ConsultaException()
         {
             var consultaTest = new Consulta
