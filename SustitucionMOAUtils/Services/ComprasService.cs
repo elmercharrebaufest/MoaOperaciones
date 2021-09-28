@@ -678,7 +678,7 @@ namespace SustitucionMOAUtils.Services
 
                 });
 
-                subposiciones.AppendLine($"<tr><th bgcolor='grey' class='posicion' colspan='6'> # {pos.TextoGenerico}</th></tr>{texto}<tr><td colspan='6'>&nbsp;</td></tr>");
+                subposiciones.AppendLine($"<tr><th class='posicion' colspan='6'> # {pos.TextoGenerico}</th></tr>{texto}<tr><td colspan='6'>&nbsp;</td></tr>");
             });
 
             solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, subposiciones.ToString());
