@@ -30,7 +30,8 @@
     public PorcentajeSobrePrecio: number;
     public Posicion: string;
     public RecibidoSinFijar: string;
-    
+    public Pase: boolean;
+
     constructor() {
         //this.TipoNegocioId = 3;
     }
