@@ -9,11 +9,14 @@ import { HttpClientModule } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AutocompleteLibModule } from "angular-ng-autocomplete";
+
 import { ReCaptchaModule } from "angular2-recaptcha";
 import { Ng2AutoCompleteModule } from "ng2-auto-complete";
 import { SelectModule } from "ng2-select";
 import { ModalModule } from "ngx-modal";
 import { NgxPaginationModule } from "ngx-pagination";
+
+
 import { AduanaService } from "./aduana/aduana.service";
 import { AltasComponent } from "./alta-proveedores/altas/altas.component";
 import { EmpresaGranosComponent } from "./alta-proveedores/empresa-granos/empresa-granos.component";

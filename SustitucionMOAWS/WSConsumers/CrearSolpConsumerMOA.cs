@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,13 @@ namespace SustitucionMOAWS.WSConsumers
         public object Request(Solp solpActual)
         {
             var solpSAP = ConvertirSOLP(solpActual);
+
+
+            var serxml = new System.Xml.Serialization.XmlSerializer(solpSAP.GetType());
+            var ms = new MemoryStream();
+            serxml.Serialize(ms, solpSAP);
+            string xml = Encoding.UTF8.GetString(ms.ToArray());
+
 
             var result = service.SI_MMRFC_CREAR_SOLPED(solpSAP.IM_PRACCOUNTList.ToArray(),
                                                        solpSAP.IM_PRACCOUNTXList.ToArray(),
@@ -87,6 +95,7 @@ namespace SustitucionMOAWS.WSConsumers
             string numeroPaquete = "";
             string preqItem = "";
             string serialNumber = "";
+            string docItem = "";
             int numeroDireccion = 0;
 
             /* Algunas cuestiones con los números que se mandan:
@@ -95,19 +104,30 @@ namespace SustitucionMOAWS.WSConsumers
              * 
              */
 
-            solpSAP.IM_PR_TYPE = "NB";
-
+            solpSAP.IM_PR_TYPE = solpActual.ClaseDocumento.CodigoSap;
 
             foreach (var posicion in solpActual.Posiciones.OrderBy(x => x.Id))
             {
                 numeroPosicion++;
 
                 preqItem = $"{numeroPosicion:0000}0";
+                docItem = preqItem;
                 numeroPaquete = $"{numeroPosicion:0000000000}";
                 serialNumber = $"{numeroPosicion:00}";
 
-                solpSAP.IM_PRITEMList.Add(new ZMPES5700
-                {
+                outlineNumber = $"{numeroPosicion:0000000000}";
+
+                //solpSAP.IM_PRHEADERTEXTList = new List<BAPIMEREQHEADTEXT>()
+                //{
+                //    new BAPIMEREQHEADTEXT
+                //    {
+                //        PREQ_ITEM = preqItem,
+                //        TEXT_LINE = "X"
+                //    }
+                //};
+
+
+                var IM_PRITEM = new ZMPES5700();
                     //PREQ_ITEM BNFPO Número de posición de la solicitud de pedido
                     //PUR_GROUP EKGRP Grupo de compras
                     //CREATED_BY ERNAM Nombre del responsable que ha añadido el objeto
@@ -118,66 +138,67 @@ namespace SustitucionMOAWS.WSConsumers
                     //STORE_LOC   LGORT_D Almacén
                     //TRACKINGNO BEDNR   Número de necesidad
 
-                    PREQ_ITEM = preqItem,
-                    PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(),
-                    CREATED_BY = solpActual.UsuarioCreacion.Mail,
-                    PREQ_NAME = posicion.Solicitante,
-                    SHORT_TEXT = posicion.TextoGenerico,
-                    MATERIAL = null, //Esto es para el MVP2 ,porque los materiales no tienen sub posiciones
-                    PLANT = posicion.Centro.CodigoSap.ToString(),
-                    STORE_LOC = posicion.Almacen.CodigoSap.ToString(),
-                    TRACKINGNO = posicion.NroNecesidad,
+                IM_PRITEM.PREQ_ITEM = preqItem;
+                IM_PRITEM.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString();
+                IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion.Mail;
+                IM_PRITEM.PREQ_NAME = posicion.Solicitante;
+                IM_PRITEM.SHORT_TEXT = posicion.TextoGenerico;
+                IM_PRITEM.MATERIAL = null; //Esto es para el MVP2 ,porque los materiales no tienen sub posiciones
+                IM_PRITEM.PLANT = posicion.Centro.CodigoSap.ToString();
+                IM_PRITEM.STORE_LOC = posicion.Almacen.CodigoSap.ToString();
+                IM_PRITEM.TRACKINGNO = posicion.NroNecesidad;
 
 
-                    //MATL_GROUP  MATKL Grupo de artículos
-                    //QUANTITY BAMNG   Cantidad solicitud de pedido
-                    //UNIT BAMEI   Unidad de medida de solicitud pedido
-                    //PREQ_UNIT_ISO BAMEI_ISO   Código ISO p.la unidad de medida en la solicitud de pedido
-                    //PREQ_DATE   BADAT Fecha de solicitud
-                    //DELIV_DATE EINDT   Fecha de entrega de posición
-                    //REL_DATE    FRGDT Fecha de liberación de la solicitud de pedido
-                    //GR_PR_TIME  WEBAZ Tiempo de tratamiento para la entrada de mercancía en días
-                    //PREQ_PRICE  BAPICUREXT Importe de moneda para BAPIs(con 9 decimales)
-                    //PRICE_UNIT EPEIN   Cantidad base
-                    //ITEM_CAT PSTYP   Tipo de posición del documento de compras
-                    //ACCTASSCAT  KNTTP Tipo de imputación
+                //MATL_GROUP  MATKL Grupo de artículos
+                //QUANTITY BAMNG   Cantidad solicitud de pedido
+                //UNIT BAMEI   Unidad de medida de solicitud pedido
+                //PREQ_UNIT_ISO BAMEI_ISO   Código ISO p.la unidad de medida en la solicitud de pedido
+                //PREQ_DATE   BADAT Fecha de solicitud
+                //DELIV_DATE EINDT   Fecha de entrega de posición
+                //REL_DATE    FRGDT Fecha de liberación de la solicitud de pedido
+                //GR_PR_TIME  WEBAZ Tiempo de tratamiento para la entrada de mercancía en días
+                //PREQ_PRICE  BAPICUREXT Importe de moneda para BAPIs(con 9 decimales)
+                //PRICE_UNIT EPEIN   Cantidad base
+                //ITEM_CAT PSTYP   Tipo de posición del documento de compras
+                //ACCTASSCAT  KNTTP Tipo de imputación
 
-                    MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString(),
-                    //QUANTITY = null,
-                    UNIT = null,
-                    PREQ_UNIT_ISO = null,
-                    PREQ_DATE = DateTime.Now.ToString(),
-                    DELIV_DATE = posicion.FechaEntregaServicio.ToString(),
-                    REL_DATE = null, //Calculan ellos ?
-                   // GR_PR_TIME = null, 
-                   // PREQ_PRICE = 0, //Calcular el precio de todas las subposiciones?
-                   // PRICE_UNIT = 0,
-                    ITEM_CAT = posicion.TipoPosicion.Codigo,
-                    ACCTASSCAT = posicion.TipoImputacion.Codigo,
+                IM_PRITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString();
+                //QUANTITY = null,
+                //UNIT = null,
+                //PREQ_UNIT_ISO = null,
+                IM_PRITEM.PREQ_DATE = SAPFormatter.PrepararFecha(DateTime.Now);
+                IM_PRITEM.DELIV_DATE = SAPFormatter.PrepararFecha(posicion.FechaEntregaServicio??DateTime.Now);
+                IM_PRITEM.REL_DATE = null; //Calculan ellos ?
+                                               // GR_PR_TIME = null, 
+                                               // PREQ_PRICE = 0, //Calcular el precio de todas las subposiciones?
+                                               // PRICE_UNIT = 0,
+                IM_PRITEM.ITEM_CAT = posicion.TipoPosicion.Codigo;
+                IM_PRITEM.ACCTASSCAT = posicion.TipoImputacion.Codigo;
 
-                    //DES_VENDOR WLIEF   Proveedor deseado
-                    //FIXED_VEND FLIEF   Proveedor fijo
-                    //PURCH_ORG EKORG   Organización de compras
-                    //AGREEMENT   KONNR Número del contrato superior
-                    //AGMT_ITEM   KTPNR Número de posición del contrato superior
-                    //INFO_REC    INFNR Número del registro info de compras
-                    //CLOSED  EBAKZ Solicitud de pedido concluida
-                    //CURRENCY    WAERS Clave de moneda
-                    //CURRENCY_ISO BAPIISOCD   Código ISO para moneda
-                    //PLND_DELRY PLIFZ   Plazo de entrega previsto en días
-                    //PCKG_NO PACKNO  Nº paquete
+                //DES_VENDOR WLIEF   Proveedor deseado
+                //FIXED_VEND FLIEF   Proveedor fijo
+                //PURCH_ORG EKORG   Organización de compras
+                //AGREEMENT   KONNR Número del contrato superior
+                //AGMT_ITEM   KTPNR Número de posición del contrato superior
+                //INFO_REC    INFNR Número del registro info de compras
+                //CLOSED  EBAKZ Solicitud de pedido concluida
+                //CURRENCY    WAERS Clave de moneda
+                //CURRENCY_ISO BAPIISOCD   Código ISO para moneda
+                //PLND_DELRY PLIFZ   Plazo de entrega previsto en días
+                //PCKG_NO PACKNO  Nº paquete
 
-                    DES_VENDOR = null, //Preguntar a Ulises
-                    FIXED_VEND = null, //Preguntar
-                    PURCH_ORG = posicion.GrupoCompras.CodigoSap,
-                    AGREEMENT = null, //Contrato marco? No está en este MVP
-                    AGMT_ITEM = null, //Contrato marco? No está en este MVP
-                    CLOSED = null, //Contrato marco? No está en este MVP
-                    CURRENCY = posicion.Moneda.CodigoSap,
-                    CURRENCY_ISO = posicion.Moneda.CodigoSap,
-                    PLND_DELRY = (decimal)posicion.PlazoEntrega,
-                    PCKG_NO = numeroPaquete
-                });
+                IM_PRITEM.DES_VENDOR = null;//Preguntar a Ulises
+                IM_PRITEM.FIXED_VEND = null; //Preguntar
+                IM_PRITEM.PURCH_ORG = posicion.GrupoCompras.CodigoSap;
+                IM_PRITEM.AGREEMENT = null; //Contrato marco? No está en este MVP
+                IM_PRITEM.AGMT_ITEM = null;//Contrato marco? No está en este MVP
+                IM_PRITEM.CLOSED = null; //Contrato marco? No está en este MVP
+                IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap;
+                IM_PRITEM.CURRENCY_ISO = posicion.Moneda.CodigoSap;
+                IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega;
+                IM_PRITEM.PCKG_NO = numeroPaquete;
+
+                solpSAP.IM_PRITEMList.Add(IM_PRITEM);
 
                 solpSAP.IM_PRITEMXList.Add(new ZMPES5660 {
                     PREQ_ITEM = preqItem,
@@ -199,7 +220,6 @@ namespace SustitucionMOAWS.WSConsumers
                     CURRENCY_ISO = "X",
                     PLND_DELRY = "X",
                     PCKG_NO = "X"
-
                 });
 
 
@@ -229,25 +249,27 @@ namespace SustitucionMOAWS.WSConsumers
                     serialNumberItem = $"{numeroSubPosicion:00}";
 
                     //SUBPOSICION
-                    solpSAP.IM_SERVICELINESList.Add(new ZMPES5780
-                    {
-                        DOC_ITEM = numeroPosicion.ToString(),
-                        OUTLINE = outlineNumber, //Preguntar a Ulises
-                        SRV_LINE = serviceLineNumber,
-                        //DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
-                        SERVICE = subPosicion.CodigoServicioSap.ToString(),
-                        SHORT_TEXT = subPosicion.Tarea,
-                        QUANTITY = subPosicion.Cantidad??0,
-                        UOM = subPosicion.Unidad.CodigoSap,
-                        UOM_ISO = subPosicion.Unidad.CodigoSap,
-                        GROSS_PRICE = subPosicion.PrecioBruto??0,
-                        CURRENCY = posicion.Moneda.CodigoSap,
-                        MATL_GROUP = subPosicion.CuentaMayorSap.CodigoSap,
-                    });
+                    var IM_SERVICELINE = new ZMPES5780();
+
+                    IM_SERVICELINE.DOC_ITEM = docItem;
+                    IM_SERVICELINE.OUTLINE = outlineNumber; //Preguntar a Ulises
+                    IM_SERVICELINE.SRV_LINE = serviceLineNumber;
+                    //IM_SERVICELINE.DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
+                    IM_SERVICELINE.SERVICE = "000000000003005912";// subPosicion.CodigoServicioSap.ToString();
+                    IM_SERVICELINE.SHORT_TEXT = subPosicion.Tarea;
+                    IM_SERVICELINE.QUANTITY = subPosicion.Cantidad ?? 0;
+                    IM_SERVICELINE.UOM = subPosicion.Unidad.CodigoSap;
+                    IM_SERVICELINE.UOM_ISO = subPosicion.Unidad.CodigoSap;
+                    IM_SERVICELINE.GROSS_PRICE = subPosicion.PrecioBruto ?? 0;
+                    IM_SERVICELINE.CURRENCY = posicion.Moneda.CodigoSap;
+                    IM_SERVICELINE.MATL_GROUP = "0000301922"; // subPosicion.CuentaMayorSap.CodigoSap;
+
+
+                    solpSAP.IM_SERVICELINESList.Add(IM_SERVICELINE);
 
                     solpSAP.IM_SERVICELINESXList.Add(new ZMPES5720
                     {
-                        DOC_ITEM = numeroPosicion.ToString(),
+                        DOC_ITEM = docItem,
                         OUTLINE = outlineNumber, //Preguntar a Ulises
                         SRV_LINE = serviceLineNumber,
                         //DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
@@ -265,7 +287,7 @@ namespace SustitucionMOAWS.WSConsumers
                     //IMPUTACION SUBPOSICION
                     solpSAP.IM_SERVICEACCOUNTList.Add(new ZMPES5790
                     {
-                        DOC_ITEM = numeroPosicion.ToString(),
+                        DOC_ITEM = docItem,
                         OUTLINE = outlineNumber, //Preguntar a Ulises
                         SRV_LINE = serviceLineNumber, //Preguntar a Ulises
                         SERIAL_NO = serialNumber,
@@ -277,7 +299,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                     solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
                     {
-                        DOC_ITEM = numeroPosicion.ToString(),
+                        DOC_ITEM = docItem,
                         OUTLINE = outlineNumber, //Preguntar a Ulises
                         SRV_LINE = serviceLineNumber, //Preguntar a Ulises
                         SERIAL_NO = serialNumber,
@@ -311,7 +333,7 @@ namespace SustitucionMOAWS.WSConsumers
                     if (!solpSAP.IM_PRACCOUNTList.Any(x => 
                             x.PREQ_ITEM == preqItem &&
                             x.SERIAL_NO == serialNumber &&
-                            x.GL_ACCOUNT == subPosicion.CuentaMayorSap.CodigoSap &&
+                            x.GL_ACCOUNT == "0000301922" && // subPosicion.CuentaMayorSap.CodigoSap &&
                             x.COSTCENTER == posicion.Centro.CodigoSap
                         ))
                     {
@@ -319,9 +341,9 @@ namespace SustitucionMOAWS.WSConsumers
                         {
                             PREQ_ITEM = preqItem,
                             SERIAL_NO = serialNumber,
-                            GL_ACCOUNT = subPosicion.CuentaMayorSap.CodigoSap,
+                            GL_ACCOUNT = "0000301922", //subPosicion.CuentaMayorSap.CodigoSap,
                             COSTCENTER = posicion.Centro.CodigoSap,
-                        });
+                        });;
 
                         solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
                         {
@@ -353,7 +375,7 @@ namespace SustitucionMOAWS.WSConsumers
                 solpSAP.IM_PRADDRDELIVERYList.Add(
                     new ZMPES5750
                     {
-                        PREQ_NO = solpActual.NroSolp,
+                        PREQ_NO = preqItem,
                         PREQ_ITEM = preqItem,
                         ADDR_NO = numeroDireccion.ToString(),
                         NAME = posicion.NombreEntrega,
@@ -386,6 +408,27 @@ namespace SustitucionMOAWS.WSConsumers
         public List<BAPI_SRV_ACC_DATAX> IM_SERVICEACCOUNTXList { get; set; } //OK
         public List<ZMPES5780> IM_SERVICELINESList { get; set; } //OK
         public List<ZMPES5720> IM_SERVICELINESXList { get; set; } //OK?
+
+
+        public SolpSAPDto ()
+        {
+            IM_PR_TYPE = "";
+            IM_PRACCOUNTList = new List<ZMPES5690>();
+            IM_PRACCOUNTXList = new List<ZMPES5680>();
+
+            IM_PRADDRDELIVERYList = new List<ZMPES5750>();
+            IM_PRHEADERTEXTList = new List<BAPIMEREQHEADTEXT>();
+
+            IM_PRITEMList = new List<ZMPES5700>();
+            IM_PRITEMTEXTList = new List<BAPIMEREQITEMTEXT>();
+
+            IM_PRITEMXList = new List<ZMPES5660>();
+
+            IM_SERVICEACCOUNTList = new List<ZMPES5790>();
+            IM_SERVICEACCOUNTXList = new List<BAPI_SRV_ACC_DATAX>();
+            IM_SERVICELINESList = new List<ZMPES5780>();
+            IM_SERVICELINESXList = new List<ZMPES5720>();
+        }
     }
 
     public interface ICrearSolpConsumerMOA
