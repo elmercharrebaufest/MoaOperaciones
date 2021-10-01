@@ -110,6 +110,19 @@ namespace SustitucionMOAModel.Dto
 
     }
 
+
+    public class RespuestaGuardarSOLP 
+    {
+        public SolpDto Solp { get; set; }
+
+        public List<string> Errores { get; set; }
+
+        public string Mensaje { get; set; }
+
+        public int IdEntidad { get; set; }
+    }
+
+
     public class SolpPosicionDto
     {
         public string Codigo { get; set; }

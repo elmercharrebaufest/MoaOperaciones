@@ -484,6 +484,10 @@
   opacity: 1;
 }
 
+.headerModalError{
+  color: #a80000;
+}
+
 .titulosModal {
   text-align: left;
   font: normal normal bold 16px/24px Roboto Regular;

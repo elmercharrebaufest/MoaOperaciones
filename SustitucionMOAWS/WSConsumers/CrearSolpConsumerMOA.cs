@@ -22,7 +22,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public object Request(Solp solpActual)
+        public CrearSolpConsumerMOAResponse Request(Solp solpActual)
         {
             var solpSAP = ConvertirSOLP(solpActual);
 
@@ -49,16 +49,25 @@ namespace SustitucionMOAWS.WSConsumers
                                                        out BAPIRETURN[] EX_RETURN);
 
 
-            return result;
+            var respuesta = new CrearSolpConsumerMOAResponse();
+
+            respuesta.NumeroSolp = EX_PREQ_NO;
+            respuesta.Errores = new List<CrearSolpConsumerMOAError>();
+
+            foreach (var errorSAP in EX_RETURN)
+            {
+                var error = new CrearSolpConsumerMOAError
+                {
+                    Codigo = errorSAP.CODE,
+                    Mensaje = errorSAP.MESSAGE,
+                    Tipo = errorSAP.TYPE
+                };
+
+                respuesta.Errores.Add(error);
+            }
+
+            return respuesta;
         }
-
-        public object Map()
-        {
-            return null;
-        }
-
-
-
 
         public SolpSAPDto ConvertirSOLP(Solp solpActual)
         {
@@ -96,7 +105,6 @@ namespace SustitucionMOAWS.WSConsumers
             string preqItem = "";
             string serialNumber = "";
             string docItem = "";
-            int numeroDireccion = 0;
 
             /* Algunas cuestiones con los números que se mandan:
              * DOC_ITEM, PREQ_ITEM, OUTLINE, SERIAL_NO, PCKG_NO, corresponden al número de la posicion pero formateados de distintas formas
@@ -110,7 +118,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 numeroPosicion++;
 
-                preqItem = $"{numeroPosicion:0000}0";
+                preqItem = $"{numeroPosicion:00000}";
                 docItem = preqItem;
                 numeroPaquete = $"{numeroPosicion:0000000000}";
                 serialNumber = $"{numeroPosicion:00}";
@@ -140,7 +148,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 IM_PRITEM.PREQ_ITEM = preqItem;
                 IM_PRITEM.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString();
-                IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion.Mail;
+                //IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion.Mail;
                 IM_PRITEM.PREQ_NAME = posicion.Solicitante;
                 IM_PRITEM.SHORT_TEXT = posicion.TextoGenerico;
                 IM_PRITEM.MATERIAL = null; //Esto es para el MVP2 ,porque los materiales no tienen sub posiciones
@@ -162,6 +170,7 @@ namespace SustitucionMOAWS.WSConsumers
                 //ITEM_CAT PSTYP   Tipo de posición del documento de compras
                 //ACCTASSCAT  KNTTP Tipo de imputación
 
+                IM_PRITEM.MATL_GROUP = "30015";
                 IM_PRITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString();
                 //QUANTITY = null,
                 //UNIT = null,
@@ -172,8 +181,38 @@ namespace SustitucionMOAWS.WSConsumers
                                                // GR_PR_TIME = null, 
                                                // PREQ_PRICE = 0, //Calcular el precio de todas las subposiciones?
                                                // PRICE_UNIT = 0,
-                IM_PRITEM.ITEM_CAT = posicion.TipoPosicion.Codigo;
-                IM_PRITEM.ACCTASSCAT = posicion.TipoImputacion.Codigo;
+
+                switch(posicion.TipoPosicion.Codigo.ToLower())
+                {
+                    case "servicio":
+                        IM_PRITEM.ITEM_CAT = "9";
+                        break;
+
+                    case "material":
+                    default:
+                        IM_PRITEM.ITEM_CAT = "0";
+                        break;
+                }
+
+                switch (posicion.TipoImputacion.Codigo.ToLower())
+                {
+                    case "centrodecosto":
+                        IM_PRITEM.ACCTASSCAT = "K";
+                        break;
+                    case "ordendeot":
+                        IM_PRITEM.ACCTASSCAT = "O";
+                        break;
+                    case "ordendeinversion":
+                        IM_PRITEM.ACCTASSCAT = "9";
+                        break;
+                    case "siniestrobeneficio":
+                        IM_PRITEM.ACCTASSCAT = "9";
+                        break;
+                    default:
+                        IM_PRITEM.ACCTASSCAT = "9";
+                        break;
+                }
+
 
                 //DES_VENDOR WLIEF   Proveedor deseado
                 //FIXED_VEND FLIEF   Proveedor fijo
@@ -187,15 +226,12 @@ namespace SustitucionMOAWS.WSConsumers
                 //PLND_DELRY PLIFZ   Plazo de entrega previsto en días
                 //PCKG_NO PACKNO  Nº paquete
 
-                IM_PRITEM.DES_VENDOR = null;//Preguntar a Ulises
-                IM_PRITEM.FIXED_VEND = null; //Preguntar
-                IM_PRITEM.PURCH_ORG = posicion.GrupoCompras.CodigoSap;
+                //IM_PRITEM.PURCH_ORG = posicion.GrupoCompras.CodigoSap;
                 IM_PRITEM.AGREEMENT = null; //Contrato marco? No está en este MVP
                 IM_PRITEM.AGMT_ITEM = null;//Contrato marco? No está en este MVP
                 IM_PRITEM.CLOSED = null; //Contrato marco? No está en este MVP
                 IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap;
-                IM_PRITEM.CURRENCY_ISO = posicion.Moneda.CodigoSap;
-                IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega;
+                //IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega;
                 IM_PRITEM.PCKG_NO = numeroPaquete;
 
                 solpSAP.IM_PRITEMList.Add(IM_PRITEM);
@@ -204,7 +240,7 @@ namespace SustitucionMOAWS.WSConsumers
                     PREQ_ITEM = preqItem,
                     PREQ_ITEMX = "X",
                     PUR_GROUP = "X",
-                    CREATED_BY = "X",
+                    //CREATED_BY = "X",
                     PREQ_NAME = "X",
                     SHORT_TEXT = "X",
                     PLANT = "X",
@@ -213,12 +249,11 @@ namespace SustitucionMOAWS.WSConsumers
                     MATL_GROUP = "X",
                     PREQ_DATE = "X",
                     DELIV_DATE = "X",
-                    ITEM_CAT = posicion.TipoPosicion.Codigo,
-                    ACCTASSCAT = posicion.TipoImputacion.Codigo,
-                    PURCH_ORG = "X",
+                    ITEM_CAT = "X",
+                    ACCTASSCAT = "X",
+                    //PURCH_ORG = "X",
                     CURRENCY = "X",
-                    CURRENCY_ISO = "X",
-                    PLND_DELRY = "X",
+                    //PLND_DELRY = "X",
                     PCKG_NO = "X"
                 });
 
@@ -255,15 +290,18 @@ namespace SustitucionMOAWS.WSConsumers
                     IM_SERVICELINE.OUTLINE = outlineNumber; //Preguntar a Ulises
                     IM_SERVICELINE.SRV_LINE = serviceLineNumber;
                     //IM_SERVICELINE.DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
-                    IM_SERVICELINE.SERVICE = "000000000003005912";// subPosicion.CodigoServicioSap.ToString();
-                    IM_SERVICELINE.SHORT_TEXT = subPosicion.Tarea;
-                    IM_SERVICELINE.QUANTITY = subPosicion.Cantidad ?? 0;
+                    IM_SERVICELINE.SERVICE = "000000000003005912";//
+                    IM_SERVICELINE.SERVICE = subPosicion.CodigoServicioSap.Codigo.ToString();
+                    //IM_SERVICELINE.SHORT_TEXT = subPosicion.Tarea;
+                    IM_SERVICELINE.QUANTITY = (decimal)subPosicion.Cantidad.Value;
+                    IM_SERVICELINE.QUANTITYSpecified = true;
                     IM_SERVICELINE.UOM = subPosicion.Unidad.CodigoSap;
-                    IM_SERVICELINE.UOM_ISO = subPosicion.Unidad.CodigoSap;
-                    IM_SERVICELINE.GROSS_PRICE = subPosicion.PrecioBruto ?? 0;
-                    IM_SERVICELINE.CURRENCY = posicion.Moneda.CodigoSap;
-                    IM_SERVICELINE.MATL_GROUP = "0000301922"; // subPosicion.CuentaMayorSap.CodigoSap;
+                    IM_SERVICELINE.GROSS_PRICE = (decimal)subPosicion.PrecioBruto.Value;
+                    IM_SERVICELINE.GROSS_PRICESpecified = true;
 
+                    IM_SERVICELINE.CURRENCY = posicion.Moneda.CodigoSap;
+                    //IM_SERVICELINE.MATL_GROUP = subPosicion.CuentaMayorSap.CodigoSap;
+                    //IM_SERVICELINE.MATL_GROUP = "30015"; // subPosicion.CuentaMayorSap.CodigoSap;
 
                     solpSAP.IM_SERVICELINESList.Add(IM_SERVICELINE);
 
@@ -274,15 +312,13 @@ namespace SustitucionMOAWS.WSConsumers
                         SRV_LINE = serviceLineNumber,
                         //DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
                         SERVICE = "X",
-                        SHORT_TEXT = "X",
+                        //SHORT_TEXT = "X",
                         QUANTITY = "X",
                         UOM = "X",
-                        UOM_ISO = "X",
                         GROSS_PRICE = "X",
                         CURRENCY = "X",
-                        MATL_GROUP = "X",
+                        //MATL_GROUP = "X",
                     });
-
 
                     //IMPUTACION SUBPOSICION
                     solpSAP.IM_SERVICEACCOUNTList.Add(new ZMPES5790
@@ -308,8 +344,6 @@ namespace SustitucionMOAWS.WSConsumers
                         PERCENT = "X"
                     });
 
-
-
                     /*
                        Nombre: ZBAPIMEREQACCOUNT		Denominación:	Imputación
                        Nombre	Dominio / Tipo	Denominación
@@ -333,7 +367,7 @@ namespace SustitucionMOAWS.WSConsumers
                     if (!solpSAP.IM_PRACCOUNTList.Any(x => 
                             x.PREQ_ITEM == preqItem &&
                             x.SERIAL_NO == serialNumber &&
-                            x.GL_ACCOUNT == "0000301922" && // subPosicion.CuentaMayorSap.CodigoSap &&
+                            x.GL_ACCOUNT == "0000607034" && //subPosicion.CuentaMayorSap.CodigoSap &&
                             x.COSTCENTER == posicion.Centro.CodigoSap
                         ))
                     {
@@ -341,7 +375,8 @@ namespace SustitucionMOAWS.WSConsumers
                         {
                             PREQ_ITEM = preqItem,
                             SERIAL_NO = serialNumber,
-                            GL_ACCOUNT = "0000301922", //subPosicion.CuentaMayorSap.CodigoSap,
+                            QUANTITY = subPosicion.Cantidad.Value,
+                            GL_ACCOUNT = "0000607034", //subPosicion.CuentaMayorSap.CodigoSap,
                             COSTCENTER = posicion.Centro.CodigoSap,
                         });;
 
@@ -349,13 +384,14 @@ namespace SustitucionMOAWS.WSConsumers
                         {
                             PREQ_ITEM = preqItem,
                             SERIAL_NO = serialNumber,
+                            PREQ_ITEMX = "X",
+                            SERIAL_NOX ="X",
+                            QUANTITY = "X",
                             GL_ACCOUNT = "X",
                             COSTCENTER = "X"
                         });
                     }
                 }
-
-
 
 
                 /*
@@ -370,14 +406,11 @@ namespace SustitucionMOAWS.WSConsumers
                     TEL1_NUMBR	AD_TLNMBR1	Primer número teléfono: Prefijo + número
                     */
 
-
-                numeroDireccion++;
                 solpSAP.IM_PRADDRDELIVERYList.Add(
                     new ZMPES5750
                     {
                         PREQ_NO = preqItem,
                         PREQ_ITEM = preqItem,
-                        ADDR_NO = numeroDireccion.ToString(),
                         NAME = posicion.NombreEntrega,
                         POSTL_COD1 = posicion.CpEntrega,
                         CITY = posicion.Centro.Descripcion,
@@ -392,6 +425,19 @@ namespace SustitucionMOAWS.WSConsumers
 
             return solpSAP;
         }
+    }
+
+    public class CrearSolpConsumerMOAResponse
+    {
+        public string NumeroSolp { get; set; }
+        public List<CrearSolpConsumerMOAError> Errores { get; set; }
+    }
+
+    public class CrearSolpConsumerMOAError
+    {
+        public string Codigo { get; set; }
+        public string Mensaje { get; set; }
+        public string Tipo { get; set; }
     }
 
     public class SolpSAPDto
@@ -433,7 +479,7 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface ICrearSolpConsumerMOA
     {
-        object Request(Solp solpActual);
+        CrearSolpConsumerMOAResponse Request(Solp solpActual);
 
     }
 }

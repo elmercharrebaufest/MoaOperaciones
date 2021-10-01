@@ -65,7 +65,7 @@ namespace SustitucionMOAUtils.Services
             this.crearSolpConsumerMOA = crearSolpConsumerMOA;
         }
 
-        public SolpDto GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
+        public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
         {
             Solp solpEntity = null;
             Pliego pliegoEntity = null;
@@ -381,19 +381,49 @@ namespace SustitucionMOAUtils.Services
                 Nombre = x.ObtenerNombre(x.Ruta)
             }).ToList();
 
+            var respuestaGuardarSOLP = new RespuestaGuardarSOLP
+            {
+                Solp = solp
+            };
 
             if (solp.Finalizar)
             {
-                crearSolpConsumerMOA.Request(solpEntity);
+                if (string.IsNullOrEmpty(solp.NroSolp))
+                {
+                    var resultadoCrearSolp = crearSolpConsumerMOA.Request(solpEntity);
+
+                    respuestaGuardarSOLP.Errores = new List<string>();
+
+                    foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Codigo == "E"))
+                    {
+                        respuestaGuardarSOLP.Errores.Add(error.Mensaje);
+                    }
+
+                    respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
+
+                    if (respuestaGuardarSOLP.Errores.Count == 0)
+                    {
+                        respuestaGuardarSOLP.Mensaje = "OK";
+                        solpEntity.NroSolp = resultadoCrearSolp.NumeroSolp;
+                    }
+
+                    repositorio.GuardarCambios();
+
+                }
+                else
+                {
+                }
             }
 
-            return solp;
+            return respuestaGuardarSOLP;
         }
 
         private string ObtenerRutaArchivos(int solpId)
         {
             return string.Format("{0}/Solp_{1}", rutaArchivosCompras, solpId);
         }
+
+
 
         private void GuardarAdjuntosSolp(SolpDto solp, HttpFileCollectionBase files, Pliego pliego)
         {

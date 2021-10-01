@@ -25,11 +25,8 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { EspecificacionesViewModel } from './PliegoPasos/solapaTres/especificacionesViewModel';
 import { SubPosicionViewModel } from './PliegoPasos/solapaSubposiciones/subPosicionViewModel';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import {DialogModule} from 'primeng/dialog';
+import { DialogModule } from 'primeng/dialog';
 import { FormGroup } from '@angular/forms';
-
-
-
 
 @Component({
     selector: 'app-solp',
@@ -53,7 +50,7 @@ import { FormGroup } from '@angular/forms';
                         style({ opacity: 0 }))
                 ]
             )
-          ]),
+        ]),
     ],
     providers: [ComprasService, MessageService]
 })
@@ -71,7 +68,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     // }
 
     @BlockUI() blockUI: NgBlockUI;
-    
+
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -98,7 +95,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
     finalizarOk: boolean;
     displayFinalizar: boolean = false;
     displaySAP: boolean;
-    
+    displayErrorSAP: boolean;
+
+    listadoErrores: string[];
+
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -165,7 +165,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }];
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        private messageService: MessageService, private route:ActivatedRoute, private confirmationService: ConfirmationService) {
+        private messageService: MessageService, private route: ActivatedRoute, private confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
 
     }
@@ -235,41 +235,41 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
             this.solpActual.ejecucion = "30";
             this.solpActual.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
-            
+
             this.solpActual.centroPorDefecto = 1029;
             this.solpActual.monedaPorDefecto = "ARP";
-            
+
 
             this.getCombos();
 
-            if(this.route.params){
+            if (this.route.params) {
                 this.route.params.forEach((params: Params) => {
                     if (params["id"] > 0) this.solpId = params["id"];
                     if (params["tipoSolp"]) this.solpActual.tipoSolp = params["tipoSolp"];
                 });
 
-                if(this.solpId > 0){
-                this.traerSolpId(this.solpId);
+                if (this.solpId > 0) {
+                    this.traerSolpId(this.solpId);
                 }
             }
 
-            
-            
+
+
         }
     }
 
-    sumarDias(fecha, dias){
+    sumarDias(fecha, dias) {
         fecha.setDate(fecha.getDate() + dias);
         return fecha;
     }
 
-    traerSolpId(idSolp){
+    traerSolpId(idSolp) {
         try {
             this.blockUI.start('Cargando...');
             this.spinnerComponent.showIt();
 
             this.subscription = this.service.traerSolpId(idSolp).subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -280,21 +280,21 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.cargarSolpActual(result.data);
                         this.spinnerComponent.hideIt();
                         this.blockUI.stop();
-                    }   
+                    }
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
                     this.spinnerComponent.hideIt();
                     this.blockUI.stop();
                 });
-            } catch (e) {
-                this.floatMsgService.setErrorMsg(e);
-                return false; //<-- Prevent Refresh
-                }
-                return false; //<-- Prevent Refresh
-    } 
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
 
-    cargarSolpActual(solp){
+    cargarSolpActual(solp) {
 
         // Paso 1
         this.solpActual.id = solp.Id;
@@ -309,9 +309,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
         // Paso 2
         this.solpActual.supervisorSector = solp.SupervisorSector || '';
         this.solpActual.supervisorTrabajo = solp.SupervisorTrabajo || '';
-        this.solpActual.listaVisitas = solp.VisitasObraMasiva.map(x=> { 
+        this.solpActual.listaVisitas = solp.VisitasObraMasiva.map(x => {
             return {
-                id: x.Codigo, 
+                id: x.Codigo,
                 visitaDeObraFecha: new Date(this.getDateFromAspNetFormat(x.FechaHora)),
                 visitaDeObraHora: new Date(this.getDateFromAspNetFormat(x.FechaHora))
             } || '';
@@ -320,13 +320,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.visitaDeObra = solp.TieneVisitaObra;
         this.solpActual.obradores = solp.TieneObradores;
         this.solpActual.modoElevacion = solp.TieneMedioElevacion;
-        this.solpActual.andamio = solp.TieneAndamio; 
+        this.solpActual.andamio = solp.TieneAndamio;
         this.solpActual.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
-        this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;        
-        this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;          
+        this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;
+        this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;
         this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
-        this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta)); 
-        this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;             
+        this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+        this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;
 
         // Paso 3
         this.solpActual.especificacionesViewModel = new EspecificacionesViewModel();
@@ -336,28 +336,28 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 nombreArchivo: x.Nombre
             }
         }),
-        this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas || this.solpActual.especificacionesViewModel.valorPorDefecto; 
-        
+            this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas || this.solpActual.especificacionesViewModel.valorPorDefecto;
+
         this.solpActual.tieneCondicionesGenerales = solp.TieneCondicionesGenerales;
 
         // Paso 4
         this.solpActual.jornadaLaboralDias.forEach(k => {
             k.selected = solp.JornadaLaboral.includes(k.weekDay);
-        });           
-        this.solpActual.comienzoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));  
-        this.solpActual.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta)); 
+        });
+        this.solpActual.comienzoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));
+        this.solpActual.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
         this.solpActual.ejecucion = solp.DiasEjecucion || '';
         this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
 
         // Paso 5
         this.solpActual.selectClaseDocumento = solp.ClaseDocumento;
 
-        if(solp.Posiciones && solp.Posiciones.length > 0){
+        if (solp.Posiciones && solp.Posiciones.length > 0) {
             let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
-            
+
             let posActual = this.solpActual.posicionActual;
             let solpActual = this.solpActual;
-            
+
             solp.Posiciones.forEach(x => {
                 posActual.id = x.Codigo;
                 posActual.textoGenerico = x.TextoGenerico;
@@ -376,7 +376,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.selectSolicitanteCompras = x.Solicitante;
                 posActual.necesidadCompras = x.NroNecesidad;
                 posActual.selectGrupoCompras = x.GrupoCompras;
-                posActual.selectArticuloCompras = x.GrupoArticulo;                               
+                posActual.selectArticuloCompras = x.GrupoArticulo;
                 posActual.monedaSeleccionada = x.Moneda;
                 posActual.servicio = x.TipoPosicion && x.TipoPosicion.Codigo;
                 posActual.tipoImputacion = x.TipoImputacion && x.TipoImputacion.Codigo;
@@ -392,7 +392,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
 
 
-                if(x.Subposiciones){
+                if (x.Subposiciones) {
                     posActual.listadoSubPosiciones = [];
                     let i = 1;
 
@@ -414,8 +414,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         i++;
                     });
                 }
-                
-                if(ultimaPos.Codigo != x.Codigo){
+
+                if (ultimaPos.Codigo != x.Codigo) {
                     solpActual.agregarNuevaPosicion();
                     posActual = solpActual.posicionActual;
                 }
@@ -471,71 +471,81 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    guardarCambios(mostrarPreview = false, enviarSap = false, guardarPorPaso = false){
+    guardarCambios(mostrarPreview = false, enviarSap = false, guardarPorPaso = false) {
         try {
 
-            if(guardarPorPaso = false){
+            if (guardarPorPaso = false) {
                 this.blockUI.start('Guardando...');
                 this.spinnerComponent.showIt();
             }
 
-            this.solpActual.enviarSap = enviarSap;
+            this.solpActual.Finalizar = enviarSap;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
-                        if(guardarPorPaso = false){
+                        if (guardarPorPaso = false) {
                             this.blockUI.stop();
-                        } 
+                        }
                     } else if (result.error != undefined && result.error != "") {
                         this.floatMsgService.setErrorMsg(result.error);
-                        if(guardarPorPaso = false){
+                        if (guardarPorPaso = false) {
                             this.blockUI.stop();
-                        } 
+                        }
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
-                        if(guardarPorPaso = false){
+                        if (guardarPorPaso = false) {
                             this.blockUI.stop();
-                        } 
+                        }
                     } else {
                         this.spinnerComponent.hideIt();
-                        if(guardarPorPaso = false){
+                        if (guardarPorPaso = false) {
                             this.blockUI.stop();
-                        } 
+                        }
 
-                        if(!mostrarPreview && !guardarPorPaso){
-                            this.messageService.add({severity:'success', detail:'Los datos se guardaron correctamente'});
+                        if (!mostrarPreview && !guardarPorPaso) {
+                            this.messageService.add({ severity: 'success', detail: 'Los datos se guardaron correctamente' });
                         }
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
-                        
-                        this.solpActual.id = result.Id;
+
+                        this.solpActual.id = result.Solp.Id;
                         this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.length);
-                        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = result.Adjuntos.map(x=> {
+                        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = result.Solp.Adjuntos.map(x => {
                             return {
                                 id: x.Id,
                                 nombreArchivo: x.Nombre,
                                 rutaDeAcceso: ''
                             }
                         });
-                        
+
                         this.cambiosGuardados = true;
 
-                        if(mostrarPreview){
-                            if(result.Pdf){
-                                this.pdfPreview = "data:application/pdf;base64," + result.Pdf;
+                        if (mostrarPreview) {
+                            if (result.Solp.Pdf) {
+                                this.pdfPreview = "data:application/pdf;base64," + result.Solp.Pdf;
                                 this.mostrarPreview = true;
                             } else {
-                                this.messageService.add({severity:'error', detail:'Hubo un error al generar el preview. Por favor contacte con el administrador de sistemas.'});
+                                this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar el preview. Por favor contacte con el administrador de sistemas.' });
                             }
                         }
 
-                        if(enviarSap){
-                            if(result.NroSolp) {
+                        if (enviarSap) {
+
+                            if (result.Mensaje == "OK") {
                                 this.finalizarOk = true;
-                            } else {
-                                this.messageService.add({severity:'error', detail:'Hubo un error al generar la SOLP en SAP, intente de nuevo mas tarde o comuniquese con el administrador'});
+                                this.displaySAP = true;
                             }
-                        } 
+                            else {
+                                this.listadoErrores = result.Errores;
+                                this.displayErrorSAP = true;
+                            }
+
+                            // if (result.Solp.NroSolp) {
+                            //     this.finalizarOk = true;
+                            // } else {
+                            //     this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar la SOLP en SAP, intente de nuevo mas tarde o comuniquese con el administrador' });
+                            // }
+                        }
 
 
                     }
@@ -543,18 +553,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
                     this.spinnerComponent.hideIt();
-                    if(guardarPorPaso = false){
+                    if (guardarPorPaso = false) {
                         this.blockUI.stop();
-                    } 
+                    }
                 }
 
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             this.spinnerComponent.hideIt();
-            if(guardarPorPaso = false){
+            if (guardarPorPaso = false) {
                 this.blockUI.stop();
-            } 
+            }
             return false; //<-- Prevent Refresh
         }
     }
@@ -606,12 +616,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.posicionActual.selectArticuloCompras,
                         this.solpActual.posicionActual.monedaSeleccionada
                     ]);
-                    
+
                     break;
-                    case EnumPasoSolp.SolpSubposiciones:
-                        paso.Completo = this.listaStringCompleta([
-                        ]);
-                        break;
+                case EnumPasoSolp.SolpSubposiciones:
+                    paso.Completo = this.listaStringCompleta([
+                    ]);
+                    break;
                 case EnumPasoSolp.SolpSubposiciones:
                     break;
             }
@@ -622,7 +632,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return lista.filter(x => !x || x.length == 0).length == 0;
     }
 
-    
+
     //evento que se activa cuando se deja uno de los paso de la solp
     //infomacionSolp : { codigo : string , esPasoInvalido : bool}
     actualizarEstadoSolp(infomacionSolp: any) {
@@ -631,11 +641,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     // funcion para que cuando agregues una posicion, vuelva a la altura posiciones
-    scrollTo(el: HTMLElement){
+    scrollTo(el: HTMLElement) {
         el.scrollIntoView();
     }
 
-    agregarPosicion(el: HTMLElement){
+    agregarPosicion(el: HTMLElement) {
         this.cabecera.validarPosicionActual();
         this.solpActual.agregarNuevaPosicion();
         el.scrollIntoView();
@@ -644,7 +654,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     getCombos() {
         try {
             this.subscription = this.service.getCombos().subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -668,7 +678,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    preview(){
+    preview() {
         this.guardarCambios(true);
     }
 
@@ -676,8 +686,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.navService.navegarSeccion('/compras');
     }
 
-    
-    generarZipPliego(idSolp){
+
+    generarZipPliego(idSolp) {
         this.blockUI.start('Generando ')
         this.service.descargarZipPliego(idSolp)
             .subscribe(
@@ -722,14 +732,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Todos los Modal
     finalizar() {
-        this.guardarCambios();
-        this.displayFinalizar = false;
-        this.displaySAP = true; 
+        this.guardarCambios(false, true, false);
+        this.displayFinalizar = false
+        // ;
+        //
     }
 
     // Abre el modal del boton finalizar
     showDialog() {
-        this.displayFinalizar = true;           
+        this.displayFinalizar = true;
     }
 
     cancelarFinalizar() {
@@ -743,7 +754,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             accept: () => {
                 this.salir();
             },
-            reject: () => {  
+            reject: () => {
             }
         });
     }
@@ -755,25 +766,25 @@ export class SolpComponent extends BaseComponent implements OnInit {
             accept: () => {
                 this.salir();
             },
-            reject: () => {  
+            reject: () => {
             }
         });
     }
 
     ultimoPasoSolp() {
         this.confirmationService.confirm({
-                    key: 'ultimoPasoSolp',
-                    message: 'Está a punto de enviar a SOLP sin documento a xxxx ¿Desea continuar?', 
-                    accept: () => {
-            
-                    },
-                    reject: () => {
-                        this.salir();  
-                    }
-                });
+            key: 'ultimoPasoSolp',
+            message: 'Está a punto de enviar a SOLP sin documento a xxxx ¿Desea continuar?',
+            accept: () => {
+
+            },
+            reject: () => {
+                this.salir();
+            }
+        });
 
     }
 
-    
+
 }
 
