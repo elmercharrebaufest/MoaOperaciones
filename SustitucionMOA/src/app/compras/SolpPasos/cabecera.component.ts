@@ -98,6 +98,13 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         { campo: 'proveedoresInvalidos',        esObligatorio: false,   esFijo: true },
         { campo: 'proveedoresNoSugeridos',      esObligatorio: false,   esFijo: true },
         { campo: 'selectMonedaCompras',         esObligatorio: true,    esFijo: true },
+        { campo: 'codigoServicio',              esObligatorio: false,    esFijo: true },
+        { campo: 'tareaSubcontratar',           esObligatorio: false,   esFijo: true },
+        { campo: 'cuentaTd',                    esObligatorio: true,   esFijo: false },
+        { campo: 'unidadMedida',                esObligatorio: true,   esFijo: false },
+        { campo: 'precioBruto',                 esObligatorio: false,   esFijo: true },
+        { campo: 'cuentaMayor',                 esObligatorio: false,    esFijo: true },
+        { campo: 'tipoImputacion',              esObligatorio: false,    esFijo: true },
     ];
     
     @Output() onEstCompleto = new EventEmitter<any>();

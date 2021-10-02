@@ -90,8 +90,8 @@
                                     <td [pEditableColumn]="posicion" style="width: 8%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <input type="text" pKeyFilter="num"  [(ngModel)]="posicion.cuentaTd"
-                                                    (paste)="onPaste($event,enumColumnaSubPosicion.CuentaTd,rowIndex)">
+                                                <input [ngClass]="validarCamposObligatorios('cuentaTd') ? 'errorInput' : ''" type="text" pKeyFilter="num"  [(ngModel)]="posicion.cuentaTd"
+                                                (paste)="onPaste($event,enumColumnaSubPosicion.CuentaTd,rowIndex)"> 
                                             </ng-template>
                                             <ng-template pTemplate="output">
                                                 {{posicion.cuentaTd}}
@@ -101,10 +101,10 @@
                                     <td [pEditableColumn]="posicion" style="width: 10%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <p-autoComplete [(ngModel)]="posicion.unidadSeleccionada" [suggestions]="unidades" 
+                                                <p-autoComplete [(ngModel)]="posicion.unidadSeleccionada" [suggestions]="unidades"
                                                 dataKey="Id" ariaLabel="Descripcion" field="Descripcion" appendTo="body" [autoHighlight]="true" emptyMessage="Ningúna unidad encontrada"
                                                 [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true" 
-                                                (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')" (onFocus)=" $event.target.select()" >
+                                                (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')" (onFocus)=" $event.target.select()">
                                                 </p-autoComplete>    
                                             </ng-template>
                                             <ng-template pTemplate="output">
@@ -157,11 +157,14 @@
                                     </td>
                                 </tr>
                             </ng-template>
-
                         </p-table>
                     </div>
                 </div>
                 <!-- End Row posiciones -->
+                <!-- <div *ngIf="!cuentaTd.value" style="color:red;">
+                    Your field is empty
+                </div> -->
+
                 <div class="row">
                     <div *ngIf="!posicionInvalida" style="float: right; margin-right: 2em">
                         <button class="btn marginButton buttonTotalCompras" >Valor Total:  {{model.posicionActual.monedaSeleccionada?.Codigo}} {{model.posicionActual.totalPosicion()}}</button>

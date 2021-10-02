@@ -44,7 +44,15 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     // array de columnas en la grilla
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
-    columnasGrilla: any = [{ nombre: "codigoServicio", tipo: "numerico" }, { nombre: "tareaSubcontratar", tipo: "string" }, { nombre: "cuentaTd", tipo: "numerico" }, { nombre: "unidadMedida", tipo: "combo" }, { nombre: "precioBruto", tipo: "decimal" }, { nombre: "cuentaMayor", tipo: "numerico" }, { nombre: "tipoImputacion", tipo: "numerico" }];
+    columnasGrilla: any = [
+        { nombre: "codigoServicio", tipo: "numerico" }, 
+        { nombre: "tareaSubcontratar", tipo: "string" }, 
+        { nombre: "cuentaTd", tipo: "numerico" }, 
+        { nombre: "unidadMedida", tipo: "combo" }, 
+        { nombre: "precioBruto", tipo: "decimal" }, 
+        { nombre: "cuentaMayor", tipo: "numerico" }, 
+        { nombre: "tipoImputacion", tipo: "numerico" }
+    ];
 
     //variable para verificar si la posicion no fue dada de alta con los datos minimos
     posicionInvalida: boolean = false;
@@ -57,17 +65,73 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     }
 
+    camposObligatorios: any[] = [
+        { campo: 'codigoServicio',       esObligatorio: false,    esFijo: true },
+        { campo: 'tareaSubcontratar',    esObligatorio: false,   esFijo: true },
+        { campo: 'cuentaTd',             esObligatorio: true,   esFijo: false },
+        { campo: 'unidadMedida',         esObligatorio: true,   esFijo: false },
+        { campo: 'precioBruto',          esObligatorio: false,   esFijo: true },
+        { campo: 'cuentaMayor',          esObligatorio: false,    esFijo: true },
+        { campo: 'tipoImputacion',       esObligatorio: false,    esFijo: true },
+        { campo: 'servicio',                    esObligatorio: true,    esFijo: true },
+        { campo: 'centroDeCosto',               esObligatorio: false,   esFijo: true },
+        { campo: 'ordenDeOt',                   esObligatorio: false,   esFijo: true },
+        { campo: 'ordenDeInversion',            esObligatorio: false,   esFijo: true },
+        { campo: 'siniestroBeneficio',          esObligatorio: false,   esFijo: true },
+        { campo: 'tipoImputacion',              esObligatorio: true,    esFijo: true },
+        { campo: 'textoGenerico',               esObligatorio: true,    esFijo: true },
+        { campo: 'fechaEntregaServicio',        esObligatorio: true,    esFijo: false },
+        { campo: 'fechaDeLiberacion',           esObligatorio: false,    esFijo: false },
+        { campo: 'plazoDeEntrega',              esObligatorio: true,   esFijo: true },
+        { campo: 'concluido',                   esObligatorio: false,   esFijo: true },
+        { campo: 'indiceFijacion',              esObligatorio: false,   esFijo: true },
+        { campo: 'selectCentroEntrega',         esObligatorio: false,    esFijo: false },
+        { campo: 'nombreEntrega',               esObligatorio: false,   esFijo: true },
+        { campo: 'codigoPostalEntrega',         esObligatorio: false,   esFijo: true },
+        { campo: 'selectAlmacenEntrega',        esObligatorio: false,    esFijo: false },
+        { campo: 'calleEntrega',                esObligatorio: true,    esFijo: true },
+        { campo: 'paisEntrega',                 esObligatorio: false,   esFijo: true },
+        { campo: 'numeroEntrega',               esObligatorio: true,    esFijo: true },
+        { campo: 'selectGrupoCompras',          esObligatorio: false,    esFijo: false },
+        { campo: 'selectArticuloCompras',       esObligatorio: true,    esFijo: true },
+        { campo: 'selectSolicitanteCompras',    esObligatorio: true,    esFijo: true },
+        { campo: 'necesidadCompras',            esObligatorio: false,   esFijo: true },
+        { campo: 'rubroElectrico',              esObligatorio: false,   esFijo: true },
+        { campo: 'rubroCivil',                  esObligatorio: false,   esFijo: true },
+        { campo: 'rubroIngenieria',             esObligatorio: false,   esFijo: true },
+        { campo: 'rubroMecanico',               esObligatorio: false,   esFijo: true },
+        { campo: 'rubroConsultoria',            esObligatorio: false,   esFijo: true },
+        { campo: 'proveedoresValidos',          esObligatorio: false,   esFijo: true },
+        { campo: 'proveedoresInvalidos',        esObligatorio: false,   esFijo: true },
+        { campo: 'proveedoresNoSugeridos',      esObligatorio: false,   esFijo: true },
+        { campo: 'selectMonedaCompras',         esObligatorio: true,    esFijo: true },
+    ];    
+
+    actualizarCamposObligatorios(claseDocumento){
+        //reset de obligatorios configurables
+        this.camposObligatorios.forEach(c => {
+            if(!c.esFijo)
+                c.esObligatorio = false;
+        });
+
+        let camposObligatoriosFiltrados = this.combos.CamposObligatoriosCabeceraSolp.filter(x=>x.ClaseDocumentoCodigo == claseDocumento.Codigo);
+       
+        camposObligatoriosFiltrados.forEach(c => {
+            this.camposObligatorios.find(x=>x.campo == c.Codigo).esObligatorio = true;
+        });
+    }
+
+    validarCamposObligatorios(campoAValidar: string){
+        return this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
+    }
+   
     setTabs() {
         this.setMenuSeccionTab("Sub Posiciones", "Sub Posiciones");
     }
 
     ngOnInit() {
         this.setTabs();
-
-        // let primeraPosicion = this.model.posiciones[0]
         this.listadoPosicionActul = this.model.posicionActual.listadoSubPosiciones;
-        // this.model.posicionActual = primeraPosicion;
-
         if(this.listadoPosicionActul.length == 0){
             this.nuevaPosicion(null);
         }
@@ -75,16 +139,22 @@ export class SubPosicionComponent extends ListBaseComponent {
         this.validarDatosMinimosPosicionActual();
         this.calcularTotalSubPosicion();
         this.actualizarTipoDeImputacion();
+        this.actualizarCamposObligatorios(this.model.selectClaseDocumento);
+
     }
+
+
 
     validarDatosMinimosPosicionActual(): void {
         if ((this.model.posicionActual.textoGenerico == undefined || this.model.posicionActual.textoGenerico == "")
             || (this.model.posicionActual.tipoImputacion == undefined || this.model.posicionActual.tipoImputacion == "")) {
             this.posicionInvalida = true;
-        }
-        else
+        } else
             this.posicionInvalida = false;
     }
+
+
+
 
     cambiarSubPosicion(): void {
         this.listadoPosicionActul = this.model.posicionActual.listadoSubPosiciones;

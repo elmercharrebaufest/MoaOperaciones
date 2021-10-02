@@ -519,3 +519,12 @@
     margin-top: 0.5em;
   }
 }
+
+.errorInput {
+  border: red solid !important;
+}
+
+/* .ui-autocomplete-input.errorInput {s
+  border: red solid !important;
+}
+ */
