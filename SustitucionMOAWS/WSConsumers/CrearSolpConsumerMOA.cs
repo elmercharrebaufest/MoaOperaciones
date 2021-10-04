@@ -367,8 +367,8 @@ namespace SustitucionMOAWS.WSConsumers
                     if (!solpSAP.IM_PRACCOUNTList.Any(x => 
                             x.PREQ_ITEM == preqItem &&
                             x.SERIAL_NO == serialNumber &&
-                            x.GL_ACCOUNT == "0000607034" && //subPosicion.CuentaMayorSap.CodigoSap &&
-                            x.COSTCENTER == posicion.Centro.CodigoSap
+                            x.GL_ACCOUNT == subPosicion.CuentaMayorSap.CodigoSap &&//"0000607034" && 
+                            x.COSTCENTER == subPosicion.TipoImputacionSap.CodigoSap
                         ))
                     {
                         solpSAP.IM_PRACCOUNTList.Add(new ZMPES5690
@@ -376,7 +376,7 @@ namespace SustitucionMOAWS.WSConsumers
                             PREQ_ITEM = preqItem,
                             SERIAL_NO = serialNumber,
                             QUANTITY = subPosicion.Cantidad.Value,
-                            GL_ACCOUNT = "0000607034", //subPosicion.CuentaMayorSap.CodigoSap,
+                            GL_ACCOUNT = subPosicion.CuentaMayorSap.CodigoSap, //"0000607034",
                             COSTCENTER = posicion.Centro.CodigoSap,
                         });;
 
@@ -415,7 +415,6 @@ namespace SustitucionMOAWS.WSConsumers
                         POSTL_COD1 = posicion.CpEntrega,
                         CITY = posicion.Centro.Descripcion,
                         STREET = posicion.CalleEntrega,
-                        HOUSE_NO = "", // Validar con Ulises el tema del telefono/número
                         TEL1_NUMBR = posicion.NumeroEntrega, //Validar si es el numero entrega o de donde lo sacamos
                     }
                 );
