@@ -52,7 +52,6 @@ namespace SustitucionMOAModel.Dto
         public bool Finalizar { get; set; }
         public bool? TieneCondicionesGenerales { get; set; }
         public bool CargaCotizacionesConArchivo { get; set; }
-        public List<ArchivoDto> AdjuntosCotizaciones { get; set; }
 
         public SolpDto() {}
         public SolpDto(Solp entity) 

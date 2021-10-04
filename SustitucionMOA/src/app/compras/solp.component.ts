@@ -332,7 +332,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         // Paso 3
         this.solpActual.especificacionesViewModel = new EspecificacionesViewModel();
-        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = solp.Adjuntos.map(x => {
+        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = solp.Adjuntos
+        .filter(x => x.FileKey == "adjuntoSolp")
+        .map(x => {
             return {
                 id: x.Id,
                 nombreArchivo: x.Nombre
@@ -345,7 +347,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
         // Paso 4
         this.solpActual.CargaCotizacionesConArchivo = solp.CargaCotizacionesConArchivo;
         if (this.solpActual.CargaCotizacionesConArchivo) {
-            this.solpActual.archivosCotizacionesGuardados = solp.AdjuntosCotizaciones.map(x => {
+            this.solpActual.archivosCotizacionesGuardados = solp.Adjuntos
+            .filter(x => x.FileKey == "adjuntoCotizacionesSolp")
+            .map(x => {
                 return {
                     id: x.Id,
                     nombreArchivo: x.Nombre,

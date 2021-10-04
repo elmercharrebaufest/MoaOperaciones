@@ -13,6 +13,7 @@ import { AdjuntosCotizaciones } from "./PliegoPasos/adjuntos-Cotizaciones";
 export class Solp extends CommonResponse {
     public id: number;
     public tipoSolp: string;
+    public Adjuntos?: { Id: number, Nombre: string }[];
 
     //paso 1
     public nombreDePedido: string;
@@ -45,7 +46,6 @@ export class Solp extends CommonResponse {
     //paso 3
     public especificacionesViewModel: EspecificacionesViewModel = new EspecificacionesViewModel();
     public tieneCondicionesGenerales: boolean;
-    public Adjuntos?: {Id:number, Nombre:string}[];
 
     // paso 4
     public CargaCotizacionesConArchivo: boolean;
@@ -58,7 +58,6 @@ export class Solp extends CommonResponse {
 
     public archivosCotizacionesNuevos: Array<File>;
     public archivosCotizacionesGuardados: Array<AdjuntosCotizaciones>
-    public AdjuntosCotizaciones?: { Id: number, Nombre: string }[];
 
     //inicio Cabecera == paso 5
     public selectClaseDocumento: any
