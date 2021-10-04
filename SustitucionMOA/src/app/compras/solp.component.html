@@ -188,7 +188,17 @@
                 </div>
             </p-panel>
         </div> 
+        <div class="col-md-12 row myRow">
+            <div class="col-md-3 titulosModal">
+                Revisado por: 
+            </div>
+            <div class="col-md-6">
+                <input type="text" pInputText [(ngModel)]="solpActual.revisadoPor" class="fourRounded" placeholder="" aria-controls="tableModal">
+            </div>
+            
+        </div>
     </div>
+    
     <p-footer>
         <button type="button" pButton  label="CANCELAR" class="ui-button-danger botonModal" (click)="cancelarFinalizar()"></button>
         <button type="button" pButton  label="FINALIZAR" class="ui-button-success botonModal" (click)="finalizar()"></button>

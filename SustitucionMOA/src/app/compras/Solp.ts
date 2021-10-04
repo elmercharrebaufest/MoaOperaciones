@@ -85,6 +85,7 @@ export class Solp {
     // public selectEstadoSolp: any;
     // public fechaSolp: Date;
     
+    public revisadoPor: string;
 
     constructor() {
         this.posiciones = [];

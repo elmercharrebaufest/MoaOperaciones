@@ -110,6 +110,8 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(solpEntity);
             }
 
+            pliegoEntity.RevisadoPor = solp.RevisadoPor;
+
             if (solpEntity != null)
             {
                 if (solp.ClaseDocumento != null)
@@ -142,6 +144,8 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
 
                 pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
+
+                pliegoEntity.RevisadoPor = solp.RevisadoPor;
 
                 if (solp.TieneVisitaObraMasiva && solp.VisitasObraMasiva != null)
                 {
@@ -449,7 +453,8 @@ namespace SustitucionMOAUtils.Services
                     EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
                     //TipoSolp
                     VincularPliego = !x.Pliego_Id.HasValue,
-                    TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales
+                    TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
+                    RevisadoPor = x.Pliego?.RevisadoPor
                 });
 
             return todasLasSolp.ToList();
@@ -525,6 +530,8 @@ namespace SustitucionMOAUtils.Services
 
                 TieneCondicionesGenerales = x.Pliego.TieneCondicionesGenerales ?? true,
 
+                RevisadoPor = x.Pliego.RevisadoPor,
+
                 EstadoSolpSapId = x.EstadoSolpSap_Id,
                 EstadoDocumentoId = x.EstadoDocumento_Id,
 
@@ -589,6 +596,7 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
             solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioActual.Mail);
 
+            solpValores.Add(SolpTemplateKeys.REVISADO_POR, solp.RevisadoPor);
 
             //ESPECIFICACION TECNICA DE TAREAS
             if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
@@ -1000,5 +1008,7 @@ namespace SustitucionMOAUtils.Services
         public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
 
         public const string TEXTO_GENERICO = "TEXTO_GENERICO";
+
+        public const string REVISADO_POR = "REVISADO_POR";
     }
 }

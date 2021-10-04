@@ -26,6 +26,7 @@
 
 [TieneAndamio] BIT NULL, 
     [TieneCondicionesGenerales] BIT NULL, 
+    [RevisadoPor] NVARCHAR(MAX) NULL, 
     CONSTRAINT [PK_dbo.Pliego] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

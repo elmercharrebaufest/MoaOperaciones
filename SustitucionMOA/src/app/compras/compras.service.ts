@@ -105,6 +105,9 @@ export class ComprasService extends BaseService {
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
             Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x=> { return {Id: x.id} }),
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento &&solp.selectClaseDocumento.Codigo),
+
+            RevisadoPor: solp.revisadoPor,
+
             Posiciones: solp.posiciones.filter(x=>x.textoGenerico).map(x=> {
                 return {
                     Codigo: x.id,
