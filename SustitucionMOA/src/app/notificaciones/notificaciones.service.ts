@@ -18,7 +18,7 @@ export class NotificacionesService extends BaseService {
         params = params.append('notificacionId', notificacionId.toString());
 
         return this.http
-            .get('/api/Notificacion/GetNotificacion', { params: params, headers: this.headers })
+            .get<any[]>('/api/Notificacion/GetNotificacion', { params: params, headers: this.headers })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 
