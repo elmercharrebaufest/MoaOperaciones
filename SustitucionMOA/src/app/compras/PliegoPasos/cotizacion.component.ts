@@ -12,7 +12,8 @@ import { WeekDay } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 import { EnumPasoSolp } from '../enum-paso-solp';
-
+import { ConfirmationService } from 'primeng/api';
+import { SelectButtonModule } from 'primeng/selectbutton';
 
 declare var $: any;
 
@@ -37,14 +38,10 @@ export class CotizacionComponent extends ListBaseComponent {
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
         protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router
-        , private formBuilder: FormBuilder,
+        , private formBuilder: FormBuilder, private confirmationService: ConfirmationService,
         private validadorPasoSolpService : ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-
-
     }
-
-   
 
     mostrarError(nombreCampo: string): boolean {
         if (this.formularioCotizacion && this.formularioCotizacion.controls) {
@@ -88,7 +85,7 @@ export class CotizacionComponent extends ListBaseComponent {
             ejecucion: new FormControl('', [Validators.required]),
             comienzoJornadaLaboral: new FormControl('', Validators.required),
             terminoJornadaLaboral: new FormControl('', Validators.required),
-            dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required,this.validatorDias])
+            dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required, this.validatorDias])
         });
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
@@ -107,5 +104,81 @@ export class CotizacionComponent extends ListBaseComponent {
         this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoCotizacion, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
     }
 
+    uploadHandler(filesUploaad: any): void {
+        this.model.archivosCotizacionesNuevos = filesUploaad["files"];
+    }
 
+    private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
+        if (window.navigator.msSaveOrOpenBlob) {
+            // IE11
+            window.navigator.msSaveOrOpenBlob(
+                blob,
+                nombreArchivo
+            );
+        } else {
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            document.body.appendChild(link);
+            link.href = url;
+            link.download = nombreArchivo;
+            link.click();
+            setTimeout(function () {
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            return;
+        }
+    }
+
+    descargarArchivo(archivo): void {
+        if (archivo.id != undefined) {
+
+            this.service.DescargarArchivo(archivo.id)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        }
+                        else {
+                            var byteArray = new Uint8Array(result.FileContents);
+                            var blob = new Blob([byteArray], {
+                                type: "application/octet-stream",
+                            });
+
+                            this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        }
+                    },
+                    (error) => {
+                        this.spinnerSmallComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                )
+        }
+        else {
+            this.downloadArchivoLocal(archivo, archivo.name);
+
+        }
+    }
+
+    eliminarAdjuntoNuevo(archivo): void {
+        var indice = this.model.archivosCotizacionesNuevos.indexOf(archivo)
+        this.model.archivosCotizacionesNuevos.splice(indice, 1)
+    }
+
+    eliminarAdjuntoGuardado(archivo): void {
+        var indice = this.model.archivosCotizacionesGuardados.indexOf(archivo)
+        this.model.archivosCotizacionesGuardados.splice(indice, 1)
+    }
+
+    eliminarArchivo(esAdjuntoNuevo: boolean, archivo: any) {
+        this.confirmationService.confirm({
+            message: '�Est� seguro que desea eliminar el archivo?',
+            accept: () => {
+                esAdjuntoNuevo ? this.eliminarAdjuntoNuevo(archivo) : this.eliminarAdjuntoGuardado(archivo)
+            },
+            reject: () => {
+
+            }
+        });
+
+    }
 }

@@ -1019,6 +1019,7 @@
     <TypeScriptCompile Include="src\app\compras\enum-columna-subPosiciones.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-paso-solp.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-imputacion.ts" />
+    <TypeScriptCompile Include="src\app\compras\PliegoPasos\adjuntos-Cotizaciones.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\cotizacion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion1.component.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion2.component.ts" />

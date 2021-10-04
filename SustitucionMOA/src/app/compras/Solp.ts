@@ -8,6 +8,7 @@ import { CampoObligatorioViewModel } from "./campo-obligatorio-viewModel";
 import { FormGroup } from "@angular/forms";
 import { SubPosicionViewModel } from "./PliegoPasos/solapaSubposiciones/subPosicionViewModel";
 import { CommonResponse } from "../common/models/common-response";
+import { AdjuntosCotizaciones } from "./PliegoPasos/adjuntos-Cotizaciones";
 
 export class Solp extends CommonResponse {
     public id: number;
@@ -47,11 +48,17 @@ export class Solp extends CommonResponse {
     public Adjuntos?: {Id:number, Nombre:string}[];
 
     // paso 4
+    public CargaCotizacionesConArchivo: boolean;
+
     public ejecucion: any;
     public jornadaLaboralDias: WeekDayItem[];
     public comienzoJornadaLaboral: Date;
     public terminoJornadaLaboral: Date;
     public observacionesCotizacion: string;
+
+    public archivosCotizacionesNuevos: Array<File>;
+    public archivosCotizacionesGuardados: Array<AdjuntosCotizaciones>
+    public AdjuntosCotizaciones?: { Id: number, Nombre: string }[];
 
     //inicio Cabecera == paso 5
     public selectClaseDocumento: any

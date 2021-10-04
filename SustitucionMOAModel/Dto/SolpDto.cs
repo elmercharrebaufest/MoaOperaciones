@@ -51,6 +51,8 @@ namespace SustitucionMOAModel.Dto
         public string Pdf { get; set; }
         public bool Finalizar { get; set; }
         public bool? TieneCondicionesGenerales { get; set; }
+        public bool CargaCotizacionesConArchivo { get; set; }
+        public List<ArchivoDto> AdjuntosCotizaciones { get; set; }
 
         public SolpDto() {}
         public SolpDto(Solp entity) 
@@ -91,8 +93,6 @@ namespace SustitucionMOAModel.Dto
             this.TipoSolp = new TablaGeneralDto(entity.TipoSolp);
             this.Posiciones = new List<SolpPosicionDto>();
             this.TieneCondicionesGenerales = entity.Pliego.TieneCondicionesGenerales.HasValue ? entity.Pliego.TieneCondicionesGenerales : true;
-
-
         }
     }
 

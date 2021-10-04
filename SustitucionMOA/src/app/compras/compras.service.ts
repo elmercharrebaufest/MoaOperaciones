@@ -74,12 +74,18 @@ export class ComprasService extends BaseService {
             ObservacionesGeneracion: solp.observacionesGeneracion,
             EspecificacionesTecnicas: solp.especificacionesViewModel.observaciones,
             TieneCondicionesGenerales: solp.tieneCondicionesGenerales,
+
+            Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x => { return { Id: x.id } }),
+            AdjuntosCotizaciones: solp.archivosCotizacionesGuardados.map(x => { return { Id: x.id } }),
+
+            CargaCotizacionesConArchivo: solp.CargaCotizacionesConArchivo,
+
             DiasEjecucion: solp.ejecucion,
-            ObservacionesCotizacion: solp.observacionesCotizacion,
             JornadaLaboral: solp.jornadaLaboralDias.filter(x => x.selected).map(x => x.weekDay),
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
-            Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x => { return { Id: x.id } }),
+            ObservacionesCotizacion: solp.observacionesCotizacion,
+
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
             Posiciones: solp.posiciones.filter(x => x.textoGenerico).map(x => {
                 return {
@@ -142,7 +148,14 @@ export class ComprasService extends BaseService {
         if (archivos != null) {
             for (let i = 0; i < archivos.length; i++) {
                 let fileToUpload = archivos[i];
-                payload.append("file", fileToUpload, fileToUpload.name);
+                payload.append("fileEspecificaciones", fileToUpload, fileToUpload.name);
+            }
+        }
+
+        if (solp.archivosCotizacionesNuevos != null) {
+            for (let i = 0; i < solp.archivosCotizacionesNuevos.length; i++) {
+                let fileToUpload = solp.archivosCotizacionesNuevos[i];
+                payload.append("fileCotizaciones", fileToUpload, fileToUpload.name);
             }
         }
 
