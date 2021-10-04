@@ -394,9 +394,10 @@ namespace SustitucionMOAUtils.Services
 
                     respuestaGuardarSOLP.Errores = new List<string>();
 
-                    foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Codigo == "E"))
+                    foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Tipo == "E"))
                     {
-                        respuestaGuardarSOLP.Errores.Add(error.Mensaje);
+                        var mensaje = error.Mensaje.Trim().Substring(3);
+                        respuestaGuardarSOLP.Errores.Add(mensaje);
                     }
 
                     respuestaGuardarSOLP.IdEntidad = solp.Id.Value;

@@ -97,8 +97,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displaySAP: boolean;
     displayErrorSAP: boolean;
 
-    listadoErrores: string[];
-
+    listadoErrores: string[] = new Array<string>();
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -474,7 +473,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     guardarCambios(mostrarPreview = false, enviarSap = false, guardarPorPaso = false) {
         try {
 
-            if (guardarPorPaso = false) {
+            if (guardarPorPaso == false) {
                 this.blockUI.start('Guardando...');
                 this.spinnerComponent.showIt();
             }
@@ -499,7 +498,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         }
                     } else {
                         this.spinnerComponent.hideIt();
-                        if (guardarPorPaso = false) {
+                        if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
 

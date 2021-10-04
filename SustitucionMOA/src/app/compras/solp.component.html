@@ -227,19 +227,19 @@
     </p-footer>
 </p-dialog>
 
-
-<p-dialog [(visible)]="displayErrorSAP" [width]="400" modal="modal" appendTo="body" [draggable]="false"
-    [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}">
+<p-dialog [(visible)]="displayErrorSAP" [width]="400" [height]="400" modal="modal" appendTo="body" [draggable]="false"
+    [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'400px'}">
     <p-header class="headerModalError">
         ¡Ocurrió un error!
     </p-header>
-    <br>
-    Errores:
-    <!-- <div *ngFor="let error of listadoErrores; let indice = index" class="ui-helper-clearfix">
-            {error}
-        </div> -->
-    <br>
-    <br>
+    <div class="col-md-12 alinearTitulo">
+        Errores:
+        <div *ngFor="let error of listadoErrores; let indice = index"
+            class="col-md-12 alinearTitulo ui-helper-clearfix">
+            {{error}}
+        </div>
+        <br>
+    </div>
     <p-footer>
         <button type="button" pButton label="Descargar SOLP" class="btn btn-defaut btn-secondary botonesCompras"
             (click)="generarZipPliego(solpActual.id)"></button>

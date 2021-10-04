@@ -52,6 +52,7 @@ namespace SustitucionMOAWS.WSConsumers
             var respuesta = new CrearSolpConsumerMOAResponse();
 
             respuesta.NumeroSolp = EX_PREQ_NO;
+            respuesta.Resultado = result;
             respuesta.Errores = new List<CrearSolpConsumerMOAError>();
 
             foreach (var errorSAP in EX_RETURN)
@@ -367,8 +368,8 @@ namespace SustitucionMOAWS.WSConsumers
                     if (!solpSAP.IM_PRACCOUNTList.Any(x => 
                             x.PREQ_ITEM == preqItem &&
                             x.SERIAL_NO == serialNumber &&
-                            x.GL_ACCOUNT == subPosicion.CuentaMayorSap.CodigoSap &&//"0000607034" && 
-                            x.COSTCENTER == subPosicion.TipoImputacionSap.CodigoSap
+                            x.GL_ACCOUNT == subPosicion.CuentaMayorSap.Codigo&&//"0000607034" && 
+                            x.COSTCENTER == subPosicion.TipoImputacionSap.Codigo
                         ))
                     {
                         solpSAP.IM_PRACCOUNTList.Add(new ZMPES5690
@@ -376,8 +377,8 @@ namespace SustitucionMOAWS.WSConsumers
                             PREQ_ITEM = preqItem,
                             SERIAL_NO = serialNumber,
                             QUANTITY = subPosicion.Cantidad.Value,
-                            GL_ACCOUNT = subPosicion.CuentaMayorSap.CodigoSap, //"0000607034",
-                            COSTCENTER = posicion.Centro.CodigoSap,
+                            GL_ACCOUNT = subPosicion.CuentaMayorSap.Codigo, //"0000607034",
+                            COSTCENTER = subPosicion.TipoImputacionSap.Codigo,
                         });;
 
                         solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
@@ -430,6 +431,7 @@ namespace SustitucionMOAWS.WSConsumers
     {
         public string NumeroSolp { get; set; }
         public List<CrearSolpConsumerMOAError> Errores { get; set; }
+        public string Resultado { get; internal set; }
     }
 
     public class CrearSolpConsumerMOAError
