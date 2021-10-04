@@ -299,6 +299,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         // Paso 1
         this.solpActual.id = solp.Id;
         this.solpActual.tipoSolp = solp.TipoSolp && solp.TipoSolp.Codigo || '';
+        this.solpActual.nroSolp = solp.NroSolp || 0;
         this.solpActual.nombreDePedido = solp.NombreDeObra || '';
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
         this.solpActual.telefono = solp.Telefono || '';
@@ -385,6 +386,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.rubroCivil = x.CodigosProveedores.includes('CIVIL');
                 posActual.rubroIngenieria = x.CodigosProveedores.includes('INGENIERIA');
                 posActual.rubroMecanico = x.CodigosProveedores.includes('MECANICO');
+                posActual.estado = x.Estado;
 
                 posActual.proveedoresValidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial);
                 posActual.proveedoresNoSugeridos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial);

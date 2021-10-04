@@ -12,6 +12,7 @@ import { CommonResponse } from "../common/models/common-response";
 export class Solp extends CommonResponse {
     public id: number;
     public tipoSolp: string;
+    public nroSolp: number;
 
     //paso 1
     public nombreDePedido: string;
@@ -104,10 +105,32 @@ export class Solp extends CommonResponse {
     }
 
     eliminarPosicion() {
-        this.posiciones = this.posiciones.filter(x => x.id != this.posicionActual.id);
+        let posicionActualId = this.posicionActual.id;
+        if(this.nroSolp > 0) {
+            this.posiciones.forEach(x => {
+                if(x.id === posicionActualId) {
+                    x.estado = false;
+                }
+            });
+        } else {
+            this.posiciones = this.posiciones.filter(x => x.id != this.posicionActual.id);
+        }
+
         if (this.posiciones.length == 0) {
             this.agregarNuevaPosicion();
         }
+
+        this.ordenarPosiciones();
+        this.posicionActual = this.posiciones[0];
+    }
+
+    recuperarPosicion() {
+        let posicionActualId = this.posicionActual.id;
+        this.posiciones.forEach(x => {
+            if(x.id === posicionActualId) {
+                x.estado = true;
+            }
+        });
         this.ordenarPosiciones();
         this.posicionActual = this.posiciones[0];
     }
@@ -187,6 +210,8 @@ export class PosicionSolp {
     public proveedoresValidos: string[] = [];
     public proveedoresInvalidos: string[] = [];
     public proveedoresNoSugeridos: string[] = [];
+
+    public estado: boolean;
 
     // Moneda
     public selectMonedaCompras: any;
