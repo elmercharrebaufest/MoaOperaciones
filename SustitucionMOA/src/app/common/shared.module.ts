@@ -1,6 +1,6 @@
 ﻿import { CommonModule, WeekDay } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { StepsModule } from 'primeng/steps';
 
@@ -31,10 +31,12 @@ import { SpinnerModule } from 'primeng/spinner';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { NumericDirective } from './directive/numeric.directive';
 import { AutocompleteLocalidadComponent } from './shared-components/autocomplete-localidad/autocomplete-localidad.component'
+import {OverlayPanelModule} from 'primeng/overlaypanel';
 import { StepperComponent } from './view-child/stepper/stepper.component';
 import {ToggleButtonModule} from 'primeng/togglebutton';
 import { WeekdaySelectComponent } from './view-child/weekday-select/weekday-select.component';
-import { CustomFilterBoolean } from "./pipes/customFilterBoolean";
+import { CustomFilterBoolean } from "./pipes/customFilterBoolean";;
+import { BuscadorComponent } from './shared-components/buscador/buscador.component'
 
 @NgModule({
     imports: [CommonModule, FormsModule, Ng2AutoCompleteModule,
@@ -43,17 +45,19 @@ import { CustomFilterBoolean } from "./pipes/customFilterBoolean";
         MultiSelectModule,
         SpinnerModule,
         AutoCompleteModule,
-        ToggleButtonModule
+        OverlayPanelModule,
+        ToggleButtonModule,
+        ReactiveFormsModule
     ],
     declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         AutocompleteLocalidadComponent, SeleccionarProveedorComponent, InformeComercialComponent,
-        CartaPresentacionComponent, NumericDirective, StepperComponent, WeekdaySelectComponent,CustomFilterBoolean],
+        CartaPresentacionComponent, NumericDirective, StepperComponent, WeekdaySelectComponent,CustomFilterBoolean, BuscadorComponent],
     exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         CommonModule, FormsModule, InformeComercialComponent,
         CartaPresentacionComponent, SeleccionarProveedorComponent, Ng2AutoCompleteModule,
         AutocompleteLibModule,
         CommonModule, FormsModule, AutocompleteLocalidadComponent, NumericDirective,
-        StepperComponent, WeekdaySelectComponent,CustomFilterBoolean],
+        StepperComponent, WeekdaySelectComponent,CustomFilterBoolean, BuscadorComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
 export class SharedModule { }

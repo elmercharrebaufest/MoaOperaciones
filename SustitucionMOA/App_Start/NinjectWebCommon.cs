@@ -107,6 +107,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IActualizarBaseDeDatosSolpSapJob>().To(typeof(ActualizarBaseDeDatosSolpSapJob)).InScope(ctx => OperationContext.Current);
 
             kernel.Bind<ICampoSustentableService>().To(typeof(CampoSustentableService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IHomeService>().To(typeof(HomeService)).InScope(ctx => OperationContext.Current);
 
             kernel.Bind<ILogPesificacionService>().To(typeof(LogPesificacionService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IValidadorPesificacion>().To(typeof(ValidadorPesificacion)).InScope(ctx => OperationContext.Current);

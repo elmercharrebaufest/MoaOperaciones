@@ -12,6 +12,7 @@ import { MensajeModalComponent } from './../common/view-child/mensaje-modal/mens
 import { LoginGuard } from './../common/security/login-guard';
 import { ok } from 'assert';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { BuscadorComponent } from './../common/shared-components/buscador/buscador.component'
 declare var $: any;
 
 @Component({
@@ -63,8 +64,12 @@ export class LayoutComponent implements OnDestroy {
     textoTooltip2: string = '';
     seccionesVisitadas: string;
     auxiliarSeccionesVisitadas: string = '';
+    menuSmall: boolean = false;
 
     @ViewChild("myModal") modal: any;
+
+    @ViewChild("MenuSmallBuscador")
+    protected MenuSmallBuscador : BuscadorComponent;
 
     @ViewChild("mensajeModal")
     protected mensajeModalComponent: MensajeModalComponent;
@@ -375,6 +380,14 @@ export class LayoutComponent implements OnDestroy {
     cerrarSesion() {
         this.sessionDataService.logout();
         return false; // <- Prevent href del a
+    }
+
+    validarTamañoPantalla(){
+        var size = window.innerWidth;
+
+        if (size <= 640) {
+            this.menuSmall = true;
+        }
     }
 
     isSeccionVisitada(){

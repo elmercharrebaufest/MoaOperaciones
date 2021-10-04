@@ -204,8 +204,10 @@
         <div class="logo">
             <img src="/Content/images/header/logo.png" class="img-responsive" (click)="clickLogo()">
         </div>
+        <div *ngIf="!menuSmall" class="col-md-6" style="margin: auto; padding: unset;">
+            <app-buscador-inteligente></app-buscador-inteligente>
+        </div>
         <div class="User-wrapper">
-
             <div class="UserBar clearfix">
                 <nav>
                     <ul class="nav">
@@ -256,6 +258,9 @@
         <div id="menuSmall">
             <div class="logoSmall"> <a href="#Inicio" data-toggle="tab"> <img
                         src="../Content/images/header/logoSmall.png" class="img-responsive"> </a> </div>
+            <div *ngIf="menuSmall" class="col-xs-3 col-md-6" style="margin: auto; padding: unset;">
+                <app-buscador-inteligente #MenuSmallBuscador></app-buscador-inteligente>
+            </div>
             <nav>
                 <ul class="nav">
                     <li id="liHome">

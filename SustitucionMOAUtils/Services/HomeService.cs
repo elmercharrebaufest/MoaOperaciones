@@ -7,12 +7,22 @@ using SustitucionMOAModel.Models.ViewModel.Home;
 using SustitucionMOAModel.Models.WSMapMOA.CuentaCorriente;
 using SustitucionMOAModel.Models.WSMapMOA.Home;
 using SustitucionMOAModel.Models.WSMapMOA.Pago;
+using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class HomeService
+    public class HomeService : IHomeService
     {
+        protected readonly IRepositorio repositorio;
+        private ContratoService _contratoService = new ContratoService();
+
+        public HomeService(IRepositorio repositorio)
+        {
+            this.repositorio = repositorio;
+        }
+
         public string getTitulo()
         {
             return "Home";
@@ -77,6 +87,26 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 return data;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<BuscadorOption> getBusqueda(string palabraABuscar, string mailUsuario, string proveedor)
+        {
+            try
+            {
+                List<BuscadorOption> listaResultados = new List<BuscadorOption> {};
+                var detalleContratoResultado = _contratoService.getDetalleContrato(proveedor, palabraABuscar);
+
+                if (detalleContratoResultado != null)
+                {
+                    listaResultados.Add(new BuscadorOption { Id = 1, Link = "/contrato/detalle", Tipo = "Detalle de contrato", Value = palabraABuscar });
+                }         
+
+                return listaResultados;
             }
             catch (Exception e)
             {
