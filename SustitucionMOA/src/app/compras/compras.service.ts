@@ -51,6 +51,7 @@ export class ComprasService extends BaseService {
     }
 
     public GuardarSolp(solp: Solp) {
+
         let solpJson = JSON.stringify({
             Id: solp.id,
             TipoSolp: this.getObjetoCodigo(solp.tipoSolp),
@@ -87,6 +88,7 @@ export class ComprasService extends BaseService {
             ObservacionesCotizacion: solp.observacionesCotizacion,
 
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
+            Finalizar: solp.Finalizar,
             Posiciones: solp.posiciones.filter(x => x.textoGenerico).map(x => {
                 return {
                     Codigo: x.id,
@@ -194,6 +196,8 @@ export class ComprasService extends BaseService {
     }
 
     getObjetoCodigo(codigo, tabla = null) {
+        console.log("codigo:", codigo);
+        console.log("tabla:", tabla);
         if (codigo) {
             if (tabla) {
                 return { Codigo: codigo, Tabla: tabla }

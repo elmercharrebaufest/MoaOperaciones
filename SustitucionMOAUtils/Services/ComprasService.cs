@@ -48,13 +48,14 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
         private readonly ICrearSolpConsumerMOA crearSolpConsumerMOA;
+        private readonly IModificarSolpConsumerMOA modificarSolpConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
         public ComprasService(IRepositorio repositorio, IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
             IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA, IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA, IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA,
-            IObtenerSolpConsumerMOA obtenerSolpConsumerMOA, ICrearSolpConsumerMOA crearSolpConsumerMOA)
+            IObtenerSolpConsumerMOA obtenerSolpConsumerMOA, ICrearSolpConsumerMOA crearSolpConsumerMOA, IModificarSolpConsumerMOA modificarSolpConsumerMOA)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -63,9 +64,10 @@ namespace SustitucionMOAUtils.Services
             this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
             this.crearSolpConsumerMOA = crearSolpConsumerMOA;
+            this.modificarSolpConsumerMOA = modificarSolpConsumerMOA;
         }
 
-        public SolpDto GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
+        public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
         {
             Solp solpEntity = null;
             Pliego pliegoEntity = null;
@@ -389,16 +391,76 @@ namespace SustitucionMOAUtils.Services
                 Nombre = x.ObtenerNombre(x.Ruta)
             }).ToList();
 
+            var respuestaGuardarSOLP = new RespuestaGuardarSOLP
+            {
+                Solp = solp
+            };
 
-            //crearSolpConsumerMOA.Request(solpEntity);
+            respuestaGuardarSOLP.Solp.NroSolp = solpEntity.NroSolp?? "";
 
-            return solp;
+
+            if (solp.Finalizar)
+            {
+                if (string.IsNullOrEmpty(solpEntity.NroSolp))
+                {
+                    var resultadoCrearSolp = crearSolpConsumerMOA.Request(solpEntity);
+
+                    respuestaGuardarSOLP.Errores = new List<string>();
+
+                    foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Tipo == "E"))
+                    {
+                        var mensaje = error.Mensaje.Trim().Substring(3);
+                        respuestaGuardarSOLP.Errores.Add(mensaje);
+                    }
+
+                    respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
+
+                    if (respuestaGuardarSOLP.Errores.Count == 0)
+                    {
+                        respuestaGuardarSOLP.Mensaje = "OK";
+                        solpEntity.NroSolp = resultadoCrearSolp.NumeroSolp;
+                        respuestaGuardarSOLP.Solp.NroSolp = resultadoCrearSolp.NumeroSolp;
+
+                        var estadoCreadoCodigo = EstadoDocumentoSolp.Creado.Code();
+                        var estadoCreado = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoCreadoCodigo);
+                        solpEntity.EstadoDocumento_Id = estadoCreado.Id;
+
+                    }
+
+                    repositorio.GuardarCambios();
+                }
+                else
+                {
+                    var resultadoEditarSolp = modificarSolpConsumerMOA.Request(solpEntity);
+
+                    respuestaGuardarSOLP.Errores = new List<string>();
+
+                    foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
+                    {
+                        var mensaje = error.Mensaje.Trim().Substring(3);
+                        respuestaGuardarSOLP.Errores.Add(mensaje);
+                    }
+
+                    respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
+
+                    if (respuestaGuardarSOLP.Errores.Count == 0)
+                    {
+                        respuestaGuardarSOLP.Mensaje = "OK";
+                    }
+
+                    repositorio.GuardarCambios();
+                }
+            }
+
+            return respuestaGuardarSOLP;
         }
 
         private string ObtenerRutaArchivos(int solpId)
         {
             return string.Format("{0}/Solp_{1}", rutaArchivosCompras, solpId);
         }
+
+
 
         private void GuardarAdjuntosSolp(SolpDto solp, HttpFileCollectionBase files, Pliego pliego)
         {
@@ -727,7 +789,7 @@ namespace SustitucionMOAUtils.Services
             });
 
             solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, subposiciones.ToString());
-            
+
 
 
 
@@ -1034,14 +1096,14 @@ namespace SustitucionMOAUtils.Services
                 {
                     codigosPorTabla.Add(cod.Tabla, new List<string>());
                 }
-                
+
                 codigosPorTabla[cod.Tabla].Add(cod.CodigoSap);
             }
 
             foreach (var tabla in codigosPorTabla)
             {
                 var lista = repositorio.Listar<TablaSap>(x => x.Tabla == tabla.Key && tabla.Value.Contains(x.CodigoSap))
-                    .Select(x=> new TablaSapDto(x)).ToList();
+                    .Select(x => new TablaSapDto(x)).ToList();
                 ret.AddRange(lista);
             }
 
@@ -1052,7 +1114,7 @@ namespace SustitucionMOAUtils.Services
         {
             var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nrosolp);
 
-            if(solp != null)
+            if (solp != null)
             {
                 solp.FechaLiberacionSap = fechaLiberacion;
                 repositorio.GuardarCambios();
