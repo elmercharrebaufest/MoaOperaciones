@@ -51,7 +51,8 @@
                             <ng-template pTemplate="body" let-posicion let-rowIndex="rowIndex">
                                 <tr style="text-align: center;">
                                     <td style="width: 4%;">
-                                        <p-checkbox [(ngModel)]="posicion.eliminar" binary="true"></p-checkbox>
+                                        <img (click)="eliminarSubPosicionIndividual(rowIndex)" src="../../../../../Content/images/icons/trashRed.svg" alt="trashWhite" class="pointer" />
+                                        <!-- <p-checkbox [(ngModel)]="posicion.eliminar" binary="true"></p-checkbox> -->
                                     </td>
                                     <td style="width: 3%;">
                                         {{posicion.subPosicion}}

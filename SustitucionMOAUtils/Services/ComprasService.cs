@@ -538,7 +538,8 @@ namespace SustitucionMOAUtils.Services
                 EstadoSolpSapId = x.EstadoSolpSap_Id,
                 EstadoDocumentoId = x.EstadoDocumento_Id,
 
-                Posiciones = x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList()
+                Posiciones = x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList(),
+                PasoCompletado = x.PasoCompletado
             };
 
             return solpDevuelta;

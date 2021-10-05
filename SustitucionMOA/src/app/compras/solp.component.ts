@@ -352,6 +352,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         // Paso 5
         this.solpActual.selectClaseDocumento = solp.ClaseDocumento;
+        this.solpActual.pasoCompletado = solp.PasoCompletado;
 
         if(solp.Posiciones && solp.Posiciones.length > 0){
             let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
@@ -387,6 +388,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.rubroIngenieria = x.CodigosProveedores.includes('INGENIERIA');
                 posActual.rubroMecanico = x.CodigosProveedores.includes('MECANICO');
                 posActual.estado = x.Estado;
+                posActual.indice = x.numeroPosicion;
 
                 posActual.proveedoresValidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial);
                 posActual.proveedoresNoSugeridos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial);
@@ -424,6 +426,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
             });
 
             this.solpActual.setearPosicionPorDefecto();
+
+            this.pasos.forEach(item => {
+                if(item.Numero <= this.solpActual.pasoCompletado) {
+                    item.Completo = true;
+                    item.Iniciado = true;
+                }
+            });
+
+            this._pasoActual = this.pasos.find(x => x.Numero == 1);
+            
         }
 
     }

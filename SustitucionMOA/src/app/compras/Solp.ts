@@ -59,6 +59,7 @@ export class Solp extends CommonResponse {
 
     public posiciones: PosicionSolp[];
     public posicionActual: PosicionSolp;
+    public pasoCompletado: number;
 
     public get ultimaPosicion(): PosicionSolp{
         this.setearPosicionMasFutura();
@@ -212,6 +213,7 @@ export class PosicionSolp {
     public proveedoresNoSugeridos: string[] = [];
 
     public estado: boolean;
+    public indice: number;
 
     // Moneda
     public selectMonedaCompras: any;
