@@ -3,7 +3,8 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "> <strong>¿Qu&eacute; tipo de SOLP quiere iniciar?</strong></div>
+            <div class="col-xs-12 col-sm-10 "> <strong>¿Qu&eacute; tipo de SOLP {{solpActual.NroSolp || ''}} quiere
+                    iniciar?</strong></div>
         </div>
         <!--End Title-->
         <!-- Form-->
@@ -216,7 +217,7 @@
         ¡Felicitaciones!
     </p-header>
     <br>
-    Ha cargado con éxito una solicitud de pedido en SAP y se ha enviado para su liberación
+    Ha cargado con éxito la solicitud de pedido {{solpActual.NroSolp || ''}} en SAP y se ha enviado para su liberación
     <br>
     <br>
     <p-footer>

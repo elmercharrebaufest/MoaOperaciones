@@ -506,6 +506,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
 
                         this.solpActual.id = result.Solp.Id;
+                        this.solpActual.NroSolp = result.Solp.NroSolp;
                         this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.length);
                         this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = result.Solp.Adjuntos.map(x => {
                             return {

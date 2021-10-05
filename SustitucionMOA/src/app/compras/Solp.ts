@@ -12,6 +12,7 @@ import { CommonResponse } from "../common/models/common-response";
 export class Solp extends CommonResponse {
     public id: number;
     public tipoSolp: string;
+    public NroSolp: string;
 
     //paso 1
     public nombreDePedido: string;

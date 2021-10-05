@@ -388,6 +388,9 @@ namespace SustitucionMOAUtils.Services
                 Solp = solp
             };
 
+            respuestaGuardarSOLP.Solp.NroSolp = solpEntity.NroSolp?? "";
+
+
             if (solp.Finalizar)
             {
                 if (string.IsNullOrEmpty(solpEntity.NroSolp))
@@ -408,7 +411,12 @@ namespace SustitucionMOAUtils.Services
                     {
                         respuestaGuardarSOLP.Mensaje = "OK";
                         solpEntity.NroSolp = resultadoCrearSolp.NumeroSolp;
-                        solpEntity.EstadoDocumento_Id = (int)EstadoDocumentoSolp.Creado;
+                        respuestaGuardarSOLP.Solp.NroSolp = resultadoCrearSolp.NumeroSolp;
+
+                        var estadoCreadoCodigo = EstadoDocumentoSolp.Creado.Code();
+                        var estadoCreado = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoCreadoCodigo);
+                        solpEntity.EstadoDocumento_Id = estadoCreado.Id;
+
                     }
 
                     repositorio.GuardarCambios();
