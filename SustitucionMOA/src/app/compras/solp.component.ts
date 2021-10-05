@@ -472,6 +472,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
         });
 
         this.pasoActual = paso;
+
+        this.solpActual.pasoCompletado = this.solpActual.pasoCompletado > this.pasoActual.Numero 
+        ? this.solpActual.pasoCompletado
+        : this.pasoActual.Numero;
     }
 
     pasoAnterior() {

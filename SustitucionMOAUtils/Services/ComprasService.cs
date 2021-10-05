@@ -121,7 +121,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (solp.TipoSolp != null)
                     solpEntity.TipoSolp = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoSolp && x.Codigo == solp.TipoSolp.Codigo);
-
+                solpEntity.PasoCompletado = solp.PasoCompletado;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
@@ -240,6 +240,7 @@ namespace SustitucionMOAUtils.Services
                         posEntity.FechaLiberacion = pos.FechaLiberacion;
                         posEntity.NroNecesidad = pos.NroNecesidad;
                         posEntity.Estado = pos.Estado;
+                        posEntity.Indice = pos.Indice;
 
                         posEntity.CalleEntrega = pos.CalleEntrega;
                         posEntity.NombreEntrega = pos.NombreEntrega;
