@@ -475,7 +475,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             if (guardarPorPaso == false) {
                 this.blockUI.start('Guardando...');
-                this.spinnerComponent.showIt();
             }
 
             this.solpActual.Finalizar = enviarSap;
@@ -483,21 +482,20 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
-                        if (guardarPorPaso = false) {
+                        if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
                     } else if (result.error != undefined && result.error != "") {
                         this.floatMsgService.setErrorMsg(result.error);
-                        if (guardarPorPaso = false) {
+                        if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
-                        if (guardarPorPaso = false) {
+                        if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
                     } else {
-                        this.spinnerComponent.hideIt();
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
@@ -551,8 +549,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
-                    this.spinnerComponent.hideIt();
-                    if (guardarPorPaso = false) {
+                    if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
                 }
@@ -560,8 +557,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
-            this.spinnerComponent.hideIt();
-            if (guardarPorPaso = false) {
+            if (guardarPorPaso == false) {
                 this.blockUI.stop();
             }
             return false; //<-- Prevent Refresh

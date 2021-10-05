@@ -48,13 +48,14 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
         private readonly ICrearSolpConsumerMOA crearSolpConsumerMOA;
+        private readonly IModificarSolpConsumerMOA modificarSolpConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
         public ComprasService(IRepositorio repositorio, IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
             IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA, IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA, IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA,
-            IObtenerSolpConsumerMOA obtenerSolpConsumerMOA, ICrearSolpConsumerMOA crearSolpConsumerMOA)
+            IObtenerSolpConsumerMOA obtenerSolpConsumerMOA, ICrearSolpConsumerMOA crearSolpConsumerMOA, IModificarSolpConsumerMOA modificarSolpConsumerMOA)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -63,6 +64,7 @@ namespace SustitucionMOAUtils.Services
             this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
             this.crearSolpConsumerMOA = crearSolpConsumerMOA;
+            this.modificarSolpConsumerMOA = modificarSolpConsumerMOA;
         }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -388,7 +390,7 @@ namespace SustitucionMOAUtils.Services
 
             if (solp.Finalizar)
             {
-                if (string.IsNullOrEmpty(solp.NroSolp))
+                if (string.IsNullOrEmpty(solpEntity.NroSolp))
                 {
                     var resultadoCrearSolp = crearSolpConsumerMOA.Request(solpEntity);
 
@@ -406,12 +408,31 @@ namespace SustitucionMOAUtils.Services
                     {
                         respuestaGuardarSOLP.Mensaje = "OK";
                         solpEntity.NroSolp = resultadoCrearSolp.NumeroSolp;
+                        solpEntity.EstadoDocumento_Id = (int)EstadoDocumentoSolp.Creado;
                     }
 
                     repositorio.GuardarCambios();
                 }
                 else
                 {
+                    var resultadoEditarSolp = modificarSolpConsumerMOA.Request(solpEntity);
+
+                    respuestaGuardarSOLP.Errores = new List<string>();
+
+                    foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
+                    {
+                        var mensaje = error.Mensaje.Trim().Substring(3);
+                        respuestaGuardarSOLP.Errores.Add(mensaje);
+                    }
+
+                    respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
+
+                    if (respuestaGuardarSOLP.Errores.Count == 0)
+                    {
+                        respuestaGuardarSOLP.Mensaje = "OK";
+                    }
+
+                    repositorio.GuardarCambios();
                 }
             }
 

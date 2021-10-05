@@ -124,7 +124,7 @@ namespace SustitucionMOAWS.WSConsumers
                 numeroPaquete = $"{numeroPosicion:0000000000}";
                 serialNumber = $"{numeroPosicion:00}";
 
-                outlineNumber = $"{numeroPosicion:0000000000}";
+                
 
                 //solpSAP.IM_PRHEADERTEXTList = new List<BAPIMEREQHEADTEXT>()
                 //{
@@ -281,8 +281,9 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     numeroSubPosicion++;
                     serviceLineNumber = $"{numeroSubPosicion:000000000}0";
-                   
-                    serialNumberItem = $"{numeroSubPosicion:00}";
+                    outlineNumber = $"{numeroSubPosicion:0000000000}";
+
+                    serialNumberItem = serialNumber;
 
                     //SUBPOSICION
                     var IM_SERVICELINE = new ZMPES5780();
