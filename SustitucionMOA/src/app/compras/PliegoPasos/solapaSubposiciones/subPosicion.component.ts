@@ -29,8 +29,8 @@ export class SubPosicionComponent extends ListBaseComponent {
     @Input('locale')
     protected locale: any;
 
-    @Input('combos') 
-    protected combos:any;
+    @Input('combos')
+    protected combos: any;
 
     tituloColumnaTipoDeImputacion: string;
     listadoPosicionActul = Array<SubPosicionViewModel>();
@@ -41,25 +41,25 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     tablaAFiltrar: any;
     autocomplete: any[];
-    autocompletePaste: {Tabla:string, CodigoSap:string}[] = [];
+    autocompletePaste: { Tabla: string, CodigoSap: string }[] = [];
 
     // array de columnas en la grilla
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
     columnasGrilla: any = [
-            { nombre: "codigoServicio", tipo: "codigoSap", tabla:"CodigoServicioSap" }, 
-            { nombre: "tareaSubcontratar", tipo: "tarea" }, 
-            { nombre: "cuentaTd", tipo: "numerico" }, 
-            { nombre: "unidadMedida", tipo: "combo" }, 
-            { nombre: "precioBruto", tipo: "decimal" }, 
-            { nombre: "cuentaMayor", tipo: "codigoSap", tabla:"CuentasSolpSap" }, 
-            { nombre: "tipoImputacion", tipo: "codigoSap" }];
+        { nombre: "codigoServicio", tipo: "codigoSap", tabla: "CodigoServicioSap" },
+        { nombre: "tareaSubcontratar", tipo: "tarea" },
+        { nombre: "cuentaTd", tipo: "numerico" },
+        { nombre: "unidadMedida", tipo: "combo" },
+        { nombre: "precioBruto", tipo: "decimal" },
+        { nombre: "cuentaMayor", tipo: "codigoSap", tabla: "CuentasSolpSap" },
+        { nombre: "tipoImputacion", tipo: "codigoSap" }];
 
     //variable para verificar si la posicion no fue dada de alta con los datos minimos
     posicionInvalida: boolean = false;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router,  private confirmationService: ConfirmationService
+        protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router, private confirmationService: ConfirmationService
     ) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
@@ -76,7 +76,7 @@ export class SubPosicionComponent extends ListBaseComponent {
         this.listadoPosicionActul = this.model.posicionActual.listadoSubPosiciones;
         // this.model.posicionActual = primeraPosicion;
 
-        if(this.listadoPosicionActul.length == 0){
+        if (this.listadoPosicionActul.length == 0) {
             this.nuevaPosicion(null);
         }
 
@@ -123,13 +123,13 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
     nuevaPosicion(rowSeleccionada: any): void {
-        if(rowSeleccionada){
+        if (rowSeleccionada) {
             let ultimoRegistroEnListado = this.listadoPosicionActul[this.listadoPosicionActul.length - 1]
             if (ultimoRegistroEnListado.id == rowSeleccionada.data.id) {
                 ultimoRegistroEnListado.seleccionado = true;
                 this.listadoPosicionActul.push(new SubPosicionViewModel(ultimoRegistroEnListado.subPosicion + 1));
             }
-        }else{
+        } else {
             this.listadoPosicionActul.push(new SubPosicionViewModel(1));
         }
     }
@@ -171,7 +171,7 @@ export class SubPosicionComponent extends ListBaseComponent {
                     this.eliminarSubposiciones();                  
             },
             reject: () => {
-                
+
             }
         });
     }
@@ -212,26 +212,26 @@ export class SubPosicionComponent extends ListBaseComponent {
             esEdicion = true;
         } else {
             fila = new SubPosicionViewModel(this.listadoPosicionActul.length);
-        }       
+        }
 
         for (let index = 0; index < columnas.length && index < this.columnasGrilla.length; index++) {
             let columna = this.columnasGrilla[indexColumn + index]
             switch (columna.tipo) {
                 case "numerico":
                     let valor = Number.parseInt(columnas[index]);
-                    fila[columna.nombre] = Number.isNaN(valor) ?  undefined:valor;
+                    fila[columna.nombre] = Number.isNaN(valor) ? undefined : valor;
                     break;
                 case "decimal":
                     let valorDecimal = Number.parseFloat(columnas[index]);
-                    fila[columna.nombre] = Number.isNaN(valorDecimal) ?  undefined:valorDecimal;
+                    fila[columna.nombre] = Number.isNaN(valorDecimal) ? undefined : valorDecimal;
                     break;
                 case "combo":
-                    let seleccion = this.combos.Unidades.find( x => x.Codigo.toLowerCase() == columnas[index].toLowerCase()) || {};
+                    let seleccion = this.combos.Unidades.find(x => x.Codigo.toLowerCase() == columnas[index].toLowerCase()) || {};
                     fila.unidadSeleccionada = seleccion;
                     break;
                 case "codigoSap":
                     fila[columna.nombre] = { CodigoSap: columnas[index] }
-       
+
                     this.autocompletePaste.push({
                         CodigoSap: columnas[index],
                         Tabla: columna.tabla || this.tablaAFiltrar
@@ -260,19 +260,19 @@ export class SubPosicionComponent extends ListBaseComponent {
         });
     }
 
-    buscarCombo(event, type){
+    buscarCombo(event, type) {
         switch (type) {
             case 'UNIDAD MEDIDA':
-                this.unidades = this.combos.Unidades.filter(x=> x.Descripcion.toLowerCase().includes(event.query.toLowerCase()));
-                break;   
-                
+                this.unidades = this.combos.Unidades.filter(x => x.Descripcion.toLowerCase().includes(event.query.toLowerCase()));
+                break;
+
             default:
                 break;
         }
     }
 
-    completarCodigosSapOnPaste(){
-        try{
+    completarCodigosSapOnPaste() {
+        try {
             this.subscription = this.service.obtenerDatosPorCodigosSap(this.autocompletePaste).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
@@ -281,21 +281,21 @@ export class SubPosicionComponent extends ListBaseComponent {
                         this.floatMsgService.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
-                    } else { 
-                        if(result){
+                    } else {
+                        if (result) {
                             this.listadoPosicionActul.forEach(c => {
-                                if(c.codigoServicio && c.codigoServicio.CodigoSap && !c.codigoServicio.Codigo){
-                                    c.codigoServicio = result.find(x=>x.Tabla == 'CodigoServicioSap' && x.CodigoSap == c.codigoServicio.CodigoSap);
-                                    c.tareaSubcontratarObj = {...c.codigoServicio};
+                                if (c.codigoServicio && c.codigoServicio.CodigoSap && !c.codigoServicio.Codigo) {
+                                    c.codigoServicio = result.find(x => x.Tabla == 'CodigoServicioSap' && x.CodigoSap == c.codigoServicio.CodigoSap);
+                                    c.tareaSubcontratarObj = { ...c.codigoServicio };
                                     c.tareaSubcontratar = c.codigoServicio.Descripcion;
                                 }
 
-                                if(c.cuentaMayor && c.cuentaMayor.CodigoSap && !c.cuentaMayor.Codigo){
-                                    c.cuentaMayor = result.find(x=>x.Tabla == 'CuentasSolpSap' && x.CodigoSap == c.cuentaMayor.CodigoSap);
+                                if (c.cuentaMayor && c.cuentaMayor.CodigoSap && !c.cuentaMayor.Codigo) {
+                                    c.cuentaMayor = result.find(x => x.Tabla == 'CuentasSolpSap' && x.CodigoSap == c.cuentaMayor.CodigoSap);
                                 }
 
-                                if(c.tipoImputacion && c.tipoImputacion.CodigoSap && !c.tipoImputacion.Codigo){
-                                    c.tipoImputacion = result.find(x=>x.Tabla == this.tablaAFiltrar && x.CodigoSap == c.tipoImputacion.CodigoSap);
+                                if (c.tipoImputacion && c.tipoImputacion.CodigoSap && !c.tipoImputacion.Codigo) {
+                                    c.tipoImputacion = result.find(x => x.Tabla == this.tablaAFiltrar && x.CodigoSap == c.tipoImputacion.CodigoSap);
                                 }
                             });
                         }
@@ -317,8 +317,8 @@ export class SubPosicionComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    autocompleteSap(event, tablaAFiltrar, soloDescripcion = false){
-        try{
+    autocompleteSap(event, tablaAFiltrar, soloDescripcion = false) {
+        try {
             this.subscription = this.service.autocompleteSap(tablaAFiltrar || this.tablaAFiltrar, event.query.toLowerCase()).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
@@ -327,8 +327,8 @@ export class SubPosicionComponent extends ListBaseComponent {
                         this.floatMsgService.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
-                    } else { 
-                        this.autocomplete = soloDescripcion ? result.map(x=> x.Descripcion.trim()) : result;
+                    } else {
+                        this.autocomplete = soloDescripcion ? result.map(x => x.Descripcion.trim()) : result;
                     }
                 },
                 error => {
@@ -344,24 +344,27 @@ export class SubPosicionComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    onSelectServicio(posicion:SubPosicionViewModel, dt){
+    onSelectServicio(posicion: SubPosicionViewModel, dt) {
+
+        console.log(posicion);
+        console.log(dt);
         posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
-        posicion.tareaSubcontratarObj = {...posicion.codigoServicio};
+        posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
         this.endEditCell(dt);
     }
 
-    onSelectTarea(posicion:SubPosicionViewModel, dt){
+    onSelectTarea(posicion: SubPosicionViewModel, dt) {
         posicion.tareaSubcontratar = posicion.tareaSubcontratarObj.Descripcion;
-        posicion.codigoServicio = {...posicion.tareaSubcontratarObj};
+        posicion.codigoServicio = { ...posicion.tareaSubcontratarObj };
         this.endEditCell(dt);
     }
 
-    onBlueTarea(event, posicion:SubPosicionViewModel){
+    onBlueTarea(event, posicion: SubPosicionViewModel) {
         posicion.tareaSubcontratar = event.target.value;
-        posicion.tareaSubcontratarObj = {Descripcion:event.target.value}
+        posicion.tareaSubcontratarObj = { Descripcion: event.target.value }
     }
 
-    endEditCell(dt){
+    endEditCell(dt) {
         dt.closeCellEdit();
     }
 }

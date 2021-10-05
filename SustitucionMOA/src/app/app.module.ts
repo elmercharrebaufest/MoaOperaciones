@@ -9,11 +9,14 @@ import { HttpClientModule } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AutocompleteLibModule } from "angular-ng-autocomplete";
+
 import { ReCaptchaModule } from "angular2-recaptcha";
 import { Ng2AutoCompleteModule } from "ng2-auto-complete";
 import { SelectModule } from "ng2-select";
 import { ModalModule } from "ngx-modal";
 import { NgxPaginationModule } from "ngx-pagination";
+
+
 import { AduanaService } from "./aduana/aduana.service";
 import { AltasComponent } from "./alta-proveedores/altas/altas.component";
 import { EmpresaGranosComponent } from "./alta-proveedores/empresa-granos/empresa-granos.component";
@@ -23,6 +26,7 @@ import { EstadoSolicitudComponent } from "./alta-proveedores/estado-solicitud/es
 import { EstadoSolicitudService } from "./alta-proveedores/estado-solicitud/estado-solicitud.service";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+
 import { LoginGuard } from "./common/security/login-guard";
 import { DataService } from "./common/services/DataService";
 import { FloatMsgService } from "./common/services/FloatMsgService";

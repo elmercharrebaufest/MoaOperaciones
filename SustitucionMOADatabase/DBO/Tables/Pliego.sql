@@ -23,9 +23,9 @@
 	[JornadaLaboralDias] [nvarchar](max) NULL,
 	[JornadaLaboralHorasDesde] [datetime2] NULL,
 	[JornadaLaboralHorasHasta] [datetime2] NULL,
-
-[TieneAndamio] BIT NULL, 
+	[TieneAndamio] BIT NULL, 
     [TieneCondicionesGenerales] BIT NULL, 
+	[CargaCotizacionesConArchivo] BIT NOT NULL,
     CONSTRAINT [PK_dbo.Pliego] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

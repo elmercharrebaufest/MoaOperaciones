@@ -51,7 +51,6 @@ export class ComprasService extends BaseService {
     }
 
     public GuardarSolp(solp: Solp) {
-        console.log('solp 1', solp);
         let solpJson = JSON.stringify({
             Id: solp.id,
             TipoSolp: this.getObjetoCodigo(solp.tipoSolp),
@@ -75,13 +74,20 @@ export class ComprasService extends BaseService {
             ObservacionesGeneracion: solp.observacionesGeneracion,
             EspecificacionesTecnicas: solp.especificacionesViewModel.observaciones,
             TieneCondicionesGenerales: solp.tieneCondicionesGenerales,
+
+            Adjuntos:   solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x => { return { Id: x.id } })
+                .concat(solp.archivosCotizacionesGuardados.map(x => { return { Id: x.id } })),
+
+            CargaCotizacionesConArchivo: solp.CargaCotizacionesConArchivo,
+
             DiasEjecucion: solp.ejecucion,
-            ObservacionesCotizacion: solp.observacionesCotizacion,
             JornadaLaboral: solp.jornadaLaboralDias.filter(x => x.selected).map(x => x.weekDay),
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
-            Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x => { return { Id: x.id } }),
+            ObservacionesCotizacion: solp.observacionesCotizacion,
+
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
+            Finalizar: solp.Finalizar,
             Posiciones: solp.posiciones.filter(x => x.textoGenerico).map(x => {
                 return {
                     Codigo: x.id,
@@ -144,7 +150,14 @@ export class ComprasService extends BaseService {
         if (archivos != null) {
             for (let i = 0; i < archivos.length; i++) {
                 let fileToUpload = archivos[i];
-                payload.append("file", fileToUpload, fileToUpload.name);
+                payload.append("fileEspecificaciones", fileToUpload, fileToUpload.name);
+            }
+        }
+
+        if (solp.archivosCotizacionesNuevos != null) {
+            for (let i = 0; i < solp.archivosCotizacionesNuevos.length; i++) {
+                let fileToUpload = solp.archivosCotizacionesNuevos[i];
+                payload.append("fileCotizaciones", fileToUpload, fileToUpload.name);
             }
         }
 
@@ -183,6 +196,8 @@ export class ComprasService extends BaseService {
     }
 
     getObjetoCodigo(codigo, tabla = null) {
+        console.log("codigo:", codigo);
+        console.log("tabla:", tabla);
         if (codigo) {
             if (tabla) {
                 return { Codigo: codigo, Tabla: tabla }
