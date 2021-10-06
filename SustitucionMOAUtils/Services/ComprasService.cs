@@ -116,7 +116,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(solpEntity);
             }
 
-            solpEntity.NroSolp = solp.NroSolp;
+            //solpEntity.NroSolp = solp.NroSolp;
 
             pliegoEntity.RevisadoPor = solp.RevisadoPor;
 
@@ -125,7 +125,7 @@ namespace SustitucionMOAUtils.Services
                 if (solp.ClaseDocumento != null)
                     solpEntity.ClaseDocumento = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.ClaseDocumento && x.Codigo == solp.ClaseDocumento.Codigo);
 
-                solpEntity.NroSolp = solp.NroSolp;
+                //solpEntity.NroSolp = solp.NroSolp;
 
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
