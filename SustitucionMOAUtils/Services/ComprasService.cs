@@ -116,9 +116,9 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(solpEntity);
             }
 
-            //solpEntity.NroSolp = solp.NroSolp;
+            solpEntity.NroSolp = solp.NroSolp;
 
-            //pliegoEntity.RevisadoPor = solp.RevisadoPor;
+            pliegoEntity.RevisadoPor = solp.RevisadoPor;
 
             if (solpEntity != null)
             {
@@ -767,7 +767,6 @@ namespace SustitucionMOAUtils.Services
 
 
                     PageEventHandler.Title = "Revisado por: " + revisadoPor;
-                    //solpValores.Add(SolpTemplateKeys.REVISADO_POR, solp.RevisadoPor);
                     PageEventHandler.HeaderFont = FontFactory.GetFont(BaseFont.COURIER_BOLD, 10, Font.BOLD);
                     //PageEventHandler.HeaderLeft = "Group";
                     //PageEventHandler.HeaderRight = "1";
