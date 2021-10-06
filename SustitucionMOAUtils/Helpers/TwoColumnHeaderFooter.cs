@@ -68,41 +68,42 @@ namespace SustitucionMOAUtils.Helpers
             }
         }
 
-        //public override void OnStartPage(PdfWriter writer, Document document)
-        //{
-        //    base.OnStartPage(writer, document);
-        //    Rectangle pageSize = document.PageSize;
-        //    if (Title != string.Empty)
-        //    {
-        //        cb.BeginText();
-        //        cb.SetFontAndSize(bf, 15);
-        //        cb.SetRGBColorFill(0, 0, 0);
-        //        cb.SetTextMatrix(pageSize.GetLeft(40), pageSize.GetTop(40));
-        //        cb.ShowText(Title);
-        //        cb.EndText();
-        //    }
-        //    if (HeaderLeft + HeaderRight != string.Empty)
-        //    {
-        //        //PdfPTable HeaderTable = new PdfPTable(2);
-        //        //HeaderTable.DefaultCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-        //        //HeaderTable.TotalWidth = pageSize.Width - 80;
-        //        //HeaderTable.SetWidthPercentage(new float[] { 45, 45 }, pageSize);
+        public override void OnStartPage(PdfWriter writer, Document document)
+        {
+            base.OnStartPage(writer, document);
+            Rectangle pageSize = document.PageSize;
+            if (Title != string.Empty)
+            {
+                cb.BeginText();
+                cb.SetFontAndSize(bf, 12);
+                cb.SetRGBColorFill(0, 0, 0);
+                cb.SetTextMatrix(pageSize.GetRight(200), pageSize.GetTop(40));
+                cb.ShowText(Title);
+                cb.EndText();
+            }
+            if (HeaderLeft + HeaderRight != string.Empty)
+            {
+                PdfPTable HeaderTable = new PdfPTable(2);
+                HeaderTable.DefaultCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                HeaderTable.TotalWidth = pageSize.Width - 40;
+                //HeaderTable.SetWidthPercentage(new float[] { 45, 45 }, pageSize);
 
-        //        PdfPCell HeaderLeftCell = new PdfPCell(new Phrase(8, HeaderLeft, HeaderFont));
-        //        HeaderLeftCell.Padding = 5;
-        //        HeaderLeftCell.PaddingBottom = 8;
-        //        HeaderLeftCell.BorderWidthRight = 0;
-        //        //HeaderTable.AddCell(HeaderLeftCell);
-        //        PdfPCell HeaderRightCell = new PdfPCell(new Phrase(8, HeaderRight, HeaderFont));
-        //        HeaderRightCell.HorizontalAlignment = PdfPCell.ALIGN_RIGHT;
-        //        HeaderRightCell.Padding = 5;
-        //        HeaderRightCell.PaddingBottom = 8;
-        //        HeaderRightCell.BorderWidthLeft = 0;
-        //        //HeaderTable.AddCell(HeaderRightCell);
-        //        cb.SetRGBColorFill(0, 0, 0);
-        //        //HeaderTable.WriteSelectedRows(0, -1, pageSize.GetLeft(40), pageSize.GetTop(50), cb);
-        //    }
-        //}
+                PdfPCell HeaderLeftCell = new PdfPCell(new Phrase(8, HeaderLeft, HeaderFont));
+                HeaderLeftCell.Padding = 5;
+                HeaderLeftCell.PaddingBottom = 8;
+                HeaderLeftCell.BorderWidthRight = 0;
+                HeaderTable.AddCell(HeaderLeftCell);
+                PdfPCell HeaderRightCell = new PdfPCell(new Phrase(8, HeaderRight, HeaderFont));
+                HeaderRightCell.HorizontalAlignment = PdfPCell.ALIGN_LEFT;
+                HeaderRightCell.Padding = 5;
+                HeaderRightCell.PaddingBottom = 8;
+                HeaderRightCell.BorderWidthLeft = 0;
+                //HeaderTable.AddCell(HeaderRightCell);
+                cb.SetRGBColorFill(0, 0, 0);
+                //HeaderTable.WriteSelectedRows(0, -1, pageSize.GetLeft(40), pageSize.GetTop(50), cb);
+            }
+        }
+
         public override void OnEndPage(PdfWriter writer, Document document)
         {
             cb = writer.DirectContent;

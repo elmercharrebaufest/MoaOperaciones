@@ -88,6 +88,8 @@ namespace SustitucionMOAUtils.Services
                     solpEntity.UsuarioModificacion_Id = solp.UsuarioActual.Id;
                     solpEntity.FechaModificacion = DateTime.Now;
 
+                    //solpEntity.NroSolp = solp.NroSolp;
+
                     pliegoEntity = solpEntity.Pliego;
                 }
             }
@@ -97,6 +99,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     UsuarioCreacion_Id = solp.UsuarioActual.Id,
                     FechaCreacion = DateTime.Now
+
+
                 };
 
                 var estadoIncompletoCodigo = EstadoDocumentoSolp.Incompleto.Code();
@@ -107,15 +111,21 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.Posiciones = new List<SolpPosicion>();
                 pliegoEntity = solpEntity.Pliego;
 
+                solpEntity.NroSolp = solp.NroSolp;
+
                 repositorio.Agregar(solpEntity);
             }
 
-            pliegoEntity.RevisadoPor = solp.RevisadoPor;
+            //solpEntity.NroSolp = solp.NroSolp;
+
+            //pliegoEntity.RevisadoPor = solp.RevisadoPor;
 
             if (solpEntity != null)
             {
                 if (solp.ClaseDocumento != null)
                     solpEntity.ClaseDocumento = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.ClaseDocumento && x.Codigo == solp.ClaseDocumento.Codigo);
+
+                solpEntity.NroSolp = solp.NroSolp;
 
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
@@ -700,7 +710,7 @@ namespace SustitucionMOAUtils.Services
 
             templateString = CombineTemplateValues(templateString, solpValores);
 
-            return ConvertHtmlToPdf(templateString, templateCssString);
+            return ConvertHtmlToPdf(templateString, templateCssString, solp.RevisadoPor);
         }
 
         private string getDia(DayOfWeek dia)
@@ -738,7 +748,7 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        private byte[] ConvertHtmlToPdf(string xHtml, string css)
+        private byte[] ConvertHtmlToPdf(string xHtml, string css, string revisadoPor = "")
         {
             using (var stream = new MemoryStream())
             {
@@ -754,15 +764,18 @@ namespace SustitucionMOAUtils.Services
                     TwoColumnHeaderFooter PageEventHandler = new TwoColumnHeaderFooter();
                     PdfWriter.PageEvent = PageEventHandler;
 
-                    //PageEventHandler.Title = "Solp";
+
+
+                    PageEventHandler.Title = "Revisado por: " + revisadoPor;
+                    //solpValores.Add(SolpTemplateKeys.REVISADO_POR, solp.RevisadoPor);
                     PageEventHandler.HeaderFont = FontFactory.GetFont(BaseFont.COURIER_BOLD, 10, Font.BOLD);
                     //PageEventHandler.HeaderLeft = "Group";
                     //PageEventHandler.HeaderRight = "1";
 
                     //for (int i = 1; i <= 2; i++)
                     //{
-                    //    // Define the page header
-                    //    PageEventHandler.HeaderRight = i.ToString();
+                    //     //Define the page header
+                    //    PageEventHandler.HeaderLeft = i.ToString();
                     //    if (i != 1)
                     //    {
                     //        document.NewPage();
@@ -809,12 +822,12 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public void AddOutline(PdfWriter writer, string Title, float Position)
-        {
-            PdfDestination destination = new PdfDestination(PdfDestination.FITH, Position);
-            PdfOutline outline = new PdfOutline(writer.DirectContent.RootOutline, destination, Title);
-            writer.DirectContent.AddOutline(outline, "Name = " + Title);
-        }
+        //public void AddOutline(PdfWriter writer, string Title, float Position)
+        //{
+        //    PdfDestination destination = new PdfDestination(PdfDestination.FITH, Position);
+        //    PdfOutline outline = new PdfOutline(writer.DirectContent.RootOutline, destination, Title);
+        //    writer.DirectContent.AddOutline(outline, "Name = " + Title);
+        //}
 
         public string GenerarZipPliego(int idSolp, string pathBase)
         {
