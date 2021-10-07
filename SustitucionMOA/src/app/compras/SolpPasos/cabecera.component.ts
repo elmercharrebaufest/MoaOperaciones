@@ -248,7 +248,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         });
     }
 
-
+    recuperarPosicion()
+    {
+        this.model.recuperarPosicion()
+    }
+    
     buscarCombo(event, type) {
         switch (type) {
             case 'CENTRO':

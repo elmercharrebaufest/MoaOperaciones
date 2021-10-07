@@ -261,6 +261,7 @@ export class PosicionSolp {
         this.listadoSubPosiciones.push(new SubPosicionViewModel(1));
         this.servicio = 'SERVICIO';
         this.selectSolicitanteCompras = fiscalContrato;
+        this.estado = true;
 
         if (posicionADuplicar) {
             //this.campo = posicionADuplicar.campo
