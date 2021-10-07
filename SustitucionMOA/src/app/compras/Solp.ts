@@ -97,6 +97,8 @@ export class Solp extends CommonResponse {
     // // dashboard
     // public selectEstadoSolp: any;
     // public fechaSolp: Date;
+    
+    public revisadoPor: string;
 
 
     constructor() {

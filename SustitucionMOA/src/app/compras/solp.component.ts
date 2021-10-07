@@ -369,6 +369,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
         }
 
+        //pop up finalizar
+        this.solpActual.revisadoPor = solp.RevisadoPor || '';
+
         // Paso 5
         this.solpActual.selectClaseDocumento = solp.ClaseDocumento;
         this.solpActual.pasoCompletado = solp.PasoCompletado;

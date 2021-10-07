@@ -114,7 +114,14 @@
     <p-header class="headerModal">
         ¡Último paso!
     </p-header>
-
+    <div class="col-md-12 row myRow alinearTitulo margenInput">
+        <div class="col-md-12 titulosModal" style="margin-right: 1em;">
+            Revisado por: 
+        </div>
+        <div class="col-md-5" style="margin-right: 1em; width: 37%;;">
+            <input type="text" pInputText [(ngModel)]="solpActual.revisadoPor" class="styled-select inputComprasFinalizar" placeholder="">
+        </div>
+    </div>
     <div class="margenInput">
         <p><b>¿Desea editar las fechas?</b></p>
     </div>
@@ -176,6 +183,7 @@
             </p-panel>
         </div>
     </div>
+    
     <p-footer>
         <button type="button" pButton label="CANCELAR" class="ui-button-danger botonModal" (click)="cancelarFinalizar()"></button>
         <button type="button" pButton label="FINALIZAR" class="ui-button-success botonModal" (click)="finalizar()"></button>

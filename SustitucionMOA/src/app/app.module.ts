@@ -14,6 +14,7 @@ import { ReCaptchaModule } from "angular2-recaptcha";
 import { Ng2AutoCompleteModule } from "ng2-auto-complete";
 import { SelectModule } from "ng2-select";
 import { ModalModule } from "ngx-modal";
+
 import { NgxPaginationModule } from "ngx-pagination";
 
 

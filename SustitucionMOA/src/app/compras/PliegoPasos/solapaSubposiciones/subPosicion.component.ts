@@ -42,6 +42,7 @@ export class SubPosicionComponent extends ListBaseComponent {
     tablaAFiltrar: any;
     autocomplete: any[];
     autocompletePaste: { Tabla: string, CodigoSap: string }[] = [];
+    arraryErrores: any = new Array<{ id: number, text: string }>();
 
     // array de columnas en la grilla
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
@@ -65,14 +66,79 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     }
 
+    camposObligatorios: any[] = [
+        { campo: 'codigoServicio', esObligatorio: false, esFijo: true },
+        { campo: 'tareaSubcontratar', esObligatorio: false, esFijo: true },
+        { campo: 'cuentaTd', esObligatorio: true, esFijo: false },
+        { campo: 'unidadMedida', esObligatorio: true, esFijo: false },
+        { campo: 'precioBruto', esObligatorio: false, esFijo: true },
+        { campo: 'cuentaMayor', esObligatorio: false, esFijo: true },
+        { campo: 'tipoImputacion', esObligatorio: false, esFijo: true },
+        { campo: 'servicio', esObligatorio: true, esFijo: true },
+        { campo: 'centroDeCosto', esObligatorio: false, esFijo: true },
+        { campo: 'ordenDeOt', esObligatorio: false, esFijo: true },
+        { campo: 'ordenDeInversion', esObligatorio: false, esFijo: true },
+        { campo: 'siniestroBeneficio', esObligatorio: false, esFijo: true },
+        { campo: 'tipoImputacion', esObligatorio: true, esFijo: true },
+        { campo: 'textoGenerico', esObligatorio: true, esFijo: true },
+        { campo: 'fechaEntregaServicio', esObligatorio: true, esFijo: false },
+        { campo: 'fechaDeLiberacion', esObligatorio: false, esFijo: false },
+        { campo: 'plazoDeEntrega', esObligatorio: true, esFijo: true },
+        { campo: 'concluido', esObligatorio: false, esFijo: true },
+        { campo: 'indiceFijacion', esObligatorio: false, esFijo: true },
+        { campo: 'selectCentroEntrega', esObligatorio: false, esFijo: false },
+        { campo: 'nombreEntrega', esObligatorio: false, esFijo: true },
+        { campo: 'codigoPostalEntrega', esObligatorio: false, esFijo: true },
+        { campo: 'selectAlmacenEntrega', esObligatorio: false, esFijo: false },
+        { campo: 'calleEntrega', esObligatorio: true, esFijo: true },
+        { campo: 'paisEntrega', esObligatorio: false, esFijo: true },
+        { campo: 'numeroEntrega', esObligatorio: true, esFijo: true },
+        { campo: 'selectGrupoCompras', esObligatorio: false, esFijo: false },
+        { campo: 'selectArticuloCompras', esObligatorio: true, esFijo: true },
+        { campo: 'selectSolicitanteCompras', esObligatorio: true, esFijo: true },
+        { campo: 'necesidadCompras', esObligatorio: false, esFijo: true },
+        { campo: 'rubroElectrico', esObligatorio: false, esFijo: true },
+        { campo: 'rubroCivil', esObligatorio: false, esFijo: true },
+        { campo: 'rubroIngenieria', esObligatorio: false, esFijo: true },
+        { campo: 'rubroMecanico', esObligatorio: false, esFijo: true },
+        { campo: 'rubroConsultoria', esObligatorio: false, esFijo: true },
+        { campo: 'proveedoresValidos', esObligatorio: false, esFijo: true },
+        { campo: 'proveedoresInvalidos', esObligatorio: false, esFijo: true },
+        { campo: 'proveedoresNoSugeridos', esObligatorio: false, esFijo: true },
+        { campo: 'selectMonedaCompras', esObligatorio: true, esFijo: true },
+    ];
+
+    actualizarCamposObligatorios(claseDocumento) {
+        //reset de obligatorios configurables
+        this.camposObligatorios.forEach(c => {
+            if (!c.esFijo)
+                c.esObligatorio = false;
+        });
+
+        let camposObligatoriosFiltrados = this.combos.CamposObligatoriosCabeceraSolp.filter(x => x.ClaseDocumentoCodigo == claseDocumento.Codigo);
+
+        camposObligatoriosFiltrados.forEach(c => {
+            this.camposObligatorios.find(x => x.campo == c.Codigo).esObligatorio = true;
+        });
+    }
+
+    validarCamposObligatorios(campoAValidar: string, rowIndex: any, valor: any) {
+
+        console.log("Validando campo:", campoAValidar);
+        console.log("valor:", valor);
+        console.log("valor.toString().length:", valor.toString().length);
+
+        this.arraryErrores[rowIndex][campoAValidar] = ((this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio)) && (valor.toString().length == 0));
+
+        return;
+    }
+
     setTabs() {
         this.setMenuSeccionTab("Sub Posiciones", "Sub Posiciones");
     }
 
     ngOnInit() {
         this.setTabs();
-
-        // let primeraPosicion = this.model.posiciones[0]
         this.listadoPosicionActul = this.model.posicionActual.listadoSubPosiciones;
         // this.model.posicionActual = primeraPosicion;
 
@@ -83,16 +149,22 @@ export class SubPosicionComponent extends ListBaseComponent {
         this.validarDatosMinimosPosicionActual();
         this.calcularTotalSubPosicion();
         this.actualizarTipoDeImputacion();
+        this.actualizarCamposObligatorios(this.model.selectClaseDocumento);
+
     }
+
+
 
     validarDatosMinimosPosicionActual(): void {
         if ((this.model.posicionActual.textoGenerico == undefined || this.model.posicionActual.textoGenerico == "")
             || (this.model.posicionActual.tipoImputacion == undefined || this.model.posicionActual.tipoImputacion == "")) {
             this.posicionInvalida = true;
-        }
-        else
+        } else
             this.posicionInvalida = false;
     }
+
+
+
 
     cambiarSubPosicion(): void {
         this.listadoPosicionActul = this.model.posicionActual.listadoSubPosiciones;
@@ -145,7 +217,7 @@ export class SubPosicionComponent extends ListBaseComponent {
             this.calcularTotalSubPosicion();
         }
 
-        if(this.listadoPosicionActul.length == 0){
+        if (this.listadoPosicionActul.length == 0) {
             this.nuevaPosicion(null);
             this.model.posicionActual.listadoSubPosiciones = this.listadoPosicionActul;
         }
@@ -158,7 +230,7 @@ export class SubPosicionComponent extends ListBaseComponent {
                     this.eliminarSubposiciones(indice);                  
             },
             reject: () => {
-                
+
             }
         });
     }
