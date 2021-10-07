@@ -45,6 +45,12 @@
     font-size: 16px;
   
   }
+
+  .inputComprasFinalizar {
+    color: #666666 !important;
+    font-size: 16px;
+  
+  }
   
   .obligatorio {
     font-size: 12px;
@@ -523,3 +529,12 @@
     margin-top: 0.5em;
   }
 }
+
+.errorInput {
+  border: red solid !important;
+}
+
+/* .ui-autocomplete-input.errorInput {s
+  border: red solid !important;
+}
+ */

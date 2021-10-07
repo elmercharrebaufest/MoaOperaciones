@@ -86,10 +86,11 @@ export class ComprasService extends BaseService {
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
             ObservacionesCotizacion: solp.observacionesCotizacion,
-
+            RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
             Finalizar: solp.Finalizar,
             Posiciones: solp.posiciones.filter(x => x.textoGenerico).map(x => {
+       
                 return {
                     Codigo: x.id,
                     TextoGenerico: x.textoGenerico,

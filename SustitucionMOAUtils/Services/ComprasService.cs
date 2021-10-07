@@ -92,6 +92,8 @@ namespace SustitucionMOAUtils.Services
                     solpEntity.UsuarioModificacion_Id = solp.UsuarioActual.Id;
                     solpEntity.FechaModificacion = DateTime.Now;
 
+                    //solpEntity.NroSolp = solp.NroSolp;
+
                     pliegoEntity = solpEntity.Pliego;
                 }
             }
@@ -101,6 +103,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     UsuarioCreacion_Id = solp.UsuarioActual.Id,
                     FechaCreacion = DateTime.Now
+
+
                 };
 
                 var estadoIncompletoCodigo = EstadoDocumentoSolp.Incompleto.Code();
@@ -111,8 +115,14 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.Posiciones = new List<SolpPosicion>();
                 pliegoEntity = solpEntity.Pliego;
 
+                solpEntity.NroSolp = solp.NroSolp;
+
                 repositorio.Agregar(solpEntity);
             }
+
+            //solpEntity.NroSolp = solp.NroSolp;
+
+            pliegoEntity.RevisadoPor = solp.RevisadoPor;
 
             if (solpEntity != null)
             {
@@ -155,6 +165,8 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
+
+                pliegoEntity.RevisadoPor = solp.RevisadoPor;
 
                 if (solp.TieneVisitaObraMasiva && solp.VisitasObraMasiva != null)
                 {
@@ -556,7 +568,8 @@ namespace SustitucionMOAUtils.Services
                     EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
                     TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                     VincularPliego = !x.Pliego_Id.HasValue,
-                    TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales
+                    TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
+                    RevisadoPor = x.Pliego?.RevisadoPor
                 });
 
             return todasLasSolp.ToList();
@@ -636,6 +649,8 @@ namespace SustitucionMOAUtils.Services
 
                 TieneCondicionesGenerales = x.Pliego.TieneCondicionesGenerales ?? true,
 
+                RevisadoPor = x.Pliego.RevisadoPor,
+
                 EstadoSolpSapId = x.EstadoSolpSap_Id,
                 EstadoDocumentoId = x.EstadoDocumento_Id,
                 //Posiciones = x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList(),
@@ -699,6 +714,7 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
             solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioActual.Mail);
 
+            solpValores.Add(SolpTemplateKeys.REVISADO_POR, solp.RevisadoPor);
 
             //ESPECIFICACION TECNICA DE TAREAS
             if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
@@ -802,7 +818,7 @@ namespace SustitucionMOAUtils.Services
 
             templateString = CombineTemplateValues(templateString, solpValores);
 
-            return ConvertHtmlToPdf(templateString, templateCssString);
+            return ConvertHtmlToPdf(templateString, templateCssString, solp.RevisadoPor);
         }
 
         private string getDia(DayOfWeek dia)
@@ -840,7 +856,7 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        private byte[] ConvertHtmlToPdf(string xHtml, string css)
+        private byte[] ConvertHtmlToPdf(string xHtml, string css, string revisadoPor = "")
         {
             using (var stream = new MemoryStream())
             {
@@ -856,15 +872,17 @@ namespace SustitucionMOAUtils.Services
                     TwoColumnHeaderFooter PageEventHandler = new TwoColumnHeaderFooter();
                     PdfWriter.PageEvent = PageEventHandler;
 
-                    //PageEventHandler.Title = "Solp";
+
+
+                    PageEventHandler.Title = "Revisado por: " + revisadoPor;
                     PageEventHandler.HeaderFont = FontFactory.GetFont(BaseFont.COURIER_BOLD, 10, Font.BOLD);
                     //PageEventHandler.HeaderLeft = "Group";
                     //PageEventHandler.HeaderRight = "1";
 
                     //for (int i = 1; i <= 2; i++)
                     //{
-                    //    // Define the page header
-                    //    PageEventHandler.HeaderRight = i.ToString();
+                    //     //Define the page header
+                    //    PageEventHandler.HeaderLeft = i.ToString();
                     //    if (i != 1)
                     //    {
                     //        document.NewPage();
@@ -911,12 +929,12 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public void AddOutline(PdfWriter writer, string Title, float Position)
-        {
-            PdfDestination destination = new PdfDestination(PdfDestination.FITH, Position);
-            PdfOutline outline = new PdfOutline(writer.DirectContent.RootOutline, destination, Title);
-            writer.DirectContent.AddOutline(outline, "Name = " + Title);
-        }
+        //public void AddOutline(PdfWriter writer, string Title, float Position)
+        //{
+        //    PdfDestination destination = new PdfDestination(PdfDestination.FITH, Position);
+        //    PdfOutline outline = new PdfOutline(writer.DirectContent.RootOutline, destination, Title);
+        //    writer.DirectContent.AddOutline(outline, "Name = " + Title);
+        //}
 
         public string GenerarZipPliego(int idSolp, string pathBase)
         {
@@ -1146,5 +1164,7 @@ namespace SustitucionMOAUtils.Services
         public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
 
         public const string TEXTO_GENERICO = "TEXTO_GENERICO";
+
+        public const string REVISADO_POR = "REVISADO_POR";
     }
 }
