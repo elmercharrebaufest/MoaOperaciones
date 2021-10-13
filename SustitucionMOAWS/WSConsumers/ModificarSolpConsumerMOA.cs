@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAWS.CredentialService;
@@ -14,6 +16,7 @@ namespace SustitucionMOAWS.WSConsumers
     public class ModificarSolpConsumerMOA : IModificarSolpConsumerMOA
     {
         private readonly SI_MMRFC_MODIFICAR_SOLPEDClient service;
+        private readonly string rutaArchivosXmls = ConfigurationManager.AppSettings["RutaArchivosCompras"];
 
         public ModificarSolpConsumerMOA()
         {
@@ -30,6 +33,18 @@ namespace SustitucionMOAWS.WSConsumers
             var ms = new MemoryStream();
             serxml.Serialize(ms, solpSAP);
             string xml = Encoding.UTF8.GetString(ms.ToArray());
+
+            var fecha = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
+
+            var nombreArchivoLlamada = string.Concat(solpActual.Id, " - ", fecha, " - llamada modificar.xml");
+            var nombreArchivoRespuesta = string.Concat(solpActual.Id, " - ", fecha, " - respuesta modificar.xml");
+
+            var rutaArchivoLlamada = Path.Combine(rutaArchivosXmls,"XMLS", nombreArchivoLlamada);
+            var rutaArchivoRespuesta = Path.Combine(rutaArchivosXmls, "XMLS", nombreArchivoRespuesta);
+
+            FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
+            fileCrear.Directory.Create();
+            File.WriteAllText(fileCrear.FullName, xml);
 
             var result = service.SI_MMRFC_MODIFICAR_SOLPED(
                                                        solpActual.NroSolp,
@@ -64,6 +79,12 @@ namespace SustitucionMOAWS.WSConsumers
                 respuesta.Errores.Add(error);
             }
 
+            var jsonRespuesta = JsonConvert.SerializeObject(respuesta);
+
+            FileInfo fileRespuesta = new FileInfo(rutaArchivoRespuesta);
+            fileRespuesta.Directory.Create();
+            File.WriteAllText(fileRespuesta.FullName, jsonRespuesta);
+
             return respuesta;
         }
 
@@ -96,12 +117,17 @@ namespace SustitucionMOAWS.WSConsumers
                 Nombre: ZBAPIMEREQITEMIMP Denominación:	Posición de SOLPED
                 Nombre  Dominio / Tipo  Denominación
             */
+
             #region posiciones y servicios
             int numeroPosicion = 0;
-            string outlineNumber = "";
+
+            //•	el problema está en que siempre debes poner en el campo OUT_LINE= "000000001", sino debieras llenar otra tabla de SAP que no la estamos cargando. Para quitarle complejidad se saco dicha tabla.
+            string outlineNumber = "000000001";
             string numeroPaquete = "";
             string preqItem = "";
             string serialNumber = "";
+            string serviceAccountSerialNumber = "01";
+
             string docItem = "";
 
             /* Algunas cuestiones con los números que se mandan:
@@ -121,7 +147,7 @@ namespace SustitucionMOAWS.WSConsumers
                 numeroPaquete = $"{numeroPosicion:0000000000}";
                 serialNumber = $"{numeroPosicion:00}";
 
-                outlineNumber = $"{numeroPosicion:0000000000}";
+
 
                 //solpSAP.IM_PRHEADERTEXTList = new List<BAPIMEREQHEADTEXT>()
                 //{
@@ -198,16 +224,13 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_PRITEM.ACCTASSCAT = "K";
                         break;
                     case "ordendeot":
-                        IM_PRITEM.ACCTASSCAT = "O";
+                        IM_PRITEM.ACCTASSCAT = "F";
                         break;
                     case "ordendeinversion":
-                        IM_PRITEM.ACCTASSCAT = "9";
+                        IM_PRITEM.ACCTASSCAT = "F";
                         break;
                     case "siniestrobeneficio":
-                        IM_PRITEM.ACCTASSCAT = "9";
-                        break;
-                    default:
-                        IM_PRITEM.ACCTASSCAT = "9";
+                        IM_PRITEM.ACCTASSCAT = "Y";
                         break;
                 }
 
@@ -273,6 +296,7 @@ namespace SustitucionMOAWS.WSConsumers
                  */
 
                 var numeroSubPosicion = 0;
+                var numeroSerialNumberItem = 0;
                 string serviceLineNumber = "";
                 string serialNumberItem = "";
                 foreach (var subPosicion in posicion.Subposiciones.OrderBy(x => x.Id))
@@ -280,7 +304,8 @@ namespace SustitucionMOAWS.WSConsumers
                     numeroSubPosicion++;
                     serviceLineNumber = $"{numeroSubPosicion:000000000}0";
 
-                    serialNumberItem = $"{numeroSubPosicion:00}";
+
+                    //serialNumberItem = serialNumber;
 
                     //SUBPOSICION
                     var IM_SERVICELINE = new ZMPES5780();
@@ -289,9 +314,14 @@ namespace SustitucionMOAWS.WSConsumers
                     IM_SERVICELINE.OUTLINE = outlineNumber; //Preguntar a Ulises
                     IM_SERVICELINE.SRV_LINE = serviceLineNumber;
                     //IM_SERVICELINE.DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
-                    IM_SERVICELINE.SERVICE = "000000000003005912";//
-                    IM_SERVICELINE.SERVICE = subPosicion.CodigoServicioSap.Codigo.ToString();
-                    //IM_SERVICELINE.SHORT_TEXT = subPosicion.Tarea;
+                    //IM_SERVICELINE.SERVICE = "000000000003005912";//
+                    //IM_SERVICELINE.SERVICE = subPosicion.CodigoServicioSap.Codigo.ToString();
+
+                    if (subPosicion.CodigoServicioSap != null)
+                        IM_SERVICELINE.SERVICE = subPosicion.CodigoServicioSap.Codigo.ToString();
+                    else
+                        IM_SERVICELINE.SHORT_TEXT = subPosicion.Tarea;
+
                     IM_SERVICELINE.QUANTITY = (decimal)subPosicion.Cantidad.Value;
                     IM_SERVICELINE.QUANTITYSpecified = true;
                     IM_SERVICELINE.UOM = subPosicion.Unidad.CodigoSap;
@@ -310,8 +340,8 @@ namespace SustitucionMOAWS.WSConsumers
                         OUTLINE = outlineNumber, //Preguntar a Ulises
                         SRV_LINE = serviceLineNumber,
                         //DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
-                        SERVICE = "X",
-                        //SHORT_TEXT = "X",
+                        SERVICE = (subPosicion.CodigoServicioSap != null) ? "X" : "",
+                        SHORT_TEXT = (subPosicion.CodigoServicioSap == null) ? "X" : "",
                         QUANTITY = "X",
                         UOM = "X",
                         GROSS_PRICE = "X",
@@ -319,29 +349,7 @@ namespace SustitucionMOAWS.WSConsumers
                         //MATL_GROUP = "X",
                     });
 
-                    //IMPUTACION SUBPOSICION
-                    solpSAP.IM_SERVICEACCOUNTList.Add(new ZMPES5790
-                    {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber, //Preguntar a Ulises
-                        SRV_LINE = serviceLineNumber, //Preguntar a Ulises
-                        SERIAL_NO = serialNumber,
-                        SERIAL_NO_ITEM = serialNumberItem,
-                        //Siempre mandar esto en 100. Lo autocalcula SAP
-                        PERCENT = 100
-                    });
 
-
-                    solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
-                    {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber, //Preguntar a Ulises
-                        SRV_LINE = serviceLineNumber, //Preguntar a Ulises
-                        SERIAL_NO = serialNumber,
-                        SERIAL_NO_ITEM = "X",
-                        //Siempre mandar esto en 100. Lo autocalcula SAP
-                        PERCENT = "X"
-                    });
 
                     /*
                        Nombre: ZBAPIMEREQACCOUNT		Denominación:	Imputación
@@ -360,38 +368,77 @@ namespace SustitucionMOAWS.WSConsumers
                        PROFIT_CTR	PRCTR	Centro de beneficio
                    */
 
-                    //Agrupar por subposición?
-                    //Valido con Ulises
 
                     if (!solpSAP.IM_PRACCOUNTList.Any(x =>
                             x.PREQ_ITEM == preqItem &&
                             x.SERIAL_NO == serialNumber &&
                             x.GL_ACCOUNT == subPosicion.CuentaMayorSap.Codigo &&//"0000607034" && 
-                            x.COSTCENTER == subPosicion.TipoImputacionSap.Codigo
+                            x.COSTCENTER == subPosicion.TipoImputacionSap.Codigo &&
+                            x.ORDERID == subPosicion.TipoImputacionSap.Codigo
                         ))
                     {
+                        numeroSerialNumberItem++;
+
+                        serialNumberItem = $"{numeroSerialNumberItem:00}";
+
+
                         solpSAP.IM_PRACCOUNTList.Add(new ZMPES5690
                         {
                             PREQ_ITEM = preqItem,
-                            SERIAL_NO = serialNumber,
+                            SERIAL_NO = serialNumberItem,
                             QUANTITY = subPosicion.Cantidad.Value,
                             GL_ACCOUNT = subPosicion.CuentaMayorSap.Codigo, //"0000607034",
                             COSTCENTER = subPosicion.TipoImputacionSap.Codigo,
+                            ORDERID = subPosicion.TipoImputacionSap.Codigo,
                         }); ;
 
                         solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
                         {
                             PREQ_ITEM = preqItem,
-                            SERIAL_NO = serialNumber,
+                            SERIAL_NO = serialNumberItem,
                             PREQ_ITEMX = "X",
                             SERIAL_NOX = "X",
                             QUANTITY = "X",
                             GL_ACCOUNT = "X",
-                            COSTCENTER = "X"
+                            COSTCENTER = (posicion.TipoImputacion.Codigo.ToLower() == "centrodecosto") ? "X" : "",
+                            ORDERID = (posicion.TipoImputacion.Codigo.ToLower() == "ordendeot" || posicion.TipoImputacion.Codigo.ToLower() == "ordendeinversion") ? "X" : ""
                         });
                     }
-                }
+                    else
+                    {
+                        serialNumberItem = solpSAP.IM_PRACCOUNTList.FirstOrDefault(x =>
+                            x.PREQ_ITEM == preqItem &&
+                            x.SERIAL_NO == serialNumber &&
+                            x.GL_ACCOUNT == subPosicion.CuentaMayorSap.Codigo &&//"0000607034" && 
+                            x.COSTCENTER == subPosicion.TipoImputacionSap.Codigo &&
+                            x.ORDERID == subPosicion.TipoImputacionSap.Codigo
+                        ).SERIAL_NO;
+                    }
 
+                    //IMPUTACION SUBPOSICION
+                    solpSAP.IM_SERVICEACCOUNTList.Add(new ZMPES5790
+                    {
+                        DOC_ITEM = docItem,
+                        OUTLINE = outlineNumber,
+                        SRV_LINE = serviceLineNumber,
+                        SERIAL_NO = serviceAccountSerialNumber,
+                        SERIAL_NO_ITEM = serialNumberItem,
+                        //Siempre mandar esto en 100. Lo autocalcula SAP
+                        PERCENT = 100
+                    });
+
+                    solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
+                    {
+                        DOC_ITEM = docItem,
+                        OUTLINE = outlineNumber, //Preguntar a Ulises
+                        SRV_LINE = serviceLineNumber, //Preguntar a Ulises
+                        SERIAL_NO = serviceAccountSerialNumber,
+                        SERIAL_NO_ITEM = "X",
+                        //Siempre mandar esto en 100. Lo autocalcula SAP
+                        PERCENT = "X"
+                    });
+
+                }
 
                 /*
                  *  PREQ_NO	BANFN	Numero de SOLPED
@@ -420,6 +467,7 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
             #endregion
+
 
             return solpSAP;
         }
