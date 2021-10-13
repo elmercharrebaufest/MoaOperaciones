@@ -13,6 +13,8 @@ import { AdjuntosCotizaciones } from "./PliegoPasos/adjuntos-Cotizaciones";
 export class Solp extends CommonResponse {
     public id: number;
     public tipoSolp: string;
+    public nroSolp: number;
+    public NroSolp: string;
     public Adjuntos?: { Id: number, Nombre: string }[];
 
     //paso 1
@@ -63,8 +65,9 @@ export class Solp extends CommonResponse {
 
     public posiciones: PosicionSolp[];
     public posicionActual: PosicionSolp;
+    public pasoCompletado: number;
 
-    public get ultimaPosicion(): PosicionSolp{
+    public get ultimaPosicion(): PosicionSolp {
         this.setearPosicionMasFutura();
         return this._ultimaPosicion;
     }
@@ -87,12 +90,15 @@ export class Solp extends CommonResponse {
     public centroPorDefecto: any;
     public monedaPorDefecto: any;
     public enviarSap: boolean;
-    
+    public Finalizar: boolean;
+
 
     // // dashboard
     // public selectEstadoSolp: any;
     // public fechaSolp: Date;
     
+    public revisadoPor: string;
+
 
     constructor() {
         super();
@@ -109,10 +115,32 @@ export class Solp extends CommonResponse {
     }
 
     eliminarPosicion() {
-        this.posiciones = this.posiciones.filter(x => x.id != this.posicionActual.id);
+        let posicionActualId = this.posicionActual.id;
+        if(this.nroSolp > 0) {
+            this.posiciones.forEach(x => {
+                if(x.id === posicionActualId) {
+                    x.estado = false;
+                }
+            });
+        } else {
+            this.posiciones = this.posiciones.filter(x => x.id != this.posicionActual.id);
+        }
+
         if (this.posiciones.length == 0) {
             this.agregarNuevaPosicion();
         }
+
+        this.ordenarPosiciones();
+        this.posicionActual = this.posiciones[0];
+    }
+
+    recuperarPosicion() {
+        let posicionActualId = this.posicionActual.id;
+        this.posiciones.forEach(x => {
+            if(x.id === posicionActualId) {
+                x.estado = true;
+            }
+        });
         this.ordenarPosiciones();
         this.posicionActual = this.posiciones[0];
     }
@@ -122,24 +150,24 @@ export class Solp extends CommonResponse {
         this.posiciones.forEach(x => x.numeroPosicion = i++);
     }
 
-    posicionesValidas(){
-        return !this.posiciones.find(x=>!x.posicionValida);
+    posicionesValidas() {
+        return !this.posiciones.find(x => !x.posicionValida);
     }
 
-    setearPosicionPorDefecto(){
-        if(this.posiciones && this.posiciones.length > 0){
+    setearPosicionPorDefecto() {
+        if (this.posiciones && this.posiciones.length > 0) {
             this.posicionActual = this.posiciones[0];
         }
     }
 
-    setearPosicionMasFutura(){
+    setearPosicionMasFutura() {
         let posicionesOrdenadas = this.posiciones.sort((a, b) => {
             return (b.fechaEntregaServicio.getTime() - a.fechaEntregaServicio.getTime())
         });
         this._ultimaPosicion = posicionesOrdenadas[0];
     }
 
-    
+
 }
 
 
@@ -168,7 +196,7 @@ export class PosicionSolp {
     public centroPorDefecto: any;
     public monedaPorDefecto: any;
 
-    
+
     public nombreEntrega: string;
     public calleEntrega: string;
     public numeroEntrega: string;
@@ -193,16 +221,19 @@ export class PosicionSolp {
     public proveedoresInvalidos: string[] = [];
     public proveedoresNoSugeridos: string[] = [];
 
+    public estado: boolean;
+    public indice: number;
+
     // Moneda
     public selectMonedaCompras: any;
     public monedaSeleccionada: any;
 
     public totalPosicion() {
 
-        if(this.listadoSubPosiciones && this.listadoSubPosiciones.length > 0){
+        if (this.listadoSubPosiciones && this.listadoSubPosiciones.length > 0) {
             let total = 0;
-            this.listadoSubPosiciones.forEach(x=>{
-                total += (x.precioBruto || 0)*(parseInt(x.cuentaTd) || 0);
+            this.listadoSubPosiciones.forEach(x => {
+                total += (x.precioBruto || 0) * (parseInt(x.cuentaTd) || 0);
             });
 
             return total;
@@ -214,7 +245,7 @@ export class PosicionSolp {
     public posicionValida: boolean;
 
     //subPosiciones
-    listadoSubPosiciones :  Array<SubPosicionViewModel>;
+    listadoSubPosiciones: Array<SubPosicionViewModel>;
 
 
 
@@ -223,7 +254,7 @@ export class PosicionSolp {
         this.numeroPosicion = numeroPosicion;
         this.plazoDeEntrega = 10;
         this.fechaEntregaServicio = new Date(fechaEntrega);
-        this.fechaEntregaServicio.setDate(fechaEntrega.getDate() + parseInt(this.plazoDeEntrega.toString()));  
+        this.fechaEntregaServicio.setDate(fechaEntrega.getDate() + parseInt(this.plazoDeEntrega.toString()));
 
         this.fechaDeLiberacion = new Date();
         this.listadoSubPosiciones = new Array<SubPosicionViewModel>();
@@ -231,8 +262,9 @@ export class PosicionSolp {
         this.listadoSubPosiciones.push(new SubPosicionViewModel(1));
         this.servicio = 'SERVICIO';
         this.selectSolicitanteCompras = fiscalContrato;
+        this.estado = true;
 
-        if(posicionADuplicar){
+        if (posicionADuplicar) {
             //this.campo = posicionADuplicar.campo
             this.servicio = posicionADuplicar.servicio;
             this.centroDeCosto = posicionADuplicar.centroDeCosto;
@@ -272,7 +304,7 @@ export class PosicionSolp {
         }
 
 
-    
+
     }
 }
 

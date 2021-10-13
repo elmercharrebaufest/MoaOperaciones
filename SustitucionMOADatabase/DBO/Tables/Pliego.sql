@@ -24,6 +24,7 @@
 	[JornadaLaboralHorasDesde] [datetime2] NULL,
 	[JornadaLaboralHorasHasta] [datetime2] NULL,
 	[TieneAndamio] BIT NULL, 
+    [RevisadoPor] NVARCHAR(MAX) NULL, 
     [TieneCondicionesGenerales] BIT NULL,
     CONSTRAINT [PK_dbo.Pliego] PRIMARY KEY CLUSTERED 
 (

@@ -74,6 +74,7 @@ export class ComprasService extends BaseService {
             ObservacionesGeneracion: solp.observacionesGeneracion,
             EspecificacionesTecnicas: solp.especificacionesViewModel.observaciones,
             TieneCondicionesGenerales: solp.tieneCondicionesGenerales,
+            PasoCompletado: solp.pasoCompletado,
 
             Adjuntos:   solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x => { return { Id: x.id } })
                 .concat(solp.archivosCotizacionesGuardados.map(x => { return { Id: x.id } })),
@@ -83,9 +84,11 @@ export class ComprasService extends BaseService {
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
             ObservacionesCotizacion: solp.observacionesCotizacion,
-
+            RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
+            Finalizar: solp.Finalizar,
             Posiciones: solp.posiciones.filter(x => x.textoGenerico).map(x => {
+       
                 return {
                     Codigo: x.id,
                     TextoGenerico: x.textoGenerico,
@@ -109,7 +112,8 @@ export class ComprasService extends BaseService {
                     Moneda: this.getObjetoCodigo(x.monedaSeleccionada && x.monedaSeleccionada.Codigo),
                     TipoImputacion: this.getObjetoCodigo(x.tipoImputacion),
                     TipoPosicion: this.getObjetoCodigo('SERVICIO'),
-
+                    Estado: x.estado,
+                    Indice: x.numeroPosicion,
                     Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.filter(sp => {
                         return !!((sp.codigoServicio && sp.codigoServicio.Codigo) ||
                             sp.tareaSubcontratar ||
@@ -192,6 +196,8 @@ export class ComprasService extends BaseService {
     }
 
     getObjetoCodigo(codigo, tabla = null) {
+        console.log("codigo:", codigo);
+        console.log("tabla:", tabla);
         if (codigo) {
             if (tabla) {
                 return { Codigo: codigo, Tabla: tabla }

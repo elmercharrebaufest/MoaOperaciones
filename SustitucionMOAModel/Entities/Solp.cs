@@ -24,6 +24,7 @@ namespace SustitucionMOAModel.Entities
         public DateTime? FechaBorrado { get; set; }
         public DateTime? FechaCreacionSap { get; set; }
         public DateTime? FechaLiberacionSap { get; set; }
+        public int? PasoCompletado { get; set; }
         public int? TipoSolp_Id { get; set; }
 
         [ForeignKey("UsuarioCreacion_Id")]

@@ -15,6 +15,7 @@
 	[FechaLiberacionSap] [datetime2] NULL,
 	[TipoSolp_Id] [int] NULL,
 
+    [PasoCompletado] INT NULL, 
     CONSTRAINT [PK_dbo.Solp] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
