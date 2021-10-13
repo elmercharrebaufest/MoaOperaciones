@@ -78,8 +78,6 @@ export class ComprasService extends BaseService {
             Adjuntos:   solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x => { return { Id: x.id } })
                 .concat(solp.archivosCotizacionesGuardados.map(x => { return { Id: x.id } })),
 
-            CargaCotizacionesConArchivo: solp.CargaCotizacionesConArchivo,
-
             DiasEjecucion: solp.ejecucion,
             JornadaLaboral: solp.jornadaLaboralDias.filter(x => x.selected).map(x => x.weekDay),
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,

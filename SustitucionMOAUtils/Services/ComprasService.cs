@@ -141,16 +141,11 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.FechaHoraLimiteConsulta = solp.FechaHoraLimiteConsulta?.ToLocalTime();
                 pliegoEntity.ObservacionesGeneracion = solp.ObservacionesGeneracion;
 
-                pliegoEntity.CargaCotizacionesConArchivo = solp.CargaCotizacionesConArchivo;
-                
-                if(!solp.CargaCotizacionesConArchivo)
-                {
-                    pliegoEntity.DiasEjecucion = solp.DiasEjecucion;
-                    pliegoEntity.JornadaLaboralDias = solp.JornadaLaboral != null ? string.Join(",", solp.JornadaLaboral.Select(x => (int)x)) : string.Empty;
-                    pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
-                    pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
-                    pliegoEntity.ObservacionesCotizacion = solp.ObservacionesCotizacion;
-                }
+                pliegoEntity.DiasEjecucion = solp.DiasEjecucion;
+                pliegoEntity.JornadaLaboralDias = solp.JornadaLaboral != null ? string.Join(",", solp.JornadaLaboral.Select(x => (int)x)) : string.Empty;
+                pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
+                pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
+                pliegoEntity.ObservacionesCotizacion = solp.ObservacionesCotizacion;
 
                 pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
 
@@ -185,7 +180,7 @@ namespace SustitucionMOAUtils.Services
                 if (solp.Adjuntos != null && pliegoEntity.Archivos != null)
                 {
                     var archivosParaBorrar = pliegoEntity.Archivos
-                        .Where(x => !solp.Adjuntos.Select(y => y.Id).Contains(x.Id) || !solp.CargaCotizacionesConArchivo && x.FileKey == FileKeys.AdjuntoCotizacionesSolp)
+                        .Where(x => !solp.Adjuntos.Select(y => y.Id).Contains(x.Id))
                         .ToList();
 
                     foreach (var archivo in archivosParaBorrar)
@@ -427,30 +422,27 @@ namespace SustitucionMOAUtils.Services
                 file.SaveAs(rutaArchivo);
             }
 
-            if(solp.CargaCotizacionesConArchivo)
+            var filesCotizaciones = files.GetMultiple("fileCotizaciones");
+            for (int i = 0; i < filesCotizaciones.Count; i++)
             {
-                var filesCotizaciones = files.GetMultiple("fileCotizaciones");
-                for (int i = 0; i < filesCotizaciones.Count; i++)
+                var file = filesCotizaciones[i];
+                var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+
+                if (File.Exists(rutaArchivo))
                 {
-                    var file = filesCotizaciones[i];
-                    var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
-
-                    if (File.Exists(rutaArchivo))
-                    {
-                        file.SaveAs(rutaArchivo);
-                        continue;
-                    }
-
-                    Directory.CreateDirectory(ruta);
-
-                    pliego.Archivos.Add(new Archivo
-                    {
-                        FileKey = FileKeys.AdjuntoCotizacionesSolp,
-                        Ruta = rutaArchivo,
-                    });
-
                     file.SaveAs(rutaArchivo);
+                    continue;
                 }
+
+                Directory.CreateDirectory(ruta);
+
+                pliego.Archivos.Add(new Archivo
+                {
+                    FileKey = FileKeys.AdjuntoCotizacionesSolp,
+                    Ruta = rutaArchivo,
+                });
+
+                file.SaveAs(rutaArchivo);
             }
         }
 
@@ -565,8 +557,6 @@ namespace SustitucionMOAUtils.Services
                     Nombre = s.ObtenerNombre(s.Ruta),
                     FileKey = s.FileKey,
                 }).ToList(),
-
-                CargaCotizacionesConArchivo = x.Pliego.CargaCotizacionesConArchivo,
 
                 EspecificacionesTecnicas = x.Pliego.Archivos.FirstOrDefault(a => a.FileKey == FileKeys.EspecificacionesTecnicasPliego)?.Ruta,
 
@@ -931,7 +921,6 @@ namespace SustitucionMOAUtils.Services
                 Codigo = c.Codigo
             }).ToList();
         }
-
 
         public List<TablaSapDto> ObtenerOrdenesSap()
         {

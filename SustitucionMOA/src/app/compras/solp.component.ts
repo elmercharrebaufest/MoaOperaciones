@@ -234,7 +234,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.ejecucion = "30";
             this.solpActual.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
 
-            this.solpActual.CargaCotizacionesConArchivo = false;
             this.solpActual.archivosCotizacionesNuevos = new Array<File>();
             this.solpActual.archivosCotizacionesGuardados = new Array<AdjuntosCotizaciones>();
 
@@ -345,26 +344,21 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.tieneCondicionesGenerales = solp.TieneCondicionesGenerales;
 
         // Paso 4
-        this.solpActual.CargaCotizacionesConArchivo = solp.CargaCotizacionesConArchivo;
-        if (this.solpActual.CargaCotizacionesConArchivo) {
-            this.solpActual.archivosCotizacionesGuardados = solp.Adjuntos
-            .filter(x => x.FileKey == "adjuntoCotizacionesSolp")
-            .map(x => {
-                return {
-                    id: x.Id,
-                    nombreArchivo: x.Nombre,
-                }
-            });
-        }
-        else {
-            this.solpActual.jornadaLaboralDias.forEach(k => {
-                k.selected = solp.JornadaLaboral.includes(k.weekDay);
-            });
-            this.solpActual.comienzoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));
-            this.solpActual.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
-            this.solpActual.ejecucion = solp.DiasEjecucion || '';
-            this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
-        }
+        this.solpActual.archivosCotizacionesGuardados = solp.Adjuntos
+        .filter(x => x.FileKey == "adjuntoCotizacionesSolp")
+        .map(x => {
+            return {
+                id: x.Id,
+                nombreArchivo: x.Nombre,
+            }
+        });
+        this.solpActual.jornadaLaboralDias.forEach(k => {
+            k.selected = solp.JornadaLaboral.includes(k.weekDay);
+        });
+        this.solpActual.comienzoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));
+        this.solpActual.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
+        this.solpActual.ejecucion = solp.DiasEjecucion || '';
+        this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
 
         // Paso 5
         this.solpActual.selectClaseDocumento = solp.ClaseDocumento;
@@ -524,17 +518,26 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.messageService.add({severity:'success', detail:'Los datos se guardaron correctamente'});
                         }
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
-                        
+
                         this.solpActual.id = result.Id;
                         this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.length);
-                        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = result.Adjuntos.map(x=> {
+                        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = result.Adjuntos.filter(x => x.FileKey != 'adjuntoCotizacionesSolp').map(x=> {
                             return {
                                 id: x.Id,
                                 nombreArchivo: x.Nombre,
                                 rutaDeAcceso: ''
                             }
                         });
-                        
+
+                        this.solpActual.archivosCotizacionesNuevos.splice(0, this.solpActual.archivosCotizacionesNuevos.length);
+                        this.solpActual.archivosCotizacionesGuardados = result.Adjuntos.filter(x => x.FileKey == 'adjuntoCotizacionesSolp').map(x => {
+                            return {
+                                id: x.Id,
+                                nombreArchivo: x.Nombre,
+                                rutaDeAcceso: ''
+                            }
+                        });
+
                         this.cambiosGuardados = true;
 
                         if(mostrarPreview){
