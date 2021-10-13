@@ -117,6 +117,9 @@
                                                 {{posicion.cuentaTd}}
                                             </ng-template>
                                         </p-cellEditor>
+                                        <div *ngIf="validarErrorCustom(posicion, posicion.cuentaTd, 'cuentaTd')">
+                                            <p class="text-danger">campo obligatorio 3 </p>
+                                        </div>
                                     </td>
                                     <td [pEditableColumn]="posicion" style="width: 10%;">
                                         <p-cellEditor>
