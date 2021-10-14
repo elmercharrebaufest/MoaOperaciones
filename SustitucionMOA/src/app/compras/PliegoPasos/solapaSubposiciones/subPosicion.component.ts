@@ -14,6 +14,7 @@ import { EnumTipoImputacion } from '../../enum-tipo-imputacion'
 import { EnumColumnaSubPosicion } from '../../enum-columna-subPosiciones'
 import { ConfirmationService } from 'primeng/api';
 import { type } from 'jquery';
+import { ThrowStmt } from '@angular/compiler';
 
 
 @Component({
@@ -68,12 +69,12 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     camposObligatorios: any[] = [
         { campo: 'codigoServicio', esObligatorio: false, esFijo: true },
-        { campo: 'tareaSubcontratar', esObligatorio: false, esFijo: true },
-        { campo: 'cuentaTd', esObligatorio: true, esFijo: false },
-        { campo: 'unidadMedida', esObligatorio: true, esFijo: false },
-        { campo: 'precioBruto', esObligatorio: false, esFijo: true },
-        { campo: 'cuentaMayor', esObligatorio: false, esFijo: true },
-        { campo: 'tipoImputacion', esObligatorio: false, esFijo: true },
+        { campo: 'tareaSubcontratar', esObligatorio: true, esFijo: true },
+        { campo: 'cuentaTd', esObligatorio: true, esFijo: true },
+        { campo: 'unidadMedida', esObligatorio: true, esFijo: true },
+        { campo: 'precioBruto', esObligatorio: true, esFijo: true },
+        { campo: 'cuentaMayor', esObligatorio: true, esFijo: true },
+        { campo: 'tipoImputacion', esObligatorio: true, esFijo: true },
         { campo: 'servicio', esObligatorio: true, esFijo: true },
         { campo: 'centroDeCosto', esObligatorio: false, esFijo: true },
         { campo: 'ordenDeOt', esObligatorio: false, esFijo: true },
@@ -135,26 +136,48 @@ export class SubPosicionComponent extends ListBaseComponent {
 
 
     validarErrorCustom(subposicion: any, valor: any, campoAValidar: string) {
+        // console.log("subposicion:", subposicion);
+        // console.log("Validando campo:", campoAValidar);
+        // console.log("valor:", valor);
 
-        console.log("subposicion:", subposicion);
-        console.log("Validando campo:", campoAValidar);
-        console.log("valor:", valor);
-
-        console.log("validación obligatorio:", (this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio));
+        // console.log("validación obligatorio:", (this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio));
 
 
-        console.log("validación valor:", valor.toString().length == 0);
+        // console.log("validación valor:", valor.toString().length == 0);
+
+
 
 
         //Terminar de validar con Szamu como mostramos el error
 
         // Agregarlo para el resto de los campos
 
-        // Hacer que solo valide si ingresaste el codogo de servicio o la tarea
 
-
-        return ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) && valor.toString().length == 0);
+        return ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) && valor.toString().length == 0);  
     }
+
+    // Hacer que solo valide si ingresaste el codigo de servicio o la tarea
+    validarCampoTd(subposicion: any){
+        return subposicion.tareaSubcontratar != "" && subposicion.cuentaTd === "" ? true : false; 
+
+         // if(subposicion.tareaSubcontratar != "" && subposicion.cuentaTd === ""){
+            //     return true;
+            // } else {
+            //     return false;
+    }
+
+    validarConNoNulo( valor: any, campoAValidar: string){
+        if (valor != null){
+            return ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) && valor.toString().length == 0);
+        }  else { return true}
+    }
+          
+    validarPrecioBruto( valor: any, campoAValidar: string){
+        if (valor != null){
+            return ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) && (valor.toString().length == 0 || valor === 0));
+        }  else { return true}
+    }
+
 
     setTabs() {
         this.setMenuSeccionTab("Sub Posiciones", "Sub Posiciones");
