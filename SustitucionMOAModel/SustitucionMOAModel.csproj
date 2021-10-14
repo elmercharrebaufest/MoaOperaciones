@@ -112,6 +112,7 @@
     <Compile Include="Entities\PliegoVisita.cs" />
     <Compile Include="Entities\Rubro.cs" />
     <Compile Include="Entities\SecuenciaIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Entities\ServicioSolp.cs" />
     <Compile Include="Entities\Solp.cs" />
     <Compile Include="Entities\SolpPosicion.cs" />
     <Compile Include="Entities\SolpProveedor.cs" />
