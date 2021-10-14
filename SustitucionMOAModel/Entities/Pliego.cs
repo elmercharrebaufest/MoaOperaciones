@@ -36,7 +36,6 @@ namespace SustitucionMOAModel.Entities
         public DateTime? JornadaLaboralHorasDesde { get; set; }
         public DateTime? JornadaLaboralHorasHasta { get; set; }
         public bool? TieneCondicionesGenerales { get; set; }
-        public bool CargaCotizacionesConArchivo { get; set; }
         public string RevisadoPor { get; set; }
 
         public virtual ICollection<PliegoVisita> VisitasMasivas { get; set; }

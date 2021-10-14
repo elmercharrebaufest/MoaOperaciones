@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -416,6 +419,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\DataSources\System.Diagnostics.EventLogEntry.datasource" />
     <None Include="Service References\AplicacionesWebServiceMOA\SI_MPMF_MOAOP_APLICACIONES.wsdl" />
     <None Include="Service References\AplicacionesWebServiceMOA\SustitucionMOAWS.AplicacionesWebServiceMOA.SI_MPMF_MOAOP_APLICACIONESResponse.datasource">
@@ -2850,7 +2854,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ModificarSolpWebServiceMOA\Reference.svcmap">
-    <Generator>WCF Proxy Generator</Generator>
+      <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>

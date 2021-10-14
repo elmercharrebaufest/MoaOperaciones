@@ -50,7 +50,6 @@ export class Solp extends CommonResponse {
     public tieneCondicionesGenerales: boolean;
 
     // paso 4
-    public CargaCotizacionesConArchivo: boolean;
 
     public ejecucion: any;
     public jornadaLaboralDias: WeekDayItem[];
