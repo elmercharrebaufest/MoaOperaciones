@@ -117,9 +117,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.articuloCompras = this.combos.GrupoArticulo;
         this.monedaCompras = this.combos.Moneda;
 
-
-
-        this.setControlesObligatorios(this.model.selectClaseDocumento || this.claseDocumento[0]);
+        this.setControlesObligatorios((this.model.selectClaseDocumento!== undefined && this.model.selectClaseDocumento.Id>0) ? this.model.selectClaseDocumento : this.claseDocumento[0]);
         this.validadorPasoSolpService.formulario = this.formularioActual;
 
         if (this.model.cargoPasoCinco) {

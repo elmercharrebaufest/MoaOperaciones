@@ -67,6 +67,7 @@ export class Solp extends CommonResponse {
     public posiciones: PosicionSolp[];
     public posicionActual: PosicionSolp;
     public pasoCompletado: number;
+    public estadoPasos: string;
 
     public get ultimaPosicion(): PosicionSolp {
         this.setearPosicionMasFutura();

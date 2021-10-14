@@ -52,6 +52,7 @@ namespace SustitucionMOAModel.Dto
         public bool Finalizar { get; set; }
         public bool? TieneCondicionesGenerales { get; set; }
         public int? PasoCompletado { get; set; }
+        public string EstadoPasos { get; set; }
         public bool CargaCotizacionesConArchivo { get; set; }
         public string RevisadoPor { get; set; }
 
@@ -95,6 +96,7 @@ namespace SustitucionMOAModel.Dto
             this.Posiciones = new List<SolpPosicionDto>();
             this.TieneCondicionesGenerales = entity.Pliego.TieneCondicionesGenerales.HasValue ? entity.Pliego.TieneCondicionesGenerales : true;
             this.PasoCompletado = entity.PasoCompletado;
+            this.EstadoPasos = entity.EstadoPasos;
             this.RevisadoPor = entity.Pliego.RevisadoPor;
 
 

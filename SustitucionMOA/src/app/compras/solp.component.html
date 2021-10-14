@@ -63,10 +63,10 @@
                             {{pasoAnterior().descripcion}}</button>&nbsp;
                     </div>
                     <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0; text-align: center;">
-                        <button class="btn btn-primary botonesComprasColor" (click)="guardarCambios()">GUARDAR</button>&nbsp;
+                        <button class="btn btn-primary botonesComprasColor" (click)="guardarCambios()" [disabled]="disabledSave">GUARDAR</button>&nbsp;
                     </div>
                     <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0;">
-                        <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente()); guardarCambios(false, false, true)">{{pasoSiguiente().descripcion}}
+                        <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" [disabled]="disabledSave" (click)="navegar(pasoSiguiente()); guardarCambios(false, false, true)">{{pasoSiguiente().descripcion}}
                             &nbsp;<i class="fa fa-arrow-right"></i></button>
                         <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="showDialog()" style="cursor: auto;">{{pasoSiguiente().descripcion}}</button>
                     </div>
@@ -116,7 +116,7 @@
     </p-header>
     <div class="col-md-12 row myRow alinearTitulo margenInput">
         <div class="col-md-12 titulosModal" style="margin-right: 1em;">
-            Revisado por: 
+            Revisado por:
         </div>
         <div class="col-md-5" style="margin-right: 1em; width: 37%;;">
             <input type="text" pInputText [(ngModel)]="solpActual.revisadoPor" class="styled-select inputComprasFinalizar" placeholder="">
@@ -183,7 +183,7 @@
             </p-panel>
         </div>
     </div>
-    
+
     <p-footer>
         <button type="button" pButton label="CANCELAR" class="ui-button-danger botonModal" (click)="cancelarFinalizar()"></button>
         <button type="button" pButton label="FINALIZAR" class="ui-button-success botonModal" (click)="finalizar()"></button>
