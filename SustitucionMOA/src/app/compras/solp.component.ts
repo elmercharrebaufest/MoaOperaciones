@@ -445,9 +445,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 }
             });
 
-            this.solpActual.setearPosicionPorDefecto();
+            this.solpActual.setearPosicionPorDefecto();   
+        }
 
-            let estadosPasos = this.solpActual.estadoPasos.split(',');
+        let estadosPasos = this.solpActual.estadoPasos.split(',');
 
             let count = 0;
             estadosPasos.forEach(item => {
@@ -457,12 +458,26 @@ export class SolpComponent extends BaseComponent implements OnInit {
             });
 
             this._pasoActual = this.pasos.find(x => x.Numero == 1); 
-            this.cambioPaso(this.pasos[0]);       
-        }
+            this.cambioPaso(this.pasos[0]);
+    }
 
+    validatePasos(){
+        let estadosPasos = this.solpActual.estadoPasos.split(',');
+        this.pasos.forEach((p, i) => {
+            estadosPasos[p.Numero -1] = !p.Iniciado ? '0' : p.Completo ? '2' : '1';      
+        });
+
+        this.solpActual.estadoPasos = '';
+
+        estadosPasos.forEach(x=> {
+            this.solpActual.estadoPasos += `${x},` ;
+        });
+
+        this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
     }
 
     cambioPaso(paso) {
+        let estadosPasos = this.solpActual.estadoPasos.split(',');
         this.pasos.forEach((p, i) => {
             if (p.Codigo == this.pasoActual.Codigo) {
                 p.Activo = false;
@@ -472,9 +487,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 p.Iniciado = true;
                 p.Activo = true;
             }
+            estadosPasos[p.Numero -1] = p.Completo ? '2' : '1';      
         });
-        let estadosPasos = this.solpActual.estadoPasos.split(',');
-        estadosPasos[this.pasoActual.Numero -1] = paso.Completado || paso.Completo ? '2' : '1';
 
         this.solpActual.estadoPasos = '';
 
@@ -527,6 +541,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
             if (guardarPorPaso == false) {
                 this.blockUI.start('Guardando...');
             }
+
+            this.validatePasos();
 
             this.solpActual.Finalizar = enviarSap;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
