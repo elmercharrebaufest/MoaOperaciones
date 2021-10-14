@@ -36,6 +36,7 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerServiciosSolpConsumerMOA> serviciosConsumerMock;
         private Mock<IObtenerSolpConsumerMOA> obtenerSolpConsumerMOAMock;
         private Mock<ICrearSolpConsumerMOA> crearSolpConsumerMOAMock;
+        private Mock<IModificarSolpConsumerMOA> modificarSolpConsumerMOAMock;
 
         [SetUp]
         public void SetUp()
@@ -47,7 +48,9 @@ namespace SustitucionMOATest.Services
             serviciosConsumerMock = new Mock<IObtenerServiciosSolpConsumerMOA>();
             obtenerSolpConsumerMOAMock = new Mock<IObtenerSolpConsumerMOA>();
             crearSolpConsumerMOAMock = new Mock<ICrearSolpConsumerMOA>();
-            target = new ComprasService(repositorioMock.Object, cecoConsumerMock.Object, cuentasConsumerMock.Object, ordenesConsumerMock.Object, serviciosConsumerMock.Object, obtenerSolpConsumerMOAMock.Object, crearSolpConsumerMOAMock.Object);
+            modificarSolpConsumerMOAMock = new Mock<IModificarSolpConsumerMOA>();
+            
+            target = new ComprasService(repositorioMock.Object, cecoConsumerMock.Object, cuentasConsumerMock.Object, ordenesConsumerMock.Object, serviciosConsumerMock.Object, obtenerSolpConsumerMOAMock.Object, crearSolpConsumerMOAMock.Object, modificarSolpConsumerMOAMock.Object);
         }
 
 

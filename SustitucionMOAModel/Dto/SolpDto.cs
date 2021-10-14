@@ -51,7 +51,8 @@ namespace SustitucionMOAModel.Dto
         public string Pdf { get; set; }
         public bool Finalizar { get; set; }
         public bool? TieneCondicionesGenerales { get; set; }
-        public bool CargaCotizacionesConArchivo { get; set; }
+        public int? PasoCompletado { get; set; }
+        public string RevisadoPor { get; set; }
 
         public SolpDto() {}
         public SolpDto(Solp entity) 
@@ -92,6 +93,10 @@ namespace SustitucionMOAModel.Dto
             this.TipoSolp = new TablaGeneralDto(entity.TipoSolp);
             this.Posiciones = new List<SolpPosicionDto>();
             this.TieneCondicionesGenerales = entity.Pliego.TieneCondicionesGenerales.HasValue ? entity.Pliego.TieneCondicionesGenerales : true;
+            this.PasoCompletado = entity.PasoCompletado;
+            this.RevisadoPor = entity.Pliego.RevisadoPor;
+
+
         }
     }
 
@@ -108,6 +113,19 @@ namespace SustitucionMOAModel.Dto
         }
 
     }
+
+
+    public class RespuestaGuardarSOLP 
+    {
+        public SolpDto Solp { get; set; }
+
+        public List<string> Errores { get; set; }
+
+        public string Mensaje { get; set; }
+
+        public int IdEntidad { get; set; }
+    }
+
 
     public class SolpPosicionDto
     {
@@ -133,7 +151,8 @@ namespace SustitucionMOAModel.Dto
         public int? GrupoArticuloId { get; set; }
         public string CodigosProveedores { get; set; }
         public int? MonedaId { get; set; }
-
+        public bool Estado { get; set; }
+        public int? Indice { get; set; }
         public TablaGeneralDto TipoPosicion { get; set; }
         public TablaGeneralDto TipoImputacion { get; set; }
         public TablaSapDto Centro { get; set; }
@@ -182,6 +201,8 @@ namespace SustitucionMOAModel.Dto
                 this.Moneda = new TablaSapDto(entity.Moneda);
                 this.Subposiciones = new List<SolpSubposicionDto>();
                 this.Proveedores = new List<SolpProveedorDto>();
+                this.Estado = entity.Estado;
+                this.Indice = entity.Indice;
 
                 if (entity.Subposiciones != null)
                 {

@@ -40,11 +40,11 @@ namespace SustitucionMOA.Controllers
 
                 try
                 {
-                    result.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Id.Value));
+                    result.Solp.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Solp.Id.Value));
                 }
                 catch
                 {
-                    result.Pdf = string.Empty;
+                    result.Solp.Pdf = string.Empty;
                 }
 
                 return JsonCustom(result);
