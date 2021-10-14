@@ -1058,6 +1058,38 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
             }
         }
+
+        public void ActualizarServiciosSolp()
+        {
+            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
+            if (resultSap.Servicios.Any())
+            {
+                var listaBase = repositorio.Listar<ServicioSolp>();
+
+                foreach (var servicio in resultSap.Servicios)
+                {
+                    int codigo = 0;
+                    if (Int32.TryParse(servicio.Codigo, out codigo) &&
+                        !listaBase.Any(x => x.Codigo == codigo && x.Descripcion == servicio.Descripcion))
+                    {
+                        repositorio.Agregar(new ServicioSolp
+                        {
+                            Codigo = codigo,
+                            Descripcion = servicio.Descripcion,
+                            GrupoArticulos = Int32.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null,
+                            TipoServicio = servicio.Serv,
+                            AmbitoServicio = servicio.Ser,
+                            Edicion = Int32.TryParse(servicio.Edit, out int edicion) ? edicion : 0,
+                            UnidadMedidaBase = servicio.Bas,
+                            SSCItem = servicio.SSCItem
+                        });
+                    }
+                }
+            }
+
+            repositorio.GuardarCambios();
+        }
+
     }
 
     public static class SolpTemplateKeys
