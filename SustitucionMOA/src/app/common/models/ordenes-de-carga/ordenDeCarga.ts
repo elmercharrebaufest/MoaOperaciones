@@ -20,6 +20,7 @@ export class OrdenDeCarga {
     TransporteExiste: boolean;
     ContratoIngresado: string;
     NumeroPedidoIngresado: string;
+    MensajeValidacionSAP: string;
 
     constructor() {
     }

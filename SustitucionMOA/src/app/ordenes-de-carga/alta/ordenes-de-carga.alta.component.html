@@ -35,7 +35,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.ContratoIngresado" maxlength="25">
+                <input type="text" [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato)" [(ngModel)]="ordenDeCarga.ContratoIngresado" maxlength="25">
               </div>
             </div>
             <div class="col-xs-12 col-md-6">

@@ -142,7 +142,8 @@ namespace SustitucionMOATest.Services
                     .Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
                     .Returns(usuarioCorredor);
 
-
+            //Lo agrego para que no rompa, hay que cambiarlo para que tambien incluya clientes.
+            var tipoProveedor = 2;
 
             var result = target.AgregarVendedor(mailUsuario, CUIT, tipoProveedor);
 
@@ -206,7 +207,8 @@ namespace SustitucionMOATest.Services
                     .Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
                     .Returns(usuarioCorredor);
 
-
+            //Lo agrego para que no rompa, hay que cambiarlo para que tambien incluya clientes.
+            var tipoProveedor = 2;
 
             var ex = Assert.Throws<ValidationCustomException>(() => target.AgregarVendedor(mailUsuario, CUIT, tipoProveedor));
 

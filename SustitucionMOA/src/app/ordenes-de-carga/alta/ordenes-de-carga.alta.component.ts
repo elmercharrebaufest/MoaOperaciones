@@ -37,6 +37,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     listaMateriales: Material[];
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
+    puedeEditarContrato: boolean = false;
 
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
@@ -137,6 +139,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.ordenDeCarga = result.data;
+
+                        debugger
+                        if(this.esComercial && result.data.ColorSemaforo != "green"){
+                            this.puedeEditarContrato = true;
+                        }
                     }
                 },
                 error => {

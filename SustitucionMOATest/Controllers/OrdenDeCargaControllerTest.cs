@@ -18,12 +18,14 @@ namespace SustitucionMOATest.Controllers
     {
         private OrdenDeCargaController target;
         private Mock<IOrdenDeCargaService> ordenDeCargaServiceMock;
+        private Mock<IConsultaService> consultaServiceMock;
 
         [SetUp]
         public void SetUp()
         {
             ordenDeCargaServiceMock = new Mock<IOrdenDeCargaService>();
-            target = new OrdenDeCargaController(ordenDeCargaServiceMock.Object);
+            consultaServiceMock = new Mock<IConsultaService>();
+            target = new OrdenDeCargaController(consultaServiceMock.Object, ordenDeCargaServiceMock.Object);
 
 
             var fakeIdentity = new GenericIdentity("User");
@@ -59,6 +61,12 @@ namespace SustitucionMOATest.Controllers
 
         [Test()]
         public void AnularOrdenTest()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test()]
+        public void EditarTest()
         {
             throw new NotImplementedException();
         }

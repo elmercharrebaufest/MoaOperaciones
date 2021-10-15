@@ -41,6 +41,7 @@ namespace SustitucionMOAModel.Dto
             ContratoIngresado = orden.ContratoIngresado;
             Cantidad = orden.Cantidad;
             NumeroPedidoIngresado = orden.NumeroPedidoIngresado;
+            ColorSemaforo = orden.Estado.ObtenerSemaforo();
         }
 
         public int Id { get; set; }
@@ -57,6 +58,7 @@ namespace SustitucionMOAModel.Dto
         public string ContratoIngresado { get; set; }
         public int Cantidad { get; set; }
         public string NumeroPedidoIngresado { get; set; }
+        public string ColorSemaforo { get; set; }
 
     }
 
@@ -88,6 +90,7 @@ namespace SustitucionMOAModel.Dto
         public string ContratoIngresado { get; set; }
         public string Cliente { get; set; }
         public string DescripcionEstadoUsuarioFinal { get; set; }
+        public string MensajeValidacionSAP { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -111,12 +114,19 @@ namespace SustitucionMOAModel.Dto
                    AprobadoCredito == dto.AprobadoCredito &&
                    InformadaSAP == dto.InformadaSAP &&
                    FechaEntregaGenerada == dto.FechaEntregaGenerada &&
-                   Producto == dto.Producto;
+                   Producto == dto.Producto &&
+                   Estado == dto.Estado &&
+                   NumeroPedido == dto.NumeroPedido &&
+                   NumeroEntrega == dto.NumeroEntrega &&
+                   ContratoIngresado == dto.ContratoIngresado &&
+                   Cliente == dto.Cliente &&
+                   DescripcionEstadoUsuarioFinal == dto.DescripcionEstadoUsuarioFinal &&
+                   MensajeValidacionSAP == dto.MensajeValidacionSAP;
         }
 
         public override int GetHashCode()
         {
-            int hashCode = -492427034;
+            int hashCode = -527641486;
             hashCode = hashCode * -1521134295 + Id.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CUITCliente);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(RazonSocialCliente);
@@ -137,6 +147,13 @@ namespace SustitucionMOAModel.Dto
             hashCode = hashCode * -1521134295 + InformadaSAP.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FechaEntregaGenerada);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Producto);
+            hashCode = hashCode * -1521134295 + Estado.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NumeroPedido);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NumeroEntrega);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContratoIngresado);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Cliente);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DescripcionEstadoUsuarioFinal);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MensajeValidacionSAP);
             return hashCode;
         }
     }
