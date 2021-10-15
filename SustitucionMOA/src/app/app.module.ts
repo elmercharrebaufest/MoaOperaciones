@@ -2,7 +2,7 @@
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   NgModule,
-  NO_ERRORS_SCHEMA,
+  NO_ERRORS_SCHEMA
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
@@ -11,8 +11,10 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AutocompleteLibModule } from "angular-ng-autocomplete";
 
 import { ReCaptchaModule } from "angular2-recaptcha";
+import { BlockUIModule } from 'ng-block-ui';
 import { Ng2AutoCompleteModule } from "ng2-auto-complete";
 import { SelectModule } from "ng2-select";
+import { NgxMaskModule } from "ngx-mask";
 import { ModalModule } from "ngx-modal";
 
 import { NgxPaginationModule } from "ngx-pagination";
@@ -42,19 +44,17 @@ import { HomeComponent } from "./home/home.component";
 import { HomeNGSComponent } from "./home/no-granos/home.no-granos.component";
 import { LayoutComponent } from "./layout/layout.component";
 import { LayoutService } from "./layout/layout.service";
+import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component';
+import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component';
+import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component';
+import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { PesificacionComponent } from "./pesificacion/pesificacion.component";
+import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
 import { UsuarioCambioVendedorComponent } from "./usuario/cambio-vendedor/usuario.cambio-vendedor.component";
 import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";
-import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
-import { NgxMaskModule } from "ngx-mask";
-import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component';
-import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component'
-import { NotificacionesService } from "./notificaciones/notificaciones.service";
-import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
-import { BlockUIModule } from 'ng-block-ui';
 import { FaqComponent } from './faq/faq.component'
 import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
 import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
@@ -107,6 +107,7 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     AltaNotificacionesComponent,
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
+    VentaSustentableBaseComponent,
     FaqComponent,
     TicketPesadaComponent,
     ConsultaBaseComponent,
