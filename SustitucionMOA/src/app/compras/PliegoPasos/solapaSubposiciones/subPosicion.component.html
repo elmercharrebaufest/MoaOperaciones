@@ -41,7 +41,7 @@
                             frozenWidth="20px" (onEditInit)="nuevaPosicion($event)">
                             <ng-template pTemplate="header">
                                 <tr>
-                                    <th style="width: 4%;"><img (click)="eliminarSubPosicion()"
+                                    <th style="width: 4%; text-align: center;"><img (click)="eliminarSubPosicion()"
                                             src="../../../../../Content/images/icons/trashWhite.svg" alt="trashWhite"
                                             class="pointer" /></th>
                                     <th style="width: 3%;" data-toggle="tooltip" title="Servicio">#</th>
@@ -60,10 +60,10 @@
                             </ng-template>
                             <ng-template pTemplate="body" let-posicion let-rowIndex="rowIndex">
                                 <tr style="text-align: center;">
-                                    <td style="width: 4%;">
+                                    <td style="width: 4%; padding: revert;">                                       
                                         <img (click)="eliminarSubPosicionIndividual(rowIndex)"
-                                            src="../../../../../Content/images/icons/trashRed.svg" alt="trashWhite"
-                                            class="pointer" />
+                                        src="../../../../../Content/images/icons/trashRed.svg" alt="trashWhite"
+                                        class="pointer" />
                                         <!-- <p-checkbox [(ngModel)]="posicion.eliminar" binary="true"></p-checkbox> -->
                                     </td>
                                     <td style="width: 3%;">
