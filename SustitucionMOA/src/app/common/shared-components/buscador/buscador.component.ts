@@ -7,7 +7,9 @@ import { SecurityService } from '../../services/SecurityService';
 import { SessionDataService } from '../../services/SessionDataService';
 import { SpinnerComponent } from '../../view-child/spinner/spinner.component';
 import { BuscadorService } from './buscador.service';
-import { Resultado } from './Buscador';
+import { Resultado, ResultadoTipo } from './Buscador';
+import { OverlayPanel } from 'primeng/overlaypanel';
+import { SpinnerSmallComponent } from '../../view-child/spinner-small/spinner-small.component';
 
 @Component({
   selector: 'app-buscador-inteligente',
@@ -23,6 +25,9 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
   @ViewChild(SpinnerComponent)
   protected spinnerComponent: SpinnerComponent;
 
+  @ViewChild(SpinnerSmallComponent)
+  public spinnerSmallComponent: SpinnerSmallComponent;
+
   constructor(protected service: BuscadorService, protected navService: NavService,
     protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
     protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
@@ -30,13 +35,15 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
     super(navService, securytiService, floatMsgService, modalService);
     this.spinnerComponent = new SpinnerComponent();
     this.spinnerModalComponent = new SpinnerComponent();
+    this.spinnerSmallComponent = new SpinnerSmallComponent();
   }
 
   palabraABuscar: string;
+  palabraABuscarAuxiliar: string;
   resultados: Resultado[] = [];
-
-  resultado1: Resultado = {Id: 1, Value: 'hola', Link: 'hola.com', Tipo: 'Contrato'}
-  resultado2: Resultado = {Id: 2, Value: 'hola2', Link: 'hola2.com', Tipo: 'Contrato2'}
+  hayResultados: boolean = true;
+  tipos: ResultadoTipo = new ResultadoTipo();
+  tituloArchivoPDF = "Documento"
 
   ngOnInit() {
     var input = document.getElementById("buscador");
@@ -49,10 +56,68 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
     }); 
   }
 
-  autoBusqueda(){
-    this.resultados = [];
+  goToSeccionSelector(resultado: Resultado){
+    switch(resultado.CtaParams){
+      case 1:
+        this.goToSeccionParam(resultado.Link, resultado.Value);
+        break
+      case 2:
+        this.goToSeccionParamDos(resultado.Link, resultado.Value, resultado.Value);
+        break
+      default:
+        this.goToSeccion(resultado.Link);
+        break
+    }
+  }
+
+  autoBusqueda(event, overlaypanel: OverlayPanel){
+    overlaypanel.show(event);
+
+    if(this.palabraABuscar == undefined || this.palabraABuscar != this.palabraABuscarAuxiliar || this.resultados.length < 1){
+      this.resultados = [];
+      this.spinnerSmallComponent.showIt();
+      this.palabraABuscarAuxiliar = this.palabraABuscar
+
+      try {
+        this.subscription = this.service.getResultados(this.palabraABuscar).subscribe(
+            (result: any) => {
+              if (result.logout == true) {
+                this.sessionDataService.logout();
+              } else{
+                this.spinnerSmallComponent.hideIt();
+                this.resultados = result.data;
+
+                if(this.resultados.length >= 1){
+                  this.hayResultados = true;
+                }
+                else{
+                  this.hayResultados = false
+                }
+              }
+            },
+            error => {
+                this.floatMsgService.setErrorMsg(error.message);
+            }
+        );
+      } catch (e) {
+          this.floatMsgService.setErrorMsg(e);
+          return false; //<-- Prevent Refresh
+      }
+    }
+    else{
+      return false;
+    }
+  }
+
+  descargaPDFLiquidacion(value: string) {
+    this.floatMsgService.setMsgsEmpty();
+    this.unsubscribe();
+    let valoresSplit = value.split(",");
+    let documento = valoresSplit[0];
+    let ejercicio = valoresSplit[1]
+
     try {
-      this.subscription = this.service.getResultados(this.palabraABuscar).subscribe(
+      this.subscription = this.service.descargarDocumentoPDF(documento, ejercicio).subscribe(
           (result: any) => {
               if (result.logout == true) {
                   this.sessionDataService.logout();
@@ -61,12 +126,27 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
               } else if (result.info != undefined) {
                   this.floatMsgService.setInfoMsg(result.info);
               } else {
-                  this.resultados = result.data;
+                var byteArray = new Uint8Array(result.data);
+                var blob = new Blob([byteArray], { type: 'application/pdf' });
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // IE11
+                    window.navigator.msSaveOrOpenBlob(blob, this.tituloArchivoPDF + documento + ".pdf");
+                } else {
+                    var url = window.URL.createObjectURL(blob);
+                    var link = document.createElement("a");
+                    document.body.appendChild(link);
+                    link.href = url;
+                    link.download = this.tituloArchivoPDF + documento + ".pdf"
+                    link.click();
+                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    return false;
+                }
               }
           },
           error => {
               this.floatMsgService.setErrorMsg(error.message);
           }
+
       );
     } catch (e) {
         this.floatMsgService.setErrorMsg(e);

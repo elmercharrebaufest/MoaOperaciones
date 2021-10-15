@@ -46,7 +46,6 @@ export class PesificacionesGuardadasComponent extends PesificacionBaseComponent 
     this.getPesificaciones()
   }
 
-
   getPesificaciones() {
     this.mensajeComponent.setMsgsEmpty();
     this.unsubscribe();
@@ -62,7 +61,12 @@ export class PesificacionesGuardadasComponent extends PesificacionBaseComponent 
 
           this.pesificaciones = result.data;
           this.filteredPesificaciones = this.pesificaciones;
-          this.actualizarFiltroFecha();
+          if (this.route.snapshot.paramMap.get('id')) {
+            this.filtroContrato = this.route.snapshot.paramMap.get('id')
+          }
+          else{
+            this.actualizarFiltroFecha();
+          }
         }
       },
       error => {

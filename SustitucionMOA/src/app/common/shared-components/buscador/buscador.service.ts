@@ -15,4 +15,13 @@ export class BuscadorService extends BaseService {
         return this.http
             .get<Resultado[]>(`/api/Home/BuscardorInteligente`, { params: params, headers: this.headers });
     }
+
+    descargarDocumentoPDF(documento: string, ejercicio: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.append('documento', documento);
+        params = params.append('ejercicio', ejercicio);
+
+        return this.http
+            .get<any>('/api/PDF/downloadDocumentPDF', { params: params, headers: this.headers })
+    }
 }

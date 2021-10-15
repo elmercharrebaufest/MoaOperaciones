@@ -12,6 +12,7 @@ import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { Seccion } from './../common/models/seccion';
 import { ModalService } from './../common/services/ModalService';
+import { ActivatedRoute } from '@angular/router';
 
 
 
@@ -21,8 +22,8 @@ import { ModalService } from './../common/services/ModalService';
 })
 export class CartaPorteBaseComponent extends ListBaseComponent {
 
-    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute) {
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService, );
     }
 
     filtroCCPP: string = "";
@@ -39,7 +40,37 @@ export class CartaPorteBaseComponent extends ListBaseComponent {
         if (this.isAuthorized("CREAR FORMULARIO CCPP"))
             secciones.push(new Seccion('/carta-porte/formulario', 'carta-porte', 'Formulario'));
         this.navService.setSeccionList(secciones);
+
+        if (this.route.snapshot.paramMap.get('contrato')) {
+            this.filtroFechaComponent.periodo = "4"
+            var fechaActualMenos5años = this.restarAñosDateActual(new Date())
+            this.filtroFechaComponent.fecha_inicio = this.fechasParaFiltros(fechaActualMenos5años);
+            this.filtroFechaComponent.fecha_fin = this.fechasParaFiltros(new Date());
+
+            this.filtroContrato = this.route.snapshot.paramMap.get('contrato')
+        }
+
         this.getData();
+    }
+
+    fechasParaFiltros(date: Date) {
+        var mm = date.getMonth() + 1; // getMonth() is zero-based
+        var dd = date.getDate();
+      
+        return [date.getFullYear(), "-",
+                (mm>9 ? '' : '0') + mm, "-",
+                (dd>9 ? '' : '0') + dd
+               ].join('');
+    };
+
+    restarAñosDateActual(d: Date){
+        new Date();
+        var year = d.getFullYear();
+        var month = d.getMonth();
+        var day = d.getDate();
+        var c = new Date(year - 5, month, day);
+
+        return c
     }
 
     setFiltroProducto(producto: string) {
@@ -70,4 +101,5 @@ export class CartaPorteBaseComponent extends ListBaseComponent {
         if (result.filtroProducto != undefined) this.filtroProducto = result.filtroProducto.options;
         if (result.filtroVendedor != undefined) this.filtroVendedor = result.filtroVendedor.options;
     }
+
 }

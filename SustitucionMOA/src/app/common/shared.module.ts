@@ -37,6 +37,8 @@ import {ToggleButtonModule} from 'primeng/togglebutton';
 import { WeekdaySelectComponent } from './view-child/weekday-select/weekday-select.component';
 import { CustomFilterBoolean } from "./pipes/customFilterBoolean";;
 import { BuscadorComponent } from './shared-components/buscador/buscador.component'
+import { HighlightDirective } from './directive/clickOutside.directive'
+import { BuscadorSmallComponent } from './shared-components/buscador/buscador-small/buscadorSmall.component';
 
 @NgModule({
     imports: [CommonModule, FormsModule, Ng2AutoCompleteModule,
@@ -50,14 +52,14 @@ import { BuscadorComponent } from './shared-components/buscador/buscador.compone
         ReactiveFormsModule
     ],
     declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
-        AutocompleteLocalidadComponent, SeleccionarProveedorComponent, InformeComercialComponent,
-        CartaPresentacionComponent, NumericDirective, StepperComponent, WeekdaySelectComponent,CustomFilterBoolean, BuscadorComponent],
-    exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
+        AutocompleteLocalidadComponent, SeleccionarProveedorComponent, InformeComercialComponent, HighlightDirective,
+        CartaPresentacionComponent, NumericDirective, StepperComponent, WeekdaySelectComponent,BuscadorSmallComponent, CustomFilterBoolean, BuscadorComponent],
+    exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent ,SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         CommonModule, FormsModule, InformeComercialComponent,
         CartaPresentacionComponent, SeleccionarProveedorComponent, Ng2AutoCompleteModule,
         AutocompleteLibModule,
         CommonModule, FormsModule, AutocompleteLocalidadComponent, NumericDirective,
-        StepperComponent, WeekdaySelectComponent,CustomFilterBoolean, BuscadorComponent],
+        StepperComponent, WeekdaySelectComponent,CustomFilterBoolean, BuscadorComponent, BuscadorSmallComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
 export class SharedModule { }

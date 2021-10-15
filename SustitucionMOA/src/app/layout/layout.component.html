@@ -258,9 +258,6 @@
         <div id="menuSmall">
             <div class="logoSmall"> <a href="#Inicio" data-toggle="tab"> <img
                         src="../Content/images/header/logoSmall.png" class="img-responsive"> </a> </div>
-            <div *ngIf="menuSmall" class="col-xs-3 col-md-6" style="margin: auto; padding: unset;">
-                <app-buscador-inteligente #MenuSmallBuscador></app-buscador-inteligente>
-            </div>
             <nav>
                 <ul class="nav">
                     <li id="liHome">
@@ -287,6 +284,10 @@
                     aria-hidden="true" onClick="openNav()"></span> <span id="myMenuClose" onClick="closeNav()"
                     class="fa fa-times" aria-hidden="true"></span> </div>
         </div>
+    </div>
+
+    <div *ngIf="menuSmall" class="col-xs-12 col-md-12">         
+        <app-buscador-inteligente-small></app-buscador-inteligente-small>
     </div>
     <!-- Navegación -->
     <barra-nav id="mySidenav" class="sidebar">

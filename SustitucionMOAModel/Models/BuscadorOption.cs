@@ -8,9 +8,18 @@ namespace SustitucionMOAModel.Models
 {
     public class BuscadorOption
     {
-        public int Id { get; set; }
         public string Link { get; set; }
         public string Value { get; set; }
         public string Tipo { get; set; }
+        public string Code { get; set; }
+        public int CtaParams { get; set; }
+    }
+
+    public class TipoBusqueda
+    {
+        public const string DetalleContrato = "DCNT";
+        public const string HistorialPesificaciones = "HPES";
+        public const string Liquidacion = "LIQ";
+        public const string CCPP = "CCPP";
     }
 }
