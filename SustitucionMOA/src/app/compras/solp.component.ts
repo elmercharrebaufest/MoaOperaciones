@@ -830,6 +830,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     cancelarFinalizar() {
         this.displayFinalizar = false;
+        this.displayErrorSAP = false;
     }
 
     cancelarSolp() {
@@ -865,6 +866,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
             },
             reject: () => {
                 this.salir();
+            }
+        });
+    }
+
+    modalErrorSAP() {
+        this.confirmationService.confirm({
+            key: 'displayErrorSAP',
+            message: '',
+            accept: () => {
+                this.salir();
+            },
+            reject: () => {
+                
             }
         });
 

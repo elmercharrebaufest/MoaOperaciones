@@ -208,14 +208,18 @@
         ¡Ocurrió un error!
     </p-header>
     <div class="col-md-12 alinearTitulo">
-        Errores:
+        <h4>No se pudo procesar la SOLP</h4>
+        <br>
+        <p>Por favor revisar los siguientes errores:</p> 
+        <br>
         <div *ngFor="let error of listadoErrores; let indice = index" class="col-md-12 alinearTitulo ui-helper-clearfix">
-            {{error}}
+            <ul>
+                <li>{{error}}</li>
+            </ul>
         </div>
         <br>
     </div>
     <p-footer>
-        <button type="button" pButton label="Descargar SOLP" class="btn btn-defaut btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)"></button>
-        <button type="button" pButton label="Volver a la home" class="btn btn-primary botonesComprasColor botonModal" (click)="solpFinalizadaVolverHome()()"></button>
+        <button type="button" pButton label="VOLVER" class="btn btn-secondary botonesComprasColor" (click)="cancelarFinalizar()"></button>
     </p-footer>
 </p-dialog>

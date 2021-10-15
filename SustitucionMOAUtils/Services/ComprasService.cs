@@ -419,7 +419,7 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Tipo == "E"))
                     {
-                        var mensaje = error.Mensaje.Trim().Substring(3);
+                        var mensaje = error.Mensaje.Trim();
                         respuestaGuardarSOLP.Errores.Add(mensaje);
                     }
 
@@ -447,7 +447,7 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
                     {
-                        var mensaje = error.Mensaje.Trim().Substring(3);
+                        var mensaje = error.Mensaje.Trim();
                         respuestaGuardarSOLP.Errores.Add(mensaje);
                     }
 
