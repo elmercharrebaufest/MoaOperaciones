@@ -107,7 +107,7 @@
                                             </ng-template>
                                         </p-cellEditor>
                                         <div *ngIf="validarErrorCustom(posicion, posicion.tareaSubcontratar, 'tareaSubcontratar')">
-                                            <p class="text-danger">campo obligatorio</p>
+                                            <p class="text-danger">*</p>
                                         </div>
                                     </td>
                                     <td [pEditableColumn]="posicion" style="width: 8%; word-break: break-all;">
@@ -120,8 +120,8 @@
                                                 {{posicion.cuentaTd}}
                                             </ng-template>
                                         </p-cellEditor>
-                                        <div *ngIf="validarCampoTd(posicion)">
-                                            <p class="text-danger">campo obligatorio</p>
+                                        <div *ngIf="validarConNoNulo(posicion, posicion.cuentaTd, 'cuentaTd')">
+                                            <p class="text-danger">*</p>
                                         </div>
                                     </td>
                                     <td [pEditableColumn]="posicion" style="width: 10%;">
@@ -140,8 +140,8 @@
                                                 {{posicion.unidadSeleccionada.Descripcion}}
                                             </ng-template>
                                         </p-cellEditor>
-                                        <div *ngIf="validarConNoNulo(posicion.unidadSeleccionada.Descripcion, 'unidadMedida')">
-                                            <p class="text-danger">campo obligatorio</p>
+                                        <div *ngIf="validarConNoNulo(posicion, posicion.unidadSeleccionada.Descripcion, 'unidadMedida')">
+                                            <p class="text-danger">*</p>
                                         </div>
                                     </td>
                                     <td [pEditableColumn]="posicion" style="width: 10%; word-break: break-all;">
@@ -156,8 +156,8 @@
                                                 {{posicion.precioBruto}}
                                             </ng-template>
                                         </p-cellEditor>
-                                        <div *ngIf="validarPrecioBruto(posicion.precioBruto, 'precioBruto')">
-                                            <p class="text-danger">campo obligatorio</p>
+                                        <div *ngIf="validarPrecioBruto(posicion, posicion.precioBruto, 'precioBruto')">
+                                            <p class="text-danger">*</p>
                                         </div>
                                     </td>
                                     <td [pEditableColumn]="posicion" style="width: 12%;">
@@ -177,8 +177,8 @@
                                                 {{posicion.cuentaMayor?.CodigoDescripcion}}
                                             </ng-template>
                                         </p-cellEditor>
-                                        <div *ngIf="validarConNoNulo(posicion.cuentaMayor.CodigoDescripcion, 'cuentaMayor')">
-                                            <p class="text-danger">campo obligatorio</p>
+                                        <div *ngIf="validarConNoNulo(posicion, posicion.cuentaMayor.CodigoDescripcion, 'cuentaMayor')">
+                                            <p class="text-danger">*</p>
                                         </div>
                                     </td>
                                     <td [pEditableColumn]="posicion" style="width: 12%;">
@@ -200,8 +200,8 @@
                                 {{posicion.tipoImputacion?.CodigoDescripcion}}
                             </ng-template>
                             </p-cellEditor>
-                            <div *ngIf="validarConNoNulo(posicion.tipoImputacion.CodigoDescripcion, 'tipoImputacion')">
-                                <p class="text-danger">campo obligatorio</p>
+                            <div *ngIf="validarConNoNulo(posicion, posicion.tipoImputacion.CodigoDescripcion, 'tipoImputacion')">
+                                <p class="text-danger">*</p>
                             </div>
                             </td>
                             </tr>
@@ -226,6 +226,11 @@
         <!-- END form-->
     </section>
     <!--End CONTENT-->
+</div>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div style="color: black;">
+        * Campos obligatorios
+    </div>
 </div>
 
 <!-- Modal eliminacion de subposicion-->
