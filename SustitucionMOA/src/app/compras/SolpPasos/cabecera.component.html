@@ -83,7 +83,7 @@
                                         </p-radioButton>
                                     </div>
                                     <div>
-                                        <p-radioButton formControlName="tipoImputacion" [ngModelOptions]="{standalone:true}" name="imputacion" value="siniestroBeneficio" label="Siniestro / Centro de beneficio (Y)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio">
+                                        <p-radioButton formControlName="tipoImputacion" hidden [ngModelOptions]="{standalone:true}" name="imputacion" value="siniestroBeneficio" label="Siniestro / Centro de beneficio (Y)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio">
                                         </p-radioButton>
                                     </div>
                                     <div *ngIf="mostrarError('tipoImputacion')">
