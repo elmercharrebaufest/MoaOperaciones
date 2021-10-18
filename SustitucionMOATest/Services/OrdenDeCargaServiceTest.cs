@@ -140,7 +140,7 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
                .Returns(ordenesDeCarga);
 
-            var result = target.Listar(mailUsuario);
+            var result = target.Listar(mailUsuario, "", "");
 
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
             repositorioMock.Verify(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
@@ -199,7 +199,7 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
                .Returns(ordenesDeCarga);
 
-            var result = target.Listar(mailUsuario);
+            var result = target.Listar(mailUsuario, "", "");
 
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
             repositorioMock.Verify(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
