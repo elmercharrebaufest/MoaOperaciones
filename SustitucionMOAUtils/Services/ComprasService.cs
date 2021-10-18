@@ -325,6 +325,7 @@ namespace SustitucionMOAUtils.Services
                                 if (subpos.CodigoServicioSap != null)
                                     subposEntity.CodigoServicioSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CodigoServicioSap && x.Codigo == subpos.CodigoServicioSap.Codigo);
 
+
                                 posEntity.Subposiciones.Add(subposEntity);
                             }
                         }

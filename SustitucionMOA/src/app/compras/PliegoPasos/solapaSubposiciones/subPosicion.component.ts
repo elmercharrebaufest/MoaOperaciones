@@ -246,7 +246,7 @@ export class SubPosicionComponent extends ListBaseComponent {
                 break;
             case this.enumTipoImputacion.Siniestro:
                 this.tituloColumnaTipoDeImputacion = "Siniestro / Centro de beneficio"
-                this.tablaAFiltrar = '';
+                this.tablaAFiltrar = 'CentroBeneficio';
                 break;
         }
     }
