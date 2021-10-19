@@ -82,7 +82,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
         //declaro las validaciones para los campos
         this.formularioCotizacion = this.formBuilder.group({
-            ejecucion: new FormControl('', [Validators.required]),
+            //ejecucion: new FormControl('', [Validators.required]),
             comienzoJornadaLaboral: new FormControl('', Validators.required),
             terminoJornadaLaboral: new FormControl('', Validators.required),
             dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required, this.validatorDias])
