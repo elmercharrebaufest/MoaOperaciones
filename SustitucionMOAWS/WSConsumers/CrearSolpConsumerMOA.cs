@@ -373,7 +373,9 @@ namespace SustitucionMOAWS.WSConsumers
                             x.SERIAL_NO == serialNumber &&
                             x.GL_ACCOUNT == subPosicion.CuentaMayorSap.Codigo &&//"0000607034" && 
                             x.COSTCENTER == subPosicion.TipoImputacionSap.Codigo &&
-                            x.ORDERID == subPosicion.TipoImputacionSap.Codigo
+                            x.ORDERID == subPosicion.TipoImputacionSap.Codigo &&
+                            x.PROFIT_CTR == subPosicion.TipoImputacionSap.Codigo
+
                         ))
                     {
                         numeroSerialNumberItem++;
@@ -389,6 +391,7 @@ namespace SustitucionMOAWS.WSConsumers
                             GL_ACCOUNT = subPosicion.CuentaMayorSap.Codigo, //"0000607034",
                             COSTCENTER = subPosicion.TipoImputacionSap.Codigo,
                             ORDERID = subPosicion.TipoImputacionSap.Codigo,
+                            PROFIT_CTR = subPosicion.TipoImputacionSap.Codigo
                         });;
 
                         solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
@@ -400,7 +403,8 @@ namespace SustitucionMOAWS.WSConsumers
                             QUANTITY = "X",
                             GL_ACCOUNT = "X",
                             COSTCENTER = (posicion.TipoImputacion.Codigo.ToLower() == "centrodecosto") ? "X" : "",
-                            ORDERID =  (posicion.TipoImputacion.Codigo.ToLower() == "ordendeot" || posicion.TipoImputacion.Codigo.ToLower() == "ordendeinversion") ? "X" : ""
+                            ORDERID =  (posicion.TipoImputacion.Codigo.ToLower() == "ordendeot" || posicion.TipoImputacion.Codigo.ToLower() == "ordendeinversion") ? "X" : "",
+                            PROFIT_CTR = (posicion.TipoImputacion.Codigo.ToLower() == "siniestrobeneficio") ? "X" : ""
                         });
                     }
                     else
@@ -410,7 +414,8 @@ namespace SustitucionMOAWS.WSConsumers
                             x.SERIAL_NO == serialNumber &&
                             x.GL_ACCOUNT == subPosicion.CuentaMayorSap.Codigo &&//"0000607034" && 
                             x.COSTCENTER == subPosicion.TipoImputacionSap.Codigo &&
-                            x.ORDERID == subPosicion.TipoImputacionSap.Codigo
+                            x.ORDERID == subPosicion.TipoImputacionSap.Codigo &&
+                            x.PROFIT_CTR == subPosicion.TipoImputacionSap.Codigo
                         ).SERIAL_NO;
                     }
 
