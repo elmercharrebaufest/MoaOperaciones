@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { WeekDay } from '@angular/common';
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, ModuleWithComponentFactories, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../common/base-components/base-component';
 import { Paso } from '../common/models/paso';
 import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component';
@@ -361,8 +361,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.jornadaLaboralDias.forEach(k => {
             k.selected = solp.JornadaLaboral.includes(k.weekDay);
         });
-        this.solpActual.comienzoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));
-        this.solpActual.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
+        this.solpActual.comienzoJornadaLaboral = new Date (this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));
+        this.solpActual.terminoJornadaLaboral = new Date (this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
         this.solpActual.ejecucion = solp.DiasEjecucion || '';
         this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
 
