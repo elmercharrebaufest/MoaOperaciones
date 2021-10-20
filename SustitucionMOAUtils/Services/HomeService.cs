@@ -112,7 +112,7 @@ namespace SustitucionMOAUtils.Services
             ListarPesificacionesWSMOAResponse historialPesificaciones = null;
             CartaPorteWSMOAResponse cartasDePorte = null;
             bool existePesificacionDelContrato = false;
-            string fechaInicio = DateTime.Now.AddYears(-5).ToString("yyyy - MM - dd");
+            string fechaInicio = DateTime.Now.AddYears(-1).ToString("yyyy - MM - dd");
             string fechaFin = DateTime.Now.AddDays(+1).ToString("yyyy - MM - dd");
             palabraABuscar.Trim().Replace("/t", "");
 
