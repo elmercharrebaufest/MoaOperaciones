@@ -204,8 +204,10 @@
         <div class="logo">
             <img src="/Content/images/header/logo.png" class="img-responsive" (click)="clickLogo()">
         </div>
+        <div *ngIf="!menuSmall" class="col-md-6" style="margin: auto; padding: unset;">
+            <app-buscador-inteligente></app-buscador-inteligente>
+        </div>
         <div class="User-wrapper">
-
             <div class="UserBar clearfix">
                 <nav>
                     <ul class="nav">
@@ -286,6 +288,10 @@
                     aria-hidden="true" onClick="openNav()"></span> <span id="myMenuClose" onClick="closeNav()"
                     class="fa fa-times" aria-hidden="true"></span> </div>
         </div>
+    </div>
+
+    <div *ngIf="menuSmall" class="col-xs-12 col-md-12">         
+        <app-buscador-inteligente-small></app-buscador-inteligente-small>
     </div>
     <!-- Navegación -->
     <barra-nav id="mySidenav" class="sidebar">
