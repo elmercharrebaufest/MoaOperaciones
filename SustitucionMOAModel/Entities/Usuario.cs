@@ -66,6 +66,11 @@ namespace SustitucionMOAModel.Entities
             return Proveedores.Where(p => p.CodigoProveedor == codigoProveedor).FirstOrDefault();
         }
 
+        public Proveedor ObtenerProveedorPorCUIT(string CUIT)
+        {
+            return Proveedores.Where(p => p.CUIT == CUIT).FirstOrDefault();
+        }
+
         public bool TieneProveedor(string codigoProveedor)
         {
             //Los administradores pueden elegir impersonarse como cualquier proveedor
@@ -131,6 +136,7 @@ namespace SustitucionMOAModel.Entities
                 Roles.Where(r => r.Codigo.Equals("NOIMP")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("NUECORR")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("NUENOGRAN")).Any() ||
+                Roles.Where(r => r.Codigo.Equals("NUECLI")).Any() ||
                 !Habilitado;
         }
 

@@ -132,6 +132,7 @@ namespace SustitucionMOAUtils.Services
                 if (solp.TipoSolp != null)
                     solpEntity.TipoSolp = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoSolp && x.Codigo == solp.TipoSolp.Codigo);
                 solpEntity.PasoCompletado = solp.PasoCompletado;
+                solpEntity.EstadoPasos = solp.EstadoPasos;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
@@ -324,6 +325,7 @@ namespace SustitucionMOAUtils.Services
                                 if (subpos.CodigoServicioSap != null)
                                     subposEntity.CodigoServicioSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CodigoServicioSap && x.Codigo == subpos.CodigoServicioSap.Codigo);
 
+
                                 posEntity.Subposiciones.Add(subposEntity);
                             }
                         }
@@ -418,7 +420,7 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Tipo == "E"))
                     {
-                        var mensaje = error.Mensaje.Trim().Substring(3);
+                        var mensaje = error.Mensaje.Trim();
                         respuestaGuardarSOLP.Errores.Add(mensaje);
                     }
 
@@ -446,7 +448,7 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
                     {
-                        var mensaje = error.Mensaje.Trim().Substring(3);
+                        var mensaje = error.Mensaje.Trim();
                         respuestaGuardarSOLP.Errores.Add(mensaje);
                     }
 
@@ -645,7 +647,8 @@ namespace SustitucionMOAUtils.Services
                 EstadoDocumentoId = x.EstadoDocumento_Id,
                 //Posiciones = x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList(),
                 Posiciones = x.Posiciones.Select(p => new SolpPosicionDto(p)).ToList(),
-                PasoCompletado = x.PasoCompletado
+                PasoCompletado = x.PasoCompletado,
+                EstadoPasos = x.EstadoPasos
             };
 
             return solpDevuelta;

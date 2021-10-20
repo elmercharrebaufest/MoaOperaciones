@@ -14,6 +14,7 @@ import { EnumTipoImputacion } from '../../enum-tipo-imputacion'
 import { EnumColumnaSubPosicion } from '../../enum-columna-subPosiciones'
 import { ConfirmationService } from 'primeng/api';
 import { type } from 'jquery';
+import { ThrowStmt } from '@angular/compiler';
 
 
 @Component({
@@ -68,12 +69,12 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     camposObligatorios: any[] = [
         { campo: 'codigoServicio', esObligatorio: false, esFijo: true },
-        { campo: 'tareaSubcontratar', esObligatorio: false, esFijo: true },
-        { campo: 'cuentaTd', esObligatorio: true, esFijo: false },
-        { campo: 'unidadMedida', esObligatorio: true, esFijo: false },
-        { campo: 'precioBruto', esObligatorio: false, esFijo: true },
-        { campo: 'cuentaMayor', esObligatorio: false, esFijo: true },
-        { campo: 'tipoImputacion', esObligatorio: false, esFijo: true },
+        { campo: 'tareaSubcontratar', esObligatorio: true, esFijo: true },
+        { campo: 'cuentaTd', esObligatorio: true, esFijo: true },
+        { campo: 'unidadMedida', esObligatorio: true, esFijo: true },
+        { campo: 'precioBruto', esObligatorio: true, esFijo: true },
+        { campo: 'cuentaMayor', esObligatorio: true, esFijo: true },
+        { campo: 'tipoImputacion', esObligatorio: true, esFijo: true },
         { campo: 'servicio', esObligatorio: true, esFijo: true },
         { campo: 'centroDeCosto', esObligatorio: false, esFijo: true },
         { campo: 'ordenDeOt', esObligatorio: false, esFijo: true },
@@ -133,6 +134,62 @@ export class SubPosicionComponent extends ListBaseComponent {
         return;
     }
 
+
+    validarErrorCustom(subposicion: any, valor: any, campoAValidar: string) {
+        // console.log("subposicion:", subposicion);
+        // console.log("Validando campo:", campoAValidar);
+        // console.log("valor:", valor);
+
+        // console.log("validación obligatorio:", (this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio));
+        // console.log("validación valor:", valor.toString().length == 0);
+
+        //Terminar de validar con Szamu como mostramos el error
+
+        // Agregarlo para el resto de los campos
+
+       
+        return ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) && valor.toString().length == 0);  
+    }
+
+
+    // Hacer que solo valide si ingresaste el codigo de servicio o la tarea
+    // validarCampoTd(subposicion: any){
+    //     return subposicion.tareaSubcontratar != "" && subposicion.cuentaTd === ""; 
+
+    //     //  if(subposicion.tareaSubcontratar != "" && subposicion.cuentaTd === ""){
+    //     //         return true;
+    //     //     } else {
+    //     //         return false;
+    // }
+
+    validarConNoNulo(subposicion: any, valor: any, campoAValidar: string){
+        
+        if(subposicion.tareaSubcontratar === ""){
+            return false
+        }  
+        
+        return valor == null || 
+            ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) 
+            && valor.toString().length == 0);
+    }
+          
+    validarPrecioBruto(subposicion: any, valor: any, campoAValidar: string){
+        if(subposicion.tareaSubcontratar === ""){
+            return false
+        }  
+
+        return valor == null ||
+            ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) 
+            && (valor.toString().length == 0 || valor === 0));
+
+        // if (valor != null){
+        //     return ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) && (valor.toString().length == 0 || valor === 0));
+        // }  else { 
+        //     return true
+        // }
+    }
+
+
     setTabs() {
         this.setMenuSeccionTab("Sub Posiciones", "Sub Posiciones");
     }
@@ -189,7 +246,7 @@ export class SubPosicionComponent extends ListBaseComponent {
                 break;
             case this.enumTipoImputacion.Siniestro:
                 this.tituloColumnaTipoDeImputacion = "Siniestro / Centro de beneficio"
-                this.tablaAFiltrar = '';
+                this.tablaAFiltrar = 'CentroBeneficio';
                 break;
         }
     }
@@ -208,10 +265,10 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     eliminarSubposiciones(indice = -1): void {
         if (this.listadoPosicionActul.length > 0) {
-            if(indice >= 0) {
+            if (indice >= 0) {
                 this.listadoPosicionActul.splice(indice, 1);
             } else {
-                this.listadoPosicionActul =  [];
+                this.listadoPosicionActul = [];
             }
             this.model.posicionActual.listadoSubPosiciones = this.listadoPosicionActul;
             this.calcularTotalSubPosicion();
@@ -226,8 +283,8 @@ export class SubPosicionComponent extends ListBaseComponent {
     eliminarSubPosicionIndividual(indice: number): void {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar la subposición?',
-            accept: () => {              
-                    this.eliminarSubposiciones(indice);                  
+            accept: () => {
+                this.eliminarSubposiciones(indice);
             },
             reject: () => {
 
@@ -235,12 +292,11 @@ export class SubPosicionComponent extends ListBaseComponent {
         });
     }
 
-    eliminarSubPosicion()
-    {
+    eliminarSubPosicion() {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar todas las subposiciones?',
-            accept: () => {              
-                    this.eliminarSubposiciones();                  
+            accept: () => {
+                this.eliminarSubposiciones();
             },
             reject: () => {
 

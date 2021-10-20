@@ -97,6 +97,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displayFinalizar: boolean = false;
     displaySAP: boolean;
     displayErrorSAP: boolean;
+    disabledSave = false;
 
     listadoErrores: string[] = new Array<string>();
 
@@ -176,6 +177,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.pasos[0].Iniciado = true;
 
             this.pasoActual = this.pasos[0];
+
+            this.solpActual.estadoPasos = "0,0,0,0,0,0";
 
             this.es = {
                 firstDayOfWeek: 0,
@@ -369,6 +372,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         // Paso 5
         this.solpActual.selectClaseDocumento = solp.ClaseDocumento;
         this.solpActual.pasoCompletado = solp.PasoCompletado;
+        this.solpActual.estadoPasos = solp.EstadoPasos;
 
         if (solp.Posiciones && solp.Posiciones.length > 0) {
             let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
@@ -441,22 +445,39 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 }
             });
 
-            this.solpActual.setearPosicionPorDefecto();
-
-            this.pasos.forEach(item => {
-                if(item.Numero <= this.solpActual.pasoCompletado) {
-                    item.Completo = true;
-                    item.Iniciado = true;
-                }
-            });
-
-            this._pasoActual = this.pasos.find(x => x.Numero == 1);
-            
+            this.solpActual.setearPosicionPorDefecto();   
         }
 
+        let estadosPasos = this.solpActual.estadoPasos.split(',');
+
+            let count = 0;
+            estadosPasos.forEach(item => {
+                this.pasos[count].Iniciado = item == '1' || item == '2';
+                this.pasos[count].Completo = item == '2';
+                count+=1;
+            });
+
+            this._pasoActual = this.pasos.find(x => x.Numero == 1); 
+            this.cambioPaso(this.pasos[0]);
+    }
+
+    validatePasos(){
+        let estadosPasos = this.solpActual.estadoPasos.split(',');
+        this.pasos.forEach((p, i) => {
+            estadosPasos[p.Numero -1] = !p.Iniciado ? '0' : p.Completo ? '2' : '1';      
+        });
+
+        this.solpActual.estadoPasos = '';
+
+        estadosPasos.forEach(x=> {
+            this.solpActual.estadoPasos += `${x},` ;
+        });
+
+        this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
     }
 
     cambioPaso(paso) {
+        let estadosPasos = this.solpActual.estadoPasos.split(',');
         this.pasos.forEach((p, i) => {
             if (p.Codigo == this.pasoActual.Codigo) {
                 p.Activo = false;
@@ -466,7 +487,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 p.Iniciado = true;
                 p.Activo = true;
             }
+            estadosPasos[p.Numero -1] = p.Completo ? '2' : '1';      
         });
+
+        this.solpActual.estadoPasos = '';
+
+        estadosPasos.forEach(x=> {
+            this.solpActual.estadoPasos += `${x},` ;
+        });
+
+        this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
 
         this.pasoActual = paso;
 
@@ -507,10 +537,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     guardarCambios(mostrarPreview = false, enviarSap = false, guardarPorPaso = false) {
         try {
-
+            this.disabledSave = true;
             if (guardarPorPaso == false) {
                 this.blockUI.start('Guardando...');
             }
+
+            this.validatePasos();
 
             this.solpActual.Finalizar = enviarSap;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
@@ -591,16 +623,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
 
                     }
+                    this.disabledSave = false;
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
+                    this.disabledSave = false;
                 }
-
             );
         } catch (e) {
+            this.disabledSave = false;
             this.floatMsgService.setErrorMsg(e);
             if (guardarPorPaso == false) {
                 this.blockUI.stop();
@@ -678,6 +712,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
     actualizarEstadoSolp(infomacionSolp: any) {
         var pasoSolp = this.pasos.find(x => x.Codigo == infomacionSolp.codigo);
         pasoSolp.Completo = !infomacionSolp.esPasoInvalido;
+
+        let estadosPasos = this.solpActual.estadoPasos.split(',');
+        estadosPasos[pasoSolp.Numero -1] = pasoSolp.Completo ? '2': estadosPasos[pasoSolp.Numero -1];
+
+        this.solpActual.estadoPasos = '';
+
+        estadosPasos.forEach(x=> {
+            this.solpActual.estadoPasos += `${x},` ;
+        });
+
+        this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
     }
 
     // funcion para que cuando agregues una posicion, vuelva a la altura posiciones
@@ -785,6 +830,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     cancelarFinalizar() {
         this.displayFinalizar = false;
+        this.displayErrorSAP = false;
     }
 
     cancelarSolp() {
@@ -820,6 +866,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
             },
             reject: () => {
                 this.salir();
+            }
+        });
+    }
+
+    modalErrorSAP() {
+        this.confirmationService.confirm({
+            key: 'displayErrorSAP',
+            message: '',
+            accept: () => {
+                this.salir();
+            },
+            reject: () => {
+                
             }
         });
 

@@ -16,6 +16,7 @@
 	[TipoSolp_Id] [int] NULL,
 
     [PasoCompletado] INT NULL, 
+    [EstadoPasos] VARCHAR(20) NULL, 
     CONSTRAINT [PK_dbo.Solp] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

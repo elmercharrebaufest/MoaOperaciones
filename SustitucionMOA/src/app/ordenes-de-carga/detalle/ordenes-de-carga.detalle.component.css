@@ -1,0 +1,13 @@
+.tablaInformacion {
+    font-size: 18px;
+    color: #707070;
+    font-weight: 500;
+}
+
+.containerBotones > div {
+    padding-bottom: 10px;
+}
+
+.semaforo {
+    margin-bottom: -5px;
+}

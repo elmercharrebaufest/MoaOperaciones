@@ -3,7 +3,7 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "> <strong>¿Qu&eacute; tipo de SOLP {{solpActual.NroSolp || ''}} quiere
+            <div class="col-xs-12 col-sm-10 "> <strong>¿Qu&eacute; tipo de SOLP quiere
                     iniciar?</strong></div>
         </div>
         <!--End Title-->
@@ -63,10 +63,10 @@
                             {{pasoAnterior().descripcion}}</button>&nbsp;
                     </div>
                     <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0; text-align: center;">
-                        <button class="btn btn-primary botonesComprasColor" (click)="guardarCambios()">GUARDAR</button>&nbsp;
+                        <button class="btn btn-primary botonesComprasColor" (click)="guardarCambios()" [disabled]="disabledSave">GUARDAR</button>&nbsp;
                     </div>
                     <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0;">
-                        <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente()); guardarCambios(false, false, true)">{{pasoSiguiente().descripcion}}
+                        <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" [disabled]="disabledSave" (click)="navegar(pasoSiguiente()); guardarCambios(false, false, true)">{{pasoSiguiente().descripcion}}
                             &nbsp;<i class="fa fa-arrow-right"></i></button>
                         <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="showDialog()" style="cursor: auto;">{{pasoSiguiente().descripcion}}</button>
                     </div>
@@ -116,7 +116,7 @@
     </p-header>
     <div class="col-md-12 row myRow alinearTitulo margenInput">
         <div class="col-md-12 titulosModal" style="margin-right: 1em;">
-            Revisado por: 
+            Revisado por:
         </div>
         <div class="col-md-5" style="margin-right: 1em; width: 37%;;">
             <input type="text" pInputText [(ngModel)]="solpActual.revisadoPor" class="styled-select inputComprasFinalizar" placeholder="">
@@ -183,7 +183,7 @@
             </p-panel>
         </div>
     </div>
-    
+
     <p-footer>
         <button type="button" pButton label="CANCELAR" class="ui-button-danger botonModal" (click)="cancelarFinalizar()"></button>
         <button type="button" pButton label="FINALIZAR" class="ui-button-success botonModal" (click)="finalizar()"></button>
@@ -208,14 +208,18 @@
         ¡Ocurrió un error!
     </p-header>
     <div class="col-md-12 alinearTitulo">
-        Errores:
+        <h4>No se pudo procesar la SOLP</h4>
+        <br>
+        <p>Por favor revisar los siguientes errores:</p> 
+        <br>
         <div *ngFor="let error of listadoErrores; let indice = index" class="col-md-12 alinearTitulo ui-helper-clearfix">
-            {{error}}
+            <ul>
+                <li>{{error}}</li>
+            </ul>
         </div>
         <br>
     </div>
     <p-footer>
-        <button type="button" pButton label="Descargar SOLP" class="btn btn-defaut btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)"></button>
-        <button type="button" pButton label="Volver a la home" class="btn btn-primary botonesComprasColor botonModal" (click)="solpFinalizadaVolverHome()()"></button>
+        <button type="button" pButton label="VOLVER" class="btn btn-secondary botonesComprasColor" (click)="cancelarFinalizar()"></button>
     </p-footer>
 </p-dialog>
