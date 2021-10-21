@@ -323,7 +323,7 @@ namespace SustitucionMOAUtils.Services
                                     subposEntity.Unidad = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Unidad && x.Codigo == subpos.Unidad.Codigo);
 
                                 if (subpos.CodigoServicioSap != null)
-                                    subposEntity.CodigoServicioSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CodigoServicioSap && x.Codigo == subpos.CodigoServicioSap.Codigo);
+                                    subposEntity.ServicioSolp = repositorio.Obtener<ServicioSolp>(x => x.Codigo == subpos.CodigoServicioSap.Codigo);
 
 
                                 posEntity.Subposiciones.Add(subposEntity);
@@ -745,7 +745,7 @@ namespace SustitucionMOAUtils.Services
 
                 var diasJornada = string.Empty;
 
-                if (tieneHuecos || diasOrdenado.Count == 1)
+                if (tieneHuecos || diasOrdenado.Count() == 1)
                 {
                     diasJornada = string.Join(",", diasOrdenado.Select(a => getDia(a)).ToList());
                 }
@@ -1039,15 +1039,24 @@ namespace SustitucionMOAUtils.Services
         public List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor)
         {
             var lista = repositorio.Listar<TablaSap>(x => x.Tabla == tabla)
-                .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToLower().Contains(valor.ToLower()))
-                .Select(s => new TablaSapDto
-                {
-                    Id = s.Id,
-                    Descripcion = s.Descripcion,
-                    CodigoSap = s.CodigoSap,
-                    Codigo = s.Codigo,
-                    Tabla = s.Tabla
-                }).ToList();
+            .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToLower().Contains(valor.ToLower()))
+            .Select(s => new TablaSapDto
+            {
+                Id = s.Id,
+                Descripcion = s.Descripcion,
+                CodigoSap = s.CodigoSap,
+                Codigo = s.Codigo,
+                Tabla = s.Tabla
+            }).ToList();
+
+            return lista;
+        }
+
+        public List<ServicioSolpDto> AutocompleteServicioSolp(string valor)
+        {
+            List<ServicioSolpDto> lista = repositorio.Listar<ServicioSolp>()
+                .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.Codigo.ToString().ToLower().Contains(valor.ToLower()))
+                .Select(s => new ServicioSolpDto(s)).ToList();
 
             return lista;
         }
@@ -1121,6 +1130,13 @@ namespace SustitucionMOAUtils.Services
             }
 
             return ret;
+        }
+
+        public List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos)
+        {
+            return repositorio
+                .Listar<ServicioSolp>(x => codigos.Contains(x.Codigo.ToString()))
+                .Select(x => new ServicioSolpDto(x)).ToList();
         }
 
         public void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion)

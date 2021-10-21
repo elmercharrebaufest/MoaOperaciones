@@ -340,8 +340,8 @@ namespace SustitucionMOAWS.WSConsumers
                         OUTLINE = outlineNumber, //Preguntar a Ulises
                         SRV_LINE = serviceLineNumber,
                         //DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
-                        SERVICE = (subPosicion.CodigoServicioSap != null) ? "X" : "",
-                        SHORT_TEXT = (subPosicion.CodigoServicioSap == null) ? "X" : "",
+                        SERVICE = (subPosicion.ServicioSolp != null) ? "X" : "",
+                        SHORT_TEXT = (subPosicion.ServicioSolp == null) ? "X" : "",
                         QUANTITY = "X",
                         UOM = "X",
                         GROSS_PRICE = "X",

@@ -1,7 +1,10 @@
-﻿namespace SustitucionMOAModel.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SustitucionMOAModel.Entities
 {
     public class ServicioSolp
     {
+        [Key]
         public int Id { get; set; }
         public int Codigo { get; set; }//SERVICE
         public string Descripcion { get; set; }//SHORT TEXT

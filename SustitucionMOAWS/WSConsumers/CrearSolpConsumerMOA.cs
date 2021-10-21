@@ -316,8 +316,8 @@ namespace SustitucionMOAWS.WSConsumers
                     //IM_SERVICELINE.SERVICE = "000000000003005912";//
                     //IM_SERVICELINE.SERVICE = subPosicion.CodigoServicioSap.Codigo.ToString();
 
-                    if(subPosicion.CodigoServicioSap != null)
-                        IM_SERVICELINE.SERVICE = subPosicion.CodigoServicioSap.Codigo.ToString();
+                    if(subPosicion.ServicioSolp != null)
+                        IM_SERVICELINE.SERVICE = subPosicion.ServicioSolp.Codigo.ToString();
                     else 
                         IM_SERVICELINE.SHORT_TEXT = subPosicion.Tarea;
 

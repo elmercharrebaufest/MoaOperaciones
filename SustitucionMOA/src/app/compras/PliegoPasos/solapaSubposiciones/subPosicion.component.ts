@@ -42,7 +42,9 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     tablaAFiltrar: any;
     autocomplete: any[];
+    autocompleteServiciosSolp: any[];
     autocompletePaste: { Tabla: string, CodigoSap: string }[] = [];
+    autocompleteServiciosSolpPaste: string[] = [];
     arraryErrores: any = new Array<{ id: number, text: string }>();
 
     // array de columnas en la grilla
@@ -305,7 +307,6 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
     onPaste(evento: any, indexColumna: number, rowIndex: number, dt): void {
-
         let datos = evento.clipboardData.getData("text");
         if (!datos.includes("Recuperando datos")) {
             this.spinnerComponent.showIt();
@@ -320,6 +321,7 @@ export class SubPosicionComponent extends ListBaseComponent {
             });
             this.calcularTotalSubPosicion();
             this.completarCodigosSapOnPaste();
+            this.completarServicioSolpOnPaste();
             this.endEditCell(dt);
         }
     }
@@ -412,12 +414,6 @@ export class SubPosicionComponent extends ListBaseComponent {
                     } else {
                         if (result) {
                             this.listadoPosicionActul.forEach(c => {
-                                if (c.codigoServicio && c.codigoServicio.CodigoSap && !c.codigoServicio.Codigo) {
-                                    c.codigoServicio = result.find(x => x.Tabla == 'CodigoServicioSap' && x.CodigoSap == c.codigoServicio.CodigoSap);
-                                    c.tareaSubcontratarObj = { ...c.codigoServicio };
-                                    c.tareaSubcontratar = c.codigoServicio.Descripcion;
-                                }
-
                                 if (c.cuentaMayor && c.cuentaMayor.CodigoSap && !c.cuentaMayor.Codigo) {
                                     c.cuentaMayor = result.find(x => x.Tabla == 'CuentasSolpSap' && x.CodigoSap == c.cuentaMayor.CodigoSap);
                                 }
@@ -426,6 +422,48 @@ export class SubPosicionComponent extends ListBaseComponent {
                                     c.tipoImputacion = result.find(x => x.Tabla == this.tablaAFiltrar && x.CodigoSap == c.tipoImputacion.CodigoSap);
                                 }
                             });
+                        }
+                    }
+
+                    this.spinnerComponent.hideIt();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.spinnerComponent.hideIt();
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+    
+    completarServicioSolpOnPaste() {
+        try {
+            this.subscription = this.service.obtenerDatosPorCodigosSapServicioSolp(this.autocompleteServiciosSolpPaste).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        if (result) {
+                            this.listadoPosicionActul.forEach(c => {
+                            if (c.codigoServicio && c.codigoServicio.CodigoSap && !c.codigoServicio.Codigo) {
+                                c.codigoServicio = result.find(x => x.CodigoSap == c.codigoServicio.CodigoSap);
+                                c.tareaSubcontratarObj = { ...c.codigoServicio };
+                                c.tareaSubcontratar = c.codigoServicio.Descripcion;
+
+                                var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == c.codigoServicio.UnidadMedidaBase);
+                                c.unidadSeleccionada = unidadSeleccionadaAux;
+                                c.unidadMedida = unidadSeleccionadaAux.Descripcion;
+                            }
+                           });
                         }
                     }
 
@@ -472,18 +510,56 @@ export class SubPosicionComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
+    autocompleteServicioSolp(event) {
+        try {
+            this.subscription = this.service.autocompleteServicioSolp(event.query.toLowerCase()).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.autocompleteServiciosSolp = result;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
     onSelectServicio(posicion: SubPosicionViewModel, dt) {
 
         console.log(posicion);
         console.log(dt);
         posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
         posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
+
+        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == posicion.codigoServicio.UnidadMedidaBase);
+
+        if (unidadSeleccionadaAux) {
+            posicion.unidadSeleccionada = unidadSeleccionadaAux;
+            posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
+        }
+
         this.endEditCell(dt);
     }
 
     onSelectTarea(posicion: SubPosicionViewModel, dt) {
         posicion.tareaSubcontratar = posicion.tareaSubcontratarObj.Descripcion;
         posicion.codigoServicio = { ...posicion.tareaSubcontratarObj };
+
+        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == posicion.codigoServicio.UnidadMedidaBase);
+        posicion.unidadSeleccionada = unidadSeleccionadaAux;
+        posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
         this.endEditCell(dt);
     }
 

@@ -25,8 +25,8 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("SolpPosicion_Id")]
         public virtual SolpPosicion SolpPosicion { get; set; }
-        [ForeignKey("CodigoServicioSap_Id")]
-        public virtual TablaSap CodigoServicioSap { get; set; }
+        [ForeignKey("ServicioSolp_Id")]
+        public virtual ServicioSolp ServicioSolp { get; set; }
         [ForeignKey("Unidad_Id")]
         public virtual TablaSap Unidad { get; set; }
         [ForeignKey("TipoImputacion_Id")]

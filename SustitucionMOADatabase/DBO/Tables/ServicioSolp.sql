@@ -7,5 +7,6 @@
 	[AmbitoServicio] VARCHAR(MAX) NOT NULL,
 	[Edicion] INT NOT NULL,
 	[UnidadMedidaBase] VARCHAR(MAX) NOT NULL,
-	[SSCItem] VARCHAR(MAX) NOT NULL
+	[SSCItem] VARCHAR(MAX) NOT NULL, 
+    [Descripcion] VARCHAR(MAX) NOT NULL
 )

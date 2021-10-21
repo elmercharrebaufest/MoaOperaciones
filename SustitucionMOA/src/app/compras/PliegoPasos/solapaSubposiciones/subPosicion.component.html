@@ -73,18 +73,18 @@
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.codigoServicio"
-                                                    [suggestions]="autocomplete" dataKey="Id" ariaLabel="Codigo"
-                                                    field="CodigoSap" appendTo="body" [autoHighlight]="true"
+                                                    [suggestions]="autocompleteServiciosSolp" dataKey="Id" ariaLabel="Codigo"
+                                                    field="Codigo" appendTo="body" [autoHighlight]="true"
                                                     emptyMessage="" [width]="400" [minLength]="2"
                                                     [forceSelection]="true"
-                                                    (completeMethod)="autocompleteSap($event, 'CodigoServicioSap')"
+                                                    (completeMethod)="autocompleteServicioSolp($event)"
                                                     (onFocus)="$event.target.select()"
                                                     (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio,rowIndex,dt)"
                                                     (onSelect)="onSelectServicio(posicion, dt)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{posicion.codigoServicio?.CodigoSap}}
+                                                {{posicion.codigoServicio?.Codigo}}
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
@@ -92,10 +92,11 @@
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.tareaSubcontratarObj"
-                                                    [suggestions]="autocomplete" dataKey="Id" field="Descripcion"
-                                                    ariaLabel="Tarea" appendTo="body" [autoHighlight]="false"
-                                                    emptyMessage="" [minLength]="2" [forceSelection]="false"
-                                                    (completeMethod)="autocompleteSap($event, 'CodigoServicioSap')"
+                                                    [suggestions]="autocompleteServiciosSolp" dataKey="Id" ariaLabel="Tarea"
+                                                    field="Descripcion" appendTo="body" [autoHighlight]="false"
+                                                    emptyMessage="" [minLength]="2" 
+                                                    [forceSelection]="false"
+                                                    (completeMethod)="autocompleteServicioSolp($event)"
                                                     (onFocus)=" $event.target.select()"
                                                     (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)"
                                                     (onSelect)="onSelectTarea(posicion)"

@@ -71,6 +71,7 @@
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaDto.cs" />
     <Compile Include="Dto\LogPesificacion\LogPesificacionDto.cs" />
     <Compile Include="Dto\PesificacionSapDto.cs" />
+    <Compile Include="Dto\ServicioSolpDto.cs" />
     <Compile Include="Dto\SolpDto.cs" />
     <Compile Include="Dto\SubCategoriaDto.cs" />
     <Compile Include="Dto\CategoriaDto.cs" />

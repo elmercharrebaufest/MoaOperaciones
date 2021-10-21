@@ -239,7 +239,7 @@ namespace SustitucionMOAModel.Dto
         public decimal? PrecioBruto { get; set; }
         public TablaSapDto TipoImputacionValor { get; set; }
 
-        public TablaSapDto CodigoServicioSap { get; set; }
+        public ServicioSolpDto CodigoServicioSap { get; set; }
         public TablaSapDto Unidad { get; set; }
 
         public SolpSubposicionDto() { }
@@ -250,14 +250,13 @@ namespace SustitucionMOAModel.Dto
             {
                 this.Codigo = entity.Codigo;
                 this.Numero = entity.Numero;
-                this.CodigoServicioSap = new TablaSapDto(entity.CodigoServicioSap);
+                this.CodigoServicioSap = new ServicioSolpDto(entity.ServicioSolp);
                 this.Tarea = entity.Tarea;
                 this.CuentaMayor = new TablaSapDto(entity.CuentaMayorSap);
                 this.Cantidad = entity.Cantidad;
                 this.UnidadId = entity.Unidad_Id;
                 this.PrecioBruto = entity.PrecioBruto;
                 this.TipoImputacionValor = new TablaSapDto(entity.TipoImputacionSap); //se corregira luego el campo en base
-                this.CodigoServicioSap = new TablaSapDto(entity.CodigoServicioSap);
                 this.Unidad = new TablaSapDto(entity.Unidad);
             }
         }
