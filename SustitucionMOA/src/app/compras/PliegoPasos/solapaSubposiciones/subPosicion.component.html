@@ -184,27 +184,25 @@
                                     <td [pEditableColumn]="posicion" style="width: 12%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                    <td [pEditableColumn]="posicion" style="width: 9%;">
-                                        <p-autoComplete [(ngModel)]="posicion.tipoImputacion"
-                                            [suggestions]="autocomplete" dataKey="Id" ariaLabel="Descripcion"
-                                            field="CodigoDescripcion" appendTo="body" [autoHighlight]="true"
-                                            emptyMessage="" [minLength]="2" [forceSelection]="true"
-                                            (completeMethod)="autocompleteSap($event, '')"
-                                            (onFocus)=" $event.target.select()"
-                                            (paste)="onPaste($event,enumColumnaSubPosicion.TipoImputacion,rowIndex,dt)"
-                                            (onSelect)="endEditCell(dt)">
-                                        </p-autoComplete>
+                                                <p-autoComplete [(ngModel)]="posicion.tipoImputacion"
+                                                    [suggestions]="autocomplete" dataKey="Id" ariaLabel="Descripcion"
+                                                    field="CodigoDescripcion" appendTo="body" [autoHighlight]="true"
+                                                    emptyMessage="" [minLength]="2" [forceSelection]="true"
+                                                    (completeMethod)="autocompleteSap($event, '')"
+                                                    (onFocus)=" $event.target.select()"
+                                                    (paste)="onPaste($event,enumColumnaSubPosicion.TipoImputacion,rowIndex,dt)"
+                                                    (onSelect)="endEditCell(dt)">
+                                                </p-autoComplete>
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                {{posicion.tipoImputacion?.CodigoDescripcion}}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                        <div *ngIf="validarConNoNulo(posicion, posicion.tipoImputacion.CodigoDescripcion, 'tipoImputacion')">
+                                            <p class="text-danger">*</p>
+                                        </div>
                                     </td>
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                {{posicion.tipoImputacion?.CodigoDescripcion}}
-                            </ng-template>
-                            </p-cellEditor>
-                            <div *ngIf="validarConNoNulo(posicion, posicion.tipoImputacion.CodigoDescripcion, 'tipoImputacion')">
-                                <p class="text-danger">*</p>
-                            </div>
-                            </td>
-                            </tr>
+                                </tr>
                             </ng-template>
                         </p-table>
                     </div>
