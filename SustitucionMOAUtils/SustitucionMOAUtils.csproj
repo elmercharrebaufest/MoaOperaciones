@@ -140,6 +140,7 @@
     <Compile Include="Interfaces\IDataAgroService.cs" />
     <Compile Include="Interfaces\IGestionImpuestosService.cs" />
     <Compile Include="Interfaces\IHangfireJob.cs" />
+    <Compile Include="Interfaces\IHomeService.cs" />
     <Compile Include="Interfaces\ILiquidacionService.cs" />
     <Compile Include="Interfaces\INotificacionService.cs" />
     <Compile Include="Interfaces\IOrdenDeCargaService.cs" />

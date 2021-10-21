@@ -156,8 +156,8 @@ namespace SustitucionMOAUtils.Services
 
                 pliegoEntity.DiasEjecucion = solp.DiasEjecucion;
                 pliegoEntity.JornadaLaboralDias = solp.JornadaLaboral != null ? string.Join(",", solp.JornadaLaboral.Select(x => (int)x)) : string.Empty;
-                pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
-                pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
+                pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde;
+                pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta;
                 pliegoEntity.ObservacionesCotizacion = solp.ObservacionesCotizacion;
 
                 pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
@@ -324,6 +324,7 @@ namespace SustitucionMOAUtils.Services
 
                                 if (subpos.CodigoServicioSap != null)
                                     subposEntity.CodigoServicioSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CodigoServicioSap && x.Codigo == subpos.CodigoServicioSap.Codigo);
+
 
                                 posEntity.Subposiciones.Add(subposEntity);
                             }

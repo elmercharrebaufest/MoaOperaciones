@@ -119,6 +119,7 @@ const appRoutes: Routes = [
       },
       { path: "pesificacion", component: PesificacionComponent },
       { path: "pesificacion/listado", component: PesificacionesGuardadasComponent },
+      { path: "pesificacion/listado/:id", component: PesificacionesGuardadasComponent },
       { path: "alta-empresa-granos", component: EmpresaGranosComponent },
       {
         path: "alta-empresa-granos/:id",

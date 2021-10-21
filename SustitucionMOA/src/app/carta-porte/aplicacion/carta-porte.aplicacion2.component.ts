@@ -6,6 +6,7 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-carta-porte-aplicacion',
@@ -16,8 +17,8 @@ export class CartaPorteAplicacionComponent extends CartaPorteBaseComponent {
 
     tituloArchivo = "ReporteAplicaciones.xls";
 
-    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService); 
+    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute) {
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService, route); 
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONSULTAR CARTAS PORTE"); }
@@ -39,4 +40,6 @@ export class CartaPorteAplicacionComponent extends CartaPorteBaseComponent {
         ]);
         return false;
     }
+
+
 }

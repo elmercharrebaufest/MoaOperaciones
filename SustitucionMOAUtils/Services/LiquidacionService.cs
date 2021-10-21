@@ -55,6 +55,32 @@ namespace SustitucionMOAUtils.Services
             return getLiquidaciones(proveedor, "PAGA", fechaInicio, fechaFin);
         }
 
+        public LiquidacionViewModel TodasLiquidaciones(string proveedor, string fechaInicio, string fechaFin)
+        {
+            try
+            {
+                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                LiquidacionViewModel dataView = new LiquidacionViewModel();
+                dataView.filtroProducto = new DropdownContent();
+                dataView.filtroObservacion = new DropdownContent();
+                dataView.data = (LiquidacionWSMOAResponse)new LiquidacionesConsumerMOA().request(proveedor, fechas);
+               
+                return dataView;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
         public LiquidacionViewModel getLiquidaciones(string proveedor, string tipo, string fechaInicio, string fechaFin) {
             try
             {

@@ -14,6 +14,10 @@ const routes: Routes = [
       component: CartaPorteAplicacionComponent,
     },
     {
+      path: "aplicacion/:contrato",
+      component: CartaPorteAplicacionComponent,
+    },
+    {
       path: "detalle/:id",
       component: CartaPorteDetalleComponent,
     },

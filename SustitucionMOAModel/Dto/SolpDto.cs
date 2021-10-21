@@ -33,8 +33,8 @@ namespace SustitucionMOAModel.Dto
         public int? DiasEjecucion { get; set; }
         public string ObservacionesCotizacion { get; set; }
         public List<DayOfWeek> JornadaLaboral { get; set; }
-        public DateTime? JornadaLaboralDesde { get; set; } 
-        public DateTime? JornadaLaboralHasta { get; set; }
+        public DateTimeOffset? JornadaLaboralDesde { get; set; } 
+        public DateTimeOffset? JornadaLaboralHasta { get; set; }
         public TablaSapDto ClaseDocumento { get; set; }
         public int? ClaseDocumentoId { get; set; }
         public List<ArchivoDto> Adjuntos { get; set; }
