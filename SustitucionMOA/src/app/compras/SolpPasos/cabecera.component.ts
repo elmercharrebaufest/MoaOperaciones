@@ -167,7 +167,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
         let camposObligatorios = this.combos.CamposObligatoriosCabeceraSolp.filter(x => x.ClaseDocumentoCodigo == claseDocumento.Codigo);
 
-        console.log("Campos:")
         camposObligatorios.forEach(c => {
             console.log(this.camposObligatorios)
 
@@ -176,7 +175,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             if (this.camposObligatorios.find(x => x.campo == c.Codigo) != null)
                 this.camposObligatorios.find(x => x.campo == c.Codigo).esObligatorio = true;
 
-            console.log("Funciona eh")
         });
     }
 

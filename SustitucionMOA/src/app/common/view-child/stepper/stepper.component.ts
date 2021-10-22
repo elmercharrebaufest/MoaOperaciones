@@ -23,7 +23,7 @@ export class StepperComponent {
 
     @Input() 
     set paso(value: Paso) {
-    
+        console.log("set pasos 1: ", this.pasos)
         this.activeStep = value;
         this.activeIndex = value.Numero - 1;
         this.change.emit(value)
@@ -37,6 +37,7 @@ export class StepperComponent {
     }
 
     ngAfterViewInit(): void {
+        console.log("Stepper mas duro que el piti", this.pasos)
         if(this.pasos){
             this.pasos.forEach((p,i) => {
                 var item = {
@@ -48,6 +49,7 @@ export class StepperComponent {
                 this.activeIndex = p.Activo ? i : this.activeIndex;
             });
         }
+        console.log("Stepper mas duro que el piti 2", this.pasos)
     }
 
     getItemClass(index){
@@ -71,10 +73,14 @@ export class StepperComponent {
     }
 
     itemClick(event, item, index){
+        console.log("Stepper 1:", this.pasos)
         var step = this.pasos[index];
+        console.log("Stepper 2:", this.pasos)
         this.activeIndex = index;
+        console.log("Stepper 3:", this.pasos)
         this.paso = step;
-
+        console.log("Stepper 4:", this.pasos)
         this.change.emit(step)
+        console.log("Stepper 5:", this.pasos)
     }
 }
