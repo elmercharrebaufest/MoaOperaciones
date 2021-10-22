@@ -789,7 +789,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     texto.AppendLine(string.Format(templateSubposiciones,
                         subpos.Numero,
-                        subpos.CodigoServicioSap?.CodigoSap,
+                        subpos.CodigoServicioSap?.Codigo,
                         subpos.Tarea,
                         subpos.Cantidad,
                         subpos.Unidad?.Descripcion
