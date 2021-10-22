@@ -393,7 +393,7 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
                 .Returns(ordenDeCargaLista);
 
-            var result = target.verificarVencimientoOrdenDeCarga();
+            var result = target.VerificarVencimientoOrdenDeCarga();
 
             repositorioMock.Verify(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
                                 It.IsAny<int>(),

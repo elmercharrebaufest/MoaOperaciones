@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="akPkDKLN7HGrY+PkyIczhSrw36+iUbZbO9vk3Yaayxw=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="WKj12lUXDYwFBW2rGR7ZUFJAl8aBp8qfo30XpcPFk5c=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="basicHttpBinding" name="SI_MPMF_MOAOP_ORDEN_CARGA_ENTREBinding">
       <properties>
@@ -221,7 +221,7 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="HTTP_Port49" contract="OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE" bindingType="basicHttpBinding" address="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_ORDEN_CARGA_ENTREBinding">
+    <endpoint name="HTTP_Port56" contract="OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE" bindingType="basicHttpBinding" address="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_ORDEN_CARGA_ENTREBinding">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
@@ -296,7 +296,7 @@
           <serializedValue>False</serializedValue>
         </property>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>HTTP_Port49</serializedValue>
+          <serializedValue>HTTP_Port56</serializedValue>
         </property>
         <property path="/kind" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -306,7 +306,7 @@
         </property>
       </properties>
     </endpoint>
-    <endpoint name="HTTPS_Port49" contract="OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE" bindingType="basicHttpBinding" address="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_ORDEN_CARGA_ENTREBinding1">
+    <endpoint name="HTTPS_Port56" contract="OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE" bindingType="basicHttpBinding" address="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_ORDEN_CARGA_ENTREBinding1">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
@@ -381,7 +381,7 @@
           <serializedValue>False</serializedValue>
         </property>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>HTTPS_Port49</serializedValue>
+          <serializedValue>HTTPS_Port56</serializedValue>
         </property>
         <property path="/kind" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
