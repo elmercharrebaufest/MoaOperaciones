@@ -4,6 +4,7 @@ namespace SustitucionMOAModel.Dto
 {
     public class ServicioSolpDto
     {
+        public ServicioSolpDto() {}
         public ServicioSolpDto(ServicioSolp servicioSolp)
         {
             Id = servicioSolp.Id;
