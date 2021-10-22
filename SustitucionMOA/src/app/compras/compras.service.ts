@@ -4,10 +4,12 @@ import { Observable } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './Solp';
 import { HttpParams } from '@angular/common/http';
+import { Formatter } from '../common/formatter/Formatter';
 
 @Injectable()
 export class ComprasService extends BaseService {
 
+    Date: Date
 
     public getCombos(): Observable<any> {
         return this.http
@@ -82,8 +84,8 @@ export class ComprasService extends BaseService {
 
             DiasEjecucion: solp.ejecucion,
             JornadaLaboral: solp.jornadaLaboralDias.filter(x => x.selected).map(x => x.weekDay),
-            JornadaLaboralDesde: solp.comienzoJornadaLaboral,
-            JornadaLaboralHasta: solp.terminoJornadaLaboral,
+            JornadaLaboralDesde: solp.comienzoJornadaLaboral.toLocaleString(),
+            JornadaLaboralHasta: solp.terminoJornadaLaboral.toLocaleString(),
             ObservacionesCotizacion: solp.observacionesCotizacion,
             RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),

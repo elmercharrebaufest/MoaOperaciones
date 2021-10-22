@@ -28,9 +28,9 @@ namespace SustitucionMOA.Controllers
     //[System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class HomeController : BaseController
     {
-        HomeService _homeService = new HomeService();
         LoginService _loginService = new LoginService();
 
+        readonly IHomeService _homeService;
         protected readonly IRepositorio repositorio;
         protected readonly IAzureB2CService azureB2CService;
         protected readonly IDataAgroService dataAgroService;
@@ -39,9 +39,10 @@ namespace SustitucionMOA.Controllers
 
         // GET: Home
 
-        public HomeController(IRepositorio repositorio, IAzureB2CService azureB2CService, IDataAgroService dataAgroService)
+        public HomeController(IRepositorio repositorio, IAzureB2CService azureB2CService, IDataAgroService dataAgroService, IHomeService _homeService)
         {
             this.repositorio = repositorio;
+            this._homeService = _homeService;
             this.azureB2CService = azureB2CService;
             this.dataAgroService = dataAgroService;
         }
@@ -380,6 +381,27 @@ namespace SustitucionMOA.Controllers
             catch (Exception e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult BuscardorInteligente(string PalabraABuscar)
+        {
+            try
+            {
+                return JsonCustom(new { data = _homeService.getBusqueda(PalabraABuscar, SessionPersister.getUsername(), SessionPersister.Proveedor) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }

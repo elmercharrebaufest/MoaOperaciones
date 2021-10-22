@@ -37,5 +37,6 @@ namespace SustitucionMOAUtils.Interfaces
         string descargarFleteProcedencia(string proveedor, string contrato);
         Task NotificarLiquidacionesAsync(HttpFileCollectionBase liquidaciones, string codigoProveedor);
         IList<LiquidacionInformada> GetLiquidacionInformadas(string codigoProveedor);
+        LiquidacionViewModel TodasLiquidaciones(string proveedor, string fechaInicio, string fechaFin);
         }
 }

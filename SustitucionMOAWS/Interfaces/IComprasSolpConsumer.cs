@@ -25,5 +25,6 @@ namespace SustitucionMOAWS.Interfaces
     public interface IObtenerSolpConsumerMOA
     {
         ObtenerSolpSAPResponse Request(ObtenerSolpRequest req);
+        ObtenerSolpSAPResponse RequestSolpWithNroAndDates(ObtenerSolpRequest req);
     }
 }

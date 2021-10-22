@@ -156,8 +156,8 @@ namespace SustitucionMOAUtils.Services
 
                 pliegoEntity.DiasEjecucion = solp.DiasEjecucion;
                 pliegoEntity.JornadaLaboralDias = solp.JornadaLaboral != null ? string.Join(",", solp.JornadaLaboral.Select(x => (int)x)) : string.Empty;
-                pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
-                pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
+                pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde;
+                pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta;
                 pliegoEntity.ObservacionesCotizacion = solp.ObservacionesCotizacion;
 
                 pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
@@ -1181,6 +1181,47 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
+        public void ActualizarEstadoSolpBulk()
+        {
+            var lista = repositorio.Listar<TablaSap>(x => x.Tabla == "EstadoSolpSap")
+                    .Select(x => new TablaSapDto(x)).ToList();
+            foreach (var todasLasSolp in repositorio.Listar<Solp>(o => o.FechaBorrado == null && o.NroSolp != null))
+            {
+                ConsultaEstadoSolp(todasLasSolp.NroSolp, lista);
+            }
+        }
+
+        private void ConsultaEstadoSolp(string nroSolp, List<TablaSapDto> listaTablaSap)
+        {
+            DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
+            DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
+            var filtros = new ObtenerSolpRequest
+            {
+                FechaDesde = fechaDesde,
+                FechaHasta = fechaHasta,
+                NumeroSolp = nroSolp,
+            };
+            var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+            if (solp.Posiciones.Any())
+            {
+                var codigoSap = listaTablaSap.Where(x => x.CodigoSap == solp.Posiciones[0].EstadoSolpSap).FirstOrDefault();
+                if(codigoSap != null)
+                {
+                    ActualizarEstadoSolp(nroSolp, codigoSap.Id);
+                }
+            }
+        }
+
+        public void ActualizarEstadoSolp(string nroSolp, int idEstado)
+        {
+            var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nroSolp);
+
+            if (solp != null)
+            {
+                solp.EstadoSolpSap_Id = idEstado;
+                repositorio.GuardarCambios();
+            }
+        }
     }
 
     public static class SolpTemplateKeys
