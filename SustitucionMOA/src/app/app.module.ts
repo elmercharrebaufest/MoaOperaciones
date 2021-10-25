@@ -5,7 +5,6 @@ import {
   NO_ERRORS_SCHEMA
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-
 import { HttpClientModule } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -19,6 +18,7 @@ import { NgxMaskModule } from "ngx-mask";
 import { ModalModule } from "ngx-modal";
 
 import { NgxPaginationModule } from "ngx-pagination";
+
 
 import { AduanaService } from "./aduana/aduana.service";
 import { AltasComponent } from "./alta-proveedores/altas/altas.component";

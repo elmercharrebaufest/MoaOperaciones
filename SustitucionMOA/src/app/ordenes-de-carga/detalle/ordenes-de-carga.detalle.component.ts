@@ -47,6 +47,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonVerificarTransporte: boolean = false;
     mostrarBotonVerificarSituacionCrediticia: boolean = false;
     mostrarBotonAnular: boolean = false;
+    mostrarBotonForzarCreacionPedido: boolean = false;
+
 
     // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -100,6 +102,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
                 this.mostrarBotonAnular = true;
+            }
+
+            if (this.ordenDeCarga.ContratoSinCantidadPendiente) {
+                this.mostrarBotonForzarCreacionPedido = true;
             }
         }
     }
@@ -357,7 +363,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         document.getElementById("openForzarCreacion").click();
     }
 
-    forzarCreacionContrato() {
+    forzarCreacionPedido() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();

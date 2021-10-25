@@ -37,6 +37,11 @@
           <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
         </div>
       </div>
+      <div *ngIf="esInterno && DescripcionErrorInterno != ''" class="formulario-input;">
+        <div class="alert alert-danger">
+          <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{orden.DescripcionErrorInterno}}
+        </div>
+      </div>
       <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
         <div class="formulario-campo">
           <div class="col-xs-12 col-md-12 search-header">
@@ -323,6 +328,11 @@
                   value="Verificar credito">
               </div>
 
+              <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonForzarCreacionPedido">
+                <input type="button" (click)="abrirModalForzarCreacion()" class="btn-custom btn-add btn-grande"
+                  value="Crear Pedido">
+              </div>
+
               <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonAnular">
                 <input type="button" (click)="abrirModalAnular()" class="btn-custom btn-remove btn-mediano"
                   value="Anular">
@@ -423,19 +433,19 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="modalForzarCreacion">Crear orden</h4>
+          <h4 class="modal-title" id="modalForzarCreacion">Crear pedido</h4>
         </div>
         <div class="modal-body">
           <div class="row" class="col-xs-12 col-sm-12 col-md-12">
-            ¿Está seguro de que desea crear la orden por menos de 30 toneladas?
+            ¿Está seguro de que desea crear el pedido por menos de 15 toneladas?
           </div>
         </div>
         <div class="modal-footer" style="border-top:none;">
           <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
             id="closemodalForzarCreacion" style="display: inline-flex;">Cancelar</button>
-          <button type="button" class="btn-custom btn-remove btn-mediano" (click)="forzarCreacionOrden()"
+          <button type="button" class="btn-custom btn-remove btn-mediano" (click)="forzarCreacionPedido()"
             style="display: inline-flex;">
-            Crear orden
+            Crear pedido
           </button>
 
         </div>
