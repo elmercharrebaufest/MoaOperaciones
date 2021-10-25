@@ -269,6 +269,7 @@ export class SubPosicionComponent extends ListBaseComponent {
         if (this.listadoPosicionActul.length > 0) {
             if (indice >= 0) {
                 this.listadoPosicionActul.splice(indice, 1);
+                this.reEnumerarSubposiciones(this.listadoPosicionActul);
             } else {
                 this.listadoPosicionActul = [];
             }
@@ -279,6 +280,12 @@ export class SubPosicionComponent extends ListBaseComponent {
         if (this.listadoPosicionActul.length == 0) {
             this.nuevaPosicion(null);
             this.model.posicionActual.listadoSubPosiciones = this.listadoPosicionActul;
+        }
+    }
+
+    reEnumerarSubposiciones(listadoSubposiciones: Array<SubPosicionViewModel>) {
+        for (let i = 0; i < listadoSubposiciones.length; i++) {
+            listadoSubposiciones[i].subPosicion = i + 1;
         }
     }
 
