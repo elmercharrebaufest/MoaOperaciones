@@ -203,6 +203,19 @@
     </p-footer>
 </p-dialog>
 
+<p-dialog [(visible)]="displaySAPEditar" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}">
+    <p-header class="headerModal">
+        ¡Felicitaciones!
+    </p-header>
+    <br> Ha editado con éxito la solicitud de pedido {{solpActual.NroSolp}} en SAP
+    <br>
+    <br>
+    <p-footer>
+        <button type="button" pButton label="Descargar SOLP" class="btn btn-defaut btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)"></button>
+        <button type="button" pButton label="Volver a la home" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()"></button>
+    </p-footer>
+</p-dialog>
+
 <p-dialog [(visible)]="displayErrorSAP" [width]="400" [height]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'400px'}">
     <p-header class="headerModalError">
         ¡Ocurrió un error!
