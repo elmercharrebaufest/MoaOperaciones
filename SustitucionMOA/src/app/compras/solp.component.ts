@@ -461,7 +461,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.cambioPaso(this.pasos[0]);
     }
 
-    validatePasos(){
+    validatePasos(): any{
+        let countPasos = 0;
         let estadosPasos = this.solpActual.estadoPasos.split(',');
         this.pasos.forEach((p, i) => {
             estadosPasos[p.Numero -1] = !p.Iniciado ? '0' : p.Completo ? '2' : '1';      
@@ -471,9 +472,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         estadosPasos.forEach(x=> {
             this.solpActual.estadoPasos += `${x},` ;
+            if(x === '2') {
+                countPasos += 1;
+            }
         });
 
         this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
+
+        return {
+            completo: countPasos === 6,
+            paso: countPasos
+        }
     }
 
     cambioPaso(paso) {
@@ -542,7 +551,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 this.blockUI.start('Guardando...');
             }
 
-            this.validatePasos();
+            let validatePasos = this.validatePasos();
+
+            if(enviarSap) {
+                if(!validatePasos.completo) {
+                    this.floatMsgService.setErrorMsg(`Falta completar campos en el paso #${validatePasos.paso}`);
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                    this.disabledSave = false;
+                    return;
+                }
+            }
 
             this.solpActual.Finalizar = enviarSap;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
@@ -846,15 +866,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     solpFinalizadaVolverHome() {
-        this.confirmationService.confirm({
-            key: 'solpFinalizadaVolverHome',
-            message: '¿Desea volver a la pantalla principal?',
-            accept: () => {
-                this.salir();
-            },
-            reject: () => {
-            }
-        });
+        this.salir();
     }
 
     ultimoPasoSolp() {
