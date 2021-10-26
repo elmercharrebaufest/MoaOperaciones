@@ -36,5 +36,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<ServicioSolpDto> AutocompleteServicioSolp(string valor);
         void ActualizarEstadoSolpBulk();
         void ActualizarEstadoSolp(string nroSolp, int idEstado);
+        List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual);
     }
 }

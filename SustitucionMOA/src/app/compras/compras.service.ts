@@ -262,4 +262,12 @@ export class ComprasService extends BaseService {
         return this.http
             .post('/api/compras/ObtenerDatosPorCodigosSapServicioSolp', payload, { headers: this.headersPost });
     }
+
+    obtenerUsuarioCompras(): Observable<any> {
+
+        return this.http
+            .get("/api/compras/ListarUsuarioCompras", {
+                headers: this.headers,
+            });
+    }
 }

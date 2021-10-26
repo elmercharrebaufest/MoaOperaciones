@@ -122,6 +122,15 @@
             <input type="text" pInputText [(ngModel)]="solpActual.revisadoPor" class="styled-select inputComprasFinalizar" placeholder="">
         </div>
     </div>
+    <div class="col-md-12 row myRow alinearTitulo margenInput">
+        <div class="col-md-12 titulosModal" style="margin-right: 1em;">
+            Usuario Compras:
+        </div>
+        <div class="col-md-5" style="margin-right: 1em; width: 65%;">
+            <p-dropdown [options]="usuarioComprasList" [(ngModel)]="selectUsuarioCompras" dataKey="Id" optionLabel="CodigoDescripcion">
+            </p-dropdown>
+        </div>
+    </div>
     <div class="margenInput">
         <p><b>¿Desea editar las fechas?</b></p>
     </div>
@@ -210,7 +219,7 @@
     <div class="col-md-12 alinearTitulo">
         <h4>No se pudo procesar la SOLP</h4>
         <br>
-        <p>Por favor revisar los siguientes errores:</p> 
+        <p>Por favor revisar los siguientes errores:</p>
         <br>
         <div *ngFor="let error of listadoErrores; let indice = index" class="col-md-12 alinearTitulo ui-helper-clearfix">
             <ul>

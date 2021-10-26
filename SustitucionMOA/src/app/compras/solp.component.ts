@@ -165,6 +165,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Numero: 6
     }];
 
+    selectUsuarioCompras: any;
+    usuarioComprasList: any[] = [];
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         private messageService: MessageService, private route: ActivatedRoute, private confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
@@ -768,6 +771,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.combos = result;
+                        this.obtenerUsuarioCompras();
                     }
                 },
                 error => {
@@ -780,6 +784,40 @@ export class SolpComponent extends BaseComponent implements OnInit {
             return false; //<-- Prevent Refresh
         }
 
+        return false; //<-- Prevent Refresh
+    }
+
+    obtenerUsuarioCompras() {
+        this.unsubscribe();
+        try {
+            this.subscription = this.service.obtenerUsuarioCompras().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.usuarioComprasList = [];
+                        result.data.forEach(element => {
+                            this.usuarioComprasList.push({
+                                Id : element.Id,
+                                CodigoDescripcion: element.UsuarioCompras.Mail
+                            });
+                        });
+                        this.selectUsuarioCompras = this.usuarioComprasList[0];
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
         return false; //<-- Prevent Refresh
     }
 

@@ -1222,6 +1222,19 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
             }
         }
+
+        public List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual)
+        {
+            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id)
+                .Select(x => new UsuarioComprasRelacionConUsuariosDto
+                {
+                    Usuario = new UsuarioDto(x.Usuario),
+                    Id = x.Id,
+                    UsuarioCompras = new UsuarioComprasDto(x.UsuarioCompras)
+                });
+
+            return usuariosCompras.ToList();
+        }
     }
 
     public static class SolpTemplateKeys
