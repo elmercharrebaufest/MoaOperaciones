@@ -262,26 +262,6 @@ namespace SustitucionMOATest.Services
         public void EditarOrdenDeCargaInformadaTest()
         {
             int orderId = 1;
-            var orden = new OrdenDeCarga
-            {
-                Id = orderId,
-                Estado = EstadoOrdenDeCarga.Confirmado,
-                InformadaSAP = true,
-                ContratoIngresado = "1111111",
-                NombreChofer = "Enzo V.",
-                HistorialCambios = new List<OrdenDeCargaCambiosHistorial> {}
-            };
-
-            var orden2 = new OrdenDeCarga
-            {
-                Id = orderId,
-                Estado = EstadoOrdenDeCarga.Confirmado,
-                InformadaSAP = true,
-                ContratoIngresado = "212121",
-                NombreChofer = "Enzo",
-                HistorialCambios = new List<OrdenDeCargaCambiosHistorial> { }
-            };
-
             string mailUsuario = "usuario@test.com";
 
             var proveedor = new Proveedor
@@ -292,6 +272,7 @@ namespace SustitucionMOATest.Services
                 RazonSocial = "RS",
                 Mail = mailUsuario,
                 CUIT = "233333333333",
+                CodigoProveedor = "2323232323",
                 TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
             };
 
@@ -305,6 +286,43 @@ namespace SustitucionMOATest.Services
                     proveedor
                 },
                 Roles = new List<Rol>()
+            };
+
+            var producto = new Material
+            {
+                Id = 1,
+                CodigoSap = "23",
+                Nombre = "Maiz"
+            };
+
+            var orden = new OrdenDeCarga
+            {
+                Id = orderId,
+                Estado = EstadoOrdenDeCarga.Confirmado,
+                InformadaSAP = true,
+                ContratoIngresado = "1111111",
+                NombreChofer = "Enzo V.",
+                HistorialCambios = new List<OrdenDeCargaCambiosHistorial> { },
+                Cliente = proveedor,
+                Cliente_Id = proveedor.Id,
+                NumeroPedido = "11",
+                Producto = producto,
+                Producto_Id = producto.Id
+            };
+
+            var orden2 = new OrdenDeCarga
+            {
+                Id = orderId,
+                Estado = EstadoOrdenDeCarga.Confirmado,
+                InformadaSAP = true,
+                ContratoIngresado = "212121",
+                NombreChofer = "Enzo",
+                HistorialCambios = new List<OrdenDeCargaCambiosHistorial> { },
+                Cliente = proveedor,
+                Cliente_Id = proveedor.Id,
+                NumeroPedido = "11",
+                Producto = producto,
+                Producto_Id = producto.Id
             };
 
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(orden);
@@ -467,6 +485,88 @@ namespace SustitucionMOATest.Services
             
             Assert.AreEqual(expected.Id, result.Id);
             Assert.AreEqual(expected.CUITCliente, result.CUITCliente);
+        }
+
+        [Test()]
+        public void ObtenerPedidosValidosTest()
+        {
+            string mailUsuario = "usuario@test.com";
+
+            var proveedor = new Proveedor
+            {
+                Id = 1,
+                EstadoAprobacion = EstadoAprobacion.Aprobado,
+                Observaciones = "Test",
+                RazonSocial = "RS",
+                Mail = mailUsuario,
+                CUIT = "233333333333",
+                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
+            };
+
+            var usuario = new Usuario
+            {
+                Id = 1,
+                Mail = mailUsuario,
+                CUITRegistro = "233333333333",
+                Proveedores = new List<Proveedor>()
+                {
+                    proveedor
+                },
+                Roles = new List<Rol> { }
+            };
+
+            var ordenId = 1;
+            var ordenDeCarga = new OrdenDeCarga { Id = ordenId, Cliente_Id = 1, CUITCliente = "233333333333", PedidosRespuesta = "1234,123,12,1" };
+            var expected = new List<string> { "1234", "123", "12", "1" };
+
+            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+                .Returns(ordenDeCarga);
+
+            var result = target.ObtenerPedidos(ordenId);
+
+            Assert.AreEqual(result, expected);
+        }
+
+        [Test()]
+        public void SeleccionarPedidoValidoTest()
+        {
+            string mailUsuario = "usuario@test.com";
+            string pedido = "1";
+
+            var proveedor = new Proveedor
+            {
+                Id = 1,
+                EstadoAprobacion = EstadoAprobacion.Aprobado,
+                Observaciones = "Test",
+                RazonSocial = "RS",
+                Mail = mailUsuario,
+                CUIT = "233333333333",
+                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
+            };
+
+            var usuario = new Usuario
+            {
+                Id = 1,
+                Mail = mailUsuario,
+                CUITRegistro = "233333333333",
+                Proveedores = new List<Proveedor>()
+                {
+                    proveedor
+                },
+                Roles = new List<Rol> { }
+            };
+
+            var ordenId = 1;
+            var ordenDeCarga = new OrdenDeCarga { Id = ordenId, Cliente_Id = 1, CUITCliente = "233333333333", PedidosRespuesta = "" };
+            var expected = SuccessMsg.OrdenDeCargaActualizada;
+
+            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+                .Returns(ordenDeCarga);
+
+            var result = target.SeleccionarPedido(ordenId, pedido);
+
+            Assert.AreEqual(result, expected);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
         }
 
 

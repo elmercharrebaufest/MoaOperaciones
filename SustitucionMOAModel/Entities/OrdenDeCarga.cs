@@ -68,6 +68,7 @@ namespace SustitucionMOAModel.Entities
         public string NumeroPedido { get; set; }
 
         public string ContratosRespuesta { get; set; }
+        public string PedidosRespuesta { get; set; }
         public string NumeroPedidoIngresado { get; set; }
         public string CodigoVerificacionSap { get; set; }
         public string DescripcionCodigoVerificacionSap { get; set; }

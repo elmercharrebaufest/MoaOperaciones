@@ -19,6 +19,8 @@ namespace SustitucionMOAUtils.Interfaces
         string NotificarTransporte(int ordenId);
         List<string> ObtenerContratos(int ordenId);
         string SeleccionarContrato(int ordenId, string contratoSAP);
+        List<string> ObtenerPedidos(int ordenId);
+        string SeleccionarPedido(int ordenId, string pedido);
         string VerificarSituacionCrediticia(int ordenId);
         string VerificarTransporte(int ordenId);
         void VerificarTransporteBulk();

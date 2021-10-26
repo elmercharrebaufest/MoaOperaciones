@@ -38,10 +38,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     contratos: string[] = [];
     contratoSeleccionado: string;
 
+    pedidos: string[] = [];
+    pedidoSeleccionado: string;
+
     corredorContratoList: CorredorContrato[] = [];
     corredorContratoSeleccionado: CorredorContrato;
 
     mostrarBotonContratos: boolean = false;
+    mostrarBotonPedidos: boolean = false;
     mostrarBotonCorredores: boolean = false;
     mostrarBotonNotificarTransporte: boolean = false;
     mostrarBotonVerificarTransporte: boolean = false;
@@ -87,6 +91,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         if (this.esInterno) {
             if (this.ordenDeCarga.ContratoSAP === "-") {
                 this.mostrarBotonContratos = true;
+            }
+
+            if (this.ordenDeCarga.NumeroPedido === "-"){
+                this.mostrarBotonPedidos = true
             }
 
             if (!this.ordenDeCarga.TransporteExiste) {
@@ -254,7 +262,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
-        console.log(this.contratoSeleccionado);
         try {
             this.subscriptionDropDowns = this.service.seleccionarContrato(this.ordenDeCargaId, this.contratoSeleccionado).subscribe(
                 result => {
@@ -314,6 +321,67 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     abrirModalAnular() {
         document.getElementById("openAnularOrden").click();
+    }
+
+    abrirModalPedidos() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+
+        try {
+            this.subscriptionDropDowns = this.service.obtenerPedidos(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.pedidos = result.data;
+                        document.getElementById("openSeleccionarPedido").click();
+
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    seleccionarPedido() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscriptionDropDowns = this.service.seleccionarPedido(this.ordenDeCargaId, this.pedidoSeleccionado).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.ordenDeCarga.NumeroPedido = this.pedidoSeleccionado;
+                        this.mostrarBotonPedidos = false;
+                        document.getElementById("closemodalSeleccionarPedido").click();
+                        this.obtenerOrdenDeCarga();
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
     }
 
     anularOrden() {
