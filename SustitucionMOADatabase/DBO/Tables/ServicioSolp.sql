@@ -1,0 +1,12 @@
+﻿CREATE TABLE [dbo].[ServicioSolp]
+(
+	[Id] INT NOT NULL PRIMARY KEY,
+	[Codigo] INT NOT NULL,
+	[GrupoArticulos] INT NULL,
+	[TipoServicio] VARCHAR(MAX) NOT NULL,
+	[AmbitoServicio] VARCHAR(MAX) NOT NULL,
+	[Edicion] INT NOT NULL,
+	[UnidadMedidaBase] VARCHAR(MAX) NOT NULL,
+	[SSCItem] VARCHAR(MAX) NOT NULL, 
+    [Descripcion] VARCHAR(MAX) NOT NULL
+)

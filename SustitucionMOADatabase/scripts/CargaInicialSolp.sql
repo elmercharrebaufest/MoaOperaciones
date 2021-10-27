@@ -50,6 +50,24 @@ BEGIN
 	VALUES('EstadoSolpSap', 'FINALIZADA', 'FINALIZADA', 'Finalizada', null)
 END
 
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'EstadoSolpSap' and Codigo = 'LIBERACION_RECHAZADA')
+BEGIN
+	INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id)
+	VALUES('EstadoSolpSap', 'LIBERACION_RECHAZADA', '08', 'Liberación rechazada', null)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'EstadoSolpSap' and Codigo = 'AUTORIZACION_EXTERNA')
+BEGIN
+	INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id)
+	VALUES('EstadoSolpSap', 'AUTORIZACION_EXTERNA', '12', 'En autorización externa', null)
+END
+
+update TablaSap set CodigoSap='01', Descripcion='Version en tratamiento' where Codigo='CREADA';
+update TablaSap set CodigoSap='02', Descripcion='Activa' where Codigo='LIBERADA';
+update TablaSap set CodigoSap='03', Descripcion='En proceso de liberación' where Codigo='PARC_LIBERADA';
+update TablaSap set CodigoSap='04', Descripcion='Para liberación general' where Codigo='RELAC_PEDIDO_COMPRA';
+update TablaSap set CodigoSap='05', Descripcion='Liberación concluida' where Codigo='FINALIZADA';
+
 -- Tabla TipoFiltroSolpProveedor
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoFiltroSolpProveedor' and Codigo = 'VALIDO')

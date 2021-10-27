@@ -323,7 +323,7 @@ namespace SustitucionMOAUtils.Services
                                     subposEntity.Unidad = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Unidad && x.Codigo == subpos.Unidad.Codigo);
 
                                 if (subpos.CodigoServicioSap != null)
-                                    subposEntity.CodigoServicioSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CodigoServicioSap && x.Codigo == subpos.CodigoServicioSap.Codigo);
+                                    subposEntity.ServicioSolp = repositorio.Obtener<ServicioSolp>(x => x.Codigo == subpos.CodigoServicioSap.Codigo);
 
 
                                 posEntity.Subposiciones.Add(subposEntity);
@@ -745,7 +745,7 @@ namespace SustitucionMOAUtils.Services
 
                 var diasJornada = string.Empty;
 
-                if (tieneHuecos || diasOrdenado.Count == 1)
+                if (tieneHuecos || diasOrdenado.Count() == 1)
                 {
                     diasJornada = string.Join(",", diasOrdenado.Select(a => getDia(a)).ToList());
                 }
@@ -789,7 +789,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     texto.AppendLine(string.Format(templateSubposiciones,
                         subpos.Numero,
-                        subpos.CodigoServicioSap?.CodigoSap,
+                        subpos.CodigoServicioSap?.Codigo,
                         subpos.Tarea,
                         subpos.Cantidad,
                         subpos.Unidad?.Descripcion
@@ -1039,15 +1039,24 @@ namespace SustitucionMOAUtils.Services
         public List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor)
         {
             var lista = repositorio.Listar<TablaSap>(x => x.Tabla == tabla)
-                .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToLower().Contains(valor.ToLower()))
-                .Select(s => new TablaSapDto
-                {
-                    Id = s.Id,
-                    Descripcion = s.Descripcion,
-                    CodigoSap = s.CodigoSap,
-                    Codigo = s.Codigo,
-                    Tabla = s.Tabla
-                }).ToList();
+            .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToLower().Contains(valor.ToLower()))
+            .Select(s => new TablaSapDto
+            {
+                Id = s.Id,
+                Descripcion = s.Descripcion,
+                CodigoSap = s.CodigoSap,
+                Codigo = s.Codigo,
+                Tabla = s.Tabla
+            }).ToList();
+
+            return lista;
+        }
+
+        public List<ServicioSolpDto> AutocompleteServicioSolp(string valor)
+        {
+            List<ServicioSolpDto> lista = repositorio.Listar<ServicioSolp>()
+                .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.Codigo.ToString().ToLower().Contains(valor.ToLower()))
+                .Select(s => new ServicioSolpDto(s)).ToList();
 
             return lista;
         }
@@ -1123,6 +1132,13 @@ namespace SustitucionMOAUtils.Services
             return ret;
         }
 
+        public List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos)
+        {
+            return repositorio
+                .Listar<ServicioSolp>(x => codigos.Contains(x.Codigo.ToString()))
+                .Select(x => new ServicioSolpDto(x)).ToList();
+        }
+
         public void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion)
         {
             var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nrosolp);
@@ -1130,6 +1146,79 @@ namespace SustitucionMOAUtils.Services
             if (solp != null)
             {
                 solp.FechaLiberacionSap = fechaLiberacion;
+                repositorio.GuardarCambios();
+            }
+        }
+
+        public void ActualizarServiciosSolp()
+        {
+            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
+            if (resultSap.Servicios.Any())
+            {
+                var listaBase = repositorio.Listar<ServicioSolp>();
+
+                foreach (var servicio in resultSap.Servicios)
+                {
+                    int codigo = 0;
+                    if (Int32.TryParse(servicio.Codigo, out codigo) &&
+                        !listaBase.Any(x => x.Codigo == codigo && x.Descripcion == servicio.Descripcion))
+                    {
+                        repositorio.Agregar(new ServicioSolp
+                        {
+                            Codigo = codigo,
+                            Descripcion = servicio.Descripcion,
+                            GrupoArticulos = Int32.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null,
+                            TipoServicio = servicio.Serv,
+                            AmbitoServicio = servicio.Ser,
+                            Edicion = Int32.TryParse(servicio.Edit, out int edicion) ? edicion : 0,
+                            UnidadMedidaBase = servicio.Bas,
+                            SSCItem = servicio.SSCItem
+                        });
+                    }
+                }
+            }
+
+            repositorio.GuardarCambios();
+        }
+
+        public void ActualizarEstadoSolpBulk()
+        {
+            var lista = repositorio.Listar<TablaSap>(x => x.Tabla == "EstadoSolpSap")
+                    .Select(x => new TablaSapDto(x)).ToList();
+            foreach (var todasLasSolp in repositorio.Listar<Solp>(o => o.FechaBorrado == null && o.NroSolp != null))
+            {
+                ConsultaEstadoSolp(todasLasSolp.NroSolp, lista);
+            }
+        }
+
+        private void ConsultaEstadoSolp(string nroSolp, List<TablaSapDto> listaTablaSap)
+        {
+            DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
+            DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
+            var filtros = new ObtenerSolpRequest
+            {
+                FechaDesde = fechaDesde,
+                FechaHasta = fechaHasta,
+                NumeroSolp = nroSolp,
+            };
+            var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+            if (solp.Posiciones.Any())
+            {
+                var codigoSap = listaTablaSap.Where(x => x.CodigoSap == solp.Posiciones[0].EstadoSolpSap).FirstOrDefault();
+                if(codigoSap != null)
+                {
+                    ActualizarEstadoSolp(nroSolp, codigoSap.Id);
+                }
+            }
+        }
+
+        public void ActualizarEstadoSolp(string nroSolp, int idEstado)
+        {
+            var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nroSolp);
+
+            if (solp != null)
+            {
+                solp.EstadoSolpSap_Id = idEstado;
                 repositorio.GuardarCambios();
             }
         }

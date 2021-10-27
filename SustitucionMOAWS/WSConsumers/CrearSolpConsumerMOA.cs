@@ -316,8 +316,8 @@ namespace SustitucionMOAWS.WSConsumers
                     //IM_SERVICELINE.SERVICE = "000000000003005912";//
                     //IM_SERVICELINE.SERVICE = subPosicion.CodigoServicioSap.Codigo.ToString();
 
-                    if(subPosicion.CodigoServicioSap != null)
-                        IM_SERVICELINE.SERVICE = subPosicion.CodigoServicioSap.Codigo.ToString();
+                    if(subPosicion.ServicioSolp != null)
+                        IM_SERVICELINE.SERVICE = subPosicion.ServicioSolp.Codigo.ToString();
                     else 
                         IM_SERVICELINE.SHORT_TEXT = subPosicion.Tarea;
 
@@ -339,8 +339,8 @@ namespace SustitucionMOAWS.WSConsumers
                         OUTLINE = outlineNumber, //Preguntar a Ulises
                         SRV_LINE = serviceLineNumber,
                         //DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
-                        SERVICE = (subPosicion.CodigoServicioSap != null) ? "X" : "",
-                        SHORT_TEXT = (subPosicion.CodigoServicioSap == null) ? "X" : "",
+                        SERVICE = (subPosicion.ServicioSolp != null) ? "X" : "",
+                        SHORT_TEXT = (subPosicion.ServicioSolp == null) ? "X" : "",
                         QUANTITY = "X",
                         UOM = "X",
                         GROSS_PRICE = "X",

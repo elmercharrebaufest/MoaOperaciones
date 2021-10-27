@@ -73,18 +73,18 @@
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.codigoServicio"
-                                                    [suggestions]="autocomplete" dataKey="Id" ariaLabel="Codigo"
-                                                    field="CodigoSap" appendTo="body" [autoHighlight]="true"
+                                                    [suggestions]="autocompleteServiciosSolp" dataKey="Id" ariaLabel="Codigo"
+                                                    field="Codigo" appendTo="body" [autoHighlight]="true"
                                                     emptyMessage="" [width]="400" [minLength]="2"
                                                     [forceSelection]="true"
-                                                    (completeMethod)="autocompleteSap($event, 'CodigoServicioSap')"
+                                                    (completeMethod)="autocompleteServicioSolp($event)"
                                                     (onFocus)="$event.target.select()"
                                                     (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio,rowIndex,dt)"
                                                     (onSelect)="onSelectServicio(posicion, dt)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{posicion.codigoServicio?.CodigoSap}}
+                                                {{posicion.codigoServicio?.Codigo}}
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
@@ -92,10 +92,11 @@
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.tareaSubcontratarObj"
-                                                    [suggestions]="autocomplete" dataKey="Id" field="Descripcion"
-                                                    ariaLabel="Tarea" appendTo="body" [autoHighlight]="false"
-                                                    emptyMessage="" [minLength]="2" [forceSelection]="false"
-                                                    (completeMethod)="autocompleteSap($event, 'CodigoServicioSap')"
+                                                    [suggestions]="autocompleteServiciosSolp" dataKey="Id" ariaLabel="Tarea"
+                                                    field="Descripcion" appendTo="body" [autoHighlight]="false"
+                                                    emptyMessage="" [minLength]="2" 
+                                                    [forceSelection]="false"
+                                                    (completeMethod)="autocompleteServicioSolp($event)"
                                                     (onFocus)=" $event.target.select()"
                                                     (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)"
                                                     (onSelect)="onSelectTarea(posicion)"
@@ -130,17 +131,17 @@
                                                 <p-autoComplete [(ngModel)]="posicion.unidadSeleccionada"
                                                     [suggestions]="unidades" dataKey="Id" ariaLabel="Descripcion"
                                                     field="Descripcion" appendTo="body" [autoHighlight]="true"
-                                                    emptyMessage="Ningúna unidad encontrada" [minLength]="1"
+                                                    emptyMessage="Ninguna unidad encontrada" [minLength]="1"
                                                     placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true"
                                                     (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')"
                                                     (onFocus)=" $event.target.select()" (onSelect)="endEditCell(dt)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{posicion.unidadSeleccionada.Descripcion}}
+                                                {{posicion.unidadSeleccionada?.Descripcion}}
                                             </ng-template>
                                         </p-cellEditor>
-                                        <div *ngIf="validarConNoNulo(posicion, posicion.unidadSeleccionada.Descripcion, 'unidadMedida')">
+                                        <div *ngIf="validarConNoNulo(posicion, posicion.unidadSeleccionada?.Descripcion, 'unidadMedida')">
                                             <p class="text-danger">*</p>
                                         </div>
                                     </td>
@@ -169,7 +170,7 @@
                                                     emptyMessage="" [minLength]="2" [forceSelection]="true"
                                                     (completeMethod)="autocompleteSap($event, 'CuentasSolpSap')"
                                                     (onFocus)=" $event.target.select()"
-                                                    (paste)="onPaste($event,enumColumnaSubPosicion.CuentaMayor,rowIndex,dt)"
+                                                    (paste)="onPaste($event,enumColumnaSubPosicion?.CuentaMayor,rowIndex,dt)"
                                                     (onSelect)="endEditCell(dt)">
                                                 </p-autoComplete>
                                             </ng-template>
@@ -177,7 +178,7 @@
                                                 {{posicion.cuentaMayor?.CodigoDescripcion}}
                                             </ng-template>
                                         </p-cellEditor>
-                                        <div *ngIf="validarConNoNulo(posicion, posicion.cuentaMayor.CodigoDescripcion, 'cuentaMayor')">
+                                        <div *ngIf="validarConNoNulo(posicion, posicion.cuentaMayor?.CodigoDescripcion, 'cuentaMayor')">
                                             <p class="text-danger">*</p>
                                         </div>
                                     </td>
@@ -198,7 +199,7 @@
                                                 {{posicion.tipoImputacion?.CodigoDescripcion}}
                                             </ng-template>
                                         </p-cellEditor>
-                                        <div *ngIf="validarConNoNulo(posicion, posicion.tipoImputacion.CodigoDescripcion, 'tipoImputacion')">
+                                        <div *ngIf="validarConNoNulo(posicion, posicion.tipoImputacion?.CodigoDescripcion, 'tipoImputacion')">
                                             <p class="text-danger">*</p>
                                         </div>
                                     </td>

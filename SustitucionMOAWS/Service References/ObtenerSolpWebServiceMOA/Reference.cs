@@ -93,6 +93,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         private string cURRENCYField;
         
         private string mATL_GROUPField;
+        private string ProcStat;
         
         private decimal nET_PRICEField;
         
@@ -301,7 +302,22 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
                 this.RaisePropertyChanged("NET_PRICESpecified");
             }
         }
-        
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 14)]
+        public string PROCSTAT
+        {
+            get
+            {
+                return this.ProcStat;
+            }
+            set
+            {
+                this.ProcStat = value;
+                this.RaisePropertyChanged("PROCSTAT");
+            }
+        }
+
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {

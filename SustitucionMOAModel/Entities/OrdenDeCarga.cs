@@ -75,12 +75,14 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("OrdenDeCarga")]
         public virtual ICollection<OrdenDeCargaCambiosHistorial> HistorialCambios { get; set; } = new List<OrdenDeCargaCambiosHistorial>();
+        public bool ContratoSinCantidadPendiente { get; set; }
+        public string DescripcionErrorInterno { get; set; }
 
         public void ActualizarEstado()
         {
             if (Estado != EstadoOrdenDeCarga.Entregada)
             {
-                if (string.IsNullOrEmpty(ContratoSAP))
+                if (string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente)
                 {
                     Estado = EstadoOrdenDeCarga.Pendiente;
                 }

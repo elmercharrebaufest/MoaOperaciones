@@ -231,5 +231,67 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(expected[0].Id, result[0].Id);
         }
+
+        [Test]
+        public void ActualizarServiciosSolpOk()
+        {
+            ServicioWSMOAResponse servicioWSMOAResponseTest = new ServicioWSMOAResponse
+            {
+                error = "",
+                Servicios = new List<Servicio>
+                {
+                    new Servicio{ Codigo = "1", Descripcion = "descripcion1", NroGrupo = "", Serv = "serv1", Ser = "ser1", Edit = "1", Bas = "base1", SSCItem = "sc1" },
+                    new Servicio{ Codigo = "2", Descripcion = "descripcion2", NroGrupo = "2", Serv = "serv2", Ser = "ser2", Edit = "2", Bas = "base2", SSCItem = "sc2" },
+                    new Servicio{ Codigo = "3", Descripcion = "descripcion3", NroGrupo = "3", Serv = "serv3", Ser = "ser3", Edit = "3", Bas = "base3", SSCItem = "sc3" },
+                    new Servicio{ Codigo = "A", Descripcion = "descripcion3", NroGrupo = "3", Serv = "serv3", Ser = "ser3", Edit = "3", Bas = "base3", SSCItem = "sc3" },
+                },
+            };
+
+            this.serviciosConsumerMock
+                .Setup(x => x.request())
+                .Returns(servicioWSMOAResponseTest);
+
+            List<ServicioSolp> listadoServiciosSolp = new List<ServicioSolp>
+            {
+                new ServicioSolp { Id = 1, Codigo = 1, Descripcion = "descripcion" },
+                new ServicioSolp { Id = 2, Codigo = 2, Descripcion = "descripcion2" },
+                new ServicioSolp { Id = 3, Codigo = 4, Descripcion = "descripcion3" },
+            };
+
+            this.repositorioMock
+                .Setup(x => x.Listar<ServicioSolp>(null, 0, null, DirOrden.Asc, null))
+                .Returns(listadoServiciosSolp);
+
+            this.repositorioMock
+                .Setup(x => x.Agregar(It.IsAny<ServicioSolp>()))
+                .Callback<ServicioSolp>(servicioSolp => listadoServiciosSolp.Add(servicioSolp));
+
+            target.ActualizarServiciosSolp();
+
+            Assert.AreEqual(5, listadoServiciosSolp.Count);
+            
+            Assert.AreEqual(1, listadoServiciosSolp[3].Codigo);
+            Assert.AreEqual("descripcion1", listadoServiciosSolp[3].Descripcion);
+            Assert.IsNull(listadoServiciosSolp[3].GrupoArticulos);
+            Assert.AreEqual("serv1", listadoServiciosSolp[3].TipoServicio);
+            Assert.AreEqual("ser1", listadoServiciosSolp[3].AmbitoServicio);
+            Assert.AreEqual(1, listadoServiciosSolp[3].Edicion);
+            Assert.AreEqual("base1", listadoServiciosSolp[3].UnidadMedidaBase);
+            Assert.AreEqual("sc1", listadoServiciosSolp[3].SSCItem);
+            
+            Assert.AreEqual(3, listadoServiciosSolp[4].Codigo);
+            Assert.AreEqual("descripcion3", listadoServiciosSolp[4].Descripcion);
+            Assert.AreEqual(3, listadoServiciosSolp[4].GrupoArticulos);
+            Assert.AreEqual("serv3", listadoServiciosSolp[4].TipoServicio);
+            Assert.AreEqual("ser3", listadoServiciosSolp[4].AmbitoServicio);
+            Assert.AreEqual(3, listadoServiciosSolp[4].Edicion);
+            Assert.AreEqual("base3", listadoServiciosSolp[4].UnidadMedidaBase);
+            Assert.AreEqual("sc3", listadoServiciosSolp[4].SSCItem);
+
+            Assert.AreEqual(3, listadoServiciosSolp[4].Codigo);
+
+            this.serviciosConsumerMock.Verify(x => x.request(), Times.Once);
+            this.repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+        }
     }
 }

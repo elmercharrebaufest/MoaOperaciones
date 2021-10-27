@@ -20,6 +20,60 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
+        public ObtenerSolpSAPResponse RequestSolpWithNroAndDates(ObtenerSolpRequest req)
+        {
+            //Fecha Solicitud Fin
+            //IM_PREQ_DATE_F: Actúa como filtro de Fecha de SOLPED (desde....)
+            // la fecha fin es desde????????????????????????????
+            string IM_PREQ_DATE_F = SAPFormatter.PrepararFecha(req.FechaHasta);
+
+            //Fecha Solicitud Inicio
+            //IM_PREQ_DATE_I: Actúa como filtro de Fecha de SOLPED (hasta....)
+            string IM_PREQ_DATE_I = SAPFormatter.PrepararFecha(req.FechaDesde);
+
+            //Numero de SOLPED
+            //IM_PREQ_NO: Permite buscar 1 solo número de SOLPED a la vez. Sino se introduce el campo, el sistema devuevle todo lo existente
+            //            en el periodo de tiempo ingresado en IM_PREQ_DATE_I y IM_PREQ_DATE_F.
+            string IM_PREQ_NO = req.NumeroSolp;
+
+            ZMPES5640[] IM_USUARIOS = new ZMPES5640[0];
+
+            //200 exito - 400 error
+            var result = service.SI_MMRFC_OBTENER_SOLPED(
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        IM_PREQ_DATE_F,
+                        IM_PREQ_DATE_I,
+                        IM_PREQ_NO,
+                        "",
+                        "",
+                        IM_USUARIOS,
+                        out ZMPES5740[] EX_PRACCOUNT,
+                        out ZMPES5750[] EX_PRADDRDELIVERY,
+                        out BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS,
+                        out ZMPES5670[] EX_PRITEM,
+                        out BAPIRETURN[] EX_RETURN,
+                        out ZMPES5770[] EX_SERVICEACCOUNT,
+                        out ZMPES5730[] EX_SERVICELINES);
+
+
+            /*  •	Datos a nivel posición de SOLPED (EX_PRITEM)
+                •	Datos de dirección de la posición de la SOLPED (EX_PRADDRDELIVERY)
+                •	Datos de imputación a nivel posición de la SOLPED (EX_PRACCOUNT)
+                •	Datos de suposiciones de Servicios (EX_SERVICELINES). Esto se da cuando EX_PRITEM-ITEM_CAT = "9"
+                •	Datos de imputación a nivel suposiciones (EX_SERVICEACCOUNT). Involucra solo porcentajes y montos.
+                •	Mensajes del WS, procesados por SAP (EX_RETURN)
+                •	Variable de status de ws (EX_EXITO)
+            */
+
+            return Map(EX_PRACCOUNT, EX_PRADDRDELIVERY, EX_PRCOMPONENTS, EX_PRITEM, EX_RETURN, EX_SERVICEACCOUNT, EX_SERVICELINES);
+        }
+
         //"Brinda información de solicitudes de Pedidos"
         public ObtenerSolpSAPResponse Request(ObtenerSolpRequest req)
         {
@@ -260,7 +314,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             */
 
-
+            result.Posiciones = new List<PosicionSolpSAP>();
             foreach (var posicion in posiciones)
             {
                 result.Posiciones.Add(new PosicionSolpSAP
@@ -308,6 +362,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Moneda = posicion.CURRENCY,
                     CantidadDiasEntrega = posicion.PLND_DELRY,
                     EstaBloqueada = posicion.REQ_BLOCKED,
+                    EstadoSolpSap = posicion.PROCSTAT
                 });
             }
 
@@ -477,6 +532,7 @@ namespace SustitucionMOAWS.WSConsumers
         public string PrecioSolpString { get; internal set; }
         public string CantidadString { get; internal set; }
         public string MonedaPrecioString { get; internal set; }
+        public string EstadoSolpSap { get; set; }
     }
 
     public class DireccionSolpSAP

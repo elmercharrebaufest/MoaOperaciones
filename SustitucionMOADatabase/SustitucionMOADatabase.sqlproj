@@ -141,6 +141,7 @@
     <None Include="scripts\Insert SecuenciaIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\Insert Rol, PermisoPorRol y RolPermisoPorRol GestionCM05.sql" />
     <Build Include="DBO\Tables\OrdenDeCargaCambiosHistorial.sql" />
+    <Build Include="DBO\Tables\ServicioSolp.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

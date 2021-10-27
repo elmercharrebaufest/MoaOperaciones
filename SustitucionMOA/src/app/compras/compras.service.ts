@@ -239,11 +239,27 @@ export class ComprasService extends BaseService {
             .get<any[]>("/api/compras/AutocompleteTablaSap", { params: params })
     }
 
+    autocompleteServicioSolp(valor: string) {
+        let params: HttpParams = new HttpParams()
+            .append('valor', valor)
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteServicioSolp", { params: params })
+    }
+
     obtenerDatosPorCodigosSap(codigos: any[]) {
         var payload = new FormData();
         payload.append('codigosSap', JSON.stringify(codigos));
 
         return this.http
             .post('/api/compras/ObtenerDatosPorCodigosSap', payload, { headers: this.headersPost });
+    }
+
+    obtenerDatosPorCodigosSapServicioSolp(codigos: string[]) {
+        var payload = new FormData();
+        payload.append('codigosSap', JSON.stringify(codigos));
+
+        return this.http
+            .post('/api/compras/ObtenerDatosPorCodigosSapServicioSolp', payload, { headers: this.headersPost });
     }
 }

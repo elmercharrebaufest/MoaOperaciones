@@ -37,6 +37,11 @@
           <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
         </div>
       </div>
+      <div *ngIf="esInterno && ordenDeCarga.DescripcionErrorInterno.length > 0" class="formulario-input;">
+        <div class="alert alert-warning">
+          <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{ordenDeCarga.DescripcionErrorInterno}}
+        </div>
+      </div>
       <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
         <div class="formulario-campo">
           <div class="col-xs-12 col-md-12 search-header">
@@ -108,10 +113,10 @@
               </div>
             </div>
           </div>
-           <!-- End Detalles interno -->
+          <!-- End Detalles interno -->
 
-           <!-- Detalles Tercero -->
-           <div class="row myRow firstSection" *ngIf="esTercero">
+          <!-- Detalles Tercero -->
+          <div class="row myRow firstSection" *ngIf="esTercero">
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
                 <div class="col-xs-12 col-md-6">
@@ -149,10 +154,10 @@
               </div>
             </div>
           </div>
-           <!-- End Detalles Tercero -->
+          <!-- End Detalles Tercero -->
 
-           <!-- Detalles Comercial -->
-           <div class="row myRow firstSection" *ngIf="esComercial">
+          <!-- Detalles Comercial -->
+          <div class="row myRow firstSection" *ngIf="esComercial">
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
                 <div class="col-xs-12 col-md-6">
@@ -210,10 +215,10 @@
               </div>
             </div>
           </div>
-           <!-- End Detalles Comercial -->
+          <!-- End Detalles Comercial -->
 
-           <!-- Detalles Puerto -->
-           <div class="row myRow firstSection" *ngIf="esPuerto">
+          <!-- Detalles Puerto -->
+          <div class="row myRow firstSection" *ngIf="esPuerto">
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
                 <div class="col-xs-12 col-md-6">
@@ -259,10 +264,10 @@
               </div>
             </div>
           </div>
-           <!-- End Detalles Puerto -->
+          <!-- End Detalles Puerto -->
 
-           <!-- Detalles Mesa Fas -->
-           <div class="row myRow firstSection" *ngIf="esMesaFas">
+          <!-- Detalles Mesa Fas -->
+          <div class="row myRow firstSection" *ngIf="esMesaFas">
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
                 <div class="col-xs-12 col-md-6">
@@ -300,7 +305,7 @@
               </div>
             </div>
           </div>
-           <!-- End Detalles Mesa Fas -->
+          <!-- End Detalles Mesa Fas -->
 
           <div class="formulario">
             <div class="containerBotones">
@@ -326,6 +331,11 @@
               <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonVerificarSituacionCrediticia">
                 <input type="button" (click)="verificarSituacionCrediticia()" class="btn-custom btn-add btn-grande"
                   value="Verificar credito">
+              </div>
+
+              <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonForzarCreacionPedido">
+                <input type="button" (click)="abrirModalForzarCreacion()" class="btn-custom btn-add btn-grande"
+                  value="Crear Pedido">
               </div>
 
               <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonAnular">
@@ -437,7 +447,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="modalAnularOrden">Seleccionar contrato</h4>
+          <h4 class="modal-title" id="modalAnularOrden">Anular orden</h4>
         </div>
         <div class="modal-body">
           <div class="row" class="col-xs-12 col-sm-12 col-md-12">
@@ -450,6 +460,38 @@
           <button type="button" class="btn-custom btn-remove btn-mediano" (click)="anularOrden()"
             style="display: inline-flex;">
             Anular orden
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <button type="button" style="display:none" id="openForzarCreacion" data-toggle="modal"
+    data-target="#modalForzarCreacion"></button>
+  <!-- Modal -->
+  <div class="modal fade" id="modalForzarCreacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="modalForzarCreacion">Crear pedido</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row" class="col-xs-12 col-sm-12 col-md-12">
+            ¿Está seguro de que desea crear el pedido por menos de 15 toneladas?
+          </div>
+        </div>
+        <div class="modal-footer" style="border-top:none;">
+          <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
+            id="closemodalForzarCreacion" style="display: inline-flex;">Cancelar</button>
+          <button type="button" class="btn-custom btn-remove btn-mediano" (click)="forzarCreacionPedido()"
+            style="display: inline-flex;">
+            Crear pedido
           </button>
 
         </div>
