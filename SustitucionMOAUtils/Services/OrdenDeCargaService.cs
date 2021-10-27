@@ -253,9 +253,19 @@ namespace SustitucionMOAUtils.Services
             //cual es el contrato correcto que le quiere entregar.
             if (result.Contains(','))
             {
-                ordenDeCarga.ContratosRespuesta = result;
-                ordenDeCarga.ContratoSAP = "";
-                ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
+                if (result.Contains(ordenDeCarga.NumeroPedido))
+                {
+                    ordenDeCarga.PedidosRespuesta = result;
+                    ordenDeCarga.NumeroPedido = "";
+                    ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
+                }
+                else
+                {
+                    ordenDeCarga.ContratosRespuesta = result;
+                    ordenDeCarga.ContratoSAP = "";
+                    ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
+                }
+                
                 ordenDeCarga.ActualizarEstado();
             }
             else
@@ -549,7 +559,43 @@ namespace SustitucionMOAUtils.Services
             return listadoContratos;
         }
 
-       
+        public string SeleccionarPedido(int ordenId, string pedido)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            orden.NumeroPedido = pedido;
+
+            orden.ActualizarEstado();
+
+            if (!string.IsNullOrEmpty(orden.NumeroPedido) && orden.TransporteExiste)
+            {
+                var creadaEnSaP = CrearOrdenEnSAP(orden, orden.Cliente);
+
+                if (creadaEnSaP)
+                {
+                    VerificarSituacionCrediticia(orden, notificar: true);
+                }
+            }
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.OrdenDeCargaActualizada;
+        }
+
+        public List<string> ObtenerPedidos(int ordenId)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            if (string.IsNullOrEmpty(orden.PedidosRespuesta))
+            {
+                throw new ValidationCustomException("La orden no tiene pedidos disponibles para seleccionar.");
+            }
+
+            var listadoPedidos = orden.PedidosRespuesta.Split(',').ToList();
+
+            return listadoPedidos;
+        }
+
         public string VerificarTransporte(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);

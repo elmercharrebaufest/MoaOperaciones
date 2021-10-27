@@ -237,6 +237,53 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
+        public ActionResult ObtenerPedidos(int ordenId)
+        {
+            try
+            {
+                return JsonCustom(new { data = ordenDeCargaService.ObtenerPedidos(ordenId) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult SeleccionarPedido(int ordenId, string pedido)
+        {
+            try
+            {
+                var mailUsuario = SessionPersister.getUsername();
+
+                return JsonCustom(new { data = ordenDeCargaService.SeleccionarPedido(ordenId, pedido) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [HttpGet]
         public ActionResult VerificarSituacionCrediticia(int ordenId)
         {
             try

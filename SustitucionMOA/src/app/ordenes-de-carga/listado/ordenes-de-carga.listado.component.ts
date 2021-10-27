@@ -27,6 +27,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 
     filtroEstado: any = null;
     filtroProducto: any = null;
+    filtroAlta: any = null;
+    filtroCliente: any = null;
 
     estadoSelected: string = "Todos";
     productoSelected: string = "Todos";
@@ -102,6 +104,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.data = result.data;
+                        console.log(this.data, "data")
+                        console.log(result.data, "result")
                     }
                 },
                 error => {

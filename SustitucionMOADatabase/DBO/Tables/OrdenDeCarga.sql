@@ -29,6 +29,7 @@
     [NumeroPedidoIngresado] NVARCHAR(MAX) NULL, 
     [CodigoVerificacionSap] NVARCHAR(50) NULL, 
     [DescripcionCodigoVerificacionSap] NVARCHAR(MAX) NULL, 
+    [PedidosRespuesta] NVARCHAR(MAX) NULL, 
     [ContratoSinCantidadPendiente] BIT NULL , 
     [DescripcionErrorInterno] NVARCHAR(MAX) NULL, 
     CONSTRAINT [FK_OrdenDeCarga_Proveedor] FOREIGN KEY (Cliente_Id) REFERENCES Proveedor(Id), 
