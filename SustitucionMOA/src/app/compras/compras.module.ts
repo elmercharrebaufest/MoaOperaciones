@@ -39,6 +39,7 @@ import {MultiSelectModule} from 'primeng/multiselect';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {PanelModule} from 'primeng/panel';
 import {InputSwitchModule} from 'primeng/inputswitch';
+import { TabDatosPosicionComponent } from './SolpPasos/tab-datos-posicion/tab-datos-posicion.component';
 
     
 @NgModule({
@@ -81,7 +82,8 @@ import {InputSwitchModule} from 'primeng/inputswitch';
         CotizacionComponent,
         DragAndDropDirective,
         CabeceraComponent,
-        SubPosicionComponent
+        SubPosicionComponent,
+        TabDatosPosicionComponent
     ],
     providers: [
         ComprasService,
