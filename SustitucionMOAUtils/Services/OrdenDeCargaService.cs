@@ -569,7 +569,7 @@ namespace SustitucionMOAUtils.Services
 
             if (!string.IsNullOrEmpty(orden.NumeroPedido) && orden.TransporteExiste)
             {
-                var creadaEnSaP = CrearOrdenEnSAP(orden, orden.Cliente);
+                var creadaEnSaP = CrearOrdenEnSAP(orden, orden.Cliente, false);
 
                 if (creadaEnSaP)
                 {
