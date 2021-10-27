@@ -47,6 +47,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonVerificarTransporte: boolean = false;
     mostrarBotonVerificarSituacionCrediticia: boolean = false;
     mostrarBotonAnular: boolean = false;
+    mostrarBotonForzarCreacionPedido: boolean = false;
+
 
     // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -101,6 +103,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
                 this.mostrarBotonAnular = true;
             }
+
+            if (this.ordenDeCarga.ContratoSinCantidadPendiente) {
+                this.mostrarBotonForzarCreacionPedido = true;
+            }
         }
     }
 
@@ -115,7 +121,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else {
                         this.ordenDeCarga = result.data;
                         this.verificarBotones()
-                        if(this.ordenDeCarga.MensajeValidacionSAP != ""){
+                        if (this.ordenDeCarga.MensajeValidacionSAP != "") {
                             this.mensajeComponent.setInfoMsg(this.ordenDeCarga.MensajeValidacionSAP)
                         }
                     }
@@ -350,5 +356,38 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     editarOrden() {
         this.goToSeccion('/ordenes-de-carga/alta/' + this.ordenDeCarga.Id);
+    }
+
+
+    abrirModalForzarCreacion() {
+        document.getElementById("openForzarCreacion").click();
+    }
+
+    forzarCreacionPedido() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscription = this.service.forzarCreacionOrden(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        document.getElementById("closemodalForzarCreacion").click();
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             Proveedor cliente;
-            ordenDeCarga.Estado = EstadoOrdenDeCarga.Pendiente;
+            ordenDeCarga.Estado = EstadoOrdenDeCarga.ErrorDeCarga;
 
             if (usuario.EsCorredor())
             {
@@ -58,6 +58,7 @@ namespace SustitucionMOAUtils.Services
 
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente_Id = cliente.Id;
+            ordenDeCarga.ContratoSinCantidadPendiente = false;
 
             var producto = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
 
@@ -79,11 +80,11 @@ namespace SustitucionMOAUtils.Services
             {
                 ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
 
-                var creadaEnSaP = CrearOrdenEnSAP(ordenDeCarga, cliente);
+                var creadaEnSaP = CrearOrdenEnSAP(ordenDeCarga, cliente, false);
 
                 if (creadaEnSaP)
                 {
-                    VerificarSituacionCrediticia(ordenDeCarga, notificar: true);
+                    VerificarSituacionCrediticia(ordenDeCarga, true);
                 }
             }
 
@@ -120,11 +121,11 @@ namespace SustitucionMOAUtils.Services
                 {
                     ordenEditar.ContratoSAP = ordenEditar.ContratoIngresado;
 
-                    var creadaEnSaP = CrearOrdenEnSAP(ordenEditar, ordenEditar.Cliente);
+                    var creadaEnSaP = CrearOrdenEnSAP(ordenEditar, ordenEditar.Cliente, false);
 
                     if (creadaEnSaP)
                     {
-                        VerificarSituacionCrediticia(ordenEditar, notificar: true);
+                        VerificarSituacionCrediticia(ordenEditar, true);
                     }
                 }
             }
@@ -186,34 +187,54 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private bool CrearOrdenEnSAP(OrdenDeCarga orden, Proveedor cliente)
+        private bool CrearOrdenEnSAP(OrdenDeCarga orden, Proveedor cliente, bool forzarCreacion)
         {
             //OV-01   'Verificar Contrato, Material, Cliente'
             //OV-02   'Verificar cantidad pendiente de Contratada'
             //OV-03   'Pedido creado - Verificar Crédito de pedido'
             //OV-00   'OK'
-            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.Corredor, orden.Cantidad, orden.Producto.CodigoSap, orden.NumeroPedidoIngresado, out string numeroPedido);
+
+            var forzarCreacionStr = forzarCreacion ? "" : "X";
+
+            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.Corredor, orden.Cantidad, orden.Producto.CodigoSap, orden.NumeroPedidoIngresado, forzarCreacionStr, out string numeroPedido);
+          
+            var resultadoCrearOrden = false;
+            orden.ContratoSinCantidadPendiente = false;
 
             //var result2 = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, orden.NombreChofer, orden.PatenteAcoplado, orden.ChasisAcoplado, "", "DNI", orden.CUITTransporte, out string mensaje);
             if (result == "OV-00" || result == "OV-03")
             {
                 orden.InformadaSAP = true;
                 orden.NumeroPedido = numeroPedido;
+                orden.DescripcionErrorInterno = "";
 
                 if (result == "OV-03")
                 {
                     orden.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
                 }
 
-                orden.ActualizarEstado();
-                repositorio.GuardarCambios();
-
-                return true;
+                resultadoCrearOrden = true;
             }
             else
             {
-                return false;
+                orden.CodigoVerificacionSap = result;
+                if(result == "OV-02")
+                {
+                    orden.ContratoSinCantidadPendiente = true;
+                    orden.CodigoVerificacionSap = "CC-01";
+                    orden.DescripcionErrorInterno = "El contrato ingresado tiene menos de 15 toneladas disponibles. Puede elegir forzar la creación del contrato desde \"Crear entrega\" o anularlo.";
+                }
+                else
+                {
+                    orden.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
+                }
+
             }
+
+            orden.ActualizarEstado();
+            repositorio.GuardarCambios();
+
+            return resultadoCrearOrden;
         }
 
         private bool VerificarOrden(OrdenDeCarga ordenDeCarga, Proveedor cliente)
@@ -234,6 +255,7 @@ namespace SustitucionMOAUtils.Services
             {
                 ordenDeCarga.ContratosRespuesta = result;
                 ordenDeCarga.ContratoSAP = "";
+                ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
                 ordenDeCarga.ActualizarEstado();
             }
             else
@@ -419,13 +441,15 @@ namespace SustitucionMOAUtils.Services
                 Producto = orden.Producto.Nombre,
                 NumeroEntrega = string.IsNullOrEmpty(orden.NumeroEntrega) ? "-" : orden.NumeroEntrega,
                 NumeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? "-" : orden.NumeroPedido,
-                MensajeValidacionSAP = string.IsNullOrEmpty(orden.DescripcionCodigoVerificacionSap) ? "" : orden.DescripcionCodigoVerificacionSap
+                MensajeValidacionSAP = string.IsNullOrEmpty(orden.DescripcionCodigoVerificacionSap) ? "" : orden.DescripcionCodigoVerificacionSap,
+                ContratoSinCantidadPendiente = orden.ContratoSinCantidadPendiente,
+                DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno 
             };
 
             return ordenDto;
         }
 
-        public List<OrdenDeCarga> verificarVencimientoOrdenDeCarga()
+        public List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga()
         {
             //TODO: Validar 72 horas exactas en cada momento.
             var fechaActualMenos72Horas = DateTime.Now.AddHours(-72);
@@ -481,12 +505,29 @@ namespace SustitucionMOAUtils.Services
 
             if (!string.IsNullOrEmpty(orden.ContratoSAP) && orden.TransporteExiste)
             {
-                var creadaEnSaP = CrearOrdenEnSAP(orden, orden.Cliente);
+                var creadaEnSaP = CrearOrdenEnSAP(orden, orden.Cliente, false);
 
                 if (creadaEnSaP)
                 {
-                    VerificarSituacionCrediticia(orden, notificar: true);
+                    VerificarSituacionCrediticia(orden, true);
                 }
+            }
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.OrdenDeCargaActualizada;
+        }
+
+
+        public string ForzarCreacionOrden(int ordenId)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            var creadaEnSaP = CrearOrdenEnSAP(orden, orden.Cliente, true);
+
+            if (creadaEnSaP)
+            {
+                VerificarSituacionCrediticia(orden, true);
             }
 
             repositorio.GuardarCambios();
@@ -609,7 +650,7 @@ namespace SustitucionMOAUtils.Services
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
-            return VerificarSituacionCrediticia(orden, notificar: false);
+            return VerificarSituacionCrediticia(orden, false);
         }
 
         private string VerificarSituacionCrediticia(OrdenDeCarga orden, bool notificar)
@@ -639,6 +680,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
+                    orden.DescripcionErrorInterno = "";
                     orden.ActualizarEstado();
 
                     return GenerarEntregaSAP(orden);
