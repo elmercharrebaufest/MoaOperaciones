@@ -137,16 +137,18 @@ namespace SustitucionMOAUtils.Services
 
                 if (valoresAEditar.Contains(prop.PropertyName))
                 {
-                    historialCambios.Add(new OrdenDeCargaCambiosHistorial
-                    {
-                        Id = 0,
-                        Antes = prop.valA.ToString(),
-                        Despues = prop.valB.ToString(),
-                        NombreColumnaCambio = prop.PropertyName,
-                        FechaCambio = DateTime.Now,
-                        Usuario_Id = usuario.Id,
-                        OrdenDeCarga_Id = ordenDeCarga.Id
-                    });
+                    var registroHistorial = new OrdenDeCargaCambiosHistorial();
+
+                    registroHistorial.Id = 0;
+                    registroHistorial.Antes = prop.valA.ToString();
+                    registroHistorial.Despues = prop.valB.ToString();
+                    registroHistorial.NombreColumnaCambio = prop.PropertyName;
+                    registroHistorial.FechaCambio = DateTime.Now;
+                    registroHistorial.Usuario_Id = usuario.Id;
+                    registroHistorial.OrdenDeCarga_Id = ordenDeCarga.Id;
+
+                    historialCambios.Add(registroHistorial);
+
                 }
             }
 
@@ -253,16 +255,16 @@ namespace SustitucionMOAUtils.Services
             //cual es el contrato correcto que le quiere entregar.
             if (result.Contains(','))
             {
-                if (result.Contains(ordenDeCarga.NumeroPedido))
+                if (string.IsNullOrEmpty(ordenDeCarga.NumeroPedido))
                 {
-                    ordenDeCarga.PedidosRespuesta = result;
-                    ordenDeCarga.NumeroPedido = "";
+                    ordenDeCarga.ContratosRespuesta = result;
+                    ordenDeCarga.ContratoSAP = "";
                     ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
                 }
                 else
                 {
-                    ordenDeCarga.ContratosRespuesta = result;
-                    ordenDeCarga.ContratoSAP = "";
+                    ordenDeCarga.PedidosRespuesta = result;
+                    ordenDeCarga.NumeroPedido = "";
                     ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
                 }
                 

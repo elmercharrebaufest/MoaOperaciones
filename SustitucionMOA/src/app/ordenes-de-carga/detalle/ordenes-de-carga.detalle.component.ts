@@ -91,12 +91,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
 
         if (this.esInterno) {
-            if (this.ordenDeCarga.ContratoSAP === "-") {
-                this.mostrarBotonContratos = true;
+
+            if (this.ordenDeCarga.NumeroPedido === "-") {
+                this.mostrarBotonPedidos = true
             }
 
-            if (this.ordenDeCarga.NumeroPedido === "-"){
-                this.mostrarBotonPedidos = true
+            if (this.ordenDeCarga.ContratoSAP === "-") {
+                this.mostrarBotonContratos = true;
+                this.mostrarBotonPedidos = false;
             }
 
             if (!this.ordenDeCarga.TransporteExiste) {
