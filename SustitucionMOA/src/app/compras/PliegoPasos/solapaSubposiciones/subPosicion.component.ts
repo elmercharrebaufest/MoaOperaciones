@@ -433,9 +433,6 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
     onSelectServicio(posicion: SubPosicionViewModel, dt) {
-
-        console.log(posicion);
-        console.log(dt);
         posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
         posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
         this.endEditCell(dt);

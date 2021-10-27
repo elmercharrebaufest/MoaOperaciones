@@ -681,7 +681,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     {
                         return paso.Completo = false;
                     }
-                    // console.log("Pasos", this.pasos)
                     break;
                 case EnumPasoSolp.PliegoCotizacion:
                     paso.Completo = true;
