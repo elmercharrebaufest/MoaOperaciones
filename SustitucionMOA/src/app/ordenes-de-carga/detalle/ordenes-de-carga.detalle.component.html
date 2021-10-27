@@ -37,9 +37,9 @@
           <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
         </div>
       </div>
-      <div *ngIf="esInterno && DescripcionErrorInterno != ''" class="formulario-input;">
-        <div class="alert alert-danger">
-          <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{orden.DescripcionErrorInterno}}
+      <div *ngIf="esInterno && ordenDeCarga.DescripcionErrorInterno.length > 0" class="formulario-input;">
+        <div class="alert alert-warning">
+          <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{ordenDeCarga.DescripcionErrorInterno}}
         </div>
       </div>
       <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">

@@ -680,6 +680,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
+                    orden.DescripcionErrorInterno = "";
                     orden.ActualizarEstado();
 
                     return GenerarEntregaSAP(orden);
