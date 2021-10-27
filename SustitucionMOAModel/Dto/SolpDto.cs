@@ -250,14 +250,14 @@ namespace SustitucionMOAModel.Dto
             {
                 this.Codigo = entity.Codigo;
                 this.Numero = entity.Numero;
-                this.CodigoServicioSap = new ServicioSolpDto(entity.ServicioSolp);
+                this.CodigoServicioSap = entity.ServicioSolp != null ? new ServicioSolpDto(entity.ServicioSolp) : null;
                 this.Tarea = entity.Tarea;
-                this.CuentaMayor = new TablaSapDto(entity.CuentaMayorSap);
+                this.CuentaMayor = entity.CuentaMayorSap != null ? new TablaSapDto(entity.CuentaMayorSap) : null;
                 this.Cantidad = entity.Cantidad;
                 this.UnidadId = entity.Unidad_Id;
                 this.PrecioBruto = entity.PrecioBruto;
-                this.TipoImputacionValor = new TablaSapDto(entity.TipoImputacionSap); //se corregira luego el campo en base
-                this.Unidad = new TablaSapDto(entity.Unidad);
+                this.TipoImputacionValor = entity.TipoImputacionSap != null ? new TablaSapDto(entity.TipoImputacionSap) : null; //se corregira luego el campo en base
+                this.Unidad = entity.Unidad != null ? new TablaSapDto(entity.Unidad) : null;
             }
         }
     }
