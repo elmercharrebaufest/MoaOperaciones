@@ -100,6 +100,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     disabledSave = false;
 
     listadoErrores: string[] = new Array<string>();
+    displaySAPEditar: boolean;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -634,6 +635,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 this.displayErrorSAP = true;
                             }
 
+                            if (this.solpActual.nroSolp) {
+                                this.displaySAPEditar = true;
+                            }
+
+                            
                             // if (result.Solp.NroSolp) {
                             //     this.finalizarOk = true;
                             // } else {
