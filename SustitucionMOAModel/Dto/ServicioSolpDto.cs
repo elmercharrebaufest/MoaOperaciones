@@ -8,7 +8,7 @@ namespace SustitucionMOAModel.Dto
         public ServicioSolpDto(ServicioSolp servicioSolp)
         {
             Id = servicioSolp.Id;
-            Codigo = servicioSolp.Codigo;
+            Codigo = servicioSolp.CodigoSap;
             Descripcion= servicioSolp.Descripcion;
             GrupoArticulos = servicioSolp.GrupoArticulos;
             TipoServicio = servicioSolp.TipoServicio;

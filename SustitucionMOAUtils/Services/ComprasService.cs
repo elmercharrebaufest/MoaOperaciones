@@ -323,7 +323,7 @@ namespace SustitucionMOAUtils.Services
                                     subposEntity.Unidad = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Unidad && x.Codigo == subpos.Unidad.Codigo);
 
                                 if (subpos.CodigoServicioSap != null)
-                                    subposEntity.ServicioSolp = repositorio.Obtener<ServicioSolp>(x => x.Codigo == subpos.CodigoServicioSap.Codigo);
+                                    subposEntity.ServicioSolp = repositorio.Obtener<ServicioSolp>(x => x.CodigoSap == subpos.CodigoServicioSap.Codigo);
 
 
                                 posEntity.Subposiciones.Add(subposEntity);
@@ -1055,7 +1055,7 @@ namespace SustitucionMOAUtils.Services
         public List<ServicioSolpDto> AutocompleteServicioSolp(string valor)
         {
             List<ServicioSolpDto> lista = repositorio.Listar<ServicioSolp>()
-                .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.Codigo.ToString().ToLower().Contains(valor.ToLower()))
+                .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToString().ToLower().Contains(valor.ToLower()))
                 .Select(s => new ServicioSolpDto(s)).ToList();
 
             return lista;
@@ -1135,7 +1135,7 @@ namespace SustitucionMOAUtils.Services
         public List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos)
         {
             return repositorio
-                .Listar<ServicioSolp>(x => codigos.Contains(x.Codigo.ToString()))
+                .Listar<ServicioSolp>(x => codigos.Contains(x.CodigoSap.ToString()))
                 .Select(x => new ServicioSolpDto(x)).ToList();
         }
 
@@ -1159,13 +1159,14 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var servicio in resultSap.Servicios)
                 {
-                    int codigo = 0;
-                    if (Int32.TryParse(servicio.Codigo, out codigo) &&
-                        !listaBase.Any(x => x.Codigo == codigo && x.Descripcion == servicio.Descripcion))
+                    int codigoNum = 0;
+                    if (Int32.TryParse(servicio.Codigo, out codigoNum) &&
+                        !listaBase.Any(x => x.CodigoSap == codigoNum && x.Descripcion == servicio.Descripcion))
                     {
                         repositorio.Agregar(new ServicioSolp
                         {
-                            Codigo = codigo,
+                            Codigo = servicio.Codigo,
+                            CodigoSap = codigoNum,
                             Descripcion = servicio.Descripcion,
                             GrupoArticulos = Int32.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null,
                             TipoServicio = servicio.Serv,

@@ -1,7 +1,8 @@
 ﻿CREATE TABLE [dbo].[ServicioSolp]
 (
 	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-	[Codigo] INT NOT NULL,
+	[Codigo] VARCHAR(MAX) NOT NULL,
+	[CodigoSap] INT NOT NULL,
 	[GrupoArticulos] INT NULL,
 	[TipoServicio] VARCHAR(MAX) NOT NULL,
 	[AmbitoServicio] VARCHAR(MAX) NOT NULL,
