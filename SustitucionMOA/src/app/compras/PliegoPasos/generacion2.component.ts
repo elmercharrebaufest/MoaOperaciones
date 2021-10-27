@@ -76,8 +76,6 @@ export class Generacion2Component extends ListBaseComponent  {
             var dateParts = this.fechaEntrega.split("-");
             this.model.fechaDeEntregaDeOfertasFecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2], this.horaEntrega);
         }
-        console.log(this.model.fechaDeEntregaDeOfertasFecha, "No funciona");
-
     }
 
     agregarNuevaVisita() {
