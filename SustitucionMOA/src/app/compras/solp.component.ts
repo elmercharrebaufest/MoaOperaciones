@@ -545,6 +545,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     guardarCambios(mostrarPreview = false, enviarSap = false, guardarPorPaso = false) {
         try {
+            this.actualizarPasoCompleto(this.pasoActual);
+
             this.disabledSave = true;
             if (guardarPorPaso == false) {
                 this.blockUI.start('Guardando...');
@@ -892,11 +894,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Todos los Modal
     finalizar() {
-        this.actualizarPasoCompleto(this.pasoActual);
         this.guardarCambios(false, true, false);
         this.displayFinalizar = false
-        // ;
-        //
     }
 
     // Abre el modal del boton finalizar
