@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, SelectItem } from 'primeng/api';
+import { ListBaseComponent } from '../../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../../common/services/FloatMsgService';
 import { ModalService } from '../../../common/services/ModalService';
 import { NavService } from '../../../common/services/NavService';
@@ -21,7 +22,7 @@ declare var $: any;
   templateUrl: `tab-datos-posicion.component.html`,
   styleUrls: ['../../compras.component.css']
 })
-export class TabDatosPosicionComponent implements OnInit {
+export class TabDatosPosicionComponent extends ListBaseComponent implements OnInit{
 
   @Input('combos')
   protected combos: any;
@@ -34,7 +35,7 @@ export class TabDatosPosicionComponent implements OnInit {
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router,
         private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService) {
-        // super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
   }
 
   //Declaro las variables
@@ -42,8 +43,7 @@ export class TabDatosPosicionComponent implements OnInit {
   solicitanteCompras: SelectItem[];
   grupoCompras: SelectItem[];
 
-  formularioPosicion: [FormGroup];
-  formularioActual: FormGroup;
+ 
 
 
   camposObligatorios: any[] = [
@@ -56,13 +56,11 @@ export class TabDatosPosicionComponent implements OnInit {
   @Output() onEstCompleto = new EventEmitter<any>();
 
     
-
-
   ngOnInit() {
+    console.log("Model: ", this.model)
     this.grupoCompras = this.combos.GrupoCompras;
     this.articuloCompras = this.combos.GrupoArticulo;
 
-    this.validadorPasoSolpService.formulario = this.formularioActual;
 
     if (!this.model.posicionActual.selectSolicitanteCompras)
     this.model.posicionActual.selectSolicitanteCompras = this.model.fiscalContrato;
@@ -80,7 +78,11 @@ export class TabDatosPosicionComponent implements OnInit {
         default:
             break;
     }
-}
+  }
+
+ 
+
+
 
 
 }
