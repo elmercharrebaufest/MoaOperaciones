@@ -564,7 +564,7 @@ namespace SustitucionMOAUtils.Services
                     VincularPliego = !x.Pliego_Id.HasValue,
                     TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
                     RevisadoPor = x.Pliego?.RevisadoPor
-                });
+                }).OrderByDescending(i => i.FechaCreacion);
 
             return todasLasSolp.ToList();
 
