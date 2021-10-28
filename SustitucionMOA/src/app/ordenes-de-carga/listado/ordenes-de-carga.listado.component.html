@@ -118,6 +118,7 @@
               <th>Producto</th>
               <th *ngIf="esComercial || esPuerto || esMesaFas">Cantidad</th>
               <th *ngIf="esTercero || esComercial || esPuerto || esMesaFas">Destino</th>
+              <th></th>
               <th>Detalle</th>
             </tr>
           </thead>
@@ -148,7 +149,7 @@
               <td>{{ordenDeCarga.Material}}</td>
               <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Cantidad}}</td>
               <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Destino}}</td>
-              <td>
+              <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">
                 <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
                 </div>
               </td>

@@ -92,7 +92,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
         if (this.esInterno) {
 
-            if (this.ordenDeCarga.NumeroPedido === "-") {
+            if (this.ordenDeCarga.NumeroPedido === "-" && this.ordenDeCarga.PedidosRespuesta != "-") {
                 this.mostrarBotonPedidos = true
             }
 
