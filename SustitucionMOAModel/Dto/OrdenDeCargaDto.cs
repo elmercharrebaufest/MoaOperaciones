@@ -91,6 +91,7 @@ namespace SustitucionMOAModel.Dto
         public string Cliente { get; set; }
         public string DescripcionEstadoUsuarioFinal { get; set; }
         public string MensajeValidacionSAP { get; set; }
+        public string PedidosRespuesta { get; set; }
         public bool ContratoSinCantidadPendiente { get; set; }
         public string DescripcionErrorInterno { get; set; }
 

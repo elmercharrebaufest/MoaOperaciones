@@ -283,7 +283,8 @@ namespace SustitucionMOAUtils.Services
 
                             if (usuario != null)
                             {
-                                usuario.RemoverRoles();
+                                //Para que no borre los roles una vez aprobado.
+                                //usuario.RemoverRoles();
                                 usuario.AgregarRol(rolUsuarioCliente);
                             }
 

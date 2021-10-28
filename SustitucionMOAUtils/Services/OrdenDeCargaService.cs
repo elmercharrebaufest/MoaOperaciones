@@ -140,20 +140,19 @@ namespace SustitucionMOAUtils.Services
                     var registroHistorial = new OrdenDeCargaCambiosHistorial();
 
                     registroHistorial.Id = 0;
-                    registroHistorial.Antes = prop.valA.ToString();
-                    registroHistorial.Despues = prop.valB.ToString();
+                    registroHistorial.Antes = prop.valA != null ? prop.valA?.ToString() : "-";
+                    registroHistorial.Despues = prop.valB != null ? prop.valB?.ToString() : "-";
                     registroHistorial.NombreColumnaCambio = prop.PropertyName;
                     registroHistorial.FechaCambio = DateTime.Now;
                     registroHistorial.Usuario_Id = usuario.Id;
                     registroHistorial.OrdenDeCarga_Id = ordenDeCarga.Id;
 
                     historialCambios.Add(registroHistorial);
-
                 }
             }
 
+            repositorio.AgregarTodos(historialCambios);
             ordenEditar.HistorialCambios.Concat(historialCambios);
-
             repositorio.GuardarCambios();
 
             if(historialCambios.Count > 0)
@@ -451,6 +450,7 @@ namespace SustitucionMOAUtils.Services
                 Transporte = $"{orden.RazonSocialTransporte} ({orden.CUITTransporte})",
                 TransporteExiste = orden.TransporteExiste,
                 Producto = orden.Producto.Nombre,
+                PedidosRespuesta = string.IsNullOrEmpty(orden.PedidosRespuesta) ? "-" : orden.PedidosRespuesta,
                 NumeroEntrega = string.IsNullOrEmpty(orden.NumeroEntrega) ? "-" : orden.NumeroEntrega,
                 NumeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? "-" : orden.NumeroPedido,
                 MensajeValidacionSAP = string.IsNullOrEmpty(orden.DescripcionCodigoVerificacionSap) ? "" : orden.DescripcionCodigoVerificacionSap,
