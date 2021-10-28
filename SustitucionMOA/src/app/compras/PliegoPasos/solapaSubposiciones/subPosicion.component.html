@@ -61,7 +61,7 @@
                             <ng-template pTemplate="body" let-posicion let-rowIndex="rowIndex">
                                 <tr style="text-align: center;">
                                     <td style="width: 4%; padding: revert;">                                       
-                                        <img (click)="eliminarSubPosicionIndividual(rowIndex)"
+                                        <img (click)="eliminarSubPosicionIndividual(rowIndex)" style="width: 50%;"
                                         src="../../../../../Content/images/icons/trashRed.svg" alt="trashWhite"
                                         class="pointer" />
                                         <!-- <p-checkbox [(ngModel)]="posicion.eliminar" binary="true"></p-checkbox> -->
@@ -69,7 +69,7 @@
                                     <td style="width: 3%;">
                                         {{posicion.subPosicion}}
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 11%; word-break: break-all;">
+                                    <td [pEditableColumn]="posicion" style="width: 11%; word-break: break-all; word-wrap:break-word">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.codigoServicio"
@@ -88,7 +88,7 @@
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 30%;">
+                                    <td [pEditableColumn]="posicion" style="width: 30%; word-wrap:break-word">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.tareaSubcontratarObj"
@@ -111,7 +111,7 @@
                                             <p class="text-danger">*</p>
                                         </div>
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 8%; word-break: break-all;">
+                                    <td [pEditableColumn]="posicion" style="width: 8%; word-break: break-all; word-wrap:break-word">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <input type="text" pKeyFilter="num" [(ngModel)]="posicion.cuentaTd"
@@ -161,7 +161,7 @@
                                             <p class="text-danger">*</p>
                                         </div>
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 12%;">
+                                    <td [pEditableColumn]="posicion" style="width: 12%; word-wrap:break-word">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.cuentaMayor"
@@ -182,7 +182,7 @@
                                             <p class="text-danger">*</p>
                                         </div>
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 12%;">
+                                    <td [pEditableColumn]="posicion" style="width: 12%; word-wrap:break-word">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.tipoImputacion"
