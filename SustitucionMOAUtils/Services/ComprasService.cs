@@ -686,7 +686,7 @@ namespace SustitucionMOAUtils.Services
             var solp = TraerSolpId(idSolp);
 
             var templateFilePath = solp.TieneCondicionesGenerales ?? true ? Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html") :
-               Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpSinCondicionesTemplate.html");
+               Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/NewPliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
             //, "Templates/PliegoSolpSinCondicionesTemplate.html"
 
@@ -781,9 +781,20 @@ namespace SustitucionMOAUtils.Services
 
             StringBuilder texto = new StringBuilder();
 
+            string plazoEntrega = "{0}";
+
+            StringBuilder plazo = new StringBuilder();
+
+
             solp.Posiciones.ForEach(pos =>
             {
                 texto = new StringBuilder();
+
+                plazo = new StringBuilder();
+
+                plazo.AppendLine(string.Format(plazoEntrega,
+                    pos.PlazoEntrega));
+
 
                 pos.Subposiciones.ForEach(subpos =>
                 {
@@ -801,6 +812,8 @@ namespace SustitucionMOAUtils.Services
             });
 
             solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, subposiciones.ToString());
+            solpValores.Add(SolpTemplateKeys.PLAZO_ENTREGA, plazo.ToString());
+
 
 
 
@@ -1248,5 +1261,7 @@ namespace SustitucionMOAUtils.Services
         public const string TEXTO_GENERICO = "TEXTO_GENERICO";
 
         public const string REVISADO_POR = "REVISADO_POR";
+
+        public const string PLAZO_ENTREGA = "PLAZO_ENTREGA";
     }
 }

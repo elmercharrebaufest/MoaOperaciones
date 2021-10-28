@@ -112,10 +112,11 @@ namespace SustitucionMOAUtils.Helpers
             base.OnEndPage(writer, document);
             int pageN = writer.PageNumber;
 
-            String text = "Pagina " + pageN; //+" de "
+            //String text = "Pagina " + pageN; //+" de "
+            String text = "F-2285_02";
             float len = bf.GetWidthPoint(text, 8);
             Rectangle pageSize = document.PageSize;
-            cb.SetRGBColorFill(0, 0, 0);
+            cb.SetRGBColorFill(128, 128, 128);
             cb.BeginText();
             cb.SetFontAndSize(bf, 8);
             cb.SetTextMatrix(pageSize.GetRight(50), pageSize.GetBottom(30));
