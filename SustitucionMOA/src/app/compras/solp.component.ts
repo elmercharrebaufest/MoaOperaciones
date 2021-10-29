@@ -167,6 +167,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Numero: 6
     }];
 
+    selectUsuarioCompras: any;
+    usuarioComprasList: any[] = [];
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         private messageService: MessageService, private route: ActivatedRoute, private confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
@@ -328,6 +331,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.modoElevacion = solp.TieneMedioElevacion;
         this.solpActual.andamio = solp.TieneAndamio;
         this.solpActual.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
+        this.solpActual.usuarioComprasId = solp.UsuarioCompras.Id || 0;
+        this.selectUsuarioCompras = this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId);
         this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;
         this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;
         this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
@@ -461,26 +466,21 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     validatePasos(): any{
-        let countPasos = 0;
         let estadosPasos = this.solpActual.estadoPasos.split(',');
-        this.pasos.forEach((p, i) => {
-            estadosPasos[p.Numero -1] = !p.Iniciado ? '0' : p.Completo ? '2' : '1';      
-        });
-
         this.solpActual.estadoPasos = '';
 
-        estadosPasos.forEach(x=> {
-            this.solpActual.estadoPasos += `${x},` ;
-            if(x === '2') {
-                countPasos += 1;
-            }
+        this.pasos.forEach((p, i) => {
+            estadosPasos[p.Numero -1] = !p.Iniciado ? '0' : p.Completo ? '2' : '1';      
+            this.solpActual.estadoPasos += `${estadosPasos[p.Numero - 1]},`;
+
         });
+
 
         this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
 
         return {
-            completo: countPasos === 6,
-            paso: countPasos
+            completo: estadosPasos.every(x => x === '2'),
+            primerPasoIncompleto: 1 + estadosPasos.findIndex(x => x != '2')
         }
     }
 
@@ -550,6 +550,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     guardarCambios(mostrarPreview = false, enviarSap = false, guardarPorPaso = false) {
         try {
+            this.actualizarPasoCompleto(this.pasoActual);
+
             this.disabledSave = true;
             if (guardarPorPaso == false) {
                 this.blockUI.start('Guardando...');
@@ -559,7 +561,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             if(enviarSap) {
                 if(!validatePasos.completo) {
-                    this.floatMsgService.setErrorMsg(`Falta completar campos en el paso #${validatePasos.paso}`);
+                    this.floatMsgService.setErrorMsg(`Falta completar campos en el paso #${validatePasos.primerPasoIncompleto}`);
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
@@ -569,6 +571,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
 
             this.solpActual.Finalizar = enviarSap;
+            this.solpActual.usuarioComprasId = this.selectUsuarioCompras.Id;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
@@ -828,6 +831,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.combos = result;
+                        this.obtenerUsuarioCompras();
                     }
                 },
                 error => {
@@ -840,6 +844,40 @@ export class SolpComponent extends BaseComponent implements OnInit {
             return false; //<-- Prevent Refresh
         }
 
+        return false; //<-- Prevent Refresh
+    }
+
+    obtenerUsuarioCompras() {
+        this.unsubscribe();
+        try {
+            this.subscription = this.service.obtenerUsuarioCompras().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.usuarioComprasList = [];
+                        result.data.forEach(element => {
+                            this.usuarioComprasList.push({
+                                Id : element.UsuarioCompras.Id,
+                                CodigoDescripcion: element.UsuarioCompras.Mail
+                            });
+                        });
+                        this.selectUsuarioCompras = this.usuarioComprasList[0];
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
         return false; //<-- Prevent Refresh
     }
 
@@ -899,8 +937,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     finalizar() {
         this.guardarCambios(false, true, false);
         this.displayFinalizar = false
-        // ;
-        //
     }
 
     // Abre el modal del boton finalizar
