@@ -377,7 +377,7 @@ namespace SustitucionMOAUtils.Services
                         DescripcionEstado = x.Estado.ToFriendlyString(),
                         ColorSemaforo = x.Estado.ObtenerSemaforo(),
                         EsFacturaAnticipada = (x.NumeroPedidoIngresado != null)
-                    }).ToList();
+                    }).OrderByDescending(y => y.Id).ToList();
             }
             else
             {
@@ -393,7 +393,7 @@ namespace SustitucionMOAUtils.Services
                         Material = x.Producto.Nombre,
                         DescripcionEstado = x.Estado.ToUserFriendlyString(),
                         EsFacturaAnticipada = (x.NumeroPedidoIngresado != null)
-                    }).ToList();
+                    }).OrderByDescending(y => y.Id).ToList();
             }
 
             if (listado == null || listado.Count == 0)

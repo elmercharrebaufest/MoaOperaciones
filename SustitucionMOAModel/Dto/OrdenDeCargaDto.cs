@@ -16,6 +16,7 @@ namespace SustitucionMOAModel.Dto
         public string ColorSemaforo { get; set; }
         public string Material { get; set; }
         public string Cliente { get; set; }
+        public string RazonSocialCliente { get; set; }
         public string Corredor { get; set; }
         public string Contrato { get; set; }
         public string Pedido { get; set; }

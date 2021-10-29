@@ -107,7 +107,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         /*VER ESTA VALIDACION, ACA VALIDA COMO SI FUERA UN CUIT PERO EN EL FRONT DICE QUE PONGA EL DNI/CUIL*/
         if (this.ordenDeCarga.CUITChofer.toString().trim().length != 11) {
-            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de chofer válido.");
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
         }
 
