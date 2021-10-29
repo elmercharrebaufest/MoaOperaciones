@@ -48,7 +48,7 @@ export class Solp extends CommonResponse {
 
     //paso 3
     public especificacionesViewModel: EspecificacionesViewModel = new EspecificacionesViewModel();
-    public tieneCondicionesGenerales: boolean;
+    public tieneCondicionesGenerales: boolean = false;
 
     // paso 4
 
