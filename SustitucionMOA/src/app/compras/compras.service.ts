@@ -78,7 +78,9 @@ export class ComprasService extends BaseService {
             TieneCondicionesGenerales: solp.tieneCondicionesGenerales,
             PasoCompletado: solp.pasoCompletado,
             EstadoPasos: solp.estadoPasos,
-
+            UsuarioCompras: {
+                Id: solp.usuarioComprasId
+            },
             Adjuntos:   solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x => { return { Id: x.id } })
                 .concat(solp.archivosCotizacionesGuardados.map(x => { return { Id: x.id } })),
 

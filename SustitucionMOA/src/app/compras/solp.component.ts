@@ -332,6 +332,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.modoElevacion = solp.TieneMedioElevacion;
         this.solpActual.andamio = solp.TieneAndamio;
         this.solpActual.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
+        this.solpActual.usuarioComprasId = solp.UsuarioCompras.Id || 0;
+        this.selectUsuarioCompras = this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId);
         this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;
         this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;
         this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
@@ -568,6 +570,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
 
             this.solpActual.Finalizar = enviarSap;
+            this.solpActual.usuarioComprasId = this.selectUsuarioCompras.Id;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
@@ -802,7 +805,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.usuarioComprasList = [];
                         result.data.forEach(element => {
                             this.usuarioComprasList.push({
-                                Id : element.Id,
+                                Id : element.UsuarioCompras.Id,
                                 CodigoDescripcion: element.UsuarioCompras.Mail
                             });
                         });

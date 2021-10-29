@@ -132,6 +132,7 @@ namespace SustitucionMOAUtils.Services
                 if (solp.TipoSolp != null)
                     solpEntity.TipoSolp = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoSolp && x.Codigo == solp.TipoSolp.Codigo);
                 solpEntity.PasoCompletado = solp.PasoCompletado;
+                solpEntity.UsuarioCompras_Id = solp.UsuarioCompras.Id; 
                 solpEntity.EstadoPasos = solp.EstadoPasos;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
@@ -602,6 +603,7 @@ namespace SustitucionMOAUtils.Services
                 EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
                 TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                 VincularPliego = !x.Pliego_Id.HasValue,
+                UsuarioCompras = new UsuarioComprasDto(x.UsuarioCompras),
 
 
                 NombreDeObra = x.Pliego.NombreObra,
@@ -705,7 +707,7 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.TELEFONO, solp.Telefono);
 
             solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
-            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioActual.Mail);
+            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioCompras.Mail);
 
             solpValores.Add(SolpTemplateKeys.REVISADO_POR, solp.RevisadoPor);
 
