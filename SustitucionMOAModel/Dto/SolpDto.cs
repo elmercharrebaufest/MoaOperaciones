@@ -55,6 +55,7 @@ namespace SustitucionMOAModel.Dto
         public string EstadoPasos { get; set; }
         public bool CargaCotizacionesConArchivo { get; set; }
         public string RevisadoPor { get; set; }
+        public UsuarioComprasDto UsuarioCompras { get; set; }
 
         public SolpDto() {}
         public SolpDto(Solp entity) 
@@ -98,7 +99,7 @@ namespace SustitucionMOAModel.Dto
             this.PasoCompletado = entity.PasoCompletado;
             this.EstadoPasos = entity.EstadoPasos;
             this.RevisadoPor = entity.Pliego.RevisadoPor;
-
+            this.UsuarioCompras = new UsuarioComprasDto(entity.UsuarioCompras);
 
         }
     }
