@@ -68,18 +68,21 @@ namespace SustitucionMOAModel.Entities
         public string NumeroPedido { get; set; }
 
         public string ContratosRespuesta { get; set; }
+        public string PedidosRespuesta { get; set; }
         public string NumeroPedidoIngresado { get; set; }
         public string CodigoVerificacionSap { get; set; }
         public string DescripcionCodigoVerificacionSap { get; set; }
 
         [InverseProperty("OrdenDeCarga")]
         public virtual ICollection<OrdenDeCargaCambiosHistorial> HistorialCambios { get; set; } = new List<OrdenDeCargaCambiosHistorial>();
+        public bool ContratoSinCantidadPendiente { get; set; }
+        public string DescripcionErrorInterno { get; set; }
 
         public void ActualizarEstado()
         {
             if (Estado != EstadoOrdenDeCarga.Entregada)
             {
-                if (string.IsNullOrEmpty(ContratoSAP))
+                if (string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido))
                 {
                     Estado = EstadoOrdenDeCarga.Pendiente;
                 }
@@ -139,13 +142,18 @@ namespace SustitucionMOAModel.Entities
                    NumeroEntrega == carga.NumeroEntrega &&
                    NumeroPedido == carga.NumeroPedido &&
                    ContratosRespuesta == carga.ContratosRespuesta &&
+                   PedidosRespuesta == carga.PedidosRespuesta &&
                    NumeroPedidoIngresado == carga.NumeroPedidoIngresado &&
-                   EqualityComparer<ICollection<OrdenDeCargaCambiosHistorial>>.Default.Equals(HistorialCambios, carga.HistorialCambios);
+                   CodigoVerificacionSap == carga.CodigoVerificacionSap &&
+                   DescripcionCodigoVerificacionSap == carga.DescripcionCodigoVerificacionSap &&
+                   EqualityComparer<ICollection<OrdenDeCargaCambiosHistorial>>.Default.Equals(HistorialCambios, carga.HistorialCambios) &&
+                   ContratoSinCantidadPendiente == carga.ContratoSinCantidadPendiente &&
+                   DescripcionErrorInterno == carga.DescripcionErrorInterno;
         }
 
         public override int GetHashCode()
         {
-            int hashCode = 1559664579;
+            int hashCode = -125590745;
             hashCode = hashCode * -1521134295 + Id.GetHashCode();
             hashCode = hashCode * -1521134295 + Cliente_Id.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<Proveedor>.Default.GetHashCode(Cliente);
@@ -174,11 +182,14 @@ namespace SustitucionMOAModel.Entities
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NumeroEntrega);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NumeroPedido);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContratosRespuesta);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PedidosRespuesta);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NumeroPedidoIngresado);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CodigoVerificacionSap);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DescripcionCodigoVerificacionSap);
             hashCode = hashCode * -1521134295 + EqualityComparer<ICollection<OrdenDeCargaCambiosHistorial>>.Default.GetHashCode(HistorialCambios);
+            hashCode = hashCode * -1521134295 + ContratoSinCantidadPendiente.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DescripcionErrorInterno);
             return hashCode;
         }
     }
-
-
 }

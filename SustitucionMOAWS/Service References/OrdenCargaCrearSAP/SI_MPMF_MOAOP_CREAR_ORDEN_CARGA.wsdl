@@ -51,6 +51,13 @@
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
+            <xsd:element minOccurs="0" name="IM_VALIDA_KG">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="1" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
           </xsd:all>
         </xsd:complexType>
       </xsd:element>

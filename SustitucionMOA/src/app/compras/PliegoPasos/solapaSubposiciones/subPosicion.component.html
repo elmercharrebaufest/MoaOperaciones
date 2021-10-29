@@ -102,15 +102,15 @@
                                     <td [pEditableColumn]="posicion" style="width: 10%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <p-autoComplete [(ngModel)]="posicion.unidadSeleccionada" [suggestions]="unidades" dataKey="Id" ariaLabel="Descripcion" field="Descripcion" appendTo="body" [autoHighlight]="true" emptyMessage="Ningúna unidad encontrada" [minLength]="1" placeholder="Seleccionar"
+                                                <p-autoComplete [(ngModel)]="posicion.unidadSeleccionada" [suggestions]="unidades" dataKey="Id" ariaLabel="Descripcion" field="Descripcion" appendTo="body" [autoHighlight]="true" emptyMessage="Ninguna unidad encontrada" [minLength]="1" placeholder="Seleccionar"
                                                     [dropdown]="true" [forceSelection]="true" (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')" (onFocus)=" $event.target.select()" (onSelect)="endEditCell(dt)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{posicion.unidadSeleccionada.Descripcion}}
+                                                {{posicion.unidadSeleccionada?.Descripcion}}
                                             </ng-template>
                                         </p-cellEditor>
-                                        <div *ngIf="validarConNoNulo(posicion, posicion.unidadSeleccionada.Descripcion, 'unidadMedida')">
+                                        <div *ngIf="validarConNoNulo(posicion, posicion.unidadSeleccionada?.Descripcion, 'unidadMedida')">
                                             <p class="text-danger">*</p>
                                         </div>
                                     </td>
@@ -131,14 +131,14 @@
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.cuentaMayor" [suggestions]="autocomplete" dataKey="Id" ariaLabel="CuentaMayor" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="" [minLength]="2" [forceSelection]="true" (completeMethod)="autocompleteSap($event, 'CuentasSolpSap')"
-                                                    (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.CuentaMayor,rowIndex,dt)" (onSelect)="endEditCell(dt)">
+                                                    (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion?.CuentaMayor,rowIndex,dt)" (onSelect)="endEditCell(dt)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
                                                 {{posicion.cuentaMayor?.CodigoDescripcion}}
                                             </ng-template>
                                         </p-cellEditor>
-                                        <div *ngIf="validarConNoNulo(posicion, posicion.cuentaMayor.CodigoDescripcion, 'cuentaMayor')">
+                                        <div *ngIf="validarConNoNulo(posicion, posicion.cuentaMayor?.CodigoDescripcion, 'cuentaMayor')">
                                             <p class="text-danger">*</p>
                                         </div>
                                     </td>
@@ -153,7 +153,7 @@
                                                 {{posicion.tipoImputacion?.CodigoDescripcion}}
                                             </ng-template>
                                         </p-cellEditor>
-                                        <div *ngIf="validarConNoNulo(posicion, posicion.tipoImputacion.CodigoDescripcion, 'tipoImputacion')">
+                                        <div *ngIf="validarConNoNulo(posicion, posicion.tipoImputacion?.CodigoDescripcion, 'tipoImputacion')">
                                             <p class="text-danger">*</p>
                                         </div>
                                     </td>

@@ -15,13 +15,17 @@ import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.compon
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
+
+declare var $: any;
+
 @Component({
     selector: 'app-ordenes-de-carga.alta',
     templateUrl: './ordenes-de-carga.alta.component.html',
     styleUrls: ['./ordenes-de-carga.alta.component.css']
 })
-export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
+export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
+    
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -64,6 +68,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
 
         this.obtenerMateriales();
+
+        if(this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS')){
+            this.ordenDeCarga.CUITCliente = 0;
+        }
     }
 
     obtenerMateriales() {
@@ -79,10 +87,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     validar() {
-
-        if (this.ordenDeCarga.CUITCliente.toString().trim().length != 11) {
-            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de cliente válido.");
-            return false;
+        //REVISAR MAÑANA, POR EL MOMENTO PUEDEN CARGAR
+        if(this.ordenDeCarga.CUITCliente != 0){
+            if (this.ordenDeCarga.CUITCliente.toString().trim().length != 11) {
+                this.mensajeComponent.setInfoMsg("Ingrese un CUIT de cliente válido.");
+                return false;
+            }
         }
 
         if (this.ordenDeCarga.NombreChofer.trim().length < 2) {
@@ -95,6 +105,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             return false;
         }
 
+        /*VER ESTA VALIDACION, ACA VALIDA COMO SI FUERA UN CUIT PERO EN EL FRONT DICE QUE PONGA EL DNI/CUIL*/
         if (this.ordenDeCarga.CUITChofer.toString().trim().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de chofer válido.");
             return false;

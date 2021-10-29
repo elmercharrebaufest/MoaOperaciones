@@ -6,7 +6,8 @@ namespace SustitucionMOAModel.Entities
     {
         [Key]
         public int Id { get; set; }
-        public int Codigo { get; set; }//SERVICE
+        public string Codigo { get; set; }
+        public int CodigoSap { get; set; }//SERVICE
         public string Descripcion { get; set; }//SHORT TEXT
         public int? GrupoArticulos { get; set; }//MATL GROUP
         public string TipoServicio { get; set; }//SERV CAT

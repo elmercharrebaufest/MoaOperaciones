@@ -28,6 +28,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { DialogModule } from 'primeng/dialog';
 import { FormGroup } from '@angular/forms';
 import { AdjuntosCotizaciones } from './PliegoPasos/adjuntos-Cotizaciones';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
     selector: 'app-solp',
@@ -100,6 +101,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     disabledSave = false;
 
     listadoErrores: string[] = new Array<string>();
+    displaySAPEditar: boolean;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -261,9 +263,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     this.traerSolpId(this.solpId);
                 }
             }
-
-
-
         }
     }
 
@@ -430,7 +429,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                         subpos.id = sp.Codigo;
                         subpos.codigoServicio = sp.CodigoServicioSap;
-                        subpos.tareaSubcontratarObj = sp.CodigoServicioSap;
+                        subpos.tareaSubcontratarObj = { Descripcion: sp.Tarea };
                         subpos.tareaSubcontratar = sp.Tarea;
                         subpos.cuentaMayor = sp.CuentaMayor;
                         subpos.cuentaTd = sp.Cantidad;
@@ -467,26 +466,21 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     validatePasos(): any{
-        let countPasos = 0;
         let estadosPasos = this.solpActual.estadoPasos.split(',');
-        this.pasos.forEach((p, i) => {
-            estadosPasos[p.Numero -1] = !p.Iniciado ? '0' : p.Completo ? '2' : '1';      
-        });
-
         this.solpActual.estadoPasos = '';
 
-        estadosPasos.forEach(x=> {
-            this.solpActual.estadoPasos += `${x},` ;
-            if(x === '2') {
-                countPasos += 1;
-            }
+        this.pasos.forEach((p, i) => {
+            estadosPasos[p.Numero -1] = !p.Iniciado ? '0' : p.Completo ? '2' : '1';      
+            this.solpActual.estadoPasos += `${estadosPasos[p.Numero - 1]},`;
+
         });
+
 
         this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
 
         return {
-            completo: countPasos === 6,
-            paso: countPasos
+            completo: estadosPasos.every(x => x === '2'),
+            primerPasoIncompleto: 1 + estadosPasos.findIndex(x => x != '2')
         }
     }
 
@@ -505,18 +499,23 @@ export class SolpComponent extends BaseComponent implements OnInit {
         });
 
         this.solpActual.estadoPasos = '';
+       
 
         estadosPasos.forEach(x=> {
             this.solpActual.estadoPasos += `${x},` ;
         });
 
         this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
-
-        this.pasoActual = paso;
+    
+        this.pasoActual = paso; //aca esta el error
 
         this.solpActual.pasoCompletado = this.solpActual.pasoCompletado > this.pasoActual.Numero 
         ? this.solpActual.pasoCompletado
         : this.pasoActual.Numero;
+       
+        this.actualizarPasoCompleto(this.pasoActual);
+       
+        // this.guardarCambios(false, false, true);
     }
 
     pasoAnterior() {
@@ -551,6 +550,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     guardarCambios(mostrarPreview = false, enviarSap = false, guardarPorPaso = false) {
         try {
+            this.actualizarPasoCompleto(this.pasoActual);
+
             this.disabledSave = true;
             if (guardarPorPaso == false) {
                 this.blockUI.start('Guardando...');
@@ -560,7 +561,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             if(enviarSap) {
                 if(!validatePasos.completo) {
-                    this.floatMsgService.setErrorMsg(`Falta completar campos en el paso #${validatePasos.paso}`);
+                    this.floatMsgService.setErrorMsg(`Falta completar campos en el paso #${validatePasos.primerPasoIncompleto}`);
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
@@ -640,14 +641,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 this.displayErrorSAP = true;
                             }
 
+                            if (this.solpActual.nroSolp) {
+                                this.displaySAPEditar = true;
+                            }
+
+                            
                             // if (result.Solp.NroSolp) {
                             //     this.finalizarOk = true;
                             // } else {
                             //     this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar la SOLP en SAP, intente de nuevo mas tarde o comuniquese con el administrador' });
                             // }
                         }
-
-
                     }
                     this.disabledSave = false;
                 },
@@ -670,68 +674,121 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     actualizarPasoCompleto(paso: Paso) {
-        if (paso) {
+        if(paso){
             switch (paso.Codigo) {
                 case EnumPasoSolp.PliegoGeneracion1:
-                    paso.Completo = this.listaStringCompleta([
+                    paso.Completo = true;
+
+                    if(!this.listaStringCompleta([
                         this.solpActual.nombreDePedido,
                         this.solpActual.fiscalContrato,
                         this.solpActual.mail,
                         this.solpActual.fechaEntrega,
                         this.solpActual.horaEntrega
-                    ]);
+                    ]))
+                    {
+                        paso.Completo = false;
+                    }                    
+             
                     break;
+                 
                 case EnumPasoSolp.PliegoGeneracion2:
-                    paso.Completo = this.listaStringCompleta([
+                    paso.Completo = true;
+                    if(!this.listaStringCompleta([
                         this.solpActual.supervisorSector,
                         this.solpActual.supervisorTrabajo
-                    ]);
+                    ]))
+                    {
+                        paso.Completo = false;
+                    }
                     break;
                 case EnumPasoSolp.PliegoEspecificacion:
-                    paso.Completo = this.listaStringCompleta([
+                    paso.Completo = true;
+                    if(!this.listaStringCompleta([
                         this.solpActual.especificacionesViewModel.observaciones
-                    ]);
+                    ]))
+                    {
+                        return paso.Completo = false;
+                    }
                     break;
                 case EnumPasoSolp.PliegoCotizacion:
-                    paso.Completo = this.listaStringCompleta([
+                    paso.Completo = true;
+                    if(!this.listaStringCompleta([
                         this.solpActual.ejecucion,
                         this.solpActual.jornadaLaboralDias,
                         this.solpActual.comienzoJornadaLaboral,
                         this.solpActual.terminoJornadaLaboral
-                    ]);
-                    break;
-                case EnumPasoSolp.SolpCabecera:
-                    console.log(this.solpActual)
-                    paso.Completo = this.listaStringCompleta([
-                        //this.solpActual.selectClaseDocumento,
-                        this.solpActual.posicionActual.servicio,
-                        this.solpActual.posicionActual.textoGenerico,
-                        this.solpActual.posicionActual.fechaEntregaServicio,
-                        this.solpActual.posicionActual.fechaDeLiberacion,
-                        this.solpActual.posicionActual.selectCentroEntrega,
-                        this.solpActual.posicionActual.selectAlmacenEntrega,
-                        this.solpActual.posicionActual.calleEntrega,
-                        this.solpActual.posicionActual.numeroEntrega,
-                        this.solpActual.posicionActual.selectGrupoCompras,
-                        this.solpActual.posicionActual.selectArticuloCompras,
-                        this.solpActual.posicionActual.monedaSeleccionada
-                    ]);
+                    ]))
+                    {
+                        return paso.Completo = false;
+                    }
 
                     break;
-                case EnumPasoSolp.SolpSubposiciones:
-                    paso.Completo = this.listaStringCompleta([
-                    ]);
+                case EnumPasoSolp.SolpCabecera:
+                    paso.Completo = true;
+                    //Revisa que todos los campos de TODAS las posiciones esten completos
+                    this.solpActual.posiciones.forEach(x => {
+                        if(!this.listaStringCompleta([
+                            x.servicio,
+                            x.textoGenerico,
+                            x.fechaEntregaServicio,
+                            x.fechaDeLiberacion,
+                            x.selectCentroEntrega,
+                            x.selectAlmacenEntrega,
+                            x.calleEntrega,
+                            x.numeroEntrega,
+                            x.selectGrupoCompras,
+                            x.selectArticuloCompras,
+                            x.monedaSeleccionada
+                        ]))
+                        {
+                            return paso.Completo = false;
+                        } 
+                    });    
                     break;
                 case EnumPasoSolp.SolpSubposiciones:
+                    paso.Completo = true;    
+
+                    this.solpActual.posiciones.forEach(pos => {
+
+                        //Filtra que en el listado de subpos de todas las posiciones, tareaSubContratar no sea vacio, en caso de que sea vacio retorna false
+                        if(pos.listadoSubPosiciones.filter(x => x.tareaSubcontratar.toString().length > 0).length == 0) {
+                            paso.Completo = false;
+                            return;
+                        }
+
+                        pos.listadoSubPosiciones.forEach(x => {
+
+                            //Chequea que tareaSub si esta vacio o undefined retorna false, esto es por que en la tabla del paso 6 se agrega una fila automaticamente
+                            if(x.tareaSubcontratar == "" || x.tareaSubcontratar == undefined) {
+                                return;
+                            } 
+                             //Aca se fija que todos los campos obligatorios de la fila esten completos
+                            if(!this.listaStringCompleta([
+                                // x.codigoServicio,
+                                // x.tareaSubcontratar,
+                                // x.tareaSubcontratarObj,
+                                x.cuentaMayor,
+                                x.cuentaTd,
+                                x.unidadSeleccionada,
+                                x.precioBruto,
+                            ]))
+                            {
+                                paso.Completo = false;
+                                return;
+                            }
+                        })
+                    }); 
                     break;
-            }
-        }
+                case EnumPasoSolp.SolpSubposiciones:
+                     break;
+            } 
+        }            
     }
 
     listaStringCompleta(lista: any[]) {
         return lista.filter(x => !x || x.length == 0).length == 0;
     }
-
 
     //evento que se activa cuando se deja uno de los paso de la solp
     //infomacionSolp : { codigo : string , esPasoInvalido : bool}
@@ -880,8 +937,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     finalizar() {
         this.guardarCambios(false, true, false);
         this.displayFinalizar = false
-        // ;
-        //
     }
 
     // Abre el modal del boton finalizar

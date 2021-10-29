@@ -475,8 +475,9 @@
 }
 
 ::ng-deep .ui-autocomplete-input {
-  width: calc(100% - 33px) !important;
+  width: calc(99% - 33px) !important;
 }
+
 
 .headerModal {
   top: 106px;

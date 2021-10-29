@@ -16,7 +16,8 @@ namespace SustitucionMOAModel.Enums
         Entregada,
         Vencida,
         EntregaPendiente,
-        AnuladaPorVencimiento
+        AnuladaPorVencimiento,
+        ErrorDeCarga
     }
 
     public static class EstadoOrdenDeCargaExtensions
@@ -25,10 +26,13 @@ namespace SustitucionMOAModel.Enums
         {
             switch (me)
             {
+                case EstadoOrdenDeCarga.ErrorDeCarga:
+                    return "red";
                 case EstadoOrdenDeCarga.Pendiente:
                 case EstadoOrdenDeCarga.Vencida:
                 case EstadoOrdenDeCarga.Anulada:
-                    return "red";
+                    return "orange";
+
                 case EstadoOrdenDeCarga.Confirmado:
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                 case EstadoOrdenDeCarga.EntregaPendiente:

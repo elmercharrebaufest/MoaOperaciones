@@ -18,7 +18,6 @@ import { NgxMaskModule } from "ngx-mask";
 import { ModalModule } from "ngx-modal";
 
 import { NgxPaginationModule } from "ngx-pagination";
-
 import { AduanaService } from "./aduana/aduana.service";
 import { AltasComponent } from "./alta-proveedores/altas/altas.component";
 import { EmpresaGranosComponent } from "./alta-proveedores/empresa-granos/empresa-granos.component";

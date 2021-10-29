@@ -201,8 +201,6 @@ export class ComprasService extends BaseService {
     }
 
     getObjetoCodigo(codigo, tabla = null) {
-        console.log("codigo:", codigo);
-        console.log("tabla:", tabla);
         if (codigo) {
             if (tabla) {
                 return { Codigo: codigo, Tabla: tabla }

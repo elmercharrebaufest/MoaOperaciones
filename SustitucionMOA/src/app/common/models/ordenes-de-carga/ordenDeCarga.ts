@@ -20,7 +20,11 @@ export class OrdenDeCarga {
     TransporteExiste: boolean;
     ContratoIngresado: string;
     NumeroPedidoIngresado: string;
+    NumeroPedido: string;
+    PedidosRespuesta: string;
     MensajeValidacionSAP: string;
+    ContratoSinCantidadPendiente: boolean;
+    DescripcionErrorInterno: string;
 
     constructor() {
     }
