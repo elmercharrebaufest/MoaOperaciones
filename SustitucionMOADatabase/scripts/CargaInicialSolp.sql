@@ -3055,4 +3055,57 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'SB32') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'SB32', 'SB32', 'SAN BENITO MRP', null) END
 
 
+-- Tabla UsuarioCompras
+
+-- Tabla estadoSap
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.UsuarioCompras WHERE Mail = 'damian.calvet@molinosagro.com.ar')
+BEGIN
+	insert into UsuarioCompras(Mail,Nombres,Habilitado,PorDefecto)
+	values('damian.calvet@molinosagro.com.ar','Calvet Damial',1,1);
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.UsuarioCompras WHERE Mail = 'franco.Fracchioni@molinosagro.com.ar')
+BEGIN
+	insert into UsuarioCompras(Mail,Nombres,Habilitado,PorDefecto)
+	values('franco.Fracchioni@molinosagro.com.ar','Franco Francchioni',1,1);
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.UsuarioCompras WHERE Mail = 'rodrigoezequiel.lombardo@molinosagro.com.ar')
+BEGIN
+	insert into UsuarioCompras(Mail,Nombres,Habilitado,PorDefecto)
+	values('rodrigoezequiel.lombardo@molinosagro.com.ar','Lombardo Rodrigo',1,1);
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.UsuarioCompras WHERE Mail = 'carolina.dmanuele@molinosagro.com.ar')
+BEGIN
+	insert into UsuarioCompras(Mail,Nombres,Habilitado,PorDefecto)
+	values('carolina.dmanuele@molinosagro.com.ar','De Manuele Carolina',1,1);
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.UsuarioCompras WHERE Mail = 'lucia.polito@molinosagro.com.ar')
+BEGIN
+	insert into UsuarioCompras(Mail,Nombres,Habilitado,PorDefecto)
+	values('lucia.polito@molinosagro.com.ar','Polito Lucia',1,1);
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.UsuarioCompras WHERE Mail = 'marcelo.mazzola@molinosagro.com.ar')
+BEGIN
+	insert into UsuarioCompras(Mail,Nombres,Habilitado,PorDefecto)
+	values('marcelo.mazzola@molinosagro.com.ar','Mazzola Marcelo',1,1);
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM UsuarioComprasRelacionConUsuarios)
+BEGIN
+declare @valor as int =1;
+while @valor<7
+begin
+insert into UsuarioComprasRelacionConUsuarios(Usuario_Id,UsuarioCompras_Id)
+select id,@valor from Usuario;
+set @valor=@valor+1;
+end
+END
+
+
+
 COMMIT TRAN
