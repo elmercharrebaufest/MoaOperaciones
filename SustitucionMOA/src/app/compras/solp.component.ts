@@ -733,8 +733,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             x.numeroEntrega,
                             x.selectGrupoCompras,
                             x.selectArticuloCompras,
-                            x.monedaSeleccionada
-                        ]))
+                            x.monedaSeleccionada])
+                        || (this.solpActual.posiciones.some(x => !(x.selectCentroEntrega && x.selectCentroEntrega.Id)))
+                        || (this.solpActual.posiciones.some(x => !(x.selectAlmacenEntrega && x.selectAlmacenEntrega.Id)))
+                        || (this.solpActual.posiciones.some(x => !(x.selectGrupoCompras && x.selectGrupoCompras.Id)))
+                        || (this.solpActual.posiciones.some(x => !(x.selectArticuloCompras && x.selectArticuloCompras.Id)))
+                        )
                         {
                             return paso.Completo = false;
                         } 

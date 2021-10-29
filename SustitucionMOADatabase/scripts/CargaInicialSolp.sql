@@ -929,7 +929,6 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'Almacen' and Codi
 
 -- Grupo Articulo
 
-IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'GrupoArticulo' and Codigo = '') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('GrupoArticulo', '', '', 'Flexibles Termo', null) END
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'GrupoArticulo' and Codigo = '001011') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('GrupoArticulo', '001011', '001011', 'Carne', null) END
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'GrupoArticulo' and Codigo = '001021') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('GrupoArticulo', '001021', '001021', 'Huevo', null) END
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'GrupoArticulo' and Codigo = '001031') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('GrupoArticulo', '001031', '001031', 'Pollo', null) END
