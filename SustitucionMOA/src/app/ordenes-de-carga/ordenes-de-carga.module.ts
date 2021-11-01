@@ -7,12 +7,14 @@ import { OrdenesDeCargaAlta } from './alta/ordenes-de-carga.alta.component';
 import { OrdenesDeCargaListado } from './listado/ordenes-de-carga.listado.component';
 import { OrdenesDeCargaService } from './ordenes-de-carga.service';
 import { OrdenesDeCargaDetalleComponent } from './detalle/ordenes-de-carga.detalle.component';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
     imports: [
         CommonModule,
         SharedModule,
         NgxPaginationModule,
+        ButtonModule,
         OrdenesDeCargaRoutingModule
     ],
     declarations: [

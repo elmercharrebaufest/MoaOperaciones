@@ -83,13 +83,11 @@
           </div>
         </div>
 
-        <button (click)="getListado()">Actualizar</button>
+        <div class="col-xs-12 col-sm-6 col-md-15" style="float: right; height: 70px;">
+          <button type="button" pButton icon="fa fa-refresh" (click)="getListado()" style="background-color: #075088; float: right; left: -10px; top: 50%;"></button> &nbsp;
+        </div>
       </div>
     </div>
-
-    
-      
- 
 
     <!-- End Search-->
     <!-- Tables-->
@@ -126,7 +124,7 @@
           </thead>
 
           <tbody>
-            <tr *ngFor="let ordenDeCarga of data; trackBy: trackListadoOrdenes
+            <tr *ngFor="let ordenDeCarga of data
                                     | customFilter : 'Contrato' : filtroAlta |
                                     customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected)  |
                                     customFilter : 'Cliente' : filtroCliente |
@@ -139,9 +137,9 @@
               <td>{{ordenDeCarga.Id}}</td>
               <td *ngIf="esMesaFas || esComercial">{{ordenDeCarga.EstadoEntrega}}</td>
               <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
-              <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Cliente}}</td>
+              <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.RazonSocialCliente}}</td>
               <td *ngIf="esMesaFas">{{ordenDeCarga.CUITCliente}}</td>
-              <td *ngIf="esInterno">{{ordenDeCarga.Corredor}}</td>
+              <td *ngIf="esInterno">{{ordenDeCarga.RazonSocialCorredor}}</td>
               <td *ngIf="esPuerto || esComercial || esTercero || esInterno">{{ordenDeCarga.DescripcionEstado}}</td>
               <td *ngIf="esTercero || esPuerto">{{ordenDeCarga.Orden}}</td>
               <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.FechaCarga}}</td>

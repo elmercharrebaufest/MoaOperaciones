@@ -85,11 +85,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         );
     }
 
-    trackListadoOrdenes(index: number, ordenDeCarga: OrdenDeCarga){
-        return ordenDeCarga
-    }
-
-
     getListado() {
         this.mensajeComponent.setMsgsEmpty();
 

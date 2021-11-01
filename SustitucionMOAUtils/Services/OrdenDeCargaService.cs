@@ -42,12 +42,13 @@ namespace SustitucionMOAUtils.Services
             if (usuario.EsCorredor())
             {
                 var corredor = usuario.ObtenerCorredor();
-                ordenDeCarga.Corredor = corredor.CodigoProveedor;
+                ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
+                ordenDeCarga.Corredor_Id = corredor.Id;
                 cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
             }
             else
             {
-                ordenDeCarga.Corredor = "";
+                ordenDeCarga.CodigoCorredor = "";
                 cliente = usuario.ObtenerProveedor();
             }
 
@@ -65,6 +66,7 @@ namespace SustitucionMOAUtils.Services
             ordenDeCarga.Producto = producto;
             ordenDeCarga.NumeroPedido = string.IsNullOrEmpty(ordenDeCarga.NumeroPedidoIngresado) ? "" : ordenDeCarga.NumeroPedidoIngresado;
             ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
+            ordenDeCarga.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
 
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
 
@@ -112,6 +114,7 @@ namespace SustitucionMOAUtils.Services
             ordenEditar.Cantidad = ordenDeCarga.Cantidad;
             ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
             ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
+            ordenEditar.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
 
             if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
             {
@@ -178,9 +181,9 @@ namespace SustitucionMOAUtils.Services
                 var cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, cambios);
                 string asunto = "Molinos Agro - Edición en su orden de carga n°: " + ordenDeCargaHistorial[0].OrdenDeCarga_Id;
                 var copia = new List<string>() { };
-                var Destinatario = ConfigurationManager.AppSettings["EmailToComerciales"];
+                var Destinatario = ConfigurationManager.AppSettings["EmailToComerciales"].Split(';').ToList();
 
-                EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, copia, null, null, null);
+                EmailSender.EnviarMail(Destinatario, asunto, cuerpo, copia, null, null, null);
             }
             catch (Exception ex)
             {
@@ -197,7 +200,7 @@ namespace SustitucionMOAUtils.Services
 
             var forzarCreacionStr = forzarCreacion ? "" : "X";
 
-            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.Corredor, orden.Cantidad, orden.Producto.CodigoSap, orden.NumeroPedidoIngresado, forzarCreacionStr, out string numeroPedido);
+            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.CodigoCorredor, orden.Cantidad, orden.Producto.CodigoSap, orden.NumeroPedidoIngresado, forzarCreacionStr, out string numeroPedido);
           
             var resultadoCrearOrden = false;
             orden.ContratoSinCantidadPendiente = false;
@@ -248,7 +251,7 @@ namespace SustitucionMOAUtils.Services
             CC-05	'Pedido entregado completamente'
             CC-00	'OK'
             */
-            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoSAP, ordenDeCarga.Corredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
+            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoSAP, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
 
             //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
             //cual es el contrato correcto que le quiere entregar.
@@ -369,7 +372,9 @@ namespace SustitucionMOAUtils.Services
                     {
                         Id = x.Id,
                         Cliente = x.Cliente.CodigoProveedor,
-                        Corredor = x.Corredor,
+                        RazonSocialCliente = x.Cliente.RazonSocial,
+                        Corredor = x.CodigoCorredor,
+                        RazonSocialCorredor = string.IsNullOrWhiteSpace(x.Corredor?.RazonSocial) ? "-" : x.Corredor?.RazonSocial,
                         Contrato = x.ContratoSAP ?? "-",
                         Pedido = x.NumeroPedido ?? "-",
                         Entrega = x.NumeroEntrega ?? "-",
@@ -438,7 +443,9 @@ namespace SustitucionMOAUtils.Services
                 ChasisAcoplado = orden.ChasisAcoplado,
                 Chofer = $"{orden.ApellidoChofer}, {orden.NombreChofer} ({orden.CUITChofer})",
                 ContratoSAP = string.IsNullOrEmpty(orden.ContratoSAP) ? "-" : orden.ContratoSAP,
-                Corredor = orden.Corredor,
+                PedidoSAP = string.IsNullOrEmpty(orden.PedidoSAP) ? "-" : orden.PedidoSAP,
+                Corredor = orden.CodigoCorredor,
+                RazonSocialCorredor = string.IsNullOrWhiteSpace(orden.Corredor?.RazonSocial) ? "-" : orden.Corredor?.RazonSocial,
                 CorredorSeleccionado = orden.CorredorSeleccionado,
                 Estado = (int)orden.Estado,
                 FechaCarga = orden.FechaCarga.ToString("dd/MM/yyyy hh:mm"),
@@ -698,7 +705,7 @@ namespace SustitucionMOAUtils.Services
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
-            return VerificarSituacionCrediticia(orden, false);
+            return VerificarSituacionCrediticia(orden, true);
         }
 
         private string VerificarSituacionCrediticia(OrdenDeCarga orden, bool notificar)
