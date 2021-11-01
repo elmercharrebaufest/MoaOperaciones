@@ -25,7 +25,7 @@ declare var $: any;
 })
 
 export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
-    
+
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -69,7 +69,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         this.obtenerMateriales();
 
-        if(this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS')){
+        if (this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS')) {
             this.ordenDeCarga.CUITCliente = 0;
         }
     }
@@ -88,7 +88,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     validar() {
         //REVISAR MAÑANA, POR EL MOMENTO PUEDEN CARGAR
-        if(this.ordenDeCarga.CUITCliente != 0){
+        if (this.ordenDeCarga.CUITCliente != 0) {
             if (this.ordenDeCarga.CUITCliente.toString().trim().length != 11) {
                 this.mensajeComponent.setInfoMsg("Ingrese un CUIT de cliente válido.");
                 return false;
@@ -151,8 +151,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     } else {
                         this.ordenDeCarga = result.data;
 
-                        debugger
-                        if(this.esComercial && result.data.ColorSemaforo != "green"){
+                        if (this.esComercial && result.data.ColorSemaforo != "green") {
                             this.puedeEditarContrato = true;
                         }
                     }
