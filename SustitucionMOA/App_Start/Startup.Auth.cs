@@ -191,9 +191,20 @@ namespace SustitucionMOA
 				notification.AddClaim(new Claim(Globals.ClaimsProveedorId, usuario.ObtenerProveedor().Id.ToString()));
 				notification.AddClaim(new Claim(Globals.ClaimsSeccionesVisitadas, usuario.SeccionesVisitadas ?? ""));
 
-				string tipoGranos = usuario.TipoUsuario.NombreCorto == "CORR" || usuario.TipoUsuario.NombreCorto == "CLI"  ? "G" : usuario.TipoUsuario.NombreCorto;
+				string tipoGranos = usuario.TipoUsuario.NombreCorto == "CORR" ? "G" : usuario.TipoUsuario.NombreCorto;
+
+				if (usuario.TipoUsuario.NombreCorto == "CLI")
+				{
+					tipoGranos = "NG";
+				}
 
 				var permisosUsuario = usuario.ObtenerPermisos();
+
+				if (permisosUsuario.Contains(SustitucionMOASecurity.Permiso.CONSULTAR_HOME))
+					tipoGranos = "G";
+
+				if (permisosUsuario.Contains(SustitucionMOASecurity.Permiso.CONSULTAR_HOME_NG))
+					tipoGranos = "NG";
 
 				if (usuario.EsAdmin() || 
 				   (permisosUsuario.Contains(SustitucionMOASecurity.Permiso.CONSULTAR_HOME) && permisosUsuario.Contains(SustitucionMOASecurity.Permiso.CONSULTAR_HOME_NG)))

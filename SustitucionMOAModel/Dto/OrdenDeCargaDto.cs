@@ -16,7 +16,9 @@ namespace SustitucionMOAModel.Dto
         public string ColorSemaforo { get; set; }
         public string Material { get; set; }
         public string Cliente { get; set; }
+        public string RazonSocialCliente { get; set; }
         public string Corredor { get; set; }
+        public string RazonSocialCorredor { get; set; }
         public string Contrato { get; set; }
         public string Pedido { get; set; }
         public string Entrega { get; set; }
@@ -67,6 +69,7 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public string CUITCliente { get; set; }
         public string RazonSocialCliente { get; set; }
+        public string RazonSocialCorredor { get; set; }
         public string DescripcionEstado { get; set; }
         public string ColorSemaforo { get; set; }
         public string Chofer { get; set; }
@@ -75,6 +78,7 @@ namespace SustitucionMOAModel.Dto
         public int Cantidad { get; set; }
         public string Observacion { get; set; }
         public string ContratoSAP { get; set; }
+        public string PedidoSAP { get; set; }
         public bool CorredorSeleccionado { get; set; }
         public string Corredor { get; set; }
         public bool TransporteExiste { get; set; }

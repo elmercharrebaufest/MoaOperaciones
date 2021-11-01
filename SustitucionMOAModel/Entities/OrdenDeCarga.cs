@@ -49,8 +49,13 @@ namespace SustitucionMOAModel.Entities
 
         public bool CorredorSeleccionado { get; set; }
 
-        public string Corredor { get; set; }
+        public string CodigoCorredor { get; set; }
 
+        public int? Corredor_Id { get; set; }
+        
+        [ForeignKey("Corredor_Id")]
+        public virtual Proveedor Corredor { get; set; }
+        
         public bool TransporteExiste { get; set; }
 
         public string PatenteAcoplado { get; set; }
@@ -70,6 +75,7 @@ namespace SustitucionMOAModel.Entities
         public string ContratosRespuesta { get; set; }
         public string PedidosRespuesta { get; set; }
         public string NumeroPedidoIngresado { get; set; }
+        public string PedidoSAP { get; set; }
         public string CodigoVerificacionSap { get; set; }
         public string DescripcionCodigoVerificacionSap { get; set; }
 
@@ -132,7 +138,9 @@ namespace SustitucionMOAModel.Entities
                    ContratoIngresado == carga.ContratoIngresado &&
                    ContratoSAP == carga.ContratoSAP &&
                    CorredorSeleccionado == carga.CorredorSeleccionado &&
-                   Corredor == carga.Corredor &&
+                   CodigoCorredor == carga.CodigoCorredor &&
+                   Corredor_Id == carga.Corredor_Id &&
+                   EqualityComparer<Proveedor>.Default.Equals(Corredor, carga.Corredor) &&
                    TransporteExiste == carga.TransporteExiste &&
                    PatenteAcoplado == carga.PatenteAcoplado &&
                    ChasisAcoplado == carga.ChasisAcoplado &&
@@ -144,6 +152,7 @@ namespace SustitucionMOAModel.Entities
                    ContratosRespuesta == carga.ContratosRespuesta &&
                    PedidosRespuesta == carga.PedidosRespuesta &&
                    NumeroPedidoIngresado == carga.NumeroPedidoIngresado &&
+                   PedidoSAP == carga.PedidoSAP &&
                    CodigoVerificacionSap == carga.CodigoVerificacionSap &&
                    DescripcionCodigoVerificacionSap == carga.DescripcionCodigoVerificacionSap &&
                    EqualityComparer<ICollection<OrdenDeCargaCambiosHistorial>>.Default.Equals(HistorialCambios, carga.HistorialCambios) &&
@@ -153,7 +162,7 @@ namespace SustitucionMOAModel.Entities
 
         public override int GetHashCode()
         {
-            int hashCode = -125590745;
+            int hashCode = -1110409952;
             hashCode = hashCode * -1521134295 + Id.GetHashCode();
             hashCode = hashCode * -1521134295 + Cliente_Id.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<Proveedor>.Default.GetHashCode(Cliente);
@@ -172,7 +181,9 @@ namespace SustitucionMOAModel.Entities
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContratoIngresado);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContratoSAP);
             hashCode = hashCode * -1521134295 + CorredorSeleccionado.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Corredor);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CodigoCorredor);
+            hashCode = hashCode * -1521134295 + Corredor_Id.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<Proveedor>.Default.GetHashCode(Corredor);
             hashCode = hashCode * -1521134295 + TransporteExiste.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PatenteAcoplado);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ChasisAcoplado);
@@ -184,6 +195,7 @@ namespace SustitucionMOAModel.Entities
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContratosRespuesta);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PedidosRespuesta);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NumeroPedidoIngresado);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PedidoSAP);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CodigoVerificacionSap);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DescripcionCodigoVerificacionSap);
             hashCode = hashCode * -1521134295 + EqualityComparer<ICollection<OrdenDeCargaCambiosHistorial>>.Default.GetHashCode(HistorialCambios);
