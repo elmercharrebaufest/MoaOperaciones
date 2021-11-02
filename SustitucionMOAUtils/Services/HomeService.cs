@@ -115,11 +115,8 @@ namespace SustitucionMOAUtils.Services
             string fechaInicio = DateTime.Now.AddYears(-1).ToString("yyyy - MM - dd");
             string fechaFin = DateTime.Now.AddDays(+1).ToString("yyyy - MM - dd");
             palabraABuscar.Trim().Replace("\t", "");
-
-            if(palabraABuscar.Length == 7)
-            {
-                palabraABuscar = String.Concat("000", palabraABuscar);
-            }
+            var formatoContrato = "0000000000";
+            palabraABuscar = (formatoContrato + palabraABuscar).Substring((formatoContrato + palabraABuscar).Length - 10);
 
             try
             {
