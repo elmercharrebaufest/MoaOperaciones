@@ -42,6 +42,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     listaMateriales: Material[];
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
+    esAdmin: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+
     puedeEditarContrato: boolean = false;
 
     constructor(protected service: OrdenesDeCargaService,
@@ -87,8 +89,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     validar() {
-        //REVISAR MAÑANA, POR EL MOMENTO PUEDEN CARGAR
-        if (this.ordenDeCarga.CUITCliente != 0) {
+        if (this.esCorredor) {
             if (this.ordenDeCarga.CUITCliente.toString().trim().length != 11) {
                 this.mensajeComponent.setInfoMsg("Ingrese un CUIT de cliente válido.");
                 return false;

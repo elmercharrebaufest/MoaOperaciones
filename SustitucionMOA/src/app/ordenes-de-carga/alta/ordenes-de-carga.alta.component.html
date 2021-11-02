@@ -26,7 +26,8 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" id="CUITCliente" [disabled]="ordenDeCargaId > 0" [(ngModel)]="ordenDeCarga.CUITCliente" class="form-control" mask="00-00000000-0">
+                <input type="text" id="CUITCliente" [disabled]="ordenDeCargaId > 0"
+                  [(ngModel)]="ordenDeCarga.CUITCliente" class="form-control" mask="00-00000000-0">
               </div>
             </div>
             <div class="col-xs-12 col-md-6">
@@ -35,7 +36,8 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato)" [(ngModel)]="ordenDeCarga.ContratoIngresado" maxlength="25">
+                <input type="text" [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato)"
+                  [(ngModel)]="ordenDeCarga.ContratoIngresado" maxlength="25">
               </div>
             </div>
             <div class="col-xs-12 col-md-6">
@@ -166,7 +168,7 @@
                 <spinner></spinner>
               </div>
 
-              <div class="col-xs-0 col-md-3">
+              <div class="col-xs-0 col-md-3" *ngIf="esAdmin">
                 <input type="button" (click)="cargaFalsa()" class="btn-custom btn-add btn-mediano" value="Llenar">
 
               </div>
