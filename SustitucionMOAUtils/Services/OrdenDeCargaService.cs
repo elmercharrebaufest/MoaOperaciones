@@ -51,6 +51,7 @@ namespace SustitucionMOAUtils.Services
             {
                 ordenDeCarga.CodigoCorredor = "";
                 cliente = usuario.ObtenerProveedor();
+                ordenDeCarga.CUITCliente = cliente.CUIT;
             }
 
             //if (ordenDeCarga.CUITCliente != "")
@@ -433,6 +434,8 @@ namespace SustitucionMOAUtils.Services
                         Id = x.Id,
                         Cliente = x.Cliente.CodigoProveedor,
                         RazonSocialCliente = x.Cliente.RazonSocial,
+                        Fecha = x.FechaCarga.ToString("dd/MM/yyyy HH:mm"),
+                        CUITCliente = x.CUITCliente,
                         Corredor = x.CodigoCorredor,
                         RazonSocialCorredor = string.IsNullOrWhiteSpace(x.Corredor?.RazonSocial) ? "-" : x.Corredor?.RazonSocial,
                         Contrato = x.ContratoSAP ?? "-",
@@ -452,6 +455,8 @@ namespace SustitucionMOAUtils.Services
                     .Select(x => new OrdenDeCargaDto
                     {
                         Id = x.Id,
+                        CUITCliente = x.CUITCliente,
+                        Fecha = x.FechaCarga.ToString("dd/MM/yyyy HH:mm"),
                         Contrato = x.ContratoSAP ?? "-",
                         Pedido = x.NumeroPedido ?? "-",
                         Entrega = x.NumeroEntrega ?? "-",
@@ -772,7 +777,7 @@ namespace SustitucionMOAUtils.Services
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
-            return VerificarSituacionCrediticia(orden, true);
+            return VerificarSituacionCrediticia(orden, false);
         }
 
         private string VerificarSituacionCrediticia(OrdenDeCarga orden, bool notificar)
@@ -783,7 +788,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (!orden.AprobadoCredito)
                 {
-                    if (notificar && false)
+                    if (notificar)
                     {
                         NotificarSituacionCrediticia(orden);
                     }
