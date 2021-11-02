@@ -472,12 +472,19 @@ namespace SustitucionMOAUtils.Services
         public OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var mostrarListadoCompleto = usuario.TienePermiso("VER TODAS ORDENES DE CARGA");
 
             OrdenDeCargaDetalleDto ordenDto;
             OrdenDeCarga orden;
 
-            if (mostrarListadoCompleto)
+            var esAdmin = usuario.TienePermiso("VER TODAS ORDENES DE CARGA");
+            var esTercero = usuario.TienePermiso("VER ORDENES DE CARGA DE TERCEROS");
+            var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
+            var esMesaFas = usuario.TienePermiso("VER ORDENES DE CARGA PARA MESA FAS");
+            var esPuerto = usuario.TienePermiso("VER ORDENES DE CARGA PARA PUERTO");
+
+            var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
+
+            if (esInterno)
             {
                 orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
             }
