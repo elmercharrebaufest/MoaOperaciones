@@ -1153,9 +1153,11 @@ namespace SustitucionMOAUtils.Services
 
         public List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos)
         {
-            return repositorio
+            var result = repositorio
                 .Listar<ServicioSolp>(x => codigos.Contains(x.CodigoSap.ToString()))
                 .Select(x => new ServicioSolpDto(x)).ToList();
+
+            return result;
         }
 
         public void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion)
