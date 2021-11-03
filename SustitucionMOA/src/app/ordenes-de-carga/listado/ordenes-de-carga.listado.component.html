@@ -71,23 +71,24 @@
           <filtro-fecha (ClickEvent)="getListado()"></filtro-fecha>
         </div>
 
-        
+
         <div id="searchPedido" class="col-xs-12 col-sm-6 col-md-15" style="margin-top: 8px;">
           Factura anticipada:
           <div class="styled-select ">
-              <select [(ngModel)]="pedidoAnticipado">
-                  <option value="0" selected>Todos</option>
-                  <option value="1" selected>Con pedido anticipado</option>
-                  <option value="2" selected>Sin pedido anticipado</option>
-              </select>
+            <select [(ngModel)]="pedidoAnticipado">
+              <option value="0" selected>Todos</option>
+              <option value="1" selected>Con pedido anticipado</option>
+              <option value="2" selected>Sin pedido anticipado</option>
+            </select>
           </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-15" style="float: right; height: 70px;">
+          <button type="button" pButton icon="fa fa-refresh" (click)="getListado()"
+            style="background-color: #075088; float: right; left: -10px; top: 50%;"></button> &nbsp;
         </div>
       </div>
     </div>
-
-    
-      
- 
 
     <!-- End Search-->
     <!-- Tables-->
@@ -104,20 +105,21 @@
             <tr role="row">
               <!--<th *ngIf="esComercial">Boton</th>-->
               <th>Id</th>
-              <th *ngIf="esMesaFas || esComercial">Estado entrega</th>
+              <!-- <th *ngIf="esMesaFas || esComercial">Estado entrega</th> -->
               <th *ngIf="esMesaFas || esInterno">Entrega</th>
               <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas">Cliente</th>
               <th *ngIf="esMesaFas">Cuit cliente</th>
               <th *ngIf="esInterno">Corredor</th>
               <th *ngIf="esPuerto || esComercial || esTercero || esInterno">Estado</th>
-              <th *ngIf="esTercero || esPuerto">Orden</th>
+              <!-- <th *ngIf="esTercero || esPuerto">Orden</th> -->
               <th *ngIf="esTercero || esComercial || esPuerto || esMesaFas">Fecha</th>
               <th>Contrato</th>
               <th *ngIf="esInterno || esMesaFas">Pedido</th>
-              <th *ngIf="esComercial || esPuerto || esMesaFas">Estado Pedido</th>
+              <!-- <th *ngIf="esComercial || esPuerto || esMesaFas">Estado Pedido</th> -->
               <th>Producto</th>
-              <th *ngIf="esComercial || esPuerto || esMesaFas">Cantidad</th>
-              <th *ngIf="esTercero || esComercial || esPuerto || esMesaFas">Destino</th>
+              <!-- <th *ngIf="esComercial || esPuerto || esMesaFas">Cantidad</th>
+              <th *ngIf="esTercero || esComercial || esPuerto || esMesaFas">Destino</th> -->
+              <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas"></th>
               <th>Detalle</th>
             </tr>
           </thead>
@@ -134,20 +136,20 @@
                                     ; let odd = odd" role="row" [class.odd]="!odd">
               <!--<td *ngIf="esComercial">{{ordenDeCarga.Boton}}</td>-->
               <td>{{ordenDeCarga.Id}}</td>
-              <td *ngIf="esMesaFas || esComercial">{{ordenDeCarga.EstadoEntrega}}</td>
+              <!-- <td *ngIf="esMesaFas || esComercial">{{ordenDeCarga.EstadoEntrega}}</td> -->
               <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
-              <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Cliente}}</td>
+              <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.RazonSocialCliente}}</td>
               <td *ngIf="esMesaFas">{{ordenDeCarga.CUITCliente}}</td>
-              <td *ngIf="esInterno">{{ordenDeCarga.Corredor}}</td>
+              <td *ngIf="esInterno">{{ordenDeCarga.RazonSocialCorredor}}</td>
               <td *ngIf="esPuerto || esComercial || esTercero || esInterno">{{ordenDeCarga.DescripcionEstado}}</td>
-              <td *ngIf="esTercero || esPuerto">{{ordenDeCarga.Orden}}</td>
-              <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.FechaCarga}}</td>
+              <!-- <td *ngIf="esTercero || esPuerto">{{ordenDeCarga.Orden}}</td> -->
+              <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Fecha}}</td>
               <td>{{ordenDeCarga.Contrato}}</td>
               <td *ngIf="esInterno || esMesaFas">{{ordenDeCarga.Pedido}}</td>
-              <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.EstadoPedido}}</td>
+              <!-- <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.EstadoPedido}}</td> -->
               <td>{{ordenDeCarga.Material}}</td>
-              <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Cantidad}}</td>
-              <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Destino}}</td>
+              <!-- <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Cantidad}}</td>
+              <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Destino}}</td> -->
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">
                 <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
                 </div>
