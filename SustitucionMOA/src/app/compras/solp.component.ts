@@ -562,7 +562,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             if(enviarSap) {
                 if (!validatePasos.completo) {
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campos en el paso #${validatePasos.primerPasoIncompleto}` });
-                    //this.floatMsgService.setErrorMsg(`Falta completar campos en el paso #${validatePasos.primerPasoIncompleto}`);
 
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
@@ -583,13 +582,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         }
                     } else if (result.error != undefined && result.error != "") {
                         this.messageService.add({ severity: 'error', summary: 'No se pudo guardar la solp', detail: result.error });
-                        //this.floatMsgService.setErrorMsg(result.error);
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
                     } else if (result.info != undefined) {
                         this.messageService.add({ severity: 'info', summary: 'No se pudo guardar la solp', detail: result.info });
-                        //this.floatMsgService.setInfoMsg(result.info);
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
@@ -661,7 +658,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 },
                 error => {
                     this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la solp', detail: error.message });
-                    //this.floatMsgService.setErrorMsg(error.message);
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
@@ -671,7 +667,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         } catch (e) {
             this.disabledSave = false;
             this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la solp', detail: e });
-            //this.floatMsgService.setErrorMsg(e);
             if (guardarPorPaso == false) {
                 this.blockUI.stop();
             }
