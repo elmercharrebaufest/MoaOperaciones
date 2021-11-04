@@ -86,8 +86,8 @@ export class ComprasService extends BaseService {
 
             DiasEjecucion: solp.ejecucion,
             JornadaLaboral: solp.jornadaLaboralDias.filter(x => x.selected).map(x => x.weekDay),
-            JornadaLaboralDesde: solp.comienzoJornadaLaboral.toLocaleString(),
-            JornadaLaboralHasta: solp.terminoJornadaLaboral.toLocaleString(),
+            JornadaLaboralDesde: solp.comienzoJornadaLaboral,
+            JornadaLaboralHasta: solp.terminoJornadaLaboral,
             ObservacionesCotizacion: solp.observacionesCotizacion,
             RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),

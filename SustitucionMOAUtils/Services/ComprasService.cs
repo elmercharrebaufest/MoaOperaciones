@@ -161,8 +161,8 @@ namespace SustitucionMOAUtils.Services
 
                 pliegoEntity.DiasEjecucion = solp.DiasEjecucion;
                 pliegoEntity.JornadaLaboralDias = solp.JornadaLaboral != null ? string.Join(",", solp.JornadaLaboral.Select(x => (int)x)) : string.Empty;
-                pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde;
-                pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta;
+                pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
+                pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
                 pliegoEntity.ObservacionesCotizacion = solp.ObservacionesCotizacion;
 
                 pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
