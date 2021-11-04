@@ -1099,29 +1099,9 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public ObtenerSolpSAPResponse ObtenerSolpsSAP(DateTime fechaDesde, DateTime fechaHasta, string numeroSolp,
-                                    string centroLogistico, string filtroTipoPosicion, string indicadorDeLiberacion, string origenCreacion, List<string> creadoPorUsuarios,
-                                    string tipoDeImputacion, bool ObtenerDireccionDeEntrega, bool ObtenerImputacion, bool ObtenerServicios, bool MostrarItemsBorrados
-                                    )
+        public ObtenerSolpSAPResponse ObtenerSolpsSAP(ObtenerSolpRequest obtenerSolpRequest)
         {
-            var filtros = new ObtenerSolpRequest
-            {
-                FechaDesde = fechaDesde,
-                FechaHasta = fechaHasta,
-                NumeroSolp = numeroSolp,
-                CentroLogistico = centroLogistico,
-                FiltroTipoPosicion = filtroTipoPosicion,
-                IndicadorDeLiberacion = indicadorDeLiberacion,
-                OrigenCreacion = origenCreacion,
-                CreadoPorUsuarios = creadoPorUsuarios,
-                TipoDeImputacion = tipoDeImputacion,
-                ObtenerDireccionDeEntrega = ObtenerDireccionDeEntrega,
-                ObtenerImputacion = ObtenerImputacion,
-                ObtenerServicios = ObtenerServicios,
-                MostrarItemsBorrados = MostrarItemsBorrados,
-
-            };
-            var solps = obtenerSolpConsumerMOA.Request(filtros);
+            var solps = obtenerSolpConsumerMOA.Request(obtenerSolpRequest);
 
             return solps;
         }
