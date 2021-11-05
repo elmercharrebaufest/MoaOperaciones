@@ -55,12 +55,6 @@ table.tablaPosiciones {
     width: 100%;
 }
 
-/*table.tablaPosiciones,
-.tablaPosiciones td,
-.tablaPosiciones tr {
-    border: 1px solid black;
-}*/
-
 .tablaPosiciones,
 .tablaPosiciones td,
 .tablaPosiciones th,
@@ -72,7 +66,6 @@ table.tablaPosiciones {
     font-family: Cambria;
 }
 
-/*table, td, th {
-    border: 1px none black;
-    border-collapse: collapse;
-}*/
+.espacioEncabezado {
+    padding-bottom: 50px;
+}

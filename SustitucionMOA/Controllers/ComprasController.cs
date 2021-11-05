@@ -42,7 +42,7 @@ namespace SustitucionMOA.Controllers
                 {
                     result.Solp.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Solp.Id.Value));
                 }
-                catch
+                catch(Exception e)
                 {
                     result.Solp.Pdf = string.Empty;
                 }
