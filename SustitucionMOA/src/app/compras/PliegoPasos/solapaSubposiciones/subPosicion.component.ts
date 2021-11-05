@@ -327,10 +327,12 @@ export class SubPosicionComponent extends ListBaseComponent {
                     fila.unidadSeleccionada = seleccion;
                     break;
                 case "codigoSap":
-                    fila[columna.nombre] = { CodigoSap: columnas[index] };
+                    var codigoSap = columnas[index].trim();
+
+                    fila[columna.nombre] = { CodigoSap: codigoSap };
 
                     this.autocompletePaste.push({
-                        CodigoSap: columnas[index],
+                        CodigoSap: codigoSap,
                         Tabla: columna.tabla || this.tablaAFiltrar
                     });
                     break;
