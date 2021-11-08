@@ -692,6 +692,8 @@ namespace SustitucionMOAUtils.Services
         {
             var solp = TraerSolpId(idSolp);
 
+            var usuarioCompras = ListarUsuarioCompras(solp.UsuarioActual);
+
             var templateFilePath = solp.TieneCondicionesGenerales ?? true ? Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html") :
                Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/NewPliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
@@ -711,7 +713,7 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.TELEFONO, solp.Telefono);
 
             solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
-            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioCompras.Mail == null ? solp.UsuarioActual.Mail : solp.UsuarioCompras.Mail);
+            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioCompras.Mail == null ? usuarioCompras.Any() ? usuarioCompras[0].UsuarioCompras.Mail : String.Empty : solp.UsuarioCompras.Mail);
 
             solpValores.Add(SolpTemplateKeys.REVISADO_POR, solp.RevisadoPor);
 
