@@ -332,7 +332,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.andamio = solp.TieneAndamio;
         this.solpActual.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
         this.solpActual.usuarioComprasId = solp.UsuarioCompras.Id || 0;
-        this.selectUsuarioCompras = this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId);
         this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;
         this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;
         this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
@@ -866,7 +865,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 CodigoDescripcion: element.UsuarioCompras.Mail
                             });
                         });
-                        this.selectUsuarioCompras = this.usuarioComprasList[0];
+                        this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
+                                                  ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
+                                                  : this.usuarioComprasList[0];
                     }
                 },
                 error => {
