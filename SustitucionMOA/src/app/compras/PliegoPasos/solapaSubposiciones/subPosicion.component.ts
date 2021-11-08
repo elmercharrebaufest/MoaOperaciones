@@ -50,7 +50,7 @@ export class SubPosicionComponent extends ListBaseComponent {
     // array de columnas en la grilla
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
     columnasGrilla: any = [
-        { nombre: "codigoServicio", tipo: "codigoSap", tabla: "CodigoServicioSap" },
+        { nombre: "codigoServicio", tipo: "codigoServicioSolp" },
         { nombre: "tareaSubcontratar", tipo: "tarea" },
         { nombre: "cuentaTd", tipo: "numerico" },
         { nombre: "unidadMedida", tipo: "combo" },
@@ -327,12 +327,19 @@ export class SubPosicionComponent extends ListBaseComponent {
                     fila.unidadSeleccionada = seleccion;
                     break;
                 case "codigoSap":
-                    fila[columna.nombre] = { CodigoSap: columnas[index] }
+                    var codigoSap = columnas[index].trim();
+
+                    fila[columna.nombre] = { CodigoSap: codigoSap };
 
                     this.autocompletePaste.push({
-                        CodigoSap: columnas[index],
+                        CodigoSap: codigoSap,
                         Tabla: columna.tabla || this.tablaAFiltrar
                     });
+                    break;
+                case "codigoServicioSolp":
+                    fila[columna.nombre] = { CodigoSap: columnas[index] };
+
+                    this.autocompleteServiciosSolpPaste.push(columnas[index]);
                     break;
                 case "tarea":
                     fila[columna.nombre] = columnas[index];
@@ -419,16 +426,20 @@ export class SubPosicionComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        if (result) {
+                        if (result && result.length > 0) {
                             this.listadoPosicionActul.forEach(c => {
-                            if (c.codigoServicio && c.codigoServicio.CodigoSap && !c.codigoServicio.Codigo) {
-                                c.codigoServicio = result.find(x => x.CodigoSap == c.codigoServicio.CodigoSap);
-                                c.tareaSubcontratarObj = { ...c.codigoServicio };
-                                c.tareaSubcontratar = c.codigoServicio.Descripcion;
+                            if (c.codigoServicio && c.codigoServicio.CodigoSap) {
+                                var datos = result.find(x => x.Codigo == c.codigoServicio.CodigoSap);
+                                if (datos) {
+                                    c.codigoServicio = datos;
+                                    c.tareaSubcontratar = c.codigoServicio.Descripcion;
 
-                                var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == c.codigoServicio.UnidadMedidaBase);
-                                c.unidadSeleccionada = unidadSeleccionadaAux;
-                                c.unidadMedida = unidadSeleccionadaAux.Descripcion;
+                                    var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == c.codigoServicio.UnidadMedidaBase);
+                                    if (unidadSeleccionadaAux) {
+                                        c.unidadSeleccionada = unidadSeleccionadaAux;
+                                        c.unidadMedida = unidadSeleccionadaAux.Descripcion;
+                                    }
+                                }
                             }
                            });
                         }

@@ -8,57 +8,33 @@ using iTextSharp.text;
 namespace SustitucionMOAUtils.Helpers
 {
     public class TwoColumnHeaderFooter : PdfPageEventHelper
-    {
-        // This is the contentbyte object of the writer
+    {        
+        // This is the contentbyte object of the writer / /Permite escribir dentro de un documento ya existente
         PdfContentByte cb;
-        // we will put the final number of pages in a template
+        // we will put the final number of pages in a template // Crear plantillas para poner contenido
         PdfTemplate template;
-        // this is the BaseFont we are going to use for the header / footer
+        // this is the BaseFont we are going to use for the header / footer // Base fuente
         BaseFont bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-        // This keeps track of the creation time
+        // This keeps track of the creation time // impresion de la fecha
         DateTime PrintTime = DateTime.Now;
         #region Properties
-        private string _Title;
-        public string Title
-        {
-            get { return _Title; }
-            set { _Title = value; }
-        }
 
-        private string _HeaderLeft;
-        public string HeaderLeft
-        {
-            get { return _HeaderLeft; }
-            set { _HeaderLeft = value; }
-        }
-        private string _HeaderRight;
-        public string HeaderRight
-        {
-            get { return _HeaderRight; }
-            set { _HeaderRight = value; }
-        }
-        private Font _HeaderFont;
-        public Font HeaderFont
-        {
-            get { return _HeaderFont; }
-            set { _HeaderFont = value; }
-        }
-        private Font _FooterFont;
-        public Font FooterFont
-        {
-            get { return _FooterFont; }
-            set { _FooterFont = value; }
-        }
+        public PdfPTable Header { get; set;  }
+        public float[] HeaderWidths { get; set; }
+        public string FechaCreacionSolp { get; set; }
         #endregion
         // we override the onOpenDocument method
+
+        //Evento cuando se abre el documento
         public override void OnOpenDocument(PdfWriter writer, Document document)
         {
             try
             {
-                PrintTime = DateTime.Now;
-                bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-                cb = writer.DirectContent;
-                template = cb.CreateTemplate(50, 50);
+                PrintTime = DateTime.Now; //fecha
+                bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED); //fuente
+                cb = writer.DirectContent;  //Envia el pdf writer y el document, define por medio de que PdfWriter va a agregar contenido con el content byte
+                template = cb.CreateTemplate(50, 50); // Plantilla y definimos el tamaño
+
             }
             catch (DocumentException de)
             {
@@ -68,76 +44,64 @@ namespace SustitucionMOAUtils.Helpers
             }
         }
 
+        //Evento que se va a ejecutar cada vez que se inicia una pagina
         public override void OnStartPage(PdfWriter writer, Document document)
         {
             base.OnStartPage(writer, document);
             Rectangle pageSize = document.PageSize;
-            if (Title != string.Empty)
-            {
-                cb.BeginText();
-                cb.SetFontAndSize(bf, 12);
-                cb.SetRGBColorFill(0, 0, 0);
-                cb.SetTextMatrix(pageSize.GetRight(200), pageSize.GetTop(40));
-                cb.ShowText(Title);
-                cb.EndText();
-            }
-            if (HeaderLeft + HeaderRight != string.Empty)
-            {
-                PdfPTable HeaderTable = new PdfPTable(2);
-                HeaderTable.DefaultCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                HeaderTable.TotalWidth = pageSize.Width - 40;
-                //HeaderTable.SetWidthPercentage(new float[] { 45, 45 }, pageSize);
 
-                PdfPCell HeaderLeftCell = new PdfPCell(new Phrase(8, HeaderLeft, HeaderFont));
-                HeaderLeftCell.Padding = 5;
-                HeaderLeftCell.PaddingBottom = 8;
-                HeaderLeftCell.BorderWidthRight = 0;
-                HeaderTable.AddCell(HeaderLeftCell);
-                PdfPCell HeaderRightCell = new PdfPCell(new Phrase(8, HeaderRight, HeaderFont));
-                HeaderRightCell.HorizontalAlignment = PdfPCell.ALIGN_LEFT;
-                HeaderRightCell.Padding = 5;
-                HeaderRightCell.PaddingBottom = 8;
-                HeaderRightCell.BorderWidthLeft = 0;
-                //HeaderTable.AddCell(HeaderRightCell);
-                cb.SetRGBColorFill(0, 0, 0);
-                //HeaderTable.WriteSelectedRows(0, -1, pageSize.GetLeft(40), pageSize.GetTop(50), cb);
+            if (Header != null)
+            {
+                Header.SetWidths(HeaderWidths);
+                Header.WriteSelectedRows(0, -1, document.LeftMargin, document.PageSize.Height - 36, writer.DirectContent);
             }
         }
 
+        //Evento que esta al final de la pagina
         public override void OnEndPage(PdfWriter writer, Document document)
         {
             cb = writer.DirectContent;
             template = cb.CreateTemplate(50, 50);
 
+            //Instancia del escritor y el document
             base.OnEndPage(writer, document);
+
+            //Indica el numero de paginas del documento
             int pageN = writer.PageNumber;
 
-            String text = "Pagina " + pageN; //+" de "
-            float len = bf.GetWidthPoint(text, 8);
-            Rectangle pageSize = document.PageSize;
-            cb.SetRGBColorFill(0, 0, 0);
+
+            //Para agregar la numeracion de las paginas
+            String text = "Pagina " + pageN;
+            //String text = "F-2285_02";
+            float len = bf.GetWidthPoint(text, 8); //Tamaño de texto   //de aca se obtiene el ancho y alto del texto para el template
+            Rectangle pageSize = document.PageSize; //crea un rectagulo que va a ser del pamaño de la pagina
+            cb.SetRGBColorFill(128, 128, 128); // color del texto
+            cb.BeginText(); // inicia el texto
+            cb.SetFontAndSize(bf, 8); //define fuente y tamaño
+            cb.SetTextMatrix(pageSize.GetRight(60), pageSize.GetBottom(30)); // colocamos el texto en la posicion que queremos dentro del rectangulo
+            cb.ShowText(text); //mostramos el texto
+            //cb.ShowText(textpagina);
+            cb.EndText(); //finalizamos el texto
+            cb.AddTemplate(template, pageSize.GetRight(80), pageSize.GetBottom(30)); //se crea otro template que se inicia en OnOpenDocument
+
+            //Este solo agrega la hora en el que fue impreso el documento
             cb.BeginText();
             cb.SetFontAndSize(bf, 8);
-            cb.SetTextMatrix(pageSize.GetRight(50), pageSize.GetBottom(30));
-            cb.ShowText(text);
+            cb.ShowTextAligned(PdfContentByte.ALIGN_RIGHT,
+                "F-2285_02",
+                pageSize.GetRight(60),
+                pageSize.GetBottom(50), 0);
             cb.EndText();
-            cb.AddTemplate(template, pageSize.GetRight(50) + len, pageSize.GetBottom(30));
-
-            //cb.BeginText();
-            //cb.SetFontAndSize(bf, 8);
-            //cb.ShowTextAligned(PdfContentByte.ALIGN_RIGHT,
-            //    "Impreso el " + PrintTime.ToString(),
-            //    pageSize.GetRight(40),
-            //    pageSize.GetBottom(30), 0);
-            //cb.EndText();
         }
+
+        //Evento cuando se finaliza el documento
         //public override void OnCloseDocument(PdfWriter writer, Document document)
         //{
         //    base.OnCloseDocument(writer, document);
         //    template.BeginText();
         //    template.SetFontAndSize(bf, 8);
         //    template.SetTextMatrix(0, 0);
-        //    //template.ShowText("" + (writer.PageNumber));
+        //    template.ShowText(" " + (writer.PageNumber - 1)); //imprime el numero de paginas
         //    template.EndText();
         //}
     }

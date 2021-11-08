@@ -53,6 +53,15 @@
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
                 <div class="col-xs-12 col-md-6" *ngIf="esInterno || esCorredor">
+                  <p class="blue"><strong>Raz&oacute;n social cliente</strong></p>
+                  <p style="width:100%">{{ordenDeCarga.RazonSocialCliente}}</p>
+                </div>
+                <div class="col-xs-12 col-md-6" *ngIf="esInterno && ordenDeCarga.Corredor != ''">
+                  <p class=" blue"><strong>Raz&oacute;n social corredor</strong></p>
+                  <p style="width:100%">{{ordenDeCarga.RazonSocialCorredor}}</p>
+                </div>
+
+                <div class="col-xs-12 col-md-6" *ngIf="esInterno || esCorredor">
                   <p class="blue"><strong>Cliente</strong></p>
                   <p style="width:100%">{{ordenDeCarga.Cliente}}</p>
                 </div>
@@ -69,9 +78,13 @@
                   <p class="blue"><strong>Contrato seleccionado</strong></p>
                   <p style="width:100%">{{ordenDeCarga.ContratoSAP}}</p>
                 </div>
+                <div class="col-xs-12 col-md-6" *ngIf="ordenDeCarga.PedidoIngresado != ''">
+                  <p class="blue"><strong>Pedido</strong></p>
+                  <p style="width:100%">{{ordenDeCarga.PedidoIngresado}}</p>
+                </div>
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Pedido</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.NumeroPedido}}</p>
+                  <p style="width:100%">{{ordenDeCarga.PedidoSAP}}</p>
                 </div>
 
                 <div class="col-xs-12 col-md-6">
@@ -489,7 +502,7 @@
         <div class="modal-footer" style="border-top:none;">
           <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
             id="closemodalForzarCreacion" style="display: inline-flex;">Cancelar</button>
-          <button type="button" class="btn-custom btn-remove btn-mediano" (click)="forzarCreacionPedido()"
+          <button type="button" class="btn-custom btn-add btn-mediano" (click)="forzarCreacionPedido()"
             style="display: inline-flex;">
             Crear pedido
           </button>

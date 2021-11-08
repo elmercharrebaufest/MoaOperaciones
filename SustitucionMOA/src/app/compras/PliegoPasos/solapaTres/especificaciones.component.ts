@@ -42,6 +42,8 @@ export class EspecificacionesComponent extends ListBaseComponent {
 
     @Output() onEstCompleto = new EventEmitter<any>();
 
+    mostrarRadioUsarTemplateCondicionesGenerales: boolean = false;
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private formBuilder: FormBuilder,

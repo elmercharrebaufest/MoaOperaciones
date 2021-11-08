@@ -52,6 +52,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonVerificarSituacionCrediticia: boolean = false;
     mostrarBotonAnular: boolean = false;
     mostrarBotonForzarCreacionPedido: boolean = false;
+    mostrarBotonEditar: boolean = false;
 
 
     // esInterno: boolean = false;
@@ -90,8 +91,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return;
         }
 
-        if (this.esInterno) {
+        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Entregada) {
+            return;
+        }
 
+        if (this.esInterno) {
             if (this.ordenDeCarga.NumeroPedido === "-" && this.ordenDeCarga.PedidosRespuesta != "-") {
                 this.mostrarBotonPedidos = true
             }
@@ -104,10 +108,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (!this.ordenDeCarga.TransporteExiste) {
                 this.mostrarBotonNotificarTransporte = true;
                 this.mostrarBotonVerificarTransporte = true;
+                this.mostrarBotonAnular = true;
             }
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
                 this.mostrarBotonVerificarSituacionCrediticia = true;
+                this.mostrarBotonAnular = true;
             }
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
