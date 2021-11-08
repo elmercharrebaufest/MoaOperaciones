@@ -136,31 +136,8 @@ export class SubPosicionComponent extends ListBaseComponent {
 
 
     validarErrorCustom(subposicion: any, valor: any, campoAValidar: string) {
-        // console.log("subposicion:", subposicion);
-        // console.log("Validando campo:", campoAValidar);
-        // console.log("valor:", valor);
-
-        // console.log("validación obligatorio:", (this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio));
-        // console.log("validación valor:", valor.toString().length == 0);
-
-        //Terminar de validar con Szamu como mostramos el error
-
-        // Agregarlo para el resto de los campos
-
-       
         return ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) && valor.toString().length == 0);  
     }
-
-
-    // Hacer que solo valide si ingresaste el codigo de servicio o la tarea
-    // validarCampoTd(subposicion: any){
-    //     return subposicion.tareaSubcontratar != "" && subposicion.cuentaTd === ""; 
-
-    //     //  if(subposicion.tareaSubcontratar != "" && subposicion.cuentaTd === ""){
-    //     //         return true;
-    //     //     } else {
-    //     //         return false;
-    // }
 
     validarConNoNulo(subposicion: any, valor: any, campoAValidar: string){
         

@@ -1,48 +1,48 @@
 <!-- Row grupo de comras -->
-  <div class="row">
+<div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
-
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 margenInput">
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
             <div class="margenInput">
-                Grupo de compras
+                Grupo de compras 
                 <p-autoComplete [(ngModel)]="model.posicionActual.selectGrupoCompras" [suggestions]="grupoCompras" dataKey="Id" ariaLabel="CodigoDescripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="Ningún grupo de compras encontrado"
                     [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true" (completeMethod)="buscarCombo($event, 'GRUPO COMPRAS')" (onFocus)=" $event.target.select()">
                 </p-autoComplete>
-
-                <!-- <div *ngIf="mostrarError('selectGrupoCompras')">
+                <div *ngIf="mostrarValidacion('selectGrupoCompras', model.posicionActual.selectGrupoCompras)">
                     <p class="text-danger">campo obligatorio</p>
-                </div> -->
-            </div>
-
-            <div class="margenInput">
-                Grupo de art&iacute;culo*
-                <p-autoComplete [(ngModel)]="model.posicionActual.selectArticuloCompras" [suggestions]="articuloCompras" dataKey="Id" ariaLabel="CodigoDescripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true"
-                    emptyMessage="Ningún articulo de compras encontrado" [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true" (completeMethod)="buscarCombo($event, 'ARTICULO COMPRAS')" (onFocus)=" $event.target.select()">
-                </p-autoComplete>
-                <!-- <div *ngIf="mostrarError('selectArticuloCompras')">
-                    <p class="text-danger">campo obligatorio</p>
-                </div> -->
+                </div>
             </div>
         </div>
 
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 margenInput">
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
             <div class="margenInput">
-                Solicitante*
+                Solicitante *
                 <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.selectSolicitanteCompras" id="selectSolicitanteCompras" placeholder=""
                     rows="1" />
-                <!-- <div *ngIf="mostrarError('selectSolicitanteCompras')">
-                    <p class="text-danger">campo obligatorio</p>
-                </div> -->
+                    <div *ngIf="mostrarValidacion('selectSolicitanteCompras', model.posicionActual.selectSolicitanteCompras)">
+                        <p class="text-danger">campo obligatorio</p>
+                    </div>
             </div>
         </div>
 
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 margenInput">
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
             <div class="margenInput">
                 N° Necesidad
                 <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.necesidadCompras" id="necesidadCompras" placeholder="" rows="1" />
             </div>
         </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
+            <div class="margenInput">
+                Grupo de art&iacute;culo * 
+                <p-autoComplete [(ngModel)]="model.posicionActual.selectArticuloCompras" [suggestions]="articuloCompras" dataKey="Id" ariaLabel="CodigoDescripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true"
+                    emptyMessage="Ningún articulo de compras encontrado" [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true" (completeMethod)="buscarCombo($event, 'ARTICULO COMPRAS')" (onFocus)=" $event.target.select()">
+                </p-autoComplete>
+                <div *ngIf="mostrarValidacion('selectArticuloCompras', model.posicionActual.selectArticuloCompras)">
+                    <p class="text-danger">campo obligatorio</p>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
  
 <!-- End Row grupo de comras -->
