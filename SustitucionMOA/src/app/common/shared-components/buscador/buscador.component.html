@@ -1,0 +1,25 @@
+<div clickOutside (clickOutside)="op.hide($event)">
+  <div class="styled-select">
+    <input #buscador results placeholder="Buscar" id="buscador" type="search" [(ngModel)]="palabraABuscar" name="palabraABuscar" class="fourRounded" aria-controls="tableModal">
+    <button (click)="autoBusqueda($event, op)" id="autoBusqueda" style="display:none"></button>
+  </div>
+  <p-overlayPanel #op appendTo="#buscador" autoZIndex="true">
+    <spinner-small></spinner-small>
+    <ng-container *ngIf="hayResultados; else elseBlock">
+      <div class="col-md-12 col-xs-12 sinPaddingLados" *ngFor="let resultado of resultados">
+        <div *ngIf="resultado.Link != ''; else descarga" class="option sinPaddingLados col-md-12 col-xs-12" (click)="goToSeccionSelector(resultado); op.hide($event)">
+          Ir a {{resultado.Tipo}} <span class="fa fa-reply pull-right"></span>
+        </div>
+        <ng-template #descarga>
+          <div class="option sinPaddingLados col-md-12 col-xs-12" (click)="descargaPDFLiquidacion(resultado.Value)">
+            Descargar {{resultado.Tipo}} <span class="fa fa-download pull-right"></span>
+          </div>
+        </ng-template>
+        <hr>
+      </div>
+    </ng-container>
+    <ng-template #elseBlock>
+      No se encontraron resultados
+    </ng-template>
+  </p-overlayPanel>
+</div>

@@ -62,6 +62,7 @@ const appRoutes: Routes = [
         path: "carta-porte",
         loadChildren: "./carta-porte/carta-porte.module#CartaPorteModule",
       },
+     
       {
         path: "comprobante-ngs",
         loadChildren:
@@ -118,6 +119,7 @@ const appRoutes: Routes = [
       },
       { path: "pesificacion", component: PesificacionComponent },
       { path: "pesificacion/listado", component: PesificacionesGuardadasComponent },
+      { path: "pesificacion/listado/:id", component: PesificacionesGuardadasComponent },
       { path: "alta-empresa-granos", component: EmpresaGranosComponent },
       {
         path: "alta-empresa-granos/:id",
@@ -135,6 +137,10 @@ const appRoutes: Routes = [
       {
         path: "sustentable",
         loadChildren: "./venta-sustentable/venta-sustentable.module#VentaSustentableModule",
+      },
+       {
+        path: "ordenes-de-carga",
+        loadChildren: "./ordenes-de-carga/ordenes-de-carga.module#OrdenesDeCargaModule",
       },
 
       { path: "notificaciones", component: ListadoNotificacionesComponent },

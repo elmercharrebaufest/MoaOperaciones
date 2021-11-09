@@ -12,6 +12,7 @@ import { FloatMsgService } from '../common/services/FloatMsgService';
 import { ListBaseComponent } from '../common/base-components/list-base-component';
 import { SelectItem } from 'primeng/api';
 import { MessageService } from 'primeng/api';
+import { CommonResponse } from '../common/models/common-response';
 
 @Component({
     templateUrl: './gestionCM05.component.html',
@@ -47,14 +48,14 @@ export class GestionCM05Component extends ListBaseComponent {
     cabeceraEditando: CabeceraCM05;
 
     constructor(protected service: GestionCM05Service,
-                protected navService: NavService,
-                protected sessionDataService: SessionDataService,
-                protected securityService: SecurityService,
-                protected floatMsgService: FloatMsgService,
-                protected modalService: ModalService,
-                protected route: ActivatedRoute,
-                protected router: Router,
-                private messageService: MessageService) {
+        protected navService: NavService,
+        protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService,
+        protected route: ActivatedRoute,
+        protected router: Router,
+        private messageService: MessageService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
@@ -64,9 +65,10 @@ export class GestionCM05Component extends ListBaseComponent {
         this.navService.setSeccionList([]);
 
         this.estados = [
-            { label: 'Pendiente',  value: 'Pendiente',  },
+            { label: 'Pendiente', value: 'Pendiente', },
             { label: 'Autorizado', value: 'Autorizado', },
             { label: 'Completado', value: 'Completado', },
+            { label: 'Rechazado por usuario', value: 'Rechazado por usuario', },
         ];
 
         this.secuencias = [
@@ -78,6 +80,8 @@ export class GestionCM05Component extends ListBaseComponent {
 
         this.cabeceraCols = [
             { field: 'Id', header: 'Id' },
+            { field: 'IdConsulta', header: 'Id consulta' },
+            { field: 'RazonSocial', header: 'Razón Social' },
             { field: 'Estado', header: 'Estado' },
             { field: 'CUIT', header: 'CUIT' },
             { field: 'Anticipo', header: 'Anticipo' },
@@ -115,6 +119,8 @@ export class GestionCM05Component extends ListBaseComponent {
             MalCargada: data.MalCargada,
             Secuencia: data.Secuencia,
             SecuenciaId: data.SecuenciaId,
+            ConsultaId: data.ConsultaId,
+            RazonSocial: data.RazonSocial,
         };
         this.service.listarDetalles(this.selectedCabecera.Id).subscribe(result => {
             this.detalles = result;
@@ -128,7 +134,7 @@ export class GestionCM05Component extends ListBaseComponent {
             this.displayDialog = true;
         }, 600);
     }
-     
+
     closeDialogDetalles() {
         this.selectedCabecera = null;
         this.detalles = null;
@@ -142,15 +148,15 @@ export class GestionCM05Component extends ListBaseComponent {
         this.detallesEditando.push({ ...rowData });
     }
 
-    guardarRow(rowData){
+    guardarRow(rowData) {
         this.messageService.clear();
         try {
-            if(this.validarRow(rowData)){
+            if (this.validarRow(rowData)) {
                 return
             }
 
             this.subscription = this.service.editarRow(rowData).subscribe(
-                result => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -197,17 +203,17 @@ export class GestionCM05Component extends ListBaseComponent {
         this.eliminarDetalleDe(rowData, this.detallesEditando);
     }
 
-    validarRow(rowData){
+    validarRow(rowData) {
         this.messageService.clear();
         var regexNumerosEnteros = /^[0-9]*$/
         var regexNumerosDecimales = /^[0-9,.]*$/
 
-        if(rowData.NumeroJurisdiccion == null || rowData.NumeroJurisdiccion == ""){
-            this.messageService.add({severity:'error', summary:'Nro. Jurisdicción', detail:'Esta vacio.'});
+        if (rowData.NumeroJurisdiccion == null || rowData.NumeroJurisdiccion == "") {
+            this.messageService.add({ severity: 'error', summary: 'Nro. Jurisdicción', detail: 'Esta vacio.' });
             return
         }
-        if(!(regexNumerosEnteros.test(rowData.NumeroJurisdiccion))){
-            this.messageService.add({severity:'error', summary:'Nro. Jurisdicción', detail:'Debe ser un numero entero.'});
+        if (!(regexNumerosEnteros.test(rowData.NumeroJurisdiccion))) {
+            this.messageService.add({ severity: 'error', summary: 'Nro. Jurisdicción', detail: 'Debe ser un numero entero.' });
             return
         }
 
@@ -229,8 +235,8 @@ export class GestionCM05Component extends ListBaseComponent {
             return
         }*/
 
-        if(!(regexNumerosDecimales.test(rowData.CoeficienteUnificado))){
-            this.messageService.add({severity:'error', summary:'Coef. Unificado', detail:'Debe ser un numero entero o decimal.'});
+        if (!(regexNumerosDecimales.test(rowData.CoeficienteUnificado))) {
+            this.messageService.add({ severity: 'error', summary: 'Coef. Unificado', detail: 'Debe ser un numero entero o decimal.' });
             return
         }
         /*
@@ -332,13 +338,14 @@ export class GestionCM05Component extends ListBaseComponent {
                         this.cabeceras.forEach(x => {
                             x.Estado =
                                 x.EstadoId == 1 ? 'Pendiente' :
-                                x.EstadoId == 2 ? 'Autorizado' :
-                                x.EstadoId == 3 ? 'Completado' :
-                                '';
+                                    x.EstadoId == 2 ? 'Autorizado' :
+                                        x.EstadoId == 3 ? 'Completado' :
+                                            x.EstadoId == 4 ? 'Rechazado por usuario' :
+                                                '';
                             x.Secuencia =
                                 x.SecuenciaId == 1 ? 'Original' :
-                                x.SecuenciaId == 2 ? 'Rectificativa' :
-                                '';
+                                    x.SecuenciaId == 2 ? 'Rectificativa' :
+                                        '';
                             x.FechaCarga = x.FechaCarga == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaCarga));
                             x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
                         });
@@ -367,7 +374,7 @@ export class GestionCM05Component extends ListBaseComponent {
         try {
             if (!this.validarCabeceraEditada()) {
                 this.subscription = this.service.editarCabecera(this.selectedCabecera).subscribe(
-                    result => {
+                    (result: any) => {
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
@@ -440,6 +447,8 @@ export class GestionCM05Component extends ListBaseComponent {
         this.selectedCabecera.CUIT = backupCabecera.CUIT;
         this.selectedCabecera.Anticipo = backupCabecera.Anticipo;
         this.selectedCabecera.Sede = backupCabecera.Sede;
+        this.selectedCabecera.SecuenciaId = backupCabecera.SecuenciaId;
+        this.selectedCabecera.RazonSocial = backupCabecera.RazonSocial;
 
         this.editandoCabecera = false;
         this.cabeceraEditando = null;

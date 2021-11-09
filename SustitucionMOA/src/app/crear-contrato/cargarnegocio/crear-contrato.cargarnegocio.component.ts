@@ -38,7 +38,7 @@ export class CrearContratoCargarNegocioComponent extends CrearContratoBaseCompon
         this.blockUI.start('');                       
         this.unsubscribe();
         this.subscription = this.service.validarDirecto().subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {

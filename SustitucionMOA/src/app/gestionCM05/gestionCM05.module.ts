@@ -17,6 +17,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { InputMaskModule } from 'primeng/inputmask';
 import { NgxMaskModule } from "ngx-mask";
 import { NgxPaginationModule } from 'ngx-pagination';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @NgModule({
     imports: [
@@ -35,6 +36,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
         InputMaskModule,
         NgxMaskModule,
         DropdownModule,
+        InputTextareaModule,
     ],
     declarations: [
         GestionCM05Component,

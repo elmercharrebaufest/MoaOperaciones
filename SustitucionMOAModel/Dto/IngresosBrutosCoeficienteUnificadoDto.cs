@@ -21,5 +21,9 @@ namespace SustitucionMOAModel.Dto
         public bool MalCargada { get; set; }
 
         public int? SecuenciaId { get; set; }
+
+        public int? ConsultaId { get; set; }
+
+        public string RazonSocial { get; set; }
     }
 }

@@ -130,7 +130,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         if (term.length > 2) {
             this.unsubscribe();
             this.subscription = this.service.buscarProveedoresConCorredor(term).subscribe(
-                result => {
+                (result:any) => {
                     var resultlist = JSON.parse(result);
 
                     this.proveedores = resultlist.map(prov => {
@@ -162,7 +162,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         if (term.length > 2) {
             this.unsubscribe();
             this.subscription = this.service.searchLocalidad(term).subscribe(
-                result => {
+                (result:any) => {
                     this.localidades = result;
                 },
                 error => {
@@ -308,7 +308,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         try {
             this.unsubscribe();
             this.subscription = this.service.grabarContratoAPrecio(this.contrato).subscribe(
-                result => {
+                (result:any) => {
                     this.blockUI.stop();
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {

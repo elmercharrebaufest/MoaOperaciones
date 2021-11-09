@@ -7,6 +7,7 @@ import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import baseParse from 'base64-arraybuffer';
+import { ActivatedRoute } from '@angular/router';
 
 declare var Tiff: any;
 
@@ -20,8 +21,8 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
     tituloArchivo = "ReporteDescargas.xls";
     tituloZip = "FotosCartaPorte.zip";
 
-    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute) {
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService, route);
     }
 
     cartaPorteId = "";
@@ -78,7 +79,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.descargarFotos(cartaPorteIDStr).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -119,7 +120,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         this.unsubscribe();
         this.subscription = this.service.getFotos(cartaDePorteNumero).subscribe(
 
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();

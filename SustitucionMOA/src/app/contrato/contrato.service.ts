@@ -1,15 +1,9 @@
 
 import {throwError as observableThrowError,  Observable } from 'rxjs';
-
 import {timeoutWith, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
-
-
-
-import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
-import { environment } from '../../environments/environment';
+import { HttpParams } from '@angular/common/http';
  
 @Injectable()
 export class ContratoService extends BaseService {
@@ -19,73 +13,65 @@ export class ContratoService extends BaseService {
     }
 
     public getDetalle(numero_contrato: string) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('numeroContrato', numero_contrato);
+        let params: HttpParams = new HttpParams();
+        params = params.set('numeroContrato', numero_contrato);
         return this.http
-            .get('/api/contrato/getDetalle', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/contrato/getDetalle', { params: params, headers: this.headers });
     }
 
     public getDetalleFijacion(numero_contrato: string, fijacion: string) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('numeroContrato', numero_contrato);
-        params.set('fijacion', fijacion);
+        let params: HttpParams = new HttpParams();
+        params = params.append('numeroContrato', numero_contrato);
+        params = params.append('fijacion', fijacion);
         return this.http
-            .get('/api/contrato/getDetalleFijacion', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/contrato/getDetalleFijacion', { params: params, headers: this.headers });
     }
 
     public downloadBoletoFisico(numero_contrato: string) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('numeroContrato', numero_contrato);
+        let params: HttpParams = new HttpParams();
+        params = params.append('numeroContrato', numero_contrato);
         return this.http
-            .get('/api/contrato/downloadBoletoFisico', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/contrato/downloadBoletoFisico', { params: params, headers: this.headers });
     }
 
     public exportExcelDetalle(numero_contrato: string) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('numeroContrato', numero_contrato);
+        let params: HttpParams = new HttpParams();
+        params = params.append('numeroContrato', numero_contrato);
         return this.http
-            .get('/api/contrato/downloadDetalle', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/contrato/downloadDetalle', { params: params, headers: this.headers });
     }
 
     public exportPDFCalidad(numero_contrato: string) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('numeroContrato', numero_contrato);
+        let params: HttpParams = new HttpParams();
+        params = params.append('numeroContrato', numero_contrato);
         return this.http
-            .get('/api/contrato/exportPDFCalidad', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/contrato/exportPDFCalidad', { params: params, headers: this.headers });
     }
 
     public exportExcelDetalleFijacion(numero_contrato: string, fijacion: string) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('numeroContrato', numero_contrato);
-        params.set('fijacion', fijacion);
+        let params: HttpParams = new HttpParams();
+        params = params.append('numeroContrato', numero_contrato);
+        params = params.append('fijacion', fijacion);
         return this.http
-            .get('/api/contrato/downloadDetalleFijacion', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/contrato/downloadDetalleFijacion', { params: params, headers: this.headers });
     }
 
     protected getContratosCommon(periodo: string, fecha_inicio: string, fecha_fin: string, method: string) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
         return this.http
-            .get('/api/contrato/' + method, { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/contrato/' + method, { params: params, headers: this.headers });
     }
 
     protected getContratosNoCumplidosCommon(periodo: string, fecha_inicio: string, fecha_fin: string, method: string, contratos: Array<string>) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
         return this.http
-            .get('/api/contrato/' + method, { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .get('/api/contrato/' + method, { params: params, headers: this.headers });
     }
 
 
@@ -94,14 +80,13 @@ export class ContratoService extends BaseService {
     }
 
     public exportExcelCommon(periodo: string, fecha_inicio: string, fecha_fin: string, method: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('periodo', periodo);
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fecha_inicio);
+        params = params.append('fechaFin', fecha_fin);
         return this.http
-            .get('/api/contrato/' + method, { search: params, headers: this.headers }).pipe(
-            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),
-            map(this.extractData),);
+            .get('/api/contrato/' + method, { params: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
     }
 }
 

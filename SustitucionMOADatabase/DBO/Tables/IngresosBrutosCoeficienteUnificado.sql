@@ -11,6 +11,7 @@
     [Archivo_Id] INT NOT NULL, 
 	[SecuenciaIngresosBrutosCoeficienteUnificado_Id] INT NULL,
     [MalCargada] BIT NOT NULL, 
+    [RazonSocial] NVARCHAR(MAX) NULL, 
     CONSTRAINT [PK_dbo.IngresosBrutosCoeficienteUnificado] PRIMARY KEY CLUSTERED
 	(
 		[Id] ASC

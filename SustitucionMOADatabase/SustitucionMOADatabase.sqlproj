@@ -102,6 +102,7 @@
     <None Include="scripts\CreacionCategorias.sql" />
     <None Include="scripts\CreacionCausasConsulta.sql" />
     <Build Include="DBO\Tables\CategoriaRol.sql" />
+    <Build Include="DBO\Tables\OrdenDeCarga.sql" />
     <Build Include="DBO\Tables\LiquidacionInformada.sql" />
     <None Include="scripts\Update Comerciales.sql" />
     <None Include="scripts\UpdateFechaSolicitud.sql" />
@@ -139,14 +140,20 @@
     <Build Include="DBO\Tables\SecuenciaIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\Insert SecuenciaIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\Insert Rol, PermisoPorRol y RolPermisoPorRol GestionCM05.sql" />
+    <Build Include="DBO\Tables\OrdenDeCargaCambiosHistorial.sql" />
+    <Build Include="DBO\Tables\ServicioSolp.sql" />
+    <Build Include="DBO\Tables\UsuarioComprasRelacionConUsuarios.sql" />
+    <Build Include="DBO\Tables\UsuarioCompras.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
     <None Include="DatabasePublishPreProd.xml" />
     <None Include="scripts\Rol_NuevoNoGranos.sql" />
+    <None Include="scripts\RolNuevoCliente.sql" />
     <None Include="SustitucionMOADatabase.publish.xml" />
     <None Include="scripts\CargaInicialSolp.sql" />
     <None Include="scripts\Insert EstadoIngresosBrutosCoeficienteUnificado.sql" />
+    <None Include="scripts\Rol Admin plataforma compras.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />
@@ -155,5 +162,8 @@
     <PostDeploy Include="scripts\PermisosNotificaciones.sql" />
     <None Include="scripts\CrearHanfireDBSchema.sql" />
     <None Include="scripts\Permiso Borrar Campo Sustentable.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="SustitucionMOADatabase.refactorlog" />
   </ItemGroup>
 </Project>

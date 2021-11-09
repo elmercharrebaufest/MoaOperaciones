@@ -97,7 +97,7 @@ export class CartaPorteFormularioComponent extends ListBaseComponent {
         this.unsubscribe();
         try {
             this.subscription = this.service.getFormularioDropdowns().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -136,7 +136,7 @@ export class CartaPorteFormularioComponent extends ListBaseComponent {
         try {
             this.spinnerSmallCTGBuscarComponent.showIt();
             this.subscription = this.service.getDataCTG(this.formulario.nroCTG).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerSmallCTGBuscarComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -236,7 +236,7 @@ export class CartaPorteFormularioComponent extends ListBaseComponent {
             this.spinnerSmallImpTempComponent.showIt();
             this.getSpecialInputs(fechaCarga);
             this.subscription = this.service.getCompletedPDFTemplate(this.formulario, this.ccppPDF, this.pageSelected).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerSmallImpTempComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -288,7 +288,7 @@ export class CartaPorteFormularioComponent extends ListBaseComponent {
             this.spinnerSmallImpBlancoComponent.showIt();
             this.getSpecialInputs(fechaCarga);
             this.subscription = this.service.getTemplate(this.formulario).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerSmallImpBlancoComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();

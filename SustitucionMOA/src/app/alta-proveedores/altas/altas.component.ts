@@ -79,6 +79,9 @@ export class AltasComponent extends BaseComponent implements OnInit {
     relacionConFuncionarios: string = "";
     cuit: string = "";
     mailVendedor: string = "";
+    razonSocial: string = "";
+    codigoCliente: string;
+
 
     contieneDocumentacionFisica: number = 0;
     puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
@@ -100,7 +103,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         try {
             this.unsubscribe();
             this.subscription = this.altaEmpresaService.getEmpresas(this.idTipoProveedor).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -134,7 +137,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     getTipoCambiario() {
         try {
             this.subscriptionDropDowns = this.service.getTipoCambiario().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -162,7 +165,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         try {
             this.unsubscribe();
             this.subscription = this.altaEmpresaService.getEstados().subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -210,7 +213,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     guardarSIPER() {
         this.spinnerModal.showIt();
         this.subscription = this.altaEmpresaService.GuardarSIPER(this.empresaSeleccionada.Id, this.empresaSeleccionada.EstadoSIPER).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerModal.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -266,6 +269,21 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.mensajeError = "Debe ingresar Estado en SIPER.";
             return false;
         }
+
+
+        if (this.empresaSeleccionada.IdTipoUsuario == 5)
+        {
+            if (this.razonSocial == "") {
+                this.mensajeError = "Debe ingresar la razón social del cliente.";
+                return false;
+            }
+
+            if (this.codigoCliente == "") {
+                this.mensajeError = "Debe ingresar el código SAP del cliente.";
+                return false;
+            }
+        }
+
         /*
         this.observacionesProveedor = this.observacionesProveedor.replace("<", "esSignoMenor");
         this.observaciones = this.observaciones.replace("<", "esSignoMenor");
@@ -273,8 +291,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.spinnerModal.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {
-            this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor, this.empresaSeleccionada.EstadoSIPER).subscribe(
-                result => {
+            this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor, this.empresaSeleccionada.EstadoSIPER, this.razonSocial, this.codigoCliente).subscribe(
+                (result:any) => {
                     this.getEmpresa();
                     this.spinnerModal.hideIt();
                     if (result.logout == true) {
@@ -311,7 +329,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.altaEmpresaService.agregarObservacion(this.empresaSeleccionada.Id, this.observaciones).subscribe(
-                result => {
+                (result:any) => {
                     this.getEmpresa();
                     this.spinnerModal.hideIt();
                     if (result.logout == true) {
@@ -347,7 +365,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     solicitarInformacion() {
         try {
             this.altaEmpresaService.solicitarInformacion(this.empresaSeleccionada.Id).subscribe(
-                result => {
+                (result:any) => {
                     this.getEmpresa();
                     this.spinnerModal.hideIt();
                     if (result.logout == true) {
@@ -380,7 +398,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.altaEmpresaService.VerificarEstadoDataAgro(empresa.Id).subscribe(
-                result => {
+                (result:any) => {
                     this.getEmpresa();
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -472,7 +490,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         if (this.validarNoGranosOperando()) return
         this.subscription = this.altaEmpresaService
             .proveedorNoGranosOperando(this.empresaSeleccionada.Id, this.empresaSeleccionada.RazonSocial).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -507,7 +525,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     obtenerArchivosSubidos(mail: string, proveedorId: number) {
         this.subscription = this.service.obtenerArchivosSubidos(mail, proveedorId).subscribe(
-            result => {
+            (result:any) => {
                 this.listaArchivos = new Array();
 
                 result.forEach(element => {
@@ -598,7 +616,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     cargarSolicitudUsuario(mail: string, proveedorId: number) {
         this.subscription = this.service.cargarSolicitudUsuario(mail, proveedorId).subscribe(
-            result => {
+            (result:any) => {
                 if (result.VinculoConEmpleadosDeMolinos != null) {
                     if (result.VinculoConEmpleadosDeMolinos) {
                         this.relacionConEmpleados = "Si";
@@ -687,7 +705,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     getRubrosOptions() {
         try {
             this.subscriptionDropDowns = this.service.getRubros().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -739,7 +757,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                 this.empresaSeleccionada.AltaInterna ? this.empresaSeleccionada.AltaInterna : false,
                 this.empresaSeleccionada.SiperObligatorio ? this.empresaSeleccionada.SiperObligatorio : false
             ).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -829,7 +847,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     grabarAltaInternaGranos(){
         this.mensajeModalComponent.setMsgsEmpty();
             this.subscription = this.altaEmpresaService.grabarAltaInternaGranos(this.cuit, this.mailVendedor).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -913,7 +931,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.service.registrarDocumentacionFisica(this.empresaSeleccionada.Id,
                 this.empresaSeleccionada.ContieneDocumentacionFisica
             ).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();

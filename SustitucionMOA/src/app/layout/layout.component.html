@@ -204,16 +204,22 @@
         <div class="logo">
             <img src="/Content/images/header/logo.png" class="img-responsive" (click)="clickLogo()">
         </div>
+        <div *ngIf="!menuSmall" class="col-md-6" style="margin: auto; padding: unset;">
+            <app-buscador-inteligente></app-buscador-inteligente>
+        </div>
         <div class="User-wrapper">
-
             <div class="UserBar clearfix">
                 <nav>
                     <ul class="nav">
                         <li class="" *ngIf="isAuthorized('CONSULTAR DATOS FISCALES'); else mostrarUsuario">
                             <div class="user-info-container">
-                                <a (click)="goToSeccion('/dato-fiscal/situacion-fiscal')" href="#" class="user-name">
+                                <a (click)="goToSeccion('/dato-fiscal/situacion-fiscal')" href="#" class="user-name"
+                                    *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')">
                                     <strong>{{nombre}}</strong>
                                 </a>
+                                <strong class="user-name"
+                                    *ngIf="!isAuthorized('CONSULTAR DATOS FISCALES')">{{nombre}}</strong>
+
                                 <span class="user-code">C&oacute;digo de proveedor {{proveedor}} </span>
                             </div>
                         </li>
@@ -282,6 +288,10 @@
                     aria-hidden="true" onClick="openNav()"></span> <span id="myMenuClose" onClick="closeNav()"
                     class="fa fa-times" aria-hidden="true"></span> </div>
         </div>
+    </div>
+
+    <div *ngIf="menuSmall" class="col-xs-12 col-md-12">
+        <app-buscador-inteligente-small></app-buscador-inteligente-small>
     </div>
     <!-- Navegación -->
     <barra-nav id="mySidenav" class="sidebar">
@@ -415,6 +425,22 @@
                             </div>
                             <div *ngIf="isAuthorized('CREAR CONTRATOS') && isGranosSelected()">
                                 <a (click)="goToSeccion('/reporte/contrato')" href="#">Reporte de mis cargas</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isNoGranosSelected()">
+                    <div class="panel-heading seccion" role="tab" id="operar">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                            href="#collapseO" aria-expanded="false" aria-controls="collapseO">
+                            Operar <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseO" class="collapse" aria-labelledby="operar" role="tabpanel">
+                        <div class="panel-body">
+                            <div>
+                                <a (click)="goToSeccion('/ordenes-de-carga/')" href="#">Ordenes de carga</a>
                             </div>
                         </div>
                     </div>
@@ -567,7 +593,7 @@
                                     Administración de pesificaciones
                                 </a>
                             </div>
-                            <div *ngIf="false && isAuthorized('GESTION IMPUESTOS CM05')">
+                            <div *ngIf="isAuthorized('GESTION IMPUESTOS CM05')">
                                 <a (click)="goToSeccion('/gestionCM05')" href="#">
                                     Gestion de Impuestos
                                 </a>

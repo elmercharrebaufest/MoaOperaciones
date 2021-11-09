@@ -36,6 +36,8 @@ namespace SustitucionMOAModel.Entities
         public int? GrupoArticulo_Id { get; set; }
         public string CodigosProveedores { get; set; }
         public int? Moneda_Id { get; set; }
+        public bool Estado { get; set; }
+        public int? Indice { get; set; }
 
         [ForeignKey("Solp_Id")]
         public virtual Solp Solp { get; set; }

@@ -1,0 +1,34 @@
+::ng-deep body .ui-overlaypanel {
+    border-top: 0px;
+    width: 100%;
+    max-width: 800px;
+}
+::ng-deep body .ui-overlaypanel > div{
+    padding-right: 0px;
+    padding-left: 0px;
+}
+::ng-deep body .ui-widget{
+    font-family: Roboto Regular;
+    font-size: 15px;
+}
+.styled-select{
+    display: block; 
+    margin-top: auto; 
+    margin-bottom: auto; 
+    height: 100%; 
+    top: 50%; 
+    position: relative;
+    width: 100%;
+}
+.sinPaddingLados{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.option:hover{
+    color: green;
+    cursor: pointer;
+}
+.bajarIcono{
+    top: 15px;
+    position: relative;
+}

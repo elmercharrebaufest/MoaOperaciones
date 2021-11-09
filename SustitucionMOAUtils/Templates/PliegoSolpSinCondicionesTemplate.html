@@ -1,0 +1,307 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <div class="fechaLugar">
+        San Lorenzo, ||FECHA_PRESENTACION||.
+    </div>
+
+    <div>
+        <table class="tablaPrimeraPagina">
+            <tr>
+                <td>
+                    <p class="margenPrimeraTabla">
+                        <b>"||NOMBRE_OBRA||"</b>
+                    </p>
+                    <p class="margenPrimeraTabla">
+                        <b>Solp: </b> ||NRO_SOLP||
+                    </p>
+                    <p class="margenPrimeraTabla">
+                        <b>Fiscal de contrato:</b>
+                    </p>
+                    <p class="margenPrimeraTabla">
+                        ||FISCAL_CONTRATO||
+                    </p>
+                    <p class="margenPrimeraTabla">
+                        Celular: ||TELEFONO||
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="padding-top: 30px;">
+        <table class="tablaPrimeraPagina">
+            <tr>
+                <td>
+                    <p class="margenPrimeraTabla">
+                        <b>Fecha de presentación de las ofertas:</b> ||FECHA_PRESENTACION||
+                    </p>
+                    <p class="margenPrimeraTabla">
+                        <b>Dirigir ofertas únicamente a por sobre cerrado a:</b>
+                    </p>
+                    <p class="margenPrimeraTabla">
+                        ||USUARIO_COMPRAS|| /Compras
+                    </p>
+                    <p class="margenPrimeraTabla">
+                        Benielli 398
+                    </p>
+                    <p class="margenPrimeraTabla">
+                        (2200) San Lorenzo
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="page-break-before:always">&nbsp;</div>
+
+    <div>
+        <h4 class="titulos">
+            3.b-Consideraciones particulares:
+        </h4>
+
+        <h4>
+            3.b.1: Especificación técnica de tareas.
+        </h4>
+
+        <div>
+            ||ESPECIFICACION_TECNICA||
+        </div>
+        <div>
+            ||LISTADO_ADJUNTOS||
+        </div>
+    </div>
+
+    <div>
+        <h4 class="titulos">
+            4-Cotización y plazo de ejecución:
+        </h4>
+        <p>
+            La ejecución de todas las tareas será la que figure en la Orden de
+            Compra correspondiente, que en principio se estima en ||PLAZO_EJECUCION|| dias corridos desde la emisión de la misma.
+
+            (o indicar la cantidad de días con que se cuenta a partir de tener el
+            equipo disponible, en una parada programada u que el trabajo depende
+            de otros).
+        </p>
+        <p>
+            La jornada laboral normal se establece en principio de ||DIAS_JORNADA_LABORAL|| de ||INICIO_FINAL_HS_JORNADA_LABORAL||hs,
+            quedando la posibilidad de ampliarla o modificarla con el acuerdo delfiscal de contrato.
+        </p>
+        <p>
+            La obra será contratada por el sistema de ajuste alzado, por lo cual se
+            consideran incluidos en el monto total del contrato o precio, todos
+            los trabajos y materiales que fueran necesarios para cumplir lo
+            especificado, aun aquellos que a pesar de no estar indicados
+            específicamente hagan a la correcta ejecución de la obra de acuerdo
+            a las reglas del buen arte.
+        </p>
+        <p>
+            No está previsto ningún tipo de anticipo para el presente trabajo ni
+            avances parciales, por lo que se podrá facturar a la finalización
+            de las tareas con la conformidad del fiscal del contrato. En caso de
+            requerirlos, deberán estar aprobados por el comprador y figurar en
+            la orden de compra para que sean aceptados por MOA
+        </p>
+        <p>
+            Con la presentación de las ofertas, el oferente entregará un plan de
+            trabajo detallando las tareas que lo componen en concordancia con los
+            ítems de la oferta o resumen de éstos para ser sometido a la
+            aprobación de MOA.
+        </p>
+        <p>
+            Todos los días de lluvia y sus consecuencias deberán ser registrados por
+            el Contratista en el Libro de Notas de pedido, firmado por ambas
+            partes, quedando a criterio de la dirección de obra determinar si
+            corresponde.
+
+        </p>
+        <p>
+            El Contratista deberá considerar que dentro del plazo total se
+            consideran incluidos 4 días/mes de lluvias que no justificarán
+            ampliación de plazo, a partir de ahí se computará lo que
+            corresponda.
+        </p>
+    </div>
+
+    <div style="page-break-before:always">&nbsp;</div>
+
+    <div>
+        <h4 class="titulos anexos">
+            ANEXO 1
+        </h4>
+
+        <h4 class="titulos">
+            DETALLE DE LA COTIZACIÓN:
+        </h4>
+
+        <p class="titulos">
+            Oferente: ||NOMBRE_OBRA||
+        </p>
+
+        <table class="tablaPosiciones">
+            <thead>
+                <tr>
+                    <th colspan="6">DETALLE</th>
+                </tr>
+                <tr>
+                    <th style="width: 5%">Serv.</th>
+                    <th style="width: 8%">Código</th>
+                    <th style="width: 41%">Descripción</th>
+                    <th style="width: 8%">Ctd</th>
+                    <th style="width: 8%">Unidad</th>
+                    <th style="width: 10%">Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                ||TABLA_POSICIONES_SUBPOSICIONES||
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" style="text-align: right">TOTAL&nbsp;</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div style="page-break-before:always">&nbsp;</div>
+
+    <div>
+        <h4 class="titulos anexos">
+            ANEXO 2: Cronograma de Tareas (Diagrama Gantt)
+        </h4>
+
+        <p>
+            A presentar por el oferente y sujeta a aprobación de MOA.
+        </p>
+    </div>
+
+    <div>
+        <h4 class="titulos anexos">
+            ANEXO 3: Grilla acuerdo UOCRA
+        </h4>
+
+        <p>
+            A completar por el oferente en el caso de que proveedor tuviera que
+            realizar trabajos dentro del predio de MOA, según la estimación de
+            cantidad de horas y de operarios con los que se presupuesta la tarea.
+        </p>
+
+        <p>
+            El valor de las horas COPA no debe ser considerado en la oferta, se
+            tendrá en cuenta por separado y se liquidarán al finalizar la obra
+            o a fin de cada mes si esta se extiende entre dos o más meses, de
+            acuerdo al registro de ingreso de personas contratistas de la
+            portería de MOA.
+        </p>
+
+        <div class="tablaPosiciones">
+            <table class="tablaPosiciones">
+                <tr>
+                    <th style="width: 25%">
+                        Detalle Hs
+                    </th>
+                    <th style="width: 15%">
+                        Normales
+                    </th>
+                    <th style="width: 15%">
+                        Nocturnas
+                    </th>
+                    <th style="width: 15%">
+                        Extras
+                    </th>
+                </tr>
+
+                <tr>
+                    <td>
+                        Cantidad de horas UOCRA
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="padding-top: 30px;">
+            <table class="tablaPosiciones">
+                <tr>
+                    <th style="width: 31%">
+                        Detalle personal Categorías
+                    </th>
+                    <th style="width: 20%">
+                        Cantidad
+                    </th>
+                    <th style="width: 20%">
+                        Nombres
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        Oficial Especializado
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        Oficial con Esp. 15%
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        Oficial con Esp. 10%
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        Oficial con Esp. 5%
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        Oficial
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        Medio Oficial
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        Ayudante
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        Técnico de Seguridad
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

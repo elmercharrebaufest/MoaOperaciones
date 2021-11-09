@@ -1,5 +1,5 @@
+import { HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { URLSearchParams } from "@angular/http";
 import { Observable, throwError as observableThrowError } from "rxjs";
 import { map, timeoutWith } from "rxjs/operators";
 import { BaseService } from "./../common/services/BaseService";
@@ -7,26 +7,27 @@ import { BaseService } from "./../common/services/BaseService";
 @Injectable()
 export class DatoFiscalService extends BaseService {
   public getDatosFiscales(vendedor: string): Observable<any> {
-    let params: URLSearchParams = new URLSearchParams();
-    params.set("vendedor", vendedor);
+    let params: HttpParams = new HttpParams();
+    params = params.append("vendedor", vendedor);
+
     return this.http
       .get("/api/vendedor/getDatoFiscales", {
-        search: params,
+        params: params,
         headers: this.headers,
-      })
-      .pipe(map(this.extractData));
+      });
   }
 
   public getVendedores(
     fecha_inicio: string,
     fecha_fin: string
   ): Observable<any> {
-    let params: URLSearchParams = new URLSearchParams();
-    params.set("fechaInicio", fecha_inicio);
-    params.set("fechaFin", fecha_fin);
+    let params: HttpParams = new HttpParams();
+    params = params.append("fechaInicio", fecha_inicio);
+    params = params.append("fechaFin", fecha_fin);
+
     return this.http
       .get("/api/vendedor/getVendedores", {
-        search: params,
+        params: params,
         headers: this.headers,
       })
       .pipe(
@@ -37,24 +38,23 @@ export class DatoFiscalService extends BaseService {
               "Tiempo de respuesta agotado, por favor intentar nuevamente"
             )
           )
-        ),
-        map(this.extractData)
+        )
       );
   }
 
   public getVendedoresPendientes(): Observable<any> {
-    let params: URLSearchParams = new URLSearchParams();
-    this.headers = new Headers();
-    this.headers.append('Content-Type', 'application/json');
-    this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
-    this.headers.append('Cache-control', 'no-cache');
-    this.headers.append('Cache-control', 'no-store');
-    this.headers.append('Expires', '0');
-    this.headers.append('Pragma', 'no-cache');
+    let params: HttpParams = new HttpParams();
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json');
+    headers = headers.append('Accept', 'q=0.8;application/json;q=0.9')
+    headers = headers.append('Cache-control', 'no-cache');
+    headers = headers.append('Cache-control', 'no-store');
+    headers = headers.append('Expires', '0');
+    headers = headers.append('Pragma', 'no-cache');
 
     return this.http
       .get("/api/vendedor/getVendedoresPendientes", {
-        search: params,
+        params: params,
         headers: this.headers,
       })
       .pipe(
@@ -65,18 +65,19 @@ export class DatoFiscalService extends BaseService {
               "Tiempo de respuesta agotado, por favor intentar nuevamente"
             )
           )
-        ),
-        map(this.extractData)
+        )
       );
   }
 
   public agregarVendedor(
-    nuevoVendedorCUIT: string
+    nuevoVendedorCUIT: string,
+    tipoProveedor: number
   ): Observable<any> {
-    let params: URLSearchParams = new URLSearchParams();
-    params.set("cuit", nuevoVendedorCUIT);
+    let params: HttpParams = new HttpParams();
+    params = params.append("cuit", nuevoVendedorCUIT);
+    params = params.append("tipoProveedor", tipoProveedor.toString());
     return this.http
-      .get("/api/vendedor/agregarVendedor", { search: params })
+      .get("/api/vendedor/agregarVendedor", { params: params })
       .pipe(
         timeoutWith(
           30000,
@@ -85,16 +86,16 @@ export class DatoFiscalService extends BaseService {
               "Tiempo de respuesta agotado, por favor intentar nuevamente"
             )
           )
-        ),
-        map(this.extractData)
+        )
       );
   }
 
   public eliminarVendedor(proveedorId: number): Observable<any> {
-    let params: URLSearchParams = new URLSearchParams();
-    params.set("proveedorId", proveedorId.toString());
+    let params: HttpParams = new HttpParams();
+    params = params.append("proveedorId", proveedorId.toString());
+
     return this.http
-      .get("/api/vendedor/eliminarVendedor", { search: params })
+      .get("/api/vendedor/eliminarVendedor", { params: params })
       .pipe(
         timeoutWith(
           30000,
@@ -103,8 +104,7 @@ export class DatoFiscalService extends BaseService {
               "Tiempo de respuesta agotado, por favor intentar nuevamente"
             )
           )
-        ),
-        map(this.extractData)
+        )
       );
   }
 }

@@ -1,15 +1,15 @@
 
 import { throwError as observableThrowError, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams, Headers } from '@angular/http';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
 import { ConsultaTicketPesada } from '../common/models/ticket-pesada/consulta-ticket-pesada';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class TicketPesadaService extends BaseService {
 
-    constructor(protected http: Http) {
+    constructor(protected http: HttpClient) {
         super(http);
     }
 
@@ -22,7 +22,6 @@ export class TicketPesadaService extends BaseService {
 
         return this.http
             .post('/api/TicketPesada/Obtener', payload)
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
-            .pipe(map(this.extractData));
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 }

@@ -21,10 +21,11 @@
 	[DiasEjecucion] [int] NULL,
 	[ObservacionesCotizacion] [nvarchar](max) NULL,
 	[JornadaLaboralDias] [nvarchar](max) NULL,
-	[JornadaLaboralHorasDesde] [datetime2] NULL,
-	[JornadaLaboralHorasHasta] [datetime2] NULL,
-
-[TieneAndamio] BIT NULL, 
+	[JornadaLaboralHorasDesde] DATETIMEOFFSET NULL,
+	[JornadaLaboralHorasHasta] DATETIMEOFFSET NULL,
+	[TieneAndamio] BIT NULL, 
+    [RevisadoPor] NVARCHAR(MAX) NULL, 
+    [TieneCondicionesGenerales] BIT NULL,
     CONSTRAINT [PK_dbo.Pliego] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

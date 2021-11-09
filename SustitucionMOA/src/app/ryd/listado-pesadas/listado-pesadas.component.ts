@@ -77,7 +77,7 @@ export class ListadoPesadasComponent extends RYDBaseComponent {
     getFiltros() {
         this.mensajeComponent.setMsgsEmpty();
         this.subscriptionDropDowns = this.service.getFiltros().subscribe(
-            result => {
+            (result:any) => {
                 //this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -123,7 +123,7 @@ export class ListadoPesadasComponent extends RYDBaseComponent {
         this.spinnerComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.getListado(this.commoditySelected, this.exportadorSelected, this.fechaInicio, this.fechaFin).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -149,7 +149,7 @@ export class ListadoPesadasComponent extends RYDBaseComponent {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.exportExcelListadoPesada(this.commoditySelected, this.exportadorSelected, this.fechaInicio, this.fechaFin).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();

@@ -67,7 +67,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     getRolesOptions() {
         try {
             this.subscriptionDropDowns = this.service.getRoles().subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -94,7 +94,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         try {
             this.unsubscribe();
             this.subscription = this.service.getUsuarios().subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -138,7 +138,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.service.desbloquearUsuario(usuario).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -170,7 +170,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.service.deshabilitarUsuario(mailUsuario).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -202,7 +202,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.service.habilitarUsuario(mailUsuario).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -276,7 +276,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     obtenerRolesUsuario() {
          try {
             this.service.obtenerRolesUsuario(this.usuarioSeleccionado).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -311,7 +311,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     
         try {
             this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles).subscribe(
-                result => {
+                (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();

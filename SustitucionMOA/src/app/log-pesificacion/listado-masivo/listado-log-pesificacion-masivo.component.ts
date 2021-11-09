@@ -67,7 +67,7 @@ export class ListadoLogPesificacionMasivoComponent implements OnInit {
   public inicliazarVista(): void {
     this.filtros.fecha = $("#dtp_input_inicio").val();
     this.logEspecificacionService.getLogPesificacionesAutomaticas().subscribe(
-      result => {
+      (result:any) => {
         this.spinnerComponent.hideIt();
         if (result.logout == true) {
           this.sessionDataService.logout();
@@ -93,7 +93,7 @@ export class ListadoLogPesificacionMasivoComponent implements OnInit {
     this.spinnerComponent.showIt();
     this.listadoPesificaciones = [];
     this.logEspecificacionService.getFiltrarPesificacionesAutomaticas(this.filtros).subscribe(
-      result => {
+      (result:any) => {
         this.spinnerComponent.hideIt();
         if (result.logout == true) {
           this.sessionDataService.logout();

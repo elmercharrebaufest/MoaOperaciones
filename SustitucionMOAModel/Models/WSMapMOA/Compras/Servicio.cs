@@ -10,7 +10,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Compras
     {
         public string Codigo { get; set; }
         public string Descripcion { get; set; }
-        public  string NroGrupo { get; set; }
+        public string NroGrupo { get; set; }
         public string Serv { get; set; }
         public string Ser { get; set; }
         public string Edit { get; set; }

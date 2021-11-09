@@ -53,6 +53,8 @@ namespace SustitucionMOAUtils.Services
                 Sede = x.Sede,
                 MalCargada = x.MalCargada,
                 SecuenciaId = x.SecuenciaIngresosBrutosCoeficienteUnificado_Id,
+                ConsultaId = x.Consulta_Id,
+                RazonSocial = x.RazonSocial,
             },null,0,"Id",SustitucionMOAModel.Consultas.DirOrden.Desc);
         }
 
@@ -112,6 +114,7 @@ namespace SustitucionMOAUtils.Services
             ingresosBrutosCoeficienteUnificado.Sede = ingresosBrutosCoeficienteUnificadoDto.Sede;
             ingresosBrutosCoeficienteUnificado.MalCargada = ingresosBrutosCoeficienteUnificadoDto.MalCargada;
             ingresosBrutosCoeficienteUnificado.SecuenciaIngresosBrutosCoeficienteUnificado_Id = ingresosBrutosCoeficienteUnificadoDto.SecuenciaId;
+            ingresosBrutosCoeficienteUnificado.RazonSocial = ingresosBrutosCoeficienteUnificadoDto.RazonSocial;
 
             ingresosBrutosCoeficienteUnificado.FechaUltimaModificacion = timeProvider.Now();
 

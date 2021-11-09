@@ -86,7 +86,7 @@ namespace SustitucionMOATest.Services
             IList<string> resultOCR3 = new List<string> {
                 "1", "2", "", "", "OSIRIS",
                 "CUIT:", "20-12312312-1", "Anticipo:", "1234", "Sede:", "901", "Secuencia:", "Original",
-                "Determinación del Coeficiente Unificado",
+                "Determinación del Coeficiente Unificado", "Contribuyente:", "razon social",
                 "Coeficiente Unificado",
                 "901", "Capital Federal", "15/05/2021", "18/06/2021", "0,2134", "0,0000", "0,9999",
                 "903", "Catamarca", "0,0000", "0,0000", "0,0000",
@@ -188,6 +188,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(2, ingresosBrutosCoeficienteUnificadosInsertados[0].Archivo_Id);
             Assert.IsFalse(ingresosBrutosCoeficienteUnificadosInsertados[0].MalCargada);
             Assert.AreEqual((int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original, ingresosBrutosCoeficienteUnificadosInsertados[0].SecuenciaIngresosBrutosCoeficienteUnificado_Id);
+            Assert.AreEqual("razon social", ingresosBrutosCoeficienteUnificadosInsertados[0].RazonSocial);
         }
 
         [Test]
@@ -239,7 +240,7 @@ namespace SustitucionMOATest.Services
             IList<string> resultOCR3 = new List<string> {
                 "1", "2", "", "", "OSIRIS",
                 "CUIT:", "20-12312312-1", "Anticipo:", "1234", "Sede:", "901", "Secuencia:", "Rectificativa 324",
-                "Determinación del Coeficiente Unificado",
+                "Determinación del Coeficiente Unificado", "Contribuyente:", "razon social",
                 "Coeficiente Unificado",
                 "901", "Capital Federal", "15/05/2021", "18/06/2021", "0,2134", "0,0000", "0,9999",
                 "903", "Catamarca", "0,0000", "0,0000", "0,0000",
@@ -341,6 +342,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(2, ingresosBrutosCoeficienteUnificadosInsertados[0].Archivo_Id);
             Assert.IsFalse(ingresosBrutosCoeficienteUnificadosInsertados[0].MalCargada);
             Assert.AreEqual((int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Rectificativa, ingresosBrutosCoeficienteUnificadosInsertados[0].SecuenciaIngresosBrutosCoeficienteUnificado_Id);
+            Assert.AreEqual("razon social", ingresosBrutosCoeficienteUnificadosInsertados[0].RazonSocial);
         }
 
         [Test]
@@ -392,9 +394,9 @@ namespace SustitucionMOATest.Services
             IList<string> resultOCR3 = new List<string> {
                 "1", "2", "", "", "OSIRIS",
                 "CUIT:", "20-12312312-1", "Anticipo:", "1234", "Sede:", "901",
-                "Determinación del Coeficiente Unificado",
+                "Determinación del Coeficiente Unificado", "Contribuyente:", "razon social",
                 "Coeficiente Unificado",
-                "901", "Capital Federal", "15/05/2021", "18/06/2021", "0,2134", "0,0000", "......",
+                "901", "Capital Federal", "15/05/2021", "18/06/2021", "0,2134", "0,0000", "aas",
                 "903", "Catamarca", "0,0000", "0,0000", "0,0000",
                 "904", "Cordoba", "23/12/2018", "0,0000", "0,7548", "0,3477",
             };
@@ -494,6 +496,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(2, ingresosBrutosCoeficienteUnificadosInsertados[0].Archivo_Id);
             Assert.IsTrue(ingresosBrutosCoeficienteUnificadosInsertados[0].MalCargada);
             Assert.IsNull(ingresosBrutosCoeficienteUnificadosInsertados[0].SecuenciaIngresosBrutosCoeficienteUnificado_Id);
+            Assert.AreEqual("razon social", ingresosBrutosCoeficienteUnificadosInsertados[0].RazonSocial);
         }
 
         [Test]
@@ -549,6 +552,143 @@ namespace SustitucionMOATest.Services
             {
                 Assert.Fail("Debió lanzar una ValidationCustomException");
             }
+        }
+
+        [Test]
+        public void ProcesarCM05Excepcion()
+        {
+            int idComentarioTest = 324;
+            string cuitProveedorTest = "20123123121";
+
+            var archivos = new Mock<HttpFileCollectionBase>();
+
+            Exception exceptionTest = new Exception("excepcion loca");
+
+            archivos.Setup(x => x.Count).Throws(exceptionTest);
+
+            try
+            {
+                target.ProcesarCM05(archivos.Object, idComentarioTest, cuitProveedorTest);
+                Assert.Fail("Debió lanzar una excepción");
+            }
+            catch (ValidationCustomException vex)
+            {
+                Assert.AreEqual(vex.Message, ErrorMsg.ErrorCargaCM05);
+                Assert.AreEqual(vex.InnerException, exceptionTest);
+                Assert.IsTrue(vex.LoguearExcepcion);
+            }
+            catch (Exception)
+            {
+                Assert.Fail("Debió lanzar una ValidationCustomException");
+            }
+        }
+
+        [Test]
+        public void AnularConsultaOk()
+        {
+            int consultaIdTest = 332;
+            int usuarioIdTest = 98;
+            string motivoRechazoTest = "rechazada pa";
+
+            DateTime hoy = new DateTime(2021, 9, 14);
+            timeProviderMock.Setup(x => x.Now()).Returns(hoy);
+
+            Mock<ConsultaService> targetMock = new Mock<ConsultaService>(this.repositorioMock.Object, this.azureServiceMock.Object, this.timeProviderMock.Object) { CallBase = true, };
+            targetMock.Setup(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<ComentarioDto>(), It.IsAny<HttpFileCollectionBase>())).Returns(new ComentarioDto());
+            targetMock.Setup(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>())).Callback(() => { });
+
+            Categoria actualizacion = new Categoria { Code = Categorias.Actualizacion };
+            Categoria boletos = new Categoria { Code = Categorias.Boletos };
+
+            SubCategoria cm05 = new SubCategoria { Code = SubCategorias.CM05 };
+            SubCategoria contratos = new SubCategoria { Code = SubCategorias.Contratos };
+
+            List<Consulta> consultaList = new List<Consulta>
+            {
+                new Consulta { Id = 248, Categoria = actualizacion, SubCategoria = contratos },
+                new Consulta { Id = 332, Categoria = boletos, SubCategoria = cm05 },
+            };
+
+            this.repositorioMock
+                .Setup(x => x.Obtener<Consulta>(It.IsAny<int>()))
+                .Returns<int>(id => consultaList.SingleOrDefault(x => x.Id == id));
+
+            var result = targetMock.Object.AnularConsulta(consultaIdTest, usuarioIdTest, motivoRechazoTest);
+
+            targetMock.Verify(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            targetMock.Verify(x => x.ActualizarEstadoConsulta(consultaIdTest, (int)EstadosConsulta.Finalizado), Times.Once);
+
+            targetMock.Verify(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<ComentarioDto>(), It.IsAny<HttpFileCollectionBase>()), Times.Once);
+            targetMock.Verify(x => x.AgregarComentario(
+                consultaIdTest,
+                It.Is<ComentarioDto>(comentario => comentario.Detalle == motivoRechazoTest + ", consulta cerrada." && comentario.Fecha == hoy && comentario.UsuarioId == usuarioIdTest),
+                It.IsAny<HttpFileCollectionBase>()), Times.Once);
+
+            this.repositorioMock.Verify(x => x.Obtener<Consulta>(It.IsAny<int>()), Times.Once);
+            this.repositorioMock.Verify(x => x.Obtener<Consulta>(consultaIdTest), Times.Once);
+         
+            this.repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<IngresosBrutosCoeficienteUnificado, bool>>>()), Times.Never);
+        }
+
+        [Test]
+        public void AnularConsultaCM05Ok()
+        {
+            int consultaIdTest = 332;
+            int usuarioIdTest = 98;
+            string motivoRechazoTest = "rechazada pa";
+
+            DateTime hoy = new DateTime(2021, 9, 14);
+            timeProviderMock.Setup(x => x.Now()).Returns(hoy);
+
+            Mock<ConsultaService> targetMock = new Mock<ConsultaService>(this.repositorioMock.Object, this.azureServiceMock.Object, this.timeProviderMock.Object) { CallBase = true, };
+            targetMock.Setup(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<ComentarioDto>(), It.IsAny<HttpFileCollectionBase>())).Returns(new ComentarioDto());
+            targetMock.Setup(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>())).Callback(() => { });
+
+            Categoria actualizacion = new Categoria { Code = Categorias.Actualizacion };
+            Categoria boletos = new Categoria { Code = Categorias.Boletos };
+
+            SubCategoria cm05 = new SubCategoria { Code = SubCategorias.CM05 };
+            SubCategoria contratos = new SubCategoria { Code = SubCategorias.Contratos };
+
+            List<Consulta> consultaList = new List<Consulta>
+            {
+                new Consulta { Id = 248, Categoria = boletos, SubCategoria = contratos },
+                new Consulta { Id = 332, Categoria = actualizacion, SubCategoria = cm05 },
+            };
+
+            this.repositorioMock
+                .Setup(x => x.Obtener<Consulta>(It.IsAny<int>()))
+                .Returns<int>(id => consultaList.SingleOrDefault(x => x.Id == id));
+
+            List<IngresosBrutosCoeficienteUnificado> ingresosBrutosCoeficienteUnificadosList = new List<IngresosBrutosCoeficienteUnificado>
+            {
+                new IngresosBrutosCoeficienteUnificado { Id = 1, Consulta_Id = 332, EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente },
+                new IngresosBrutosCoeficienteUnificado { Id = 2, Consulta_Id = 248, EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente },
+            };
+
+            this.repositorioMock
+                .Setup(x => x.Obtener(It.IsAny<Expression<Func<IngresosBrutosCoeficienteUnificado, bool>>>()))
+                .Returns<Expression<Func<IngresosBrutosCoeficienteUnificado, bool>>>(q => ingresosBrutosCoeficienteUnificadosList.SingleOrDefault(q.Compile()));
+
+            var result = targetMock.Object.AnularConsulta(consultaIdTest, usuarioIdTest, motivoRechazoTest);
+
+            targetMock.Verify(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            targetMock.Verify(x => x.ActualizarEstadoConsulta(consultaIdTest, (int)EstadosConsulta.Finalizado), Times.Once);
+
+            targetMock.Verify(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<ComentarioDto>(), It.IsAny<HttpFileCollectionBase>()), Times.Once);
+            targetMock.Verify(x => x.AgregarComentario(
+                consultaIdTest,
+                It.Is<ComentarioDto>(comentario => comentario.Detalle == motivoRechazoTest + ", consulta cerrada." && comentario.Fecha == hoy && comentario.UsuarioId == usuarioIdTest),
+                It.IsAny<HttpFileCollectionBase>()), Times.Once);
+
+            this.repositorioMock.Verify(x => x.Obtener<Consulta>(It.IsAny<int>()), Times.Once);
+            this.repositorioMock.Verify(x => x.Obtener<Consulta>(consultaIdTest), Times.Once);
+
+            this.repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<IngresosBrutosCoeficienteUnificado, bool>>>()), Times.Once);
+
+            Assert.AreEqual((int)EnumEstadoIngresosBrutosCoeficienteUnificado.RechazadoPorUsuario, ingresosBrutosCoeficienteUnificadosList[0].EstadoIngresosBrutosCoeficienteUnificado_Id);
+
+            this.repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
         }
     }
 }

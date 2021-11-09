@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { WeekDay } from '@angular/common';
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, ModuleWithComponentFactories, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../common/base-components/base-component';
 import { Paso } from '../common/models/paso';
 import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component';
@@ -25,11 +25,10 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { EspecificacionesViewModel } from './PliegoPasos/solapaTres/especificacionesViewModel';
 import { SubPosicionViewModel } from './PliegoPasos/solapaSubposiciones/subPosicionViewModel';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import {DialogModule} from 'primeng/dialog';
+import { DialogModule } from 'primeng/dialog';
 import { FormGroup } from '@angular/forms';
-
-
-
+import { AdjuntosCotizaciones } from './PliegoPasos/adjuntos-Cotizaciones';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
     selector: 'app-solp',
@@ -53,7 +52,7 @@ import { FormGroup } from '@angular/forms';
                         style({ opacity: 0 }))
                 ]
             )
-          ]),
+        ]),
     ],
     providers: [ComprasService, MessageService]
 })
@@ -71,7 +70,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     // }
 
     @BlockUI() blockUI: NgBlockUI;
-    
+
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -98,7 +97,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
     finalizarOk: boolean;
     displayFinalizar: boolean = false;
     displaySAP: boolean;
-    
+    displayErrorSAP: boolean;
+    disabledSave = false;
+
+    listadoErrores: string[] = new Array<string>();
+    displaySAPEditar: boolean;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -164,10 +167,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Numero: 6
     }];
 
-    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        private messageService: MessageService, private route:ActivatedRoute, private confirmationService: ConfirmationService) {
-        super(navService, securytiService, floatMsgService, modalService);
+    selectUsuarioCompras: any;
+    usuarioComprasList: any[] = [];
 
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        private messageService: MessageService, private route: ActivatedRoute, private confirmationService: ConfirmationService) {
+        super(navService, securytiService, floatMsgService, modalService);
     }
 
     ngOnInit() {
@@ -176,6 +181,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.pasos[0].Iniciado = true;
 
             this.pasoActual = this.pasos[0];
+
+            this.solpActual.estadoPasos = "0,0,0,0,0,0";
 
             this.es = {
                 firstDayOfWeek: 0,
@@ -218,9 +225,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     selected: false
                 }
             ];
-            //let fechaEntrega = new Date();
             let fechaLimiteFecha = new Date();
-            //this.solpActual.fechaEntrega = this.sumarDias(fechaEntrega, 7);
             this.solpActual.horaEntrega = new Date(1, 1, 1, 10, 0, 0, 0);
             this.solpActual.fechaLimiteFecha = this.sumarDias(fechaLimiteFecha, 6);
             this.solpActual.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
@@ -236,41 +241,42 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.comienzoJornadaLaboral = new Date(1, 1, 1, 7, 0, 0, 0);
             this.solpActual.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
             this.solpActual.ejecucion = "30";
-            this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
-            
+            this.solpActual.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
+
+            this.solpActual.archivosCotizacionesNuevos = new Array<File>();
+            this.solpActual.archivosCotizacionesGuardados = new Array<AdjuntosCotizaciones>();
+
             this.solpActual.centroPorDefecto = 1029;
             this.solpActual.monedaPorDefecto = "ARP";
 
+
             this.getCombos();
 
-            if(this.route.params){
+            if (this.route.params) {
                 this.route.params.forEach((params: Params) => {
                     if (params["id"] > 0) this.solpId = params["id"];
                     if (params["tipoSolp"]) this.solpActual.tipoSolp = params["tipoSolp"];
                 });
 
-                if(this.solpId > 0){
-                this.traerSolpId(this.solpId);
+                if (this.solpId > 0) {
+                    this.traerSolpId(this.solpId);
                 }
             }
-
-            
-            
         }
     }
 
-    sumarDias(fecha, dias){
+    sumarDias(fecha, dias) {
         fecha.setDate(fecha.getDate() + dias);
         return fecha;
     }
 
-    traerSolpId(idSolp){
+    traerSolpId(idSolp) {
         try {
             this.blockUI.start('Cargando...');
             this.spinnerComponent.showIt();
 
             this.subscription = this.service.traerSolpId(idSolp).subscribe(
-                result => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -281,25 +287,26 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.cargarSolpActual(result.data);
                         this.spinnerComponent.hideIt();
                         this.blockUI.stop();
-                    }   
+                    }
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
                     this.spinnerComponent.hideIt();
                     this.blockUI.stop();
                 });
-            } catch (e) {
-                this.floatMsgService.setErrorMsg(e);
-                return false; //<-- Prevent Refresh
-                }
-                return false; //<-- Prevent Refresh
-    } 
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
 
-    cargarSolpActual(solp){
+    cargarSolpActual(solp) {
 
         // Paso 1
         this.solpActual.id = solp.Id;
         this.solpActual.tipoSolp = solp.TipoSolp && solp.TipoSolp.Codigo || '';
+        this.solpActual.nroSolp = solp.NroSolp || 0;
         this.solpActual.nombreDePedido = solp.NombreDeObra || '';
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
         this.solpActual.telefono = solp.Telefono || '';
@@ -310,9 +317,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
         // Paso 2
         this.solpActual.supervisorSector = solp.SupervisorSector || '';
         this.solpActual.supervisorTrabajo = solp.SupervisorTrabajo || '';
-        this.solpActual.listaVisitas = solp.VisitasObraMasiva.map(x=> { 
+        this.solpActual.listaVisitas = solp.VisitasObraMasiva.map(x => {
             return {
-                id: x.Codigo, 
+                id: x.Codigo,
                 visitaDeObraFecha: new Date(this.getDateFromAspNetFormat(x.FechaHora)),
                 visitaDeObraHora: new Date(this.getDateFromAspNetFormat(x.FechaHora))
             } || '';
@@ -321,42 +328,60 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.visitaDeObra = solp.TieneVisitaObra;
         this.solpActual.obradores = solp.TieneObradores;
         this.solpActual.modoElevacion = solp.TieneMedioElevacion;
-        this.solpActual.andamio = solp.TieneAndamio; 
+        this.solpActual.andamio = solp.TieneAndamio;
         this.solpActual.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
-        this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;        
-        this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;          
+        this.solpActual.usuarioComprasId = solp.UsuarioCompras.Id || 0;
+        this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;
+        this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;
         this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
-        this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta)); 
-        this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;             
+        this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+        this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;
 
         // Paso 3
         this.solpActual.especificacionesViewModel = new EspecificacionesViewModel();
-        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = solp.Adjuntos.map(x => {
+        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = solp.Adjuntos
+        .filter(x => x.FileKey == "adjuntoSolp")
+        .map(x => {
             return {
                 id: x.Id,
                 nombreArchivo: x.Nombre
             }
         }),
-        this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas || this.solpActual.especificacionesViewModel.valorPorDefecto; 
+            this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas || this.solpActual.especificacionesViewModel.valorPorDefecto;
+
+        this.solpActual.tieneCondicionesGenerales = solp.TieneCondicionesGenerales;
 
         // Paso 4
+        this.solpActual.archivosCotizacionesGuardados = solp.Adjuntos
+        .filter(x => x.FileKey == "adjuntoCotizacionesSolp")
+        .map(x => {
+            return {
+                id: x.Id,
+                nombreArchivo: x.Nombre,
+            }
+        });
         this.solpActual.jornadaLaboralDias.forEach(k => {
             k.selected = solp.JornadaLaboral.includes(k.weekDay);
-        });           
-        this.solpActual.comienzoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));  
-        this.solpActual.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta)); 
+        });
+        this.solpActual.comienzoJornadaLaboral = new Date (this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));
+        this.solpActual.terminoJornadaLaboral = new Date (this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
         this.solpActual.ejecucion = solp.DiasEjecucion || '';
         this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
 
+        //pop up finalizar
+        this.solpActual.revisadoPor = solp.RevisadoPor || '';
+
         // Paso 5
         this.solpActual.selectClaseDocumento = solp.ClaseDocumento;
+        this.solpActual.pasoCompletado = solp.PasoCompletado;
+        this.solpActual.estadoPasos = solp.EstadoPasos;
 
-        if(solp.Posiciones && solp.Posiciones.length > 0){
+        if (solp.Posiciones && solp.Posiciones.length > 0) {
             let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
-            
+
             let posActual = this.solpActual.posicionActual;
             let solpActual = this.solpActual;
-            
+
             solp.Posiciones.forEach(x => {
                 posActual.id = x.Codigo;
                 posActual.textoGenerico = x.TextoGenerico;
@@ -375,7 +400,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.selectSolicitanteCompras = x.Solicitante;
                 posActual.necesidadCompras = x.NroNecesidad;
                 posActual.selectGrupoCompras = x.GrupoCompras;
-                posActual.selectArticuloCompras = x.GrupoArticulo;                               
+                posActual.selectArticuloCompras = x.GrupoArticulo;
                 posActual.monedaSeleccionada = x.Moneda;
                 posActual.servicio = x.TipoPosicion && x.TipoPosicion.Codigo;
                 posActual.tipoImputacion = x.TipoImputacion && x.TipoImputacion.Codigo;
@@ -384,12 +409,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.rubroCivil = x.CodigosProveedores.includes('CIVIL');
                 posActual.rubroIngenieria = x.CodigosProveedores.includes('INGENIERIA');
                 posActual.rubroMecanico = x.CodigosProveedores.includes('MECANICO');
+                posActual.estado = x.Estado;
+                posActual.indice = x.numeroPosicion;
 
                 posActual.proveedoresValidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial);
                 posActual.proveedoresNoSugeridos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial);
                 posActual.proveedoresInvalidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'INVALIDO').map(p => p.RazonSocial);
 
-                if(x.Subposiciones){
+
+
+                if (x.Subposiciones) {
                     posActual.listadoSubPosiciones = [];
                     let i = 1;
 
@@ -398,7 +427,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                         subpos.id = sp.Codigo;
                         subpos.codigoServicio = sp.CodigoServicioSap;
-                        subpos.tareaSubcontratarObj = sp.CodigoServicioSap;
+                        subpos.tareaSubcontratarObj = { Descripcion: sp.Tarea };
                         subpos.tareaSubcontratar = sp.Tarea;
                         subpos.cuentaMayor = sp.CuentaMayor;
                         subpos.cuentaTd = sp.Cantidad;
@@ -411,21 +440,50 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         i++;
                     });
                 }
-                
-                if(ultimaPos.Codigo != x.Codigo){
+
+                if (ultimaPos.Codigo != x.Codigo) {
                     solpActual.agregarNuevaPosicion();
                     posActual = solpActual.posicionActual;
                 }
             });
 
-            this.solpActual.setearPosicionPorDefecto();
-            // this.cabecera.solpActual = this.solpActual;
-            // this.actualizarPasoCompleto();
+            this.solpActual.setearPosicionPorDefecto();   
         }
 
+        let estadosPasos = this.solpActual.estadoPasos.split(',');
+
+            let count = 0;
+            estadosPasos.forEach(item => {
+                this.pasos[count].Iniciado = item == '1' || item == '2';
+                this.pasos[count].Completo = item == '2';
+                count+=1;
+            });
+
+            this._pasoActual = this.pasos.find(x => x.Numero == 1); 
+            this.cambioPaso(this.pasos[0]);
+    }
+
+    validatePasos(): any{
+        let estadosPasos = this.solpActual.estadoPasos.split(',');
+        this.solpActual.estadoPasos = '';
+
+        this.pasos.forEach((p, i) => {
+            estadosPasos[p.Numero -1] = !p.Iniciado ? '0' : p.Completo ? '2' : '1';      
+            this.solpActual.estadoPasos += `${estadosPasos[p.Numero - 1]},`;
+
+        });
+
+
+        this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
+
+        return {
+            completo: estadosPasos.every(x => x === '2'),
+            primerPasoIncompleto: 1 + estadosPasos.findIndex(x => x != '2')
+        }
     }
 
     cambioPaso(paso) {
+        let estadosPasos = this.solpActual.estadoPasos.split(',');
         this.pasos.forEach((p, i) => {
             if (p.Codigo == this.pasoActual.Codigo) {
                 p.Activo = false;
@@ -435,9 +493,27 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 p.Iniciado = true;
                 p.Activo = true;
             }
+            estadosPasos[p.Numero -1] = p.Completo ? '2' : '1';      
         });
 
-        this.pasoActual = paso;
+        this.solpActual.estadoPasos = '';
+       
+
+        estadosPasos.forEach(x=> {
+            this.solpActual.estadoPasos += `${x},` ;
+        });
+
+        this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
+    
+        this.pasoActual = paso; //aca esta el error
+
+        this.solpActual.pasoCompletado = this.solpActual.pasoCompletado > this.pasoActual.Numero 
+        ? this.solpActual.pasoCompletado
+        : this.pasoActual.Numero;
+       
+        this.actualizarPasoCompleto(this.pasoActual);
+       
+        // this.guardarCambios(false, false, true);
     }
 
     pasoAnterior() {
@@ -470,152 +546,271 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    
-
-    guardarCambios(mostrarPreview = false, enviarSap = false){
+    guardarCambios(mostrarPreview = false, enviarSap = false, guardarPorPaso = false) {
+        this.messageService.clear();
         try {
-            this.blockUI.start('Guardando...');
-            this.spinnerComponent.showIt();
+            this.actualizarPasoCompleto(this.pasoActual);
 
-            this.solpActual.enviarSap = enviarSap;
+            this.disabledSave = true;
+            if (guardarPorPaso == false) {
+                this.blockUI.start('Guardando...');
+            }
+
+            let validatePasos = this.validatePasos();
+
+            if(enviarSap) {
+                if (!validatePasos.completo) {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campos en el paso #${validatePasos.primerPasoIncompleto}` });
+
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                    this.disabledSave = false;
+                    return;
+                }
+            }
+
+            this.solpActual.Finalizar = enviarSap;
+            this.solpActual.usuarioComprasId = this.selectUsuarioCompras.Id;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
-                result => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
-                        this.blockUI.stop();
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
                     } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                        this.blockUI.stop();
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo guardar la solp', detail: result.error });
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
                     } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                        this.blockUI.stop();
+                        this.messageService.add({ severity: 'info', summary: 'No se pudo guardar la solp', detail: result.info });
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
                     } else {
-                        this.spinnerComponent.hideIt();
-                        this.blockUI.stop();
-                        if(!mostrarPreview){
-                            this.messageService.add({severity:'success', detail:'Los datos se guardaron correctamente'});
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
+
+                        if (!mostrarPreview && !guardarPorPaso) {
+                            this.messageService.add({ severity: 'success', detail: 'Los datos se guardaron correctamente' });
                         }
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
-                        
-                        this.solpActual.id = result.Id;
+
+                        this.solpActual.id = result.Solp.Id;
+                        this.solpActual.NroSolp = result.Solp.NroSolp;
                         this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.length);
-                        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = result.Adjuntos.map(x=> {
+                        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = result.Solp.Adjuntos.filter(x => x.FileKey != 'adjuntoCotizacionesSolp').map(x=> {
                             return {
                                 id: x.Id,
-                                nombreArchivo: x.Nombre
+                                nombreArchivo: x.Nombre,
+                                rutaDeAcceso: ''
                             }
                         });
-                        
+
+                        this.solpActual.archivosCotizacionesNuevos.splice(0, this.solpActual.archivosCotizacionesNuevos.length);
+                        this.solpActual.archivosCotizacionesGuardados = result.Solp.Adjuntos.filter(x => x.FileKey == 'adjuntoCotizacionesSolp').map(x => {
+                            return {
+                                id: x.Id,
+                                nombreArchivo: x.Nombre,
+                                rutaDeAcceso: ''
+                            }
+                        });
+
                         this.cambiosGuardados = true;
 
-                        if(mostrarPreview){
-                            if(result.Pdf){
-                                this.pdfPreview = "data:application/pdf;base64," + result.Pdf;
+                        if (mostrarPreview) {
+                            if (result.Solp.Pdf) {
+                                this.pdfPreview = "data:application/pdf;base64," + result.Solp.Pdf;
                                 this.mostrarPreview = true;
                             } else {
-                                this.messageService.add({severity:'error', detail:'Hubo un error al generar el preview. Por favor contacte con el administrador de sistemas.'});
+                                this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar el preview. Por favor contacte con el administrador de sistemas.' });
                             }
                         }
 
-                        if(enviarSap){
-                            if(result.NroSolp) {
-                                this.finalizarOk = true;
-                            } else {
-                                this.messageService.add({severity:'error', detail:'Hubo un error al generar la SOLP en SAP, intente de nuevo mas tarde o comuniquese con el administrador'});
-                            }
-                        } 
+                        if (enviarSap) {
 
+                            if (result.Mensaje == "OK") {
+                                this.finalizarOk = true;
+                                this.displaySAP = true;
+                            }
+                            else {
+                                this.listadoErrores = result.Errores;
+                                this.displayErrorSAP = true;
+                            }
+
+                            if (this.solpActual.nroSolp) {
+                                this.displaySAPEditar = true;
+                            }
+
+                            
+                            // if (result.Solp.NroSolp) {
+                            //     this.finalizarOk = true;
+                            // } else {
+                            //     this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar la SOLP en SAP, intente de nuevo mas tarde o comuniquese con el administrador' });
+                            // }
+                        }
                     }
+                    this.disabledSave = false;
                 },
                 error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                    this.spinnerComponent.hideIt();
-                    this.blockUI.stop();
+                    this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la solp', detail: error.message });
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                    this.disabledSave = false;
                 }
-
             );
         } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            this.spinnerComponent.hideIt();
-            this.blockUI.stop();
+            this.disabledSave = false;
+            this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la solp', detail: e });
+            if (guardarPorPaso == false) {
+                this.blockUI.stop();
+            }
             return false; //<-- Prevent Refresh
         }
     }
 
     actualizarPasoCompleto(paso: Paso) {
-        if (paso) {
+        if(paso){
             switch (paso.Codigo) {
                 case EnumPasoSolp.PliegoGeneracion1:
-                    paso.Completo = this.listaStringCompleta([
+                    paso.Completo = true;
+
+                    if(!this.listaStringCompleta([
                         this.solpActual.nombreDePedido,
                         this.solpActual.fiscalContrato,
                         this.solpActual.mail,
                         this.solpActual.fechaEntrega,
                         this.solpActual.horaEntrega
-                    ]);
+                    ]))
+                    {
+                        paso.Completo = false;
+                    }                    
+             
                     break;
+                 
                 case EnumPasoSolp.PliegoGeneracion2:
-                    paso.Completo = this.listaStringCompleta([
+                    paso.Completo = true;
+                    if(!this.listaStringCompleta([
                         this.solpActual.supervisorSector,
                         this.solpActual.supervisorTrabajo
-                    ]);
+                    ]))
+                    {
+                        paso.Completo = false;
+                    }
                     break;
                 case EnumPasoSolp.PliegoEspecificacion:
-                    paso.Completo = this.listaStringCompleta([
+                    paso.Completo = true;
+                    if(!this.listaStringCompleta([
                         this.solpActual.especificacionesViewModel.observaciones
-                    ]);
+                    ]))
+                    {
+                        return paso.Completo = false;
+                    }
                     break;
                 case EnumPasoSolp.PliegoCotizacion:
-                    paso.Completo = this.listaStringCompleta([
+                    paso.Completo = true;
+                    if(!this.listaStringCompleta([
                         this.solpActual.ejecucion,
                         this.solpActual.jornadaLaboralDias,
                         this.solpActual.comienzoJornadaLaboral,
                         this.solpActual.terminoJornadaLaboral
-                    ]);
+                    ]))
+                    {
+                        return paso.Completo = false;
+                    }
+
                     break;
                 case EnumPasoSolp.SolpCabecera:
-                    console.log(this.solpActual)
-                    paso.Completo = this.listaStringCompleta([
-                        //this.solpActual.selectClaseDocumento,
-                        this.solpActual.posicionActual.servicio,
-                        this.solpActual.posicionActual.textoGenerico,
-                        this.solpActual.posicionActual.fechaEntregaServicio,
-                        this.solpActual.posicionActual.fechaDeLiberacion,
-                        this.solpActual.posicionActual.selectCentroEntrega,
-                        this.solpActual.posicionActual.selectAlmacenEntrega,
-                        this.solpActual.posicionActual.calleEntrega,
-                        this.solpActual.posicionActual.numeroEntrega,
-                        this.solpActual.posicionActual.selectGrupoCompras,
-                        this.solpActual.posicionActual.selectArticuloCompras,
-                        this.solpActual.posicionActual.monedaSeleccionada
-                    ]);
-                    
+                    paso.Completo = true;
+                    //Revisa que todos los campos de TODAS las posiciones esten completos
+                    this.solpActual.posiciones.forEach(x => {
+                        if(!this.listaStringCompleta([
+                            x.servicio,
+                            x.textoGenerico,
+                            x.fechaEntregaServicio,
+                            x.fechaDeLiberacion,
+                            x.selectCentroEntrega,
+                            x.selectAlmacenEntrega,
+                            x.calleEntrega,
+                            x.numeroEntrega,
+                            x.selectGrupoCompras,
+                            x.selectArticuloCompras,
+                            x.monedaSeleccionada])
+                        || (this.solpActual.posiciones.some(x => !(x.selectCentroEntrega && x.selectCentroEntrega.Id)))
+                        || (this.solpActual.posiciones.some(x => !(x.selectAlmacenEntrega && x.selectAlmacenEntrega.Id)))
+                        || (this.solpActual.posiciones.some(x => !(x.selectGrupoCompras && x.selectGrupoCompras.Id)))
+                        || (this.solpActual.posiciones.some(x => !(x.selectArticuloCompras && x.selectArticuloCompras.Id))))
+                        {
+                            return paso.Completo = false;
+                        }
+                    });    
                     break;
-                    case EnumPasoSolp.SolpSubposiciones:
-                        paso.Completo = this.listaStringCompleta([
-                        ]);
-                        break;
                 case EnumPasoSolp.SolpSubposiciones:
+                    //paso.Completo = true;
+                    paso.Completo = this.solpActual.posiciones.every(pos =>
+                        pos.listadoSubPosiciones.every(subPos =>
+                            this.listaStringCompleta([
+                                subPos.tareaSubcontratar,
+                                subPos.cuentaTd,
+                                subPos.precioBruto,
+                                subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
+                                subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
+                                subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
+                            ]) ||
+                            this.listaStringVacia([
+                                subPos.tareaSubcontratar,
+                                subPos.cuentaTd,
+                                subPos.precioBruto,
+                                subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
+                                subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
+                                subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
+                            ])
+                        )
+                    );
+
                     break;
-            }
-        }
+                case EnumPasoSolp.SolpSubposiciones:
+                     break;
+            } 
+        }            
     }
 
     listaStringCompleta(lista: any[]) {
         return lista.filter(x => !x || x.length == 0).length == 0;
     }
 
-    scrollTo(el: HTMLElement){
-        el.scrollIntoView();
+    listaStringVacia(lista: any[]) {
+        return lista.every(x => !x || x.length == 0);
     }
+
     //evento que se activa cuando se deja uno de los paso de la solp
     //infomacionSolp : { codigo : string , esPasoInvalido : bool}
     actualizarEstadoSolp(infomacionSolp: any) {
         var pasoSolp = this.pasos.find(x => x.Codigo == infomacionSolp.codigo);
         pasoSolp.Completo = !infomacionSolp.esPasoInvalido;
+
+        let estadosPasos = this.solpActual.estadoPasos.split(',');
+        estadosPasos[pasoSolp.Numero -1] = pasoSolp.Completo ? '2': estadosPasos[pasoSolp.Numero -1];
+
+        this.solpActual.estadoPasos = '';
+
+        estadosPasos.forEach(x=> {
+            this.solpActual.estadoPasos += `${x},` ;
+        });
+
+        this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
     }
 
-    agregarPosicion(el: HTMLElement){
+    // funcion para que cuando agregues una posicion, vuelva a la altura posiciones
+    scrollTo(el: HTMLElement) {
+        el.scrollIntoView();
+    }
+
+    agregarPosicion(el: HTMLElement) {
         this.cabecera.validarPosicionActual();
         this.solpActual.agregarNuevaPosicion();
         el.scrollIntoView();
@@ -624,7 +819,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     getCombos() {
         try {
             this.subscription = this.service.getCombos().subscribe(
-                result => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -633,6 +828,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.combos = result;
+                        this.obtenerUsuarioCompras();
                     }
                 },
                 error => {
@@ -648,7 +844,40 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    preview(){
+    obtenerUsuarioCompras() {
+        try {
+            this.subscription = this.service.obtenerUsuarioCompras().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.usuarioComprasList = [];
+                        result.data.forEach(element => {
+                            this.usuarioComprasList.push({
+                                Id : element.UsuarioCompras.Id,
+                                CodigoDescripcion: element.UsuarioCompras.Mail
+                            });
+                        });
+                        this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
+                                                  ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
+                                                  : this.usuarioComprasList[0];
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+        }
+    }
+
+    preview() {
         this.guardarCambios(true);
     }
 
@@ -656,48 +885,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.navService.navegarSeccion('/compras');
     }
 
-    cancelarSolp() {
-        this.confirmationService.confirm({
-            key: 'cancelarSolp',
-            message: '¿Está seguro que desea volver a la pantalla principal? No se conservaran los cambios no guardados.',
-            accept: () => {
-                this.salir();
-            },
-            reject: () => {  
-            }
-        });
-    }
 
-    cancelarFinalizar() {
-        this.displayFinalizar = false;
-    }
-
-
-    ultimoPasoSolp() {
-        this.confirmationService.confirm({
-                    key: 'ultimoPasoSolp',
-                    message: 'Está a punto de enviar a SOLP sin documento a xxxx ¿Desea continuar?', 
-                    accept: () => {
-            
-                    },
-                    reject: () => {
-                        this.salir();  
-                    }
-                });
-
-    }
-
-    finalizar() {
-        this.guardarCambios();
-        this.displayFinalizar = false;
-        this.displaySAP = true; 
-    }
-
-    showDialog() {
-        this.displayFinalizar = true;           
-    }
-
-    generarZipPliego(idSolp){
+    generarZipPliego(idSolp) {
         this.blockUI.start('Generando ')
         this.service.descargarZipPliego(idSolp)
             .subscribe(
@@ -739,6 +928,66 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 }
             )
     }
+
+    // Todos los Modal
+    finalizar() {
+        this.guardarCambios(false, true, false);
+        this.displayFinalizar = false
+    }
+
+    // Abre el modal del boton finalizar
+    showDialog() {
+        this.displayFinalizar = true;
+    }
+
+    cancelarFinalizar() {
+        this.displayFinalizar = false;
+        this.displayErrorSAP = false;
+    }
+
+    cancelarSolp() {
+        this.confirmationService.confirm({
+            key: 'cancelarSolp',
+            message: '¿Está seguro que desea volver a la pantalla principal? No se conservaran los cambios no guardados.',
+            accept: () => {
+                this.salir();
+            },
+            reject: () => {
+            }
+        });
+    }
+
+    solpFinalizadaVolverHome() {
+        this.salir();
+    }
+
+    ultimoPasoSolp() {
+        this.confirmationService.confirm({
+            key: 'ultimoPasoSolp',
+            message: 'Está a punto de enviar a SOLP sin documento a xxxx ¿Desea continuar?',
+            accept: () => {
+
+            },
+            reject: () => {
+                this.salir();
+            }
+        });
+    }
+
+    modalErrorSAP() {
+        this.confirmationService.confirm({
+            key: 'displayErrorSAP',
+            message: '',
+            accept: () => {
+                this.salir();
+            },
+            reject: () => {
+                
+            }
+        });
+
+    }
+
 
 }
 

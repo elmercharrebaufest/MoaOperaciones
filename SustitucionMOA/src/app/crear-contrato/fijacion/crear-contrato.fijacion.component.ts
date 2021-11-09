@@ -140,7 +140,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         if (term.length > 2) {
             this.unsubscribe();
             this.subscription = this.service.buscarProveedoresConCorredor(term).subscribe(
-                result => {
+                (result:any) => {
                     var resultlist = JSON.parse(result);
 
                     this.proveedores = resultlist.map(prov => {
@@ -215,7 +215,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         try {
             this.unsubscribe();
             this.subscription = this.service.grabarContratoFijacion(this.contrato).subscribe(
-                result => {
+                (result:any) => {
                     this.blockUI.stop();
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -364,6 +364,13 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
     selectEventContratoId(item: FijacionesAutomaticas) {
         if (item && item.ContratoId) {
             console.log("a fijar", item);
+            if (item.Pase == true) {
+                this.mensajeComponent.setErrorMsg("Negocio no disponible para Fijar, contactarse con el Comercial.");
+                this.contrato.ContratoSAP = "";
+                this.pendienteFijarContrato = "";
+                return;
+            }
+            this.mensajeComponent.setErrorMsg("");
             this.pendienteFijar = item;
             this.contrato.ContratoSAP = item.ContratoId;
             this.contrato.Posicion = item.Posicion;
@@ -387,14 +394,13 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.contrato.TrigoEspecial = item.Calidad;
         }
 
-
     }
 
     onChangeSearchContratoId(term: string) {
         //if (term.length > 2) {
         //    this.unsubscribe();
         //    this.subscription = this.service.searchLocalidad(term).subscribe(
-        //        result => {
+        //        (result:any) => {
         //            this.localidades = result;
         //        },
         //        error => {

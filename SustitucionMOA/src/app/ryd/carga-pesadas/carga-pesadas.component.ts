@@ -124,7 +124,7 @@ export class CargaPesadasComponent extends RYDBaseComponent implements OnDestroy
     getDataInputs() {
         this.setAllMsgsEmpty();
         this.subscriptionDropDowns = this.service.getInputsCargaPesadas().subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 }else if (result.error != undefined && result.error != "") {
@@ -190,7 +190,7 @@ export class CargaPesadasComponent extends RYDBaseComponent implements OnDestroy
                 pesada.fecha,
                 this.pesoTara,
                 this.pesoBruto).subscribe(
-                result => {
+                (result:any) => {
                     this.hideAllSpinners();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -219,7 +219,7 @@ export class CargaPesadasComponent extends RYDBaseComponent implements OnDestroy
         this.showAllSpinners();
         this.unsubscribe();
         this.subscription = this.service.postFinalizarCargaPesadas(this.cargaPesadas.balanza, this.cargaPesadas.fecha).subscribe(
-            result => {
+            (result:any) => {
                 this.hideAllSpinners();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -248,7 +248,7 @@ export class CargaPesadasComponent extends RYDBaseComponent implements OnDestroy
         this.setAllMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.verificarBalanzaEnProceso(this.cargaPesadas.balanza).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerTopComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();

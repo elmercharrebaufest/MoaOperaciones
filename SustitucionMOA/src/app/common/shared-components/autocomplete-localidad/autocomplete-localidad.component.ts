@@ -66,7 +66,7 @@ export class AutocompleteLocalidadComponent extends BaseComponent implements OnI
   getLocalidadById(){
     this.unsubscribe();
       this.subscription = this.service.getLocalidadById(this.localidad_Id).subscribe(
-        (result) => {
+        (result:{Nombre:string, Provincia:{Nombre:string}}) => {
           this.localidad = result.Nombre + " (" + result.Provincia.Nombre + ")";
         },
         (error) => {

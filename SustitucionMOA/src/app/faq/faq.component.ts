@@ -13,9 +13,6 @@ import { FloatMsgService } from './../common/services/FloatMsgService';
 import { Seccion } from './../common/models/seccion';
 import { ModalService } from './../common/services/ModalService';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
-import { element } from '@angular/core/src/render3/instructions';
-import { e } from '@angular/core/src/render3';
-
 
 declare var $: any;
 

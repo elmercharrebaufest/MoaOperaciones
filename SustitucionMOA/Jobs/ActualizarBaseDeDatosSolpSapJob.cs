@@ -29,9 +29,10 @@ namespace SustitucionMOA.Jobs
             try
             {
                 this.ActualizarTablaSap(_comprasService.ObtenerCecoSap(), TablasSap.CecoSolpSap);
-                this.ActualizarTablaSap(_comprasService.ObtenerServiciosSap(), TablasSap.CodigoServicioSap);
                 this.ActualizarTablaSap(_comprasService.ObtenerCuentasSap(), TablasSap.CuentasSolpSap);
                 this.ActualizarTablaSap(_comprasService.ObtenerOrdenesSap(), TablasSap.OrdenSolpSap);
+
+                this._comprasService.ActualizarServiciosSolp();
             }
             catch (Exception e)
             {

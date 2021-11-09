@@ -58,7 +58,7 @@ export class RYDMantenimientoCommoditiesComponent extends RYDMantenimientoBaseCo
     getFiltros() {
         this.mensajeComponent.setMsgsEmpty();
         this.subscriptionDropDowns = this.service.getFiltros().subscribe(
-            result => {
+            (result:any) => {
                 //this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -84,7 +84,7 @@ export class RYDMantenimientoCommoditiesComponent extends RYDMantenimientoBaseCo
 
     getDataInputs() {
         this.subscriptionDropDowns = this.service.getInputCommodities().subscribe(
-            result => {
+            (result:any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -109,7 +109,7 @@ export class RYDMantenimientoCommoditiesComponent extends RYDMantenimientoBaseCo
         this.spinnerComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.getCommodities(this.commoditieSelected).subscribe(
-            result => {
+            (result:any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -138,7 +138,7 @@ export class RYDMantenimientoCommoditiesComponent extends RYDMantenimientoBaseCo
         try {
             this.unsubscribe();
             this.subscription = this.service.guardarCommodity(this.materialSAP, this.almacenOrigen, this.descripcion).subscribe(
-                result => {
+                (result:any) => {
                     this.visibleButton = true;
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -178,7 +178,7 @@ export class RYDMantenimientoCommoditiesComponent extends RYDMantenimientoBaseCo
         try {
             this.unsubscribe();
             this.subscription = this.service.actualizarCommodity(this.materialSAP, this.almacenOrigen, this.descripcion, this.commoditieSelected).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -214,7 +214,7 @@ export class RYDMantenimientoCommoditiesComponent extends RYDMantenimientoBaseCo
         try {
             this.unsubscribe();
             this.subscription = this.service.borrarCommodity(this.commoditieSelected).subscribe(
-                result => {
+                (result:any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {

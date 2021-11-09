@@ -3,34 +3,34 @@ import {throwError as observableThrowError,  Observable } from 'rxjs';
 
 import {map, timeoutWith} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams, Headers } from '@angular/http';
 import { BaseService } from './../common/services/BaseService';
-import { environment } from '../../environments/environment';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class HomeService extends BaseService {
 
-    constructor(protected http: Http) {
+    constructor(protected http: HttpClient) {
         super(http);
     }
 
     public getHomeInfo(fecha_inicio: string, fecha_fin: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
+        let params: HttpParams = new HttpParams()
+        .append('fechaInicio', fecha_inicio)
+        .append('fechaFin', fecha_fin);
+        
         return this.http
-            .get('/api/home/getHomeInfo', { search: params, headers: this.headers }).pipe(map(this.extractData),
+            .get('/api/home/getHomeInfo', { params: params, headers: this.headers }).pipe(
             timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),);
     }
 
     descargarDocumentoPDF(documento: string, ejercicio: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('documento', documento);
-        params.set('ejercicio', ejercicio);
+        let params: HttpParams = new HttpParams();
+        params = params.append('documento', documento);
+        params = params.append('ejercicio', ejercicio);
+        
         return this.http
-            .get('/api/PDF/downloadDocumentPDF', { search: params, headers: this.headers }).pipe(
-            timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))),
-            map(this.extractData),);
+            .get('/api/PDF/downloadDocumentPDF', { params: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
 }
 
@@ -38,11 +38,12 @@ export class HomeService extends BaseService {
 export class HomeNGService extends HomeService {
 
     public getHomeInfo(fecha_inicio: string, fecha_fin: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
+        let params: HttpParams = new HttpParams()
+            .append('fechaInicio', fecha_inicio)
+            .append('fechaFin', fecha_fin);
+        
         return this.http
-            .get('/api/home/getHomeNGInfo', { search: params, headers: this.headers }).pipe(map(this.extractData),
-            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),);
+            .get('/api/home/getHomeNGInfo', { params: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
     }
 }

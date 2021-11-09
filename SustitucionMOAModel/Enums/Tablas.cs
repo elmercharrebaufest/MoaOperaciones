@@ -25,6 +25,7 @@ namespace SustitucionMOAModel.Enums
         public const string CecoSolpSap = "CecoSolpSap";
         public const string OrdenSolpSap = "OrdenSolpSap";
         public const string CuentasSolpSap = "CuentasSolpSap";
+        public const string CentroBeneficio = "CentroBeneficio";
     }
 
     public static class TablasGenerales
