@@ -28,6 +28,7 @@ namespace SustitucionMOAModel.Entities
         public string EstadoPasos { get; set; }
         public int? TipoSolp_Id { get; set; }
         public int? UsuarioCompras_Id { get; set; }
+        public int? TipoSolpSap { get; set; }
 
         [ForeignKey("UsuarioCreacion_Id")]
         public virtual Usuario UsuarioCreacion { get; set; }
