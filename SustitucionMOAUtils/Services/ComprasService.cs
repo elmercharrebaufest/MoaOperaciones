@@ -551,7 +551,12 @@ namespace SustitucionMOAUtils.Services
 
         public List<SolpDto> ListarSolp(UsuarioDto usuarioActual)
         {
-            var todasLasSolp = repositorio.Listar<Solp>(x => x.FechaBorrado == null && x.UsuarioCreacion_Id == usuarioActual.Id)
+            Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null && x.UsuarioCreacion_Id == usuarioActual.Id;
+
+            if (usuarioActual.Permisos.Contains("VER TODAS SOLPS"))
+                filtro = (x => x.FechaBorrado == null);
+
+            var todasLasSolp = repositorio.Listar(filtro)
                 .Select(x => new SolpDto
                 {
                     UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
@@ -569,8 +574,6 @@ namespace SustitucionMOAUtils.Services
                 }).OrderByDescending(i => i.FechaCreacion);
 
             return todasLasSolp.ToList();
-
-
         }
 
         public SolpDto TraerSolpId(int idSolp)
