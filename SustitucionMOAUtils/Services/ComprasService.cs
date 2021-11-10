@@ -135,6 +135,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.PasoCompletado = solp.PasoCompletado;
                 solpEntity.UsuarioCompras_Id = solp.UsuarioCompras.Id; 
                 solpEntity.EstadoPasos = solp.EstadoPasos;
+                solpEntity.TipoSolpSap = 1;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
@@ -608,8 +609,7 @@ namespace SustitucionMOAUtils.Services
                 TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                 VincularPliego = !x.Pliego_Id.HasValue,
                 UsuarioCompras = x.UsuarioCompras != null ? new UsuarioComprasDto(x.UsuarioCompras) : new UsuarioComprasDto(),
-
-
+                TipoSolpSap = x.TipoSolpSap,
                 NombreDeObra = x.Pliego.NombreObra,
                 FiscalContrato = x.Pliego.FiscalContrato,
                 Telefono = x.Pliego.Telefono,
