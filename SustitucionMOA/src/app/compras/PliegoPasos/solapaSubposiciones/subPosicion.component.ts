@@ -42,13 +42,15 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     tablaAFiltrar: any;
     autocomplete: any[];
+    autocompleteServiciosSolp: any[];
     autocompletePaste: { Tabla: string, CodigoSap: string }[] = [];
+    autocompleteServiciosSolpPaste: string[] = [];
     arraryErrores: any = new Array<{ id: number, text: string }>();
 
     // array de columnas en la grilla
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
     columnasGrilla: any = [
-        { nombre: "codigoServicio", tipo: "codigoSap", tabla: "CodigoServicioSap" },
+        { nombre: "codigoServicio", tipo: "codigoServicioSolp" },
         { nombre: "tareaSubcontratar", tipo: "tarea" },
         { nombre: "cuentaTd", tipo: "numerico" },
         { nombre: "unidadMedida", tipo: "combo" },
@@ -123,24 +125,11 @@ export class SubPosicionComponent extends ListBaseComponent {
         });
     }
 
-    validarCamposObligatorios(campoAValidar: string, rowIndex: any, valor: any) {
-
-        console.log("Validando campo:", campoAValidar);
-        console.log("valor:", valor);
-        console.log("valor.toString().length:", valor.toString().length);
-
-        this.arraryErrores[rowIndex][campoAValidar] = ((this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio)) && (valor.toString().length == 0));
-
-        return;
-    }
-
-
     validarErrorCustom(subposicion: any, valor: any, campoAValidar: string) {
         return ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) && valor.toString().length == 0);  
     }
 
-    validarConNoNulo(subposicion: any, valor: any, campoAValidar: string){
-        
+    validarConNoNulo(subposicion: any, valor: any, campoAValidar: string){    
         if(subposicion.tareaSubcontratar === ""){
             return false
         }  
@@ -154,17 +143,13 @@ export class SubPosicionComponent extends ListBaseComponent {
         if(subposicion.tareaSubcontratar === ""){
             return false
         }  
-
+        
         return valor == null ||
             ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) 
             && (valor.toString().length == 0 || valor === 0));
-
-        // if (valor != null){
-        //     return ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) && (valor.toString().length == 0 || valor === 0));
-        // }  else { 
-        //     return true
-        // }
     }
+
+
 
 
     setTabs() {
@@ -244,6 +229,7 @@ export class SubPosicionComponent extends ListBaseComponent {
         if (this.listadoPosicionActul.length > 0) {
             if (indice >= 0) {
                 this.listadoPosicionActul.splice(indice, 1);
+                this.reEnumerarSubposiciones(this.listadoPosicionActul);
             } else {
                 this.listadoPosicionActul = [];
             }
@@ -254,6 +240,12 @@ export class SubPosicionComponent extends ListBaseComponent {
         if (this.listadoPosicionActul.length == 0) {
             this.nuevaPosicion(null);
             this.model.posicionActual.listadoSubPosiciones = this.listadoPosicionActul;
+        }
+    }
+
+    reEnumerarSubposiciones(listadoSubposiciones: Array<SubPosicionViewModel>) {
+        for (let i = 0; i < listadoSubposiciones.length; i++) {
+            listadoSubposiciones[i].subPosicion = i + 1;
         }
     }
 
@@ -282,7 +274,6 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
     onPaste(evento: any, indexColumna: number, rowIndex: number, dt): void {
-
         let datos = evento.clipboardData.getData("text");
         if (!datos.includes("Recuperando datos")) {
             this.spinnerComponent.showIt();
@@ -297,6 +288,7 @@ export class SubPosicionComponent extends ListBaseComponent {
             });
             this.calcularTotalSubPosicion();
             this.completarCodigosSapOnPaste();
+            this.completarServicioSolpOnPaste();
             this.endEditCell(dt);
         }
     }
@@ -335,12 +327,19 @@ export class SubPosicionComponent extends ListBaseComponent {
                     fila.unidadSeleccionada = seleccion;
                     break;
                 case "codigoSap":
-                    fila[columna.nombre] = { CodigoSap: columnas[index] }
+                    var codigoSap = columnas[index].trim();
+
+                    fila[columna.nombre] = { CodigoSap: codigoSap };
 
                     this.autocompletePaste.push({
-                        CodigoSap: columnas[index],
+                        CodigoSap: codigoSap,
                         Tabla: columna.tabla || this.tablaAFiltrar
                     });
+                    break;
+                case "codigoServicioSolp":
+                    fila[columna.nombre] = { CodigoSap: columnas[index] };
+
+                    this.autocompleteServiciosSolpPaste.push(columnas[index]);
                     break;
                 case "tarea":
                     fila[columna.nombre] = columnas[index];
@@ -389,12 +388,6 @@ export class SubPosicionComponent extends ListBaseComponent {
                     } else {
                         if (result) {
                             this.listadoPosicionActul.forEach(c => {
-                                if (c.codigoServicio && c.codigoServicio.CodigoSap && !c.codigoServicio.Codigo) {
-                                    c.codigoServicio = result.find(x => x.Tabla == 'CodigoServicioSap' && x.CodigoSap == c.codigoServicio.CodigoSap);
-                                    c.tareaSubcontratarObj = { ...c.codigoServicio };
-                                    c.tareaSubcontratar = c.codigoServicio.Descripcion;
-                                }
-
                                 if (c.cuentaMayor && c.cuentaMayor.CodigoSap && !c.cuentaMayor.Codigo) {
                                     c.cuentaMayor = result.find(x => x.Tabla == 'CuentasSolpSap' && x.CodigoSap == c.cuentaMayor.CodigoSap);
                                 }
@@ -403,6 +396,52 @@ export class SubPosicionComponent extends ListBaseComponent {
                                     c.tipoImputacion = result.find(x => x.Tabla == this.tablaAFiltrar && x.CodigoSap == c.tipoImputacion.CodigoSap);
                                 }
                             });
+                        }
+                    }
+
+                    this.spinnerComponent.hideIt();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.spinnerComponent.hideIt();
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+    
+    completarServicioSolpOnPaste() {
+        try {
+            this.subscription = this.service.obtenerDatosPorCodigosSapServicioSolp(this.autocompleteServiciosSolpPaste).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        if (result && result.length > 0) {
+                            this.listadoPosicionActul.forEach(c => {
+                            if (c.codigoServicio && c.codigoServicio.CodigoSap) {
+                                var datos = result.find(x => x.Codigo == c.codigoServicio.CodigoSap);
+                                if (datos) {
+                                    c.codigoServicio = datos;
+                                    c.tareaSubcontratar = c.codigoServicio.Descripcion;
+
+                                    var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == c.codigoServicio.UnidadMedidaBase);
+                                    if (unidadSeleccionadaAux) {
+                                        c.unidadSeleccionada = unidadSeleccionadaAux;
+                                        c.unidadMedida = unidadSeleccionadaAux.Descripcion;
+                                    }
+                                }
+                            }
+                           });
                         }
                     }
 
@@ -449,18 +488,53 @@ export class SubPosicionComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    onSelectServicio(posicion: SubPosicionViewModel, dt) {
+    autocompleteServicioSolp(event) {
+        try {
+            this.subscription = this.service.autocompleteServicioSolp(event.query.toLowerCase()).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.autocompleteServiciosSolp = result;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
 
-        console.log(posicion);
-        console.log(dt);
+        return false; //<-- Prevent Refresh
+    }
+
+    onSelectServicio(posicion: SubPosicionViewModel, dt) {
         posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
         posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
+
+        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == posicion.codigoServicio.UnidadMedidaBase);
+
+        if (unidadSeleccionadaAux) {
+            posicion.unidadSeleccionada = unidadSeleccionadaAux;
+            posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
+        }
+
         this.endEditCell(dt);
     }
 
     onSelectTarea(posicion: SubPosicionViewModel, dt) {
         posicion.tareaSubcontratar = posicion.tareaSubcontratarObj.Descripcion;
         posicion.codigoServicio = { ...posicion.tareaSubcontratarObj };
+
+        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == posicion.codigoServicio.UnidadMedidaBase);
+        posicion.unidadSeleccionada = unidadSeleccionadaAux;
+        posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
         this.endEditCell(dt);
     }
 

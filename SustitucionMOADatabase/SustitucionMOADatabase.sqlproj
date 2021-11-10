@@ -141,6 +141,9 @@
     <None Include="scripts\Insert SecuenciaIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\Insert Rol, PermisoPorRol y RolPermisoPorRol GestionCM05.sql" />
     <Build Include="DBO\Tables\OrdenDeCargaCambiosHistorial.sql" />
+    <Build Include="DBO\Tables\ServicioSolp.sql" />
+    <Build Include="DBO\Tables\UsuarioComprasRelacionConUsuarios.sql" />
+    <Build Include="DBO\Tables\UsuarioCompras.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -150,6 +153,7 @@
     <None Include="SustitucionMOADatabase.publish.xml" />
     <None Include="scripts\CargaInicialSolp.sql" />
     <None Include="scripts\Insert EstadoIngresosBrutosCoeficienteUnificado.sql" />
+    <None Include="scripts\Rol Admin plataforma compras.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

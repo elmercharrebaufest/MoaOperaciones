@@ -22,7 +22,7 @@ namespace SustitucionMOA.Jobs
         {
             try
             {
-                var response = ordebDeCargaService.verificarVencimientoOrdenDeCarga();
+                var response = ordebDeCargaService.VerificarVencimientoOrdenDeCarga();
             }
             catch (Exception e)
             {

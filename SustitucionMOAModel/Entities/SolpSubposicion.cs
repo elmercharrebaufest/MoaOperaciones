@@ -15,7 +15,7 @@ namespace SustitucionMOAModel.Entities
         public string Codigo { get; set; }
         public int SolpPosicion_Id { get; set; }
         public int Numero { get; set; }
-        public int? CodigoServicioSap_Id { get; set; }
+        public int? ServicioSolp_Id { get; set; }
         public string Tarea { get; set; }
         public int? CuentaMayor_Id { get; set; }
         public decimal? Cantidad { get; set; }
@@ -25,8 +25,8 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("SolpPosicion_Id")]
         public virtual SolpPosicion SolpPosicion { get; set; }
-        [ForeignKey("CodigoServicioSap_Id")]
-        public virtual TablaSap CodigoServicioSap { get; set; }
+        [ForeignKey("ServicioSolp_Id")]
+        public virtual ServicioSolp ServicioSolp { get; set; }
         [ForeignKey("Unidad_Id")]
         public virtual TablaSap Unidad { get; set; }
         [ForeignKey("TipoImputacion_Id")]

@@ -4,6 +4,7 @@ export class OrdenDeCarga {
     Id: number;
     CUITTercero: number;
     CUITCliente: number;
+    RazonSocialCliente: string;
     NombreChofer: string;
     ApellidoChofer: string;
     CUITChofer: number;
@@ -16,11 +17,17 @@ export class OrdenDeCarga {
     Observacion: string;
     Estado: EstadoOrdenDeCarga;
     ContratoSAP: string;
+    PedidoSAP: string;
     Corredor: string;
+    RazonSocialCorredor: string;
     TransporteExiste: boolean;
     ContratoIngresado: string;
     NumeroPedidoIngresado: string;
+    NumeroPedido: string;
+    PedidosRespuesta: string;
     MensajeValidacionSAP: string;
+    ContratoSinCantidadPendiente: boolean;
+    DescripcionErrorInterno: string;
 
     constructor() {
     }

@@ -23,7 +23,6 @@ export class StepperComponent {
 
     @Input() 
     set paso(value: Paso) {
-    
         this.activeStep = value;
         this.activeIndex = value.Numero - 1;
         this.change.emit(value)
@@ -74,7 +73,6 @@ export class StepperComponent {
         var step = this.pasos[index];
         this.activeIndex = index;
         this.paso = step;
-
         this.change.emit(step)
     }
 }

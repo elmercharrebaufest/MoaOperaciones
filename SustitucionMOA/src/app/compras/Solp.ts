@@ -44,10 +44,11 @@ export class Solp extends CommonResponse {
     public visitaDeObraMasiva: boolean;
     public observacionesGeneracion: string = "";
     public listaVisitas: any;
+    public usuarioComprasId: number;
 
     //paso 3
     public especificacionesViewModel: EspecificacionesViewModel = new EspecificacionesViewModel();
-    public tieneCondicionesGenerales: boolean;
+    public tieneCondicionesGenerales: boolean = false;
 
     // paso 4
 

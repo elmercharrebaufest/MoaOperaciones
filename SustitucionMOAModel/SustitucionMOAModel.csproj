@@ -71,6 +71,7 @@
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaDto.cs" />
     <Compile Include="Dto\LogPesificacion\LogPesificacionDto.cs" />
     <Compile Include="Dto\PesificacionSapDto.cs" />
+    <Compile Include="Dto\ServicioSolpDto.cs" />
     <Compile Include="Dto\SolpDto.cs" />
     <Compile Include="Dto\SubCategoriaDto.cs" />
     <Compile Include="Dto\CategoriaDto.cs" />
@@ -87,6 +88,8 @@
     <Compile Include="Dto\TablaEstadoDto.cs" />
     <Compile Include="Dto\TablaGeneralDto.cs" />
     <Compile Include="Dto\TablaSapDto.cs" />
+    <Compile Include="Dto\UsuarioComprasDto.cs" />
+    <Compile Include="Dto\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Entities\Categoria.cs" />
     <Compile Include="Entities\CausaConsulta.cs" />
     <Compile Include="Entities\CentroDireccion.cs" />
@@ -116,6 +119,9 @@
     <Compile Include="Entities\PliegoVisita.cs" />
     <Compile Include="Entities\Rubro.cs" />
     <Compile Include="Entities\SecuenciaIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Entities\ServicioSolp.cs" />
+    <Compile Include="Entities\UsuarioCompras.cs" />
+    <Compile Include="Entities\UsuarioComprasRelacionConUsuarios.cs" />
     <Compile Include="Enums\EstadoOrdenDeCarga.cs" />
     <Compile Include="Entities\Solp.cs" />
     <Compile Include="Entities\SolpPosicion.cs" />

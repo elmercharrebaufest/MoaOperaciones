@@ -38,15 +38,22 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     contratos: string[] = [];
     contratoSeleccionado: string;
 
+    pedidos: string[] = [];
+    pedidoSeleccionado: string;
+
     corredorContratoList: CorredorContrato[] = [];
     corredorContratoSeleccionado: CorredorContrato;
 
     mostrarBotonContratos: boolean = false;
+    mostrarBotonPedidos: boolean = false;
     mostrarBotonCorredores: boolean = false;
     mostrarBotonNotificarTransporte: boolean = false;
     mostrarBotonVerificarTransporte: boolean = false;
     mostrarBotonVerificarSituacionCrediticia: boolean = false;
     mostrarBotonAnular: boolean = false;
+    mostrarBotonForzarCreacionPedido: boolean = false;
+    mostrarBotonEditar: boolean = false;
+
 
     // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -84,22 +91,37 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return;
         }
 
+        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Entregada) {
+            return;
+        }
+
         if (this.esInterno) {
+            if (this.ordenDeCarga.NumeroPedido === "-" && this.ordenDeCarga.PedidosRespuesta != "-") {
+                this.mostrarBotonPedidos = true
+            }
+
             if (this.ordenDeCarga.ContratoSAP === "-") {
                 this.mostrarBotonContratos = true;
+                this.mostrarBotonPedidos = false;
             }
 
             if (!this.ordenDeCarga.TransporteExiste) {
                 this.mostrarBotonNotificarTransporte = true;
                 this.mostrarBotonVerificarTransporte = true;
+                this.mostrarBotonAnular = true;
             }
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
                 this.mostrarBotonVerificarSituacionCrediticia = true;
+                this.mostrarBotonAnular = true;
             }
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
                 this.mostrarBotonAnular = true;
+            }
+
+            if (this.ordenDeCarga.ContratoSinCantidadPendiente) {
+                this.mostrarBotonForzarCreacionPedido = true;
             }
         }
     }
@@ -115,7 +137,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else {
                         this.ordenDeCarga = result.data;
                         this.verificarBotones()
-                        if(this.ordenDeCarga.MensajeValidacionSAP != ""){
+                        if (this.ordenDeCarga.MensajeValidacionSAP != "") {
                             this.mensajeComponent.setInfoMsg(this.ordenDeCarga.MensajeValidacionSAP)
                         }
                     }
@@ -254,7 +276,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
-        console.log(this.contratoSeleccionado);
         try {
             this.subscriptionDropDowns = this.service.seleccionarContrato(this.ordenDeCargaId, this.contratoSeleccionado).subscribe(
                 result => {
@@ -316,6 +337,67 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         document.getElementById("openAnularOrden").click();
     }
 
+    abrirModalPedidos() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+
+        try {
+            this.subscriptionDropDowns = this.service.obtenerPedidos(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.pedidos = result.data;
+                        document.getElementById("openSeleccionarPedido").click();
+
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    seleccionarPedido() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscriptionDropDowns = this.service.seleccionarPedido(this.ordenDeCargaId, this.pedidoSeleccionado).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.ordenDeCarga.NumeroPedido = this.pedidoSeleccionado;
+                        this.mostrarBotonPedidos = false;
+                        document.getElementById("closemodalSeleccionarPedido").click();
+                        this.obtenerOrdenDeCarga();
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
     anularOrden() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -350,5 +432,38 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     editarOrden() {
         this.goToSeccion('/ordenes-de-carga/alta/' + this.ordenDeCarga.Id);
+    }
+
+
+    abrirModalForzarCreacion() {
+        document.getElementById("openForzarCreacion").click();
+    }
+
+    forzarCreacionPedido() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscription = this.service.forzarCreacionOrden(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        document.getElementById("closemodalForzarCreacion").click();
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
     }
 }

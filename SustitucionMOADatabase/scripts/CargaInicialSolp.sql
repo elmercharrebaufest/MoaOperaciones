@@ -50,6 +50,24 @@ BEGIN
 	VALUES('EstadoSolpSap', 'FINALIZADA', 'FINALIZADA', 'Finalizada', null)
 END
 
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'EstadoSolpSap' and Codigo = 'LIBERACION_RECHAZADA')
+BEGIN
+	INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id)
+	VALUES('EstadoSolpSap', 'LIBERACION_RECHAZADA', '08', 'Liberación rechazada', null)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'EstadoSolpSap' and Codigo = 'AUTORIZACION_EXTERNA')
+BEGIN
+	INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id)
+	VALUES('EstadoSolpSap', 'AUTORIZACION_EXTERNA', '12', 'En autorización externa', null)
+END
+
+update TablaSap set CodigoSap='01', Descripcion='Version en tratamiento' where Codigo='CREADA';
+update TablaSap set CodigoSap='02', Descripcion='Activa' where Codigo='LIBERADA';
+update TablaSap set CodigoSap='03', Descripcion='En proceso de liberación' where Codigo='PARC_LIBERADA';
+update TablaSap set CodigoSap='04', Descripcion='Para liberación general' where Codigo='RELAC_PEDIDO_COMPRA';
+update TablaSap set CodigoSap='05', Descripcion='Liberación concluida' where Codigo='FINALIZADA';
+
 -- Tabla TipoFiltroSolpProveedor
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoFiltroSolpProveedor' and Codigo = 'VALIDO')
@@ -911,7 +929,6 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'Almacen' and Codi
 
 -- Grupo Articulo
 
-IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'GrupoArticulo' and Codigo = '') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('GrupoArticulo', '', '', 'Flexibles Termo', null) END
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'GrupoArticulo' and Codigo = '001011') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('GrupoArticulo', '001011', '001011', 'Carne', null) END
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'GrupoArticulo' and Codigo = '001021') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('GrupoArticulo', '001021', '001021', 'Huevo', null) END
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'GrupoArticulo' and Codigo = '001031') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('GrupoArticulo', '001031', '001031', 'Pollo', null) END
@@ -3035,6 +3052,59 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'PY01') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'PY01', 'PY01', 'PROYECTO KECLON', null) END
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'SB15') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'SB15', 'SB15', 'PUERTO SAN BENITO', null) END
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'CentroBeneficio' and Codigo = 'SB32') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('CentroBeneficio', 'SB32', 'SB32', 'SAN BENITO MRP', null) END
+
+
+-- Tabla UsuarioCompras
+
+-- Tabla estadoSap
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.UsuarioCompras WHERE Mail = 'damian.calvet@molinosagro.com.ar')
+BEGIN
+	insert into UsuarioCompras(Mail,Nombres,Habilitado,PorDefecto)
+	values('damian.calvet@molinosagro.com.ar','Calvet Damial',1,1);
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.UsuarioCompras WHERE Mail = 'franco.Fracchioni@molinosagro.com.ar')
+BEGIN
+	insert into UsuarioCompras(Mail,Nombres,Habilitado,PorDefecto)
+	values('franco.Fracchioni@molinosagro.com.ar','Franco Francchioni',1,1);
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.UsuarioCompras WHERE Mail = 'rodrigoezequiel.lombardo@molinosagro.com.ar')
+BEGIN
+	insert into UsuarioCompras(Mail,Nombres,Habilitado,PorDefecto)
+	values('rodrigoezequiel.lombardo@molinosagro.com.ar','Lombardo Rodrigo',1,1);
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.UsuarioCompras WHERE Mail = 'carolina.dmanuele@molinosagro.com.ar')
+BEGIN
+	insert into UsuarioCompras(Mail,Nombres,Habilitado,PorDefecto)
+	values('carolina.dmanuele@molinosagro.com.ar','De Manuele Carolina',1,1);
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.UsuarioCompras WHERE Mail = 'lucia.polito@molinosagro.com.ar')
+BEGIN
+	insert into UsuarioCompras(Mail,Nombres,Habilitado,PorDefecto)
+	values('lucia.polito@molinosagro.com.ar','Polito Lucia',1,1);
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.UsuarioCompras WHERE Mail = 'marcelo.mazzola@molinosagro.com.ar')
+BEGIN
+	insert into UsuarioCompras(Mail,Nombres,Habilitado,PorDefecto)
+	values('marcelo.mazzola@molinosagro.com.ar','Mazzola Marcelo',1,1);
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM UsuarioComprasRelacionConUsuarios)
+BEGIN
+declare @valor as int =1;
+while @valor<7
+begin
+insert into UsuarioComprasRelacionConUsuarios(Usuario_Id,UsuarioCompras_Id)
+select id,@valor from Usuario;
+set @valor=@valor+1;
+end
+END
+
 
 
 COMMIT TRAN

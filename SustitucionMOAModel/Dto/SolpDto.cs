@@ -55,6 +55,7 @@ namespace SustitucionMOAModel.Dto
         public string EstadoPasos { get; set; }
         public bool CargaCotizacionesConArchivo { get; set; }
         public string RevisadoPor { get; set; }
+        public UsuarioComprasDto UsuarioCompras { get; set; }
 
         public SolpDto() {}
         public SolpDto(Solp entity) 
@@ -98,7 +99,7 @@ namespace SustitucionMOAModel.Dto
             this.PasoCompletado = entity.PasoCompletado;
             this.EstadoPasos = entity.EstadoPasos;
             this.RevisadoPor = entity.Pliego.RevisadoPor;
-
+            this.UsuarioCompras = new UsuarioComprasDto(entity.UsuarioCompras);
 
         }
     }
@@ -239,7 +240,7 @@ namespace SustitucionMOAModel.Dto
         public decimal? PrecioBruto { get; set; }
         public TablaSapDto TipoImputacionValor { get; set; }
 
-        public TablaSapDto CodigoServicioSap { get; set; }
+        public ServicioSolpDto CodigoServicioSap { get; set; }
         public TablaSapDto Unidad { get; set; }
 
         public SolpSubposicionDto() { }
@@ -250,15 +251,14 @@ namespace SustitucionMOAModel.Dto
             {
                 this.Codigo = entity.Codigo;
                 this.Numero = entity.Numero;
-                this.CodigoServicioSap = new TablaSapDto(entity.CodigoServicioSap);
+                this.CodigoServicioSap = entity.ServicioSolp != null ? new ServicioSolpDto(entity.ServicioSolp) : null;
                 this.Tarea = entity.Tarea;
-                this.CuentaMayor = new TablaSapDto(entity.CuentaMayorSap);
+                this.CuentaMayor = entity.CuentaMayorSap != null ? new TablaSapDto(entity.CuentaMayorSap) : null;
                 this.Cantidad = entity.Cantidad;
                 this.UnidadId = entity.Unidad_Id;
                 this.PrecioBruto = entity.PrecioBruto;
-                this.TipoImputacionValor = new TablaSapDto(entity.TipoImputacionSap); //se corregira luego el campo en base
-                this.CodigoServicioSap = new TablaSapDto(entity.CodigoServicioSap);
-                this.Unidad = new TablaSapDto(entity.Unidad);
+                this.TipoImputacionValor = entity.TipoImputacionSap != null ? new TablaSapDto(entity.TipoImputacionSap) : null; //se corregira luego el campo en base
+                this.Unidad = entity.Unidad != null ? new TablaSapDto(entity.Unidad) : null;
             }
         }
     }

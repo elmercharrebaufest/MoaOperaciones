@@ -53,6 +53,7 @@ namespace SustitucionMOAUtils.Services
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
+
         public ComprasService(IRepositorio repositorio, IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
             IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA, IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA, IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA,
             IObtenerSolpConsumerMOA obtenerSolpConsumerMOA, ICrearSolpConsumerMOA crearSolpConsumerMOA, IModificarSolpConsumerMOA modificarSolpConsumerMOA)
@@ -132,6 +133,11 @@ namespace SustitucionMOAUtils.Services
                 if (solp.TipoSolp != null)
                     solpEntity.TipoSolp = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoSolp && x.Codigo == solp.TipoSolp.Codigo);
                 solpEntity.PasoCompletado = solp.PasoCompletado;
+                //solpEntity.UsuarioCompras = new UsuarioCompras
+                //{
+                //    Id = solp.UsuarioCompras.Id
+                //};
+                solpEntity.UsuarioCompras_Id = solp.UsuarioCompras.Id; 
                 solpEntity.EstadoPasos = solp.EstadoPasos;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
@@ -156,8 +162,8 @@ namespace SustitucionMOAUtils.Services
 
                 pliegoEntity.DiasEjecucion = solp.DiasEjecucion;
                 pliegoEntity.JornadaLaboralDias = solp.JornadaLaboral != null ? string.Join(",", solp.JornadaLaboral.Select(x => (int)x)) : string.Empty;
-                pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde;
-                pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta;
+                pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
+                pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
                 pliegoEntity.ObservacionesCotizacion = solp.ObservacionesCotizacion;
 
                 pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
@@ -323,7 +329,7 @@ namespace SustitucionMOAUtils.Services
                                     subposEntity.Unidad = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Unidad && x.Codigo == subpos.Unidad.Codigo);
 
                                 if (subpos.CodigoServicioSap != null)
-                                    subposEntity.CodigoServicioSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CodigoServicioSap && x.Codigo == subpos.CodigoServicioSap.Codigo);
+                                    subposEntity.ServicioSolp = repositorio.Obtener<ServicioSolp>(x => x.CodigoSap == subpos.CodigoServicioSap.Codigo);
 
 
                                 posEntity.Subposiciones.Add(subposEntity);
@@ -549,7 +555,12 @@ namespace SustitucionMOAUtils.Services
 
         public List<SolpDto> ListarSolp(UsuarioDto usuarioActual)
         {
-            var todasLasSolp = repositorio.Listar<Solp>(x => x.FechaBorrado == null && x.UsuarioCreacion_Id == usuarioActual.Id)
+            Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null && x.UsuarioCreacion_Id == usuarioActual.Id;
+
+            if (usuarioActual.Permisos.Contains("VER TODAS SOLPS"))
+                filtro = (x => x.FechaBorrado == null);
+
+            var todasLasSolp = repositorio.Listar(filtro)
                 .Select(x => new SolpDto
                 {
                     UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
@@ -564,11 +575,9 @@ namespace SustitucionMOAUtils.Services
                     VincularPliego = !x.Pliego_Id.HasValue,
                     TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
                     RevisadoPor = x.Pliego?.RevisadoPor
-                });
+                }).OrderByDescending(i => i.FechaCreacion);
 
             return todasLasSolp.ToList();
-
-
         }
 
         public SolpDto TraerSolpId(int idSolp)
@@ -602,6 +611,7 @@ namespace SustitucionMOAUtils.Services
                 EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
                 TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                 VincularPliego = !x.Pliego_Id.HasValue,
+                UsuarioCompras = x.UsuarioCompras != null ? new UsuarioComprasDto(x.UsuarioCompras) : new UsuarioComprasDto(),
 
 
                 NombreDeObra = x.Pliego.NombreObra,
@@ -685,8 +695,10 @@ namespace SustitucionMOAUtils.Services
         {
             var solp = TraerSolpId(idSolp);
 
+            var usuarioCompras = ListarUsuarioCompras(solp.UsuarioActual);
+
             var templateFilePath = solp.TieneCondicionesGenerales ?? true ? Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html") :
-               Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpSinCondicionesTemplate.html");
+               Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/NewPliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
             //, "Templates/PliegoSolpSinCondicionesTemplate.html"
 
@@ -696,7 +708,6 @@ namespace SustitucionMOAUtils.Services
 
             var solpValores = new Dictionary<string, string>();
 
-
             //aca va la asignacion de valores de la solp que se van a reemplazar en el documento
             solpValores.Add(SolpTemplateKeys.FECHA_LIBERACION, ""); //crear campo fecha de liberacion en tabla
             solpValores.Add(SolpTemplateKeys.NOMBRE_OBRA, solp.NombreDeObra);
@@ -705,9 +716,11 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.TELEFONO, solp.Telefono);
 
             solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
-            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioActual.Mail);
+            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioCompras.Mail == null ? usuarioCompras.Any() ? usuarioCompras[0].UsuarioCompras.Mail : String.Empty : solp.UsuarioCompras.Mail);
 
             solpValores.Add(SolpTemplateKeys.REVISADO_POR, solp.RevisadoPor);
+
+            //solpValores.Add(SolpTemplateKeys.PAGINAS, PageEventHandler.p);
 
             //ESPECIFICACION TECNICA DE TAREAS
             if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
@@ -745,7 +758,7 @@ namespace SustitucionMOAUtils.Services
 
                 var diasJornada = string.Empty;
 
-                if (tieneHuecos || diasOrdenado.Count == 1)
+                if (tieneHuecos || diasOrdenado.Count() == 1)
                 {
                     diasJornada = string.Join(",", diasOrdenado.Select(a => getDia(a)).ToList());
                 }
@@ -781,15 +794,26 @@ namespace SustitucionMOAUtils.Services
 
             StringBuilder texto = new StringBuilder();
 
+            string plazoEntrega = "{0}";
+
+            StringBuilder plazo = new StringBuilder();
+
+
             solp.Posiciones.ForEach(pos =>
             {
                 texto = new StringBuilder();
+
+                plazo = new StringBuilder();
+
+                plazo.AppendLine(string.Format(plazoEntrega,
+                    pos.PlazoEntrega));
+
 
                 pos.Subposiciones.ForEach(subpos =>
                 {
                     texto.AppendLine(string.Format(templateSubposiciones,
                         subpos.Numero,
-                        subpos.CodigoServicioSap?.CodigoSap,
+                        subpos.CodigoServicioSap?.Codigo,
                         subpos.Tarea,
                         subpos.Cantidad,
                         subpos.Unidad?.Descripcion
@@ -797,10 +821,12 @@ namespace SustitucionMOAUtils.Services
 
                 });
 
-                subposiciones.AppendLine($"<tr><th class='posicion' colspan='6'> # {pos.TextoGenerico}</th></tr>{texto}<tr><td colspan='6'>&nbsp;</td></tr>");
+                subposiciones.AppendLine($"<tr><th class='posicion' colspan='6'> {pos.Indice} - {pos.TextoGenerico}</th></tr>{texto}<tr><td colspan='6'>&nbsp;</td></tr>");
             });
 
             solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, subposiciones.ToString());
+            solpValores.Add(SolpTemplateKeys.PLAZO_ENTREGA, plazo.ToString());
+
 
 
 
@@ -811,7 +837,7 @@ namespace SustitucionMOAUtils.Services
 
             templateString = CombineTemplateValues(templateString, solpValores);
 
-            return ConvertHtmlToPdf(templateString, templateCssString, solp.RevisadoPor);
+            return ConvertHtmlToPdf(templateString, templateCssString, solp); //agregar solp
         }
 
         private string getDia(DayOfWeek dia)
@@ -849,12 +875,14 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        private byte[] ConvertHtmlToPdf(string xHtml, string css, string revisadoPor = "")
+        private byte[] ConvertHtmlToPdf(string xHtml, string css, SolpDto solp)
         {
             using (var stream = new MemoryStream())
             {
-                using (var document = new Document(PageSize.A4, 70f, 70f, 60f, 60f))
+                using (var document = new Document(PageSize.A4, 70f, 70f, 150f, 60f))
                 {
+                    //var solp = repositorio.Obtener<Solp>(idSolp);
+
                     var PdfWriter = iTextSharp.text.pdf.PdfWriter.GetInstance(document, stream);
                     document.Open();
 
@@ -862,36 +890,67 @@ namespace SustitucionMOAUtils.Services
                     image.SetAbsolutePosition(180, 700);
                     PdfWriter.DirectContent.AddImage(image, false);
 
+                    //PdfPTable table = new PdfPTable(2);
+
+                    
+
+                    // Our custom Header and Footer is done using Event Handler
                     TwoColumnHeaderFooter PageEventHandler = new TwoColumnHeaderFooter();
                     PdfWriter.PageEvent = PageEventHandler;
 
+                    //define el header
+                    //PageEventHandler.Title = "Revisado por: " + revisadoPor.
 
+                    //string encabezado = "Revisado por: " + revisadoPor;
 
-                    PageEventHandler.Title = "Revisado por: " + revisadoPor;
-                    PageEventHandler.HeaderFont = FontFactory.GetFont(BaseFont.COURIER_BOLD, 10, Font.BOLD);
-                    //PageEventHandler.HeaderLeft = "Group";
-                    //PageEventHandler.HeaderRight = "1";
+                    var tablaHeader = new PdfPTable(2);
 
-                    //for (int i = 1; i <= 2; i++)
-                    //{
-                    //     //Define the page header
-                    //    PageEventHandler.HeaderLeft = i.ToString();
-                    //    if (i != 1)
-                    //    {
-                    //        document.NewPage();
-                    //    }
+                    tablaHeader.TotalWidth = document.PageSize.Width - document.LeftMargin - document.RightMargin;
 
-                    //    // New outline must be created after the page is added
-                    //    //AddOutline(PdfWriter, "Group " + i.ToString(), document.PageSize.Height);
+                    PdfPCell obra = new PdfPCell();
 
-                    //}
+                    obra.AddElement(new Paragraph($"Nombre obra: {solp.NombreDeObra}"));
+                    tablaHeader.AddCell(obra);
 
+                    var imagen = Image.GetInstance(@"https://b2cmoagro.blob.core.windows.net/moaoperaciones/logo.png");
+
+                    //2284 x 1059
+                    imagen.ScaleAbsolute(80f, 40f);
+                    PdfPCell cellImagen = new PdfPCell(imagen);
+
+                    cellImagen.FixedHeight = 50f;
+                    cellImagen.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    cellImagen.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tablaHeader.AddCell(cellImagen);
+
+                    PdfPCell nombres = new PdfPCell();
+
+                    nombres.AddElement(new Paragraph($"Redactó: {solp.FiscalContrato}"));
+                    nombres.AddElement(new Paragraph($"Aprobó: {solp.RevisadoPor}"));
+
+                    tablaHeader.AddCell(nombres);
+
+                    PdfPCell numeros = new PdfPCell();
+
+                    numeros.AddElement(new Paragraph($"Fecha: {solp.FechaCreacion.ToString("dd/MM/yyyy")}"));
+
+                    numeros.FixedHeight = 50f;
+
+                    tablaHeader.AddCell(numeros);
+
+                    PageEventHandler.HeaderWidths = new float[] { 3f, 1f };
+
+                    PageEventHandler.Header = tablaHeader;
+
+                    //PageEventHandler.Header.SetWidthPercentage(new float[] { 10, 10 }, document.PageSize);
+                    //PageEventHandler.Header.WriteSelectedRows(0, -1, document.LeftMargin, document.PageSize.Height - 36, writer.DirectContent);
+
+                    //PageEventHandler.Title = document.Add(table).ToString();
+                    //PageEventHandler.HeaderFont = FontFactory.GetFont(BaseFont.COURIER_BOLD, 10, Font.BOLD);
+                   
                     // instantiate custom tag processor and add to `HtmlPipelineContext`.
                     var tagProcessorFactory = Tags.GetHtmlTagProcessorFactory();
-                    //tagProcessorFactory.AddProcessor(
-                    //    new TableDataProcessor(),
-                    //    new string[] { HTML.Tag.TD }
-                    //);
+                  
                     var htmlPipelineContext = new HtmlPipelineContext(null);
                     htmlPipelineContext.SetTagFactory(tagProcessorFactory);
 
@@ -1039,15 +1098,24 @@ namespace SustitucionMOAUtils.Services
         public List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor)
         {
             var lista = repositorio.Listar<TablaSap>(x => x.Tabla == tabla)
-                .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToLower().Contains(valor.ToLower()))
-                .Select(s => new TablaSapDto
-                {
-                    Id = s.Id,
-                    Descripcion = s.Descripcion,
-                    CodigoSap = s.CodigoSap,
-                    Codigo = s.Codigo,
-                    Tabla = s.Tabla
-                }).ToList();
+            .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToLower().Contains(valor.ToLower()))
+            .Select(s => new TablaSapDto
+            {
+                Id = s.Id,
+                Descripcion = s.Descripcion,
+                CodigoSap = s.CodigoSap,
+                Codigo = s.Codigo,
+                Tabla = s.Tabla
+            }).ToList();
+
+            return lista;
+        }
+
+        public List<ServicioSolpDto> AutocompleteServicioSolp(string valor)
+        {
+            List<ServicioSolpDto> lista = repositorio.Listar<ServicioSolp>()
+                .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToString().ToLower().Contains(valor.ToLower()))
+                .Select(s => new ServicioSolpDto(s)).ToList();
 
             return lista;
         }
@@ -1123,6 +1191,15 @@ namespace SustitucionMOAUtils.Services
             return ret;
         }
 
+        public List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos)
+        {
+            var result = repositorio
+                .Listar<ServicioSolp>(x => codigos.Contains(x.CodigoSap.ToString()))
+                .Select(x => new ServicioSolpDto(x)).ToList();
+
+            return result;
+        }
+
         public void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion)
         {
             var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nrosolp);
@@ -1132,6 +1209,38 @@ namespace SustitucionMOAUtils.Services
                 solp.FechaLiberacionSap = fechaLiberacion;
                 repositorio.GuardarCambios();
             }
+        }
+
+        public void ActualizarServiciosSolp()
+        {
+            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
+            if (resultSap.Servicios.Any())
+            {
+                var listaBase = repositorio.Listar<ServicioSolp>();
+
+                foreach (var servicio in resultSap.Servicios)
+                {
+                    int codigoNum = 0;
+                    if (Int32.TryParse(servicio.Codigo, out codigoNum) &&
+                        !listaBase.Any(x => x.CodigoSap == codigoNum && x.Descripcion == servicio.Descripcion))
+                    {
+                        repositorio.Agregar(new ServicioSolp
+                        {
+                            Codigo = servicio.Codigo,
+                            CodigoSap = codigoNum,
+                            Descripcion = servicio.Descripcion,
+                            GrupoArticulos = Int32.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null,
+                            TipoServicio = servicio.Serv,
+                            AmbitoServicio = servicio.Ser,
+                            Edicion = Int32.TryParse(servicio.Edit, out int edicion) ? edicion : 0,
+                            UnidadMedidaBase = servicio.Bas,
+                            SSCItem = servicio.SSCItem
+                        });
+                    }
+                }
+            }
+
+            repositorio.GuardarCambios();
         }
 
         public void ActualizarEstadoSolpBulk()
@@ -1175,6 +1284,19 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
             }
         }
+
+        public List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual)
+        {
+            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id)
+                .Select(x => new UsuarioComprasRelacionConUsuariosDto
+                {
+                    Usuario = new UsuarioDto(x.Usuario),
+                    Id = x.Id,
+                    UsuarioCompras = new UsuarioComprasDto(x.UsuarioCompras)
+                });
+
+            return usuariosCompras.ToList();
+        }
     }
 
     public static class SolpTemplateKeys
@@ -1200,5 +1322,8 @@ namespace SustitucionMOAUtils.Services
         public const string TEXTO_GENERICO = "TEXTO_GENERICO";
 
         public const string REVISADO_POR = "REVISADO_POR";
+
+        public const string PLAZO_ENTREGA = "PLAZO_ENTREGA";
+        public const string PAGINAS = "PAGINAS";
     }
 }

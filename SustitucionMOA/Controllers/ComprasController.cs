@@ -42,7 +42,7 @@ namespace SustitucionMOA.Controllers
                 {
                     result.Solp.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Solp.Id.Value));
                 }
-                catch
+                catch(Exception e)
                 {
                     result.Solp.Pdf = string.Empty;
                 }
@@ -143,6 +143,33 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(new { data = service.ListarSolp(ObtenerUsuarioActual()) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ListarUsuarioCompras()
+        {
+            try
+            {
+                return JsonCustom(new { data = service.ListarUsuarioCompras(ObtenerUsuarioActual()) });
             }
             catch (InfoCustomException e)
             {
@@ -328,6 +355,52 @@ namespace SustitucionMOA.Controllers
                 var codigos = JsonConvert.DeserializeObject<List<TablaSapDto>>(codigosSap);
 
                 return JsonCustom(service.ObtenerDatosPorCodigosSap(codigos));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult AutocompleteServicioSolp(string valor)
+        {
+            try
+            {
+                return JsonCustom(service.AutocompleteServicioSolp(valor));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [ValidateInput(false)]
+        public JsonResult ObtenerDatosPorCodigosSapServicioSolp(string codigosSap)
+        {
+            try
+            {
+                var codigos = JsonConvert.DeserializeObject<List<string>>(codigosSap);
+
+                return JsonCustom(service.ObtenerDatosPorCodigosSapServicioSolp(codigos));
             }
             catch (InfoCustomException e)
             {

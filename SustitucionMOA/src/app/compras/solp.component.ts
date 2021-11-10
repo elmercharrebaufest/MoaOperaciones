@@ -28,6 +28,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { DialogModule } from 'primeng/dialog';
 import { FormGroup } from '@angular/forms';
 import { AdjuntosCotizaciones } from './PliegoPasos/adjuntos-Cotizaciones';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
     selector: 'app-solp',
@@ -100,6 +101,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     disabledSave = false;
 
     listadoErrores: string[] = new Array<string>();
+    displaySAPEditar: boolean;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -165,10 +167,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Numero: 6
     }];
 
+    selectUsuarioCompras: any;
+    usuarioComprasList: any[] = [];
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         private messageService: MessageService, private route: ActivatedRoute, private confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
-
     }
 
     ngOnInit() {
@@ -230,7 +234,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.listaVisitas = [
                 {
                     id: uuid.v4(),
-                    visitaDeObraFecha: this.solpActual.fechaEntrega,
+                    visitaDeObraFecha: new Date(),
                     visitaDeObraHora: new Date(1, 1, 1, 10, 0, 0, 0)
                 }];
 
@@ -258,9 +262,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     this.traerSolpId(this.solpId);
                 }
             }
-
-
-
         }
     }
 
@@ -329,6 +330,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.modoElevacion = solp.TieneMedioElevacion;
         this.solpActual.andamio = solp.TieneAndamio;
         this.solpActual.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
+        this.solpActual.usuarioComprasId = solp.UsuarioCompras.Id || 0;
         this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;
         this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;
         this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
@@ -425,7 +427,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                         subpos.id = sp.Codigo;
                         subpos.codigoServicio = sp.CodigoServicioSap;
-                        subpos.tareaSubcontratarObj = sp.CodigoServicioSap;
+                        subpos.tareaSubcontratarObj = { Descripcion: sp.Tarea };
                         subpos.tareaSubcontratar = sp.Tarea;
                         subpos.cuentaMayor = sp.CuentaMayor;
                         subpos.cuentaTd = sp.Cantidad;
@@ -461,19 +463,23 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.cambioPaso(this.pasos[0]);
     }
 
-    validatePasos(){
+    validatePasos(): any{
         let estadosPasos = this.solpActual.estadoPasos.split(',');
-        this.pasos.forEach((p, i) => {
-            estadosPasos[p.Numero -1] = !p.Iniciado ? '0' : p.Completo ? '2' : '1';      
-        });
-
         this.solpActual.estadoPasos = '';
 
-        estadosPasos.forEach(x=> {
-            this.solpActual.estadoPasos += `${x},` ;
+        this.pasos.forEach((p, i) => {
+            estadosPasos[p.Numero -1] = !p.Iniciado ? '0' : p.Completo ? '2' : '1';      
+            this.solpActual.estadoPasos += `${estadosPasos[p.Numero - 1]},`;
+
         });
 
+
         this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
+
+        return {
+            completo: estadosPasos.every(x => x === '2'),
+            primerPasoIncompleto: 1 + estadosPasos.findIndex(x => x != '2')
+        }
     }
 
     cambioPaso(paso) {
@@ -491,18 +497,23 @@ export class SolpComponent extends BaseComponent implements OnInit {
         });
 
         this.solpActual.estadoPasos = '';
+       
 
         estadosPasos.forEach(x=> {
             this.solpActual.estadoPasos += `${x},` ;
         });
 
         this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
-
-        this.pasoActual = paso;
+    
+        this.pasoActual = paso; //aca esta el error
 
         this.solpActual.pasoCompletado = this.solpActual.pasoCompletado > this.pasoActual.Numero 
         ? this.solpActual.pasoCompletado
         : this.pasoActual.Numero;
+       
+        this.actualizarPasoCompleto(this.pasoActual);
+       
+        // this.guardarCambios(false, false, true);
     }
 
     pasoAnterior() {
@@ -536,15 +547,31 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     guardarCambios(mostrarPreview = false, enviarSap = false, guardarPorPaso = false) {
+        this.messageService.clear();
         try {
+            this.actualizarPasoCompleto(this.pasoActual);
+
             this.disabledSave = true;
             if (guardarPorPaso == false) {
                 this.blockUI.start('Guardando...');
             }
 
-            this.validatePasos();
+            let validatePasos = this.validatePasos();
+
+            if(enviarSap) {
+                if (!validatePasos.completo) {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campos en el paso #${validatePasos.primerPasoIncompleto}` });
+
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                    this.disabledSave = false;
+                    return;
+                }
+            }
 
             this.solpActual.Finalizar = enviarSap;
+            this.solpActual.usuarioComprasId = this.selectUsuarioCompras.Id;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
@@ -553,12 +580,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                     } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo guardar la solp', detail: result.error });
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
                     } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
+                        this.messageService.add({ severity: 'info', summary: 'No se pudo guardar la solp', detail: result.info });
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
@@ -614,19 +641,22 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 this.displayErrorSAP = true;
                             }
 
+                            if (this.solpActual.nroSolp) {
+                                this.displaySAPEditar = true;
+                            }
+
+                            
                             // if (result.Solp.NroSolp) {
                             //     this.finalizarOk = true;
                             // } else {
                             //     this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar la SOLP en SAP, intente de nuevo mas tarde o comuniquese con el administrador' });
                             // }
                         }
-
-
                     }
                     this.disabledSave = false;
                 },
                 error => {
-                    this.floatMsgService.setErrorMsg(error.message);
+                    this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la solp', detail: error.message });
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
@@ -635,7 +665,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             );
         } catch (e) {
             this.disabledSave = false;
-            this.floatMsgService.setErrorMsg(e);
+            this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la solp', detail: e });
             if (guardarPorPaso == false) {
                 this.blockUI.stop();
             }
@@ -644,68 +674,118 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     actualizarPasoCompleto(paso: Paso) {
-        if (paso) {
+        if(paso){
             switch (paso.Codigo) {
                 case EnumPasoSolp.PliegoGeneracion1:
-                    paso.Completo = this.listaStringCompleta([
+                    paso.Completo = true;
+
+                    if(!this.listaStringCompleta([
                         this.solpActual.nombreDePedido,
                         this.solpActual.fiscalContrato,
                         this.solpActual.mail,
                         this.solpActual.fechaEntrega,
                         this.solpActual.horaEntrega
-                    ]);
+                    ]))
+                    {
+                        paso.Completo = false;
+                    }                    
+             
                     break;
+                 
                 case EnumPasoSolp.PliegoGeneracion2:
-                    paso.Completo = this.listaStringCompleta([
+                    paso.Completo = true;
+                    if(!this.listaStringCompleta([
                         this.solpActual.supervisorSector,
                         this.solpActual.supervisorTrabajo
-                    ]);
+                    ]))
+                    {
+                        paso.Completo = false;
+                    }
                     break;
                 case EnumPasoSolp.PliegoEspecificacion:
-                    paso.Completo = this.listaStringCompleta([
+                    paso.Completo = true;
+                    if(!this.listaStringCompleta([
                         this.solpActual.especificacionesViewModel.observaciones
-                    ]);
+                    ]))
+                    {
+                        return paso.Completo = false;
+                    }
                     break;
                 case EnumPasoSolp.PliegoCotizacion:
-                    paso.Completo = this.listaStringCompleta([
+                    paso.Completo = true;
+                    if(!this.listaStringCompleta([
                         this.solpActual.ejecucion,
                         this.solpActual.jornadaLaboralDias,
                         this.solpActual.comienzoJornadaLaboral,
                         this.solpActual.terminoJornadaLaboral
-                    ]);
+                    ]))
+                    {
+                        return paso.Completo = false;
+                    }
+
                     break;
                 case EnumPasoSolp.SolpCabecera:
-                    console.log(this.solpActual)
-                    paso.Completo = this.listaStringCompleta([
-                        //this.solpActual.selectClaseDocumento,
-                        this.solpActual.posicionActual.servicio,
-                        this.solpActual.posicionActual.textoGenerico,
-                        this.solpActual.posicionActual.fechaEntregaServicio,
-                        this.solpActual.posicionActual.fechaDeLiberacion,
-                        this.solpActual.posicionActual.selectCentroEntrega,
-                        this.solpActual.posicionActual.selectAlmacenEntrega,
-                        this.solpActual.posicionActual.calleEntrega,
-                        this.solpActual.posicionActual.numeroEntrega,
-                        this.solpActual.posicionActual.selectGrupoCompras,
-                        this.solpActual.posicionActual.selectArticuloCompras,
-                        this.solpActual.posicionActual.monedaSeleccionada
-                    ]);
+                    paso.Completo = true;
+                    //Revisa que todos los campos de TODAS las posiciones esten completos
+                    this.solpActual.posiciones.forEach(x => {
+                        if(!this.listaStringCompleta([
+                            x.servicio,
+                            x.textoGenerico,
+                            x.fechaEntregaServicio,
+                            x.fechaDeLiberacion,
+                            x.selectCentroEntrega,
+                            x.selectAlmacenEntrega,
+                            x.calleEntrega,
+                            x.numeroEntrega,
+                            x.selectGrupoCompras,
+                            x.selectArticuloCompras,
+                            x.monedaSeleccionada])
+                        || (this.solpActual.posiciones.some(x => !(x.selectCentroEntrega && x.selectCentroEntrega.Id)))
+                        || (this.solpActual.posiciones.some(x => !(x.selectAlmacenEntrega && x.selectAlmacenEntrega.Id)))
+                        || (this.solpActual.posiciones.some(x => !(x.selectGrupoCompras && x.selectGrupoCompras.Id)))
+                        || (this.solpActual.posiciones.some(x => !(x.selectArticuloCompras && x.selectArticuloCompras.Id))))
+                        {
+                            return paso.Completo = false;
+                        }
+                    });    
+                    break;
+                case EnumPasoSolp.SolpSubposiciones:
+                    //paso.Completo = true;
+                    paso.Completo = this.solpActual.posiciones.every(pos =>
+                        pos.listadoSubPosiciones.every(subPos =>
+                            this.listaStringCompleta([
+                                subPos.tareaSubcontratar,
+                                subPos.cuentaTd,
+                                subPos.precioBruto,
+                                subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
+                                subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
+                                subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
+                            ]) ||
+                            this.listaStringVacia([
+                                subPos.tareaSubcontratar,
+                                subPos.cuentaTd,
+                                subPos.precioBruto,
+                                subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
+                                subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
+                                subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
+                            ])
+                        )
+                    );
 
                     break;
                 case EnumPasoSolp.SolpSubposiciones:
-                    paso.Completo = this.listaStringCompleta([
-                    ]);
-                    break;
-                case EnumPasoSolp.SolpSubposiciones:
-                    break;
-            }
-        }
+                     break;
+            } 
+        }            
     }
 
     listaStringCompleta(lista: any[]) {
         return lista.filter(x => !x || x.length == 0).length == 0;
     }
 
+    listaStringVacia(lista: any[]) {
+        return lista.every(x => !x || x.length == 0);
+    }
 
     //evento que se activa cuando se deja uno de los paso de la solp
     //infomacionSolp : { codigo : string , esPasoInvalido : bool}
@@ -748,6 +828,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.combos = result;
+                        this.obtenerUsuarioCompras();
                     }
                 },
                 error => {
@@ -761,6 +842,39 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
 
         return false; //<-- Prevent Refresh
+    }
+
+    obtenerUsuarioCompras() {
+        try {
+            this.subscription = this.service.obtenerUsuarioCompras().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.usuarioComprasList = [];
+                        result.data.forEach(element => {
+                            this.usuarioComprasList.push({
+                                Id : element.UsuarioCompras.Id,
+                                CodigoDescripcion: element.UsuarioCompras.Mail
+                            });
+                        });
+                        this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
+                                                  ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
+                                                  : this.usuarioComprasList[0];
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+        }
     }
 
     preview() {
@@ -819,8 +933,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     finalizar() {
         this.guardarCambios(false, true, false);
         this.displayFinalizar = false
-        // ;
-        //
     }
 
     // Abre el modal del boton finalizar
@@ -846,15 +958,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     solpFinalizadaVolverHome() {
-        this.confirmationService.confirm({
-            key: 'solpFinalizadaVolverHome',
-            message: '¿Desea volver a la pantalla principal?',
-            accept: () => {
-                this.salir();
-            },
-            reject: () => {
-            }
-        });
+        this.salir();
     }
 
     ultimoPasoSolp() {

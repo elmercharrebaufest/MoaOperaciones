@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OrdenesDeCarga.DetalleComponent } from './ordenes-de-carga.detalle.component';
+import { OrdenesDeCargaDetalleComponent } from './ordenes-de-carga.detalle.component';
 
-describe('OrdenesDeCarga.DetalleComponent', () => {
-  let component: OrdenesDeCarga.DetalleComponent;
-  let fixture: ComponentFixture<OrdenesDeCarga.DetalleComponent>;
+describe('OrdenesDeCargaDetalleComponent', () => {
+  let component: OrdenesDeCargaDetalleComponent;
+  let fixture: ComponentFixture<OrdenesDeCargaDetalleComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OrdenesDeCarga.DetalleComponent ]
+      declarations: [ OrdenesDeCargaDetalleComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OrdenesDeCarga.DetalleComponent);
+    fixture = TestBed.createComponent(OrdenesDeCargaDetalleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

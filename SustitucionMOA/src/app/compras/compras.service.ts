@@ -78,14 +78,16 @@ export class ComprasService extends BaseService {
             TieneCondicionesGenerales: solp.tieneCondicionesGenerales,
             PasoCompletado: solp.pasoCompletado,
             EstadoPasos: solp.estadoPasos,
-
+            UsuarioCompras: {
+                Id: solp.usuarioComprasId
+            },
             Adjuntos:   solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x => { return { Id: x.id } })
                 .concat(solp.archivosCotizacionesGuardados.map(x => { return { Id: x.id } })),
 
             DiasEjecucion: solp.ejecucion,
             JornadaLaboral: solp.jornadaLaboralDias.filter(x => x.selected).map(x => x.weekDay),
-            JornadaLaboralDesde: solp.comienzoJornadaLaboral.toLocaleString(),
-            JornadaLaboralHasta: solp.terminoJornadaLaboral.toLocaleString(),
+            JornadaLaboralDesde: solp.comienzoJornadaLaboral,
+            JornadaLaboralHasta: solp.terminoJornadaLaboral,
             ObservacionesCotizacion: solp.observacionesCotizacion,
             RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
@@ -199,8 +201,6 @@ export class ComprasService extends BaseService {
     }
 
     getObjetoCodigo(codigo, tabla = null) {
-        console.log("codigo:", codigo);
-        console.log("tabla:", tabla);
         if (codigo) {
             if (tabla) {
                 return { Codigo: codigo, Tabla: tabla }
@@ -239,11 +239,35 @@ export class ComprasService extends BaseService {
             .get<any[]>("/api/compras/AutocompleteTablaSap", { params: params })
     }
 
+    autocompleteServicioSolp(valor: string) {
+        let params: HttpParams = new HttpParams()
+            .append('valor', valor)
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteServicioSolp", { params: params })
+    }
+
     obtenerDatosPorCodigosSap(codigos: any[]) {
         var payload = new FormData();
         payload.append('codigosSap', JSON.stringify(codigos));
 
         return this.http
             .post('/api/compras/ObtenerDatosPorCodigosSap', payload, { headers: this.headersPost });
+    }
+
+    obtenerDatosPorCodigosSapServicioSolp(codigos: string[]) {
+        var payload = new FormData();
+        payload.append('codigosSap', JSON.stringify(codigos));
+
+        return this.http
+            .post('/api/compras/ObtenerDatosPorCodigosSapServicioSolp', payload, { headers: this.headersPost });
+    }
+
+    obtenerUsuarioCompras(): Observable<any> {
+
+        return this.http
+            .get("/api/compras/ListarUsuarioCompras", {
+                headers: this.headers,
+            });
     }
 }

@@ -71,28 +71,29 @@
           <filtro-fecha (ClickEvent)="getListado()"></filtro-fecha>
         </div>
 
-        
+
         <div id="searchPedido" class="col-xs-12 col-sm-6 col-md-15" style="margin-top: 8px;">
           Factura anticipada:
           <div class="styled-select ">
-              <select [(ngModel)]="pedidoAnticipado">
-                  <option value="0" selected>Todos</option>
-                  <option value="1" selected>Con pedido anticipado</option>
-                  <option value="2" selected>Sin pedido anticipado</option>
-              </select>
+            <select [(ngModel)]="pedidoAnticipado">
+              <option value="0" selected>Todos</option>
+              <option value="1" selected>Con pedido anticipado</option>
+              <option value="2" selected>Sin pedido anticipado</option>
+            </select>
           </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-15" style="float: right; height: 70px;">
+          <button type="button" pButton icon="fa fa-refresh" (click)="getListado()"
+            style="background-color: #075088; float: right; left: -10px; top: 50%;"></button> &nbsp;
         </div>
       </div>
     </div>
 
-    
-      
- 
-
     <!-- End Search-->
     <!-- Tables-->
     <div class="row myRow">
-      <div class="clearfix myTables">
+      <div class="clearfix myTables" style="overflow-x:auto;">
         <mensaje></mensaje>
         <spinner></spinner>
         <table *ngIf="data && data.length != 0;" id="tableModal"
@@ -101,96 +102,29 @@
           style="width: 100%; padding:10px 0; background: white !important;">
 
           <thead>
-            <tr role="row" *ngIf="esInterno">
+            <tr role="row">
+              <!--<th *ngIf="esComercial">Boton</th>-->
               <th>Id</th>
-              <th>Cliente</th>
-              <th>Corredor</th>
+              <!-- <th *ngIf="esMesaFas || esComercial">Estado entrega</th> -->
+              <th *ngIf="esMesaFas || esInterno">Entrega</th>
+              <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas">Cliente</th>
+              <th *ngIf="esMesaFas">Cuit cliente</th>
+              <th *ngIf="esInterno">Corredor</th>
+              <th *ngIf="esPuerto || esComercial || esTercero || esInterno">Estado</th>
+              <!-- <th *ngIf="esTercero || esPuerto">Orden</th> -->
+              <th *ngIf="esTercero || esComercial || esPuerto || esMesaFas">Fecha</th>
               <th>Contrato</th>
-              <th>Pedido</th>
-              <th>Entrega</th>
-              <th>Estado</th>
+              <th *ngIf="esInterno || esMesaFas">Pedido</th>
+              <!-- <th *ngIf="esComercial || esPuerto || esMesaFas">Estado Pedido</th> -->
               <th>Producto</th>
-              <th></th>
-              <th>
-                Detalle
-              </th>
-            </tr>
-
-            <!-- Tables Tercero-->
-            <tr role="row" *ngIf="esTercero">
-              <th>Id</th>
-              <th>Estado</th>
-              <th>Orden</th>
-              <th>Fecha</th>
-              <th>Contrato</th>
-              <th>Producto</th>
-              <th>Destino</th>
-              <th></th>
-              <th>
-                Detalle
-              </th>
-            </tr>
-
-            <!-- Tables Comercial-->
-            <tr role="row" *ngIf="esComercial">
-              <th>Boton</th>
-              <th>Id</th>
-              <th>Cliente</th>
-              <th>Estado</th>
-              <th>Fecha</th>
-              <th>Contrato</th>
-              <th>Producto</th>
-              <th>Cantidad</th>
-              <th>Destino</th>
-              <th>Estado Pedido</th>
-              <th>Estado entrega</th>
-              <th></th>
-              <th>
-                Detalle
-              </th>
-            </tr>
-
-            <!-- Tables Puerto-->
-            <tr role="row" *ngIf="esPuerto">
-              <th>Id</th>
-              <th>Cliente</th>
-              <th>Orden</th>
-              <th>Fecha</th>
-              <th>Estado Pedido</th>
-              <th>Estado</th>
-              <th>Contrato</th>
-              <th>Producto</th>
-              <th>Cantidad</th>
-              <th>Destino</th>
-              <th></th>
-              <th>
-                Detalle
-              </th>
-            </tr>
-
-            <!-- Tables Mesa Fas-->
-            <tr role="row" *ngIf="esMesaFas">
-              <th>Id</th>
-              <th>Estado entrega</th>
-              <th>Entrega</th>
-              <th>Cliente</th>
-              <th>Cuit Cliente</th>
-              <th>Fecha</th>
-              <th>Contrato</th>
-              <th>Producto</th>
-              <th>Cantidad</th>
-              <th>Destino</th>
-              <th>Pedido</th>
-              <th>Estado Pedido</th>
-              <th></th>
-              <th>
-                Detalle
-              </th>
+              <!-- <th *ngIf="esComercial || esPuerto || esMesaFas">Cantidad</th>
+              <th *ngIf="esTercero || esComercial || esPuerto || esMesaFas">Destino</th> -->
+              <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas"></th>
+              <th>Detalle</th>
             </tr>
           </thead>
 
-
-          <tbody *ngIf="esInterno">
+          <tbody>
             <tr *ngFor="let ordenDeCarga of data
                                     | customFilter : 'Contrato' : filtroAlta |
                                     customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected)  |
@@ -200,15 +134,23 @@
                                     | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
                                     | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
                                     ; let odd = odd" role="row" [class.odd]="!odd">
+              <!--<td *ngIf="esComercial">{{ordenDeCarga.Boton}}</td>-->
               <td>{{ordenDeCarga.Id}}</td>
-              <td>{{ordenDeCarga.Cliente}}</td>
-              <td>{{ordenDeCarga.Corredor}}</td>
+              <!-- <td *ngIf="esMesaFas || esComercial">{{ordenDeCarga.EstadoEntrega}}</td> -->
+              <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
+              <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.RazonSocialCliente}}</td>
+              <td *ngIf="esMesaFas">{{ordenDeCarga.CUITCliente}}</td>
+              <td *ngIf="esInterno">{{ordenDeCarga.RazonSocialCorredor}}</td>
+              <td *ngIf="esPuerto || esComercial || esTercero || esInterno">{{ordenDeCarga.DescripcionEstado}}</td>
+              <!-- <td *ngIf="esTercero || esPuerto">{{ordenDeCarga.Orden}}</td> -->
+              <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Fecha}}</td>
               <td>{{ordenDeCarga.Contrato}}</td>
-              <td>{{ordenDeCarga.Pedido}}</td>
-              <td>{{ordenDeCarga.Entrega}}</td>
-              <td>{{ordenDeCarga.DescripcionEstado}}</td>
+              <td *ngIf="esInterno || esMesaFas">{{ordenDeCarga.Pedido}}</td>
+              <!-- <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.EstadoPedido}}</td> -->
               <td>{{ordenDeCarga.Material}}</td>
-              <td>
+              <!-- <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Cantidad}}</td>
+              <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Destino}}</td> -->
+              <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">
                 <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
                 </div>
               </td>
@@ -219,126 +161,6 @@
               </td>
             </tr>
           </tbody>
-
-          <!-- Tables Tercero-->
-          <tbody *ngIf="esTercero">
-            <tr *ngFor="let ordenDeCarga of data 
-                                    | customFilter : 'Contrato' : filtroAlta
-                                    | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
-                                    | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
-                                    ; let odd = odd" role="row" [class.odd]="!odd">
-              <td>{{ordenDeCarga.Id}}</td>
-              <td>{{ordenDeCarga.DescripcionEstado}}</td>
-              <td>{{ordenDeCarga.Orden}}</td>
-              <td>{{ordenDeCarga.FechaCarga}}</td>
-              <td>{{ordenDeCarga.Contrato}}</td>
-              <td>{{ordenDeCarga.Material}}</td>
-              <td>{{ordenDeCarga.Destino}}</td>
-              <td>
-                <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
-                </div>
-              </td>
-              <td>
-                <a class="cursor" (click)="goToSeccionParam('/ordenes-de-carga/detalle/', ordenDeCarga.Id)">
-                  Ver
-                </a>
-              </td>
-            </tr>
-          </tbody>
-          <!-- End Tables Tercero-->
-
-          <!-- Tables Comercial-->
-          <tbody *ngIf="esComercial">
-            <tr *ngFor="let ordenDeCarga of data 
-                                    | customFilter : 'Contrato' : filtroAlta
-                                    | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
-                                    | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
-                                    ; let odd = odd" role="row" [class.odd]="!odd">
-              <td>Boton</td>
-              <td>{{ordenDeCarga.Id}}</td>
-              <td>{{ordenDeCarga.Cliente}}</td>
-              <td>{{ordenDeCarga.DescripcionEstado}}</td>
-              <td>{{ordenDeCarga.FechaCarga}}</td>
-              <td>{{ordenDeCarga.Contrato}}</td>
-              <td>{{ordenDeCarga.Material}}</td>
-              <td>{{ordenDeCarga.Cantidad}}</td>
-              <td>{{ordenDeCarga.Destino}}</td>
-              <td>{{ordenDeCarga.EstadoPedido}}</td>
-              <td>{{ordenDeCarga.EstadoEntrega}}</td>
-              <td>
-                <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
-                </div>
-              </td>
-              <td>
-                <a class="cursor" (click)="goToSeccionParam('/ordenes-de-carga/detalle/', ordenDeCarga.Id)">
-                  Ver
-                </a>
-              </td>
-            </tr>
-          </tbody>
-          <!-- End Tables Comercial-->
-
-          <!-- Tables Puerto-->
-          <tbody *ngIf="esPuerto">
-            <tr *ngFor="let ordenDeCarga of data 
-                                    | customFilter : 'Contrato' : filtroAlta
-                                    | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
-                                    | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
-                                    ; let odd = odd" role="row" [class.odd]="!odd">
-              <td>{{ordenDeCarga.Id}}</td>
-              <td>{{ordenDeCarga.Cliente}}</td>
-              <td>{{ordenDeCarga.Orden}}</td>
-              <td>{{ordenDeCarga.FechaCarga}}</td>
-              <td>{{ordenDeCarga.EstadoPedido}}</td>
-              <td>{{ordenDeCarga.DescripcionEstado}}</td>
-              <td>{{ordenDeCarga.Contrato}}</td>
-              <td>{{ordenDeCarga.Material}}</td>
-              <td>{{ordenDeCarga.Cantidad}}</td>
-              <td>{{ordenDeCarga.Destino}}</td>
-              <td>
-                <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
-                </div>
-              </td>
-              <td>
-                <a class="cursor" (click)="goToSeccionParam('/ordenes-de-carga/detalle/', ordenDeCarga.Id)">
-                  Ver
-                </a>
-              </td>
-            </tr>
-          </tbody>
-          <!-- End Tables Puerto-->
-
-          <!-- Tables Mesa Fas-->
-          <tbody *ngIf="esMesaFas">
-            <tr *ngFor="let ordenDeCarga of data 
-                                    | customFilter : 'Contrato' : filtroAlta
-                                    | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
-                                    | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
-                                    ; let odd = odd" role="row" [class.odd]="!odd">
-              <td>{{ordenDeCarga.Id}}</td>
-              <td>{{ordenDeCarga.EstadoEntrega}}</td>
-              <td>{{ordenDeCarga.Entrega}}</td>
-              <td>{{ordenDeCarga.Cliente}}</td>
-              <td>{{ordenDeCarga.CUITCliente}}</td>
-              <td>{{ordenDeCarga.FechaCarga}}</td>
-              <td>{{ordenDeCarga.Contrato}}</td>
-              <td>{{ordenDeCarga.Material}}</td>
-              <td>{{ordenDeCarga.Cantidad}}</td>
-              <td>{{ordenDeCarga.Destino}}</td>
-              <td>{{ordenDeCarga.NumeroPedido}}</td>
-              <td>{{ordenDeCarga.DescripcionEstado}}</td>
-              <td>
-                <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
-                </div>
-              </td>
-              <td>
-                <a class="cursor" (click)="goToSeccionParam('/ordenes-de-carga/detalle/', ordenDeCarga.Id)">
-                  Ver
-                </a>
-              </td>
-            </tr>
-          </tbody>
-          <!-- End Tables Mesa Fas-->
         </table>
 
 
