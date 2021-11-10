@@ -107,7 +107,10 @@
                     <hr class="separadorCompras">
 
                     <!-- Row fechas de entrega -->
-                    <div class="row">
+
+                    <tab-fechas [(model)]="model" [(locale)]="locale"></tab-fechas>
+
+                    <!-- <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput" style="font-size: 24px;">
                                 Fechas
@@ -130,7 +133,7 @@
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
-                            <!-- <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput prime-hora">
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput prime-hora">
                                 <div class="col-xs-12 col-sm-12 col-md-12 margenInput checkboxFechas">
                                     <p-checkbox formControlName="concluido" [ngModelOptions]="{standalone:true}"
                                         class="checkboxFechas" [(ngModel)]="model.posicionActual.concluido"
@@ -141,9 +144,9 @@
                                         class="checkboxFechas" [(ngModel)]="model.posicionActual.indiceFijacion"
                                         label="Ind. Fijación (A definir)" binary="true"></p-checkbox>
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- End Row fechas de entrega -->
                     <hr class="separadorCompras">
                     <!-- Row datos direccion de entrega -->

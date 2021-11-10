@@ -53,8 +53,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     almacenEntrega: SelectItem[];
     posiciones: SelectItem[];
     resultadoProveedores: string[];
-    fechaEntregaServicio: any;
-    fechaDeLiberacion: any;
+    // fechaEntregaServicio: any;
+    // fechaDeLiberacion: any;
     hoy: Date = new Date();
     selectPosicion: any;
 
@@ -74,11 +74,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         { campo: 'siniestroBeneficio', esObligatorio: false, esFijo: true },
         { campo: 'tipoImputacion', esObligatorio: true, esFijo: true },
         { campo: 'textoGenerico', esObligatorio: true, esFijo: true },
-        { campo: 'fechaEntregaServicio', esObligatorio: true, esFijo: false },
-        { campo: 'fechaDeLiberacion', esObligatorio: false, esFijo: false },
-        { campo: 'plazoDeEntrega', esObligatorio: true, esFijo: true },
-        { campo: 'concluido', esObligatorio: false, esFijo: true },
-        { campo: 'indiceFijacion', esObligatorio: false, esFijo: true },
+        // { campo: 'fechaEntregaServicio', esObligatorio: true, esFijo: false },
+        // { campo: 'fechaDeLiberacion', esObligatorio: false, esFijo: false },
+        // { campo: 'plazoDeEntrega', esObligatorio: true, esFijo: true },
+        // { campo: 'concluido', esObligatorio: false, esFijo: true },
+        // { campo: 'indiceFijacion', esObligatorio: false, esFijo: true },
         { campo: 'selectCentroEntrega', esObligatorio: false, esFijo: false },
         { campo: 'nombreEntrega', esObligatorio: false, esFijo: true },
         { campo: 'codigoPostalEntrega', esObligatorio: false, esFijo: true },
@@ -280,9 +280,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         el.scrollIntoView();
     }
 
-    calcularFechaEntrega() {
-        let fechaNueva = new Date(this.model.fechaEntrega);
-        fechaNueva.setDate(fechaNueva.getDate() + parseInt(this.model.posicionActual.plazoDeEntrega.toString()));
-        this.model.posicionActual.fechaEntregaServicio = fechaNueva;
-    }
+    // calcularFechaEntrega() {
+    //     let fechaNueva = new Date(this.model.fechaEntrega);
+    //     fechaNueva.setDate(fechaNueva.getDate() + parseInt(this.model.posicionActual.plazoDeEntrega.toString()));
+    //     this.model.posicionActual.fechaEntregaServicio = fechaNueva;
+    // }
 }
