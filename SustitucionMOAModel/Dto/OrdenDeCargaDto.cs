@@ -99,6 +99,7 @@ namespace SustitucionMOAModel.Dto
         public string PedidosRespuesta { get; set; }
         public bool ContratoSinCantidadPendiente { get; set; }
         public string DescripcionErrorInterno { get; set; }
+        public string NumeroPedidoIngresado { get; set; }
 
         public override bool Equals(object obj)
         {

@@ -153,6 +153,7 @@
     <None Include="SustitucionMOADatabase.publish.xml" />
     <None Include="scripts\CargaInicialSolp.sql" />
     <None Include="scripts\Insert EstadoIngresosBrutosCoeficienteUnificado.sql" />
+    <None Include="scripts\Rol Admin plataforma compras.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

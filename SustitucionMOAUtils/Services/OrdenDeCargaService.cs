@@ -46,6 +46,11 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
                 ordenDeCarga.Corredor_Id = corredor.Id;
                 cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
+
+                if(cliente == null)
+                {
+                    throw new ValidationCustomException("Su usuario no está habilitado para operar con ese CUIT");
+                }
             }
             else
             {
@@ -53,11 +58,6 @@ namespace SustitucionMOAUtils.Services
                 cliente = usuario.ObtenerProveedor();
                 ordenDeCarga.CUITCliente = cliente.CUIT;
             }
-
-            //if (ordenDeCarga.CUITCliente != "")
-            //    cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
-            //else
-            //    cliente = usuario.ObtenerProveedor();
 
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente_Id = cliente.Id;
@@ -199,10 +199,6 @@ namespace SustitucionMOAUtils.Services
             //OV-02   'Verificar cantidad pendiente de Contratada'
             //OV-03   'Pedido creado - Verificar Crédito de pedido'
             //OV-00   'OK'
-
-            if (!string.IsNullOrEmpty(orden.NumeroPedidoIngresado))
-                forzarCreacion = true;
-
             var forzarCreacionStr = forzarCreacion ? "" : "X";
 
             var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.CodigoCorredor, orden.Cantidad, orden.Producto.CodigoSap, orden.NumeroPedidoIngresado, forzarCreacionStr, out string numeroPedido);
@@ -509,6 +505,7 @@ namespace SustitucionMOAUtils.Services
                 DescripcionEstadoUsuarioFinal = orden.Estado.ToUserFriendlyString(),
                 ColorSemaforo = orden.Estado.ObtenerSemaforo(),
                 ContratoIngresado = orden.ContratoIngresado,
+                NumeroPedidoIngresado = orden.NumeroPedidoIngresado,
                 Cliente = orden.Cliente.CodigoProveedor,
                 AprobadoCredito = orden.AprobadoCredito,
                 Cantidad = orden.Cantidad,

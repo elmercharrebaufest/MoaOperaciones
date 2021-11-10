@@ -114,7 +114,9 @@ namespace SustitucionMOAUtils.Services
             bool existePesificacionDelContrato = false;
             string fechaInicio = DateTime.Now.AddYears(-1).ToString("yyyy - MM - dd");
             string fechaFin = DateTime.Now.AddDays(+1).ToString("yyyy - MM - dd");
-            palabraABuscar.Trim().Replace("/t", "");
+            palabraABuscar.Trim().Replace("\t", "");
+            var formatoContrato = "0000000000";
+            palabraABuscar = (formatoContrato + palabraABuscar).Substring((formatoContrato + palabraABuscar).Length - 10);
 
             try
             {
