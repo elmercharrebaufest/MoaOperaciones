@@ -571,7 +571,8 @@ namespace SustitucionMOAUtils.Services
                     TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                     VincularPliego = !x.Pliego_Id.HasValue,
                     TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
-                    RevisadoPor = x.Pliego?.RevisadoPor
+                    RevisadoPor = x.Pliego?.RevisadoPor,
+                    TipoSolpSap = x.TipoSolpSap
                 }).OrderByDescending(i => i.FechaCreacion);
 
             return todasLasSolp.ToList();
