@@ -285,7 +285,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.cargarSolpActual(result.data);
-                        this.spinnerComponent.hideIt();
                         this.blockUI.stop();
                     }
                 },
@@ -865,6 +864,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
                                                   ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
                                                   : this.usuarioComprasList[0];
+                        this.spinnerComponent.hideIt();
                     }
                 },
                 error => {
