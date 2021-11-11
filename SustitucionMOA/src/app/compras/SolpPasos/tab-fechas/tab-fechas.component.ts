@@ -39,7 +39,7 @@ export class TabFechasComponent extends ListBaseComponent implements OnInit {
 
   camposObligatorios: any[] = [
     { campo: 'fechaEntregaServicio', esObligatorio: false, esFijo: false },
-    { campo: 'fechaDeLiberacion', esObligatorio: false, esFijo: false },
+    // { campo: 'fechaDeLiberacion', esObligatorio: false, esFijo: false },
     { campo: 'plazoDeEntrega', esObligatorio: true, esFijo: true },
     { campo: 'concluido', esObligatorio: false, esFijo: true },
     { campo: 'indiceFijacion', esObligatorio: false, esFijo: true }
@@ -64,10 +64,7 @@ export class TabFechasComponent extends ListBaseComponent implements OnInit {
 
   mostrarValidacion(campoAValidar, vacio){
     let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-    return (camposVacios != null && vacio == undefined);
+    return (camposVacios != null && vacio == "");
   }
-
-
-
 
 }

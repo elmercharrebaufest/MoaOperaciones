@@ -14,33 +14,11 @@
         </div>
       </div>
 
-      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput" style="margin-bottom: 30px;">
-        <div>
-            Fecha de liberación 
-        </div>
-        <div class="styled-select">
-            <p-calendar [(ngModel)]="model.posicionActual.fechaDeLiberacion" [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>
-        </div>
-        <div *ngIf="mostrarValidacion('fechaDeLiberacion', model.posicionActual.fechaDeLiberacion)">
-            <p class="text-danger">campo obligatorio</p>
-        </div>
-      </div>
-
       <div class="styled-select1 col-xs-6 col-sm-12 col-md-3 col-lg-3 ejecucionCompras">
           <span class="ejecucionCompras">Plazo de entrega previsto &nbsp;</span>
           <input pInputText type="text" pKeyFilter="pnum" [(ngModel)]="model.posicionActual.plazoDeEntrega" class="fourRounded widthInputDias" aria-controls="tableModal" placeholder="" (change)="calcularFechaEntrega()" />
           <div *ngIf="mostrarValidacion('plazoDeEntrega', model.posicionActual.plazoDeEntrega)">
               <p class="text-danger">campo obligatorio</p>
-          </div>
-      </div>
-      
-      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput prime-hora">
-          <div class="col-xs-12 col-sm-12 col-md-12 margenInput checkboxFechas">
-              <p-checkbox class="checkboxFechas" [(ngModel)]="model.posicionActual.concluido" label="Concluido" binary="true"></p-checkbox>
-          </div>
-
-          <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-              <p-checkbox class="checkboxFechas" [(ngModel)]="model.posicionActual.indiceFijacion" label="Ind. Fijación (A definir)" binary="true"></p-checkbox>
           </div>
       </div>
     </div>
