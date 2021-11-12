@@ -133,10 +133,6 @@ namespace SustitucionMOAUtils.Services
                 if (solp.TipoSolp != null)
                     solpEntity.TipoSolp = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoSolp && x.Codigo == solp.TipoSolp.Codigo);
                 solpEntity.PasoCompletado = solp.PasoCompletado;
-                solpEntity.UsuarioCompras = new UsuarioCompras
-                {
-                    Id = solp.UsuarioCompras.Id
-                };
                 solpEntity.UsuarioCompras_Id = solp.UsuarioCompras.Id; 
                 solpEntity.EstadoPasos = solp.EstadoPasos;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
@@ -1287,11 +1283,10 @@ namespace SustitucionMOAUtils.Services
 
         public List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual)
         {
-            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id)
+            var usuarios = repositorio.Listar<Usuario>().ToList();
+            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>().Where(item => item.Usuario_Id == usuarios[0].Id)
                 .Select(x => new UsuarioComprasRelacionConUsuariosDto
                 {
-                    Usuario = new UsuarioDto(x.Usuario),
-                    Id = x.Id,
                     UsuarioCompras = new UsuarioComprasDto(x.UsuarioCompras)
                 });
 
