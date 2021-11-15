@@ -417,16 +417,8 @@ export class GestionCM05Component extends ListBaseComponent {
                     } else {
                         this.cabeceras = result;
                         this.cabeceras.forEach(x => {
-                            x.Estado =
-                                x.EstadoId == 1 ? 'Pendiente' :
-                                    x.EstadoId == 2 ? 'Autorizado' :
-                                        x.EstadoId == 3 ? 'Completado' :
-                                            x.EstadoId == 4 ? 'Rechazado por usuario' :
-                                                '';
-                            x.Secuencia =
-                                x.SecuenciaId == 1 ? 'Original' :
-                                    x.SecuenciaId == 2 ? 'Rectificativa' :
-                                        '';
+                            x.Estado = this.estados.find(e => e.value == x.EstadoId).label;
+                            x.Secuencia = this.secuencias.find(s => s.value == x.SecuenciaId).label;
                             x.FechaCarga = x.FechaCarga == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaCarga));
                             x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
                         });

@@ -6,9 +6,12 @@
             </div>
             <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
                 <!-- Button trigger modal -->
-                <button type="button" pButton icon="fa fa-refresh" (click)="listarCabeceras()" style="background-color: #067935; float: right"></button>
-
-                <button type="button" pButton icon="fa fa-plus" (click)="mostrarDialogCargaCM05()" style="background-color: #067935; float: right"></button>
+                <div style="margin-right: 10px;">
+                    <button type="button" pButton icon="fa fa-refresh" (click)="listarCabeceras()" style="background-color: #067935; float: right"></button>
+                </div>
+                <div>
+                    <button type="button" pButton icon="fa fa-plus" (click)="mostrarDialogCargaCM05()" style="background-color: #067935; float: right" label="Cargar CM05"></button>
+                </div>
             </div>
         </div>
         <div>
@@ -102,7 +105,7 @@
                             {{rowData.Sede}}
                         </td>
                         <td class="td-cabecera">
-                            {{rowData.FechaCarga | date:'dd/MM/yyyy hh:mm:ss'}}
+                            {{rowData.FechaCarga | date:'dd/MM/yyyy HH:mm:ss'}}
                         </td>
                         <td class="td-cabecera">
                             {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
@@ -245,7 +248,7 @@
                             {{rowData.FechaCese | date:'dd/MM/yyyy'}}
                         </td>
                         <td class="td-detalle">
-                            {{rowData.CoeficienteUnificado}}
+                            {{rowData.CoeficienteUnificado.toFixed(4) | mask: '0.0000'}}
                         </td>
                         <td class="td-detalle">
                             {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}

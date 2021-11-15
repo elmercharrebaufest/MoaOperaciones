@@ -35,7 +35,7 @@ AS
              EstadoPosterior_Id)
         VALUES
            (@IdIngresosBrutosCoeficienteUnificado,
-            '',
+            @Observaciones,
             GETDATE(),
             @TipoMovimientoIngresosBrutosCoeficienteUnificado_ExportacionExitosa,
             @OrigenMovimientoIngresosBrutosCoeficienteUnificado_SAP,
