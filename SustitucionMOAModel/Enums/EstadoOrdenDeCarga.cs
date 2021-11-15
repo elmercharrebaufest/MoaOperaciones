@@ -84,8 +84,9 @@ namespace SustitucionMOAModel.Enums
                 case EstadoOrdenDeCarga.Confirmado:
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                 case EstadoOrdenDeCarga.EntregaPendiente:
-                case EstadoOrdenDeCarga.EntregaGenerada:
                     return "Pendiente de carga";
+                case EstadoOrdenDeCarga.EntregaGenerada:
+                    return "Listo para retirar";
                 case EstadoOrdenDeCarga.Entregada:
                     return "Completada";
                 case EstadoOrdenDeCarga.Anulada:

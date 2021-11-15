@@ -53,6 +53,7 @@ namespace SustitucionMOAUtils.Services
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
+
         public ComprasService(IRepositorio repositorio, IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
             IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA, IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA, IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA,
             IObtenerSolpConsumerMOA obtenerSolpConsumerMOA, ICrearSolpConsumerMOA crearSolpConsumerMOA, IModificarSolpConsumerMOA modificarSolpConsumerMOA)
@@ -132,12 +133,9 @@ namespace SustitucionMOAUtils.Services
                 if (solp.TipoSolp != null)
                     solpEntity.TipoSolp = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoSolp && x.Codigo == solp.TipoSolp.Codigo);
                 solpEntity.PasoCompletado = solp.PasoCompletado;
-                solpEntity.UsuarioCompras = new UsuarioCompras
-                {
-                    Id = solp.UsuarioCompras.Id
-                };
                 solpEntity.UsuarioCompras_Id = solp.UsuarioCompras.Id; 
                 solpEntity.EstadoPasos = solp.EstadoPasos;
+                solpEntity.TipoSolpSap = 1;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
@@ -161,8 +159,8 @@ namespace SustitucionMOAUtils.Services
 
                 pliegoEntity.DiasEjecucion = solp.DiasEjecucion;
                 pliegoEntity.JornadaLaboralDias = solp.JornadaLaboral != null ? string.Join(",", solp.JornadaLaboral.Select(x => (int)x)) : string.Empty;
-                pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde;
-                pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta;
+                pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
+                pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
                 pliegoEntity.ObservacionesCotizacion = solp.ObservacionesCotizacion;
 
                 pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
@@ -554,7 +552,12 @@ namespace SustitucionMOAUtils.Services
 
         public List<SolpDto> ListarSolp(UsuarioDto usuarioActual)
         {
-            var todasLasSolp = repositorio.Listar<Solp>(x => x.FechaBorrado == null && x.UsuarioCreacion_Id == usuarioActual.Id)
+            Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null && x.UsuarioCreacion_Id == usuarioActual.Id;
+
+            if (usuarioActual.Permisos.Contains("VER TODAS SOLPS"))
+                filtro = (x => x.FechaBorrado == null);
+
+            var todasLasSolp = repositorio.Listar(filtro)
                 .Select(x => new SolpDto
                 {
                     UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
@@ -568,12 +571,11 @@ namespace SustitucionMOAUtils.Services
                     TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                     VincularPliego = !x.Pliego_Id.HasValue,
                     TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
-                    RevisadoPor = x.Pliego?.RevisadoPor
+                    RevisadoPor = x.Pliego?.RevisadoPor,
+                    TipoSolpSap = x.TipoSolpSap
                 }).OrderByDescending(i => i.FechaCreacion);
 
             return todasLasSolp.ToList();
-
-
         }
 
         public SolpDto TraerSolpId(int idSolp)
@@ -608,8 +610,7 @@ namespace SustitucionMOAUtils.Services
                 TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                 VincularPliego = !x.Pliego_Id.HasValue,
                 UsuarioCompras = x.UsuarioCompras != null ? new UsuarioComprasDto(x.UsuarioCompras) : new UsuarioComprasDto(),
-
-
+                TipoSolpSap = x.TipoSolpSap,
                 NombreDeObra = x.Pliego.NombreObra,
                 FiscalContrato = x.Pliego.FiscalContrato,
                 Telefono = x.Pliego.Telefono,
@@ -691,6 +692,8 @@ namespace SustitucionMOAUtils.Services
         {
             var solp = TraerSolpId(idSolp);
 
+            var usuarioCompras = ListarUsuarioCompras(solp.UsuarioActual);
+
             var templateFilePath = solp.TieneCondicionesGenerales ?? true ? Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html") :
                Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/NewPliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
@@ -702,7 +705,6 @@ namespace SustitucionMOAUtils.Services
 
             var solpValores = new Dictionary<string, string>();
 
-
             //aca va la asignacion de valores de la solp que se van a reemplazar en el documento
             solpValores.Add(SolpTemplateKeys.FECHA_LIBERACION, ""); //crear campo fecha de liberacion en tabla
             solpValores.Add(SolpTemplateKeys.NOMBRE_OBRA, solp.NombreDeObra);
@@ -711,9 +713,11 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.TELEFONO, solp.Telefono);
 
             solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
-            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioCompras.Mail == null ? solp.UsuarioActual.Mail : solp.UsuarioCompras.Mail);
+            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioCompras.Mail == null ? usuarioCompras.Any() ? usuarioCompras[0].UsuarioCompras.Mail : String.Empty : solp.UsuarioCompras.Mail);
 
             solpValores.Add(SolpTemplateKeys.REVISADO_POR, solp.RevisadoPor);
+
+            //solpValores.Add(SolpTemplateKeys.PAGINAS, PageEventHandler.p);
 
             //ESPECIFICACION TECNICA DE TAREAS
             if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
@@ -830,7 +834,7 @@ namespace SustitucionMOAUtils.Services
 
             templateString = CombineTemplateValues(templateString, solpValores);
 
-            return ConvertHtmlToPdf(templateString, templateCssString, solp.RevisadoPor);
+            return ConvertHtmlToPdf(templateString, templateCssString, solp); //agregar solp
         }
 
         private string getDia(DayOfWeek dia)
@@ -868,12 +872,14 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        private byte[] ConvertHtmlToPdf(string xHtml, string css, string revisadoPor = "")
+        private byte[] ConvertHtmlToPdf(string xHtml, string css, SolpDto solp)
         {
             using (var stream = new MemoryStream())
             {
-                using (var document = new Document(PageSize.A4, 70f, 70f, 60f, 60f))
+                using (var document = new Document(PageSize.A4, 70f, 70f, 150f, 60f))
                 {
+                    //var solp = repositorio.Obtener<Solp>(idSolp);
+
                     var PdfWriter = iTextSharp.text.pdf.PdfWriter.GetInstance(document, stream);
                     document.Open();
 
@@ -881,36 +887,67 @@ namespace SustitucionMOAUtils.Services
                     image.SetAbsolutePosition(180, 700);
                     PdfWriter.DirectContent.AddImage(image, false);
 
+                    //PdfPTable table = new PdfPTable(2);
+
+                    
+
+                    // Our custom Header and Footer is done using Event Handler
                     TwoColumnHeaderFooter PageEventHandler = new TwoColumnHeaderFooter();
                     PdfWriter.PageEvent = PageEventHandler;
 
+                    //define el header
+                    //PageEventHandler.Title = "Revisado por: " + revisadoPor.
 
+                    //string encabezado = "Revisado por: " + revisadoPor;
 
-                    PageEventHandler.Title = "Revisado por: " + revisadoPor;
-                    PageEventHandler.HeaderFont = FontFactory.GetFont(BaseFont.COURIER_BOLD, 10, Font.BOLD);
-                    //PageEventHandler.HeaderLeft = "Group";
-                    //PageEventHandler.HeaderRight = "1";
+                    var tablaHeader = new PdfPTable(2);
 
-                    //for (int i = 1; i <= 2; i++)
-                    //{
-                    //     //Define the page header
-                    //    PageEventHandler.HeaderLeft = i.ToString();
-                    //    if (i != 1)
-                    //    {
-                    //        document.NewPage();
-                    //    }
+                    tablaHeader.TotalWidth = document.PageSize.Width - document.LeftMargin - document.RightMargin;
 
-                    //    // New outline must be created after the page is added
-                    //    //AddOutline(PdfWriter, "Group " + i.ToString(), document.PageSize.Height);
+                    PdfPCell obra = new PdfPCell();
 
-                    //}
+                    obra.AddElement(new Paragraph($"Nombre obra: {solp.NombreDeObra}"));
+                    tablaHeader.AddCell(obra);
 
+                    var imagen = Image.GetInstance(@"https://b2cmoagro.blob.core.windows.net/moaoperaciones/logo.png");
+
+                    //2284 x 1059
+                    imagen.ScaleAbsolute(80f, 40f);
+                    PdfPCell cellImagen = new PdfPCell(imagen);
+
+                    cellImagen.FixedHeight = 50f;
+                    cellImagen.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    cellImagen.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tablaHeader.AddCell(cellImagen);
+
+                    PdfPCell nombres = new PdfPCell();
+
+                    nombres.AddElement(new Paragraph($"Redactó: {solp.FiscalContrato}"));
+                    nombres.AddElement(new Paragraph($"Aprobó: {solp.RevisadoPor}"));
+
+                    tablaHeader.AddCell(nombres);
+
+                    PdfPCell numeros = new PdfPCell();
+
+                    numeros.AddElement(new Paragraph($"Fecha: {solp.FechaCreacion.ToString("dd/MM/yyyy")}"));
+
+                    numeros.FixedHeight = 50f;
+
+                    tablaHeader.AddCell(numeros);
+
+                    PageEventHandler.HeaderWidths = new float[] { 3f, 1f };
+
+                    PageEventHandler.Header = tablaHeader;
+
+                    //PageEventHandler.Header.SetWidthPercentage(new float[] { 10, 10 }, document.PageSize);
+                    //PageEventHandler.Header.WriteSelectedRows(0, -1, document.LeftMargin, document.PageSize.Height - 36, writer.DirectContent);
+
+                    //PageEventHandler.Title = document.Add(table).ToString();
+                    //PageEventHandler.HeaderFont = FontFactory.GetFont(BaseFont.COURIER_BOLD, 10, Font.BOLD);
+                   
                     // instantiate custom tag processor and add to `HtmlPipelineContext`.
                     var tagProcessorFactory = Tags.GetHtmlTagProcessorFactory();
-                    //tagProcessorFactory.AddProcessor(
-                    //    new TableDataProcessor(),
-                    //    new string[] { HTML.Tag.TD }
-                    //);
+                  
                     var htmlPipelineContext = new HtmlPipelineContext(null);
                     htmlPipelineContext.SetTagFactory(tagProcessorFactory);
 
@@ -1099,29 +1136,9 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public ObtenerSolpSAPResponse ObtenerSolpsSAP(DateTime fechaDesde, DateTime fechaHasta, string numeroSolp,
-                                    string centroLogistico, string filtroTipoPosicion, string indicadorDeLiberacion, string origenCreacion, List<string> creadoPorUsuarios,
-                                    string tipoDeImputacion, bool ObtenerDireccionDeEntrega, bool ObtenerImputacion, bool ObtenerServicios, bool MostrarItemsBorrados
-                                    )
+        public ObtenerSolpSAPResponse ObtenerSolpsSAP(ObtenerSolpRequest obtenerSolpRequest)
         {
-            var filtros = new ObtenerSolpRequest
-            {
-                FechaDesde = fechaDesde,
-                FechaHasta = fechaHasta,
-                NumeroSolp = numeroSolp,
-                CentroLogistico = centroLogistico,
-                FiltroTipoPosicion = filtroTipoPosicion,
-                IndicadorDeLiberacion = indicadorDeLiberacion,
-                OrigenCreacion = origenCreacion,
-                CreadoPorUsuarios = creadoPorUsuarios,
-                TipoDeImputacion = tipoDeImputacion,
-                ObtenerDireccionDeEntrega = ObtenerDireccionDeEntrega,
-                ObtenerImputacion = ObtenerImputacion,
-                ObtenerServicios = ObtenerServicios,
-                MostrarItemsBorrados = MostrarItemsBorrados,
-
-            };
-            var solps = obtenerSolpConsumerMOA.Request(filtros);
+            var solps = obtenerSolpConsumerMOA.Request(obtenerSolpRequest);
 
             return solps;
         }
@@ -1153,9 +1170,11 @@ namespace SustitucionMOAUtils.Services
 
         public List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos)
         {
-            return repositorio
+            var result = repositorio
                 .Listar<ServicioSolp>(x => codigos.Contains(x.CodigoSap.ToString()))
                 .Select(x => new ServicioSolpDto(x)).ToList();
+
+            return result;
         }
 
         public void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion)
@@ -1245,11 +1264,10 @@ namespace SustitucionMOAUtils.Services
 
         public List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual)
         {
-            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id)
+            var usuarios = repositorio.Listar<Usuario>().ToList();
+            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>().Where(item => item.Usuario_Id == usuarios[0].Id)
                 .Select(x => new UsuarioComprasRelacionConUsuariosDto
                 {
-                    Usuario = new UsuarioDto(x.Usuario),
-                    Id = x.Id,
                     UsuarioCompras = new UsuarioComprasDto(x.UsuarioCompras)
                 });
 
@@ -1282,5 +1300,6 @@ namespace SustitucionMOAUtils.Services
         public const string REVISADO_POR = "REVISADO_POR";
 
         public const string PLAZO_ENTREGA = "PLAZO_ENTREGA";
+        public const string PAGINAS = "PAGINAS";
     }
 }
