@@ -19,8 +19,8 @@
             <p-table #dt [columns]="cabeceraCols" [value]="cabeceras" selectionMode="single" [(selection)]="selectedCabecera" [paginator]="true" [rows]="10">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Id</th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Id Consulta</th>
+                        <th class="col-md-1 th-cabecera">Id</th>
+                        <th class="col-md-1 th-cabecera">Id Consulta</th>
                         <th class="col-md-1 th-cabecera" rowspan="2">Razón Social</th>
                         <th class="col-md-3 th-cabecera" style="border-bottom:none">
                             Estado
@@ -33,14 +33,20 @@
                         <th class="col-md-2 th-cabecera" rowspan="2">Última modificación</th>
                     </tr>
                     <tr>
-                        <th class="col-md-2 th-cabecera" style="font-size:10px !important; text-transform:capitalize; border-top:none">
-                            <p-multiSelect [styleClass]="spanFiltroMultiSelect" appendTo="body" [options]="estados" defaultLabel="" (onChange)="dt.filter($event.value, 'Estado', 'in')">
+                        <th class="th-cabecera" style="font-size:12px !important; font-weight: lighter;">
+                            <input [(ngModel)]="idFiltro" placeholder="Buscar" (input)="dt.filter(idFiltro, 'Id', 'contains')">
+                        </th>
+                        <th class="th-cabecera" style="font-size:12px !important; font-weight: lighter;">
+                            <input [(ngModel)]="idConsultaFiltro" placeholder="Buscar" (input)="dt.filter(idConsultaFiltro, 'ConsultaId', 'contains')">
+                        </th>
+                        <th class="col-md-2 th-cabecera" style="font-size:12px !important; text-transform:capitalize; border-top:none;">
+                            <p-multiSelect [styleClass]="spanFiltroMultiSelect" appendTo="body" [options]="estados" defaultLabel="Seleccionar estado" (onChange)="dt.filter($event.value, 'Estado', 'in')">
                                 <ng-template let-estado pTemplate="item">
                                     <span>{{estado.label}}</span>
                                 </ng-template>
                             </p-multiSelect>
                         </th>
-                        <th>
+                        <th class="th-cabecera" style="font-size:12px !important; text-transform:capitalize; border-top:none; font-weight: lighter;">
                             <input [(ngModel)]="cuitFiltro" placeholder="00-00000000-0" mask="00-00000000-0" (input)="dt.filter(cuitFiltro, 'CUIT', 'startsWith')" unmask="true">
                         </th>
                     </tr>

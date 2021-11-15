@@ -44,6 +44,8 @@ export class GestionCM05Component extends ListBaseComponent {
     detallesEditando: DetalleCM05[];
 
     cuitFiltro: string;
+    idConsultaFiltro: string;
+    idFiltro: string;
 
     fechaDesde: Date;
     fechaHasta: Date;
