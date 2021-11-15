@@ -13,6 +13,9 @@ import { ListBaseComponent } from '../common/base-components/list-base-component
 import { SelectItem } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { CommonResponse } from '../common/models/common-response';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+
+declare var $: any;
 
 @Component({
     templateUrl: './gestionCM05.component.html',
@@ -20,6 +23,7 @@ import { CommonResponse } from '../common/models/common-response';
     providers: [{ provide: GestionCM05Service, useClass: GestionCM05Service }, MessageService]
 })
 export class GestionCM05Component extends ListBaseComponent {
+    @BlockUI() blockUI: NgBlockUI;
 
     @ViewChild("dt")
     protected table: Table;
@@ -46,6 +50,8 @@ export class GestionCM05Component extends ListBaseComponent {
 
     editandoCabecera: boolean;
     cabeceraEditando: CabeceraCM05;
+    files: FileList = null;
+    listaArchivos: Array<File> = new Array<File>();
 
     constructor(protected service: GestionCM05Service,
         protected navService: NavService,
@@ -104,6 +110,10 @@ export class GestionCM05Component extends ListBaseComponent {
 
         this.editandoCabecera = false;
         this.cabeceraEditando = null;
+
+        $(".adjuntarArchivo").click(function () {
+            $(".adjuntarArchivo1").click();
+        });
     }
 
     onCabeceraClick(data) {
@@ -452,5 +462,57 @@ export class GestionCM05Component extends ListBaseComponent {
 
         this.editandoCabecera = false;
         this.cabeceraEditando = null;
+    }
+
+    cargarArchivo(event: any) {
+        let fileList: FileList = event.target.files;
+        let file;
+
+        if (fileList.length > 0) {
+            this.files = fileList;
+            for (let i = 0; i < fileList.length; i++) {
+                file = fileList[i];
+                this.listaArchivos.push(file);
+            }
+        }
+
+        let $formInput = $('input[type=file]');
+        $formInput.val(null);
+    }
+
+    
+    borrarArchivo(i: number) {
+        this.listaArchivos.splice(i, 1);
+    }
+
+    cargarCM05() {
+        this.blockUI.start()
+        try {
+            this.service.cargarCM05(this.listaArchivos).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.blockUI.stop()
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.blockUI.stop()
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.blockUI.stop()
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.blockUI.stop()
+                        this.listarCabeceras();
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false;
     }
 }

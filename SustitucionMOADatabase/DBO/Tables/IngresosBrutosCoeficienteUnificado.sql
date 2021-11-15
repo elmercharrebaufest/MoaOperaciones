@@ -7,7 +7,7 @@
     [Sede] INT NOT NULL,
 	[FechaCarga] DATETIME NOT NULL, 
     [FechaUltimaModificacion] DATETIME NOT NULL, 
-    [Consulta_Id] INT NOT NULL, 
+    [Consulta_Id] INT NULL, 
     [Archivo_Id] INT NOT NULL, 
 	[SecuenciaIngresosBrutosCoeficienteUnificado_Id] INT NULL,
     [MalCargada] BIT NOT NULL, 
