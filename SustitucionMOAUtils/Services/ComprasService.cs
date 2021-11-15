@@ -595,7 +595,9 @@ namespace SustitucionMOAUtils.Services
                     TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                     VincularPliego = !x.Pliego_Id.HasValue,
                     TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
-                    RevisadoPor = x.Pliego?.RevisadoPor
+                    RevisadoPor = x.Pliego?.RevisadoPor,
+                    TipoSolpSap = x.TipoSolpSap,
+                    EstadoPasos = x.EstadoPasos,
                 }).OrderByDescending(i => i.FechaCreacion);
 
             return todasLasSolp.ToList();
@@ -633,8 +635,7 @@ namespace SustitucionMOAUtils.Services
                 TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                 VincularPliego = !x.Pliego_Id.HasValue,
                 UsuarioCompras = x.UsuarioCompras != null ? new UsuarioComprasDto(x.UsuarioCompras) : new UsuarioComprasDto(),
-
-
+                TipoSolpSap = x.TipoSolpSap,
                 NombreDeObra = x.Pliego.NombreObra,
                 FiscalContrato = x.Pliego.FiscalContrato,
                 Telefono = x.Pliego.Telefono,
@@ -1337,10 +1338,11 @@ namespace SustitucionMOAUtils.Services
 
         public List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual)
         {
-            var usuarios = repositorio.Listar<Usuario>().ToList();
-            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>().Where(item => item.Usuario_Id == usuarios[0].Id)
+            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id)
                 .Select(x => new UsuarioComprasRelacionConUsuariosDto
                 {
+                    Usuario = new UsuarioDto(x.Usuario),
+                    Id = x.Id,
                     UsuarioCompras = new UsuarioComprasDto(x.UsuarioCompras)
                 });
 
