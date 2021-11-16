@@ -213,7 +213,10 @@ namespace SustitucionMOAUtils.Services
 
             if (esAdministradorMolinos)
             {
-                foreach (var prov in usuario.Proveedores)
+                //Hacemos el cambio para que no le vuele el historial a todos los proveedores
+                var prov = usuario.Proveedores.FirstOrDefault(p => p.CUIT == usuario.CUITRegistro && p.Mail == usuario.Mail);
+
+                if(prov != null)
                 {
                     prov.EstadoAprobacion = EstadoAprobacion.Aprobado;
 
@@ -224,8 +227,8 @@ namespace SustitucionMOAUtils.Services
                     repositorio.RemoverTodos(historial);
 
                     prov.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
-
                 }
+
             }
 
             repositorio.GuardarCambios();

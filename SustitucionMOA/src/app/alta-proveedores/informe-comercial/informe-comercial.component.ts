@@ -67,13 +67,13 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
   }
 
   iniciarForm() {
-    if (this.proveedorId > 0) {
+    /*if (this.proveedorId > 0) {*/
       document.getElementById("openModalHiddenButton").click();
       this.obtenerCampanias();
-    }
+    /*}
     else {
       this.floatMsgService.setInfoMsg("No hay un proveedor seleccionado para completar el informe comercial.")
-    }
+    }*/
   }
 
 
