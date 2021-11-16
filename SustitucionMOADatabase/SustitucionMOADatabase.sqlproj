@@ -144,6 +144,7 @@
     <Build Include="DBO\Tables\ServicioSolp.sql" />
     <Build Include="DBO\Tables\UsuarioComprasRelacionConUsuarios.sql" />
     <Build Include="DBO\Tables\UsuarioCompras.sql" />
+    <None Include="scripts\CreacionRolAccesoQr.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
