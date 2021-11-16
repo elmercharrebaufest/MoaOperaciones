@@ -62,7 +62,13 @@ camposObligatorios: any[] = [
     return valor == null || 
         ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) 
         && valor.toString().length == 0);
-}
+  }
+
+
+  mostrarValidacion(campoAValidar, vacio){
+    let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
+    return (camposVacios != null && vacio == undefined);
+  }
 
   actualizarTipoDeImputacion(): void {
     debugger

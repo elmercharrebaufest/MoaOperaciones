@@ -7,6 +7,9 @@
         <p-autoComplete [(ngModel)]="posicion.tipoImputacion" [suggestions]="autocomplete" dataKey="Id" ariaLabel="Descripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="" [minLength]="2" [forceSelection]="true" (completeMethod)="autocompleteSap($event, '')"
             (onFocus)=" $event.target.select()">
         </p-autoComplete>
+        <div *ngIf="mostrarValidacion('tipoImputacion', posicion.tipoImputacion)">
+          <p class="text-danger">campo obligatorio</p>
+      </div>
        </div>
     </div>
 
@@ -16,6 +19,9 @@
           <p-autoComplete [(ngModel)]="posicion.cuentaMayor" [suggestions]="autocomplete" dataKey="Id" ariaLabel="CuentaMayor" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="" [minLength]="2" [forceSelection]="true" (completeMethod)="autocompleteSap($event, 'CuentasSolpSap')"
               (onFocus)=" $event.target.select()">
           </p-autoComplete>
+          <div *ngIf="mostrarValidacion('cuentaMayor', posicion.cuentaMayor)">
+            <p class="text-danger">campo obligatorio</p>
+        </div>
         </div>
     </div>
  
