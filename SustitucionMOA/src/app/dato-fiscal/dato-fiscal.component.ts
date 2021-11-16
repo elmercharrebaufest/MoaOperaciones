@@ -53,7 +53,7 @@ export class DatoFiscalBaseComponent extends BaseComponent implements OnInit {
   nombre = "";
   proveedor = "";
   tipoUsuario: string;
-  vendedorId: string;
+  vendedorId: string = "";
   itemsPerPage = sessionStorage.getItem("itemsPerPage")
     ? sessionStorage.getItem("itemsPerPage")
     : "10";
@@ -108,7 +108,17 @@ export class DatoFiscalBaseComponent extends BaseComponent implements OnInit {
     this.spinnerComponent.showIt();
     this.unsubscribe();
     this.route.params.forEach((params: Params) => {
-      this.vendedorId = params["id"];
+
+
+      if (
+        params["id"] != undefined &&
+        params["id"] != "" &&
+        params["id"] != null
+      ) {
+        this.vendedorId = params["id"];
+      }
+
+
       if (
         params["id2"] != undefined &&
         params["id2"] != "" &&
@@ -167,12 +177,12 @@ export class DatoFiscalBaseComponent extends BaseComponent implements OnInit {
     return false;
   }
 
-    showModalTableConveniosMultilateralesResponsive(Convenio: any) {
-        this.modalService.openModalTableResponsive("Convenio Multilateral", [
-            { etiqueta: "Provincia", valor: Convenio.provincia },
-            { etiqueta: "Coeficiente", valor: Convenio.coeficiente },
-            { etiqueta: "Descripcion", valor: Convenio.descripcion },
-        ]);
-        return false;
-    }
+  showModalTableConveniosMultilateralesResponsive(Convenio: any) {
+    this.modalService.openModalTableResponsive("Convenio Multilateral", [
+      { etiqueta: "Provincia", valor: Convenio.provincia },
+      { etiqueta: "Coeficiente", valor: Convenio.coeficiente },
+      { etiqueta: "Descripcion", valor: Convenio.descripcion },
+    ]);
+    return false;
+  }
 }
