@@ -51,6 +51,9 @@
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-posicion let-rowIndex="rowIndex">
+
+                                <!-- <tab-imputaciones [posicion]="posicion" [model]="model"></tab-imputaciones> -->
+
                                 <tr style="text-align: center;">
                                     <td style="width: 4%; padding: revert;">                                       
                                         <img (click)="eliminarSubPosicionIndividual(rowIndex)" style="width: 50%;"
@@ -187,6 +190,9 @@
         * Campos obligatorios
     </div>
 </div>
+
+
+
 
 <!-- Modal eliminacion de subposicion-->
 <p-confirmDialog #dialogo header="Eliminar" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
