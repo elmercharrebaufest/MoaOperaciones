@@ -9,21 +9,49 @@
             <div style="width: 75%; height: 35px; margin-top: 10px; margin-bottom: 10px;">
                 <button type="button" pButton icon="fa fa-refresh" (click)="listarCabeceras()" style="background-color: #067935; float: right"></button>
             </div>
-            <p-table #dt [columns]="cabeceraCols" [value]="cabeceras" selectionMode="single" [(selection)]="selectedCabecera" [paginator]="true" [rows]="10">
+            <p-table #dt [columns]="cabeceraCols" [value]="cabeceras" selectionMode="single" [(selection)]="selectedCabecera" [paginator]="true" [rows]="10" sortMode="multiple">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Id</th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Id Consulta</th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Razón Social</th>
-                        <th class="col-md-3 th-cabecera" style="border-bottom:none">
-                            Estado
+                        <th [pSortableColumn]="'Id'" class="col-md-1 th-cabecera" rowspan="2">
+                            Id
+                            <p-sortIcon [field]="'Id'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Secuencia</th>
-                        <th class="col-md-2 th-cabecera">CUIT</th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Anticipo</th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Sede</th>
-                        <th class="col-md-2 th-cabecera" rowspan="2">Fecha Carga</th>
-                        <th class="col-md-2 th-cabecera" rowspan="2">Última modificación</th>
+                        <th [pSortableColumn]="'ConsultaId'" class="col-md-1 th-cabecera" rowspan="2">
+                            Id Consulta
+                            <p-sortIcon [field]="'ConsultaId'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'RazonSocial'" class="col-md-1 th-cabecera" rowspan="2">
+                            Razón Social
+                            <p-sortIcon [field]="'RazonSocial'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'Estado'" class="col-md-3 th-cabecera" style="border-bottom:none">
+                            Estado
+                            <p-sortIcon [field]="'Estado'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'Secuencia'" class="col-md-1 th-cabecera" rowspan="2">
+                            Secuencia
+                            <p-sortIcon [field]="'Secuencia'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'CUIT'" class="col-md-2 th-cabecera">
+                            CUIT
+                            <p-sortIcon [field]="'CUIT'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'Anticipo'" class="col-md-1 th-cabecera" rowspan="2">
+                            Anticipo
+                            <p-sortIcon [field]="'Anticipo'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'Sede'" class="col-md-1 th-cabecera" rowspan="2">
+                            Sede
+                            <p-sortIcon [field]="'Sede'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'FechaCarga'" class="col-md-2 th-cabecera" rowspan="2">
+                            Fecha Carga
+                            <p-sortIcon [field]="'FechaCarga'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'FechaUltimaModificacion'" class="col-md-2 th-cabecera" rowspan="2">
+                            Última modificación
+                            <p-sortIcon [field]="'FechaUltimaModificacion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
                     </tr>
                     <tr>
                         <th class="col-md-2 th-cabecera" style="font-size:10px !important; text-transform:capitalize; border-top:none">
