@@ -95,7 +95,9 @@
                             </td>
                             <td>{{vendedor.idVendedor}}</td>
                             <td *ngIf="vendedor.estado == '';else elseBlock">{{vendedor.estadoMoa}}</td>
-                            <ng-template #elseBlock><td>{{vendedor.estado}}</td></ng-template>
+                            <ng-template #elseBlock>
+                                <td>{{vendedor.estado}}</td>
+                            </ng-template>
                         </tr>
                     </tbody>
                 </table>
@@ -144,7 +146,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="for row myRow">
+                        <div class="for row myRow" [hidden]='true'>
                             <div class="col-xs-12 col-sm-12 col-md-12">
                                 <p class="crearConsultaTitulos">Tipo</p>
                                 <div class="styled-select" style="display: flex;">
