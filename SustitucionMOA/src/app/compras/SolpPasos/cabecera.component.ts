@@ -13,14 +13,15 @@ import { AbstractControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { EnumPasoSolp } from '../enum-paso-solp';
-
+import { Message } from 'primeng/components/common/api';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 declare var $: any;
 
 @Component({
     selector: 'cabecera',
     templateUrl: `cabecera.component.html`,
-    styleUrls: ['../compras.component.css'],
+    styleUrls: ['../compras.component.css', './cabecera.component.css'],
 })
 export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
@@ -33,12 +34,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     @Input('locale')
     protected locale: any;
 
-
-
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router,
-        private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService) {
+        private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService, private messageService: MessageService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
     }
@@ -87,6 +86,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     @Output() onEstCompleto = new EventEmitter<any>();
 
+    mensajesEncabezado: Message[] = [];
+
     setTabs() {
         this.setMenuSeccionTab("Cabecera", "Cabecera");
     }
@@ -116,6 +117,15 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.model.posicionActual.selectSolicitanteCompras = this.model.fiscalContrato;
 
         this.model.cargoPasoCinco = true;
+
+        if (this.model.vincularAPliego) {
+            this.mensajesEncabezado.push({ severity: 'warn', summary: '', detail: 'No es posible editar esta pantalla desde la plataforma. Para editar dirijase a SAP' });
+            this.formularioActual.disable();
+        }
+        else {
+            this.mensajesEncabezado = [];
+            this.formularioActual.enable();
+        }
     }
 
     setControlesObligatorios(claseDocumento) {

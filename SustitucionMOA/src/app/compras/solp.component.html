@@ -3,8 +3,10 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "> <strong>¿Qu&eacute; tipo de SOLP quiere
-                    iniciar?</strong></div>
+            <div class="col-xs-12 col-sm-10 ">
+                <strong *ngIf="!titulo">¿Qu&eacute; tipo de SOLP quiere iniciar?</strong>
+                <strong *ngIf="titulo">{{titulo}}</strong>
+            </div>
         </div>
         <!--End Title-->
         <!-- Form-->
@@ -24,16 +26,16 @@
                 <!-- contenido -->
                 <div class="col-xs-12 col-md-12" [ngSwitch]="pasoActual.Codigo">
                     <div *ngSwitchCase="enumSolp.PliegoGeneracion1" [@fadeInOut]>
-                        <generacion1 #paso1 [(model)]="solpActual" [(locale)]="es" ></generacion1>
+                        <generacion1 #paso1 [(model)]="solpActual" [(locale)]="es"></generacion1>
                     </div>
                     <div *ngSwitchCase="enumSolp.PliegoGeneracion2" [@fadeInOut]>
-                        <generacion2 #paso2 [(model)]="solpActual" [(locale)]="es" ></generacion2>
+                        <generacion2 #paso2 [(model)]="solpActual" [(locale)]="es"></generacion2>
                     </div>
                     <div *ngSwitchCase="enumSolp.PliegoEspecificacion" [@fadeInOut]>
-                        <especificaciones #paso3 [(model)]="solpActual" [(locale)]="es" ></especificaciones>
+                        <especificaciones #paso3 [(model)]="solpActual" [(locale)]="es"></especificaciones>
                     </div>
                     <div *ngSwitchCase="enumSolp.PliegoCotizacion" [@fadeInOut]>
-                        <cotizacion [(model)]="solpActual" [(locale)]="es" ></cotizacion>
+                        <cotizacion [(model)]="solpActual" [(locale)]="es"></cotizacion>
                     </div>
                     <div *ngSwitchCase="enumSolp.SolpCabecera" [@fadeInOut]>
                         <cabecera #cabecera [(model)]="solpActual" [(locale)]="es" [(combos)]="combos"></cabecera>
@@ -54,20 +56,25 @@
                 </div>
                 <div class="col-xs-3 col-md-3" style="text-align: center;">
                     <!-- <button class="btn btn-danger" (click)="cancelarSolp()"><i class="fa fa-reply"></i>&nbsp; CANCELAR</button> -->
-                    <button class="btn btn-defaut btn-secondary botonesCompras" (click)="cancelarSolp()"><i
-                            class="fa fa-arrow-left"></i>&nbsp; VOLVER</button>&nbsp;
+                    <button class="btn btn-defaut btn-secondary botonesCompras" (click)="cancelarSolp()">
+                        <i class="fa fa-arrow-left"></i>&nbsp; VOLVER
+                    </button>&nbsp;
                 </div>
                 <div class="col-xs-8 col-md-8">
                     <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0; text-align: right;">
-                        <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoAnterior().paso" (click)="navegar(pasoAnterior())"><i class="fa fa-arrow-left"></i>&nbsp;
-                            {{pasoAnterior().descripcion}}</button>&nbsp;
+                        <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoAnterior().paso" (click)="navegar(pasoAnterior())">
+                            <i class="fa fa-arrow-left"></i>&nbsp;
+                            {{pasoAnterior().descripcion}}
+                        </button>&nbsp;
                     </div>
                     <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0; text-align: center;">
                         <button class="btn btn-primary botonesComprasColor" (click)="guardarCambios()" [disabled]="disabledSave">GUARDAR</button>&nbsp;
                     </div>
                     <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0;">
-                        <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" [disabled]="disabledSave" (click)="navegar(pasoSiguiente()); guardarCambios(false, false, true)">{{pasoSiguiente().descripcion}}
-                            &nbsp;<i class="fa fa-arrow-right"></i></button>
+                        <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" [disabled]="disabledSave" (click)="navegar(pasoSiguiente()); guardarCambios(false, false, true)">
+                            {{pasoSiguiente().descripcion}}
+                            &nbsp;<i class="fa fa-arrow-right"></i>
+                        </button>
                         <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="showDialog()" style="cursor: auto;">{{pasoSiguiente().descripcion}}</button>
                     </div>
                     <div class="col-xs-1 col-md-1">
@@ -100,7 +107,6 @@
     </p-footer>
 </p-confirmDialog>
 <!--fin modal cancelar SOLP-->
-
 <!-- Modal Volver a home SOLP-->
 <p-confirmDialog #dialo key="solpFinalizadaVolverHome" header="Confirmacion" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
     <p-footer>
@@ -218,6 +224,19 @@
     </p-header>
     <br> Ha editado con éxito la solicitud de pedido {{solpActual.NroSolp}} en SAP
     <br>
+    <br>
+    <p-footer>
+        <button type="button" pButton label="Descargar SOLP" class="btn btn-defaut btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)"></button>
+        <button type="button" pButton label="Volver a la home" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()"></button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="displaySAPVincularPliego" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}">
+    <p-header class="headerModal">
+        ¡Felicitaciones!
+    </p-header>
+    <br> La vinculación del Pliego se realizó correctamente.
+    <br> Puede descargar la SOLP y enviarla por mail.
     <br>
     <p-footer>
         <button type="button" pButton label="Descargar SOLP" class="btn btn-defaut btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)"></button>
