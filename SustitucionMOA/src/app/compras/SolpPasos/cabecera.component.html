@@ -4,6 +4,7 @@
     <div #headerPosiciones></div>
     <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <mensaje></mensaje>
+        <p-messages [(value)]="mensajesEncabezado" [closable]="false"></p-messages>
         <div class="inputCompras">
             <div class="row myRow" style="padding-top: 2px;">
                 <!-- Row Clase documento -->
@@ -12,7 +13,8 @@
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
                             Clase documento
                             <div>
-                                <p-dropdown [options]="claseDocumento" [(ngModel)]="model.selectClaseDocumento" dataKey="Id" optionLabel="CodigoDescripcion" (onChange)="cambiarClaseDocumento()">
+                                <p-dropdown [options]="claseDocumento" [(ngModel)]="model.selectClaseDocumento" dataKey="Id" optionLabel="CodigoDescripcion" (onChange)="cambiarClaseDocumento()" styleClass="claseDocumento"
+                                            [disabled]="model.vincularAPliego">
                                 </p-dropdown>
                             </div>
                         </div>
@@ -42,13 +44,13 @@
                             <div class="col-xs-5 col-sm- col-md-5 col-lg-5">
                             </div>
                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                <button class="btn btn-secondary botonAgregarPosicion botonesCompras" (click)="agregarPosicion(headerPosiciones)"><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
+                                <button class="btn btn-secondary botonAgregarPosicion botonesCompras" (click)="agregarPosicion(headerPosiciones)" [disabled]="model.vincularAPliego"><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
                             </div>
                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" *ngIf="model.posicionActual.estado">
-                                <button class="btn btn-danger botonesComprasColor" (click)="eliminarPosicion()"><img  src="./Content/images/icons/trashWhite.svg" alt="trashWhite"/> Eliminar posici&oacute;n</button>
+                                <button class="btn btn-danger botonesComprasColor" (click)="eliminarPosicion()" [disabled]="model.vincularAPliego"><img src="./Content/images/icons/trashWhite.svg" alt="trashWhite" /> Eliminar posici&oacute;n</button>
                             </div>
                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" *ngIf="!model.posicionActual.estado && this.model.nroSolp > 0">
-                                <button class="btn btn-info botonesComprasColor" (click)="recuperarPosicion()"><img  src="./Content/images/icons/editar.svg" alt="trashWhite"/> Recuperar posici&oacute;n</button>
+                                <button class="btn btn-info botonesComprasColor" (click)="recuperarPosicion()" [disabled]="model.vincularAPliego"><img src="./Content/images/icons/editar.svg" alt="trashWhite" /> Recuperar posici&oacute;n</button>
                             </div>
                         </div>
                     </div>
@@ -96,7 +98,7 @@
                                     Texto gen&eacute;rico*
                                 </div>
                                 <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.textoGenerico" name="textoGenerico" formControlName="textoGenerico" id="textoGenerico" placeholder="Ingrese nombre de la posicion" maxlength="40"
-                                    rows="1" />
+                                       rows="1" />
                                 <div *ngIf="mostrarError('textoGenerico')">
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
@@ -141,7 +143,7 @@
                     <hr class="separadorCompras">
                     <!-- Row grupo de compras -->
 
-                    <tab-datos-posicion [(model)]="model" [(combos)]="combos"></tab-datos-posicion>
+                    <tab-datos-posicion [(model)]="model" [(combos)]="combos" [(disabled)]="model.vincularAPliego"></tab-datos-posicion>
 
                     <!-- End Row grupo de compras -->
                     <hr class="separadorCompras">
@@ -153,55 +155,55 @@
                                 Proveedores
                             </div>
                             <!-- <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                                <div>
-                                    Rubro
-                                </div>
-                                <div>
-                                    <p-checkbox formControlName="rubroElectrico" [ngModelOptions]="{standalone:true}"
-                                        class="checkboxFechas" [(ngModel)]="model.posicionActual.rubroElectrico"
-                                        label="Eléctrico" binary="true"></p-checkbox>
-                                </div>
-                                <div>
-                                    <p-checkbox formControlName="rubroCivil" [ngModelOptions]="{standalone:true}"
-                                        class="checkboxFechas" [(ngModel)]="model.posicionActual.rubroCivil"
-                                        label="Civil" binary="true"></p-checkbox>
-                                </div>
-                                <div>
-                                    <p-checkbox formControlName="rubroMecanico" [ngModelOptions]="{standalone:true}"
-                                        class="checkboxFechas" [(ngModel)]="model.posicionActual.rubroMecanico"
-                                        label="Mecánico" binary="true"></p-checkbox>
-                                </div>
-                                <div>
-                                    <p-checkbox formControlName="rubroIngenieria" [ngModelOptions]="{standalone:true}"
-                                        class="checkboxFechas" [(ngModel)]="model.posicionActual.rubroIngenieria"
-                                        label="Ingeniería" binary="true"></p-checkbox>
-                                </div>
-                                <div>
-                                    <p-checkbox formControlName="rubroConsultoria" [ngModelOptions]="{standalone:true}"
-                                        class="checkboxFechas" [(ngModel)]="model.posicionActual.rubroConsultoria"
-                                        label="Consultoría" binary="true"></p-checkbox>
-                                </div>
-                            </div> -->
+                            <div>
+                                Rubro
+                            </div>
+                            <div>
+                                <p-checkbox formControlName="rubroElectrico" [ngModelOptions]="{standalone:true}"
+                                    class="checkboxFechas" [(ngModel)]="model.posicionActual.rubroElectrico"
+                                    label="Eléctrico" binary="true"></p-checkbox>
+                            </div>
+                            <div>
+                                <p-checkbox formControlName="rubroCivil" [ngModelOptions]="{standalone:true}"
+                                    class="checkboxFechas" [(ngModel)]="model.posicionActual.rubroCivil"
+                                    label="Civil" binary="true"></p-checkbox>
+                            </div>
+                            <div>
+                                <p-checkbox formControlName="rubroMecanico" [ngModelOptions]="{standalone:true}"
+                                    class="checkboxFechas" [(ngModel)]="model.posicionActual.rubroMecanico"
+                                    label="Mecánico" binary="true"></p-checkbox>
+                            </div>
+                            <div>
+                                <p-checkbox formControlName="rubroIngenieria" [ngModelOptions]="{standalone:true}"
+                                    class="checkboxFechas" [(ngModel)]="model.posicionActual.rubroIngenieria"
+                                    label="Ingeniería" binary="true"></p-checkbox>
+                            </div>
+                            <div>
+                                <p-checkbox formControlName="rubroConsultoria" [ngModelOptions]="{standalone:true}"
+                                    class="checkboxFechas" [(ngModel)]="model.posicionActual.rubroConsultoria"
+                                    label="Consultoría" binary="true"></p-checkbox>
+                            </div>
+                        </div> -->
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="padding-left: 0;">
                                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 ui-fluid">
                                     Válidos
                                     <p-chips [(ngModel)]="model.posicionActual.proveedoresValidos" formControlName="proveedoresValidos" name="model.posicionActual.proveedoresValidos" styleClass="widthAutocomplete" id="proveedoresValidos" [suggestions]="resultadoProveedores" (completeMethod)="search($event)"
-                                        addOnTab="true" [addOnBlur]="true">
+                                             addOnTab="true" [addOnBlur]="true">
                                     </p-chips>
                                 </div>
 
                                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 ui-fluid">
                                     Inválidos
                                     <p-chips [(ngModel)]="model.posicionActual.proveedoresInvalidos" formControlName="proveedoresInvalidos" name="model.posicionActual.proveedoresInvalidos" styleClass="widthAutocomplete" id="proveedoresInvalidos" [suggestions]="resultadoProveedores" (completeMethod)="search($event)"
-                                        addOnTab="true" [addOnBlur]="true">
+                                             addOnTab="true" [addOnBlur]="true">
                                     </p-chips>
                                 </div>
 
                                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 ui-fluid">
-                                    No sugeridos                                
+                                    No sugeridos
                                     <p-chips [(ngModel)]="model.posicionActual.proveedoresNoSugeridos" formControlName="proveedoresNoSugeridos" name="model.posicionActual.proveedoresNoSugeridos" styleClass="widthAutocomplete" id="proveedoresNoSugeridos" [suggestions]="resultadoProveedores"
-                                        (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true">
+                                             (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true">
                                     </p-chips>
                                 </div>
                             </div>
@@ -215,13 +217,14 @@
                             <div class="margenInput">
                                 Moneda*
                                 <p-autoComplete formControlName="selectMonedaCompras" [(ngModel)]="model.posicionActual.monedaSeleccionada" [suggestions]="monedaCompras" dataKey="Id" ariaLabel="CodigoDescripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="Ningúna moneda encontrada"
-                                    [minLength]="1" [dropdown]="true" [forceSelection]="true" (completeMethod)="buscarCombo($event, 'MONEDA COMPRAS')" (onFocus)=" $event.target.select()">
+                                                [minLength]="1" [dropdown]="true" [forceSelection]="true" (completeMethod)="buscarCombo($event, 'MONEDA COMPRAS')" (onFocus)=" $event.target.select()">
                                 </p-autoComplete>
                                 <div *ngIf="mostrarError('selectMonedaCompras')">
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
-                            <p *ngIf="model.posicionActual.totalPosicion()" class="valorTotal">Valor Total: {{model.posicionActual.totalPosicion()}}
+                            <p *ngIf="model.posicionActual.totalPosicion()" class="valorTotal">
+                                Valor Total: {{model.posicionActual.totalPosicion()}}
                             </p>
                         </div>
                     </div>
