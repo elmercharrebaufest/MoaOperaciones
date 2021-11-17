@@ -204,7 +204,7 @@
         <div class="logo">
             <img src="/Content/images/header/logo.png" class="img-responsive" (click)="clickLogo()">
         </div>
-        <div *ngIf="!menuSmall" class="col-md-6" style="margin: auto; padding: unset;">
+        <div *ngIf="!menuSmall && false" class="col-md-6" style="margin: auto; padding: unset;">
             <app-buscador-inteligente></app-buscador-inteligente>
         </div>
         <div class="User-wrapper">
@@ -430,7 +430,7 @@
                     </div>
                 </div>
 
-                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isNoGranosSelected()">
+                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isNoGranosSelected() && false">
                     <div class="panel-heading seccion" role="tab" id="operar">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                             href="#collapseO" aria-expanded="false" aria-controls="collapseO">
