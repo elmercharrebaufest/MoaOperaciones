@@ -43,7 +43,7 @@ export class GestionCM05Service extends BaseService {
         headers = headers.append("Expires", "0");
         headers = headers.append("Pragma", "no-cache");
         let params: HttpParams = new HttpParams();
-        params.set("idCabecera", idCabecera.toString());
+        params = params.set("idCabecera", idCabecera.toString());
         return this.http
             .get('/api/GestionImpuestos/DescargarFormularioCM05?idCabecera=' + idCabecera, { headers: this.headers });
     }
