@@ -30,6 +30,9 @@ export class TabDatosPosicionComponent extends ListBaseComponent implements OnIn
   @Input('model')
   protected model: Solp;
 
+  @Input('disabled')
+  protected disabled: boolean = false;
+
 
   constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
