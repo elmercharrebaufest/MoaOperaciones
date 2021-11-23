@@ -131,8 +131,8 @@ export class VentaSustentableService extends BaseService {
 
     borrarCampoSustentable(proveedorId: number, cosechaId: number) {
         let params: HttpParams = new HttpParams();
-        params.set("proveedorId", proveedorId.toString());
-        params.set("cosechaId", cosechaId.toString());
+        params = params.set("proveedorId", proveedorId.toString());
+        params = params.set("cosechaId", cosechaId.toString());
         return this.http
             .get('/api/CampoSustentable/BorrarCampoSustentable', { params: params, headers: this.headers });
         // .pipe(map(this.extractData)
@@ -143,8 +143,8 @@ export class VentaSustentableService extends BaseService {
 
 
         let params: HttpParams = new HttpParams();
-        params.set("campoCosechaId", campoCosechaId.toString());
-        params.set("proveedorId", proveedorId.toString());
+        params = params.set("campoCosechaId", campoCosechaId.toString());
+        params = params.set("proveedorId", proveedorId.toString());
 
         return this.http
             .get('/api/CampoSustentable/DescargarArchivoKMZ', { params: params, headers: this.headers })

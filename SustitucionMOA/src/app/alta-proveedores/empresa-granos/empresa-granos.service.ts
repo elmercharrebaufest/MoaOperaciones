@@ -37,7 +37,7 @@ export class EmpresaGranosService extends BaseService {
         headers = headers.append("Pragma", "no-cache");
 
         let params: HttpParams = new HttpParams();
-        params.set("localidad", term);
+        params = params.set("localidad", term);
 
         return this.http
             .get("/api/AltaEmpresaGranos/GetLocalidadCombo", {
