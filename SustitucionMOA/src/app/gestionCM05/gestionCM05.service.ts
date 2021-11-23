@@ -74,4 +74,9 @@ export class GestionCM05Service extends BaseService {
         return this.http
             .post('/api/Consulta/cargarCM05', payload, { headers: this.headers });
     }
+
+    public listarMovimientos(idCabecera): Observable<any> {
+        return this.http
+            .get('/api/GestionImpuestos/ListarMovimientos?idCabecera=' + idCabecera, { headers: this.headers });
+    }
 }

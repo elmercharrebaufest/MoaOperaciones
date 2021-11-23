@@ -39,6 +39,16 @@
     vertical-align:central;
 }
 
+.th-movimiento {
+    text-align: center;
+    text-transform: capitalize;
+    font-size: 13px;
+}
+
+.td-movimiento {
+    font-size: 10px;
+}
+
 input {
     width: 100%;    
 }

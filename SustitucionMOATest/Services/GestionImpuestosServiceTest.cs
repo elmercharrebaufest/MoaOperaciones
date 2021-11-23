@@ -1022,5 +1022,227 @@ namespace SustitucionMOATest.Services
                 Assert.Fail("Debió lanzar una InfoCustomException");
             }
         }
+
+        [Test]
+        public void ListarMovimientosOk()
+        {
+            int idCabeceraTest = 921;
+
+            DateTime hoy = new DateTime(2021, 07, 28);
+            DateTime ayer = new DateTime(2021, 07, 29);
+
+            List<MovimientoIngresosBrutosCoeficienteUnificado> movimientos = new List<MovimientoIngresosBrutosCoeficienteUnificado>
+            {
+                new MovimientoIngresosBrutosCoeficienteUnificado
+                {
+                    Id = 1,
+                    IngresosBrutosCoeficienteUnificado_Id = 921,
+                    Fecha = ayer,
+                    Observaciones = "Observaciones che",
+                    OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumOrigenIngresosBrutosCoeficienteUnificado.WEB,
+                    TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumTipoIngresosBrutosCoeficienteUnificado.Autorizacion,
+                    EstadoAnterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                    EstadoPosterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
+                },
+                new MovimientoIngresosBrutosCoeficienteUnificado
+                {
+                    Id = 23,
+                    IngresosBrutosCoeficienteUnificado_Id = 921,
+                    Fecha = ayer,
+                    Observaciones = "Observaciones che",
+                    OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumOrigenIngresosBrutosCoeficienteUnificado.WEB,
+                    TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumTipoIngresosBrutosCoeficienteUnificado.AutorizacionRevertida,
+                    EstadoAnterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
+                    EstadoPosterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                },
+                new MovimientoIngresosBrutosCoeficienteUnificado
+                {
+                    Id = 33,
+                    IngresosBrutosCoeficienteUnificado_Id = 921,
+                    Fecha = ayer,
+                    Observaciones = "Observaciones che",
+                    OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumOrigenIngresosBrutosCoeficienteUnificado.WEB,
+                    TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumTipoIngresosBrutosCoeficienteUnificado.Autorizacion,
+                    EstadoAnterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                    EstadoPosterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
+                },
+                new MovimientoIngresosBrutosCoeficienteUnificado
+                {
+                    Id = 4343,
+                    IngresosBrutosCoeficienteUnificado_Id = 922,
+                    Fecha = ayer,
+                    Observaciones = "Observaciones che",
+                    OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumOrigenIngresosBrutosCoeficienteUnificado.SAP,
+                    TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumTipoIngresosBrutosCoeficienteUnificado.Error,
+                    EstadoAnterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                    EstadoPosterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
+                },
+                new MovimientoIngresosBrutosCoeficienteUnificado
+                {
+                    Id = 233333,
+                    IngresosBrutosCoeficienteUnificado_Id = 921,
+                    Fecha = hoy,
+                    Observaciones = "Observaciones che",
+                    OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumOrigenIngresosBrutosCoeficienteUnificado.WEB,
+                    TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumTipoIngresosBrutosCoeficienteUnificado.ExportacionExitosa,
+                    EstadoAnterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
+                    EstadoPosterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Completado,
+                },
+            };
+
+            this.repositorioMock
+                .Setup(repo => repo.Listar
+                    (It.IsAny<Expression<Func<MovimientoIngresosBrutosCoeficienteUnificado, MovimientoIngresosBrutosCoeficienteUnificadoDto>>>(),
+                    It.IsAny<Expression<Func<MovimientoIngresosBrutosCoeficienteUnificado, bool>>>(),
+                    0,
+                    null,
+                    DirOrden.Asc))
+                .Returns<Expression<Func<MovimientoIngresosBrutosCoeficienteUnificado, MovimientoIngresosBrutosCoeficienteUnificadoDto>>, Expression<Func<MovimientoIngresosBrutosCoeficienteUnificado, bool>>, int, string, DirOrden>
+                    ((proy, filtro, maxResultados, orden, dirOrden) =>
+                    movimientos.Where(filtro.Compile()).Select(x => proy.Compile().Invoke(x)).ToList());
+
+            var result = target.ListarMovimientos(idCabeceraTest);
+
+            this.repositorioMock.Verify(
+                repo => repo.Listar(
+                    It.IsAny<Expression<Func<MovimientoIngresosBrutosCoeficienteUnificado, MovimientoIngresosBrutosCoeficienteUnificadoDto>>>(),
+                    It.IsAny<Expression<Func<MovimientoIngresosBrutosCoeficienteUnificado, bool>>>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<DirOrden>()),
+                Times.Once);
+
+            Assert.AreEqual(4, result.Count);
+
+            Assert.AreEqual(1, result[0].Id);
+            Assert.AreEqual(idCabeceraTest, result[0].IngresosBrutosCoeficienteUnificado.Id);
+            Assert.AreEqual(ayer, result[0].Fecha);
+            Assert.AreEqual("Observaciones che", result[0].Observaciones);
+            Assert.AreEqual(1, result[0].OrigenId);
+            Assert.AreEqual(2, result[0].TipoId);
+            Assert.AreEqual(1, result[0].EstadoAnteriorId);
+            Assert.AreEqual(2, result[0].EstadoPosteriorId);
+
+            Assert.AreEqual(23, result[1].Id);
+            Assert.AreEqual(idCabeceraTest, result[1].IngresosBrutosCoeficienteUnificado.Id);
+            Assert.AreEqual(ayer, result[1].Fecha);
+            Assert.AreEqual("Observaciones che", result[1].Observaciones);
+            Assert.AreEqual(1, result[1].OrigenId);
+            Assert.AreEqual(3, result[1].TipoId);
+            Assert.AreEqual(2, result[1].EstadoAnteriorId);
+            Assert.AreEqual(1, result[1].EstadoPosteriorId);
+
+            Assert.AreEqual(33, result[2].Id);
+            Assert.AreEqual(idCabeceraTest, result[2].IngresosBrutosCoeficienteUnificado.Id);
+            Assert.AreEqual(ayer, result[2].Fecha);
+            Assert.AreEqual("Observaciones che", result[2].Observaciones);
+            Assert.AreEqual(1, result[2].OrigenId);
+            Assert.AreEqual(2, result[2].TipoId);
+            Assert.AreEqual(1, result[2].EstadoAnteriorId);
+            Assert.AreEqual(2, result[2].EstadoPosteriorId);
+
+            Assert.AreEqual(233333, result[3].Id);
+            Assert.AreEqual(idCabeceraTest, result[3].IngresosBrutosCoeficienteUnificado.Id);
+            Assert.AreEqual(hoy, result[3].Fecha);
+            Assert.AreEqual("Observaciones che", result[3].Observaciones);
+            Assert.AreEqual(1, result[3].OrigenId);
+            Assert.AreEqual(4, result[3].TipoId);
+            Assert.AreEqual(2, result[3].EstadoAnteriorId);
+            Assert.AreEqual(3, result[3].EstadoPosteriorId);
+        }
+
+        [Test]
+        public void ListarMovimientosListaVaciaNoNulaOk()
+        {
+            int idCabeceraTest = 931;
+
+            DateTime hoy = new DateTime(2021, 07, 28);
+            DateTime ayer = new DateTime(2021, 07, 29);
+
+            List<MovimientoIngresosBrutosCoeficienteUnificado> movimientos = new List<MovimientoIngresosBrutosCoeficienteUnificado>
+            {
+                new MovimientoIngresosBrutosCoeficienteUnificado
+                {
+                    Id = 1,
+                    IngresosBrutosCoeficienteUnificado_Id = 921,
+                    Fecha = ayer,
+                    Observaciones = "Observaciones che",
+                    OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumOrigenIngresosBrutosCoeficienteUnificado.WEB,
+                    TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumTipoIngresosBrutosCoeficienteUnificado.Autorizacion,
+                    EstadoAnterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                    EstadoPosterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
+                },
+                new MovimientoIngresosBrutosCoeficienteUnificado
+                {
+                    Id = 23,
+                    IngresosBrutosCoeficienteUnificado_Id = 921,
+                    Fecha = ayer,
+                    Observaciones = "Observaciones che",
+                    OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumOrigenIngresosBrutosCoeficienteUnificado.WEB,
+                    TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumTipoIngresosBrutosCoeficienteUnificado.AutorizacionRevertida,
+                    EstadoAnterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
+                    EstadoPosterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                },
+                new MovimientoIngresosBrutosCoeficienteUnificado
+                {
+                    Id = 33,
+                    IngresosBrutosCoeficienteUnificado_Id = 921,
+                    Fecha = ayer,
+                    Observaciones = "Observaciones che",
+                    OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumOrigenIngresosBrutosCoeficienteUnificado.WEB,
+                    TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumTipoIngresosBrutosCoeficienteUnificado.Autorizacion,
+                    EstadoAnterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                    EstadoPosterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
+                },
+                new MovimientoIngresosBrutosCoeficienteUnificado
+                {
+                    Id = 4343,
+                    IngresosBrutosCoeficienteUnificado_Id = 922,
+                    Fecha = ayer,
+                    Observaciones = "Observaciones che",
+                    OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumOrigenIngresosBrutosCoeficienteUnificado.SAP,
+                    TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumTipoIngresosBrutosCoeficienteUnificado.Error,
+                    EstadoAnterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                    EstadoPosterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
+                },
+                new MovimientoIngresosBrutosCoeficienteUnificado
+                {
+                    Id = 233333,
+                    IngresosBrutosCoeficienteUnificado_Id = 921,
+                    Fecha = hoy,
+                    Observaciones = "Observaciones che",
+                    OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumOrigenIngresosBrutosCoeficienteUnificado.WEB,
+                    TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = (int)EnumTipoIngresosBrutosCoeficienteUnificado.ExportacionExitosa,
+                    EstadoAnterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado,
+                    EstadoPosterior_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Completado,
+                },
+            };
+
+            this.repositorioMock
+                .Setup(repo => repo.Listar
+                    (It.IsAny<Expression<Func<MovimientoIngresosBrutosCoeficienteUnificado, MovimientoIngresosBrutosCoeficienteUnificadoDto>>>(),
+                    It.IsAny<Expression<Func<MovimientoIngresosBrutosCoeficienteUnificado, bool>>>(),
+                    0,
+                    null,
+                    DirOrden.Asc))
+                .Returns<Expression<Func<MovimientoIngresosBrutosCoeficienteUnificado, MovimientoIngresosBrutosCoeficienteUnificadoDto>>, Expression<Func<MovimientoIngresosBrutosCoeficienteUnificado, bool>>, int, string, DirOrden>
+                    ((proy, filtro, maxResultados, orden, dirOrden) =>
+                    movimientos.Where(filtro.Compile()).Select(x => proy.Compile().Invoke(x)).ToList());
+
+            var result = target.ListarMovimientos(idCabeceraTest);
+
+            this.repositorioMock.Verify(
+                repo => repo.Listar(
+                    It.IsAny<Expression<Func<MovimientoIngresosBrutosCoeficienteUnificado, MovimientoIngresosBrutosCoeficienteUnificadoDto>>>(),
+                    It.IsAny<Expression<Func<MovimientoIngresosBrutosCoeficienteUnificado, bool>>>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<DirOrden>()),
+                Times.Once);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count);
+        }
+
     }
 }

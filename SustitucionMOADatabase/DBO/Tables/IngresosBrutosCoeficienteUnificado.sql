@@ -23,28 +23,24 @@ ALTER TABLE [dbo].[IngresosBrutosCoeficienteUnificado]  WITH CHECK
 	ADD CONSTRAINT [FK_dbo.IngresosBrutosCoeficienteUnificado_dbo.EstadoIngresosBrutosCoeficienteUnificado] 
 	FOREIGN KEY([EstadoIngresosBrutosCoeficienteUnificado_Id])
 	REFERENCES [dbo].[EstadoIngresosBrutosCoeficienteUnificado]([Id])
-	ON DELETE CASCADE
 GO
 
 ALTER TABLE [dbo].[IngresosBrutosCoeficienteUnificado]  WITH CHECK 
 	ADD CONSTRAINT [FK_dbo.IngresosBrutosCoeficienteUnificado_dbo.Consulta] 
 	FOREIGN KEY([Consulta_Id])
 	REFERENCES [dbo].[Consulta]([Id])
-	ON DELETE CASCADE
 GO
 
 ALTER TABLE [dbo].[IngresosBrutosCoeficienteUnificado]  WITH CHECK 
 	ADD CONSTRAINT [FK_dbo.IngresosBrutosCoeficienteUnificado_dbo.Archivo] 
 	FOREIGN KEY([Archivo_Id])
 	REFERENCES [dbo].[Archivo]([Id])
-	ON DELETE CASCADE
 GO
 
 ALTER TABLE [dbo].[IngresosBrutosCoeficienteUnificado]  WITH CHECK 
 	ADD CONSTRAINT [FK_dbo.IngresosBrutosCoeficienteUnificado_dbo.SecuenciaIngresosBrutosCoeficienteUnificado] 
 	FOREIGN KEY([SecuenciaIngresosBrutosCoeficienteUnificado_Id])
 	REFERENCES [dbo].[SecuenciaIngresosBrutosCoeficienteUnificado]([Id])
-	ON DELETE CASCADE
 GO
 
 ALTER TABLE [dbo].[IngresosBrutosCoeficienteUnificado] CHECK CONSTRAINT [FK_dbo.IngresosBrutosCoeficienteUnificado_dbo.EstadoIngresosBrutosCoeficienteUnificado]

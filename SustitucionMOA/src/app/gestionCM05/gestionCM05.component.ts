@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit, ViewChild } from '@angular/core';
-import { CabeceraCM05, DetalleCM05 } from './gestionCM05';
+import { CabeceraCM05, DetalleCM05, MovimientoCM05 } from './gestionCM05';
 import { Table, TableModule } from 'primeng/table';
 import { DropdownComponent, DropdownOption } from './../common/view-child/dropdown/dropdown.component';
 import { GestionCM05Service } from './gestionCM05.service';
@@ -14,6 +14,7 @@ import { SelectItem } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { CommonResponse } from '../common/models/common-response';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { MenuItem } from 'primeng/api';
 
 declare var $: any;
 
@@ -37,9 +38,15 @@ export class GestionCM05Component extends ListBaseComponent {
 
     detalleCols: any[];
     detalles: DetalleCM05[];
+    frozenCols: any[];
+
+    movimientoCols: any[];
+    movimientos: MovimientoCM05[];
 
     estados: SelectItem[];
     secuencias: SelectItem[];
+    tiposMovimiento: SelectItem[];
+    origenesMovimiento: SelectItem[];
 
     detallesEditando: DetalleCM05[];
 
@@ -54,6 +61,9 @@ export class GestionCM05Component extends ListBaseComponent {
     cabeceraEditando: CabeceraCM05;
     files: FileList = null;
     listaArchivos: Array<File> = new Array<File>();
+
+    tabsPopup: MenuItem[];
+    tabPopupActiva: MenuItem;
 
     constructor(protected service: GestionCM05Service,
         protected navService: NavService,
@@ -73,15 +83,29 @@ export class GestionCM05Component extends ListBaseComponent {
         this.navService.setSeccionList([]);
 
         this.estados = [
-            { label: 'Pendiente', value: 'Pendiente', },
-            { label: 'Autorizado', value: 'Autorizado', },
-            { label: 'Completado', value: 'Completado', },
-            { label: 'Rechazado por usuario', value: 'Rechazado por usuario', },
+            { label: 'Pendiente', value: 1, },
+            { label: 'Autorizado', value: 2, },
+            { label: 'Completado', value: 3, },
+            { label: 'Rechazado por usuario', value: 4, },
+            { label: 'Rechazado por sistema', value: 5, },
         ];
 
         this.secuencias = [
             { label: 'Original', value: 1, },
             { label: 'Rectificativa', value: 2, },
+        ];
+
+        this.tiposMovimiento = [
+            { label: 'Creación', value: 1 },
+            { label: 'Autorización', value: 2 },
+            { label: 'Autorización revertida', value: 3 },
+            { label: 'Exportación exitosa', value: 4 },
+            { label: 'Error', value: 5 }
+        ];
+
+        this.origenesMovimiento = [
+            { label: 'WEB', value: 1 },
+            { label: 'SAP', value: 2 },
         ];
 
         this.listarCabeceras();
@@ -109,6 +133,16 @@ export class GestionCM05Component extends ListBaseComponent {
             { field: 'CoeficienteUnificado', header: 'Coef. unificado', },
             { field: 'FechaUltimaModificacion', header: 'Última modificación', },
         ];
+        this.frozenCols = this.detalleCols;
+
+        this.movimientoCols = [
+            { field: 'Fecha', header: 'Fecha', },
+            { field: 'Observaciones', header: 'Observaciones', },
+            { field: 'Tipo', header: 'Tipo', },
+            { field: 'Origen', header: 'Origen', },
+            { field: 'EstadoAnterior', header: 'Estado Anterior', },
+            { field: 'EstadoPosterior', header: 'Estado Posterior', },
+        ];
 
         this.editandoCabecera = false;
         this.cabeceraEditando = null;
@@ -116,6 +150,20 @@ export class GestionCM05Component extends ListBaseComponent {
         $(".adjuntarArchivo").click(function () {
             $(".adjuntarArchivo1").click();
         });
+
+        this.tabsPopup = [
+            {
+                label: 'Detalles',
+                icon: 'fa fa-fw fa-bar-chart',
+                command: (event) => { this.tabPopupActiva = this.tabsPopup[0] }
+            },
+            {
+                label: 'Movimientos',
+                icon: 'fa fa-fw fa-twitter',
+                command: (event) => { this.tabPopupActiva = this.tabsPopup[1] }
+            },
+        ];
+
     }
 
     onCabeceraClick(data) {
@@ -134,6 +182,7 @@ export class GestionCM05Component extends ListBaseComponent {
             ConsultaId: data.ConsultaId,
             RazonSocial: data.RazonSocial,
         };
+
         this.service.listarDetalles(this.selectedCabecera.Id).subscribe(result => {
             this.detalles = result;
             this.detalles.forEach(x => {
@@ -142,9 +191,23 @@ export class GestionCM05Component extends ListBaseComponent {
                 x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
             });
         });
+
+        this.service.listarMovimientos(this.selectedCabecera.Id).subscribe(result => {
+            this.movimientos = result;
+            this.movimientos.forEach(x => {
+                x.Fecha = x.Fecha == undefined ? null : new Date(this.getDateFromAspNetFormat(x.Fecha));
+                x.Origen = this.origenesMovimiento.find(origen => origen.value == x.OrigenId).label;
+                x.Tipo = this.tiposMovimiento.find(tipo => tipo.value == x.TipoId).label;
+                x.EstadoAnterior = this.estados.find(estado => estado.value == x.EstadoAnteriorId).label;
+                x.EstadoPosterior = this.estados.find(estado => estado.value == x.EstadoPosteriorId).label;
+            });
+        });
+
+        this.tabPopupActiva = this.tabsPopup[0];
+
         setTimeout(() => {
             this.displayDialog = true;
-        }, 600);
+        }, 700);
     }
 
     closeDialogDetalles() {

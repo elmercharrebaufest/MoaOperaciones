@@ -570,5 +570,95 @@ namespace SustitucionMOATest.Controllers
             this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificado(It.Is<IngresosBrutosCoeficienteUnificadoDto>(x => x.Id == 1)), Times.Once);
         }
 
+        [Test]
+        public void ListarMovimientosOk()
+        {
+            int idCabeceraTest = 3;
+
+            var movimientoIngresosBrutosCoeficienteUnificadoDtoList = new List<MovimientoIngresosBrutosCoeficienteUnificadoDto>
+            {
+                new MovimientoIngresosBrutosCoeficienteUnificadoDto { Id = 1, IngresosBrutosCoeficienteUnificado = new IngresosBrutosCoeficienteUnificadoDto { Id = 1, } },
+                new MovimientoIngresosBrutosCoeficienteUnificadoDto { Id = 2, IngresosBrutosCoeficienteUnificado = new IngresosBrutosCoeficienteUnificadoDto { Id = 2, } },
+                new MovimientoIngresosBrutosCoeficienteUnificadoDto { Id = 3, IngresosBrutosCoeficienteUnificado = new IngresosBrutosCoeficienteUnificadoDto { Id = 3, } },
+                new MovimientoIngresosBrutosCoeficienteUnificadoDto { Id = 4, IngresosBrutosCoeficienteUnificado = new IngresosBrutosCoeficienteUnificadoDto { Id = 3, } },
+            };
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarMovimientos(It.IsAny<int>()))
+                .Returns<int>(idCabecera => movimientoIngresosBrutosCoeficienteUnificadoDtoList.Where(x => x.IngresosBrutosCoeficienteUnificado.Id == idCabecera).ToList());
+
+            var result = target.ListarMovimientos(idCabeceraTest);
+
+            Assert.IsInstanceOf<List<MovimientoIngresosBrutosCoeficienteUnificadoDto>>(result.Data);
+
+            List<MovimientoIngresosBrutosCoeficienteUnificadoDto> resultData = (List<MovimientoIngresosBrutosCoeficienteUnificadoDto>)result.Data;
+            Assert.AreEqual(2, resultData.Count);
+            Assert.AreEqual(movimientoIngresosBrutosCoeficienteUnificadoDtoList[2], resultData[0]);
+            Assert.AreEqual(movimientoIngresosBrutosCoeficienteUnificadoDtoList[3], resultData[1]);
+
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarMovimientos(It.IsAny<int>()), Times.Once);
+        }
+
+        [Test]
+        public void ListarMovimientosInfoCustomException()
+        {
+            int idCabeceraTest = 1;
+
+            var excepcionTest = new InfoCustomException("Algo");
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarMovimientos(idCabeceraTest))
+                .Throws(excepcionTest);
+
+            var result = target.ListarMovimientos(idCabeceraTest);
+
+            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Algo", infoResultData);
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarMovimientos(idCabeceraTest), Times.Once);
+        }
+
+        [Test]
+        public void ListarMovimientosValidationCustomException()
+        {
+            int idCabeceraTest = 1;
+
+            var excepcionTest = new ValidationCustomException("Error de validacion");
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarMovimientos(idCabeceraTest))
+                .Throws(excepcionTest);
+
+            var result = target.ListarMovimientos(idCabeceraTest);
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Error de validacion", errorResultData);
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarMovimientos(idCabeceraTest), Times.Once);
+        }
+
+        [Test]
+        public void ListarMovimientosException()
+        {
+            int idCabeceraTest = 1;
+
+            var excepcionTest = new NullReferenceException("exploto molinos");
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarMovimientos(1))
+                .Throws(excepcionTest);
+
+            HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
+
+            JsonResult result = target.ListarMovimientos(idCabeceraTest);
+
+            Assert.IsNotNull(result.Data);
+
+            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarMovimientos(It.IsAny<int>()), Times.Once);
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarMovimientos(1), Times.Once);
+        }
     }
 }

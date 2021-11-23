@@ -18,6 +18,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { NgxMaskModule } from "ngx-mask";
 import { NgxPaginationModule } from 'ngx-pagination';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TabMenuModule } from 'primeng/tabmenu';
 
 @NgModule({
     imports: [
@@ -37,6 +38,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
         NgxMaskModule,
         DropdownModule,
         InputTextareaModule,
+        TabMenuModule,
     ],
     declarations: [
         GestionCM05Component,

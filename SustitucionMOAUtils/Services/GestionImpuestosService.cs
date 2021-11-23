@@ -167,5 +167,24 @@ namespace SustitucionMOAUtils.Services
 
             return cabecera.Archivo.Ruta;
         }
+
+        public IList<MovimientoIngresosBrutosCoeficienteUnificadoDto> ListarMovimientos(int idCabecera)
+        {
+            var result = repositorio.Listar<MovimientoIngresosBrutosCoeficienteUnificado, MovimientoIngresosBrutosCoeficienteUnificadoDto>(
+                x => new MovimientoIngresosBrutosCoeficienteUnificadoDto
+                {
+                    Id = x.Id,
+                    IngresosBrutosCoeficienteUnificado = new IngresosBrutosCoeficienteUnificadoDto { Id = x.IngresosBrutosCoeficienteUnificado_Id },
+                    Observaciones = x.Observaciones,
+                    Fecha = x.Fecha,
+                    TipoId = x.TipoMovimientoIngresosBrutosCoeficienteUnificado_Id,
+                    OrigenId = x.OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id,
+                    EstadoAnteriorId = x.EstadoAnterior_Id,
+                    EstadoPosteriorId = x.EstadoPosterior_Id,
+                },
+                x => x.IngresosBrutosCoeficienteUnificado_Id == idCabecera);
+
+            return result;
+        }
     }
 }
