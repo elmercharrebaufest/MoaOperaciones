@@ -8,7 +8,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ComprasService } from '../../compras.service';
 import { FloatMsgService } from './../../../common/services/FloatMsgService';
 import { ModalService } from './../../../common/services/ModalService';
-import { Solp } from '../../Solp';
+import { PosicionSolp, Solp } from '../../Solp';
 import { SubPosicionViewModel } from './subPosicionViewModel';
 import { EnumTipoImputacion } from '../../enum-tipo-imputacion'
 import { EnumColumnaSubPosicion } from '../../enum-columna-subPosiciones'
@@ -40,6 +40,8 @@ export class SubPosicionComponent extends ListBaseComponent {
     enumColumnaSubPosicion: typeof EnumColumnaSubPosicion = EnumColumnaSubPosicion;
     total: number = 0;
     unidades: any[];
+
+    posicion: PosicionSolp;
 
     tablaAFiltrar: any;
     autocomplete: any[];
@@ -153,10 +155,9 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
 
-
-
+    
     setTabs() {
-        this.setMenuSeccionTab("Sub Posiciones", "Sub Posiciones");
+        this.setMenuSeccionTab("Sub Posiciones", "Sub Posiciones")
     }
 
     ngOnInit() {
@@ -196,10 +197,12 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     cambiarSubPosicion(): void {
         this.listadoPosicionActul = this.model.posicionActual.listadoSubPosiciones;
+
         this.validarDatosMinimosPosicionActual();
         this.actualizarTipoDeImputacion();
         this.calcularTotalSubPosicion();
     }
+
 
     actualizarTipoDeImputacion(): void {
         switch (this.model.posicionActual.tipoImputacion) {
