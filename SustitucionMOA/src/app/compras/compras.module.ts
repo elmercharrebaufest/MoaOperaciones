@@ -41,6 +41,7 @@ import {PanelModule} from 'primeng/panel';
 import {InputSwitchModule} from 'primeng/inputswitch';
 import { TabDatosPosicionComponent } from './SolpPasos/tab-datos-posicion/tab-datos-posicion.component';
 import { TabDireccionEntregaComponent } from './SolpPasos/tab-direccion-entrega/tab-direccion-entrega.component';
+import { TabImputacionesComponent } from './SolpPasos/tab-imputaciones/tab-imputaciones.component';
 
     
 @NgModule({
@@ -85,7 +86,11 @@ import { TabDireccionEntregaComponent } from './SolpPasos/tab-direccion-entrega/
         CabeceraComponent,
         SubPosicionComponent,
         TabDatosPosicionComponent,
+<<<<<<< HEAD
         TabDireccionEntregaComponent
+=======
+        TabImputacionesComponent
+>>>>>>> 25229f7d5c763089d4d1976d82c865033dcc1d86
     ],
     providers: [
         ComprasService,
