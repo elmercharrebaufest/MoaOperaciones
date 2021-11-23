@@ -77,6 +77,39 @@ namespace SustitucionMOAExternalAPI.Controllers
                     TransporteCuit = x.Transporte?.CUIT,
                     TransporteRazonSocial = x.Transporte?.RazonSocial,
                     TrasportePatente = x.Transporte?.Patente,
+
+                    CuitOrigen = x.CuitOrigen,
+                    CuitCorredorVentaSecundaria = x.CorredorVentaSecundaria?.CUIT,
+                    RazonSocialCorredorVentaSecundaria = x.CorredorVentaSecundaria?.RazonSocial,
+                    CuitMercadoATermino = x.MercadoATermino?.CUIT,
+                    RazonSocialMercadoATermino = x.MercadoATermino?.RazonSocial,
+                    CuitPagadorFlete = x.PagadorFlete?.CUIT, 
+                    RazonSocialPagadorFlete = x.PagadorFlete?.RazonSocial,
+                    CuitRemitenteComercialVentaPrimaria = x.RemitenteComercialVentaPrimaria?.CUIT,
+                    RazonSocialRemitenteComercialVentaPrimaria = x.RemitenteComercialVentaPrimaria?.RazonSocial,
+                    CuitRemitenteComercialVentaSecundaria = x.RemitenteComercialVentaSecundaria?.CUIT,
+                    RazonSocialRemitenteComercialVentaSecundaria = x.RemitenteComercialVentaSecundaria?.RazonSocial,
+                    CuitRemitenteComercialVentaSecundaria2 = x.RemitenteComercialVentaSecundaria2?.CUIT,
+                    RazonSocialRemitenteComercialVentaSecundaria2 = x.RemitenteComercialVentaSecundaria2?.RazonSocial,
+                    CuitRepresentanteRecibidor = x.RepresentanteRecibidor?.CUIT,
+                    RazonSocialRepresentanteRecibidor = x.RepresentanteRecibidor?.RazonSocial,
+                    Cupo = x.Turno,
+                    Domicilio = x.DomicilioOrigen,
+                    Estado= x.Estado,
+                    KmRecorrer = x.Transporte?.KmRecorrer,
+                    MercaderiaFumigada = x.MercaderiaFumigada,
+                    NroOperativo = x.NroOperativo,
+                    NroOrden = x.NroOrden,
+                    NumeroPrecinto = x.NumeroPrecinto,
+                    Observacion = x.Observaciones,
+                    PlantaDestino = x.PlantaDestino,
+                    PlantaOrigen = x.PlantaOrigen,
+                    RamalFerroviario = x.RamalFerroviario,
+                    RetiroProductor = x.RetiroProductor,
+                    Sucursal = x.Sucursal,
+                    Tarifa = x.Tarifa,
+                    TipoCartaPorte = x.TipoCartaPorte,
+
                     FotoCpBase64 = x.FotoCp?.ImagenBase64,
                     FotoCpNombreArchivo = x.FotoCp?.NombreArchivo,
                     
@@ -134,6 +167,7 @@ namespace SustitucionMOAExternalAPI.Controllers
     public class TransporteDto : ParticipanteDto
     {
         public string Patente { get; set; }
+        public int KmRecorrer { get; set; }
     }
 
     public class ParticipanteDto
@@ -165,7 +199,14 @@ namespace SustitucionMOAExternalAPI.Controllers
     {
         [Required]
         public string NroCartaPorte { get; set; }
+        public int TipoCartaPorte { get; set; }
+        public int Sucursal { get; set; }
+        public long NroOrden { get; set; }
+        public DateTime FechaEmision { get; set; }
+        public string Estado { get; set; }
+        public DateTime FechaInicioEstado { get; set; }
         public DateTime FechaCarga { get; set; }
+        public string Observaciones { get; set; }
         public DateTime FechaVencimiento { get; set; }
         public DateTime FechaArribo { get; set; }
         public DateTime FechaDescarga { get; set; }
@@ -179,6 +220,13 @@ namespace SustitucionMOAExternalAPI.Controllers
         public ProductoDto Producto { get; set; }
         public ProcedenciaDto Procedencia { get; set; }
         public ParticipanteDto Corredor { get; set; }
+        public ParticipanteDto CorredorVentaSecundaria { get; set; }
+        public ParticipanteDto MercadoATermino { get; set; }
+        public ParticipanteDto PagadorFlete { get; set; }
+        public ParticipanteDto RemitenteComercialVentaPrimaria { get; set; }
+        public ParticipanteDto RemitenteComercialVentaSecundaria { get; set; }
+        public ParticipanteDto RemitenteComercialVentaSecundaria2 { get; set; }
+        public ParticipanteDto RepresentanteRecibidor { get; set; }
         public ParticipanteDto Entregador { get; set; }
         public ParticipanteDto Destinatario { get; set; }
         public DestinoDto Destino { get; set; }
@@ -189,6 +237,19 @@ namespace SustitucionMOAExternalAPI.Controllers
         public DescuentosDto Descuentos { get; set; }
         public FotoCpDto FotoCp { get; set; }
         public List<CaracteristicaDto> Calidad { get; set; }
+
+        public string Turno { get; set; }
+        public bool MercaderiaFumigada { get; set; }
+        public long NroOperativo { get; set; }
+        public string NumeroPrecinto { get; set; }
+        public int RamalFerroviario { get; set; }
+        public bool RetiroProductor { get; set; }
+        public double Tarifa { get; set; }
+        public int PlantaDestino { get; set; }
+        public int PlantaOrigen { get; set; }
+        public string DomicilioOrigen { get; set; }
+        public string CuitOrigen { get; set; }
+        
     }
 
 
