@@ -24,7 +24,7 @@ export class CuentaCorrienteService extends BaseService {
 
     }
 
-    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string, pago: string, retencion: string ): Observable<any> {
+    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string = "", pago: string = "", retencion: string = "" ): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.append('periodo', periodo);
         params = params.append('fechaInicio', fecha_inicio);
@@ -67,7 +67,7 @@ export class CuentaCorrienteAgrupadaService extends CuentaCorrienteService {
             timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
     }
 
-    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string, pago: string, retencion: string ): Observable<any> {
+    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string = "", pago: string = "", retencion: string = ""): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.append('periodo', periodo);
         params = params.append('fechaInicio', fecha_inicio);
@@ -100,7 +100,7 @@ export class CuentaCorrientePartidasAbiertasService extends CuentaCorrienteServi
 
     }
 
-    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string, pago: string, retencion: string): Observable<any> {
+    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string = "", pago: string = "", retencion: string = ""): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.append('periodo', periodo);
         params = params.append('fechaInicio', fecha_inicio);
