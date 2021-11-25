@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../../base-components/base-component';
 import { FloatMsgService } from '../../services/FloatMsgService';
 import { ModalService } from '../../services/ModalService';
@@ -10,6 +10,7 @@ import { BuscadorService } from './buscador.service';
 import { Resultado, ResultadoTipo } from './Buscador';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { SpinnerSmallComponent } from '../../view-child/spinner-small/spinner-small.component';
+declare var $: any;
 
 @Component({
   selector: 'app-buscador-inteligente',
@@ -49,7 +50,7 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
     var input = document.getElementById("buscador");
 
     input.addEventListener("keyup", function(event) {
-      if (event.keyCode === 13) {
+      if (event.keyCode === 13 || $(this).val().length >= 6) {
         event.preventDefault();
         document.getElementById("autoBusqueda").click();
       }
@@ -76,7 +77,8 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
     if(this.palabraABuscar == undefined || this.palabraABuscar != this.palabraABuscarAuxiliar || this.resultados.length < 1){
       this.resultados = [];
       this.spinnerSmallComponent.showIt();
-      this.palabraABuscarAuxiliar = this.palabraABuscar
+      this.palabraABuscarAuxiliar = this.palabraABuscar;
+      this.hayResultados = true;
 
       try {
         this.subscription = this.service.getResultados(this.palabraABuscar).subscribe(
@@ -107,6 +109,62 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
     else{
       return false;
     }
+  }
+
+  public switchDescargas(resultado: Resultado){
+    switch (resultado.Code) {
+      case this.tipos.Liquidacion:
+        this.descargaPDFLiquidacion(resultado.Value);
+        break;
+
+      case this.tipos.ProformaFinal:
+        debugger
+        this.descargarProforma(resultado.Value);
+        console.log(resultado)
+        break;
+    
+      default:
+        break;
+    }
+  }
+
+  descargarProforma(fijacion: string){
+    this.spinnerSmallComponent.showIt();
+    this.unsubscribe();
+    this.subscription = this.service.descargarProformaFinal(fijacion).subscribe(
+        (result:any) => {
+            this.spinnerSmallComponent.hideIt();
+            if(result.pdf){
+                var byteArray = new Uint8Array(result.pdf.data);
+                var blob = new Blob([byteArray], { type: 'application/pdf' });
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // IE11
+                    window.navigator.msSaveOrOpenBlob(blob, this.tituloArchivoPDF + fijacion + '.pdf');
+                } else {
+                    var url = window.URL.createObjectURL(blob);
+                    var link = document.createElement("a");
+                    document.body.appendChild(link);
+                    link.href = url;
+                    link.download = this.tituloArchivoPDF + fijacion + '.pdf';
+                    link.click();
+                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    return false;
+                }
+            }
+            else{
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                } else if (result.info != undefined) {
+                }
+            }
+        },
+        error => {
+            this.spinnerSmallComponent.hideIt();
+        }
+
+    );
+    return false;
   }
 
   descargaPDFLiquidacion(value: string) {

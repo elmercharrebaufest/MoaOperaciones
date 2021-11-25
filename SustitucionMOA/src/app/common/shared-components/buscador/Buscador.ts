@@ -10,4 +10,5 @@ export class ResultadoTipo {
     DetalleContrato: string = "DCNT";
     HistorialPesificacion: string = "HPES"
     Liquidacion: string = "LIQ"
+    ProformaFinal: string = "PROF"
 }

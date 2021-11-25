@@ -11,7 +11,7 @@
           Ir a {{resultado.Tipo}} <span class="fa fa-reply pull-right"></span>
         </div>
         <ng-template #descarga>
-          <div class="option sinPaddingLados col-md-12 col-xs-12" (click)="descargaPDFLiquidacion(resultado.Value)">
+          <div class="option sinPaddingLados col-md-12 col-xs-12" (click)="switchDescargas(resultado)">
             Descargar {{resultado.Tipo}} <span class="fa fa-download pull-right"></span>
           </div>
         </ng-template>

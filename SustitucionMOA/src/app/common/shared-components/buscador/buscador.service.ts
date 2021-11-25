@@ -24,4 +24,13 @@ export class BuscadorService extends BaseService {
         return this.http
             .get<any>('/api/PDF/downloadDocumentPDF', { params: params, headers: this.headers })
     }
+
+    descargarProformaFinal(fijacion: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.append('fijacion', fijacion);
+
+        return this.http
+            .get('/api/liquidacion/descargarProformaFinal', { params: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
+    }
 }

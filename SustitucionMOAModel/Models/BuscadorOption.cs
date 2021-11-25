@@ -21,5 +21,6 @@ namespace SustitucionMOAModel.Models
         public const string HistorialPesificaciones = "HPES";
         public const string Liquidacion = "LIQ";
         public const string CCPP = "CCPP";
+        public const string ProformaFinal = "PROF";
     }
 }
