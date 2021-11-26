@@ -54,6 +54,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonForzarCreacionPedido: boolean = false;
     mostrarBotonEditar: boolean = false;
 
+    mostrarListadoInterno: boolean = false;
+    mostrarListadoTercero: boolean = false;
+    mostrarListadoComercial: boolean = false;
+    mostrarListadoMesaFas: boolean = false;
+    mostrarListadoPuerto: boolean = false;
 
     // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -86,6 +91,29 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
+    //Está función va a desaparecer cuando hagamos el refactor de como mostrar los datos de esta pantalla
+    verificarListado() {
+
+        if (this.esComercial) {
+            this.mostrarListadoComercial = true;
+            return;
+        }
+
+        if (this.esMesaFas) {
+            this.mostrarListadoMesaFas = true;
+            return;
+        }
+
+        if (this.esPuerto) {
+            this.mostrarListadoPuerto = true;
+            return;
+        }
+
+        if (this.esTercero) {
+            this.mostrarListadoTercero = true;
+            return;
+        }
+    }
     verificarBotones() {
         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada) {
             return;
@@ -455,6 +483,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         document.getElementById("closemodalForzarCreacion").click();
+                        this.obtenerOrdenDeCarga();
                         this.mensajeComponent.setSuccessMsg(result.data);
                     }
                 },

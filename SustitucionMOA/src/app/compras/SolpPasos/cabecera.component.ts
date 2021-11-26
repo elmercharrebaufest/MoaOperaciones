@@ -67,8 +67,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         { campo: 'tipoImputacion', esObligatorio: true, esFijo: true },
         { campo: 'textoGenerico', esObligatorio: true, esFijo: true },
         { campo: 'selectCentroEntrega', esObligatorio: false, esFijo: false },
-        { campo: 'nombreEntrega', esObligatorio: false, esFijo: true },
-        { campo: 'codigoPostalEntrega', esObligatorio: false, esFijo: true },
         { campo: 'selectAlmacenEntrega', esObligatorio: false, esFijo: false },
         { campo: 'calleEntrega', esObligatorio: true, esFijo: true },
         { campo: 'paisEntrega', esObligatorio: false, esFijo: true },

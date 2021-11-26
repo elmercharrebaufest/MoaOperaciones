@@ -43,7 +43,7 @@ export class GestionCM05Service extends BaseService {
         headers = headers.append("Expires", "0");
         headers = headers.append("Pragma", "no-cache");
         let params: HttpParams = new HttpParams();
-        params.set("idCabecera", idCabecera.toString());
+        params = params.set("idCabecera", idCabecera.toString());
         return this.http
             .get('/api/GestionImpuestos/DescargarFormularioCM05?idCabecera=' + idCabecera, { headers: this.headers });
     }
@@ -57,5 +57,21 @@ export class GestionCM05Service extends BaseService {
         return this.http
             .post('/api/GestionImpuestos/EditarIngresosBrutosCoeficienteUnificado', payload, { headers: this.headers })
 
+    }
+
+    public cargarCM05(archivo: any = null): Observable<any> {
+        var payload = new FormData();
+
+        if (archivo != null) {
+            for (let i = 0; i < archivo.length; i++) {
+                let fileToUpload = archivo[i];
+                payload.append("file", fileToUpload, fileToUpload.name);
+            }
+        }
+
+        payload.append("file", archivo);
+
+        return this.http
+            .post('/api/Consulta/cargarCM05', payload, { headers: this.headers });
     }
 }

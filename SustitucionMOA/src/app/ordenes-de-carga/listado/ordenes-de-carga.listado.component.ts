@@ -36,8 +36,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     private selectUndefinedOptionValue: any;
     pedidoAnticipado: number = 0;
 
-
-
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS');
     esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');

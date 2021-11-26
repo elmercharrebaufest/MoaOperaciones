@@ -928,6 +928,12 @@
     <None Include="Service References\ScatoComandosWebService\ServicioComandos8.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos9.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos91.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\ScatoComandosWebService\SustitucionMOAWS.ScatoComandosWebService.Resultado.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
