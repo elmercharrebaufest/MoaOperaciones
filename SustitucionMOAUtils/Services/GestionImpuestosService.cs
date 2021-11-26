@@ -31,12 +31,16 @@ namespace SustitucionMOAUtils.Services
         private readonly IRepositorio repositorio;
         private readonly ITimeProvider timeProvider;
         private readonly IConsultaService consultaService;
+        private readonly IAzureService azureService;
 
-        public GestionImpuestosService(IRepositorio repositorio, ITimeProvider timeProvider, IConsultaService consultaService)
+        private readonly string rutaArchivosCM05 = ConfigurationManager.AppSettings["RutaArchivosCM05"];
+
+        public GestionImpuestosService(IRepositorio repositorio, ITimeProvider timeProvider, IAzureService azureService, IConsultaService consultaService)
         {
             this.repositorio = repositorio;
             this.timeProvider = timeProvider;
             this.consultaService = consultaService;
+            this.azureService = azureService;
         }
 
         public IList<IngresosBrutosCoeficienteUnificadoDto> ListarCabeceras()
@@ -139,14 +143,18 @@ namespace SustitucionMOAUtils.Services
 
             Usuario usuario = repositorio.Obtener<Usuario>(usr => usr.Mail == mailUsuario);
 
-            ComentarioDto comentarioDto = new ComentarioDto
+            if(cabecera.Consulta_Id.HasValue && cabecera.Consulta_Id != null)
             {
-                Detalle = "Autorizado",
-                Fecha = timeProvider.Now(),
-                UsuarioId = usuario.Id,
-            };
+                ComentarioDto comentarioDto = new ComentarioDto
+                {
+                    Detalle = "Autorizado",
+                    Fecha = timeProvider.Now(),
+                    UsuarioId = usuario.Id,
+                };
 
-            this.consultaService.AgregarComentario(cabecera.Consulta_Id, comentarioDto, null);
+              
+                this.consultaService.AgregarComentario((int)cabecera.Consulta_Id, comentarioDto, null);
+            }
 
             repositorio.GuardarCambios();
 

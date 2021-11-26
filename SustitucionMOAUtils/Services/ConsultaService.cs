@@ -35,6 +35,7 @@ namespace SustitucionMOAUtils.Services
 
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
+        private readonly string rutaArchivosCM05 = ConfigurationManager.AppSettings["RutaArchivosCM05"];
 
         public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider)
         {
@@ -188,7 +189,8 @@ namespace SustitucionMOAUtils.Services
                     Proveedor proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == consulta.CodigoProveedor);
                     try
                     {
-                        mensajeResultado = this.ProcesarCM05(files, comentario.Id, proveedor.CUIT);
+                        mensajeResultado = this.ProcesarCM05(files, proveedor.CUIT, comentario.Id, false);
+                        //mensajeResultado =    this.ProcesarCM05(files, comentario.Id, proveedor.CUIT);
                     }
                     catch(ValidationCustomException vex)
                     {
@@ -906,17 +908,44 @@ namespace SustitucionMOAUtils.Services
             return string.Format("{0}/{1}/{2}", rutaArchivosConsulta, comentario.Consulta.Usuario_Id, comentario.Consulta_Id);
         }
 
-        public string ProcesarCM05(HttpFileCollectionBase archivos, int comentario_Id, string cuitProveedor)
+        public string AnularConsulta(int consultaId, int usuarioId, string motivoRechazo)
+        {
+            this.ActualizarEstadoConsulta(consultaId, (int)EstadosConsulta.Finalizado);
+
+            ComentarioDto comentarioDto = new ComentarioDto
+            {
+                Detalle = motivoRechazo + ", consulta cerrada.",
+                Fecha = timeProvider.Now(),
+                UsuarioId = usuarioId,
+            };
+
+            this.AgregarComentario(consultaId, comentarioDto, null);
+
+            Consulta consulta = repositorio.Obtener<Consulta>(consultaId);
+            if (consulta.Categoria.Code == Categorias.Actualizacion && consulta.SubCategoria.Code == SubCategorias.CM05)
+            {
+                IngresosBrutosCoeficienteUnificado ingresosBrutosCoeficienteUnificado =
+                    repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(x => x.Consulta_Id == consultaId);
+
+                ingresosBrutosCoeficienteUnificado.EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.RechazadoPorUsuario;
+                repositorio.GuardarCambios();
+            }
+
+            return SuccessMsg.ConsultaRechazadaOK;
+        }
+
+        public string ProcesarCM05(HttpFileCollectionBase archivos, string cuitProveedor, int? comentario_Id = null, bool esCargaInterna = false)
         {
             try
             {
+                var errores = new List<string>();
                 string resultado = string.Empty;
 
                 bool existeArchivoConCoeficientes = false;
                 for (int i = 0; i < archivos.Count; i++)
                 {
                     HttpPostedFileBase archivo = archivos[i];
-                    if(archivo.ContentType == "application/pdf")
+                    if (archivo.ContentType == "application/pdf")
                     {
                         var operacionOCRId = Task.Run(async () => await azureService.AnalizarImagenAsync(archivo)).Result;
 
@@ -926,13 +955,46 @@ namespace SustitucionMOAUtils.Services
 
                         if (elementosLeidos.Any(str => str == "Determinación del Coeficiente Unificado"))
                         {
-                            Comentario comentario = repositorio.Obtener<Comentario>(comentario_Id);
+                            Comentario comentario = null;
+                            int? consulta_Id = null;
+                            int archivo_Id = 1;
+                            string nombreArchivo = string.Format("{0}_{1}", comentario_Id, Path.GetFileName(archivo.FileName));
 
-                            int consulta_Id = comentario.Consulta_Id;
-                            var nombreArchivo = string.Format("{0}_{1}", comentario_Id, Path.GetFileName(archivo.FileName));
-                            int archivo_Id = comentario.Archivos.Single(file => file.ObtenerNombre() == nombreArchivo).Id;
+                            if (comentario_Id != null)
+                            {
+                                comentario = repositorio.Obtener<Comentario>(comentario_Id);
+                                consulta_Id = comentario.Consulta_Id;
+                                archivo_Id = comentario.Archivos.Single(file => file.ObtenerNombre() == nombreArchivo).Id;
+                            }
 
-                            resultado = ProcesarArchivoCoeficientesImpuestosIngresosBrutos(elementosLeidos.ToList(), consulta_Id, archivo_Id, cuitProveedor);
+                            if (esCargaInterna)
+                            {
+                                var ruta = ArmarRutaCarpetaCM05(cuitProveedor);
+                                var rutaArchivo = string.Concat(ruta, "/", nombreArchivo);
+
+                                /*
+                                if (File.Exists(rutaArchivo))
+                                {
+                                    errores.Add($"{nombreArchivo}: {ErrorMsg.ErrorArchivoRepetido}");
+                                    continue;
+                                }*/
+
+                                Directory.CreateDirectory(ruta);
+
+                                var ArchivoAGuardar = new Archivo()
+                                {
+                                    FileKey = FileKeys.FormularioCM05,
+                                    Ruta = rutaArchivo,
+                                };
+
+                                archivo.SaveAs(rutaArchivo);
+                                repositorio.Agregar(ArchivoAGuardar);
+                                repositorio.GuardarCambios();
+
+                                archivo_Id = ArchivoAGuardar.Id;
+                            }
+
+                            resultado = ProcesarArchivoCoeficientesImpuestosIngresosBrutos(elementosLeidos.ToList(), archivo_Id, cuitProveedor, consulta_Id);
                             existeArchivoConCoeficientes = true;
                             break;
                         }
@@ -946,17 +1008,17 @@ namespace SustitucionMOAUtils.Services
 
                 return resultado;
             }
-            catch(ValidationCustomException ex)
+            catch (ValidationCustomException ex)
             {
                 throw;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new ValidationCustomException(ErrorMsg.ErrorCargaCM05, ex, true);
             }
         }
 
-        private string ProcesarArchivoCoeficientesImpuestosIngresosBrutos(List<string> elementosLeidos, int consulta_Id, int archivo_Id, string cuitProveedor)
+        private string ProcesarArchivoCoeficientesImpuestosIngresosBrutos(List<string> elementosLeidos, int archivo_Id, string cuitProveedor, int? consulta_Id = null)
         {
             //Descarto palabras que ya se que son "basura"
             elementosLeidos
@@ -967,8 +1029,8 @@ namespace SustitucionMOAUtils.Services
             string encabezadoFormulario = "OSIRIS";
             int indiceComienzoPaginaCoeficientesBrutos = elementosLeidos.Take(indiceDeterminacionDelCoeficienteUnificado).ToList().LastIndexOf(encabezadoFormulario);
             List<string> info_DeterminacionCoeficienteUnificado = elementosLeidos.Skip(indiceComienzoPaginaCoeficientesBrutos).ToList();
-                        
-            string cuit = SacarHasta(info_DeterminacionCoeficienteUnificado, "CUIT:")[0].Replace("-","");
+
+            string cuit = SacarHasta(info_DeterminacionCoeficienteUnificado, "CUIT:")[0].Replace("-", "");
 
             int anticipoAux;
             int anticipo = Int32.TryParse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Anticipo:")[0], out anticipoAux) ? anticipoAux : 0;
@@ -1010,7 +1072,7 @@ namespace SustitucionMOAUtils.Services
                 string jurisdiccion = listadoCoeficientes[i + 1];
 
                 DateTime fechaInicioAux;
-                DateTime? fechaInicio = DateTime.TryParseExact(listadoCoeficientes[i + 2], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicioAux) ? fechaInicioAux: (DateTime?)null;
+                DateTime? fechaInicio = DateTime.TryParseExact(listadoCoeficientes[i + 2], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicioAux) ? fechaInicioAux : (DateTime?)null;
 
                 DateTime fechaCeseAux;
                 DateTime? fechaCese = DateTime.TryParseExact(listadoCoeficientes[i + 3], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaCeseAux) ? fechaCeseAux : (DateTime?)null;
@@ -1052,8 +1114,8 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.Agregar(ingresosBrutosCoeficienteUnificado);
             repositorio.GuardarCambios();
-            
-            return cuit != cuitProveedor ?  
+
+            return cuit != cuitProveedor ?
                 SuccessMsg.AltaFormularioCM05DistintoCUITOK :
                 string.Empty;
         }
@@ -1069,30 +1131,10 @@ namespace SustitucionMOAUtils.Services
             return new List<string>();
         }
 
-        public string AnularConsulta(int consultaId, int usuarioId, string motivoRechazo)
+        public virtual string ArmarRutaCarpetaCM05(string username)
         {
-            this.ActualizarEstadoConsulta(consultaId, (int)EstadosConsulta.Finalizado);
-
-            ComentarioDto comentarioDto = new ComentarioDto
-            {
-                Detalle = motivoRechazo + ", consulta cerrada.",
-                Fecha = timeProvider.Now(),
-                UsuarioId = usuarioId,
-            };
-
-            this.AgregarComentario(consultaId, comentarioDto, null);
-
-            Consulta consulta = repositorio.Obtener<Consulta>(consultaId);
-            if (consulta.Categoria.Code == Categorias.Actualizacion && consulta.SubCategoria.Code == SubCategorias.CM05)
-            {
-                IngresosBrutosCoeficienteUnificado ingresosBrutosCoeficienteUnificado =
-                    repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(x => x.Consulta_Id == consultaId);
-
-                ingresosBrutosCoeficienteUnificado.EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.RechazadoPorUsuario;
-                repositorio.GuardarCambios();
-            }
-
-            return SuccessMsg.ConsultaRechazadaOK;
+            var usuario = repositorio.Obtener<Usuario>(x => x.Mail == username);
+            return string.Format("{0}/{1}", rutaArchivosCM05, usuario.Id);
         }
     }
 }
