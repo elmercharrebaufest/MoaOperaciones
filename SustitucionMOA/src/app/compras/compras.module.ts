@@ -39,6 +39,7 @@ import {MultiSelectModule} from 'primeng/multiselect';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {PanelModule} from 'primeng/panel';
 import {InputSwitchModule} from 'primeng/inputswitch';
+import { TabFechasComponent } from './SolpPasos/tab-fechas/tab-fechas.component';
 import { TabDatosPosicionComponent } from './SolpPasos/tab-datos-posicion/tab-datos-posicion.component';
 import { TabDireccionEntregaComponent } from './SolpPasos/tab-direccion-entrega/tab-direccion-entrega.component';
 import { TabImputacionesComponent } from './SolpPasos/tab-imputaciones/tab-imputaciones.component';
@@ -85,12 +86,9 @@ import { TabImputacionesComponent } from './SolpPasos/tab-imputaciones/tab-imput
         DragAndDropDirective,
         CabeceraComponent,
         SubPosicionComponent,
+        TabFechasComponent,
         TabDatosPosicionComponent,
-<<<<<<< HEAD
         TabDireccionEntregaComponent
-=======
-        TabImputacionesComponent
->>>>>>> 25229f7d5c763089d4d1976d82c865033dcc1d86
     ],
     providers: [
         ComprasService,

@@ -49,8 +49,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     almacenEntrega: SelectItem[];
     posiciones: SelectItem[];
     resultadoProveedores: string[];
-    fechaEntregaServicio: any;
-    fechaDeLiberacion: any;
     hoy: Date = new Date();
     selectPosicion: any;
 
@@ -68,13 +66,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         { campo: 'siniestroBeneficio', esObligatorio: false, esFijo: true },
         { campo: 'tipoImputacion', esObligatorio: true, esFijo: true },
         { campo: 'textoGenerico', esObligatorio: true, esFijo: true },
-        { campo: 'fechaEntregaServicio', esObligatorio: true, esFijo: false },
-        { campo: 'fechaDeLiberacion', esObligatorio: false, esFijo: false },
-        { campo: 'plazoDeEntrega', esObligatorio: true, esFijo: true },
-        { campo: 'concluido', esObligatorio: false, esFijo: true },
-        { campo: 'indiceFijacion', esObligatorio: false, esFijo: true },
         { campo: 'selectCentroEntrega', esObligatorio: false, esFijo: false },
         { campo: 'selectAlmacenEntrega', esObligatorio: false, esFijo: false },
+        { campo: 'calleEntrega', esObligatorio: true, esFijo: true },
+        { campo: 'paisEntrega', esObligatorio: false, esFijo: true },
+        { campo: 'numeroEntrega', esObligatorio: true, esFijo: true },
         { campo: 'rubroElectrico', esObligatorio: false, esFijo: true },
         { campo: 'rubroCivil', esObligatorio: false, esFijo: true },
         { campo: 'rubroIngenieria', esObligatorio: false, esFijo: true },
@@ -100,8 +96,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
         this.claseDocumento = this.combos.ClaseDocumento;
         this.centroEntrega = this.combos.Centro;
-        // this.grupoCompras = this.combos.GrupoCompras;
-        // this.articuloCompras = this.combos.GrupoArticulo;
         this.monedaCompras = this.combos.Moneda;
         let claseDocumento = this.model.selectClaseDocumento!== undefined && this.model.selectClaseDocumento.Id>0 ? this.model.selectClaseDocumento : this.claseDocumento[0];
         this.setControlesObligatorios(claseDocumento);
