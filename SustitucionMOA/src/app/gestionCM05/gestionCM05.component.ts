@@ -154,12 +154,12 @@ export class GestionCM05Component extends ListBaseComponent {
         this.tabsPopup = [
             {
                 label: 'Detalles',
-                icon: 'fa fa-fw fa-bar-chart',
+                icon: 'fa fa-fw fa-info',
                 command: (event) => { this.tabPopupActiva = this.tabsPopup[0] }
             },
             {
                 label: 'Movimientos',
-                icon: 'fa fa-fw fa-twitter',
+                icon: 'fa fa-fw fa-history',
                 command: (event) => { this.tabPopupActiva = this.tabsPopup[1] }
             },
         ];

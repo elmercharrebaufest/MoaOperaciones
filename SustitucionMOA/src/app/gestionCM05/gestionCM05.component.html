@@ -24,11 +24,11 @@
                             Id Consulta
                             <p-sortIcon [field]="'ConsultaId'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th [pSortableColumn]="'RazonSocial'" class="col-md-1 th-cabecera" rowspan="2">
+                        <th [pSortableColumn]="'RazonSocial'" class="col-md-3 th-cabecera" rowspan="2">
                             Razón Social
                             <p-sortIcon [field]="'RazonSocial'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th [pSortableColumn]="'Estado'" class="col-md-3 th-cabecera" style="border-bottom:none">
+                        <th [pSortableColumn]="'Estado'" class="col-md-1 th-cabecera" style="border-bottom:none">
                             Estado
                             <p-sortIcon [field]="'Estado'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
@@ -64,7 +64,7 @@
                         <th class="th-cabecera" style="font-size:12px !important; font-weight: lighter;">
                             <input [(ngModel)]="idConsultaFiltro" placeholder="Buscar" (input)="dt.filter(idConsultaFiltro, 'ConsultaId', 'contains')">
                         </th>
-                        <th class="col-md-2 th-cabecera" style="font-size:12px !important; text-transform:capitalize; border-top:none;">
+                        <th class="col-md-1 th-cabecera" style="font-size:12px !important; text-transform:capitalize; border-top:none;">
                             <p-multiSelect [styleClass]="spanFiltroMultiSelect" appendTo="body" [options]="estados" defaultLabel="Seleccionar estado" (onChange)="dt.filter($event.value, 'EstadoId', 'in')">
                                 <ng-template let-estado pTemplate="item">
                                     <span>{{estado.label}}</span>
@@ -135,7 +135,7 @@
         </div>
     </p-header>
     <p-tabMenu [model]="tabsPopup" [activeItem]="tabsPopup[0]"></p-tabMenu>
-    <div *ngIf="tabPopupActiva.label=='Detalles'">
+    <div *ngIf="tabPopupActiva.label=='Detalles'" style="border: 1px solid #c8c8c8;">
         <div class="row">
             <div class="col-md-10">
                 <div class="col-12 col-sm-12">
@@ -292,7 +292,7 @@
         </p-footer>
         <p-toast></p-toast>
     </div>
-    <div *ngIf="tabPopupActiva.label=='Movimientos'">
+    <div *ngIf="tabPopupActiva.label=='Movimientos'" style="border: 1px solid #c8c8c8;">
         <p-table [columns]="movimientoCols" [value]="movimientos" dataKey="Id" [scrollable]="true" scrollHeight="flex">
             <ng-template pTemplate="header" let-columns>
                 <tr>
