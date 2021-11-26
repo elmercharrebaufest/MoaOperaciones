@@ -29,6 +29,7 @@ namespace SustitucionMOAUtils.Interfaces
         string RecordarComentario(int consultaId);
         string GenerarReclamoImpositivoPdf(ReclamoImpositivo reclamoImpositivo);
         List<MaterialDto> ObtenerMaterial();
+        List<MaterialDto> ObtenerMaterialesSAP();
         string AnularConsulta(int consultaId, int usuarioId, string motivoRechazo);
         string ProcesarCM05(HttpFileCollectionBase archivos, string cuitProveedor, int? comentario_Id = null, bool esCargaInterna = false);
     }

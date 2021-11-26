@@ -40,6 +40,7 @@ import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {PanelModule} from 'primeng/panel';
 import {InputSwitchModule} from 'primeng/inputswitch';
 import { TabDatosPosicionComponent } from './SolpPasos/tab-datos-posicion/tab-datos-posicion.component';
+import { TabImputacionesComponent } from './SolpPasos/tab-imputaciones/tab-imputaciones.component';
 
     
 @NgModule({
@@ -83,7 +84,8 @@ import { TabDatosPosicionComponent } from './SolpPasos/tab-datos-posicion/tab-da
         DragAndDropDirective,
         CabeceraComponent,
         SubPosicionComponent,
-        TabDatosPosicionComponent
+        TabDatosPosicionComponent,
+        TabImputacionesComponent
     ],
     providers: [
         ComprasService,

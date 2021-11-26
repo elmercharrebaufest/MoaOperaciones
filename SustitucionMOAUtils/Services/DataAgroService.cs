@@ -73,7 +73,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (repositorio.Existe<Proveedor>(x => x.CUIT == proveedor.CUIT && x.Mail == mail))
                 {
-                    var proveedorExistente = repositorio.Obtener<Proveedor>(x => x.CUIT == proveedor.CUIT && x.Mail == mail && (x.AltaInterna.HasValue && x.AltaInterna == true));
+                    var proveedorExistente = repositorio.Obtener<Proveedor>(x => x.CUIT == proveedor.CUIT && x.Mail == mail);
 
                     var tipoUsuarioGranos = ObtenerTipoPorNombreCorto("G");
 

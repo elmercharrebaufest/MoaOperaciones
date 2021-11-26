@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -99,7 +99,7 @@ namespace SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -243,7 +243,7 @@ namespace SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -457,7 +457,7 @@ namespace SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -538,19 +538,19 @@ namespace SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA {
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=0)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN[] EX_SERVICESELECTION;
+        public SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN[] IM_SERVICESELECTION;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=1)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIASKRAN[] EX_SRVSHORTTEXTSELECTION;
+        public SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIASKRAN[] IM_SRVSHORTTEXTSELECTION;
         
         public SI_MMRFC_OBTENER_SERVICIOSRequest() {
         }
         
-        public SI_MMRFC_OBTENER_SERVICIOSRequest(SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN[] EX_SERVICESELECTION, SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIASKRAN[] EX_SRVSHORTTEXTSELECTION) {
-            this.EX_SERVICESELECTION = EX_SERVICESELECTION;
-            this.EX_SRVSHORTTEXTSELECTION = EX_SRVSHORTTEXTSELECTION;
+        public SI_MMRFC_OBTENER_SERVICIOSRequest(SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN[] IM_SERVICESELECTION, SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIASKRAN[] IM_SRVSHORTTEXTSELECTION) {
+            this.IM_SERVICESELECTION = IM_SERVICESELECTION;
+            this.IM_SRVSHORTTEXTSELECTION = IM_SRVSHORTTEXTSELECTION;
         }
     }
     
@@ -561,25 +561,25 @@ namespace SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_EXITO;
+        public string EX_EXITO;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=1)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIRET2[] IM_RETURN;
+        public SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIRET2[] EX_RETURN;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=2)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.ZMPES5710[] IM_SERVICELIST;
+        public SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.ZMPES5710[] EX_SERVICELIST;
         
         public SI_MMRFC_OBTENER_SERVICIOSResponse() {
         }
         
-        public SI_MMRFC_OBTENER_SERVICIOSResponse(string IM_EXITO, SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIRET2[] IM_RETURN, SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.ZMPES5710[] IM_SERVICELIST) {
-            this.IM_EXITO = IM_EXITO;
-            this.IM_RETURN = IM_RETURN;
-            this.IM_SERVICELIST = IM_SERVICELIST;
+        public SI_MMRFC_OBTENER_SERVICIOSResponse(string EX_EXITO, SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIRET2[] EX_RETURN, SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.ZMPES5710[] EX_SERVICELIST) {
+            this.EX_EXITO = EX_EXITO;
+            this.EX_RETURN = EX_RETURN;
+            this.EX_SERVICELIST = EX_SERVICELIST;
         }
     }
     
@@ -615,14 +615,14 @@ namespace SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA {
             return base.Channel.SI_MMRFC_OBTENER_SERVICIOS(request);
         }
         
-        public string SI_MMRFC_OBTENER_SERVICIOS(SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN[] EX_SERVICESELECTION, SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIASKRAN[] EX_SRVSHORTTEXTSELECTION, out SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIRET2[] IM_RETURN, out SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.ZMPES5710[] IM_SERVICELIST) {
+        public string SI_MMRFC_OBTENER_SERVICIOS(SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN[] IM_SERVICESELECTION, SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIASKRAN[] IM_SRVSHORTTEXTSELECTION, out SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.BAPIRET2[] EX_RETURN, out SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.ZMPES5710[] EX_SERVICELIST) {
             SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.SI_MMRFC_OBTENER_SERVICIOSRequest inValue = new SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.SI_MMRFC_OBTENER_SERVICIOSRequest();
-            inValue.EX_SERVICESELECTION = EX_SERVICESELECTION;
-            inValue.EX_SRVSHORTTEXTSELECTION = EX_SRVSHORTTEXTSELECTION;
+            inValue.IM_SERVICESELECTION = IM_SERVICESELECTION;
+            inValue.IM_SRVSHORTTEXTSELECTION = IM_SRVSHORTTEXTSELECTION;
             SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.SI_MMRFC_OBTENER_SERVICIOSResponse retVal = ((SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.SI_MMRFC_OBTENER_SERVICIOS)(this)).SI_MMRFC_OBTENER_SERVICIOS(inValue);
-            IM_RETURN = retVal.IM_RETURN;
-            IM_SERVICELIST = retVal.IM_SERVICELIST;
-            return retVal.IM_EXITO;
+            EX_RETURN = retVal.EX_RETURN;
+            EX_SERVICELIST = retVal.EX_SERVICELIST;
+            return retVal.EX_EXITO;
         }
         
         public System.Threading.Tasks.Task<SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.SI_MMRFC_OBTENER_SERVICIOSResponse> SI_MMRFC_OBTENER_SERVICIOSAsync(SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA.SI_MMRFC_OBTENER_SERVICIOSRequest request) {

@@ -440,7 +440,8 @@ namespace SustitucionMOAUtils.Services
                         Material = x.Producto.Nombre,
                         DescripcionEstado = x.Estado.ToFriendlyString(),
                         ColorSemaforo = x.Estado.ObtenerSemaforo(),
-                        EsFacturaAnticipada = (x.NumeroPedidoIngresado != null)
+                        EsFacturaAnticipada = (x.NumeroPedidoIngresado != null),
+                        PatenteChasis = x.ChasisAcoplado 
                     }).OrderByDescending(y => y.Id).ToList();
             }
             else
@@ -458,7 +459,9 @@ namespace SustitucionMOAUtils.Services
                         Entrega = x.NumeroEntrega ?? "-",
                         Material = x.Producto.Nombre,
                         DescripcionEstado = x.Estado.ToUserFriendlyString(),
-                        EsFacturaAnticipada = (x.NumeroPedidoIngresado != null)
+                        EsFacturaAnticipada = (x.NumeroPedidoIngresado != null),
+                        PatenteChasis = x.ChasisAcoplado
+
                     }).OrderByDescending(y => y.Id).ToList();
             }
 

@@ -154,6 +154,7 @@
     <None Include="scripts\PostDeployment\PermisosNotificaciones.sql" />
     <Build Include="DBO\Tables\TipoMovimientoIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\PostDeployment\EstadoIngresosBrutosCoeficienteUnificado.sql" />
+    <None Include="scripts\CreacionRolAccesoQr.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
