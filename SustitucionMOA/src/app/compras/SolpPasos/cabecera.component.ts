@@ -46,9 +46,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     claseDocumento: SelectItem[];
     centroEntrega: SelectItem[];
     monedaCompras: SelectItem[];
-    // articuloCompras: SelectItem[];
-    // solicitanteCompras: SelectItem[];
-    // grupoCompras: SelectItem[];
     almacenEntrega: SelectItem[];
     posiciones: SelectItem[];
     resultadoProveedores: string[];
@@ -56,8 +53,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     fechaDeLiberacion: any;
     hoy: Date = new Date();
     selectPosicion: any;
-
-    // solpActual: Solp;
 
     formularioPosicion: [FormGroup];
     formularioActual: FormGroup;
@@ -79,16 +74,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         { campo: 'concluido', esObligatorio: false, esFijo: true },
         { campo: 'indiceFijacion', esObligatorio: false, esFijo: true },
         { campo: 'selectCentroEntrega', esObligatorio: false, esFijo: false },
-        { campo: 'nombreEntrega', esObligatorio: false, esFijo: true },
-        { campo: 'codigoPostalEntrega', esObligatorio: false, esFijo: true },
         { campo: 'selectAlmacenEntrega', esObligatorio: false, esFijo: false },
-        { campo: 'calleEntrega', esObligatorio: true, esFijo: true },
-        { campo: 'paisEntrega', esObligatorio: false, esFijo: true },
-        { campo: 'numeroEntrega', esObligatorio: true, esFijo: true },
-        // { campo: 'selectGrupoCompras', esObligatorio: false, esFijo: false },
-        // { campo: 'selectArticuloCompras', esObligatorio: true, esFijo: true },
-        // { campo: 'selectSolicitanteCompras', esObligatorio: true, esFijo: true },
-        // { campo: 'necesidadCompras', esObligatorio: false, esFijo: true },
         { campo: 'rubroElectrico', esObligatorio: false, esFijo: true },
         { campo: 'rubroCivil', esObligatorio: false, esFijo: true },
         { campo: 'rubroIngenieria', esObligatorio: false, esFijo: true },
@@ -268,12 +254,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                         x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
                 }
                 break;
-            // case 'GRUPO COMPRAS':
-            //     this.grupoCompras = this.combos.GrupoCompras.filter(x => x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
-            //     break;
-            // case 'ARTICULO COMPRAS':
-            //     this.articuloCompras = this.combos.GrupoArticulo.filter(x => x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
-            //     break;
             case 'MONEDA COMPRAS':
                 this.monedaCompras = this.combos.Moneda.filter(x => x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
                 break;
@@ -288,9 +268,4 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         el.scrollIntoView();
     }
 
-    calcularFechaEntrega() {
-        let fechaNueva = new Date(this.model.fechaEntrega);
-        fechaNueva.setDate(fechaNueva.getDate() + parseInt(this.model.posicionActual.plazoDeEntrega.toString()));
-        this.model.posicionActual.fechaEntregaServicio = fechaNueva;
-    }
 }
