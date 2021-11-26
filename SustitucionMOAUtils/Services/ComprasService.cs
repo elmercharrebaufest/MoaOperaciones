@@ -133,12 +133,9 @@ namespace SustitucionMOAUtils.Services
                 if (solp.TipoSolp != null)
                     solpEntity.TipoSolp = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoSolp && x.Codigo == solp.TipoSolp.Codigo);
                 solpEntity.PasoCompletado = solp.PasoCompletado;
-                //solpEntity.UsuarioCompras = new UsuarioCompras
-                //{
-                //    Id = solp.UsuarioCompras.Id
-                //};
                 solpEntity.UsuarioCompras_Id = solp.UsuarioCompras.Id; 
                 solpEntity.EstadoPasos = solp.EstadoPasos;
+                solpEntity.TipoSolpSap = solp.TipoSolpSap;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
@@ -577,7 +574,9 @@ namespace SustitucionMOAUtils.Services
                     TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                     VincularPliego = !x.Pliego_Id.HasValue,
                     TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
-                    RevisadoPor = x.Pliego?.RevisadoPor
+                    RevisadoPor = x.Pliego?.RevisadoPor,
+                    TipoSolpSap = x.TipoSolpSap,
+                    EstadoPasos = x.EstadoPasos,
                 }).OrderByDescending(i => i.FechaCreacion);
 
             return todasLasSolp.ToList();
@@ -615,8 +614,7 @@ namespace SustitucionMOAUtils.Services
                 TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                 VincularPliego = !x.Pliego_Id.HasValue,
                 UsuarioCompras = x.UsuarioCompras != null ? new UsuarioComprasDto(x.UsuarioCompras) : new UsuarioComprasDto(),
-
-
+                TipoSolpSap = x.TipoSolpSap,
                 NombreDeObra = x.Pliego.NombreObra,
                 FiscalContrato = x.Pliego.FiscalContrato,
                 Telefono = x.Pliego.Telefono,
@@ -1142,29 +1140,9 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public ObtenerSolpSAPResponse ObtenerSolpsSAP(DateTime fechaDesde, DateTime fechaHasta, string numeroSolp,
-                                    string centroLogistico, string filtroTipoPosicion, string indicadorDeLiberacion, string origenCreacion, List<string> creadoPorUsuarios,
-                                    string tipoDeImputacion, bool ObtenerDireccionDeEntrega, bool ObtenerImputacion, bool ObtenerServicios, bool MostrarItemsBorrados
-                                    )
+        public ObtenerSolpSAPResponse ObtenerSolpsSAP(ObtenerSolpRequest obtenerSolpRequest)
         {
-            var filtros = new ObtenerSolpRequest
-            {
-                FechaDesde = fechaDesde,
-                FechaHasta = fechaHasta,
-                NumeroSolp = numeroSolp,
-                CentroLogistico = centroLogistico,
-                FiltroTipoPosicion = filtroTipoPosicion,
-                IndicadorDeLiberacion = indicadorDeLiberacion,
-                OrigenCreacion = origenCreacion,
-                CreadoPorUsuarios = creadoPorUsuarios,
-                TipoDeImputacion = tipoDeImputacion,
-                ObtenerDireccionDeEntrega = ObtenerDireccionDeEntrega,
-                ObtenerImputacion = ObtenerImputacion,
-                ObtenerServicios = ObtenerServicios,
-                MostrarItemsBorrados = MostrarItemsBorrados,
-
-            };
-            var solps = obtenerSolpConsumerMOA.Request(filtros);
+            var solps = obtenerSolpConsumerMOA.Request(obtenerSolpRequest);
 
             return solps;
         }

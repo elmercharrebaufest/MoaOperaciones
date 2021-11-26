@@ -4,6 +4,7 @@ import { BaseService } from '../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
 import { FiltroPesificacionViewModel } from './ViewModels/filtroPesificacionesViewModel';
 import { FiltroPesificacionesAutomaticoViewModel } from './ViewModels/filtroPesificacionesAutomaticoViewModel';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class LogPesificacionService extends BaseService {
@@ -15,15 +16,14 @@ export class LogPesificacionService extends BaseService {
     }
 
     public getFiltrarPesificaciones(filtros: FiltroPesificacionViewModel): Observable<any> {
+        let Filtrosjson = JSON.stringify(filtros);
+        var params = new HttpParams();
+
+        params = params.append('filtroJson', Filtrosjson)
+
         return this.http
             .get('/api/logPesificacion/ListarPorFiltros', {
-                params: {
-                    Fecha: filtros.fecha == undefined ? "":filtros.fecha,
-                    Contrato: filtros.contrato.toString() ,
-                    Proveedor: filtros.proveedor == undefined ? "":filtros.proveedor,
-                    Mail: filtros.mail == undefined ? "":filtros.mail,
-                    Fijacion: filtros.fijacion.toString() 
-                },
+                params: params,
                 headers: this.headers,
             }
             )
@@ -36,13 +36,14 @@ export class LogPesificacionService extends BaseService {
     }
 
     public getFiltrarPesificacionesAutomaticas(filtros: FiltroPesificacionesAutomaticoViewModel): Observable<any> {
+        let Filtrosjson = JSON.stringify(filtros);
+        var params = new HttpParams();
+
+        params = params.append('filtroJson', Filtrosjson)
+
         return this.http
             .get('/api/logPesificacion/ListarPorFiltrosAutomaticas', {
-                params: {
-                    Fecha: filtros.fecha == undefined ? "":filtros.fecha,
-                    Proveedor: filtros.proveedor == undefined ? "":filtros.proveedor,
-                    Mail: filtros.mail == undefined ? "":filtros.mail,
-                },
+                params: params,
                 headers: this.headers,
             }
             )
@@ -50,11 +51,12 @@ export class LogPesificacionService extends BaseService {
     }
 
     public descargarArchivoSubido(idArchivo : number): Observable<any> {
+        var params = new HttpParams();
+        params = params.append("idArchivo", idArchivo.toString())
+
         return this.http
             .get('/api/logPesificacion/DescargarArchivo', {
-                params: {
-                   IdArchivo : idArchivo.toString()
-                },
+                params: params,
                 headers: this.headers,
             }
             )

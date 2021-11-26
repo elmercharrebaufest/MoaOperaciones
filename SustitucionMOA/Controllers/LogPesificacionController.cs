@@ -1,4 +1,5 @@
-﻿using SustitucionMOAAssets;
+﻿using Newtonsoft.Json;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.LogPesificacion;
@@ -83,11 +84,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [ActionName("ListarPorFiltros")]
-        public JsonResult ListadoPorFiltros(FiltroDeBusquedaDto filtro)
+        public JsonResult ListadoPorFiltros(string filtroJson)
         {
             try
             {
-
+                var filtro = JsonConvert.DeserializeObject<FiltroDeBusquedaDto>(filtroJson);
                 var idUsuario = ObtenerUsuarioActual().Id;
                 filtro.IdUsuario = idUsuario;
 
@@ -114,11 +115,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [ActionName("ListarPorFiltrosAutomaticas")]
-        public JsonResult ListadoFiltroAutomaticas(FiltroDeBusquedaMasicoDto filtro)
+        public JsonResult ListadoFiltroAutomaticas(string filtroJson)
         {
             try
             {
-
+                var filtro = JsonConvert.DeserializeObject<FiltroDeBusquedaMasicoDto>(filtroJson);
                 var idUsuario = ObtenerUsuarioActual().Id;
                 filtro.IdUsuario = idUsuario;
 

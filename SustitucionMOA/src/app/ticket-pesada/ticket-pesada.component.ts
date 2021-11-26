@@ -59,7 +59,7 @@ export class TicketPesadaComponent extends BaseComponent implements OnInit {
     hayError() {
 
         if (this.TicketPesada.NumeroCartaPorte.toString().length < 10) {
-            this.mensajeComponent.setErrorMsg("Ingrese un número de carta de porte válido");
+            this.mensajeComponent.setErrorMsg("Ingrese un CTG válido");
             return true;
         }
 

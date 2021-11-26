@@ -65,12 +65,12 @@ export class VentaSustentableService extends BaseService {
     }
 
     campoProveedorBorrar(campoCosechaId: number, proveedorId: number) {
-        let params: HttpParams = new HttpParams();
-        params = params.append('campoCosechaId', campoCosechaId.toString());
-        params = params.append('proveedorId', proveedorId.toString());
+        var payload = new FormData();
+        payload.append("proveedorId", proveedorId.toString());
+        payload.append("campoCosechaId", campoCosechaId.toString());
 
         return this.http
-            .post('/api/CampoSustentable/CampoProveedorBorrar', { params: params, headers: this.headers, });
+            .post('/api/CampoSustentable/CampoProveedorBorrar', payload, { headers: this.headersPost, });
     }
 
     getCampoProveedor(proveedorId: any, campoCosechaId: any) {
@@ -131,8 +131,8 @@ export class VentaSustentableService extends BaseService {
 
     borrarCampoSustentable(proveedorId: number, cosechaId: number) {
         let params: HttpParams = new HttpParams();
-        params.set("proveedorId", proveedorId.toString());
-        params.set("cosechaId", cosechaId.toString());
+        params = params.set("proveedorId", proveedorId.toString());
+        params = params.set("cosechaId", cosechaId.toString());
         return this.http
             .get('/api/CampoSustentable/BorrarCampoSustentable', { params: params, headers: this.headers });
         // .pipe(map(this.extractData)
@@ -143,8 +143,8 @@ export class VentaSustentableService extends BaseService {
 
 
         let params: HttpParams = new HttpParams();
-        params.set("campoCosechaId", campoCosechaId.toString());
-        params.set("proveedorId", proveedorId.toString());
+        params = params.set("campoCosechaId", campoCosechaId.toString());
+        params = params.set("proveedorId", proveedorId.toString());
 
         return this.http
             .get('/api/CampoSustentable/DescargarArchivoKMZ', { params: params, headers: this.headers })

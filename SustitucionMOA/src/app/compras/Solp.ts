@@ -9,10 +9,13 @@ import { FormGroup } from "@angular/forms";
 import { SubPosicionViewModel } from "./PliegoPasos/solapaSubposiciones/subPosicionViewModel";
 import { CommonResponse } from "../common/models/common-response";
 import { AdjuntosCotizaciones } from "./PliegoPasos/adjuntos-Cotizaciones";
+import { EnumTipoSolpSap } from "./enum-tipo-solp-sap";
 
 export class Solp extends CommonResponse {
     public id: number;
     public tipoSolp: string;
+    public tipoSolpSap: EnumTipoSolpSap;
+    public vincularAPliego: boolean = false;
     public nroSolp: number;
     public NroSolp: string;
     public Adjuntos?: { Id: number, Nombre: string }[];

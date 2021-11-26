@@ -8,21 +8,21 @@
       <xsd:element name="Z_MMRFC_OBTENER_SERVICIOS.Response">
         <xsd:complexType>
           <xsd:all>
-            <xsd:element minOccurs="0" name="IM_EXITO">
+            <xsd:element minOccurs="0" name="EX_EXITO">
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="3" />
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
-            <xsd:element minOccurs="0" name="IM_RETURN">
+            <xsd:element minOccurs="0" name="EX_RETURN">
               <xsd:complexType>
                 <xsd:sequence>
                   <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIRET2" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
-            <xsd:element minOccurs="0" name="IM_SERVICELIST">
+            <xsd:element minOccurs="0" name="EX_SERVICELIST">
               <xsd:complexType>
                 <xsd:sequence>
                   <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES5710" />
@@ -35,14 +35,14 @@
       <xsd:element name="Z_MMRFC_OBTENER_SERVICIOS">
         <xsd:complexType>
           <xsd:all>
-            <xsd:element minOccurs="0" name="EX_SERVICESELECTION">
+            <xsd:element minOccurs="0" name="IM_SERVICESELECTION">
               <xsd:complexType>
                 <xsd:sequence>
                   <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIASNRAN" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
-            <xsd:element minOccurs="0" name="EX_SRVSHORTTEXTSELECTION">
+            <xsd:element minOccurs="0" name="IM_SRVSHORTTEXTSELECTION">
               <xsd:complexType>
                 <xsd:sequence>
                   <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIASKRAN" />

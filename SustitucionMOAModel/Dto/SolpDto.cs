@@ -56,6 +56,7 @@ namespace SustitucionMOAModel.Dto
         public bool CargaCotizacionesConArchivo { get; set; }
         public string RevisadoPor { get; set; }
         public UsuarioComprasDto UsuarioCompras { get; set; }
+        public int? TipoSolpSap { get; set; }
 
         public SolpDto() {}
         public SolpDto(Solp entity) 
@@ -100,7 +101,7 @@ namespace SustitucionMOAModel.Dto
             this.EstadoPasos = entity.EstadoPasos;
             this.RevisadoPor = entity.Pliego.RevisadoPor;
             this.UsuarioCompras = new UsuarioComprasDto(entity.UsuarioCompras);
-
+            this.TipoSolpSap = entity.TipoSolpSap;
         }
     }
 
