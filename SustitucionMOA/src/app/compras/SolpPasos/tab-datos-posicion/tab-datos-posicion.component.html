@@ -1,7 +1,7 @@
-<!-- Row grupo de comras -->
+<!-- Row grupo de compras -->
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
-        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
+        <div *ngIf="mostrarCamposTipoSolp('selectGrupoCompras')" class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
             <div class="margenInput">
                 Grupo de compras 
                 <p-autoComplete [(ngModel)]="model.posicionActual.selectGrupoCompras" [suggestions]="grupoCompras" dataKey="Id" ariaLabel="CodigoDescripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="Ningún grupo de compras encontrado"
@@ -13,25 +13,29 @@
             </div>
         </div>
 
-        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
+        <div *ngIf="mostrarCamposTipoSolp('selectSolicitanteCompras')" class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
             <div class="margenInput">
                 Solicitante *
-                <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.selectSolicitanteCompras" id="selectSolicitanteCompras" placeholder=""
+                <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.selectSolicitanteCompras" id="selectSolicitanteCompras" placeholder="Ingrese solicitante"
                     rows="1" />
-                    <div *ngIf="mostrarValidacion('selectSolicitanteCompras', model.posicionActual.selectSolicitanteCompras)">
-                        <p class="text-danger">campo obligatorio</p>
-                    </div>
+                <div *ngIf="mostrarValidacion('selectSolicitanteCompras', model.posicionActual.selectSolicitanteCompras)">
+                    <p class="text-danger">campo obligatorio</p>
+                </div>
             </div>
         </div>
 
-        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
+        <div *ngIf="mostrarCamposTipoSolp('necesidadCompras')" class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
             <div class="margenInput">
                 N° Necesidad
-                <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.necesidadCompras" id="necesidadCompras" placeholder="" rows="1" />
+                <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.necesidadCompras" id="necesidadCompras" placeholder="Ingrese Nro de necesidad" rows="1" />
+                <div *ngIf="mostrarValidacion('necesidadCompras', model.posicionActual.necesidadCompras)">
+                    <p class="text-danger">campo obligatorio</p>
+                </div>
             </div>
+           
         </div>
 
-        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
+        <div *ngIf="mostrarCamposTipoSolp('selectArticuloCompras')" class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
             <div class="margenInput">
                 Grupo de art&iacute;culo * 
                 <p-autoComplete [(ngModel)]="model.posicionActual.selectArticuloCompras" [suggestions]="articuloCompras" dataKey="Id" ariaLabel="CodigoDescripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true"
@@ -44,5 +48,40 @@
         </div>
     </div>
 </div>
- 
-<!-- End Row grupo de comras -->
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
+        <div *ngIf="mostrarCamposTipoSolp('textoSuministro')" class="col-xs-12 col-sm-6 col-md-6 col-lg-6 margenInput">
+            <div class="margenInput">
+                Texto de suministro
+                <textarea [(ngModel)]="model.posicionActual.textoSuministro" id="observaciones" placeholder="Ingrese texto de suministro" cols="30" rows="5"></textarea>
+                <div *ngIf="mostrarValidacion('textoSuministro', model.posicionActual.textoSuministro)">
+                    <p class="text-danger">campo obligatorio</p>
+                </div>
+            </div>
+        </div>
+    
+
+        <div *ngIf="mostrarCamposTipoSolp('motivo')" class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
+            <div class="margenInput">
+                Motivo
+                <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" placeholder="Ingrese motivo" [(ngModel)]="model.posicionActual.motivo" id="motivo" rows="1" />
+            </div>
+            <div *ngIf="mostrarValidacion('motivo', model.posicionActual.motivo)">
+                <p class="text-danger">campo obligatorio</p>
+            </div>
+        </div>
+
+        <div *ngIf="mostrarCamposTipoSolp('modelo')" class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
+            <div class="margenInput">
+                Modelo
+                <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" placeholder="Ingrese modelo" [(ngModel)]="model.posicionActual.modelo" id="modelo" rows="1" />
+            </div>
+            <div *ngIf="mostrarValidacion('modelo', model.posicionActual.modelo)">
+                <p class="text-danger">campo obligatorio</p>
+            </div>
+        </div>
+    </div>
+
+</div> 
+<!-- End Row grupo de compras -->

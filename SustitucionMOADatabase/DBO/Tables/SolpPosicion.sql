@@ -25,9 +25,11 @@
 	[GrupoArticulo_Id] [int] NULL,
 	[CodigosProveedores] [nvarchar](max) NULL,
 	[Moneda_Id] [int] NULL,
-
-[Estado] BIT NULL DEFAULT 1, 
+	[Estado] BIT NULL DEFAULT 1, 
     [Indice] INT NULL, 
+    [TextoSuministro] NVARCHAR(MAX) NULL, 
+    [Motivo] NVARCHAR(MAX) NULL, 
+    [Modelo] NVARCHAR(MAX) NULL, 
     CONSTRAINT [PK_dbo.SolpPosicion] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

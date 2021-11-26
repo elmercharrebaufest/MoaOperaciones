@@ -47,9 +47,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     claseDocumento: SelectItem[];
     centroEntrega: SelectItem[];
     monedaCompras: SelectItem[];
-    // articuloCompras: SelectItem[];
-    // solicitanteCompras: SelectItem[];
-    // grupoCompras: SelectItem[];
     almacenEntrega: SelectItem[];
     posiciones: SelectItem[];
     resultadoProveedores: string[];
@@ -57,8 +54,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     fechaDeLiberacion: any;
     hoy: Date = new Date();
     selectPosicion: any;
-
-    // solpActual: Solp;
 
     formularioPosicion: [FormGroup];
     formularioActual: FormGroup;
@@ -86,10 +81,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         { campo: 'calleEntrega', esObligatorio: true, esFijo: true },
         { campo: 'paisEntrega', esObligatorio: false, esFijo: true },
         { campo: 'numeroEntrega', esObligatorio: true, esFijo: true },
-        // { campo: 'selectGrupoCompras', esObligatorio: false, esFijo: false },
-        // { campo: 'selectArticuloCompras', esObligatorio: true, esFijo: true },
-        // { campo: 'selectSolicitanteCompras', esObligatorio: true, esFijo: true },
-        // { campo: 'necesidadCompras', esObligatorio: false, esFijo: true },
         { campo: 'rubroElectrico', esObligatorio: false, esFijo: true },
         { campo: 'rubroCivil', esObligatorio: false, esFijo: true },
         { campo: 'rubroIngenieria', esObligatorio: false, esFijo: true },
@@ -113,8 +104,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
         this.claseDocumento = this.combos.ClaseDocumento;
         this.centroEntrega = this.combos.Centro;
-        // this.grupoCompras = this.combos.GrupoCompras;
-        // this.articuloCompras = this.combos.GrupoArticulo;
         this.monedaCompras = this.combos.Moneda;
         let claseDocumento = this.model.selectClaseDocumento!== undefined && this.model.selectClaseDocumento.Id>0 ? this.model.selectClaseDocumento : this.claseDocumento[0];
         this.setControlesObligatorios(claseDocumento);
@@ -258,12 +247,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                         x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
                 }
                 break;
-            // case 'GRUPO COMPRAS':
-            //     this.grupoCompras = this.combos.GrupoCompras.filter(x => x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
-            //     break;
-            // case 'ARTICULO COMPRAS':
-            //     this.articuloCompras = this.combos.GrupoArticulo.filter(x => x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
-            //     break;
             case 'MONEDA COMPRAS':
                 this.monedaCompras = this.combos.Moneda.filter(x => x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
                 break;

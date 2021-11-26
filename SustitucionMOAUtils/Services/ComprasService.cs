@@ -253,6 +253,9 @@ namespace SustitucionMOAUtils.Services
                         posEntity.FechaEntregaServicio = pos.FechaEntregaServicio;
                         posEntity.FechaLiberacion = pos.FechaLiberacion;
                         posEntity.NroNecesidad = pos.NroNecesidad;
+                        posEntity.TextoSuministro = pos.TextoSuministro;
+                        posEntity.Motivo = pos.Motivo;
+                        posEntity.Modelo = pos.Modelo;
                         posEntity.Estado = pos.Estado;
                         posEntity.Indice = pos.Indice;
 
