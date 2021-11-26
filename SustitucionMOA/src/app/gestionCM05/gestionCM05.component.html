@@ -239,7 +239,7 @@
                     {{rowData.FechaCese | date:'dd/MM/yyyy'}}
                 </td>
                 <td class="td-detalle">
-                    {{rowData.CoeficienteUnificado}}
+                    {{rowData.CoeficienteUnificado.toFixed(4) | mask: '0.0000'}}
                 </td>
                 <td class="td-detalle">
                     {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
