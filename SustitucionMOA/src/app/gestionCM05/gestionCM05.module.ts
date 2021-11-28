@@ -19,6 +19,7 @@ import { NgxMaskModule } from "ngx-mask";
 import { NgxPaginationModule } from 'ngx-pagination';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TabMenuModule } from 'primeng/tabmenu';
+import { FileUploadModule } from 'primeng/fileupload';
 
 @NgModule({
     imports: [
@@ -39,6 +40,7 @@ import { TabMenuModule } from 'primeng/tabmenu';
         DropdownModule,
         InputTextareaModule,
         TabMenuModule,
+        FileUploadModule
     ],
     declarations: [
         GestionCM05Component,

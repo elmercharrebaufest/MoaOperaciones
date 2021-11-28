@@ -29,7 +29,10 @@ export class GestionCM05Component extends ListBaseComponent {
     @ViewChild("dt")
     protected table: Table;
 
-    displayDialog: boolean;
+    @ViewChild('fileUploadCargaCM05')
+    protected fileUploadCargaCM05: any;
+
+    displayDialogDetallesCM05: boolean;
 
     cabeceraCols: any[];
     cabeceras: CabeceraCM05[];
@@ -64,6 +67,9 @@ export class GestionCM05Component extends ListBaseComponent {
 
     tabsPopup: MenuItem[];
     tabPopupActiva: MenuItem;
+
+    displayDialogCargaCM05: boolean = false;
+    uploadedFiles: any[] = [];
 
     constructor(protected service: GestionCM05Service,
         protected navService: NavService,
@@ -206,7 +212,7 @@ export class GestionCM05Component extends ListBaseComponent {
         this.tabPopupActiva = this.tabsPopup[0];
 
         setTimeout(() => {
-            this.displayDialog = true;
+            this.displayDialogDetallesCM05 = true;
         }, 700);
     }
 
@@ -215,7 +221,7 @@ export class GestionCM05Component extends ListBaseComponent {
         this.detalles = null;
         this.editandoCabecera = false;
         this.cabeceraEditando = null;
-        this.displayDialog = false;
+        this.displayDialogDetallesCM05 = false;
     }
 
     editarRow(rowData) {
@@ -453,14 +459,11 @@ export class GestionCM05Component extends ListBaseComponent {
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
-                            this.messageService.add({ severity: 'error', summary: 'No se pudo editar', detail: result.error });
-                            this.floatMsgService.setErrorMsg(result.error);
+                            this.messageService.add({ key: 'toastPopupDetalles', severity: 'error', summary: 'No se pudo editar', detail: result.error });
                         } else if (result.info != undefined) {
-                            this.messageService.add({ severity: 'info', summary: 'No se pudo editar', detail: result.info });
-                            this.floatMsgService.setInfoMsg(result.info);
+                            this.messageService.add({ key: 'toastPopupDetalles', severity: 'info', summary: 'No se pudo editar', detail: result.info });
                         } else {
-                            this.messageService.add({ severity: 'success', summary: 'Cabecera actualizada', detail: result.Mensaje });
-                            this.floatMsgService.setSuccessMsg(result.Mensaje);
+                            this.messageService.add({ key:'toastPopupDetalles', severity: 'success', summary: 'Cabecera actualizada', detail: result.Mensaje });
 
                             this.selectedCabecera.Secuencia = this.selectedCabecera.SecuenciaId ? this.secuencias.find(s => s.value == this.selectedCabecera.SecuenciaId).label : '';
                             this.selectedCabecera.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(result.FechaUltimaModificacion));
@@ -472,12 +475,12 @@ export class GestionCM05Component extends ListBaseComponent {
                         }
                     },
                     error => {
-                        this.floatMsgService.setErrorMsg(error.message);
+                        this.messageService.add({ key: 'toastPopupDetalles', severity: 'error', summary: 'No se pudo editar', detail: error.message });
                     }
                 );
             }
         } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
+            this.messageService.add({ key: 'toastPopupDetalles', severity: 'error', detail: e });
             return false; //<-- Prevent Refresh
         }
 
@@ -529,55 +532,53 @@ export class GestionCM05Component extends ListBaseComponent {
         this.cabeceraEditando = null;
     }
 
-    cargarArchivo(event: any) {
-        let fileList: FileList = event.target.files;
-        let file;
-
-        if (fileList.length > 0) {
-            this.files = fileList;
-            for (let i = 0; i < fileList.length; i++) {
-                file = fileList[i];
-                this.listaArchivos.push(file);
-            }
-        }
-
-        let $formInput = $('input[type=file]');
-        $formInput.val(null);
+    mostrarDialogCargaCM05() {
+        this.displayDialogCargaCM05 = true;
     }
 
-    
-    borrarArchivo(i: number) {
-        this.listaArchivos.splice(i, 1);
+    closeDialogCargaCM05() {
+        this.displayDialogCargaCM05 = false;
+        this.fileUploadCargaCM05.clear();
+        this.blockUI.stop();
     }
 
-    cargarCM05() {
+    cargarCM05(event: any) {
         this.blockUI.start()
         try {
-            this.service.cargarCM05(this.listaArchivos).subscribe(
+            this.service.cargarCM05(event.files).subscribe(
                 result => {
                     if (result.logout == true) {
-                        this.blockUI.stop()
-                        this.sessionDataService.logout();
+                        this.sessionDataService.logout()
+                        this.blockUI.stop();
                     } else if (result.error != undefined && result.error != "") {
-                        this.blockUI.stop()
-                        this.floatMsgService.setErrorMsg(result.error);
+                        this.messageService.add({ key: 'toastPopupCargaCM05', severity: 'error', detail: result.error });
+                        this.blockUI.stop();
                     } else if (result.info != undefined) {
+                        this.messageService.add({ key: 'toastPopupCargaCM05', severity: 'info', detail: result.info });
                         this.blockUI.stop()
-                        this.floatMsgService.setInfoMsg(result.info);
+                        return false;
                     } else {
-                        this.blockUI.stop()
-                        this.listarCabeceras();
+                        this.messageService.add({ key: 'toastPopupCargaCM05', severity: 'success', detail: result.Mensaje });
+                        this.listarCabeceras()
+                        this.closeDialogCargaCM05()
+                        this.blockUI.stop();
+                        return false;
                     }
                 },
                 error => {
-                    this.floatMsgService.setErrorMsg(error.message);
+                    this.messageService.add({ key: 'toastPopupCargaCM05', severity: 'error', detail: error.message });
+
+                    this.closeDialogCargaCM05()
+                    this.blockUI.stop();
+                    return false;
                 }
             );
         } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
+            this.messageService.add({ key: 'toastPopupCargaCM05', severity: 'error', detail: e });
+            this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
-
-        return false;
     }
+
+
 }

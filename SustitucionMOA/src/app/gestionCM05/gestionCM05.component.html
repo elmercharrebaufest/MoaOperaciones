@@ -7,9 +7,8 @@
             <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
                 <!-- Button trigger modal -->
                 <button type="button" pButton icon="fa fa-refresh" (click)="listarCabeceras()" style="background-color: #067935; float: right"></button>
-                <button type="button" id="openModalCargaCM05" data-toggle="modal" data-target="#ModalCargaCM05" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande" id="modalToggleButton">
-                    Cargar CM05
-                </button>
+
+                <button type="button" pButton icon="fa fa-plus" (click)="mostrarDialogCargaCM05()" style="background-color: #067935; float: right"></button>
             </div>
         </div>
         <div>
@@ -115,21 +114,21 @@
     </section>
 </div>
 
-<p-dialog *ngIf="selectedCabecera" [(visible)]="displayDialog" [maximizable]="true" [responsive]="true" showEffect="fade" [modal]="true" [width]="900" appendTo="body" (onHide)="closeDialogDetalles()">
+<p-dialog *ngIf="selectedCabecera" [(visible)]="displayDialogDetallesCM05" [maximizable]="true" [responsive]="true" showEffect="fade" [modal]="true" [width]="900" appendTo="body" (onHide)="closeDialogDetalles()">
     <p-header>
-        <div class="col-md-3">
-            <label class="headerDetalle">
+        <div class="titulo-dialog-CM05 col-md-3">
+            <label class="col-md-3">
                 Id:
             </label>
-            <label>
+            <label class="col-md-9">
                 {{selectedCabecera.Id}}
             </label>
         </div>
-        <div class="col-md-3" *ngIf="selectedCabecera.ConsultaId">
-            <label class="headerDetalle">
+        <div class="titulo-dialog-CM05 col-md-3" *ngIf="selectedCabecera.ConsultaId">
+            <label class="col-md-9">
                 Id Consulta:
             </label>
-            <label>
+            <label class="col-md-3">
                 {{selectedCabecera.ConsultaId}}
             </label>
         </div>
@@ -214,8 +213,8 @@
             <div class="col-sm-1" style="width:12%" *ngIf="selectedCabecera.Estado=='Pendiente'">
                 <button *ngIf="!editandoCabecera; else elseBotonesBlock" pButton type="button" (click)="editarCabecera()" class="p-button-secondary" style="background-color: #075088;" icon="fa fa-edit"></button>
                 <ng-template #elseBotonesBlock>
-                    <button pButton type="button" (click)="guardarCabeceraEditada()" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-check"></button>
-                    <button pButton type="button" (click)="cancelarEditarCabecera()" class="p-button-secondary" style="background-color: #ff4343;" icon="fa fa-times"></button>
+                    <button pButton type="button" (click)="guardarCabeceraEditada()" class="p-button-secondary" style="background-color: #067935 !important;" icon="fa fa-check"></button>
+                    <button pButton type="button" (click)="cancelarEditarCabecera()" class="p-button-secondary" style="background-color: #ff4343 !important;" icon="fa fa-times"></button>
                 </ng-template>
             </div>
         </div>
@@ -276,8 +275,8 @@
                                 {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
                             </td>
                             <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado=='Pendiente'">
-                                <button pButton type="button" (click)="guardarRow(rowData)" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-check"></button>
-                                <button pButton type="button" (click)="cancelarGuardarRow(rowData)" class="p-button-secondary" style="background-color: #ff4343;" icon="fa fa-times"></button>
+                                <button pButton type="button" (click)="guardarRow(rowData)" class="p-button-secondary" style="background-color: #067935 !important" icon="fa fa-check"></button>
+                                <button pButton type="button" (click)="cancelarGuardarRow(rowData)" class="p-button-secondary" style="background-color: #ff4343 !important" icon="fa fa-times"></button>
                             </td>
                         </tr>
                     </ng-template>
@@ -290,7 +289,7 @@
             <button pButton label="Autorizar" (click)="autorizarCabecera()" [disabled]="selectedCabecera.Estado!='Pendiente'" type="button" icon="fa fa-check-circle" iconPos="right" style="float: right"></button>
             <button pButton label="Descargar PDF" (click)="descargarFormularioCM05()" type="button" icon="fa fa-file" iconPos="right" style="float: right"></button>
         </p-footer>
-        <p-toast></p-toast>
+        <p-toast key="toastPopupDetalles"></p-toast>
     </div>
     <div *ngIf="tabPopupActiva.label=='Movimientos'" style="border: 1px solid #c8c8c8;">
         <p-table [columns]="movimientoCols" [value]="movimientos" dataKey="Id" [scrollable]="true" scrollHeight="flex">
@@ -330,48 +329,17 @@
     </div>
 </p-dialog>
 
-<div class="modal fade" id="ModalCargaCM05" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-    data-backdrop="false" style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
-    <div class="modal-dialog" role="document" style="width: 500px;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
-                    id="hideModalCargaCM05">
-                    <span aria-hidden="true" id="HideModalOperando">&times;</span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">
-                    Cargar CM05
-                </h4>
-            </div>
-            <div class="modal-body" style="padding-top:0;">
-                <mensaje #mensajeModalComponent></mensaje>
-                <div class="content-wraper" style="margin-top:0;padding-top:0">
-                    <div class="for row myRow">
-                        <div class="col-xs-12 col-sm-12 col-md-12">
-                            <input class="adjuntarArchivo" #fileInput type="image"
-                            src="Content/images/buttons/Adjuntar.svg" style="padding-left: 15px; margin-top: 15px; width: 190px; text-align: center;">
-                            <input class="adjuntarArchivo1" #fileInput type="file"
-                            style="display:none" (change)="cargarArchivo($event)" multiple>
-                            <br />
-    
-                            <div *ngIf="listaArchivos.length > 0" class="col-xs-12 col-sm-12 col-md-12 archivosBox">
-                                <ng-container *ngFor="let Archivo of listaArchivos, let i = index">
-                                    <p class="col-xs-10 col-sm-10 col-md-10">{{Archivo.name}}</p>
-                                    <span class="fa fa-times col-xs-1 col-sm-1 col-md-1" (click)="borrarArchivo(i)"></span>
-                                    <br>
-                                </ng-container>
-                            </div>
-                            <br>
-                        </div>
-                    </div>
-                    <div class="for row myRow center">
-                        <button type="button" class="btn-custom btn-mediano btn-add"
-                            (click)="cargarCM05()">
-                            Cargar
-                        </button>
-                    </div>
-                </div>
-            </div>
+<p-dialog [(visible)]="displayDialogCargaCM05" showEffect="fade" [modal]="true" appendTo="body" (onHide)="closeDialogCargaCM05()">
+    <p-header>
+        <div>
+            <label class="titulo-dialog-CM05 col-md-8">
+                Cargar CM05
+            </label>
         </div>
-    </div>
-</div>
+    </p-header>
+
+    <p-fileUpload #fileUploadCargaCM05 name="fileUploadCM05" (uploadHandler)="cargarCM05($event)" [customUpload]="true" 
+                  chooseLabel="Seleccionar" uploadLabel="Cargar" [showCancelButton]="false" accept=".pdf"></p-fileUpload>
+
+    <p-toast key="toastPopupCargaCM05"></p-toast>
+</p-dialog>

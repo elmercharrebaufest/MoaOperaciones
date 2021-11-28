@@ -23,13 +23,15 @@ namespace SustitucionMOATest.Controllers
         GestionImpuestosController target;
 
         Mock<IGestionImpuestosService> gestionImpuestosServiceMock;
+        Mock<IConsultaService> consultaServiceMock;
 
         [SetUp]
         public void SetUp()
         {
             this.gestionImpuestosServiceMock = new Mock<IGestionImpuestosService>();
+            this.consultaServiceMock = new Mock<IConsultaService>();
 
-            this.target = new GestionImpuestosController(gestionImpuestosServiceMock.Object);
+            this.target = new GestionImpuestosController(gestionImpuestosServiceMock.Object, consultaServiceMock.Object);
         }
 
         [Test]
@@ -321,7 +323,7 @@ namespace SustitucionMOATest.Controllers
             gestionImpuestosServiceMock
                 .Setup(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.Is<IngresosBrutosCoeficienteUnificadoDetalleDto>(x => x.Id == 1)))
                 .Returns(new EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto { Mensaje = "Se edito ok", FechaUltimaModificacion = hoy });
-            
+
             string parametroJson = JsonConvert.SerializeObject(ingresosBrutosCoeficienteUnificadoDetalleDtoTest);
 
             var result = target.EditarIngresosBrutosCoeficienteUnificadoDetalle(parametroJson);
@@ -429,12 +431,12 @@ namespace SustitucionMOATest.Controllers
             this.gestionImpuestosServiceMock
                 .Setup(g => g.ObtenerRutaArchivoFormularioCM05(It.IsAny<int>()))
                 .Returns<int>(idCabecera => ingresosBrutosCoeficienteUnificadoList.SingleOrDefault(x => x.Id == idCabecera).Archivo.Ruta);
-            
+
             var result = target.DescargarFormularioCM05(idCabeceraTest);
 
             Assert.IsNotNull(result.Data);
             Assert.IsInstanceOf<FileContentResult>(result.Data);
-            
+
             FileContentResult resultData = (FileContentResult)result.Data;
             Assert.AreEqual("46_3061565409 CM05.pdf", resultData.FileDownloadName);
 

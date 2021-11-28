@@ -972,13 +972,6 @@ namespace SustitucionMOAUtils.Services
                                 var ruta = ArmarRutaCarpetaCM05(cuitProveedor);
                                 var rutaArchivo = string.Concat(ruta, "/", nombreArchivo);
 
-                                /*
-                                if (File.Exists(rutaArchivo))
-                                {
-                                    errores.Add($"{nombreArchivo}: {ErrorMsg.ErrorArchivoRepetido}");
-                                    continue;
-                                }*/
-
                                 Directory.CreateDirectory(ruta);
 
                                 var ArchivoAGuardar = new Archivo()
@@ -994,7 +987,7 @@ namespace SustitucionMOAUtils.Services
                                 archivo_Id = ArchivoAGuardar.Id;
                             }
 
-                            resultado = ProcesarArchivoCoeficientesImpuestosIngresosBrutos(elementosLeidos.ToList(), archivo_Id, cuitProveedor, consulta_Id);
+                            resultado = ProcesarArchivoCoeficientesImpuestosIngresosBrutos(elementosLeidos.ToList(), archivo_Id, cuitProveedor, consulta_Id, esCargaInterna);
                             existeArchivoConCoeficientes = true;
                             break;
                         }
@@ -1018,7 +1011,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private string ProcesarArchivoCoeficientesImpuestosIngresosBrutos(List<string> elementosLeidos, int archivo_Id, string cuitProveedor, int? consulta_Id = null)
+        private string ProcesarArchivoCoeficientesImpuestosIngresosBrutos(List<string> elementosLeidos, int archivo_Id, string cuitProveedor, int? consulta_Id, bool esCargaInterna)
         {
             //Descarto palabras que ya se que son "basura"
             elementosLeidos
@@ -1115,9 +1108,14 @@ namespace SustitucionMOAUtils.Services
             repositorio.Agregar(ingresosBrutosCoeficienteUnificado);
             repositorio.GuardarCambios();
 
-            return cuit != cuitProveedor ?
-                SuccessMsg.AltaFormularioCM05DistintoCUITOK :
-                string.Empty;
+            return 
+                esCargaInterna ? 
+                    ingresosBrutosCoeficienteUnificado.MalCargada ? 
+                        SuccessMsg.AltaFormularioCM05CargaInternaMalCargadoOK 
+                      : SuccessMsg.AltaFormularioCM05CargaInternaOK
+                : cuit != cuitProveedor ? 
+                    SuccessMsg.AltaFormularioCM05DistintoCUITOK 
+                : string.Empty;
         }
 
         private List<string> SacarHasta(IList<string> listaStrings, string elemento)
