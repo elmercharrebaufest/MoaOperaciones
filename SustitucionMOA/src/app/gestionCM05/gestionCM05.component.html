@@ -4,36 +4,77 @@
             <div class="col-xs-12 col-sm-10 ">
                 <strong>Gestión de CM05</strong>
             </div>
+            <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
+                <!-- Button trigger modal -->
+                <button type="button" pButton icon="fa fa-refresh" (click)="listarCabeceras()" style="background-color: #067935; float: right"></button>   
+                <button type="button" id="openModalCargaCM05" data-toggle="modal" data-target="#ModalCargaCM05" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande" id="modalToggleButton">
+                  Cargar CM05
+                </button>    
+              </div>
         </div>
         <div>
             <div style="width: 75%; height: 35px; margin-top: 10px; margin-bottom: 10px;">
                 <button type="button" pButton icon="fa fa-refresh" (click)="listarCabeceras()" style="background-color: #067935; float: right"></button>
             </div>
-            <p-table #dt [columns]="cabeceraCols" [value]="cabeceras" selectionMode="single" [(selection)]="selectedCabecera" [paginator]="true" [rows]="10">
+            <p-table #dt [columns]="cabeceraCols" [value]="cabeceras" selectionMode="single" [(selection)]="selectedCabecera" [paginator]="true" [rows]="10" sortMode="multiple">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Id</th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Id Consulta</th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Razón Social</th>
-                        <th class="col-md-3 th-cabecera" style="border-bottom:none">
-                            Estado
+                        <th [pSortableColumn]="'Id'" class="col-md-1 th-cabecera">
+                            Id
+                            <p-sortIcon [field]="'Id'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Secuencia</th>
-                        <th class="col-md-2 th-cabecera">CUIT</th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Anticipo</th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Sede</th>
-                        <th class="col-md-2 th-cabecera" rowspan="2">Fecha Carga</th>
-                        <th class="col-md-2 th-cabecera" rowspan="2">Última modificación</th>
+                        <th [pSortableColumn]="'ConsultaId'" class="col-md-1 th-cabecera">
+                            Id Consulta
+                            <p-sortIcon [field]="'ConsultaId'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'RazonSocial'" class="col-md-1 th-cabecera" rowspan="2">
+                            Razón Social
+                            <p-sortIcon [field]="'RazonSocial'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'Estado'" class="col-md-3 th-cabecera" style="border-bottom:none">
+                            Estado
+                            <p-sortIcon [field]="'Estado'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'Secuencia'" class="col-md-1 th-cabecera" rowspan="2">
+                            Secuencia
+                            <p-sortIcon [field]="'Secuencia'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'CUIT'" class="col-md-2 th-cabecera">
+                            CUIT
+                            <p-sortIcon [field]="'CUIT'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'Anticipo'" class="col-md-1 th-cabecera" rowspan="2">
+                            Anticipo
+                            <p-sortIcon [field]="'Anticipo'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'Sede'" class="col-md-1 th-cabecera" rowspan="2">
+                            Sede
+                            <p-sortIcon [field]="'Sede'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'FechaCarga'" class="col-md-2 th-cabecera" rowspan="2">
+                            Fecha Carga
+                            <p-sortIcon [field]="'FechaCarga'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'FechaUltimaModificacion'" class="col-md-2 th-cabecera" rowspan="2">
+                            Última modificación
+                            <p-sortIcon [field]="'FechaUltimaModificacion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
                     </tr>
                     <tr>
-                        <th class="col-md-2 th-cabecera" style="font-size:10px !important; text-transform:capitalize; border-top:none">
-                            <p-multiSelect [styleClass]="spanFiltroMultiSelect" appendTo="body" [options]="estados" defaultLabel="" (onChange)="dt.filter($event.value, 'Estado', 'in')">
+                        <th class="th-cabecera" style="font-size:12px !important; font-weight: lighter;">
+                            <input [(ngModel)]="idFiltro" placeholder="Buscar" (input)="dt.filter(idFiltro, 'Id', 'contains')">
+                        </th>
+                        <th class="th-cabecera" style="font-size:12px !important; font-weight: lighter;">
+                            <input [(ngModel)]="idConsultaFiltro" placeholder="Buscar" (input)="dt.filter(idConsultaFiltro, 'ConsultaId', 'contains')">
+                        </th>
+                        <th class="col-md-2 th-cabecera" style="font-size:12px !important; text-transform:capitalize; border-top:none;">
+                            <p-multiSelect [styleClass]="spanFiltroMultiSelect" appendTo="body" [options]="estados" defaultLabel="Seleccionar estado" (onChange)="dt.filter($event.value, 'Estado', 'in')">
                                 <ng-template let-estado pTemplate="item">
                                     <span>{{estado.label}}</span>
                                 </ng-template>
                             </p-multiSelect>
                         </th>
-                        <th>
+                        <th class="th-cabecera" style="font-size:12px !important; text-transform:capitalize; border-top:none; font-weight: lighter;">
                             <input [(ngModel)]="cuitFiltro" placeholder="00-00000000-0" mask="00-00000000-0" (input)="dt.filter(cuitFiltro, 'CUIT', 'startsWith')" unmask="true">
                         </th>
                     </tr>
@@ -205,7 +246,7 @@
                     {{rowData.FechaCese | date:'dd/MM/yyyy'}}
                 </td>
                 <td class="td-detalle">
-                    {{rowData.CoeficienteUnificado}}
+                    {{rowData.CoeficienteUnificado.toFixed(4) | mask: '0.0000'}}
                 </td>
                 <td class="td-detalle">
                     {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
@@ -248,3 +289,49 @@
     </p-footer>
     <p-toast></p-toast>
 </p-dialog>
+
+<div class="modal fade" id="ModalCargaCM05" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    data-backdrop="false" style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document" style="width: 500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
+                    id="hideModalCargaCM05">
+                    <span aria-hidden="true" id="HideModalOperando">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Cargar CM05
+                </h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+                <mensaje #mensajeModalComponent></mensaje>
+                <div class="content-wraper" style="margin-top:0;padding-top:0">
+                    <div class="for row myRow">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <input class="adjuntarArchivo" #fileInput type="image"
+                            src="Content/images/buttons/Adjuntar.svg" style="padding-left: 15px; margin-top: 15px; width: 190px; text-align: center;">
+                            <input class="adjuntarArchivo1" #fileInput type="file"
+                            style="display:none" (change)="cargarArchivo($event)" multiple>
+                            <br />
+    
+                            <div *ngIf="listaArchivos.length > 0" class="col-xs-12 col-sm-12 col-md-12 archivosBox">
+                                <ng-container *ngFor="let Archivo of listaArchivos, let i = index">
+                                    <p class="col-xs-10 col-sm-10 col-md-10">{{Archivo.name}}</p>
+                                    <span class="fa fa-times col-xs-1 col-sm-1 col-md-1" (click)="borrarArchivo(i)"></span>
+                                    <br>
+                                </ng-container>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                    <div class="for row myRow center">
+                        <button type="button" class="btn-custom btn-mediano btn-add"
+                            (click)="cargarCM05()">
+                            Cargar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

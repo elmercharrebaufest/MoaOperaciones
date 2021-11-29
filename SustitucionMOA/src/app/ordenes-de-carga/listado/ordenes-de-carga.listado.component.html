@@ -117,6 +117,7 @@
               <th *ngIf="esInterno || esMesaFas">Pedido</th>
               <!-- <th *ngIf="esComercial || esPuerto || esMesaFas">Estado Pedido</th> -->
               <th>Producto</th>
+              <th>Patente chasis</th>
               <!-- <th *ngIf="esComercial || esPuerto || esMesaFas">Cantidad</th>
               <th *ngIf="esTercero || esComercial || esPuerto || esMesaFas">Destino</th> -->
               <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas"></th>
@@ -148,6 +149,7 @@
               <td *ngIf="esInterno || esMesaFas">{{ordenDeCarga.Pedido}}</td>
               <!-- <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.EstadoPedido}}</td> -->
               <td>{{ordenDeCarga.Material}}</td>
+              <td>{{ordenDeCarga.PatenteChasis}}</td>
               <!-- <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Cantidad}}</td>
               <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Destino}}</td> -->
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">

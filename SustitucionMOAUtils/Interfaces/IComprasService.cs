@@ -34,6 +34,7 @@ namespace SustitucionMOAUtils.Interfaces
         void ActualizarServiciosSolp();
         List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos);
         List<ServicioSolpDto> AutocompleteServicioSolp(string valor);
+        ObtenerSolpSAPResponse ObtenerSolpsSAP(ObtenerSolpRequest obtenerSolpRequest);
         void ActualizarEstadoSolpBulk();
         void ActualizarEstadoSolp(string nroSolp, int idEstado);
         List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual);

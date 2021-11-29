@@ -58,4 +58,20 @@ export class GestionCM05Service extends BaseService {
             .post('/api/GestionImpuestos/EditarIngresosBrutosCoeficienteUnificado', payload, { headers: this.headers })
 
     }
+
+    public cargarCM05(archivo: any = null): Observable<any> {
+        var payload = new FormData();
+
+        if (archivo != null) {
+            for (let i = 0; i < archivo.length; i++) {
+                let fileToUpload = archivo[i];
+                payload.append("file", fileToUpload, fileToUpload.name);
+            }
+        }
+
+        payload.append("file", archivo);
+
+        return this.http
+            .post('/api/Consulta/cargarCM05', payload, { headers: this.headers });
+    }
 }

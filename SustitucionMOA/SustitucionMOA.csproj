@@ -257,9 +257,11 @@
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
+    <Content Include="Content\images\icons\SAP.svg" />
     <Content Include="Content\images\icons\trash.svg" />
     <Content Include="Content\images\icons\trashRed.svg" />
     <Content Include="Content\images\icons\trashWhite.svg" />
+    <Content Include="Content\images\icons\worker.svg" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
@@ -348,6 +350,7 @@
     <Content Include="src\app\compras\PliegoPasos\solapaTres\especificaciones.component.html" />
     <Content Include="src\app\compras\preview\pliego.preview.component.html" />
     <Content Include="src\app\compras\solp.component.html" />
+    <Content Include="src\app\compras\SolpPasos\cabecera.component.css" />
     <Content Include="src\app\compras\SolpPasos\cabecera.component.html" />
     <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.css" />
     <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.html" />
@@ -988,6 +991,7 @@
     </Compile>
     <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJob.cs" />
     <Compile Include="Jobs\ActualizarEstadoSolpSapJob.cs" />
+    <Compile Include="Jobs\ObtenerSolpsDesdeSAPJob.cs" />
     <Compile Include="Jobs\ReporteCamposSustentablesTSAJob.cs" />
     <Compile Include="Jobs\ReporteConflictosCamposSustentablesJob.cs" />
     <Compile Include="Jobs\ReporteLiquidacionesInformadasJob.cs" />
@@ -1028,6 +1032,7 @@
     <TypeScriptCompile Include="src\app\compras\enum-columna-subPosiciones.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-paso-solp.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-imputacion.ts" />
+    <TypeScriptCompile Include="src\app\compras\enum-tipo-solp-sap.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\adjuntos-Cotizaciones.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\cotizacion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion1.component.ts" />
