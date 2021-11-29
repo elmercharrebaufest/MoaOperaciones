@@ -144,13 +144,13 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr>
                     <td>
-                        <div class="col-md-2">
+                        <!-- <div class="col-md-2">
                             <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada'"><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash" (click)="eliminarPosicionDashboard(rowData.Id)" /></span>
-                        </div>
-                        <div class="col-md-2">
+                        </div> -->
+                        <div class="col-md-4">
                             <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" (click)="goToSeccionParam('/compras/solp', rowData.Id)"/></span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <span><img  class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="generarZipPliego(rowData.Id)"/></span>
                         </div>
                     </td>
