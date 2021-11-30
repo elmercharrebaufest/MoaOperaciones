@@ -18,5 +18,7 @@ namespace SustitucionMOAUtils.Interfaces
         string AutorizarCabecera(int idCabecera, string mailUsuario);
 
         string ObtenerRutaArchivoFormularioCM05(int idCabecera);
+
+        IList<MovimientoIngresosBrutosCoeficienteUnificadoDto> ListarMovimientos(int idCabecera);
     }
 }

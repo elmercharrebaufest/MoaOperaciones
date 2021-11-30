@@ -59,6 +59,10 @@
     <Folder Include="DBO" />
     <Folder Include="DBO\Tables" />
     <Folder Include="scripts" />
+    <Folder Include="DBO\Stored Procedures" />
+    <Folder Include="DBO\Views" />
+    <Folder Include="scripts\PreDeployment" />
+    <Folder Include="scripts\PostDeployment" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="DBO\Tables\ProveedorHistorialAprobacion.sql" />
@@ -113,7 +117,6 @@
     <Build Include="DBO\Tables\LogPesificacion.sql" />
     <None Include="scripts\PermisosLogPesificaciones.sql" />
     <Build Include="DBO\Tables\DeclaracionCampoSustentable.sql" />
-    <None Include="scripts\SP_ActualizarToneladasAprobadasCampo.sql" />
     <Build Include="DBO\Tables\ConflictoCampoSustentable.sql" />
     <None Include="scripts\CreacionRolSolp.sql" />
     <None Include="scripts\CreacionRolApiKey.sql" />
@@ -135,8 +138,6 @@
     <Build Include="DBO\Tables\IngresosBrutosCoeficienteUnificado.sql" />
     <Build Include="DBO\Tables\IngresosBrutosCoeficienteUnificadoDetalle.sql" />
     <Build Include="DBO\Tables\EstadoIngresosBrutosCoeficienteUnificado.sql" />
-    <Build Include="scripts\Create Procedure ActualizarIngresosBrutosCoeficienteUnificado.sql" />
-    <Build Include="scripts\Create View viewIngresosBrutosCoeficienteUnificado.sql" />
     <Build Include="DBO\Tables\SecuenciaIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\Insert SecuenciaIngresosBrutosCoeficienteUnificado.sql" />
     <Build Include="DBO\Tables\OrdenDeCargaCambiosHistorial.sql" />
@@ -144,6 +145,15 @@
     <Build Include="DBO\Tables\UsuarioComprasRelacionConUsuarios.sql" />
     <Build Include="DBO\Tables\UsuarioCompras.sql" />
     <None Include="scripts\Insert Rol PermisoPorRol y RolPermisoPorRol GestionCM05.sql" />
+    <Build Include="DBO\Stored Procedures\ActualizarIngresosBrutosCoeficienteUnificadoRechazado.sql" />
+    <Build Include="DBO\Stored Procedures\ActualizarIngresosBrutosCoeficienteUnificado.sql" />
+    <Build Include="DBO\Views\viewIngresosBrutosCoeficienteUnificado.sql" />
+    <Build Include="DBO\Stored Procedures\ActualizarToneladasAprobadasCampo.sql" />
+    <Build Include="DBO\Tables\MovimientoIngresosBrutosCoeficienteUnificado.sql" />
+    <Build Include="DBO\Tables\OrigenMovimientoIngresosBrutosCoeficienteUnificado.sql" />
+    <None Include="scripts\PostDeployment\PermisosNotificaciones.sql" />
+    <Build Include="DBO\Tables\TipoMovimientoIngresosBrutosCoeficienteUnificado.sql" />
+    <None Include="scripts\PostDeployment\EstadoIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\CreacionRolAccesoQr.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -153,18 +163,21 @@
     <None Include="scripts\RolNuevoCliente.sql" />
     <None Include="SustitucionMOADatabase.publish.xml" />
     <None Include="scripts\CargaInicialSolp.sql" />
-    <None Include="scripts\Insert EstadoIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\Rol Admin plataforma compras.sql" />
+    <None Include="scripts\PostDeployment\TipoMovimientoIngresosBrutosCoeficienteUnificado.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />
   </ItemGroup>
   <ItemGroup>
-    <PostDeploy Include="scripts\PermisosNotificaciones.sql" />
     <None Include="scripts\CrearHanfireDBSchema.sql" />
     <None Include="scripts\Permiso Borrar Campo Sustentable.sql" />
+    <PostDeploy Include="scripts\PostDeployment\_ScriptBasePostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SustitucionMOADatabase.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\PostDeployment\OrigenMovimientoIngresosBrutosCoeficienteUnificado.sql" />
   </ItemGroup>
 </Project>

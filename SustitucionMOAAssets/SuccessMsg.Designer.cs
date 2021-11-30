@@ -61,6 +61,24 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El formulario CM05 se cargó pero quedaron campos incompletos..
+        /// </summary>
+        public static string AltaFormularioCM05CargaInternaMalCargadoOK {
+            get {
+                return ResourceManager.GetString("AltaFormularioCM05CargaInternaMalCargadoOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El formulario CM05 se cargó correctamente.
+        /// </summary>
+        public static string AltaFormularioCM05CargaInternaOK {
+            get {
+                return ResourceManager.GetString("AltaFormularioCM05CargaInternaOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El formulario cargado corresponde a un CUIT diferente.
         /// </summary>
         public static string AltaFormularioCM05DistintoCUITOK {

@@ -21,7 +21,6 @@ ALTER TABLE [dbo].[IngresosBrutosCoeficienteUnificadoDetalle]
     WITH CHECK ADD CONSTRAINT [FK_dbo.IngresosBrutosCoeficienteUnificadoDetalle_dbo.IngresosBrutosCoeficienteUnificado] 
     FOREIGN KEY([IngresosBrutosCoeficienteUnificado_Id])
     REFERENCES [dbo].[IngresosBrutosCoeficienteUnificado] ([Id])
-    ON DELETE CASCADE
 GO
 
 ALTER TABLE [dbo].[IngresosBrutosCoeficienteUnificadoDetalle] CHECK CONSTRAINT [FK_dbo.IngresosBrutosCoeficienteUnificadoDetalle_dbo.IngresosBrutosCoeficienteUnificado]

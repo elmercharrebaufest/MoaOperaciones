@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit, ViewChild } from '@angular/core';
-import { CabeceraCM05, DetalleCM05 } from './gestionCM05';
+import { CabeceraCM05, DetalleCM05, MovimientoCM05 } from './gestionCM05';
 import { Table, TableModule } from 'primeng/table';
 import { DropdownComponent, DropdownOption } from './../common/view-child/dropdown/dropdown.component';
 import { GestionCM05Service } from './gestionCM05.service';
@@ -14,6 +14,7 @@ import { SelectItem } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { CommonResponse } from '../common/models/common-response';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { MenuItem } from 'primeng/api';
 
 declare var $: any;
 
@@ -28,7 +29,10 @@ export class GestionCM05Component extends ListBaseComponent {
     @ViewChild("dt")
     protected table: Table;
 
-    displayDialog: boolean;
+    @ViewChild('fileUploadCargaCM05')
+    protected fileUploadCargaCM05: any;
+
+    displayDialogDetallesCM05: boolean;
 
     cabeceraCols: any[];
     cabeceras: CabeceraCM05[];
@@ -37,9 +41,15 @@ export class GestionCM05Component extends ListBaseComponent {
 
     detalleCols: any[];
     detalles: DetalleCM05[];
+    frozenCols: any[];
+
+    movimientoCols: any[];
+    movimientos: MovimientoCM05[];
 
     estados: SelectItem[];
     secuencias: SelectItem[];
+    tiposMovimiento: SelectItem[];
+    origenesMovimiento: SelectItem[];
 
     detallesEditando: DetalleCM05[];
 
@@ -54,6 +64,12 @@ export class GestionCM05Component extends ListBaseComponent {
     cabeceraEditando: CabeceraCM05;
     files: FileList = null;
     listaArchivos: Array<File> = new Array<File>();
+
+    tabsPopup: MenuItem[];
+    tabPopupActiva: MenuItem;
+
+    displayDialogCargaCM05: boolean = false;
+    uploadedFiles: any[] = [];
 
     constructor(protected service: GestionCM05Service,
         protected navService: NavService,
@@ -73,15 +89,29 @@ export class GestionCM05Component extends ListBaseComponent {
         this.navService.setSeccionList([]);
 
         this.estados = [
-            { label: 'Pendiente', value: 'Pendiente', },
-            { label: 'Autorizado', value: 'Autorizado', },
-            { label: 'Completado', value: 'Completado', },
-            { label: 'Rechazado por usuario', value: 'Rechazado por usuario', },
+            { label: 'Pendiente', value: 1, },
+            { label: 'Autorizado', value: 2, },
+            { label: 'Completado', value: 3, },
+            { label: 'Rechazado por usuario', value: 4, },
+            { label: 'Rechazado por sistema', value: 5, },
         ];
 
         this.secuencias = [
             { label: 'Original', value: 1, },
             { label: 'Rectificativa', value: 2, },
+        ];
+
+        this.tiposMovimiento = [
+            { label: 'Creación', value: 1 },
+            { label: 'Autorización', value: 2 },
+            { label: 'Autorización revertida', value: 3 },
+            { label: 'Exportación exitosa', value: 4 },
+            { label: 'Error', value: 5 }
+        ];
+
+        this.origenesMovimiento = [
+            { label: 'WEB', value: 1 },
+            { label: 'SAP', value: 2 },
         ];
 
         this.listarCabeceras();
@@ -109,6 +139,16 @@ export class GestionCM05Component extends ListBaseComponent {
             { field: 'CoeficienteUnificado', header: 'Coef. unificado', },
             { field: 'FechaUltimaModificacion', header: 'Última modificación', },
         ];
+        this.frozenCols = this.detalleCols;
+
+        this.movimientoCols = [
+            { field: 'Fecha', header: 'Fecha', },
+            { field: 'Observaciones', header: 'Observaciones', },
+            { field: 'Tipo', header: 'Tipo', },
+            { field: 'Origen', header: 'Origen', },
+            { field: 'EstadoAnterior', header: 'Estado Anterior', },
+            { field: 'EstadoPosterior', header: 'Estado Posterior', },
+        ];
 
         this.editandoCabecera = false;
         this.cabeceraEditando = null;
@@ -116,6 +156,20 @@ export class GestionCM05Component extends ListBaseComponent {
         $(".adjuntarArchivo").click(function () {
             $(".adjuntarArchivo1").click();
         });
+
+        this.tabsPopup = [
+            {
+                label: 'Detalles',
+                icon: 'fa fa-fw fa-info',
+                command: (event) => { this.tabPopupActiva = this.tabsPopup[0] }
+            },
+            {
+                label: 'Movimientos',
+                icon: 'fa fa-fw fa-history',
+                command: (event) => { this.tabPopupActiva = this.tabsPopup[1] }
+            },
+        ];
+
     }
 
     onCabeceraClick(data) {
@@ -134,6 +188,7 @@ export class GestionCM05Component extends ListBaseComponent {
             ConsultaId: data.ConsultaId,
             RazonSocial: data.RazonSocial,
         };
+
         this.service.listarDetalles(this.selectedCabecera.Id).subscribe(result => {
             this.detalles = result;
             this.detalles.forEach(x => {
@@ -142,9 +197,23 @@ export class GestionCM05Component extends ListBaseComponent {
                 x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
             });
         });
+
+        this.service.listarMovimientos(this.selectedCabecera.Id).subscribe(result => {
+            this.movimientos = result;
+            this.movimientos.forEach(x => {
+                x.Fecha = x.Fecha == undefined ? null : new Date(this.getDateFromAspNetFormat(x.Fecha));
+                x.Origen = this.origenesMovimiento.find(origen => origen.value == x.OrigenId).label;
+                x.Tipo = this.tiposMovimiento.find(tipo => tipo.value == x.TipoId).label;
+                x.EstadoAnterior = this.estados.find(estado => estado.value == x.EstadoAnteriorId).label;
+                x.EstadoPosterior = this.estados.find(estado => estado.value == x.EstadoPosteriorId).label;
+            });
+        });
+
+        this.tabPopupActiva = this.tabsPopup[0];
+
         setTimeout(() => {
-            this.displayDialog = true;
-        }, 600);
+            this.displayDialogDetallesCM05 = true;
+        }, 700);
     }
 
     closeDialogDetalles() {
@@ -152,7 +221,7 @@ export class GestionCM05Component extends ListBaseComponent {
         this.detalles = null;
         this.editandoCabecera = false;
         this.cabeceraEditando = null;
-        this.displayDialog = false;
+        this.displayDialogDetallesCM05 = false;
     }
 
     editarRow(rowData) {
@@ -390,14 +459,11 @@ export class GestionCM05Component extends ListBaseComponent {
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
-                            this.messageService.add({ severity: 'error', summary: 'No se pudo editar', detail: result.error });
-                            this.floatMsgService.setErrorMsg(result.error);
+                            this.messageService.add({ key: 'toastPopupDetalles', severity: 'error', summary: 'No se pudo editar', detail: result.error });
                         } else if (result.info != undefined) {
-                            this.messageService.add({ severity: 'info', summary: 'No se pudo editar', detail: result.info });
-                            this.floatMsgService.setInfoMsg(result.info);
+                            this.messageService.add({ key: 'toastPopupDetalles', severity: 'info', summary: 'No se pudo editar', detail: result.info });
                         } else {
-                            this.messageService.add({ severity: 'success', summary: 'Cabecera actualizada', detail: result.Mensaje });
-                            this.floatMsgService.setSuccessMsg(result.Mensaje);
+                            this.messageService.add({ key:'toastPopupDetalles', severity: 'success', summary: 'Cabecera actualizada', detail: result.Mensaje });
 
                             this.selectedCabecera.Secuencia = this.selectedCabecera.SecuenciaId ? this.secuencias.find(s => s.value == this.selectedCabecera.SecuenciaId).label : '';
                             this.selectedCabecera.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(result.FechaUltimaModificacion));
@@ -409,12 +475,12 @@ export class GestionCM05Component extends ListBaseComponent {
                         }
                     },
                     error => {
-                        this.floatMsgService.setErrorMsg(error.message);
+                        this.messageService.add({ key: 'toastPopupDetalles', severity: 'error', summary: 'No se pudo editar', detail: error.message });
                     }
                 );
             }
         } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
+            this.messageService.add({ key: 'toastPopupDetalles', severity: 'error', detail: e });
             return false; //<-- Prevent Refresh
         }
 
@@ -466,55 +532,53 @@ export class GestionCM05Component extends ListBaseComponent {
         this.cabeceraEditando = null;
     }
 
-    cargarArchivo(event: any) {
-        let fileList: FileList = event.target.files;
-        let file;
-
-        if (fileList.length > 0) {
-            this.files = fileList;
-            for (let i = 0; i < fileList.length; i++) {
-                file = fileList[i];
-                this.listaArchivos.push(file);
-            }
-        }
-
-        let $formInput = $('input[type=file]');
-        $formInput.val(null);
+    mostrarDialogCargaCM05() {
+        this.displayDialogCargaCM05 = true;
     }
 
-    
-    borrarArchivo(i: number) {
-        this.listaArchivos.splice(i, 1);
+    closeDialogCargaCM05() {
+        this.displayDialogCargaCM05 = false;
+        this.fileUploadCargaCM05.clear();
+        this.blockUI.stop();
     }
 
-    cargarCM05() {
+    cargarCM05(event: any) {
         this.blockUI.start()
         try {
-            this.service.cargarCM05(this.listaArchivos).subscribe(
+            this.service.cargarCM05(event.files).subscribe(
                 result => {
                     if (result.logout == true) {
-                        this.blockUI.stop()
-                        this.sessionDataService.logout();
+                        this.sessionDataService.logout()
+                        this.blockUI.stop();
                     } else if (result.error != undefined && result.error != "") {
-                        this.blockUI.stop()
-                        this.floatMsgService.setErrorMsg(result.error);
+                        this.messageService.add({ key: 'toastPopupCargaCM05', severity: 'error', detail: result.error });
+                        this.blockUI.stop();
                     } else if (result.info != undefined) {
+                        this.messageService.add({ key: 'toastPopupCargaCM05', severity: 'info', detail: result.info });
                         this.blockUI.stop()
-                        this.floatMsgService.setInfoMsg(result.info);
+                        return false;
                     } else {
-                        this.blockUI.stop()
-                        this.listarCabeceras();
+                        this.messageService.add({ key: 'toastPopupCargaCM05', severity: 'success', detail: result.Mensaje });
+                        this.listarCabeceras()
+                        this.closeDialogCargaCM05()
+                        this.blockUI.stop();
+                        return false;
                     }
                 },
                 error => {
-                    this.floatMsgService.setErrorMsg(error.message);
+                    this.messageService.add({ key: 'toastPopupCargaCM05', severity: 'error', detail: error.message });
+
+                    this.closeDialogCargaCM05()
+                    this.blockUI.stop();
+                    return false;
                 }
             );
         } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
+            this.messageService.add({ key: 'toastPopupCargaCM05', severity: 'error', detail: e });
+            this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
-
-        return false;
     }
+
+
 }

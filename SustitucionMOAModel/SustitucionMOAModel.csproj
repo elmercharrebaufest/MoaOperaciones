@@ -70,6 +70,7 @@
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaMasicoDto.cs" />
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaDto.cs" />
     <Compile Include="Dto\LogPesificacion\LogPesificacionDto.cs" />
+    <Compile Include="Dto\MovimientoIngresosBrutosCoeficienteUnificadoDto.cs" />
     <Compile Include="Dto\PesificacionSapDto.cs" />
     <Compile Include="Dto\ServicioSolpDto.cs" />
     <Compile Include="Dto\SolpDto.cs" />
@@ -105,6 +106,9 @@
     <Compile Include="Entities\CampoSustentable.cs" />
     <Compile Include="Entities\DeclaracionCampoSustentable.cs" />
     <Compile Include="Entities\EstadoIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Entities\TipoMovimientoIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Entities\OrigenMovimientoIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Entities\MovimientoIngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Entities\OrdenDeCargaCambiosHistorial.cs" />
     <Compile Include="Entities\IngresosBrutosCoeficienteUnificadoDetalle.cs" />
     <Compile Include="Entities\IngresosBrutosCoeficienteUnificado.cs" />
@@ -122,6 +126,8 @@
     <Compile Include="Entities\ServicioSolp.cs" />
     <Compile Include="Entities\UsuarioCompras.cs" />
     <Compile Include="Entities\UsuarioComprasRelacionConUsuarios.cs" />
+    <Compile Include="Enums\EnumOrigenMovimientoIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Enums\EnumTipoMovimientoIngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Enums\EstadoOrdenDeCarga.cs" />
     <Compile Include="Entities\Solp.cs" />
     <Compile Include="Entities\SolpPosicion.cs" />

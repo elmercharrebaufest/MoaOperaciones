@@ -428,31 +428,5 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.GESTION_IMPUESTOS_CM05)]
-        [HttpPost]
-        public JsonResult cargarCM05()
-        {
-            try
-            {
-                var username = SessionPersister.getUsername();
-                if (Request.Files.Count <= 0) return Json(new { info = "No se adjuntaron archivos" }, JsonRequestBehavior.AllowGet);
-
-                return JsonCustom(new { data = consultaService.ProcesarCM05(Request.Files, username, null, true) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
     }
 }
