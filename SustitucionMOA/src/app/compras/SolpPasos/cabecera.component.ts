@@ -68,6 +68,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     camposObligatorios: any[] = [
         { campo: 'servicio', esObligatorio: true, esFijo: true },
+        { campo: 'selectClaseDocumento', esObligatorio: true, esFijo: true },
         { campo: 'centroDeCosto', esObligatorio: false, esFijo: true },
         { campo: 'ordenDeOt', esObligatorio: false, esFijo: true },
         { campo: 'ordenDeInversion', esObligatorio: false, esFijo: true },
@@ -123,7 +124,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         if (this.model.cargoPasoCinco) {
             this.validadorPasoSolpService.aplicarValidaciones();
         }
-        this.model.selectClaseDocumento = claseDocumento;
+        this.model.selectClaseDocumento = this.model.selectClaseDocumento!== undefined && this.model.selectClaseDocumento.Id>0 ? this.model.selectClaseDocumento : 0;
 
         this.centroSeleccionado();
 
@@ -136,7 +137,17 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.model.cargoPasoCinco = true;
     }
 
+    mostrarValidacion(campoAValidar, vacio){
+        let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
+        return (camposVacios != null && vacio == 0);
+      }
+
     setControlesObligatorios(claseDocumento) {
+
+        if(!claseDocumento || claseDocumento > 0){
+            return
+        }
+
         this.actualizarCamposObligatorios(claseDocumento);
 
         if (!this.formularioActual) {
