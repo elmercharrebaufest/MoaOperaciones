@@ -73,7 +73,6 @@ export class TabDatosPosicionComponent extends ListBaseComponent implements OnIn
 
     
   ngOnInit() {
-    console.log("Model: ", this.model)
     this.grupoCompras = this.combos.GrupoCompras;
     this.articuloCompras = this.combos.GrupoArticulo;
 
@@ -96,7 +95,6 @@ export class TabDatosPosicionComponent extends ListBaseComponent implements OnIn
 
   mostrarValidacion(campoAValidar, vacio){
     let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-    console.log("Campos vacios: " + camposVacios, "Input vacio: " + vacio);
     return (camposVacios != null && vacio == undefined);
   }
   
