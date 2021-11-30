@@ -264,4 +264,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             "/ordenes-de-carga"
         );
     }
+
+    onCorredorSeleccionado(proveedor: any) {
+        this.ordenDeCarga.CUITCorredor = proveedor.CUIT;
+    }
+
+    onClienteSeleccionado(proveedor: any) {
+        this.ordenDeCarga.CUITCliente = proveedor.CUIT;
+    }
 }

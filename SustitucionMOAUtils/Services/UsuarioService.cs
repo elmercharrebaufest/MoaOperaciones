@@ -325,8 +325,22 @@ namespace SustitucionMOAUtils.Services
         public ProveedorDto VerificarYObtenerProveedor(string mailUsuario, string codigoCorredor, string codigoProveedor)
         {
             var usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == mailUsuario);
-            var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor && x.Mail == mailUsuario);
-            var corredor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoCorredor && x.Mail == mailUsuario);
+            Proveedor proveedor;
+            Proveedor corredor;
+            bool insertarProveedor = false;
+
+            //Si tiene permisos para usar todos los proveedores, no filtramos por tipo de usuario
+            if (usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
+            {
+                proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor && x.EstadoAprobacion == EstadoAprobacion.Aprobado);
+                corredor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoCorredor && x.EstadoAprobacion == EstadoAprobacion.Aprobado);
+            }
+            else
+            {
+                proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor && x.Mail == mailUsuario);
+                corredor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoCorredor && x.Mail == mailUsuario);
+                insertarProveedor = true;
+            }
 
             if (proveedor == null)
             {
@@ -351,9 +365,11 @@ namespace SustitucionMOAUtils.Services
                     TipoProveedor = tipoProveedorGranos
                 };
 
-                usuario.Proveedores.Add(nuevoProveedorMOA);
-
-                repositorio.GuardarCambios();
+                if (insertarProveedor)
+                {
+                    usuario.Proveedores.Add(nuevoProveedorMOA);
+                    repositorio.GuardarCambios();
+                }
 
                 proveedor = nuevoProveedorMOA;
             }

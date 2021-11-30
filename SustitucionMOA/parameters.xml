@@ -122,6 +122,25 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="EmailToMesaVentaFas Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToMesaVentaFas']
+                           /@value" />
+	</parameter>
+
+	<parameter name="EmailToCobranzas Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToCobranzas']
+                           /@value" />
+	</parameter>
+
+	<parameter name="EmailToComerciales Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToComerciales']
+                           /@value" />
+	</parameter>
+	
+
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client

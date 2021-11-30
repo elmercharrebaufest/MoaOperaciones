@@ -38,27 +38,54 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             Proveedor cliente;
+            Proveedor corredor;
             ordenDeCarga.Estado = EstadoOrdenDeCarga.ErrorDeCarga;
 
-            if (usuario.EsCorredor())
-            {
-                var corredor = usuario.ObtenerCorredor();
-                ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
-                ordenDeCarga.Corredor_Id = corredor.Id;
-                cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
+            var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
 
-                if(cliente == null)
+            if (esComercial)
+            {
+                cliente = repositorio.Obtener<Proveedor>(x => x.CUIT == ordenDeCarga.CUITCliente && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
+                corredor = repositorio.Obtener<Proveedor>(x => x.CUIT == ordenDeCarga.CUITCorredor && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 4);
+
+                if (corredor != null)
                 {
-                    throw new ValidationCustomException("Su usuario no está habilitado para operar con ese CUIT");
+                    ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
+                    ordenDeCarga.Corredor_Id = corredor.Id;
+                }
+                else
+                {
+                    if (ordenDeCarga.CUITCorredor != null)
+                    {
+                        throw new ValidationCustomException("No se encontró el corredor seleccionado");
+                    }
                 }
             }
-            else
+            else 
             {
-                ordenDeCarga.CodigoCorredor = "";
-                cliente = usuario.ObtenerProveedor();
-                ordenDeCarga.CUITCliente = cliente.CUIT;
+                if (usuario.EsCorredor())
+                {
+                    corredor = usuario.ObtenerCorredor();
+                    ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
+                    ordenDeCarga.Corredor_Id = corredor.Id;
+                    ordenDeCarga.CUITCorredor = corredor.CUIT;
+                    cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
+
+                    if (cliente == null)
+                    {
+                        throw new ValidationCustomException("Su usuario no está habilitado para operar con ese CUIT");
+                    }
+                }
+                else
+                {
+                    ordenDeCarga.CodigoCorredor = "";
+                    cliente = usuario.ObtenerProveedor();
+                    ordenDeCarga.CUITCliente = cliente.CUIT;
+                    ordenDeCarga.CUITCorredor = "";
+                }
             }
 
+            ordenDeCarga.UsuarioCreacion_Id = usuario.Id;
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente_Id = cliente.Id;
             ordenDeCarga.ContratoSinCantidadPendiente = false;
@@ -213,10 +240,10 @@ namespace SustitucionMOAUtils.Services
                 orden.NumeroPedido = numeroPedido;
                 orden.DescripcionErrorInterno = "";
 
-                if (result == "OV-03")
-                {
-                    orden.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
-                }
+                //if (result == "OV-03")
+                //{
+                //    orden.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
+                //}
 
                 resultadoCrearOrden = true;
             }
