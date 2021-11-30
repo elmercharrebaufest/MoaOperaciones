@@ -4,36 +4,73 @@
             <div class="col-xs-12 col-sm-10 ">
                 <strong>Gestión de CM05</strong>
             </div>
+            <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
+                <!-- Button trigger modal -->
+                <button type="button" pButton icon="fa fa-refresh" (click)="listarCabeceras()" style="background-color: #067935; float: right"></button>
+
+                <button type="button" pButton icon="fa fa-plus" (click)="mostrarDialogCargaCM05()" style="background-color: #067935; float: right"></button>
+            </div>
         </div>
         <div>
-            <div style="width: 75%; height: 35px; margin-top: 10px; margin-bottom: 10px;">
-                <button type="button" pButton icon="fa fa-refresh" (click)="listarCabeceras()" style="background-color: #067935; float: right"></button>
-            </div>
-            <p-table #dt [columns]="cabeceraCols" [value]="cabeceras" selectionMode="single" [(selection)]="selectedCabecera" [paginator]="true" [rows]="10">
+            <p-table #dt [columns]="cabeceraCols" [value]="cabeceras" selectionMode="single" [(selection)]="selectedCabecera" [paginator]="true" [rows]="10" sortMode="multiple">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Id</th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Id Consulta</th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Razón Social</th>
-                        <th class="col-md-3 th-cabecera" style="border-bottom:none">
-                            Estado
+                        <th [pSortableColumn]="'Id'" class="col-md-1 th-cabecera">
+                            Id
+                            <p-sortIcon [field]="'Id'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Secuencia</th>
-                        <th class="col-md-2 th-cabecera">CUIT</th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Anticipo</th>
-                        <th class="col-md-1 th-cabecera" rowspan="2">Sede</th>
-                        <th class="col-md-2 th-cabecera" rowspan="2">Fecha Carga</th>
-                        <th class="col-md-2 th-cabecera" rowspan="2">Última modificación</th>
+                        <th [pSortableColumn]="'ConsultaId'" class="col-md-1 th-cabecera">
+                            Id Consulta
+                            <p-sortIcon [field]="'ConsultaId'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'RazonSocial'" class="col-md-3 th-cabecera" rowspan="2">
+                            Razón Social
+                            <p-sortIcon [field]="'RazonSocial'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'Estado'" class="col-md-1 th-cabecera" style="border-bottom:none">
+                            Estado
+                            <p-sortIcon [field]="'Estado'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'Secuencia'" class="col-md-1 th-cabecera" rowspan="2">
+                            Secuencia
+                            <p-sortIcon [field]="'Secuencia'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'CUIT'" class="col-md-2 th-cabecera">
+                            CUIT
+                            <p-sortIcon [field]="'CUIT'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'Anticipo'" class="col-md-1 th-cabecera" rowspan="2">
+                            Anticipo
+                            <p-sortIcon [field]="'Anticipo'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'Sede'" class="col-md-1 th-cabecera" rowspan="2">
+                            Sede
+                            <p-sortIcon [field]="'Sede'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'FechaCarga'" class="col-md-2 th-cabecera" rowspan="2">
+                            Fecha Carga
+                            <p-sortIcon [field]="'FechaCarga'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
+                        <th [pSortableColumn]="'FechaUltimaModificacion'" class="col-md-2 th-cabecera" rowspan="2">
+                            Última modificación
+                            <p-sortIcon [field]="'FechaUltimaModificacion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        </th>
                     </tr>
                     <tr>
-                        <th class="col-md-2 th-cabecera" style="font-size:10px !important; text-transform:capitalize; border-top:none">
-                            <p-multiSelect [styleClass]="spanFiltroMultiSelect" appendTo="body" [options]="estados" defaultLabel="" (onChange)="dt.filter($event.value, 'Estado', 'in')">
+                        <th class="th-cabecera" style="font-size:12px !important; font-weight: lighter;">
+                            <input [(ngModel)]="idFiltro" placeholder="Buscar" (input)="dt.filter(idFiltro, 'Id', 'contains')">
+                        </th>
+                        <th class="th-cabecera" style="font-size:12px !important; font-weight: lighter;">
+                            <input [(ngModel)]="idConsultaFiltro" placeholder="Buscar" (input)="dt.filter(idConsultaFiltro, 'ConsultaId', 'contains')">
+                        </th>
+                        <th class="col-md-1 th-cabecera" style="font-size:12px !important; text-transform:capitalize; border-top:none;">
+                            <p-multiSelect [styleClass]="spanFiltroMultiSelect" appendTo="body" [options]="estados" defaultLabel="Seleccionar estado" (onChange)="dt.filter($event.value, 'EstadoId', 'in')">
                                 <ng-template let-estado pTemplate="item">
                                     <span>{{estado.label}}</span>
                                 </ng-template>
                             </p-multiSelect>
                         </th>
-                        <th>
+                        <th class="th-cabecera" style="font-size:12px !important; text-transform:capitalize; border-top:none; font-weight: lighter;">
                             <input [(ngModel)]="cuitFiltro" placeholder="00-00000000-0" mask="00-00000000-0" (input)="dt.filter(cuitFiltro, 'CUIT', 'startsWith')" unmask="true">
                         </th>
                     </tr>
@@ -77,174 +114,232 @@
     </section>
 </div>
 
-<p-dialog *ngIf="selectedCabecera" [(visible)]="displayDialog" [maximizable]="true" [responsive]="true" showEffect="fade" [modal]="true" [width]="900" appendTo="body" (onHide)="closeDialogDetalles()">
+<p-dialog *ngIf="selectedCabecera" [(visible)]="displayDialogDetallesCM05" [maximizable]="true" [responsive]="true" showEffect="fade" [modal]="true" [width]="900" appendTo="body" (onHide)="closeDialogDetalles()">
     <p-header>
-        <div class="col-md-3">
-            <label class="headerDetalle">
+        <div class="titulo-dialog-CM05 col-md-3">
+            <label class="col-md-3">
                 Id:
             </label>
-            <label>
+            <label class="col-md-9">
                 {{selectedCabecera.Id}}
             </label>
         </div>
-        <div class="col-md-3">
-            <label class="headerDetalle">
+        <div class="titulo-dialog-CM05 col-md-3" *ngIf="selectedCabecera.ConsultaId">
+            <label class="col-md-9">
                 Id Consulta:
             </label>
-            <label>
+            <label class="col-md-3">
                 {{selectedCabecera.ConsultaId}}
             </label>
         </div>
     </p-header>
-    <div class="row">
-        <div class="col-md-10">
-            <div class="col-12 col-sm-12">
-                <div class="col-2 col-sm-2" style="padding-right:0px">
-                    <label class="headerDetalle" style="text-align: left">
-                        Razón Social:
-                    </label>
+    <p-tabMenu [model]="tabsPopup" [activeItem]="tabsPopup[0]"></p-tabMenu>
+    <div *ngIf="tabPopupActiva.label=='Detalles'" style="border: 1px solid #c8c8c8;">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="col-12 col-sm-12">
+                    <div class="col-2 col-sm-2" style="padding-right:0px">
+                        <label class="headerDetalle" style="text-align: left">
+                            Razón Social:
+                        </label>
+                    </div>
+                    <div class="col-10 col-sm-10">
+                        <label *ngIf="!editandoCabecera; else elseRazonSocialBlock">
+                            {{selectedCabecera.RazonSocial}}
+                        </label>
+                        <ng-template #elseRazonSocialBlock>
+                            <textarea pInputTextarea rows="1" [(ngModel)]="selectedCabecera.RazonSocial"></textarea>
+                        </ng-template>
+                    </div>
                 </div>
-                <div class="col-10 col-sm-10" >
-                    <label *ngIf="!editandoCabecera; else elseRazonSocialBlock">
-                        {{selectedCabecera.RazonSocial}}
-                    </label>
-                    <ng-template #elseRazonSocialBlock>
-                        <textarea pInputTextarea rows="1" [(ngModel)]="selectedCabecera.RazonSocial"></textarea>
-                    </ng-template>
+                <div class="col-12 col-sm-12">
+                    <div class="col-2 col-sm-2">
+                        <label class="headerDetalle">
+                            CUIT:
+                        </label>
+                    </div>
+                    <div class="col-3 col-sm-3">
+                        <label *ngIf="!editandoCabecera; else elseCUITBlock">
+                            {{selectedCabecera.CUIT | mask: '00-00000000-0'}}
+                        </label>
+                        <ng-template #elseCUITBlock>
+                            <input type="text" mask="00-00000000-0" [(ngModel)]="selectedCabecera.CUIT" name="selectedCabecera.CUIT" required> <!--style="width:max-content"-->
+                        </ng-template>
+                    </div>
+                    <div class="col-2 col-sm-2">
+                        <label class="headerDetalle">
+                            Anticipo:
+                        </label>
+                    </div>
+                    <div class="col-3 col-sm-3">
+                        <label *ngIf="!editandoCabecera; else elseAnticipoBlock">
+                            {{selectedCabecera.Anticipo}}
+                        </label>
+                        <ng-template #elseAnticipoBlock>
+                            <input type="text" [(ngModel)]="selectedCabecera.Anticipo" name="selectedCabecera.Anticipo" required> <!--style="width:max-content"-->
+                        </ng-template>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-12">
+                    <div class="col-2 col-sm-2">
+                        <label class="headerDetalle">
+                            Sede:
+                        </label>
+                    </div>
+                    <div class="col-3 col-sm-3">
+                        <label *ngIf="!editandoCabecera; else elseSedeBlock">
+                            {{selectedCabecera.Sede}}
+                        </label>
+                        <ng-template #elseSedeBlock>
+                            <input type="text" [(ngModel)]="selectedCabecera.Sede" name="selectedCabecera.Sede" required>
+                        </ng-template>
+                    </div>
+                    <div class="col-2 col-sm-2">
+                        <label class="headerDetalle">
+                            Secuencia:
+                        </label>
+                    </div>
+                    <div class="col-5 col-sm-5">
+                        <label *ngIf="!editandoCabecera; else elseSecuenciaBlock">
+                            {{selectedCabecera.Secuencia}}
+                        </label>
+                        <ng-template #elseSecuenciaBlock>
+                            <p-dropdown [options]="secuencias" [(ngModel)]="selectedCabecera.SecuenciaId" [style]="{'width':'75% !important'}"
+                                        [showClear]="true" [autoDisplayFirst]="false"></p-dropdown>
+                        </ng-template>
+                    </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12">
-                <div class="col-2 col-sm-2">
-                    <label class="headerDetalle">
-                        CUIT:
-                    </label>
-                </div>
-                <div class="col-3 col-sm-3">
-                    <label *ngIf="!editandoCabecera; else elseCUITBlock">
-                        {{selectedCabecera.CUIT | mask: '00-00000000-0'}}
-                    </label>
-                    <ng-template #elseCUITBlock>
-                        <input type="text" mask="00-00000000-0" [(ngModel)]="selectedCabecera.CUIT" name="selectedCabecera.CUIT" required> <!--style="width:max-content"-->
-                    </ng-template>
-                </div>
-                <div class="col-2 col-sm-2">
-                    <label class="headerDetalle">
-                        Anticipo:
-                    </label>
-                </div>
-                <div class="col-3 col-sm-3">
-                    <label *ngIf="!editandoCabecera; else elseAnticipoBlock">
-                        {{selectedCabecera.Anticipo}}
-                    </label>
-                    <ng-template #elseAnticipoBlock>
-                        <input type="text" [(ngModel)]="selectedCabecera.Anticipo" name="selectedCabecera.Anticipo" required> <!--style="width:max-content"-->
-                    </ng-template>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12">
-                <div class="col-2 col-sm-2">
-                    <label class="headerDetalle">
-                        Sede:
-                    </label>
-                </div>
-                <div class="col-3 col-sm-3">
-                    <label *ngIf="!editandoCabecera; else elseSedeBlock">
-                        {{selectedCabecera.Sede}}
-                    </label>
-                    <ng-template #elseSedeBlock>
-                        <input type="text" [(ngModel)]="selectedCabecera.Sede" name="selectedCabecera.Sede" required>
-                    </ng-template>
-                </div>
-                <div class="col-2 col-sm-2">
-                    <label class="headerDetalle">
-                        Secuencia:
-                    </label>
-                </div>
-                <div class="col-5 col-sm-5">
-                    <label *ngIf="!editandoCabecera; else elseSecuenciaBlock">
-                        {{selectedCabecera.Secuencia}}
-                    </label>
-                    <ng-template #elseSecuenciaBlock>
-                        <p-dropdown [options]="secuencias" [(ngModel)]="selectedCabecera.SecuenciaId" [style]="{'width':'75% !important'}"
-                                    [showClear]="true" [autoDisplayFirst]="false"></p-dropdown>
-                    </ng-template>
-                </div>
+            <div class="col-sm-1" style="width:12%" *ngIf="selectedCabecera.Estado=='Pendiente'">
+                <button *ngIf="!editandoCabecera; else elseBotonesBlock" pButton type="button" (click)="editarCabecera()" class="p-button-secondary" style="background-color: #075088;" icon="fa fa-edit"></button>
+                <ng-template #elseBotonesBlock>
+                    <button pButton type="button" (click)="guardarCabeceraEditada()" class="p-button-secondary" style="background-color: #067935 !important;" icon="fa fa-check"></button>
+                    <button pButton type="button" (click)="cancelarEditarCabecera()" class="p-button-secondary" style="background-color: #ff4343 !important;" icon="fa fa-times"></button>
+                </ng-template>
             </div>
         </div>
-        <div class="col-sm-1" style="width:12%" *ngIf="selectedCabecera.Estado=='Pendiente'">
-            <button *ngIf="!editandoCabecera; else elseBotonesBlock" pButton type="button" (click)="editarCabecera()" class="p-button-secondary" style="background-color: #075088;" icon="fa fa-edit"></button>
-            <ng-template #elseBotonesBlock>
-                <button pButton type="button" (click)="guardarCabeceraEditada()" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-check"></button>
-                <button pButton type="button" (click)="cancelarEditarCabecera()" class="p-button-secondary" style="background-color: #ff4343;" icon="fa fa-times"></button>
-            </ng-template>
+        <div style="height:80%">
+            <p-table [columns]="detalleCols" [value]="detalles" dataKey="Id" editMode="row" [scrollable]="true" scrollHeight="50vh" frozenWidth="min-width">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th class="col-md-3 th-detalle" colspan="2">Jurisdicción</th>
+                        <th class="col-md-1 th-detalle">Fecha Inicio</th>
+                        <th class="col-md-1 th-detalle">Fecha Cese</th>
+                        <th class="col-md-4 th-detalle">Coeficiente Unificado</th>
+                        <th class="col-md-2 th-detalle">Última modificación</th>
+                        <th class="col-md-1 th-detalle" *ngIf="selectedCabecera.Estado=='Pendiente'"></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex" let-columns="columns">
+                    <tr *ngIf="!rowData.Editar; else elseBlock">
+                        <td class="td-detalle">
+                            {{rowData.NumeroJurisdiccion}}
+                        </td>
+                        <td class="td-detalle">
+                            {{rowData.Jurisdiccion}}
+                        </td>
+                        <td class="td-detalle">
+                            {{rowData.FechaInicio | date:'dd/MM/yyyy'}}
+                        </td>
+                        <td class="td-detalle">
+                            {{rowData.FechaCese | date:'dd/MM/yyyy'}}
+                        </td>
+                        <td class="td-detalle">
+                            {{rowData.CoeficienteUnificado}}
+                        </td>
+                        <td class="td-detalle">
+                            {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
+                        </td>
+                        <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado=='Pendiente'">
+                            <button pButton type="button" (click)="editarRow(rowData)" class="p-button-secondary" style="background-color: #075088;" icon="fa fa-edit"></button>
+                        </td>
+                    </tr>
+                    <ng-template #elseBlock>
+                        <tr>
+                            <td class="td-detalle">
+                                <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.NumeroJurisdiccion" name="rowData.NumeroJurisdiccion" required>
+                            </td>
+                            <td class="td-detalle">
+                                <input type="text" [(ngModel)]="rowData.Jurisdiccion" name="rowData.Jurisdiccion" required>
+                            </td>
+                            <td class="td-detalle">
+                                <p-calendar [(ngModel)]="rowData.FechaInicio" name="rowData.FechaInicio" dateFormat="dd/mm/yy"></p-calendar>
+                            </td>
+                            <td class="td-detalle">
+                                <p-calendar [(ngModel)]="rowData.FechaCese" name="rowData.FechaCese" dateFormat="dd/mm/yy"></p-calendar>
+                            </td>
+                            <td class="td-detalle">
+                                <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.CoeficienteUnificado" name="rowData.CoeficienteUnificado" required>
+                            </td>
+                            <td class="td-detalle">
+                                {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
+                            </td>
+                            <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado=='Pendiente'">
+                                <button pButton type="button" (click)="guardarRow(rowData)" class="p-button-secondary" style="background-color: #067935 !important" icon="fa fa-check"></button>
+                                <button pButton type="button" (click)="cancelarGuardarRow(rowData)" class="p-button-secondary" style="background-color: #ff4343 !important" icon="fa fa-times"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </ng-template>
+            </p-table>
+
         </div>
+        <p-footer [minHeight]="'auto'">
+            <div class="row"></div>
+            <button pButton label="Autorizar" (click)="autorizarCabecera()" [disabled]="selectedCabecera.Estado!='Pendiente'" type="button" icon="fa fa-check-circle" iconPos="right" style="float: right"></button>
+            <button pButton label="Descargar PDF" (click)="descargarFormularioCM05()" type="button" icon="fa fa-file" iconPos="right" style="float: right"></button>
+        </p-footer>
+        <p-toast key="toastPopupDetalles"></p-toast>
     </div>
-    <p-table [columns]="detalleCols" [value]="detalles" dataKey="Id" editMode="row" [scrollable]="true" scrollHeight="flex" [frozenColumns]="frozenCols" frozenWidth="min-width">
-        <ng-template pTemplate="header" let-columns>
-            <tr>
-                <th class="col-md-3 th-detalle" colspan="2">Jurisdicción</th>
-                <th class="col-md-1 th-detalle">Fecha Inicio</th>
-                <th class="col-md-1 th-detalle">Fecha Cese</th>
-                <th class="col-md-4 th-detalle">Coeficiente Unificado</th>
-                <th class="col-md-2 th-detalle">Última modificación</th>
-                <th class="col-md-1 th-detalle" *ngIf="selectedCabecera.Estado=='Pendiente'"></th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex" let-columns="columns">
-            <tr *ngIf="!rowData.Editar; else elseBlock">
-                <td class="td-detalle">
-                    {{rowData.NumeroJurisdiccion}}
-                </td>
-                <td class="td-detalle">
-                    {{rowData.Jurisdiccion}}
-                </td>
-                <td class="td-detalle">
-                    {{rowData.FechaInicio | date:'dd/MM/yyyy'}}
-                </td>
-                <td class="td-detalle">
-                    {{rowData.FechaCese | date:'dd/MM/yyyy'}}
-                </td>
-                <td class="td-detalle">
-                    {{rowData.CoeficienteUnificado}}
-                </td>
-                <td class="td-detalle">
-                    {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
-                </td>
-                <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado=='Pendiente'">
-                    <button pButton type="button" (click)="editarRow(rowData)" class="p-button-secondary" style="background-color: #075088;" icon="fa fa-edit"></button>
-                </td>
-            </tr>
-            <ng-template #elseBlock>
+    <div *ngIf="tabPopupActiva.label=='Movimientos'" style="border: 1px solid #c8c8c8;">
+        <p-table [columns]="movimientoCols" [value]="movimientos" dataKey="Id" [scrollable]="true" scrollHeight="flex">
+            <ng-template pTemplate="header" let-columns>
                 <tr>
-                    <td class="td-detalle">
-                        <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.NumeroJurisdiccion" name="rowData.NumeroJurisdiccion" required>
+                    <th class="col-md-1 th-movimiento">Tipo</th>
+                    <th class="col-md-1 th-movimiento">Origen</th>
+                    <th class="col-md-2 th-movimiento">Fecha</th>
+                    <th class="col-md-6 th-movimiento">Observaciones</th>
+                    <th class="col-md-1 th-movimiento">Estado Anterior</th>
+                    <th class="col-md-1 th-movimiento">Estado Posterior</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-ri="rowIndex" let-columns="columns">
+                <tr>
+                    <td class="col-md-1 td-movimiento">
+                        {{rowData.Tipo}}
                     </td>
-                    <td class="td-detalle">
-                        <input type="text" [(ngModel)]="rowData.Jurisdiccion" name="rowData.Jurisdiccion" required>
+                    <td class="col-md-1 td-movimiento">
+                        {{rowData.Origen}}
                     </td>
-                    <td class="td-detalle">
-                        <p-calendar [(ngModel)]="rowData.FechaInicio" name="rowData.FechaInicio" dateFormat="dd/mm/yy"></p-calendar>
+                    <td class="col-md-2 td-movimiento">
+                        {{rowData.Fecha| date:'dd/MM/yyyy HH:mm:ss'}}
                     </td>
-                    <td class="td-detalle">
-                        <p-calendar [(ngModel)]="rowData.FechaCese" name="rowData.FechaCese" dateFormat="dd/mm/yy"></p-calendar>
+                    <td class="col-md-6 td-movimiento">
+                        {{rowData.Observaciones}}
                     </td>
-                    <td class="td-detalle">
-                        <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.CoeficienteUnificado" name="rowData.CoeficienteUnificado" required>
+                    <td class="col-md-1 td-movimiento">
+                        {{rowData.EstadoAnterior}}
                     </td>
-                    <td class="td-detalle">
-                        {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
-                    </td>
-                    <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado=='Pendiente'">
-                        <button pButton type="button" (click)="guardarRow(rowData)" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-check"></button>
-                        <button pButton type="button" (click)="cancelarGuardarRow(rowData)" class="p-button-secondary" style="background-color: #ff4343;" icon="fa fa-times"></button>
+                    <td class="col-md-1 td-movimiento">
+                        {{rowData.EstadoPosterior}}
                     </td>
                 </tr>
             </ng-template>
-        </ng-template>
-    </p-table>
-    <p-footer [minHeight]="'auto'">
-        <button pButton label="Autorizar" (click)="autorizarCabecera()" [disabled]="selectedCabecera.Estado!='Pendiente'" type="button" icon="fa fa-check-circle" iconPos="right" style="float: right"></button>
-        <button pButton label="Descargar PDF" (click)="descargarFormularioCM05()" type="button" icon="fa fa-file" iconPos="right" style="float: right"></button>
-    </p-footer>
-    <p-toast></p-toast>
+        </p-table>
+    </div>
+</p-dialog>
+
+<p-dialog [(visible)]="displayDialogCargaCM05" showEffect="fade" [modal]="true" appendTo="body" (onHide)="closeDialogCargaCM05()">
+    <p-header>
+        <div>
+            <label class="titulo-dialog-CM05 col-md-8">
+                Cargar CM05
+            </label>
+        </div>
+    </p-header>
+
+    <p-fileUpload #fileUploadCargaCM05 name="fileUploadCM05" (uploadHandler)="cargarCM05($event)" [customUpload]="true" 
+                  chooseLabel="Seleccionar" uploadLabel="Cargar" [showCancelButton]="false" accept=".pdf"></p-fileUpload>
+
+    <p-toast key="toastPopupCargaCM05"></p-toast>
 </p-dialog>

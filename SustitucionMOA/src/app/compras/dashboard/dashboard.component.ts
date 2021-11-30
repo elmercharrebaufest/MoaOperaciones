@@ -16,6 +16,7 @@ import { SortEvent } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 
 
 
@@ -151,6 +152,9 @@ export class DashboardComponent extends ListBaseComponent {
                             this.tablaSolp = result.data;
                             this.tablaSolp.forEach(x => {
                                 x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
+                                x.VincularPliego = x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP;
+                                x.PliegoVinculado = (x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP) &&
+                                                    this.primerosCuatroPasosCompletados(x);
                             });
                             this.spinnerComponent.hideIt();
                         }
@@ -168,6 +172,10 @@ export class DashboardComponent extends ListBaseComponent {
     
             return false; //<-- Prevent Refresh
         
+    }
+
+    primerosCuatroPasosCompletados(solp: any): boolean {
+        return solp.EstadoPasos.split(',').slice(0, 4).every(estado => estado == '2');
     }
 
     borrarSolp(idSolp){
@@ -332,6 +340,10 @@ export class DashboardComponent extends ListBaseComponent {
         }
     }
 
+    vincularAPliego(solpId: number) {
+        this.goToSeccionParam('/compras/solp', solpId);
+    }
+
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {
             // IE11
@@ -354,9 +366,3 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
 }
-
-
-
-
-
-

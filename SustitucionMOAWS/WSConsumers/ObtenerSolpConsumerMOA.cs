@@ -219,6 +219,10 @@ namespace SustitucionMOAWS.WSConsumers
                 Todos estos objetos van a venir completos segun el tipo de imputación. Por ejemplo, si la imputación es del tipo (EX_PREITEM-ACCTASSCAT) = "K", la tabla va a pasar como parámetro el campo COSTCENTER. 
                 Resto de campos solo a nivel informativo.
              */
+            if(result.TipoImputaciones == null)
+            {
+                result.TipoImputaciones = new List<TipoImputacionSAP>();
+            }
             foreach (var tipoImputacion in tipoImputaciones)
             {
                 result.TipoImputaciones.Add(new TipoImputacionSAP
@@ -256,6 +260,10 @@ namespace SustitucionMOAWS.WSConsumers
 
             */
 
+            if (result.Direcciones == null)
+            {
+                result.Direcciones = new List<DireccionSolpSAP>();
+            }
             foreach (var direccionPosicion in direccionesPosicion)
             {
                 result.Direcciones.Add(new DireccionSolpSAP
@@ -384,6 +392,10 @@ namespace SustitucionMOAWS.WSConsumers
 
              */
 
+            if (result.ImputacionesSuposiciones == null)
+            {
+                result.ImputacionesSuposiciones = new List<ImputacionSuposicionSAP>();
+            }
             foreach (var imputacionSuposicion in imputacionesSuposiciones)
             {
                 result.ImputacionesSuposiciones.Add(new ImputacionSuposicionSAP
@@ -424,6 +436,11 @@ namespace SustitucionMOAWS.WSConsumers
 
              
              */
+
+            if(result.ServiciosSuposiciones == null)
+            {
+                result.ServiciosSuposiciones = new List<SuposicionServicioSAP>();
+            }
             foreach (var suposicionServicio in suposicionesServicios)
             {
                 result.ServiciosSuposiciones.Add(new SuposicionServicioSAP
