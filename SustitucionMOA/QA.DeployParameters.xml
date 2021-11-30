@@ -29,6 +29,10 @@
 
 	<setParameter name="EmailToReporteCamposSustentables Config" value="mpfeiffer@baufest.com,martin.pfe@gmail.com,evilliate@baufest.com,jyon@baufest.com" />
 
+	<setParameter name="EmailToMesaVentaFas Config" value="mpfeiffer@baufest.com;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
+	<setParameter name="EmailToCobranzas Config" value="mpfeiffer@baufest.com;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
+	<setParameter name="EmailToComerciales Config" value="mpfeiffer@baufest.com;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
+
 
 	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />

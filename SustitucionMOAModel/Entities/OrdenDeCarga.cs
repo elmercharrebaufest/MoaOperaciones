@@ -79,10 +79,15 @@ namespace SustitucionMOAModel.Entities
         public string CodigoVerificacionSap { get; set; }
         public string DescripcionCodigoVerificacionSap { get; set; }
 
+        public int? UsuarioCreacion_Id { get; set; }
+        [ForeignKey("UsuarioCreacion_Id")]
+        public virtual Usuario UsuarioCreacion { get; set; }
+
         [InverseProperty("OrdenDeCarga")]
         public virtual ICollection<OrdenDeCargaCambiosHistorial> HistorialCambios { get; set; } = new List<OrdenDeCargaCambiosHistorial>();
         public bool ContratoSinCantidadPendiente { get; set; }
         public string DescripcionErrorInterno { get; set; }
+        public string CUITCorredor { get; set; }
 
         public void ActualizarEstado()
         {
