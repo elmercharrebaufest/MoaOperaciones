@@ -1,8 +1,4 @@
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-ALTER PROCEDURE [dbo].[ActualizarToneladasAprobadasCampo] @IdCampo INT, @IdTSA INT, @Cuit NVARCHAR(15), @ToneladasAprobadas FLOAT, @MotivoRechazo NVARCHAR(500)
+﻿CREATE PROCEDURE [dbo].[ActualizarToneladasAprobadasCampo] @IdCampo INT, @IdTSA INT, @Cuit NVARCHAR(15), @ToneladasAprobadas FLOAT, @MotivoRechazo NVARCHAR(500)
 AS
 BEGIN
 SET NOCOUNT ON
@@ -46,7 +42,7 @@ BEGIN TRY
 					WHERE CP.CUIT = @Cuit AND GETDATE() BETWEEN c.Inicio AND c.Fin AND cc.CampoSustentable_Id = @IdCampo
 				END
 			END
-			--No existe todav�a relacion entre el campo que debemos asignar y la cosecha. Lo creamos ahora
+			--No existe todavía relacion entre el campo que debemos asignar y la cosecha. Lo creamos ahora
 			ELSE
 			BEGIN
 				DECLARE @NuevoCC table (Id int)

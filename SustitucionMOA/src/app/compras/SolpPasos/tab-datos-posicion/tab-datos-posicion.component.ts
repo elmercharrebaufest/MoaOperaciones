@@ -36,8 +36,7 @@ export class TabDatosPosicionComponent extends ListBaseComponent implements OnIn
 
   constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router,
-        private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService) {
+        protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
   }
 
