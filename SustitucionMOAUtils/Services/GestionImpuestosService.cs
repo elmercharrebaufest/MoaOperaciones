@@ -50,10 +50,14 @@ namespace SustitucionMOAUtils.Services
                 CUIT = x.CUIT,
                 FechaCarga = x.FechaCarga,
                 FechaUltimaModificacion = x.FechaUltimaModificacion,
-                Sede = x.Sede
+                Sede = x.Sede,
+                MalCargada = x.MalCargada,
+                SecuenciaId = x.SecuenciaIngresosBrutosCoeficienteUnificado_Id,
+                ConsultaId = x.Consulta_Id,
+                RazonSocial = x.RazonSocial,
             },null,0,"Id",SustitucionMOAModel.Consultas.DirOrden.Desc);
         }
-        
+
         public IList<IngresosBrutosCoeficienteUnificadoDetalleDto> ListarDetalles(int idCabecera)
         {
             return repositorio.Listar<IngresosBrutosCoeficienteUnificadoDetalle, IngresosBrutosCoeficienteUnificadoDetalleDto>(
@@ -97,7 +101,32 @@ namespace SustitucionMOAUtils.Services
                 FechaUltimaModificacion = ingresosBrutosCoeficienteUnificadoDetalle.FechaUltimaModificacion
             };
         }
-        
+
+        public EditarIngresosBrutosCoeficienteUnificadoResponseDto EditarIngresosBrutosCoeficienteUnificado(IngresosBrutosCoeficienteUnificadoDto ingresosBrutosCoeficienteUnificadoDto)
+        {
+            var ingresosBrutosCoeficienteUnificado = repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(ingresosBrutosCoeficienteUnificadoDto.Id);
+
+            if (ingresosBrutosCoeficienteUnificado == null)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de coeficientes unificados"));
+
+            ingresosBrutosCoeficienteUnificado.CUIT = ingresosBrutosCoeficienteUnificadoDto.CUIT;
+            ingresosBrutosCoeficienteUnificado.Anticipo = ingresosBrutosCoeficienteUnificadoDto.Anticipo;
+            ingresosBrutosCoeficienteUnificado.Sede = ingresosBrutosCoeficienteUnificadoDto.Sede;
+            ingresosBrutosCoeficienteUnificado.MalCargada = ingresosBrutosCoeficienteUnificadoDto.MalCargada;
+            ingresosBrutosCoeficienteUnificado.SecuenciaIngresosBrutosCoeficienteUnificado_Id = ingresosBrutosCoeficienteUnificadoDto.SecuenciaId;
+            ingresosBrutosCoeficienteUnificado.RazonSocial = ingresosBrutosCoeficienteUnificadoDto.RazonSocial;
+
+            ingresosBrutosCoeficienteUnificado.FechaUltimaModificacion = timeProvider.Now();
+
+            repositorio.GuardarCambios();
+
+            return new EditarIngresosBrutosCoeficienteUnificadoResponseDto
+            {
+                Mensaje = SuccessMsg.IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK,
+                FechaUltimaModificacion = ingresosBrutosCoeficienteUnificado.FechaUltimaModificacion
+            };
+        }
+
         public string AutorizarCabecera(int idCabecera, string mailUsuario)
         {
             var cabecera = this.repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(idCabecera);

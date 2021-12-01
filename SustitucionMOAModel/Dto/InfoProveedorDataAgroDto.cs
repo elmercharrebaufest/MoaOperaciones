@@ -12,6 +12,7 @@ namespace SustitucionMOAModel.Dto
         
         public string ProveedorCUIT { get; set; }
         public bool AltaInterna { get; set; }
+        public string Observacion { get; set; }
 
         public override bool Equals(object obj)
         {

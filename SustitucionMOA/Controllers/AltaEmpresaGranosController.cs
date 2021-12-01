@@ -54,7 +54,7 @@ namespace SustitucionMOA.Controllers
                 {
                     proveedorId = usuario.ObtenerProveedor().Id;
                 }
-                var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+                var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
                 proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
@@ -69,7 +69,7 @@ namespace SustitucionMOA.Controllers
                 }
 
 
-                informeComercial.ContactoComercial.Email1 = userMail;
+                informeComercial.ContactoComercial.Email1 = proveedor.Mail;
 
                 //Para los proveedores que hicieron el alta con los flujos, tenemos el IDDataAgro y IDComercial. Para los migrados no. Por esto, lo vamos a buscar
                 if (proveedor.IdDataAgro == null)

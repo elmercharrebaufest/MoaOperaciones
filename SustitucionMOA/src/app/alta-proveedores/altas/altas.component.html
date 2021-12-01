@@ -68,6 +68,7 @@
                             <option value="2" selected>Granos</option>
                             <option value="3" selected>No granos</option>
                             <option value="4" selected>Corredor</option>
+                            <option value="5" selected>Cliente</option>
                         </select>
                     </div>
                 </div>
@@ -228,7 +229,7 @@
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}
                                 | customFilterBoolean : 'ContieneDocumentacionFisica' : (contieneDocumentacionFisica == 0 ? null:  (contieneDocumentacionFisica != 2)) : (idTipoProveedor != 1)
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
-                                ; let odd = odd" role="row" [class.odd]="!odd" tabindex="0">
+                                ; let odd = odd ; trackBy: trackListadoAlta" role="row" [class.odd]="!odd" tabindex="0">
                                 <td>{{empresa.CodigoProveedor || "-"}}</td>
                                 <td>{{empresa.CUIT}}</td>
                                 <td>{{empresa.RazonSocial || "-"}}</td>
@@ -342,8 +343,12 @@
                     (click)=resetVariables()>
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">
+                <h4 class="modal-title" id="myModalLabel" *ngIf="empresaSeleccionada.RazonSocial != ''">
                     {{empresaSeleccionada.RazonSocial}} -
+                    {{empresaSeleccionada.CUIT}} -
+                    {{empresaSeleccionada.Mail}}
+                </h4>
+                <h4 class="modal-title" id="myModalLabel" *ngIf="empresaSeleccionada.RazonSocial == ''">
                     {{empresaSeleccionada.CUIT}} -
                     {{empresaSeleccionada.Mail}}
                 </h4>
@@ -629,12 +634,19 @@
                                         </span>
                                     </div>
 
-                                    <div class="form-group grey ">
+                                    <div class="form-group grey " *ngIf="puedeAltaInterna; else habilitarEditarDocFisica">
                                         Presento documentación física:
                                         <input type="checkbox" style="margin-right: 5px;" id="AltaFisica" placeholder=""
-                                            [(ngModel)]="empresaSeleccionada.ContieneDocumentacionFisica"
-                                            (ngModelChange)="onChangeDocumentacionFisica()">
+                                            [(ngModel)]="empresaSeleccionada.ContieneDocumentacionFisica" disabled>
                                     </div>
+                                    <ng-template #habilitarEditarDocFisica>
+                                        <div class="form-group grey">
+                                            Presento documentación física:
+                                            <input type="checkbox" style="margin-right: 5px;" id="AltaFisica" placeholder=""
+                                                [(ngModel)]="empresaSeleccionada.ContieneDocumentacionFisica"
+                                                (ngModelChange)="onChangeDocumentacionFisica()">
+                                        </div>
+                                    </ng-template>
                                 </mdb-step>
                                 <mdb-step name="Step 3" label="Documentación Impositiva" *ngIf="empresaSeleccionada.AltaInterna && empresaSeleccionada.IdTipoUsuario == 2">
                                     <h3>DDJJ</h3>
@@ -1063,7 +1075,7 @@
                         </div>
                     </div>
 
-                    <div class="row" *ngIf="!pantallaEditarAlta">
+                    <div class="row" *ngIf="empresaSeleccionada.IdTipoUsuario != 5 && !pantallaEditarAlta">
                         <div class="form-group align-right">
                             <button [disabled]="listaArchivos.length === 0" type="button"
                                 class="btn-custom btn-mediano btn-add" style="float: right;"
@@ -1086,7 +1098,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="row" *ngIf="!pantallaEditarAlta">
+                    <div class="row" *ngIf="empresaSeleccionada.IdTipoUsuario != 5 && !pantallaEditarAlta">
                         <div class="accordion" id="accordionExample">
                             <div class="card">
                                 <div class="card-header" id="headingMolinos">
@@ -1233,7 +1245,7 @@
                         </div>
                     </div>
 
-                    <div class="row" *ngIf="!pantallaEditarAlta">
+                    <div class="row historialContainer" *ngIf="!pantallaEditarAlta">
                         <table
                             *ngIf="empresaSeleccionada.HistorialAprobaciones && empresaSeleccionada.HistorialAprobaciones.length > 0"
                             id="tableModalHistorial"
@@ -1287,6 +1299,32 @@
                         [(ngModel)]="observacionesProveedor" aria-controls="tableModal"></textarea>
                 </div>
 
+                <div class="row infoClienteContainer"
+                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS APROBADOR')">
+                    <label class="observaciones col-xs-12 col-md-12" style="justify-content: left;
+    display: flex;">
+                        Información cliente
+                    </label>
+
+                    <div style="display: flex;">
+                        <div class="form-group roundedInfo grey col-xs-12 col-md-2">
+                            Razon Social
+                        </div>
+                        <div class="col-xs-12 col-md-2">
+                            <input type="text" class="form-control" [value]="" [(ngModel)]="razonSocial" />
+                        </div>
+
+                        <div class="form-group roundedInfo grey col-xs-12 col-md-2">
+                            Codigo SAP
+                        </div>
+                        <div class="form-group grey col-xs-12 col-md-2">
+                            <input type="text" class="form-control" [value]="" [(ngModel)]="codigoCliente" />
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+
+                        </div>
+                    </div>
+                </div>
                 <div class="col-xs-12" style="align-items: center;">
                     <spinner-small #spinnerModal></spinner-small>
                 </div>
@@ -1310,7 +1348,7 @@
                         Enviar a Etapa Final
                     </button>
                     <button type="button" class="btn-custom btn-mediano btn-guardar"
-                        *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS APROBADOR')"
                         (click)="cambiarEstado(0)">
                         Aprobar
                     </button>
@@ -1325,7 +1363,7 @@
                         Anular rechazo
                     </button>
                     <button type="button" class="btn-custom btn-mediano btn-add"
-                        *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8) && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8) && empresaSeleccionada.IdTipoUsuario != 5 && isAuthorized('ABM EMPRESAS OPERADOR')"
                         (click)="cambiarEstado(4)">
                         Solicitar informaci&oacute;n
                     </button>
@@ -1432,7 +1470,6 @@
     </div>
 </div>
 
-
 <div class="modal fade" id="modalAltaInternaGranos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     data-backdrop="false" style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog" role="document" style="width: 500px;">
@@ -1447,8 +1484,8 @@
                 </h4>
             </div>
             <div class="modal-body" style="padding-top:0;">
+                <mensaje #mensajeModalComponent></mensaje>
                 <div class="content-wraper" style="margin-top:0;padding-top:0">
-                    
                     <div class="for row myRow">
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <p class="crearConsultaTitulos">CUIT vendedor<span class="requerido">*</span></p>

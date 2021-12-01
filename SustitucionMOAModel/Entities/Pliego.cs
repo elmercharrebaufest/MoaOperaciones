@@ -33,8 +33,10 @@ namespace SustitucionMOAModel.Entities
         public int? DiasEjecucion { get; set; }
         public string ObservacionesCotizacion { get; set; }
         public string JornadaLaboralDias { get; set; }
-        public DateTime? JornadaLaboralHorasDesde { get; set; }
-        public DateTime? JornadaLaboralHorasHasta { get; set; }
+        public DateTimeOffset? JornadaLaboralHorasDesde { get; set; }
+        public DateTimeOffset? JornadaLaboralHorasHasta { get; set; }
+        public bool? TieneCondicionesGenerales { get; set; }
+        public string RevisadoPor { get; set; }
 
         public virtual ICollection<PliegoVisita> VisitasMasivas { get; set; }
 

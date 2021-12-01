@@ -8,8 +8,21 @@ namespace SustitucionMOAModel.CustomExceptions
 {
     public class ValidationCustomException : Exception
     {
-        public ValidationCustomException() : base() { }
-        public ValidationCustomException(string msj) : base(msj) { }
-        public ValidationCustomException(string msj, Exception e) : base(msj, e) { }
+        public bool LoguearExcepcion { get; set; }
+
+        public ValidationCustomException(bool loguearExcepcion = false) : base() 
+        {
+            this.LoguearExcepcion = loguearExcepcion;
+        }
+        
+        public ValidationCustomException(string msj, bool loguearExcepcion = false) : base(msj) 
+        { 
+            this.LoguearExcepcion = loguearExcepcion;
+        }
+        
+        public ValidationCustomException(string msj, Exception e, bool loguearExcepcion = false) : base(msj, e) 
+        { 
+            this.LoguearExcepcion = loguearExcepcion; 
+        }
     }
 }

@@ -35,23 +35,40 @@ using SustitucionMOAUtils.Helpers;
 using System.Web.UI.WebControls;
 using System.Data;
 
+using SustitucionMOAWS.Interfaces;
 
 namespace SustitucionMOAUtils.Services
 {
     public class ComprasService : IComprasService
     {
         private readonly IRepositorio repositorio;
+        private readonly IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA;
+        private readonly IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA;
+        private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
+        private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
+        private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
+        private readonly ICrearSolpConsumerMOA crearSolpConsumerMOA;
+        private readonly IModificarSolpConsumerMOA modificarSolpConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
-
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
-        public ComprasService(IRepositorio repositorio)
+
+        public ComprasService(IRepositorio repositorio, IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
+            IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA, IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA, IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA,
+            IObtenerSolpConsumerMOA obtenerSolpConsumerMOA, ICrearSolpConsumerMOA crearSolpConsumerMOA, IModificarSolpConsumerMOA modificarSolpConsumerMOA)
         {
             this.repositorio = repositorio;
+            this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
+            this.cuentasSolpConsumerMOA = cuentasSolpConsumerMOA;
+            this.ordenesSolpConsumerMOA = ordenesSolpConsumerMOA;
+            this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
+            this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
+            this.crearSolpConsumerMOA = crearSolpConsumerMOA;
+            this.modificarSolpConsumerMOA = modificarSolpConsumerMOA;
         }
 
-        public SolpDto GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
+        public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
         {
             Solp solpEntity = null;
             Pliego pliegoEntity = null;
@@ -76,6 +93,8 @@ namespace SustitucionMOAUtils.Services
                     solpEntity.UsuarioModificacion_Id = solp.UsuarioActual.Id;
                     solpEntity.FechaModificacion = DateTime.Now;
 
+                    //solpEntity.NroSolp = solp.NroSolp;
+
                     pliegoEntity = solpEntity.Pliego;
                 }
             }
@@ -85,6 +104,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     UsuarioCreacion_Id = solp.UsuarioActual.Id,
                     FechaCreacion = DateTime.Now
+
+
                 };
 
                 var estadoIncompletoCodigo = EstadoDocumentoSolp.Incompleto.Code();
@@ -95,21 +116,34 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.Posiciones = new List<SolpPosicion>();
                 pliegoEntity = solpEntity.Pliego;
 
+                solpEntity.NroSolp = solp.NroSolp;
+
                 repositorio.Agregar(solpEntity);
             }
+
+            //solpEntity.NroSolp = solp.NroSolp;
+
+            pliegoEntity.RevisadoPor = solp.RevisadoPor;
 
             if (solpEntity != null)
             {
                 if (solp.ClaseDocumento != null)
                     solpEntity.ClaseDocumento = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.ClaseDocumento && x.Codigo == solp.ClaseDocumento.Codigo);
 
+                if (solp.TipoSolp != null)
+                    solpEntity.TipoSolp = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoSolp && x.Codigo == solp.TipoSolp.Codigo);
+                solpEntity.PasoCompletado = solp.PasoCompletado;
+                solpEntity.UsuarioCompras_Id = solp.UsuarioCompras.Id; 
+                solpEntity.EstadoPasos = solp.EstadoPasos;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
                 pliegoEntity.Email = solp.Email;
                 pliegoEntity.FechaHoraEntrega = solp.FechaHoraEntrega?.ToLocalTime();
-                pliegoEntity.SupervisorSector = solp.SupervisorSector;
-                pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo;
+                //pliegoEntity.SupervisorSector = solp.SupervisorSector;
+                //pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo;
+                pliegoEntity.SupervisorSector = solp.SupervisorSector != null ? string.Join(",", solp.SupervisorSector.Select(x => x)) : string.Empty;
+                pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo != null ? string.Join(",", solp.SupervisorTrabajo.Select(x => x)) : string.Empty;
 
                 pliegoEntity.TieneVisitaObra = solp.TieneVisitaObra;
                 pliegoEntity.TieneVisitaObraMasiva = solp.TieneVisitaObraMasiva;
@@ -121,11 +155,16 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.TieneDocumentacionTecnica = solp.TieneDocumentacionTecnica;
                 pliegoEntity.FechaHoraLimiteConsulta = solp.FechaHoraLimiteConsulta?.ToLocalTime();
                 pliegoEntity.ObservacionesGeneracion = solp.ObservacionesGeneracion;
-                pliegoEntity.ObservacionesCotizacion = solp.ObservacionesCotizacion;
+
                 pliegoEntity.DiasEjecucion = solp.DiasEjecucion;
                 pliegoEntity.JornadaLaboralDias = solp.JornadaLaboral != null ? string.Join(",", solp.JornadaLaboral.Select(x => (int)x)) : string.Empty;
                 pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
                 pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
+                pliegoEntity.ObservacionesCotizacion = solp.ObservacionesCotizacion;
+
+                pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
+
+                pliegoEntity.RevisadoPor = solp.RevisadoPor;
 
                 if (solp.TieneVisitaObraMasiva && solp.VisitasObraMasiva != null)
                 {
@@ -157,7 +196,9 @@ namespace SustitucionMOAUtils.Services
 
                 if (solp.Adjuntos != null && pliegoEntity.Archivos != null)
                 {
-                    var archivosParaBorrar = pliegoEntity.Archivos.Where(x => !solp.Adjuntos.Select(y => y.Id).Contains(x.Id)).ToList();
+                    var archivosParaBorrar = pliegoEntity.Archivos
+                        .Where(x => !solp.Adjuntos.Select(y => y.Id).Contains(x.Id))
+                        .ToList();
 
                     foreach (var archivo in archivosParaBorrar)
                     {
@@ -174,6 +215,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     solpEntity.Posiciones = new List<SolpPosicion>();
                 }
+
+
 
                 //posiciones eliminadas
                 if (solpEntity.Posiciones.Count > 0)
@@ -206,6 +249,8 @@ namespace SustitucionMOAUtils.Services
                         posEntity.FechaEntregaServicio = pos.FechaEntregaServicio;
                         posEntity.FechaLiberacion = pos.FechaLiberacion;
                         posEntity.NroNecesidad = pos.NroNecesidad;
+                        posEntity.Estado = pos.Estado;
+                        posEntity.Indice = pos.Indice;
 
                         posEntity.CalleEntrega = pos.CalleEntrega;
                         posEntity.NombreEntrega = pos.NombreEntrega;
@@ -264,10 +309,13 @@ namespace SustitucionMOAUtils.Services
                                 subposEntity.Codigo = subpos.Codigo;
                                 subposEntity.Cantidad = subpos.Cantidad;
 
-                                if(subpos.TipoImputacionValor != null)
+                                if (subpos.TipoImputacionValor != null)
                                     subposEntity.TipoImputacionSap = repositorio.Obtener<TablaSap>(x => x.Tabla == subpos.TipoImputacionValor.Tabla && x.Codigo == subpos.TipoImputacionValor.Codigo);
 
-                                subposEntity.CuentaMayor = subpos.CuentaMayor;
+                                if (subpos.CuentaMayor != null)
+                                    subposEntity.CuentaMayorSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CuentasSolpSap && x.Codigo == subpos.CuentaMayor.Codigo);
+
+
                                 subposEntity.Numero = subpos.Numero;
                                 subposEntity.PrecioBruto = subpos.PrecioBruto;
                                 subposEntity.Tarea = subpos.Tarea;
@@ -277,7 +325,8 @@ namespace SustitucionMOAUtils.Services
                                     subposEntity.Unidad = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Unidad && x.Codigo == subpos.Unidad.Codigo);
 
                                 if (subpos.CodigoServicioSap != null)
-                                    subposEntity.CodigoServicioSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CodigoServicioSap && x.Codigo == subpos.Unidad.Codigo);
+                                    subposEntity.ServicioSolp = repositorio.Obtener<ServicioSolp>(x => x.CodigoSap == subpos.CodigoServicioSap.Codigo);
+
 
                                 posEntity.Subposiciones.Add(subposEntity);
                             }
@@ -348,14 +397,75 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
-            solp.Adjuntos = pliegoEntity.Archivos.Where(x => x.FileKey == FileKeys.AdjuntoSolp).Select(x => new ArchivoDto()
+            solp.Adjuntos = pliegoEntity.Archivos.Where(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(x => new ArchivoDto()
             {
                 Id = x.Id,
                 FileKey = x.FileKey,
                 Nombre = x.ObtenerNombre(x.Ruta)
             }).ToList();
 
-            return solp;
+            var respuestaGuardarSOLP = new RespuestaGuardarSOLP
+            {
+                Solp = solp
+            };
+
+            respuestaGuardarSOLP.Solp.NroSolp = solpEntity.NroSolp?? "";
+
+
+            if (solp.Finalizar)
+            {
+                if (string.IsNullOrEmpty(solpEntity.NroSolp))
+                {
+                    var resultadoCrearSolp = crearSolpConsumerMOA.Request(solpEntity);
+
+                    respuestaGuardarSOLP.Errores = new List<string>();
+
+                    foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Tipo == "E"))
+                    {
+                        var mensaje = error.Mensaje.Trim();
+                        respuestaGuardarSOLP.Errores.Add(mensaje);
+                    }
+
+                    respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
+
+                    if (respuestaGuardarSOLP.Errores.Count == 0)
+                    {
+                        respuestaGuardarSOLP.Mensaje = "OK";
+                        solpEntity.NroSolp = resultadoCrearSolp.NumeroSolp;
+                        respuestaGuardarSOLP.Solp.NroSolp = resultadoCrearSolp.NumeroSolp;
+
+                        var estadoCreadoCodigo = EstadoDocumentoSolp.Creado.Code();
+                        var estadoCreado = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoCreadoCodigo);
+                        solpEntity.EstadoDocumento_Id = estadoCreado.Id;
+
+                    }
+
+                    repositorio.GuardarCambios();
+                }
+                else
+                {
+                    var resultadoEditarSolp = modificarSolpConsumerMOA.Request(solpEntity);
+
+                    respuestaGuardarSOLP.Errores = new List<string>();
+
+                    foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
+                    {
+                        var mensaje = error.Mensaje.Trim();
+                        respuestaGuardarSOLP.Errores.Add(mensaje);
+                    }
+
+                    respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
+
+                    if (respuestaGuardarSOLP.Errores.Count == 0)
+                    {
+                        respuestaGuardarSOLP.Mensaje = "OK";
+                    }
+
+                    repositorio.GuardarCambios();
+                }
+            }
+
+            return respuestaGuardarSOLP;
         }
 
         private string ObtenerRutaArchivos(int solpId)
@@ -363,13 +473,16 @@ namespace SustitucionMOAUtils.Services
             return string.Format("{0}/Solp_{1}", rutaArchivosCompras, solpId);
         }
 
+
+
         private void GuardarAdjuntosSolp(SolpDto solp, HttpFileCollectionBase files, Pliego pliego)
         {
             var ruta = ObtenerRutaArchivos(solp.Id.Value);
 
-            for (int i = 0; i < files.Count; i++)
+            var filesEspecificaciones = files.GetMultiple("fileEspecificaciones");
+            for (int i = 0; i < filesEspecificaciones.Count; i++)
             {
-                var file = files[i];
+                var file = filesEspecificaciones[i];
                 var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
 
                 if (File.Exists(rutaArchivo))
@@ -383,6 +496,29 @@ namespace SustitucionMOAUtils.Services
                 pliego.Archivos.Add(new Archivo
                 {
                     FileKey = FileKeys.AdjuntoSolp,
+                    Ruta = rutaArchivo,
+                });
+
+                file.SaveAs(rutaArchivo);
+            }
+
+            var filesCotizaciones = files.GetMultiple("fileCotizaciones");
+            for (int i = 0; i < filesCotizaciones.Count; i++)
+            {
+                var file = filesCotizaciones[i];
+                var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+
+                if (File.Exists(rutaArchivo))
+                {
+                    file.SaveAs(rutaArchivo);
+                    continue;
+                }
+
+                Directory.CreateDirectory(ruta);
+
+                pliego.Archivos.Add(new Archivo
+                {
+                    FileKey = FileKeys.AdjuntoCotizacionesSolp,
                     Ruta = rutaArchivo,
                 });
 
@@ -413,9 +549,14 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        public List<SolpDto> ListarSolp()
+        public List<SolpDto> ListarSolp(UsuarioDto usuarioActual)
         {
-            var todasLasSolp = repositorio.Listar<Solp>(x => x.FechaBorrado == null)
+            Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null && x.UsuarioCreacion_Id == usuarioActual.Id;
+
+            if (usuarioActual.Permisos.Contains("VER TODAS SOLPS"))
+                filtro = (x => x.FechaBorrado == null);
+
+            var todasLasSolp = repositorio.Listar(filtro)
                 .Select(x => new SolpDto
                 {
                     UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
@@ -426,13 +567,13 @@ namespace SustitucionMOAUtils.Services
                     EstadoDocumento = new TablaEstadoDto(x.EstadoDocumento),
                     EstadoSolpSapId = x.EstadoSolpSap_Id,
                     EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
-                    //TipoSolp
+                    TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                     VincularPliego = !x.Pliego_Id.HasValue,
-                });
+                    TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
+                    RevisadoPor = x.Pliego?.RevisadoPor
+                }).OrderByDescending(i => i.FechaCreacion);
 
             return todasLasSolp.ToList();
-
-
         }
 
         public SolpDto TraerSolpId(int idSolp)
@@ -464,8 +605,9 @@ namespace SustitucionMOAUtils.Services
                 FechaCreacion = x.FechaCreacion,
                 EstadoDocumento = new TablaEstadoDto(x.EstadoDocumento),
                 EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
-                //TipoSolp
+                TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                 VincularPliego = !x.Pliego_Id.HasValue,
+                UsuarioCompras = x.UsuarioCompras != null ? new UsuarioComprasDto(x.UsuarioCompras) : new UsuarioComprasDto(),
 
 
                 NombreDeObra = x.Pliego.NombreObra,
@@ -473,8 +615,8 @@ namespace SustitucionMOAUtils.Services
                 Telefono = x.Pliego.Telefono,
                 Email = x.Pliego.Email,
                 FechaHoraEntrega = x.Pliego.FechaHoraEntrega,
-                SupervisorSector = x.Pliego.SupervisorSector,
-                SupervisorTrabajo = x.Pliego.SupervisorTrabajo,
+                SupervisorSector = x.Pliego.SupervisorSector.Split(',').ToList(),
+                SupervisorTrabajo = x.Pliego.SupervisorTrabajo.Split(',').ToList(),
                 VisitasObraMasiva = x.Pliego.VisitasMasivas.Select(a => new VisitaObraDto(a)).ToList(),
                 TieneVisitaObra = x.Pliego.TieneVisitaObra ?? false,
                 TieneVisitaObraMasiva = x.Pliego.TieneVisitaObraMasiva ?? false,
@@ -493,26 +635,32 @@ namespace SustitucionMOAUtils.Services
                 JornadaLaboralDesde = x.Pliego.JornadaLaboralHorasDesde,
                 JornadaLaboralHasta = x.Pliego.JornadaLaboralHorasHasta,
                 ClaseDocumento = x.ClaseDocumento != null ? new TablaSapDto(x.ClaseDocumento) : new TablaSapDto(),
-                Adjuntos = x.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp).Select(s => new ArchivoDto
+                
+                Adjuntos = x.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
                 {
                     Id = s.Id,
-                    Nombre = s.ObtenerNombre(s.Ruta)
+                    Nombre = s.ObtenerNombre(s.Ruta),
+                    FileKey = s.FileKey,
                 }).ToList(),
 
                 EspecificacionesTecnicas = x.Pliego.Archivos.FirstOrDefault(a => a.FileKey == FileKeys.EspecificacionesTecnicasPliego)?.Ruta,
 
+                TieneCondicionesGenerales = x.Pliego.TieneCondicionesGenerales ?? true,
+
+                RevisadoPor = x.Pliego.RevisadoPor,
+
                 EstadoSolpSapId = x.EstadoSolpSap_Id,
                 EstadoDocumentoId = x.EstadoDocumento_Id,
-
-                Posiciones = x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList()
+                //Posiciones = x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList(),
+                Posiciones = x.Posiciones.Select(p => new SolpPosicionDto(p)).ToList(),
+                PasoCompletado = x.PasoCompletado,
+                EstadoPasos = x.EstadoPasos
             };
 
             return solpDevuelta;
 
 
         }
-
-
 
         public string BorrarSolp(int idSolp)
         {
@@ -541,17 +689,20 @@ namespace SustitucionMOAUtils.Services
 
         public byte[] GenerarSolpPdf(int idSolp)
         {
-            var templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html");
+            var solp = TraerSolpId(idSolp);
+
+            var usuarioCompras = ListarUsuarioCompras(solp.UsuarioActual);
+
+            var templateFilePath = solp.TieneCondicionesGenerales ?? true ? Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html") :
+               Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/NewPliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
+            //, "Templates/PliegoSolpSinCondicionesTemplate.html"
+
 
             var templateCssFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.css");
             var templateCssString = System.IO.File.ReadAllText(templateCssFilePath);
 
             var solpValores = new Dictionary<string, string>();
-
-
-
-            var solp = TraerSolpId(idSolp);
 
             //aca va la asignacion de valores de la solp que se van a reemplazar en el documento
             solpValores.Add(SolpTemplateKeys.FECHA_LIBERACION, ""); //crear campo fecha de liberacion en tabla
@@ -561,7 +712,11 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.TELEFONO, solp.Telefono);
 
             solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
-            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioActual.Mail);
+            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioCompras.Mail == null ? usuarioCompras.Any() ? usuarioCompras[0].UsuarioCompras.Mail : String.Empty : solp.UsuarioCompras.Mail);
+
+            solpValores.Add(SolpTemplateKeys.REVISADO_POR, solp.RevisadoPor);
+
+            //solpValores.Add(SolpTemplateKeys.PAGINAS, PageEventHandler.p);
 
             //ESPECIFICACION TECNICA DE TAREAS
             if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
@@ -599,7 +754,7 @@ namespace SustitucionMOAUtils.Services
 
                 var diasJornada = string.Empty;
 
-                if (tieneHuecos || diasOrdenado.Count == 1)
+                if (tieneHuecos || diasOrdenado.Count() == 1)
                 {
                     diasJornada = string.Join(",", diasOrdenado.Select(a => getDia(a)).ToList());
                 }
@@ -629,15 +784,30 @@ namespace SustitucionMOAUtils.Services
                 solpValores.Add(SolpTemplateKeys.INICIO_FINAL_HS_JORNADA_LABORAL, " ");
             }
 
-            string templateSubposiciones = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td></td><td></td></tr>";
+            string templateSubposiciones = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td></td></tr>";
+
             StringBuilder subposiciones = new StringBuilder();
+
+            StringBuilder texto = new StringBuilder();
+
+            string plazoEntrega = "{0}";
+
+            StringBuilder plazo = new StringBuilder();
+
 
             solp.Posiciones.ForEach(pos =>
             {
+                texto = new StringBuilder();
+
+                plazo = new StringBuilder();
+
+                plazo.AppendLine(string.Format(plazoEntrega,
+                    pos.PlazoEntrega));
+
+
                 pos.Subposiciones.ForEach(subpos =>
                 {
-                    subposiciones.AppendLine(string.Format(templateSubposiciones,
-                        pos.TextoGenerico,
+                    texto.AppendLine(string.Format(templateSubposiciones,
                         subpos.Numero,
                         subpos.CodigoServicioSap?.Codigo,
                         subpos.Tarea,
@@ -646,16 +816,24 @@ namespace SustitucionMOAUtils.Services
                         ));
 
                 });
+
+                subposiciones.AppendLine($"<tr><th class='posicion' colspan='6'> {pos.Indice} - {pos.TextoGenerico}</th></tr>{texto}<tr><td colspan='6'>&nbsp;</td></tr>");
             });
 
             solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, subposiciones.ToString());
+            solpValores.Add(SolpTemplateKeys.PLAZO_ENTREGA, plazo.ToString());
+
+
+
+
+
 
             //ADJUNTOS
             solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "");
 
             templateString = CombineTemplateValues(templateString, solpValores);
 
-            return ConvertHtmlToPdf(templateString, templateCssString);
+            return ConvertHtmlToPdf(templateString, templateCssString, solp); //agregar solp
         }
 
         private string getDia(DayOfWeek dia)
@@ -693,12 +871,14 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        private byte[] ConvertHtmlToPdf(string xHtml, string css)
+        private byte[] ConvertHtmlToPdf(string xHtml, string css, SolpDto solp)
         {
             using (var stream = new MemoryStream())
             {
-                using (var document = new Document(PageSize.A4, 70f, 70f, 60f, 60f))
+                using (var document = new Document(PageSize.A4, 70f, 70f, 150f, 60f))
                 {
+                    //var solp = repositorio.Obtener<Solp>(idSolp);
+
                     var PdfWriter = iTextSharp.text.pdf.PdfWriter.GetInstance(document, stream);
                     document.Open();
 
@@ -706,34 +886,67 @@ namespace SustitucionMOAUtils.Services
                     image.SetAbsolutePosition(180, 700);
                     PdfWriter.DirectContent.AddImage(image, false);
 
+                    //PdfPTable table = new PdfPTable(2);
+
+                    
+
+                    // Our custom Header and Footer is done using Event Handler
                     TwoColumnHeaderFooter PageEventHandler = new TwoColumnHeaderFooter();
                     PdfWriter.PageEvent = PageEventHandler;
 
-                    //PageEventHandler.Title = "Solp";
-                    PageEventHandler.HeaderFont = FontFactory.GetFont(BaseFont.COURIER_BOLD, 10, Font.BOLD);
-                    //PageEventHandler.HeaderLeft = "Group";
-                    //PageEventHandler.HeaderRight = "1";
+                    //define el header
+                    //PageEventHandler.Title = "Revisado por: " + revisadoPor.
 
-                    //for (int i = 1; i <= 2; i++)
-                    //{
-                    //    // Define the page header
-                    //    PageEventHandler.HeaderRight = i.ToString();
-                    //    if (i != 1)
-                    //    {
-                    //        document.NewPage();
-                    //    }
-                    
-                    //    // New outline must be created after the page is added
-                    //    //AddOutline(PdfWriter, "Group " + i.ToString(), document.PageSize.Height);
-           
-                    //}
-                  
+                    //string encabezado = "Revisado por: " + revisadoPor;
+
+                    var tablaHeader = new PdfPTable(2);
+
+                    tablaHeader.TotalWidth = document.PageSize.Width - document.LeftMargin - document.RightMargin;
+
+                    PdfPCell obra = new PdfPCell();
+
+                    obra.AddElement(new Paragraph($"Nombre obra: {solp.NombreDeObra}"));
+                    tablaHeader.AddCell(obra);
+
+                    var imagen = Image.GetInstance(@"https://b2cmoagro.blob.core.windows.net/moaoperaciones/logo.png");
+
+                    //2284 x 1059
+                    imagen.ScaleAbsolute(80f, 40f);
+                    PdfPCell cellImagen = new PdfPCell(imagen);
+
+                    cellImagen.FixedHeight = 50f;
+                    cellImagen.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    cellImagen.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tablaHeader.AddCell(cellImagen);
+
+                    PdfPCell nombres = new PdfPCell();
+
+                    nombres.AddElement(new Paragraph($"Redactó: {solp.FiscalContrato}"));
+                    nombres.AddElement(new Paragraph($"Aprobó: {solp.RevisadoPor}"));
+
+                    tablaHeader.AddCell(nombres);
+
+                    PdfPCell numeros = new PdfPCell();
+
+                    numeros.AddElement(new Paragraph($"Fecha: {solp.FechaCreacion.ToString("dd/MM/yyyy")}"));
+
+                    numeros.FixedHeight = 50f;
+
+                    tablaHeader.AddCell(numeros);
+
+                    PageEventHandler.HeaderWidths = new float[] { 3f, 1f };
+
+                    PageEventHandler.Header = tablaHeader;
+
+                    //PageEventHandler.Header.SetWidthPercentage(new float[] { 10, 10 }, document.PageSize);
+                    //PageEventHandler.Header.WriteSelectedRows(0, -1, document.LeftMargin, document.PageSize.Height - 36, writer.DirectContent);
+
+                    //PageEventHandler.Title = document.Add(table).ToString();
+                    //PageEventHandler.HeaderFont = FontFactory.GetFont(BaseFont.COURIER_BOLD, 10, Font.BOLD);
+                   
                     // instantiate custom tag processor and add to `HtmlPipelineContext`.
                     var tagProcessorFactory = Tags.GetHtmlTagProcessorFactory();
-                    //tagProcessorFactory.AddProcessor(
-                    //    new TableDataProcessor(),
-                    //    new string[] { HTML.Tag.TD }
-                    //);
+                  
                     var htmlPipelineContext = new HtmlPipelineContext(null);
                     htmlPipelineContext.SetTagFactory(tagProcessorFactory);
 
@@ -764,12 +977,12 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public void AddOutline(PdfWriter writer, string Title, float Position)
-        {
-            PdfDestination destination = new PdfDestination(PdfDestination.FITH, Position);
-            PdfOutline outline = new PdfOutline(writer.DirectContent.RootOutline, destination, Title);
-            writer.DirectContent.AddOutline(outline, "Name = " + Title);
-        }
+        //public void AddOutline(PdfWriter writer, string Title, float Position)
+        //{
+        //    PdfDestination destination = new PdfDestination(PdfDestination.FITH, Position);
+        //    PdfOutline outline = new PdfOutline(writer.DirectContent.RootOutline, destination, Title);
+        //    writer.DirectContent.AddOutline(outline, "Name = " + Title);
+        //}
 
         public string GenerarZipPliego(int idSolp, string pathBase)
         {
@@ -780,7 +993,7 @@ namespace SustitucionMOAUtils.Services
             var pdfFilePath = $"{pathBase}/{pdfFilename}";
             File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
 
-            if (solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp))
+            if (solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
             {
                 var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.zip";
                 var filePath = $"{pathBase}/{zipFilename}";
@@ -791,7 +1004,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         foreach (var archivoSubido in solp.Pliego.Archivos)
                         {
-                            if (File.Exists(archivoSubido.Ruta) && archivoSubido.FileKey == FileKeys.AdjuntoSolp)
+                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
                             {
                                 string fileName = Path.GetFileName(archivoSubido.Ruta);
                                 archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
@@ -819,74 +1032,90 @@ namespace SustitucionMOAUtils.Services
                 ret.Append(value);
             }
 
-             return ret.ToString();
-         }
+            return ret.ToString();
+        }
 
         public List<TablaSapDto> ObtenerServiciosSap()
         {
-            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)new ObtenerServiciosSolpConsumerMOA().request();
+            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
+            var codigoNum = 0;
 
             return resultSap.Servicios.Select(s => new TablaSapDto()
             {
                 Tabla = TablasSap.CodigoServicioSap,
                 Descripcion = s.Descripcion,
-                CodigoSap = s.Codigo,
+                CodigoSap = int.TryParse(s.Codigo, out codigoNum) ? codigoNum.ToString() : s.Codigo,
+                Codigo = s.Codigo
             }).ToList();
         }
 
         public List<TablaSapDto> ObtenerCuentasSap()
         {
-            CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)new ObtenerCuentasSolpConsumerMOA().request();
+            CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)cuentasSolpConsumerMOA.request();
+            var codigoNum = 0;
 
             return resultSap.Cuentas.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CuentasSolpSap,
                 Descripcion = c.Descripcion,
-                CodigoSap = c.Codigo,
+                CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
+                Codigo = c.Codigo
             }).ToList();
         }
 
-        
         public List<TablaSapDto> ObtenerOrdenesSap()
         {
-            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)new ObtenerOrdenSolpConsumerMOA().request();
+            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)ordenesSolpConsumerMOA.request();
+            var codigoNum = 0;
 
             return resultSap.Ordenes.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.OrdenSolpSap,
                 Descripcion = c.Descripcion,
-                CodigoSap = c.Codigo,
+                CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
+                Codigo = c.Codigo
             }).ToList();
         }
 
         public List<TablaSapDto> ObtenerCecoSap()
         {
-            CecoWSMOAResponse resultSap = (CecoWSMOAResponse)new ObtenerCecoSolpConsumerMOA().request();
+            CecoWSMOAResponse resultSap = (CecoWSMOAResponse)CecoSolpConsumerMOA.request();
+            var codigoNum = 0;
 
             return resultSap.Cecos.Select(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CecoSolpSap,
                 Descripcion = c.Descripcion,
-                CodigoSap = c.CostCenter,
+                CodigoSap = int.TryParse(c.CostCenter, out codigoNum) ? codigoNum.ToString() : c.CostCenter,
+                Codigo = c.CostCenter
             }).ToList();
         }
 
         public List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor)
         {
             var lista = repositorio.Listar<TablaSap>(x => x.Tabla == tabla)
-                .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToLower().Contains(valor.ToLower()))
-                .Select(s => new TablaSapDto
-                {
-                    Id = s.Id,
-                    Descripcion = s.Descripcion,
-                    CodigoSap = s.CodigoSap,
-                    Codigo = s.Codigo,
-                    Tabla = s.Tabla
-                }).ToList();
+            .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToLower().Contains(valor.ToLower()))
+            .Select(s => new TablaSapDto
+            {
+                Id = s.Id,
+                Descripcion = s.Descripcion,
+                CodigoSap = s.CodigoSap,
+                Codigo = s.Codigo,
+                Tabla = s.Tabla
+            }).ToList();
 
             return lista;
         }
- 
+
+        public List<ServicioSolpDto> AutocompleteServicioSolp(string valor)
+        {
+            List<ServicioSolpDto> lista = repositorio.Listar<ServicioSolp>()
+                .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToString().ToLower().Contains(valor.ToLower()))
+                .Select(s => new ServicioSolpDto(s)).ToList();
+
+            return lista;
+        }
+
         private void EnviarMailSolp(Solp solp, Usuario usuario)
         {
             try
@@ -898,11 +1127,170 @@ namespace SustitucionMOAUtils.Services
                 var Destinatario = usuario.Mail;
 
 
+
                 EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
             }
             catch (Exception e)
             {
             }
+        }
+
+        public ObtenerSolpSAPResponse ObtenerSolpsSAP(DateTime fechaDesde, DateTime fechaHasta, string numeroSolp,
+                                    string centroLogistico, string filtroTipoPosicion, string indicadorDeLiberacion, string origenCreacion, List<string> creadoPorUsuarios,
+                                    string tipoDeImputacion, bool ObtenerDireccionDeEntrega, bool ObtenerImputacion, bool ObtenerServicios, bool MostrarItemsBorrados
+                                    )
+        {
+            var filtros = new ObtenerSolpRequest
+            {
+                FechaDesde = fechaDesde,
+                FechaHasta = fechaHasta,
+                NumeroSolp = numeroSolp,
+                CentroLogistico = centroLogistico,
+                FiltroTipoPosicion = filtroTipoPosicion,
+                IndicadorDeLiberacion = indicadorDeLiberacion,
+                OrigenCreacion = origenCreacion,
+                CreadoPorUsuarios = creadoPorUsuarios,
+                TipoDeImputacion = tipoDeImputacion,
+                ObtenerDireccionDeEntrega = ObtenerDireccionDeEntrega,
+                ObtenerImputacion = ObtenerImputacion,
+                ObtenerServicios = ObtenerServicios,
+                MostrarItemsBorrados = MostrarItemsBorrados,
+
+            };
+            var solps = obtenerSolpConsumerMOA.Request(filtros);
+
+            return solps;
+        }
+
+        public List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos)
+        {
+            var ret = new List<TablaSapDto>();
+            var codigosPorTabla = new Dictionary<string, List<string>>();
+
+            foreach (var cod in codigos)
+            {
+                if (!codigosPorTabla.ContainsKey(cod.Tabla))
+                {
+                    codigosPorTabla.Add(cod.Tabla, new List<string>());
+                }
+
+                codigosPorTabla[cod.Tabla].Add(cod.CodigoSap);
+            }
+
+            foreach (var tabla in codigosPorTabla)
+            {
+                var lista = repositorio.Listar<TablaSap>(x => x.Tabla == tabla.Key && tabla.Value.Contains(x.CodigoSap))
+                    .Select(x => new TablaSapDto(x)).ToList();
+                ret.AddRange(lista);
+            }
+
+            return ret;
+        }
+
+        public List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos)
+        {
+            var result = repositorio
+                .Listar<ServicioSolp>(x => codigos.Contains(x.CodigoSap.ToString()))
+                .Select(x => new ServicioSolpDto(x)).ToList();
+
+            return result;
+        }
+
+        public void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion)
+        {
+            var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nrosolp);
+
+            if (solp != null)
+            {
+                solp.FechaLiberacionSap = fechaLiberacion;
+                repositorio.GuardarCambios();
+            }
+        }
+
+        public void ActualizarServiciosSolp()
+        {
+            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
+            if (resultSap.Servicios.Any())
+            {
+                var listaBase = repositorio.Listar<ServicioSolp>();
+
+                foreach (var servicio in resultSap.Servicios)
+                {
+                    int codigoNum = 0;
+                    if (Int32.TryParse(servicio.Codigo, out codigoNum) &&
+                        !listaBase.Any(x => x.CodigoSap == codigoNum && x.Descripcion == servicio.Descripcion))
+                    {
+                        repositorio.Agregar(new ServicioSolp
+                        {
+                            Codigo = servicio.Codigo,
+                            CodigoSap = codigoNum,
+                            Descripcion = servicio.Descripcion,
+                            GrupoArticulos = Int32.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null,
+                            TipoServicio = servicio.Serv,
+                            AmbitoServicio = servicio.Ser,
+                            Edicion = Int32.TryParse(servicio.Edit, out int edicion) ? edicion : 0,
+                            UnidadMedidaBase = servicio.Bas,
+                            SSCItem = servicio.SSCItem
+                        });
+                    }
+                }
+            }
+
+            repositorio.GuardarCambios();
+        }
+
+        public void ActualizarEstadoSolpBulk()
+        {
+            var lista = repositorio.Listar<TablaSap>(x => x.Tabla == "EstadoSolpSap")
+                    .Select(x => new TablaSapDto(x)).ToList();
+            foreach (var todasLasSolp in repositorio.Listar<Solp>(o => o.FechaBorrado == null && o.NroSolp != null))
+            {
+                ConsultaEstadoSolp(todasLasSolp.NroSolp, lista);
+            }
+        }
+
+        private void ConsultaEstadoSolp(string nroSolp, List<TablaSapDto> listaTablaSap)
+        {
+            DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
+            DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
+            var filtros = new ObtenerSolpRequest
+            {
+                FechaDesde = fechaDesde,
+                FechaHasta = fechaHasta,
+                NumeroSolp = nroSolp,
+            };
+            var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+            if (solp.Posiciones.Any())
+            {
+                var codigoSap = listaTablaSap.Where(x => x.CodigoSap == solp.Posiciones[0].EstadoSolpSap).FirstOrDefault();
+                if(codigoSap != null)
+                {
+                    ActualizarEstadoSolp(nroSolp, codigoSap.Id);
+                }
+            }
+        }
+
+        public void ActualizarEstadoSolp(string nroSolp, int idEstado)
+        {
+            var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nroSolp);
+
+            if (solp != null)
+            {
+                solp.EstadoSolpSap_Id = idEstado;
+                repositorio.GuardarCambios();
+            }
+        }
+
+        public List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual)
+        {
+            var usuarios = repositorio.Listar<Usuario>().ToList();
+            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>().Where(item => item.Usuario_Id == usuarios[0].Id)
+                .Select(x => new UsuarioComprasRelacionConUsuariosDto
+                {
+                    UsuarioCompras = new UsuarioComprasDto(x.UsuarioCompras)
+                });
+
+            return usuariosCompras.ToList();
         }
     }
 
@@ -925,5 +1313,12 @@ namespace SustitucionMOAUtils.Services
 
         public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
         public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
+
+        public const string TEXTO_GENERICO = "TEXTO_GENERICO";
+
+        public const string REVISADO_POR = "REVISADO_POR";
+
+        public const string PLAZO_ENTREGA = "PLAZO_ENTREGA";
+        public const string PAGINAS = "PAGINAS";
     }
 }

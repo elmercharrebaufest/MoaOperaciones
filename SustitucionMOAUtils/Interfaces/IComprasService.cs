@@ -12,13 +12,13 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IComprasService
     {
-        SolpDto GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos);
+        RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos);
         string ObtenerRutaArchivo(int archivoId);
 
         List<TablaSapDto> ObtenerTablaSap(string tabla);
         List<TablaGeneralDto> ObtenerTablaGeneral(string tabla);
         List<CentroDireccionDto> ObtenerCentrosDireccion();
-        List<SolpDto> ListarSolp();
+        List<SolpDto> ListarSolp(UsuarioDto usuarioActual);
         string BorrarSolp(int idSolp);
         SolpDto TraerSolpId(int idSolp);
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
@@ -29,5 +29,13 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerCecoSap();
         List<TablaSapDto> ObtenerCuentasSap();
         List<TablaSapDto> ObtenerOrdenesSap();
+        List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos);
+        void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion);
+        void ActualizarServiciosSolp();
+        List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos);
+        List<ServicioSolpDto> AutocompleteServicioSolp(string valor);
+        void ActualizarEstadoSolpBulk();
+        void ActualizarEstadoSolp(string nroSolp, int idEstado);
+        List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual);
     }
 }

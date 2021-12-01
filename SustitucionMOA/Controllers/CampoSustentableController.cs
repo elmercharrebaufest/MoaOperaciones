@@ -7,8 +7,10 @@ using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.Logger;
 using System;
+using System.IO;
 using System.Web;
 using System.Web.Mvc;
 
@@ -17,12 +19,13 @@ namespace SustitucionMOA.Controllers
     public class CampoSustentableController : BaseController
     {
         readonly ICampoSustentableService campoSustentableService;
+        private readonly IFileWrapper fileWrapper;
 
-        public CampoSustentableController(ICampoSustentableService campoSustentableService)
+        public CampoSustentableController(ICampoSustentableService campoSustentableService, IFileWrapper fileWrapper)
         {
             this.campoSustentableService = campoSustentableService;
+            this.fileWrapper = fileWrapper;
         }
-
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpPost]
@@ -72,28 +75,28 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        //[CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CONTRATO)]
-        //[HttpDelete]
-        //public JsonResult CampoProveedorBorrar(int campoCosechaId, int proveedorId)
-        //{
-        //    try
-        //    {
-        //        return JsonCustom(campoSustentableService.Borrar(SessionPersister.User.username, campoCosechaId, proveedorId));
-        //    }
-        //    catch (InfoCustomException e)
-        //    {
-        //        return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-        //    }
-        //    catch (ValidationCustomException e)
-        //    {
-        //        return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-        //        return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-        //    }
-        //}
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.BORRAR_CAMPOS_CREADOS)]
+        [HttpPost]
+        public JsonResult CampoProveedorBorrar(int campoCosechaId, int proveedorId)
+        {
+            try
+            {
+                return JsonCustom(campoSustentableService.Borrar(SessionPersister.User.username, campoCosechaId, proveedorId));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpGet]
@@ -296,5 +299,34 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
+        [HttpGet]
+        public JsonResult DescargarArchivoKMZ(int campoCosechaId, int proveedorId)
+        {
+            try
+            {
+                string rutaArchivo = campoSustentableService.ObtenerRutaArchivoKMZ(campoCosechaId, proveedorId);
+
+                byte[] fileBytes = fileWrapper.ReadAllBytes(rutaArchivo);
+                string fileName = Path.GetFileName(rutaArchivo);
+                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }

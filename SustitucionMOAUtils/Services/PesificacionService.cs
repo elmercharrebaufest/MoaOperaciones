@@ -1,8 +1,8 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
-using SustitucionMOAUtils.Email;
-using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.PesificacionGuadarWebServiceMOA;
 using SustitucionMOAWS.WSConsumers;
 using System;
@@ -14,9 +14,15 @@ using System.Web;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class PesificacionService
+    public class PesificacionService : IPesificacionService
     {
-        FeriadoService _feriadoService = new FeriadoService();
+        readonly FeriadoService _feriadoService = new FeriadoService();
+        readonly IListarPesificacionesConsumer pesificacionesConsumer;
+
+        public PesificacionService(IListarPesificacionesConsumer pesificacionesConsumer)
+        {
+            this.pesificacionesConsumer = pesificacionesConsumer;
+        }
 
         public Fecha GetFechaPesificacion(string formatoFecha)
         {
@@ -30,7 +36,7 @@ namespace SustitucionMOAUtils.Services
                 DateTime dateTimeCorte = DateTime.Today.Add(ts);
                 DateTime dateTimePesificacion = dateTimeCorte < DateTime.Now ? DateTime.Today.AddDays(1) : DateTime.Today;
                 dateTimePesificacion = ObtenerProximoDiaHabil(dateTimePesificacion, feriados);
-                Fecha fecha = new Fecha()
+                Fecha fecha = new Fecha
                 {
                     HoraDeCorte = horaDeCorte,
                     FechaPesificacion = dateTimePesificacion.ToString(formatoFecha),
@@ -84,7 +90,12 @@ namespace SustitucionMOAUtils.Services
                     throw new InfoCustomException("No se encontraron contratos para pesificar");
                 }
 
-                Contrato contratoEncontrado = responseGet.Contratos.Find(x => x.NroContrato.TrimStart(new Char[] { '0' }) == contrato && x.Fijacion.TrimStart(new Char[] { '0' }) == fijacion && x.CantidadPendiente > 0);
+                Contrato contratoEncontrado = 
+                        responseGet.Contratos.
+                        Find(x => x.NroContrato.TrimStart(new Char[] { '0' }) == contrato
+                        && x.Fijacion.TrimStart(new Char[] { '0' }) == fijacion
+                        && x.CantidadPendiente > 0);
+
                 if (contratoEncontrado == null)
                 {
                     throw new InfoCustomException("El contrato que desea pesificar no se encuentra o bien ya fue pesificado completamente");
@@ -92,7 +103,13 @@ namespace SustitucionMOAUtils.Services
 
                 if (contratoEncontrado.CantidadPendiente < cantidad)
                 {
-                    throw new InfoCustomException("El Contrato " + contrato + " dispone de " + contratoEncontrado.CantidadPendiente + " " + contratoEncontrado.Unidad + " por pesificar. Por favor ingrese una cantidad igual o menor a la pendiente");
+                    throw new InfoCustomException("El Contrato "
+                                                  + contrato
+                                                  + " dispone de "
+                                                  + contratoEncontrado.CantidadPendiente
+                                                  + " "
+                                                  + contratoEncontrado.Unidad
+                                                  + " por pesificar. Por favor ingrese una cantidad igual o menor a la pendiente");
                 }
 
                 List<ZMPES5480> comprobantes = new List<ZMPES5480>
@@ -118,26 +135,24 @@ namespace SustitucionMOAUtils.Services
                 }
                 if (responseSet != null && responseSet.Log.Count > 0 && responseSet.Log[0].Mensaje != "")
                 {
-                    //throw new InfoCustomException(responseSet.Log[0].Mensaje);
                     throw new InfoCustomException(ErrorMsg.Error);
                 }
 
                 return responseSet;
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
-
 
         public string SetContratos(string proveedor, HttpPostedFileBase file)
         {
@@ -160,13 +175,13 @@ namespace SustitucionMOAUtils.Services
 
                 return SuccessMsg.EnvioMsjOk;
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -178,8 +193,6 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-
-
                 if (proveedor == null || proveedor == "")
                 {
                     throw new ValidationCustomException("Debe ingresar un proveedor");
@@ -205,13 +218,46 @@ namespace SustitucionMOAUtils.Services
                         Vendedor = x.Vendedor
                     }).ToList();
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+
+        public List<PesificacionSapDto> GetPesificacionesSAP(string proveedor)
+        {
+            try
+            {
+                if (proveedor == null || proveedor == "")
+                {
+                    throw new ValidationCustomException("Debe ingresar un proveedor");
+                }
+
+                var responseGet = pesificacionesConsumer.Request(proveedor);
+
+                if (responseGet == null)
+                {
+                    throw new InfoCustomException("No se encontraron pesificaciones");
+                }
+
+                return responseGet.Pesificaciones;
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
             }
             catch (Exception e)
             {

@@ -140,8 +140,10 @@
     <Compile Include="Interfaces\IDataAgroService.cs" />
     <Compile Include="Interfaces\IGestionImpuestosService.cs" />
     <Compile Include="Interfaces\IHangfireJob.cs" />
+    <Compile Include="Interfaces\IHomeService.cs" />
     <Compile Include="Interfaces\ILiquidacionService.cs" />
     <Compile Include="Interfaces\INotificacionService.cs" />
+    <Compile Include="Interfaces\IOrdenDeCargaService.cs" />
     <Compile Include="Interfaces\IReportesService.cs" />
     <Compile Include="Interfaces\ITicketPesadaService.cs" />
     <Compile Include="Interfaces\ILogPesificacionService.cs" />
@@ -150,6 +152,8 @@
     <Compile Include="Interfaces\IUsuarioService.cs" />
     <Compile Include="Interfaces\IVendedorService.cs" />
     <Compile Include="Interfaces\Validadores\IValidadorPesificacion.cs" />
+    <Compile Include="Interfaces\Wrappers\IFileWrapper.cs" />
+    <Compile Include="Interfaces\Wrappers\IExcelExportWrapper.cs" />
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AduanaService.cs" />
@@ -174,9 +178,11 @@
     <Compile Include="Services\GestionImpuestosService.cs" />
     <Compile Include="Services\HomeService.cs" />
     <Compile Include="Interfaces\ICartaPorteService.cs" />
+    <Compile Include="Interfaces\IPesificacionService.cs" />
     <Compile Include="Services\LiquidacionService.cs" />
     <Compile Include="Services\LoginService.cs" />
     <Compile Include="Services\NotificacionService.cs" />
+    <Compile Include="Services\OrdenDeCargaService.cs" />
     <Compile Include="Services\PagoService.cs" />
     <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\PesificacionService.cs" />
@@ -190,6 +196,8 @@
     <Compile Include="Services\VendedorService.cs" />
     <Compile Include="Validadores\ResultadoValidacionPesificacion.cs" />
     <Compile Include="Validadores\ValidadorPesificacion.cs" />
+    <Compile Include="Wrappers\FileWrapper.cs" />
+    <Compile Include="Wrappers\ExcelExportWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SustitucionMOAAssets\SustitucionMOAAsset.csproj">
@@ -233,6 +241,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Templates\EncabezadoSolpPreview.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\images\logo.png" />
+    <Content Include="Templates\images\logoEndosado.png" />
+    <Content Include="Templates\NewPliegoSolpSinCondicionesTemplate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\PliegoSolpSinCondicionesTemplate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\PliegoSolpTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -240,6 +259,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

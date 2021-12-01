@@ -100,23 +100,41 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado && !v.CodigoProveedor.Contains("C"))
+            var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado || v.EstadoAprobacion == EstadoAprobacion.Deshabilitado)
                 .Select(v => new Vendedor()
                 {
                     descVendedor = v.RazonSocial,
-                    estado = "-",
-                    //estado = (v.ContieneDocumentacionFisica.HasValue && v.ContieneDocumentacionFisica == true)? "Alta definitiva aceptada" : "Pendiente de envío documentación original",
+                    estado = "",
                     estadoMoa = v.EstadoAprobacion == EstadoAprobacion.Aprobado ? (
-                        (v.ContieneDocumentacionFisica.HasValue && v.ContieneDocumentacionFisica == true) ? "Alta definitiva aceptada" 
+                        (v.ContieneDocumentacionFisica.HasValue && v.ContieneDocumentacionFisica == true) ? "Habilitado"
                         : "Pendiente de envío documentación original") : v.EstadoAprobacionDescripcion,
                     idVendedor = v.CodigoProveedor
                 });
             response.vendedores.AddRange(vendedoresAprobados);
 
-            response.vendedores = response.vendedores.Distinct().ToList();
+            response.vendedores = response.vendedores.GroupBy(i => new 
+                {
+                    i.idVendedor,
+                    i.descVendedor
+                })
+                .Select(vendedor => vendedor.Skip(1)
+                .Aggregate(
+                    vendedor.First(), (a, o) => 
+                    {
+                        if(!a.estado.Contains("Pendiente de envío documentación original") 
+                        && (a.estadoMoa.Contains("Pendiente de envío documentación original") || o.estadoMoa.Contains("Pendiente de envío documentación original"))
+                        && a.estado != ""
+                        && !a.estado.Contains("Habilitado"))
+                        {
+                            a.estado = a.estado + " - Pendiente de envío documentación original";
+                        }
+                        
+                        return a; 
+                    }))
+                .ToList();
             return response;
         }
-     
+
         public VendedorHabilitadoWSMOAResponse GetVendedorStatus(string cuit, string user)
         {
             try
@@ -278,6 +296,7 @@ namespace SustitucionMOAUtils.Services
                             Comercial = proveedor.Comercial,
                             EstadoSIPER = proveedor.EstadoSIPER,
                             ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
+                            IdTipoProveedor = proveedor.TipoProveedor.Id
                         })
                 );
             }
@@ -307,6 +326,7 @@ namespace SustitucionMOAUtils.Services
                     Comercial = proveedor.Comercial,
                     EstadoSIPER = proveedor.EstadoSIPER,
                     ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
+                    IdTipoProveedor = proveedor.TipoProveedor.Id
                 }
                 ).ToList());
             }
@@ -319,7 +339,7 @@ namespace SustitucionMOAUtils.Services
             return listadoProveedores.Distinct().ToList();
         }
 
-        public string AgregarVendedor(string mailUsuario, string cuit)
+        public string AgregarVendedor(string mailUsuario, string cuit, int tipoProveedor)
         {
             var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
 
@@ -331,75 +351,104 @@ namespace SustitucionMOAUtils.Services
             if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any())
                 throw new ValidationCustomException(ErrorMsg.ErrorVendedorRepetido);
 
-            var nuevoVendedor = new Proveedor
+            if (tipoProveedor == 2)
             {
-                CUIT = cuit,
-                Mail = usuario.Mail,
-                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
-                CodigoProveedor = FormatearCodigoProveedor(cuit),
-                TipoProveedor = ObtenerTipoPorNombreCorto("G"),
-                FechaSolicitud = DateTime.Now
-            };
-
-            if (usuario.EsCorredor())
-            {
-                var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit);
-                string comercial = "";
-                if (infoDA.HayError)
+                var nuevoVendedor = new Proveedor
                 {
-                    if (infoDA.ListaErrores[0].Message == "El cuit no tiene ninguno comercial asociado") {
-                        var infoDACorredor = dataAgroService.ObtenerValidarCUITProveedorGranos(usuario.ObtenerCorredor().CUIT, true);
+                    CUIT = cuit,
+                    Mail = usuario.Mail,
+                    EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                    CodigoProveedor = FormatearCodigoProveedor(cuit),
+                    TipoProveedor = ObtenerTipoPorNombreCorto("G"),
+                    FechaSolicitud = DateTime.Now
+                };
 
-                        if (infoDACorredor.HayError)
+                if (usuario.EsCorredor())
+                {
+                    var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit);
+                    string comercial = "";
+                    if (infoDA.HayError)
+                    {
+                        if (infoDA.ListaErrores[0].Message == "El cuit no tiene ninguno comercial asociado")
                         {
-                            throw new ValidationCustomException(infoDACorredor.ListaErrores[0].Message);
-                        }
+                            var infoDACorredor = dataAgroService.ObtenerValidarCUITProveedorGranos(usuario.ObtenerCorredor().CUIT, true);
 
-                        infoDA.ComercialId = infoDACorredor.ComercialId;
-                        comercial = string.Concat(infoDACorredor.ComercialNombres, " ", infoDACorredor.ComercialApellido);
+                            if (infoDACorredor.HayError)
+                            {
+                                throw new ValidationCustomException(infoDACorredor.ListaErrores[0].Message);
+                            }
+
+                            infoDA.ComercialId = infoDACorredor.ComercialId;
+                            comercial = string.Concat(infoDACorredor.ComercialNombres, " ", infoDACorredor.ComercialApellido);
+                        }
+                        else
+                        {
+                            throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
+                        }
                     }
                     else
                     {
-                        throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
+                        comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido);
                     }
+
+                    var hist = new ProveedorHistorialAprobacion
+                    {
+                        Fecha = DateTime.Now,
+                        Usuario_Id = usuario.Id,
+                        EstadoAprobacion = nuevoVendedor.EstadoAprobacion,
+                        Observacion = "Proveedor habilitado en DataAgro"
+                    };
+                    nuevoVendedor.HistorialAprobaciones.Add(hist);
+
+                    nuevoVendedor.IdProveedorCorredor = usuario.ObtenerCorredor().Id;
+                    nuevoVendedor.RazonSocial = infoDA.ProveedorRazonSocial;
+                    nuevoVendedor.Comercial = comercial;
+                    nuevoVendedor.IdComercialDataAgro = infoDA.ComercialId;
+                    nuevoVendedor.IdDataAgro = infoDA.ProveedorId;
+                    nuevoVendedor.TipoProveedor = ObtenerTipoPorNombreCorto("CORR");
+
                 }
                 else
                 {
-                    comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido);
+                    dataAgroService.ValidarNuevoProveedorMultifirma(ref nuevoVendedor);
+
+                    var hist = new ProveedorHistorialAprobacion
+                    {
+                        Fecha = DateTime.Now,
+                        Usuario_Id = usuario.Id,
+                        EstadoAprobacion = nuevoVendedor.EstadoAprobacion,
+                        Observacion = nuevoVendedor.Observaciones
+                    };
+                    nuevoVendedor.HistorialAprobaciones.Add(hist);
                 }
-
-                var hist = new ProveedorHistorialAprobacion
-                {
-                    Fecha = DateTime.Now,
-                    Usuario_Id = usuario.Id,
-                    EstadoAprobacion = nuevoVendedor.EstadoAprobacion,
-                    Observacion = "Proveedor habilitado en DataAgro"
-                };
-                nuevoVendedor.HistorialAprobaciones.Add(hist);
-
-                nuevoVendedor.IdProveedorCorredor = usuario.ObtenerCorredor().Id;
-                nuevoVendedor.RazonSocial = infoDA.ProveedorRazonSocial;
-                nuevoVendedor.Comercial = comercial;
-                nuevoVendedor.IdComercialDataAgro = infoDA.ComercialId;
-                nuevoVendedor.IdDataAgro = infoDA.ProveedorId;
-                nuevoVendedor.TipoProveedor = ObtenerTipoPorNombreCorto("CORR");
-
+                usuario.Proveedores.Add(nuevoVendedor);
             }
             else
             {
-                dataAgroService.ValidarNuevoProveedorMultifirma(ref nuevoVendedor);
-
-                var hist = new ProveedorHistorialAprobacion
+                Proveedor proveedor = new Proveedor
                 {
-                    Fecha = DateTime.Now,
-                    Usuario_Id = usuario.Id,
-                    EstadoAprobacion = nuevoVendedor.EstadoAprobacion,
-                    Observacion = nuevoVendedor.Observaciones
+                    CUIT = cuit,
+                    Mail = usuario.Mail,
+                    EstadoAprobacion = EstadoAprobacion.EtapaFinal,
+                    Observaciones = "Esperando aprobación.",
+                    TipoProveedor = ObtenerTipoPorNombreCorto("CLI")
                 };
-                nuevoVendedor.HistorialAprobaciones.Add(hist);
+
+                proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>
+                {
+                    new ProveedorHistorialAprobacion()
+                    {
+                        Fecha = DateTime.Now,
+                        Proveedor_Id = proveedor.Id,
+                        EstadoAprobacion = EstadoAprobacion.EtapaFinal,
+                        Observacion = "Registro de usuario cliente",
+                        Usuario_Id = usuario.Id
+                    }
+                };
+
+                usuario.Proveedores.Add(proveedor);
             }
 
-            usuario.Proveedores.Add(nuevoVendedor);
 
             repositorio.GuardarCambios();
 

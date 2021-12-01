@@ -34,7 +34,9 @@ namespace SustitucionMOAModel.Dto
 
         public int CosechaId { get; set; }
         public string MotivoRechazo { get; set; }
-        public string Estado { 
+        public DateTime? FechaCreacion { get; set; }
+        public string Estado
+        {
             get
             {
                 return ToneladasAprobadas > 0 ? "Aprobado" : ToneladasAprobadas == 0 ? "Desaprobado" : "En gestión";

@@ -175,12 +175,14 @@ namespace SustitucionMOAUtils.Services
         }
 
         public string SetEstadoAprobacion(int proveedorId,
-                                      EstadoAprobacion estado,
-                                      string observacion,
-                                      string usuarioMail,
-                                      string observacionParaElProveedor,
-                                      string estadoSIPER,
-                                      bool enviarMail)
+                                          EstadoAprobacion estado,
+                                          string observacion,
+                                          string usuarioMail,
+                                          string observacionParaElProveedor,
+                                          string estadoSIPER,
+                                          bool enviarMail,
+                                          string razonSocial,
+                                          string codigoCliente)
         {
             try
             {
@@ -273,6 +275,21 @@ namespace SustitucionMOAUtils.Services
                                 if (!usuario.Roles.Contains(rolUsuarioNoGranos))
                                     usuario.AgregarRol(rolUsuarioNoGranos);
                             }
+
+                            break;
+
+                        case "Cliente":
+                            var rolUsuarioCliente = ObtenerRolPorCodigo("CLIENT");
+
+                            if (usuario != null)
+                            {
+                                //Para que no borre los roles una vez aprobado.
+                                //usuario.RemoverRoles();
+                                usuario.AgregarRol(rolUsuarioCliente);
+                            }
+
+                            proveedor.CodigoProveedor = codigoCliente;
+                            proveedor.RazonSocial = razonSocial;
 
                             break;
                     }
@@ -599,7 +616,6 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
-
 
         private string FormatearCodigoProveedor(string CUIT)
         {

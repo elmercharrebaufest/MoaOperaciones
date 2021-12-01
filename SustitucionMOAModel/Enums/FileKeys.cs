@@ -30,6 +30,7 @@ namespace SustitucionMOAModel.Enums
         public const string DeclaracionCampoSustentable = "declaracionCampoSustentable";
         public const string ArchivoLogPesificaciones = "archivoLogPesificaciones";
         public const string AdjuntoSolp = "adjuntoSolp";
+        public const string AdjuntoCotizacionesSolp = "adjuntoCotizacionesSolp";
         public const string EspecificacionesTecnicasPliego = "especificacionesTecnicasPliego";
         public const string ArchivoPliego = "archivoPliego";
         public const string DDJJ = "DDJJ";

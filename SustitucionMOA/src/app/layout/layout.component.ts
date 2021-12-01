@@ -1,4 +1,4 @@
-﻿import { Component, Renderer, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, Renderer, OnDestroy, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
 import { Router } from "@angular/router";
 import { Seccion } from './../common/models/seccion';
 import { LayoutService } from './layout.service';
@@ -12,6 +12,7 @@ import { MensajeModalComponent } from './../common/view-child/mensaje-modal/mens
 import { LoginGuard } from './../common/security/login-guard';
 import { ok } from 'assert';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { BuscadorComponent } from './../common/shared-components/buscador/buscador.component'
 declare var $: any;
 
 @Component({
@@ -63,11 +64,17 @@ export class LayoutComponent implements OnDestroy {
     textoTooltip2: string = '';
     seccionesVisitadas: string;
     auxiliarSeccionesVisitadas: string = '';
+    menuSmall: boolean = false;
 
     @ViewChild("myModal") modal: any;
 
     @ViewChild("mensajeModal")
     protected mensajeModalComponent: MensajeModalComponent;
+
+    @HostListener('window:resize', ['$event'])
+        onResize(event) {
+        this.validarSreen();
+    }
 
     //se porque al usuario comercial se le asigno el nuevo rol de 
     //alta empresa granos y solo deberia acceder desde el listado
@@ -652,5 +659,20 @@ export class LayoutComponent implements OnDestroy {
         if (this.isAuthorized('CONSULTAR HOME NG') && this.isNoGranosSelected()) {
             this.goToSeccion('/home-ngs')
         }
+    }
+
+    validarSreen(){
+        var size = window.innerWidth;
+
+        if (size <= 950) {
+            this.menuSmall = true;
+        }
+        else{
+            this.menuSmall = false;
+        }
+    }
+
+    ngOnInit(){
+        this.validarSreen()
     }
 }

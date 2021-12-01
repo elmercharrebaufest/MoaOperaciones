@@ -47,7 +47,6 @@
                 </div>
 
                 <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esCorredor || esInterno">
-
                     Por Vendedor
                     <div class="styled-select">
                         <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesProveedores"
@@ -109,9 +108,9 @@
                                 | customNumericFilter : 'IdScato' : filtroId : ''
                                 | customFilter : 'NombreCampo' : filtroNombreCampo
                                 | customFilter : 'CodigoProveedor' : filtroProveedor
-                                | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
-                                | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
-                        
+                                | orderedColumn : {property: orderedByColumn, direction: orderDirection}
+                                | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
+
                         ">
                             <td *ngIf="esInterno">{{campo.IdScato || 'Pendiente'}}</td>
                             <td>{{campo.NombreCosecha}}</td>
@@ -126,7 +125,7 @@
                                     {{campo.MotivoRechazo || ''}}
                                 </span>
                                 <span *ngIf="(campo.MotivoRechazo || '').length >= 50" class="fa fa-info-circle"
-                                    toggle="tooltip" title="{{campo.MotivoRechazo || ''}}"></span>
+                                      toggle="tooltip" title="{{campo.MotivoRechazo || ''}}"></span>
 
 
                             </td>
@@ -134,16 +133,25 @@
                             <td>{{campo.HectareasSoja}}</td>
                             <td>{{campo.ToneladasAprobadas == -1 ? 0: campo.ToneladasAprobadas }}</td>
                             <!--<td>NO VIENE</td>-->
-                            <td>
-                                <a *ngIf="(campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1) && editarCampos"
-                                    class="animate"
-                                    [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
-                                    href="#">Editar</a>
+                            <td width="100px">
+                                <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
+                                                           [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId">
+                                </app-impresion-declaracion>
                             </td>
                             <td>
-                                <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
-                                    [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId">
-                                </app-impresion-declaracion>
+                                <button type="button" class="btn-sin-fondo btn-descargar fa fa-download"
+                                        title="Descargar KMZ" (click)="descargarKMZ(campo.CampoCosechaId, campo.Proveedor.Id)">
+                                </button>
+                                <a *ngIf="editarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
+                                    class="animate"
+                                    [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
+                                    href="#">
+                                    <span title="Editar" class="fa fa-edit"
+                                            style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
+                                </a>
+                                <button *ngIf="borrarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)" type="button" class="btn-sin-fondo btn-descargar fa fa-trash"
+                                    title="Borrar" (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
+                                </button>
                             </td>
                         </tr>
                     </tbody>

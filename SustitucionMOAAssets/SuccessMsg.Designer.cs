@@ -61,6 +61,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El formulario cargado corresponde a un CUIT diferente.
+        /// </summary>
+        public static string AltaFormularioCM05DistintoCUITOK {
+            get {
+                return ResourceManager.GetString("AltaFormularioCM05DistintoCUITOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Se ha generado el usuario correctamente.
         /// </summary>
         public static string AltaUsuarioOK {
@@ -196,6 +205,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Se ha anulado la consulta correctamente..
+        /// </summary>
+        public static string ConsultaRechazadaOK {
+            get {
+                return ResourceManager.GetString("ConsultaRechazadaOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Los datos de las Pesadas se han guardado correctamente.
         /// </summary>
         public static string DatosPesadasGuardadosOK {
@@ -286,7 +304,16 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to El detalle de ingresos brutos se ha actualizado correctamente..
+        ///   Looks up a localized string similar to El detalle de coeficientes unificados de ingresos brutos se ha actualizado correctamente..
+        /// </summary>
+        public static string IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK {
+            get {
+                return ResourceManager.GetString("IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El detalle de coeficientes unificados de ingresos brutos se ha actualizado correctamente..
         /// </summary>
         public static string IngresosBrutosCoeficienteUnificadoDetalleActualizadoOK {
             get {
@@ -363,6 +390,33 @@ namespace SustitucionMOAAssets {
         public static string OlvideContraniaOk {
             get {
                 return ResourceManager.GetString("OlvideContraniaOk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Orden de carga actualizada correctamente.
+        /// </summary>
+        public static string OrdenDeCargaActualizada {
+            get {
+                return ResourceManager.GetString("OrdenDeCargaActualizada", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La orden de carga se ha guardado correctamente..
+        /// </summary>
+        public static string OrdenDeCargaAgregada {
+            get {
+                return ResourceManager.GetString("OrdenDeCargaAgregada", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La orden de carga se ha anulado correctamente..
+        /// </summary>
+        public static string OrdenDeCargaAnulada {
+            get {
+                return ResourceManager.GetString("OrdenDeCargaAnulada", resourceCulture);
             }
         }
         

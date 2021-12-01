@@ -26,7 +26,7 @@ export class VentaSustentableService extends BaseService {
         payload.append('archivoKmz', archivoKmz);
         payload.append('campoProveedorJson', camp);
         return this.http
-            .post('/api/CampoSustentable/CampoProveedorAgregar', payload, {headers:this.headersPost});
+            .post('/api/CampoSustentable/CampoProveedorAgregar', payload, { headers: this.headersPost });
     }
 
     campoProveedorEditar(campoProveedor: CampoProveedor, archivoKmz: File) {
@@ -36,7 +36,7 @@ export class VentaSustentableService extends BaseService {
         payload.append('archivoKmz', archivoKmz);
         payload.append('campoProveedorJson', camp);
         return this.http
-            .post('/api/CampoSustentable/CampoProveedorEditar', payload, {headers:this.headersPost});
+            .post('/api/CampoSustentable/CampoProveedorEditar', payload, { headers: this.headersPost });
     }
 
     public getProveedor(codigo: string) {
@@ -65,12 +65,12 @@ export class VentaSustentableService extends BaseService {
     }
 
     campoProveedorBorrar(campoCosechaId: number, proveedorId: number) {
-        let params: HttpParams = new HttpParams();
-        params = params.append('campoCosechaId', campoCosechaId.toString());
-        params = params.append('proveedorId', proveedorId.toString());
+        var payload = new FormData();
+        payload.append("proveedorId", proveedorId.toString());
+        payload.append("campoCosechaId", campoCosechaId.toString());
 
         return this.http
-            .delete('/api/CampoSustentable/CampoProveedorBorrar', { params: params, headers: this.headers, });
+            .post('/api/CampoSustentable/CampoProveedorBorrar', payload, { headers: this.headersPost, });
     }
 
     getCampoProveedor(proveedorId: any, campoCosechaId: any) {
@@ -100,7 +100,7 @@ export class VentaSustentableService extends BaseService {
                 hectareasTotales: hectareasTotales,
                 CUITDeclaracion: CUIT,
                 RazonSocialDeclaracion: RazonSocial
-            }, {headers:this.headersPost});
+            }, { headers: this.headersPost });
     }
 
     imprimirDeclaracion(proveedorId: number, cosechaId: number, CUIT: string) {
@@ -121,11 +121,33 @@ export class VentaSustentableService extends BaseService {
         payload.append('CUITDeclaracion', CUITDeclaracion);
         payload.append('fileSubido', fileSubido);
         return this.http
-            .post('/api/CampoSustentable/AdjuntarDeclaracionFirmada', payload, {headers:this.headersPost});
+            .post('/api/CampoSustentable/AdjuntarDeclaracionFirmada', payload, { headers: this.headersPost });
     }
 
     exportExcel() {
         return this.http
             .get('/api/CampoSustentable/ExportarCamposProveedores');
+    }
+
+    borrarCampoSustentable(proveedorId: number, cosechaId: number) {
+        let params: HttpParams = new HttpParams();
+        params = params.set("proveedorId", proveedorId.toString());
+        params = params.set("cosechaId", cosechaId.toString());
+        return this.http
+            .get('/api/CampoSustentable/BorrarCampoSustentable', { params: params, headers: this.headers });
+        // .pipe(map(this.extractData)
+
+    }
+
+    descargarArchivoKMZ(campoCosechaId: number, proveedorId: number): Observable<any> {
+
+
+        let params: HttpParams = new HttpParams();
+        params = params.set("campoCosechaId", campoCosechaId.toString());
+        params = params.set("proveedorId", proveedorId.toString());
+
+        return this.http
+            .get('/api/CampoSustentable/DescargarArchivoKMZ', { params: params, headers: this.headers })
+        // .pipe(map(this.extractData));
     }
 }

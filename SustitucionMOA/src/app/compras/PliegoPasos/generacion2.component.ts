@@ -61,6 +61,10 @@ export class Generacion2Component extends ListBaseComponent  {
     fechaLimiteHora: any;
     fechaLimiteFecha: any;
     hoy: Date = new Date();
+    resultadoSupervisorSector: string[]; 
+    resultadoSupervisorTrabajo: string[];
+
+    
 
     //variables auxiliares de text rich
     posicionDeInicioInsert: number = 0;
@@ -72,8 +76,6 @@ export class Generacion2Component extends ListBaseComponent  {
             var dateParts = this.fechaEntrega.split("-");
             this.model.fechaDeEntregaDeOfertasFecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2], this.horaEntrega);
         }
-        console.log(this.model.fechaDeEntregaDeOfertasFecha, "No funciona");
-
     }
 
     agregarNuevaVisita() {
@@ -116,9 +118,11 @@ export class Generacion2Component extends ListBaseComponent  {
 
         this.model.cargoPasoDos = true;
 
-        if(!this.model.supervisorTrabajo){
-            this.model.supervisorTrabajo = this.model.fiscalContrato;
-        }
+        // if(!this.model.supervisorTrabajo){
+        //     this.model.supervisorTrabajo = this.model.fiscalContrato;
+        // }
+
+
         
     }
 

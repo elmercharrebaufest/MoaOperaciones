@@ -166,6 +166,7 @@ namespace SustitucionMOAUtils.Services
                 
             ).Select(x => new NotificacionDto
             {
+                Id = x.Id,
                 Nombre = x.Nombre,
                 FechaInicio = x.FechaInicio.ToString(),
                 HoraInicio = x.FechaInicio.Hour,
@@ -174,7 +175,7 @@ namespace SustitucionMOAUtils.Services
                 Habilitada = x.Habilitada,
                 Mensaje = x.Mensaje,
                 LinkAdjunto = x.LinkAdjunto
-            }).ToList();
+            }).OrderByDescending(s => s.Id).ToList();
 
 
             return listado;

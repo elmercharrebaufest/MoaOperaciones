@@ -93,10 +93,11 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         private string cURRENCYField;
         
         private string mATL_GROUPField;
+        private string ProcStat;
         
-        private decimal nET_VALUEField;
+        private decimal nET_PRICEField;
         
-        private bool nET_VALUEFieldSpecified;
+        private bool nET_PRICEFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -280,28 +281,43 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=13)]
-        public decimal NET_VALUE {
+        public decimal NET_PRICE {
             get {
-                return this.nET_VALUEField;
+                return this.nET_PRICEField;
             }
             set {
-                this.nET_VALUEField = value;
-                this.RaisePropertyChanged("NET_VALUE");
+                this.nET_PRICEField = value;
+                this.RaisePropertyChanged("NET_PRICE");
             }
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool NET_VALUESpecified {
+        public bool NET_PRICESpecified {
             get {
-                return this.nET_VALUEFieldSpecified;
+                return this.nET_PRICEFieldSpecified;
             }
             set {
-                this.nET_VALUEFieldSpecified = value;
-                this.RaisePropertyChanged("NET_VALUESpecified");
+                this.nET_PRICEFieldSpecified = value;
+                this.RaisePropertyChanged("NET_PRICESpecified");
             }
         }
-        
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 14)]
+        public string PROCSTAT
+        {
+            get
+            {
+                return this.ProcStat;
+            }
+            set
+            {
+                this.ProcStat = value;
+                this.RaisePropertyChanged("PROCSTAT");
+            }
+        }
+
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -318,7 +334,9 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:sap-com:document:sap:rfc:functions")]
-    public partial class BAPI_SRV_ACC_DATA : object, System.ComponentModel.INotifyPropertyChanged {
+    public partial class ZMPES5770 : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string pREQ_NOField;
         
         private string dOC_ITEMField;
         
@@ -346,6 +364,18 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
+        public string PREQ_NO {
+            get {
+                return this.pREQ_NOField;
+            }
+            set {
+                this.pREQ_NOField = value;
+                this.RaisePropertyChanged("PREQ_NO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
         public string DOC_ITEM {
             get {
                 return this.dOC_ITEMField;
@@ -357,7 +387,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
         public string OUTLINE {
             get {
                 return this.oUTLINEField;
@@ -369,7 +399,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
         public string SRV_LINE {
             get {
                 return this.sRV_LINEField;
@@ -381,7 +411,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=4)]
         public string SERIAL_NO {
             get {
                 return this.sERIAL_NOField;
@@ -393,7 +423,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=4)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=5)]
         public string SERIAL_NO_ITEM {
             get {
                 return this.sERIAL_NO_ITEMField;
@@ -405,7 +435,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=5)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=6)]
         public string DEL_IND {
             get {
                 return this.dEL_INDField;
@@ -417,7 +447,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=6)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=7)]
         public decimal QUANTITY {
             get {
                 return this.qUANTITYField;
@@ -441,7 +471,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=7)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=8)]
         public decimal PERCENT {
             get {
                 return this.pERCENTField;
@@ -465,7 +495,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=8)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=9)]
         public decimal NET_VALUE {
             get {
                 return this.nET_VALUEField;
@@ -772,9 +802,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         
         private bool pLND_DELRYFieldSpecified;
         
-        private decimal pROCSTATField;
-        
-        private bool pROCSTATFieldSpecified;
+        private string pROCSTATField;
         
         private string rEQ_BLOCKEDField;
         
@@ -1512,25 +1540,13 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=54)]
-        public decimal PROCSTAT {
+        public string PROCSTAT {
             get {
                 return this.pROCSTATField;
             }
             set {
                 this.pROCSTATField = value;
                 this.RaisePropertyChanged("PROCSTAT");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool PROCSTATSpecified {
-            get {
-                return this.pROCSTATFieldSpecified;
-            }
-            set {
-                this.pROCSTATFieldSpecified = value;
-                this.RaisePropertyChanged("PROCSTATSpecified");
             }
         }
         
@@ -1960,7 +1976,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         
         private string sTREETField;
         
-        private string sTREET_NOField;
+        private string hOUSE_NOField;
         
         private string tEL1_NUMBRField;
         
@@ -2050,13 +2066,13 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=7)]
-        public string STREET_NO {
+        public string HOUSE_NO {
             get {
-                return this.sTREET_NOField;
+                return this.hOUSE_NOField;
             }
             set {
-                this.sTREET_NOField = value;
-                this.RaisePropertyChanged("STREET_NO");
+                this.hOUSE_NOField = value;
+                this.RaisePropertyChanged("HOUSE_NO");
             }
         }
         
@@ -2089,6 +2105,8 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:sap-com:document:sap:rfc:functions")]
     public partial class ZMPES5740 : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string pREQ_NOField;
         
         private string pREQ_ITEMField;
         
@@ -2128,6 +2146,18 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
+        public string PREQ_NO {
+            get {
+                return this.pREQ_NOField;
+            }
+            set {
+                this.pREQ_NOField = value;
+                this.RaisePropertyChanged("PREQ_NO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
         public string PREQ_ITEM {
             get {
                 return this.pREQ_ITEMField;
@@ -2139,7 +2169,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
         public string SERIAL_NO {
             get {
                 return this.sERIAL_NOField;
@@ -2151,7 +2181,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
         public string DELETE_IND {
             get {
                 return this.dELETE_INDField;
@@ -2163,7 +2193,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=4)]
         public string CREAT_DATE {
             get {
                 return this.cREAT_DATEField;
@@ -2175,7 +2205,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=4)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=5)]
         public decimal QUANTITY {
             get {
                 return this.qUANTITYField;
@@ -2199,7 +2229,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=5)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=6)]
         public decimal DISTR_PERC {
             get {
                 return this.dISTR_PERCField;
@@ -2223,7 +2253,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=6)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=7)]
         public decimal NET_VALUE {
             get {
                 return this.nET_VALUEField;
@@ -2247,7 +2277,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=7)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=8)]
         public string GL_ACCOUNT {
             get {
                 return this.gL_ACCOUNTField;
@@ -2259,7 +2289,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=8)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=9)]
         public string BUS_AREA {
             get {
                 return this.bUS_AREAField;
@@ -2271,7 +2301,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=9)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=10)]
         public string COSTCENTER {
             get {
                 return this.cOSTCENTERField;
@@ -2283,7 +2313,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=10)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=11)]
         public string ASSET_NO {
             get {
                 return this.aSSET_NOField;
@@ -2295,7 +2325,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=11)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=12)]
         public string SUB_NUMBER {
             get {
                 return this.sUB_NUMBERField;
@@ -2307,7 +2337,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=12)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=13)]
         public string ORDERID {
             get {
                 return this.oRDERIDField;
@@ -2319,7 +2349,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=13)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=14)]
         public string CO_AREA {
             get {
                 return this.cO_AREAField;
@@ -2331,7 +2361,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=14)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=15)]
         public string PROFIT_CTR {
             get {
                 return this.pROFIT_CTRField;
@@ -2383,25 +2413,29 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=6)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_PREQ_DATE_F;
+        public string IM_PLANT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=7)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_PREQ_DATE_I;
+        public string IM_PREQ_DATE_F;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=8)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_PREQ_NO;
+        public string IM_PREQ_DATE_I;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=9)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_REL_IND;
+        public string IM_PREQ_NO;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=10)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_SERVICES;
+        public string IM_REL_IND;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=11)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_SERVICES;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=12)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
         public SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5640[] IM_USUARIOS;
@@ -2409,13 +2443,14 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         public SI_MMRFC_OBTENER_SOLPEDRequest() {
         }
         
-        public SI_MMRFC_OBTENER_SOLPEDRequest(string IM_ACCOUNT_ASSIGNMENT, string IM_ACCTASSCAT, string IM_CREATE_IND, string IM_DELETE_IND, string IM_DELIVERY_ADDRESS, string IM_ITEM_CAT, string IM_PREQ_DATE_F, string IM_PREQ_DATE_I, string IM_PREQ_NO, string IM_REL_IND, string IM_SERVICES, SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5640[] IM_USUARIOS) {
+        public SI_MMRFC_OBTENER_SOLPEDRequest(string IM_ACCOUNT_ASSIGNMENT, string IM_ACCTASSCAT, string IM_CREATE_IND, string IM_DELETE_IND, string IM_DELIVERY_ADDRESS, string IM_ITEM_CAT, string IM_PLANT, string IM_PREQ_DATE_F, string IM_PREQ_DATE_I, string IM_PREQ_NO, string IM_REL_IND, string IM_SERVICES, SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5640[] IM_USUARIOS) {
             this.IM_ACCOUNT_ASSIGNMENT = IM_ACCOUNT_ASSIGNMENT;
             this.IM_ACCTASSCAT = IM_ACCTASSCAT;
             this.IM_CREATE_IND = IM_CREATE_IND;
             this.IM_DELETE_IND = IM_DELETE_IND;
             this.IM_DELIVERY_ADDRESS = IM_DELIVERY_ADDRESS;
             this.IM_ITEM_CAT = IM_ITEM_CAT;
+            this.IM_PLANT = IM_PLANT;
             this.IM_PREQ_DATE_F = IM_PREQ_DATE_F;
             this.IM_PREQ_DATE_I = IM_PREQ_DATE_I;
             this.IM_PREQ_NO = IM_PREQ_NO;
@@ -2462,7 +2497,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=6)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ObtenerSolpWebServiceMOA.BAPI_SRV_ACC_DATA[] EX_SERVICEACCOUNT;
+        public SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5770[] EX_SERVICEACCOUNT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=7)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
@@ -2472,7 +2507,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
         public SI_MMRFC_OBTENER_SOLPEDResponse() {
         }
         
-        public SI_MMRFC_OBTENER_SOLPEDResponse(string EX_EXITO, SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5740[] EX_PRACCOUNT, SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5750[] EX_PRADDRDELIVERY, SustitucionMOAWS.ObtenerSolpWebServiceMOA.BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS, SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5670[] EX_PRITEM, SustitucionMOAWS.ObtenerSolpWebServiceMOA.BAPIRETURN[] EX_RETURN, SustitucionMOAWS.ObtenerSolpWebServiceMOA.BAPI_SRV_ACC_DATA[] EX_SERVICEACCOUNT, SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5730[] EX_SERVICELINES) {
+        public SI_MMRFC_OBTENER_SOLPEDResponse(string EX_EXITO, SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5740[] EX_PRACCOUNT, SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5750[] EX_PRADDRDELIVERY, SustitucionMOAWS.ObtenerSolpWebServiceMOA.BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS, SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5670[] EX_PRITEM, SustitucionMOAWS.ObtenerSolpWebServiceMOA.BAPIRETURN[] EX_RETURN, SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5770[] EX_SERVICEACCOUNT, SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5730[] EX_SERVICELINES) {
             this.EX_EXITO = EX_EXITO;
             this.EX_PRACCOUNT = EX_PRACCOUNT;
             this.EX_PRADDRDELIVERY = EX_PRADDRDELIVERY;
@@ -2523,6 +2558,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
                     string IM_DELETE_IND, 
                     string IM_DELIVERY_ADDRESS, 
                     string IM_ITEM_CAT, 
+                    string IM_PLANT, 
                     string IM_PREQ_DATE_F, 
                     string IM_PREQ_DATE_I, 
                     string IM_PREQ_NO, 
@@ -2534,7 +2570,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
                     out SustitucionMOAWS.ObtenerSolpWebServiceMOA.BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS, 
                     out SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5670[] EX_PRITEM, 
                     out SustitucionMOAWS.ObtenerSolpWebServiceMOA.BAPIRETURN[] EX_RETURN, 
-                    out SustitucionMOAWS.ObtenerSolpWebServiceMOA.BAPI_SRV_ACC_DATA[] EX_SERVICEACCOUNT, 
+                    out SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5770[] EX_SERVICEACCOUNT, 
                     out SustitucionMOAWS.ObtenerSolpWebServiceMOA.ZMPES5730[] EX_SERVICELINES) {
             SustitucionMOAWS.ObtenerSolpWebServiceMOA.SI_MMRFC_OBTENER_SOLPEDRequest inValue = new SustitucionMOAWS.ObtenerSolpWebServiceMOA.SI_MMRFC_OBTENER_SOLPEDRequest();
             inValue.IM_ACCOUNT_ASSIGNMENT = IM_ACCOUNT_ASSIGNMENT;
@@ -2543,6 +2579,7 @@ namespace SustitucionMOAWS.ObtenerSolpWebServiceMOA {
             inValue.IM_DELETE_IND = IM_DELETE_IND;
             inValue.IM_DELIVERY_ADDRESS = IM_DELIVERY_ADDRESS;
             inValue.IM_ITEM_CAT = IM_ITEM_CAT;
+            inValue.IM_PLANT = IM_PLANT;
             inValue.IM_PREQ_DATE_F = IM_PREQ_DATE_F;
             inValue.IM_PREQ_DATE_I = IM_PREQ_DATE_I;
             inValue.IM_PREQ_NO = IM_PREQ_NO;

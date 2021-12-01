@@ -46,15 +46,14 @@ th
     text-align: center;
 }
 
+.posicion {
+    padding-left: 20px;
+    background-color: #e3e4e5;
+}
+
 table.tablaPosiciones {
     width: 100%;
 }
-
-/*table.tablaPosiciones,
-.tablaPosiciones td,
-.tablaPosiciones tr {
-    border: 1px solid black;
-}*/
 
 .tablaPosiciones,
 .tablaPosiciones td,
@@ -63,9 +62,10 @@ table.tablaPosiciones {
 .tablaPosiciones table {
     border: 1px solid black;
     border-collapse: collapse;
+    font-size: 12px;
+    font-family: Cambria;
 }
 
-/*table, td, th {
-    border: 1px none black;
-    border-collapse: collapse;
-}*/
+.espacioEncabezado {
+    padding-bottom: 50px;
+}

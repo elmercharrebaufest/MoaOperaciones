@@ -73,7 +73,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (repositorio.Existe<Proveedor>(x => x.CUIT == proveedor.CUIT && x.Mail == mail))
                 {
-                    var proveedorExistente = repositorio.Obtener<Proveedor>(x => x.CUIT == proveedor.CUIT && x.Mail == mail && (x.AltaInterna.HasValue && x.AltaInterna == true));
+                    var proveedorExistente = repositorio.Obtener<Proveedor>(x => x.CUIT == proveedor.CUIT && x.Mail == mail);
 
                     var tipoUsuarioGranos = ObtenerTipoPorNombreCorto("G");
 
@@ -279,7 +279,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "Empresas"));
             }
             int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
-            var respuesta = ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+            var respuesta = ObtenerValidarCUITProveedorGranos(proveedor.CUIT, null);
 
             var hist = new ProveedorHistorialAprobacion
             {

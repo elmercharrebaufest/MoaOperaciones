@@ -49,8 +49,10 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\AgregarConsultaResponseDto.cs" />
     <Compile Include="Dto\ArchivoDescargaDto.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
+    <Compile Include="Dto\CorredorContratoDto.cs" />
     <Compile Include="Dto\CampoProveedorDto.cs" />
     <Compile Include="Dto\CampoProveedorListadoDto.cs" />
     <Compile Include="Dto\CampoReporteDTO.cs" />
@@ -59,6 +61,7 @@
     <Compile Include="Dto\CampoSustentableExportDTO.cs" />
     <Compile Include="Dto\ComentarioRecordadoDto.cs" />
     <Compile Include="Dto\CentroDireccionDto.cs" />
+    <Compile Include="Dto\EditarIngresosBrutosCoeficienteUnificadoResponseDto.cs" />
     <Compile Include="Dto\EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto.cs" />
     <Compile Include="Dto\EstadoDeclaracionSustentableDto.cs" />
     <Compile Include="Dto\CausaConsultaDto.cs" />
@@ -67,6 +70,8 @@
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaMasicoDto.cs" />
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaDto.cs" />
     <Compile Include="Dto\LogPesificacion\LogPesificacionDto.cs" />
+    <Compile Include="Dto\PesificacionSapDto.cs" />
+    <Compile Include="Dto\ServicioSolpDto.cs" />
     <Compile Include="Dto\SolpDto.cs" />
     <Compile Include="Dto\SubCategoriaDto.cs" />
     <Compile Include="Dto\CategoriaDto.cs" />
@@ -77,11 +82,14 @@
     <Compile Include="Dto\InfoProveedorDataAgroDto.cs" />
     <Compile Include="Dto\InfoProveedorNoGranosDto.cs" />
     <Compile Include="Dto\NotificacionDto.cs" />
+    <Compile Include="Dto\OrdenDeCargaDto.cs" />
     <Compile Include="Dto\DeclaracionCampoSustentableDto.cs" />
     <Compile Include="Dto\Resultado.cs" />
     <Compile Include="Dto\TablaEstadoDto.cs" />
     <Compile Include="Dto\TablaGeneralDto.cs" />
     <Compile Include="Dto\TablaSapDto.cs" />
+    <Compile Include="Dto\UsuarioComprasDto.cs" />
+    <Compile Include="Dto\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Entities\Categoria.cs" />
     <Compile Include="Entities\CausaConsulta.cs" />
     <Compile Include="Entities\CentroDireccion.cs" />
@@ -97,6 +105,7 @@
     <Compile Include="Entities\CampoSustentable.cs" />
     <Compile Include="Entities\DeclaracionCampoSustentable.cs" />
     <Compile Include="Entities\EstadoIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Entities\OrdenDeCargaCambiosHistorial.cs" />
     <Compile Include="Entities\IngresosBrutosCoeficienteUnificadoDetalle.cs" />
     <Compile Include="Entities\IngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Entities\LiquidacionInformada.cs" />
@@ -105,9 +114,15 @@
     <Compile Include="Entities\Notificacion.cs" />
     <Compile Include="Dto\ProveedorAltaDto.cs" />
     <Compile Include="Dto\RubroDto.cs" />
+    <Compile Include="Entities\OrdenDeCarga.cs" />
     <Compile Include="Entities\Pliego.cs" />
     <Compile Include="Entities\PliegoVisita.cs" />
     <Compile Include="Entities\Rubro.cs" />
+    <Compile Include="Entities\SecuenciaIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Entities\ServicioSolp.cs" />
+    <Compile Include="Entities\UsuarioCompras.cs" />
+    <Compile Include="Entities\UsuarioComprasRelacionConUsuarios.cs" />
+    <Compile Include="Enums\EstadoOrdenDeCarga.cs" />
     <Compile Include="Entities\Solp.cs" />
     <Compile Include="Entities\SolpPosicion.cs" />
     <Compile Include="Entities\SolpProveedor.cs" />
@@ -116,6 +131,7 @@
     <Compile Include="Entities\TablaEstado.cs" />
     <Compile Include="Entities\TablaGeneral.cs" />
     <Compile Include="Entities\TablaSap.cs" />
+    <Compile Include="Enums\EnumSecuenciaEstadoIngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Enums\SubCategorias.cs" />
     <Compile Include="Enums\ComprasEnums.cs" />
     <Compile Include="Enums\Categorias.cs" />
@@ -125,6 +141,7 @@
     <Compile Include="Enums\OpcionesDeclaracionCampoSustentable.cs" />
     <Compile Include="Enums\SituacionIVA.cs" />
     <Compile Include="Enums\Tablas.cs" />
+    <Compile Include="Models\BuscadorOption.cs" />
     <Compile Include="Models\DataAgro\BasicoContrato.cs" />
     <Compile Include="Models\DataAgro\CookiesDataAgro.cs" />
     <Compile Include="Models\DataAgro\GrabarContratoResult.cs" />
@@ -295,6 +312,7 @@
     <Compile Include="Models\WSMapMOA\Pesificacion\Contrato.cs" />
     <Compile Include="Models\WSMapMOA\Pesificacion\Fecha.cs" />
     <Compile Include="Models\WSMapMOA\Pesificacion\Item.cs" />
+    <Compile Include="Models\WSMapMOA\Pesificacion\ListarPesificacionesWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Pesificacion\PesificacionSetContratosWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Pesificacion\PesificacionGetContratosWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Proforma\Cabecera.cs" />
@@ -331,6 +349,7 @@
     <Compile Include="Models\WSMapMOA\Vincula\Detalle\VinculaDetalleWSMOAResponse.cs" />
     <Compile Include="Consulta\Paginacion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Variance.cs" />
     <Compile Include="Util\Retry.cs" />
   </ItemGroup>
   <ItemGroup>

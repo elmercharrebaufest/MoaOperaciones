@@ -122,14 +122,6 @@
                            /@value" />
 	</parameter>
 
-	<parameter name="EmailToUsuariosCompras Config">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/appSettings/add[@key='EmailToUsuariosCompras']
-                           /@value" />
-	</parameter>
-
-
-
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
@@ -452,6 +444,62 @@
                            /@address" />
 	</parameter>
 
+	<parameter name="SI_MPMF_MOAOP_LISTAR_PESIF Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_LISTAR_PESIF']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MMRFC_OBTENER_CUENTAS Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MMRFC_OBTENER_CUENTAS']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MMRFC_OBTENER_SERVICIOS Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MMRFC_OBTENER_SERVICIOS']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MMRFC_OBTENER_CECO Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MMRFC_OBTENER_CECO']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MMRFC_OBTENER_ORDEN Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MMRFC_OBTENER_ORDEN']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MMRFC_OBTENER_SOLPED Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MMRFC_OBTENER_SOLPED']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MMRFC_CREAR_SOLPED Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MMRFC_CREAR_SOLPED']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MMRFC_MODIFICAR_SOLPED Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MMRFC_MODIFICAR_SOLPED']
+                           /@address" />
+	</parameter>
+	
 	<parameter name="BasicHttpBinding_IAuthService Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client

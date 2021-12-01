@@ -96,8 +96,9 @@ namespace SustitucionMOATest.Services
             var observacion = "";
             var observacionParaElProveedor = "";
             var estadoSIPER = "";
+            var codigoCliente = "";
 
-            var result = target.SetEstadoAprobacion(proveedorId, EstadoAprobacion.Aprobado, observacion, mailUsuario, observacionParaElProveedor, estadoSIPER, false);
+            var result = target.SetEstadoAprobacion(proveedorId, EstadoAprobacion.Aprobado, observacion, mailUsuario, observacionParaElProveedor, estadoSIPER, false, "", codigoCliente);
 
 
             repositorioMock.Verify(x => x.Obtener<Proveedor>(It.IsAny<int>()), Times.Once);
@@ -219,7 +220,7 @@ namespace SustitucionMOATest.Services
 
             var result = target.AgregarObservacion(proveedorId, observacion, mailUsuario);
 
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>(), It.IsAny<Expression<Func<Usuario, int>>>()), Times.Once);
 
             repositorioMock.Verify(x => x.Obtener<Proveedor>(It.IsAny<int>()), Times.Once);
 

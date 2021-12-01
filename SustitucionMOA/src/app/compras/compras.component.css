@@ -45,6 +45,12 @@
     font-size: 16px;
   
   }
+
+  .inputComprasFinalizar {
+    color: #666666 !important;
+    font-size: 16px;
+  
+  }
   
   .obligatorio {
     font-size: 12px;
@@ -118,6 +124,17 @@
   ::ng-deep .ui-calendar .ui-button{
     background-color: #FFFFFF !important;
     border-color: #DDDDDD !important;
+  } 
+
+  /* ::ng-deep .ui-clickable {
+    background-color: #FFFFFF !important;
+    border-color: #DDDDDD !important;
+  }  */
+
+
+
+  ::ng-deep .ui-state-default  {
+    border-color: #DDDDDD !important
   } 
 
   ::ng-deep .ui-button {
@@ -458,8 +475,9 @@
 }
 
 ::ng-deep .ui-autocomplete-input {
-  width: calc(100% - 33px) !important;
+  width: calc(99% - 33px) !important;
 }
+
 
 .headerModal {
   top: 106px;
@@ -471,6 +489,10 @@
   letter-spacing: 0px;
   color: #5CB85C;
   opacity: 1;
+}
+
+.headerModalError{
+  color: #a80000;
 }
 
 .titulosModal {
@@ -485,3 +507,35 @@
 .disabled {
   color: grey !important;
 }
+
+.inline-flex {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+.col-flex {
+  display: flex;
+  margin-left: 1em;
+  justify-content: flex-start;
+  flex: 1;
+}
+
+@media only screen and (max-width: 768px){
+  .inline-flex {
+    flex-direction: column;
+  }
+
+  .col-flex {
+    margin-top: 0.5em;
+  }
+}
+
+.errorInput {
+  border: red solid !important;
+}
+
+/* .ui-autocomplete-input.errorInput {s
+  border: red solid !important;
+}
+ */

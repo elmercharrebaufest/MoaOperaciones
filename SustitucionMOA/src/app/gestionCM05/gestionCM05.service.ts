@@ -16,19 +16,22 @@ export class GestionCM05Service extends BaseService {
             .get('/api/GestionImpuestos/ListarDetalles?idCabecera=' + idCabecera, { headers: this.headers });
     }
 
-    public editarRow(rowdata){
+    public editarRow(rowdata) {
         let detalleJson = JSON.stringify(rowdata);
         var payload = new FormData();
 
         payload.append('detalleJson', detalleJson);
 
         return this.http
-            .post('/api/GestionImpuestos/EditarIngresosBrutosCoeficienteUnificadoDetalle', payload, {headers: this.headers});
+            .post('/api/GestionImpuestos/EditarIngresosBrutosCoeficienteUnificadoDetalle', payload, { headers: this.headers });
     }
 
     public autorizarCabecera(idCabecera): Observable<any> {
+        var payload = new FormData();
+        payload.append('idCabecera', idCabecera.toString());
+
         return this.http
-            .get('/api/GestionImpuestos/AutorizarCabecera?idCabecera=' + idCabecera, { headers: this.headers });
+            .post('/api/GestionImpuestos/AutorizarCabecera', payload, { headers: this.headersPost })
     }
 
     public DescargarArchivoFormularioCM05(idCabecera: number): Observable<any> {
@@ -40,9 +43,19 @@ export class GestionCM05Service extends BaseService {
         headers = headers.append("Expires", "0");
         headers = headers.append("Pragma", "no-cache");
         let params: HttpParams = new HttpParams();
-        params.set("idCabecera", idCabecera.toString());
+        params = params.set("idCabecera", idCabecera.toString());
         return this.http
             .get('/api/GestionImpuestos/DescargarFormularioCM05?idCabecera=' + idCabecera, { headers: this.headers });
     }
 
+    public editarCabecera(cabecera) {
+        let cabeceraJson = JSON.stringify(cabecera);
+        var payload = new FormData();
+
+        payload.append('cabeceraJson', cabeceraJson);
+
+        return this.http
+            .post('/api/GestionImpuestos/EditarIngresosBrutosCoeficienteUnificado', payload, { headers: this.headers })
+
+    }
 }

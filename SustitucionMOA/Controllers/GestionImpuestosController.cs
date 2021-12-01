@@ -26,6 +26,8 @@ namespace SustitucionMOA.Controllers
             this.gestionImpuestosService = gestionImpuestosService;
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.GESTION_IMPUESTOS_CM05)]
+        [HttpGet]
         public JsonResult ListarCabeceras()
         {
             try
@@ -47,6 +49,8 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.GESTION_IMPUESTOS_CM05)]
+        [HttpGet]
         public JsonResult ListarDetalles(int idCabecera)
         {
             try
@@ -68,6 +72,8 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.GESTION_IMPUESTOS_CM05)]
+        [HttpPost]
         public JsonResult AutorizarCabecera(int idCabecera)
         {
             try
@@ -89,7 +95,9 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
+        
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.GESTION_IMPUESTOS_CM05)]
+        [HttpPost]
         public JsonResult EditarIngresosBrutosCoeficienteUnificadoDetalle(string detalleJson)
         {
             try
@@ -113,6 +121,8 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.GESTION_IMPUESTOS_CM05)]
+        [HttpGet]
         public JsonResult DescargarFormularioCM05(int idCabecera)
         {
             try
@@ -122,6 +132,31 @@ namespace SustitucionMOA.Controllers
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivo);
                 string fileName = Path.GetFileName(rutaArchivo);
                 return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.GESTION_IMPUESTOS_CM05)]
+        [HttpPost]
+        public JsonResult EditarIngresosBrutosCoeficienteUnificado(string cabeceraJson)
+        {
+            try
+            {
+                IngresosBrutosCoeficienteUnificadoDto cabecera = JsonConvert.DeserializeObject<IngresosBrutosCoeficienteUnificadoDto>(cabeceraJson);
+
+                return JsonCustom(gestionImpuestosService.EditarIngresosBrutosCoeficienteUnificado(cabecera));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

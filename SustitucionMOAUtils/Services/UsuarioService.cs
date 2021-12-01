@@ -154,7 +154,7 @@ namespace SustitucionMOAUtils.Services
         {
             List<string> interno = new List<string>
             {
-                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP", "APIKEY", "AIGRAN"
+                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP", "APIKEY", "AIGRAN", "ADMINPLATCOMPRAS"
             };
 
             List<string> contacto = new List<string>
@@ -213,7 +213,10 @@ namespace SustitucionMOAUtils.Services
 
             if (esAdministradorMolinos)
             {
-                foreach (var prov in usuario.Proveedores)
+                //Hacemos el cambio para que no le vuele el historial a todos los proveedores
+                var prov = usuario.Proveedores.FirstOrDefault(p => p.CUIT == usuario.CUITRegistro && p.Mail == usuario.Mail);
+
+                if(prov != null)
                 {
                     prov.EstadoAprobacion = EstadoAprobacion.Aprobado;
 
@@ -224,8 +227,8 @@ namespace SustitucionMOAUtils.Services
                     repositorio.RemoverTodos(historial);
 
                     prov.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
-
                 }
+
             }
 
             repositorio.GuardarCambios();
@@ -321,8 +324,8 @@ namespace SustitucionMOAUtils.Services
         /// <returns></returns>
         public ProveedorDto VerificarYObtenerProveedor(string mailUsuario, string codigoCorredor, string codigoProveedor)
         {
-            var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor);
             var usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == mailUsuario);
+            var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor && x.Mail == mailUsuario);
             var corredor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoCorredor && x.Mail == mailUsuario);
 
             if (proveedor == null)

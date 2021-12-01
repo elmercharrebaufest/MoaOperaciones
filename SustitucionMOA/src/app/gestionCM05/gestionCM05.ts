@@ -1,15 +1,4 @@
-﻿export interface EstadoCM05 {
-    Id: number;
-    Descripcion: string;
-};
-
-enum EstadoCabeceraCM05 {
-    Pendiente = 0,
-    Autorizado = 1,
-    Completado = 2,
-}
-
-export interface CabeceraCM05 {
+﻿export interface CabeceraCM05 {
     Id;
     Estado;
     EstadoId;
@@ -18,6 +7,11 @@ export interface CabeceraCM05 {
     Sede;
     FechaCarga;
     FechaUltimaModificacion;
+    MalCargada;
+    Secuencia;
+    SecuenciaId;
+    ConsultaId;
+    RazonSocial;
 };
 
 export interface DetalleCM05 {

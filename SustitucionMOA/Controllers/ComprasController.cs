@@ -40,11 +40,11 @@ namespace SustitucionMOA.Controllers
 
                 try
                 {
-                    result.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Id.Value));
+                    result.Solp.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Solp.Id.Value));
                 }
-                catch
+                catch(Exception e)
                 {
-                    result.Pdf = string.Empty;
+                    result.Solp.Pdf = string.Empty;
                 }
 
                 return JsonCustom(result);
@@ -102,9 +102,8 @@ namespace SustitucionMOA.Controllers
                     Moneda = service.ObtenerTablaSap(TablasSap.Moneda),
                     Unidades = service.ObtenerTablaSap(TablasSap.Unidad),
                     EstadosSolpSap = service.ObtenerTablaSap(TablasSap.EstadoSolpSap),
-
-                    EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),  //rocio
-
+                    CentroBeneficio = service.ObtenerTablaSap(TablasSap.CentroBeneficio),
+                    EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),
                     CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
                     {
                         ClaseDocumentoCodigo = x.Padre.Codigo,
@@ -143,7 +142,34 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = service.ListarSolp() });
+                return JsonCustom(new { data = service.ListarSolp(ObtenerUsuarioActual()) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ListarUsuarioCompras()
+        {
+            try
+            {
+                return JsonCustom(new { data = service.ListarUsuarioCompras(ObtenerUsuarioActual()) });
             }
             catch (InfoCustomException e)
             {
@@ -313,6 +339,76 @@ namespace SustitucionMOA.Controllers
                 Directory.Delete(path, true);
 
                 return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [ValidateInput(false)]
+        public JsonResult ObtenerDatosPorCodigosSap(string codigosSap)
+        {
+            try
+            {
+                var codigos = JsonConvert.DeserializeObject<List<TablaSapDto>>(codigosSap);
+
+                return JsonCustom(service.ObtenerDatosPorCodigosSap(codigos));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult AutocompleteServicioSolp(string valor)
+        {
+            try
+            {
+                return JsonCustom(service.AutocompleteServicioSolp(valor));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [ValidateInput(false)]
+        public JsonResult ObtenerDatosPorCodigosSapServicioSolp(string codigosSap)
+        {
+            try
+            {
+                var codigos = JsonConvert.DeserializeObject<List<string>>(codigosSap);
+
+                return JsonCustom(service.ObtenerDatosPorCodigosSapServicioSolp(codigos));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

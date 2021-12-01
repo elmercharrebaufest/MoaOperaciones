@@ -1,5 +1,5 @@
 
-import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { throwError as observableThrowError, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
@@ -15,7 +15,7 @@ export class PesificacionService extends BaseService {
         return this.setComprobantePesificacion(contrato, fijacion, cantidad);
     }
 
-    public setMassiveData(file: any){
+    public setMassiveData(file: any) {
         return this.setComprobantesPesificacion(file);
     }
 
@@ -38,7 +38,7 @@ export class PesificacionService extends BaseService {
         let payload = new FormData();
         payload.append("file", file);
         return this.http
-            .post('/api/pesificacion/setComprobantes', payload, {headers: this.headersPost})
+            .post('/api/pesificacion/setComprobantes', payload, { headers: this.headersPost })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 
@@ -46,5 +46,12 @@ export class PesificacionService extends BaseService {
         return this.http
             .get('/api/pesificacion/GetContratos')
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+    }
+
+    public getPesificacionesSap(): Observable<any> {
+        return this.http
+            .get('/api/pesificacion/PesificacionesSap')
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))))
+        // .pipe(map(this.extractData));
     }
 }
