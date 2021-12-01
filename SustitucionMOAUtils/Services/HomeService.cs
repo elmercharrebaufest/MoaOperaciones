@@ -114,98 +114,150 @@ namespace SustitucionMOAUtils.Services
             ContratoDetalleWSMOAResponse detalleContratoResultado = null;
             LiquidacionViewModel todasLiquidaciones = null;
             ListarPesificacionesWSMOAResponse historialPesificaciones = null;
-            CartaPorteWSMOAResponse cartasDePorte = null;
+            CartaPorteWSMOAResponse cartasPorteAplicacion = null;
+            CartaPorteDescargaWSMOAResponse cartasPorteDescargas = null;
             bool existePesificacionDelContrato = false;
-            string fechaInicio = DateTime.Now.AddYears(-1).ToString("yyyy - MM - dd");
+            string fechaInicio = DateTime.Now.AddDays(-150).ToString("yyyy - MM - dd");
+            bool ccppAplicacion = false;
+            bool ccppDescargas = false;
             string fechaFin = DateTime.Now.AddDays(+1).ToString("yyyy - MM - dd");
+            List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
             palabraABuscar.Trim().Replace("\t", "");
+
             var formatoContrato = "0000000000";
-            palabraABuscar = (formatoContrato + palabraABuscar).Substring((formatoContrato + palabraABuscar).Length - 10);
+            var palabraABuscarContrato = (formatoContrato + palabraABuscar).Substring((formatoContrato + palabraABuscar).Length - 10);
+            var formatoCCPP1 =  (formatoContrato + palabraABuscar).Substring((formatoContrato + palabraABuscar).Length - 12);
+            var formatoCCPP2 = string.Format("000{0}", palabraABuscar.Substring(3));
 
-            try
+            List<string> palabrasABuscar = new List<string>() { palabraABuscarContrato, formatoCCPP1, formatoCCPP2 };
+
+            palabrasABuscar.ForEach(palabra => 
             {
-                detalleContratoResultado = _contratoService.getDetalleContrato(proveedor, palabraABuscar);
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-
-
-            if (detalleContratoResultado != null)
-            {
-                listaResultados.Add(new BuscadorOption { Link = "/contrato/detalle", Tipo = "detalle de contrato", Value = palabraABuscar, Code = TipoBusqueda.DetalleContrato, CtaParams = 1 });
-
-
-                detalleContratoResultado.liquidaciones.ForEach(liq =>
-                {
-                    if (!string.IsNullOrEmpty(liq.pedido) && liq.tipo.Contains("Fijac."))
-                    {
-                        listaResultados.Add(new BuscadorOption { Link = "", Tipo = "proforma final " + liq.tipo, Value = liq.pedido, Code = TipoBusqueda.ProformaFinal, CtaParams = 1 });
-                    }
-                });
-
-                //HISTORIAL PESIFICACIONES
                 try
                 {
-                    historialPesificaciones = pesificacionesConsumer.Request(proveedor);
+                    detalleContratoResultado = _contratoService.getDetalleContrato(proveedor, palabra);
                 }
                 catch (Exception e)
                 {
                     Log.Error(e);
                 }
 
-                if (historialPesificaciones != null)
-                {
-                    existePesificacionDelContrato = historialPesificaciones.Pesificaciones.Exists(p => p.Contrato == palabraABuscar);
 
-                    if (existePesificacionDelContrato)
+                if (detalleContratoResultado != null)
+                {
+                    listaResultados.Add(new BuscadorOption { Link = "/contrato/detalle", Tipo = "detalle de contrato", Value = palabra, Code = TipoBusqueda.DetalleContrato, CtaParams = 1 });
+                    var opcionProformaFinal = new BuscadorOption { Link = "", Tipo = "", Value = "", Code = TipoBusqueda.ProformaFinalAgrupador, CtaParams = 1 };
+
+                    detalleContratoResultado.liquidaciones.ForEach(liq =>
                     {
-                        listaResultados.Add(new BuscadorOption { Link = "/pesificacion/listado", Tipo = "historial de pesificaciónes", Value = palabraABuscar, Code = TipoBusqueda.HistorialPesificaciones, CtaParams = 1 });
+                        if (!string.IsNullOrEmpty(liq.pedido) && liq.tipo.Contains("Fijac."))
+                        {
+                            opcionProformaFinal.SubOpciones.Add(new SubOption { Nombre = liq.tipo, Value = liq.pedido });
+                        }
+                    });
+
+                    if (opcionProformaFinal.SubOpciones.Count >= 1) listaResultados.Add(opcionProformaFinal);
+
+                    //HISTORIAL PESIFICACIONES
+                    try
+                    {
+                        if(historialPesificaciones == null) historialPesificaciones = pesificacionesConsumer.Request(proveedor);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+
+                    if (historialPesificaciones != null)
+                    {
+                        existePesificacionDelContrato = historialPesificaciones.Pesificaciones.Exists(p => p.Contrato == palabra);
+
+                        if (existePesificacionDelContrato)
+                        {
+                            listaResultados.Add(new BuscadorOption { Link = "/pesificacion/listado", Tipo = "historial de pesificaciónes", Value = palabra, Code = TipoBusqueda.HistorialPesificaciones, CtaParams = 1 });
+                        }
+                    }
+
+                    //CARTAS DE PORTE
+                    try
+                    {
+                        if(cartasPorteAplicacion == null)
+                        {
+                            cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, fechas);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+
+                    if (cartasPorteAplicacion != null && cartasPorteAplicacion?.cartasPorte.Count > 0)
+                    {
+                        var existeccpp = cartasPorteAplicacion.cartasPorte.Exists(c => c.contrnum == palabra);
+
+                        if (existeccpp)
+                        {
+                            listaResultados.Add(new BuscadorOption { Link = "/carta-porte/aplicacion", Tipo = "aplicaciones", Value = palabra, Code = TipoBusqueda.CCPP, CtaParams = 1 });
+                        }
+                    }
+
+                    //LIQUIDACIONES
+                    try
+                    {
+                        if(todasLiquidaciones == null)  todasLiquidaciones = liquidacionService.TodasLiquidaciones(proveedor, fechaInicio, fechaFin);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+
+                    if (todasLiquidaciones != null)
+                    {
+                        var liquidacion = todasLiquidaciones.data.liquidaciones.Find(lp => lp.contrato == palabra) ?? null;
+
+                        if (liquidacion != null)
+                        {
+                            listaResultados.Add(new BuscadorOption { Link = "", Tipo = "liquidación", Value = liquidacion.documento + "," + liquidacion.ejercicio, Code = TipoBusqueda.Liquidacion, CtaParams = 1 });
+                        }
+                    }
+
+                    detalleContratoResultado = null;
+                }
+                else
+                {
+                    //CARTAS DE PORTE
+                    try
+                    {
+                        if (cartasPorteAplicacion == null)
+                        {
+                            cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, fechas);
+                        }
+
+                        if (cartasPorteDescargas == null)
+                        {
+                            cartasPorteDescargas = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, fechas);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+
+                    if (((cartasPorteAplicacion != null && cartasPorteAplicacion?.cartasPorte.Count > 0) 
+                    || (cartasPorteDescargas != null && cartasPorteDescargas?.cartasPorte.Count > 0))                   
+                    && (!ccppAplicacion && !ccppDescargas))
+                    {
+                        ccppAplicacion = cartasPorteAplicacion.cartasPorte.Any(c => c.cartaPorte == palabra);
+                        ccppDescargas = cartasPorteDescargas.cartasPorte.Any(c => c.cartaPorte == palabra);
+
+                        if (ccppAplicacion || ccppDescargas)
+                        {
+                            listaResultados.Add(new BuscadorOption { Link = "/carta-porte/detalle", Tipo = "detalle carta de porte", Value = palabra, Code = TipoBusqueda.CCPP, CtaParams = 1 });
+                            listaResultados.Add(new BuscadorOption { Link = "", Tipo = "carta de porte", Value = palabra, Code = TipoBusqueda.CCPP, CtaParams = 1 });
+                        }
                     }
                 }
-
-                //CARTAS DE PORTE
-                try
-                {
-                    List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
-                    cartasDePorte = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, fechas);
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e);
-                }
-
-                if (cartasDePorte != null)
-                {
-                    var existeccpp = cartasDePorte.cartasPorte.Exists(ccpp => ccpp.contrnum == palabraABuscar);
-
-                    if (existeccpp)
-                    {
-                        listaResultados.Add(new BuscadorOption { Link = "/carta-porte/aplicacion", Tipo = "aplicaciones", Value = palabraABuscar, Code = TipoBusqueda.CCPP, CtaParams = 1 });
-                    }
-                }
-
-                //LIQUIDACIONES
-                try
-                {
-                    todasLiquidaciones = liquidacionService.TodasLiquidaciones(proveedor, fechaInicio, fechaFin);
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e);
-                }
-
-                if (todasLiquidaciones != null)
-                {
-                    var liquidacion = todasLiquidaciones.data.liquidaciones.Find(lp => lp.contrato == palabraABuscar) ?? null;
-
-                    if (liquidacion != null)
-                    {
-                        listaResultados.Add(new BuscadorOption { Link = "", Tipo = "liquidación", Value = liquidacion.documento + "," + liquidacion.ejercicio, Code = TipoBusqueda.Liquidacion, CtaParams = 1 });
-                    }
-                }
-            }
+            });          
 
             return listaResultados;
         }

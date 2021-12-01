@@ -10,13 +10,16 @@ import { BuscadorService } from './buscador.service';
 import { Resultado, ResultadoTipo } from './Buscador';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { SpinnerSmallComponent } from '../../view-child/spinner-small/spinner-small.component';
+import { MensajeComponent } from '../../view-child/mensaje/mensaje.component';
+import { Message, MessageService } from 'primeng/api';
+
 declare var $: any;
 
 @Component({
   selector: 'app-buscador-inteligente',
   templateUrl: './buscador.component.html',
   styleUrls: ['./buscador.component.css'],
-  providers: [BuscadorService],
+  providers: [BuscadorService, MessageService],
 })
 export class BuscadorComponent extends BaseComponent implements OnInit {
 
@@ -31,7 +34,7 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
 
   constructor(protected service: BuscadorService, protected navService: NavService,
     protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
-    protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    protected floatMsgService: FloatMsgService, protected modalService: ModalService, private messageService: MessageService) {
 
     super(navService, securytiService, floatMsgService, modalService);
     this.spinnerComponent = new SpinnerComponent();
@@ -47,14 +50,6 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
   tituloArchivoPDF = "Documento"
 
   ngOnInit() {
-    var input = document.getElementById("buscador");
-
-    input.addEventListener("keyup", function(event) {
-      if (event.keyCode === 13 || $(this).val().length >= 6) {
-        event.preventDefault();
-        document.getElementById("autoBusqueda").click();
-      }
-    }); 
   }
 
   goToSeccionSelector(resultado: Resultado){
@@ -73,6 +68,8 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
 
   autoBusqueda(event, overlaypanel: OverlayPanel){
     overlaypanel.show(event);
+    this.messageService.clear();
+    this.unsubscribe();
 
     if(this.palabraABuscar == undefined || this.palabraABuscar != this.palabraABuscarAuxiliar || this.resultados.length < 1){
       this.resultados = [];
@@ -111,17 +108,18 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
     }
   }
 
-  public switchDescargas(resultado: Resultado){
+  public descargarComprobante(resultado: Resultado = null, value: string = ""){
     switch (resultado.Code) {
       case this.tipos.Liquidacion:
         this.descargaPDFLiquidacion(resultado.Value);
         break;
 
-      case this.tipos.ProformaFinal:
-        debugger
-        this.descargarProforma(resultado.Value);
-        console.log(resultado)
+      case this.tipos.ProformaFinalAgrupador:
+        this.descargarProforma(value);
         break;
+
+      case this.tipos.CartaPorte:
+        this.descargarFotosCCPP(resultado.Value)
     
       default:
         break;
@@ -137,25 +135,22 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
             if(result.pdf){
                 var byteArray = new Uint8Array(result.pdf.data);
                 var blob = new Blob([byteArray], { type: 'application/pdf' });
-                if (window.navigator.msSaveOrOpenBlob) {
-                    // IE11
-                    window.navigator.msSaveOrOpenBlob(blob, this.tituloArchivoPDF + fijacion + '.pdf');
-                } else {
-                    var url = window.URL.createObjectURL(blob);
-                    var link = document.createElement("a");
-                    document.body.appendChild(link);
-                    link.href = url;
-                    link.download = this.tituloArchivoPDF + fijacion + '.pdf';
-                    link.click();
-                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
-                    return false;
-                }
+                var url = window.URL.createObjectURL(blob);
+                var link = document.createElement("a");
+                document.body.appendChild(link);
+                link.href = url;
+                link.download = this.tituloArchivoPDF + fijacion + '.pdf';
+                link.click();
+                setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                return false;
             }
             else{
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
+                  this.floatMsgService.setErrorMsg(result.error);
                 } else if (result.info != undefined) {
+                  this.floatMsgService.setInfoMsg(result.info);
                 }
             }
         },
@@ -186,19 +181,14 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
               } else {
                 var byteArray = new Uint8Array(result.data);
                 var blob = new Blob([byteArray], { type: 'application/pdf' });
-                if (window.navigator.msSaveOrOpenBlob) {
-                    // IE11
-                    window.navigator.msSaveOrOpenBlob(blob, this.tituloArchivoPDF + documento + ".pdf");
-                } else {
-                    var url = window.URL.createObjectURL(blob);
-                    var link = document.createElement("a");
-                    document.body.appendChild(link);
-                    link.href = url;
-                    link.download = this.tituloArchivoPDF + documento + ".pdf"
-                    link.click();
-                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
-                    return false;
-                }
+                var url = window.URL.createObjectURL(blob);
+                var link = document.createElement("a");
+                document.body.appendChild(link);
+                link.href = url;
+                link.download = this.tituloArchivoPDF + documento + ".pdf"
+                link.click();
+                setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                return false;        
               }
           },
           error => {
@@ -210,6 +200,42 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
         this.floatMsgService.setErrorMsg(e);
         return false; //<-- Prevent Refresh
     }
+  }
+
+  descargarFotosCCPP(cartaPorteIDStr: string) {
+    this.spinnerSmallComponent.showIt();
+    this.floatMsgService.setMsgsEmpty
+    this.unsubscribe();
+    this.subscription = this.service.descargarFotosCCPP(cartaPorteIDStr).subscribe(
+        (result:any) => {
+            this.spinnerSmallComponent.hideIt();
+            if (result.logout == true) {
+                this.sessionDataService.logout();
+            } else if (result.error != undefined && result.error != "") {
+                this.messageService.add({severity:'error', summary:'Error', detail:result.error});
+                this.floatMsgService.setErrorMsg(result.error)
+            } else if (result.info != undefined) {
+              this.floatMsgService.setInfoMsg(result.info)
+              this.messageService.add({severity:'info', summary:'Info', detail:result.info});
+            } else {
+                var byteArray = new Uint8Array(result.FileContents);
+                var blob = new Blob([byteArray], { type: 'application/zip' });
+                var url = window.URL.createObjectURL(blob);
+                var link = document.createElement("a");
+                document.body.appendChild(link);
+                link.href = url;
+                link.download = this.tituloArchivoPDF;
+                link.click();
+                setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                return false;
+            }
+        },
+        error => {
+            this.spinnerSmallComponent.hideIt();
+            this.messageService.add({severity:'error', summary:'Error', detail:error.message});
+        }
+    );
+    return false;  // <- Prevent href del a
   }
 
 }

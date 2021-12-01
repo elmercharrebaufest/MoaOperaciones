@@ -33,4 +33,12 @@ export class BuscadorService extends BaseService {
             .get('/api/liquidacion/descargarProformaFinal', { params: params, headers: this.headers })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
     }
+
+    public descargarFotosCCPP(cartaPorteIds: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.append('cartaPorteIds', cartaPorteIds);
+       
+        return this.http
+            .get('/api/cartaporte/DescargarFotos', { params: params, headers: this.headers });
+    }
 }
