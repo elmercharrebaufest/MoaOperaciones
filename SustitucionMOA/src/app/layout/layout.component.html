@@ -677,15 +677,16 @@
         </div>
     </barra-nav>
     <div class="alert alert-danger alert-dismissible flotante fade in" *ngIf="mensajeError != ''" role="alert"><button
-            type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            type="button" class="close" (click)="mensajeError = ''"><span
                 aria-hiden="true">&times;</span></button><i class="fa fa-exclamation-triangle"
             aria-hidden="true"></i>{{mensajeError}}</div>
-    <div class="alert alert-warning alert-dismissible flotante fade in" *ngIf="mensajeInfo != ''" role="alert"><button
-            type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+    <div class="alert alert-warning alert-dismissible flotante fade in" *ngIf="mensajeInfo != ''" role="alert">
+        <button
+            type="button" class="close" (click)="mensajeInfo = ''"><span
                 aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-down"
             aria-hidden="true"></i>{{mensajeInfo}}</div>
     <div class="alert alert-success alert-dismissible flotante fade in" *ngIf="mensajeSuccess != ''" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+        <button type="button" class="close" (click)="mensajeSuccess = ''"><span
                 aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-up"
             aria-hidden="true"></i>{{mensajeSuccess}}
     </div>
