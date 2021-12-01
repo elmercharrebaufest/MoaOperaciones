@@ -414,6 +414,9 @@ namespace SustitucionMOAUtils.Services
 
             if (solp.Finalizar)
             {
+
+                //solpEntity.UsuarioCreacion = repositorio.Obtener<Usuario>(solpEntity.UsuarioCreacion_Id);
+
                 if (string.IsNullOrEmpty(solpEntity.NroSolp))
                 {
                     var resultadoCrearSolp = crearSolpConsumerMOA.Request(solpEntity);
@@ -427,6 +430,8 @@ namespace SustitucionMOAUtils.Services
                     }
 
                     respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
+
+                    
 
                     if (respuestaGuardarSOLP.Errores.Count == 0)
                     {

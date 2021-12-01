@@ -121,6 +121,12 @@
                     <h4 class="modal-title" id="myModalLabel">Asignar rol - {{usuarioSeleccionado?.Mail || ""}}</h4>
                 </div>
                 <div class="modal-body">
+                    <div class="row" style=" text-align: center;">
+                        <h5 class="tituloCategoriaListaUsuarios col-md-12">Usuario SAP</h5><br>
+                        <hr>
+                        <input pInputText class="styled-select1" name="usuarioSap" id="usuarioSap" value="usuarioSap" [(ngModel)]="usuarioSap" placeholder="Ingrese usuario SAP" maxlength="10"
+                        rows="1">
+                    </div>
                     <div class="row" *ngFor="let titulo of titulos">
                         <h5 class="tituloCategoriaListaUsuarios col-md-12">{{titulo}}</h5><br>
                         <hr>
