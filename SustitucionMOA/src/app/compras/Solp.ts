@@ -213,6 +213,11 @@ export class PosicionSolp {
     public selectSolicitanteCompras: any;
     public necesidadCompras: string;
     public selectArticuloCompras: any;
+    public textoSuministro: string;
+    public motivo: string;
+    public modelo: string;
+
+
 
     // proveedores 
     public rubroElectrico: boolean;
@@ -295,6 +300,9 @@ export class PosicionSolp {
             this.selectSolicitanteCompras = posicionADuplicar.selectSolicitanteCompras;
             this.necesidadCompras = posicionADuplicar.necesidadCompras;
             this.selectArticuloCompras = posicionADuplicar.selectArticuloCompras;
+            this.textoSuministro = posicionADuplicar.textoSuministro;
+            this.motivo = posicionADuplicar.motivo;
+            this.modelo = posicionADuplicar.modelo;
             this.rubroElectrico = posicionADuplicar.rubroElectrico;
             this.rubroCivil = posicionADuplicar.rubroCivil;
             this.rubroMecanico = posicionADuplicar.rubroMecanico;

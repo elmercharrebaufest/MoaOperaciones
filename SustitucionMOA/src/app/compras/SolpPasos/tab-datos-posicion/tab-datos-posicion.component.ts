@@ -49,24 +49,34 @@ export class TabDatosPosicionComponent extends ListBaseComponent implements OnIn
 
 
   camposObligatorios: any[] = [
-    { campo: 'selectGrupoCompras', esObligatorio: false, esFijo: false },
+    { campo: 'selectGrupoCompras', esObligatorio: true, esFijo: false },
     { campo: 'selectArticuloCompras', esObligatorio: true, esFijo: true },
     { campo: 'selectSolicitanteCompras', esObligatorio: true, esFijo: true },
-    { campo: 'necesidadCompras', esObligatorio: false, esFijo: true },
+    { campo: 'necesidadCompras', esObligatorio: true, esFijo: true },
+    { campo: 'textoSuministro', esObligatorio: true, esFijo: true },
+    { campo: 'motivo', esObligatorio: true, esFijo: true },
+    { campo: 'modelo', esObligatorio: true, esFijo: true }
   ];
+
+  camposAValidar: any[] = [
+    { campo: 'selectGrupoCompras', servicio: true, materialCatalogado: true },
+    { campo: 'selectArticuloCompras', servicio: true, materialCatalogado: true },
+    { campo: 'selectSolicitanteCompras', servicio: true, materialCatalogado: true },
+    { campo: 'necesidadCompras', servicio: true, materialCatalogado: true },
+    { campo: 'textoSuministro', servicio: false, materialCatalogado: true },
+    { campo: 'motivo', servicio: false, materialCatalogado: true },
+    { campo: 'modelo', servicio: false, materialCatalogado: true }
+  ]
 
   @Output() onEstCompleto = new EventEmitter<any>();
 
     
   ngOnInit() {
-    console.log("Model: ", this.model)
     this.grupoCompras = this.combos.GrupoCompras;
     this.articuloCompras = this.combos.GrupoArticulo;
 
-
     if (!this.model.posicionActual.selectSolicitanteCompras)
     this.model.posicionActual.selectSolicitanteCompras = this.model.fiscalContrato;
-
   }
 
   buscarCombo(event, type) {
@@ -87,4 +97,18 @@ export class TabDatosPosicionComponent extends ListBaseComponent implements OnIn
     return (camposVacios != null && vacio == undefined);
   }
   
+  mostrarCamposTipoSolp(campoAValidar){
+    let camposMostrar = this.camposAValidar.find(x => x.campo == campoAValidar);
+
+    if(camposMostrar != null && camposMostrar != undefined){
+      switch(this.model.posicionActual.servicio) {
+        case 'SERVICIO':
+          return camposMostrar.servicio;
+        default:
+          return camposMostrar.materialCatalogado; 
+      }
+    }
+    return false
+  }
+
 }

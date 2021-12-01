@@ -406,6 +406,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.necesidadCompras = x.NroNecesidad;
                 posActual.selectGrupoCompras = x.GrupoCompras;
                 posActual.selectArticuloCompras = x.GrupoArticulo;
+                posActual.textoSuministro = x.TextoSuministro;
+                posActual.motivo = x.Motivo;
+                posActual.modelo = x.Modelo;
                 posActual.monedaSeleccionada = x.Moneda;
                 posActual.servicio = x.TipoPosicion && x.TipoPosicion.Codigo;
                 posActual.tipoImputacion = x.TipoImputacion && x.TipoImputacion.Codigo;
