@@ -34,7 +34,7 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
 
   constructor(protected service: BuscadorService, protected navService: NavService,
     protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
-    protected floatMsgService: FloatMsgService, protected modalService: ModalService, private messageService: MessageService) {
+    protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
 
     super(navService, securytiService, floatMsgService, modalService);
     this.spinnerComponent = new SpinnerComponent();
@@ -68,7 +68,6 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
 
   autoBusqueda(event, overlaypanel: OverlayPanel){
     overlaypanel.show(event);
-    this.messageService.clear();
     this.unsubscribe();
 
     if(this.palabraABuscar == undefined || this.palabraABuscar != this.palabraABuscarAuxiliar || this.resultados.length < 1){
@@ -212,11 +211,9 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
             if (result.logout == true) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
-                this.messageService.add({severity:'error', summary:'Error', detail:result.error});
                 this.floatMsgService.setErrorMsg(result.error)
             } else if (result.info != undefined) {
               this.floatMsgService.setInfoMsg(result.info)
-              this.messageService.add({severity:'info', summary:'Info', detail:result.info});
             } else {
                 var byteArray = new Uint8Array(result.FileContents);
                 var blob = new Blob([byteArray], { type: 'application/zip' });
@@ -232,7 +229,6 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
         },
         error => {
             this.spinnerSmallComponent.hideIt();
-            this.messageService.add({severity:'error', summary:'Error', detail:error.message});
         }
     );
     return false;  // <- Prevent href del a

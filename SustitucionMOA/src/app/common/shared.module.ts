@@ -39,9 +39,6 @@ import { CustomFilterBoolean } from "./pipes/customFilterBoolean";;
 import { BuscadorComponent } from './shared-components/buscador/buscador.component'
 import { HighlightDirective } from './directive/clickOutside.directive'
 import { BuscadorSmallComponent } from './shared-components/buscador/buscador-small/buscadorSmall.component';
-import {GrowlModule} from 'primeng/growl';
-import { MessageService } from 'primeng/api';
-import {AccordionModule} from 'primeng/accordion';
 
 
 @NgModule({
@@ -52,8 +49,6 @@ import {AccordionModule} from 'primeng/accordion';
         SpinnerModule,
         AutoCompleteModule,
         OverlayPanelModule,
-        AccordionModule,
-        GrowlModule,
         ToggleButtonModule,
         ReactiveFormsModule
     ],
@@ -61,9 +56,9 @@ import {AccordionModule} from 'primeng/accordion';
         AutocompleteLocalidadComponent, SeleccionarProveedorComponent, InformeComercialComponent, HighlightDirective,
         CartaPresentacionComponent, NumericDirective, StepperComponent, WeekdaySelectComponent,BuscadorSmallComponent, CustomFilterBoolean, BuscadorComponent],
     exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent ,SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
-        CommonModule, FormsModule, InformeComercialComponent, AccordionModule,
+        CommonModule, FormsModule, InformeComercialComponent,
         CartaPresentacionComponent, SeleccionarProveedorComponent, Ng2AutoCompleteModule,
-        AutocompleteLibModule, GrowlModule, 
+        AutocompleteLibModule,
         CommonModule, FormsModule, AutocompleteLocalidadComponent, NumericDirective,
         StepperComponent, WeekdaySelectComponent,CustomFilterBoolean, BuscadorComponent, BuscadorSmallComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
