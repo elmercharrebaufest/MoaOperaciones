@@ -155,6 +155,7 @@
     <None Include="scripts\CargaInicialSolp.sql" />
     <None Include="scripts\Insert EstadoIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\Rol Admin plataforma compras.sql" />
+    <None Include="scripts\Insert estado borrado SAP.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />
