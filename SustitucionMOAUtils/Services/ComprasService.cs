@@ -1273,6 +1273,11 @@ namespace SustitucionMOAUtils.Services
                     ActualizarEstadoSolp(nroSolp, codigoSap.Id);
                 }
             }
+            else
+            {
+                var estadoEliminada = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.EstadoSolpSap && x.Descripcion == "Borrada");
+                ActualizarEstadoSolp(nroSolp, estadoEliminada.Id);
+            }
         }
 
         public void ActualizarEstadoSolp(string nroSolp, int idEstado)
