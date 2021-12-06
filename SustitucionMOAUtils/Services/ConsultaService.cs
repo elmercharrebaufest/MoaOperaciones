@@ -744,11 +744,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<MaterialDto> ObtenerMaterial()
+        public List<MaterialDto> ObtenerMaterial(TablaSeccionMaterial tablaSeccionMaterial)
         {
             try
             {
-                var subcategorias = repositorio.Listar<Material>().OrderBy(c => c.Nombre);
+                var subcategorias = repositorio.Listar<Material>().Where(x => x.TablaSeccionMaterial == tablaSeccionMaterial).OrderBy(c => c.Nombre);
                 return subcategorias.Select(x => new MaterialDto
                 { 
                     MaterialId = x.Id,
@@ -769,30 +769,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<MaterialDto> ObtenerMaterialesSAP()
-        {
-            try
-            {
-                var subcategorias = repositorio.Listar<Material>(x => x.CodigoSap != null).OrderBy(c => c.Nombre);
-                return subcategorias.Select(x => new MaterialDto
-                {
-                    MaterialId = x.Id,
-                    Descripcion = x.Nombre
-                }).ToList();
-            }
-            catch (ValidationCustomException e)
-            {
-                throw e;
-            }
-            catch (InfoCustomException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
         public List<EstadoConsultaDto> ObtenerEstados()
         {
             try
