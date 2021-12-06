@@ -109,12 +109,12 @@ namespace SustitucionMOA.Controllers
 
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
-        public ActionResult GuardarRoles(string idRoles, int idUsuario)
+        public ActionResult GuardarRoles(string idRoles, int idUsuario, string usuarioSap)
         {
             try
             {
                 List<int> rolesList = idRoles.Split(',').Select(int.Parse).ToList();
-                return JsonCustom(new { data = _usuarioService.GuardarRoles(rolesList, idUsuario) });
+                return JsonCustom(new { data = _usuarioService.GuardarRoles(rolesList, idUsuario, usuarioSap) });
             }
             catch (InfoCustomException e)
             {
