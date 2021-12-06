@@ -11,6 +11,7 @@ import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.comp
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { UsuarioService } from './../usuario.service';
 import { Rol } from '../../common/models/rol';
+import { Usuario } from '../usuario';
 
 
 
@@ -50,6 +51,8 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
     usuarioSeleccionado: any = null;
     titulos: Array<string> = ["Externo", "Interno", "Contacto"]
+
+    usuarioSap: any;
 
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Listado Usuarios');
@@ -105,6 +108,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
                     } else {
                         this.data = result.data.usuarios;
                     }
+                    
                 },
                 error => {
                     this.spinnerComponent.hideIt();
@@ -248,6 +252,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
     abrirModalEditarRoles(usuario: any) {
         this.usuarioSeleccionado = usuario;
+        this.usuarioSap = usuario.UsuarioSap;
         this.rolesUsuarioSeleccionado = new Array<Rol>();
 
         this.rolOptions = [];
@@ -308,9 +313,8 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
         const idRoles = this.rolesUsuarioSeleccionado.filter(r => r.checked).map(({ Id }) => Id);
-    
         try {
-            this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles).subscribe(
+            this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles, this.usuarioSap).subscribe(
                 (result:any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {

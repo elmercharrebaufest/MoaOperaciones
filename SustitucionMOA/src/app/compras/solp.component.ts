@@ -29,6 +29,7 @@ import { DialogModule } from 'primeng/dialog';
 import { FormGroup } from '@angular/forms';
 import { AdjuntosCotizaciones } from './PliegoPasos/adjuntos-Cotizaciones';
 import { forEach } from '@angular/router/src/utils/collection';
+import { EnumTipoSolpSap } from './enum-tipo-solp-sap';
 
 @Component({
     selector: 'app-solp',
@@ -98,10 +99,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displayFinalizar: boolean = false;
     displaySAP: boolean;
     displayErrorSAP: boolean;
+    displaySAPVincularPliego: boolean;
     disabledSave = false;
+<<<<<<< HEAD
 
     disabled: boolean = false;
 
+=======
+    
+>>>>>>> 515a99845134beb06a3dca948d810837881d1c5c
     listadoErrores: string[] = new Array<string>();
     displaySAPEditar: boolean;
 
@@ -171,6 +177,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     selectUsuarioCompras: any;
     usuarioComprasList: any[] = [];
+
+    titulo: string = "";
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         private messageService: MessageService, private route: ActivatedRoute, private confirmationService: ConfirmationService) {
@@ -251,7 +259,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.centroPorDefecto = 1029;
             this.solpActual.monedaPorDefecto = "ARP";
 
-
             this.getCombos();
 
             if (this.route.params) {
@@ -307,6 +314,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
         // Paso 1
         this.solpActual.id = solp.Id;
         this.solpActual.tipoSolp = solp.TipoSolp && solp.TipoSolp.Codigo || '';
+        this.solpActual.tipoSolpSap = solp.TipoSolpSap || '';
+        this.solpActual.vincularAPliego = (this.solpActual.tipoSolpSap == EnumTipoSolpSap.Mantenimiento || this.solpActual.tipoSolpSap == EnumTipoSolpSap.SAP);
+        this.titulo = this.solpActual.vincularAPliego ? "Vincular pliego" : "";
         this.solpActual.nroSolp = solp.NroSolp || 0;
         this.solpActual.nombreDePedido = solp.NombreDeObra || '';
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
@@ -402,6 +412,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.necesidadCompras = x.NroNecesidad;
                 posActual.selectGrupoCompras = x.GrupoCompras;
                 posActual.selectArticuloCompras = x.GrupoArticulo;
+                posActual.textoSuministro = x.TextoSuministro;
+                posActual.motivo = x.Motivo;
+                posActual.modelo = x.Modelo;
                 posActual.monedaSeleccionada = x.Moneda;
                 posActual.servicio = x.TipoPosicion && x.TipoPosicion.Codigo;
                 posActual.tipoImputacion = x.TipoImputacion && x.TipoImputacion.Codigo;
@@ -636,6 +649,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             if (result.Mensaje == "OK") {
                                 this.finalizarOk = true;
                                 this.displaySAP = true;
+
+                                if (this.solpActual.vincularAPliego) {
+                                    this.displaySAPVincularPliego = true;
+                                }
+                                else if (this.solpActual.nroSolp) {
+                                    this.displaySAPEditar = true;
+                                }
                             }
                             else {
                                 this.listadoErrores = result.Errores;

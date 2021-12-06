@@ -9,13 +9,15 @@ import { HttpParams } from '@angular/common/http';
 @Injectable()
 export class UsuarioService extends BaseService {
 
-    guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any) {
+    guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any, usuarioSap: string) {
         let params: HttpParams = new HttpParams();
 
         var idUsuario = usuarioSeleccionado.Id;
 
         params = params.append('idRoles', idRoles);
         params = params.append('idUsuario', idUsuario);
+        params = params.append('usuarioSap', usuarioSap);
+
 
         return this.http
             .get('/api/usuario/GuardarRoles', { params: params, headers: this.headers });

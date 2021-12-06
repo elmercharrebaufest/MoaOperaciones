@@ -8,14 +8,15 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ComprasService } from '../../compras.service';
 import { FloatMsgService } from './../../../common/services/FloatMsgService';
 import { ModalService } from './../../../common/services/ModalService';
-import { Solp } from '../../Solp';
+import { PosicionSolp, Solp } from '../../Solp';
 import { SubPosicionViewModel } from './subPosicionViewModel';
 import { EnumTipoImputacion } from '../../enum-tipo-imputacion'
 import { EnumColumnaSubPosicion } from '../../enum-columna-subPosiciones'
 import { ConfirmationService } from 'primeng/api';
 import { type } from 'jquery';
 import { ThrowStmt } from '@angular/compiler';
-
+import { Message } from 'primeng/components/common/api';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 @Component({
     selector: 'subPosicion',
@@ -39,6 +40,8 @@ export class SubPosicionComponent extends ListBaseComponent {
     enumColumnaSubPosicion: typeof EnumColumnaSubPosicion = EnumColumnaSubPosicion;
     total: number = 0;
     unidades: any[];
+
+    posicion: PosicionSolp;
 
     tablaAFiltrar: any;
     autocomplete: any[];
@@ -100,6 +103,9 @@ export class SubPosicionComponent extends ListBaseComponent {
         { campo: 'selectArticuloCompras', esObligatorio: true, esFijo: true },
         { campo: 'selectSolicitanteCompras', esObligatorio: true, esFijo: true },
         { campo: 'necesidadCompras', esObligatorio: false, esFijo: true },
+        { campo: 'textoSuministro', esObligatorio: false, esFijo: true },
+        { campo: 'motivo', esObligatorio: false, esFijo: true },
+        { campo: 'modelo', esObligatorio: false, esFijo: true },
         { campo: 'rubroElectrico', esObligatorio: false, esFijo: true },
         { campo: 'rubroCivil', esObligatorio: false, esFijo: true },
         { campo: 'rubroIngenieria', esObligatorio: false, esFijo: true },
@@ -110,6 +116,8 @@ export class SubPosicionComponent extends ListBaseComponent {
         { campo: 'proveedoresNoSugeridos', esObligatorio: false, esFijo: true },
         { campo: 'selectMonedaCompras', esObligatorio: true, esFijo: true },
     ];
+
+    mensajesEncabezado: Message[] = [];
 
     actualizarCamposObligatorios(claseDocumento) {
         //reset de obligatorios configurables
@@ -150,10 +158,9 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
 
-
-
+    
     setTabs() {
-        this.setMenuSeccionTab("Sub Posiciones", "Sub Posiciones");
+        this.setMenuSeccionTab("Sub Posiciones", "Sub Posiciones")
     }
 
     ngOnInit() {
@@ -170,6 +177,12 @@ export class SubPosicionComponent extends ListBaseComponent {
         this.actualizarTipoDeImputacion();
         this.actualizarCamposObligatorios(this.model.selectClaseDocumento);
 
+        if (this.model.vincularAPliego) {
+            this.mensajesEncabezado.push({ severity: 'warn', summary: '', detail: 'No es posible editar esta pantalla desde la plataforma. Para editar dirijase a SAP' });
+        }
+        else {
+            this.mensajesEncabezado = [];
+        }
     }
 
 
@@ -187,10 +200,12 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     cambiarSubPosicion(): void {
         this.listadoPosicionActul = this.model.posicionActual.listadoSubPosiciones;
+
         this.validarDatosMinimosPosicionActual();
         this.actualizarTipoDeImputacion();
         this.calcularTotalSubPosicion();
     }
+
 
     actualizarTipoDeImputacion(): void {
         switch (this.model.posicionActual.tipoImputacion) {
@@ -214,14 +229,16 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
     nuevaPosicion(rowSeleccionada: any): void {
-        if (rowSeleccionada) {
-            let ultimoRegistroEnListado = this.listadoPosicionActul[this.listadoPosicionActul.length - 1]
-            if (ultimoRegistroEnListado.id == rowSeleccionada.data.id) {
-                ultimoRegistroEnListado.seleccionado = true;
-                this.listadoPosicionActul.push(new SubPosicionViewModel(ultimoRegistroEnListado.subPosicion + 1));
+        if (!this.model.vincularAPliego) {
+            if (rowSeleccionada) {
+                let ultimoRegistroEnListado = this.listadoPosicionActul[this.listadoPosicionActul.length - 1]
+                if (ultimoRegistroEnListado.id == rowSeleccionada.data.id) {
+                    ultimoRegistroEnListado.seleccionado = true;
+                    this.listadoPosicionActul.push(new SubPosicionViewModel(ultimoRegistroEnListado.subPosicion + 1));
+                }
+            } else {
+                this.listadoPosicionActul.push(new SubPosicionViewModel(1));
             }
-        } else {
-            this.listadoPosicionActul.push(new SubPosicionViewModel(1));
         }
     }
 

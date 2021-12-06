@@ -90,20 +90,14 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
                 } else {
                     var byteArray = new Uint8Array(result.FileContents);
                     var blob = new Blob([byteArray], { type: 'application/zip' });
-
-                    if (window.navigator.msSaveOrOpenBlob) {
-                        // IE11
-                        window.navigator.msSaveOrOpenBlob(blob, this.tituloZip);
-                    } else {
-                        var url = window.URL.createObjectURL(blob);
-                        var link = document.createElement("a");
-                        document.body.appendChild(link);
-                        link.href = url;
-                        link.download = this.tituloZip;
-                        link.click();
-                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
-                        return false;
-                    }
+                    var url = window.URL.createObjectURL(blob);
+                    var link = document.createElement("a");
+                    document.body.appendChild(link);
+                    link.href = url;
+                    link.download = this.tituloZip;
+                    link.click();
+                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    return false;
                 }
             },
             error => {

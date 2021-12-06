@@ -295,5 +295,27 @@ namespace SustitucionMOATest.Services
             this.serviciosConsumerMock.Verify(x => x.request(), Times.Once);
             this.repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
         }
+
+
+        [Test]
+        public void ObtenerRutaArchivo() {
+            var rutaArchivo = "ruta/archivo";
+            var archivoId = 1;
+ 
+            repositorioMock
+              .Setup(y => y.Obtener(It.IsAny<Expression<Func<Archivo, bool>>>()))
+              .Returns(new Archivo
+              {
+                   Id = archivoId,
+                   FileKey = "12323",
+                   Ruta = rutaArchivo
+              });
+
+            var result = target.ObtenerRutaArchivo(archivoId);
+
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Archivo, bool>>>()), Times.Once);
+
+            Assert.AreEqual(rutaArchivo, result);
+        }
     }
 }

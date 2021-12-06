@@ -14,14 +14,15 @@ import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { EnumPasoSolp } from '../enum-paso-solp';
 import { DISABLED } from '@angular/forms/src/model';
-
+import { Message } from 'primeng/components/common/api';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 declare var $: any;
 
 @Component({
     selector: 'cabecera',
     templateUrl: `cabecera.component.html`,
-    styleUrls: ['../compras.component.css'],
+    styleUrls: ['../compras.component.css', './cabecera.component.css'],
 })
 export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
@@ -34,12 +35,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     @Input('locale')
     protected locale: any;
 
-
-
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router,
-        private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService) {
+        private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService, private messageService: MessageService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
     }
@@ -48,14 +47,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     claseDocumento: SelectItem[];
     centroEntrega: SelectItem[];
     monedaCompras: SelectItem[];
-    articuloCompras: SelectItem[];
-    solicitanteCompras: SelectItem[];
-    grupoCompras: SelectItem[];
     almacenEntrega: SelectItem[];
     posiciones: SelectItem[];
     resultadoProveedores: string[];
-    fechaEntregaServicio: any;
-    fechaDeLiberacion: any;
     hoy: Date = new Date();
     selectPosicion: any;
 
@@ -71,28 +65,18 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     camposObligatorios: any[] = [
         { campo: 'servicio', esObligatorio: true, esFijo: true },
+        { campo: 'selectClaseDocumento', esObligatorio: true, esFijo: true },
         { campo: 'centroDeCosto', esObligatorio: false, esFijo: true },
         { campo: 'ordenDeOt', esObligatorio: false, esFijo: true },
         { campo: 'ordenDeInversion', esObligatorio: false, esFijo: true },
         { campo: 'siniestroBeneficio', esObligatorio: false, esFijo: true },
         { campo: 'tipoImputacion', esObligatorio: true, esFijo: true },
         { campo: 'textoGenerico', esObligatorio: true, esFijo: true },
-        { campo: 'fechaEntregaServicio', esObligatorio: true, esFijo: false },
-        { campo: 'fechaDeLiberacion', esObligatorio: false, esFijo: false },
-        { campo: 'plazoDeEntrega', esObligatorio: true, esFijo: true },
-        { campo: 'concluido', esObligatorio: false, esFijo: true },
-        { campo: 'indiceFijacion', esObligatorio: false, esFijo: true },
         { campo: 'selectCentroEntrega', esObligatorio: false, esFijo: false },
-        { campo: 'nombreEntrega', esObligatorio: false, esFijo: true },
-        { campo: 'codigoPostalEntrega', esObligatorio: false, esFijo: true },
         { campo: 'selectAlmacenEntrega', esObligatorio: false, esFijo: false },
         { campo: 'calleEntrega', esObligatorio: true, esFijo: true },
         { campo: 'paisEntrega', esObligatorio: false, esFijo: true },
         { campo: 'numeroEntrega', esObligatorio: true, esFijo: true },
-        { campo: 'selectGrupoCompras', esObligatorio: false, esFijo: false },
-        { campo: 'selectArticuloCompras', esObligatorio: true, esFijo: true },
-        { campo: 'selectSolicitanteCompras', esObligatorio: true, esFijo: true },
-        { campo: 'necesidadCompras', esObligatorio: false, esFijo: true },
         { campo: 'rubroElectrico', esObligatorio: false, esFijo: true },
         { campo: 'rubroCivil', esObligatorio: false, esFijo: true },
         { campo: 'rubroIngenieria', esObligatorio: false, esFijo: true },
@@ -106,6 +90,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     @Output() onEstCompleto = new EventEmitter<any>();
 
+    mensajesEncabezado: Message[] = [];
+
     setTabs() {
         this.setMenuSeccionTab("Cabecera", "Cabecera");
     }
@@ -116,8 +102,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
         this.claseDocumento = this.combos.ClaseDocumento;
         this.centroEntrega = this.combos.Centro;
-        this.grupoCompras = this.combos.GrupoCompras;
-        this.articuloCompras = this.combos.GrupoArticulo;
         this.monedaCompras = this.combos.Moneda;
         let claseDocumento = this.model.selectClaseDocumento!== undefined && this.model.selectClaseDocumento.Id>0 ? this.model.selectClaseDocumento : this.claseDocumento[0];
         this.setControlesObligatorios(claseDocumento);
@@ -126,7 +110,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         if (this.model.cargoPasoCinco) {
             this.validadorPasoSolpService.aplicarValidaciones();
         }
-        this.model.selectClaseDocumento = claseDocumento;
+        this.model.selectClaseDocumento = this.model.selectClaseDocumento!== undefined && this.model.selectClaseDocumento.Id>0 ? this.model.selectClaseDocumento : 0;
 
         this.centroSeleccionado();
 
@@ -137,9 +121,24 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.model.posicionActual.selectSolicitanteCompras = this.model.fiscalContrato;
 
         this.model.cargoPasoCinco = true;
-        debugger
+       
         this.editarDocumento = this.disableDocumento();
+
+        if (this.model.vincularAPliego) {
+            this.mensajesEncabezado.push({ severity: 'warn', summary: '', detail: 'No es posible editar esta pantalla desde la plataforma. Para editar dirijase a SAP' });
+            this.formularioActual.disable();
+        }
+        else {
+            this.mensajesEncabezado = [];
+            this.formularioActual.enable();
+        }
     }
+
+    mostrarValidacion(campoAValidar, vacio){
+        let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
+        return (camposVacios != null && vacio == 0);
+      }
+
 
     disableDocumento(){
         if(this.model.nroSolp){
@@ -149,9 +148,12 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
     }
 
-
-
     setControlesObligatorios(claseDocumento) {
+
+        if(!claseDocumento || claseDocumento > 0){
+            return
+        }
+
         this.actualizarCamposObligatorios(claseDocumento);
 
         if (!this.formularioActual) {
@@ -181,11 +183,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         });
 
         let camposObligatorios = this.combos.CamposObligatoriosCabeceraSolp.filter(x => x.ClaseDocumentoCodigo == claseDocumento.Codigo);
-
         camposObligatorios.forEach(c => {
             if (this.camposObligatorios.find(x => x.campo == c.Codigo) != null)
                 this.camposObligatorios.find(x => x.campo == c.Codigo).esObligatorio = true;
-
         });
     }
 
@@ -275,12 +275,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                         x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
                 }
                 break;
-            case 'GRUPO COMPRAS':
-                this.grupoCompras = this.combos.GrupoCompras.filter(x => x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
-                break;
-            case 'ARTICULO COMPRAS':
-                this.articuloCompras = this.combos.GrupoArticulo.filter(x => x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
-                break;
             case 'MONEDA COMPRAS':
                 this.monedaCompras = this.combos.Moneda.filter(x => x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
                 break;
@@ -295,9 +289,4 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         el.scrollIntoView();
     }
 
-    calcularFechaEntrega() {
-        let fechaNueva = new Date(this.model.fechaEntrega);
-        fechaNueva.setDate(fechaNueva.getDate() + parseInt(this.model.posicionActual.plazoDeEntrega.toString()));
-        this.model.posicionActual.fechaEntregaServicio = fechaNueva;
-    }
 }
