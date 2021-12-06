@@ -22,7 +22,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<RolDropdownDto> GetRoles();
 
         byte[] getDocumento(string nombre);
-        string GuardarRoles(List<int> idRol, int idUsuario);
+        string GuardarRoles(List<int> idRol, int idUsuario, string usuarioSap);
         List<ProveedorDto> GetVendedoresUsuario(string usuarioMail);
 
         List<RolDropdownDto> GetRolesUsuario(int idUsuario);
