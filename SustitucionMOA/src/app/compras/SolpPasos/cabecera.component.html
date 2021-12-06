@@ -14,7 +14,7 @@
                             Clase documento *
                             <div>
                                 <p-dropdown [options]="claseDocumento" [(disabled)]="editarDocumento" [(ngModel)]="model.selectClaseDocumento" placeholder="Elegir clase documento" dataKey="Id" optionLabel="CodigoDescripcion" (onChange)="cambiarClaseDocumento()" [disabled]="model.vincularAPliego" styleClass="claseDocumento">
-                                </p-dropdown>>
+                                </p-dropdown>
                             </div>
                             <div *ngIf="mostrarValidacion('selectClaseDocumento', model.selectClaseDocumento)">
                                 <p class="text-danger">campo obligatorio</p>
