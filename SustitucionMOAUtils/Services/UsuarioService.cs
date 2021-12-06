@@ -182,7 +182,7 @@ namespace SustitucionMOAUtils.Services
 
             usuario.RemoverRolesEditables();
 
-            usuario.UsuarioSap = usuarioSap;
+            usuario.UsuarioSap = usuarioSap.ToUpper();
 
             foreach (int idRol in idRoles)
             {

@@ -107,7 +107,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.data = result.data.usuarios;
-                        console.log("Data: " + this.data);
                     }
                     
                 },
