@@ -176,11 +176,13 @@ namespace SustitucionMOAUtils.Services
             return roles;
         }
 
-        public string GuardarRoles(List<int> idRoles, int idUsuario)
+        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap)
         {
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
 
             usuario.RemoverRolesEditables();
+
+            usuario.UsuarioSap = usuarioSap;
 
             foreach (int idRol in idRoles)
             {

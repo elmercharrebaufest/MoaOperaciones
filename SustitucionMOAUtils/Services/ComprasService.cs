@@ -533,7 +533,7 @@ namespace SustitucionMOAUtils.Services
 
         public string ObtenerRutaArchivo(int archivoId)
         {
-            var archivo = repositorio.Obtener<Archivo>(archivoId);
+            var archivo = repositorio.Obtener<Archivo>(x => x.Id == archivoId);
 
             return archivo?.Ruta;
         }
