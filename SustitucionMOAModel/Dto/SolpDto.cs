@@ -56,6 +56,7 @@ namespace SustitucionMOAModel.Dto
         public bool CargaCotizacionesConArchivo { get; set; }
         public string RevisadoPor { get; set; }
         public UsuarioComprasDto UsuarioCompras { get; set; }
+        public int? TipoSolpSap { get; set; }
 
         public SolpDto() {}
         public SolpDto(Solp entity) 
@@ -100,7 +101,7 @@ namespace SustitucionMOAModel.Dto
             this.EstadoPasos = entity.EstadoPasos;
             this.RevisadoPor = entity.Pliego.RevisadoPor;
             this.UsuarioCompras = new UsuarioComprasDto(entity.UsuarioCompras);
-
+            this.TipoSolpSap = entity.TipoSolpSap;
         }
     }
 
@@ -153,6 +154,9 @@ namespace SustitucionMOAModel.Dto
         public string Solicitante { get; set; }
         public string NroNecesidad { get; set; }
         public int? GrupoArticuloId { get; set; }
+        public string TextoSuministro { get; set; }
+        public string Motivo { get; set; }
+        public string Modelo { get; set; }
         public string CodigosProveedores { get; set; }
         public int? MonedaId { get; set; }
         public bool Estado { get; set; }
@@ -193,6 +197,9 @@ namespace SustitucionMOAModel.Dto
                 this.GrupoComprasId = entity.GrupoCompras_Id;
                 this.Solicitante = entity.Solicitante;
                 this.NroNecesidad = entity.NroNecesidad;
+                this.TextoSuministro = entity.TextoSuministro;
+                this.Motivo = entity.Motivo;
+                this.Modelo = entity.Modelo;
                 this.GrupoArticuloId = entity.GrupoArticulo_Id;
                 this.CodigosProveedores = entity.CodigosProveedores;
                 this.MonedaId = entity.Moneda_Id;
