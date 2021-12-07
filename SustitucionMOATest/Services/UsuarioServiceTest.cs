@@ -178,6 +178,7 @@ namespace SustitucionMOATest.Services
         public void CambiarRolesUsuarioComunTest()
         {
             var mailUsuario = "existente@mail.com";
+            string usuarioSap = "FOSSIM";
 
             repositorioMock
               .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
@@ -208,7 +209,7 @@ namespace SustitucionMOATest.Services
 
             int IdUsuario = 1;
 
-            var result = target.GuardarRoles(idRoles, IdUsuario);
+            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap);
 
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
@@ -224,6 +225,7 @@ namespace SustitucionMOATest.Services
         public void CambiarRolesUsuarioAdminTest()
         {
             var mailUsuario = "existente@mail.com";
+            string usuarioSap = "FOSSIM";
 
             var usuario = new Usuario
             {
@@ -232,6 +234,7 @@ namespace SustitucionMOATest.Services
                 CUITRegistro = "23333333333",
                 Roles = new List<Rol> { new Rol { Nombre = "DESHABILITADO EN DATAAGRO", Codigo = "DDAG", EsEditable = true } },
                 TipoUsuario = new TipoUsuario { Id = 2, Nombre = "Granos", NombreCorto = "GRAN" },
+                UsuarioSap = "",
                 Proveedores = new List<Proveedor>
                       {
                         new Proveedor
@@ -239,6 +242,7 @@ namespace SustitucionMOATest.Services
                             Id = 1, 
                             EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro,
                             CUIT = "23333333333",
+                            Mail = mailUsuario,
                             HistorialAprobaciones = new List<ProveedorHistorialAprobacion>
                             {
                                 new ProveedorHistorialAprobacion
@@ -271,7 +275,7 @@ namespace SustitucionMOATest.Services
 
             int IdUsuario = 1;
 
-            var result = target.GuardarRoles(idRoles, IdUsuario);
+            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap);
 
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 

@@ -13,6 +13,7 @@ import { AbstractControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { EnumPasoSolp } from '../enum-paso-solp';
+import { DISABLED } from '@angular/forms/src/model';
 
 
 declare var $: any;
@@ -58,6 +59,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     hoy: Date = new Date();
     selectPosicion: any;
 
+    editarDocumento: boolean = false;
+
     // solpActual: Solp;
 
     formularioPosicion: [FormGroup];
@@ -68,6 +71,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     camposObligatorios: any[] = [
         { campo: 'servicio', esObligatorio: true, esFijo: true },
+        { campo: 'selectClaseDocumento', esObligatorio: true, esFijo: true },
         { campo: 'centroDeCosto', esObligatorio: false, esFijo: true },
         { campo: 'ordenDeOt', esObligatorio: false, esFijo: true },
         { campo: 'ordenDeInversion', esObligatorio: false, esFijo: true },
@@ -123,7 +127,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         if (this.model.cargoPasoCinco) {
             this.validadorPasoSolpService.aplicarValidaciones();
         }
-        this.model.selectClaseDocumento = claseDocumento;
+        this.model.selectClaseDocumento = this.model.selectClaseDocumento!== undefined && this.model.selectClaseDocumento.Id>0 ? this.model.selectClaseDocumento : 0;
 
         this.centroSeleccionado();
 
@@ -134,9 +138,31 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.model.posicionActual.selectSolicitanteCompras = this.model.fiscalContrato;
 
         this.model.cargoPasoCinco = true;
+        debugger
+        this.editarDocumento = this.disableDocumento();
     }
 
+    mostrarValidacion(campoAValidar, vacio){
+        let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
+        return (camposVacios != null && vacio == 0);
+      }
+
+    disableDocumento(){
+        if(this.model.nroSolp){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
     setControlesObligatorios(claseDocumento) {
+
+        if(!claseDocumento || claseDocumento > 0){
+            return
+        }
+
         this.actualizarCamposObligatorios(claseDocumento);
 
         if (!this.formularioActual) {

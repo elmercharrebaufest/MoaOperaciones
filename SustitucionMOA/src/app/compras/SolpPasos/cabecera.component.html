@@ -10,10 +10,13 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput" style="margin: 40px 0px 30px 0px;">
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
-                            Clase documento
+                            Clase documento *
                             <div>
-                                <p-dropdown [options]="claseDocumento" [(ngModel)]="model.selectClaseDocumento" dataKey="Id" optionLabel="CodigoDescripcion" (onChange)="cambiarClaseDocumento()">
+                                <p-dropdown [options]="claseDocumento" [(disabled)]="editarDocumento" placeholder="Elegir clase documento" [(ngModel)]="model.selectClaseDocumento" dataKey="Id" optionLabel="CodigoDescripcion" (onChange)="cambiarClaseDocumento()">
                                 </p-dropdown>
+                            </div>
+                            <div *ngIf="mostrarValidacion('selectClaseDocumento', model.selectClaseDocumento)">
+                                <p class="text-danger">campo obligatorio</p>
                             </div>
                         </div>
                     </div>

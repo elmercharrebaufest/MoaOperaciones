@@ -100,6 +100,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displayErrorSAP: boolean;
     disabledSave = false;
 
+    disabled: boolean = false;
+
     listadoErrores: string[] = new Array<string>();
     displaySAPEditar: boolean;
 
@@ -643,13 +645,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             if (this.solpActual.nroSolp) {
                                 this.displaySAPEditar = true;
                             }
-
-                            
-                            // if (result.Solp.NroSolp) {
-                            //     this.finalizarOk = true;
-                            // } else {
-                            //     this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar la SOLP en SAP, intente de nuevo mas tarde o comuniquese con el administrador' });
-                            // }
                         }
                     }
                     this.disabledSave = false;
