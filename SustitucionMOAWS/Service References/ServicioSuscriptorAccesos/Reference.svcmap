@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="f7c7782a-cf07-476c-8933-e225d03b6b8c" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:63790/servicios/serviciosuscriptor.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ServicioSuscriptor.xsd" MetadataType="Schema" ID="9e6bea1d-b431-4b46-9ea8-c7f2a63148c7" SourceId="1" SourceUrl="http://localhost:63790/servicios/ServicioSuscriptor.svc?xsd=xsd2" />
+    <MetadataFile FileName="ServicioSuscriptor.wsdl" MetadataType="Wsdl" ID="7a908d33-79d1-4e83-8bc6-e42b77f07319" SourceId="1" SourceUrl="http://localhost:63790/servicios/ServicioSuscriptor.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="ServicioSuscriptor1.xsd" MetadataType="Schema" ID="9fd9c3a5-9def-4896-8687-39e87d0b958b" SourceId="1" SourceUrl="http://localhost:63790/servicios/ServicioSuscriptor.svc?xsd=xsd3" />
+    <MetadataFile FileName="ServicioSuscriptor2.xsd" MetadataType="Schema" ID="e5936875-ed47-45ff-a64a-8ccc013361ed" SourceId="1" SourceUrl="http://localhost:63790/servicios/ServicioSuscriptor.svc?xsd=xsd1" />
+    <MetadataFile FileName="ServicioSuscriptor3.xsd" MetadataType="Schema" ID="7df9c94f-81ec-4d50-8553-1ac4115eedab" SourceId="1" SourceUrl="http://localhost:63790/servicios/ServicioSuscriptor.svc?xsd=xsd0" />
+    <MetadataFile FileName="ServicioSuscriptor1.wsdl" MetadataType="Wsdl" ID="8ee69769-d9c7-44eb-87b3-353bbc6ed596" SourceId="1" SourceUrl="http://localhost:63790/servicios/ServicioSuscriptor.svc?wsdl" />
+    <MetadataFile FileName="ServicioSuscriptor.disco" MetadataType="Disco" ID="9f7c97c0-51f9-4a91-bdf8-3d0172fc3c2d" SourceId="1" SourceUrl="http://localhost:63790/servicios/ServicioSuscriptor.svc?disco" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
