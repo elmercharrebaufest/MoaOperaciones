@@ -15,6 +15,8 @@ import { MessageService } from 'primeng/api';
 import { CommonResponse } from '../common/models/common-response';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { MenuItem } from 'primeng/api';
+import { resolve } from 'url';
+import { first } from 'rxjs/operators';
 
 declare var $: any;
 
@@ -46,6 +48,7 @@ export class GestionCM05Component extends ListBaseComponent {
     movimientoCols: any[];
     movimientos: MovimientoCM05[];
 
+    estadosList: any[];
     estados: SelectItem[];
     secuencias: SelectItem[];
     tiposMovimiento: SelectItem[];
@@ -85,21 +88,7 @@ export class GestionCM05Component extends ListBaseComponent {
 
     ngOnInit() {
         this.detallesEditando = [];
-
         this.navService.setSeccionList([]);
-
-        this.estados = [
-            { label: 'Pendiente', value: 1, },
-            { label: 'Autorizado', value: 2, },
-            { label: 'Completado', value: 3, },
-            { label: 'Rechazado por usuario', value: 4, },
-            { label: 'Rechazado por sistema', value: 5, },
-        ];
-
-        this.secuencias = [
-            { label: 'Original', value: 1, },
-            { label: 'Rectificativa', value: 2, },
-        ];
 
         this.tiposMovimiento = [
             { label: 'Creación', value: 1 },
@@ -113,8 +102,6 @@ export class GestionCM05Component extends ListBaseComponent {
             { label: 'WEB', value: 1 },
             { label: 'SAP', value: 2 },
         ];
-
-        this.listarCabeceras();
 
         this.cabeceraCols = [
             { field: 'Id', header: 'Id' },
@@ -170,6 +157,7 @@ export class GestionCM05Component extends ListBaseComponent {
             },
         ];
 
+        this.listarCabeceras();
     }
 
     onCabeceraClick(data) {
@@ -404,7 +392,7 @@ export class GestionCM05Component extends ListBaseComponent {
     }
 
     listarCabeceras() {
-        this.unsubscribe();
+        this.getCombos();
         try {
             this.subscription = this.service.listarCabeceras().subscribe(
                 result => {
@@ -417,8 +405,6 @@ export class GestionCM05Component extends ListBaseComponent {
                     } else {
                         this.cabeceras = result;
                         this.cabeceras.forEach(x => {
-                            x.Estado = this.estados.find(e => e.value == x.EstadoId).label;
-                            x.Secuencia = this.secuencias.find(s => s.value == x.SecuenciaId).label;
                             x.FechaCarga = x.FechaCarga == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaCarga));
                             x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
                         });
@@ -457,11 +443,11 @@ export class GestionCM05Component extends ListBaseComponent {
                         } else {
                             this.messageService.add({ key:'toastPopupDetalles', severity: 'success', summary: 'Cabecera actualizada', detail: result.Mensaje });
 
-                            this.selectedCabecera.Secuencia = this.selectedCabecera.SecuenciaId ? this.secuencias.find(s => s.value == this.selectedCabecera.SecuenciaId).label : '';
                             this.selectedCabecera.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(result.FechaUltimaModificacion));
 
                             this.editandoCabecera = false;
                             this.cabeceraEditando = null;
+                            this.selectedCabecera.Estado = result.estadoCabecera;
 
                             this.listarCabeceras();
                         }
@@ -477,6 +463,35 @@ export class GestionCM05Component extends ListBaseComponent {
         }
 
         return false; //<-- Prevent Refresh
+    }
+
+    getCombos() {
+            try {
+                this.subscription = this.service.getCombos().subscribe(
+                    (result: any) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.messageService.add({ key: 'toastPopupDetalles', severity: 'error', summary: 'No se pudo cargar los estados.', detail: result.error });
+                        } else if (result.info != undefined) {
+                            this.messageService.add({ key: 'toastPopupDetalles', severity: 'info', summary: 'No se pudo cargar los estados.', detail: result.info });
+                        } else {
+                            this.estados = [];
+                            result.estados.forEach(e => this.estados.push({ label: e.Descripcion, value: e.Id }));
+                            this.secuencias = [];
+                            result.secuencias.forEach(e => this.secuencias.push({ label: e.Descripcion, value: e.Id }));
+                        }
+                    },
+                    error => {
+                        this.messageService.add({ key: 'toastPopupDetalles', severity: 'error', summary: 'No se pudo cargar los estados', detail: error.message });
+                    }
+                );
+            } catch (e) {
+                this.messageService.add({ key: 'toastPopupDetalles', severity: 'error', detail: e });
+                return false; //<-- Prevent Refresh
+            }
+    
+            return false; //<-- Prevent Refresh
     }
 
     validarCabeceraEditada() {

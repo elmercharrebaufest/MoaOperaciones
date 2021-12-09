@@ -30,13 +30,13 @@
                             Razón Social
                             <p-sortIcon [field]="'RazonSocial'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th [pSortableColumn]="'Estado'" class="col-md-1 th-cabecera" style="border-bottom:none">
+                        <th [pSortableColumn]="'Estado.Descripcion'" class="col-md-1 th-cabecera" style="border-bottom:none">
                             Estado
-                            <p-sortIcon [field]="'Estado'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                            <p-sortIcon [field]="'Estado.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th [pSortableColumn]="'Secuencia'" class="col-md-1 th-cabecera" rowspan="2">
+                        <th [pSortableColumn]="'Secuencia.Descripcion'" class="col-md-1 th-cabecera" rowspan="2">
                             Secuencia
-                            <p-sortIcon [field]="'Secuencia'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                            <p-sortIcon [field]="'Secuencia.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
                         <th [pSortableColumn]="'CUIT'" class="col-md-2 th-cabecera">
                             CUIT
@@ -90,10 +90,10 @@
                             {{rowData.RazonSocial}}
                         </td>
                         <td class="td-cabecera">
-                            {{rowData.Estado}}
+                            {{rowData.Estado.Descripcion}}
                         </td>
                         <td class="td-cabecera">
-                            {{rowData.Secuencia}}
+                            {{rowData.Secuencia.Descripcion}}
                         </td>
                         <td class="td-cabecera">
                             {{rowData.CUIT | mask: '00-00000000-0'}}
@@ -204,16 +204,29 @@
                     </div>
                     <div class="col-5 col-sm-5">
                         <label *ngIf="!editandoCabecera; else elseSecuenciaBlock">
-                            {{selectedCabecera.Secuencia}}
+                            {{selectedCabecera.Secuencia.Descripcion}}
                         </label>
                         <ng-template #elseSecuenciaBlock>
                             <p-dropdown [options]="secuencias" [(ngModel)]="selectedCabecera.SecuenciaId" [style]="{'width':'75% !important'}"
                                         [showClear]="true" [autoDisplayFirst]="false"></p-dropdown>
                         </ng-template>
                     </div>
+                    <div class="col-2 col-sm-2 col-sm-offset-5">
+                        <label class="headerDetalle">
+                            Estado:
+                        </label>
+                    </div>
+                    <div class="col-5 col-sm-5">
+                        <p-dropdown [options]="estados" [(ngModel)]="selectedCabecera.EstadoId" [style]="{'width':'75% !important'}"
+                        [showClear]="true" [autoDisplayFirst]="false" (onChange)="guardarCabeceraEditada()"></p-dropdown>
+                        <ng-template>
+                            <p-dropdown [options]="estados" [(ngModel)]="selectedCabecera.EstadoId" [style]="{'width':'75% !important'}"
+                                        [showClear]="true" [autoDisplayFirst]="false" (onChange)="guardarCabeceraEditada()"></p-dropdown>
+                        </ng-template>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-1" style="width:12%" *ngIf="selectedCabecera.Estado=='Pendiente'">
+            <div class="col-sm-1" style="width:12%" *ngIf="selectedCabecera.Estado.Descripcion=='Pendiente'">
                 <button *ngIf="!editandoCabecera; else elseBotonesBlock" pButton type="button" (click)="editarCabecera()" class="p-button-secondary" style="background-color: #075088;" icon="fa fa-edit"></button>
                 <ng-template #elseBotonesBlock>
                     <button pButton type="button" (click)="guardarCabeceraEditada()" class="p-button-secondary" style="background-color: #067935 !important;" icon="fa fa-check"></button>
@@ -230,7 +243,7 @@
                         <th class="col-md-1 th-detalle">Fecha Cese</th>
                         <th class="col-md-4 th-detalle">Coeficiente Unificado</th>
                         <th class="col-md-2 th-detalle">Última modificación</th>
-                        <th class="col-md-1 th-detalle" *ngIf="selectedCabecera.Estado=='Pendiente'"></th>
+                        <th class="col-md-1 th-detalle" *ngIf="selectedCabecera.Estado.Descripcion=='Pendiente'"></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex" let-columns="columns">
@@ -253,7 +266,7 @@
                         <td class="td-detalle">
                             {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
                         </td>
-                        <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado=='Pendiente'">
+                        <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado.Descripcion=='Pendiente'">
                             <button pButton type="button" (click)="editarRow(rowData)" class="p-button-secondary" style="background-color: #075088;" icon="fa fa-edit"></button>
                         </td>
                     </tr>
@@ -289,7 +302,7 @@
         </div>
         <p-footer [minHeight]="'auto'">
             <div class="row"></div>
-            <button pButton label="Autorizar" (click)="autorizarCabecera()" [disabled]="selectedCabecera.Estado!='Pendiente'" type="button" icon="fa fa-check-circle" iconPos="right" style="float: right"></button>
+            <button pButton label="Autorizar" (click)="autorizarCabecera()" [disabled]="selectedCabecera.Estado.Descripcion!='Pendiente'" type="button" icon="fa fa-check-circle" iconPos="right" style="float: right"></button>
             <button pButton label="Descargar PDF" (click)="descargarFormularioCM05()" type="button" icon="fa fa-file" iconPos="right" style="float: right"></button>
         </p-footer>
         <p-toast key="toastPopupDetalles"></p-toast>
