@@ -1275,7 +1275,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                var estadoEliminada = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.EstadoSolpSap && x.Descripcion == "Borrada");
+                var estadoEliminada = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.EstadoSolpSap && x.Codigo == "BORRADA");
                 ActualizarEstadoSolp(nroSolp, estadoEliminada.Id);
             }
         }
