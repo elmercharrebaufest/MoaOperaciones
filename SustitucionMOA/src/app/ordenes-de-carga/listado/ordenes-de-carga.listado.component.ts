@@ -10,6 +10,7 @@ import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { Material } from '../../common/models/material';
 import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { Formatter } from '../../common/formatter/Formatter';
+import { SelectItem } from 'primeng/api';
 
 @Component({
     selector: 'app-ordenes-de-carga.listado',
@@ -31,6 +32,20 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     filtroCliente: any = null;
 
     estadoSelected: string = "Todos";
+    estadosSelected: string[] = [
+        "Pendiente",
+        "Confirmado",
+        "Pendiente aprobación crédito",
+        "Entrega generada",
+        "Anulada",
+        "Vencida",
+        "Entrega pendiente",
+        "Anulada por vencimiento",
+        "Error de datos"
+    ];
+    datosAux: any[];
+
+
     productoSelected: string = "Todos";
     listaProductos: any = null;
     private selectUndefinedOptionValue: any;
@@ -46,17 +61,17 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
 
-    descripcionEstadoOrdenCarga = [
-        { label: "Todos", value: 0 },
-        { label: "Pendiente", value: 1 },
-        { label: "Confirmado", value: 2 },
-        { label: "Pendiente aprobación crédito", value: 3 },
-        { label: "Entrega generada", value: 4 },
-        { label: "Anulada", value: 5 },
-        { label: "Entregada", value: 6 },
-        { label: "Vencida", value: 7 },
-        { label: "Entrega pendiente", value: 8 },
-        { label: "Anulada por vencimiento", value: 9 }
+    descripcionEstadoOrdenCarga: SelectItem[] =  [
+        { label: "Pendiente", value: "Pendiente" },
+        { label: "Confirmado", value: "Confirmado" },
+        { label: "Pendiente aprobación crédito", value: "Pendiente aprobación crédito" },
+        { label: "Entrega generada", value: "Entrega generada" },
+        { label: "Anulada", value: "Anulada" },
+        { label: "Entregada", value: "Entregada" },
+        { label: "Vencida", value: "Vencida" },
+        { label: "Entrega pendiente", value: "Entrega pendiente" },
+        { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
+        { label: "Error de datos", value: "Error de datos" }
     ]
 
 
@@ -68,6 +83,15 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         this.getListado();
         this.obtenerMateriales();
     }
+
+    filtrarListado(){
+        if(this.estadosSelected.length < 1 || this.estadosSelected == null){
+            this.data = this.datosAux;
+        } else {
+            this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.DescripcionEstado) >= 0);
+        }
+    }
+
 
     setFiltroProducto(producto: string) {
         this.productoSelected = producto;
@@ -103,8 +127,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.data = result.data;
-                        console.log(this.data, "data")
-                        console.log(result.data, "result")
+                        this.datosAux = result.data;
+                        this.filtrarListado();
                     }
                 },
                 error => {
