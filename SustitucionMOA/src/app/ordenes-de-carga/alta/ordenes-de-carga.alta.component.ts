@@ -46,6 +46,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     puedeEditarContrato: boolean = false;
 
+    public patternPatente = { '0': { pattern: new RegExp('\[a-zA-Z0-9\]') } };
+
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
         private route: ActivatedRoute,
@@ -261,5 +263,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.navService.navegarSeccion(
             "/ordenes-de-carga"
         );
+    }
+
+    onCorredorSeleccionado(proveedor: any) {
+        this.ordenDeCarga.CUITCorredor = proveedor.CUIT;
+    }
+
+    onClienteSeleccionado(proveedor: any) {
+        this.ordenDeCarga.CUITCliente = proveedor.CUIT;
     }
 }

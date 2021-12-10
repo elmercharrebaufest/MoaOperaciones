@@ -33,6 +33,9 @@ namespace SustitucionMOAModel.Entities
         public int? GrupoCompras_Id { get; set; }
         public string Solicitante { get; set; }
         public string NroNecesidad { get; set; }
+        public string TextoSuministro { get; set; }
+        public string Motivo { get; set; }
+        public string Modelo { get; set; }
         public int? GrupoArticulo_Id { get; set; }
         public string CodigosProveedores { get; set; }
         public int? Moneda_Id { get; set; }

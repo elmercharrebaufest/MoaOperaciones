@@ -287,7 +287,8 @@
 
                         <option value="1">Confirma</option>
                         <option value="2">Físico</option>
-                        <option value="3">A cargo del vendedor</option>
+                        <option *ngIf="!isVisibleProveedor()" value="3">A cargo del vendedor</option>
+                        <option *ngIf="isVisibleProveedor()" value="3">A cargo del corredor</option>
                         <option value="4">Carta Oferta</option>
                         <!--<option value="5">Físico</option>-->
                     </select>

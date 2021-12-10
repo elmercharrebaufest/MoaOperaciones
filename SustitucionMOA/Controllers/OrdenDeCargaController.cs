@@ -337,7 +337,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = consultaService.ObtenerMaterial() });
+                return JsonCustom(new { data = consultaService.ObtenerMaterialesSAP() });
             }
             catch (InfoCustomException e)
             {

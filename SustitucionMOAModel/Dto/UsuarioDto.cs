@@ -23,6 +23,7 @@ namespace SustitucionMOAModel.Dto
         public List<string> Permisos { get; set; }
         public bool NuevoUsuario{ get; set; }
         public string ApiKey { get; set; }
+        public string UsuarioSap { get; set; }
 
         public UsuarioDto() { }
 
@@ -32,6 +33,7 @@ namespace SustitucionMOAModel.Dto
             Mail = usuario.Mail;
             Habilitado = usuario.Habilitado;
             CUIT = usuario.CUITRegistro;
+            UsuarioSap = string.IsNullOrEmpty(usuario.UsuarioSap) ? "" : usuario.UsuarioSap; 
 
             switch (usuario.TipoUsuario.NombreCorto)
             {
