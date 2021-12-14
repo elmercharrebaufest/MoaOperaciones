@@ -61,6 +61,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     editarDocumento: boolean = false;
 
+    tipoPosicion: any[];
+
     // solpActual: Solp;
 
     formularioPosicion: [FormGroup];
@@ -70,7 +72,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     proveedoresAutocomplete: any;
 
     camposObligatorios: any[] = [
-        { campo: 'servicio', esObligatorio: true, esFijo: true },
+        { campo: 'tipoPosicion', esObligatorio: true, esFijo: true },
         { campo: 'selectClaseDocumento', esObligatorio: true, esFijo: true },
         { campo: 'centroDeCosto', esObligatorio: false, esFijo: true },
         { campo: 'ordenDeOt', esObligatorio: false, esFijo: true },
@@ -120,6 +122,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.grupoCompras = this.combos.GrupoCompras;
         this.articuloCompras = this.combos.GrupoArticulo;
         this.monedaCompras = this.combos.Moneda;
+        this.tipoPosicion = this.combos.TipoPosicion;
         let claseDocumento = this.model.selectClaseDocumento!== undefined && this.model.selectClaseDocumento.Id>0 ? this.model.selectClaseDocumento : this.claseDocumento[0];
         this.setControlesObligatorios(claseDocumento);
         this.validadorPasoSolpService.formulario = this.formularioActual;

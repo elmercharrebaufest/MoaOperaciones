@@ -403,7 +403,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.selectGrupoCompras = x.GrupoCompras;
                 posActual.selectArticuloCompras = x.GrupoArticulo;
                 posActual.monedaSeleccionada = x.Moneda;
-                posActual.servicio = x.TipoPosicion && x.TipoPosicion.Codigo;
+                posActual.tipoPosicion = x.TipoPosicion && x.TipoPosicion.Codigo;
                 posActual.tipoImputacion = x.TipoImputacion && x.TipoImputacion.Codigo;
                 posActual.rubroElectrico = x.CodigosProveedores.includes('ELECTRICO');
                 posActual.rubroConsultoria = x.CodigosProveedores.includes('CONSULTORIA');
@@ -723,7 +723,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     //Revisa que todos los campos de TODAS las posiciones esten completos
                     this.solpActual.posiciones.forEach(x => {
                         if(!this.listaStringCompleta([
-                            x.servicio,
+                            x.tipoPosicion,
                             x.textoGenerico,
                             x.fechaEntregaServicio,
                             x.fechaDeLiberacion,

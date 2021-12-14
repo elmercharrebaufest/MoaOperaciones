@@ -177,8 +177,10 @@ export class Solp extends CommonResponse {
 export class PosicionSolp {
     public id: any;
     public numeroPosicion: number;
+    public tipoPosicion: string;
 
     public servicio: string;
+    public materiales: string;
     public centroDeCosto: boolean;
     public ordenDeOt: boolean;
     public ordenDeInversion: boolean;
@@ -262,13 +264,16 @@ export class PosicionSolp {
         this.listadoSubPosiciones = new Array<SubPosicionViewModel>();
         //agrega un fila por defecto
         this.listadoSubPosiciones.push(new SubPosicionViewModel(1));
-        this.servicio = 'SERVICIO';
+        // this.servicio = 'SERVICIO';
+        
         this.selectSolicitanteCompras = fiscalContrato;
         this.estado = true;
 
         if (posicionADuplicar) {
             //this.campo = posicionADuplicar.campo
             this.servicio = posicionADuplicar.servicio;
+            this.materiales = posicionADuplicar.materiales;
+            this.tipoPosicion = posicionADuplicar.tipoPosicion;
             this.centroDeCosto = posicionADuplicar.centroDeCosto;
             this.ordenDeOt = posicionADuplicar.ordenDeOt;
             this.ordenDeInversion = posicionADuplicar.ordenDeInversion;
