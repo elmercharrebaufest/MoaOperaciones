@@ -1,7 +1,8 @@
 <div clickOutside (clickOutside)="op.hide($event)">
-  <div class="styled-select">
-    <input #buscador results placeholder="Buscar" id="buscador" type="search" [(ngModel)]="palabraABuscar" name="palabraABuscar" class="fourRounded" aria-controls="tableModal">
-    <button (click)="autoBusqueda($event, op)" id="autoBusqueda" style="display:none"></button>
+  <div>
+    <p-autoComplete #buscador [minLength]="6" [(ngModel)]="palabraABuscar" [suggestions]="resultados" 
+    (completeMethod)="autoBusqueda($event, op)" (onFocus)="autoBusqueda($event, op)" placeholder="Ingresar contrato o CCPP">
+    </p-autoComplete>
   </div>
   <p-overlayPanel #op appendTo="#buscador" autoZIndex="true">
     <spinner-small></spinner-small>
@@ -11,9 +12,32 @@
           Ir a {{resultado.Tipo}} <span class="fa fa-reply pull-right"></span>
         </div>
         <ng-template #descarga>
-          <div class="option sinPaddingLados col-md-12 col-xs-12" (click)="descargaPDFLiquidacion(resultado.Value)">
-            Descargar {{resultado.Tipo}} <span class="fa fa-download pull-right"></span>
-          </div>
+          <ng-container [ngSwitch]="resultado.Code">
+            <!--Seccion descargas-->
+            <div *ngSwitchCase="tipos.ProformaFinalAgrupador">
+
+              <!--Accordion proforma final-->
+              <div class="panel panel-default">
+                <div class="panel-heading seccion" role="tab" id="proformaF">
+                    <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                        href="#collapseMO" aria-expanded="false" aria-controls="collapseMO">
+                        Descargar proforma Final <span class="glyphicon glyphicon-chevron-down pull-right icono" aria-hidden="true"></span>
+                    </a>
+                </div>
+                <div id="collapseMO" class="collapse" aria-labelledby="proformaF" role="tabpanel">
+                    <div class="panel-body resultado-collapse" *ngFor="let liq of resultado.SubOpciones" (click)="descargarComprobante(resultado, liq.Value)">
+                      {{liq.Nombre}} <span class="fa fa-download pull-right"></span>
+                      <hr>
+                    </div>
+                </div>
+            </div>
+
+              
+            </div>
+            <div *ngSwitchDefault class="option sinPaddingLados col-md-12 col-xs-12" (click)="descargarComprobante(resultado)">
+              Descargar {{resultado.Tipo}} <span class="fa fa-download pull-right"></span>
+            </div>
+          </ng-container>
         </ng-template>
         <hr>
       </div>
@@ -23,3 +47,4 @@
     </ng-template>
   </p-overlayPanel>
 </div>
+<mensaje></mensaje>

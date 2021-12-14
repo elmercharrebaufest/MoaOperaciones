@@ -63,6 +63,7 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
   @Output() onProveedorSeleccionado = new EventEmitter<any>();
 
   @Input() corredorId: number;
+  @Input() tipoProveedorId: number;
 
   selectEvent(item) {
     try {
@@ -77,7 +78,7 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
             this.floatMsgService.setInfoMsg(result.info);
           } else {
 
-            item = { ...item, proveedorId: result.Id }
+            item = { ...item, proveedorId: result.Id, CUIT: result.CUIT }
 
             this.onLocalidadSeleccionada.emit(item);
             this.onProveedorSeleccionado.emit(item);
@@ -114,8 +115,11 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
     this.floatMsgService.setMsgsEmpty();
     this.spinnerComponent.showIt();
     this.unsubscribe();
+
+    this.tipoProveedorId = this.tipoProveedorId ? this.tipoProveedorId : 0;
+
     try {
-      this.subscription = this.service.getVendedores("", "").subscribe(
+      this.subscription = this.service.getVendedores("", "", this.tipoProveedorId).subscribe(
         (result) => {
           this.spinnerComponent.hideIt();
           if (result.logout == true) {

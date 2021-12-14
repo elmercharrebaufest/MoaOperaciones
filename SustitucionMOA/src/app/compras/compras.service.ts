@@ -56,6 +56,7 @@ export class ComprasService extends BaseService {
         let solpJson = JSON.stringify({
             Id: solp.id,
             TipoSolp: this.getObjetoCodigo(solp.tipoSolp),
+            TipoSolpSap: solp.tipoSolpSap,
             NombreDeObra: solp.nombreDePedido,
             FiscalContrato: solp.fiscalContrato,
             Telefono: solp.telefono,
@@ -113,6 +114,9 @@ export class ComprasService extends BaseService {
                     Solicitante: x.selectSolicitanteCompras,
                     NroNecesidad: x.necesidadCompras,
                     GrupoArticulo: this.getObjetoCodigo(x.selectArticuloCompras && x.selectArticuloCompras.Codigo),
+                    TextoSuministro: x.textoSuministro,
+                    Motivo: x.motivo,
+                    Modelo: x.modelo,
                     CodigosProveedores: this.getCodigosProveedores(x.rubroElectrico, x.rubroConsultoria, x.rubroCivil, x.rubroIngenieria, x.rubroMecanico),
                     Moneda: this.getObjetoCodigo(x.monedaSeleccionada && x.monedaSeleccionada.Codigo),
                     TipoImputacion: this.getObjetoCodigo(x.tipoImputacion),

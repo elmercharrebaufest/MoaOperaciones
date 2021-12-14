@@ -9,10 +9,13 @@ import { FormGroup } from "@angular/forms";
 import { SubPosicionViewModel } from "./PliegoPasos/solapaSubposiciones/subPosicionViewModel";
 import { CommonResponse } from "../common/models/common-response";
 import { AdjuntosCotizaciones } from "./PliegoPasos/adjuntos-Cotizaciones";
+import { EnumTipoSolpSap } from "./enum-tipo-solp-sap";
 
 export class Solp extends CommonResponse {
     public id: number;
     public tipoSolp: string;
+    public tipoSolpSap: EnumTipoSolpSap;
+    public vincularAPliego: boolean = false;
     public nroSolp: number;
     public NroSolp: string;
     public Adjuntos?: { Id: number, Nombre: string }[];
@@ -212,6 +215,11 @@ export class PosicionSolp {
     public selectSolicitanteCompras: any;
     public necesidadCompras: string;
     public selectArticuloCompras: any;
+    public textoSuministro: string;
+    public motivo: string;
+    public modelo: string;
+
+
 
     // proveedores 
     public rubroElectrico: boolean;
@@ -297,6 +305,9 @@ export class PosicionSolp {
             this.selectSolicitanteCompras = posicionADuplicar.selectSolicitanteCompras;
             this.necesidadCompras = posicionADuplicar.necesidadCompras;
             this.selectArticuloCompras = posicionADuplicar.selectArticuloCompras;
+            this.textoSuministro = posicionADuplicar.textoSuministro;
+            this.motivo = posicionADuplicar.motivo;
+            this.modelo = posicionADuplicar.modelo;
             this.rubroElectrico = posicionADuplicar.rubroElectrico;
             this.rubroCivil = posicionADuplicar.rubroCivil;
             this.rubroMecanico = posicionADuplicar.rubroMecanico;

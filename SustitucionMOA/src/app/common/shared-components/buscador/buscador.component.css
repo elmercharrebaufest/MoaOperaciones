@@ -2,6 +2,8 @@
     border-top: 0px;
     width: 100%;
     max-width: 800px;
+    max-height: 500px;
+    overflow-y: auto;
 }
 ::ng-deep body .ui-overlaypanel > div{
     padding-right: 0px;
@@ -32,3 +34,61 @@
     top: 15px;
     position: relative;
 }
+::ng-deep body .ui-overlaypanel::-webkit-scrollbar{
+    width: 10px;
+    border-radius: 10px;
+  }
+  ::ng-deep body .ui-overlaypanel::-webkit-scrollbar-track{
+    background: white;
+    border-radius: 10px;
+  }
+  ::ng-deep body .ui-overlaypanel::-webkit-scrollbar-thumb{
+    background: #707070; 
+    border-radius: 10px;
+  }
+  ::ng-deep body .ui-overlaypanel::-webkit-scrollbar-thumb:hover{
+    background: #707070;  
+    border-radius: 10px;
+  }
+  ::ng-deep .ui-autocomplete-input{
+      width: 100% !important;
+      position: relative;
+      top: 10px;
+  }
+  ::ng-deep .ui-autocomplete-panel{
+      z-index: 20;
+  }
+  .panel{
+      border: none;
+  }
+  .collapsed:hover, .link-header:hover, .panel-body:hover{
+    color: green;
+    cursor: pointer;
+  }
+  .panel-default > .panel-heading {
+      font-size: 15px;
+      color: black;
+  }
+  .link-header{
+    font-size: 15px;
+    color: #333333;;
+    font-family: Roboto Regular;
+    font-weight: normal;
+    padding-left: 0px;
+    text-transform: none;
+  }
+  .icono{
+    right: 0px;
+    top: 2px;
+  }
+  .panel-body, .resultado-collapse{
+    width: 100%;
+    display: initial !important;
+  }
+.resultado-collapse > hr{
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .collapse.in{
+      padding-top: 15px;
+  }
