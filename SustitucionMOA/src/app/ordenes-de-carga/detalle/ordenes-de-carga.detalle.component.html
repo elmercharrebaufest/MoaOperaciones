@@ -14,6 +14,10 @@
         </strong>
       </div>
       <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
+        <div style="float: right;">
+          <button type="button" pButton icon="fa fa-refresh" (click)="obtenerOrdenDeCarga()"
+            style="background-color: #075088; float: right; top: 5%;"></button> &nbsp;
+        </div>
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande" (click)="editarOrden()"
           id="modalToggleButton">
@@ -78,13 +82,13 @@
                   <p class="blue"><strong>Contrato seleccionado</strong></p>
                   <p style="width:100%">{{ordenDeCarga.ContratoSAP}}</p>
                 </div>
-                <div class="col-xs-12 col-md-6" *ngIf="ordenDeCarga.PedidoIngresado != ''">
+                <div class="col-xs-12 col-md-6" *ngIf="ordenDeCarga.NumeroPedidoIngresado != ''">
                   <p class="blue"><strong>Pedido</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.PedidoIngresado}}</p>
+                  <p style="width:100%">{{ordenDeCarga.NumeroPedidoIngresado}}</p>
                 </div>
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Pedido</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.PedidoSAP}}</p>
+                  <p style="width:100%">{{ordenDeCarga.NumeroPedido}}</p>
                 </div>
 
                 <div class="col-xs-12 col-md-6">

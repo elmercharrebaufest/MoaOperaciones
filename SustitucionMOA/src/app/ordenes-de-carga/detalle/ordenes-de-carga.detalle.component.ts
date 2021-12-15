@@ -156,6 +156,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     obtenerOrdenDeCarga() {
         try {
+            this.unsubscribe();
             this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
                 result => {
                     if (result.logout == true) {
@@ -196,6 +197,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.mensajeComponent.setSuccessMsg(result.data);
+                        this.obtenerOrdenDeCarga()
                     }
                 },
                 error => {
