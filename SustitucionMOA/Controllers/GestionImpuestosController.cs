@@ -53,6 +53,33 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.GESTION_IMPUESTOS_CM05)]
         [HttpGet]
+        public JsonResult GetCombos()
+        {
+            try
+            {
+                return JsonCustom(new 
+                { 
+                    estados = gestionImpuestosService.ListarEstados(),
+                    secuencias = gestionImpuestosService.ListarSecuenciaIngresosBrutosCoeficientesUnificador()
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.GESTION_IMPUESTOS_CM05)]
+        [HttpGet]
         public JsonResult ListarDetalles(int idCabecera)
         {
             try

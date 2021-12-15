@@ -20,5 +20,7 @@ namespace SustitucionMOAUtils.Interfaces
         string ObtenerRutaArchivoFormularioCM05(int idCabecera);
 
         IList<MovimientoIngresosBrutosCoeficienteUnificadoDto> ListarMovimientos(int idCabecera);
+        List<EstadoIngresosBrutosCoeficienteUnificadoDto> ListarEstados();
+        List<SecuenciaIngresosBrutosCoeficienteUnificadoDto> ListarSecuenciaIngresosBrutosCoeficientesUnificador();
     }
 }
