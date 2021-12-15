@@ -1,10 +1,12 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SustitucionMOAAssets;
+using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Helpers;
@@ -1071,6 +1073,68 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual((int)EnumEstadoIngresosBrutosCoeficienteUnificado.RechazadoPorUsuario, ingresosBrutosCoeficienteUnificadosList[0].EstadoIngresosBrutosCoeficienteUnificado_Id);
 
             this.repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+        }
+
+        [Test()]
+        public void ObtenerMaterialesContactoTest()
+        {
+            var materiales = new List<Material>() 
+            { 
+                new Material { Id=1, Nombre="Maiz", TablaSeccionMaterial=TablaSeccionMaterial.Contacto },
+                new Material { Id=2, Nombre="Choclo", TablaSeccionMaterial=TablaSeccionMaterial.Contacto },
+                new Material { Id=3, Nombre="Choclo algo", TablaSeccionMaterial=TablaSeccionMaterial.OrdenDeCarga },
+                new Material { Id=4, Nombre="Maiz algo", TablaSeccionMaterial=TablaSeccionMaterial.OrdenDeCarga },
+            };
+
+            repositorioMock
+            .Setup(x => x.Listar(It.IsAny<Expression<Func<Material, bool>>>(),
+                            It.IsAny<int>(),
+                            It.IsAny<string>(),
+                            It.IsAny<DirOrden>(),
+                            It.IsAny<IEnumerable<Expression<Func<Material, object>>>>()))
+            .Returns(materiales);
+
+            var expected = new List<MaterialDto>()
+            {
+                new MaterialDto { MaterialId=2, Descripcion="Choclo" },
+                new MaterialDto { MaterialId=1, Descripcion="Maiz" }
+            };
+
+            var result = target.ObtenerMaterial(TablaSeccionMaterial.Contacto);
+
+            Assert.AreEqual(expected.Count, result.Count);
+            Assert.AreEqual(expected[0].Descripcion, result[0].Descripcion);
+        }
+
+        [Test()]
+        public void ObtenerMaterialesSapTest()
+        {
+            var materiales = new List<Material>()
+            {
+                new Material { Id=1, Nombre="Maiz", TablaSeccionMaterial=TablaSeccionMaterial.Contacto },
+                new Material { Id=2, Nombre="Choclo", TablaSeccionMaterial=TablaSeccionMaterial.Contacto },
+                new Material { Id=3, Nombre="Choclo algo", TablaSeccionMaterial=TablaSeccionMaterial.OrdenDeCarga },
+                new Material { Id=4, Nombre="Maiz algo", TablaSeccionMaterial=TablaSeccionMaterial.OrdenDeCarga },
+            };
+
+            repositorioMock
+            .Setup(x => x.Listar(It.IsAny<Expression<Func<Material, bool>>>(),
+                            It.IsAny<int>(),
+                            It.IsAny<string>(),
+                            It.IsAny<DirOrden>(),
+                            It.IsAny<IEnumerable<Expression<Func<Material, object>>>>()))
+            .Returns(materiales);
+
+            var expected = new List<MaterialDto>()
+            {
+                new MaterialDto { MaterialId=2, Descripcion="Choclo algo" },
+                new MaterialDto { MaterialId=1, Descripcion="Maiz algo" }
+            };
+
+            var result = target.ObtenerMaterial(TablaSeccionMaterial.OrdenDeCarga);
+
+            Assert.AreEqual(expected.Count, result.Count);
+            Assert.AreEqual(expected[0].Descripcion, result[0].Descripcion);
         }
     }
 }
