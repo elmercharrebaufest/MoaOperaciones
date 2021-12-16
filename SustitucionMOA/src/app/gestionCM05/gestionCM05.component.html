@@ -290,7 +290,7 @@
                             <td class="td-detalle">
                                 {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
                             </td>
-                            <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado=='Pendiente'">
+                            <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado.Descripcion=='Pendiente'">
                                 <button pButton type="button" (click)="guardarRow(rowData)" class="p-button-secondary" style="background-color: #067935 !important" icon="fa fa-check"></button>
                                 <button pButton type="button" (click)="cancelarGuardarRow(rowData)" class="p-button-secondary" style="background-color: #ff4343 !important" icon="fa fa-times"></button>
                             </td>
