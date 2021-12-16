@@ -6,6 +6,6 @@
 
 	<setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
   <setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address"    value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
-
+  <setParameter name="BasicHttpBinding_IServicioSuscriptor Service Endpoint Address" value="http://gsloaccesos01.molinosagro.ad:8081/Servicios/ServicioSuscriptor.svc" />
 
 </parameters>																																																																												 
