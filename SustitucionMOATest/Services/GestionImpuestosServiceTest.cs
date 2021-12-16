@@ -611,13 +611,6 @@ namespace SustitucionMOATest.Services
             this.repositorioMock.Verify(repo => repo.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
             this.repositorioMock.Verify(repo => repo.GuardarCambios(), Times.Once);
 
-            this.consultaServiceMock.Verify(c => c.AgregarComentario(It.IsAny<int>(), It.IsAny<ComentarioDto>(), It.IsAny<System.Web.HttpFileCollectionBase>()), Times.Once);
-            this.consultaServiceMock.Verify(c => c.AgregarComentario(
-                132,
-                It.Is<ComentarioDto>(comentarioDto => comentarioDto.Detalle == "Autorizado" && comentarioDto.Fecha == hoy && comentarioDto.UsuarioId == 3),
-                null),
-                Times.Once);
-
             Assert.AreEqual(221, ingresosBrutosCoeficienteUnificadoAModificar.Id);
             Assert.AreEqual(1, ingresosBrutosCoeficienteUnificadoAModificar.Anticipo);
             Assert.AreEqual("1", ingresosBrutosCoeficienteUnificadoAModificar.CUIT);
