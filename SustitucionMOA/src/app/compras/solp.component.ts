@@ -410,7 +410,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.motivo = x.Motivo;
                 posActual.modelo = x.Modelo;
                 posActual.monedaSeleccionada = x.Moneda;
-                posActual.servicio = x.TipoPosicion && x.TipoPosicion.Codigo;
+                posActual.tipoPosicion = x.TipoPosicion && x.TipoPosicion.Codigo;
                 posActual.tipoImputacion = x.TipoImputacion && x.TipoImputacion.Codigo;
                 posActual.rubroElectrico = x.CodigosProveedores.includes('ELECTRICO');
                 posActual.rubroConsultoria = x.CodigosProveedores.includes('CONSULTORIA');
@@ -656,12 +656,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 this.displayErrorSAP = true;
                             }
 
-                            
-                            // if (result.Solp.NroSolp) {
-                            //     this.finalizarOk = true;
-                            // } else {
-                            //     this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar la SOLP en SAP, intente de nuevo mas tarde o comuniquese con el administrador' });
-                            // }
+                            if (this.solpActual.nroSolp) {
+                                this.displaySAPEditar = true;
+                            }
                         }
                     }
                     this.disabledSave = false;
@@ -740,7 +737,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     //Revisa que todos los campos de TODAS las posiciones esten completos
                     this.solpActual.posiciones.forEach(x => {
                         if(!this.listaStringCompleta([
-                            x.servicio,
+                            x.tipoPosicion,
                             x.textoGenerico,
                             x.fechaEntregaServicio,
                             x.fechaDeLiberacion,

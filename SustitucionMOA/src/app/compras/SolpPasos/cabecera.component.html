@@ -13,8 +13,11 @@
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
                             Clase documento *
                             <div>
-                                <p-dropdown [options]="claseDocumento" [(ngModel)]="model.selectClaseDocumento" placeholder="Elegir clase documento" dataKey="Id" optionLabel="CodigoDescripcion" (onChange)="cambiarClaseDocumento()" [disabled]="model.vincularAPliego" styleClass="claseDocumento">
+                                <p-dropdown [options]="claseDocumento" [(ngModel)]="model.selectClaseDocumento" placeholder="Elegir clase documento" dataKey="Id" optionLabel="CodigoDescripcion" (onChange)="cambiarClaseDocumento()" [disabled]="model.vincularAPliego" styleClass="claseDocumento" [(disabled)]="editarDocumento">
                                 </p-dropdown>>
+                            </div>
+                            <div *ngIf="mostrarValidacion('selectClaseDocumento', model.selectClaseDocumento)">
+                                <p class="text-danger">campo obligatorio</p>
                             </div>
                             <div *ngIf="mostrarValidacion('selectClaseDocumento', model.selectClaseDocumento)">
                                 <p class="text-danger">campo obligatorio</p>
@@ -64,8 +67,19 @@
                                 <div>
                                     Tipo de posici&oacute;n*
                                 </div>
-                                <p-radioButton formControlName="servicio" [ngModelOptions]="{standalone:true}" name="posiciones" value="SERVICIO" label="Servicio (F)" [(ngModel)]="model.posicionActual.servicio" inputId="servicio">
-                                </p-radioButton>
+                                <div>
+                                    <p-radioButton formControlName="tipoPosicion" [ngModelOptions]="{standalone:true}" name="posiciones" value="SERVICIO" label="Servicio (F)" [(ngModel)]="model.posicionActual.tipoPosicion" inputId="tipoPosicion">
+                                    </p-radioButton>
+                                </div>
+                                <div>
+                                    <p-radioButton formControlName="tipoPosicion" [ngModelOptions]="{standalone:true}" name="posiciones" value="MATERIALES" label="Materiales (F)" [(ngModel)]="model.posicionActual.tipoPosicion" inputId="tipoPosicion">
+                                    </p-radioButton>
+                                </div>
+                              
+                                <!-- <div *ngFor="let tipo of tipoPosicion">
+                                    <p-radioButton formControlName="tipoPosicion" [ngModelOptions]="{standalone:true}" name="posiciones" value="{{tipo.Codigo}}" label="{{tipo.Codigo}}" [(ngModel)]="model.posicionActual.tipoPosicion">
+                                    </p-radioButton>
+                                </div> -->
                                 <div *ngIf="mostrarError('servicio')">
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>

@@ -120,7 +120,7 @@ export class ComprasService extends BaseService {
                     CodigosProveedores: this.getCodigosProveedores(x.rubroElectrico, x.rubroConsultoria, x.rubroCivil, x.rubroIngenieria, x.rubroMecanico),
                     Moneda: this.getObjetoCodigo(x.monedaSeleccionada && x.monedaSeleccionada.Codigo),
                     TipoImputacion: this.getObjetoCodigo(x.tipoImputacion),
-                    TipoPosicion: this.getObjetoCodigo('SERVICIO'),
+                    TipoPosicion: this.getObjetoCodigo(x.tipoPosicion),
                     Estado: x.estado,
                     Indice: x.numeroPosicion,
                     Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.filter(sp => {
