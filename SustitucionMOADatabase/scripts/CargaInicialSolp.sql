@@ -3105,6 +3105,8 @@ set @valor=@valor+1;
 end
 END
 
+update Solp set TipoSolpSap=1 where TipoSolpSap=null;
+
 
 
 COMMIT TRAN

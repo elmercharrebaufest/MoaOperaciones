@@ -252,8 +252,9 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_PRITEM.AGMT_ITEM = null;//Contrato marco? No está en este MVP
                 IM_PRITEM.CLOSED = null; //Contrato marco? No está en este MVP
                 IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap;
-                //IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega;
+                IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega;
                 IM_PRITEM.PCKG_NO = numeroPaquete;
+                IM_PRITEM.DELETE_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null);
 
                 solpSAP.IM_PRITEMList.Add(IM_PRITEM);
 
@@ -274,7 +275,7 @@ namespace SustitucionMOAWS.WSConsumers
                     ACCTASSCAT = "X",
                     //PURCH_ORG = "X",
                     CURRENCY = "X",
-                    //PLND_DELRY = "X",
+                    PLND_DELRY = "X",
                     PCKG_NO = "X"
                 });
 

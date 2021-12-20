@@ -135,6 +135,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.PasoCompletado = solp.PasoCompletado;
                 solpEntity.UsuarioCompras_Id = solp.UsuarioCompras.Id; 
                 solpEntity.EstadoPasos = solp.EstadoPasos;
+                solpEntity.TipoSolpSap = solp.TipoSolpSap;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
@@ -1242,6 +1243,35 @@ namespace SustitucionMOAUtils.Services
             }
 
             repositorio.GuardarCambios();
+        }
+
+        public void ObtenerYGuardarSolpSap(ObtenerSolpRequest obtenerSolpRequest)
+        {
+            var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
+            foreach (var item in solp.Posiciones)
+            {
+                var obtenerSolp = repositorio.Obtener<Solp>(x => x.NroSolp == item.NumeroSolicitud);
+                //if (obtenerSolp == null)
+                //{
+                //    Pliego pliegoEntity = null;
+                //    Solp solpEntity = new Solp()
+                //    {
+                //        FechaCreacion = DateTime.Now
+                //    };
+                //    var estadoIncompletoCodigo = EstadoDocumentoSolp.Incompleto.Code();
+                //    var estadoIncompleto = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoIncompletoCodigo);
+                //    solpEntity.EstadoDocumento_Id = estadoIncompleto.Id;
+                //    solpEntity.Pliego = new Pliego();
+                //    solpEntity.Posiciones = new List<SolpPosicion>();
+                //    pliegoEntity = solpEntity.Pliego;
+                //    solpEntity.NroSolp = item.NumeroSolicitud;
+                //    repositorio.Agregar(solpEntity);
+                //    solpEntity.ClaseDocumento = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.ClaseDocumento && x.Codigo == item.TipoDocumento);
+                //    solpEntity.TipoSolpSap = item.EstadoSolpSap == ComprasEnumsExtensions.CodeTipoSolpSap(TipoSolpSap.Mantenimiento) ? (int)TipoSolpSap.Mantenimiento : (int)TipoSolpSap.Sap;
+                //    solpEntity.Posiciones = new List<SolpPosicion>();
+                //    repositorio.GuardarCambios();
+                //}
+            }
         }
 
         public void ActualizarEstadoSolpBulk()

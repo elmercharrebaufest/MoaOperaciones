@@ -36,22 +36,26 @@ namespace SustitucionMOAWS.WSConsumers
             //            en el periodo de tiempo ingresado en IM_PREQ_DATE_I y IM_PREQ_DATE_F.
             string IM_PREQ_NO = req.NumeroSolp;
 
+            string IM_SERVICES = "X";
+            string IM_ACCOUNT_ASSIGNMENT = "X";
+            string IM_DELIVERY_ADDRESS = "X";
+
             ZMPES5640[] IM_USUARIOS = new ZMPES5640[0];
 
             //200 exito - 400 error
             var result = service.SI_MMRFC_OBTENER_SOLPED(
+                        IM_ACCOUNT_ASSIGNMENT,
                         "",
                         "",
                         "",
-                        "",
-                        "",
+                        IM_DELIVERY_ADDRESS,
                         "",
                         "",
                         IM_PREQ_DATE_F,
                         IM_PREQ_DATE_I,
                         IM_PREQ_NO,
                         "",
-                        "",
+                        IM_SERVICES,
                         IM_USUARIOS,
                         out ZMPES5740[] EX_PRACCOUNT,
                         out ZMPES5750[] EX_PRADDRDELIVERY,
