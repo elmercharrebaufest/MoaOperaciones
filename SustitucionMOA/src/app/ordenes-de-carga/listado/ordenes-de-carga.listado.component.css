@@ -25,3 +25,11 @@
     background-color: palegreen;
     border: 1px solid greenyellow;
 }
+
+::ng-deep .ui-multiselect {
+    font-size: 1.5rem !important;
+    font-weight: 400 !important;
+    color: #3f4845 !important;
+    overflow: hidden !important;
+    min-width: 100%;
+}

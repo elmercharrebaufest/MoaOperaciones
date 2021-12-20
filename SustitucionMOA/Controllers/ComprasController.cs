@@ -104,6 +104,7 @@ namespace SustitucionMOA.Controllers
                     EstadosSolpSap = service.ObtenerTablaSap(TablasSap.EstadoSolpSap),
                     CentroBeneficio = service.ObtenerTablaSap(TablasSap.CentroBeneficio),
                     EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),
+                    TipoPosicionSolp = service.ObtenerTablaEstado(TablasGenerales.TipoPosicionSolp),
                     CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
                     {
                         ClaseDocumentoCodigo = x.Padre.Codigo,

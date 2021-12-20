@@ -5,6 +5,7 @@ using SustitucionMOA.Controllers;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -661,6 +662,186 @@ namespace SustitucionMOATest.Controllers
 
             this.gestionImpuestosServiceMock.Verify(g => g.ListarMovimientos(It.IsAny<int>()), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.ListarMovimientos(1), Times.Once);
+        }
+
+        [Test]
+        public void GetCombosOk()
+        {
+            var estados = new List<EstadoIngresosBrutosCoeficienteUnificadoDto>
+            {
+                new EstadoIngresosBrutosCoeficienteUnificadoDto { Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado, Descripcion = EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado.ToFriendlyString() },
+                new EstadoIngresosBrutosCoeficienteUnificadoDto { Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente, Descripcion = EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente.ToFriendlyString() },
+            };
+
+            var secuencias = new List<SecuenciaIngresosBrutosCoeficienteUnificadoDto>
+            {
+                  new SecuenciaIngresosBrutosCoeficienteUnificadoDto { Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado, Descripcion = EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado.ToFriendlyString() },
+                  new SecuenciaIngresosBrutosCoeficienteUnificadoDto { Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente, Descripcion = EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente.ToFriendlyString() },
+            };
+
+            this.gestionImpuestosServiceMock.Setup(g => g.ListarEstados()).Returns(estados);
+            this.gestionImpuestosServiceMock.Setup(g => g.ListarSecuenciaIngresosBrutosCoeficientesUnificador()).Returns(secuencias);
+
+            var result = target.GetCombos();
+            List<EstadoIngresosBrutosCoeficienteUnificadoDto> estadosList = (List<EstadoIngresosBrutosCoeficienteUnificadoDto>)result.Data.GetType().GetProperty("estados").GetValue(result.Data);
+            List<SecuenciaIngresosBrutosCoeficienteUnificadoDto> secuenciasList = (List<SecuenciaIngresosBrutosCoeficienteUnificadoDto>)result.Data.GetType().GetProperty("secuencias").GetValue(result.Data);
+
+            Assert.IsInstanceOf<List<EstadoIngresosBrutosCoeficienteUnificadoDto>>(result.Data.GetType().GetProperty("estados").GetValue(result.Data));
+            Assert.IsInstanceOf<List<SecuenciaIngresosBrutosCoeficienteUnificadoDto>>(result.Data.GetType().GetProperty("secuencias").GetValue(result.Data));
+
+            Assert.AreEqual(2, estadosList.Count);
+            Assert.AreEqual(2, secuenciasList.Count);
+
+            Assert.AreEqual(estados[0].Descripcion, estadosList[0].Descripcion);
+            Assert.AreEqual(estados[1].Descripcion, estadosList[1].Descripcion);
+            Assert.AreEqual(secuencias[0].Descripcion, secuenciasList[0].Descripcion);
+            Assert.AreEqual(secuencias[1].Descripcion, secuenciasList[1].Descripcion);
+
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarEstados(), Times.Once);
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarSecuenciaIngresosBrutosCoeficientesUnificador(), Times.Once);
+        }
+
+        [Test]
+        public void GetCombosInfoCustomExceptionEstados()
+        {
+            var excepcionTest = new InfoCustomException("Algo");
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarEstados())
+                .Throws(excepcionTest);
+
+            var result = target.GetCombos();
+
+            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Algo", infoResultData);
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarEstados(), Times.Once);
+        }
+
+        [Test]
+        public void GetCombosValidationCustomExceptionEstados()
+        {
+            var excepcionTest = new ValidationCustomException("Error de validacion");
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarEstados())
+                .Throws(excepcionTest);
+
+            var result = target.GetCombos();
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Error de validacion", errorResultData);
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarEstados(), Times.Once);
+        }
+
+        [Test]
+        public void GetCombosExceptionEstados()
+        {
+            var excepcionTest = new NullReferenceException("exploto molinos");
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarEstados())
+                .Throws(excepcionTest);
+
+            HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
+
+            JsonResult result = target.GetCombos();
+
+            Assert.IsNotNull(result.Data);
+
+            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarEstados(), Times.Once);
+        }
+
+        [Test]
+        public void GetCombosInfoCustomExceptionSecuencias()
+        {
+            var excepcionTest = new InfoCustomException("Algo");
+
+            var estados = new List<EstadoIngresosBrutosCoeficienteUnificadoDto>
+            {
+                new EstadoIngresosBrutosCoeficienteUnificadoDto { Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado, Descripcion = EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado.ToFriendlyString() },
+                new EstadoIngresosBrutosCoeficienteUnificadoDto { Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente, Descripcion = EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente.ToFriendlyString() },
+            };
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarEstados())
+                .Returns(estados);
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarSecuenciaIngresosBrutosCoeficientesUnificador())
+                .Throws(excepcionTest);
+
+            var result = target.GetCombos();
+
+            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Algo", infoResultData);
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarEstados(), Times.Once);
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarSecuenciaIngresosBrutosCoeficientesUnificador(), Times.Once);
+        }
+
+        [Test]
+        public void GetCombosValidationCustomExceptionSecuencias()
+        {
+            var excepcionTest = new ValidationCustomException("Error de validacion");
+
+            var estados = new List<EstadoIngresosBrutosCoeficienteUnificadoDto>
+            {
+                new EstadoIngresosBrutosCoeficienteUnificadoDto { Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado, Descripcion = EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado.ToFriendlyString() },
+                new EstadoIngresosBrutosCoeficienteUnificadoDto { Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente, Descripcion = EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente.ToFriendlyString() },
+            };
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarEstados())
+                .Returns(estados);
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarSecuenciaIngresosBrutosCoeficientesUnificador())
+                .Throws(excepcionTest);
+
+            var result = target.GetCombos();
+
+            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+
+            Assert.AreEqual("Error de validacion", errorResultData);
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarEstados(), Times.Once);
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarSecuenciaIngresosBrutosCoeficientesUnificador(), Times.Once);
+        }
+
+        [Test]
+        public void GetCombosExceptionSecuencias()
+        {
+            var excepcionTest = new NullReferenceException("exploto molinos");
+
+            var estados = new List<EstadoIngresosBrutosCoeficienteUnificadoDto>
+            {
+                new EstadoIngresosBrutosCoeficienteUnificadoDto { Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado, Descripcion = EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado.ToFriendlyString() },
+                new EstadoIngresosBrutosCoeficienteUnificadoDto { Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente, Descripcion = EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente.ToFriendlyString() },
+            };
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarEstados())
+                .Returns(estados);
+
+            this.gestionImpuestosServiceMock
+                .Setup(g => g.ListarSecuenciaIngresosBrutosCoeficientesUnificador())
+                .Throws(excepcionTest);
+
+            HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
+
+            JsonResult result = target.GetCombos();
+
+            Assert.IsNotNull(result.Data);
+
+            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
+            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarEstados(), Times.Once);
+            this.gestionImpuestosServiceMock.Verify(g => g.ListarSecuenciaIngresosBrutosCoeficientesUnificador(), Times.Once);
         }
     }
 }

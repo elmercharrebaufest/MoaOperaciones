@@ -65,6 +65,7 @@
     <Compile Include="Dto\EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto.cs" />
     <Compile Include="Dto\EstadoDeclaracionSustentableDto.cs" />
     <Compile Include="Dto\CausaConsultaDto.cs" />
+    <Compile Include="Dto\EstadoIngresosBrutosCoeficienteUnificadoDto.cs" />
     <Compile Include="Dto\IngresosBrutosCoeficienteUnificadoDetalleDto.cs" />
     <Compile Include="Dto\IngresosBrutosCoeficienteUnificadoDto.cs" />
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaMasicoDto.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Dto\LogPesificacion\LogPesificacionDto.cs" />
     <Compile Include="Dto\MovimientoIngresosBrutosCoeficienteUnificadoDto.cs" />
     <Compile Include="Dto\PesificacionSapDto.cs" />
+    <Compile Include="Dto\SecuenciaIngresosBrutosCoeficienteUnificadoDto.cs" />
     <Compile Include="Dto\ServicioSolpDto.cs" />
     <Compile Include="Dto\SolpDto.cs" />
     <Compile Include="Dto\SubCategoriaDto.cs" />
@@ -147,6 +149,7 @@
     <Compile Include="Enums\OpcionesDeclaracionCampoSustentable.cs" />
     <Compile Include="Enums\SituacionIVA.cs" />
     <Compile Include="Enums\Tablas.cs" />
+    <Compile Include="Enums\TablaSeccionMaterial.cs" />
     <Compile Include="Models\BuscadorOption.cs" />
     <Compile Include="Models\DataAgro\BasicoContrato.cs" />
     <Compile Include="Models\DataAgro\CookiesDataAgro.cs" />

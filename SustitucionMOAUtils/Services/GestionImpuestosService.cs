@@ -50,6 +50,18 @@ namespace SustitucionMOAUtils.Services
             {
                 Id = x.Id,
                 EstadoId = x.EstadoIngresosBrutosCoeficienteUnificado.Id,
+                Estado = new EstadoIngresosBrutosCoeficienteUnificadoDto() 
+                    { 
+                        Id = x.EstadoIngresosBrutosCoeficienteUnificado.Id,
+                        Descripcion = x.EstadoIngresosBrutosCoeficienteUnificado.Descripcion
+                    },
+                Secuencia = x.SecuenciaIngresosBrutosCoeficienteUnificado_Id == null ?
+                    null : 
+                    new SecuenciaIngresosBrutosCoeficienteUnificadoDto()
+                    {
+                        Id = x.SecuenciaIngresosBrutosCoeficienteUnificado.Id,
+                        Descripcion = x.SecuenciaIngresosBrutosCoeficienteUnificado.Descripcion
+                    },
                 Anticipo = x.Anticipo,
                 CUIT = x.CUIT,
                 FechaCarga = x.FechaCarga,
@@ -113,13 +125,19 @@ namespace SustitucionMOAUtils.Services
             if (ingresosBrutosCoeficienteUnificado == null)
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de coeficientes unificados"));
 
+            var estado = repositorio.Obtener<EstadoIngresosBrutosCoeficienteUnificado>(ingresosBrutosCoeficienteUnificadoDto.EstadoId);
+
+            if (estado == null)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de estados."));
+
             ingresosBrutosCoeficienteUnificado.CUIT = ingresosBrutosCoeficienteUnificadoDto.CUIT;
             ingresosBrutosCoeficienteUnificado.Anticipo = ingresosBrutosCoeficienteUnificadoDto.Anticipo;
             ingresosBrutosCoeficienteUnificado.Sede = ingresosBrutosCoeficienteUnificadoDto.Sede;
             ingresosBrutosCoeficienteUnificado.MalCargada = ingresosBrutosCoeficienteUnificadoDto.MalCargada;
             ingresosBrutosCoeficienteUnificado.SecuenciaIngresosBrutosCoeficienteUnificado_Id = ingresosBrutosCoeficienteUnificadoDto.SecuenciaId;
             ingresosBrutosCoeficienteUnificado.RazonSocial = ingresosBrutosCoeficienteUnificadoDto.RazonSocial;
-
+            ingresosBrutosCoeficienteUnificado.EstadoIngresosBrutosCoeficienteUnificado = estado;
+            ingresosBrutosCoeficienteUnificado.EstadoIngresosBrutosCoeficienteUnificado_Id = ingresosBrutosCoeficienteUnificadoDto.EstadoId;
             ingresosBrutosCoeficienteUnificado.FechaUltimaModificacion = timeProvider.Now();
 
             repositorio.GuardarCambios();
@@ -127,7 +145,8 @@ namespace SustitucionMOAUtils.Services
             return new EditarIngresosBrutosCoeficienteUnificadoResponseDto
             {
                 Mensaje = SuccessMsg.IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK,
-                FechaUltimaModificacion = ingresosBrutosCoeficienteUnificado.FechaUltimaModificacion
+                FechaUltimaModificacion = ingresosBrutosCoeficienteUnificado.FechaUltimaModificacion,
+                estadoCabecera = new EstadoIngresosBrutosCoeficienteUnificadoDto(estado)
             };
         }
 
@@ -142,19 +161,6 @@ namespace SustitucionMOAUtils.Services
             cabecera.FechaUltimaModificacion = timeProvider.Now();
 
             Usuario usuario = repositorio.Obtener<Usuario>(usr => usr.Mail == mailUsuario);
-
-            if(cabecera.Consulta_Id.HasValue && cabecera.Consulta_Id != null)
-            {
-                ComentarioDto comentarioDto = new ComentarioDto
-                {
-                    Detalle = "Autorizado",
-                    Fecha = timeProvider.Now(),
-                    UsuarioId = usuario.Id,
-                };
-
-              
-                this.consultaService.AgregarComentario((int)cabecera.Consulta_Id, comentarioDto, null);
-            }
 
             repositorio.GuardarCambios();
 
@@ -185,6 +191,28 @@ namespace SustitucionMOAUtils.Services
                 x => x.IngresosBrutosCoeficienteUnificado_Id == idCabecera);
 
             return result;
+        }
+
+        public List<EstadoIngresosBrutosCoeficienteUnificadoDto> ListarEstados()
+        {
+            var estados = repositorio.Listar<EstadoIngresosBrutosCoeficienteUnificado>()
+                .Select(e => new EstadoIngresosBrutosCoeficienteUnificadoDto(e)).OrderBy(x => x.Descripcion).ToList();
+
+            if(estados.Count < 1 || estados == null)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de estados"));
+
+            return estados;
+        }
+
+        public List<SecuenciaIngresosBrutosCoeficienteUnificadoDto> ListarSecuenciaIngresosBrutosCoeficientesUnificador()
+        {
+            var secuencias = repositorio.Listar<SecuenciaIngresosBrutosCoeficienteUnificado>()
+                .Select(e => new SecuenciaIngresosBrutosCoeficienteUnificadoDto(e)).OrderBy(x => x.Descripcion).ToList();
+
+            if (secuencias.Count < 1 || secuencias == null)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de secuencias"));
+
+            return secuencias;
         }
     }
 }

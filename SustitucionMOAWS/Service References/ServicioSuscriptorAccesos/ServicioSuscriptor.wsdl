@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://suscriptor.orquestador.molinos.com.ar" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://suscriptor.orquestador.molinos.com.ar" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://suscriptor.orquestador.molinos.com.ar/Imports">
+      <xsd:import schemaLocation="http://localhost:63790/servicios/ServicioSuscriptor.svc?xsd=xsd0" namespace="http://suscriptor.orquestador.molinos.com.ar" />
+      <xsd:import schemaLocation="http://localhost:63790/servicios/ServicioSuscriptor.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:63790/servicios/ServicioSuscriptor.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.Orquest.Dominio.Resultados" />
+      <xsd:import schemaLocation="http://localhost:63790/servicios/ServicioSuscriptor.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IServicioSuscriptor_Recibir_InputMessage">
+    <wsdl:part name="parameters" element="tns:Recibir" />
+  </wsdl:message>
+  <wsdl:message name="IServicioSuscriptor_Recibir_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RecibirResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioSuscriptor_Suscribir_InputMessage">
+    <wsdl:part name="parameters" element="tns:Suscribir" />
+  </wsdl:message>
+  <wsdl:message name="IServicioSuscriptor_Suscribir_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SuscribirResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioSuscriptor_ObtenerQRTransitoTemporal_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerQRTransitoTemporal" />
+  </wsdl:message>
+  <wsdl:message name="IServicioSuscriptor_ObtenerQRTransitoTemporal_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerQRTransitoTemporalResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IServicioSuscriptor">
+    <wsdl:operation name="Recibir">
+      <wsdl:input wsaw:Action="http://suscriptor.orquestador.molinos.com.ar/IServicioSuscriptor/Recibir" message="tns:IServicioSuscriptor_Recibir_InputMessage" />
+      <wsdl:output wsaw:Action="http://suscriptor.orquestador.molinos.com.ar/IServicioSuscriptor/RecibirResponse" message="tns:IServicioSuscriptor_Recibir_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Suscribir">
+      <wsdl:input wsaw:Action="http://suscriptor.orquestador.molinos.com.ar/IServicioSuscriptor/Suscribir" message="tns:IServicioSuscriptor_Suscribir_InputMessage" />
+      <wsdl:output wsaw:Action="http://suscriptor.orquestador.molinos.com.ar/IServicioSuscriptor/SuscribirResponse" message="tns:IServicioSuscriptor_Suscribir_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerQRTransitoTemporal">
+      <wsdl:input wsaw:Action="http://suscriptor.orquestador.molinos.com.ar/IServicioSuscriptor/ObtenerQRTransitoTemporal" message="tns:IServicioSuscriptor_ObtenerQRTransitoTemporal_InputMessage" />
+      <wsdl:output wsaw:Action="http://suscriptor.orquestador.molinos.com.ar/IServicioSuscriptor/ObtenerQRTransitoTemporalResponse" message="tns:IServicioSuscriptor_ObtenerQRTransitoTemporal_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

@@ -13,4 +13,24 @@ namespace SustitucionMOAModel.Enums
         Completado = 3,
         RechazadoPorUsuario = 4,
     }
+
+    public static class EnumEstadoIngresosBrutosCoeficienteUnificadoExtensions
+    {
+        public static string ToFriendlyString(this EnumEstadoIngresosBrutosCoeficienteUnificado me)
+        {
+            switch (me)
+            {
+                case EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente:
+                    return "Pendiente";
+                case EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado:
+                    return "Autorizado";
+                case EnumEstadoIngresosBrutosCoeficienteUnificado.Completado:
+                    return "Completado";
+                case EnumEstadoIngresosBrutosCoeficienteUnificado.RechazadoPorUsuario:
+                    return "RechazadoPorUsuario";
+                default:
+                    return "Estado desconocido";
+            }
+        }
+    }
 }

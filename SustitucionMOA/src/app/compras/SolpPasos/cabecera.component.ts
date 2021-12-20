@@ -55,8 +55,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     editarDocumento: boolean = false;
 
-    // solpActual: Solp;
-
+    tipoPosicion: any[];
+    
     formularioPosicion: [FormGroup];
     formularioActual: FormGroup;
     validFormEliminarPosicion = true;
@@ -64,7 +64,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     proveedoresAutocomplete: any;
 
     camposObligatorios: any[] = [
-        { campo: 'servicio', esObligatorio: true, esFijo: true },
+        { campo: 'tipoPosicion', esObligatorio: true, esFijo: true },
         { campo: 'selectClaseDocumento', esObligatorio: true, esFijo: true },
         { campo: 'centroDeCosto', esObligatorio: false, esFijo: true },
         { campo: 'ordenDeOt', esObligatorio: false, esFijo: true },
@@ -103,6 +103,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.claseDocumento = this.combos.ClaseDocumento;
         this.centroEntrega = this.combos.Centro;
         this.monedaCompras = this.combos.Moneda;
+        this.tipoPosicion = this.combos.TipoPosicion;
         let claseDocumento = this.model.selectClaseDocumento!== undefined && this.model.selectClaseDocumento.Id>0 ? this.model.selectClaseDocumento : this.claseDocumento[0];
         this.setControlesObligatorios(claseDocumento);
         this.validadorPasoSolpService.formulario = this.formularioActual;
@@ -124,6 +125,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
        
         this.editarDocumento = this.disableDocumento();
 
+        this.editarDocumento = this.disableDocumento();
+
         if (this.model.vincularAPliego) {
             this.mensajesEncabezado.push({ severity: 'warn', summary: '', detail: 'No es posible editar esta pantalla desde la plataforma. Para editar dirijase a SAP' });
             this.formularioActual.disable();
@@ -134,11 +137,12 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
     }
 
+    
+
     mostrarValidacion(campoAValidar, vacio){
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
         return (camposVacios != null && vacio == 0);
       }
-
 
     disableDocumento(){
         if(this.model.nroSolp){

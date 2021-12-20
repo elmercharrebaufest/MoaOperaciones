@@ -54,6 +54,7 @@
     <Compile Include="Interfaces\IOrdenCargaConsumerMOA.cs" />
     <Compile Include="Interfaces\IComprasSolpConsumer.cs" />
     <Compile Include="Interfaces\IListarPesificacionesConsumer.cs" />
+    <Compile Include="Interfaces\IServicioSuscriptorAccesosConsumer.cs" />
     <Compile Include="Interfaces\IScatoComandosConsumer.cs" />
     <Compile Include="Interfaces\IScatoConsumer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -322,6 +323,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\ServicioSuscriptorAccesos\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\UsuarioDesbloquearWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -420,6 +426,7 @@
     <Compile Include="WSConsumers\PesificacionGuardarConsumerMOA.cs" />
     <Compile Include="WSConsumers\ProformaFleteProcedenciaConsumerMOA.cs" />
     <Compile Include="WSConsumers\RecepcionesConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ServicioSuscriptorAccesosConsumer.cs" />
     <Compile Include="WSConsumers\ScatoComandosConsumer.cs" />
     <Compile Include="WSConsumers\ScatoConsumer.cs" />
     <Compile Include="WSConsumers\UsuarioCrearConsumerMOA.cs" />
@@ -2010,6 +2017,20 @@
     <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ZonaDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\ServicioSuscriptorAccesos\ServicioSuscriptor.wsdl" />
+    <None Include="Service References\ServicioSuscriptorAccesos\ServicioSuscriptor.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServicioSuscriptorAccesos\ServicioSuscriptor1.wsdl" />
+    <None Include="Service References\ServicioSuscriptorAccesos\ServicioSuscriptor1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServicioSuscriptorAccesos\ServicioSuscriptor2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServicioSuscriptorAccesos\ServicioSuscriptor3.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\UsuarioDesbloquearWebServiceMOA\SI_MPMF_MOAOP_LOGIN_DESBUSR.wsdl" />
     <None Include="Service References\UsuarioDesbloquearWebServiceMOA\SustitucionMOAWS.UsuarioDesbloquearWebServiceMOA.SI_MPMF_MOAOP_LOGIN_DESBUSRResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -2165,6 +2186,7 @@
     <WCFMetadataStorage Include="Service References\RecepcionesWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ScatoComandosWebService\" />
     <WCFMetadataStorage Include="Service References\ScatoWebService\" />
+    <WCFMetadataStorage Include="Service References\ServicioSuscriptorAccesos\" />
     <WCFMetadataStorage Include="Service References\UsuarioDesbloquearWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\UsuarioHabilitarWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\UsuarioInhabilitarWebServiceMOA\" />
@@ -2950,6 +2972,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ListarPesificaciones\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServicioSuscriptorAccesos\ServicioSuscriptor.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServicioSuscriptorAccesos\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServicioSuscriptorAccesos\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServicioSuscriptorAccesos\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

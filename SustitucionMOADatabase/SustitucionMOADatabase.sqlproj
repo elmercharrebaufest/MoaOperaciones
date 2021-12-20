@@ -164,6 +164,7 @@
     <None Include="SustitucionMOADatabase.publish.xml" />
     <None Include="scripts\CargaInicialSolp.sql" />
     <None Include="scripts\Rol Admin plataforma compras.sql" />
+    <None Include="scripts\Insert estado borrado SAP.sql" />
     <None Include="scripts\PostDeployment\TipoMovimientoIngresosBrutosCoeficienteUnificado.sql" />
   </ItemGroup>
   <ItemGroup>
