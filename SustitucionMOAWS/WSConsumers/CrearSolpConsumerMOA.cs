@@ -256,6 +256,8 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_PRITEM.PCKG_NO = numeroPaquete;
                 IM_PRITEM.DELETE_IND = SAPFormatter.FormatearBooleano(!posicion.Estado);
 
+                
+
                 solpSAP.IM_PRITEMList.Add(IM_PRITEM);
 
                 solpSAP.IM_PRITEMXList.Add(new ZMPES5660 {
