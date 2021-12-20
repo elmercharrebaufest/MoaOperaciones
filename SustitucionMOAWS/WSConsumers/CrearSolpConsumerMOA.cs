@@ -254,7 +254,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap;
                 IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega;
                 IM_PRITEM.PCKG_NO = numeroPaquete;
-                IM_PRITEM.DELETE_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null);
+                IM_PRITEM.DELETE_IND = SAPFormatter.FormatearBooleano(!posicion.Estado);
 
                 solpSAP.IM_PRITEMList.Add(IM_PRITEM);
 
