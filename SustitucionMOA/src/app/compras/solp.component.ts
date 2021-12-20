@@ -101,7 +101,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displayErrorSAP: boolean;
     displaySAPVincularPliego: boolean;
     disabledSave = false;
-    
+
+    disabled: boolean = false;
+
     listadoErrores: string[] = new Array<string>();
     displaySAPEditar: boolean;
 

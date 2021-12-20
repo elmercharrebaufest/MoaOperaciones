@@ -56,9 +56,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     editarDocumento: boolean = false;
 
     tipoPosicion: any[];
-
-    // solpActual: Solp;
-
+    
     formularioPosicion: [FormGroup];
     formularioActual: FormGroup;
     validFormEliminarPosicion = true;
@@ -124,6 +122,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.model.posicionActual.selectSolicitanteCompras = this.model.fiscalContrato;
 
         this.model.cargoPasoCinco = true;
+       
+        this.editarDocumento = this.disableDocumento();
 
         this.editarDocumento = this.disableDocumento();
 
@@ -151,7 +151,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             return false;
         }
     }
-
 
     setControlesObligatorios(claseDocumento) {
 
