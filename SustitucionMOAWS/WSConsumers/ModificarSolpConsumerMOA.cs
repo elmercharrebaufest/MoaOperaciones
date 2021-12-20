@@ -276,8 +276,9 @@ namespace SustitucionMOAWS.WSConsumers
                     ACCTASSCAT = "X",
                     //PURCH_ORG = "X",
                     CURRENCY = "X",
-                    //PLND_DELRY = "X",
-                    PCKG_NO = "X"
+                    PLND_DELRY = "X",
+                    PCKG_NO = "X",
+                    DELETE_IND = SAPFormatter.FormatearBooleano(!posicion.Estado)
                 });
 
 
@@ -314,7 +315,7 @@ namespace SustitucionMOAWS.WSConsumers
                     IM_SERVICELINE.DOC_ITEM = docItem;
                     IM_SERVICELINE.OUTLINE = outlineNumber; //Preguntar a Ulises
                     IM_SERVICELINE.SRV_LINE = serviceLineNumber;
-                    //IM_SERVICELINE.DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
+                    IM_SERVICELINE.DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null);
                     //IM_SERVICELINE.SERVICE = "000000000003005912";//
                     //IM_SERVICELINE.SERVICE = subPosicion.CodigoServicioSap.Codigo.ToString();
 
@@ -340,7 +341,7 @@ namespace SustitucionMOAWS.WSConsumers
                         DOC_ITEM = docItem,
                         OUTLINE = outlineNumber, //Preguntar a Ulises
                         SRV_LINE = serviceLineNumber,
-                        //DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
+                        DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
                         SERVICE = (subPosicion.ServicioSolp != null) ? "X" : "",
                         SHORT_TEXT = (subPosicion.ServicioSolp == null) ? "X" : "",
                         QUANTITY = "X",
