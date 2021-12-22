@@ -119,6 +119,8 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+            NotificarTransporte(ordenDeCarga.Id);
+
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
         }
 
@@ -163,6 +165,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             ordenEditar.Observacion = ordenDeCarga.Observacion;
+            ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
 
             foreach (var prop in listaValoresDiferentes)
             {
@@ -186,6 +189,8 @@ namespace SustitucionMOAUtils.Services
             repositorio.AgregarTodos(historialCambios);
             ordenEditar.HistorialCambios.Concat(historialCambios);
             repositorio.GuardarCambios();
+
+            NotificarTransporte(ordenEditar.Id);
 
             if (historialCambios.Count > 0)
             {
