@@ -92,8 +92,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     //Está función va a desaparecer cuando hagamos el refactor de como mostrar los datos de esta pantalla
-    verificarListado() {
-        debugger;
+    verificarListado() {     
         if (this.esComercial) {
             this.mostrarListadoComercial = true;
             return;
@@ -114,8 +113,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return;
         }
     }
-    verificarBotones() {
-        debugger;
+    verificarBotones() {     
         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada) {
             return;
         }
@@ -148,15 +146,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
                 this.mostrarBotonAnular = true;
             }
-
+           
             if (this.ordenDeCarga.ContratoSinCantidadPendiente) {
                 this.mostrarBotonForzarCreacionPedido = true;
             }
         }
     }
 
-    obtenerOrdenDeCarga() {
-        debugger;
+    obtenerOrdenDeCarga() {        
         try {
             this.unsubscribe();
             this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
@@ -167,7 +164,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCarga = result.data;
-                        this.verificarBotones()
+                        this.verificarBotones()                       
                         if (this.ordenDeCarga.MensajeValidacionSAP != "" && this.esInterno) {
                             this.mensajeComponent.setInfoMsg(this.ordenDeCarga.MensajeValidacionSAP)
                         }
@@ -182,8 +179,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
 
-    notificarTransporte() {
-        debugger;
+    notificarTransporte() {       
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
@@ -213,8 +209,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
 
-    verificarTransporte() {
-        debugger;
+    verificarTransporte() {       
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
@@ -246,8 +241,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
-    verificarSituacionCrediticia() {
-        debugger;
+    verificarSituacionCrediticia() {       
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
@@ -277,8 +271,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
-    abrirModalCorredores() {
-        debugger;
+    abrirModalCorredores() {      
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
@@ -309,7 +302,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     seleccionarContrato() {
-        debugger;
+        ;
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
@@ -341,7 +334,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     abrirModalContratos() {
-        debugger;
+        ;
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
