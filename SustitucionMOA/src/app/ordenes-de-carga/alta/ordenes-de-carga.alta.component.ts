@@ -143,7 +143,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.ordenDeCarga.llenar()
     }
 
-    obtenerOrdenDeCarga() {
+    obtenerOrdenDeCarga() {       
         try {
             this.subscriptionDropDowns = this.service.getEditarOrdenDeCarga(this.ordenDeCargaId).subscribe(
                 result => {
@@ -172,7 +172,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
 
-    submit() {
+    submit() {        
         if (!this.validar()) {
             this.spinnerComponent.hideIt();
             return;
