@@ -61,7 +61,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
-            else 
+            else
             {
                 if (usuario.EsCorredor())
                 {
@@ -131,7 +131,7 @@ namespace SustitucionMOAUtils.Services
             var listaValoresDiferentes = ordenEditar.Compare(ordenDeCarga);
             var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
 
-            ordenEditar.NombreChofer = ordenDeCarga.NombreChofer;  
+            ordenEditar.NombreChofer = ordenDeCarga.NombreChofer;
             ordenEditar.ApellidoChofer = ordenDeCarga.ApellidoChofer;
             ordenEditar.CUITChofer = ordenDeCarga.CUITChofer;
             ordenEditar.PatenteAcoplado = ordenDeCarga.PatenteAcoplado;
@@ -187,7 +187,7 @@ namespace SustitucionMOAUtils.Services
             ordenEditar.HistorialCambios.Concat(historialCambios);
             repositorio.GuardarCambios();
 
-            if(historialCambios.Count > 0)
+            if (historialCambios.Count > 0)
             {
                 EnviarMailEdicionOrdenDeCarga(historialCambios);
             }
@@ -229,7 +229,7 @@ namespace SustitucionMOAUtils.Services
             var forzarCreacionStr = forzarCreacion ? "" : "X";
 
             var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.CodigoCorredor, orden.Cantidad, orden.Producto.CodigoSap, orden.NumeroPedidoIngresado, forzarCreacionStr, out string numeroPedido);
-          
+
             var resultadoCrearOrden = false;
             orden.ContratoSinCantidadPendiente = false;
 
@@ -250,7 +250,7 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 orden.CodigoVerificacionSap = result;
-                if(result == "OV-02")
+                if (result == "OV-02")
                 {
                     orden.ContratoSinCantidadPendiente = true;
                     orden.CodigoVerificacionSap = "CC-01";
@@ -297,7 +297,7 @@ namespace SustitucionMOAUtils.Services
                     ordenDeCarga.NumeroPedido = "";
                     ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
                 }
-                
+
                 ordenDeCarga.ActualizarEstado();
             }
             else
@@ -445,8 +445,8 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.ErrorDeCarga);
                 }
 
-                Expression<Func<OrdenDeCarga, bool>> filtro = 
-                    o => o.FechaCarga <= fechaFinDateTime 
+                Expression<Func<OrdenDeCarga, bool>> filtro =
+                    o => o.FechaCarga <= fechaFinDateTime
                     && o.FechaCarga >= fechaIncioDateTime
                     && filtrosEstados.Contains(o.Estado);
 
@@ -468,7 +468,7 @@ namespace SustitucionMOAUtils.Services
                         DescripcionEstado = x.Estado.ToFriendlyString(),
                         ColorSemaforo = x.Estado.ObtenerSemaforo(),
                         EsFacturaAnticipada = (x.NumeroPedidoIngresado != null),
-                        PatenteChasis = x.ChasisAcoplado 
+                        PatenteChasis = x.ChasisAcoplado
                     }).OrderByDescending(y => y.Id).ToList();
             }
             else
@@ -561,7 +561,7 @@ namespace SustitucionMOAUtils.Services
                 NumeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? "-" : orden.NumeroPedido,
                 MensajeValidacionSAP = string.IsNullOrEmpty(orden.DescripcionCodigoVerificacionSap) ? "" : orden.DescripcionCodigoVerificacionSap,
                 ContratoSinCantidadPendiente = orden.ContratoSinCantidadPendiente,
-                DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno 
+                DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno
             };
 
             return ordenDto;
@@ -579,7 +579,7 @@ namespace SustitucionMOAUtils.Services
                 orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
             }
 
-            if(ordenes.Count > 0) repositorio.GuardarCambios();
+            if (ordenes.Count > 0) repositorio.GuardarCambios();
 
             return ordenes;
         }
@@ -615,10 +615,11 @@ namespace SustitucionMOAUtils.Services
 
         public string SeleccionarContrato(int ordenId, string contratoSAP)
         {
+            string resultado = SuccessMsg.OrdenDeCargaActualizada;
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
             orden.ContratoSAP = contratoSAP;
-
+            orden.DescripcionErrorInterno = "";
             orden.ActualizarEstado();
 
             if (!string.IsNullOrEmpty(orden.ContratoSAP) && orden.TransporteExiste)
@@ -627,13 +628,17 @@ namespace SustitucionMOAUtils.Services
 
                 if (creadaEnSaP)
                 {
-                    VerificarSituacionCrediticia(orden, true);
+                    resultado = VerificarSituacionCrediticia(orden, true);
                 }
+            }
+            else
+            {
+                resultado = VerificarTransporte(orden);
             }
 
             repositorio.GuardarCambios();
 
-            return SuccessMsg.OrdenDeCargaActualizada;
+            return resultado;
         }
 
 

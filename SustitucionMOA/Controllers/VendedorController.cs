@@ -55,7 +55,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_VENDEDORES)]
-        public ActionResult GetVendedores(string fechaInicio, string fechaFin, int tipoProveedorId)
+        public ActionResult GetVendedores(string fechaInicio, string fechaFin)
         {
             try
             {

@@ -37,6 +37,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajeError: string = "";
     mensajeSuccess: string = "";
+    CodigoCliente: string = "";
+    CodigoCorredor: string = "";
     private selectUndefinedOptionValue: any;
 
     listaMateriales: Material[];
@@ -153,7 +155,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.ordenDeCarga = result.data;
-
+                        this.CodigoCliente = result.data.CodigoCliente;
+                        this.CodigoCorredor = result.data.CodigoCorredor;
                         if (this.esComercial && result.data.ColorSemaforo != "green") {
                             this.puedeEditarContrato = true;
                         }
@@ -266,6 +269,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     onCorredorSeleccionado(proveedor: any) {
+        console.log(proveedor);
         this.ordenDeCarga.CUITCorredor = proveedor.CUIT;
     }
 

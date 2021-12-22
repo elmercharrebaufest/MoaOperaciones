@@ -16,136 +16,153 @@ import { MensajeComponent } from '../../view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../../view-child/spinner/spinner.component';
 
 @Component({
-  selector: 'app-seleccionar-proveedor',
-  templateUrl: './seleccionar-proveedor.component.html',
-  styleUrls: ['./seleccionar-proveedor.component.css'],
-  providers: [SeleccionarProveedorService],
+    selector: 'app-seleccionar-proveedor',
+    templateUrl: './seleccionar-proveedor.component.html',
+    styleUrls: ['./seleccionar-proveedor.component.css'],
+    providers: [SeleccionarProveedorService],
 })
 
-export class SeleccionarProveedorComponent extends BaseComponent implements OnInit {
+export class SeleccionarProveedorComponent extends BaseComponent {
 
-  @ViewChild("mensajeModal")
-  protected mensajeModalComponent: MensajeComponent;
+    @ViewChild("mensajeModal")
+    protected mensajeModalComponent: MensajeComponent;
 
-  @ViewChild("spinnerModal")
-  protected spinnerModalComponent: SpinnerComponent;
+    @ViewChild("spinnerModal")
+    protected spinnerModalComponent: SpinnerComponent;
 
-  @ViewChild(MensajeComponent)
-  protected mensajeComponent: MensajeComponent;
+    @ViewChild(MensajeComponent)
+    protected mensajeComponent: MensajeComponent;
 
-  @ViewChild(SpinnerComponent)
-  protected spinnerComponent: SpinnerComponent;
+    @ViewChild(SpinnerComponent)
+    protected spinnerComponent: SpinnerComponent;
 
-  constructor(protected service: SeleccionarProveedorService, protected navService: NavService,
-    protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
-    protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    constructor(protected service: SeleccionarProveedorService, protected navService: NavService,
+        protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
+        protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
 
-    super(navService, securytiService, floatMsgService, modalService);
-    this.mensajeComponent = new MensajeComponent();
-    this.spinnerComponent = new SpinnerComponent();
-    this.mensajeModalComponent = new MensajeComponent();
-    this.spinnerModalComponent = new SpinnerComponent();
-  }
+        super(navService, securytiService, floatMsgService, modalService);
+        this.mensajeComponent = new MensajeComponent();
+        this.spinnerComponent = new SpinnerComponent();
+        this.mensajeModalComponent = new MensajeComponent();
+        this.spinnerModalComponent = new SpinnerComponent();
+    }
 
-  data: any;
-  vendedorId: any;
-  filtro: any;
-  selectProveedor: any[];
-  filtroProveedor: any[];
-  selected: any;
-  proveedorId: any;
+    data: any;
+    vendedorId: any;
+    filtro: any;
+    //selectProveedor: any[];
+    filtroProveedor: any[];
+    selected: any;
+    proveedorId: any;
 
-  ngOnInit() {
-    this.getUsuario();
-  }
+    //ngOnInit() {
+    //    this.getUsuario();
+    //    //this.selected = { fecha: null, idVendedor: "C50012088", descVendedor: "ACA", estado: "", estadoMoa: null, proveedorId: 65, CUIT: "30500120882" };
+    //    console.log("init");
+    //}
 
-  @Output() onLocalidadSeleccionada = new EventEmitter<any>();
-  @Output() onProveedorSeleccionado = new EventEmitter<any>();
+    ngOnChanges() {
+        this.getUsuario();
+    }
 
-  @Input() corredorId: number;
-  @Input() tipoProveedorId: number;
+    @Output() onLocalidadSeleccionada = new EventEmitter<any>();
+    @Output() onProveedorSeleccionado = new EventEmitter<any>();
 
-  selectEvent(item) {
-    try {
-      this.subscription = this.service.obtenerProveedorPorCodigo(item.idVendedor).subscribe(
-        (result) => {
-          this.spinnerComponent.hideIt();
-          if (result.logout == true) {
-            this.sessionDataService.logout();
-          } else if (result.error != undefined && result.error != "") {
-            this.floatMsgService.setErrorMsg(result.error);
-          } else if (result.info != undefined) {
-            this.floatMsgService.setInfoMsg(result.info);
-          } else {
+    @Input() corredorId: number;
+    @Input() tipoProveedorId: number;
+    @Input() valorInicial: string;
 
-            item = { ...item, proveedorId: result.Id, CUIT: result.CUIT }
+    selectEvent(item) {
+        try {
+            this.subscription = this.service.obtenerProveedorPorCodigo(item.idVendedor).subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
 
-            this.onLocalidadSeleccionada.emit(item);
-            this.onProveedorSeleccionado.emit(item);
+                        item = { ...item, proveedorId: result.Id, CUIT: result.CUIT }
 
-          }
-        },
-        (error) => {
-          this.spinnerComponent.hideIt();
-          this.floatMsgService.setErrorMsg(error.message);
+                        this.onLocalidadSeleccionada.emit(item);
+                        this.onProveedorSeleccionado.emit(item);
+
+                    }
+                },
+                (error) => {
+                    this.spinnerComponent.hideIt();
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
         }
-      );
-    } catch (e) {
-      this.spinnerComponent.hideIt();
-      this.floatMsgService.setErrorMsg(e);
-      return false; //<-- Prevent Refresh
+
     }
 
-  }
-
-  filterProveedor(event) {
-    let filtered: any[] = [];
-    let query = event.query;
-    for (let i = 0; i < this.data.length; i++) {
-      let proveedor = this.data[i];
-      if (proveedor.descVendedor.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-        filtered.push(proveedor);
-      }
-    }
-
-    this.filtroProveedor = filtered;
-  }
-
-  getUsuario() {
-    this.floatMsgService.setMsgsEmpty();
-    this.spinnerComponent.showIt();
-    this.unsubscribe();
-
-    this.tipoProveedorId = this.tipoProveedorId ? this.tipoProveedorId : 0;
-
-    try {
-      this.subscription = this.service.getVendedores("", "", this.tipoProveedorId).subscribe(
-        (result) => {
-          this.spinnerComponent.hideIt();
-          if (result.logout == true) {
-            this.sessionDataService.logout();
-          } else if (result.error != undefined && result.error != "") {
-            this.floatMsgService.setErrorMsg(result.error);
-          } else if (result.info != undefined) {
-            this.floatMsgService.setInfoMsg(result.info);
-          } else {
-            this.data = result.data.vendedores;
-            this.selectProveedor = [];
-            this.data.forEach(x => this.selectProveedor.push({ label: x.descVendedor, value: x.idVendedor }));
-          }
-        },
-        (error) => {
-          this.spinnerComponent.hideIt();
-          this.floatMsgService.setErrorMsg(error.message);
+    filterProveedor(event) {
+        let filtered: any[] = [];
+        let query = event.query;
+        for (let i = 0; i < this.data.length; i++) {
+            let proveedor = this.data[i];
+            if (proveedor.descVendedor.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+                filtered.push(proveedor);
+            }
         }
-      );
-    } catch (e) {
-      this.spinnerComponent.hideIt();
-      this.floatMsgService.setErrorMsg(e);
-      return false; //<-- Prevent Refresh
+
+        this.filtroProveedor = filtered;
     }
 
-    return false; //<-- Prevent Refresh
-  }
+    getUsuario() {
+        this.floatMsgService.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+
+        this.tipoProveedorId = this.tipoProveedorId ? this.tipoProveedorId : 0;
+
+        try {
+            this.subscription = this.service.getVendedores("", "", this.tipoProveedorId).subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.data = result.data.vendedores;
+                        //this.selectProveedor = [];
+                        //  this.data.forEach(x => this.selectProveedor.push({ label: x.descVendedor, value: x.idVendedor }));
+                        console.log(this.data);
+                        console.log(this.valorInicial);
+                        let xxx = this.valorInicial;
+                        if (this.valorInicial != "") {
+                            let seleccionado = result.data.vendedores.filter(a => a.idVendedor == this.valorInicial);
+                            console.log(seleccionado);
+                            if (seleccionado != null && seleccionado.length > 0) {
+                                this.selected = seleccionado[0];
+                            }
+                        }
+                    }
+                },
+                (error) => {
+                    this.spinnerComponent.hideIt();
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
 
 }

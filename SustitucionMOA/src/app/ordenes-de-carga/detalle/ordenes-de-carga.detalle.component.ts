@@ -230,7 +230,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.mensajeComponent.setSuccessMsg(result.data);
+                        if (result.data != "Orden de carga actualizada correctamente") {
+                            this.mensajeComponent.setInfoMsg(result.data);
+                        } else {
+                            this.mensajeComponent.setSuccessMsg(result.data);
+                        }
                         // this.mostrarBotonNotificarTransporte = false;
                         // this.mostrarBotonVerificarTransporte = false;
                         this.obtenerOrdenDeCarga();
@@ -328,6 +332,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mostrarBotonContratos = false;
                         document.getElementById("closemodalSeleccionarContrato").click();
                         this.obtenerOrdenDeCarga();
+                        this.mensajeComponent.setMsgsEmpty();
                         this.mensajeComponent.setSuccessMsg(result.data);
                     }
                 },
