@@ -14,6 +14,7 @@
 
 
 [TipoImputacion_Id] INT NULL, 
+    [Estado] BIT NULL DEFAULT 1, 
     CONSTRAINT [PK_dbo.SolpSubposicion] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

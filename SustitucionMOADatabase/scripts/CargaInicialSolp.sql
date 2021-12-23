@@ -3107,6 +3107,6 @@ END
 
 update Solp set TipoSolpSap=1 where TipoSolpSap=null;
 
-
+update SolpSubposicion set Estado=1;
 
 COMMIT TRAN

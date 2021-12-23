@@ -285,16 +285,10 @@ namespace SustitucionMOAUtils.Services
                         if (posEntity.Subposiciones == null)
                             posEntity.Subposiciones = new List<SolpSubposicion>();
 
-                        //subposiciones eliminadas 
-                        if (posEntity.Subposiciones.Count > 0)
+                        posEntity.Subposiciones.ToList().ForEach(x =>
                         {
-                            var subposEliminadas = posEntity.Subposiciones.Where(x => pos.Subposiciones == null || !pos.Subposiciones.Any(y => y.Codigo == x.Codigo));
-
-                            foreach (var subpos in subposEliminadas.ToList())
-                            {
-                                repositorio.Remover(subpos);
-                            }
-                        }
+                            x.Estado = false;
+                        });
 
                         if (pos.Subposiciones != null)
                         {
@@ -303,6 +297,8 @@ namespace SustitucionMOAUtils.Services
                                 SolpSubposicion subposEntity = null;
 
                                 subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Codigo == subpos.Codigo);
+
+                                subposEntity.Estado = true;
 
                                 if (subposEntity == null)
                                     subposEntity = new SolpSubposicion();
@@ -471,6 +467,27 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+            if (solp.Posiciones != null)
+            {
+                //posiciones nuevas y actualizadas
+                foreach (var pos in solp.Posiciones)
+                {
+                    SolpPosicion posEntity = null;
+
+                    posEntity = solpEntity.Posiciones.FirstOrDefault(y => y.Codigo == pos.Codigo);
+                    //subposiciones eliminadas 
+                    if (posEntity.Subposiciones.Count > 0)
+                    {
+                        var subposEliminadas = posEntity.Subposiciones.Where(x => pos.Subposiciones == null || !pos.Subposiciones.Any(y => y.Codigo == x.Codigo));
+
+                        foreach (var subpos in subposEliminadas.ToList())
+                        {
+                            repositorio.Remover(subpos);
+                        }
+                    }
+                }
+                repositorio.GuardarCambios();
+            }
             return respuestaGuardarSOLP;
         }
 

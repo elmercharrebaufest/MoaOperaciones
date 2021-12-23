@@ -22,6 +22,7 @@ namespace SustitucionMOAModel.Entities
         public int? Unidad_Id { get; set; }
         public decimal? PrecioBruto { get; set; }
         public int? TipoImputacion_Id { get; set; }
+        public bool? Estado { get; set; }
 
         [ForeignKey("SolpPosicion_Id")]
         public virtual SolpPosicion SolpPosicion { get; set; }
