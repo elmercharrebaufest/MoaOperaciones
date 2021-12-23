@@ -139,15 +139,6 @@ namespace SustitucionMOAUtils.Services
 
             Usuario usuario = repositorio.Obtener<Usuario>(usr => usr.Mail == mailUsuario);
 
-            ComentarioDto comentarioDto = new ComentarioDto
-            {
-                Detalle = "Autorizado",
-                Fecha = timeProvider.Now(),
-                UsuarioId = usuario.Id,
-            };
-
-            this.consultaService.AgregarComentario(cabecera.Consulta_Id, comentarioDto, null);
-
             repositorio.GuardarCambios();
 
             return (SuccessMsg.IngresosBrutosCoeficienteUnificadoAutorizado);
