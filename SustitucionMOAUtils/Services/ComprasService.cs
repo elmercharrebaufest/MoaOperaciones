@@ -298,13 +298,15 @@ namespace SustitucionMOAUtils.Services
 
                                 subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Codigo == subpos.Codigo);
 
-                                subposEntity.Estado = true;
+                                
 
                                 if (subposEntity == null)
                                     subposEntity = new SolpSubposicion();
 
                                 subposEntity.Codigo = subpos.Codigo;
                                 subposEntity.Cantidad = subpos.Cantidad;
+
+                                subposEntity.Estado = true;
 
                                 if (subpos.TipoImputacionValor != null)
                                     subposEntity.TipoImputacionSap = repositorio.Obtener<TablaSap>(x => x.Tabla == subpos.TipoImputacionValor.Tabla && x.Codigo == subpos.TipoImputacionValor.Codigo);
