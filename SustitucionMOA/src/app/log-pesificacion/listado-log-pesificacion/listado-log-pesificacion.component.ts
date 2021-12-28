@@ -19,7 +19,7 @@ export class ListadoLogPesificacionComponent implements OnInit {
 
   public listadoPesificaciones: Array<LogPesificacionViewModel> = [];
   public filtros: FiltroPesificacionViewModel = new FiltroPesificacionViewModel();
-  public orderedByColumn: string = "contrato";
+  public orderedByColumn: string;
   public orderDirection: number = 1;
   public itemsPerPage = "10";
   public fechaFiltro: any;
