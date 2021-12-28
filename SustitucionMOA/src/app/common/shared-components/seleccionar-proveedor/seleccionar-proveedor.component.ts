@@ -55,11 +55,9 @@ export class SeleccionarProveedorComponent extends BaseComponent {
     selected: any;
     proveedorId: any;
 
-    //ngOnInit() {
-    //    this.getUsuario();
-    //    //this.selected = { fecha: null, idVendedor: "C50012088", descVendedor: "ACA", estado: "", estadoMoa: null, proveedorId: 65, CUIT: "30500120882" };
-    //    console.log("init");
-    //}
+    ngOnInit() {
+        this.getUsuario();
+    }
 
     ngOnChanges() {
         this.getUsuario();
