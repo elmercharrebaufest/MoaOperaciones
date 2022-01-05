@@ -94,7 +94,6 @@ namespace SustitucionMOAUtils.Services
 
             ordenDeCarga.Producto = producto;
             ordenDeCarga.NumeroPedido = string.IsNullOrEmpty(ordenDeCarga.NumeroPedidoIngresado) ? "" : ordenDeCarga.NumeroPedidoIngresado;
-            ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
             ordenDeCarga.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
 
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
@@ -102,6 +101,11 @@ namespace SustitucionMOAUtils.Services
             ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
 
             var crearPedido = VerificarOrden(ordenDeCarga, cliente);
+
+            if (ordenDeCarga.ContratoSAP == null)
+            {
+                ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
+            }
 
             repositorio.Agregar(ordenDeCarga);
 
@@ -149,11 +153,14 @@ namespace SustitucionMOAUtils.Services
 
             if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
             {
-                var crearPedido = VerificarOrden(ordenEditar, ordenEditar.Cliente);
+                var crearPedido = !string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP) || VerificarOrden(ordenEditar, ordenEditar.Cliente);
 
                 if (crearPedido)
                 {
-                    ordenEditar.ContratoSAP = ordenEditar.ContratoIngresado;
+                    if(string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP))
+                    {
+                        ordenEditar.ContratoSAP = ordenEditar.ContratoIngresado;
+                    }
 
                     var creadaEnSaP = CrearOrdenEnSAP(ordenEditar, ordenEditar.Cliente, false);
 
@@ -284,7 +291,9 @@ namespace SustitucionMOAUtils.Services
             CC-05	'Pedido entregado completamente'
             CC-00	'OK'
             */
-            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoSAP, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
+            string contrato = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP) ? ordenDeCarga.ContratoIngresado : ordenDeCarga.ContratoSAP;
+
+            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
 
             //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
             //cual es el contrato correcto que le quiere entregar.
@@ -292,9 +301,12 @@ namespace SustitucionMOAUtils.Services
             {
                 if (string.IsNullOrEmpty(ordenDeCarga.NumeroPedido))
                 {
-                    ordenDeCarga.ContratosRespuesta = result;
-                    ordenDeCarga.ContratoSAP = "";
-                    ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
+                    if (string.IsNullOrEmpty(ordenDeCarga.ContratoSAP))
+                    {
+                        ordenDeCarga.ContratosRespuesta = result;
+                        ordenDeCarga.ContratoSAP = "";
+                        ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
+                    }
                 }
                 else
                 {
