@@ -86,7 +86,14 @@
                     [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'contrato' && orderDirection < 0 }"></i>
                 </span>
               </th>
-              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('fecha')">Fecha de creación</th>
+              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('fecha')">Fecha de creación
+              <span>
+                <i
+                  [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'fecha' && orderDirection > 0 }"></i>
+                <i
+                  [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'fecha' && orderDirection < 0 }"></i>
+              </span>
+            </th>
               <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('fijacion')">Fijación
                 <span>
                   <i
@@ -113,7 +120,7 @@
               *ngFor="let pesificacion of listadoPesificaciones | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
               role="row" [class.odd]="!odd">
               <td>{{pesificacion.contrato}}</td>
-              <td>{{pesificacion.fecha}}</td>
+              <td>{{pesificacion.fecha | date:'dd/MM/yyyy hh:mm'}}</td>
               <td>{{pesificacion.fijacion}}</td>
               <td>{{pesificacion.cantidadKilos}}</td>
               <td>{{pesificacion.usuario}}</td>
