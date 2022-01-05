@@ -282,7 +282,8 @@ namespace SustitucionMOAWS.WSConsumers
                     CURRENCY = "X",
                     PLND_DELRY = "X",
                     PCKG_NO = "X",
-                    DELETE_IND = SAPFormatter.FormatearBooleano(eliminarPosicion)
+                    DELETE_IND = "X",
+                    CREATED_BY = "X"
                 });
 
 
