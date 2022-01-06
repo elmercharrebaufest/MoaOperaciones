@@ -104,10 +104,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     UsuarioCreacion_Id = solp.UsuarioActual.Id,
                     FechaCreacion = DateTime.Now
-
-
                 };
 
+                solp.TipoSolpSap = (int)TipoSolpSap.Web;
                 var estadoIncompletoCodigo = EstadoDocumentoSolp.Incompleto.Code();
                 var estadoIncompleto = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoIncompletoCodigo);
                 solpEntity.EstadoDocumento_Id = estadoIncompleto.Id;
