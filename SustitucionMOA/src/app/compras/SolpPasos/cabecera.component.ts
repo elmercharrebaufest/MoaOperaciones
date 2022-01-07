@@ -137,6 +137,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.model.cargoPasoCinco = true;
 
         this.editarDocumento = this.disableDocumento();
+
+        if (this.model.vincularAPliego) {
+            this.formularioActual.disable();
+        }
     }
 
     mostrarValidacion(campoAValidar, vacio){

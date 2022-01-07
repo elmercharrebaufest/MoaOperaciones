@@ -578,12 +578,14 @@ namespace SustitucionMOAUtils.Services
             Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null && x.UsuarioCreacion_Id == usuarioActual.Id;
 
             if (usuarioActual.Permisos.Contains("VER TODAS SOLPS"))
+            {
                 filtro = (x => x.FechaBorrado == null);
+            }
 
             var todasLasSolp = repositorio.Listar(filtro)
                 .Select(x => new SolpDto
                 {
-                    UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
+                    UsuarioActual = x.UsuarioCreacion != null ? new UsuarioDto(x.UsuarioCreacion) : new UsuarioDto(),
                     Id = x.Id,
                     NroSolp = x.NroSolp,
                     NombreDeObra = x.Pliego?.NombreObra,
@@ -606,15 +608,8 @@ namespace SustitucionMOAUtils.Services
         {
 
             var includes = new List<Expression<Func<Solp, object>>>();
-            includes.Add(u => u.Pliego);
-            includes.Add(u => u.Pliego.VisitasMasivas);
-            includes.Add(u => u.Pliego.Archivos);
-            includes.Add(u => u.Posiciones);
-            includes.Add(u => u.Posiciones.Select(y => y.Subposiciones));
-            includes.Add(u => u.UsuarioCreacion);
-            includes.Add(u => u.UsuarioModificacion);
 
-            var x = repositorio.Obtener<Solp>(includes, s => s.Id == idSolp);
+            var x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
 
             if (x == null)
             {
@@ -625,7 +620,7 @@ namespace SustitucionMOAUtils.Services
             var solpDevuelta = new SolpDto()
             {
 
-                UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
+                UsuarioActual = x.UsuarioCreacion != null ? new UsuarioDto(x.UsuarioCreacion) : new UsuarioDto(),
                 Id = x.Id,
                 NroSolp = x.NroSolp,
                 FechaCreacion = x.FechaCreacion,
@@ -656,7 +651,8 @@ namespace SustitucionMOAUtils.Services
                 //EspecificacionesTecnicas = x.EspecificacionesTecnicas,
                 DiasEjecucion = x.Pliego.DiasEjecucion,
                 ObservacionesCotizacion = x.Pliego.ObservacionesCotizacion,
-                JornadaLaboral = x.Pliego.JornadaLaboralDias.Split(",".ToCharArray()).Select(a => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), a)).ToList(),
+                JornadaLaboral = string.IsNullOrEmpty(x.Pliego.JornadaLaboralDias) ? new List<DayOfWeek>() :
+                                x.Pliego.JornadaLaboralDias.Split(",".ToCharArray()).Select(a => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), a)).ToList(),
                 JornadaLaboralDesde = x.Pliego.JornadaLaboralHorasDesde,
                 JornadaLaboralHasta = x.Pliego.JornadaLaboralHorasHasta,
                 ClaseDocumento = x.ClaseDocumento != null ? new TablaSapDto(x.ClaseDocumento) : new TablaSapDto(),
@@ -1270,26 +1266,30 @@ namespace SustitucionMOAUtils.Services
             foreach (var item in solp.Posiciones)
             {
                 var obtenerSolp = repositorio.Obtener<Solp>(x => x.NroSolp == item.NumeroSolicitud);
-                //if (obtenerSolp == null)
-                //{
-                //    Pliego pliegoEntity = null;
-                //    Solp solpEntity = new Solp()
-                //    {
-                //        FechaCreacion = DateTime.Now
-                //    };
-                //    var estadoIncompletoCodigo = EstadoDocumentoSolp.Incompleto.Code();
-                //    var estadoIncompleto = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoIncompletoCodigo);
-                //    solpEntity.EstadoDocumento_Id = estadoIncompleto.Id;
-                //    solpEntity.Pliego = new Pliego();
-                //    solpEntity.Posiciones = new List<SolpPosicion>();
-                //    pliegoEntity = solpEntity.Pliego;
-                //    solpEntity.NroSolp = item.NumeroSolicitud;
-                //    repositorio.Agregar(solpEntity);
-                //    solpEntity.ClaseDocumento = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.ClaseDocumento && x.Codigo == item.TipoDocumento);
-                //    solpEntity.TipoSolpSap = item.EstadoSolpSap == ComprasEnumsExtensions.CodeTipoSolpSap(TipoSolpSap.Mantenimiento) ? (int)TipoSolpSap.Mantenimiento : (int)TipoSolpSap.Sap;
-                //    solpEntity.Posiciones = new List<SolpPosicion>();
-                //    repositorio.GuardarCambios();
-                //}
+                if (obtenerSolp == null)
+                {
+                    Pliego pliegoEntity = null;
+                    Solp solpEntity = new Solp()
+                    {
+                        FechaCreacion = DateTime.Now
+                    };
+                    var estadoIncompletoCodigo = EstadoDocumentoSolp.Incompleto.Code();
+                    var estadoIncompleto = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoIncompletoCodigo);
+                    solpEntity.EstadoDocumento_Id = estadoIncompleto.Id;
+                    solpEntity.Pliego = new Pliego();
+                    solpEntity.Posiciones = new List<SolpPosicion>();
+                    pliegoEntity = solpEntity.Pliego;
+                    pliegoEntity.SupervisorSector = string.Empty;
+                    pliegoEntity.SupervisorTrabajo = string.Empty;
+                    pliegoEntity.JornadaLaboralDias = string.Empty;
+                    solpEntity.NroSolp = item.NumeroSolicitud;
+                    repositorio.Agregar(solpEntity);
+                    solpEntity.ClaseDocumento = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.ClaseDocumento && x.Codigo == item.TipoDocumento);
+                    solpEntity.TipoSolpSap = item.EstadoSolpSap == ComprasEnumsExtensions.CodeTipoSolpSap(TipoSolpSap.Mantenimiento) ? (int)TipoSolpSap.Mantenimiento : (int)TipoSolpSap.Sap;
+                    solpEntity.Posiciones = new List<SolpPosicion>();
+                    solpEntity.EstadoPasos = "0,0,0,0,0,0";
+                    repositorio.GuardarCambios();
+                }
             }
         }
 
