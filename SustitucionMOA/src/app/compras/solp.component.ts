@@ -721,7 +721,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 case EnumPasoSolp.PliegoCotizacion:
                     paso.Completo = true;
                     if(!this.listaStringCompleta([
-                        this.solpActual.ejecucion,
                         this.solpActual.jornadaLaboralDias,
                         this.solpActual.comienzoJornadaLaboral,
                         this.solpActual.terminoJornadaLaboral
