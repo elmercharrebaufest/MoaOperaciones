@@ -245,4 +245,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="CodigoCorredor" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="7ba46e59-cdf3-4b26-a5bc-c1e6b73cdcf8" ChangeDateTime="01/10/2022 16:43:32">
+    <Property Name="ElementName" Value="[dbo].[SolpPosicion].[CantidadSubposicionesAEliminar]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SolpPosicion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CantidadSubposicionesEnSAP" />
+  </Operation>
 </Operations>

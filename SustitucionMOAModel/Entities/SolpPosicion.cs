@@ -39,6 +39,8 @@ namespace SustitucionMOAModel.Entities
         public bool Estado { get; set; }
         public int? Indice { get; set; }
 
+        public int? CantidadSubposicionesEnSAP { get; set; }
+
         [ForeignKey("Solp_Id")]
         public virtual Solp Solp { get; set; }
         [ForeignKey("TipoPosicion_Id")]

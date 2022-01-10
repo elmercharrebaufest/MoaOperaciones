@@ -284,10 +284,19 @@ namespace SustitucionMOAUtils.Services
                         if (posEntity.Subposiciones == null)
                             posEntity.Subposiciones = new List<SolpSubposicion>();
 
-                        posEntity.Subposiciones.ToList().ForEach(x =>
+                        //subposiciones eliminadas 
+                        if (posEntity.Subposiciones.Count > 0)
                         {
-                            x.Estado = false;
-                        });
+                            //posEntity.CantidadSubposicionesAEliminar = 0;
+                            var subposEliminadas = posEntity.Subposiciones.Where(x => pos.Subposiciones == null || !pos.Subposiciones.Any(y => y.Codigo == x.Codigo));
+                            if (!string.IsNullOrEmpty(solpEntity.NroSolp))
+                            {
+                                foreach (var subpos in subposEliminadas.ToList())
+                                {
+                                    repositorio.Remover(subpos);
+                                }
+                            }
+                        }
 
                         if (pos.Subposiciones != null)
                         {
@@ -297,7 +306,7 @@ namespace SustitucionMOAUtils.Services
 
                                 subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Codigo == subpos.Codigo);
 
-                                
+
 
                                 if (subposEntity == null)
                                     subposEntity = new SolpSubposicion();
@@ -462,6 +471,11 @@ namespace SustitucionMOAUtils.Services
                     if (respuestaGuardarSOLP.Errores.Count == 0)
                     {
                         respuestaGuardarSOLP.Mensaje = "OK";
+                        
+                        foreach(var pos in solpEntity.Posiciones)
+                        {
+                            pos.CantidadSubposicionesEnSAP = pos.Subposiciones.Count;
+                        }
                     }
 
                     repositorio.GuardarCambios();
