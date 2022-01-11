@@ -840,7 +840,7 @@ namespace SustitucionMOAUtils.Services
             string asunto = string.Concat("Orden de carga #", orden.Id);
             string cuerpo = string.Format("Orden de carga {0} de cliente {1} no pasó validaciones crediticias. <br> Numero de Contato: {2} <br> Numero de Pedido: {3}"
                 , orden.Id, cliente.RazonSocial, string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP
-                , string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedidoIngresado : orden.PedidoSAP);
+                , (string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedidoIngresado : orden.PedidoSAP)??"");
 
             EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
 
