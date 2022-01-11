@@ -320,7 +320,7 @@ namespace SustitucionMOAWS.WSConsumers
                     IM_SERVICELINE.DOC_ITEM = docItem;
                     IM_SERVICELINE.OUTLINE = outlineNumber; //Preguntar a Ulises
                     IM_SERVICELINE.SRV_LINE = serviceLineNumber;
-                    IM_SERVICELINE.DEL_IND = SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado));
+                    //IM_SERVICELINE.DEL_IND = SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado));
                     //IM_SERVICELINE.SERVICE = "000000000003005912";//
                     //IM_SERVICELINE.SERVICE = subPosicion.CodigoServicioSap.Codigo.ToString();
 
@@ -445,6 +445,28 @@ namespace SustitucionMOAWS.WSConsumers
                         PERCENT = "X"
                     });
 
+                }
+
+                int cantidadSubposicionesAEliminar = (posicion.CantidadSubposicionesEnSAP.HasValue ? posicion.CantidadSubposicionesEnSAP.Value : 0) - posicion.Subposiciones.Count;
+                for (int i = 0; i < cantidadSubposicionesAEliminar; i++)
+                {
+                    numeroSubPosicion++;
+                    serviceLineNumber = $"{numeroSubPosicion:000000000}0";
+
+                    solpSAP.IM_SERVICELINESList.Add(new ZMPES5780
+                    {
+                        DOC_ITEM = docItem,
+                        OUTLINE = outlineNumber, //Preguntar a Ulises
+                        SRV_LINE = serviceLineNumber,
+                        DEL_IND = "X",
+                    });
+                    solpSAP.IM_SERVICELINESXList.Add(new ZMPES5720
+                    {
+                        DOC_ITEM = docItem,
+                        OUTLINE = outlineNumber, //Preguntar a Ulises
+                        SRV_LINE = serviceLineNumber,
+                        DEL_IND = "X",
+                    });
                 }
 
                 /*
