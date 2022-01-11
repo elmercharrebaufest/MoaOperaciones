@@ -47,7 +47,7 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.Corredor_Id = corredor.Id;
                 cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
 
-                if(cliente == null)
+                if (cliente == null)
                 {
                     throw new ValidationCustomException("Su usuario no está habilitado para operar con ese CUIT");
                 }
@@ -104,7 +104,7 @@ namespace SustitucionMOAUtils.Services
             var listaValoresDiferentes = ordenEditar.Compare(ordenDeCarga);
             var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
 
-            ordenEditar.NombreChofer = ordenDeCarga.NombreChofer;  
+            ordenEditar.NombreChofer = ordenDeCarga.NombreChofer;
             ordenEditar.ApellidoChofer = ordenDeCarga.ApellidoChofer;
             ordenEditar.CUITChofer = ordenDeCarga.CUITChofer;
             ordenEditar.PatenteAcoplado = ordenDeCarga.PatenteAcoplado;
@@ -160,7 +160,7 @@ namespace SustitucionMOAUtils.Services
             ordenEditar.HistorialCambios.Concat(historialCambios);
             repositorio.GuardarCambios();
 
-            if(historialCambios.Count > 0)
+            if (historialCambios.Count > 0)
             {
                 EnviarMailEdicionOrdenDeCarga(historialCambios);
             }
@@ -202,7 +202,7 @@ namespace SustitucionMOAUtils.Services
             var forzarCreacionStr = forzarCreacion ? "" : "X";
 
             var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.CodigoCorredor, orden.Cantidad, orden.Producto.CodigoSap, orden.NumeroPedidoIngresado, forzarCreacionStr, out string numeroPedido);
-          
+
             var resultadoCrearOrden = false;
             orden.ContratoSinCantidadPendiente = false;
 
@@ -223,7 +223,7 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 orden.CodigoVerificacionSap = result;
-                if(result == "OV-02")
+                if (result == "OV-02")
                 {
                     orden.ContratoSinCantidadPendiente = true;
                     orden.CodigoVerificacionSap = "CC-01";
@@ -270,7 +270,7 @@ namespace SustitucionMOAUtils.Services
                     ordenDeCarga.NumeroPedido = "";
                     ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
                 }
-                
+
                 ordenDeCarga.ActualizarEstado();
             }
             else
@@ -418,8 +418,8 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.ErrorDeCarga);
                 }
 
-                Expression<Func<OrdenDeCarga, bool>> filtro = 
-                    o => o.FechaCarga <= fechaFinDateTime 
+                Expression<Func<OrdenDeCarga, bool>> filtro =
+                    o => o.FechaCarga <= fechaFinDateTime
                     && o.FechaCarga >= fechaIncioDateTime
                     && filtrosEstados.Contains(o.Estado);
 
@@ -531,7 +531,7 @@ namespace SustitucionMOAUtils.Services
                 NumeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? "-" : orden.NumeroPedido,
                 MensajeValidacionSAP = string.IsNullOrEmpty(orden.DescripcionCodigoVerificacionSap) ? "" : orden.DescripcionCodigoVerificacionSap,
                 ContratoSinCantidadPendiente = orden.ContratoSinCantidadPendiente,
-                DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno 
+                DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno
             };
 
             return ordenDto;
@@ -549,7 +549,7 @@ namespace SustitucionMOAUtils.Services
                 orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
             }
 
-            if(ordenes.Count > 0) repositorio.GuardarCambios();
+            if (ordenes.Count > 0) repositorio.GuardarCambios();
 
             return ordenes;
         }
@@ -838,7 +838,9 @@ namespace SustitucionMOAUtils.Services
             var cliente = repositorio.Obtener<Proveedor>(orden.Cliente_Id);
 
             string asunto = string.Concat("Orden de carga #", orden.Id);
-            string cuerpo = string.Format("Orden de carga {0} de cliente {1} no pasó validaciones crediticias.", orden.Id, cliente.RazonSocial);
+            string cuerpo = string.Format("Orden de carga {0} de cliente {1} no pasó validaciones crediticias. <br> Numero de Contato: {2} <br> Numero de Pedido: {3}"
+                , orden.Id, cliente.RazonSocial, string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP
+                , string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedidoIngresado : orden.PedidoSAP);
 
             EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
 
