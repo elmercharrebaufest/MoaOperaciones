@@ -7,12 +7,13 @@ import { HttpParams } from '@angular/common/http';
 @Injectable()
 export class SeleccionarProveedorService extends BaseService {
 
-  public getVendedores(fecha_inicio: string, fecha_fin: string): Observable<any> {
+  public getVendedores(fecha_inicio: string, fecha_fin: string, tipoProveedorId: number): Observable<any> {
     let params: HttpParams = new HttpParams();
     params = params.set("fechaInicio", fecha_inicio);
     params = params.set("fechaFin", fecha_fin);
+    params = params.set("tipoProveedorId", tipoProveedorId.toString());
 
-    return this.http.get("/api/vendedor/getVendedores", { params: params, headers: this.headers, })
+    return this.http.get("/api/vendedor/AutocompleteProveedores", { params: params, headers: this.headers, })
       .pipe(timeoutWith(30000, observableThrowError(
         new Error(
           "Tiempo de respuesta agotado, por favor intentar nuevamente"

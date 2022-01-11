@@ -6,14 +6,17 @@ using System.Drawing;
 using System.IO;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
+using SustitucionMOAWS.Interfaces;
 
 namespace SustitucionMOAExternalAPI.Controllers
 {
     public class AccesoQrController : ApiController
     {
+        private readonly IServicioSuscriptorAccesosConsumer accesosConsumer;
 
-        public AccesoQrController()
+        public AccesoQrController(IServicioSuscriptorAccesosConsumer accesosConsumer)
         {
+            this.accesosConsumer = accesosConsumer;
         }
 
         [Authorize(Roles = "ACCESO QR")]
@@ -22,9 +25,7 @@ namespace SustitucionMOAExternalAPI.Controllers
             try
             {
                 Log.ExternalAPIInfo(string.Format("Se solicita qr para email {0}", email));
-
-                //llamar al servicio de accesos para obtener el token del qr
-                var tokenQr = email;
+                var tokenQr = accesosConsumer.ObtenerQRTransitoTemporal(email);
 
                 QRCodeGenerator qrGenerator = new QRCodeGenerator();
                 QRCodeData qrCodeData = qrGenerator.CreateQrCode(tokenQr, QRCodeGenerator.ECCLevel.Q);

@@ -24,6 +24,7 @@ namespace SustitucionMOAModel.Dto
         public string Entrega { get; set; }
         public bool EsFacturaAnticipada { get; set; }
         public string Fecha { get; set; }
+        public string PatenteChasis { get; set; }
     }
 
     public class OrdenDeCargaEditarDto
@@ -43,8 +44,14 @@ namespace SustitucionMOAModel.Dto
             Observacion = orden.Observacion;
             ContratoIngresado = orden.ContratoIngresado;
             Cantidad = orden.Cantidad;
-            NumeroPedidoIngresado = orden.NumeroPedidoIngresado;
+            NumeroPedidoIngresado = string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedido : orden.NumeroPedidoIngresado;
             ColorSemaforo = orden.Estado.ObtenerSemaforo();
+            Cliente_Id = orden.Cliente_Id;
+            Corredor_Id = orden.Corredor_Id;
+            CUITCorredor = orden.CUITCorredor;
+            CodigoCliente = orden.Cliente.CodigoProveedor;
+            CodigoCorredor = orden.Corredor != null ? orden.Corredor.CodigoProveedor : "";
+
         }
 
         public int Id { get; set; }
@@ -62,7 +69,11 @@ namespace SustitucionMOAModel.Dto
         public int Cantidad { get; set; }
         public string NumeroPedidoIngresado { get; set; }
         public string ColorSemaforo { get; set; }
-
+        public int Cliente_Id { get; set; }
+        public int? Corredor_Id { get; set; }
+        public string CUITCorredor { get; set; }
+        public string CodigoCliente { get; set; }
+        public string CodigoCorredor { get; set; }
     }
 
     public class OrdenDeCargaDetalleDto

@@ -39,16 +39,9 @@
 
         <div id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Estado:</p>
-          <div class="styled-select">
-            <!-- <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroEstado" (select)="setFiltroEstado($event)"></dropdown> -->
-            <select name="estado" [(ngModel)]="estadoSelected">
-              <option disabled hidden [value]="selectUndefinedOptionValue">
-                Estado
-              </option>
-              <option *ngFor="let estado of descripcionEstadoOrdenCarga" value="{{estado.label}}">
-                {{estado.label}}
-              </option>
-            </select>
+          <div>
+            <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected" (onChange)="filtrarListado()" appendTo="body">
+            </p-multiSelect>
           </div>
         </div>
 
@@ -83,7 +76,7 @@
           </div>
         </div>
 
-        <div class="col-xs-12 col-sm-6 col-md-15" style="float: right; height: 70px;">
+        <div style="float: right; height: 70px;">
           <button type="button" pButton icon="fa fa-refresh" (click)="getListado()"
             style="background-color: #075088; float: right; left: -10px; top: 50%;"></button> &nbsp;
         </div>
@@ -96,7 +89,7 @@
       <div class="clearfix myTables" style="overflow-x:auto;">
         <mensaje></mensaje>
         <spinner></spinner>
-        <table *ngIf="data && data.length != 0;" id="tableModal"
+        <table #tabla *ngIf="data && data.length != 0;" id="tableModal"
           class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" cellspacing="0"
           role="grid" aria-describedby="tableModal_info"
           style="width: 100%; padding:10px 0; background: white !important;">
@@ -117,6 +110,7 @@
               <th *ngIf="esInterno || esMesaFas">Pedido</th>
               <!-- <th *ngIf="esComercial || esPuerto || esMesaFas">Estado Pedido</th> -->
               <th>Producto</th>
+              <th>Patente chasis</th>
               <!-- <th *ngIf="esComercial || esPuerto || esMesaFas">Cantidad</th>
               <th *ngIf="esTercero || esComercial || esPuerto || esMesaFas">Destino</th> -->
               <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas"></th>
@@ -129,7 +123,6 @@
                                     | customFilter : 'Contrato' : filtroAlta |
                                     customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected)  |
                                     customFilter : 'Cliente' : filtroCliente |
-                                    customFilter : 'DescripcionEstado' : (estadoSelected  == 'Todos' ? '' : estadoSelected ) |
                                     customFilterBoolean : 'EsFacturaAnticipada' : (pedidoAnticipado == 0 ? null:  (pedidoAnticipado != 2)) : true
                                     | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
                                     | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
@@ -148,6 +141,7 @@
               <td *ngIf="esInterno || esMesaFas">{{ordenDeCarga.Pedido}}</td>
               <!-- <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.EstadoPedido}}</td> -->
               <td>{{ordenDeCarga.Material}}</td>
+              <td>{{ordenDeCarga.PatenteChasis}}</td>
               <!-- <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Cantidad}}</td>
               <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Destino}}</td> -->
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">

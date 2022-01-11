@@ -14,6 +14,10 @@
         </strong>
       </div>
       <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
+        <div style="float: right;">
+          <button type="button" pButton icon="fa fa-refresh" (click)="obtenerOrdenDeCarga()"
+            style="background-color: #075088; float: right; top: 5%;"></button> &nbsp;
+        </div>
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande" (click)="editarOrden()"
           id="modalToggleButton">
@@ -78,13 +82,13 @@
                   <p class="blue"><strong>Contrato seleccionado</strong></p>
                   <p style="width:100%">{{ordenDeCarga.ContratoSAP}}</p>
                 </div>
-                <div class="col-xs-12 col-md-6" *ngIf="ordenDeCarga.PedidoIngresado != ''">
+                <div class="col-xs-12 col-md-6" *ngIf="ordenDeCarga.NumeroPedidoIngresado != ''">
                   <p class="blue"><strong>Pedido</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.PedidoIngresado}}</p>
+                  <p style="width:100%">{{ordenDeCarga.NumeroPedidoIngresado}}</p>
                 </div>
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Pedido</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.PedidoSAP}}</p>
+                  <p style="width:100%">{{ordenDeCarga.NumeroPedido}}</p>
                 </div>
 
                 <div class="col-xs-12 col-md-6">
@@ -129,7 +133,7 @@
           <!-- End Detalles interno -->
 
           <!-- Detalles Tercero -->
-          <div class="row myRow firstSection" *ngIf="esTercero">
+          <div class="row myRow firstSection" *ngIf="mostrarListadoTercero">
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
                 <div class="col-xs-12 col-md-6">
@@ -170,7 +174,7 @@
           <!-- End Detalles Tercero -->
 
           <!-- Detalles Comercial -->
-          <div class="row myRow firstSection" *ngIf="esComercial">
+          <div class="row myRow firstSection" *ngIf="mostrarListadoComercial">
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
                 <div class="col-xs-12 col-md-6">
@@ -231,7 +235,7 @@
           <!-- End Detalles Comercial -->
 
           <!-- Detalles Puerto -->
-          <div class="row myRow firstSection" *ngIf="esPuerto">
+          <div class="row myRow firstSection" *ngIf="mostrarListadoPuerto">
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
                 <div class="col-xs-12 col-md-6">
@@ -280,7 +284,7 @@
           <!-- End Detalles Puerto -->
 
           <!-- Detalles Mesa Fas -->
-          <div class="row myRow firstSection" *ngIf="esMesaFas">
+          <div class="row myRow firstSection" *ngIf="mostrarListadoMesaFas">
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
                 <div class="col-xs-12 col-md-6">
@@ -496,7 +500,7 @@
         </div>
         <div class="modal-body">
           <div class="row" class="col-xs-12 col-sm-12 col-md-12">
-            ¿Está seguro de que desea crear el pedido por menos de 15 toneladas?
+            Quedan menos de 15 ton disponibles, el pedido se creara por 30 ton ¿Desea continuar?
           </div>
         </div>
         <div class="modal-footer" style="border-top:none;">

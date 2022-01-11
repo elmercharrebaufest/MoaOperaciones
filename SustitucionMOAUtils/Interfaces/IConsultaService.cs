@@ -1,6 +1,7 @@
 ﻿using iTextSharp.text;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.ViewModel;
 using SustitucionMOAWS.WSConsumers;
@@ -28,7 +29,8 @@ namespace SustitucionMOAUtils.Interfaces
         string ObtenerRutaArchivo(int archivoId);
         string RecordarComentario(int consultaId);
         string GenerarReclamoImpositivoPdf(ReclamoImpositivo reclamoImpositivo);
-        List<MaterialDto> ObtenerMaterial();
+        List<MaterialDto> ObtenerMaterial(TablaSeccionMaterial tablaSeccionMaterial);
         string AnularConsulta(int consultaId, int usuarioId, string motivoRechazo);
+        string ProcesarCM05(HttpFileCollectionBase archivos, string cuitProveedor, int? comentario_Id = null, bool esCargaInterna = false);
     }
 }

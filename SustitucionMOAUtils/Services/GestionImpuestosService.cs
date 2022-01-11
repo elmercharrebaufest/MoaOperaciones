@@ -31,12 +31,16 @@ namespace SustitucionMOAUtils.Services
         private readonly IRepositorio repositorio;
         private readonly ITimeProvider timeProvider;
         private readonly IConsultaService consultaService;
+        private readonly IAzureService azureService;
 
-        public GestionImpuestosService(IRepositorio repositorio, ITimeProvider timeProvider, IConsultaService consultaService)
+        private readonly string rutaArchivosCM05 = ConfigurationManager.AppSettings["RutaArchivosCM05"];
+
+        public GestionImpuestosService(IRepositorio repositorio, ITimeProvider timeProvider, IAzureService azureService, IConsultaService consultaService)
         {
             this.repositorio = repositorio;
             this.timeProvider = timeProvider;
             this.consultaService = consultaService;
+            this.azureService = azureService;
         }
 
         public IList<IngresosBrutosCoeficienteUnificadoDto> ListarCabeceras()
@@ -46,6 +50,18 @@ namespace SustitucionMOAUtils.Services
             {
                 Id = x.Id,
                 EstadoId = x.EstadoIngresosBrutosCoeficienteUnificado.Id,
+                Estado = new EstadoIngresosBrutosCoeficienteUnificadoDto() 
+                    { 
+                        Id = x.EstadoIngresosBrutosCoeficienteUnificado.Id,
+                        Descripcion = x.EstadoIngresosBrutosCoeficienteUnificado.Descripcion
+                    },
+                Secuencia = x.SecuenciaIngresosBrutosCoeficienteUnificado_Id == null ?
+                    null : 
+                    new SecuenciaIngresosBrutosCoeficienteUnificadoDto()
+                    {
+                        Id = x.SecuenciaIngresosBrutosCoeficienteUnificado.Id,
+                        Descripcion = x.SecuenciaIngresosBrutosCoeficienteUnificado.Descripcion
+                    },
                 Anticipo = x.Anticipo,
                 CUIT = x.CUIT,
                 FechaCarga = x.FechaCarga,
@@ -109,13 +125,19 @@ namespace SustitucionMOAUtils.Services
             if (ingresosBrutosCoeficienteUnificado == null)
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de coeficientes unificados"));
 
+            var estado = repositorio.Obtener<EstadoIngresosBrutosCoeficienteUnificado>(ingresosBrutosCoeficienteUnificadoDto.EstadoId);
+
+            if (estado == null)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de estados."));
+
             ingresosBrutosCoeficienteUnificado.CUIT = ingresosBrutosCoeficienteUnificadoDto.CUIT;
             ingresosBrutosCoeficienteUnificado.Anticipo = ingresosBrutosCoeficienteUnificadoDto.Anticipo;
             ingresosBrutosCoeficienteUnificado.Sede = ingresosBrutosCoeficienteUnificadoDto.Sede;
             ingresosBrutosCoeficienteUnificado.MalCargada = ingresosBrutosCoeficienteUnificadoDto.MalCargada;
             ingresosBrutosCoeficienteUnificado.SecuenciaIngresosBrutosCoeficienteUnificado_Id = ingresosBrutosCoeficienteUnificadoDto.SecuenciaId;
             ingresosBrutosCoeficienteUnificado.RazonSocial = ingresosBrutosCoeficienteUnificadoDto.RazonSocial;
-
+            ingresosBrutosCoeficienteUnificado.EstadoIngresosBrutosCoeficienteUnificado = estado;
+            ingresosBrutosCoeficienteUnificado.EstadoIngresosBrutosCoeficienteUnificado_Id = ingresosBrutosCoeficienteUnificadoDto.EstadoId;
             ingresosBrutosCoeficienteUnificado.FechaUltimaModificacion = timeProvider.Now();
 
             repositorio.GuardarCambios();
@@ -123,7 +145,8 @@ namespace SustitucionMOAUtils.Services
             return new EditarIngresosBrutosCoeficienteUnificadoResponseDto
             {
                 Mensaje = SuccessMsg.IngresosBrutosCoeficienteUnificadoCabeceraActualizadoOK,
-                FechaUltimaModificacion = ingresosBrutosCoeficienteUnificado.FechaUltimaModificacion
+                FechaUltimaModificacion = ingresosBrutosCoeficienteUnificado.FechaUltimaModificacion,
+                estadoCabecera = new EstadoIngresosBrutosCoeficienteUnificadoDto(estado)
             };
         }
 
@@ -149,6 +172,47 @@ namespace SustitucionMOAUtils.Services
             IngresosBrutosCoeficienteUnificado cabecera = repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(idCabecera);
 
             return cabecera.Archivo.Ruta;
+        }
+
+        public IList<MovimientoIngresosBrutosCoeficienteUnificadoDto> ListarMovimientos(int idCabecera)
+        {
+            var result = repositorio.Listar<MovimientoIngresosBrutosCoeficienteUnificado, MovimientoIngresosBrutosCoeficienteUnificadoDto>(
+                x => new MovimientoIngresosBrutosCoeficienteUnificadoDto
+                {
+                    Id = x.Id,
+                    IngresosBrutosCoeficienteUnificado = new IngresosBrutosCoeficienteUnificadoDto { Id = x.IngresosBrutosCoeficienteUnificado_Id },
+                    Observaciones = x.Observaciones,
+                    Fecha = x.Fecha,
+                    TipoId = x.TipoMovimientoIngresosBrutosCoeficienteUnificado_Id,
+                    OrigenId = x.OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id,
+                    EstadoAnteriorId = x.EstadoAnterior_Id,
+                    EstadoPosteriorId = x.EstadoPosterior_Id,
+                },
+                x => x.IngresosBrutosCoeficienteUnificado_Id == idCabecera);
+
+            return result;
+        }
+
+        public List<EstadoIngresosBrutosCoeficienteUnificadoDto> ListarEstados()
+        {
+            var estados = repositorio.Listar<EstadoIngresosBrutosCoeficienteUnificado>()
+                .Select(e => new EstadoIngresosBrutosCoeficienteUnificadoDto(e)).OrderBy(x => x.Descripcion).ToList();
+
+            if(estados.Count < 1 || estados == null)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de estados"));
+
+            return estados;
+        }
+
+        public List<SecuenciaIngresosBrutosCoeficienteUnificadoDto> ListarSecuenciaIngresosBrutosCoeficientesUnificador()
+        {
+            var secuencias = repositorio.Listar<SecuenciaIngresosBrutosCoeficienteUnificado>()
+                .Select(e => new SecuenciaIngresosBrutosCoeficienteUnificadoDto(e)).OrderBy(x => x.Descripcion).ToList();
+
+            if (secuencias.Count < 1 || secuencias == null)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de secuencias"));
+
+            return secuencias;
         }
     }
 }
