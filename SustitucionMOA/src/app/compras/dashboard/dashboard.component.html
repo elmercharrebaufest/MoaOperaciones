@@ -102,7 +102,7 @@
     </section>
 
     <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
-        <p-table #tabla [value]="tablaSolp" [globalFilterFields]="['NroSolp']" sortMode="multiple">
+        <p-table #tabla [value]="tablaSolp" [globalFilterFields]="['NroSolp']" [paginator]="true" [rows]="10" sortMode="multiple">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th data-toggle="tooltip" title="Acciones SOLP"></th>
