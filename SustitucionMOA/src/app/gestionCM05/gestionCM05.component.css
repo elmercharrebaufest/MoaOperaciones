@@ -39,6 +39,16 @@
     vertical-align:central;
 }
 
+.th-movimiento {
+    text-align: center;
+    text-transform: capitalize;
+    font-size: 13px;
+}
+
+.td-movimiento {
+    font-size: 10px;
+}
+
 input {
     width: 100%;    
 }
@@ -64,4 +74,24 @@ input {
 
 ng-multiselect-dropdown /deep/ .multiselect-dropdown > .dropdown-btn {
     font-size: 12px !important;
+}
+
+::ng-deep .ui-dialog-titlebar {
+    background-color: #067935 !important
+}
+
+.titulo-dialog-CM05 {
+    font-family:"Roboto Condensed", Arial, sans-serif !important;
+    color: #FFFFFF !important;
+    font-size: 21px !important;
+    font-weight: bold !important;
+}
+
+::ng-deep .ui-button,
+::ng-deep .ui-tabmenuitem.ui-state-active,
+::ng-deep .ui-paginator-page.ui-state-active {
+    margin-right: 8px;
+    color: #FFFFFF !important;
+    font-weight: bold !important;
+    background-color: #067935 !important;
 }

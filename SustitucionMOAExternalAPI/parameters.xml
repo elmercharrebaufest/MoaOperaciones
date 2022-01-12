@@ -14,5 +14,11 @@
                            /endpoint[@name='BasicHttpBinding_IServicioComandos']
                            /@address" />
 	</parameter>
+  <parameter name="BasicHttpBinding_IServicioSuscriptor Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='BasicHttpBinding_IServicioSuscriptor']
+                           /@address" />
+  </parameter>
 </parameters>
 

@@ -301,6 +301,11 @@
     <Content Include="dist\glyphicons-halflings-regular.*.svg" />
     <Content Include="dist\*.js" />
     <Content Include="dist\styles.*.css" />
+ 
+    <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
+    <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
+    <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.css" />
+    <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.html" />
     <Content Include="UPDATE.DeployParameters.Debug.xml">
       <DependentUpon>UPDATE.DeployParameters.xml</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1037,6 +1042,10 @@
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
     <TypeScriptCompile Include="src\app\common\pipes\customFilterBoolean.ts" />
+
+    <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.service.ts" />
     <TypeScriptCompile Include="src\app\compras\campo-obligatorio-viewModel.ts" />
     <TypeScriptCompile Include="src\app\compras\compras-routing.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.module.ts" />
@@ -1091,6 +1100,8 @@
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\notificaciones.service.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.ts" />
     <TypeScriptCompile Include="src\app\pesificacion\pesificacion-base.component.ts" />
     <TypeScriptCompile Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.spec.ts" />
     <TypeScriptCompile Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.ts" />

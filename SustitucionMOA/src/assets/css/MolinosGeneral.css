@@ -4260,9 +4260,3 @@ input[type=number]::-webkit-inner-spin-button {
   opacity: 1;
 }
 
-.styled-select1 {
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: #3f4845;
-  overflow: hidden;
-}

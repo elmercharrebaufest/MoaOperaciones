@@ -52,10 +52,10 @@ namespace SustitucionMOAModel.Entities
         public string CodigoCorredor { get; set; }
 
         public int? Corredor_Id { get; set; }
-        
+
         [ForeignKey("Corredor_Id")]
         public virtual Proveedor Corredor { get; set; }
-        
+
         public bool TransporteExiste { get; set; }
 
         public string PatenteAcoplado { get; set; }
@@ -79,38 +79,50 @@ namespace SustitucionMOAModel.Entities
         public string CodigoVerificacionSap { get; set; }
         public string DescripcionCodigoVerificacionSap { get; set; }
 
+        public int? UsuarioCreacion_Id { get; set; }
+        [ForeignKey("UsuarioCreacion_Id")]
+        public virtual Usuario UsuarioCreacion { get; set; }
+
         [InverseProperty("OrdenDeCarga")]
         public virtual ICollection<OrdenDeCargaCambiosHistorial> HistorialCambios { get; set; } = new List<OrdenDeCargaCambiosHistorial>();
         public bool ContratoSinCantidadPendiente { get; set; }
         public string DescripcionErrorInterno { get; set; }
+        public string CUITCorredor { get; set; }
 
         public void ActualizarEstado()
         {
             if (Estado != EstadoOrdenDeCarga.Entregada)
             {
-                if (string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido))
+                if (CodigoVerificacionSap == "CC-01")
                 {
-                    Estado = EstadoOrdenDeCarga.Pendiente;
+                    Estado = EstadoOrdenDeCarga.ErrorDeCarga;
                 }
                 else
                 {
-                    if (InformadaSAP)
+                    if (string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido))
                     {
-                        Estado = EstadoOrdenDeCarga.Confirmado;
-                    }
-                    if (!AprobadoCredito || !TransporteExiste)
-                    {
-                        Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
+                        Estado = EstadoOrdenDeCarga.Pendiente;
                     }
                     else
                     {
-                        if (FechaEntregaGenerada != null)
+                        if (InformadaSAP)
                         {
-                            Estado = EstadoOrdenDeCarga.EntregaGenerada;
+                            Estado = EstadoOrdenDeCarga.Confirmado;
+                        }
+                        if (!AprobadoCredito || !TransporteExiste)
+                        {
+                            Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
                         }
                         else
                         {
-                            Estado = EstadoOrdenDeCarga.EntregaPendiente;
+                            if (FechaEntregaGenerada != null)
+                            {
+                                Estado = EstadoOrdenDeCarga.EntregaGenerada;
+                            }
+                            else
+                            {
+                                Estado = EstadoOrdenDeCarga.EntregaPendiente;
+                            }
                         }
                     }
                 }

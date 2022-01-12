@@ -9,6 +9,7 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.ViewModel;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
@@ -318,7 +319,7 @@ namespace SustitucionMOA.Controllers
                     subcategorias = consultaService.ObtenerSubCategorias(),
                     estados = consultaService.ObtenerEstados(),
                     causas = consultaService.ObtenerCausas(),
-                    materiales = consultaService.ObtenerMaterial(),
+                    materiales = consultaService.ObtenerMaterial(TablaSeccionMaterial.Contacto),
                     isExternal = !obtenerTodos,
                     proveedorId = SessionPersister.ProveedorId
                 });;

@@ -92,7 +92,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let cuentaCorriente of data.cuentasCorrientes | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'docNo' : 'contrato' : filtroNroCteContrato  | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
+                        <tr *ngFor="let cuentaCorriente of data.cuentasCorrientes 
+                        | orderedColumn : {property: orderedByColumn, direction: orderDirection} 
+                        | customFilterOr : 'xblnr' : 'contrato' : filtroNroCteContrato    
+                        | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
                             role="row" [class.odd]="!odd">
                             <td><a (click)="showModalTableResponsive(cuentaCorriente)" class="btnShowModal"><i
                                         class="fa fa-plus fa-lg" aria-hidden="true"></i></a> {{cuentaCorriente.docDate}}

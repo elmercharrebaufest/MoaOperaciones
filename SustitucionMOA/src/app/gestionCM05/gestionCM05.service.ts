@@ -1,6 +1,7 @@
 ﻿import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { first, tap } from 'rxjs/operators';
 import { BaseService } from './../common/services/BaseService';
 
 @Injectable()
@@ -56,6 +57,31 @@ export class GestionCM05Service extends BaseService {
 
         return this.http
             .post('/api/GestionImpuestos/EditarIngresosBrutosCoeficienteUnificado', payload, { headers: this.headers })
+    }
 
+    public getCombos(): Observable<any>{
+        return this.http
+        .get('/api/GestionImpuestos/GetCombos', { headers: this.headers });
+    }
+
+    public cargarCM05(archivo: any = null): Observable<any> {
+        var payload = new FormData();
+
+        if (archivo != null) {
+            for (let i = 0; i < archivo.length; i++) {
+                let fileToUpload = archivo[i];
+                payload.append("file", fileToUpload, fileToUpload.name);
+            }
+        }
+
+        payload.append("file", archivo);
+
+        return this.http
+            .post('/api/GestionImpuestos/CargarCM05', payload, { headers: this.headers });
+    }
+
+    public listarMovimientos(idCabecera): Observable<any> {
+        return this.http
+            .get('/api/GestionImpuestos/ListarMovimientos?idCabecera=' + idCabecera, { headers: this.headers });
     }
 }

@@ -135,6 +135,70 @@ namespace SustitucionMOAUtils.Services
             return response;
         }
 
+        public VendedoresWSMOAResponse AutocompleteProveedores(string usuariomail, string codigoProveedor, string fechaInicio, string fechaFin, int tipoProveedorId)
+        {
+            VendedoresWSMOAResponse response = new VendedoresWSMOAResponse();
+
+            if (tipoProveedorId != 5)
+            {
+                if (fechaInicio == "")
+                {
+                    fechaInicio = DateTime.Now.AddDays(-1).ToShortDateString();
+                }
+                if (fechaFin == "")
+                {
+                    fechaFin = DateTime.Now.ToShortDateString();
+                }
+
+                List<Models.FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                try
+                {
+                    response = new VendedoresConsumerMOA().request(codigoProveedor, fechas);
+                }
+                catch
+                {
+
+                }
+            }
+
+            var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == usuariomail);
+
+            if (usuario.EsAdmin())
+            {
+                var proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == codigoProveedor && p.EstadoAprobacion == EstadoAprobacion.Aprobado);
+
+                if (proveedor != null)
+                {
+                    usuariomail = proveedor.Mail;
+                }
+            }
+
+            var vendedoresAprobados = GetVendedores(usuariomail,
+                v => (v.EstadoAprobacion == EstadoAprobacion.Aprobado)
+                    && v.TipoProveedor.Id == (tipoProveedorId > 0 ? tipoProveedorId : v.TipoProveedor.Id))
+                .Select(v => new Vendedor()
+                {
+                    descVendedor = v.RazonSocial,
+                    estado = "",
+                    idVendedor = v.CodigoProveedor
+                });
+            response.vendedores.AddRange(vendedoresAprobados);
+
+            response.vendedores = response.vendedores.GroupBy(i => new
+            {
+                i.idVendedor,
+                i.descVendedor
+            })
+                .Select(vendedor => vendedor.Skip(1)
+                .Aggregate(
+                    vendedor.First(), (a, o) =>
+                    {
+                        return a;
+                    }))
+                .ToList();
+            return response;
+        }
+
         public VendedorHabilitadoWSMOAResponse GetVendedorStatus(string cuit, string user)
         {
             try
@@ -277,9 +341,11 @@ namespace SustitucionMOAUtils.Services
 
             if (usuario.EsAdmin() || usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
             {
+
                 listadoProveedores.AddRange(
                     repositorio
                         .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
+                        .Where(filtro)
                         .Select(proveedor => new ProveedorDto
                         {
                             CodigoProveedor = proveedor.CodigoProveedor ?? "",
