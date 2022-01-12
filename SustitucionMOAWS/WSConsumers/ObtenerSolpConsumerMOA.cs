@@ -347,7 +347,7 @@ namespace SustitucionMOAWS.WSConsumers
                     UnidadMedida = posicion.UNIT,
                     CantidadString = SAPFormatter.FormatearCantidad(posicion.QUANTITY, posicion.UNIT),
                     FechaSolicitud = SAPFormatter.FormatearFecha(posicion.PREQ_DATE),
-                    FechaEntrega = SAPFormatter.FormatearFecha(posicion.DELIV_DATE),
+                    FechaEntrega = SAPFormatter.GetDateTime(posicion.DELIV_DATE),
                     FechaEstimadaLiberacion = SAPFormatter.FormatearFecha(posicion.REL_DATE),
                     DiasTratamientoEntrada = posicion.GR_PR_TIME,
                     PrecioSolp = posicion.PREQ_PRICE,
@@ -520,7 +520,7 @@ namespace SustitucionMOAWS.WSConsumers
         public decimal Cantidad { get; set; }
         public string UnidadMedida { get; set; }
         public string FechaSolicitud { get; set; }
-        public string FechaEntrega { get; set; }
+        public DateTime FechaEntrega { get; set; }
         public string FechaEstimadaLiberacion { get; set; }
         public decimal DiasTratamientoEntrada { get; set; }
         public decimal PrecioSolp { get; set; }

@@ -155,6 +155,7 @@
     <Build Include="DBO\Tables\TipoMovimientoIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\PostDeployment\EstadoIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\CreacionRolAccesoQr.sql" />
+    <Build Include="DBO\Tables\TipoImputacionSAP.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
