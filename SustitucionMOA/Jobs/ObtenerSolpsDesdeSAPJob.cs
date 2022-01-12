@@ -29,8 +29,8 @@ namespace SustitucionMOA.Jobs
             {
                 ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
                 {
-                    FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString()),
-                    FechaHasta = DateTime.Now,
+                    FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
+                    FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
                     CreadoPorUsuarios = new List<string>(),
                 };
                 _comprasService.ObtenerYGuardarSolpSap(obtenerSolpRequest);
