@@ -14,19 +14,21 @@
 	<setParameter name="SpaUrl Config" value="https://moaoperacionesqa.molinosagro.com.ar:9002/web" />
 
 	<setParameter name="ida:RedirectUri Config" value="https://moaoperacionesqa.molinosagro.com.ar:9002/" />
-	<setParameter name="ida:Tenant Config" value="webOpDev.onmicrosoft.com" />
-	<setParameter name="ida:TenantId Config" value="52797f85-e8e3-4d20-b3bf-70cc5e60ee71" />
-	<setParameter name="ida:ClientId Config" value="af885dee-a5a6-48b3-ac9a-105f9aec5ca6" />
-	<setParameter name="ida:ClientSecret Config" value="-Hl7Fb.1l_Y_227ojF1egefB3UTGt.2C6t" />
-	<setParameter name="ida:AadInstance Config" value="https://webOpDev.b2clogin.com/tfp/{0}/{1}" />
-	<setParameter name="ida:SignUpPolicyId Config" value="B2C_1_RegistroConLogin" />
-	<setParameter name="ida:SignInPolicyId Config" value="B2C_1_RegistroConLogin" />
-	<setParameter name="ida:SignUpAndSignInPolicyId Config" value="B2C_1_RegistroConLogin" />
+  <setParameter name="ida:Tenant Config" value="moagroQA.onmicrosoft.com" />
+  <setParameter name="ida:TenantId Config" value="196fe16f-d755-45a8-a27d-47856a18d695" />
+  <setParameter name="ida:ClientId Config" value="331d5323-ba12-498c-956c-e001d44e3088" />
+  <setParameter name="ida:ClientSecret Config" value="JC78V31FOQ07MGmw4z_8F1BKfzd-~P.rAc" />
+  <setParameter name="ida:AadInstance Config" value="https://moagroqa.b2clogin.com/tfp/{0}/{1}" />
+  <setParameter name="ida:SignUpPolicyId Config" value="B2C_1_Registro" />
+  <setParameter name="ida:SignInPolicyId Config" value="B2C_1_IniciodeSesion" />
 
-	<setParameter name="ida:EditProfilePolicyId Config" value="b2c_1_edit_profile" />
-	<setParameter name="ida:ResetPasswordPolicyId Config" value="B2C_1_ResetPassword" />
+  <setParameter name="ida:SignUpAndSignInPolicyId Config" value="B2C_1_RegistroConLogin" />
 
-	<setParameter name="EmailToReporteCamposSustentables Config" value="mpfeiffer@baufest.com,martin.pfe@gmail.com,evilliate@baufest.com,jyon@baufest.com" />
+  <setParameter name="ida:EditProfilePolicyId Config" value="B2C_1_EditProfile" />
+  <setParameter name="ida:ResetPasswordPolicyId Config" value="B2C_1_ResetPassword" />
+
+
+  <setParameter name="EmailToReporteCamposSustentables Config" value="mpfeiffer@baufest.com,martin.pfe@gmail.com,evilliate@baufest.com,jyon@baufest.com" />
 	<setParameter name="EmailToUsuariosCompras Config" value="rorlando@baufest.com" />
 
 
