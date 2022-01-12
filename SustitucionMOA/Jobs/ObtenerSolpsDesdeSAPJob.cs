@@ -29,7 +29,7 @@ namespace SustitucionMOA.Jobs
             {
                 ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
                 {
-                    FechaDesde = new DateTime(2022, 01, 11), // Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString()),
+                    FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString()),
                     FechaHasta = DateTime.Now,
                     CreadoPorUsuarios = new List<string>(),
                 };
