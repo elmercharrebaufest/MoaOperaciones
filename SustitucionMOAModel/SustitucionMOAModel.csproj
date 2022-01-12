@@ -120,6 +120,7 @@
     <Compile Include="Entities\Rubro.cs" />
     <Compile Include="Entities\SecuenciaIngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Entities\ServicioSolp.cs" />
+    <Compile Include="Entities\TipoImputacionSAP.cs" />
     <Compile Include="Entities\UsuarioCompras.cs" />
     <Compile Include="Entities\UsuarioComprasRelacionConUsuarios.cs" />
     <Compile Include="Enums\EstadoOrdenDeCarga.cs" />

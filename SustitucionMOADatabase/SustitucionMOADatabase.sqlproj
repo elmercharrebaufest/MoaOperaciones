@@ -145,6 +145,7 @@
     <Build Include="DBO\Tables\UsuarioComprasRelacionConUsuarios.sql" />
     <Build Include="DBO\Tables\UsuarioCompras.sql" />
     <None Include="scripts\CreacionRolAccesoQr.sql" />
+    <Build Include="DBO\Tables\TipoImputacionSAP.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

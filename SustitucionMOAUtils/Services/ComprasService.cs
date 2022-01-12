@@ -1282,26 +1282,72 @@ namespace SustitucionMOAUtils.Services
                 var obtenerSolp = repositorio.Obtener<Solp>(x => x.NroSolp == item.NumeroSolicitud);
                 if (obtenerSolp == null)
                 {
-                    Pliego pliegoEntity = null;
                     Solp solpEntity = new Solp()
                     {
-                        FechaCreacion = DateTime.Now
+                        FechaCreacion = DateTime.Now,
                     };
                     var estadoIncompletoCodigo = EstadoDocumentoSolp.Incompleto.Code();
                     var estadoIncompleto = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoIncompletoCodigo);
                     solpEntity.EstadoDocumento_Id = estadoIncompleto.Id;
                     solpEntity.Pliego = new Pliego();
                     solpEntity.Posiciones = new List<SolpPosicion>();
-                    pliegoEntity = solpEntity.Pliego;
-                    pliegoEntity.SupervisorSector = string.Empty;
-                    pliegoEntity.SupervisorTrabajo = string.Empty;
-                    pliegoEntity.JornadaLaboralDias = string.Empty;
                     solpEntity.NroSolp = item.NumeroSolicitud;
-                    repositorio.Agregar(solpEntity);
                     solpEntity.ClaseDocumento = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.ClaseDocumento && x.Codigo == item.TipoDocumento);
                     solpEntity.TipoSolpSap = item.EstadoSolpSap == ComprasEnumsExtensions.CodeTipoSolpSap(TipoSolpSap.Mantenimiento) ? (int)TipoSolpSap.Mantenimiento : (int)TipoSolpSap.Sap;
                     solpEntity.Posiciones = new List<SolpPosicion>();
                     solpEntity.EstadoPasos = "0,0,0,0,0,0";
+                    
+                    DireccionSolpSAP direccion = solp.Direcciones
+                        .SingleOrDefault(dir => dir.NumeroSolicitud == item.NumeroSolicitud &&
+                                                dir.NumeroPosicion == item.NumeroPosicion);
+
+                    var tipoPosicion = repositorio.Obtener<TablaGeneral>(t => t.Tabla == TablasGenerales.TipoPosicionSolp && t.Codigo == item.Tipo);
+
+                    var tipoImputacion_Id = repositorio.Obtener<SustitucionMOAModel.Entities.TipoImputacionSAP>(t => t.Codigo == item.TipoImputacion).TablaGeneral_Id;
+
+                    var moneda = repositorio.Obtener<TablaSap>(m => m.Tabla == TablasSap.Moneda && m.Codigo == item.Moneda);
+                        
+                    var almacen = repositorio.Obtener<TablaSap>(a => a.Tabla == TablasSap.Almacen && a.Codigo == item.Almacen);
+
+                    var centro = repositorio.Obtener<TablaSap>(c => c.Tabla == TablasSap.Centro && c.Codigo == item.CentroLogistico);
+
+                    var grupoCompras = repositorio.Obtener<TablaSap>(g => g.Tabla == TablasSap.GrupoCompras && g.Codigo == item.GrupoCompras);
+
+                    var grupoArticulo = repositorio.Obtener<TablaSap>(g => g.Tabla == TablasSap.GrupoArticulo && g.Codigo == item.GrupoArticulo);
+
+                    solpEntity.Posiciones.Add(new SolpPosicion
+                    {
+                        TipoPosicion_Id = tipoPosicion?.Id,
+                        TipoImputacion_Id = tipoImputacion_Id,
+
+                        TextoGenerico = item.TextoPosicion,
+
+                        PlazoEntrega = (int)item.CantidadDiasEntrega,
+                        FechaEntregaServicio = item.FechaEntrega,
+
+                        Centro_Id = centro?.Id,
+                        Almacen_Id = almacen?.Id,
+                            
+                        NombreEntrega = direccion?.NombreUbicacion ?? string.Empty,
+                        CalleEntrega = direccion?.Calle ?? string.Empty,
+                        NumeroEntrega = direccion?.Numero ?? string.Empty,
+                        CpEntrega = direccion?.CodigoPostal ?? string.Empty,
+                            PaisEntrega = string.Empty, // "AR"?
+
+                        GrupoCompras_Id = grupoCompras?.Id,
+                        Solicitante = item.NombreSolicitante,
+                        GrupoArticulo_Id = grupoArticulo?.Id,
+
+                        Moneda_Id = moneda?.Id,
+                    });
+
+                    Pliego pliegoEntity = null;
+                    pliegoEntity = solpEntity.Pliego;
+                    pliegoEntity.SupervisorSector = string.Empty;
+                    pliegoEntity.SupervisorTrabajo = string.Empty;
+                    pliegoEntity.JornadaLaboralDias = string.Empty;
+                    
+                    repositorio.Agregar(solpEntity);
                     repositorio.GuardarCambios();
                 }
             }
