@@ -156,6 +156,7 @@
     <None Include="scripts\PostDeployment\EstadoIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\CreacionRolAccesoQr.sql" />
     <Build Include="DBO\Tables\TipoImputacionSAP.sql" />
+    <Build Include="DBO\Tables\TipoSolpPosicionSAP.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -167,6 +168,8 @@
     <None Include="scripts\Rol Admin plataforma compras.sql" />
     <None Include="scripts\Insert estado borrado SAP.sql" />
     <None Include="scripts\PostDeployment\TipoMovimientoIngresosBrutosCoeficienteUnificado.sql" />
+    <None Include="scripts\PostDeployment\TipoImputacionSAP.sql" />
+    <None Include="scripts\PostDeployment\TipoSolpPosicionSAP.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

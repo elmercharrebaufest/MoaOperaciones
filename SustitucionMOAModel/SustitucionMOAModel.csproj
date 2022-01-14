@@ -108,6 +108,7 @@
     <Compile Include="Entities\CampoSustentable.cs" />
     <Compile Include="Entities\DeclaracionCampoSustentable.cs" />
     <Compile Include="Entities\EstadoIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Entities\TipoSolpPosicionSAP.cs" />
     <Compile Include="Entities\TipoMovimientoIngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Entities\OrigenMovimientoIngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Entities\MovimientoIngresosBrutosCoeficienteUnificado.cs" />
