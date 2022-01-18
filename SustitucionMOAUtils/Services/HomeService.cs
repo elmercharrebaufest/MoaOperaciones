@@ -117,7 +117,7 @@ namespace SustitucionMOAUtils.Services
             CartaPorteWSMOAResponse cartasPorteAplicacion = null;
             CartaPorteDescargaWSMOAResponse cartasPorteDescargas = null;
             bool existePesificacionDelContrato = false;
-            string fechaInicio = DateTime.Now.AddDays(-150).ToString("yyyy - MM - dd");
+            string fechaInicio = DateTime.Now.AddYears(-3).ToString("yyyy - MM - dd");
             bool ccppAplicacion = false;
             bool ccppDescargas = false;
             string fechaFin = DateTime.Now.AddDays(+1).ToString("yyyy - MM - dd");
@@ -217,7 +217,7 @@ namespace SustitucionMOAUtils.Services
 
                         if (liquidacion != null)
                         {
-                            listaResultados.Add(new BuscadorOption { Link = "", Tipo = "liquidación", Value = liquidacion.documento + "," + liquidacion.ejercicio, Code = TipoBusqueda.Liquidacion, CtaParams = 1 });
+                            listaResultados.Add(new BuscadorOption { Link = "", Tipo = "liquidación emitida", Value = liquidacion.documento + "," + liquidacion.ejercicio, Code = TipoBusqueda.Liquidacion, CtaParams = 1 });
                         }
                     }
 
