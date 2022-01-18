@@ -28,6 +28,7 @@
 
 [Estado] BIT NULL DEFAULT 1, 
     [Indice] INT NULL, 
+    [CantidadSubposicionesEnSAP] INT NULL , 
     CONSTRAINT [PK_dbo.SolpPosicion] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

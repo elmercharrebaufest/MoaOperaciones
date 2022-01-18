@@ -16,7 +16,6 @@ import { ConfirmationService } from 'primeng/api';
 import { type } from 'jquery';
 import { ThrowStmt } from '@angular/compiler';
 
-
 @Component({
     selector: 'subPosicion',
     templateUrl: `subPosicion.component.html`,
@@ -169,10 +168,7 @@ export class SubPosicionComponent extends ListBaseComponent {
         this.calcularTotalSubPosicion();
         this.actualizarTipoDeImputacion();
         this.actualizarCamposObligatorios(this.model.selectClaseDocumento);
-
     }
-
-
 
     validarDatosMinimosPosicionActual(): void {
         if ((this.model.posicionActual.textoGenerico == undefined || this.model.posicionActual.textoGenerico == "")
@@ -181,9 +177,6 @@ export class SubPosicionComponent extends ListBaseComponent {
         } else
             this.posicionInvalida = false;
     }
-
-
-
 
     cambiarSubPosicion(): void {
         this.listadoPosicionActul = this.model.posicionActual.listadoSubPosiciones;
@@ -214,14 +207,16 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
     nuevaPosicion(rowSeleccionada: any): void {
-        if (rowSeleccionada) {
-            let ultimoRegistroEnListado = this.listadoPosicionActul[this.listadoPosicionActul.length - 1]
-            if (ultimoRegistroEnListado.id == rowSeleccionada.data.id) {
-                ultimoRegistroEnListado.seleccionado = true;
-                this.listadoPosicionActul.push(new SubPosicionViewModel(ultimoRegistroEnListado.subPosicion + 1));
+        if (!this.model.vincularAPliego) {
+            if (rowSeleccionada) {
+                let ultimoRegistroEnListado = this.listadoPosicionActul[this.listadoPosicionActul.length - 1]
+                if (ultimoRegistroEnListado.id == rowSeleccionada.data.id) {
+                    ultimoRegistroEnListado.seleccionado = true;
+                    this.listadoPosicionActul.push(new SubPosicionViewModel(ultimoRegistroEnListado.subPosicion + 1));
+                }
+            } else {
+                this.listadoPosicionActul.push(new SubPosicionViewModel(1));
             }
-        } else {
-            this.listadoPosicionActul.push(new SubPosicionViewModel(1));
         }
     }
 

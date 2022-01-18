@@ -104,10 +104,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     UsuarioCreacion_Id = solp.UsuarioActual.Id,
                     FechaCreacion = DateTime.Now
-
-
                 };
 
+                solp.TipoSolpSap = (int)TipoSolpSap.Web;
                 var estadoIncompletoCodigo = EstadoDocumentoSolp.Incompleto.Code();
                 var estadoIncompleto = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoIncompletoCodigo);
                 solpEntity.EstadoDocumento_Id = estadoIncompleto.Id;
@@ -135,6 +134,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.PasoCompletado = solp.PasoCompletado;
                 solpEntity.UsuarioCompras_Id = solp.UsuarioCompras.Id; 
                 solpEntity.EstadoPasos = solp.EstadoPasos;
+                solpEntity.TipoSolpSap = solp.TipoSolpSap;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
@@ -287,11 +287,14 @@ namespace SustitucionMOAUtils.Services
                         //subposiciones eliminadas 
                         if (posEntity.Subposiciones.Count > 0)
                         {
+                            //posEntity.CantidadSubposicionesAEliminar = 0;
                             var subposEliminadas = posEntity.Subposiciones.Where(x => pos.Subposiciones == null || !pos.Subposiciones.Any(y => y.Codigo == x.Codigo));
-
-                            foreach (var subpos in subposEliminadas.ToList())
+                            if (!string.IsNullOrEmpty(solpEntity.NroSolp))
                             {
-                                repositorio.Remover(subpos);
+                                foreach (var subpos in subposEliminadas.ToList())
+                                {
+                                    repositorio.Remover(subpos);
+                                }
                             }
                         }
 
@@ -303,11 +306,15 @@ namespace SustitucionMOAUtils.Services
 
                                 subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Codigo == subpos.Codigo);
 
+
+
                                 if (subposEntity == null)
                                     subposEntity = new SolpSubposicion();
 
                                 subposEntity.Codigo = subpos.Codigo;
                                 subposEntity.Cantidad = subpos.Cantidad;
+
+                                subposEntity.Estado = true;
 
                                 if (subpos.TipoImputacionValor != null)
                                     subposEntity.TipoImputacionSap = repositorio.Obtener<TablaSap>(x => x.Tabla == subpos.TipoImputacionValor.Tabla && x.Codigo == subpos.TipoImputacionValor.Codigo);
@@ -464,12 +471,38 @@ namespace SustitucionMOAUtils.Services
                     if (respuestaGuardarSOLP.Errores.Count == 0)
                     {
                         respuestaGuardarSOLP.Mensaje = "OK";
+                        
+                        foreach(var pos in solpEntity.Posiciones)
+                        {
+                            pos.CantidadSubposicionesEnSAP = pos.Subposiciones.Count;
+                        }
                     }
 
                     repositorio.GuardarCambios();
                 }
             }
 
+            if (solp.Posiciones != null)
+            {
+                //posiciones nuevas y actualizadas
+                foreach (var pos in solp.Posiciones)
+                {
+                    SolpPosicion posEntity = null;
+
+                    posEntity = solpEntity.Posiciones.FirstOrDefault(y => y.Codigo == pos.Codigo);
+                    //subposiciones eliminadas 
+                    if (posEntity.Subposiciones.Count > 0)
+                    {
+                        var subposEliminadas = posEntity.Subposiciones.Where(x => pos.Subposiciones == null || !pos.Subposiciones.Any(y => y.Codigo == x.Codigo));
+
+                        foreach (var subpos in subposEliminadas.ToList())
+                        {
+                            repositorio.Remover(subpos);
+                        }
+                    }
+                }
+                repositorio.GuardarCambios();
+            }
             return respuestaGuardarSOLP;
         }
 
@@ -559,12 +592,14 @@ namespace SustitucionMOAUtils.Services
             Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null && x.UsuarioCreacion_Id == usuarioActual.Id;
 
             if (usuarioActual.Permisos.Contains("VER TODAS SOLPS"))
+            {
                 filtro = (x => x.FechaBorrado == null);
+            }
 
             var todasLasSolp = repositorio.Listar(filtro)
                 .Select(x => new SolpDto
                 {
-                    UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
+                    UsuarioActual = x.UsuarioCreacion != null ? new UsuarioDto(x.UsuarioCreacion) : new UsuarioDto(),
                     Id = x.Id,
                     NroSolp = x.NroSolp,
                     NombreDeObra = x.Pliego?.NombreObra,
@@ -575,7 +610,9 @@ namespace SustitucionMOAUtils.Services
                     TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                     VincularPliego = !x.Pliego_Id.HasValue,
                     TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
-                    RevisadoPor = x.Pliego?.RevisadoPor
+                    RevisadoPor = x.Pliego?.RevisadoPor,
+                    TipoSolpSap = x.TipoSolpSap,
+                    EstadoPasos = x.EstadoPasos,
                 }).OrderByDescending(i => i.FechaCreacion);
 
             return todasLasSolp.ToList();
@@ -585,15 +622,8 @@ namespace SustitucionMOAUtils.Services
         {
 
             var includes = new List<Expression<Func<Solp, object>>>();
-            includes.Add(u => u.Pliego);
-            includes.Add(u => u.Pliego.VisitasMasivas);
-            includes.Add(u => u.Pliego.Archivos);
-            includes.Add(u => u.Posiciones);
-            includes.Add(u => u.Posiciones.Select(y => y.Subposiciones));
-            includes.Add(u => u.UsuarioCreacion);
-            includes.Add(u => u.UsuarioModificacion);
 
-            var x = repositorio.Obtener<Solp>(includes, s => s.Id == idSolp);
+            var x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
 
             if (x == null)
             {
@@ -604,7 +634,7 @@ namespace SustitucionMOAUtils.Services
             var solpDevuelta = new SolpDto()
             {
 
-                UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
+                UsuarioActual = x.UsuarioCreacion != null ? new UsuarioDto(x.UsuarioCreacion) : new UsuarioDto(),
                 Id = x.Id,
                 NroSolp = x.NroSolp,
                 FechaCreacion = x.FechaCreacion,
@@ -613,8 +643,7 @@ namespace SustitucionMOAUtils.Services
                 TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
                 VincularPliego = !x.Pliego_Id.HasValue,
                 UsuarioCompras = x.UsuarioCompras != null ? new UsuarioComprasDto(x.UsuarioCompras) : new UsuarioComprasDto(),
-
-
+                TipoSolpSap = x.TipoSolpSap,
                 NombreDeObra = x.Pliego.NombreObra,
                 FiscalContrato = x.Pliego.FiscalContrato,
                 Telefono = x.Pliego.Telefono,
@@ -636,7 +665,8 @@ namespace SustitucionMOAUtils.Services
                 //EspecificacionesTecnicas = x.EspecificacionesTecnicas,
                 DiasEjecucion = x.Pliego.DiasEjecucion,
                 ObservacionesCotizacion = x.Pliego.ObservacionesCotizacion,
-                JornadaLaboral = x.Pliego.JornadaLaboralDias.Split(",".ToCharArray()).Select(a => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), a)).ToList(),
+                JornadaLaboral = string.IsNullOrEmpty(x.Pliego.JornadaLaboralDias) ? new List<DayOfWeek>() :
+                                x.Pliego.JornadaLaboralDias.Split(",".ToCharArray()).Select(a => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), a)).ToList(),
                 JornadaLaboralDesde = x.Pliego.JornadaLaboralHorasDesde,
                 JornadaLaboralHasta = x.Pliego.JornadaLaboralHorasHasta,
                 ClaseDocumento = x.ClaseDocumento != null ? new TablaSapDto(x.ClaseDocumento) : new TablaSapDto(),
@@ -1244,6 +1274,147 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
+        public void ObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest)
+        {
+            //TODO: ver como actualizar Solp.EstadoDocumento_Id segun la RFC
+
+            ObtenerSolpSAPResponse result = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
+
+            IList<Solp> solpsFinales = new List<Solp>();
+
+            List<string> tablasSapAConsultar = new List<string>
+            { 
+                TablasSap.Moneda, 
+                TablasSap.Almacen, 
+                TablasSap.Centro, 
+                TablasSap.GrupoCompras,
+                TablasSap.GrupoArticulo, 
+                TablasSap.Unidad,
+                TablasSap.ClaseDocumento,
+            };
+
+            IList<TablaSap> tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
+
+            List<SustitucionMOAModel.Entities.TipoSolpPosicionSAP> tiposSolpPosicionSAP = repositorio.Listar<SustitucionMOAModel.Entities.TipoSolpPosicionSAP>();
+            List<SustitucionMOAModel.Entities.TipoImputacionSAP> tiposImputacionSAP = repositorio.Listar<SustitucionMOAModel.Entities.TipoImputacionSAP>();
+
+            List<TablaSap> monedas = tablaSap.Where(x => x.Tabla == TablasSap.Moneda).ToList();
+            List<TablaSap> almacenes = tablaSap.Where(x => x.Tabla == TablasSap.Almacen).ToList();
+            List<TablaSap> centros = tablaSap.Where(x => x.Tabla == TablasSap.Centro).ToList();
+            List<TablaSap> gruposCompras = tablaSap.Where(x => x.Tabla == TablasSap.GrupoCompras).ToList();
+            List<TablaSap> gruposArticulos = tablaSap.Where(x => x.Tabla == TablasSap.GrupoArticulo).ToList();
+            List<TablaSap> unidadesDeMedida = tablaSap.Where(x => x.Tabla == TablasSap.Unidad).ToList();
+            List<TablaSap> clasesDeDocumento = tablaSap.Where(x => x.Tabla == TablasSap.ClaseDocumento).ToList();
+
+            int? estadoIncompletoId = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == "INCOMPLETO")?.Id;
+            //int? estadoIncompletoId = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == EstadoDocumentoSolp.Incompleto.Code())?.Id;
+
+            foreach (var posicion in result.Posiciones)
+            {
+                SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion = result.TipoImputaciones
+                    .SingleOrDefault(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud &&
+                                            dir.NumeroPosicion == posicion.NumeroPosicion);
+
+                Solp solp = solpsFinales.SingleOrDefault(x => x.NroSolp == posicion.NumeroSolicitud);
+
+                bool nuevaSolp = solp == null;
+                if (nuevaSolp)
+                {
+                    solp =  repositorio.Obtener<Solp>(s => s.NroSolp == posicion.NumeroSolicitud) ??
+                            new Solp { 
+                                EstadoDocumento_Id = estadoIncompletoId,
+                                NroSolp = posicion.NumeroSolicitud,
+                                ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id,
+                                EstadoPasos = "0,0,0,0,1,1",
+                                TipoSolpSap = !string.IsNullOrEmpty(tipoImputacion.IdOrden) ? (int?)TipoSolpSap.Mantenimiento : (int?)TipoSolpSap.Sap,               
+                                Pliego = new Pliego
+                                {
+                                    SupervisorSector = string.Empty,
+                                    SupervisorTrabajo = string.Empty,
+                                    JornadaLaboralDias = string.Empty,
+                                },
+                            };
+
+                    solpsFinales.Add(solp);
+                };
+
+                DireccionSolpSAP direccion = result.Direcciones
+                    .SingleOrDefault(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud &&
+                                            dir.NumeroPosicion == posicion.NumeroPosicion);
+
+                var tipoSolpPosicion_Id = tiposSolpPosicionSAP.FirstOrDefault(t => t.Codigo == posicion.Tipo)?.TablaGeneral_Id;
+                var tipoImputacion_Id = tiposImputacionSAP.FirstOrDefault(t => t.Codigo == posicion.TipoImputacion)?.TablaGeneral_Id;
+                var moneda = monedas.FirstOrDefault(m => m.Codigo == posicion.Moneda);
+                var almacen = almacenes.FirstOrDefault(a => a.Codigo == posicion.Almacen);
+                var centro = centros.FirstOrDefault(c => c.Codigo == posicion.CentroLogistico);
+                var grupoCompras = gruposCompras.FirstOrDefault(g => g.Codigo == posicion.GrupoCompras);
+                var grupoArticulo = gruposArticulos.FirstOrDefault(g => g.Codigo == posicion.GrupoArticulo);
+
+                var posicionEntity = solp.Posiciones.SingleOrDefault(pos => pos.Indice == Int32.Parse(posicion.NumeroPosicion));
+                    
+                if(posicionEntity == null)
+                {
+                    posicionEntity = new SolpPosicion { 
+                        Indice = Int32.Parse(posicion.NumeroPosicion),
+                        Subposiciones = new List<SolpSubposicion>(),
+                        PaisEntrega = "AR",
+                        CodigosProveedores = string.Empty,
+                    };
+                    solp.Posiciones.Add(posicionEntity);
+                }
+
+                posicionEntity.TipoPosicion_Id = tipoSolpPosicion_Id;
+                posicionEntity.TipoImputacion_Id = tipoImputacion_Id;
+                posicionEntity.TextoGenerico = posicion.TextoPosicion;
+                posicionEntity.PlazoEntrega = (int)posicion.CantidadDiasEntrega;
+                posicionEntity.FechaEntregaServicio = posicion.FechaEntrega;
+                posicionEntity.Centro_Id = centro?.Id;
+                posicionEntity.Almacen_Id = almacen?.Id;
+                posicionEntity.NombreEntrega = direccion?.NombreUbicacion ?? string.Empty;
+                posicionEntity.CalleEntrega = direccion?.Calle ?? string.Empty;
+                posicionEntity.NumeroEntrega = direccion?.Numero ?? string.Empty;
+                posicionEntity.CpEntrega = direccion?.CodigoPostal ?? string.Empty;
+                posicionEntity.GrupoCompras_Id = grupoCompras?.Id;
+                posicionEntity.Solicitante = posicion.NombreSolicitante;
+                posicionEntity.GrupoArticulo_Id = grupoArticulo?.Id;
+                posicionEntity.Moneda_Id = moneda?.Id;
+
+                IList<SuposicionServicioSAP> subPosicionesDeLaPosicion = 
+                    result.ServiciosSuposiciones.Where(x => x.NumeroPosicion == posicion.NumeroPosicion && 
+                                                            x.NumeroSolicitud == posicion.NumeroSolicitud).ToList();
+                
+                foreach (var subPosicion in subPosicionesDeLaPosicion)
+                {
+                    int indiceSubPosicion = Int32.Parse(subPosicion.SumeroSubPosicion) / 10;
+                    var subPosicionEntity = posicionEntity.Subposiciones.SingleOrDefault(sp => sp.Numero == indiceSubPosicion);
+
+                    if (subPosicionEntity == null)
+                    {
+                        subPosicionEntity = new SolpSubposicion();
+                        posicionEntity.Subposiciones.Add(subPosicionEntity);
+                    }
+
+                    var unidadMedida = unidadesDeMedida.SingleOrDefault(g => g.Tabla == TablasSap.GrupoCompras && g.Codigo == posicion.GrupoCompras);
+
+                    subPosicionEntity.Numero = indiceSubPosicion;
+                    subPosicionEntity.Codigo = subPosicion.CodigoServicio;
+                    subPosicionEntity.Tarea = subPosicion.DescripcionServicio;
+                    //subPosicionEntity.CuentaMayor_Id = null;
+                    subPosicionEntity.Cantidad = subPosicion.Cantidad;
+                    subPosicionEntity.Unidad_Id = unidadMedida?.Id;
+                    subPosicionEntity.PrecioBruto = subPosicion.PrecioUnitario;
+                    //subPosicionEntity.TipoImputacion_Id = null;
+                }
+
+                solp.Posiciones.Add(posicionEntity);
+
+                if(solp.Id == 0 && nuevaSolp)
+                    repositorio.Agregar(solp);
+            }
+            
+            repositorio.GuardarCambios();
+        }
+
         public void ActualizarEstadoSolpBulk()
         {
             var lista = repositorio.Listar<TablaSap>(x => x.Tabla == "EstadoSolpSap")
@@ -1273,11 +1444,6 @@ namespace SustitucionMOAUtils.Services
                     ActualizarEstadoSolp(nroSolp, codigoSap.Id);
                 }
             }
-            else
-            {
-                var estadoEliminada = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.EstadoSolpSap && x.Codigo == "BORRADA");
-                ActualizarEstadoSolp(nroSolp, estadoEliminada.Id);
-            }
         }
 
         public void ActualizarEstadoSolp(string nroSolp, int idEstado)
@@ -1293,10 +1459,11 @@ namespace SustitucionMOAUtils.Services
 
         public List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual)
         {
-            var usuarios = repositorio.Listar<Usuario>().ToList();
-            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>().Where(item => item.Usuario_Id == usuarios[0].Id)
+            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id)
                 .Select(x => new UsuarioComprasRelacionConUsuariosDto
                 {
+                    Usuario = new UsuarioDto(x.Usuario),
+                    Id = x.Id,
                     UsuarioCompras = new UsuarioComprasDto(x.UsuarioCompras)
                 });
 

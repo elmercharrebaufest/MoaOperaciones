@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Entities;
+using System;
 
 namespace SustitucionMOAModel.Dto.LogPesificacion
 {
@@ -10,7 +11,7 @@ namespace SustitucionMOAModel.Dto.LogPesificacion
         public LogPesificacionDto(Entities.LogPesificacion entidad)
         {
             Id = entidad.Id;
-            Fecha = entidad.Fecha.ToString("dd/MM/yyyy HH:mm");
+            Fecha = entidad.Fecha;
             Contrato = entidad.Contrato;
             Fijacion = entidad.Fijacion;
             CantidadKilos = entidad.CantidadKilos;
@@ -24,7 +25,7 @@ namespace SustitucionMOAModel.Dto.LogPesificacion
 
         public int Id { get; set; }
 
-        public string Fecha { get; set; }
+        public DateTime Fecha { get; set; }
 
         public int? Contrato { get; set; }
 

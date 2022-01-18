@@ -164,7 +164,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<LogPesificacion> pesificaciones = repositorio.Listar<LogPesificacion>(x => x.EsCargaMasiva);
-                List<LogPesificacionDto> usuariosDto = pesificaciones.Select(x => new LogPesificacionDto(x)).ToList();
+                List<LogPesificacionDto> usuariosDto = pesificaciones.Select(x => new LogPesificacionDto(x)).OrderBy(x=>x.Fecha).ToList();
 
                 if (usuariosDto.Count == 0)
                 {
@@ -186,7 +186,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<LogPesificacion> pesificaciones = repositorio.Listar<LogPesificacion>(x => !x.EsCargaMasiva);
-                List<LogPesificacionDto> usuariosDto = pesificaciones.Select(x => new LogPesificacionDto(x)).ToList();
+                List<LogPesificacionDto> usuariosDto = pesificaciones.Select(x => new LogPesificacionDto(x)).OrderBy(x => x.Fecha).ToList();
 
                 if (usuariosDto.Count == 0)
                 {

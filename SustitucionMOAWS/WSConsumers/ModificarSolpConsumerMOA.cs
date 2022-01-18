@@ -140,6 +140,9 @@ namespace SustitucionMOAWS.WSConsumers
 
             foreach (var posicion in solpActual.Posiciones.OrderBy(x => x.Id))
             {
+                bool eliminarPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
+
+                eliminarPosicion = eliminarPosicion ? true : !posicion.Estado;
                 numeroPosicion++;
 
                 preqItem = $"{numeroPosicion:00000}";
@@ -252,7 +255,9 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_PRITEM.AGMT_ITEM = null;//Contrato marco? No está en este MVP
                 IM_PRITEM.CLOSED = null; //Contrato marco? No está en este MVP
                 IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap;
-                //IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega;
+                IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega;
+                IM_PRITEM.PLND_DELRYSpecified = true;
+                IM_PRITEM.DELETE_IND = SAPFormatter.FormatearBooleano(eliminarPosicion);
                 IM_PRITEM.PCKG_NO = numeroPaquete;
 
                 solpSAP.IM_PRITEMList.Add(IM_PRITEM);
@@ -275,8 +280,10 @@ namespace SustitucionMOAWS.WSConsumers
                     ACCTASSCAT = "X",
                     //PURCH_ORG = "X",
                     CURRENCY = "X",
-                    //PLND_DELRY = "X",
-                    PCKG_NO = "X"
+                    PLND_DELRY = "X",
+                    PCKG_NO = "X",
+                    DELETE_IND = "X",
+                    CREATED_BY = "X"
                 });
 
 
@@ -313,7 +320,7 @@ namespace SustitucionMOAWS.WSConsumers
                     IM_SERVICELINE.DOC_ITEM = docItem;
                     IM_SERVICELINE.OUTLINE = outlineNumber; //Preguntar a Ulises
                     IM_SERVICELINE.SRV_LINE = serviceLineNumber;
-                    //IM_SERVICELINE.DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
+                    //IM_SERVICELINE.DEL_IND = SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado));
                     //IM_SERVICELINE.SERVICE = "000000000003005912";//
                     //IM_SERVICELINE.SERVICE = subPosicion.CodigoServicioSap.Codigo.ToString();
 
@@ -339,7 +346,7 @@ namespace SustitucionMOAWS.WSConsumers
                         DOC_ITEM = docItem,
                         OUTLINE = outlineNumber, //Preguntar a Ulises
                         SRV_LINE = serviceLineNumber,
-                        //DEL_IND = SAPFormatter.FormatearBooleano(posicion.FechaBaja != null),
+                        DEL_IND = SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado)),
                         SERVICE = (subPosicion.ServicioSolp != null) ? "X" : "",
                         SHORT_TEXT = (subPosicion.ServicioSolp == null) ? "X" : "",
                         QUANTITY = "X",
@@ -438,6 +445,28 @@ namespace SustitucionMOAWS.WSConsumers
                         PERCENT = "X"
                     });
 
+                }
+
+                int cantidadSubposicionesAEliminar = (posicion.CantidadSubposicionesEnSAP.HasValue ? posicion.CantidadSubposicionesEnSAP.Value : 0) - posicion.Subposiciones.Count;
+                for (int i = 0; i < cantidadSubposicionesAEliminar; i++)
+                {
+                    numeroSubPosicion++;
+                    serviceLineNumber = $"{numeroSubPosicion:000000000}0";
+
+                    solpSAP.IM_SERVICELINESList.Add(new ZMPES5780
+                    {
+                        DOC_ITEM = docItem,
+                        OUTLINE = outlineNumber, //Preguntar a Ulises
+                        SRV_LINE = serviceLineNumber,
+                        DEL_IND = "X",
+                    });
+                    solpSAP.IM_SERVICELINESXList.Add(new ZMPES5720
+                    {
+                        DOC_ITEM = docItem,
+                        OUTLINE = outlineNumber, //Preguntar a Ulises
+                        SRV_LINE = serviceLineNumber,
+                        DEL_IND = "X",
+                    });
                 }
 
                 /*

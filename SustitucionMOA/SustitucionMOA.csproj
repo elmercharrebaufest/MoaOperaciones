@@ -19,10 +19,14 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>58280</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>
+    </IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -253,9 +257,11 @@
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
+    <Content Include="Content\images\icons\SAP.svg" />
     <Content Include="Content\images\icons\trash.svg" />
     <Content Include="Content\images\icons\trashRed.svg" />
     <Content Include="Content\images\icons\trashWhite.svg" />
+    <Content Include="Content\images\icons\worker.svg" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
@@ -295,6 +301,12 @@
     <Content Include="dist\glyphicons-halflings-regular.*.svg" />
     <Content Include="dist\*.js" />
     <Content Include="dist\styles.*.css" />
+    <Content Include="src\app\common\shared-components\buscador\buscador.component.css" />
+    <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
+    <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
+    <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
+    <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.css" />
+    <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.html" />
     <Content Include="UPDATE.DeployParameters.Debug.xml">
       <DependentUpon>UPDATE.DeployParameters.xml</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -356,6 +368,7 @@
     <Content Include="src\app\compras\PliegoPasos\solapaTres\especificaciones.component.html" />
     <Content Include="src\app\compras\preview\pliego.preview.component.html" />
     <Content Include="src\app\compras\solp.component.html" />
+    <Content Include="src\app\compras\SolpPasos\cabecera.component.css" />
     <Content Include="src\app\compras\SolpPasos\cabecera.component.html" />
     <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.css" />
     <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.html" />
@@ -996,6 +1009,7 @@
     </Compile>
     <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJob.cs" />
     <Compile Include="Jobs\ActualizarEstadoSolpSapJob.cs" />
+    <Compile Include="Jobs\ObtenerSolpsDesdeSAPJob.cs" />
     <Compile Include="Jobs\ReporteCamposSustentablesTSAJob.cs" />
     <Compile Include="Jobs\ReporteConflictosCamposSustentablesJob.cs" />
     <Compile Include="Jobs\ReporteLiquidacionesInformadasJob.cs" />
@@ -1029,6 +1043,14 @@
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
     <TypeScriptCompile Include="src\app\common\pipes\customFilterBoolean.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador-small\buscadorSmall.component.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador.component.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador.service.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\buscador\Buscador.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.service.ts" />
     <TypeScriptCompile Include="src\app\compras\campo-obligatorio-viewModel.ts" />
     <TypeScriptCompile Include="src\app\compras\compras-routing.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.module.ts" />
@@ -1036,6 +1058,7 @@
     <TypeScriptCompile Include="src\app\compras\enum-columna-subPosiciones.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-paso-solp.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-imputacion.ts" />
+    <TypeScriptCompile Include="src\app\compras\enum-tipo-solp-sap.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\adjuntos-Cotizaciones.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\cotizacion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion1.component.ts" />
@@ -1082,6 +1105,8 @@
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\notificaciones.service.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.ts" />
     <TypeScriptCompile Include="src\app\pesificacion\pesificacion-base.component.ts" />
     <TypeScriptCompile Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.spec.ts" />
     <TypeScriptCompile Include="src\app\pesificacion\pesificaciones-guardadas\pesificaciones-guardadas.component.ts" />

@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using System.Collections.Generic;
+using System.Web;
 
 namespace SustitucionMOAUtils.Interfaces
 {
@@ -17,5 +18,9 @@ namespace SustitucionMOAUtils.Interfaces
         string AutorizarCabecera(int idCabecera, string mailUsuario);
 
         string ObtenerRutaArchivoFormularioCM05(int idCabecera);
+
+        IList<MovimientoIngresosBrutosCoeficienteUnificadoDto> ListarMovimientos(int idCabecera);
+        List<EstadoIngresosBrutosCoeficienteUnificadoDto> ListarEstados();
+        List<SecuenciaIngresosBrutosCoeficienteUnificadoDto> ListarSecuenciaIngresosBrutosCoeficientesUnificador();
     }
 }

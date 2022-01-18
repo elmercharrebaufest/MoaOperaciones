@@ -13,15 +13,14 @@ import { AbstractControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { EnumPasoSolp } from '../enum-paso-solp';
-import { DISABLED } from '@angular/forms/src/model';
-
+import { DISABLED } from '@angular/forms/src/model'
 
 declare var $: any;
 
 @Component({
     selector: 'cabecera',
     templateUrl: `cabecera.component.html`,
-    styleUrls: ['../compras.component.css'],
+    styleUrls: ['../compras.component.css', './cabecera.component.css'],
 })
 export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
@@ -33,8 +32,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     @Input('locale')
     protected locale: any;
-
-
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -138,8 +135,12 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.model.posicionActual.selectSolicitanteCompras = this.model.fiscalContrato;
 
         this.model.cargoPasoCinco = true;
-        debugger
+
         this.editarDocumento = this.disableDocumento();
+
+        if (this.model.vincularAPliego) {
+            this.formularioActual.disable();
+        }
     }
 
     mostrarValidacion(campoAValidar, vacio){

@@ -8,6 +8,8 @@ namespace SustitucionMOAModel.Dto
 
         public int EstadoId { get; set; }
 
+        public EstadoIngresosBrutosCoeficienteUnificadoDto Estado { get; set; }
+
         public string CUIT { get; set; }
 
         public int Anticipo { get; set; }
@@ -21,6 +23,7 @@ namespace SustitucionMOAModel.Dto
         public bool MalCargada { get; set; }
 
         public int? SecuenciaId { get; set; }
+        public SecuenciaIngresosBrutosCoeficienteUnificadoDto Secuencia { get; set; }
 
         public int? ConsultaId { get; set; }
 

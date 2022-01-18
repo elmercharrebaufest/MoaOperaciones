@@ -40,6 +40,7 @@ import { BuscadorComponent } from './shared-components/buscador/buscador.compone
 import { HighlightDirective } from './directive/clickOutside.directive'
 import { BuscadorSmallComponent } from './shared-components/buscador/buscador-small/buscadorSmall.component';
 
+
 @NgModule({
     imports: [CommonModule, FormsModule, Ng2AutoCompleteModule,
         AutocompleteLibModule,

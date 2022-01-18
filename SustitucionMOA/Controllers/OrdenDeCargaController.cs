@@ -3,6 +3,7 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -337,7 +338,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = consultaService.ObtenerMaterial() });
+                return JsonCustom(new { data = consultaService.ObtenerMaterial(TablaSeccionMaterial.OrdenDeCarga) });
             }
             catch (InfoCustomException e)
             {

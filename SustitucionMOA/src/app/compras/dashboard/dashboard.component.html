@@ -102,7 +102,7 @@
     </section>
 
     <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
-        <p-table #tabla [value]="tablaSolp" [globalFilterFields]="['NroSolp']" sortMode="multiple">
+        <p-table #tabla [value]="tablaSolp" [globalFilterFields]="['NroSolp']" [paginator]="true" [rows]="10" sortMode="multiple">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th data-toggle="tooltip" title="Acciones SOLP"></th>
@@ -144,14 +144,22 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr>
                     <td>
-                        <!-- <div class="col-md-2">
-                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada'"><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash" (click)="eliminarPosicionDashboard(rowData.Id)" /></span>
-                        </div> -->
-                        <div class="col-md-4">
-                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" (click)="goToSeccionParam('/compras/solp', rowData.Id)"/></span>
+                        <div *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && rowData.TipoSolpSap != 2 && rowData.TipoSolpSap != 3" class="col-md-2">
+                            <span><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash" (click)="eliminarPosicionDashboard(rowData.Id)" /></span>
                         </div>
-                        <div class="col-md-4">
-                            <span><img  class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="generarZipPliego(rowData.Id)"/></span>
+                        <div  *ngIf="rowData.TipoSolpSap == 2" class="col-md-2">
+                            <span><img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento" style="height:25px; cursor:default"/></span>
+                        </div>
+                        <div *ngIf="rowData.TipoSolpSap == 3" class="col-md-5">
+                            <span>
+                                <img class="pointer" src="./Content/images/icons/SAP.svg" alt="SAP" style="height: 30px; cursor:default"/>
+                            </span>
+                        </div>
+                        <div class="col-md-2" *ngIf="rowData.TipoSolpSap != 3">
+                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" (click)="goToSeccionParam('/compras/solp', rowData.Id)" /></span>
+                        </div>
+                        <div class="col-md-2" *ngIf="rowData.TipoSolpSap != 3">
+                            <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="generarZipPliego(rowData.Id)" /></span>
                         </div>
                     </td>
                     <td>
@@ -175,7 +183,10 @@
                         {{ rowData.TipoSolp.Descripcion || "" }}
                     </td>
                     <td>
-                        <button class="btn btn-success botonesComprasColor" *ngIf="rowData.VincularPliego">Vincular a Pliego</button>
+                        <button class="btn btn-success botonesComprasColor" *ngIf="rowData.VincularPliego"
+                                (click)="vincularAPliego(rowData.Id)" [disabled]="rowData.PliegoVinculado">
+                            {{(rowData.PliegoVinculado) ? "Pliego vinculado" : "Vincular a Pliego" }}
+                        </button>
                     </td>
                 </tr>
             </ng-template>

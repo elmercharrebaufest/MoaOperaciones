@@ -26,3 +26,17 @@ export interface DetalleCM05 {
     FechaUltimaModificacion;
     Editar?;
 };
+
+export interface MovimientoCM05 {
+    Id;
+    Observaciones;
+    Fecha;
+    Tipo;
+    TipoId;
+    Origen;
+    OrigenId;
+    EstadoAnterior;
+    EstadoAnteriorId;
+    EstadoPosterior;
+    EstadoPosteriorId;
+};

@@ -9,6 +9,7 @@ import { NgxMaskModule } from "ngx-mask";
 import { OrdenesDeCargaService } from './ordenes-de-carga.service';
 import { OrdenesDeCargaDetalleComponent } from './detalle/ordenes-de-carga.detalle.component';
 import { ButtonModule } from 'primeng/button';
+import {MultiSelectModule} from 'primeng/multiselect';
 
 @NgModule({
     imports: [
@@ -17,7 +18,8 @@ import { ButtonModule } from 'primeng/button';
         NgxPaginationModule,
         ButtonModule,
         NgxMaskModule,
-        OrdenesDeCargaRoutingModule
+        OrdenesDeCargaRoutingModule,
+        MultiSelectModule
     ],
     declarations: [
         OrdenesDeCargaAlta,

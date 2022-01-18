@@ -56,6 +56,7 @@ import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";
 import { FaqComponent } from './faq/faq.component'
+
 import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
 import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
 import { ConsultaBaseComponent } from "./consulta/consulta.component";
