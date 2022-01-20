@@ -32,7 +32,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 if (cartaPorteFotos.Count == 0)
                 {
-                    throw new SustitucionMOAModel.CustomExceptions.InfoCustomException("No hay foto para la/s carta/s porte seleccionada");
+                    throw new SustitucionMOAModel.CustomExceptions.InfoCustomException("No hay imagen para la/s carta/s porte seleccionada");
                 }
 
                 return cartaPorteFotos;
