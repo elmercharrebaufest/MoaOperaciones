@@ -37,6 +37,6 @@ namespace SustitucionMOAUtils.Interfaces
         void ActualizarEstadoSolpBulk();
         void ActualizarEstadoSolp(string nroSolp, int idEstado);
         List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual);
-        void ObtenerYGuardarSolpSap(ObtenerSolpRequest obtenerSolpRequest);
+        void ObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
     }
 }

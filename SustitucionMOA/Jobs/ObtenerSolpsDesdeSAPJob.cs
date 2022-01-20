@@ -27,13 +27,16 @@ namespace SustitucionMOA.Jobs
         {
             try
             {
-                ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
+                if(ConfigurationManager.AppSettings["ObtenerSolpsDesdeSAPJob_Habilitado"] == "1")
                 {
-                    FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
-                    FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
-                    CreadoPorUsuarios = new List<string>(),
-                };
-                _comprasService.ObtenerYGuardarSolpSap(obtenerSolpRequest);
+                    ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
+                    {
+                        FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
+                        FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
+                        CreadoPorUsuarios = new List<string>(),
+                    };
+                    _comprasService.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+                }
             }
             catch (Exception e)
             {

@@ -168,37 +168,72 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
     let documento = valoresSplit[0];
     let ejercicio = valoresSplit[1]
 
-    try {
-      this.subscription = this.service.descargarDocumentoPDF(documento, ejercicio).subscribe(
-          (result: any) => {
-              if (result.logout == true) {
-                  this.sessionDataService.logout();
-              } else if (result.error != undefined && result.error != "") {
-                  this.floatMsgService.setErrorMsg(result.error);
-              } else if (result.info != undefined) {
-                  this.floatMsgService.setInfoMsg(result.info);
-              } else {
-                var byteArray = new Uint8Array(result.data);
-                var blob = new Blob([byteArray], { type: 'application/pdf' });
-                var url = window.URL.createObjectURL(blob);
-                var link = document.createElement("a");
-                document.body.appendChild(link);
-                link.href = url;
-                link.download = this.tituloArchivoPDF + documento + ".pdf"
-                link.click();
-                setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
-                return false;        
-              }
-          },
-          error => {
-              this.floatMsgService.setErrorMsg(error.message);
-          }
+      if (documento.split("|").length == 1) {
+          try {
+              this.subscription = this.service.descargarDocumentoPDF(documento, ejercicio).subscribe(
+                  (result: any) => {
+                      if (result.logout == true) {
+                          this.sessionDataService.logout();
+                      } else if (result.error != undefined && result.error != "") {
+                          this.floatMsgService.setErrorMsg(result.error);
+                      } else if (result.info != undefined) {
+                          this.floatMsgService.setInfoMsg(result.info);
+                      } else {
+                          var byteArray = new Uint8Array(result.data);
+                          var blob = new Blob([byteArray], { type: 'application/pdf' });
+                          var url = window.URL.createObjectURL(blob);
+                          var link = document.createElement("a");
+                          document.body.appendChild(link);
+                          link.href = url;
+                          link.download = this.tituloArchivoPDF + documento + ".pdf"
+                          link.click();
+                          setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                          return false;
+                      }
+                  },
+                  error => {
+                      this.floatMsgService.setErrorMsg(error.message);
+                  }
 
-      );
-    } catch (e) {
-        this.floatMsgService.setErrorMsg(e);
-        return false; //<-- Prevent Refresh
-    }
+              );
+          } catch (e) {
+              this.floatMsgService.setErrorMsg(e);
+              return false; //<-- Prevent Refresh
+          }
+      } else {
+          try {
+              this.subscription = this.service.descargarDocumentoPDF(documento, ejercicio).subscribe(
+                  (result: any) => {
+                      if (result.logout == true) {
+                          this.sessionDataService.logout();
+                      } else if (result.error != undefined && result.error != "") {
+                          this.floatMsgService.setErrorMsg(result.error);
+                      } else if (result.info != undefined) {
+                          this.floatMsgService.setInfoMsg(result.info);
+                      } else {
+                          var byteArray = new Uint8Array(result.FileContents);
+                          var blob = new Blob([byteArray], { type: 'application/zip' });
+                          var url = window.URL.createObjectURL(blob);
+                          var link = document.createElement("a");
+                          document.body.appendChild(link);
+                          link.href = url;
+                          link.download = "Liquidaciones_" + ejercicio+".zip";
+                          link.click();
+                          setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                          return false;
+                      }
+                  },
+                  error => {
+                      this.floatMsgService.setErrorMsg(error.message);
+                  }
+
+              );
+          } catch (e) {
+              this.floatMsgService.setErrorMsg(e);
+              return false; //<-- Prevent Refresh
+          }
+      }
+    
   }
 
   descargarFotosCCPP(cartaPorteIDStr: string) {

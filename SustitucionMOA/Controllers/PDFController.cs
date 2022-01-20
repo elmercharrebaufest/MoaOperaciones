@@ -1,9 +1,13 @@
-﻿using SustitucionMOAAssets;
+﻿using ICSharpCode.SharpZipLib.Core;
+using ICSharpCode.SharpZipLib.Zip;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
@@ -18,7 +22,43 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_pdfService.downloadDocumentPDF(documento, ejercicio, SessionPersister.Proveedor, SessionPersister.Sociedad));
+                if (documento.Split('|').Length == 1)
+                {
+                    return JsonCustom(_pdfService.downloadDocumentPDF(documento, ejercicio, SessionPersister.Proveedor, SessionPersister.Sociedad));
+                }
+                else
+                {
+                    List<SustitucionMOAModel.Models.WSMapMOA.Pdf> pdfs = new List<SustitucionMOAModel.Models.WSMapMOA.Pdf>();
+                    
+                    var outputMemStream = new MemoryStream();
+
+                    using (var zipStream = new ZipOutputStream(outputMemStream))
+                    {
+                        zipStream.SetLevel(3);
+
+                        foreach (var doc in documento.Split('|'))
+                        {
+                            var pdf = _pdfService.downloadDocumentPDF(doc, ejercicio, SessionPersister.Proveedor, SessionPersister.Sociedad);
+                            if (pdf != null)
+                            {
+                                MemoryStream fotoMemoryStream = new MemoryStream(pdf.data);
+
+                                ZipEntry entry = new ZipEntry(string.Concat(doc, ".pdf"));
+                                entry.DateTime = DateTime.Now;
+                                zipStream.PutNextEntry(entry);
+                                StreamUtils.Copy(fotoMemoryStream, zipStream, new byte[4096]);
+                                zipStream.CloseEntry();
+                            }
+
+                        }
+
+                        zipStream.IsStreamOwner = false;
+                    }
+
+                    outputMemStream.Position = 0;
+
+                    return JsonCustom(File(outputMemStream.ToArray(), "application/zip", "Liquidaciones.zip"));
+                }
             }
             catch (InfoCustomException e)
             {

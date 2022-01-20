@@ -13,4 +13,6 @@ Post-Deployment Script Template
 :r .\EstadoIngresosBrutosCoeficienteUnificado.sql
 :r .\OrigenMovimientoIngresosBrutosCoeficienteUnificado.sql
 :r .\TipoMovimientoIngresosBrutosCoeficienteUnificado.sql
+:r .\TipoImputacionSAP.sql
+:r .\TipoSolpPosicionSAP.sql
 :r .\PermisosNotificaciones.sql
