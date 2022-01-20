@@ -32,7 +32,7 @@ export class CartaPorteBaseComponent extends ListBaseComponent {
     productoSelected: string = "";
     filtroVendedor: any = null;
     vendedorSelected: string = "";
-
+    msgBusquedaLimitada: string = "";
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
@@ -42,12 +42,13 @@ export class CartaPorteBaseComponent extends ListBaseComponent {
         this.navService.setSeccionList(secciones);
 
         if (this.route.snapshot.paramMap.get('contrato')) {
-            this.filtroFechaComponent.periodo = "4"
+            sessionStorage.setItem("periodo", "4");
+            this.filtroFechaComponent.periodo = "4";
             var fechaActualMenos5años = this.restarAñosDateActual(new Date())
             this.filtroFechaComponent.fecha_inicio = this.fechasParaFiltros(fechaActualMenos5años);
             this.filtroFechaComponent.fecha_fin = this.fechasParaFiltros(new Date());
-
             this.filtroContrato = this.route.snapshot.paramMap.get('contrato')
+            this.msgBusquedaLimitada = "Búsqueda limitada a los últimos 6 meses, modificar el rango fechas para buscar anteriores.";
         }
 
         this.getData();
@@ -68,7 +69,7 @@ export class CartaPorteBaseComponent extends ListBaseComponent {
         var year = d.getFullYear();
         var month = d.getMonth();
         var day = d.getDate();
-        var c = new Date(year - 5, month, day);
+        var c = new Date(year, month - 6, day);
 
         return c
     }

@@ -42,24 +42,27 @@ namespace SustitucionMOAUtils.Services
             return "Home";
         }
 
-        public HomeViewModel getHomeInfo(string proveedor, string fechaInicio, string fechaFin, string sociedad) {
+        public HomeViewModel getHomeInfo(string proveedor, string fechaInicio, string fechaFin, string sociedad)
+        {
             try
             {
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
                 FechaWS fecha = CommonService.toDate(fechaInicio, fechaFin);
                 HomeViewModel data = new HomeViewModel();
                 HomeWSMOAResponse homeWsRes = new HomeConsumerMOA().request(proveedor, fechas);
-                if (homeWsRes != null) {
+                if (homeWsRes != null)
+                {
                     data.resumen = homeWsRes.resumen;
                 }
-                CuentaCorrienteWSMOAResponse CtaCteWsRes = (CuentaCorrienteWSMOAResponse) new CuentaCorrientesConsumerMOA().request("", proveedor, sociedad, fecha, "", "", "");
+                CuentaCorrienteWSMOAResponse CtaCteWsRes = (CuentaCorrienteWSMOAResponse)new CuentaCorrientesConsumerMOA().request("", proveedor, sociedad, fecha, "", "", "");
                 if (CtaCteWsRes != null)
                 {
                     if (CtaCteWsRes.cuentasCorrientes.Count > 0)
                     {
                         data.cuentasCorrientes = CtaCteWsRes.cuentasCorrientes;
                     }
-                    else {
+                    else
+                    {
                         data.msjCtaCte = String.Format(InfoMsg.SinRegistros, "datos de Cuenta Corriente");
                     }
                 }
@@ -110,28 +113,31 @@ namespace SustitucionMOAUtils.Services
 
         public List<BuscadorOption> getBusqueda(string palabraABuscar, string mailUsuario, string proveedor)
         {
-            List<BuscadorOption> listaResultados = new List<BuscadorOption> {};
+            List<BuscadorOption> listaResultados = new List<BuscadorOption> { };
             ContratoDetalleWSMOAResponse detalleContratoResultado = null;
             LiquidacionViewModel todasLiquidaciones = null;
             ListarPesificacionesWSMOAResponse historialPesificaciones = null;
             CartaPorteWSMOAResponse cartasPorteAplicacion = null;
             CartaPorteDescargaWSMOAResponse cartasPorteDescargas = null;
             bool existePesificacionDelContrato = false;
-            string fechaInicio = DateTime.Now.AddYears(-3).ToString("yyyy - MM - dd");
+            string fechaInicio = DateTime.Now.AddDays(-150).ToString("yyyy - MM - dd");
             bool ccppAplicacion = false;
             bool ccppDescargas = false;
             string fechaFin = DateTime.Now.AddDays(+1).ToString("yyyy - MM - dd");
             List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
             palabraABuscar.Trim().Replace("\t", "");
-
+            if (palabraABuscar == null || palabraABuscar == "undefined" || palabraABuscar.Length < 5)
+            {
+                return listaResultados;
+            }
             var formatoContrato = "0000000000";
             var palabraABuscarContrato = (formatoContrato + palabraABuscar).Substring((formatoContrato + palabraABuscar).Length - 10);
-            var formatoCCPP1 =  (formatoContrato + palabraABuscar).Substring((formatoContrato + palabraABuscar).Length - 12);
+            var formatoCCPP1 = (formatoContrato + palabraABuscar).Substring((formatoContrato + palabraABuscar).Length - 12);
             var formatoCCPP2 = string.Format("000{0}", palabraABuscar.Substring(3));
 
             List<string> palabrasABuscar = new List<string>() { palabraABuscarContrato, formatoCCPP1, formatoCCPP2 };
 
-            palabrasABuscar.ForEach(palabra => 
+            palabrasABuscar.ForEach(palabra =>
             {
                 try
                 {
@@ -161,7 +167,7 @@ namespace SustitucionMOAUtils.Services
                     //HISTORIAL PESIFICACIONES
                     try
                     {
-                        if(historialPesificaciones == null) historialPesificaciones = pesificacionesConsumer.Request(proveedor);
+                        if (historialPesificaciones == null) historialPesificaciones = pesificacionesConsumer.Request(proveedor);
                     }
                     catch (Exception e)
                     {
@@ -181,7 +187,7 @@ namespace SustitucionMOAUtils.Services
                     //CARTAS DE PORTE
                     try
                     {
-                        if(cartasPorteAplicacion == null)
+                        if (cartasPorteAplicacion == null)
                         {
                             cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, fechas);
                         }
@@ -204,7 +210,7 @@ namespace SustitucionMOAUtils.Services
                     //LIQUIDACIONES
                     try
                     {
-                        if(todasLiquidaciones == null)  todasLiquidaciones = liquidacionService.TodasLiquidaciones(proveedor, fechaInicio, fechaFin);
+                        if (todasLiquidaciones == null) todasLiquidaciones = liquidacionService.TodasLiquidaciones(proveedor, fechaInicio, fechaFin);
                     }
                     catch (Exception e)
                     {
@@ -214,10 +220,11 @@ namespace SustitucionMOAUtils.Services
                     if (todasLiquidaciones != null)
                     {
                         var liquidacion = todasLiquidaciones.data.liquidaciones.Find(lp => lp.contrato == palabra) ?? null;
-
-                        if (liquidacion != null)
+                        var liquidaciones = todasLiquidaciones.data.liquidaciones.Where(lp => lp.contrato == palabra).ToList();
+                        if (liquidaciones != null && liquidaciones.Count() > 0)
                         {
-                            listaResultados.Add(new BuscadorOption { Link = "", Tipo = "liquidación emitida", Value = liquidacion.documento + "," + liquidacion.ejercicio, Code = TipoBusqueda.Liquidacion, CtaParams = 1 });
+                            var value = string.Join("|", liquidaciones.Select(a => a.documento).ToList());
+                            listaResultados.Add(new BuscadorOption { Link = "", Tipo = "liquidación emitida", Value = value + "," + liquidacion.ejercicio, Code = TipoBusqueda.Liquidacion, CtaParams = 1 });
                         }
                     }
 
@@ -243,8 +250,8 @@ namespace SustitucionMOAUtils.Services
                         Log.Error(e);
                     }
 
-                    if (((cartasPorteAplicacion != null && cartasPorteAplicacion?.cartasPorte.Count > 0) 
-                    || (cartasPorteDescargas != null && cartasPorteDescargas?.cartasPorte.Count > 0))                   
+                    if (((cartasPorteAplicacion != null && cartasPorteAplicacion?.cartasPorte.Count > 0)
+                    || (cartasPorteDescargas != null && cartasPorteDescargas?.cartasPorte.Count > 0))
                     && (!ccppAplicacion && !ccppDescargas))
                     {
                         ccppAplicacion = cartasPorteAplicacion.cartasPorte.Any(c => c.cartaPorte == palabra);
@@ -257,9 +264,10 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
-            });          
+            });
 
-            return listaResultados;
+
+            return listaResultados.GroupBy(x => x.Tipo).Select(y => y.First()).ToList();
         }
     }
 }
