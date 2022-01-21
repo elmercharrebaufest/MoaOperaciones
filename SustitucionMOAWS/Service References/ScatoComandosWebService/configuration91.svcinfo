@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="Xs74v7wdJlKH03MxTA3eFyzmFdUDy8x43Dckprujfkc=">
+<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="rWjw7eo877AmsYsRCSFPFRP0XOgcgwYYuXxyvualVnw=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="basicHttpBinding" name="BasicHttpBinding_IServicioComandos">
       <properties>
@@ -112,10 +112,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="BasicHttpBinding_IServicioComandos" contract="ScatoComandosWebService.IServicioComandos" bindingType="basicHttpBinding" address="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" bindingConfiguration="BasicHttpBinding_IServicioComandos">
+    <endpoint name="BasicHttpBinding_IServicioComandos" contract="ScatoComandosWebService.IServicioComandos" bindingType="basicHttpBinding" address="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc" bindingConfiguration="BasicHttpBinding_IServicioComandos">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc</serializedValue>
+          <serializedValue>http://localhost/Scato.ServiciosWeb/ServicioComandos.svc</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

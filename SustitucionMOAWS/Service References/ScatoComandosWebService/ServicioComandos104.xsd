@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Entidades" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Entidades" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" />
-  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd8" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Seguridad" />
-  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Entidades" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Entidades" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" />
+  <xs:import schemaLocation="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd8" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Seguridad" />
+  <xs:import schemaLocation="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:complexType name="Calle">
     <xs:sequence>
       <xs:element minOccurs="0" name="Automatica" type="xs:boolean" />
@@ -69,6 +69,7 @@
       <xs:element minOccurs="0" name="ValorEspecialMaximo" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="ValorEspecialMinimo" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="ValorProteina" nillable="true" type="xs:decimal" />
+      <xs:element minOccurs="0" name="ValorProteinaMedia" nillable="true" type="xs:decimal" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="CaracteristicaDeCalidad" nillable="true" type="tns:CaracteristicaDeCalidad" />
@@ -181,9 +182,11 @@
   <xs:complexType name="Localidad">
     <xs:sequence>
       <xs:element minOccurs="0" name="CodigoAfip" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CodigoPostal" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="Provincia" nillable="true" type="tns:Provincia" />
+      <xs:element minOccurs="0" name="SubcodigoPostal" nillable="true" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Localidad" nillable="true" type="tns:Localidad" />
