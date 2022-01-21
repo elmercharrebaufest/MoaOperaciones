@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="9ae9c439-7621-469a-8521-a9b411b2c9dc" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="9ae9c439-7621-469a-8521-a9b411b2c9dc" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -19,22 +19,22 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?wsdl" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://localhost/Scato.serviciosWeb/ServicioComandos.svc?wsdl" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="ServicioComandos9.xsd" MetadataType="Schema" ID="69c0cc39-00d4-4aa0-a253-dd84c00e4503" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd9" />
-    <MetadataFile FileName="ServicioComandos2.xsd" MetadataType="Schema" ID="c61009af-8006-4faf-9f22-184fc57bb344" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd1" />
-    <MetadataFile FileName="ServicioComandos5.xsd" MetadataType="Schema" ID="f84324c3-517e-4364-8496-8a64b41dae73" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd5" />
-    <MetadataFile FileName="ServicioComandos6.xsd" MetadataType="Schema" ID="d924cb13-3e34-4e56-9b41-8b8459510586" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd8" />
-    <MetadataFile FileName="ServicioComandos3.xsd" MetadataType="Schema" ID="fdb2a4e0-212f-4071-9364-34ad64e0a587" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd0" />
-    <MetadataFile FileName="ServicioComandos8.xsd" MetadataType="Schema" ID="b6414cfc-95b7-4567-b430-bf963cf69df9" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd4" />
-    <MetadataFile FileName="ServicioComandos.xsd" MetadataType="Schema" ID="1c3fd825-ec28-4ef0-9aba-f7f79f041c6a" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd3" />
-    <MetadataFile FileName="ServicioComandos.wsdl" MetadataType="Wsdl" ID="a7c812e2-f96d-407b-9894-03312d0e931c" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?wsdl=wsdl0" />
-    <MetadataFile FileName="ServicioComandos4.xsd" MetadataType="Schema" ID="b1d78752-bae5-4812-8d25-a3192cb19924" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd7" />
-    <MetadataFile FileName="ServicioComandos1.wsdl" MetadataType="Wsdl" ID="e03593b8-0568-444d-acc3-7ac575c94f70" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?wsdl" />
-    <MetadataFile FileName="ServicioComandos91.xsd" MetadataType="Schema" ID="b24b8f5d-99de-4894-93f1-c4292038124b" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd10" />
-    <MetadataFile FileName="ServicioComandos1.xsd" MetadataType="Schema" ID="306eb25d-a002-4a72-bdf3-17783050947f" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd2" />
-    <MetadataFile FileName="ServicioComandos7.xsd" MetadataType="Schema" ID="330da168-98c0-4181-b61f-40217326ff03" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd6" />
+    <MetadataFile FileName="ServicioComandos10.xsd" MetadataType="Schema" ID="d66574cf-5c53-4168-b41e-148d52f5fd71" SourceId="1" SourceUrl="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd0" />
+    <MetadataFile FileName="ServicioComandos101.xsd" MetadataType="Schema" ID="a72d7fc4-f6fb-4cca-80f8-d4f6662d1a4d" SourceId="1" SourceUrl="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd1" />
+    <MetadataFile FileName="ServicioComandos2.wsdl" MetadataType="Wsdl" ID="9c6b3944-0ce1-4bac-80e8-87327371c328" SourceId="1" SourceUrl="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="ServicioComandos21.wsdl" MetadataType="Wsdl" ID="2af0eb23-8d7f-42f7-ae3e-962699a7f255" SourceId="1" SourceUrl="http://localhost/Scato.serviciosWeb/ServicioComandos.svc?wsdl" />
+    <MetadataFile FileName="ServicioComandos102.xsd" MetadataType="Schema" ID="91a36a27-0761-46f6-83a5-315439784858" SourceId="1" SourceUrl="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd10" />
+    <MetadataFile FileName="ServicioComandos103.xsd" MetadataType="Schema" ID="3920640f-2fbf-4485-84fc-4406a7af5636" SourceId="1" SourceUrl="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd8" />
+    <MetadataFile FileName="ServicioComandos104.xsd" MetadataType="Schema" ID="0af4ded6-839c-4ad9-b68a-ebf9ac966e29" SourceId="1" SourceUrl="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd9" />
+    <MetadataFile FileName="ServicioComandos105.xsd" MetadataType="Schema" ID="9457cfe5-06f2-415a-9c8d-68a7e6212edd" SourceId="1" SourceUrl="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd6" />
+    <MetadataFile FileName="ServicioComandos106.xsd" MetadataType="Schema" ID="c50d60a7-af18-4b68-be40-4835343043f0" SourceId="1" SourceUrl="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd7" />
+    <MetadataFile FileName="ServicioComandos107.xsd" MetadataType="Schema" ID="a6e3d3aa-b070-439c-b19a-7f59da9211a3" SourceId="1" SourceUrl="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd4" />
+    <MetadataFile FileName="ServicioComandos108.xsd" MetadataType="Schema" ID="da0cf1c9-cd7b-441b-a9ba-f770c6c8f2ef" SourceId="1" SourceUrl="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd5" />
+    <MetadataFile FileName="ServicioComandos109.xsd" MetadataType="Schema" ID="560a478e-8d5c-4fbb-91a8-a2ff9f59f2ac" SourceId="1" SourceUrl="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd2" />
+    <MetadataFile FileName="ServicioComandos1010.xsd" MetadataType="Schema" ID="80e945d9-ef1a-4c56-9382-ef890fa6d370" SourceId="1" SourceUrl="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd3" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

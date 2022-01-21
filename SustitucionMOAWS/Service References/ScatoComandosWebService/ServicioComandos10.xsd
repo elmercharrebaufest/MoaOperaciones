@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://scato.molinos.com.ar" elementFormDefault="qualified" targetNamespace="http://scato.molinos.com.ar" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" />
+  <xs:import schemaLocation="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" />
   <xs:element name="Ejecutar">
     <xs:complexType>
       <xs:sequence>
