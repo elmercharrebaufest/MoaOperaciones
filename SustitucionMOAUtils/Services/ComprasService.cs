@@ -1350,18 +1350,27 @@ namespace SustitucionMOAUtils.Services
                 var grupoCompras = gruposCompras.FirstOrDefault(g => g.Codigo == posicion.GrupoCompras);
                 var grupoArticulo = gruposArticulos.FirstOrDefault(g => g.Codigo == posicion.GrupoArticulo);
 
-                var posicionEntity = solp.Posiciones.SingleOrDefault(pos => pos.Indice == Int32.Parse(posicion.NumeroPosicion));
+                //var posicionEntity = solp.Posiciones.SingleOrDefault(pos => pos.Indice == Int32.Parse(posicion.NumeroPosicion));
                     
-                if(posicionEntity == null)
+                //if(posicionEntity == null)
+                //{
+                //    posicionEntity = new SolpPosicion { 
+                //        Indice = Int32.Parse(posicion.NumeroPosicion),
+                //        Subposiciones = new List<SolpSubposicion>(),
+                //        PaisEntrega = "AR",
+                //        CodigosProveedores = string.Empty,
+                //    };
+                //    solp.Posiciones = new List<SolpPosicion>();
+                //    solp.Posiciones.Add(posicionEntity);
+                //}
+                var posicionEntity = new SolpPosicion
                 {
-                    posicionEntity = new SolpPosicion { 
-                        Indice = Int32.Parse(posicion.NumeroPosicion),
-                        Subposiciones = new List<SolpSubposicion>(),
-                        PaisEntrega = "AR",
-                        CodigosProveedores = string.Empty,
-                    };
-                    solp.Posiciones.Add(posicionEntity);
-                }
+                    Indice = Int32.Parse(posicion.NumeroPosicion),
+                    Subposiciones = new List<SolpSubposicion>(),
+                    PaisEntrega = "AR",
+                    CodigosProveedores = string.Empty,
+                };
+                solp.Posiciones = new List<SolpPosicion>();
 
                 posicionEntity.TipoPosicion_Id = tipoSolpPosicion_Id;
                 posicionEntity.TipoImputacion_Id = tipoImputacion_Id;
@@ -1403,6 +1412,7 @@ namespace SustitucionMOAUtils.Services
                     subPosicionEntity.Cantidad = subPosicion.Cantidad;
                     subPosicionEntity.Unidad_Id = unidadMedida?.Id;
                     subPosicionEntity.PrecioBruto = subPosicion.PrecioUnitario;
+                    subPosicionEntity.Estado = true;
                     //subPosicionEntity.TipoImputacion_Id = null;
                 }
 

@@ -7,6 +7,7 @@ using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -164,6 +165,41 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        //[HttpGet]
+        //public ActionResult ObtenerSolpDeSap()
+        //{
+        //    try
+        //    {
+        //        ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
+        //        {
+        //            FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
+        //            FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
+        //            CreadoPorUsuarios = new List<string>(),
+        //            NumeroSolp = "0212105292"
+        //        };
+        //        service.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+        //        return JsonCustom(new { success = true});
+        //    }
+        //    catch (InfoCustomException e)
+        //    {
+        //        return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (ValidationCustomException e)
+        //    {
+        //        return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (WSCustomException e)
+        //    {
+        //        Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+        //        return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+        //        return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
 
         [HttpGet]
         public ActionResult ListarUsuarioCompras()
