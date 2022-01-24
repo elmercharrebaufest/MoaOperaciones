@@ -223,8 +223,10 @@ namespace SustitucionMOAWS.WSConsumers
                 Todos estos objetos van a venir completos segun el tipo de imputación. Por ejemplo, si la imputación es del tipo (EX_PREITEM-ACCTASSCAT) = "K", la tabla va a pasar como parámetro el campo COSTCENTER. 
                 Resto de campos solo a nivel informativo.
              */
-
-            result.TipoImputaciones = new List<TipoImputacionSAP>();
+            if(result.TipoImputaciones == null)
+            {
+                result.TipoImputaciones = new List<TipoImputacionSAP>();
+            }
             foreach (var tipoImputacion in tipoImputaciones)
             {
                 result.TipoImputaciones.Add(new TipoImputacionSAP
@@ -262,7 +264,10 @@ namespace SustitucionMOAWS.WSConsumers
 
             */
 
-            result.Direcciones = new List<DireccionSolpSAP>();
+            if (result.Direcciones == null)
+            {
+                result.Direcciones = new List<DireccionSolpSAP>();
+            }
             foreach (var direccionPosicion in direccionesPosicion)
             {
                 result.Direcciones.Add(new DireccionSolpSAP
@@ -347,7 +352,8 @@ namespace SustitucionMOAWS.WSConsumers
                     UnidadMedida = posicion.UNIT,
                     CantidadString = SAPFormatter.FormatearCantidad(posicion.QUANTITY, posicion.UNIT),
                     FechaSolicitud = SAPFormatter.FormatearFecha(posicion.PREQ_DATE),
-                    FechaEntrega = SAPFormatter.GetDateTime(posicion.DELIV_DATE),
+                    FechaEntrega = SAPFormatter.FormatearFecha(posicion.DELIV_DATE),
+                    FechaEntregaDate = SAPFormatter.GetDateTime(posicion.DELIV_DATE),
                     FechaEstimadaLiberacion = SAPFormatter.FormatearFecha(posicion.REL_DATE),
                     DiasTratamientoEntrada = posicion.GR_PR_TIME,
                     PrecioSolp = posicion.PREQ_PRICE,
@@ -391,7 +397,10 @@ namespace SustitucionMOAWS.WSConsumers
 
              */
 
-            result.ImputacionesSuposiciones = new List<ImputacionSuposicionSAP>();
+            if (result.ImputacionesSuposiciones == null)
+            {
+                result.ImputacionesSuposiciones = new List<ImputacionSuposicionSAP>();
+            }
             foreach (var imputacionSuposicion in imputacionesSuposiciones)
             {
                 result.ImputacionesSuposiciones.Add(new ImputacionSuposicionSAP
@@ -433,7 +442,10 @@ namespace SustitucionMOAWS.WSConsumers
              
              */
 
-            result.ServiciosSuposiciones = new List<SuposicionServicioSAP>();
+            if(result.ServiciosSuposiciones == null)
+            {
+                result.ServiciosSuposiciones = new List<SuposicionServicioSAP>();
+            }
             foreach (var suposicionServicio in suposicionesServicios)
             {
                 result.ServiciosSuposiciones.Add(new SuposicionServicioSAP
@@ -520,7 +532,8 @@ namespace SustitucionMOAWS.WSConsumers
         public decimal Cantidad { get; set; }
         public string UnidadMedida { get; set; }
         public string FechaSolicitud { get; set; }
-        public DateTime FechaEntrega { get; set; }
+        public string FechaEntrega { get; set; }
+        public DateTime FechaEntregaDate { get; set; }
         public string FechaEstimadaLiberacion { get; set; }
         public decimal DiasTratamientoEntrada { get; set; }
         public decimal PrecioSolp { get; set; }
