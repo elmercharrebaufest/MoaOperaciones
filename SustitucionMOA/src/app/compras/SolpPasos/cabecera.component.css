@@ -5,3 +5,7 @@
     background-color: #bebebe !important;
     color: #333232 !important;
 }
+
+::ng-deep .ui-autocomplete-input {    
+    top: 0px;
+}
