@@ -144,10 +144,8 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr>
                     <td>
-                        <div *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && rowData.TipoSolpSap != 2 && rowData.TipoSolpSap != 3" class="col-md-2">
-                            <span><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash" (click)="eliminarPosicionDashboard(rowData.Id)" /></span>
-                        </div>
-                        <div  *ngIf="rowData.TipoSolpSap == 2" class="col-md-2">
+                        
+                        <div  *ngIf="rowData.TipoSolpSap == 2" class="col-md-5">
                             <span><img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento" style="height:25px; cursor:default"/></span>
                         </div>
                         <div *ngIf="rowData.TipoSolpSap == 3" class="col-md-5">
@@ -155,10 +153,13 @@
                                 <img class="pointer" src="./Content/images/icons/SAP.svg" alt="SAP" style="height: 30px; cursor:default"/>
                             </span>
                         </div>
-                        <div class="col-md-2" *ngIf="rowData.TipoSolpSap != 3">
+                        <div class="col-md-2">
+                            <span><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash" (click)="eliminarPosicionDashboard(rowData.Id)" /></span>
+                        </div>
+                        <div class="col-md-2">
                             <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" (click)="goToSeccionParam('/compras/solp', rowData.Id)" /></span>
                         </div>
-                        <div class="col-md-2" *ngIf="rowData.TipoSolpSap != 3">
+                        <div class="col-md-2">
                             <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="generarZipPliego(rowData.Id)" /></span>
                         </div>
                     </td>
