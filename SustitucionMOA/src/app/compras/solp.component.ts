@@ -411,11 +411,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.monedaSeleccionada = x.Moneda;
                 posActual.servicio = x.TipoPosicion && x.TipoPosicion.Codigo;
                 posActual.tipoImputacion = x.TipoImputacion && x.TipoImputacion.Codigo;
-                posActual.rubroElectrico = x.CodigosProveedores.includes('ELECTRICO');
-                posActual.rubroConsultoria = x.CodigosProveedores.includes('CONSULTORIA');
-                posActual.rubroCivil = x.CodigosProveedores.includes('CIVIL');
-                posActual.rubroIngenieria = x.CodigosProveedores.includes('INGENIERIA');
-                posActual.rubroMecanico = x.CodigosProveedores.includes('MECANICO');
+                //posActual.rubroElectrico = x.CodigosProveedores.includes('ELECTRICO');
+                //posActual.rubroConsultoria = x.CodigosProveedores.includes('CONSULTORIA');
+                //posActual.rubroCivil = x.CodigosProveedores.includes('CIVIL');
+                //posActual.rubroIngenieria = x.CodigosProveedores.includes('INGENIERIA');
+                //posActual.rubroMecanico = x.CodigosProveedores.includes('MECANICO');
                 posActual.estado = x.Estado;
                 posActual.indice = x.numeroPosicion;
 
