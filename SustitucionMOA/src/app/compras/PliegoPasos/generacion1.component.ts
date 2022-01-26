@@ -50,6 +50,10 @@ export class Generacion1Component extends ListBaseComponent  {
 
     ngOnInit() {
         this.setTabs();
+
+        console.log('model mail ', this.model);
+        console.log('mail ', this.model.mail);
+
         if (!this.model.mail)
             this.model.mail = sessionStorage.getItem("username");
 
@@ -83,6 +87,8 @@ export class Generacion1Component extends ListBaseComponent  {
             var dateParts = this.fechaEntrega.split("-");
             this.model.fechaDeEntregaDeOfertasFecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2], this.horaEntrega);
         }
+        if (!this.model.mail)
+            this.model.mail = sessionStorage.getItem("username");
     }
 
 
