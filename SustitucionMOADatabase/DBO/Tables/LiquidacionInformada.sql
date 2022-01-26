@@ -2,7 +2,7 @@
 (
     [Id] UNIQUEIDENTIFIER NOT NULL,
     [Proveedor_Id] INT NOT NULL,
-    [COE] NVARCHAR(12) NULL,
+    [COE] VARCHAR(50) NULL,
     [FechaComprobante] DATE NULL,
 [FechaInformada] DATE NOT NULL, 
     CONSTRAINT [PK_dbo.LiquidacionInformada] PRIMARY KEY CLUSTERED 
