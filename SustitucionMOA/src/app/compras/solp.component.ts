@@ -575,6 +575,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     this.disabledSave = false;
                     return;
                 }
+
+                debugger
+                if (!this.solpActual.revisadoPor) {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Revisado por` });
+
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                    this.disabledSave = false;
+                    return;
+                }
             }
 
             this.solpActual.Finalizar = enviarSap;
