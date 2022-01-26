@@ -71,7 +71,7 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
 
-            if (result.cabeceras[0] == null)
+            if (result.cabeceras == null || result.cabeceras.Count() == 0 || result.cabeceras[0] == null)
             {
                 result.cabeceras.Add(new Cabecera());
             }
@@ -86,7 +86,8 @@ namespace SustitucionMOAWS.WSConsumers
                     }
                 }
             }
-            else {
+            else
+            {
                 result.cabeceras[0].categorias.Add("-");
             }
 

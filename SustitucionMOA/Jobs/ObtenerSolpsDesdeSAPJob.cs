@@ -33,7 +33,7 @@ namespace SustitucionMOA.Jobs
                     {
                         FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
                         FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
-                        CreadoPorUsuarios = new List<string>(),
+                        CreadoPorUsuarios = new List<string>()
                     };
                     _comprasService.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
                 }

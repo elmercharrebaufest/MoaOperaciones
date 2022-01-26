@@ -1320,19 +1320,21 @@ namespace SustitucionMOAUtils.Services
                 bool nuevaSolp = solp == null;
                 if (nuevaSolp)
                 {
-                    solp =  repositorio.Obtener<Solp>(s => s.NroSolp == posicion.NumeroSolicitud) ??
-                            new Solp { 
+                    solp = repositorio.Obtener<Solp>(s => s.NroSolp == posicion.NumeroSolicitud) ??
+                            new Solp {
+                                FechaCreacion = DateTime.Now,
                                 EstadoDocumento_Id = estadoIncompletoId,
                                 NroSolp = posicion.NumeroSolicitud,
                                 ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id,
                                 EstadoPasos = "0,0,0,0,1,1",
-                                TipoSolpSap = !string.IsNullOrEmpty(tipoImputacion.IdOrden) ? (int?)TipoSolpSap.Mantenimiento : (int?)TipoSolpSap.Sap,               
+                                TipoSolpSap = !string.IsNullOrEmpty(tipoImputacion.IdOrden) ? (int?)TipoSolpSap.Mantenimiento : (int?)TipoSolpSap.Sap,
                                 Pliego = new Pliego
                                 {
                                     SupervisorSector = string.Empty,
                                     SupervisorTrabajo = string.Empty,
                                     JornadaLaboralDias = string.Empty,
                                 },
+                                Posiciones = new List<SolpPosicion>(),
                             };
 
                     solpsFinales.Add(solp);
@@ -1351,14 +1353,16 @@ namespace SustitucionMOAUtils.Services
                 var grupoArticulo = gruposArticulos.FirstOrDefault(g => g.Codigo == posicion.GrupoArticulo);
 
                 var posicionEntity = solp.Posiciones.SingleOrDefault(pos => pos.Indice == Int32.Parse(posicion.NumeroPosicion));
-                    
-                if(posicionEntity == null)
+
+                if (posicionEntity == null)
                 {
-                    posicionEntity = new SolpPosicion { 
+                    posicionEntity = new SolpPosicion
+                    {
                         Indice = Int32.Parse(posicion.NumeroPosicion),
                         Subposiciones = new List<SolpSubposicion>(),
                         PaisEntrega = "AR",
                         CodigosProveedores = string.Empty,
+                        Codigo = Guid.NewGuid().ToString(),
                     };
                     solp.Posiciones.Add(posicionEntity);
                 }
@@ -1367,7 +1371,7 @@ namespace SustitucionMOAUtils.Services
                 posicionEntity.TipoImputacion_Id = tipoImputacion_Id;
                 posicionEntity.TextoGenerico = posicion.TextoPosicion;
                 posicionEntity.PlazoEntrega = (int)posicion.CantidadDiasEntrega;
-                posicionEntity.FechaEntregaServicio = posicion.FechaEntrega;
+                posicionEntity.FechaEntregaServicio = posicion.FechaEntregaDate;
                 posicionEntity.Centro_Id = centro?.Id;
                 posicionEntity.Almacen_Id = almacen?.Id;
                 posicionEntity.NombreEntrega = direccion?.NombreUbicacion ?? string.Empty;
@@ -1403,6 +1407,7 @@ namespace SustitucionMOAUtils.Services
                     subPosicionEntity.Cantidad = subPosicion.Cantidad;
                     subPosicionEntity.Unidad_Id = unidadMedida?.Id;
                     subPosicionEntity.PrecioBruto = subPosicion.PrecioUnitario;
+                    subPosicionEntity.Estado = true;
                     //subPosicionEntity.TipoImputacion_Id = null;
                 }
 
