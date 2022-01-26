@@ -733,21 +733,25 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 case EnumPasoSolp.SolpCabecera:
                     paso.Completo = true;
                     //Revisa que todos los campos de TODAS las posiciones esten completos
+                    var almacenObligatorio = this.solpActual.tipoSolpSap != EnumTipoSolpSap.Mantenimiento;
                     this.solpActual.posiciones.forEach(x => {
-                        if(!this.listaStringCompleta([
+                        var listaCamposAValidar = [
                             x.servicio,
                             x.textoGenerico,
                             x.fechaEntregaServicio,
                             x.fechaDeLiberacion,
                             x.selectCentroEntrega,
-                            x.selectAlmacenEntrega,
                             x.calleEntrega,
                             x.numeroEntrega,
                             x.selectGrupoCompras,
                             x.selectArticuloCompras,
-                            x.monedaSeleccionada])
+                            x.monedaSeleccionada]
+                        if (almacenObligatorio)
+                            listaCamposAValidar.push(x.selectAlmacenEntrega)
+
+                        if (!this.listaStringCompleta(listaCamposAValidar)
                         || (this.solpActual.posiciones.some(x => !(x.selectCentroEntrega && x.selectCentroEntrega.Id)))
-                        || (this.solpActual.posiciones.some(x => !(x.selectAlmacenEntrega && x.selectAlmacenEntrega.Id)))
+                        || (almacenObligatorio && this.solpActual.posiciones.some(x => !(x.selectAlmacenEntrega && x.selectAlmacenEntrega.Id)))
                         || (this.solpActual.posiciones.some(x => !(x.selectGrupoCompras && x.selectGrupoCompras.Id)))
                         || (this.solpActual.posiciones.some(x => !(x.selectArticuloCompras && x.selectArticuloCompras.Id))))
                         {
