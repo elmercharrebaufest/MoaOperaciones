@@ -299,6 +299,7 @@ namespace SustitucionMOAUtils.Services
             //cual es el contrato correcto que le quiere entregar.
             if (result.Contains(','))
             {
+                result = string.Join(",", result.Split(',').Select(a => a.Split('|')[0]).ToList());
                 if (string.IsNullOrEmpty(ordenDeCarga.NumeroPedido))
                 {
                     if (string.IsNullOrEmpty(ordenDeCarga.ContratoSAP))

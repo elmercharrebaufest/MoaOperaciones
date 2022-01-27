@@ -430,10 +430,10 @@
                     </div>
                 </div>
 
-                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isNoGranosSelected()">
+                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && (!isAmbos() ||isNoGranosSelected())">
                     <div class="panel-heading seccion" role="tab" id="operar">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                            href="#collapseO" aria-expanded="false" aria-controls="collapseO">
+                           href="#collapseO" aria-expanded="false" aria-controls="collapseO">
                             Operar <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
