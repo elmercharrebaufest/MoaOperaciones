@@ -728,8 +728,7 @@ namespace SustitucionMOAUtils.Services
 
             var usuarioCompras = ListarUsuarioCompras(solp.UsuarioActual);
 
-            var templateFilePath = solp.TieneCondicionesGenerales ?? true ? Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html") :
-               Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/NewPliegoSolpSinCondicionesTemplate.html");
+            var templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/NewPliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
             //, "Templates/PliegoSolpSinCondicionesTemplate.html"
 
@@ -1291,6 +1290,10 @@ namespace SustitucionMOAUtils.Services
                 TablasSap.GrupoArticulo, 
                 TablasSap.Unidad,
                 TablasSap.ClaseDocumento,
+                TablasSap.CecoSolpSap,
+                TablasSap.OrdenSolpSap,
+                TablasSap.CentroBeneficio,
+                TablasSap.CuentasSolpSap,
             };
 
             IList<TablaSap> tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
@@ -1305,6 +1308,10 @@ namespace SustitucionMOAUtils.Services
             List<TablaSap> gruposArticulos = tablaSap.Where(x => x.Tabla == TablasSap.GrupoArticulo).ToList();
             List<TablaSap> unidadesDeMedida = tablaSap.Where(x => x.Tabla == TablasSap.Unidad).ToList();
             List<TablaSap> clasesDeDocumento = tablaSap.Where(x => x.Tabla == TablasSap.ClaseDocumento).ToList();
+            List<TablaSap> centrosDeCosto = tablaSap.Where(x => x.Tabla == TablasSap.CecoSolpSap).ToList();
+            List<TablaSap> ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
+            List<TablaSap> centrosDeBeneficio = tablaSap.Where(x => x.Tabla == TablasSap.CentroBeneficio).ToList();
+            List<TablaSap> cuentasSolpesSap = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
 
             int? estadoIncompletoId = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == "INCOMPLETO")?.Id;
             //int? estadoIncompletoId = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == EstadoDocumentoSolp.Incompleto.Code())?.Id;
@@ -1338,19 +1345,19 @@ namespace SustitucionMOAUtils.Services
                             };
 
                     solpsFinales.Add(solp);
-                };
+                }
 
                 DireccionSolpSAP direccion = result.Direcciones
                     .SingleOrDefault(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud &&
                                             dir.NumeroPosicion == posicion.NumeroPosicion);
 
-                var tipoSolpPosicion_Id = tiposSolpPosicionSAP.FirstOrDefault(t => t.Codigo == posicion.Tipo)?.TablaGeneral_Id;
-                var tipoImputacion_Id = tiposImputacionSAP.FirstOrDefault(t => t.Codigo == posicion.TipoImputacion)?.TablaGeneral_Id;
-                var moneda = monedas.FirstOrDefault(m => m.Codigo == posicion.Moneda);
-                var almacen = almacenes.FirstOrDefault(a => a.Codigo == posicion.Almacen);
-                var centro = centros.FirstOrDefault(c => c.Codigo == posicion.CentroLogistico);
-                var grupoCompras = gruposCompras.FirstOrDefault(g => g.Codigo == posicion.GrupoCompras);
-                var grupoArticulo = gruposArticulos.FirstOrDefault(g => g.Codigo == posicion.GrupoArticulo);
+                int? tipoSolpPosicion_Id = tiposSolpPosicionSAP.FirstOrDefault(t => t.Codigo == posicion.Tipo)?.TablaGeneral_Id;
+                SustitucionMOAModel.Entities.TipoImputacionSAP tipoImputacionPosicion = tiposImputacionSAP.FirstOrDefault(t => t.Codigo == posicion.TipoImputacion);
+                TablaSap moneda = monedas.FirstOrDefault(m => m.Codigo == posicion.Moneda);
+                TablaSap almacen = almacenes.FirstOrDefault(a => a.Codigo == posicion.Almacen);
+                TablaSap centro = centros.FirstOrDefault(c => c.Codigo == posicion.CentroLogistico);
+                TablaSap grupoCompras = gruposCompras.FirstOrDefault(g => g.Codigo == posicion.GrupoCompras);
+                TablaSap grupoArticulo = gruposArticulos.FirstOrDefault(g => g.Codigo == posicion.GrupoArticulo);
 
                 var posicionEntity = solp.Posiciones.SingleOrDefault(pos => pos.Indice == Int32.Parse(posicion.NumeroPosicion));
 
@@ -1368,7 +1375,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 posicionEntity.TipoPosicion_Id = tipoSolpPosicion_Id;
-                posicionEntity.TipoImputacion_Id = tipoImputacion_Id;
+                posicionEntity.TipoImputacion_Id = tipoImputacionPosicion?.TablaGeneral_Id;
                 posicionEntity.TextoGenerico = posicion.TextoPosicion;
                 posicionEntity.PlazoEntrega = (int)posicion.CantidadDiasEntrega;
                 posicionEntity.FechaEntregaServicio = posicion.FechaEntregaDate;
@@ -1390,7 +1397,7 @@ namespace SustitucionMOAUtils.Services
                 foreach (var subPosicion in subPosicionesDeLaPosicion)
                 {
                     int indiceSubPosicion = Int32.Parse(subPosicion.SumeroSubPosicion) / 10;
-                    var subPosicionEntity = posicionEntity.Subposiciones.SingleOrDefault(sp => sp.Numero == indiceSubPosicion);
+                    SolpSubposicion subPosicionEntity = posicionEntity.Subposiciones.SingleOrDefault(sp => sp.Numero == indiceSubPosicion);
 
                     if (subPosicionEntity == null)
                     {
@@ -1398,17 +1405,38 @@ namespace SustitucionMOAUtils.Services
                         posicionEntity.Subposiciones.Add(subPosicionEntity);
                     }
 
-                    var unidadMedida = unidadesDeMedida.SingleOrDefault(g => g.Tabla == TablasSap.GrupoCompras && g.Codigo == posicion.GrupoCompras);
+                    ImputacionSuposicionSAP imputacionSubposicion = result.ImputacionesSuposiciones
+                        .FirstOrDefault(ims => ims.NumeroSolicitud == subPosicion.NumeroSolicitud &&
+                                               ims.NumeroPosicion == subPosicion.NumeroPosicion &&
+                                               ims.NumeroSubPosicion == subPosicion.SumeroSubPosicion);
 
+                    SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacionSAP = result.TipoImputaciones
+                        .FirstOrDefault(ti => ti.NumeroSolicitud == subPosicion.NumeroSolicitud && 
+                                              ti.NumeroPosicion == subPosicion.NumeroPosicion &&
+                                              ti.NumeroDeSerie == imputacionSubposicion.ImputacionLineaServicio);
+
+                    TablaSap unidadMedida = unidadesDeMedida.SingleOrDefault(um => um.Codigo == subPosicion.UnidadDeMedida);
+
+                    TablaSap tipoImputacionSubposicion = 
+                        tipoImputacionPosicion == null || imputacionSubposicion == null || tipoImputacionSAP == null ? null :
+                        tipoImputacionPosicion.Codigo == "K" ? centrosDeCosto.SingleOrDefault(ceco => Int32.Parse(ceco.CodigoSap) == Int32.Parse(tipoImputacionSAP.CentroDeCosto)) :
+                        tipoImputacionPosicion.Codigo == "F" ? ordenes.SingleOrDefault(o => o.CodigoSap == tipoImputacionSAP.IdOrden) :
+                        tipoImputacionPosicion.Codigo == "Y" ? centrosDeBeneficio.SingleOrDefault(cebe => cebe.CodigoSap == tipoImputacionSAP.CentroDeBeneficio) :
+                        null;
+
+                    TablaSap cuentaSolpSap = 
+                        tipoImputacionPosicion == null || imputacionSubposicion == null || tipoImputacionSAP == null ? null :
+                        cuentasSolpesSap.SingleOrDefault(c => Int32.Parse(c.Codigo) == Int32.Parse(tipoImputacionSAP.CuentaContableImputada));
+                    
                     subPosicionEntity.Numero = indiceSubPosicion;
                     subPosicionEntity.Codigo = subPosicion.CodigoServicio;
                     subPosicionEntity.Tarea = subPosicion.DescripcionServicio;
-                    //subPosicionEntity.CuentaMayor_Id = null;
+                    subPosicionEntity.CuentaMayor_Id = cuentaSolpSap?.Id;
+                    subPosicionEntity.TipoImputacion_Id = tipoImputacionSubposicion?.Id;
                     subPosicionEntity.Cantidad = subPosicion.Cantidad;
                     subPosicionEntity.Unidad_Id = unidadMedida?.Id;
                     subPosicionEntity.PrecioBruto = subPosicion.PrecioUnitario;
                     subPosicionEntity.Estado = true;
-                    //subPosicionEntity.TipoImputacion_Id = null;
                 }
 
                 solp.Posiciones.Add(posicionEntity);

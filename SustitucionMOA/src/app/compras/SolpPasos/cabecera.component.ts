@@ -14,6 +14,7 @@ import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { EnumPasoSolp } from '../enum-paso-solp';
 import { DISABLED } from '@angular/forms/src/model'
+import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 
 declare var $: any;
 
@@ -101,7 +102,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         { campo: 'proveedoresNoSugeridos', esObligatorio: false, esFijo: true },
         { campo: 'selectMonedaCompras', esObligatorio: true, esFijo: true },
     ];
-
+    
     @Output() onEstCompleto = new EventEmitter<any>();
 
     setTabs() {
@@ -197,8 +198,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         camposObligatorios.forEach(c => {
             if (this.camposObligatorios.find(x => x.campo == c.Codigo) != null)
                 this.camposObligatorios.find(x => x.campo == c.Codigo).esObligatorio = true;
-
         });
+
+        if (this.model.tipoSolpSap == EnumTipoSolpSap.Mantenimiento)
+            this.camposObligatorios.find(x => x.campo == 'selectAlmacenEntrega').esObligatorio = false;
     }
 
     cambiarClaseDocumento() {
