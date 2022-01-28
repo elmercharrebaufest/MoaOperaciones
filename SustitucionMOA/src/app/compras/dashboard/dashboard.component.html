@@ -183,10 +183,11 @@
                     <td>
                         {{ rowData.TipoSolp.Descripcion || "" }}
                     </td>
-                    <td>
-                        <button class="btn btn-success botonesComprasColor" *ngIf="rowData.VincularPliego"
+                    <td class="col-sm-12 col-md-12 col-lg-12">
+                        <button style="white-space: normal; text-align: center; vertical-align: middle;" class="btn btn-success botonesComprasColor col-sm-12 col-md-12 col-lg-12" *ngIf="rowData.VincularPliego"
                                 (click)="vincularAPliego(rowData.Id)" [disabled]="rowData.PliegoVinculado">
-                            {{(rowData.PliegoVinculado) ? "Pliego vinculado" : "Vincular a Pliego" }}
+                            <p >{{(rowData.PliegoVinculado) ? "Pliego vinculado" : "Vincular a Pliego" }}</p>
+                                
                         </button>
                     </td>
                 </tr>

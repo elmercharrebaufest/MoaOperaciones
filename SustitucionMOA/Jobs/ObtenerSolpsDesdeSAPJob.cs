@@ -35,6 +35,7 @@ namespace SustitucionMOA.Jobs
                         FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
                         CreadoPorUsuarios = new List<string>()
                     };
+
                     _comprasService.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
                 }
             }

@@ -576,7 +576,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return;
                 }
 
-                debugger
                 if (!this.solpActual.revisadoPor) {
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Revisado por` });
 
