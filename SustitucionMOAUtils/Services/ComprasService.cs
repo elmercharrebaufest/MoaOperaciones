@@ -1428,8 +1428,8 @@ namespace SustitucionMOAUtils.Services
                         tipoImputacionPosicion == null || imputacionSubposicion == null || tipoImputacionSAP == null ? null :
                         cuentasSolpesSap.SingleOrDefault(c => Int32.Parse(c.Codigo) == Int32.Parse(tipoImputacionSAP.CuentaContableImputada));
 
-                    int codigoServicio = Int32.Parse(subPosicion.CodigoServicio);
-                    ServicioSolp servicioSolp = repositorio.Obtener<ServicioSolp>(x => x.CodigoSap == codigoServicio);
+                    int codigoServicio = 0;
+                    ServicioSolp servicioSolp = Int32.TryParse(subPosicion.CodigoServicio, out codigoServicio) ? repositorio.Obtener<ServicioSolp>(x => x.CodigoSap == codigoServicio) : null;
 
                     subPosicionEntity.Numero = indiceSubPosicion;
                     subPosicionEntity.Codigo = subPosicion.CodigoServicio;
