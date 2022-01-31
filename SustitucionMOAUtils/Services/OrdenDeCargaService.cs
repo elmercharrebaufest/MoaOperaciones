@@ -157,7 +157,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (crearPedido)
                 {
-                    if(string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP))
+                    if (string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP))
                     {
                         ordenEditar.ContratoSAP = ordenEditar.ContratoIngresado;
                     }
@@ -193,7 +193,12 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            repositorio.AgregarTodos(historialCambios);
+            // error de base de datos al usar agregar todos
+            //repositorio.AgregarTodos(historialCambios);
+            foreach (var historialCambio in historialCambios)
+            {
+                repositorio.Agregar(historialCambio);
+            }
             ordenEditar.HistorialCambios.Concat(historialCambios);
             repositorio.GuardarCambios();
 
@@ -239,8 +244,9 @@ namespace SustitucionMOAUtils.Services
             //OV-03   'Pedido creado - Verificar Crédito de pedido'
             //OV-00   'OK'
             var forzarCreacionStr = forzarCreacion ? "" : "X";
-
+            Log.Debug("CrearOrdenEnSAP CrearOrdenRequest" + $"cliente.CodigoProveedor {cliente.CodigoProveedor ?? ""}, orden.ContratoSAP {orden.ContratoSAP ?? ""}, orden.CodigoCorredor {orden.CodigoCorredor ?? ""}, orden.Cantidad {orden.Cantidad}, orden.Producto.CodigoSap {orden.Producto.CodigoSap ?? ""}, orden.NumeroPedidoIngresado {orden.NumeroPedidoIngresado ?? ""}, forzarCreacionStr {forzarCreacionStr ?? ""}");
             var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.CodigoCorredor, orden.Cantidad, orden.Producto.CodigoSap, orden.NumeroPedidoIngresado, forzarCreacionStr, out string numeroPedido);
+            Log.Debug("CrearOrdenEnSAP CrearOrdenRequest Result " + result);
 
             var resultadoCrearOrden = false;
             orden.ContratoSinCantidadPendiente = false;
@@ -293,7 +299,9 @@ namespace SustitucionMOAUtils.Services
             */
             string contrato = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP) ? ordenDeCarga.ContratoIngresado : ordenDeCarga.ContratoSAP;
 
+            Log.Debug("VerificarOrden ControlCargaRequest " + $"cliente.CodigoProveedor {cliente.CodigoProveedor ?? ""}, contrato {contrato ?? ""}, ordenDeCarga.CodigoCorredor {ordenDeCarga.CodigoCorredor ?? ""}, ordenDeCarga.CUITTransporte {ordenDeCarga.CUITTransporte ?? ""}, ordenDeCarga.Producto.CodigoSap {ordenDeCarga.Producto.CodigoSap ?? ""}, ordenDeCarga.NumeroPedido {ordenDeCarga.NumeroPedido ?? ""}");
             var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
+            Log.Debug("VerificarOrden ControlCargaRequest Result " + result);
 
             //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
             //cual es el contrato correcto que le quiere entregar.
@@ -755,7 +763,9 @@ namespace SustitucionMOAUtils.Services
 
         public string VerificarEstadoEntrega(OrdenDeCarga orden)
         {
+            Log.Debug("VerificarEstadoEntrega OrdenCargaControlEstadoRequest " + $"orden.NumeroEntrega {orden.NumeroEntrega ?? ""}");
             var result = consumer.OrdenCargaControlEstadoRequest(orden.NumeroEntrega, "", "");
+            Log.Debug("VerificarEstadoEntrega OrdenCargaControlEstadoRequest Result " + result);
 
             if (result == "CE-06")
             {
@@ -771,7 +781,9 @@ namespace SustitucionMOAUtils.Services
 
         private bool TransporteExiste(OrdenDeCarga orden)
         {
+            Log.Debug("TransporteExiste OrdenCargaControlEstadoRequest " + $"orden.CUITTransporte {orden.CUITTransporte ?? ""}");
             var result = consumer.OrdenCargaControlEstadoRequest("", "", orden.CUITTransporte);
+            Log.Debug("TransporteExiste OrdenCargaControlEstadoRequest Result " + result);
 
             return result == "CE-07";
         }
@@ -871,7 +883,9 @@ namespace SustitucionMOAUtils.Services
 
         private bool ObtenerSituacionCrediticia(OrdenDeCarga orden)
         {
+            Log.Debug("ObtenerSituacionCrediticia OrdenCargaControlEstadoRequest " + $"orden.NumeroPedido {orden.NumeroPedido ?? ""}");
             var result = consumer.OrdenCargaControlEstadoRequest("", orden.NumeroPedido, "");
+            Log.Debug("ObtenerSituacionCrediticia OrdenCargaControlEstadoRequest Result " + result);
 
             return result == "CE-00";
         }
@@ -893,7 +907,7 @@ namespace SustitucionMOAUtils.Services
             string asunto = string.Concat("Orden de carga #", orden.Id);
             string cuerpo = string.Format("Orden de carga {0} de cliente {1} no pasó validaciones crediticias. <br> Numero de Contato: {2} <br> Numero de Pedido: {3}"
                 , orden.Id, cliente.RazonSocial, string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP
-                , (string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedidoIngresado : orden.PedidoSAP)??"");
+                , (string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedidoIngresado : orden.PedidoSAP) ?? "");
 
             EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
 
@@ -912,10 +926,13 @@ namespace SustitucionMOAUtils.Services
             var conductor = string.Concat(orden.ApellidoChofer, ", ", orden.NombreChofer);
 
             var tipoDocumento = "CUIL";
+
+            Log.Debug("GenerarEntregaSAP OrdenCargaEntregadaRequest " + $"orden.CUITChofer {orden.CUITChofer ?? ""}, orden.Cantidad {orden.Cantidad}, conductor {conductor ?? ""}, orden.PatenteAcoplado {orden.PatenteAcoplado ?? ""}, orden.ChasisAcoplado {orden.ChasisAcoplado ?? ""}, orden.NumeroPedido {orden.NumeroPedido ?? ""}, tipoDocumento {tipoDocumento ?? ""}, orden.CUITTransporte {orden.CUITTransporte ?? ""}");
             var result = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, conductor, orden.PatenteAcoplado, orden.ChasisAcoplado, orden.NumeroPedido, tipoDocumento, orden.CUITTransporte, out string respuesta);
+            Log.Debug("GenerarEntregaSAP OrdenCargaEntregadaRequest Result " + result);
 
             //OE-00   'OK'
-            //OE-01   'No existe tranportista'
+            //OE-01   'No existe tranportista
             //OE-02   'Entrega Creada - Error al insertar'
 
             switch (respuesta)
