@@ -1334,7 +1334,7 @@ namespace SustitucionMOAUtils.Services
                                 NroSolp = posicion.NumeroSolicitud,
                                 ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id,
                                 EstadoPasos = "0,0,0,0,1,1",
-                                TipoSolpSap = !string.IsNullOrEmpty(tipoImputacion.IdOrden) ? (int?)TipoSolpSap.Mantenimiento : (int?)TipoSolpSap.Sap,
+                                TipoSolpSap = !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F" ? (int?)TipoSolpSap.Mantenimiento : (int?)TipoSolpSap.Sap,
                                 Pliego = new Pliego
                                 {
                                     SupervisorSector = string.Empty,
@@ -1427,9 +1427,13 @@ namespace SustitucionMOAUtils.Services
                     TablaSap cuentaSolpSap = 
                         tipoImputacionPosicion == null || imputacionSubposicion == null || tipoImputacionSAP == null ? null :
                         cuentasSolpesSap.SingleOrDefault(c => Int32.Parse(c.Codigo) == Int32.Parse(tipoImputacionSAP.CuentaContableImputada));
-                    
+
+                    int codigoServicio = 0;
+                    ServicioSolp servicioSolp = Int32.TryParse(subPosicion.CodigoServicio, out codigoServicio) ? repositorio.Obtener<ServicioSolp>(x => x.CodigoSap == codigoServicio) : null;
+
                     subPosicionEntity.Numero = indiceSubPosicion;
                     subPosicionEntity.Codigo = subPosicion.CodigoServicio;
+                    subPosicionEntity.ServicioSolp_Id = servicioSolp?.Id;
                     subPosicionEntity.Tarea = subPosicion.DescripcionServicio;
                     subPosicionEntity.CuentaMayor_Id = cuentaSolpSap?.Id;
                     subPosicionEntity.TipoImputacion_Id = tipoImputacionSubposicion?.Id;
