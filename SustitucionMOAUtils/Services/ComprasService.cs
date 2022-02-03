@@ -928,6 +928,10 @@ namespace SustitucionMOAUtils.Services
                     TwoColumnHeaderFooter PageEventHandler = new TwoColumnHeaderFooter();
                     PdfWriter.PageEvent = PageEventHandler;
 
+                    var tagProcessors = (DefaultTagProcessorFactory)Tags.GetHtmlTagProcessorFactory();
+                    tagProcessors.RemoveProcessor(HTML.Tag.IMG); // remove the default processor
+                    tagProcessors.AddProcessor(HTML.Tag.IMG, new CustomImageTagProcessor()); // use our new processor
+
                     //define el header
                     //PageEventHandler.Title = "Revisado por: " + revisadoPor.
 
@@ -985,38 +989,41 @@ namespace SustitucionMOAUtils.Services
                     htmlPipelineContext.SetTagFactory(tagProcessorFactory);
 
                     var pdfWriterPipeline = new PdfWriterPipeline(document, PdfWriter);
-                    var htmlPipeline = new HtmlPipeline(htmlPipelineContext, pdfWriterPipeline);
+                    //var htmlPipeline = new HtmlPipeline(htmlPipelineContext, pdfWriterPipeline);
+                   
 
                     // get an ICssResolver and add the custom CSS
                     var cssResolver = XMLWorkerHelper.GetInstance().GetDefaultCssResolver(true);
                     cssResolver.AddCss(css, "utf-8", true);
-                    var cssResolverPipeline = new CssResolverPipeline(
-                        cssResolver, htmlPipeline
-                    );
+                    //var cssResolverPipeline = new CssResolverPipeline(
+                    //    cssResolver, htmlPipeline
+                    //);
 
-                    var worker = new XMLWorker(cssResolverPipeline, true);
-                    var parser = new XMLParser(worker);
-                    using (var stringReader = new StringReader(xHtml))
-                    {
-                        parser.Parse(stringReader);
-                        document.Close();
-                        byte[] bytes = stream.ToArray();
-                        stream.Close();
-                        return bytes;
-                    }
+                    var hpc = new HtmlPipelineContext(new CssAppliersImpl(new XMLWorkerFontProvider()));
+                    hpc.SetAcceptUnknown(true).AutoBookmark(true).SetTagFactory(tagProcessors); // inject the tagProcessors
 
+                    var htmlPipeline = new HtmlPipeline(hpc, new PdfWriterPipeline(document, PdfWriter));
+                    var pipeline = new CssResolverPipeline(cssResolver, htmlPipeline);
+
+                    var worker = new XMLWorker(pipeline, true);
+
+                    var charset = Encoding.UTF8;
+
+                    var xmlParser = new XMLParser(true, worker, charset);
+                    xmlParser.Parse(new StringReader(xHtml));
+                    document.Close();
+                    byte[] bytes = stream.ToArray();
+                    stream.Close();
+                    return bytes;           
                 }
 
             }
 
+
+          
+
         }
 
-        //public void AddOutline(PdfWriter writer, string Title, float Position)
-        //{
-        //    PdfDestination destination = new PdfDestination(PdfDestination.FITH, Position);
-        //    PdfOutline outline = new PdfOutline(writer.DirectContent.RootOutline, destination, Title);
-        //    writer.DirectContent.AddOutline(outline, "Name = " + Title);
-        //}
 
         public string GenerarZipPliego(int idSolp, string pathBase)
         {
