@@ -124,6 +124,7 @@
     <Compile Include="Export\ExcelValidator.cs" />
     <Compile Include="Export\PDFExport.cs" />
     <Compile Include="Helpers\CustomImageTagProcessor.cs" />
+    <Compile Include="Helpers\ExtensionesSerializacion.cs" />
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\IAltaEmpresaNoGranosService.cs" />

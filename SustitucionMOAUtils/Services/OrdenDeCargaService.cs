@@ -1,5 +1,4 @@
-﻿using NLog.Fluent;
-using SustitucionMOAAssets;
+﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
@@ -17,6 +16,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Text;
+using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Helpers;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -35,6 +36,8 @@ namespace SustitucionMOAUtils.Services
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
+            Log.Info($"OdenDeCargaService Agregar: {ordenDeCarga.ToJson()}");
+
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             Proveedor cliente;
@@ -130,6 +133,8 @@ namespace SustitucionMOAUtils.Services
 
         public Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
+            Log.Info($"OdenDeCargaService Editar: {ordenDeCarga.ToJson()}");
+
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var valoresAEditar = new List<string> { "NombreChofer", "ApellidoChofer", "CUITChofer", "PatenteAcoplado", "ChasisAcoplado", "ContratoIngresado",
             "NumeroPedido", "Observacion", "Cantidad", "RazonSocialTransporte", "CUITTransporte", "Producto_Id", "NumeroPedidoIngresado" };
@@ -233,7 +238,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception ex)
             {
-                Log.Error(ex.ToString());
+                Log.Error(ex);
             }
         }
 
@@ -244,9 +249,9 @@ namespace SustitucionMOAUtils.Services
             //OV-03   'Pedido creado - Verificar Crédito de pedido'
             //OV-00   'OK'
             var forzarCreacionStr = forzarCreacion ? "" : "X";
-            Log.Debug("CrearOrdenEnSAP CrearOrdenRequest" + $"cliente.CodigoProveedor {cliente.CodigoProveedor ?? ""}, orden.ContratoSAP {orden.ContratoSAP ?? ""}, orden.CodigoCorredor {orden.CodigoCorredor ?? ""}, orden.Cantidad {orden.Cantidad}, orden.Producto.CodigoSap {orden.Producto.CodigoSap ?? ""}, orden.NumeroPedidoIngresado {orden.NumeroPedidoIngresado ?? ""}, forzarCreacionStr {forzarCreacionStr ?? ""}");
+            Log.Info("CrearOrdenEnSAP CrearOrdenRequest" + $"cliente.CodigoProveedor {cliente.CodigoProveedor ?? ""}, orden.ContratoSAP {orden.ContratoSAP ?? ""}, orden.CodigoCorredor {orden.CodigoCorredor ?? ""}, orden.Cantidad {orden.Cantidad}, orden.Producto.CodigoSap {orden.Producto.CodigoSap ?? ""}, orden.NumeroPedidoIngresado {orden.NumeroPedidoIngresado ?? ""}, forzarCreacionStr {forzarCreacionStr ?? ""}");
             var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.CodigoCorredor, orden.Cantidad, orden.Producto.CodigoSap, orden.NumeroPedidoIngresado, forzarCreacionStr, out string numeroPedido);
-            Log.Debug("CrearOrdenEnSAP CrearOrdenRequest Result " + result);
+            Log.Info("CrearOrdenEnSAP CrearOrdenRequest Result " + result);
 
             var resultadoCrearOrden = false;
             orden.ContratoSinCantidadPendiente = false;
@@ -299,9 +304,9 @@ namespace SustitucionMOAUtils.Services
             */
             string contrato = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP) ? ordenDeCarga.ContratoIngresado : ordenDeCarga.ContratoSAP;
 
-            Log.Debug("VerificarOrden ControlCargaRequest " + $"cliente.CodigoProveedor {cliente.CodigoProveedor ?? ""}, contrato {contrato ?? ""}, ordenDeCarga.CodigoCorredor {ordenDeCarga.CodigoCorredor ?? ""}, ordenDeCarga.CUITTransporte {ordenDeCarga.CUITTransporte ?? ""}, ordenDeCarga.Producto.CodigoSap {ordenDeCarga.Producto.CodigoSap ?? ""}, ordenDeCarga.NumeroPedido {ordenDeCarga.NumeroPedido ?? ""}");
+            Log.Info("VerificarOrden ControlCargaRequest " + $"cliente.CodigoProveedor {cliente.CodigoProveedor ?? ""}, contrato {contrato ?? ""}, ordenDeCarga.CodigoCorredor {ordenDeCarga.CodigoCorredor ?? ""}, ordenDeCarga.CUITTransporte {ordenDeCarga.CUITTransporte ?? ""}, ordenDeCarga.Producto.CodigoSap {ordenDeCarga.Producto.CodigoSap ?? ""}, ordenDeCarga.NumeroPedido {ordenDeCarga.NumeroPedido ?? ""}");
             var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
-            Log.Debug("VerificarOrden ControlCargaRequest Result " + result);
+            Log.Info("VerificarOrden ControlCargaRequest Result " + result);
 
             //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
             //cual es el contrato correcto que le quiere entregar.
@@ -763,9 +768,9 @@ namespace SustitucionMOAUtils.Services
 
         public string VerificarEstadoEntrega(OrdenDeCarga orden)
         {
-            Log.Debug("VerificarEstadoEntrega OrdenCargaControlEstadoRequest " + $"orden.NumeroEntrega {orden.NumeroEntrega ?? ""}");
+            Log.Info("VerificarEstadoEntrega OrdenCargaControlEstadoRequest " + $"orden.NumeroEntrega {orden.NumeroEntrega ?? ""}");
             var result = consumer.OrdenCargaControlEstadoRequest(orden.NumeroEntrega, "", "");
-            Log.Debug("VerificarEstadoEntrega OrdenCargaControlEstadoRequest Result " + result);
+            Log.Info("VerificarEstadoEntrega OrdenCargaControlEstadoRequest Result " + result);
 
             if (result == "CE-06")
             {
@@ -781,9 +786,9 @@ namespace SustitucionMOAUtils.Services
 
         private bool TransporteExiste(OrdenDeCarga orden)
         {
-            Log.Debug("TransporteExiste OrdenCargaControlEstadoRequest " + $"orden.CUITTransporte {orden.CUITTransporte ?? ""}");
+            Log.Info("TransporteExiste OrdenCargaControlEstadoRequest " + $"orden.CUITTransporte {orden.CUITTransporte ?? ""}");
             var result = consumer.OrdenCargaControlEstadoRequest("", "", orden.CUITTransporte);
-            Log.Debug("TransporteExiste OrdenCargaControlEstadoRequest Result " + result);
+            Log.Info("TransporteExiste OrdenCargaControlEstadoRequest Result " + result);
 
             return result == "CE-07";
         }
@@ -883,9 +888,9 @@ namespace SustitucionMOAUtils.Services
 
         private bool ObtenerSituacionCrediticia(OrdenDeCarga orden)
         {
-            Log.Debug("ObtenerSituacionCrediticia OrdenCargaControlEstadoRequest " + $"orden.NumeroPedido {orden.NumeroPedido ?? ""}");
+            Log.Info("ObtenerSituacionCrediticia OrdenCargaControlEstadoRequest " + $"orden.NumeroPedido {orden.NumeroPedido ?? ""}");
             var result = consumer.OrdenCargaControlEstadoRequest("", orden.NumeroPedido, "");
-            Log.Debug("ObtenerSituacionCrediticia OrdenCargaControlEstadoRequest Result " + result);
+            Log.Info("ObtenerSituacionCrediticia OrdenCargaControlEstadoRequest Result " + result);
 
             return result == "CE-00";
         }
@@ -927,9 +932,9 @@ namespace SustitucionMOAUtils.Services
 
             var tipoDocumento = "CUIL";
 
-            Log.Debug("GenerarEntregaSAP OrdenCargaEntregadaRequest " + $"orden.CUITChofer {orden.CUITChofer ?? ""}, orden.Cantidad {orden.Cantidad}, conductor {conductor ?? ""}, orden.PatenteAcoplado {orden.PatenteAcoplado ?? ""}, orden.ChasisAcoplado {orden.ChasisAcoplado ?? ""}, orden.NumeroPedido {orden.NumeroPedido ?? ""}, tipoDocumento {tipoDocumento ?? ""}, orden.CUITTransporte {orden.CUITTransporte ?? ""}");
+            Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest " + $"orden.CUITChofer {orden.CUITChofer ?? ""}, orden.Cantidad {orden.Cantidad}, conductor {conductor ?? ""}, orden.PatenteAcoplado {orden.PatenteAcoplado ?? ""}, orden.ChasisAcoplado {orden.ChasisAcoplado ?? ""}, orden.NumeroPedido {orden.NumeroPedido ?? ""}, tipoDocumento {tipoDocumento ?? ""}, orden.CUITTransporte {orden.CUITTransporte ?? ""}");
             var result = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, conductor, orden.PatenteAcoplado, orden.ChasisAcoplado, orden.NumeroPedido, tipoDocumento, orden.CUITTransporte, out string respuesta);
-            Log.Debug("GenerarEntregaSAP OrdenCargaEntregadaRequest Result " + result);
+            Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Result " + result);
 
             //OE-00   'OK'
             //OE-01   'No existe tranportista
