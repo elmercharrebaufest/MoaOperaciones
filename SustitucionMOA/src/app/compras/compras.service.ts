@@ -75,7 +75,7 @@ export class ComprasService extends BaseService {
             TieneDocumentacionTecnica: solp.entregaDocumentacion,
             FechaHoraLimiteConsulta: this.getFechaHora(solp.fechaLimiteFecha, solp.fechaLimiteHora),
             ObservacionesGeneracion: solp.observacionesGeneracion,
-            EspecificacionesTecnicas: solp.especificacionesViewModel.observaciones,
+            EspecificacionesTecnicas: solp.especificacionesViewModel.observaciones.replace(/(<img("[^"]*"|[^/">])*)>/gi, "$1/>"),
             TieneCondicionesGenerales: solp.tieneCondicionesGenerales,
             PasoCompletado: solp.pasoCompletado,
             EstadoPasos: solp.estadoPasos,
