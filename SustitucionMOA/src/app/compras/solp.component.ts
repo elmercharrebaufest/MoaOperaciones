@@ -585,6 +585,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     this.disabledSave = false;
                     return;
                 }
+               
+                if (this.selectUsuarioCompras.Id == null) {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
+                    
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                    this.disabledSave = false;
+                    return;
+                }
             }
 
             this.solpActual.Finalizar = enviarSap;
@@ -882,6 +892,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 CodigoDescripcion: element.UsuarioCompras.Mail
                             });
                         });
+                        this.usuarioComprasList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario"}, ...this.usuarioComprasList];
                         this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
                                                   ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
                                                   : this.usuarioComprasList[0];
