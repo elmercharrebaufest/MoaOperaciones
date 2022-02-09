@@ -133,7 +133,7 @@
                                                 <input type="text" pKeyFilter="num" [(ngModel)]="posicion.precioBruto" (paste)="onPaste($event,enumColumnaSubPosicion.PrecioBruto,rowIndex,dt)" (change)="calcularTotalSubPosicion()">
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{model.posicionActual.monedaSeleccionada?.Codigo}} {{posicion.precioBruto}}
+                                                {{model.posicionActual.monedaSeleccionada?.Codigo}} <br/> {{posicion.precioBruto | number:'1.2-2':'es'}}
                                             </ng-template>
                                         </p-cellEditor>
                                         <div *ngIf="validarPrecioBruto(posicion, posicion.precioBruto, 'precioBruto')">
@@ -231,7 +231,7 @@
                         <button class="btn marginButton buttonTotalCompras">
                             Valor Total:
                             {{model.posicionActual.monedaSeleccionada?.Codigo}}
-                            {{model.posicionActual.totalPosicion()}}
+                            {{model.posicionActual.totalPosicion() | number:'1.2-2':'es'}}
                         </button>
                     </div>
                 </div>
