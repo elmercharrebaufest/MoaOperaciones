@@ -149,7 +149,8 @@ export class EdicionComponent extends BaseComponent implements OnInit {
       Latitud: this.campoProveedor.Latitud, Longitud: this.campoProveedor.Longitud, Proveedor_Id: this.proveedorId,
       CampoCosecha: campoCosecha,
       CampoCosecha_Id: this.campoCosechaId,
-      CUIT: ""
+      CUIT: "",
+      Archivo_Id:0
     }
 
     this.mensajeComponent.setMsgsEmpty();
