@@ -42,11 +42,12 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     borrarCampos: boolean = this.isAuthorized('BORRAR CAMPOS CREADOS')
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     opcionesProveedores: any;
+    cosechas: any;
 
     filtroId: string = "";
     filtroNombreCampo: string = "";
     filtroProveedor: string = "";
-
+    filtroCosechaId: string = "";
     orderedByColumn: string = "Nombre";
     orderDirection: number = 1;
     itemsPerPage = 20;
@@ -55,7 +56,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
 
     ngOnInit() {
         this.navService.setSeccionList([]);
-        this.getCamposSustentables();
+        this.getCosechas();
     }
 
     getCamposSustentables() {
@@ -197,5 +198,38 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         )
+    }
+
+    getCosechas() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        try {
+            this.subscription = this.service.getCosechas().subscribe(
+                (result: any) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.cosechas = result;  
+                        this.getCamposSustentables();
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
     }
 }
