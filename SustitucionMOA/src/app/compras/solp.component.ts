@@ -340,8 +340,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.usuarioComprasId = solp.UsuarioCompras.Id || 0;
         this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;
         this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;
-        this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
-        this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+        if(solp.FechaHoraLimiteConsulta != null) {
+            this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+            this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+        }
         this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;
 
         // Paso 3

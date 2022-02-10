@@ -589,6 +589,23 @@ namespace SustitucionMOAUtils.Services
 
         public List<SolpDto> ListarSolp(UsuarioDto usuarioActual)
         {
+            var usuariosCompras = repositorio.Listar<UsuarioCompras>();
+            var usuariosComprasRelacion = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id);
+            UsuarioComprasRelacionConUsuarios usuarioComprasRelacionEntity = null;
+            if (!usuariosComprasRelacion.ToList().Any())
+            {
+                usuariosCompras.ToList().ForEach(x =>
+                {
+                    usuarioComprasRelacionEntity = new UsuarioComprasRelacionConUsuarios
+                    {
+                        Usuario_Id = usuarioActual.Id,
+                        UsuarioCompras_Id = x.Id
+                    };
+                    repositorio.Agregar(usuarioComprasRelacionEntity);
+                });
+                repositorio.GuardarCambios();
+            }
+
             Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null && x.UsuarioCreacion_Id == usuarioActual.Id;
 
             if (usuarioActual.Permisos.Contains("VER TODAS SOLPS"))
@@ -1370,6 +1387,7 @@ namespace SustitucionMOAUtils.Services
                         PaisEntrega = "AR",
                         CodigosProveedores = string.Empty,
                         Codigo = Guid.NewGuid().ToString(),
+                        Estado = posicion.EstadoPosicion != "X"
                     };
                     solp.Posiciones.Add(posicionEntity);
                 }
@@ -1389,6 +1407,7 @@ namespace SustitucionMOAUtils.Services
                 posicionEntity.Solicitante = posicion.NombreSolicitante;
                 posicionEntity.GrupoArticulo_Id = grupoArticulo?.Id;
                 posicionEntity.Moneda_Id = moneda?.Id;
+                posicionEntity.Estado = posicion.EstadoPosicion != "X";
 
                 IList<SuposicionServicioSAP> subPosicionesDeLaPosicion = 
                     result.ServiciosSuposiciones.Where(x => x.NumeroPosicion == posicion.NumeroPosicion && 
@@ -1434,6 +1453,7 @@ namespace SustitucionMOAUtils.Services
                     subPosicionEntity.Numero = indiceSubPosicion;
                     subPosicionEntity.Codigo = subPosicion.CodigoServicio;
                     subPosicionEntity.ServicioSolp_Id = servicioSolp?.Id;
+                    subPosicionEntity.CodigoServicioSap_Id = servicioSolp?.Id;
                     subPosicionEntity.Tarea = subPosicion.DescripcionServicio;
                     subPosicionEntity.CuentaMayor_Id = cuentaSolpSap?.Id;
                     subPosicionEntity.TipoImputacion_Id = tipoImputacionSubposicion?.Id;

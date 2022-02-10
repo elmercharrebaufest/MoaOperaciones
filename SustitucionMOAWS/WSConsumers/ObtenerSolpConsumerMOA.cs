@@ -278,7 +278,7 @@ namespace SustitucionMOAWS.WSConsumers
                     CodigoPostal = direccionPosicion.POSTL_COD1,
                     Ciudad = direccionPosicion.CITY,
                     Calle = direccionPosicion.STREET,
-                    Numero = direccionPosicion.HOUSE_NO,
+                    Numero = direccionPosicion.TEL1_NUMBR,
                     Telefono = direccionPosicion.TEL1_NUMBR,
                 });
             }
@@ -375,7 +375,8 @@ namespace SustitucionMOAWS.WSConsumers
                     Moneda = posicion.CURRENCY,
                     CantidadDiasEntrega = posicion.PLND_DELRY,
                     EstaBloqueada = posicion.REQ_BLOCKED,
-                    EstadoSolpSap = posicion.PROCSTAT
+                    EstadoSolpSap = posicion.PROCSTAT,
+                    EstadoPosicion = posicion.DELETE_IND
                 });
             }
 
@@ -556,6 +557,7 @@ namespace SustitucionMOAWS.WSConsumers
         public string CantidadString { get; internal set; }
         public string MonedaPrecioString { get; internal set; }
         public string EstadoSolpSap { get; set; }
+        public string EstadoPosicion { get; set; }
     }
 
     public class DireccionSolpSAP
