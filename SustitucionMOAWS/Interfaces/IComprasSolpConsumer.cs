@@ -14,7 +14,7 @@ namespace SustitucionMOAWS.Interfaces
 
     public interface IObtenerOrdenSolpConsumerMOA
     {
-        object request();
+        object request(string idOrder = "");
     }
 
     public interface IObtenerServiciosSolpConsumerMOA

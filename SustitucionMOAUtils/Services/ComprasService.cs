@@ -1121,9 +1121,9 @@ namespace SustitucionMOAUtils.Services
             }).ToList();
         }
 
-        public List<TablaSapDto> ObtenerOrdenesSap()
+        public List<TablaSapDto> ObtenerOrdenesSap(string idOrder = "")
         {
-            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)ordenesSolpConsumerMOA.request();
+            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)ordenesSolpConsumerMOA.request(idOrder);
             var codigoNum = 0;
 
             return resultSap.Ordenes.Select(c => new TablaSapDto()
@@ -1133,6 +1133,33 @@ namespace SustitucionMOAUtils.Services
                 CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
                 Codigo = c.Codigo
             }).ToList();
+        }
+
+        private void ActualizarTablaSap(List<TablaSapDto> listaSap, string tablaSap)
+        {
+            if (listaSap.Count > 0)
+            {
+                var listaBase = repositorio.Listar<TablaSap>(c => c.Tabla == tablaSap).ToList();
+
+                for (int i = 0; i < listaSap.Count; i++)
+                {
+                    if (!listaBase.Any(x => x.CodigoSap == listaSap[i].CodigoSap && x.Descripcion == listaSap[i].Descripcion))
+                    {
+                        var ordenAgregar = new TablaSap()
+                        {
+                            Id = -1,
+                            Codigo = listaSap[i].Codigo,
+                            CodigoSap = listaSap[i].CodigoSap,
+                            Descripcion = listaSap[i].Descripcion,
+                            Tabla = listaSap[i].Tabla,
+                        };
+
+                        repositorio.Agregar(ordenAgregar);
+                    }
+                }
+            }
+
+            repositorio.GuardarCambios();
         }
 
         public List<TablaSapDto> ObtenerCecoSap()
@@ -1302,16 +1329,15 @@ namespace SustitucionMOAUtils.Services
             //TODO: ver como actualizar Solp.EstadoDocumento_Id segun la RFC
 
             ObtenerSolpSAPResponse result = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
-
-            IList<Solp> solpsFinales = new List<Solp>();
+            List<TablaSap> ordenes;
 
             List<string> tablasSapAConsultar = new List<string>
-            { 
-                TablasSap.Moneda, 
-                TablasSap.Almacen, 
-                TablasSap.Centro, 
+            {
+                TablasSap.Moneda,
+                TablasSap.Almacen,
+                TablasSap.Centro,
                 TablasSap.GrupoCompras,
-                TablasSap.GrupoArticulo, 
+                TablasSap.GrupoArticulo,
                 TablasSap.Unidad,
                 TablasSap.ClaseDocumento,
                 TablasSap.CecoSolpSap,
@@ -1321,6 +1347,24 @@ namespace SustitucionMOAUtils.Services
             };
 
             IList<TablaSap> tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
+
+            if (result.TipoImputaciones.Count > 0)
+            {
+                var imputacionesTemp = result.TipoImputaciones.ToList();
+                foreach (var impTemp in imputacionesTemp)
+                {
+                    tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
+                    ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
+                    var existeOrden = ordenes.Where(x => x.Codigo == impTemp.IdOrden).ToList();
+                    if (existeOrden.Count == 0)
+                    {
+                        this.ActualizarTablaSap(ObtenerOrdenesSap(impTemp.IdOrden), TablasSap.OrdenSolpSap);
+                    }
+                }
+            }
+
+            IList<Solp> solpsFinales = new List<Solp>();
+    
 
             List<SustitucionMOAModel.Entities.TipoSolpPosicionSAP> tiposSolpPosicionSAP = repositorio.Listar<SustitucionMOAModel.Entities.TipoSolpPosicionSAP>();
             List<SustitucionMOAModel.Entities.TipoImputacionSAP> tiposImputacionSAP = repositorio.Listar<SustitucionMOAModel.Entities.TipoImputacionSAP>();
@@ -1333,7 +1377,7 @@ namespace SustitucionMOAUtils.Services
             List<TablaSap> unidadesDeMedida = tablaSap.Where(x => x.Tabla == TablasSap.Unidad).ToList();
             List<TablaSap> clasesDeDocumento = tablaSap.Where(x => x.Tabla == TablasSap.ClaseDocumento).ToList();
             List<TablaSap> centrosDeCosto = tablaSap.Where(x => x.Tabla == TablasSap.CecoSolpSap).ToList();
-            List<TablaSap> ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
+            ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
             List<TablaSap> centrosDeBeneficio = tablaSap.Where(x => x.Tabla == TablasSap.CentroBeneficio).ToList();
             List<TablaSap> cuentasSolpesSap = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
 

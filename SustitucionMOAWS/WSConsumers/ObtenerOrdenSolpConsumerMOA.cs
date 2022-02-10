@@ -24,12 +24,12 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
 
-        public object request()
+        public object request(string idOrder = "")
         {
             try
              {
                 string IM_NAME = "";
-                string IM_ORDER = "";
+                string IM_ORDER = idOrder;
                 string IM_TYPE = "";
                 ZMPES5650[] EX_ORDER_LIST = new ZMPES5650[] { };
                 BAPIRETURN[] EX_RETURN = new BAPIRETURN[] { };
