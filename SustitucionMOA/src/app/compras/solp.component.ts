@@ -340,8 +340,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.usuarioComprasId = solp.UsuarioCompras.Id || 0;
         this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;
         this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;
-        this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
-        this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+        if(solp.FechaHoraLimiteConsulta != null) {
+            this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+            this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+        }
         this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;
 
         // Paso 3
@@ -579,6 +581,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 if (!this.solpActual.revisadoPor) {
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Revisado por` });
 
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                    this.disabledSave = false;
+                    return;
+                }
+               
+                if (this.selectUsuarioCompras.Id == null) {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
+                    
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
@@ -882,6 +894,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 CodigoDescripcion: element.UsuarioCompras.Mail
                             });
                         });
+                        this.usuarioComprasList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario"}, ...this.usuarioComprasList];
                         this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
                                                   ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
                                                   : this.usuarioComprasList[0];

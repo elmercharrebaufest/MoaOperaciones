@@ -589,6 +589,23 @@ namespace SustitucionMOAUtils.Services
 
         public List<SolpDto> ListarSolp(UsuarioDto usuarioActual)
         {
+            var usuariosCompras = repositorio.Listar<UsuarioCompras>();
+            var usuariosComprasRelacion = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id);
+            UsuarioComprasRelacionConUsuarios usuarioComprasRelacionEntity = null;
+            if (!usuariosComprasRelacion.ToList().Any())
+            {
+                usuariosCompras.ToList().ForEach(x =>
+                {
+                    usuarioComprasRelacionEntity = new UsuarioComprasRelacionConUsuarios
+                    {
+                        Usuario_Id = usuarioActual.Id,
+                        UsuarioCompras_Id = x.Id
+                    };
+                    repositorio.Agregar(usuarioComprasRelacionEntity);
+                });
+                repositorio.GuardarCambios();
+            }
+
             Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null && x.UsuarioCreacion_Id == usuarioActual.Id;
 
             if (usuarioActual.Permisos.Contains("VER TODAS SOLPS"))
@@ -928,6 +945,10 @@ namespace SustitucionMOAUtils.Services
                     TwoColumnHeaderFooter PageEventHandler = new TwoColumnHeaderFooter();
                     PdfWriter.PageEvent = PageEventHandler;
 
+                    var tagProcessors = (DefaultTagProcessorFactory)Tags.GetHtmlTagProcessorFactory();
+                    tagProcessors.RemoveProcessor(HTML.Tag.IMG); // remove the default processor
+                    tagProcessors.AddProcessor(HTML.Tag.IMG, new CustomImageTagProcessor()); // use our new processor
+
                     //define el header
                     //PageEventHandler.Title = "Revisado por: " + revisadoPor.
 
@@ -985,38 +1006,41 @@ namespace SustitucionMOAUtils.Services
                     htmlPipelineContext.SetTagFactory(tagProcessorFactory);
 
                     var pdfWriterPipeline = new PdfWriterPipeline(document, PdfWriter);
-                    var htmlPipeline = new HtmlPipeline(htmlPipelineContext, pdfWriterPipeline);
+                    //var htmlPipeline = new HtmlPipeline(htmlPipelineContext, pdfWriterPipeline);
+                   
 
                     // get an ICssResolver and add the custom CSS
                     var cssResolver = XMLWorkerHelper.GetInstance().GetDefaultCssResolver(true);
                     cssResolver.AddCss(css, "utf-8", true);
-                    var cssResolverPipeline = new CssResolverPipeline(
-                        cssResolver, htmlPipeline
-                    );
+                    //var cssResolverPipeline = new CssResolverPipeline(
+                    //    cssResolver, htmlPipeline
+                    //);
 
-                    var worker = new XMLWorker(cssResolverPipeline, true);
-                    var parser = new XMLParser(worker);
-                    using (var stringReader = new StringReader(xHtml))
-                    {
-                        parser.Parse(stringReader);
-                        document.Close();
-                        byte[] bytes = stream.ToArray();
-                        stream.Close();
-                        return bytes;
-                    }
+                    var hpc = new HtmlPipelineContext(new CssAppliersImpl(new XMLWorkerFontProvider()));
+                    hpc.SetAcceptUnknown(true).AutoBookmark(true).SetTagFactory(tagProcessors); // inject the tagProcessors
 
+                    var htmlPipeline = new HtmlPipeline(hpc, new PdfWriterPipeline(document, PdfWriter));
+                    var pipeline = new CssResolverPipeline(cssResolver, htmlPipeline);
+
+                    var worker = new XMLWorker(pipeline, true);
+
+                    var charset = Encoding.UTF8;
+
+                    var xmlParser = new XMLParser(true, worker, charset);
+                    xmlParser.Parse(new StringReader(xHtml));
+                    document.Close();
+                    byte[] bytes = stream.ToArray();
+                    stream.Close();
+                    return bytes;           
                 }
 
             }
 
+
+          
+
         }
 
-        //public void AddOutline(PdfWriter writer, string Title, float Position)
-        //{
-        //    PdfDestination destination = new PdfDestination(PdfDestination.FITH, Position);
-        //    PdfOutline outline = new PdfOutline(writer.DirectContent.RootOutline, destination, Title);
-        //    writer.DirectContent.AddOutline(outline, "Name = " + Title);
-        //}
 
         public string GenerarZipPliego(int idSolp, string pathBase)
         {
@@ -1097,9 +1121,9 @@ namespace SustitucionMOAUtils.Services
             }).ToList();
         }
 
-        public List<TablaSapDto> ObtenerOrdenesSap()
+        public List<TablaSapDto> ObtenerOrdenesSap(string idOrder = "")
         {
-            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)ordenesSolpConsumerMOA.request();
+            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)ordenesSolpConsumerMOA.request(idOrder);
             var codigoNum = 0;
 
             return resultSap.Ordenes.Select(c => new TablaSapDto()
@@ -1109,6 +1133,33 @@ namespace SustitucionMOAUtils.Services
                 CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
                 Codigo = c.Codigo
             }).ToList();
+        }
+
+        private void ActualizarTablaSap(List<TablaSapDto> listaSap, string tablaSap)
+        {
+            if (listaSap.Count > 0)
+            {
+                var listaBase = repositorio.Listar<TablaSap>(c => c.Tabla == tablaSap).ToList();
+
+                for (int i = 0; i < listaSap.Count; i++)
+                {
+                    if (!listaBase.Any(x => x.CodigoSap == listaSap[i].CodigoSap && x.Descripcion == listaSap[i].Descripcion))
+                    {
+                        var ordenAgregar = new TablaSap()
+                        {
+                            Id = -1,
+                            Codigo = listaSap[i].Codigo,
+                            CodigoSap = listaSap[i].CodigoSap,
+                            Descripcion = listaSap[i].Descripcion,
+                            Tabla = listaSap[i].Tabla,
+                        };
+
+                        repositorio.Agregar(ordenAgregar);
+                    }
+                }
+            }
+
+            repositorio.GuardarCambios();
         }
 
         public List<TablaSapDto> ObtenerCecoSap()
@@ -1278,16 +1329,15 @@ namespace SustitucionMOAUtils.Services
             //TODO: ver como actualizar Solp.EstadoDocumento_Id segun la RFC
 
             ObtenerSolpSAPResponse result = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
-
-            IList<Solp> solpsFinales = new List<Solp>();
+            List<TablaSap> ordenes;
 
             List<string> tablasSapAConsultar = new List<string>
-            { 
-                TablasSap.Moneda, 
-                TablasSap.Almacen, 
-                TablasSap.Centro, 
+            {
+                TablasSap.Moneda,
+                TablasSap.Almacen,
+                TablasSap.Centro,
                 TablasSap.GrupoCompras,
-                TablasSap.GrupoArticulo, 
+                TablasSap.GrupoArticulo,
                 TablasSap.Unidad,
                 TablasSap.ClaseDocumento,
                 TablasSap.CecoSolpSap,
@@ -1297,6 +1347,24 @@ namespace SustitucionMOAUtils.Services
             };
 
             IList<TablaSap> tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
+
+            if (result.TipoImputaciones.Count > 0)
+            {
+                var imputacionesTemp = result.TipoImputaciones.ToList();
+                foreach (var impTemp in imputacionesTemp)
+                {
+                    tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
+                    ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
+                    var existeOrden = ordenes.Where(x => x.Codigo == impTemp.IdOrden).ToList();
+                    if (existeOrden.Count == 0)
+                    {
+                        this.ActualizarTablaSap(ObtenerOrdenesSap(impTemp.IdOrden), TablasSap.OrdenSolpSap);
+                    }
+                }
+            }
+
+            IList<Solp> solpsFinales = new List<Solp>();
+    
 
             List<SustitucionMOAModel.Entities.TipoSolpPosicionSAP> tiposSolpPosicionSAP = repositorio.Listar<SustitucionMOAModel.Entities.TipoSolpPosicionSAP>();
             List<SustitucionMOAModel.Entities.TipoImputacionSAP> tiposImputacionSAP = repositorio.Listar<SustitucionMOAModel.Entities.TipoImputacionSAP>();
@@ -1309,7 +1377,7 @@ namespace SustitucionMOAUtils.Services
             List<TablaSap> unidadesDeMedida = tablaSap.Where(x => x.Tabla == TablasSap.Unidad).ToList();
             List<TablaSap> clasesDeDocumento = tablaSap.Where(x => x.Tabla == TablasSap.ClaseDocumento).ToList();
             List<TablaSap> centrosDeCosto = tablaSap.Where(x => x.Tabla == TablasSap.CecoSolpSap).ToList();
-            List<TablaSap> ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
+            ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
             List<TablaSap> centrosDeBeneficio = tablaSap.Where(x => x.Tabla == TablasSap.CentroBeneficio).ToList();
             List<TablaSap> cuentasSolpesSap = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
 
@@ -1370,6 +1438,7 @@ namespace SustitucionMOAUtils.Services
                         PaisEntrega = "AR",
                         CodigosProveedores = string.Empty,
                         Codigo = Guid.NewGuid().ToString(),
+                        Estado = posicion.EstadoPosicion != "X"
                     };
                     solp.Posiciones.Add(posicionEntity);
                 }
@@ -1389,6 +1458,7 @@ namespace SustitucionMOAUtils.Services
                 posicionEntity.Solicitante = posicion.NombreSolicitante;
                 posicionEntity.GrupoArticulo_Id = grupoArticulo?.Id;
                 posicionEntity.Moneda_Id = moneda?.Id;
+                posicionEntity.Estado = posicion.EstadoPosicion != "X";
 
                 IList<SuposicionServicioSAP> subPosicionesDeLaPosicion = 
                     result.ServiciosSuposiciones.Where(x => x.NumeroPosicion == posicion.NumeroPosicion && 
@@ -1434,6 +1504,7 @@ namespace SustitucionMOAUtils.Services
                     subPosicionEntity.Numero = indiceSubPosicion;
                     subPosicionEntity.Codigo = subPosicion.CodigoServicio;
                     subPosicionEntity.ServicioSolp_Id = servicioSolp?.Id;
+                    subPosicionEntity.CodigoServicioSap_Id = servicioSolp?.Id;
                     subPosicionEntity.Tarea = subPosicion.DescripcionServicio;
                     subPosicionEntity.CuentaMayor_Id = cuentaSolpSap?.Id;
                     subPosicionEntity.TipoImputacion_Id = tipoImputacionSubposicion?.Id;

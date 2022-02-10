@@ -16,6 +16,10 @@ import { ConfirmationService } from 'primeng/api';
 import { type } from 'jquery';
 import { ThrowStmt } from '@angular/compiler';
 
+import es from '@angular/common/locales/es';
+
+import { registerLocaleData } from '@angular/common';
+
 @Component({
     selector: 'subPosicion',
     templateUrl: `subPosicion.component.html`,
@@ -156,6 +160,7 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        registerLocaleData(es);
         this.setTabs();
         this.listadoPosicionActul = this.model.posicionActual.listadoSubPosiciones;
         // this.model.posicionActual = primeraPosicion;
