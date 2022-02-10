@@ -35,22 +35,30 @@
                     Id
                     <div class="styled-select">
                         <input type="search" class="" placeholder="" [(ngModel)]="filtroId" type="number"
-                            aria-controls="tableModal">
+                               aria-controls="tableModal">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-4">
                     Nombre
                     <div class="styled-select">
                         <input type="search" class="" placeholder="" aria-controls="tableModal"
-                            [(ngModel)]="filtroNombreCampo">
+                               [(ngModel)]="filtroNombreCampo">
                     </div>
                 </div>
-
+                <div class="col-xs-12 col-sm-12 col-md-4">
+                    Por Cosecha
+                    <div class="styled-select">
+                        <select [(ngModel)]="filtroCosechaId">
+                            <option value="">Todas</option>
+                            <option *ngFor="let x of cosechas" value="{{x.Nombre}}">{{x.Nombre}}</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esCorredor || esInterno">
                     Por Vendedor
                     <div class="styled-select">
-                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesProveedores"
-                            (select)="proveedorSeleccionado($event)">
+                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="cosechas"
+                                  (select)="proveedorSeleccionado($event)">
                         </dropdown>
                     </div>
                 </div>
@@ -108,6 +116,7 @@
                                 | customNumericFilter : 'IdScato' : filtroId : ''
                                 | customFilter : 'NombreCampo' : filtroNombreCampo
                                 | customFilter : 'CodigoProveedor' : filtroProveedor
+                                | customFilter : 'NombreCosecha' : filtroCosechaId
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
 
@@ -143,14 +152,21 @@
                                         title="Descargar KMZ" (click)="descargarKMZ(campo.CampoCosechaId, campo.Proveedor.Id)">
                                 </button>
                                 <a *ngIf="editarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
-                                    class="animate"
-                                    [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
-                                    href="#">
+                                   class="animate"
+                                   [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
+                                   href="#">
                                     <span title="Editar" class="fa fa-edit"
-                                            style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
+                                          style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
+                                </a>
+                                <a *ngIf="!this.spinnerSmallComponent.visible"
+                                   class="animate"
+                                   [routerLink]="['/sustentable/alta', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
+                                   href="#">
+                                    <span title="Copiar" class="fa fa-copy"
+                                          style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
                                 </a>
                                 <button *ngIf="borrarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)" type="button" class="btn-sin-fondo btn-descargar fa fa-trash"
-                                    title="Borrar" (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
+                                        title="Borrar" (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
                                 </button>
                             </td>
                         </tr>

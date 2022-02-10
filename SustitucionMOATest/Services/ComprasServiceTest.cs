@@ -167,7 +167,7 @@ namespace SustitucionMOATest.Services
                 }
             };
 
-            ordenesConsumerMock.Setup(x => x.request()).Returns(rfcResultMock);
+            ordenesConsumerMock.Setup(x => x.request("")).Returns(rfcResultMock);
 
             List<TablaSapDto> expected = new List<TablaSapDto>
             {

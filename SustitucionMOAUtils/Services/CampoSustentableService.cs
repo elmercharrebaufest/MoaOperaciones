@@ -53,16 +53,22 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.RazonSocial = declaracion.RazonSocial;
             campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
-            campoProveedor.Archivo = (new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" });
+            if (campoProveedor.Archivo_Id == 0)
+            {
+                campoProveedor.Archivo = (new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" });
+            }
             campoProveedor.CampoCosecha.ToneladasAprobadas = -1;
 
             repositorio.Agregar(campoProveedor);
 
             repositorio.GuardarCambios();
 
-            GuardarArchivoKMZ(campoProveedor, archivoKmz);
+            if (campoProveedor.Archivo_Id == 0)
+            {
+                GuardarArchivoKMZ(campoProveedor, archivoKmz);
+                repositorio.GuardarCambios();
+            }
 
-            repositorio.GuardarCambios();
 
             return new Resultado { IdEntidad = campoProveedor.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
         }
@@ -178,7 +184,7 @@ namespace SustitucionMOAUtils.Services
 
                 PdfReader pdfReaderCampos = new PdfReader(pdfCampos);
 
-                pdfReaderCampos.SelectPages(string.Concat("2-",pdfReaderCampos.NumberOfPages));
+                pdfReaderCampos.SelectPages(string.Concat("2-", pdfReaderCampos.NumberOfPages));
 
                 //var fileKey = string.Concat(FileKeys.DeclaracionCampoSustentable, "-", cosechaId);
 
@@ -260,7 +266,7 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("El proveedor seleccionado no tiene firmada la declaración.");
             }
 
-            if (Path.GetExtension(archivoKmz.FileName).ToLower() != ".kmz")
+            if (campoProveedor.Archivo_Id == 0 && Path.GetExtension(archivoKmz.FileName).ToLower() != ".kmz")
             {
                 throw new ValidationCustomException("El archivo debe tener formato KMZ.");
             }
@@ -534,6 +540,10 @@ namespace SustitucionMOAUtils.Services
                                 LocalidadNombre = cp.CampoCosecha.Campo.Localidad.Nombre,
                                 CampoSustentableId = cp.CampoCosecha.CampoSustentable_Id,
                                 CosechaId = cp.CampoCosecha.Cosecha_Id,
+                                CUIT = cp.CUIT,
+                                Archivo_Id = cp.Archivo_Id,
+                                Proveedor_Id = cp.Proveedor_Id,
+                                CodigoProveedor = cp.Proveedor.CodigoProveedor
                             });
 
             return campo;

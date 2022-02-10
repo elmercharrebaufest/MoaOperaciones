@@ -7,6 +7,7 @@ export interface CampoProveedor {
     CampoCosecha?: CampoCosecha;
     CampoCosecha_Id?: number;
     CUIT: string;
+    Archivo_Id: number;
 }
 export interface CampoCosecha {
     Campo: CampoSustentable;

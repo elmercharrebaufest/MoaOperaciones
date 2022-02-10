@@ -135,14 +135,8 @@ export class SeleccionarProveedorComponent extends BaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.data = result.data.vendedores;
-                        //this.selectProveedor = [];
-                        //  this.data.forEach(x => this.selectProveedor.push({ label: x.descVendedor, value: x.idVendedor }));
-                        console.log(this.data);
-                        console.log(this.valorInicial);
-                        let xxx = this.valorInicial;
                         if (this.valorInicial != "") {
                             let seleccionado = result.data.vendedores.filter(a => a.idVendedor == this.valorInicial);
-                            console.log(seleccionado);
                             if (seleccionado != null && seleccionado.length > 0) {
                                 this.selected = seleccionado[0];
                             }
