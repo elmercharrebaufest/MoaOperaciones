@@ -18,6 +18,7 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { NullAstVisitor } from '@angular/compiler';
+import { zip } from 'rxjs';
 
 
 
@@ -73,9 +74,13 @@ export class DashboardComponent extends ListBaseComponent {
     es: any;
     display: boolean = false;
     tablaSolp: any[];
+    tablaSolpCopy: any[];
     cols: any[];
     serviciosDashboard: any = "Servicios"
     solp: Solp = new Solp();
+
+    checkedFilterSap = false;
+    checkedFilterMantenimiento = false;
 
     showDialog() {
         this.display = true;
@@ -158,6 +163,7 @@ export class DashboardComponent extends ListBaseComponent {
                                                     x.EstadoDocumento.Codigo == "CREADO";
                                     
                             });
+                            this.tablaSolpCopy = result.data;
                             this.spinnerComponent.hideIt();
                         }
                     },
@@ -257,6 +263,29 @@ export class DashboardComponent extends ListBaseComponent {
     filtrarPorFecha(){
         this.filtrarFecha(this.tabla, "FechaCreacion", this.desdeDashboard, this.hastaDashboard);   
     }
+
+    filtrarPorSap(){
+        this.checkedFilterSap = !this.checkedFilterSap;
+        this.filtrarTablaPorTipoSolp();
+    }
+
+    filtrarPorMantenimiento(){
+        this.checkedFilterMantenimiento = !this.checkedFilterMantenimiento;
+        this.filtrarTablaPorTipoSolp();
+    }
+
+    filtrarTablaPorTipoSolp(){
+        let tablaPrincipal = this.tablaSolpCopy;
+        if(this.checkedFilterSap && this.checkedFilterMantenimiento) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
+        } else if(this.checkedFilterMantenimiento) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
+        } else if(this.checkedFilterSap) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP);
+        }
+        this.tablaSolp = tablaPrincipal;
+    }
+
 
     
     eliminarPosicionDashboard(idSolp) {
