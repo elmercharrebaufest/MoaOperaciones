@@ -138,7 +138,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Codigo: EnumPasoSolp.PliegoEspecificacion,
         Nombre: 'Especificaciones técnicas',
         Activo: false,
-        Completo: false,
+        Completo: true,
         Iniciado: false,
         Preview: true,
         Numero: 3
@@ -147,7 +147,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Codigo: EnumPasoSolp.PliegoCotizacion,
         Nombre: 'Cotización y plazo de ejecución',
         Activo: false,
-        Completo: false,
+        Completo: true,
         Iniciado: false,
         Preview: true,
         Numero: 4
@@ -499,6 +499,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 p.Iniciado = true;
                 //p.Completo = true;
             } else if (p.Codigo == paso.Codigo) {
+                p.Iniciado = true;
+                p.Activo = true;
+            //Esto hace que el paso 3 y 4 se marquen en verde cuando pasas al paso 5
+            } else if (p.Codigo == "PliegoCotizacion"  && paso.Numero == 5) {
+                p.Iniciado = true;
+                p.Activo = true;
+            } else if (p.Codigo == "PliegoEspecificacion"  && paso.Numero == 5) {
                 p.Iniciado = true;
                 p.Activo = true;
             }
