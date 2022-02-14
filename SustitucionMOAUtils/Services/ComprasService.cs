@@ -640,13 +640,20 @@ namespace SustitucionMOAUtils.Services
 
             var includes = new List<Expression<Func<Solp, object>>>();
 
-            var x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
+            Solp x;
+
+            x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
 
             if (x == null)
             {
                 throw new InfoCustomException("No se encontro la solp");
             }
 
+            if (!String.IsNullOrEmpty(x.NroSolp))
+            {
+                ActualizarEstadoSolpPorId(x.NroSolp);
+                x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
+            }
 
             var solpDevuelta = new SolpDto()
             {
@@ -1355,10 +1362,13 @@ namespace SustitucionMOAUtils.Services
                 {
                     tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
                     ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
-                    var existeOrden = ordenes.Where(x => x.Codigo == impTemp.IdOrden).ToList();
-                    if (existeOrden.Count == 0)
+                    if(!String.IsNullOrEmpty(impTemp.IdOrden))
                     {
-                        this.ActualizarTablaSap(ObtenerOrdenesSap(impTemp.IdOrden), TablasSap.OrdenSolpSap);
+                        var existeOrden = ordenes.Where(x => x.Codigo == impTemp.IdOrden).ToList();
+                        if (existeOrden.Count == 0)
+                        {
+                            this.ActualizarTablaSap(ObtenerOrdenesSap(impTemp.IdOrden), TablasSap.OrdenSolpSap);
+                        }
                     }
                 }
             }
@@ -1504,7 +1514,6 @@ namespace SustitucionMOAUtils.Services
                     subPosicionEntity.Numero = indiceSubPosicion;
                     subPosicionEntity.Codigo = subPosicion.CodigoServicio;
                     subPosicionEntity.ServicioSolp_Id = servicioSolp?.Id;
-                    subPosicionEntity.CodigoServicioSap_Id = servicioSolp?.Id;
                     subPosicionEntity.Tarea = subPosicion.DescripcionServicio;
                     subPosicionEntity.CuentaMayor_Id = cuentaSolpSap?.Id;
                     subPosicionEntity.TipoImputacion_Id = tipoImputacionSubposicion?.Id;
@@ -1531,6 +1540,13 @@ namespace SustitucionMOAUtils.Services
             {
                 ConsultaEstadoSolp(todasLasSolp.NroSolp, lista);
             }
+        }
+
+        public void ActualizarEstadoSolpPorId(string nroSolp)
+        {
+            var lista = repositorio.Listar<TablaSap>(x => x.Tabla == "EstadoSolpSap")
+                    .Select(x => new TablaSapDto(x)).ToList();
+            this.ConsultaEstadoSolp(nroSolp, lista);
         }
 
         private void ConsultaEstadoSolp(string nroSolp, List<TablaSapDto> listaTablaSap)
