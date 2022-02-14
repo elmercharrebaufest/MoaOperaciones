@@ -27,7 +27,7 @@ namespace SustitucionMOAModel.Dto
                 this.Codigo = entity.Codigo;
                 this.CodigoSap = entity.CodigoSap;
                 this.Descripcion = entity.Descripcion;
-                this.IdPadre = entity.Padre_Id;
+                this.IdPadre = entity.Padre_id;
             }
         }
 
