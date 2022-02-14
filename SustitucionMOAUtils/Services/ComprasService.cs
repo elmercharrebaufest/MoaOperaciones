@@ -471,6 +471,13 @@ namespace SustitucionMOAUtils.Services
                     if (respuestaGuardarSOLP.Errores.Count == 0)
                     {
                         respuestaGuardarSOLP.Mensaje = "OK";
+
+                        if(solpEntity.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solpEntity.TipoSolpSap == (int?)TipoSolpSap.Sap)
+                        {
+                            var estadoCreadoCodigo = EstadoDocumentoSolp.Creado.Code();
+                            var estadoCreado = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoCreadoCodigo);
+                            solpEntity.EstadoDocumento_Id = estadoCreado.Id;
+                        }
                         
                         foreach(var pos in solpEntity.Posiciones)
                         {
@@ -1396,6 +1403,9 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var posicion in result.Posiciones)
             {
+                if (result.TipoImputaciones.Where(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud &&
+                                             dir.NumeroPosicion == posicion.NumeroPosicion).ToList().Count > 1) continue;
+
                 SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion = result.TipoImputaciones
                     .SingleOrDefault(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud &&
                                             dir.NumeroPosicion == posicion.NumeroPosicion);
