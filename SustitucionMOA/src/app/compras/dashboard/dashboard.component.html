@@ -27,7 +27,7 @@
 
                     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8" style="margin-left: -46px;">
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="Buscar">
+                            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="Buscar por numero de solp">
                         </div>
 
 
@@ -149,12 +149,12 @@
                     <td style="display:none;">
                         {{rowData.TipoSolpSap}}
                     </td>
-                    <td style="padding-left: 0px; padding-right: 0px;">
+                    <td class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
 
-                        <div *ngIf="rowData.TipoSolpSap == 2" class="col-md-3">
+                        <div *ngIf="rowData.TipoSolpSap == 2" class="col-md-2">
                             <span><img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento" style="height:25px; cursor:default"/></span>
                         </div>
-                        <div *ngIf="rowData.TipoSolpSap == 3" class="col-md-3">
+                        <div *ngIf="rowData.TipoSolpSap == 3" class="col-md-2">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/SAP.svg" alt="SAP" style="width: 30px; height: 30px; cursor:default"/>
                             </span>
@@ -190,9 +190,8 @@
                         {{ rowData.TipoSolp.Descripcion || "" }}
                     </td>
                     <td class="col-sm-12 col-md-12 col-lg-12">
-                        <button style="white-space: normal; text-align: center; vertical-align: middle;" class="btn btn-success botonesComprasColor col-sm-12 col-md-12 col-lg-12" *ngIf="rowData.VincularPliego" (click)="vincularAPliego(rowData.Id)" [disabled]="rowData.PliegoVinculado">
-                            <p >{{(rowData.PliegoVinculado) ? "Pliego vinculado" : "Vincular a Pliego" }}</p>
-                                
+                        <button style="white-space: normal; text-align: center; vertical-align: middle;" class="btn btn-success botonesComprasColor" *ngIf="rowData.VincularPliego" (click)="vincularAPliego(rowData.Id)" [disabled]="rowData.PliegoVinculado">
+                            {{(rowData.PliegoVinculado) ? "Pliego vinculado" : "Vincular a Pliego" }}
                         </button>
                     </td>
                 </tr>
