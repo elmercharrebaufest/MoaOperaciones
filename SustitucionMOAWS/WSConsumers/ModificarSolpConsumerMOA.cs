@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.ModificarSolpWebServiceMOA;
 
@@ -39,7 +40,7 @@ namespace SustitucionMOAWS.WSConsumers
             var nombreArchivoLlamada = string.Concat(solpActual.Id, " - ", fecha, " - llamada modificar.xml");
             var nombreArchivoRespuesta = string.Concat(solpActual.Id, " - ", fecha, " - respuesta modificar.xml");
 
-            var rutaArchivoLlamada = Path.Combine(rutaArchivosXmls,"XMLS", nombreArchivoLlamada);
+            var rutaArchivoLlamada = Path.Combine(rutaArchivosXmls, "XMLS", nombreArchivoLlamada);
             var rutaArchivoRespuesta = Path.Combine(rutaArchivosXmls, "XMLS", nombreArchivoRespuesta);
 
             FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
@@ -175,12 +176,12 @@ namespace SustitucionMOAWS.WSConsumers
 
                 IM_PRITEM.PREQ_ITEM = preqItem;
                 IM_PRITEM.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString();
-                IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion.UsuarioSap;
+                IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion == null ? "" : solpActual.UsuarioCreacion.UsuarioSap;
                 IM_PRITEM.PREQ_NAME = posicion.Solicitante;
                 IM_PRITEM.SHORT_TEXT = posicion.TextoGenerico;
                 IM_PRITEM.MATERIAL = null; //Esto es para el MVP2 ,porque los materiales no tienen sub posiciones
                 IM_PRITEM.PLANT = posicion.Centro.CodigoSap.ToString();
-                IM_PRITEM.STORE_LOC = posicion.Almacen.CodigoSap.ToString();
+                IM_PRITEM.STORE_LOC = solpActual.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ? "" : posicion.Almacen.CodigoSap.ToString();
                 IM_PRITEM.TRACKINGNO = posicion.NroNecesidad;
 
 
@@ -500,7 +501,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             return solpSAP;
         }
-        
+
     }
     public class ModificarSolpConsumerMOAResponse
     {
