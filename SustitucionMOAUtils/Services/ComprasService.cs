@@ -606,7 +606,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
             }
 
-            Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null && x.UsuarioCreacion_Id == usuarioActual.Id;
+            Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null; //&& x.UsuarioCreacion_Id == usuarioActual.Id;
 
             if (usuarioActual.Permisos.Contains("VER TODAS SOLPS"))
             {

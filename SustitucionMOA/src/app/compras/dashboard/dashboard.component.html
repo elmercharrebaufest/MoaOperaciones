@@ -23,16 +23,21 @@
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="row myRow col-xs-12 col-sm-12 col-md-12 col-lg-12 " style="margin-top: 1em; margin-bottom: 15px;">
+                <div class="row myRow col-xs-12 col-sm-12 col-md-12 col-lg-12 "
+                    style="margin-top: 1em; margin-bottom: 15px;">
 
                     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8" style="margin-left: -46px;">
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="Buscar por numero de solp">
+                            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text"
+                                (input)="tabla.filterGlobal($event.target.value, 'contains')"
+                                placeholder="Buscar por numero de solp">
                         </div>
 
 
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp" defaultLabel="Estado SOLP" (onChange)="tabla.filter($event.value, 'EstadoSolpSap.Id', 'in')"></p-multiSelect>
+                            <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp"
+                                defaultLabel="Estado SOLP"
+                                (onChange)="tabla.filter($event.value, 'EstadoSolpSap.Id', 'in')"></p-multiSelect>
 
                         </div>
 
@@ -44,7 +49,10 @@
                                             Desde
                                         </div>
                                         <div class="col-md-9">
-                                            <p-calendar [(ngModel)]="desdeDashboard" [locale]="locale" dateFormat="dd-M-yy" [showIcon]="true" [selectOtherMonths]="true" [(ngModel)]="rangeDates" selectionMode="single" readonlyInput="true"></p-calendar>
+                                            <p-calendar [(ngModel)]="desdeDashboard" [locale]="locale"
+                                                dateFormat="dd-M-yy" [showIcon]="true" [selectOtherMonths]="true"
+                                                [(ngModel)]="rangeDates" selectionMode="single" readonlyInput="true">
+                                            </p-calendar>
                                         </div>
                                     </div>
                                     <div class="row" style="margin-top: 1em;">
@@ -52,7 +60,10 @@
                                             Hasta
                                         </div>
                                         <div class="col-md-9">
-                                            <p-calendar [(ngModel)]="hastaDashboard" [locale]="locale" dateFormat="dd-M-yy" [showIcon]="true" [selectOtherMonths]="true" [(ngModel)]="rangeDates" selectionMode="single" readonlyInput="true"></p-calendar>
+                                            <p-calendar [(ngModel)]="hastaDashboard" [locale]="locale"
+                                                dateFormat="dd-M-yy" [showIcon]="true" [selectOtherMonths]="true"
+                                                [(ngModel)]="rangeDates" selectionMode="single" readonlyInput="true">
+                                            </p-calendar>
                                         </div>
                                     </div>
                                     <div class="row" style="margin-top: 1em; padding-left: 5px; margin-right:-39px">
@@ -63,7 +74,9 @@
                                             <button class="btn" (click)="setUltimoAnio()">Ultimo año</button>
                                         </div>
                                         <div class="col-md-4">
-                                            <button class="btn btn-success" style="height: 32px;" (click)="filtrarPorFecha() && op.toggle($event)"><i class="pi pi-check"></i></button>
+                                            <button class="btn btn-success" style="height: 32px;"
+                                                (click)="filtrarPorFecha() && op.toggle($event)"><i
+                                                    class="pi pi-check"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -71,7 +84,9 @@
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <button class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura botonFechaDashboard " type="text" pButton (click)="op.toggle($event, actualTarget)">Fecha <span class="pull-right fa fa-calendar-o"></span></button>
+                            <button class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura botonFechaDashboard "
+                                type="text" pButton (click)="op.toggle($event, actualTarget)">Fecha <span
+                                    class="pull-right fa fa-calendar-o"></span></button>
                         </div>
                     </div>
 
@@ -86,12 +101,15 @@
                         </div> -->
 
                     <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="border-left: 1px solid black;"> -->
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="border-left: 1px solid black; margin-top: 8px;">
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"
+                        style="border-left: 1px solid black; margin-top: 8px;">
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <p-checkbox class="checkboxFechas" binary="true" label="SAP" (onChange)="filtrarPorSap()"></p-checkbox>
+                            <p-checkbox class="checkboxFechas" binary="true" label="SAP" (onChange)="filtrarPorSap()">
+                            </p-checkbox>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                            <p-checkbox class="checkboxFechas" binary="true" label="Mantenimiento" (onChange)="filtrarPorMantenimiento()"></p-checkbox>
+                            <p-checkbox class="checkboxFechas" binary="true" label="Mantenimiento"
+                                (onChange)="filtrarPorMantenimiento()"></p-checkbox>
                         </div>
                     </div>
                     <!-- </div>     -->
@@ -102,41 +120,55 @@
     </section>
 
     <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
-        <p-table #tabla [value]="tablaSolp" [globalFilterFields]="['NroSolp']" [paginator]="true" [rows]="10" sortMode="multiple">
+        <p-table #tabla [value]="tablaSolp" [globalFilterFields]="['NroSolp']" [paginator]="true" [rows]="10"
+            sortMode="multiple">
             <ng-template pTemplate="header" let-columns>
                 <tr>
-                    <th [pSortableColumn]="'TipoSolpSap'" data-toggle="tooltip" title="Numero SOLP" style="display: none">
+                    <th [pSortableColumn]="'TipoSolpSap'" data-toggle="tooltip" title="Numero SOLP"
+                        style="display: none">
                         Tipo Solp
                     </th>
                     <th data-toggle="tooltip" title="Acciones SOLP"></th>
                     <th [pSortableColumn]="'NroSolp'" data-toggle="tooltip" title="Numero SOLP">
                         Numero SOLP
-                        <p-sortIcon [field]="'NroSolp'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <p-sortIcon [field]="'NroSolp'" ariaLabel="Activate to sort"
+                            ariaLabelDesc="Activate to sort in descending order"
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
 
                     <th [pSortableColumn]="'NombreDeObra'" data-toggle="tooltip" title="Nombre de pedido">
                         Nombre de pedido
-                        <p-sortIcon [field]="'NombreDeObra'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <p-sortIcon [field]="'NombreDeObra'" ariaLabel="Activate to sort"
+                            ariaLabelDesc="Activate to sort in descending order"
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
 
                     <th [pSortableColumn]="'FechaCreacion'" data-toggle="tooltip" title="Fecha de creacion de SOLP">
                         Fecha creacion
-                        <p-sortIcon [field]="'FechaCreacion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <p-sortIcon [field]="'FechaCreacion'" ariaLabel="Activate to sort"
+                            ariaLabelDesc="Activate to sort in descending order"
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
 
                     <th [pSortableColumn]="'EstadoDocumento'" data-toggle="tooltip" title="Estado de documento">
                         Estado Doc
-                        <p-sortIcon [field]="'EstadoDocumento.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <p-sortIcon [field]="'EstadoDocumento.Descripcion'" ariaLabel="Activate to sort"
+                            ariaLabelDesc="Activate to sort in descending order"
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
 
                     <th [pSortableColumn]="'EstadoSolpSap'" data-toggle="tooltip" title="Estado SOLP">
                         Estado Solp
-                        <p-sortIcon [field]="'EstadoSolpSap.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <p-sortIcon [field]="'EstadoSolpSap.Descripcion'" ariaLabel="Activate to sort"
+                            ariaLabelDesc="Activate to sort in descending order"
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
 
                     <th [pSortableColumn]="'TipoSolp'" data-toggle="tooltip" title="Tipo de  SOLP">
                         Tipo
-                        <p-sortIcon [field]="'TipoSolp.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <p-sortIcon [field]="'TipoSolp.Descripcion'" ariaLabel="Activate to sort"
+                            ariaLabelDesc="Activate to sort in descending order"
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
                     <th data-toggle="tooltip" title="Vincular a pliego">
                         Vincular Pliego
@@ -146,27 +178,38 @@
 
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr>
-                    <td  style="display: none">
-                        {{rowData.TipoSolpSap}}
+                    <td style="display: none;">
+                        {{ usuario == rowData.UsuarioActual.Mail}}
                     </td>
                     <td class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
 
                         <div *ngIf="rowData.TipoSolpSap == 2" class="col-md-2">
-                            <span><img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento" style="height:25px; cursor:default"/></span>
+                            <span><img class="pointer" src="./Content/images/icons/worker.svg" 
+                                alt="Mantenimiento"
+                                    style="height:25px; cursor:default" /></span>
                         </div>
                         <div *ngIf="rowData.TipoSolpSap == 3" class="col-md-2">
                             <span>
-                                <img class="pointer" src="./Content/images/icons/SAP.svg" alt="SAP" style="width: 30px; height: 30px; cursor:default"/>
+                                <img class="pointer" src="./Content/images/icons/SAP.svg" alt="SAP"
+                                    style="width: 30px; height: 30px; cursor:default" />
                             </span>
                         </div>
                         <div class="col-md-2">
-                            <span><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash" (click)="eliminarPosicionDashboard(rowData.Id)" /></span>
+                            <span><img *ngIf="rowData.UsuarioActual.Mail == usuario" class="pointer" src="./Content/images/icons/trash.svg" 
+                                alt="trash"
+                                    (click)="eliminarPosicionDashboard(rowData.Id)" /></span>
                         </div>
                         <div class="col-md-2">
-                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" (click)="goToSeccionParam('/compras/solp', rowData.Id)" /></span>
+                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' ">
+                                <img *ngIf="rowData.UsuarioActual.Mail == usuario" class="pointer"
+                                    src="./Content/images/icons/editar.svg" alt="editar"
+                                    (click)="goToSeccionParam('/compras/solp', rowData.Id)" /></span>
                         </div>
                         <div class="col-md-2">
-                            <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="generarZipPliego(rowData.Id)" /></span>
+                            <span><img *ngIf="rowData.UsuarioActual.Mail == usuario"
+                                 class="pointer" src="./Content/images/icons/descargar.svg" 
+                                 alt="descargar"
+                                    (click)="generarZipPliego(rowData.Id)" /></span>
                         </div>
                     </td>
                     <td>
@@ -180,7 +223,7 @@
                     </td>
                     <td>
                         <span [style.color]="rowData.EstadoDocumento.Color">
-                           {{rowData.EstadoDocumento.Descripcion}}
+                            {{rowData.EstadoDocumento.Descripcion}}
                         </span>
                     </td>
                     <td>
@@ -190,7 +233,9 @@
                         {{ rowData.TipoSolp.Descripcion || "" }}
                     </td>
                     <td class="col-sm-12 col-md-12 col-lg-12">
-                        <button style="white-space: normal; text-align: center; vertical-align: middle;" class="btn btn-success botonesComprasColor" *ngIf="rowData.VincularPliego" (click)="vincularAPliego(rowData.Id)" [disabled]="rowData.PliegoVinculado">
+                        <button style="white-space: normal; text-align: center; vertical-align: middle;"
+                            class="btn btn-success botonesComprasColor" *ngIf="rowData.VincularPliego && rowData.UsuarioActual.Mail == usuario"
+                            (click)="vincularAPliego(rowData.Id)" [disabled]="rowData.PliegoVinculado">
                             {{(rowData.PliegoVinculado) ? "Pliego vinculado" : "Vincular a Pliego" }}
                         </button>
                     </td>
@@ -201,10 +246,13 @@
 </div>
 
 <!-- Modal eliminacion de SOLP-->
-<p-confirmDialog #dialogo header="Eliminar SOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+<p-confirmDialog #dialogo header="Eliminar SOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true"
+    appendTo="body">
     <p-footer>
-        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
-        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal"
+            (click)="dialogo.reject()"></button>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
+            (click)="dialogo.accept()"></button>
     </p-footer>
 </p-confirmDialog>
 <!--fin modal eliminacion de SOLP-->
