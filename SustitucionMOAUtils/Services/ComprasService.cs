@@ -91,10 +91,12 @@ namespace SustitucionMOAUtils.Services
                     //TODO: validar si está en un estado modificable
 
                     solpEntity.UsuarioModificacion_Id = solp.UsuarioActual.Id;
+                    if(solpEntity.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solpEntity.TipoSolpSap == (int?)TipoSolpSap.Sap)
+                    {
+                        solpEntity.UsuarioCreacion_Id = solp.UsuarioActual.Id;
+                    }
                     solpEntity.FechaModificacion = DateTime.Now;
-
                     //solpEntity.NroSolp = solp.NroSolp;
-
                     pliegoEntity = solpEntity.Pliego;
                 }
             }
