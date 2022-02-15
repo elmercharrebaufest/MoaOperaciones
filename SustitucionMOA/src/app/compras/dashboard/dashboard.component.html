@@ -194,20 +194,20 @@
                                     style="width: 30px; height: 30px; cursor:default" />
                             </span>
                         </div>
-                        <div class="col-md-2">
-                            <span><img *ngIf="rowData.UsuarioActual.Mail == usuario" class="pointer" src="./Content/images/icons/trash.svg" 
+                        <div class="col-md-2" *ngIf="rowData.UsuarioActual.Mail == usuario">
+                            <span ><img  class="pointer"
+                                 src="./Content/images/icons/trash.svg" 
                                 alt="trash"
                                     (click)="eliminarPosicionDashboard(rowData.Id)" /></span>
                         </div>
-                        <div class="col-md-2">
-                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' ">
-                                <img *ngIf="rowData.UsuarioActual.Mail == usuario" class="pointer"
+                        <div class="col-md-2" *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && rowData.UsuarioActual.Mail == usuario ">
+                            <span >
+                                <img class="pointer"
                                     src="./Content/images/icons/editar.svg" alt="editar"
                                     (click)="goToSeccionParam('/compras/solp', rowData.Id)" /></span>
                         </div>
                         <div class="col-md-2">
-                            <span><img *ngIf="rowData.UsuarioActual.Mail == usuario"
-                                 class="pointer" src="./Content/images/icons/descargar.svg" 
+                            <span><img class="pointer" src="./Content/images/icons/descargar.svg" 
                                  alt="descargar"
                                     (click)="generarZipPliego(rowData.Id)" /></span>
                         </div>
