@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.ModificarSolpWebServiceMOA;
 
@@ -180,7 +181,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_PRITEM.SHORT_TEXT = posicion.TextoGenerico;
                 IM_PRITEM.MATERIAL = null; //Esto es para el MVP2 ,porque los materiales no tienen sub posiciones
                 IM_PRITEM.PLANT = posicion.Centro.CodigoSap.ToString();
-                IM_PRITEM.STORE_LOC = posicion.Almacen.CodigoSap.ToString();
+                IM_PRITEM.STORE_LOC = solpActual.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ? "" : posicion.Almacen.CodigoSap.ToString();
                 IM_PRITEM.TRACKINGNO = posicion.NroNecesidad;
 
 

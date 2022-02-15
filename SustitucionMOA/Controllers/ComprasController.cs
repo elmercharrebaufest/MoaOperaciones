@@ -176,7 +176,7 @@ namespace SustitucionMOA.Controllers
                     FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
                     FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
                     CreadoPorUsuarios = new List<string>(),
-                    NumeroSolp = "0212105346"
+                    NumeroSolp = "0212105353"
                 };
                 service.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
                 return JsonCustom(new { success = true });
