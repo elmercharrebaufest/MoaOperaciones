@@ -661,6 +661,17 @@ namespace SustitucionMOAUtils.Services
             if (!String.IsNullOrEmpty(x.NroSolp))
             {
                 ActualizarEstadoSolpPorId(x.NroSolp);
+
+                ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
+                {
+                    FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
+                    FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
+                    CreadoPorUsuarios = new List<string>(),
+                    NumeroSolp = x.NroSolp
+                };
+
+                ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+
                 x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
             }
 
@@ -1512,7 +1523,7 @@ namespace SustitucionMOAUtils.Services
                             TablaSap tipoImputacionSubposicion =
                                 tipoImputacionPosicion == null || imputacionSubposicion == null || tipoImputacionSAP == null ? null :
                                 tipoImputacionPosicion.Codigo == "K" ? centrosDeCosto.SingleOrDefault(ceco => Int32.Parse(ceco.CodigoSap) == Int32.Parse(tipoImputacionSAP.CentroDeCosto)) :
-                                tipoImputacionPosicion.Codigo == "F" ? ordenes.SingleOrDefault(o => o.CodigoSap == tipoImputacionSAP.IdOrden) :
+                                tipoImputacionPosicion.Codigo == "F" ? ordenes.SingleOrDefault(o => o.Codigo == tipoImputacionSAP.IdOrden) :
                                 tipoImputacionPosicion.Codigo == "Y" ? centrosDeBeneficio.SingleOrDefault(cebe => cebe.CodigoSap == tipoImputacionSAP.CentroDeBeneficio) :
                                 null;
 
