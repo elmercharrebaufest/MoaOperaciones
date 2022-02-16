@@ -660,8 +660,6 @@ namespace SustitucionMOAUtils.Services
 
             if (!String.IsNullOrEmpty(x.NroSolp))
             {
-                ActualizarEstadoSolpPorId(x.NroSolp);
-
                 ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
                 {
                     FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
@@ -1406,6 +1404,7 @@ namespace SustitucionMOAUtils.Services
                 ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
                 List<TablaSap> centrosDeBeneficio = tablaSap.Where(x => x.Tabla == TablasSap.CentroBeneficio).ToList();
                 List<TablaSap> cuentasSolpesSap = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
+                var listaEstadosSolpSap = repositorio.Listar<TablaSap>(x => x.Tabla == "EstadoSolpSap").Select(x => new TablaSapDto(x)).ToList();
 
                 int? estadoIncompletoId = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == "INCOMPLETO")?.Id;
                 //int? estadoIncompletoId = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == EstadoDocumentoSolp.Incompleto.Code())?.Id;
@@ -1415,11 +1414,8 @@ namespace SustitucionMOAUtils.Services
                     try
                     {
 
-                        if (result.TipoImputaciones.Where(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud &&
-                                             dir.NumeroPosicion == posicion.NumeroPosicion).ToList().Count > 1) continue;
-
                         SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion = result.TipoImputaciones
-                        .SingleOrDefault(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud &&
+                        .FirstOrDefault(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud &&
                                                 dir.NumeroPosicion == posicion.NumeroPosicion);
 
                         Solp solp = solpsFinales.SingleOrDefault(x => x.NroSolp == posicion.NumeroSolicitud);
@@ -1561,10 +1557,18 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 repositorio.GuardarCambios();
+
+                foreach(var resultPosicion in result.Posiciones)
+                {
+                    var codigoSap = listaEstadosSolpSap.Where(x => x.CodigoSap == resultPosicion.EstadoSolpSap).FirstOrDefault();
+                    if (codigoSap != null)
+                    {
+                        ActualizarEstadoSolp(resultPosicion.NumeroSolicitud, codigoSap.Id);
+                    }
+                }
             }
             catch (Exception e)
             {
-
                 throw;
             }
 

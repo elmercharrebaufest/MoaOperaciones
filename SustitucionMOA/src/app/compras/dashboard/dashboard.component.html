@@ -159,7 +159,7 @@
                                 <img class="pointer" src="./Content/images/icons/SAP.svg" alt="SAP" style="width: 30px; height: 30px; cursor:default"/>
                             </span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2" *ngIf="rowData.NroSolp == '' || rowData.NroSolp == null">
                             <span><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash" (click)="eliminarPosicionDashboard(rowData.Id)" /></span>
                         </div>
                         <div class="col-md-2">
