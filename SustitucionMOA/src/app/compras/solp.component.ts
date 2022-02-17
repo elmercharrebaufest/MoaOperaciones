@@ -385,6 +385,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.pasoCompletado = solp.PasoCompletado;
         this.solpActual.estadoPasos = solp.EstadoPasos;
 
+        this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0 ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId) : this.usuarioComprasList[0];
+        
+
         if (solp.Posiciones && solp.Posiciones.length > 0) {
             let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
 

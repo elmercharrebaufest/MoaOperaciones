@@ -194,7 +194,7 @@
                                     style="width: 30px; height: 30px; cursor:default" />
                             </span>
                         </div>
-                        <div class="col-md-2" *ngIf="rowData.UsuarioActual.Mail == usuario">
+                        <div class="col-md-2" *ngIf="(rowData.NroSolp == '' || rowData.NroSolp == null) && rowData.UsuarioActual.Mail == usuario">
                             <span ><img  class="pointer"
                                  src="./Content/images/icons/trash.svg" 
                                 alt="trash"
