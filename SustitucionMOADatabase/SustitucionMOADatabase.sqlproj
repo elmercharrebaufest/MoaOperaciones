@@ -170,6 +170,8 @@
     <None Include="scripts\PostDeployment\TipoMovimientoIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\PostDeployment\TipoImputacionSAP.sql" />
     <None Include="scripts\PostDeployment\TipoSolpPosicionSAP.sql" />
+    <None Include="scripts\PostDeployment\PermisoPorRolBuscadorInteligente.sql" />
+    <None Include="scripts\Insert Rol PermisoPorRol Buscador Inteligente.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

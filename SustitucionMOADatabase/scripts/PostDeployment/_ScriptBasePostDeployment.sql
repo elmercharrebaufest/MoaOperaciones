@@ -16,3 +16,4 @@ Post-Deployment Script Template
 :r .\TipoImputacionSAP.sql
 :r .\TipoSolpPosicionSAP.sql
 :r .\PermisosNotificaciones.sql
+:r .\PermisoPorRolBuscadorInteligente.sql
