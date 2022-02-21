@@ -61,8 +61,10 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                DateTime fecha = DateTime.Now;
                 var consulta = JsonConvert.DeserializeObject<Consulta>(consultaJson);
                 var comentario = JsonConvert.DeserializeObject<Comentario>(comentarioJson);
+                comentario.Fecha = fecha;
                 consulta.Usuario_Id = ObtenerUsuarioActual().Id;
 
                 return JsonCustom(consultaService.AgregarConsulta(consulta, comentario, Request.Files));

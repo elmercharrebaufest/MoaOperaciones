@@ -38,7 +38,7 @@
                         <div *ngIf="(comentarioPropio(comentario) && esCorredor) || esInterno; else elseBlock">
                             <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
                             class="col-xs-12 col-sm-12 col-md-12">
-                                {{comentario.Fecha | date:'hh:mm'}} | {{comentario.Usuario.Mail}}
+                            {{this.comentario.Fecha | date:'HH:mm'}} | {{comentario.Usuario.Mail}} 
                             </p>
                             <div *ngIf="esInterno && comentario.Detalle != '' && comentario.Recordado">
                                 <p *ngFor="let recordado of comentario.ComentarioRecordados" [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
@@ -50,7 +50,7 @@
                         <ng-template #elseBlock>
                             <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
                             class="col-xs-12 col-sm-12 col-md-12">
-                                {{comentario.Fecha | date:'hh:mm'}}
+                            {{this.comentario.Fecha | date:'HH:mm'}}
                             </p>
                         </ng-template>
                     </div>
