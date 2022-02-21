@@ -43,8 +43,19 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         "Anulada por vencimiento",
         "Error de datos"
     ];
-    datosAux: any[];
 
+    estadosSelectedTercero: string[] = [
+        "Pendiente de carga",
+        "Anulada",
+        "Vencida",
+        "Sin estado",
+        "Listo para retirar",
+        "Completada"  
+    ];
+
+
+
+    datosAux: any[];
 
     productoSelected: string = "Todos";
     listaProductos: any = null;
@@ -57,24 +68,35 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
     esPuerto: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA PUERTO');
 
+    
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
 
     descripcionEstadoOrdenCarga: SelectItem[] =  [
-        { label: "Pendiente", value: "Pendiente" },
-        { label: "Confirmado", value: "Confirmado" },
-        { label: "Pendiente aprobación crédito", value: "Pendiente aprobación crédito" },
-        { label: "Entrega generada", value: "Entrega generada" },
-        { label: "Anulada", value: "Anulada" },
-        { label: "Entregada", value: "Entregada" },
         { label: "Vencida", value: "Vencida" },
-        { label: "Entrega pendiente", value: "Entrega pendiente" },
-        { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
-        { label: "Error de datos", value: "Error de datos" }
+        { label: "Pendiente de carga", value: "Pendiente de carga" },
+        { label: "Listo para retirar", value: "Listo para retirar" },
+        { label: "Completada", value: "Completada" },
+        { label: "Anulada", value: "Anulada" },
+        { label: "Sin estado", value: "Sin estado" }
     ]
 
 
 
     ngOnInit() {
+        if (this.esInterno || this.esComercial || this.esMesaFas || this.esPuerto) {
+            this.descripcionEstadoOrdenCarga = [
+            { label: "Pendiente", value: "Pendiente" },
+            { label: "Confirmado", value: "Confirmado" },
+            { label: "Pendiente aprobación crédito", value: "Pendiente aprobación crédito" },
+            { label: "Entrega generada", value: "Entrega generada" },
+            { label: "Anulada", value: "Anulada" },
+            { label: "Entregada", value: "Entregada" },
+            { label: "Vencida", value: "Vencida" },
+            { label: "Entrega pendiente", value: "Entrega pendiente" },
+            { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
+            { label: "Error de datos", value: "Error de datos" }
+        ]}
+
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([]);
@@ -83,10 +105,18 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     }
 
     filtrarListado(){
-        if(this.estadosSelected.length < 1 || this.estadosSelected == null){
-            this.data = this.datosAux;
+        if (this.esInterno || this.esComercial || this.esMesaFas || this.esPuerto) {
+            if(this.estadosSelected.length < 1 || this.estadosSelected == null){
+                this.data = this.datosAux;
+            } else {
+                this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.DescripcionEstado) >= 0);
+            }
         } else {
-            this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.DescripcionEstado) >= 0);
+            if(this.estadosSelectedTercero.length < 1 || this.estadosSelectedTercero == null){
+                this.data = this.datosAux;
+            } else {
+                this.data = this.datosAux.filter(x => this.estadosSelectedTercero.indexOf(x.DescripcionEstado) >= 0);
+            }
         }
     }
 
