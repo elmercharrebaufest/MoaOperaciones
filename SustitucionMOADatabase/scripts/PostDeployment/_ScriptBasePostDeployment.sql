@@ -17,3 +17,8 @@ Post-Deployment Script Template
 :r .\TipoSolpPosicionSAP.sql
 :r .\PermisosNotificaciones.sql
 :r .\PermisoPorRolBuscadorInteligente.sql
+:r .\CategoriaYSubcategoriasConsulta.sql
+:r .\RolesConsulta.sql
+:r .\PermisoPorRolConsulta.sql
+:r .\RolPermisoPorRolConsulta.sql
+:r .\CategoriaRolConsulta.sql
