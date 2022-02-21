@@ -162,7 +162,7 @@ namespace SustitucionMOAUtils.Services
                 "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
                 "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
-                "FINDIR", "FINCOR", "FLE"
+                "FINDIR", "FINCOR", "FLE", "CRDECPE"
             };
 
             var roles = repositorio.Listar<Rol>().Where(r => r.EsEditable)
@@ -195,7 +195,7 @@ namespace SustitucionMOAUtils.Services
                 "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
                 "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
-                "FINDIR", "FINCOR", "FLE"
+                "FINDIR", "FINCOR", "FLE", "CRDECPE"
             };
 
             var esAdministradorMolinos = usuario

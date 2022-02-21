@@ -129,6 +129,8 @@
                         </div>
                     </div>
 
+
+
                     <!-- Expanded para Pagos -->
                     <div class="col-xs-12 col-sm-12 col-md-12"
                          *ngIf="this.categoriaCode == 'PAG'">
@@ -289,7 +291,7 @@
                     </div>
 
                     <div class="col-xs-12 col-sm-12 col-md-12"
-                         *ngIf="(this.categoriaCode == 'PAR' && this.subcategoriaCode == 'NROR') || (this.categoriaCode == 'FIN' && this.subcategoriaCode) ">
+                        *ngIf="(this.categoriaCode == 'PAR' && this.subcategoriaCode == 'NROR') || (this.categoriaCode == 'PAR' && this.subcategoriaCode == 'PFLET') || (this.categoriaCode == 'FIN' && this.subcategoriaCode) ">
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
                                 N° de contrato<span class="requerido">*</span>
@@ -329,6 +331,19 @@
                             <div class="styled-select">
                                 <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
                                        aria-controls="tableModal" required>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- Expanded para cesion y rectificacion de cpe -->
+                     <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'CRCPE'">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                Nro de CTGe<span class="requerido">*</span>
+                            </p>
+                            <div class="styled-select">
+                                <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                                    aria-controls="tableModal" required>
                             </div>
                         </div>
                     </div>
