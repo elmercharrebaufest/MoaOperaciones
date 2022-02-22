@@ -129,6 +129,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="cuit" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="corredor" nillable="true" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -195,6 +196,20 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="AnulaFijacionVirtualSAP">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="fijacionSAP" nillable="true" type="q27:FijacionVirtualSAP" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AnulaFijacionVirtualSAPResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="AnulaFijacionVirtualSAPResult" nillable="true" type="q28:ResultadoSap" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="ProveedorApocrifo">
     <xs:complexType>
       <xs:sequence>
@@ -220,6 +235,35 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="TraerTipoDeCambioResult" type="xs:decimal" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ActualizarCesionContratoSAP">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="contratoSAP" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="cesion" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ActualizarCesionContratoSAPResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q29="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ActualizarCesionContratoSAPResult" nillable="true" type="q29:ResultadoSap" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AltaCampoSustentable">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q30="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="campo" nillable="true" type="q30:CampoDetalleTerceroDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AltaCampoSustentableResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="AltaCampoSustentableResult" nillable="true" type="q31:Resultado" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

@@ -8,7 +8,6 @@ using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -127,7 +126,7 @@ namespace SustitucionMOAUtils.Services
                         (proveedorDto.IdTipoUsuario == 2 || proveedorDto.IdTipoUsuario == 4)
                         )
                     {
-                        ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedorDto.CUIT);
+                        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedorDto.CUIT);
                         if (result != null)
                         {
                             proveedorDto.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
@@ -413,7 +412,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var copia = new List<string>();
 
-                ResultadoValidarProveedorComercial resultadoValidarProveedorComercial = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+                SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial resultadoValidarProveedorComercial = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
                 if (resultadoValidarProveedorComercial != null)
                 {
                     if (!string.IsNullOrWhiteSpace(resultadoValidarProveedorComercial.ComercialMail))

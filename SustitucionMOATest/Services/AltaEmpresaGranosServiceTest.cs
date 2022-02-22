@@ -10,7 +10,6 @@ using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
-using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,7 +115,7 @@ namespace SustitucionMOATest.Services
         [Test]
         public void GrabarProveedorAltaInternaGranosTest()
         {
-            var infoDataAgro = new ResultadoValidarProveedorComercial
+            var infoDataAgro = new SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial
             {
                 ProveedorCBU = "1234",
                 ProveedorClasificacion = "Productor",
@@ -177,7 +176,7 @@ namespace SustitucionMOATest.Services
         [Test]
         public void NotificarSolicitudTest()
         {
-            var infoDataAgro = new ResultadoValidarProveedorComercial
+            var infoDataAgro = new SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial
             {
                 ProveedorCBU = "1234",
                 ProveedorClasificacion = "Productor",
@@ -283,7 +282,7 @@ namespace SustitucionMOATest.Services
                 ProveedorCUIT = "23-33333333-33"
             };
 
-            var infoDataAgro = new ResultadoValidarProveedorComercial
+            var infoDataAgro = new SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial
             {
                 ProveedorCBU = "1234",
                 ProveedorClasificacion = "Productor",
@@ -390,7 +389,7 @@ namespace SustitucionMOATest.Services
         [Test]
         public void EnviarSolicitudUsuarioTest()
         {
-            var infoDataAgro = new ResultadoValidarProveedorComercial
+            var infoDataAgro = new SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial
             {
                 ProveedorCBU = "1234",
                 ProveedorClasificacion = "Productor",
