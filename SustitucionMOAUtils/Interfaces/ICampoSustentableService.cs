@@ -22,7 +22,6 @@ namespace SustitucionMOAUtils.Interfaces
         CampoProveedorDto ObtenerCampo(string mailUsuario, int proveedorId, int campoCosechaId);
         List<Cosecha> ObtenerCosechas();
         EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId, string CUITDeclaracion);
-        string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId);
-        void InformarCampoSustentable(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz);
+        string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId);    
     }
 }

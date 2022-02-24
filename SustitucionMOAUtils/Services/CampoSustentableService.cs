@@ -70,8 +70,8 @@ namespace SustitucionMOAUtils.Services
                 GuardarArchivoKMZ(campoProveedor, archivoKmz);
                 repositorio.GuardarCambios();
             }
-
-
+            var archivo = ConvertirArchivo64(archivoKmz);
+            InformarCampoSustentable(campoProveedor, archivo);
             return new Resultado { IdEntidad = campoProveedor.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
         }
 
@@ -118,6 +118,8 @@ namespace SustitucionMOAUtils.Services
             //GuardarArchivoKMZ(campoProveedor, archivoKmz);
 
             //repositorio.GuardarCambios();
+            var archivo = ConvertirArchivo64(archivoKmz);
+            InformarCampoSustentable(campoProveedor, archivo);
 
             return new Resultado { IdEntidad = campoProveedorObj.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableActualizado };
         }
@@ -616,9 +618,25 @@ namespace SustitucionMOAUtils.Services
             return campoProveedor.Archivo.Ruta;
         }
 
-        public void InformarCampoSustentable(CampoProveedor campoProveedor , HttpPostedFileBase archivoKmz)
-        {            
-            dataAgroService.AltaCampoSustentable(campoProveedor, archivoKmz.ToString());
+        internal void InformarCampoSustentable(CampoProveedor campoProveedor, string archivoKmz)
+        {
+            dataAgroService.AltaCampoSustentable(campoProveedor, archivoKmz);
+        }
+
+        /// <summary>
+        /// se Convierte un archivo a 64 bits
+        /// </summary>
+        /// <param name="archivoKmz"></param>
+        /// <returns></returns>
+        public string ConvertirArchivo64(HttpPostedFileBase archivoKmz)
+        {
+            string theFileName = Path.GetFileName(archivoKmz.FileName);
+            byte[] thePictureAsBytes = new byte[archivoKmz.ContentLength];
+            using (BinaryReader theReader = new BinaryReader(archivoKmz.InputStream))
+            {
+                thePictureAsBytes = theReader.ReadBytes(archivoKmz.ContentLength);
+            }
+            return Convert.ToBase64String(thePictureAsBytes);
         }
     }
 }

@@ -35,8 +35,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);
-                campoSustentableService.InformarCampoSustentable(campoProveedor, archivoKmz);
+                var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);               
                 return JsonCustom(campoSustentableService.Agregar(SessionPersister.User.username, campoProveedor, archivoKmz));
             }
             catch (InfoCustomException e)
@@ -60,8 +59,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);
-                campoSustentableService.InformarCampoSustentable(campoProveedor, archivoKmz);
+                var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);                
                 return JsonCustom(campoSustentableService.Editar(SessionPersister.User.username, campoProveedor, archivoKmz));
             }
             catch (InfoCustomException e)

@@ -56,20 +56,19 @@ namespace SustitucionMOAWS.WSConsumers
 
             return service.AltaCampoSustentable(new CampoDetalleTerceroDto
             {
-               // Campania = campo.CampoCosecha.Cosecha,
-                KMZfileBase64 = kmz,
-              //  ProveedorCUIT = campo.Proveedor.CUIT,
+                ProveedorCUIT = campo.Proveedor.CUIT,
+                Campania = campo.CampoCosecha.Cosecha.Nombre,
+                LocalidadId = campo.CampoCosecha.Campo.Localidad_Id,
                 Latitud = campo.Latitud,
                 Longitud = campo.Longitud,
+                KMZnombre = campo.Archivo.FileKey,
+                KMZfileBase64 = kmz,
                 Nombre = campo.CampoCosecha.Campo.Nombre,
                 ToneladasAprobadas = Convert.ToDecimal(campo.CampoCosecha.ToneladasAprobadas),
                 HectareasTotales = Convert.ToDecimal(campo.HectareasTotales),
-                Id = campo.CampoCosecha.Id,
-                LocalidadId = campo.CampoCosecha.Campo.Localidad_Id,
                 HectareasCultivables = Convert.ToDecimal(campo.HectareasSoja),
-               // KMZnombre = campo.Archivo.ObtenerNombre(),
-                //Estado = campo
-                //... el resto
+                Id = campo.CampoCosecha.Id,
+                Estado = campo.Proveedor.EstadoAprobacion.ToString()
             });
         }
 
