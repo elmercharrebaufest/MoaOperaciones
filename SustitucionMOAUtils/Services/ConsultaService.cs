@@ -1036,46 +1036,53 @@ namespace SustitucionMOAUtils.Services
 
             for (int i = 0; i < listadoCoeficientes.Count; i++)
             {
-                int numeroJurisdiccionAux;
-                int? numeroJurisdiccion = int.TryParse(listadoCoeficientes[i], out numeroJurisdiccionAux) ? numeroJurisdiccionAux : (int?)null;
-
-                string jurisdiccion = listadoCoeficientes[i + 1];
-
-                DateTime fechaInicioAux;
-                DateTime? fechaInicio = DateTime.TryParseExact(listadoCoeficientes[i + 2], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicioAux) ? fechaInicioAux : (DateTime?)null;
-
-                DateTime fechaCeseAux;
-                DateTime? fechaCese = DateTime.TryParseExact(listadoCoeficientes[i + 3], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaCeseAux) ? fechaCeseAux : (DateTime?)null;
-
-                i += (fechaInicio.HasValue ? fechaCese.HasValue ? 4 : 3 : 2);
-
-                decimal coeficienteIngresosAux;
-                decimal? coeficienteIngresos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteIngresosAux) ? coeficienteIngresosAux : (decimal?)null;
-
-                decimal coeficienteGastosAux;
-                decimal? coeficienteGastos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteGastosAux) ? coeficienteGastosAux : (decimal?)null;
-
-                decimal coeficienteUnificadoAux;
-                decimal? coeficienteUnificado = decimal.TryParse(listadoCoeficientes[i], out coeficienteUnificadoAux) ? coeficienteUnificadoAux : (decimal?)null;
-
-                IngresosBrutosCoeficienteUnificadoDetalle detalleGenerado = new IngresosBrutosCoeficienteUnificadoDetalle
+                try
                 {
-                    NumeroJurisdiccion = numeroJurisdiccion,
-                    Jurisdiccion = jurisdiccion,
-                    FechaInicio = fechaInicio,
-                    FechaCese = fechaCese,
-                    CoeficienteIngresos = coeficienteIngresos,
-                    CoeficienteGastos = coeficienteGastos,
-                    CoeficienteUnificado = coeficienteUnificado,
-                    FechaUltimaModificacion = timeProvider.Now()
-                };
+                    int numeroJurisdiccionAux;
+                    int? numeroJurisdiccion = int.TryParse(listadoCoeficientes[i], out numeroJurisdiccionAux) ? numeroJurisdiccionAux : (int?)null;
 
-                repositorio.Agregar(detalleGenerado);
+                    string jurisdiccion = listadoCoeficientes[i + 1];
 
-                ingresosBrutosCoeficienteUnificadoDetalles.Add(detalleGenerado);
+                    DateTime fechaInicioAux;
+                    DateTime? fechaInicio = DateTime.TryParseExact(listadoCoeficientes[i + 2], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicioAux) ? fechaInicioAux : (DateTime?)null;
 
-                if (ingresosBrutosCoeficienteUnificadoDetalles.Count >= 24)
-                    break;
+                    DateTime fechaCeseAux;
+                    DateTime? fechaCese = DateTime.TryParseExact(listadoCoeficientes[i + 3], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaCeseAux) ? fechaCeseAux : (DateTime?)null;
+
+                    i += (fechaInicio.HasValue ? fechaCese.HasValue ? 4 : 3 : 2);
+
+                    decimal coeficienteIngresosAux;
+                    decimal? coeficienteIngresos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteIngresosAux) ? coeficienteIngresosAux : (decimal?)null;
+
+                    decimal coeficienteGastosAux;
+                    decimal? coeficienteGastos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteGastosAux) ? coeficienteGastosAux : (decimal?)null;
+
+                    decimal coeficienteUnificadoAux;
+                    decimal? coeficienteUnificado = decimal.TryParse(listadoCoeficientes[i], out coeficienteUnificadoAux) ? coeficienteUnificadoAux : (decimal?)null;
+
+                    IngresosBrutosCoeficienteUnificadoDetalle detalleGenerado = new IngresosBrutosCoeficienteUnificadoDetalle
+                    {
+                        NumeroJurisdiccion = numeroJurisdiccion,
+                        Jurisdiccion = jurisdiccion,
+                        FechaInicio = fechaInicio,
+                        FechaCese = fechaCese,
+                        CoeficienteIngresos = coeficienteIngresos,
+                        CoeficienteGastos = coeficienteGastos,
+                        CoeficienteUnificado = coeficienteUnificado,
+                        FechaUltimaModificacion = timeProvider.Now()
+                    };
+
+                    //repositorio.Agregar(detalleGenerado);
+
+                    ingresosBrutosCoeficienteUnificadoDetalles.Add(detalleGenerado);
+
+                    if (ingresosBrutosCoeficienteUnificadoDetalles.Count >= 24)
+                        break;
+                }
+                catch (Exception)
+                {
+
+                }
             }
 
             ingresosBrutosCoeficienteUnificado.Detalle = ingresosBrutosCoeficienteUnificadoDetalles;
