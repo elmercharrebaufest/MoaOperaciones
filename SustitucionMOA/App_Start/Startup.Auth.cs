@@ -31,78 +31,67 @@ namespace SustitucionMOA
 			get { return DependencyResolver.Current.GetService<IAzureB2CService>(); }
 		}
 
-        /*
+		/*
         * Configure the OWIN middleware
         */
-        public void ConfigureAuth(IAppBuilder app)
-        {
-            app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                CookieManager = new SystemWebChunkingCookieManager()
-            });
+		public void ConfigureAuth(IAppBuilder app)
+		{
+			// Required for Azure webapps, as by default they force TLS 1.2 and this project attempts 1.0
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            var authenticationOptions = new OpenIdConnectAuthenticationNotifications();
-            app.UseOpenIdConnectAuthentication(Globals.ClientId, String.Format(Globals.WellKnownMetadata, Globals.Tenant, Globals.DefaultPolicy));
-        }
-        //public void ConfigureAuth(IAppBuilder app)
-        //{
-        //	// Required for Azure webapps, as by default they force TLS 1.2 and this project attempts 1.0
-        //	ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+			app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
 
-        //	app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
-
-        //	app.UseCookieAuthentication(new CookieAuthenticationOptions
-        //	{
-        //		// ASP.NET web host compatible cookie manager
-        //		CookieManager = new SystemWebChunkingCookieManager()
-        //	});
+			app.UseCookieAuthentication(new CookieAuthenticationOptions
+			{
+				// ASP.NET web host compatible cookie manager
+				CookieManager = new SystemWebChunkingCookieManager()
+			});
 
 
-        //	app.UseOpenIdConnectAuthentication(
-        //		new OpenIdConnectAuthenticationOptions
-        //		{
-        //			// Generate the metadata address using the tenant and policy information
-        //			MetadataAddress = String.Format(Globals.WellKnownMetadata, Globals.Tenant, Globals.DefaultPolicy),
+			app.UseOpenIdConnectAuthentication(
+				new OpenIdConnectAuthenticationOptions
+				{
+					// Generate the metadata address using the tenant and policy information
+					MetadataAddress = String.Format(Globals.WellKnownMetadata, Globals.Tenant, Globals.DefaultPolicy),
 
 
-        //			// These are standard OpenID Connect parameters, with values pulled from web.config
-        //			ClientId = Globals.ClientId,
-        //			RedirectUri = Globals.RedirectUri,
-        //			PostLogoutRedirectUri = Globals.RedirectUri,
+					// These are standard OpenID Connect parameters, with values pulled from web.config
+					ClientId = Globals.ClientId,
+					RedirectUri = Globals.RedirectUri,
+					PostLogoutRedirectUri = Globals.RedirectUri,
 
-        //			// Specify the callbacks for each type of notifications
-        //			Notifications = new OpenIdConnectAuthenticationNotifications
-        //			{
-        //				RedirectToIdentityProvider = OnRedirectToIdentityProvider,
-        //				AuthorizationCodeReceived = OnAuthorizationCodeReceived,
-        //				AuthenticationFailed = OnAuthenticationFailed,
-        //				SecurityTokenValidated = OnSecurityTokenValidated
+					// Specify the callbacks for each type of notifications
+					Notifications = new OpenIdConnectAuthenticationNotifications
+					{
+						RedirectToIdentityProvider = OnRedirectToIdentityProvider,
+						AuthorizationCodeReceived = OnAuthorizationCodeReceived,
+						AuthenticationFailed = OnAuthenticationFailed,
+						SecurityTokenValidated = OnSecurityTokenValidated
 
-        //			},
+					},
 
-        //			// Specify the claim type that specifies the Name property.
-        //			TokenValidationParameters = new TokenValidationParameters
-        //			{
-        //				NameClaimType = "name",
-        //				ValidateIssuer = false
-        //			},
+					// Specify the claim type that specifies the Name property.
+					TokenValidationParameters = new TokenValidationParameters
+					{
+						NameClaimType = "name",
+						ValidateIssuer = false
+					},
 
-        //			// ASP.NET web host compatible cookie manager
-        //			CookieManager = new SystemWebCookieManager(),
+					// ASP.NET web host compatible cookie manager
+					CookieManager = new SystemWebCookieManager(),
 
-        //			// Specify the scope by appending all of the scopes requested into one string (separated by a blank space)
-        //			Scope = $"openid profile offline_access"
+					// Specify the scope by appending all of the scopes requested into one string (separated by a blank space)
+					Scope = $"openid profile offline_access"
 
-        //		}
-        //	);
-        //}
+				}
+			);
+		}
 
 
 
-        //Agrego esta función del callback. Ya que esta es llamada desde el registro y desde el login. 
-        private Task OnSecurityTokenValidated(SecurityTokenValidatedNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
+		//Agrego esta función del callback. Ya que esta es llamada desde el registro y desde el login. 
+		private Task OnSecurityTokenValidated(SecurityTokenValidatedNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
 		{
 			ValidarLogin(notification.AuthenticationTicket.Identity);
 
