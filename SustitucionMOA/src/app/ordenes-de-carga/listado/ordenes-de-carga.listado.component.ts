@@ -70,6 +70,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 
     
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
 
     descripcionEstadoOrdenCarga: SelectItem[] =  [
         { label: "Vencida", value: "Vencida" },

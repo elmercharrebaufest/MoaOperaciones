@@ -429,7 +429,15 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
+        if (this.categoriaCode == 'CRCPE') {
+            if (this.comprobante == "" || !this.comprobante) {
+                this.mensajeComponent.setErrorMsg("El campo Nro de CTG esta vacio.");
+                return true;
+            }
+        }
     }
+
+    
 
     postConsulta() {
         this.blockUI.start('Generando Consulta');

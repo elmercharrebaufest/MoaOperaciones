@@ -136,5 +136,8 @@
 
         /*Gestion CM05*/
         public const string GESTION_IMPUESTOS_CM05 = "GESTION IMPUESTOS CM05";
+
+        /*CESIÓN Y RECTIFICACIÓN DE CPE*/
+        public const string CESION_Y_RECTIFICACION_DE_CPE = "CESIÓN Y RECTIFICACIÓN DE CPE";
     }
 }

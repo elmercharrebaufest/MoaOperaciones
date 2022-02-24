@@ -29,7 +29,7 @@
         </div>
 
 
-        <div id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
+        <div *ngIf="!esCliente" [hidden]="esCliente" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Cliente:</p>
           <div class="styled-select">
             <input type="search" class="" placeholder="Ingrese numero de cliente" [value]="" aria-controls="tableModal"

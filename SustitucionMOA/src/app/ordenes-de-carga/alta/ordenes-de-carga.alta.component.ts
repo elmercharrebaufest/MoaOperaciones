@@ -15,6 +15,7 @@ import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.compon
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
+import { NgBlockUI, BlockUI } from 'ng-block-ui';
 
 declare var $: any;
 
@@ -25,6 +26,7 @@ declare var $: any;
 })
 
 export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
+    @BlockUI() blockUI: NgBlockUI;
 
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
@@ -180,7 +182,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
-
+        this.blockUI.start('Grabando...');
         if (this.ordenDeCargaId > 0) {
             this.subscription = this.service
                 .editar(this.ordenDeCarga)
@@ -221,6 +223,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 .subscribe(
                     (result) => {
                         this.spinnerComponent.hideIt();
+                        this.blockUI.stop();
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (
@@ -245,6 +248,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     (error) => {
                         this.spinnerComponent.hideIt();
                         this.mensajeComponent.setErrorMsg(error.message);
+                        this.blockUI.stop();
                     }
                 );
         }

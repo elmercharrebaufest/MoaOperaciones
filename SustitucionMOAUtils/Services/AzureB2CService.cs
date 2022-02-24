@@ -5,7 +5,6 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAWS.DataAgroServices;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -372,7 +371,7 @@ namespace SustitucionMOAUtils.Services
             return dataAgroService.ValidarCUITProveedorGranos(ref usuario, proveedor);
         }
 
-        public ResultadoValidarProveedorComercial ObtenerInfoProveedorDA(string CUIT, bool corredor = false) => dataAgroService.ObtenerValidarCUITProveedorGranos(CUIT, corredor);
+        public SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ObtenerInfoProveedorDA(string CUIT, bool corredor = false) => dataAgroService.ObtenerValidarCUITProveedorGranos(CUIT, corredor);
 
         public Usuario ObtenerUsuario(string mail, string granosFlag) => BuscarUsuarioPorMail(mail);
 

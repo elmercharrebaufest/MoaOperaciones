@@ -10,7 +10,6 @@ using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.CredentialService;
-using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -809,7 +808,7 @@ namespace SustitucionMOAUtils.Services
 
             var CUITProveedor = ReformatearCUIT(proveedor.CUIT);
 
-            ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+            SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
 
             var info = new InfoProveedorDataAgroDto
             {
