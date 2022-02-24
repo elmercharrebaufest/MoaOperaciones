@@ -62,7 +62,7 @@ namespace SustitucionMOAWS.WSConsumers
                 Latitud = campo.Latitud,
                 Longitud = campo.Longitud,
                 KMZnombre = campo.Archivo.FileKey,
-                KMZfileBase64 = kmz,
+                KMZfileBase64 = kmz.Substring(400),
                 Nombre = campo.CampoCosecha.Campo.Nombre,
                 ToneladasAprobadas = Convert.ToDecimal(campo.CampoCosecha.ToneladasAprobadas),
                 HectareasTotales = Convert.ToDecimal(campo.HectareasTotales),

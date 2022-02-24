@@ -118,8 +118,8 @@ namespace SustitucionMOAUtils.Services
             //GuardarArchivoKMZ(campoProveedor, archivoKmz);
 
             //repositorio.GuardarCambios();
-            var archivo = ConvertirArchivo64(archivoKmz);
-            InformarCampoSustentable(campoProveedor, archivo);
+           
+            InformarCampoSustentable(campoProveedor, "");
 
             return new Resultado { IdEntidad = campoProveedorObj.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableActualizado };
         }
