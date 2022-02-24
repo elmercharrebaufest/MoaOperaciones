@@ -392,7 +392,6 @@ namespace SustitucionMOAUtils.Services
 
         public SustitucionMOAWS.DataAgroServices.Resultado AltaCampoSustentable(CampoProveedor campo, string kmz)
         {
-
             try
             {
                 var respuesta = new DataAgroConsumer().AltaCampoSustentable(campo,kmz);

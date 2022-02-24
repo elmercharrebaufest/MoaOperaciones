@@ -31,12 +31,14 @@ namespace SustitucionMOAUtils.Services
         private readonly IRepositorio repositorio;
         private readonly string DataAgroURL;
         private readonly IExcelExportWrapper excelExport;
+        private readonly IDataAgroService dataAgroService;
 
-        public CampoSustentableService(IRepositorio repositorio, IExcelExportWrapper excelExport)
+        public CampoSustentableService(IRepositorio repositorio, IExcelExportWrapper excelExport, IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
             this.excelExport = excelExport;
+            this.dataAgroService = dataAgroService;
         }
 
         public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
@@ -68,8 +70,8 @@ namespace SustitucionMOAUtils.Services
                 GuardarArchivoKMZ(campoProveedor, archivoKmz);
                 repositorio.GuardarCambios();
             }
-
-
+            var archivo = ConvertirArchivo64(archivoKmz);
+            InformarCampoSustentable(campoProveedor, archivo);
             return new Resultado { IdEntidad = campoProveedor.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
         }
 
@@ -116,6 +118,8 @@ namespace SustitucionMOAUtils.Services
             //GuardarArchivoKMZ(campoProveedor, archivoKmz);
 
             //repositorio.GuardarCambios();
+           
+            InformarCampoSustentable(campoProveedor, "");
 
             return new Resultado { IdEntidad = campoProveedorObj.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableActualizado };
         }
@@ -612,6 +616,27 @@ namespace SustitucionMOAUtils.Services
             CampoProveedor campoProveedor = repositorio.Obtener<CampoProveedor>(x => x.Proveedor_Id == proveedorId && x.CampoCosecha_Id == campoCosechaId);
 
             return campoProveedor.Archivo.Ruta;
+        }
+
+        internal void InformarCampoSustentable(CampoProveedor campoProveedor, string archivoKmz)
+        {
+            dataAgroService.AltaCampoSustentable(campoProveedor, archivoKmz);
+        }
+
+        /// <summary>
+        /// se Convierte un archivo a 64 bits
+        /// </summary>
+        /// <param name="archivoKmz"></param>
+        /// <returns></returns>
+        public string ConvertirArchivo64(HttpPostedFileBase archivoKmz)
+        {
+            string theFileName = Path.GetFileName(archivoKmz.FileName);
+            byte[] thePictureAsBytes = new byte[archivoKmz.ContentLength];
+            using (BinaryReader theReader = new BinaryReader(archivoKmz.InputStream))
+            {
+                thePictureAsBytes = theReader.ReadBytes(archivoKmz.ContentLength);
+            }
+            return Convert.ToBase64String(thePictureAsBytes);
         }
     }
 }
