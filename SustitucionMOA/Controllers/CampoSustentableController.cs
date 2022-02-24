@@ -20,11 +20,13 @@ namespace SustitucionMOA.Controllers
     {
         readonly ICampoSustentableService campoSustentableService;
         private readonly IFileWrapper fileWrapper;
+        private readonly IDataAgroService dataAgroService;
 
-        public CampoSustentableController(ICampoSustentableService campoSustentableService, IFileWrapper fileWrapper)
+        public CampoSustentableController(ICampoSustentableService campoSustentableService, IFileWrapper fileWrapper, IDataAgroService dataAgroService)
         {
             this.campoSustentableService = campoSustentableService;
             this.fileWrapper = fileWrapper;
+            this.dataAgroService = dataAgroService;
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
@@ -34,6 +36,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);
+                campoSustentableService.InformarCampoSustentable(campoProveedor, archivoKmz);
                 return JsonCustom(campoSustentableService.Agregar(SessionPersister.User.username, campoProveedor, archivoKmz));
             }
             catch (InfoCustomException e)
@@ -58,6 +61,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);
+                campoSustentableService.InformarCampoSustentable(campoProveedor, archivoKmz);
                 return JsonCustom(campoSustentableService.Editar(SessionPersister.User.username, campoProveedor, archivoKmz));
             }
             catch (InfoCustomException e)

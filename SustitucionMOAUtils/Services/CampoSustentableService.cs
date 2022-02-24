@@ -31,12 +31,14 @@ namespace SustitucionMOAUtils.Services
         private readonly IRepositorio repositorio;
         private readonly string DataAgroURL;
         private readonly IExcelExportWrapper excelExport;
+        private readonly IDataAgroService dataAgroService;
 
-        public CampoSustentableService(IRepositorio repositorio, IExcelExportWrapper excelExport)
+        public CampoSustentableService(IRepositorio repositorio, IExcelExportWrapper excelExport, IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
             this.excelExport = excelExport;
+            this.dataAgroService = dataAgroService;
         }
 
         public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
@@ -612,6 +614,11 @@ namespace SustitucionMOAUtils.Services
             CampoProveedor campoProveedor = repositorio.Obtener<CampoProveedor>(x => x.Proveedor_Id == proveedorId && x.CampoCosecha_Id == campoCosechaId);
 
             return campoProveedor.Archivo.Ruta;
+        }
+
+        public void InformarCampoSustentable(CampoProveedor campoProveedor , HttpPostedFileBase archivoKmz)
+        {            
+            dataAgroService.AltaCampoSustentable(campoProveedor, archivoKmz.ToString());
         }
     }
 }
