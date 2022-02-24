@@ -58,6 +58,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     esPuerto: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA PUERTO');
 
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
 
     descripcionEstadoOrdenCarga: SelectItem[] =  [
         { label: "Pendiente", value: "Pendiente" },
