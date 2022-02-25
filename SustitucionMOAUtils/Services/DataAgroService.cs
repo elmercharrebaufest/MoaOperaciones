@@ -390,7 +390,7 @@ namespace SustitucionMOAUtils.Services
             return new DataAgroConsumer().ProveedorApocrifo(CUIT);
         }
 
-        public SustitucionMOAWS.DataAgroServices.Resultado AltaCampoSustentable(CampoProveedor campo, string kmz)
+        public SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(CampoProveedor campo, string kmz)
         {
             try
             {
@@ -401,11 +401,11 @@ namespace SustitucionMOAUtils.Services
             catch (Exception ex)
             {
                 Log.Error(ex);
-                var resultado =new SustitucionMOAWS.DataAgroServices.Resultado();
+                var resultado =new SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable();
                 var error = new SustitucionMOAWS.DataAgroServices.ErrorMessage {Message=ex.Message };
                 var errores = new List<SustitucionMOAWS.DataAgroServices.ErrorMessage>();
                 errores.Add(error);
-                resultado.ListaErrores = errores.ToArray();
+                resultado.Errores = errores.ToArray();
                 return resultado;
             }
         }

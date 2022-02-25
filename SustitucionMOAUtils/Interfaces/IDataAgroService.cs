@@ -18,6 +18,6 @@ namespace SustitucionMOAUtils.Interfaces
         string VerificarEstadoProveedor(int proveedorID, string usuarioMail);
         bool ProveedorApocrifo(string CUIT);
         decimal TraerTipoDeCambio();
-        SustitucionMOAWS.DataAgroServices.Resultado AltaCampoSustentable(CampoProveedor campo, string kmz);
+        SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(CampoProveedor campo, string kmz);
     }
 }

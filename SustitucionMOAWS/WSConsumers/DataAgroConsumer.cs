@@ -51,7 +51,7 @@ namespace SustitucionMOAWS.WSConsumers
             return service.TraerTipoDeCambio(null);
         }
 
-        public SustitucionMOAWS.DataAgroServices.Resultado AltaCampoSustentable(SustitucionMOAModel.Entities.CampoProveedor campo, string kmz)
+        public SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(SustitucionMOAModel.Entities.CampoProveedor campo, string kmz)
         {
 
             return service.AltaCampoSustentable(new CampoDetalleTerceroDto

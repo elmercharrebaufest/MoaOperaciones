@@ -263,7 +263,7 @@
   <xs:element name="AltaCampoSustentableResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="AltaCampoSustentableResult" nillable="true" type="q31:Resultado" />
+        <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="AltaCampoSustentableResult" nillable="true" type="q31:ResultadoAltaCampoSustentable" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
