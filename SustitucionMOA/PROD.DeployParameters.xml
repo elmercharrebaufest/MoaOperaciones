@@ -71,9 +71,10 @@
 	<setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="http://gvicdataagro02.molinosagro.ad/services/AuthService.svc" />
   <setParameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address" value="http://gvicdataagro02.molinosagro.ad/services/DataAgroServices.svc" />
 
-  <setParameter name="EmailToMesaVentaFas Config" value="mesafassanlorenzo@molinosagro.com.ar;Mesaentsl@molinosagro.com.ar" />
-  <setParameter name="EmailToCobranzas Config" value="cobranzasfas@molinosagro.com.ar" />
-  <setParameter name="EmailToComerciales Config" value="comerciolocal@molinosagro.com.ar" />
+	<setParameter name="EmailToMesaENTSL Config" value="Mesaentsl@molinosagro.com.ar" />
+	<setParameter name="EmailToMesaVentaFas Config" value="mesafassanlorenzo@molinosagro.com.ar" />
+	<setParameter name="EmailToCobranzas Config" value="cobranzasfas@molinosagro.com.ar" />
+	<setParameter name="EmailToComerciales Config" value="comerciolocal@molinosagro.com.ar" />
 
   <setParameter name="SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE&amp;interfaceNamespace=urn%3AOPERACIONES" />
   <setParameter name="SI_MPMF_MOAOP_CONTROL_ESTADO Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CONTROL_ESTADO&amp;interfaceNamespace=urn%3AOPERACIONES" />

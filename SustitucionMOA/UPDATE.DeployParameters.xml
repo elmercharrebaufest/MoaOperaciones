@@ -31,6 +31,11 @@
   <setParameter name="EmailToReporteCamposSustentables Config" value="mpfeiffer@baufest.com,martin.pfe@gmail.com,evilliate@baufest.com,jyon@baufest.com" />
 	<setParameter name="EmailToUsuariosCompras Config" value="rorlando@baufest.com" />
 
+	<setParameter name="EmailToMesaENTSL Config" value="Mesaentsl@molinosagro.com.ar" />
+	<setParameter name="EmailToMesaVentaFas Config" value="mesafassanlorenzo@molinosagro.com.ar" />
+	<setParameter name="EmailToCobranzas Config" value="cobranzasfas@molinosagro.com.ar" />
+	<setParameter name="EmailToComerciales Config" value="comerciolocal@molinosagro.com.ar" />
+
 
 	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
