@@ -32,6 +32,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     filtroCliente: any = null;
 
     estadoSelected: string = "Todos";
+
     estadosSelected: string[] = [
         "Pendiente",
         "Confirmado",
@@ -44,18 +45,10 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         "Error de datos"
     ];
 
-    estadosSelectedTercero: string[] = [
-        "Pendiente de carga",
-        "Anulada",
-        "Vencida",
-        "Sin estado",
-        "Listo para retirar",
-        "Completada"  
-    ];
-
 
 
     datosAux: any[];
+    primerListado: any[];
 
     productoSelected: string = "Todos";
     listaProductos: any = null;
@@ -72,18 +65,14 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
 
-    descripcionEstadoOrdenCarga: SelectItem[] =  [
-        { label: "Vencida", value: "Vencida" },
-        { label: "Pendiente de carga", value: "Pendiente de carga" },
-        { label: "Listo para retirar", value: "Listo para retirar" },
-        { label: "Completada", value: "Completada" },
-        { label: "Anulada", value: "Anulada" },
-        { label: "Sin estado", value: "Sin estado" }
-    ]
+    descripcionEstadoOrdenCarga: any[];
+    entregada: string = "Entregada";
+   
 
 
 
     ngOnInit() {
+
         if (this.esInterno || this.esComercial || this.esMesaFas || this.esPuerto) {
             this.descripcionEstadoOrdenCarga = [
             { label: "Pendiente", value: "Pendiente" },
@@ -96,7 +85,26 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
             { label: "Entrega pendiente", value: "Entrega pendiente" },
             { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
             { label: "Error de datos", value: "Error de datos" }
-        ]}
+        ]} else {
+            this.descripcionEstadoOrdenCarga =  [
+                { label: "Vencida", value: "Vencida" },
+                { label: "Pendiente de carga", value: "Pendiente de carga" },
+                { label: "Listo para retirar", value: "Listo para retirar" },
+                { label: "Completada", value: "Completada" },
+                { label: "Anulada", value: "Anulada" },
+                { label: "Sin estado", value: "Sin estado" }
+            ]
+    
+            this.estadosSelected = [
+                "Pendiente de carga",
+                "Anulada",
+                "Vencida",
+                "Sin estado",
+                "Listo para retirar",
+            ];
+    
+            this.entregada = "Completada";
+        }
 
         this.setTabs();
         this.checkPermisos();
@@ -105,20 +113,20 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         this.obtenerMateriales();
     }
 
+    
+
     filtrarListado(){
-        if (this.esInterno || this.esComercial || this.esMesaFas || this.esPuerto) {
+        debugger
+        this.primerListado = this.datosAux.filter(x => x.DescripcionEstado != this.entregada);
+
+      
             if(this.estadosSelected.length < 1 || this.estadosSelected == null){
                 this.data = this.datosAux;
             } else {
                 this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.DescripcionEstado) >= 0);
+                //lista filtrada
+                // this.data = this.datosAux.filter(x => x.DescripcionEstado != "Entregada");
             }
-        } else {
-            if(this.estadosSelectedTercero.length < 1 || this.estadosSelectedTercero == null){
-                this.data = this.datosAux;
-            } else {
-                this.data = this.datosAux.filter(x => this.estadosSelectedTercero.indexOf(x.DescripcionEstado) >= 0);
-            }
-        }
     }
 
 
