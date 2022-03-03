@@ -153,7 +153,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
-    obtenerOrdenDeCarga() {        
+    obtenerOrdenDeCarga() {    
+        debugger;    
         try {
             this.unsubscribe();
             this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
@@ -163,6 +164,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.error != undefined && result.error != "") {
                     } else if (result.info != undefined) {
                     } else {
+                        debugger;
                         this.ordenDeCarga = result.data;
                         this.verificarBotones()                       
                         if (this.ordenDeCarga.MensajeValidacionSAP != "" && this.esInterno) {
@@ -472,6 +474,13 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     abrirModalForzarCreacion() {
         document.getElementById("openForzarCreacion").click();
     }
+
+    abrirModalDetalleHistorialCompras() {    
+        document.getElementById("openModalDetalleHistorial").click();      
+    }
+
+
+
 
     forzarCreacionPedido() {
         this.mensajeComponent.setMsgsEmpty();
