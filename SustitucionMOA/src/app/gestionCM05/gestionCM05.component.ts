@@ -183,6 +183,7 @@ export class GestionCM05Component extends ListBaseComponent {
                 x.FechaCese = x.FechaCese == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaCese));
                 x.FechaInicio = x.FechaInicio == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaInicio));
                 x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
+                //x.CoeficienteUnificado = x.CoeficienteUnificado == null ? 0 : x.CoeficienteUnificado;
             });
         });
 
