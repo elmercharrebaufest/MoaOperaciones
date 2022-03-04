@@ -260,7 +260,6 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega;
                 IM_PRITEM.PLND_DELRYSpecified = true;
                 IM_PRITEM.DELETE_IND = SAPFormatter.FormatearBooleano(eliminarPosicion);
-                IM_PRITEM.VAL_TYPE = SAPFormatter.FormatearBooleano(eliminarPosicion);
                 IM_PRITEM.PCKG_NO = numeroPaquete;
 
                 solpSAP.IM_PRITEMList.Add(IM_PRITEM);
@@ -286,8 +285,7 @@ namespace SustitucionMOAWS.WSConsumers
                     PLND_DELRY = "X",
                     PCKG_NO = "X",
                     DELETE_IND = "X",
-                    CREATED_BY = "X",
-                    VAL_TYPE = "X"
+                    CREATED_BY = "X"
                 });
 
 
