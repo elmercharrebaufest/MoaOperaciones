@@ -142,8 +142,15 @@ export class DashboardComponent extends ListBaseComponent {
 
     }
 
-    getListarSolp() {
+    getStatusDocumentoSolp(data: any): String {
+        return data.Posiciones.every(x => x.Estado == false) && data.NroSolp != null ? 'Borrardo en sap' : data.EstadoDocumento.Descripcion;
+    }
 
+    public getColorDocumentoSolp(data: any): String {
+        return data.Posiciones.every(x => x.Estado == false) && data.NroSolp != null ? '#DD441E' : data.EstadoDocumento.Color;
+    }
+
+    getListarSolp(){
         try {
             this.spinnerComponent.showIt();
 

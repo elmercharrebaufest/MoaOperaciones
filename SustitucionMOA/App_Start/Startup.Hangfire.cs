@@ -61,7 +61,7 @@ namespace SustitucionMOA
             RecurringJob.AddOrUpdate<Jobs.IObtenerSolpsDesdeSAPJob>(
                 "ObtenerSolpsDesdeSAPJob",
                 j => j.Execute(),
-                "0 * * * *", tz);
+                "*/15 * * * *", tz);
         }
     }
 }

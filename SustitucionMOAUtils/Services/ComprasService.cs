@@ -306,7 +306,7 @@ namespace SustitucionMOAUtils.Services
                             {
                                 SolpSubposicion subposEntity = null;
 
-                                subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Codigo == subpos.Codigo);
+                                subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Codigo == subpos.Codigo || y.Numero == subpos.Numero);
 
 
 
@@ -639,6 +639,7 @@ namespace SustitucionMOAUtils.Services
                     RevisadoPor = x.Pliego?.RevisadoPor,
                     TipoSolpSap = x.TipoSolpSap,
                     EstadoPasos = x.EstadoPasos,
+                    Posiciones = x.Posiciones.Select(p => new SolpPosicionDto(p)).ToList()
                 }).OrderByDescending(i => i.FechaCreacion);
 
             return todasLasSolp.ToList();
@@ -1493,16 +1494,25 @@ namespace SustitucionMOAUtils.Services
                             result.ServiciosSuposiciones.Where(x => x.NumeroPosicion == posicion.NumeroPosicion &&
                                                                     x.NumeroSolicitud == posicion.NumeroSolicitud).ToList();
 
+                        int subposicionIndice = 0;
+
                         foreach (var subPosicion in subPosicionesDeLaPosicion)
                         {
                             int indiceSubPosicion = Int32.Parse(subPosicion.SumeroSubPosicion) / 10;
-                            SolpSubposicion subPosicionEntity = posicionEntity.Subposiciones.SingleOrDefault(sp => sp.Numero == indiceSubPosicion);
+                            SolpSubposicion subPosicionEntity = null;
+
+                            if(posicionEntity.Subposiciones != null && posicionEntity.Subposiciones.Count() == (subposicionIndice + 1))
+                            {
+                                subPosicionEntity = posicionEntity.Subposiciones.ToList()[subposicionIndice];
+                            }
 
                             if (subPosicionEntity == null)
                             {
                                 subPosicionEntity = new SolpSubposicion();
                                 posicionEntity.Subposiciones.Add(subPosicionEntity);
                             }
+
+                            subposicionIndice += 1;
 
                             ImputacionSuposicionSAP imputacionSubposicion = result.ImputacionesSuposiciones
                                 .FirstOrDefault(ims => ims.NumeroSolicitud == subPosicion.NumeroSolicitud &&
