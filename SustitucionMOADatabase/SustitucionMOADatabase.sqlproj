@@ -16,12 +16,13 @@
     <ModelCollation>1033, CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetLanguage>CS</TargetLanguage>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -157,6 +158,11 @@
     <None Include="scripts\CreacionRolAccesoQr.sql" />
     <Build Include="DBO\Tables\TipoImputacionSAP.sql" />
     <Build Include="DBO\Tables\TipoSolpPosicionSAP.sql" />
+    <None Include="scripts\PostDeployment\CategoriaRolConsulta.sql" />
+    <None Include="scripts\PostDeployment\CategoriaYSubcategoriasConsulta.sql" />
+    <None Include="scripts\PostDeployment\PermisoPorRolConsulta.sql" />
+    <None Include="scripts\PostDeployment\RolesConsulta.sql" />
+    <None Include="scripts\PostDeployment\RolPermisoPorRolConsulta.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -170,6 +176,8 @@
     <None Include="scripts\PostDeployment\TipoMovimientoIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\PostDeployment\TipoImputacionSAP.sql" />
     <None Include="scripts\PostDeployment\TipoSolpPosicionSAP.sql" />
+    <None Include="scripts\PostDeployment\PermisoPorRolBuscadorInteligente.sql" />
+    <None Include="scripts\Insert Rol PermisoPorRol Buscador Inteligente.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />
