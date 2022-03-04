@@ -11,6 +11,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UsuarioLogueado } from './common/models/usuario-logueado';
 import { Subscription } from 'rxjs';
 
+
 @Component({
     selector: 'my-app',
     templateUrl: `app.component.html`
@@ -41,6 +42,7 @@ export class AppComponent implements OnDestroy {
     disabledAgreement: boolean = true;
 
     ngOnInit() {
+
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
 
@@ -51,6 +53,7 @@ export class AppComponent implements OnDestroy {
             this.validarLoginAzure();
         }
     }
+
 
     validarLoginAzure() {
         let headers = new HttpHeaders();
