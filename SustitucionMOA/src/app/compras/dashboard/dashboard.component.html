@@ -179,8 +179,8 @@
                         {{rowData.FechaCreacion | date:'dd/MM/yyyy'}}
                     </td>
                     <td>
-                        <span [style.color]="rowData.EstadoDocumento.Color">
-                           {{rowData.EstadoDocumento.Descripcion}}
+                        <span [style.color]="getColorDocumentoSolp(rowData)">
+                            {{getStatusDocumentoSolp(rowData)}}
                         </span>
                     </td>
                     <td>

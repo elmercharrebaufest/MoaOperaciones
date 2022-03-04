@@ -142,6 +142,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
 
                 bool eliminarPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
+                bool eliminarSubPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
 
                 eliminarPosicion = eliminarPosicion ? true : !posicion.Estado;
 
@@ -261,8 +262,9 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_PRITEM.PLND_DELRYSpecified = true;
                 IM_PRITEM.PCKG_NO = numeroPaquete;
                 IM_PRITEM.DELETE_IND = SAPFormatter.FormatearBooleano(eliminarPosicion);
+                IM_PRITEM.VAL_TYPE = SAPFormatter.FormatearBooleano(eliminarPosicion);
 
-                
+
 
                 solpSAP.IM_PRITEMList.Add(IM_PRITEM);
 
@@ -286,6 +288,7 @@ namespace SustitucionMOAWS.WSConsumers
                     PLND_DELRY = "X",
                     PCKG_NO = "X",
                     DELETE_IND = "X",
+                    VAL_TYPE = "X",
                     CREATED_BY = "X"
                 });
 
@@ -349,7 +352,7 @@ namespace SustitucionMOAWS.WSConsumers
                         DOC_ITEM = docItem,
                         OUTLINE = outlineNumber, //Preguntar a Ulises
                         SRV_LINE = serviceLineNumber,
-                        DEL_IND = SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado)),
+                        DEL_IND = eliminarSubPosicion ? "" : SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado)),
                         SERVICE = (subPosicion.ServicioSolp != null) ? "X" : "",
                         SHORT_TEXT = (subPosicion.ServicioSolp == null) ? "X" : "",
                         QUANTITY = "X",
