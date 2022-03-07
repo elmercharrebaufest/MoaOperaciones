@@ -29,6 +29,7 @@
 
 	<setParameter name="EmailToReporteCamposSustentables Config" value="emartin@baufest.com,martin.pfe@gmail.com,evilliate@baufest.com,jyon@baufest.com" />
 
+	<setParameter name="EmailToMesaENTSL Config" value="emartin@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
 	<setParameter name="EmailToMesaVentaFas Config" value="emartin@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
 	<setParameter name="EmailToCobranzas Config" value="emartin@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
 	<setParameter name="EmailToComerciales Config" value="emartin@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />

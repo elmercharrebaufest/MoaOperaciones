@@ -122,6 +122,12 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="EmailToMesaENTSL Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToMesaENTSL']
+                           /@value" />
+	</parameter>
+
 	<parameter name="EmailToMesaVentaFas Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailToMesaVentaFas']

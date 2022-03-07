@@ -232,7 +232,15 @@ namespace SustitucionMOAUtils.Services
                 var cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, cambios);
                 string asunto = "Molinos Agro - Edición en su orden de carga n°: " + ordenDeCargaHistorial[0].OrdenDeCarga_Id;
                 var copia = new List<string>() { };
-                var Destinatario = ConfigurationManager.AppSettings["EmailToComerciales"].Split(';').ToList();
+                //var Destinatario = ConfigurationManager.AppSettings["EmailToComerciales"].Split(';').ToList();
+                var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+                var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+
+                var Destinatario = new List<string>
+                {
+                    mailsMesaVentaFas,
+                    mailsComerciales,
+                };
 
                 EmailSender.EnviarMail(Destinatario, asunto, cuerpo, copia, null, null, null);
             }
@@ -802,8 +810,14 @@ namespace SustitucionMOAUtils.Services
             if (!TransporteExiste(orden))
             {
                 string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+                string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
 
-                var mails = mailsMesaVentaFas.Split(';').ToList();
+                var mails = new List<string>
+                {
+                    mailsMesaVentaFas,
+                    mailsMesaENTSL,
+                };
+                //var mails = mailsMesaVentaFas.Split(';').ToList();
 
                 string asunto = "ALTA TTE";
 
