@@ -164,10 +164,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                     } else if (result.info != undefined) {
-                    } else {
+                    } else {                    
                         this.ordenDeCarga = result.data;
-                        this.verificarBotones()                       
-                        if (this.ordenDeCarga.MensajeValidacionSAP != "" && this.ordenDeCarga.MensajeValidacionSAP != "OK" && this.esInterno) {
+                        this.separarCadenas();
+                        this.verificarBotones()
+                        if (this.ordenDeCarga.MensajeValidacionSAP != "" && this.esInterno) {
                             this.mensajeComponent.setInfoMsg(this.ordenDeCarga.MensajeValidacionSAP)
                         }
                     }
@@ -180,6 +181,24 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
+    separarCadenas() {       
+
+        this.ordenDeCarga.OrdenDeCargaCambiosHistorial.forEach(x => {
+
+            if (x.NombreColumnaCambio.indexOf("CUIT") > -1) {
+
+                const wordRegex = /[A-Z]?[a-z]+|[0-9]+|[A-Z]+(?![a-z])/g;                
+                const string = x.NombreColumnaCambio;
+                var palabra = string.match(wordRegex);                
+                x.NombreColumnaCambio = palabra.join(" ");
+
+            } else {
+
+                var a = x.NombreColumnaCambio.replace(/([a-z])([A-Z])/g, '$1 $2');
+                x.NombreColumnaCambio = a.replace(/([A-Z])([A-Z])/g, '$1 $2');                
+            }
+        });
+    }
 
     notificarTransporte() {
         this.mensajeComponent.setMsgsEmpty();
@@ -486,6 +505,13 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     abrirModalForzarCreacion() {
         document.getElementById("openForzarCreacion").click();
     }
+
+    abrirModalDetalleHistorialCompras() {
+        document.getElementById("openModalDetalleHistorial").click();
+    }
+
+
+
 
     forzarCreacionPedido() {
         this.mensajeComponent.setMsgsEmpty();

@@ -536,7 +536,10 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             OrdenDeCargaDetalleDto ordenDto;
+
+            List<OrdenDeCargaCambiosHistorialDto> listado = new List<OrdenDeCargaCambiosHistorialDto>();
             OrdenDeCarga orden;
+
 
             var esAdmin = usuario.TienePermiso("VER TODAS ORDENES DE CARGA");
             var esTercero = usuario.TienePermiso("VER ORDENES DE CARGA DE TERCEROS");
@@ -557,6 +560,19 @@ namespace SustitucionMOAUtils.Services
             }
 
             Proveedor cliente = repositorio.Obtener<Proveedor>(orden.Cliente_Id);
+            //  var ordenDeCargaCambiosHistorial = repositorio.Listar<OrdenDeCargaCambiosHistorial>(ordenes => ordenes.OrdenDeCarga_Id == orden.Id);
+
+            var ordenDeCargaCambiosHistorial = repositorio.Listar<OrdenDeCargaCambiosHistorial>
+        (ordenes => ordenes.OrdenDeCarga_Id == orden.Id).Select(x => new OrdenDeCargaCambiosHistorialDto
+        {
+            Id = x.Id,
+            Antes = x.Antes,
+            Despues = x.Despues,
+            FechaCambio = Convert.ToDateTime(x.FechaCambio).ToString("dd/MM/yyyy HH:mm"),
+            NombreColumnaCambio = x.NombreColumnaCambio,
+            OrdenDeCarga_Id = x.OrdenDeCarga_Id,
+            Usuario = x.Usuario.Mail
+        }).ToList();
 
             ordenDto = new OrdenDeCargaDetalleDto
             {
@@ -592,7 +608,8 @@ namespace SustitucionMOAUtils.Services
                 NumeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? "-" : orden.NumeroPedido,
                 MensajeValidacionSAP = string.IsNullOrEmpty(orden.DescripcionCodigoVerificacionSap) ? "" : orden.DescripcionCodigoVerificacionSap,
                 ContratoSinCantidadPendiente = orden.ContratoSinCantidadPendiente,
-                DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno
+                DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno,
+                OrdenDeCargaCambiosHistorial = ordenDeCargaCambiosHistorial
             };
 
             return ordenDto;
