@@ -30,8 +30,8 @@ export class OrdenDeCarga {
     MensajeValidacionSAP: string;
     ContratoSinCantidadPendiente: boolean;
     DescripcionErrorInterno: string;
-    OrdenDeCargaCambiosHistorial: OrdenDeCargaCambiosHistorial;
-
+    OrdenDeCargaCambiosHistorial: OrdenDeCargaCambiosHistorial[];
+    
     constructor() {
     }
 

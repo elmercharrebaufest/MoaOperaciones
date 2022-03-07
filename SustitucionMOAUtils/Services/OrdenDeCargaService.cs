@@ -567,12 +567,12 @@ namespace SustitucionMOAUtils.Services
         {
             Id = x.Id,
             Antes = x.Antes,
-            Despues = x.Despues,            
-            FechaCambio = Convert.ToDateTime( x.FechaCambio).ToString("dd/MM/yyyy"),
+            Despues = x.Despues,
+            FechaCambio = Convert.ToDateTime(x.FechaCambio).ToString("dd/MM/yyyy HH:mm"),
             NombreColumnaCambio = x.NombreColumnaCambio,
             OrdenDeCarga_Id = x.OrdenDeCarga_Id,
-            Usuario = x.Usuario.Mail          
-         }).ToList();
+            Usuario = x.Usuario.Mail
+        }).ToList();
 
             ordenDto = new OrdenDeCargaDetalleDto
             {

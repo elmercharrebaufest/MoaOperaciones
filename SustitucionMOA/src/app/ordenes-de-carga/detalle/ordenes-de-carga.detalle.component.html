@@ -423,7 +423,7 @@
   <div class="modal fade" id="ModalDetalleHistorial" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
+      <div class="modal-content" style="width: 150%;" >
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -437,9 +437,7 @@
 
           <thead>
             <tr role="row">
-              <!--
               
-              <th>OrdenDeCargaId</th>  -->
               <th>Descripcion</th>
              
               <th>Fecha Cambio</th>
@@ -450,7 +448,7 @@
           </thead>
 
           <tbody *ngFor="let OrdenDeCargaCambiosHistorial of ordenDeCarga.OrdenDeCargaCambiosHistorial">
-            <tr>
+            <tr *ngIf="OrdenDeCargaCambiosHistorial.Antes && OrdenDeCargaCambiosHistorial.Despues">
               <td>{{OrdenDeCargaCambiosHistorial.NombreColumnaCambio}}</td>
               <td>{{OrdenDeCargaCambiosHistorial.FechaCambio }}</td>
               <td>{{OrdenDeCargaCambiosHistorial.Usuario}}</td>
