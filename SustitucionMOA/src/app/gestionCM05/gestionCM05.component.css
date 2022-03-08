@@ -99,10 +99,7 @@ ng-multiselect-dropdown /deep/ .multiselect-dropdown > .dropdown-btn {
 ::ng-deep body .ui-datepicker table td {
     padding: 0;
 }
-    
-/*::ng-deep .ui-datepicker .ui-datepicker-group {
-    width: 400px;
-}*/
+
 ::ng-deep body .ui-datepicker:not(.ui-datepicker-inline) {
     width: 266px;
     padding: 3px;
