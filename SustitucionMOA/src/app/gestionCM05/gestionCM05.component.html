@@ -26,7 +26,7 @@
                             Id Consulta
                             <p-sortIcon [field]="'ConsultaId'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th [pSortableColumn]="'RazonSocial'" class="col-md-3 th-cabecera" rowspan="2">
+                        <th [pSortableColumn]="'RazonSocial'" class="col-md-3 th-cabecera">
                             Razón Social
                             <p-sortIcon [field]="'RazonSocial'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
@@ -34,7 +34,7 @@
                             Estado
                             <p-sortIcon [field]="'Estado.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th [pSortableColumn]="'Secuencia.Descripcion'" class="col-md-1 th-cabecera" rowspan="2">
+                        <th [pSortableColumn]="'Secuencia.Descripcion'" class="col-md-1 th-cabecera">
                             Secuencia
                             <p-sortIcon [field]="'Secuencia.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
@@ -42,19 +42,19 @@
                             CUIT
                             <p-sortIcon [field]="'CUIT'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th [pSortableColumn]="'Anticipo'" class="col-md-1 th-cabecera" rowspan="2">
+                        <th [pSortableColumn]="'Anticipo'" class="col-md-1 th-cabecera">
                             Anticipo
                             <p-sortIcon [field]="'Anticipo'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th [pSortableColumn]="'Sede'" class="col-md-1 th-cabecera" rowspan="2">
+                        <th [pSortableColumn]="'Sede'" class="col-md-1 th-cabecera">
                             Sede
                             <p-sortIcon [field]="'Sede'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th [pSortableColumn]="'FechaCarga'" class="col-md-2 th-cabecera" rowspan="2">
+                        <th [pSortableColumn]="'FechaCarga'" class="col-md-2 th-cabecera">
                             Fecha Carga
                             <p-sortIcon [field]="'FechaCarga'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th [pSortableColumn]="'FechaUltimaModificacion'" class="col-md-2 th-cabecera" rowspan="2">
+                        <th [pSortableColumn]="'FechaUltimaModificacion'" class="col-md-2 th-cabecera">
                             Última modificación
                             <p-sortIcon [field]="'FechaUltimaModificacion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
@@ -63,9 +63,15 @@
                         <th class="th-cabecera" style="font-size:12px !important; font-weight: lighter;">
                             <input [(ngModel)]="idFiltro" placeholder="Buscar" (input)="dt.filter(idFiltro, 'Id', 'contains')">
                         </th>
+
                         <th class="th-cabecera" style="font-size:12px !important; font-weight: lighter;">
                             <input [(ngModel)]="idConsultaFiltro" placeholder="Buscar" (input)="dt.filter(idConsultaFiltro, 'ConsultaId', 'contains')">
                         </th>
+
+                        <th class="th-cabecera" style="font-size:12px !important; font-weight: lighter;">
+                            <input [(ngModel)]="idRazonSocialFiltro" placeholder="Buscar" (input)="dt.filter(idRazonSocialFiltro, 'RazonSocial', 'contains')">
+                        </th>
+
                         <th class="col-md-1 th-cabecera" style="font-size:12px !important; text-transform:capitalize; border-top:none;">
                             <p-multiSelect [styleClass]="spanFiltroMultiSelect" appendTo="body" [options]="estados" defaultLabel="Seleccionar estado" (onChange)="dt.filter($event.value, 'EstadoId', 'in')">
                                 <ng-template let-estado pTemplate="item">
@@ -73,9 +79,32 @@
                                 </ng-template>
                             </p-multiSelect>
                         </th>
-                        <th class="th-cabecera" style="font-size:12px !important; text-transform:capitalize; border-top:none; font-weight: lighter;">
-                            <input [(ngModel)]="cuitFiltro" placeholder="00-00000000-0" mask="00-00000000-0" (input)="dt.filter(cuitFiltro, 'CUIT', 'startsWith')" unmask="true">
+
+                        <th class="th-cabecera" style="font-size:12px !important; font-weight: lighter;">
+                            <input [(ngModel)]="idSecuenciaFiltro" placeholder="Buscar" (input)="dt.filter(idSecuenciaFiltro, 'Secuencia.Descripcion', 'contains')">
                         </th>
+
+                        <th class="th-cabecera" style="font-size:12px !important; text-transform:capitalize; border-top:none; font-weight: lighter;">
+                            <input [(ngModel)]="cuitFiltro" placeholder="00-00000000-0" mask="00-00000000-0" (input)="dt.filter(cuitFiltro, 'CUIT', 'contains')" unmask="true">
+                        </th>
+
+                        <th class="th-cabecera" style="font-size:12px !important; font-weight: lighter;">
+                            <input [(ngModel)]="idAnticipoFiltro" placeholder="Buscar" (input)="dt.filter(idAnticipoFiltro, 'Anticipo', 'contains')">
+                        </th>
+
+                        <th class="th-cabecera" style="font-size:12px !important; font-weight: lighter;">
+                            <input [(ngModel)]="idSedeFiltro" placeholder="Buscar" (input)="dt.filter(idSedeFiltro, 'Sede', 'contains')">
+                        </th>
+
+                        <th>
+                            <p-calendar (onSelect)="onDateSelect($event, 'FechaCargaString')" (onClearClick)="dt.filter('', 'FechaCargaString', 'equals')" [showButtonBar]="true" styleClass="ui-column-filter" placeholder="Buscar" [readonlyInput]="true" dateFormat="dd/mm/yy" [locale]="es"></p-calendar>
+                        </th>
+                       
+                        <th>
+                            <p-calendar (onSelect)="onDateSelect($event, 'FechaUltimaModificacionString')" (onClearClick)="dt.filter('', 'FechaUltimaModificacionString', 'equals')" [showButtonBar]="true" styleClass="ui-column-filter" placeholder="Buscar" [readonlyInput]="true" dateFormat="dd/mm/yy" [locale]="es"></p-calendar>
+                        </th>
+                       
+
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
