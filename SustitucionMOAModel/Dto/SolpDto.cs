@@ -57,6 +57,7 @@ namespace SustitucionMOAModel.Dto
         public string RevisadoPor { get; set; }
         public UsuarioComprasDto UsuarioCompras { get; set; }
         public int? TipoSolpSap { get; set; }
+        public bool PosicionesEstado { get; set; }
 
         public SolpDto() {}
         public SolpDto(Solp entity) 

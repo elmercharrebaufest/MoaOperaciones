@@ -91,7 +91,7 @@ namespace SustitucionMOAUtils.Services
                     //TODO: validar si está en un estado modificable
 
                     solpEntity.UsuarioModificacion_Id = solp.UsuarioActual.Id;
-                    if(solpEntity.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solpEntity.TipoSolpSap == (int?)TipoSolpSap.Sap)
+                    if (solpEntity.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solpEntity.TipoSolpSap == (int?)TipoSolpSap.Sap)
                     {
                         solpEntity.UsuarioCreacion_Id = solp.UsuarioActual.Id;
                     }
@@ -474,14 +474,14 @@ namespace SustitucionMOAUtils.Services
                     {
                         respuestaGuardarSOLP.Mensaje = "OK";
 
-                        if(solpEntity.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solpEntity.TipoSolpSap == (int?)TipoSolpSap.Sap)
+                        if (solpEntity.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solpEntity.TipoSolpSap == (int?)TipoSolpSap.Sap)
                         {
                             var estadoCreadoCodigo = EstadoDocumentoSolp.Creado.Code();
                             var estadoCreado = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoCreadoCodigo);
                             solpEntity.EstadoDocumento_Id = estadoCreado.Id;
                         }
-                        
-                        foreach(var pos in solpEntity.Posiciones)
+
+                        foreach (var pos in solpEntity.Posiciones)
                         {
                             pos.CantidadSubposicionesEnSAP = pos.Subposiciones.Count;
                         }
@@ -622,26 +622,44 @@ namespace SustitucionMOAUtils.Services
                 filtro = (x => x.FechaBorrado == null);
             }
 
+            var todasLasSolp = repositorio.Listar<Solp, SolpDto>(x => new SolpDto
+            {
+                UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
+                Id = x.Id,
+                NroSolp = x.NroSolp,
+                NombreDeObra = x.Pliego == null ? "" : x.Pliego.NombreObra,
+                FechaCreacion = x.FechaCreacion,
+                EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Descripcion, Color = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Color, Codigo = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Codigo },
+                EstadoSolpSapId = x.EstadoSolpSap_Id,
+                EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "" },
+                TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
+                VincularPliego = !x.Pliego_Id.HasValue,
+                TieneCondicionesGenerales = x.Pliego == null ? (bool?)null : x.Pliego.TieneCondicionesGenerales,
+                RevisadoPor = x.Pliego == null ? "" : x.Pliego.RevisadoPor,
+                TipoSolpSap = x.TipoSolpSap,
+                EstadoPasos = x.EstadoPasos,
+                PosicionesEstado = x.Posiciones.All(p => p.Estado == false)
+            }, x => x.FechaBorrado == null, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc);
 
-            var todasLasSolp = repositorio.Listar(filtro)
-                            .Select(x => new SolpDto
-                            {
-                                UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
-                                Id = x.Id,
-                                NroSolp = x.NroSolp,
-                                NombreDeObra = x.Pliego?.NombreObra,
-                                FechaCreacion = x.FechaCreacion,
-                                EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento?.Descripcion, Color = x.EstadoDocumento?.Color, Codigo = x.EstadoDocumento?.Codigo },
-                                EstadoSolpSapId = x.EstadoSolpSap_Id,
-                                EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "" },
-                                TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
-                                VincularPliego = !x.Pliego_Id.HasValue,
-                                TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
-                                RevisadoPor = x.Pliego?.RevisadoPor,
-                                TipoSolpSap = x.TipoSolpSap,
-                                EstadoPasos = x.EstadoPasos,
-                                Posiciones = x.Posiciones.Select(p => new SolpPosicionDto { Estado = p.Estado }).ToList()
-                            }).OrderByDescending(i => i.FechaCreacion).ToList();
+            //var todasLasSolp = repositorio.Listar(filtro)
+            //                .Select(x => new SolpDto
+            //                {
+            //                    UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
+            //                    Id = x.Id,
+            //                    NroSolp = x.NroSolp,
+            //                    NombreDeObra = x.Pliego?.NombreObra,
+            //                    FechaCreacion = x.FechaCreacion,
+            //                    EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento?.Descripcion, Color = x.EstadoDocumento?.Color, Codigo = x.EstadoDocumento?.Codigo },
+            //                    EstadoSolpSapId = x.EstadoSolpSap_Id,
+            //                    EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "" },
+            //                    TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
+            //                    VincularPliego = !x.Pliego_Id.HasValue,
+            //                    TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
+            //                    RevisadoPor = x.Pliego?.RevisadoPor,
+            //                    TipoSolpSap = x.TipoSolpSap,
+            //                    EstadoPasos = x.EstadoPasos,
+            //                    Posiciones = x.Posiciones.Select(p => new SolpPosicionDto { Estado = p.Estado }).ToList()
+            //                }).OrderByDescending(i => i.FechaCreacion).ToList();
 
             return todasLasSolp;
         }
@@ -1502,7 +1520,7 @@ namespace SustitucionMOAUtils.Services
                             int indiceSubPosicion = Int32.Parse(subPosicion.SumeroSubPosicion) / 10;
                             SolpSubposicion subPosicionEntity = null;
 
-                            if(posicionEntity.Subposiciones != null && posicionEntity.Subposiciones.Count() == (subposicionIndice + 1))
+                            if (posicionEntity.Subposiciones != null && posicionEntity.Subposiciones.Count() == (subposicionIndice + 1))
                             {
                                 subPosicionEntity = posicionEntity.Subposiciones.ToList()[subposicionIndice];
                             }
@@ -1569,7 +1587,7 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.GuardarCambios();
 
-                foreach(var resultPosicion in result.Posiciones)
+                foreach (var resultPosicion in result.Posiciones)
                 {
                     var codigoSap = listaEstadosSolpSap.Where(x => x.CodigoSap == resultPosicion.EstadoSolpSap).FirstOrDefault();
                     if (codigoSap != null)
