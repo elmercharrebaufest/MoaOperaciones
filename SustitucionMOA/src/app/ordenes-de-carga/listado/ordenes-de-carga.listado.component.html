@@ -37,10 +37,10 @@
           </div>
         </div>
 
-        <div id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
+        <div class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Estado:</p>
           <div>
-            <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected" (onChange)="filtrarListado()" appendTo="body">
+            <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected" selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListado()" appendTo="body">
             </p-multiSelect>
           </div>
         </div>

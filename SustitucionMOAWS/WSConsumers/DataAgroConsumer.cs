@@ -56,7 +56,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             return service.AltaCampoSustentable(new CampoDetalleTerceroDto
             {
-                ProveedorCUIT = campo.Proveedor.CUIT,
+                ProveedorCUIT = campo.CUIT,
                 Campania = campo.CampoCosecha.Cosecha.Nombre,
                 LocalidadId = campo.CampoCosecha.Campo.Localidad_Id,
                 Latitud = campo.Latitud,
