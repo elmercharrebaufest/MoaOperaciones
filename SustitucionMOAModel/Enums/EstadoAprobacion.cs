@@ -19,6 +19,7 @@
         RechazadoPorCompras,
         AltaIncompleta,
         AnularAprobacion
+
     }
 
     public static class EstadoDeAprobacionExtensions
