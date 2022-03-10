@@ -12,7 +12,7 @@ namespace SustitucionMOAModel.Entities
     {
         [Key]
         public int Id { get; set; }
-        public int UsuarioCreacion_Id { get; set; }
+        public int? UsuarioCreacion_Id { get; set; }
         public int? UsuarioModificacion_Id { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime? FechaModificacion { get; set; }
