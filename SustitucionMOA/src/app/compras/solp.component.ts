@@ -673,13 +673,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                             if (result.Mensaje == "OK") {
                                 this.finalizarOk = true;
-                                this.displaySAP = true;
 
                                 if (this.solpActual.vincularAPliego) {
                                     this.displaySAPVincularPliego = true;
                                 }
                                 else if (this.solpActual.nroSolp) {
                                     this.displaySAPEditar = true;
+                                }else{
+                                    this.displaySAP = true;
                                 }
                             }
                             else {
