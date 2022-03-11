@@ -1,4 +1,8 @@
-﻿using System.IO;
+﻿using SustitucionMOAModel.Entities;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Xml.Serialization;
@@ -55,6 +59,16 @@ namespace SustitucionMOAUtils.Helpers
                 return value;
             }
             return value.Length <= maxLength ? value : value.Substring(0, maxLength);
+        }
+
+        public static List<SolpSubposicion> GetClone(List<SolpSubposicion> source)
+        {
+            return source;
+        }
+
+        public static IList<T> CloneList<T>(this IList<T> source) where T: ICloneable
+        {
+            return source.Select(item => (T)item.Clone()).ToList();
         }
     }
 }

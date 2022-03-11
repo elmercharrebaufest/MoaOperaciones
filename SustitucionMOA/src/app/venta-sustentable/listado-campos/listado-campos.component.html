@@ -57,7 +57,7 @@
                 <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esCorredor || esInterno">
                     Por Vendedor
                     <div class="styled-select">
-                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="cosechas"
+                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesProveedores"
                                   (select)="proveedorSeleccionado($event)">
                         </dropdown>
                     </div>

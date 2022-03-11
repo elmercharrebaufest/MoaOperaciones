@@ -26,9 +26,9 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public ModificarSolpConsumerMOAResponse Request(Solp solpActual)
+        public ModificarSolpConsumerMOAResponse Request(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas)
         {
-            var solpSAP = ConvertirSOLPModificar(solpActual);
+            var solpSAP = ConvertirSOLPModificar(solpActual, postEntitySubPosicionesEliminadas);
 
             var serxml = new System.Xml.Serialization.XmlSerializer(solpSAP.GetType());
             var ms = new MemoryStream();
@@ -89,7 +89,7 @@ namespace SustitucionMOAWS.WSConsumers
             return respuesta;
         }
 
-        public SolpSAPModificarDto ConvertirSOLPModificar(Solp solpActual)
+        public SolpSAPModificarDto ConvertirSOLPModificar(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas)
         {
             SolpSAPModificarDto solpSAP = new SolpSAPModificarDto();
 
@@ -311,7 +311,7 @@ namespace SustitucionMOAWS.WSConsumers
                 foreach (var subPosicion in posicion.Subposiciones.OrderBy(x => x.Id))
                 {
                     numeroSubPosicion++;
-                    serviceLineNumber = $"{numeroSubPosicion:000000000}0";
+                    serviceLineNumber = $"{subPosicion.Numero:000000000}0";
 
 
                     //serialNumberItem = serialNumber;
@@ -557,6 +557,6 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface IModificarSolpConsumerMOA
     {
-        ModificarSolpConsumerMOAResponse Request(Solp solpActual);
+        ModificarSolpConsumerMOAResponse Request(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas);
     }
 }
