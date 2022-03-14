@@ -275,7 +275,7 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     onPaste(evento: any, indexColumna: number, rowIndex: number, dt): void {
         let datos = evento.clipboardData.getData("text");
-        if (!datos.includes("Recuperando datos")) {
+        if (!datos.includes("Recuperando datos") && datos.split("\n")[0].split("\t").length == 7) {
             this.spinnerComponent.showIt();
             //separo la informacion por filas 
             let filas = datos.split("\n");
