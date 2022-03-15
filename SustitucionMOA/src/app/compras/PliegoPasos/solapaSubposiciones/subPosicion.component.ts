@@ -250,15 +250,27 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
     eliminarSubPosicionIndividual(indice: number): void {
-        this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar la subposición?',
-            accept: () => {
-                this.eliminarSubposiciones(indice);
-            },
-            reject: () => {
-
-            }
-        });
+        if(this.model.posicionActual.listadoSubPosiciones.length === 1 && this.model.nroSolp) {
+            this.confirmationService.confirm({
+                key: 'validarEliminarSubPosicion',
+                message: 'No se puede borrar la subposición, ya que no se permiten posiciones sin subposición',
+                accept: () => {
+                    //this.salir();
+                },
+                reject: () => {
+                }
+            });
+        } else {
+            this.confirmationService.confirm({
+                message: '¿Está seguro que desea eliminar la subposición?',
+                accept: () => {
+                    this.eliminarSubposiciones(indice);
+                },
+                reject: () => {
+    
+                }
+            });
+        }
     }
 
     eliminarSubPosicion() {
