@@ -1486,7 +1486,7 @@ namespace SustitucionMOAUtils.Services
                                         NroSolp = posicion.NumeroSolicitud,
                                         ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id,
                                         EstadoPasos = "0,0,0,0,1,1",
-                                        TipoSolpSap = !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F" ? (int?)TipoSolpSap.Mantenimiento : (int?)TipoSolpSap.Sap,
+                                        TipoSolpSap = tipoImputacion!= null && !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F" ? (int?)TipoSolpSap.Mantenimiento : (int?)TipoSolpSap.Sap,
                                         Pliego = new Pliego
                                         {
                                             SupervisorSector = string.Empty,
