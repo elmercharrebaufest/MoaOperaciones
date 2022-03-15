@@ -148,6 +148,9 @@ namespace SustitucionMOAUtils.Services
                 LiquidacionNGViewModel dataView = new LiquidacionNGViewModel();
                 dataView.filtroObservacion = new DropdownContent();
                 dataView.data = (LiquidacionNGWSMOAResponse) new LiquidacionesNGConsumerMOA().request(proveedor, fechas);
+
+                var algo = new ComprobantesNGConsumerMOA().request(proveedor, fechas);
+
                 validarRespuestaNG(dataView.data);
                 switch (tipo)
                 {
@@ -177,6 +180,33 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        public ComprobantesNGWSMOAResponse getComprobantesNG(string proveedor, string fechaInicio, string fechaFin)
+        {
+            try
+            {
+                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                
+                var result = new ComprobantesNGConsumerMOA().request(proveedor, fechas);
+
+                if (result.comprobantes.Count == 0) // <- Repito consulta por el filtrado que se realiza antes
+                    throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Comprobantes"));
+                return result;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
 
         public string downloadAprobadas(string proveedor, string fechaInicio, string fechaFin)
         {

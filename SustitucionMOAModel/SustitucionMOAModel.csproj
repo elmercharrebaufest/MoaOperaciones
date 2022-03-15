@@ -49,6 +49,7 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\ComprobanteNGDto.cs" />
     <Compile Include="Dto\AgregarConsultaResponseDto.cs" />
     <Compile Include="Dto\ArchivoDescargaDto.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
@@ -297,6 +298,7 @@
     <Compile Include="Models\WSMapMOA\Liquidacion\Liquidacion.cs" />
     <Compile Include="Models\WSMapMOA\Liquidacion\LiquidacionWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Liquidacion\NoGranos\Compra.cs" />
+    <Compile Include="Models\WSMapMOA\Liquidacion\NoGranos\ComprobantesNGWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Liquidacion\NoGranos\LiquidacionNGWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Liquidacion\NoGranos\Salida.cs" />
     <Compile Include="Models\WSMapMOA\Login\LoginWSMOAResponse.cs" />
