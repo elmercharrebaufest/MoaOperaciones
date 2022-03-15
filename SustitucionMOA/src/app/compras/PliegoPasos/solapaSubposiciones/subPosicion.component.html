@@ -3,9 +3,9 @@
     <!-- Contiene todo -->
     <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <mensaje></mensaje>
-        <div *ngIf="this.model.vincularAPliego" class="ui-messages ui-widget ui-corner-all ng-tns-c24-70 ui-messages-warn ng-trigger ng-trigger-messageAnimation ng-star-inserted" 
-             style="display: block; transform: translateY(0px); opacity: 1;" ng-reflect-ng-class="[object Object]">
-            <span class="ui-messages-icon pi pi-exclamation-triangle" ng-reflect-klass="ui-messages-icon pi" ng-reflect-ng-class="pi-exclamation-triangle"></span><ul class="ng-tns-c24-70">
+        <div *ngIf="this.model.vincularAPliego" class="ui-messages ui-widget ui-corner-all ng-tns-c24-70 ui-messages-warn ng-trigger ng-trigger-messageAnimation ng-star-inserted" style="display: block; transform: translateY(0px); opacity: 1;" ng-reflect-ng-class="[object Object]">
+            <span class="ui-messages-icon pi pi-exclamation-triangle" ng-reflect-klass="ui-messages-icon pi" ng-reflect-ng-class="pi-exclamation-triangle"></span>
+            <ul class="ng-tns-c24-70">
                 <li class="ng-tns-c24-70 ng-star-inserted" style="">
                     <span class="ui-messages-detail ng-tns-c24-70 ng-star-inserted">No es posible editar esta pantalla desde la plataforma. Para editar dirijase a SAP</span>
                 </li>
@@ -64,9 +64,7 @@
                             <ng-template pTemplate="body" let-posicion let-rowIndex="rowIndex">
                                 <tr *ngIf="!model.vincularAPliego; else elseBlock" style="text-align: center;">
                                     <td style="width: 4%; padding: revert;">
-                                        <img (click)="eliminarSubPosicionIndividual(rowIndex)" style="width: 50%;"
-                                             src="../../../../../Content/images/icons/trashRed.svg" alt="trashWhite"
-                                             class="pointer" />
+                                        <img (click)="eliminarSubPosicionIndividual(rowIndex)" style="width: 50%;" src="../../../../../Content/images/icons/trashRed.svg" alt="trashWhite" class="pointer" />
                                         <!-- <p-checkbox [(ngModel)]="posicion.eliminar" binary="true"></p-checkbox> -->
                                     </td>
                                     <td style="width: 3%;">
@@ -76,7 +74,7 @@
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.codigoServicio" [suggestions]="autocompleteServiciosSolp" dataKey="Id" ariaLabel="Codigo" field="Codigo" appendTo="body" [autoHighlight]="true" emptyMessage="" [width]="400" [minLength]="2" [forceSelection]="true"
-                                                                (completeMethod)="autocompleteServicioSolp($event)" (onFocus)="$event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio,rowIndex,dt)" (onSelect)="onSelectServicio(posicion, dt)">
+                                                    (completeMethod)="autocompleteServicioSolp($event)" (onFocus)="$event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio,rowIndex,dt)" (onSelect)="onSelectServicio(posicion, dt)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
@@ -88,7 +86,7 @@
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.tareaSubcontratarObj" [suggestions]="autocompleteServiciosSolp" dataKey="Id" ariaLabel="Tarea" field="Descripcion" appendTo="body" [autoHighlight]="false" emptyMessage="" [minLength]="2" [forceSelection]="false" (completeMethod)="autocompleteServicioSolp($event)"
-                                                                (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)" (onSelect)="onSelectTarea(posicion)" (onBlur)="onBlueTarea($event, posicion)">
+                                                    (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)" (onSelect)="onSelectTarea(posicion)" (onBlur)="onBlueTarea($event, posicion)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output" style="text-align: left;">
@@ -116,7 +114,7 @@
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.unidadSeleccionada" [suggestions]="unidades" dataKey="Id" ariaLabel="Descripcion" field="Descripcion" appendTo="body" [autoHighlight]="true" emptyMessage="Ninguna unidad encontrada" [minLength]="1" placeholder="Seleccionar"
-                                                                [dropdown]="true" [forceSelection]="true" (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')" (onFocus)=" $event.target.select()" (onSelect)="endEditCell(dt)">
+                                                    [dropdown]="true" [forceSelection]="true" (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')" (onFocus)=" $event.target.select()" (onSelect)="endEditCell(dt)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
@@ -144,7 +142,7 @@
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.cuentaMayor" [suggestions]="autocomplete" dataKey="Id" ariaLabel="CuentaMayor" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="" [minLength]="2" [forceSelection]="true" (completeMethod)="autocompleteSap($event, 'CuentasSolpSap')"
-                                                                (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion?.CuentaMayor,rowIndex,dt)" (onSelect)="endEditCell(dt)">
+                                                    (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion?.CuentaMayor,rowIndex,dt)" (onSelect)="endEditCell(dt)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
@@ -159,7 +157,7 @@
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-autoComplete [(ngModel)]="posicion.tipoImputacion" [suggestions]="autocomplete" dataKey="Id" ariaLabel="Descripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="" [minLength]="2" [forceSelection]="true" (completeMethod)="autocompleteSap($event, '')"
-                                                                (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.TipoImputacion,rowIndex,dt)" (onSelect)="endEditCell(dt)">
+                                                    (onFocus)=" $event.target.select()" (paste)="onPaste($event,enumColumnaSubPosicion.TipoImputacion,rowIndex,dt)" (onSelect)="endEditCell(dt)">
                                                 </p-autoComplete>
                                             </ng-template>
                                             <ng-template pTemplate="output">
@@ -252,6 +250,11 @@
     <p-footer>
         <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
         <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+<p-confirmDialog #dialogo2 key="validarEliminarSubPosicion" header="Advertencia" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" pButton label="Aceptar" class="ui-button-info botonModal" (click)="dialogo2.reject()"></button>
     </p-footer>
 </p-confirmDialog>
 <!--fin modal eliminacion de subposicion-->
