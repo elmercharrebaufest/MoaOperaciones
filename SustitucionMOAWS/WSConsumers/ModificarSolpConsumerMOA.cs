@@ -449,27 +449,27 @@ namespace SustitucionMOAWS.WSConsumers
 
                 }
 
-                int cantidadSubposicionesAEliminar = (posicion.CantidadSubposicionesEnSAP.HasValue ? posicion.CantidadSubposicionesEnSAP.Value : 0) - posicion.Subposiciones.Count;
-                for (int i = 0; i < cantidadSubposicionesAEliminar; i++)
-                {
-                    numeroSubPosicion++;
-                    serviceLineNumber = $"{numeroSubPosicion:000000000}0";
+                //int cantidadSubposicionesAEliminar = (posicion.CantidadSubposicionesEnSAP.HasValue ? posicion.CantidadSubposicionesEnSAP.Value : 0) - posicion.Subposiciones.Count;
+                //for (int i = 0; i < cantidadSubposicionesAEliminar; i++)
+                //{
+                //    numeroSubPosicion++;
+                //    serviceLineNumber = $"{numeroSubPosicion:000000000}0";
 
-                    solpSAP.IM_SERVICELINESList.Add(new ZMPES5780
-                    {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber, //Preguntar a Ulises
-                        SRV_LINE = serviceLineNumber,
-                        DEL_IND = "X",
-                    });
-                    solpSAP.IM_SERVICELINESXList.Add(new ZMPES5720
-                    {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber, //Preguntar a Ulises
-                        SRV_LINE = serviceLineNumber,
-                        DEL_IND = "X",
-                    });
-                }
+                //    solpSAP.IM_SERVICELINESList.Add(new ZMPES5780
+                //    {
+                //        DOC_ITEM = docItem,
+                //        OUTLINE = outlineNumber, //Preguntar a Ulises
+                //        SRV_LINE = serviceLineNumber,
+                //        DEL_IND = "X",
+                //    });
+                //    solpSAP.IM_SERVICELINESXList.Add(new ZMPES5720
+                //    {
+                //        DOC_ITEM = docItem,
+                //        OUTLINE = outlineNumber, //Preguntar a Ulises
+                //        SRV_LINE = serviceLineNumber,
+                //        DEL_IND = "X",
+                //    });
+                //}
 
                 /*
                  *  PREQ_NO	BANFN	Numero de SOLPED
