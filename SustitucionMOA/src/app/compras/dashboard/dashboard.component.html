@@ -195,12 +195,12 @@
                         {{rowData.FechaCreacion | date:'dd/MM/yyyy'}}
                     </td>
                     <td>
+                        {{rowData.EstadoDocumento.Descripcion}}
+                    </td>
+                    <td>
                         <span [style.color]="getColorDocumentoSolp(rowData)">
                             {{getStatusDocumentoSolp(rowData)}}
                         </span>
-                    </td>
-                    <td>
-                        {{ rowData.EstadoSolpSap.Descripcion || "" }}
                     </td>
                     <td>
                         {{ rowData.TipoSolp.Descripcion || "" }}
