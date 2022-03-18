@@ -135,6 +135,11 @@ namespace SustitucionMOAUtils.Services
             return getLiquidacionesNG(proveedor, "OBSERVADA", fechaInicio, fechaFin);
         }
 
+        public LiquidacionNGViewModel getRegistradosNG(string proveedor, string fechaInicio, string fechaFin)
+        {
+            return getLiquidacionesNG(proveedor, "REGISTRADO", fechaInicio, fechaFin);
+        }
+
         public LiquidacionNGViewModel getPagasNG(string proveedor, string fechaInicio, string fechaFin)
         {
             return getLiquidacionesNG(proveedor, "PAGA", fechaInicio, fechaFin);
@@ -159,6 +164,8 @@ namespace SustitucionMOAUtils.Services
                         break;
                     case "OBSERVADA":
                         dataView.data.liquidaciones = dataView.data.liquidaciones.Where(x => x.observaciones != "").ToList();
+                        break;
+                    case "REGISTRADO":
                         break;
                     case "PAGA":
                         break;

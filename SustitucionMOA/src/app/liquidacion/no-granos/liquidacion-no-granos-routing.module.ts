@@ -1,17 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { LiquidacionNGAprobadaComponent } from "./aprobada/liquidacion.no-granos.aprobada.component";
-import { LiquidacionNGObservadaComponent } from "./observada/liquidacion.no-granos.observada.component";
+import { LiquidacionNGRegistradoComponent } from './registrada/liquidacion.no-granos.registrado.component';
 
 const routes: Routes = [
-    { path: '', component: LiquidacionNGAprobadaComponent },
+    { path: '', component: LiquidacionNGRegistradoComponent },
     {
-      path: "aprobada",
-      component: LiquidacionNGAprobadaComponent,
-    },
-    {
-      path: "observada",
-      component: LiquidacionNGObservadaComponent,
+      path: "registrado",
+      component: LiquidacionNGRegistradoComponent,
     }
 ];
 
