@@ -469,8 +469,11 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Tipo == "E"))
                     {
-                        var mensaje = error.Mensaje.Trim();
+                        //var mensaje = error.Mensaje.Trim();
+                        //respuestaGuardarSOLP.Errores.Add(mensaje);
+                        var mensaje = "No se pudo procesar la SOLP";
                         respuestaGuardarSOLP.Errores.Add(mensaje);
+                        break;
                     }
 
                     respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
@@ -499,8 +502,9 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
                     {
-                        var mensaje = error.Mensaje.Trim();
+                        var mensaje = "No se pudo procesar la SOLP";
                         respuestaGuardarSOLP.Errores.Add(mensaje);
+                        break;
                     }
 
                     respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
