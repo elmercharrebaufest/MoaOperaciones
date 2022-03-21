@@ -84,6 +84,8 @@ export class DashboardComponent extends ListBaseComponent {
     checkedFilterSap = false;
     checkedFilterMantenimiento = false;
 
+    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
+
     showDialog() {
         this.display = true;
     }

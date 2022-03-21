@@ -47,10 +47,18 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
-                FotosDto fotos = service.ObtenerFotosCartaPortePorNumero(cartaPorteId);
+                FotosDto fotos = service.ObtenerFotosCartaPortePorNumero(cartaPorteId.TrimStart('0'));
                 foreach (FotoDto foto in fotos.Fotos)
                 {
                     cartaPorteFotos.Add(new CartaPorteFoto(cartaPorteId, foto.Foto, foto.FotoChica, foto.Extension));
+                }
+                if (fotos.Fotos == null || fotos.Fotos.Length == 0)
+                {
+                    fotos = service.ObtenerFotosCartaPortePorNumero(cartaPorteId);
+                    foreach (FotoDto foto in fotos.Fotos)
+                    {
+                        cartaPorteFotos.Add(new CartaPorteFoto(cartaPorteId, foto.Foto, foto.FotoChica, foto.Extension));
+                    }
                 }
             }
             catch

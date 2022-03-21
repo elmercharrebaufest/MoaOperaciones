@@ -173,7 +173,7 @@
                                 alt="trash"
                                     (click)="eliminarPosicionDashboard(rowData.Id)" /></span>
                         </div>
-                        <div class="col-md-2" *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && rowData.UsuarioActual.Mail == usuario ">
+                        <div class="col-md-2" *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && (rowData.UsuarioActual.Mail == usuario || verTodas)">
                             <span>
                                 <img class="pointer"
                                     src="./Content/images/icons/editar.svg" alt="editar"
