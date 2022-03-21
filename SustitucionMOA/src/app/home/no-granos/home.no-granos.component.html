@@ -24,9 +24,9 @@
                 <div class="col-xs-12 rowInfoGrey shadow animate custom-card-body">
                     <div class="col-xs-12 ">
                         <p> <a (click)="goToSeccion('/comprobante-ngs/registrado')" href="#"><i class="fa fa-caret-right"
-                                    aria-hidden="true"></i>Aprobados <span>({{aprobadas}})</span></a></p>
-                        <p> <a (click)="goToSeccion('/comprobante-ngs/registrado')" href="#"><i class="fa fa-caret-right"
-                                    aria-hidden="true"></i>Observados <span>({{observadas}})</span></a></p>
+                                    aria-hidden="true"></i>Registrados <span>({{registrado}})</span></a></p>
+                        <p> <a (click)="goToSeccion('/comprobante-ngs/pendiente-registro')" href="#"><i class="fa fa-caret-right"
+                                    aria-hidden="true"></i>Pendientes de registro <span>({{pendientesRegistro}})</span></a></p>
                         <!--<p> <a (click)="goToSeccion('/comprobante-ngs/paga')" href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Pagos <span>({{pagas}})</span></a></p>-->
                     </div>
                 </div>
@@ -85,23 +85,23 @@
                             style="width: 100%; padding:10px 0;">
                             <thead>
                                 <tr role="row">
-                                    <th tabindex="0" rowspan="1" colspan="1" style=""
+                                    <th tabindex="0" rowspan="1" colspan="1" 
                                         (click)="orderColumnBy('docDateDate')">F. Emisi&oacute;n</th>
-                                    <th tabindex="0" rowspan="1" colspan="1" style=""
+                                    <th tabindex="0" rowspan="1" colspan="1" 
                                         (click)="orderColumnBy('fecVtoDate')">F. Vto.</th>
-                                    <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('docNo')">
+                                    <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('docNo')">
                                         N&deg; Cte.</th>
-                                    <th tabindex="0" rowspan="1" colspan="1" style=""
+                                    <th tabindex="0" rowspan="1" colspan="1" 
                                         (click)="orderColumnBy('descripcion')">Descripci&oacute;n</th>
-                                    <th tabindex="0" rowspan="1" colspan="1" style=""
+                                    <th tabindex="0" rowspan="1" colspan="1" 
                                         (click)="orderColumnBy('contrato')">Contrato</th>
-                                    <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('moneda')">
+                                    <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('moneda')">
                                         Moneda</th>
-                                    <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('ukurs')">
+                                    <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('ukurs')">
                                         TC</th>
-                                    <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('debe')">
+                                    <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('debe')">
                                         Debe</th>
-                                    <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('haber')">
+                                    <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('haber')">
                                         Haber</th>
                                 </tr>
                             </thead>

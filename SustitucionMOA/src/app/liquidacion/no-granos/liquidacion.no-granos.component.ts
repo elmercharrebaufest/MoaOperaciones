@@ -28,8 +28,7 @@ export class LiquidacionNGBaseComponent extends LiquidacionBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([new Seccion('/comprobante-ngs/registrado', 'comprobante-ngs', 'Registrados')]);
-        // , new Seccion('/comprobante-ngs/observada', 'comprobante-ngs', 'Observados')/*, new Seccion('/comprobante-ngs/paga', 'comprobante-ngs', 'Pagos')*/]);
+        this.navService.setSeccionList([new Seccion('/comprobante-ngs/registrado', 'comprobante-ngs', 'Registrados') , new Seccion('/comprobante-ngs/pendiente-registro', 'comprobante-ngs', 'Pendientes de registro')/*, new Seccion('/comprobante-ngs/paga', 'comprobante-ngs', 'Pagos')*/]);
         this.getData();
     }
 }

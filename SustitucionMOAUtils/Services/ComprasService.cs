@@ -1476,28 +1476,28 @@ namespace SustitucionMOAUtils.Services
                         Solp solp = solpsFinales.SingleOrDefault(x => x.NroSolp == posicion.NumeroSolicitud);
 
                         bool nuevaSolp = solp == null;
-                        if (nuevaSolp)
-                        {
-                            solp = repositorio.Obtener<Solp>(s => s.NroSolp == posicion.NumeroSolicitud) ??
-                                    new Solp
-                                    {
-                                        FechaCreacion = DateTime.Now,
-                                        EstadoDocumento_Id = estadoIncompletoId,
-                                        NroSolp = posicion.NumeroSolicitud,
-                                        ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id,
-                                        EstadoPasos = "0,0,0,0,1,1",
-                                        TipoSolpSap = !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F" ? (int?)TipoSolpSap.Mantenimiento : (int?)TipoSolpSap.Sap,
-                                        Pliego = new Pliego
-                                        {
-                                            SupervisorSector = string.Empty,
-                                            SupervisorTrabajo = string.Empty,
-                                            JornadaLaboralDias = string.Empty,
-                                        },
-                                        Posiciones = new List<SolpPosicion>(),
-                                    };
+                        //if (nuevaSolp)
+                        //{
+                        //    solp = repositorio.Obtener<Solp>(s => s.NroSolp == posicion.NumeroSolicitud) ??
+                        //            new Solp
+                        //            {
+                        //                FechaCreacion = DateTime.Now,
+                        //                EstadoDocumento_Id = estadoIncompletoId,
+                        //                NroSolp = posicion.NumeroSolicitud,
+                        //                ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id,
+                        //                EstadoPasos = "0,0,0,0,1,1",
+                        //                TipoSolpSap = !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F" ? (int?)TipoSolpSap.Mantenimiento : (int?)TipoSolpSap.Sap,
+                        //                Pliego = new Pliego
+                        //                {
+                        //                    SupervisorSector = string.Empty,
+                        //                    SupervisorTrabajo = string.Empty,
+                        //                    JornadaLaboralDias = string.Empty,
+                        //                },
+                        //                Posiciones = new List<SolpPosicion>(),
+                        //            };
 
-                            solpsFinales.Add(solp);
-                        }
+                        //    solpsFinales.Add(solp);
+                        //}
 
                         DireccionSolpSAP direccion = result.Direcciones
                             .SingleOrDefault(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud &&

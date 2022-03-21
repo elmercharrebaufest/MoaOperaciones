@@ -45,7 +45,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             if (error != null && error.Length>0) {
                 result.error.codigo = error[0].MESSAGE;
-                //result.error.descripcion = error[0].;
+                result.error.descripcion = error[0].MESSAGE;
                 //result.error.tipo = error[0].TIPO;
             }
 

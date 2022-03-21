@@ -148,7 +148,8 @@
                             <td>{{liquidacion.comprobante}}</td>
                             <td>{{liquidacion.importeString}}</td>
                             <td>{{liquidacion.compra}}</td>
-                            <td>{{liquidacion.falta}}</td>
+                            <td>{{liquidacion.observaciones | shortenString }}</td>
+                            <td><span class="fa  fa-info-circle" toggle="tooltip" title="{{liquidacion.observaciones}}"></span></td>
                             <td>{{liquidacion.estado}}</td>
 
                         </tr>

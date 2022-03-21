@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { LiquidacionNoGranosRoutingModule } from './liquidacion-no-granos-routing.module';
-import { LiquidacionNGRegistradoService, LiquidacionNGPagaService, LiquidacionService } from '../liquidacion.service';
+import { LiquidacionNGRegistradoService, LiquidacionNGPagaService, LiquidacionService, LiquidacionNGPendienteRegistroService } from '../liquidacion.service';
 import { LiquidacionNGRegistradoComponent } from './registrada/liquidacion.no-granos.registrado.component';
+import { LiquidacionNGPendienteRegistroComponent } from './pendiente-registro/liquidacion.no-granos.pendiente-registro.component';
+
 
 @NgModule({
   imports: [
@@ -14,13 +16,16 @@ import { LiquidacionNGRegistradoComponent } from './registrada/liquidacion.no-gr
     NgxPaginationModule
   ],
     declarations: [
-      LiquidacionNGRegistradoComponent
+      LiquidacionNGRegistradoComponent,
+      LiquidacionNGPendienteRegistroComponent
+      
 
     ],
     providers: [
       LiquidacionService,
       LiquidacionNGRegistradoService,
       LiquidacionNGPagaService,
+      LiquidacionNGPendienteRegistroService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

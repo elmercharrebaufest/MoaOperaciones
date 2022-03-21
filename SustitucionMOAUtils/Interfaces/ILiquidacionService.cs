@@ -22,6 +22,7 @@ namespace SustitucionMOAUtils.Interfaces
         LiquidacionNGViewModel getAprobadasNG(string proveedor, string fechaInicio, string fechaFin);
         LiquidacionNGViewModel getObservadasNG(string proveedor, string fechaInicio, string fechaFin);
         LiquidacionNGViewModel getRegistradosNG(string proveedor, string fechaInicio, string fechaFin);
+        LiquidacionNGViewModel getPendienteRegistroNG(string proveedor, string fechaInicio, string fechaFin);
         LiquidacionNGViewModel getPagasNG(string proveedor, string fechaInicio, string fechaFin);
         LiquidacionNGViewModel getLiquidacionesNG(string proveedor, string tipo, string fechaInicio, string fechaFin);
         string downloadAprobadas(string proveedor, string fechaInicio, string fechaFin);
