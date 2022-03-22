@@ -84,6 +84,8 @@ export class DashboardComponent extends ListBaseComponent {
     checkedFilterSap = false;
     checkedFilterMantenimiento = false;
 
+    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
+
     showDialog() {
         this.display = true;
     }
@@ -143,11 +145,11 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     getStatusDocumentoSolp(data: any): String {
-        return data.PosicionesEstado && data.NroSolp != null ? 'Borrardo en sap' : data.EstadoDocumento.Descripcion;
+        return data.PosicionesEstado && data.NroSolp != null ? 'Borrardo en sap' : data.EstadoSolpSap.Descripcion;
     }
 
     public getColorDocumentoSolp(data: any): String {
-        return data.PosicionesEstado && data.NroSolp != null ? '#DD441E' : data.EstadoDocumento.Color;
+        return data.PosicionesEstado && data.NroSolp != null ? '#DD441E' : '#333333';
     }
 
     getListarSolp(){
