@@ -127,7 +127,7 @@
                   <p class="blue"><strong>Fecha</strong></p>
                   <p style="width:100%">{{ordenDeCarga.FechaCarga}}</p>
                 </div>
-                
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Estado</strong></p>
                   <p style="width:100%">{{ordenDeCarga.DescripcionEstadoUsuarioFinal}}</p>
@@ -433,12 +433,12 @@
   <div class="modal fade" id="ModalDetalleHistorial" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog" role="document">
-      <div class="modal-content" style="width: 150%;" >
+      <div class="modal-content" style="width: 150%;">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="modalSeleccionarPedidoLabel">Ver Historial</h4>
+          <h4 class="modal-title" id="modalSeleccionarHistorialLabel">Ver Historial</h4>
         </div>
 
         <table class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" cellspacing="0"
@@ -447,12 +447,10 @@
 
           <thead>
             <tr role="row">
-              
               <th>Descripcion</th>
-             
               <th>Fecha Cambio</th>
               <th>Usuario</th>
-              <th>Antes</th>              
+              <th>Antes</th>
               <th>Despues</th>
             </tr>
           </thead>
@@ -468,13 +466,81 @@
           </tbody>
         </table>
 
-        <div class="row" class="col-xs-12 col-sm-12 col-md-12" *ngIf="ordenDeCarga.OrdenDeCargaCambiosHistorial.length == 0">
+        <div class="row" class="col-xs-12 col-sm-12 col-md-12"
+          *ngIf="ordenDeCarga.OrdenDeCargaCambiosHistorial.length == 0">
           No se encontraron movimientos
         </div>
 
         <div class="modal-footer">
           <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
-            id="closemodalSeleccionarPedido" style="display: inline-flex;">Cerrar</button>
+            id="closemodalSeleccionarHistorial" style="display: inline-flex;">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" style="display:none" id="openSeleccionarPedido" data-toggle="modal"
+    data-target="#modalSeleccionarPedido"></button>
+  <!-- Modal -->
+  <div class="modal fade" id="modalSeleccionarPedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+
+    <div class="modal-dialog" role="document">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+            <span aria-hidden="true">&times;</span>
+
+          </button>
+
+          <h4 class="modal-title" id="modalSeleccionarPedidoLabel">Seleccionar pedido</h4>
+
+        </div>
+
+        <div class="modal-body">
+
+          <div class="row" *ngIf="pedidos.length > 0">
+
+            <span *ngFor="let corredorPedido of pedidos" class="col-xs-12 col-sm-12 col-md-12">
+
+              <input type="radio" name="corredorPedido" id="corredor_{{corredorPedido}}" [value]="corredorPedido"
+                [(ngModel)]="pedidoSeleccionado">
+
+              &nbsp;
+
+              <label for="corredor_{{corredorPedido}}">
+
+                {{corredorPedido}}
+
+              </label>
+
+            </span>
+
+          </div>
+
+          <div class="row" class="col-xs-12 col-sm-12 col-md-12" *ngIf="pedidos.length == 0">
+
+            No se encontraron contratos
+
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+          <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
+            id="closemodalSeleccionarPedido" style="display: inline-flex;">Cancelar</button>
+
+          <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarPedido()"
+            style="display: inline-flex;">
+
+            Confirmar
+
+          </button>
         </div>
       </div>
     </div>
