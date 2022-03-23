@@ -37,14 +37,14 @@
                         </div>
 
                         <div>
-                            <p-overlayPanel appendTo="body" #op [showCloseIcon]="true">
+                            <p-overlayPanel appendTo="body" #op>
                                 <div>
                                     <div class="row">
                                         <div class="col-md-2">
                                             Desde
                                         </div>
-                                        <div class="col-md-9">
-                                            <p-calendar [(ngModel)]="desdeDashboard" [locale]="locale" dateFormat="dd-M-yy" [showIcon]="true" [selectOtherMonths]="true" [(ngModel)]="rangeDates" selectionMode="single" readonlyInput="true">
+                                        <div class="col-md-4">
+                                            <p-calendar [(ngModel)]="desdeDashboard" appendTo="body" [locale]="locale" dateFormat="dd-M-yy" [showIcon]="true" [selectOtherMonths]="true" [(ngModel)]="rangeDates" selectionMode="single" readonlyInput="true">
                                             </p-calendar>
                                         </div>
                                     </div>
@@ -52,19 +52,19 @@
                                         <div class="col-md-2">
                                             Hasta
                                         </div>
-                                        <div class="col-md-9">
-                                            <p-calendar [(ngModel)]="hastaDashboard" [locale]="locale" dateFormat="dd-M-yy" [showIcon]="true" [selectOtherMonths]="true" [(ngModel)]="rangeDates" selectionMode="single" readonlyInput="true">
+                                        <div class="col-md-4">
+                                            <p-calendar [(ngModel)]="hastaDashboard" appendTo="body" [locale]="locale" dateFormat="dd-M-yy" [showIcon]="true" [selectOtherMonths]="true" [(ngModel)]="rangeDates" selectionMode="single" readonlyInput="true">
                                             </p-calendar>
                                         </div>
                                     </div>
                                     <div class="row" style="margin-top: 1em; padding-left: 5px; margin-right:-39px">
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <button class="btn" (click)="setUltimoMes()">Ultimo mes</button>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <button class="btn" (click)="setUltimoAnio()">Ultimo año</button>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <button class="btn btn-success" style="height: 32px;" (click)="filtrarPorFecha() && op.toggle($event)"><i
                                                     class="pi pi-check"></i></button>
                                         </div>

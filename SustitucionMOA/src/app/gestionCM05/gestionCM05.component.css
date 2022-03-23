@@ -95,3 +95,16 @@ ng-multiselect-dropdown /deep/ .multiselect-dropdown > .dropdown-btn {
     font-weight: bold !important;
     background-color: #067935 !important;
 }
+
+::ng-deep body .ui-datepicker table td {
+    padding: 0;
+}
+
+::ng-deep body .ui-datepicker:not(.ui-datepicker-inline) {
+    width: 266px;
+    padding: 3px;
+}
+
+::ng-deep body .ui-datepicker table td > a, body .ui-datepicker table td > span {
+    padding: 3px;
+}
