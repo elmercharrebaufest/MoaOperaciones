@@ -166,7 +166,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCarga = result.data;
-                        this.verificarBotones()                       
+                        this.separarCadenas();
+                        this.verificarBotones()
                         if (this.ordenDeCarga.MensajeValidacionSAP != "" && this.ordenDeCarga.MensajeValidacionSAP != "OK" && this.esInterno) {
                             this.mensajeComponent.setInfoMsg(this.ordenDeCarga.MensajeValidacionSAP)
                         }
@@ -180,6 +181,16 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
+    separarCadenas() {
+
+        this.ordenDeCarga.OrdenDeCargaCambiosHistorial.forEach(x => {
+
+            const wordRegex = /[A-Z]?[a-z]+|[0-9]+|[A-Z]+(?![a-z])/g;
+            const string = x.NombreColumnaCambio;
+            var palabra = string.match(wordRegex);
+            x.NombreColumnaCambio = palabra.join(" ");
+        });
+    }
 
     notificarTransporte() {
         this.mensajeComponent.setMsgsEmpty();
@@ -486,6 +497,13 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     abrirModalForzarCreacion() {
         document.getElementById("openForzarCreacion").click();
     }
+
+    abrirModalDetalleHistorialCompras() {
+        document.getElementById("openModalDetalleHistorial").click();
+    }
+
+
+
 
     forzarCreacionPedido() {
         this.mensajeComponent.setMsgsEmpty();

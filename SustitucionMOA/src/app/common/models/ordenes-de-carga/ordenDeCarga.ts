@@ -1,4 +1,5 @@
 import { EstadoOrdenDeCarga } from "./estadoOrdenDeCarga";
+import { OrdenDeCargaCambiosHistorial } from "./ordenDeCargaCambiosHistorial";
 
 export class OrdenDeCarga {
     Id: number;
@@ -29,7 +30,8 @@ export class OrdenDeCarga {
     MensajeValidacionSAP: string;
     ContratoSinCantidadPendiente: boolean;
     DescripcionErrorInterno: string;
-
+    OrdenDeCargaCambiosHistorial: OrdenDeCargaCambiosHistorial[];
+    
     constructor() {
     }
 
