@@ -9,6 +9,7 @@ using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.ComprobantesNGWebServiceMOA;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos;
+using SustitucionMOAModel.Enums;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -56,18 +57,21 @@ namespace SustitucionMOAWS.WSConsumers
                     Sociedad = comprobante.BUKRS, //BUKRS: corresponde a la sociedad MOA que no se utilizará para la web
                     CodigoProveedorSAP = comprobante.LIFNR, //LIFNR: corresponde al código de proveedor en SAP
                     RazonSocialProveedorSAP = comprobante.VEND_NAME, //VEND_NAME: corresponde a la razón social del proveedor en SAP
-                    FechaDocumento = SAPFormatter.GetDateTime(comprobante.BLDAT), //BLDAT: corresponde a la fecha de documento del documento // Fecha comprobante
+                    FechaDocumento = SAPFormatter.FormatearFecha(comprobante.BLDAT), //BLDAT: corresponde a la fecha de documento del documento // Fecha comprobante
                     TipoDocumento = comprobante.BLART, //BLART: corresponde al tipo de documento
                     DescripcionTipoDocumento = comprobante.LTEXT,  //LTEXT: corresponde a la descripción del tipo de documento
                     NumeroLegalDocumento = comprobante.XBLNR, //XBLNR: corresponde al número legal del documento
-                    CodigoEstadoDocumento = comprobante.STATUS, //STATUS: corresponde al código de estado del documento
+                    CodigoEstadoDocumento = (SustitucionMOAModel.Enums.EstadoComprobantesNG)int.Parse(comprobante.STATUS), //STATUS: corresponde al código de estado del documento
+                    CodigoEstadoDocumentoDescripcion = EstadoComprobantesNGExtensions.ToFriendlyString((SustitucionMOAModel.Enums.EstadoComprobantesNG)int.Parse(comprobante.STATUS)),
                     CodigoRolDocumento = comprobante.CURR_ROLE, //CURR_ROLE: corresponde al código del rol que tiene asignado este documento
                     CodigoMotivoRechazo = comprobante.DELREASON, //DELREASON: corresponde al código del motivo de rechazo
                     OrdenDeCompra = comprobante.EBELN, //EBELN: corresponde a la orden de compra
                     ImporteMercaderiaDocumento = comprobante.NET_AMOUNT, //NET_AMOUNT: corresponde al importe de la mercadería del documento
                     ImporteImpuestosDocumento = comprobante.VAT_AMOUNT, //VAT_AMOUNT: corresponde al importe de los impuestos del documento
                     TotalDocumento = comprobante.GROSS_AMOUNT, //GROSS_AMOUNT: corresponde al total del documento
-                    MonedaDocumento = comprobante.WAERS //WAERS: corresponde a la moneda del documento
+                    MonedaDocumento = comprobante.WAERS, //WAERS: corresponde a la moneda del documento
+                    TotalMasMoneda = SAPFormatter.FormatearMonto(comprobante.GROSS_AMOUNT, comprobante.WAERS),
+                    ColorEstado = EstadoComprobantesNGExtensions.ObtenerColorEstado((EstadoComprobantesNG)int.Parse(comprobante.STATUS))
                 };
 
                result.comprobantes.Add(comprobanteDto);

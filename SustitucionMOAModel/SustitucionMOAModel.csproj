@@ -133,6 +133,7 @@
     <Compile Include="Entities\UsuarioComprasRelacionConUsuarios.cs" />
     <Compile Include="Enums\EnumOrigenMovimientoIngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Enums\EnumTipoMovimientoIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Enums\EstadoComprobantesNG.cs" />
     <Compile Include="Enums\EstadoOrdenDeCarga.cs" />
     <Compile Include="Entities\Solp.cs" />
     <Compile Include="Entities\SolpPosicion.cs" />
