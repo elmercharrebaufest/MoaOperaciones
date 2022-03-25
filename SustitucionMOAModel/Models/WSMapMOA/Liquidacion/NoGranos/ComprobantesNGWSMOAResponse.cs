@@ -10,6 +10,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos
     public class ComprobantesNGWSMOAResponse
     {
         public ErrorWS error { get; set; }
+        public bool TieneModal { get; set; } = false;
+        public string MensajeModal { get; set; }
         public List<ComprobanteNGDto> comprobantes { get; set; }
 
         public ComprobantesNGWSMOAResponse() {

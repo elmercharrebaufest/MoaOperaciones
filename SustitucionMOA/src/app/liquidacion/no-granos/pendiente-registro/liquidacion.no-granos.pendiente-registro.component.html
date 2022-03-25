@@ -12,6 +12,7 @@
             </div>
         </div>
         <!--End Title-->
+        <div class="alert alert-light" *ngIf="data.TieneModal" [innerHTML]="data.MensajeModal"></div>
         <!--Search-->
         <div class="row myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
@@ -52,6 +53,19 @@
                     </div>
                     <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
                 </div>
+                <div id="searchPedido" class="col-xs-12 col-sm-6 col-md-15">
+                    Por estado:
+                    <div class="styled-select ">
+                      <select [(ngModel)]="filtroEstados" [value]="Todos">
+                        <option value="Todos">Todos</option>
+                        <option value="En gestión">En gestión</option>
+                        <option value="En aprobación">En aprobación</option>
+                        <option value="Rechazados">Rechazados</option>
+                      </select>
+                    </div>
+                  </div>
+
+
             </div>
         </div>
         <!-- End Search-->
@@ -123,7 +137,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let comprobante of data.comprobantes">
+                        <tr *ngFor="let comprobante of data.comprobantes  | customFilter : 'CodigoEstadoDocumentoDescripcion' : (filtroEstados  == 'Todos' ? '' : filtroEstados)">
+                                                                         <!-- customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected)   -->
                             <td>{{comprobante.FechaDocumento}}</td>
                             <td>{{comprobante.DescripcionTipoDocumento}}</td>
                             <td>{{comprobante.NumeroLegalDocumento}}</td>

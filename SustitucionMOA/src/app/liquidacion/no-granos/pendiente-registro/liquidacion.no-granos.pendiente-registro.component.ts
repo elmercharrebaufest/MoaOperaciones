@@ -9,6 +9,7 @@ import { ModalService } from '../../../common/services/ModalService';
 
 
 
+
 @Component({
     selector: 'app-liquidacion-no-granos-pendiente-registro',
     templateUrl: `liquidacion.no-granos.pendiente-registro.component.html`,
@@ -20,6 +21,9 @@ export class LiquidacionNGPendienteRegistroComponent extends LiquidacionNGBaseCo
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
+    filtroEstados: string= "Todos";
+
+    
     tituloArchivo = "ReporteComprobantesPendienteRegistro.xls";
 
     setTabs() {

@@ -62,7 +62,7 @@ namespace SustitucionMOAWS.WSConsumers
                     DescripcionTipoDocumento = comprobante.LTEXT,  //LTEXT: corresponde a la descripción del tipo de documento
                     NumeroLegalDocumento = comprobante.XBLNR, //XBLNR: corresponde al número legal del documento
                     CodigoEstadoDocumento = (SustitucionMOAModel.Enums.EstadoComprobantesNG)int.Parse(comprobante.STATUS), //STATUS: corresponde al código de estado del documento
-                    CodigoEstadoDocumentoDescripcion = EstadoComprobantesNGExtensions.ToFriendlyString((SustitucionMOAModel.Enums.EstadoComprobantesNG)int.Parse(comprobante.STATUS)),
+                    CodigoEstadoDocumentoDescripcion = EstadoComprobantesNGExtensions.ToFriendlyString((EstadoComprobantesNG)int.Parse(comprobante.STATUS)),
                     CodigoRolDocumento = comprobante.CURR_ROLE, //CURR_ROLE: corresponde al código del rol que tiene asignado este documento
                     CodigoMotivoRechazo = comprobante.DELREASON, //DELREASON: corresponde al código del motivo de rechazo
                     OrdenDeCompra = comprobante.EBELN, //EBELN: corresponde a la orden de compra
@@ -75,6 +75,13 @@ namespace SustitucionMOAWS.WSConsumers
                 };
 
                result.comprobantes.Add(comprobanteDto);
+            }
+
+            if(result.comprobantes.Any(x => x.CodigoEstadoDocumento == EstadoComprobantesNG.ListoValidacion))
+            {
+                result.TieneModal = true;
+                var contador = result.comprobantes.Count(x => x.CodigoEstadoDocumento == EstadoComprobantesNG.ListoValidacion);
+                result.MensajeModal = "Tiene <strong>" + contador + " comprobantes</strong> pendientes de procesar. El plazo estimado es de 48hs.";
 
             }
 
@@ -117,7 +124,7 @@ namespace SustitucionMOAWS.WSConsumers
     //            if (compra != null) {
     //                salidaNew.compra = compra.OCOMPRA;
     //            }
-
+    
     //            result.liquidaciones.Add(salidaNew);
     //        }
 

@@ -41,7 +41,7 @@ namespace SustitucionMOA.Jobs
                             CreadoPorUsuarios = new List<string>()
                         };
 
-                        //_comprasService.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+                        _comprasService.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
                     }
 
                 }
