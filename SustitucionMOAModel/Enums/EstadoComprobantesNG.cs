@@ -75,7 +75,7 @@ namespace SustitucionMOAModel.Enums
                 case EstadoComprobantesNG.AprobaciónRetirada:
                     return "green";
                 case EstadoComprobantesNG.Obsoletos:
-                    return "red";
+                    return "#AD2200";
                 default:
                     return "white";
             }
