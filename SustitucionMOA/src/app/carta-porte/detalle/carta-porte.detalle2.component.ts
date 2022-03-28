@@ -43,6 +43,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     tituloArchivo = "ReporteCartaPorteDetalle.xls";
     fotoSrc = "";
     showModalBox = false;
+    condicionCamara:any;
 
     setTabs() {
         this.setMenuSeccionTab("carta-porte", "Detalle");
@@ -79,6 +80,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.data = result.data;
+                        this.condicionCamara = result.data.datosCalidad.every(x => x.resultadoCamara ==0);
                     }
                 },
                 error => {
