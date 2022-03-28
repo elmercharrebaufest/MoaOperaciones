@@ -76,7 +76,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
                     if (result.length > 0) {
                         let allProveedores = result.map(cp => { return { value: cp.Proveedor.CodigoProveedor, label: cp.Proveedor.RazonSocial } });
                         this.opcionesProveedores = [...new Map(allProveedores.map(item => [item.value, item])).values()]
-                        this.opcionesProveedores.unshift({ value: "", label: "Todos" })
+                       // this.opcionesProveedores.unshift({ value: "", label: "Todos" })
                     }
                     else {
                         this.mensajeComponent.setInfoMsg("No hay campos sustentables cargados.");
@@ -111,11 +111,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         );
-    }
-
-    proveedorSeleccionado(event: string) {
-        this.filtroProveedor = event;
-    }
+    }   
 
     exportExcel() {
         this.mensajeComponent.setMsgsEmpty();
@@ -198,6 +194,20 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         )
+    }
+
+    proveedorSeleccionado(event) {
+        this.filtroProveedor = event.value;
+    }
+
+
+    buscarCombo() {
+
+        var lista2 = new Array;
+        for (var i = 0; i < this.opcionesProveedores.length; i++) {
+            lista2.push({ label: this.opcionesProveedores[i].label, value: this.opcionesProveedores[i].value });
+        }
+        this.opcionesProveedores = lista2;
     }
 
     getCosechas() {

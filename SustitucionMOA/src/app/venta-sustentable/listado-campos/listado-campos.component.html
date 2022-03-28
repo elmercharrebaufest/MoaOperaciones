@@ -70,7 +70,6 @@
 
                         <input type="search" class="" placeholder="" [(ngModel)]="filtroId" type="number"
                                aria-controls="tableModal">
-
                     </div>
 
                 </div>
@@ -83,7 +82,6 @@
 
                         <input type="search" class="" placeholder="" aria-controls="tableModal"
                                [(ngModel)]="filtroNombreCampo">
-
                     </div>
 
                 </div>
@@ -107,22 +105,20 @@
                 </div>
 
                 <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esCorredor || esInterno">
-
-                    Por Vendedor
-
-                    <div class="styled-select">
-
-                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesProveedores"
+                    <p> Por Vendedor </p>
+                    <!--   <div class="styled-select">
+                      <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesProveedores"
                                   (select)="proveedorSeleccionado($event)">
+                        </dropdown>-->
 
-                        </dropdown>
+                    <p-autoComplete [(ngModel)]="varrr" [dropdown]="true" [suggestions]="opcionesProveedores"
+                        field="label" (completeMethod)="buscarCombo()" dataKey="value" ariaLabel="label"
+                        [autoHighlight]="true" [minLength]="1" placeholder="Seleccionar" [forceSelection]="true"
+                        appendTo="body" (onSelect)="proveedorSeleccionado($event)"></p-autoComplete>
 
-                    </div>
 
                 </div>
-
             </div>
-
         </div>
 
 
@@ -262,7 +258,7 @@
                                 </span>
 
                                 <span *ngIf="(campo.MotivoRechazo || '').length >= 50" class="fa fa-info-circle"
-                                      toggle="tooltip" title="{{campo.MotivoRechazo || ''}}"></span>
+                                    toggle="tooltip" title="{{campo.MotivoRechazo || ''}}"></span>
 
 
 
