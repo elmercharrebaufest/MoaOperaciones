@@ -93,6 +93,10 @@ export class ListBaseComponent extends BaseComponent implements OnInit {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.data = result.data;
+                    if(result.data==null && result.comprobantes && result.comprobantes.comprobantes){
+                        this.data = result.comprobantes;
+
+                    }
                     this.cargarFiltrosVariables(result);
                 }
             },

@@ -10,11 +10,13 @@ export class MensajeComponent {
     errorMsg = "";
     infoMsg = "";
     successMsg = "";
+    infoBlancoMsg = "";
 
     setMsgsEmpty() {
         this.errorMsg = "";
         this.infoMsg = "";
         this.successMsg = "";
+        this.infoBlancoMsg = "";
     }
 
     setErrorMsg(msg: string) {
@@ -25,6 +27,11 @@ export class MensajeComponent {
     setInfoMsg(msg: string) {
         window.scroll(0, 0);
         this.infoMsg = msg;
+    }
+
+    setInfoBlancoMsg(msg: string) {
+        window.scroll(0, 0);
+        this.infoBlancoMsg = msg;
     }
 
     setSuccessMsg(msg: string) {

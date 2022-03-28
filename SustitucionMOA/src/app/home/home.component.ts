@@ -49,6 +49,8 @@ export class HomeComponent extends BaseComponent implements OnInit, OnDestroy {
     descargas: string;
     aplicaciones: string;
     aprobadas: string;
+    registrado: string;
+    pendientesRegistro: string;
     observadas: string;
     pagas: string;
     emitidos: string;
@@ -169,6 +171,8 @@ export class HomeComponent extends BaseComponent implements OnInit, OnDestroy {
         this.descargas = this.getCantidad("Descargas", resumen);
         this.aplicaciones = this.getCantidad("Aplicaciones", resumen);
         this.aprobadas = this.getCantidad("Aprobadas", resumen);
+        this.registrado = this.getCantidad("Registrados", resumen);
+        this.pendientesRegistro = this.getCantidad("Pendientes de registro", resumen);
         this.observadas = this.getCantidad("Observadas", resumen);
         this.pagas = this.getCantidad("Pagas", resumen);
         this.emitidos = this.getCantidad("Emitidos", resumen);
@@ -197,6 +201,8 @@ export class HomeComponent extends BaseComponent implements OnInit, OnDestroy {
         this.descargas = null;
         this.aplicaciones = null;
         this.aprobadas = null;
+        this.registrado = null;
+        this.pendientesRegistro = null;
         this.observadas = null;
         this.emitidos = null;
         this.iva = null;

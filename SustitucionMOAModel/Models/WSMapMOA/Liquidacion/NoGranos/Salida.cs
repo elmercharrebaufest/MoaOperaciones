@@ -16,6 +16,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos
         public string moneda { get; set; }
         public string compra { get; set; }
         public string observaciones { get; set; }
+        public string fechaDocumento { get; set; }
     }
 
     public class SalidaView : Salida
