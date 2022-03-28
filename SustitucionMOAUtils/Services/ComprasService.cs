@@ -1409,7 +1409,10 @@ namespace SustitucionMOAUtils.Services
             {
                 //TODO: ver como actualizar Solp.EstadoDocumento_Id segun la RFC
                 //obtenerSolpRequest.NumeroSolp = "0212201890";
+                Logger.Log.Info($"ObtenerSolpesDesdeSAPJob inicio");
                 ObtenerSolpSAPResponse result = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
+                Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin obtener solps");
+
                 List<TablaSap> ordenes;
 
                 List<string> tablasSapAConsultar = new List<string>
@@ -1642,6 +1645,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 repositorio.GuardarCambios();
+                Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin");
 
                 //actualizo el estado en la creacion/actualizacion del la solp
                 //foreach (var resultPosicion in result.Posiciones)
