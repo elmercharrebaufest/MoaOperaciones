@@ -70,7 +70,7 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
     }
 
     isVisible(): boolean {
-        if (this.data && this.data.liquidaciones && this.data.liquidaciones.length != 0)
+        if((this.data && this.data.liquidaciones && this.data.liquidaciones.length != 0) || (this.data && this.data.comprobantes && this.data.comprobantes.length != 0))
             return true;
         else
             return false;

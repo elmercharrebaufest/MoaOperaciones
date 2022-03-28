@@ -1,59 +1,109 @@
 <div class="content-wraper">
+
     <!-- CONTENT-->
 
+
+
     <section class="container-fluid clearfix">
+
         <!--Title-->
+
         <div class="row titleSection">
+
             <div class="col-xs-12 col-sm-6 "><strong>Campos sustentables</strong> </div>
+
             <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
+
                 <div class="row">
+
                     <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
+
                         <spinner-small></spinner-small>
+
                         <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
-                            *ngIf="!this.spinnerSmallComponent.visible">
-                            <div class="btnSection animate align-right">Exportar <img
-                                    src="Content/images/buttons/EXPORT.svg" /></div>
+                           *ngIf="!this.spinnerSmallComponent.visible">
+
+                            <div class="btnSection animate align-right">
+                                Exportar <img src="Content/images/buttons/EXPORT.svg" />
+                            </div>
+
                         </a>
+
                     </div>
+
                     <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
+
                         <!-- Button trigger modal -->
+
                         <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
-                            (click)="goToSeccion('/sustentable/alta')" id="modalToggleButton">
+                                (click)="goToSeccion('/sustentable/alta')" id="modalToggleButton">
+
                             Nuevo campo
+
                         </button>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
         <!--End Title-->
+
         <div class="row myRow mySearch">
+
             <div class="col-xs-12 col-md-12 rounded shadow animate">
+
                 <div class="col-xs-12 col-md-12 search-header">
+
                     <title-caps>Refinar resultados</title-caps>
+
                 </div>
+
                 <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esInterno">
+
                     Id
+
                     <div class="styled-select">
+
                         <input type="search" class="" placeholder="" [(ngModel)]="filtroId" type="number"
-                            aria-controls="tableModal">
+                               aria-controls="tableModal">
                     </div>
+
                 </div>
+
                 <div class="col-xs-12 col-sm-12 col-md-4">
+
                     Nombre
+
                     <div class="styled-select">
+
                         <input type="search" class="" placeholder="" aria-controls="tableModal"
-                            [(ngModel)]="filtroNombreCampo">
+                               [(ngModel)]="filtroNombreCampo">
                     </div>
+
                 </div>
+
                 <div class="col-xs-12 col-sm-12 col-md-4">
+
                     Por Cosecha
+
                     <div class="styled-select">
+
                         <select [(ngModel)]="filtroCosechaId">
+
                             <option value="">Todas</option>
+
                             <option *ngFor="let x of cosechas" value="{{x.Nombre}}">{{x.Nombre}}</option>
+
                         </select>
+
                     </div>
+
                 </div>
+
                 <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esCorredor || esInterno">
                     <p> Por Vendedor </p>
                     <!--   <div class="styled-select">
@@ -71,135 +121,271 @@
             </div>
         </div>
 
+
+
         <div class="row myRow">
+
             <div class="clearfix myTables">
+
                 <mensaje></mensaje>
+
                 <spinner></spinner>
+
                 <table id="tableModal" *ngIf="data && data.length > 0"
-                    class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table"
-                    cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                       class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table"
+                       cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+
                     <thead>
+
                         <tr role="row">
+
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('IdScato')"
                                 *ngIf="esInterno">
+
                                 ID
+
                             </th>
+
                             <th tabindex="0" rowspan="1" colspan="1">
+
                                 Cosecha
+
                             </th>
+
                             <th tabindex="0" rowspan="1" colspan="1">
+
                                 Nombre Campo
+
                             </th>
+
                             <th tabindex="0" rowspan="1" colspan="1">
+
                                 Proveedor
+
                             </th>
+
                             <th tabindex="0" rowspan="1" colspan="1">
+
                                 Estado
+
                             </th>
+
                             <th tabindex="0" rowspan="1" colspan="1">
+
                                 Motivo
+
                             </th>
+
                             <th tabindex="0" rowspan="1" colspan="1">
+
                                 Hectares Totales
+
                             </th>
+
                             <th tabindex="0" rowspan="1" colspan="1">
+
                                 Hectareas Soja
+
                             </th>
+
                             <th tabindex="0" rowspan="1" colspan="1">
+
                                 Toneladas Aprobadas
+
                             </th>
+
                             <!--<th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
+
                                 Hectares pendientes
+
                             </th>-->
+
                             <th tabindex="0" rowspan="1" colspan="2" style="text-align: center">
+
                                 Acciones
+
                             </th>
+
                         </tr>
+
                     </thead>
 
+
+
                     <tbody>
+
                         <tr *ngFor="let campo of data
+
                                 | customNumericFilter : 'IdScato' : filtroId : ''
+
                                 | customFilter : 'NombreCampo' : filtroNombreCampo
+
                                 | customFilter : 'CodigoProveedor' : filtroProveedor
+
                                 | customFilter : 'NombreCosecha' : filtroCosechaId
+
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}
+
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
 
+
+
                         ">
+
                             <td *ngIf="esInterno">{{campo.IdScato || 'Pendiente'}}</td>
+
                             <td>{{campo.NombreCosecha}}</td>
+
                             <td>{{campo.NombreCampo}}</td>
+
                             <td>{{campo.CUITProveedor}}</td>
+
                             <td [ngClass]="{'estadoRechazado': campo.ToneladasAprobadas === 0,
-                                            'estadoAprobado': campo.ToneladasAprobadas > 0,
-                                            'estadoEnGestion': campo.ToneladasAprobadas === -1}">{{campo.Estado}}</td>
+                                'estadoAprobado' : campo.ToneladasAprobadas>
+                                0,
+
+                                'estadoEnGestion': campo.ToneladasAprobadas === -1}">{{campo.Estado}}
+                            </td>
+
+
 
                             <td style="text-align: center;">
+
                                 <span *ngIf="(campo.MotivoRechazo || '').length < 50">
+
                                     {{campo.MotivoRechazo || ''}}
+
                                 </span>
+
                                 <span *ngIf="(campo.MotivoRechazo || '').length >= 50" class="fa fa-info-circle"
                                     toggle="tooltip" title="{{campo.MotivoRechazo || ''}}"></span>
 
 
+
                             </td>
+
                             <td>{{campo.HectareasTotales}}</td>
+
                             <td>{{campo.HectareasSoja}}</td>
+
                             <td>{{campo.ToneladasAprobadas == -1 ? 0: campo.ToneladasAprobadas }}</td>
+
                             <!--<td>NO VIENE</td>-->
+
                             <td width="100px">
-                                <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
-                                    [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId">
-                                </app-impresion-declaracion>
+
+                                <div class="col-sm-2">
+
+                                    <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
+                                                               [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId">
+
+                                    </app-impresion-declaracion>
+
+                                </div>
+
                             </td>
+
                             <td>
-                                <button type="button" class="btn-sin-fondo btn-descargar fa fa-download"
-                                    title="Descargar KMZ"
-                                    (click)="descargarKMZ(campo.CampoCosechaId, campo.Proveedor.Id)">
-                                </button>
-                                <a *ngIf="editarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
-                                    class="animate"
-                                    [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
-                                    href="#">
-                                    <span title="Editar" class="fa fa-edit"
-                                        style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
-                                </a>
-                                <a *ngIf="!this.spinnerSmallComponent.visible" class="animate"
-                                    [routerLink]="['/sustentable/alta', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
-                                    href="#">
-                                    <span title="Copiar" class="fa fa-copy"
-                                        style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
-                                </a>
-                                <button
-                                    *ngIf="borrarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
-                                    type="button" class="btn-sin-fondo btn-descargar fa fa-trash" title="Borrar"
-                                    (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
-                                </button>
+
+                                <div class="form-group row justify-content-center">
+
+                                    <div class="col-sm-2" style="padding-left: 0px; padding-right: 14px;">
+
+                                        <span>
+                                            <button type="button" class="btn-sin-fondo btn-descargar fa fa-download"
+                                                    title="Descargar KMZ"
+                                                    (click)="descargarKMZ(campo.CampoCosechaId, campo.Proveedor.Id)">
+                                            </button>
+
+                                        </span>
+
+                                        <span>
+
+                                            <a *ngIf="editarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
+                                               class="animate"
+                                               [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
+                                               href="#">
+
+                                                <span title="Editar" class="fa fa-edit"
+                                                      style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
+
+                                            </a>
+
+                                        </span>
+
+                                    </div>
+
+                                    <div class="col-sm-2">
+
+                                        <a *ngIf="!this.spinnerSmallComponent.visible" class="animate"
+                                           [routerLink]="['/sustentable/alta', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
+                                           href="#">
+
+                                            <span title="Copiar" class="fa fa-copy"
+                                                  style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
+
+                                        </a>
+
+                                        <button *ngIf="borrarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
+                                                type="button" class="btn-sin-fondo btn-descargar fa fa-trash" title="Borrar"
+                                                (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
                             </td>
+
                         </tr>
+
                     </tbody>
+
                 </table>
+
                 <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="data && data.length != 0">
+
                     <div class="dataTables_paginate paging_simple_numbers">
+
                         <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
-                            [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                           [class.disabled]="pT.isFirstPage()"> Anterior </a>
+
                         <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+
                             <a class="paginate_button" (click)="pT.setCurrent(page.value)"
-                                *ngIf="pT.getCurrent() !== page.value">{{
-                                page.label }}</a>
-                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label
-                                }}</a>
+                               *ngIf="pT.getCurrent() !== page.value">
+                                {{
+                                page.label
+                                }}
+                            </a>
+
+                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">
+                                {{
+ page.label
+                                }}
+                            </a>
+
                         </span>
+
                         <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
-                            [class.disabled]="pT.isLastPage()">
-                            Siguiente </a>
+                           [class.disabled]="pT.isLastPage()">
+
+                            Siguiente
+                        </a>
+
                     </div>
+
                 </pagination-template>
+
             </div>
+
         </div>
+
         <!-- END tables-->
         <!-- END form-->
+
     </section>
+
     <!--End CONTENT-->
+
 </div>

@@ -83,6 +83,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\ComprobantesNGWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\ContactoMailCategoriasWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -386,6 +391,7 @@
     <Compile Include="WSConsumers\ContactoMailCategoriasConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContactoMailConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContratoDetalleConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ComprobantesNGConsumerMOA.cs" />
     <Compile Include="WSConsumers\OrdenCargaConsumerMOA.cs" />
     <Compile Include="WSConsumers\CrearSolpConsumerMOA.cs" />
     <Compile Include="WSConsumers\ModificarSolpConsumerMOA.cs" />
@@ -518,6 +524,7 @@
     <None Include="Service References\CartaPorteFormularioDesplegablesWebServiceMOA\SustitucionMOAWS.CartaPorteFormularioDesplegablesWebServiceMOA.Z_MPMF_MOAOP_CP_DESPLEGABLESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\ComprobantesNGWebServiceMOA\SI_MPMF_MOAOP_COMPROB_NOGRANOS.wsdl" />
     <None Include="Service References\ContactoMailCategoriasWebServiceMOA\SI_MPMF_MOAOP_CATEG_CONTACTO.wsdl" />
     <None Include="Service References\ContactoMailCategoriasWebServiceMOA\SustitucionMOAWS.ContactoMailCategoriasWebServiceMOA.SI_MPMF_MOAOP_CATEG_CONTACTOResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -2138,6 +2145,7 @@
     <WCFMetadataStorage Include="Service References\CartaPorteDetalleWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\CartaPorteFormularioCTGWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\CartaPorteFormularioDesplegablesWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ComprobantesNGWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ContactoMailCategoriasWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ContactoMailWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ContratoDetalleWebServiceMOA\" />
@@ -2987,6 +2995,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ServicioSuscriptorAccesos\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ComprobantesNGWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ComprobantesNGWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ComprobantesNGWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

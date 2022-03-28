@@ -116,7 +116,7 @@
           <xsd:element minOccurs="0" name="IMPORTE">
             <xsd:simpleType>
               <xsd:restriction base="xsd:decimal">
-                <xsd:totalDigits value="7" />
+                <xsd:totalDigits value="23" />
                 <xsd:fractionDigits value="2" />
               </xsd:restriction>
             </xsd:simpleType>
@@ -127,6 +127,11 @@
                 <xsd:maxLength value="50" />
               </xsd:restriction>
             </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="FECHA_DOC" type="rfc:date">
+            <xsd:annotation>
+              <xsd:documentation>Document Date in Document</xsd:documentation>
+            </xsd:annotation>
           </xsd:element>
         </xsd:sequence>
       </xsd:complexType>

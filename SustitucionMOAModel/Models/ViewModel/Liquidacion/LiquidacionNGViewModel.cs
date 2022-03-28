@@ -11,5 +11,7 @@ namespace SustitucionMOAModel.Models.ViewModel.Liquidacion
     {
         public LiquidacionNGWSMOAResponse data { get; set; }
         public DropdownContent filtroObservacion { get; set; }
+
+        public ComprobantesNGWSMOAResponse comprobantes { get; set; }
     }
 }

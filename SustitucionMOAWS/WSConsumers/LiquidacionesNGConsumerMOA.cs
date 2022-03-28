@@ -62,7 +62,8 @@ namespace SustitucionMOAWS.WSConsumers
                     tipo = salida.TIPO,
                     vencimiento = SAPFormatter.FormatearFecha(salida.VENCIMIENTO),
                     vencimientoDate = SAPFormatter.GetDateTime(salida.VENCIMIENTO),
-                    compra = ""
+                    compra = "",
+                    fechaDocumento = SAPFormatter.FormatearFecha(salida.FECHA_DOC)
                 };
 
                 ZMPES6110 compra = comprasList.Find(c => c.ID == salidaNew.id);
@@ -107,7 +108,8 @@ namespace SustitucionMOAWS.WSConsumers
                     observaciones = salida.OBSERVACIONES,
                     tipo = salida.TIPO,
                     compra = "",
-                    vencimiento = SAPFormatter.FormatearFecha(salida.VENCIMIENTO)
+                    vencimiento = SAPFormatter.FormatearFecha(salida.VENCIMIENTO),
+                    fechaDocumento = SAPFormatter.FormatearFecha(salida.FECHA_DOC)
                 };
 
                 ZMPES6110 compra = comprasList.Find(c => c.ID == salidaNew.id);

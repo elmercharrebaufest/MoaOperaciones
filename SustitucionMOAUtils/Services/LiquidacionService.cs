@@ -135,6 +135,16 @@ namespace SustitucionMOAUtils.Services
             return getLiquidacionesNG(proveedor, "OBSERVADA", fechaInicio, fechaFin);
         }
 
+        public LiquidacionNGViewModel getRegistradosNG(string proveedor, string fechaInicio, string fechaFin)
+        {
+            return getLiquidacionesNG(proveedor, "REGISTRADO", fechaInicio, fechaFin);
+        }
+
+        public LiquidacionNGViewModel getPendienteRegistroNG(string proveedor, string fechaInicio, string fechaFin)
+        {
+            return getLiquidacionesNG(proveedor, "PENDIENTE-REGISTRO", fechaInicio, fechaFin);
+        }
+
         public LiquidacionNGViewModel getPagasNG(string proveedor, string fechaInicio, string fechaFin)
         {
             return getLiquidacionesNG(proveedor, "PAGA", fechaInicio, fechaFin);
@@ -144,10 +154,23 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
                 LiquidacionNGViewModel dataView = new LiquidacionNGViewModel();
+               
                 dataView.filtroObservacion = new DropdownContent();
+
+                if (tipo == "PENDIENTE-REGISTRO")
+                {
+                    LiquidacionNGViewModel liquidacionView = new LiquidacionNGViewModel();
+                    var comprobantes = (ComprobantesNGWSMOAResponse)new ComprobantesNGConsumerMOA().request(proveedor, fechas);
+                    validarRespuestaNG(comprobantes);
+                    liquidacionView.comprobantes = comprobantes; 
+                    return liquidacionView;
+                }
+              
                 dataView.data = (LiquidacionNGWSMOAResponse) new LiquidacionesNGConsumerMOA().request(proveedor, fechas);
+
                 validarRespuestaNG(dataView.data);
                 switch (tipo)
                 {
@@ -156,6 +179,10 @@ namespace SustitucionMOAUtils.Services
                         break;
                     case "OBSERVADA":
                         dataView.data.liquidaciones = dataView.data.liquidaciones.Where(x => x.observaciones != "").ToList();
+                        break;
+                    case "REGISTRADO":
+                        break;
+                    case "PENDIENTE-REGISTRO":
                         break;
                     case "PAGA":
                         break;
@@ -177,6 +204,33 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        public ComprobantesNGWSMOAResponse getComprobantesNG(string proveedor, string fechaInicio, string fechaFin)
+        {
+            try
+            {
+                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                
+                var result =  new ComprobantesNGConsumerMOA().request(proveedor, fechas);
+
+                if (result.comprobantes.Count == 0) // <- Repito consulta por el filtrado que se realiza antes
+                    throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Comprobantes"));
+                return result;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
 
         public string downloadAprobadas(string proveedor, string fechaInicio, string fechaFin)
         {
@@ -597,7 +651,17 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Liquidaciones"));
         }
 
-        private void validarRespuestaNG(LiquidacionNGWSMOAResponse data) {
+        private void validarRespuestaNG(ComprobantesNGWSMOAResponse data) {
+            if (data == null)
+                throw new ValidationCustomException(ErrorMsg.Error);
+            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11")
+                throw new ValidationCustomException(data.error.descripcion);
+            if (data.comprobantes == null || data.comprobantes.Count == 0)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Comprobantes"));
+        }
+
+        private void validarRespuestaNG(LiquidacionNGWSMOAResponse data)
+        {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.Error);
             if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11")
