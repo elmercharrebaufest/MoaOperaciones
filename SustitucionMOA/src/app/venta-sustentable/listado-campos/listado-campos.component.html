@@ -35,14 +35,14 @@
                     Id
                     <div class="styled-select">
                         <input type="search" class="" placeholder="" [(ngModel)]="filtroId" type="number"
-                               aria-controls="tableModal">
+                            aria-controls="tableModal">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-4">
                     Nombre
                     <div class="styled-select">
                         <input type="search" class="" placeholder="" aria-controls="tableModal"
-                               [(ngModel)]="filtroNombreCampo">
+                            [(ngModel)]="filtroNombreCampo">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-4">
@@ -55,12 +55,18 @@
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esCorredor || esInterno">
-                    Por Vendedor
-                    <div class="styled-select">
-                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesProveedores"
+                    <p> Por Vendedor </p>
+                    <!--   <div class="styled-select">
+                      <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesProveedores"
                                   (select)="proveedorSeleccionado($event)">
-                        </dropdown>
-                    </div>
+                        </dropdown>-->
+
+                    <p-autoComplete [(ngModel)]="varrr" [dropdown]="true" [suggestions]="opcionesProveedores"
+                        field="label" (completeMethod)="buscarCombo()" dataKey="value" ariaLabel="label"
+                        [autoHighlight]="true" [minLength]="1" placeholder="Seleccionar" [forceSelection]="true"
+                        appendTo="body" (onSelect)="proveedorSeleccionado($event)"></p-autoComplete>
+
+
                 </div>
             </div>
         </div>
@@ -134,7 +140,7 @@
                                     {{campo.MotivoRechazo || ''}}
                                 </span>
                                 <span *ngIf="(campo.MotivoRechazo || '').length >= 50" class="fa fa-info-circle"
-                                      toggle="tooltip" title="{{campo.MotivoRechazo || ''}}"></span>
+                                    toggle="tooltip" title="{{campo.MotivoRechazo || ''}}"></span>
 
 
                             </td>
@@ -144,29 +150,31 @@
                             <!--<td>NO VIENE</td>-->
                             <td width="100px">
                                 <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
-                                                           [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId">
+                                    [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId">
                                 </app-impresion-declaracion>
                             </td>
                             <td>
                                 <button type="button" class="btn-sin-fondo btn-descargar fa fa-download"
-                                        title="Descargar KMZ" (click)="descargarKMZ(campo.CampoCosechaId, campo.Proveedor.Id)">
+                                    title="Descargar KMZ"
+                                    (click)="descargarKMZ(campo.CampoCosechaId, campo.Proveedor.Id)">
                                 </button>
                                 <a *ngIf="editarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
-                                   class="animate"
-                                   [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
-                                   href="#">
+                                    class="animate"
+                                    [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
+                                    href="#">
                                     <span title="Editar" class="fa fa-edit"
-                                          style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
+                                        style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
                                 </a>
-                                <a *ngIf="!this.spinnerSmallComponent.visible"
-                                   class="animate"
-                                   [routerLink]="['/sustentable/alta', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
-                                   href="#">
+                                <a *ngIf="!this.spinnerSmallComponent.visible" class="animate"
+                                    [routerLink]="['/sustentable/alta', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
+                                    href="#">
                                     <span title="Copiar" class="fa fa-copy"
-                                          style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
+                                        style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
                                 </a>
-                                <button *ngIf="borrarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)" type="button" class="btn-sin-fondo btn-descargar fa fa-trash"
-                                        title="Borrar" (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
+                                <button
+                                    *ngIf="borrarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
+                                    type="button" class="btn-sin-fondo btn-descargar fa fa-trash" title="Borrar"
+                                    (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
                                 </button>
                             </td>
                         </tr>
