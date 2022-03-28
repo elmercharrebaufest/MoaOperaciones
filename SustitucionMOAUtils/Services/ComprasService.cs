@@ -1408,8 +1408,9 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 //TODO: ver como actualizar Solp.EstadoDocumento_Id segun la RFC
-                //obtenerSolpRequest.NumeroSolp = "0212201890";
+                //obtenerSolpRequest.NumeroSolp = "0212202212";
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob inicio");
+                Logger.Log.Info($"ObtenerSolpesDesdeSAPJob desde {obtenerSolpRequest.FechaDesde.ToString()} hasta {obtenerSolpRequest.FechaHasta.ToString()}");
                 ObtenerSolpSAPResponse result = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin obtener solps");
 
