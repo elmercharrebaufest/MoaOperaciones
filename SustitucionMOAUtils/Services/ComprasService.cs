@@ -350,7 +350,7 @@ namespace SustitucionMOAUtils.Services
                                 posEntity.Subposiciones.Add(subposEntity);
                             }
 
-                            foreach(var subpos2 in lstSubPosicionesUnicas.Where(x => pos.Subposiciones == null || !pos.Subposiciones.Any(y => y.Codigo == x.Codigo)))
+                            foreach (var subpos2 in lstSubPosicionesUnicas.Where(x => pos.Subposiciones == null || !pos.Subposiciones.Any(y => y.Codigo == x.Codigo)))
                             {
                                 SolpSubposicion subposEntity = null;
 
@@ -1408,8 +1408,11 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 //TODO: ver como actualizar Solp.EstadoDocumento_Id segun la RFC
-
+                //obtenerSolpRequest.NumeroSolp = "0212201890";
+                Logger.Log.Info($"ObtenerSolpesDesdeSAPJob inicio");
                 ObtenerSolpSAPResponse result = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
+                Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin obtener solps");
+
                 List<TablaSap> ordenes;
 
                 List<string> tablasSapAConsultar = new List<string>
@@ -1432,6 +1435,7 @@ namespace SustitucionMOAUtils.Services
                 if (result.TipoImputaciones.Count > 0)
                 {
                     var imputacionesTemp = result.TipoImputaciones.ToList();
+                    var listaSap = new List<TablaSapDto>();
                     foreach (var impTemp in imputacionesTemp)
                     {
                         ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
@@ -1440,10 +1444,12 @@ namespace SustitucionMOAUtils.Services
                             var existeOrden = ordenes.Where(x => x.Codigo == impTemp.IdOrden).ToList();
                             if (existeOrden.Count == 0)
                             {
-                                this.ActualizarTablaSap(ObtenerOrdenesSap(impTemp.IdOrden), TablasSap.OrdenSolpSap);
+                                //this.ActualizarTablaSap(ObtenerOrdenesSap(impTemp.IdOrden), TablasSap.OrdenSolpSap);
+                                listaSap.AddRange(ObtenerOrdenesSap(impTemp.IdOrden));
                             }
                         }
                     }
+                    this.ActualizarTablaSap(listaSap, TablasSap.OrdenSolpSap);
                 }
 
                 IList<Solp> solpsFinales = new List<Solp>();
@@ -1463,11 +1469,13 @@ namespace SustitucionMOAUtils.Services
                 ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
                 List<TablaSap> centrosDeBeneficio = tablaSap.Where(x => x.Tabla == TablasSap.CentroBeneficio).ToList();
                 List<TablaSap> cuentasSolpesSap = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
-                var listaEstadosSolpSap = repositorio.Listar<TablaSap>(x => x.Tabla == "EstadoSolpSap").Select(x => new TablaSapDto(x)).ToList();
-
+                var listaEstadosSolpSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.EstadoSolpSap).Select(x => new TablaSapDto(x)).ToList();
+                List<ServicioSolp> listaServicioSolp = repositorio.Listar<ServicioSolp>();
                 int? estadoIncompletoId = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == "INCOMPLETO")?.Id;
                 //int? estadoIncompletoId = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == EstadoDocumentoSolp.Incompleto.Code())?.Id;
 
+                List<string> numeroSolicitudes = result.Posiciones.Select(a => a.NumeroSolicitud).Distinct().ToList();
+                var solpdsDB = repositorio.Listar<Solp>(s => numeroSolicitudes.Contains( s.NroSolp));
                 foreach (var posicion in result.Posiciones)
                 {
                     try
@@ -1482,7 +1490,7 @@ namespace SustitucionMOAUtils.Services
                         bool nuevaSolp = solp == null;
                         if (nuevaSolp)
                         {
-                            solp = repositorio.Obtener<Solp>(s => s.NroSolp == posicion.NumeroSolicitud) ??
+                            solp = solpdsDB.Where(s => s.NroSolp == posicion.NumeroSolicitud).SingleOrDefault() ??
                                     new Solp
                                     {
                                         FechaCreacion = DateTime.Now,
@@ -1490,7 +1498,7 @@ namespace SustitucionMOAUtils.Services
                                         NroSolp = posicion.NumeroSolicitud,
                                         ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id,
                                         EstadoPasos = "0,0,0,0,1,1",
-                                        TipoSolpSap = tipoImputacion!= null && !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F" ? (int?)TipoSolpSap.Mantenimiento : (int?)TipoSolpSap.Sap,
+                                        TipoSolpSap = tipoImputacion != null && !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F" ? (int?)TipoSolpSap.Mantenimiento : (int?)TipoSolpSap.Sap,
                                         Pliego = new Pliego
                                         {
                                             SupervisorSector = string.Empty,
@@ -1498,11 +1506,16 @@ namespace SustitucionMOAUtils.Services
                                             JornadaLaboralDias = string.Empty,
                                         },
                                         Posiciones = new List<SolpPosicion>(),
+                                        UsuarioCreacion_Id = 0
                                     };
 
                             solpsFinales.Add(solp);
                         }
-
+                        var codigoSap = listaEstadosSolpSap.Where(x => x.CodigoSap == posicion.EstadoSolpSap).FirstOrDefault();
+                        if (codigoSap != null)
+                        {
+                            solp.EstadoSolpSap_Id = codigoSap.Id;
+                        }
                         DireccionSolpSAP direccion = result.Direcciones
                             .SingleOrDefault(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud &&
                                                     dir.NumeroPosicion == posicion.NumeroPosicion);
@@ -1559,13 +1572,16 @@ namespace SustitucionMOAUtils.Services
                             int indiceSubPosicion = Int32.Parse(subPosicion.SumeroSubPosicion) / 10;
                             SolpSubposicion subPosicionEntity = null;
 
-                            if(posicionEntity.Subposiciones != null)
+                            if (posicionEntity.Subposiciones != null)
                             {
                                 if (subposicionIndice + 1 > posicionEntity.Subposiciones.Count())
                                 {
-                                    continue;
+
                                 }
-                                subPosicionEntity = posicionEntity.Subposiciones.ToList()[subposicionIndice];
+                                else
+                                {
+                                    subPosicionEntity = posicionEntity.Subposiciones.ToList()[subposicionIndice];
+                                }
                             }
 
                             if (subPosicionEntity == null)
@@ -1600,7 +1616,7 @@ namespace SustitucionMOAUtils.Services
                                 cuentasSolpesSap.SingleOrDefault(c => Int32.Parse(c.Codigo) == Int32.Parse(tipoImputacionSAP.CuentaContableImputada));
 
                             int codigoServicio = 0;
-                            ServicioSolp servicioSolp = Int32.TryParse(subPosicion.CodigoServicio, out codigoServicio) ? repositorio.Obtener<ServicioSolp>(x => x.CodigoSap == codigoServicio) : null;
+                            ServicioSolp servicioSolp = Int32.TryParse(subPosicion.CodigoServicio, out codigoServicio) ? listaServicioSolp.Where(x => x.CodigoSap == codigoServicio).SingleOrDefault() : null;
 
                             subPosicionEntity.Numero = indiceSubPosicion;
                             //subPosicionEntity.Codigo = subPosicion.CodigoServicio;
@@ -1629,15 +1645,17 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 repositorio.GuardarCambios();
+                Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin");
 
-                foreach (var resultPosicion in result.Posiciones)
-                {
-                    var codigoSap = listaEstadosSolpSap.Where(x => x.CodigoSap == resultPosicion.EstadoSolpSap).FirstOrDefault();
-                    if (codigoSap != null)
-                    {
-                        ActualizarEstadoSolp(resultPosicion.NumeroSolicitud, codigoSap.Id);
-                    }
-                }
+                //actualizo el estado en la creacion/actualizacion del la solp
+                //foreach (var resultPosicion in result.Posiciones)
+                //{
+                //    var codigoSap = listaEstadosSolpSap.Where(x => x.CodigoSap == resultPosicion.EstadoSolpSap).FirstOrDefault();
+                //    if (codigoSap != null)
+                //    {
+                //        ActualizarEstadoSolp(resultPosicion.NumeroSolicitud, codigoSap.Id);
+                //    }
+                //}
             }
             catch (Exception e)
             {
