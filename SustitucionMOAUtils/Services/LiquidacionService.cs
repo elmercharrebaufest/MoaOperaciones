@@ -10,6 +10,7 @@ using System.Web;
 using SustitucionMOAAssets;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.ViewModel.Liquidacion;
@@ -623,17 +624,33 @@ namespace SustitucionMOAUtils.Services
             if (archivosNoProcesados.Any()) throw new InfoCustomException(string.Join(". ", archivosNoProcesados));
         }
 
-        public IList<LiquidacionInformada> GetLiquidacionInformadas(string codigoProveedor)
+        public IList<LiquidacionInformadaDto> GetLiquidacionInformadas(string codigoProveedor)
         {
             var proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == codigoProveedor);
             //No existe proveedor para la sesión, termino
             if (proveedor == null) throw new InfoCustomException("No existe un proveedor registrado para el código seleccionado");
 
-            var liquidaciones = repositorio.Listar<LiquidacionInformada>(li => li.Proveedor_Id == proveedor.Id);
-            
-            if (!liquidaciones.Any()) throw new InfoCustomException("No se encontraron liquidaciones informadas");
+            var liquidacionesAux = repositorio.Listar<LiquidacionInformada, LiquidacionInformadaDto>(x => new LiquidacionInformadaDto()
+            {
+                Id = x.Id,
+                Proveedor_Id = x.Proveedor_Id,
+                COE = x.COE,
+                FechaComprobante = x.FechaComprobante.ToString(),
+                FechaInformada = x.FechaInformada.ToString(),
+            }, x => x.Proveedor_Id == proveedor.Id).ToList();
 
-            return liquidaciones;
+            var liquidacionesDto = liquidacionesAux.Select(x => new LiquidacionInformadaDto()
+            {
+                Id = x.Id,
+                Proveedor_Id = x.Proveedor_Id,
+                COE = x.COE,
+                FechaComprobante = Convert.ToDateTime(x.FechaComprobante).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                FechaInformada = Convert.ToDateTime(x.FechaInformada).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+            }).ToList();
+
+            if (!liquidacionesDto.Any()) throw new InfoCustomException("No se encontraron liquidaciones informadas");
+
+            return liquidacionesDto;
         }
 
         private void validarRespuesta(LiquidacionExcelWSMOAResponse data)

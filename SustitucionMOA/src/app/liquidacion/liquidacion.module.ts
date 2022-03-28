@@ -11,6 +11,7 @@ import { LiquidacionRoutingModule } from './liquidacion-routing.module';
 import { LiquidacionInformarComponent } from './informar/liquidacion.informar.component';
 import { LiquidacionInformadaComponent } from './informada/liquidacion.informada.component';
 import { ReCaptchaModule } from 'angular2-recaptcha';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { ReCaptchaModule } from 'angular2-recaptcha';
     LiquidacionRoutingModule,
     SharedModule,
     NgxPaginationModule,
-    ReCaptchaModule
+    ReCaptchaModule,
+    CalendarModule
   ],
     declarations: [
       LiquidacionAprobadaComponent,
