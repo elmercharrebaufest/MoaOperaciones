@@ -116,6 +116,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
     verificarBotones() {
+        
         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada) {
             return;
         }
@@ -164,11 +165,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                     } else if (result.info != undefined) {
-                    } else {                    
+                    } else {
                         this.ordenDeCarga = result.data;
                         this.separarCadenas();
                         this.verificarBotones()
-                        if (this.ordenDeCarga.MensajeValidacionSAP != "" && this.esInterno) {
+                        if (this.ordenDeCarga.MensajeValidacionSAP != "" && this.ordenDeCarga.MensajeValidacionSAP != "OK" && this.esInterno) {
                             this.mensajeComponent.setInfoMsg(this.ordenDeCarga.MensajeValidacionSAP)
                         }
                     }
@@ -181,22 +182,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
-    separarCadenas() {       
+    separarCadenas() {
 
         this.ordenDeCarga.OrdenDeCargaCambiosHistorial.forEach(x => {
 
-            if (x.NombreColumnaCambio.indexOf("CUIT") > -1) {
-
-                const wordRegex = /[A-Z]?[a-z]+|[0-9]+|[A-Z]+(?![a-z])/g;                
-                const string = x.NombreColumnaCambio;
-                var palabra = string.match(wordRegex);                
-                x.NombreColumnaCambio = palabra.join(" ");
-
-            } else {
-
-                var a = x.NombreColumnaCambio.replace(/([a-z])([A-Z])/g, '$1 $2');
-                x.NombreColumnaCambio = a.replace(/([A-Z])([A-Z])/g, '$1 $2');                
-            }
+            const wordRegex = /[A-Z]?[a-z]+|[0-9]+|[A-Z]+(?![a-z])/g;
+            const string = x.NombreColumnaCambio;
+            var palabra = string.match(wordRegex);
+            x.NombreColumnaCambio = palabra.join(" ");
         });
     }
 
@@ -402,6 +395,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     abrirModalPedidos() {
+        
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
@@ -432,6 +426,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     seleccionarPedido() {
+        
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
