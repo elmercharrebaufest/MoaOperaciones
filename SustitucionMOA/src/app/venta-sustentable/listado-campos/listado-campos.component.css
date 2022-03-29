@@ -30,8 +30,6 @@ input:disabled,
     top: 0 !important;
     }
     
-    
-    
-    ::ng-deep .ui-autocomplete-input {
+ ::ng-deep .ui-autocomplete-input {
     width: calc(99% - 33px) !important;
     }
