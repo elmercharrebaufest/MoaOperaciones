@@ -221,9 +221,10 @@ namespace SustitucionMOAUtils.Services
 
 
 
-                //posiciones eliminadas
+                //posiciones eliminadas, elimina posiciones que no llegan desde el front al back y no tienen fecha de baja
                 if (solpEntity.Posiciones.Count > 0)
                 {
+                    // trae todas las que no tienen fecha baja (osea que son null) y despues que no esten en la web (las que vienen del front)
                     var posEliminadas = solpEntity.Posiciones.Where(x => !x.FechaBaja.HasValue).Where(x => solp.Posiciones == null || !solp.Posiciones.Any(y => y.Codigo == x.Codigo));
 
                     foreach (var pos in posEliminadas)
@@ -231,6 +232,11 @@ namespace SustitucionMOAUtils.Services
                         pos.FechaBaja = DateTime.Now;
                     }
                 }
+
+                var codigos = solpEntity.Posiciones.Select(x => x.Codigo).ToList();
+
+                // eliminar posiciones que no se grabaron (Eliminadas en el front). se fija que el estado este en false (osea borrado) y que esas posiciones no existan en la db
+                solp.Posiciones = solp.Posiciones.Where(a => a.Estado == true || codigos.Contains(a.Codigo)).ToList();
 
                 if (solp.Posiciones != null)
                 {
@@ -469,9 +475,9 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Tipo == "E"))
                     {
-                        //var mensaje = error.Mensaje.Trim();
+                        var mensaje = error.Mensaje.Trim();
                         //respuestaGuardarSOLP.Errores.Add(mensaje);
-                        var mensaje = "No se pudo procesar la SOLP";
+                        //var mensaje = "No se pudo procesar la SOLP";
                         respuestaGuardarSOLP.Errores.Add(mensaje);
                         break;
                     }
