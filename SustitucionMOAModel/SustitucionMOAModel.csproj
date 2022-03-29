@@ -69,6 +69,7 @@
     <Compile Include="Dto\EstadoIngresosBrutosCoeficienteUnificadoDto.cs" />
     <Compile Include="Dto\IngresosBrutosCoeficienteUnificadoDetalleDto.cs" />
     <Compile Include="Dto\IngresosBrutosCoeficienteUnificadoDto.cs" />
+    <Compile Include="Dto\LiquidacionInformadaDto.cs.cs" />
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaMasicoDto.cs" />
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaDto.cs" />
     <Compile Include="Dto\LogPesificacion\LogPesificacionDto.cs" />
