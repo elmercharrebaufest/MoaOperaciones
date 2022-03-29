@@ -21,7 +21,7 @@
                         <spinner-small></spinner-small>
 
                         <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
-                           *ngIf="!this.spinnerSmallComponent.visible">
+                            *ngIf="!this.spinnerSmallComponent.visible">
 
                             <div class="btnSection animate align-right">
                                 Exportar <img src="Content/images/buttons/EXPORT.svg" />
@@ -36,7 +36,7 @@
                         <!-- Button trigger modal -->
 
                         <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
-                                (click)="goToSeccion('/sustentable/alta')" id="modalToggleButton">
+                            (click)="goToSeccion('/sustentable/alta')" id="modalToggleButton">
 
                             Nuevo campo
 
@@ -69,7 +69,7 @@
                     <div class="styled-select">
 
                         <input type="search" class="" placeholder="" [(ngModel)]="filtroId" type="number"
-                               aria-controls="tableModal">
+                            aria-controls="tableModal">
                     </div>
 
                 </div>
@@ -81,7 +81,7 @@
                     <div class="styled-select">
 
                         <input type="search" class="" placeholder="" aria-controls="tableModal"
-                               [(ngModel)]="filtroNombreCampo">
+                            [(ngModel)]="filtroNombreCampo">
                     </div>
 
                 </div>
@@ -105,23 +105,19 @@
                 </div>
 
                 <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esCorredor || esInterno">
-                    <p> Por Vendedor </p>
-                    <!--   <div class="styled-select">
-                      <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesProveedores"
-                                  (select)="proveedorSeleccionado($event)">
-                        </dropdown>-->
-
-                    <p-autoComplete [(ngModel)]="varrr" [dropdown]="true" [suggestions]="opcionesProveedores"
-                        field="label" (completeMethod)="buscarCombo()" dataKey="value" ariaLabel="label"
-                        [autoHighlight]="true" [minLength]="1" placeholder="Seleccionar" [forceSelection]="true"
-                        appendTo="body" (onSelect)="proveedorSeleccionado($event)"></p-autoComplete>
-
-
+                    <p>Por Vendedor</p>
+                    <p-autoComplete [(ngModel)]="selectedCountryAdvanced" [dropdown]="true" field="label"
+                        [suggestions]="filteredProveedor" (completeMethod)="filterProveedor($event)" appendTo="body"
+                        placeholder="Seleccionar" appendTo="body" (onSelect)="proveedorSeleccionado($event)">
+                        <ng-template let-country pTemplate="item">
+                            <div class="country-item">
+                                <div>{{country.label}}</div>
+                            </div>
+                        </ng-template>
+                    </p-autoComplete>
                 </div>
             </div>
         </div>
-
-
 
         <div class="row myRow">
 
@@ -132,8 +128,8 @@
                 <spinner></spinner>
 
                 <table id="tableModal" *ngIf="data && data.length > 0"
-                       class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table"
-                       cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                    class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table"
+                    cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
 
                     <thead>
 
@@ -277,7 +273,7 @@
                                 <div class="col-sm-2">
 
                                     <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
-                                                               [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId">
+                                        [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId">
 
                                     </app-impresion-declaracion>
 
@@ -293,8 +289,8 @@
 
                                         <span>
                                             <button type="button" class="btn-sin-fondo btn-descargar fa fa-download"
-                                                    title="Descargar KMZ"
-                                                    (click)="descargarKMZ(campo.CampoCosechaId, campo.Proveedor.Id)">
+                                                title="Descargar KMZ"
+                                                (click)="descargarKMZ(campo.CampoCosechaId, campo.Proveedor.Id)">
                                             </button>
 
                                         </span>
@@ -302,12 +298,12 @@
                                         <span>
 
                                             <a *ngIf="editarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
-                                               class="animate"
-                                               [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
-                                               href="#">
+                                                class="animate"
+                                                [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
+                                                href="#">
 
                                                 <span title="Editar" class="fa fa-edit"
-                                                      style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
+                                                    style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
 
                                             </a>
 
@@ -318,17 +314,18 @@
                                     <div class="col-sm-2">
 
                                         <a *ngIf="!this.spinnerSmallComponent.visible" class="animate"
-                                           [routerLink]="['/sustentable/alta', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
-                                           href="#">
+                                            [routerLink]="['/sustentable/alta', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
+                                            href="#">
 
                                             <span title="Copiar" class="fa fa-copy"
-                                                  style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
+                                                style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
 
                                         </a>
 
-                                        <button *ngIf="borrarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
-                                                type="button" class="btn-sin-fondo btn-descargar fa fa-trash" title="Borrar"
-                                                (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
+                                        <button
+                                            *ngIf="borrarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
+                                            type="button" class="btn-sin-fondo btn-descargar fa fa-trash" title="Borrar"
+                                            (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
                                         </button>
 
                                     </div>
@@ -348,12 +345,12 @@
                     <div class="dataTables_paginate paging_simple_numbers">
 
                         <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
-                           [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                            [class.disabled]="pT.isFirstPage()"> Anterior </a>
 
                         <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
 
                             <a class="paginate_button" (click)="pT.setCurrent(page.value)"
-                               *ngIf="pT.getCurrent() !== page.value">
+                                *ngIf="pT.getCurrent() !== page.value">
                                 {{
                                 page.label
                                 }}
@@ -361,14 +358,14 @@
 
                             <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">
                                 {{
- page.label
+                                page.label
                                 }}
                             </a>
 
                         </span>
 
                         <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
-                           [class.disabled]="pT.isLastPage()">
+                            [class.disabled]="pT.isLastPage()">
 
                             Siguiente
                         </a>
