@@ -91,7 +91,7 @@
                     <div class="row myRow">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <label class="labelCompras" for="editorTexto">Descripción del servicio</label>
-                            <quill-editor [class.error]="mostrarError('observacion')"  formControlName="observacion" appDragAndDrop id="observaciones" [(ngModel)]="viewModel.observaciones"
+                            <quill-editor  formControlName="observacion" appDragAndDrop id="observaciones" [(ngModel)]="viewModel.observaciones"
                                 [styles]="{'min-height':'500px','max-height':'auto'}" 
                                 (onFileDropped)="fileChange($event)" (onSelectionChanged)="selectionChange($event)"
                                 placeholder="" [modules]="modulesEditor" [required]="true">
@@ -138,9 +138,9 @@
                             </quill-editor>
 
 
-                            <div *ngIf="mostrarError('observacion')">
+                            <!-- <div *ngIf="mostrarError('observacion')">
                                 <p class="text-danger">campo obligatorio</p>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
