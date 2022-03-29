@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.ViewModel.Liquidacion;
 using SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
@@ -39,7 +40,7 @@ namespace SustitucionMOAUtils.Interfaces
         ProcedenciaFleteWSMOAResponse getFleteProcedencia(string proveedor, string contrato);
         string descargarFleteProcedencia(string proveedor, string contrato);
         Task NotificarLiquidacionesAsync(HttpFileCollectionBase liquidaciones, string codigoProveedor);
-        IList<LiquidacionInformada> GetLiquidacionInformadas(string codigoProveedor);
+        IList<LiquidacionInformadaDto> GetLiquidacionInformadas(string codigoProveedor);
         LiquidacionViewModel TodasLiquidaciones(string proveedor, string fechaInicio, string fechaFin);
         ComprobantesNGWSMOAResponse getComprobantesNG(string proveedor, string fechaInicio, string fechaFin);
 

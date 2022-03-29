@@ -557,7 +557,7 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var esAdminCampos = usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE");
-            var headersBase = new List<string>() { "Cosecha", "Campo", "Proveedor", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas", "Razon Social", "Fecha Creacion" };
+            var headersBase = new List<string>() { "Cosecha", "Campo", "Proveedor", "Cuit", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas", "Razon Social", "Fecha Creacion" };
             dynamic listado;
 
             if (esAdminCampos)
@@ -566,7 +566,8 @@ namespace SustitucionMOAUtils.Services
                 listado = ListarCampos(usuario, cp => new CampoSustentableExportDTO()
                 {
                     Campo = cp.CampoCosecha.Campo.Nombre,
-                    CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                    ProveedorRazonSocial = cp.Proveedor.RazonSocial,
+                    CuitProveedor = cp.Proveedor.CUIT,
                     Cosecha = cp.CampoCosecha.Cosecha.Nombre,
                     HectareasSoja = cp.HectareasSoja,
                     HectareasTotales = cp.HectareasTotales,
@@ -582,7 +583,7 @@ namespace SustitucionMOAUtils.Services
                 listado = ListarCampos(usuario, cp => new CampoSustentableExportBaseDTO()
                 {
                     Campo = cp.CampoCosecha.Campo.Nombre,
-                    CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                    ProveedorRazonSocial = cp.Proveedor.CodigoProveedor,
                     Cosecha = cp.CampoCosecha.Cosecha.Nombre,
                     HectareasSoja = cp.HectareasSoja,
                     HectareasTotales = cp.HectareasTotales,

@@ -25,6 +25,27 @@
                         <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
                     </div>
                 </div>
+                <div id="searchVerCarga" class="col-xs-12 col-sm-6 col-md-15">
+                    Filtro Fecha:
+                    <div class="styled-select">
+                        <select [(ngModel)]="tipoFiltroFecha">
+                            <option value="1">
+                                Fecha de Informe
+                            </option>
+                            <option value="2">
+                                Fecha de comprobante
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                    Rango:
+                    <div class="form-group styled-select">
+                        <p-calendar [showIcon]="true" #myCalendar dateFormat="dd/mm/yy" [style]="{'width': '70%'}"
+                            (onSelect)="onSelect($event)" appendTo="body" [(ngModel)]="rangeDates" selectionMode="range"
+                            [readonlyInput]="true" [locale]="es"></p-calendar>
+                    </div>
+                </div>
                 <div id="showSearch" onClick="openSearch()">
                     <div style="">
                         <div class="fa fa-angle-double-right" aria-hidden="true"></div>
@@ -48,24 +69,31 @@
                 <mensaje></mensaje>
                 <spinner></spinner>
 
-                <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                <table *ngIf="isVisible()" id="tableModal"
+                    class="display nowrap dataTable no-footer dtr-inline rounded shadow animate" cellspacing="0"
+                    role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('COE')">
                                 COE
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'COE' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'COE' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'COE' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'COE' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('FechaComprobante')">
+                            <th tabindex="0" rowspan="1" colspan="1" style=""
+                                (click)="orderColumnBy('FechaComprobante')">
                                 Fecha de comprobante
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaComprobante' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaComprobante' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaComprobante' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaComprobante' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -73,30 +101,37 @@
                                 Fecha de informe
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaInformada' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaInformada' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaInformada' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaInformada' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let liquidacion of data.liquidaciones | customFilter: 'COE' : filtroCOE | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                        <tr *ngFor="let liquidacion of filteredfechas | customFilter: 'COE' : filtroCOE | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
+                            role="row" [class.odd]="!odd">
                             <td>{{liquidacion.COE}}</td>
-                            <td>{{liquidacion.FechaComprobante ? (liquidacion.FechaComprobante.slice(6,-2) | date: 'dd/MM/yyyy') : ''}}</td>
-                            <td>{{liquidacion.FechaInformada ? (liquidacion.FechaInformada.slice(6,-2) | date: 'dd/MM/yyyy') : ''}}</td>
+                            <td>{{liquidacion.FechaComprobante}}</td>
+                            <td>{{liquidacion.FechaInformada}}</td>
                         </tr>
                     </tbody>
                 </table>
 
                 <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisible()">
                     <div class="dataTables_paginate paging_simple_numbers">
-                        <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()" [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                        <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
+                            [class.disabled]="pT.isFirstPage()"> Anterior </a>
                         <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
-                            <a class="paginate_button" (click)="pT.setCurrent(page.value)" *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
-                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+                            <a class="paginate_button" (click)="pT.setCurrent(page.value)"
+                                *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label
+                                }}</a>
                         </span>
-                        <a id="tableModal_next" class="paginate_button next" (click)="pT.next()" [class.disabled]="pT.isLastPage()"> Siguiente </a>
+                        <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
+                            [class.disabled]="pT.isLastPage()"> Siguiente </a>
                     </div>
                 </pagination-template>
             </div>

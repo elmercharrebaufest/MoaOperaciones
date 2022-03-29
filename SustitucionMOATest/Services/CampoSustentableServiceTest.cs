@@ -1100,8 +1100,8 @@ namespace SustitucionMOATest.Services
             this.excelExportWrapperMock
                 .Verify(excelExport => excelExport.ToExcel(
                     It.Is<List<CampoSustentableExportBaseDTO>>(x => x.Count == 2 &&
-                        x[0].CodigoProveedor == "prov2" &&
-                        x[1].CodigoProveedor == "prov1"),
+                        x[0].RazonSocial == "prov2" &&
+                        x[1].RazonSocial == "prov1"),
                     It.IsAny<string[]>(),
                     It.IsAny<string>()),
                 Times.Once);
