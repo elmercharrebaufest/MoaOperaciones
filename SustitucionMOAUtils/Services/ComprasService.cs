@@ -727,8 +727,8 @@ namespace SustitucionMOAUtils.Services
             {
                 ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
                 {
-                    FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
-                    FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
+                    FechaDesde = Convert.ToDateTime(new DateTime(2010,01,01)),
+                    FechaHasta = Convert.ToDateTime(DateTime.Now.Date.AddDays(1)),
                     CreadoPorUsuarios = new List<string>(),
                     NumeroSolp = x.NroSolp
                 };
@@ -1414,7 +1414,6 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 //TODO: ver como actualizar Solp.EstadoDocumento_Id segun la RFC
-                //obtenerSolpRequest.NumeroSolp = "0212202212";
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob inicio");
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob desde {obtenerSolpRequest.FechaDesde.ToString()} hasta {obtenerSolpRequest.FechaHasta.ToString()}");
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob numero{obtenerSolpRequest.NumeroSolp}");
