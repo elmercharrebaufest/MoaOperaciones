@@ -17,11 +17,13 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos
         public string compra { get; set; }
         public string observaciones { get; set; }
         public string fechaDocumento { get; set; }
+        
     }
 
     public class SalidaView : Salida
     {
         public DateTime vencimientoDate { get; set; }
         public string importeString { get; set; }
+        public string estadoRegistradas { get { return observaciones == "" ? "Aprobada" : "Observada"; } }
     }
 }

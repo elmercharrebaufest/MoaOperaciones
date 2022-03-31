@@ -302,6 +302,7 @@
     <Compile Include="Models\WSMapMOA\Liquidacion\NoGranos\Compra.cs" />
     <Compile Include="Models\WSMapMOA\Liquidacion\NoGranos\ComprobantesNGWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Liquidacion\NoGranos\LiquidacionNGWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Liquidacion\NoGranos\ComprobanteNG.cs" />
     <Compile Include="Models\WSMapMOA\Liquidacion\NoGranos\Salida.cs" />
     <Compile Include="Models\WSMapMOA\Login\LoginWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Noticia\Cabecera.cs" />
