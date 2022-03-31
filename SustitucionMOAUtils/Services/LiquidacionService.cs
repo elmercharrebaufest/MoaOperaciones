@@ -210,8 +210,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
-                
-                var result =  new ComprobantesNGConsumerMOA().request(proveedor, fechas);
+
+                ComprobantesNGWSMOAResponse result =  (ComprobantesNGWSMOAResponse)new ComprobantesNGConsumerMOA().request(proveedor, fechas);
 
                 if (result.comprobantes.Count == 0) // <- Repito consulta por el filtrado que se realiza antes
                     throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Comprobantes"));
@@ -361,6 +361,60 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        public string downloadRegistradosNG(string proveedor, string fechaInicio, string fechaFin)
+        {
+            try
+            {
+                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                LiquidacionExcelNGWSMOAResponse data = (LiquidacionExcelNGWSMOAResponse)new LiquidacionesExcelNGConsumerMOA().request(proveedor, fechas);
+                validarRespuestaNG(data);
+                data.liquidaciones = data.liquidaciones.ToList();
+                if (data.liquidaciones.Count == 0)
+                    throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Comprobantes"));
+                return ExcelExport.ToExcel(data.liquidaciones, new string[] { "ID", "Vencimiento", "Tipo", "Comprobante", "Total", "Moneda", "Orden de Compra", "Observacion" }, "Reporte Comprobantes Registrados");
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public string downloadPendienteRegistroNG(string proveedor, string fechaInicio, string fechaFin)
+        {
+            try
+            {
+                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                ComprobantesExcelNGWSMOAResponse data = (ComprobantesExcelNGWSMOAResponse)new ComprobantesExcelNGConsumerMOA().request(proveedor, fechas);
+                validarRespuestaNG(data);
+                data.comprobantes = data.comprobantes.ToList();
+                if (data.comprobantes.Count == 0)
+                    throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Comprobantes"));
+                return ExcelExport.ToExcel(data.comprobantes, new string[] { "Fecha de comprobante", "Tipo", "Comprobante", "Total", "Orden de Compra", "Estado" }, "Reporte Comprobantes No Registrados");
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+
 
         public string downloadPagasNG(string proveedor, string fechaInicio, string fechaFin)
         {
@@ -652,6 +706,16 @@ namespace SustitucionMOAUtils.Services
         }
 
         private void validarRespuestaNG(ComprobantesNGWSMOAResponse data) {
+            if (data == null)
+                throw new ValidationCustomException(ErrorMsg.Error);
+            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11")
+                throw new ValidationCustomException(data.error.descripcion);
+            if (data.comprobantes == null || data.comprobantes.Count == 0)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Comprobantes"));
+        }
+
+        private void validarRespuestaNG(ComprobantesExcelNGWSMOAResponse data)
+        {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.Error);
             if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11")

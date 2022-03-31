@@ -39,5 +39,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion
         public string ejercicio { get; set; }
         public string detallePago { get; set; }
         public string fechaDocumento { get; set; }
+        public string solapa { get; set; }
+
     }
 }

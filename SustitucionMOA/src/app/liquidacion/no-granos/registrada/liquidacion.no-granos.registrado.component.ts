@@ -20,6 +20,8 @@ export class LiquidacionNGRegistradoComponent extends LiquidacionNGBaseComponent
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
+    filtroEstados: string= "Todos";
+
     tituloArchivo = "ReporteComprobantesRegistrados.xls";
 
     setTabs() {

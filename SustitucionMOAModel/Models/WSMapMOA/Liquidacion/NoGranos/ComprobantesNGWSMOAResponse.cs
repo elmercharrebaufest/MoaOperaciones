@@ -12,23 +12,23 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos
         public ErrorWS error { get; set; }
         public bool TieneModal { get; set; } = false;
         public string MensajeModal { get; set; }
-        public List<ComprobanteNGDto> comprobantes { get; set; }
+        public List<ComprobanteView> comprobantes { get; set; }
 
         public ComprobantesNGWSMOAResponse() {
             this.error = new ErrorWS();
-            this.comprobantes = new List<ComprobanteNGDto>() { };
+            this.comprobantes = new List<ComprobanteView>() { };
         }
     }
 
-    //public class ComprobantesExcelNGWSMOAResponse
-    //{
-    //    public ErrorWS error { get; set; }
-    //    public List<Salida> comprobantes { get; set; }
+    public class ComprobantesExcelNGWSMOAResponse
+    {
+        public ErrorWS error { get; set; }
+        public List<ComprobanteNGLista> comprobantes { get; set; }
 
-    //    public ComprobantesExcelNGWSMOAResponse()
-    //    {
-    //        this.error = new ErrorWS();
-    //        this.comprobantes = new List<Salida>() { };
-    //    }
-    //}
+        public ComprobantesExcelNGWSMOAResponse()
+        {
+            this.error = new ErrorWS();
+            this.comprobantes = new List<ComprobanteNGLista>() { };
+        }
+    }
 }
