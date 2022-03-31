@@ -1417,6 +1417,7 @@ namespace SustitucionMOAUtils.Services
                 //obtenerSolpRequest.NumeroSolp = "0212202212";
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob inicio");
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob desde {obtenerSolpRequest.FechaDesde.ToString()} hasta {obtenerSolpRequest.FechaHasta.ToString()}");
+                Logger.Log.Info($"ObtenerSolpesDesdeSAPJob numero{obtenerSolpRequest.NumeroSolp}");
                 ObtenerSolpSAPResponse result = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin obtener solps");
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob Posiciones {result.Posiciones.Count()}");

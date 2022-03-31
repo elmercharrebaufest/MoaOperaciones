@@ -52,6 +52,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonNotificarTransporte: boolean = false;
     mostrarBotonVerificarTransporte: boolean = false;
     mostrarBotonVerificarSituacionCrediticia: boolean = false;
+    mostrarBotonVerHistorial: boolean = false;
     mostrarBotonAnular: boolean = false;
     mostrarBotonForzarCreacionPedido: boolean = false;
     mostrarBotonEditar: boolean = false;
@@ -126,6 +127,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
 
         if (this.esInterno) {
+            this.mostrarBotonVerHistorial = true;
             if (this.ordenDeCarga.NumeroPedido === "-" && this.ordenDeCarga.PedidosRespuesta != "-") {
                 this.mostrarBotonPedidos = true
             }
