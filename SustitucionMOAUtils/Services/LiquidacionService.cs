@@ -398,7 +398,7 @@ namespace SustitucionMOAUtils.Services
                 data.comprobantes = data.comprobantes.ToList();
                 if (data.comprobantes.Count == 0)
                     throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Comprobantes"));
-                return ExcelExport.ToExcel(data.comprobantes, new string[] { "Fecha de comprobante", "Tipo", "Comprobante", "Total", "Orden de Compra", "Estado" }, "Reporte Comprobantes No Registrados");
+                return ExcelExport.ToExcel(data.comprobantes, new string[] { "Fecha de comprobante", "Tipo", "Comprobante", "Total", "Orden de Compra", "Estado" }, "Reporte Comprobantes Pendientes de Registro");
             }
             catch (InfoCustomException e)
             {
