@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/Microsoft.ApplicationServer.StoreManagement.Query" />
-  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" />
-  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd8" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Seguridad" />
-  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd10" namespace="http://schemas.datacontract.org/2004/07/System.Web" />
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/Microsoft.ApplicationServer.StoreManagement.Query" />
+  <xs:import schemaLocation="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" />
+  <xs:import schemaLocation="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd8" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Seguridad" />
+  <xs:import schemaLocation="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd10" namespace="http://schemas.datacontract.org/2004/07/System.Web" />
   <xs:complexType name="ArrayOfInstanciaWorkflowDto">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="InstanciaWorkflowDto" nillable="true" type="tns:InstanciaWorkflowDto" />
@@ -14,6 +14,7 @@
   <xs:element name="ArrayOfInstanciaWorkflowDto" nillable="true" type="tns:ArrayOfInstanciaWorkflowDto" />
   <xs:complexType name="InstanciaWorkflowDto">
     <xs:sequence>
+      <xs:element minOccurs="0" name="AlmacenDestino" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="AnalisisObligatorio" type="xs:boolean" />
       <xs:element minOccurs="0" name="CPE" type="xs:boolean" />
       <xs:element minOccurs="0" name="CTG" nillable="true" type="xs:string" />
@@ -31,6 +32,7 @@
       <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Microsoft.ApplicationServer.StoreManagement.Query" minOccurs="0" name="Condicion" type="q2:InstanceCondition" />
       <xs:element minOccurs="0" name="Cuit" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DatosProximaActividad" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DiferenciaPesoNeto" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Entregador" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="EsCuerposExtranos" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsEspecial" type="xs:boolean" />
@@ -39,6 +41,7 @@
       <xs:element minOccurs="0" name="EsHumedad" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsProteinaAlta" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsProteinaBaja" type="xs:boolean" />
+      <xs:element minOccurs="0" name="EsProteinaMedia" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsSemillaSoja" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsSustentable" type="xs:boolean" />
       <xs:element minOccurs="0" name="EstaDemorado" type="xs:boolean" />
@@ -61,6 +64,7 @@
       <xs:element minOccurs="0" name="PagaTicketMunicipal" type="xs:boolean" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Procedencia" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Proteina" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Proveedor" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProximaAccion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PuestoDeTrabajo" nillable="true" type="xs:string" />
@@ -349,6 +353,9 @@
       <xs:element minOccurs="0" name="NumeroPrecinto" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Observacion" nillable="true" type="xs:string" />
       <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="OrigenVehiculo" type="q9:OrigenVehiculo" />
+      <xs:element minOccurs="0" name="PagadorFlete" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PagadorFleteCuil" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PagadorFleteId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Prestador" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PrestadorCodigoSap" nillable="true" type="xs:string" />
@@ -359,6 +366,9 @@
       <xs:element minOccurs="0" name="ProvinciaCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProvinciaDescripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProvinciaId" type="xs:int" />
+      <xs:element minOccurs="0" name="RepresentanteRecibidor" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RepresentanteRecibidorCuil" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RepresentanteRecibidorId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="RequiereAnexoInase" type="xs:boolean" />
       <xs:element minOccurs="0" name="RequiereCupo" type="xs:boolean" />
       <xs:element minOccurs="0" name="RequiereNumeroAduana" type="xs:boolean" />
@@ -551,6 +561,7 @@
       <xs:element minOccurs="0" name="CertificadoCOE" nillable="true" type="xs:long" />
       <xs:element minOccurs="0" name="ChoferCuit" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ChoferRazonSocial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CodigoEstablecimientoSustentable" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CorredorCuit" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CorredorRazonSocial" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CuitCorredorVentaSecundaria" nillable="true" type="xs:string" />
@@ -576,6 +587,7 @@
       <xs:element minOccurs="0" name="Domicilio" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="EntregadorCuit" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="EntregadorRazonSocial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="EsSustentable" type="xs:boolean" />
       <xs:element minOccurs="0" name="Establecimiento" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Estado" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="FechaArribo" type="xs:dateTime" />
@@ -1162,6 +1174,17 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="MotivosLimpiezaDto" nillable="true" type="tns:MotivosLimpiezaDto" />
+  <xs:complexType name="LogCambioDeModalidadCalleDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="CalleId" type="xs:int" />
+      <xs:element minOccurs="0" name="Fecha" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Motivo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Usuario" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="LogCambioDeModalidadCalleDto" nillable="true" type="tns:LogCambioDeModalidadCalleDto" />
   <xs:complexType name="ImpEtiquetaPuertoDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="Bodega" nillable="true" type="xs:string" />
@@ -1307,7 +1330,7 @@
   <xs:complexType name="MuestraEnvioACamaraAuditoriaDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="Actividad" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="CPE" type="xs:boolean" />
+      <xs:element minOccurs="0" name="CPE" nillable="true" type="xs:boolean" />
       <xs:element minOccurs="0" name="CTG" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CamaraDesc" nillable="true" type="xs:string" />
       <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q14:CamaraFormatoDeArchivo" />
@@ -1357,7 +1380,9 @@
       <xs:element minOccurs="0" name="Perito" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PesoNeto" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Procedencia" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcedenciaCodigoPostal" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="ProcedenciaCodigoSap" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcedenciaSubcodigoPostal" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Proveedor" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProveedorCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="RtteComercial" nillable="true" type="xs:string" />
@@ -1425,6 +1450,7 @@
       <xs:element minOccurs="0" name="ValorEspecialMaximo" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="ValorEspecialMinimo" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="ValorProteina" nillable="true" type="xs:decimal" />
+      <xs:element minOccurs="0" name="ValorProteinaMedia" nillable="true" type="xs:decimal" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="CaracteristicaDeCalidadDto" nillable="true" type="tns:CaracteristicaDeCalidadDto" />
@@ -2027,6 +2053,7 @@
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="ImprimeCartaPorte" type="xs:boolean" />
       <xs:element minOccurs="0" name="ImprimeTarjetaDeAcceso" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IntercomunicadorCodigo" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="InvisibleEnListaDeTareas" type="xs:boolean" />
       <xs:element minOccurs="0" name="Lector" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="LectorQr" nillable="true" type="xs:string" />
@@ -2908,7 +2935,7 @@
   <xs:complexType name="MuestraEnvioACamaraBiotecnoligiaDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="Actividad" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="CPE" type="xs:boolean" />
+      <xs:element minOccurs="0" name="CPE" nillable="true" type="xs:boolean" />
       <xs:element minOccurs="0" name="CTG" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CamaraDesc" nillable="true" type="xs:string" />
       <xs:element xmlns:q67="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q67:CamaraFormatoDeArchivo" />
@@ -2957,7 +2984,9 @@
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PesoNeto" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Procedencia" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcedenciaCodigoPostal" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="ProcedenciaCodigoSap" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcedenciaSubcodigoPostal" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Proveedor" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProveedorCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="RtteComercial" nillable="true" type="xs:string" />
@@ -5025,7 +5054,7 @@
   <xs:complexType name="MuestraEnvioACamaraDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="Actividad" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="CPE" type="xs:boolean" />
+      <xs:element minOccurs="0" name="CPE" nillable="true" type="xs:boolean" />
       <xs:element minOccurs="0" name="CTG" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CaladoId" type="xs:int" />
       <xs:element minOccurs="0" name="CamaraDesc" nillable="true" type="xs:string" />
@@ -5074,7 +5103,9 @@
       <xs:element minOccurs="0" name="PesoNeto" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="PesoNetoFecha" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Procedencia" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcedenciaCodigoPostal" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="ProcedenciaCodigoSap" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcedenciaSubcodigoPostal" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Proveedor" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProveedorCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="RtteComercial" nillable="true" type="xs:string" />

@@ -112,6 +112,9 @@ namespace SustitucionMOAExternalAPI.Controllers
 
                     FotoCpBase64 = x.FotoCp?.ImagenBase64,
                     FotoCpNombreArchivo = x.FotoCp?.NombreArchivo,
+
+                    EsSustentable = x.EsSustentable,
+                    CodigoEstablecimientoSustentable = x.CodigoEstablecimientoSustentable,
                     
                     Caracteristicas = x.Calidad.Select(y=> new CaracteristicasCartaPorteOtrosPuertosDto()
                     {
@@ -249,7 +252,9 @@ namespace SustitucionMOAExternalAPI.Controllers
         public int PlantaOrigen { get; set; }
         public string DomicilioOrigen { get; set; }
         public string CuitOrigen { get; set; }
-        
+
+        public bool EsSustentable { get; set; }
+        public string CodigoEstablecimientoSustentable { get; set; }
     }
 
 

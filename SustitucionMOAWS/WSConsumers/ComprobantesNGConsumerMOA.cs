@@ -17,7 +17,7 @@ namespace SustitucionMOAWS.WSConsumers
     {
         SI_MPMF_MOAOP_COMPROB_NOGRANOSClient service = new SI_MPMF_MOAOP_COMPROB_NOGRANOSClient();
 
-        public ComprobantesNGWSMOAResponse request(string proveedor, List<FechaWS> listaFechas)
+        public object request(string proveedor, List<FechaWS> listaFechas)
          {
             try
             {
@@ -40,7 +40,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         }
 
-        protected virtual ComprobantesNGWSMOAResponse map(ZMPES5940[] comprobantes, BAPIRET2[] error)
+        protected virtual object map(ZMPES5940[] comprobantes, BAPIRET2[] error)
         {
             ComprobantesNGWSMOAResponse result = new ComprobantesNGWSMOAResponse();
 
@@ -52,7 +52,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             foreach (var comprobante in comprobantes)
             {
-                ComprobanteNGDto comprobanteDto = new ComprobanteNGDto()
+                ComprobanteView comprobanteView = new ComprobanteView()
                 {
                     Sociedad = comprobante.BUKRS, //BUKRS: corresponde a la sociedad MOA que no se utilizará para la web
                     CodigoProveedorSAP = comprobante.LIFNR, //LIFNR: corresponde al código de proveedor en SAP
@@ -74,7 +74,7 @@ namespace SustitucionMOAWS.WSConsumers
                     ColorEstado = EstadoComprobantesNGExtensions.ObtenerColorEstado((EstadoComprobantesNG)int.Parse(comprobante.STATUS))
                 };
 
-               result.comprobantes.Add(comprobanteDto);
+               result.comprobantes.Add(comprobanteView);
             }
 
             if(result.comprobantes.Any(x => x.CodigoEstadoDocumento == EstadoComprobantesNG.ListoValidacion))
@@ -89,46 +89,72 @@ namespace SustitucionMOAWS.WSConsumers
         }
     }
 
-    //public class LiquidacionesExcelNGConsumerMOA : LiquidacionesNGConsumerMOA
-    //{
+    public class ComprobantesExcelNGConsumerMOA : ComprobantesNGConsumerMOA
+    {
 
-    //    protected override object map(ZMPES4910 error, ZMPES6110[] compras, ZMPES6100[] salidas)
-    //    {
-    //        LiquidacionExcelNGWSMOAResponse result = new LiquidacionExcelNGWSMOAResponse();
+        protected override object map(ZMPES5940[] comprobantes, BAPIRET2[] error)
+        {
+            ComprobantesExcelNGWSMOAResponse result = new ComprobantesExcelNGWSMOAResponse();
 
-    //        List<ZMPES6110> comprasList = compras.ToList();
 
-    //        if (error != null)
-    //        {
-    //            result.error.codigo = error.CODIGO;
-    //            result.error.descripcion = error.DESCRIPCION;
-    //            result.error.tipo = error.TIPO;
-    //        }
+            if (error != null && error.Length > 0)
+            {
+                result.error.codigo = error[0].MESSAGE;
+                result.error.descripcion = error[0].MESSAGE;
+                //result.error.tipo = error[0].TIPO;
+            }
 
-    //        foreach (ZMPES6100 salida in salidas)
-    //        {
+            foreach (ZMPES5940 comprobante in comprobantes)
+            {
+                ComprobanteNGLista comprobanteView = new ComprobanteNGLista()
+                {
+                    //{ "Fecha de comprobante", "Tipo", "Comprobante", "Total", "Orden de Compra", "Estado" }
 
-    //            Salida salidaNew = new Salida()
-    //            {
-    //                id = salida.ID,
-    //                comprobante = salida.COMPROBANTE,
-    //                moneda = salida.MONEDA,
-    //                importe = salida.IMPORTE,
-    //                observaciones = salida.OBSERVACIONES,
-    //                tipo = salida.TIPO,
-    //                compra = "",
-    //                vencimiento = SAPFormatter.FormatearFecha(salida.VENCIMIENTO)
-    //            };
+                    FechaDocumento = SAPFormatter.FormatearFecha(comprobante.BLDAT), //BLDAT: corresponde a la fecha de documento del documento // Fecha comprobante
+                    DescripcionTipoDocumento = comprobante.LTEXT, //BLART: corresponde al tipo de documento
+                    NumeroLegalDocumento = comprobante.XBLNR, //XBLNR: corresponde al número legal del documento
+                    TotalMasMoneda = SAPFormatter.FormatearMonto(comprobante.GROSS_AMOUNT, comprobante.WAERS),
+                    OrdenDeCompra = comprobante.EBELN, //EBELN: corresponde a la orden de compra
+                    CodigoEstadoDocumentoDescripcion = EstadoComprobantesNGExtensions.ToFriendlyString((EstadoComprobantesNG)int.Parse(comprobante.STATUS)),
 
-    //            ZMPES6110 compra = comprasList.Find(c => c.ID == salidaNew.id);
-    //            if (compra != null) {
-    //                salidaNew.compra = compra.OCOMPRA;
-    //            }
-    
-    //            result.liquidaciones.Add(salidaNew);
-    //        }
+                };
 
-    //        return result;
-    //    }
-    //}
+                result.comprobantes.Add(comprobanteView);
+            }
+
+
+            return result;
+        }
+
+
+        //LiquidacionExcelWSMOAResponse result = new LiquidacionExcelWSMOAResponse();
+
+        //result.error = error;
+
+        //    foreach (ZMPES4980 liquidacion in salidas)
+        //    {
+        //        result.liquidaciones.Add(new Liquidacion()
+        //{
+        //    comprobante = liquidacion.COMPROBANTE,
+        //            contrato = liquidacion.CONTRATO,
+        //            emitido = SAPFormatter.FormatearFecha(liquidacion.EMITIDO),
+        //            moneda = liquidacion.MONEDA,
+        //            importe = liquidacion.IMPORTE,
+        //            iva = liquidacion.IVA,
+        //            unidadLiquidado = liquidacion.UNIME,
+        //            liquidado = liquidacion.LIQUIDADO,
+        //            observaciones = liquidacion.OBSERVACIONES,
+        //            producto = liquidacion.PRODUCTO,
+        //            tipo = liquidacion.TIPO,
+        //            secuencia = liquidacion.SECUENCIA,
+        //            solapa = liquidacion.SOLAPA,
+        //            fijacion = liquidacion.FIJACION
+        //        }
+        //        );
+        //    }
+
+        //    return result;
+        //}
+        
+    }
 }

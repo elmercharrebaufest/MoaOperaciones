@@ -5,13 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using SustitucionMOAModel.Enums;
 
-namespace SustitucionMOAModel.Dto
+namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos
 {
-    public class ComprobanteNGDto
+    public class ComprobanteNGLista
     {
-      
-        //{ "Fecha de comprobante", "Tipo", "Comprobante", "Total", "Orden de Compra", "Estado" }, "Reporte Comprobantes No Registrados");
+        public string FechaDocumento { get; set; } //BLDAT: corresponde a la fecha de documento del documento // Fecha comprobante
+        public string DescripcionTipoDocumento { get; set; } //LTEXT: corresponde a la descripción del tipo de documento
+        public string NumeroLegalDocumento { get; set; } //XBLNR: corresponde al número legal del documento
+        public string TotalMasMoneda { get; set; }
+        public string OrdenDeCompra { get; set; } //EBELN: corresponde a la orden de compra
+        public string CodigoEstadoDocumentoDescripcion { get; set; }
+       
+    }
 
+    public class ComprobanteView : ComprobanteNGLista
+    {
         public string FechaDocumento { get; set; } //BLDAT: corresponde a la fecha de documento del documento // Fecha comprobante
         public string DescripcionTipoDocumento { get; set; } //LTEXT: corresponde a la descripción del tipo de documento
         public string NumeroLegalDocumento { get; set; } //XBLNR: corresponde al número legal del documento
@@ -33,11 +41,5 @@ namespace SustitucionMOAModel.Dto
         public string CodigoRolDocumento { get; set; } //CURR_ROLE: corresponde al código del rol que tiene asignado este documento
         public string CodigoMotivoRechazo { get; set; } //DELREASON: corresponde al código del motivo de rechazo
 
-        public ComprobanteNGDto() { }
-
-
-
-
     }
 }
-

@@ -52,6 +52,16 @@
                     </div>
                     <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
                 </div>
+                <div id="searchPedido" class="col-xs-12 col-sm-6 col-md-15">
+                    Por estado:
+                    <div class="styled-select ">
+                      <select [(ngModel)]="filtroEstados" [value]="Todos">
+                        <option value="Todos">Todos</option>
+                        <option value="Aprobada">Aprobadas</option>
+                        <option value="Observada">Observadas</option>
+                      </select>
+                    </div>
+                  </div>
             </div>
         </div>
         <!-- End Search-->
@@ -130,19 +140,22 @@
                                 </div>     
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" ></th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('estado')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('solapa')">
                                 Estado
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'estado' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'estado' && orderDirection < 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'solapa' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'solapa' && orderDirection < 0 }"></i>
                                     </span>
                                 </div> 
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let liquidacion of data.liquidaciones | customFilter : 'observaciones' : observacionSelected | customFilterOr : 'compra' : 'comprobante' : filtroComprobanteOContrato | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                        <tr *ngFor="let liquidacion of data.liquidaciones | customFilter : 'observaciones' : observacionSelected 
+                        | customFilterOr : 'compra' : 'comprobante' : filtroComprobanteOContrato 
+                        | customFilter : 'estadoRegistradas' : (filtroEstados  == 'Todos' ? '' : filtroEstados) 
+                        | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
                             <td>{{liquidacion.fechaDocumento}}</td>
                             <td>{{liquidacion.vencimiento}}</td>
                             <td>{{liquidacion.tipo}}</td>
@@ -151,7 +164,7 @@
                             <td>{{liquidacion.compra}}</td>
                             <td>{{liquidacion.observaciones | shortenString }}</td>
                             <td><span class="fa  fa-info-circle" toggle="tooltip" title="{{liquidacion.observaciones}}"></span></td>
-                            <td>{{liquidacion.estado}}</td>
+                            <td [ngStyle]="{'color': liquidacion.estadoRegistradas == 'Aprobada' ? 'green' : 'orange'}">{{liquidacion.estadoRegistradas}}</td>
                         </tr>
                     </tbody>
                 </table>
