@@ -31,6 +31,8 @@ namespace SustitucionMOAUtils.Interfaces
         string downloadPagas(string proveedor, string fechaInicio, string fechaFin);
         string downloadAprobadasNG(string proveedor, string fechaInicio, string fechaFin);
         string downloadObservadasNG(string proveedor, string fechaInicio, string fechaFin);
+        string downloadRegistradosNG(string proveedor, string fechaInicio, string fechaFin);
+        string downloadPendienteRegistroNG(string proveedor, string fechaInicio, string fechaFin);
         string downloadPagasNG(string proveedor, string fechaInicio, string fechaFin);
         VinculaDetalleWSMOAResponse getVinculacion(string proveedor, string contrato, string secuencia);
         string descargaVinculacion(string proveedor, string contrato, string secuencia);

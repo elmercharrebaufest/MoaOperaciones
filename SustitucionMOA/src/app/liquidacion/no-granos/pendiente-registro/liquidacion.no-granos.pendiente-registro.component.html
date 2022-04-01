@@ -64,8 +64,6 @@
                       </select>
                     </div>
                   </div>
-
-
             </div>
         </div>
         <!-- End Search-->
@@ -137,8 +135,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let comprobante of data.comprobantes  | customFilter : 'CodigoEstadoDocumentoDescripcion' : (filtroEstados  == 'Todos' ? '' : filtroEstados)">
-                                                                         <!-- customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected)   -->
+                        <tr *ngFor="let comprobante of data.comprobantes  | customFilterOr : 'OrdenDeCompra' : 'NumeroLegalDocumento' : filtroComprobanteOContrato 
+                        | customFilter : 'CodigoEstadoDocumentoDescripcion' : (filtroEstados  == 'Todos' ? '' : filtroEstados) 
+                        | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">                                      
                             <td>{{comprobante.FechaDocumento}}</td>
                             <td>{{comprobante.DescripcionTipoDocumento}}</td>
                             <td>{{comprobante.NumeroLegalDocumento}}</td>
