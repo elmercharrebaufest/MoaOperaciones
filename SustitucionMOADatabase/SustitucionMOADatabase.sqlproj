@@ -163,6 +163,7 @@
     <None Include="scripts\PostDeployment\PermisoPorRolConsulta.sql" />
     <None Include="scripts\PostDeployment\RolesConsulta.sql" />
     <None Include="scripts\PostDeployment\RolPermisoPorRolConsulta.sql" />
+    <Build Include="DBO\Tables\LogActualizarToneladasAprobadasCampo.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
