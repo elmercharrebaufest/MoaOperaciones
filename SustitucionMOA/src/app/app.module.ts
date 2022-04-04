@@ -16,7 +16,7 @@ import { Ng2AutoCompleteModule } from "ng2-auto-complete";
 import { SelectModule } from "ng2-select";
 import { NgxMaskModule } from "ngx-mask";
 import { ModalModule } from "ngx-modal";
-
+import { MultiSelectModule } from 'primeng/multiselect';
 import { NgxPaginationModule } from "ngx-pagination";
 import { AduanaService } from "./aduana/aduana.service";
 import { AltasComponent } from "./alta-proveedores/altas/altas.component";
@@ -89,6 +89,7 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     BlockUIModule.forRoot(),
     ComprasModule,
     ConfirmDialogModule,
+    MultiSelectModule
   ],
   declarations: [
     AppComponent,
