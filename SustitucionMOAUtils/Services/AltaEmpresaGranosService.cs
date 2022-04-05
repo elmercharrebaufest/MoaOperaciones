@@ -1036,9 +1036,5 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        SustitucionMOAModel.Entities.Localidad IAltaEmpresaGranosService.GetLocalidad(int localidadId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

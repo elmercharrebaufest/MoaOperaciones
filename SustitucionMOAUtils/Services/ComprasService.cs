@@ -733,7 +733,7 @@ namespace SustitucionMOAUtils.Services
                     NumeroSolp = x.NroSolp
                 };
 
-                ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+                //ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
 
                 x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
             }
@@ -1618,9 +1618,9 @@ namespace SustitucionMOAUtils.Services
 
                             TablaSap tipoImputacionSubposicion =
                                 tipoImputacionPosicion == null || imputacionSubposicion == null || tipoImputacionSAP == null ? null :
-                                tipoImputacionPosicion.Codigo == "K" ? centrosDeCosto.SingleOrDefault(ceco => Int32.Parse(ceco.CodigoSap) == Int32.Parse(tipoImputacionSAP.CentroDeCosto)) :
-                                tipoImputacionPosicion.Codigo == "F" ? ordenes.SingleOrDefault(o => o.Codigo == tipoImputacionSAP.IdOrden) :
-                                tipoImputacionPosicion.Codigo == "Y" ? centrosDeBeneficio.SingleOrDefault(cebe => cebe.CodigoSap == tipoImputacionSAP.CentroDeBeneficio) :
+                                tipoImputacionPosicion.Codigo == "K" ? centrosDeCosto.FirstOrDefault(ceco => Int32.Parse(ceco.CodigoSap) == Int32.Parse(tipoImputacionSAP.CentroDeCosto)) :
+                                tipoImputacionPosicion.Codigo == "F" ? ordenes.FirstOrDefault(o => o.Codigo == tipoImputacionSAP.IdOrden) :
+                                tipoImputacionPosicion.Codigo == "Y" ? centrosDeBeneficio.FirstOrDefault(cebe => cebe.CodigoSap == tipoImputacionSAP.CentroDeBeneficio) :
                                 null;
 
                             TablaSap cuentaSolpSap =
