@@ -5,9 +5,8 @@ import { LiquidacionNGRegistradoComponent } from './registrada/liquidacion.no-gr
 
 const routes: Routes = [
     { path: '', component: LiquidacionNGRegistradoComponent },
-    { path: '', component: LiquidacionNGPendienteRegistroComponent },
     {
-      path: "registrado",
+      path: "registrada",
       component: LiquidacionNGRegistradoComponent,
     },
     {
