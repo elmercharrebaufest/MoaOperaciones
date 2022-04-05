@@ -99,7 +99,7 @@
               <!--<th *ngIf="esComercial">Boton</th>-->
               <th>Id</th>
               <!-- <th *ngIf="esMesaFas || esComercial">Estado entrega</th> -->
-              <th *ngIf="esMesaFas || esInterno">Entrega</th>
+              <th *ngIf="esTercero || esMesaFas || esInterno">Entrega</th>
               <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas">Cliente</th>
               <th *ngIf="esMesaFas">Cuit cliente</th>
               <th *ngIf="esInterno">Corredor</th>
@@ -130,7 +130,7 @@
               <!--<td *ngIf="esComercial">{{ordenDeCarga.Boton}}</td>-->
               <td>{{ordenDeCarga.Id}}</td>
               <!-- <td *ngIf="esMesaFas || esComercial">{{ordenDeCarga.EstadoEntrega}}</td> -->
-              <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
+              <td *ngIf="esTercero || esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.RazonSocialCliente}}</td>
               <td *ngIf="esMesaFas">{{ordenDeCarga.CUITCliente}}</td>
               <td *ngIf="esInterno">{{ordenDeCarga.RazonSocialCorredor}}</td>
