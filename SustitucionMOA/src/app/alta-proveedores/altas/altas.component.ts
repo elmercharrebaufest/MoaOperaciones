@@ -85,7 +85,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     contieneDocumentacionFisica: number = 0;
     puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
-
+    puedeAltaInternaNoGranos: boolean = this.isAuthorized('ALTA INTERNA NO GRANOS');
     ngOnInit(): void {
         this.getEstados();
         this.navService.setSeccionList([]);
