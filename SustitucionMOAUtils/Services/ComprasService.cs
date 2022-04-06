@@ -1581,9 +1581,13 @@ namespace SustitucionMOAUtils.Services
                         var numerosExistentes = subPosicionesDeLaPosicion.Select(a => Int32.Parse(a.SumeroSubPosicion) / 10).ToList();
 
                         var eliminadas = posicionEntity.Subposiciones.Where(a => !numerosExistentes.Contains(a.Numero)).Select(a => a.Numero);
+                        Logger.Log.Info($"ObtenerSolpesDesdeSAPJob numerosExistentes " + numerosExistentes.ToJson());
+                        Logger.Log.Info($"ObtenerSolpesDesdeSAPJob posicionEntity.Subposiciones " + posicionEntity.Subposiciones.Select(a => a.Numero).ToJson());
+                        Logger.Log.Info($"ObtenerSolpesDesdeSAPJob eliminadas " + eliminadas.Count());
                         foreach (var nro in eliminadas)
                         {
                             var item = posicionEntity.Subposiciones.Where(a => nro == a.Numero).Single();
+                            Logger.Log.Info($"ObtenerSolpesDesdeSAPJob subPosicionesBorradas.Add " + item.Id);
                             subPosicionesBorradas.Add(item.Id);
                         }
                         int subposicionIndice = 0;
