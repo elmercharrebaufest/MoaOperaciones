@@ -17,10 +17,12 @@ namespace SustitucionMOAWS.WSConsumers
     {
         SI_MPMF_MOAOP_RECEPCIONESClient service = new SI_MPMF_MOAOP_RECEPCIONESClient();
 
-        public object request(string proveedor, List<FechaWS> fechas)
+        public object request(string proveedor, List<FechaWS> fechas, List<string> cartaPortes)
         {
             try
             {
+                cartaPortes = cartaPortes ?? new List<string>();
+
                 ZMPES4110[] carta_porte_in = new ZMPES4110[] { };
                 ZMPES4130[] centros_in = new ZMPES4130[] { };
                 ZMPES4090[] materiales_in = new ZMPES4090[] { };
@@ -35,6 +37,9 @@ namespace SustitucionMOAWS.WSConsumers
                         FECHA_OP_HASTA = SAPFormatter.PrepararFecha(fecha.fechaFin)
                     });
                 }
+
+                carta_porte_in = cartaPortes.Select(x => new ZMPES4110 { CARTA_PORTE = x }).ToArray();
+
                 ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
                 //ZmprfcGolRecepciones requestInfo = new ZmprfcGolRecepciones { PeProveedor = proveedor, TFechaDescargaIn = fechasSAP.ToArray() };
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
