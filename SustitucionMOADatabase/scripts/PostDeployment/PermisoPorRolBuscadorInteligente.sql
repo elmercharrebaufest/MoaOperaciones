@@ -41,8 +41,11 @@ GO
  DECLARE @IdRolNoGrnos INT =(SELECT TOP 1 Id from Rol where Codigo='NOGRAN')
 IF EXISTS (SELECT TOP 1 1 FROM PermisoPorRol WHERE Permiso = 'MOSTRAR BUSCADOR INTELIGENTE') 
 BEGIN 
+   IF NOT EXISTS (SELECT TOP 1 1 FROM RolPermisoPorRol WHERE PermisoPorRol_Id = @IdPermiso) 
+BEGIN 
    INSERT INTO RolPermisoPorRol (Rol_Id, PermisoPorRol_Id) 
    SELECT DISTINCT ROL_ID,@IdPermiso FROM RolPermisoPorRol WHERE Rol_Id <> @IdRolNoGrnos
+END
 END
 GO
 COMMIT TRAN
