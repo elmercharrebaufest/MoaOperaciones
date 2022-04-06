@@ -189,6 +189,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 .subscribe(
                     (result) => {
                         this.spinnerComponent.hideIt();
+                        this.blockUI.stop();
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (
@@ -213,6 +214,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     (error) => {
                         this.spinnerComponent.hideIt();
                         this.mensajeComponent.setErrorMsg(error.message);
+                        this.blockUI.stop();
                     }
                 );
 
