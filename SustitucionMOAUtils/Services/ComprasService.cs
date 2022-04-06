@@ -1666,6 +1666,8 @@ namespace SustitucionMOAUtils.Services
 
                 }
 
+                Logger.Log.Info($"ObtenerSolpesDesdeSAPJob subPosicionesBorradas " + subPosicionesBorradas.Count());
+
                 if (subPosicionesBorradas.Count() > 0)
                 {
                     var subposborradas = repositorio.Listar<SolpSubposicion>(x => subPosicionesBorradas.Contains(x.Id));
