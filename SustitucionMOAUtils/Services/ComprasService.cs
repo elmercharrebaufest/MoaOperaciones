@@ -727,7 +727,7 @@ namespace SustitucionMOAUtils.Services
             {
                 ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
                 {
-                    FechaDesde = Convert.ToDateTime(new DateTime(2010,01,01)),
+                    FechaDesde = Convert.ToDateTime(new DateTime(2010, 01, 01)),
                     FechaHasta = Convert.ToDateTime(DateTime.Now.Date.AddDays(1)),
                     CreadoPorUsuarios = new List<string>(),
                     NumeroSolp = x.NroSolp
@@ -1427,6 +1427,8 @@ namespace SustitucionMOAUtils.Services
 
                 List<TablaSap> ordenes;
 
+                List<int> subPosicionesBorradas = new List<int>();
+
                 List<string> tablasSapAConsultar = new List<string>
             {
                 TablasSap.Moneda,
@@ -1487,7 +1489,7 @@ namespace SustitucionMOAUtils.Services
                 //int? estadoIncompletoId = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == EstadoDocumentoSolp.Incompleto.Code())?.Id;
 
                 List<string> numeroSolicitudes = result.Posiciones.Select(a => a.NumeroSolicitud).Distinct().ToList();
-                var solpdsDB = repositorio.Listar<Solp>(s => numeroSolicitudes.Contains( s.NroSolp));
+                var solpdsDB = repositorio.Listar<Solp>(s => numeroSolicitudes.Contains(s.NroSolp));
                 foreach (var posicion in result.Posiciones)
                 {
                     try
@@ -1576,7 +1578,14 @@ namespace SustitucionMOAUtils.Services
                         IList<SuposicionServicioSAP> subPosicionesDeLaPosicion =
                             result.ServiciosSuposiciones.Where(x => x.NumeroPosicion == posicion.NumeroPosicion &&
                                                                     x.NumeroSolicitud == posicion.NumeroSolicitud).ToList();
+                        var numerosExistentes = subPosicionesDeLaPosicion.Select(a => Int32.Parse(a.SumeroSubPosicion) / 10).ToList();
 
+                        var eliminadas = posicionEntity.Subposiciones.Where(a => !numerosExistentes.Contains(a.Numero)).Select(a => a.Numero);
+                        foreach (var nro in eliminadas)
+                        {
+                            var item = posicionEntity.Subposiciones.Where(a => nro == a.Numero).Single();
+                            subPosicionesBorradas.Add(item.Id);
+                        }
                         int subposicionIndice = 0;
 
                         foreach (var subPosicion in subPosicionesDeLaPosicion)
@@ -1586,14 +1595,15 @@ namespace SustitucionMOAUtils.Services
 
                             if (posicionEntity.Subposiciones != null)
                             {
-                                if (subposicionIndice + 1 > posicionEntity.Subposiciones.Count())
-                                {
+                                //if (subposicionIndice + 1 > posicionEntity.Subposiciones.Count())
+                                //{
 
-                                }
-                                else
-                                {
-                                    subPosicionEntity = posicionEntity.Subposiciones.ToList()[subposicionIndice];
-                                }
+                                //}
+                                //else
+                                //{
+                                //    subPosicionEntity = posicionEntity.Subposiciones.ToList()[subposicionIndice];
+                                //}
+                                subPosicionEntity = posicionEntity.Subposiciones.Where(a => a.Numero == indiceSubPosicion).SingleOrDefault();
                             }
 
                             if (subPosicionEntity == null)
@@ -1656,6 +1666,11 @@ namespace SustitucionMOAUtils.Services
 
                 }
 
+                if (subPosicionesBorradas.Count() > 0)
+                {
+                    var subposborradas = repositorio.Listar<SolpSubposicion>(x => subPosicionesBorradas.Contains(x.Id));
+                    repositorio.RemoverTodos<SolpSubposicion>(subposborradas);
+                }
                 repositorio.GuardarCambios();
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin");
 
