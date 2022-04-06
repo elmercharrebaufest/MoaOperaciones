@@ -16,6 +16,10 @@ import { RelacionConEmpleados } from '../../common/models//RelacionConEmpleados'
 import { RelacionConFuncionarios } from '../../common/models/relacionConFuncionarios';
 import { formatDate } from '@angular/common';
 import * as XLSX from 'xlsx';
+import { forEach } from '@angular/router/src/utils/collection';
+import { Key } from 'selenium-webdriver';
+import { element } from '@angular/core/src/render3';
+import { SelectItem } from 'primeng/api';
 declare var $: any;
 
 
@@ -63,16 +67,15 @@ export class AltasComponent extends BaseComponent implements OnInit {
     mensajeSIPERGuardado: string = "";
     idTipoProveedor: number = 0;
     pantallaEditarAlta: boolean = false;
-
+    estadosSelected: string[] = [];
+    datosAux: any[];
     tipoCambiario: number = 1;
     rubros: any;
     IdRubro: number;
     facturacionAnual: number;
     nosisObligatorio: boolean;
     RealizarAnalisisNOSIS: boolean;
-
     listaArchivos: Array<Archivo> = [];
-
     empleados: Array<RelacionConEmpleados> = [];
     funcionarios: Array<RelacionConFuncionarios> = [];
     relacionConEmpleados: string = "";
@@ -81,8 +84,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     mailVendedor: string = "";
     razonSocial: string = "";
     codigoCliente: string;
-
-
+    descripcionEstadoAlta: SelectItem[];
     contieneDocumentacionFisica: number = 0;
     puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
     puedeAltaInternaNoGranos: boolean = this.isAuthorized('ALTA INTERNA NO GRANOS');
@@ -113,6 +115,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.data = result.data;
+                        this.datosAux = this.data;
 
                         setTimeout(function () {
                             $('[data-toggle="popover"]').popover({ trigger: 'focus', delay: { "hide": 3000 } });
@@ -178,6 +181,11 @@ export class AltasComponent extends BaseComponent implements OnInit {
                         let estadosFinales = result.finales;
                         let estadosAgrupados = [{ Key: estadosIntermedios.map(x => x.Key).join("|"), Value: 'Altas en gestión' }, { Key: estadosFinales.map(x => x.Key).join("|"), Value: 'Altas finalizadas' }]
                         this.estados = estadosIntermedios.concat(estadosFinales).concat(estadosAgrupados);
+                        this.descripcionEstadoAlta = [];
+                        this.estados.forEach(x => this.descripcionEstadoAlta.push({
+                            label: x.Value, value: x.Key
+                        }));
+                     
                         this.getEmpresa();
                     }
                 },
@@ -195,6 +203,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
         return false; //<-- Prevent Refresh
     }
+
     isVisible() {
         return this.data && this.data.length != 0;
     }
@@ -209,7 +218,15 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.orderedByColumn = column;
         }
     }
+    filtrarListadoAlta() {
+        debugger;
+        this.data = this.datosAux;
 
+        if (this.estadosSelected.length < 1 || this.estadosSelected == null) {
+        } else {
+            this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.EstadoAprobacionDescripcion) >= 0);
+        }
+    }
     guardarSIPER() {
         this.spinnerModal.showIt();
         this.subscription = this.altaEmpresaService.GuardarSIPER(this.empresaSeleccionada.Id, this.empresaSeleccionada.EstadoSIPER).subscribe(
