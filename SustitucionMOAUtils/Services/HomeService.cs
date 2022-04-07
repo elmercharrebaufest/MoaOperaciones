@@ -242,7 +242,7 @@ namespace SustitucionMOAUtils.Services
 
                         if (cartasPorteDescargas == null)
                         {
-                            cartasPorteDescargas = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, new List<FechaWS>(), new List<string> { "010101781256" });
+                            cartasPorteDescargas = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, new List<FechaWS>(), new List<string> { palabra });
                         }
                     }
                     catch (Exception e)
