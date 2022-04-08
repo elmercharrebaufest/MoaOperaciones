@@ -688,9 +688,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 this.displayErrorSAP = true;
                             }
 
-                            if (this.solpActual.nroSolp) {
-                                this.displaySAPEditar = true;
-                            }
+                            // if (this.solpActual.nroSolp) {
+                            //     this.displaySAPEditar = true;
+                            // }
                         }
                     }
                     this.disabledSave = false;
