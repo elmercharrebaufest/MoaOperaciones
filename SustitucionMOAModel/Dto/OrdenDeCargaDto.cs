@@ -25,7 +25,6 @@ namespace SustitucionMOAModel.Dto
         public bool EsFacturaAnticipada { get; set; }
         public string Fecha { get; set; }
         public string PatenteChasis { get; set; }
-        public string FechaCarga { get; set; }
     }
 
     public class OrdenDeCargaEditarDto
