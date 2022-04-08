@@ -37,7 +37,7 @@
           </div>
         </div>
 
-        <div *ngIf="!esCliente" [hidden]="esCliente" id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
+        <div *ngIf="!esCliente" [hidden]="esCliente" [hidden]="esCorredor" id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Estado:</p>
           <div>
             <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected" selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListado()" appendTo="body">
@@ -99,7 +99,7 @@
               <!--<th *ngIf="esComercial">Boton</th>-->
               <th>Id</th>
               <!-- <th *ngIf="esMesaFas || esComercial">Estado entrega</th> -->
-              <th *ngIf="esTercero || esMesaFas || esInterno">Entrega</th>
+              <th *ngIf="esMesaFas || esInterno">Entrega</th>
               <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas">Cliente</th>
               <th *ngIf="esMesaFas">Cuit cliente</th>
               <th *ngIf="esInterno">Corredor</th>
@@ -130,7 +130,7 @@
               <!--<td *ngIf="esComercial">{{ordenDeCarga.Boton}}</td>-->
               <td>{{ordenDeCarga.Id}}</td>
               <!-- <td *ngIf="esMesaFas || esComercial">{{ordenDeCarga.EstadoEntrega}}</td> -->
-              <td *ngIf="esTercero || esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
+              <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.RazonSocialCliente}}</td>
               <td *ngIf="esMesaFas">{{ordenDeCarga.CUITCliente}}</td>
               <td *ngIf="esInterno">{{ordenDeCarga.RazonSocialCorredor}}</td>
