@@ -81,40 +81,19 @@ namespace SustitucionMOAModel.Enums
             switch (me)
             {
                 case EstadoOrdenDeCarga.Vencida:
+                case EstadoOrdenDeCarga.Anulada:
                     return "Vencida";
                 case EstadoOrdenDeCarga.Pendiente:
                 case EstadoOrdenDeCarga.Confirmado:
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                 case EstadoOrdenDeCarga.EntregaPendiente:
-                    return "Pendiente de carga";
+                    return "En proceso";
                 case EstadoOrdenDeCarga.EntregaGenerada:
-                    return "Listo para retirar";
+                    return "OK";
                 case EstadoOrdenDeCarga.Entregada:
                     return "Completada";
-                case EstadoOrdenDeCarga.Anulada:
-                    return "Anulada";
-                default:
-                    return "Sin estado";
-            }
-        }
-
-        public static string ToUserFriendlyStringCliente(this EstadoOrdenDeCarga me)
-        {
-            switch (me)
-            {
-                case EstadoOrdenDeCarga.Vencida:
-                    return "Vencida";
-                case EstadoOrdenDeCarga.Pendiente:
-                case EstadoOrdenDeCarga.Confirmado:
-                case EstadoOrdenDeCarga.PendienteAprobacionCredito:
-                case EstadoOrdenDeCarga.EntregaPendiente:
-                    return "Pendiente de carga";
-                case EstadoOrdenDeCarga.EntregaGenerada:
-                    return "Listo para retirar";
-                case EstadoOrdenDeCarga.Entregada:
-                    return "Completada";
-                case EstadoOrdenDeCarga.Anulada:
-                    return "Anulada";
+                //case EstadoOrdenDeCarga.Anulada:
+                //    return "Anulada";
                 default:
                     return "Sin estado";
             }

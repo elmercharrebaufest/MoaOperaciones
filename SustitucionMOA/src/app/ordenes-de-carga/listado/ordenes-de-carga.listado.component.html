@@ -115,8 +115,6 @@
               <th *ngIf="esTercero || esComercial || esPuerto || esMesaFas">Destino</th> -->
               <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas"></th>
               <th>Detalle</th>
-              <th *ngIf="esCliente || esCorredor">Fecha</th>
-              <th *ngIf="esCliente || esCorredor">Estado Cliente/Corredor</th>
             </tr>
           </thead>
 
@@ -136,9 +134,9 @@
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.RazonSocialCliente}}</td>
               <td *ngIf="esMesaFas">{{ordenDeCarga.CUITCliente}}</td>
               <td *ngIf="esInterno">{{ordenDeCarga.RazonSocialCorredor}}</td>
-              <td *ngIf="esPuerto || esComercial || esTercero || esInterno">{{ordenDeCarga.DescripcionEstado}}</td>
+              <td *ngIf="esPuerto || esComercial || esTercero || esInterno || esCliente || esCorredor">{{ordenDeCarga.DescripcionEstado}}</td>
               <!-- <td *ngIf="esTercero || esPuerto">{{ordenDeCarga.Orden}}</td> -->
-              <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Fecha}}</td>
+              <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas || esCliente || esCorredor">{{ordenDeCarga.Fecha}}</td>
               <td>{{ordenDeCarga.Contrato}}</td>
               <td *ngIf="esInterno || esMesaFas">{{ordenDeCarga.Pedido}}</td>
               <!-- <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.EstadoPedido}}</td> -->
@@ -155,8 +153,6 @@
                   Ver
                 </a>
               </td>
-              <td *ngIf="esCliente || esCorredor">{{ordenDeCarga.FechaCarga}}</td>
-              <td *ngIf="esCliente || esCorredor">{{ordenDeCarga.Cliente/Corredor}}</td>
             </tr>
           </tbody>
         </table>
