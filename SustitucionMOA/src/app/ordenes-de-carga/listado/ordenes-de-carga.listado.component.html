@@ -37,7 +37,7 @@
           </div>
         </div>
 
-        <div id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
+        <div *ngIf="!esCliente" [hidden]="esCliente" id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Estado:</p>
           <div>
             <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected" (onChange)="filtrarListado()" appendTo="body">
@@ -115,6 +115,8 @@
               <th *ngIf="esTercero || esComercial || esPuerto || esMesaFas">Destino</th> -->
               <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas"></th>
               <th>Detalle</th>
+              <th *ngIf="esCliente || esCorredor">Fecha</th>
+              <th *ngIf="esCliente || esCorredor">Estado Cliente/Corredor</th>
             </tr>
           </thead>
 
@@ -153,6 +155,8 @@
                   Ver
                 </a>
               </td>
+              <td *ngIf="esCliente || esCorredor">{{ordenDeCarga.FechaCarga}}</td>
+              <td *ngIf="esCliente || esCorredor">{{ordenDeCarga.Cliente/Corredor}}</td>
             </tr>
           </tbody>
         </table>
