@@ -29,7 +29,7 @@
         </div>
 
 
-        <div *ngIf="!esCliente" [hidden]="esCliente" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
+        <div *ngIf="!esCliente" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Cliente:</p>
           <div class="styled-select">
             <input type="search" class="" placeholder="Ingrese numero de cliente" [value]="" aria-controls="tableModal"
@@ -37,7 +37,7 @@
           </div>
         </div>
 
-        <div *ngIf="!esCliente" [hidden]="esCliente" [hidden]="esCorredor" id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
+        <div *ngIf="!esTercero" id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Estado:</p>
           <div>
             <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected" selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListado()" appendTo="body">
@@ -103,9 +103,9 @@
               <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas">Cliente</th>
               <th *ngIf="esMesaFas">Cuit cliente</th>
               <th *ngIf="esInterno">Corredor</th>
-              <th *ngIf="esPuerto || esComercial || esTercero || esInterno">Estado</th>
+              <th>Estado</th>
               <!-- <th *ngIf="esTercero || esPuerto">Orden</th> -->
-              <th *ngIf="esTercero || esComercial || esPuerto || esMesaFas">Fecha</th>
+              <th>Fecha</th>
               <th>Contrato</th>
               <th *ngIf="esInterno || esMesaFas">Pedido</th>
               <!-- <th *ngIf="esComercial || esPuerto || esMesaFas">Estado Pedido</th> -->
@@ -134,9 +134,9 @@
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.RazonSocialCliente}}</td>
               <td *ngIf="esMesaFas">{{ordenDeCarga.CUITCliente}}</td>
               <td *ngIf="esInterno">{{ordenDeCarga.RazonSocialCorredor}}</td>
-              <td *ngIf="esPuerto || esComercial || esTercero || esInterno || esCliente || esCorredor">{{ordenDeCarga.DescripcionEstado}}</td>
+              <td>{{ordenDeCarga.DescripcionEstado}}</td>
               <!-- <td *ngIf="esTercero || esPuerto">{{ordenDeCarga.Orden}}</td> -->
-              <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas || esCliente || esCorredor">{{ordenDeCarga.Fecha}}</td>
+              <td>{{ordenDeCarga.Fecha}}</td>
               <td>{{ordenDeCarga.Contrato}}</td>
               <td *ngIf="esInterno || esMesaFas">{{ordenDeCarga.Pedido}}</td>
               <!-- <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.EstadoPedido}}</td> -->

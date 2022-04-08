@@ -514,7 +514,15 @@ namespace SustitucionMOAUtils.Services
             {
                 var clientes = usuario.Proveedores.Select(c => c.Id);
                 listado = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id) && n.FechaCarga <= fechaFinDateTime
-                    && n.FechaCarga >= fechaIncioDateTime)
+                    && n.FechaCarga >= fechaIncioDateTime
+                    && (n.Estado == EstadoOrdenDeCarga.Vencida
+                        || n.Estado == EstadoOrdenDeCarga.ErrorDeCarga
+                        || n.Estado == EstadoOrdenDeCarga.Pendiente
+                        || n.Estado == EstadoOrdenDeCarga.Confirmado
+                        || n.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito
+                        || n.Estado == EstadoOrdenDeCarga.EntregaPendiente
+                        || n.Estado == EstadoOrdenDeCarga.EntregaGenerada)
+                    )
                     .Select(x => new OrdenDeCargaDto
                     {
                         Id = x.Id,

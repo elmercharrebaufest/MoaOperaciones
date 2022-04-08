@@ -86,22 +86,22 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
             { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
             { label: "Error de datos", value: "Error de datos" }
         ]} else {
-            this.descripcionEstadoOrdenCarga =  [
-                { label: "Vencida", value: "Vencida" },
-                { label: "Pendiente de carga", value: "Pendiente de carga" },
-                { label: "Listo para retirar", value: "Listo para retirar" },
-                { label: "Completada", value: "Completada" },
-                { label: "Anulada", value: "Anulada" },
-                { label: "Sin estado", value: "Sin estado" }
-            ]
+            //this.descripcionEstadoOrdenCarga =  [
+            //    { label: "Vencida", value: "Vencida" },
+            //    { label: "Pendiente de carga", value: "Pendiente de carga" },
+            //    { label: "Listo para retirar", value: "Listo para retirar" },
+            //    { label: "Completada", value: "Completada" },
+            //    { label: "Anulada", value: "Anulada" },
+            //    { label: "Sin estado", value: "Sin estado" }
+            //]
     
-            this.estadosSelected = [
-                "Pendiente de carga",
-                "Anulada",
-                "Vencida",
-                "Sin estado",
-                "Listo para retirar",
-            ];
+            //this.estadosSelected = [
+            //    "Pendiente de carga",
+            //    "Anulada",
+            //    "Vencida",
+            //    "Sin estado",
+            //    "Listo para retirar",
+            //];
     
             this.entregada = "Completada";
         }
@@ -119,7 +119,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         debugger
         this.primerListado = this.datosAux.filter(x => x.DescripcionEstado != this.entregada);
 
-      
+        if (!this.esTercero) {
             if(this.estadosSelected.length < 1 || this.estadosSelected == null){
                 this.data = this.datosAux;
             } else {
@@ -127,6 +127,9 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
                 //lista filtrada
                 // this.data = this.datosAux.filter(x => x.DescripcionEstado != "Entregada");
             }
+        } else {
+            this.data = this.datosAux;
+        }
     }
 
 

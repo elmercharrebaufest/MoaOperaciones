@@ -81,8 +81,8 @@ namespace SustitucionMOAModel.Enums
             switch (me)
             {
                 case EstadoOrdenDeCarga.Vencida:
-                case EstadoOrdenDeCarga.Anulada:
                     return "Vencida";
+                case EstadoOrdenDeCarga.ErrorDeCarga:
                 case EstadoOrdenDeCarga.Pendiente:
                 case EstadoOrdenDeCarga.Confirmado:
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
@@ -90,8 +90,8 @@ namespace SustitucionMOAModel.Enums
                     return "En proceso";
                 case EstadoOrdenDeCarga.EntregaGenerada:
                     return "OK";
-                case EstadoOrdenDeCarga.Entregada:
-                    return "Completada";
+                //case EstadoOrdenDeCarga.Entregada:
+                //    return "Completada";
                 //case EstadoOrdenDeCarga.Anulada:
                 //    return "Anulada";
                 default:
