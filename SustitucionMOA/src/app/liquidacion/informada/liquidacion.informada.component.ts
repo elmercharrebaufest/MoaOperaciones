@@ -11,6 +11,7 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { SecurityService } from './../../common/services/SecurityService';
 import { Seccion } from '../../common/models/seccion';
+import { LiquidacionInformada } from '../../common/models/liquidacionInformada';
 
 @Component({
     selector: 'app-liquidacion-informada',
@@ -19,15 +20,35 @@ import { Seccion } from '../../common/models/seccion';
 })
 export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
 
+    @ViewChild('myCalendar', undefined) private calendar: any;
+
     constructor(protected service: LiquidacionInformadaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected elementRef: ElementRef, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
     filtroCOE: string = "";
+    filteredfechas: LiquidacionInformada[];
+    liquidacionInformada: LiquidacionInformada[] = new Array<LiquidacionInformada>();
+    fechaInicio: any;
+    fechaFin: any;
+    es: any;
+    rangeDates: Date[];
+    data = null;
+    tipoFiltroFecha = 1;
 
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
+        this.es = {
+            firstDayOfWeek: 1,
+            dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
+            dayNamesShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
+            dayNamesMin: ["D", "L", "M", "X", "J", "V", "S"],
+            monthNames: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+            monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
+            today: 'Hoy',
+            clear: 'Borrar'
+        }
         if (this.securityService.tienePermiso("INFORMAR LIQUIDACION")) {
             this.navService.setSeccionList([
                 new Seccion('/liquidacion/aprobada', 'liquidacion', 'Aprobadas'),
@@ -49,6 +70,27 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
         this.getData();
     }
 
+    onSelect(event) {
+
+        // console.log(event);
+        //let d = new Date(Date.parse(event));
+        //   this.fechaInicio = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+        //   this.fechaFin = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+
+        if (this.rangeDates[0] && this.rangeDates[1] == null) {
+            let d = new Date(Date.parse(event));
+            this.fechaInicio = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+
+        } else {
+            let d = new Date(Date.parse(event));
+            this.fechaFin = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            if (this.rangeDates[1]) { // If second date is selected
+                this.calendar.overlayVisible = false;
+            }
+            this.getData();
+        }
+    }
+
     getData() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -57,7 +99,7 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
         try {
             this.unsubscribe();
             this.subscription = this.service.getData(null, null, null).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -67,6 +109,10 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.data = { liquidaciones: result.data };
+                        this.filteredfechas = this.data.liquidaciones;
+                        if (this.fechaInicio != null && this.fechaFin != null) {
+                            this.actualizarFiltroFecha();
+                        }
                     }
                 },
                 error => {
@@ -81,6 +127,28 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
+    }
+
+    actualizarFiltroFecha() {
+        debugger;
+        var fechaDesde = this.fechaInicio;
+        var fechaHasta = this.fechaFin + " 23:59:59";
+
+        this.filteredfechas =
+            this.data.liquidaciones
+                .filter(x =>
+                    new Date(Date.parse(this.tipoFiltroFecha == 1 ? (x.FechaInformada) : x.FechaComprobante)) >= new Date(fechaDesde) &&
+                    new Date(Date.parse(this.tipoFiltroFecha == 1 ? (x.FechaInformada) : x.FechaComprobante)) <= new Date(fechaHasta)
+                )
+
+        if (this.filteredfechas.length == 0) {
+            this.mensajeComponent.setInfoMsg("No se encontraron liquidaciones")
+        }
+        else {
+            this.mensajeComponent.setMsgsEmpty();
+        }
+
+        console.log(this.filteredfechas);
     }
 
     setTabs() {

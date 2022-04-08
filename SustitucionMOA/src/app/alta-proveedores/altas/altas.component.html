@@ -48,22 +48,29 @@
                     Por Razon Social/CUIT:
                     <div class="styled-select ">
                         <input type="search" class="" placeholder="" [value]="" aria-controls="tableModal"
-                            [(ngModel)]="filtroAlta">
+                               [(ngModel)]="filtroAlta">
                     </div>
                 </div>
+                <!--<div class="col-xs-6  col-sm-4 col-md-5">
+        Por Estado:
+        <div class="styled-select ">
+            <select [(ngModel)]="selectedEstado" (ngModelChange)="onOptionsSelected()">
+                <option value="" selected>Todos</option>
+                <option *ngFor="let x of estados" value="{{x.Key}}">{{x.Value}}</option>
+            </select>
+
+        </div>
+    </div>-->
                 <div class="col-xs-6  col-sm-4 col-md-5">
                     Por Estado:
                     <div class="styled-select ">
-                        <select [(ngModel)]="selectedEstado" (ngModelChange)="onOptionsSelected()">
-                            <option value="" selected>Todos</option>
-                            <option *ngFor="let x of estados" value="{{x.Key}}">{{x.Value}}</option>
-                        </select>
-
+                        <p-multiSelect [options]="descripcionEstadoAlta" defaultLabel="Estados" [(ngModel)]="estadosSelected" selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListadoAlta()" appendTo="body" [style]="{'width':'100%', 'height': '40px'}">
+                        </p-multiSelect>
                     </div>
                 </div>
 
                 <div class="col-xs-6  col-sm-4 col-md-5"
-                    *ngIf="isAuthorized('VER ALTAS GRANOS') && isAuthorized('VER ALTAS NO GRANOS')">
+                     *ngIf="isAuthorized('VER ALTAS GRANOS') && isAuthorized('VER ALTAS NO GRANOS')">
                     Tipo proveedor:
                     <div class="styled-select ">
                         <select [(ngModel)]="idTipoProveedor" (ngModelChange)="onChangeProveedor()">
@@ -88,11 +95,11 @@
                 </div>
 
                 <!---
-                <a (click)="getEmpresa()" href="#" style="text-decoration:none!important">
-                    <div class="btn btn-custom btn-add" style="margin-top:23px!important">Buscar
-                        <span class="fa fa-search" style="margin-left: 5px;margin-bottom: 2px;"></span>
-                    </div>
-                </a>-->
+    <a (click)="getEmpresa()" href="#" style="text-decoration:none!important">
+        <div class="btn btn-custom btn-add" style="margin-top:23px!important">Buscar
+            <span class="fa fa-search" style="margin-left: 5px;margin-bottom: 2px;"></span>
+        </div>
+    </a>-->
             </div>
 
         </div>
@@ -273,7 +280,7 @@
                                         data-toggle="modal" data-target="#ModalVieneOperando"></button>
 
                                     <button type="button"
-                                        *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario === 3 && empresa.AltaInterna && puedeAltaInterna"
+                                        *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario === 3 && empresa.AltaInterna && puedeAltaInternaNoGranos"
                                         class="btn-custom btn-add btn-chico" (click)="altaInterna(empresa)">
                                         Alta interna
                                     </button>

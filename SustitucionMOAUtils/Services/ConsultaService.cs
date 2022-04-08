@@ -87,7 +87,7 @@ namespace SustitucionMOAUtils.Services
                 ActualizarEstadoConsulta(consultaId, estado.Id);
             }
 
-            if(string.IsNullOrWhiteSpace(comentario.Detalle))
+            if (string.IsNullOrWhiteSpace(comentario.Detalle))
             {
                 comentario.Detalle = "";
             }
@@ -118,9 +118,9 @@ namespace SustitucionMOAUtils.Services
             SubCategoria subcatecategoria = repositorio.Obtener<SubCategoria>(s => s.Id == consulta.SubCategoria_Id);
             Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
 
-            if(usuario.TipoUsuario.NombreCorto != "CORR")
+            if (usuario.TipoUsuario.NombreCorto != "CORR")
             {
-                if(categoria.Code == Categorias.Actualizacion && subcatecategoria.Code == SubCategorias.CartaPresentacón)
+                if (categoria.Code == Categorias.Actualizacion && subcatecategoria.Code == SubCategorias.CartaPresentacón)
                 {
                     throw new InfoCustomException("Tiene que ser corredor para consultar sobre Carta de Presentacion.");
                 }
@@ -160,7 +160,7 @@ namespace SustitucionMOAUtils.Services
                 else
                 {
                     consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARDIR").Id;
-                    var subcategoriaCode = subcatecategoria.Code  + "PD";
+                    var subcategoriaCode = subcatecategoria.Code + "PD";
                     consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
                 }
             }
@@ -179,11 +179,11 @@ namespace SustitucionMOAUtils.Services
             repositorio.Agregar(consulta);
             repositorio.GuardarCambios();
 
-            if(files.Count > 0)
+            if (files.Count > 0)
             {
                 Comentario primerComentario = repositorio.Obtener<Comentario>(c => c.Consulta_Id == consulta.Id);
                 AgregarAdjuntoComentario(consulta.Id, primerComentario.Id, files);
-                
+
                 if (categoria.Code == Categorias.Actualizacion && subcatecategoria.Code == SubCategorias.CM05)
                 {
                     Proveedor proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == consulta.CodigoProveedor);
@@ -192,7 +192,7 @@ namespace SustitucionMOAUtils.Services
                         mensajeResultado = this.ProcesarCM05(files, proveedor.CUIT, comentario.Id, false);
                         //mensajeResultado =    this.ProcesarCM05(files, comentario.Id, proveedor.CUIT);
                     }
-                    catch(ValidationCustomException vex)
+                    catch (ValidationCustomException vex)
                     {
                         consulta.Comentarios.Add(new Comentario
                         {
@@ -203,7 +203,7 @@ namespace SustitucionMOAUtils.Services
                         });
 
                         consulta.FechaUltimaModificacion = DateTime.Now;
-                        
+
                         repositorio.GuardarCambios();
                     }
                 }
@@ -235,7 +235,7 @@ namespace SustitucionMOAUtils.Services
             includes.Add(x => x.EstadoConsulta);
             includes.Add(x => x.Detalle.CausaConsulta);
 
-            var c = repositorio.Obtener<Consulta>(includes, y=> y.Id == consultaId);
+            var c = repositorio.Obtener<Consulta>(includes, y => y.Id == consultaId);
 
             var ret = new ConsultaDto()
             {
@@ -309,17 +309,17 @@ namespace SustitucionMOAUtils.Services
                     Mail = x.Usuario.Mail
                 },
                 Archivos = x.Archivos.Select(a => new ArchivoDto()
-                { 
+                {
                     Id = a.Id,
                     Ruta = a.Ruta,
                     FileKey = a.FileKey,
                     Nombre = a.ObtenerNombre(a.Ruta),
                 }).ToList(),
-                ComentarioRecordados = x.ComentarioRecordado.Select(cr => new ComentarioRecordadoDto()
-                { 
+                ComentarioRecordados = x.ComentarioRecordado != null ? x.ComentarioRecordado.Select(cr => new ComentarioRecordadoDto()
+                {
                     Id = cr.Id,
                     FechaRecordado = cr.FechaRecordado
-                }).ToList()
+                }).ToList() : new List<ComentarioRecordadoDto>()
             }).ToList();
 
             return ret;
@@ -327,7 +327,7 @@ namespace SustitucionMOAUtils.Services
 
         private string FormatearStringNewLine(string dato)
         {
-            if(dato == null)
+            if (dato == null)
             {
                 return dato;
             }
@@ -381,7 +381,7 @@ namespace SustitucionMOAUtils.Services
                 code = code.Replace("COR", "");
                 id = repositorio.Obtener<Categoria>(x => x.Code == code).Id;
             }
-            
+
             return id;
         }
 
@@ -471,9 +471,9 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
             var esInterno = usuario.TienePermiso("CONSULTA ABM");
             var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
-            
-            ret = repositorio.Listar<Consulta>(x=> (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId , includes: includes)
-                .Select(x => new ConsultaDto 
+
+            ret = repositorio.Listar<Consulta>(x => (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId, includes: includes)
+                .Select(x => new ConsultaDto
                 {
                     Id = x.Id,
                     Asunto = x.Asunto,
@@ -482,46 +482,46 @@ namespace SustitucionMOAUtils.Services
                     CodigoProveedor = x.CodigoProveedor,
                     RazonSocialProveedor = x.RazonSocialProveedor,
                     CategoriaId = x.Categoria_Id,
-                    Categoria = new CategoriaDto 
-                        { 
-                            Id = x.Categoria.Id,
-                            Code = x.Categoria.Code,
-                            Nombre = x.Categoria.Nombre
-                        },
-                    SubCategoriaId = x.SubCategoria_Id != null? x.SubCategoria_Id : 0,
-                    SubCategoria = x.SubCategoria != null? new SubCategoriaDto 
-                        {
-                            Id = x.SubCategoria.Id,
-                            Code = x.SubCategoria.Code,
-                            Nombre = x.SubCategoria.Nombre,
-                            CategoriaId = x.SubCategoria.Categoria_Id
-                        } : new SubCategoriaDto { Nombre = "" },
+                    Categoria = new CategoriaDto
+                    {
+                        Id = x.Categoria.Id,
+                        Code = x.Categoria.Code,
+                        Nombre = x.Categoria.Nombre
+                    },
+                    SubCategoriaId = x.SubCategoria_Id != null ? x.SubCategoria_Id : 0,
+                    SubCategoria = x.SubCategoria != null ? new SubCategoriaDto
+                    {
+                        Id = x.SubCategoria.Id,
+                        Code = x.SubCategoria.Code,
+                        Nombre = x.SubCategoria.Nombre,
+                        CategoriaId = x.SubCategoria.Categoria_Id
+                    } : new SubCategoriaDto { Nombre = "" },
                     EstadoConsultaId = x.EstadoConsulta_Id,
                     Material_Id = x.Detalle.Material_Id,
                     Material = x.Categoria.Code == "APP" ? x.Detalle.OtroComprobanteNo : "",
-                    EstadoConsulta = new EstadoConsultaDto 
-                        {
-                            Id = x.EstadoConsulta.Id,
-                            Descripcion = esInterno? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == "GESRTA" ? "En gestión" : x.EstadoConsulta.Descripcion,
-                            Color = x.EstadoConsulta.Color,
-                            Code = x.EstadoConsulta.Code
-                        },
+                    EstadoConsulta = new EstadoConsultaDto
+                    {
+                        Id = x.EstadoConsulta.Id,
+                        Descripcion = esInterno ? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == "GESRTA" ? "En gestión" : x.EstadoConsulta.Descripcion,
+                        Color = x.EstadoConsulta.Color,
+                        Code = x.EstadoConsulta.Code
+                    },
                     FechaCreacion = x.FechaCreacion,
                     FechaUltimaModificacion = x.FechaUltimaModificacion,
                     UsuarioId = x.Usuario_Id,
-                    Fecha = x.Detalle != null? x.Detalle.Fecha : null,
-                    ComprobanteNo = x.Detalle != null? x.Detalle.ComprobanteNo : "",
-                    OtroComprobanteNo = x.Detalle != null? x.Detalle.OtroComprobanteNo : "",
-                    ContratoNo = x.Detalle != null? x.Detalle.ContratoNo : "",
-                    Importe = x.Detalle != null? x.Detalle.Importe : null,
-                    Impuesto = x.Detalle != null? x.Detalle.Impuesto : null,
-                    BolsaEmisoraOblea = x.Detalle != null? x.Detalle.BolsaEmisoraOblea : "",
-                    CausaConsultaId = x.Detalle.CausaConsulta != null? x.Detalle.CausaConsulta_Id : null,
-                    CausaConsulta = x.Detalle.CausaConsulta != null? new CausaConsultaDto
-                        {
-                            Id = x.Detalle.CausaConsulta.Id,
-                            Nombre = x.Detalle.CausaConsulta.Nombre
-                        } : null
+                    Fecha = x.Detalle != null ? x.Detalle.Fecha : null,
+                    ComprobanteNo = x.Detalle != null ? x.Detalle.ComprobanteNo : "",
+                    OtroComprobanteNo = x.Detalle != null ? x.Detalle.OtroComprobanteNo : "",
+                    ContratoNo = x.Detalle != null ? x.Detalle.ContratoNo : "",
+                    Importe = x.Detalle != null ? x.Detalle.Importe : null,
+                    Impuesto = x.Detalle != null ? x.Detalle.Impuesto : null,
+                    BolsaEmisoraOblea = x.Detalle != null ? x.Detalle.BolsaEmisoraOblea : "",
+                    CausaConsultaId = x.Detalle.CausaConsulta != null ? x.Detalle.CausaConsulta_Id : null,
+                    CausaConsulta = x.Detalle.CausaConsulta != null ? new CausaConsultaDto
+                    {
+                        Id = x.Detalle.CausaConsulta.Id,
+                        Nombre = x.Detalle.CausaConsulta.Nombre
+                    } : null
                 }).ToList();
 
             return ret;
@@ -538,7 +538,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             if (categoria == null) throw new InfoCustomException("No existe la categoria");
-            
+
             var consulta = GetConsulta(consultaId);
 
             consulta.Categoria_Id = categoriaId;
@@ -642,7 +642,7 @@ namespace SustitucionMOAUtils.Services
 
                 Directory.CreateDirectory(ruta);
 
-                if(comentario.Archivos == null)
+                if (comentario.Archivos == null)
                 {
                     comentario.Archivos = new List<Archivo>();
                 }
@@ -686,7 +686,7 @@ namespace SustitucionMOAUtils.Services
                     categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
                 }
 
-                return categorias.Select(x =>new CategoriaDto(x)).ToList();
+                return categorias.Select(x => new CategoriaDto(x)).ToList();
             }
             catch (ValidationCustomException e)
             {
@@ -750,7 +750,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var subcategorias = repositorio.Listar<Material>().Where(x => x.TablaSeccionMaterial == tablaSeccionMaterial).OrderBy(c => c.Nombre);
                 return subcategorias.Select(x => new MaterialDto
-                { 
+                {
                     MaterialId = x.Id,
                     Descripcion = x.Nombre
                 }).ToList();
@@ -844,7 +844,8 @@ namespace SustitucionMOAUtils.Services
             tblTabla.AddCell(clCertificado);
 
             // Llenamos la tabla con información
-            foreach (Reclamo reclamo in reclamoImpositivo.Reclamos){
+            foreach (Reclamo reclamo in reclamoImpositivo.Reclamos)
+            {
                 clNombre = new PdfPCell(new Phrase(reclamoImpositivo.RazonSocialEmpresa, _standardFont));
                 clNombre.BorderWidth = 1;
 
@@ -1035,46 +1036,53 @@ namespace SustitucionMOAUtils.Services
 
             for (int i = 0; i < listadoCoeficientes.Count; i++)
             {
-                int numeroJurisdiccionAux;
-                int? numeroJurisdiccion = int.TryParse(listadoCoeficientes[i], out numeroJurisdiccionAux) ? numeroJurisdiccionAux : (int?)null;
-
-                string jurisdiccion = listadoCoeficientes[i + 1];
-
-                DateTime fechaInicioAux;
-                DateTime? fechaInicio = DateTime.TryParseExact(listadoCoeficientes[i + 2], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicioAux) ? fechaInicioAux : (DateTime?)null;
-
-                DateTime fechaCeseAux;
-                DateTime? fechaCese = DateTime.TryParseExact(listadoCoeficientes[i + 3], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaCeseAux) ? fechaCeseAux : (DateTime?)null;
-
-                i += (fechaInicio.HasValue ? fechaCese.HasValue ? 4 : 3 : 2);
-
-                decimal coeficienteIngresosAux;
-                decimal? coeficienteIngresos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteIngresosAux) ? coeficienteIngresosAux : (decimal?)null;
-
-                decimal coeficienteGastosAux;
-                decimal? coeficienteGastos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteGastosAux) ? coeficienteGastosAux : (decimal?)null;
-
-                decimal coeficienteUnificadoAux;
-                decimal? coeficienteUnificado = decimal.TryParse(listadoCoeficientes[i], out coeficienteUnificadoAux) ? coeficienteUnificadoAux : (decimal?)null;
-
-                IngresosBrutosCoeficienteUnificadoDetalle detalleGenerado = new IngresosBrutosCoeficienteUnificadoDetalle
+                try
                 {
-                    NumeroJurisdiccion = numeroJurisdiccion,
-                    Jurisdiccion = jurisdiccion,
-                    FechaInicio = fechaInicio,
-                    FechaCese = fechaCese,
-                    CoeficienteIngresos = coeficienteIngresos,
-                    CoeficienteGastos = coeficienteGastos,
-                    CoeficienteUnificado = coeficienteUnificado,
-                    FechaUltimaModificacion = timeProvider.Now()
-                };
+                    int numeroJurisdiccionAux;
+                    int? numeroJurisdiccion = int.TryParse(listadoCoeficientes[i], out numeroJurisdiccionAux) ? numeroJurisdiccionAux : (int?)null;
 
-                repositorio.Agregar(detalleGenerado);
+                    string jurisdiccion = listadoCoeficientes[i + 1];
 
-                ingresosBrutosCoeficienteUnificadoDetalles.Add(detalleGenerado);
+                    DateTime fechaInicioAux;
+                    DateTime? fechaInicio = DateTime.TryParseExact(listadoCoeficientes[i + 2], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicioAux) ? fechaInicioAux : (DateTime?)null;
 
-                if (ingresosBrutosCoeficienteUnificadoDetalles.Count >= 24)
-                    break;
+                    DateTime fechaCeseAux;
+                    DateTime? fechaCese = DateTime.TryParseExact(listadoCoeficientes[i + 3], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaCeseAux) ? fechaCeseAux : (DateTime?)null;
+
+                    i += (fechaInicio.HasValue ? fechaCese.HasValue ? 4 : 3 : 2);
+
+                    decimal coeficienteIngresosAux;
+                    decimal? coeficienteIngresos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteIngresosAux) ? coeficienteIngresosAux : (decimal?)null;
+
+                    decimal coeficienteGastosAux;
+                    decimal? coeficienteGastos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteGastosAux) ? coeficienteGastosAux : (decimal?)null;
+
+                    decimal coeficienteUnificadoAux;
+                    decimal? coeficienteUnificado = decimal.TryParse(listadoCoeficientes[i], out coeficienteUnificadoAux) ? coeficienteUnificadoAux : (decimal?)null;
+
+                    IngresosBrutosCoeficienteUnificadoDetalle detalleGenerado = new IngresosBrutosCoeficienteUnificadoDetalle
+                    {
+                        NumeroJurisdiccion = numeroJurisdiccion,
+                        Jurisdiccion = jurisdiccion,
+                        FechaInicio = fechaInicio,
+                        FechaCese = fechaCese,
+                        CoeficienteIngresos = coeficienteIngresos,
+                        CoeficienteGastos = coeficienteGastos,
+                        CoeficienteUnificado = coeficienteUnificado,
+                        FechaUltimaModificacion = timeProvider.Now()
+                    };
+
+                    //repositorio.Agregar(detalleGenerado);
+
+                    ingresosBrutosCoeficienteUnificadoDetalles.Add(detalleGenerado);
+
+                    if (ingresosBrutosCoeficienteUnificadoDetalles.Count >= 24)
+                        break;
+                }
+                catch (Exception)
+                {
+
+                }
             }
 
             ingresosBrutosCoeficienteUnificado.Detalle = ingresosBrutosCoeficienteUnificadoDetalles;
@@ -1084,13 +1092,13 @@ namespace SustitucionMOAUtils.Services
             repositorio.Agregar(ingresosBrutosCoeficienteUnificado);
             repositorio.GuardarCambios();
 
-            return 
-                esCargaInterna ? 
-                    ingresosBrutosCoeficienteUnificado.MalCargada ? 
-                        SuccessMsg.AltaFormularioCM05CargaInternaMalCargadoOK 
+            return
+                esCargaInterna ?
+                    ingresosBrutosCoeficienteUnificado.MalCargada ?
+                        SuccessMsg.AltaFormularioCM05CargaInternaMalCargadoOK
                       : SuccessMsg.AltaFormularioCM05CargaInternaOK
-                : cuit != cuitProveedor ? 
-                    SuccessMsg.AltaFormularioCM05DistintoCUITOK 
+                : cuit != cuitProveedor ?
+                    SuccessMsg.AltaFormularioCM05DistintoCUITOK
                 : string.Empty;
         }
 

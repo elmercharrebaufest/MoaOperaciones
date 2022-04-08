@@ -52,6 +52,10 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     orderDirection: number = 1;
     itemsPerPage = 20;
 
+    selectedCountryAdvanced: any[];
+    filteredProveedor: any[];
+    countries: any[];
+
     tituloArchivo: string = "Reporte de Campos Sustentables.xls";
 
     ngOnInit() {
@@ -63,7 +67,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.getCamposProveedores().subscribe(
-            (result:any) => {
+            (result: any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -76,7 +80,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
                     if (result.length > 0) {
                         let allProveedores = result.map(cp => { return { value: cp.Proveedor.CodigoProveedor, label: cp.Proveedor.RazonSocial } });
                         this.opcionesProveedores = [...new Map(allProveedores.map(item => [item.value, item])).values()]
-                        this.opcionesProveedores.unshift({ value: "", label: "Todos" })
+                        // this.opcionesProveedores.unshift({ value: "", label: "Todos" })
                     }
                     else {
                         this.mensajeComponent.setInfoMsg("No hay campos sustentables cargados.");
@@ -91,11 +95,69 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         return false;
     }
 
+    proveedorSeleccionado(event) {      
+        this.filtroProveedor = event.value;
+    }
+
+
+    filterProveedor(event) {
+        
+        let filtered: any[] = [];
+        let query = event.query;
+
+        for (let i = 0; i < this.opcionesProveedores.length; i++) {
+            let proveedor = this.opcionesProveedores[i];
+            if (proveedor.label.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+                filtered.push(proveedor);
+            }
+        }
+
+        //ordenar alfabeticamente
+        filtered = filtered.sort(function (a, b) {
+            if (a.label > b.label) {
+                return 1;
+            }
+            if (a.label < b.label) {
+                return -1;
+            }
+            // a must be equal to b
+            return 0;
+        });
+
+        this.filteredProveedor = filtered;
+
+        /*    this.opcionesProveedores.getResults(event.query).then(data => {
+               this.results = data;
+           });
+          var lista2 = new Array;
+   
+           for (var i = 0; i < this.opcionesProveedores.length; i++) {
+               lista2.push({ label: this.opcionesProveedores[i].label, value: this.opcionesProveedores[i].value });
+           }
+   
+           lista2 = lista2.sort(function (a, b) {
+               if (a.label > b.label) {
+                   return 1;
+               }
+               if (a.label < b.label) {
+                   return -1;
+               }
+               // a must be equal to b
+               return 0;
+           });
+   
+           this.opcionesProveedores = lista2;*/
+
+
+    }
+
+
+
     eliminarCampo(campoCosechaId: number, proveedorId: number) {
         this.mensajeComponent.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.campoProveedorBorrar(campoCosechaId, proveedorId).subscribe(
-            (result:any) => {
+            (result: any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -113,17 +175,13 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         );
     }
 
-    proveedorSeleccionado(event: string) {
-        this.filtroProveedor = event;
-    }
-
     exportExcel() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
 
         this.subscription = this.service.exportExcel().subscribe(
-            (result:any) => {
+            (result: any) => {
                 if (result.logout == true) {
                     this.spinnerSmallComponent.hideIt();
                     this.sessionDataService.logout();
@@ -200,6 +258,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         )
     }
 
+
     getCosechas() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -214,7 +273,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.cosechas = result;  
+                        this.cosechas = result;
                         this.getCamposSustentables();
                     }
                 },

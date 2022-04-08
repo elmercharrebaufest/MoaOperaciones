@@ -10,7 +10,7 @@ using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.CredentialService;
-using SustitucionMOAWS.DataAgroServices;
+//using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -129,7 +129,7 @@ namespace SustitucionMOAUtils.Services
                 var urlCartaPresentacion = string.Concat(DataAgroURL, "/CartaDePresentacion/Generar");
                 var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
 
-                var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+                var proveedor = repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(proveedorId);
                 var infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
 
                 cartadePresentacion.vendedorCuit = proveedor.CUIT;
@@ -761,14 +761,14 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            var proveedor = repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(proveedorId);
 
             return proveedor.Archivos.FirstOrDefault(f => f.Id.Equals(archivoID)).Ruta;
         }
 
         public string EliminarArchivo(string mailUsuario, int archivoID, int proveedorId)
         {
-            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            var proveedor = repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(proveedorId);
 
             string rutaArchivo = "";
 
@@ -803,13 +803,13 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            Proveedor proveedor;
+            SustitucionMOAModel.Entities.Proveedor proveedor;
 
-            proveedor = proveedorId > 0 ? repositorio.Obtener<Proveedor>(proveedorId) : usuario.ObtenerProveedor();
+            proveedor = proveedorId > 0 ? repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(proveedorId) : usuario.ObtenerProveedor();
 
             var CUITProveedor = ReformatearCUIT(proveedor.CUIT);
 
-            ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+            SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
 
             var info = new InfoProveedorDataAgroDto
             {
@@ -829,7 +829,7 @@ namespace SustitucionMOAUtils.Services
         {
             AltaEmpresaViewModel altaEmpresa = new AltaEmpresaViewModel();
 
-            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            var proveedor = repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(proveedorId);
 
             altaEmpresa.VinculoConEmpleadosDeMolinos = proveedor.VinculoConEmpleadosDeMolinos;
             altaEmpresa.VinculoConFuncionariosPublicos = proveedor.VinculoConFuncionariosPublicos;
@@ -903,9 +903,9 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public Proveedor ObtenerRazonSocialProveedor(int proveedorId)
+        public SustitucionMOAModel.Entities.Proveedor ObtenerRazonSocialProveedor(int proveedorId)
         {
-            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            var proveedor = repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(proveedorId);
 
             return proveedor;
         }
@@ -917,7 +917,7 @@ namespace SustitucionMOAUtils.Services
 
         public string ObtenerArchivos(string mail, int proveedorId, string pathBase)
         {
-            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            var proveedor = repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(proveedorId);
             var zipFilename = $"Proveedor-{proveedor.CUIT}-Documentacion.zip";
             var filePath = $"{pathBase}/{zipFilename}";
 
@@ -945,7 +945,7 @@ namespace SustitucionMOAUtils.Services
         {
             InfoProveedorDataAgroDto infoProveedor = null;
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var proveedor = proveedorId > 0 ? repositorio.Obtener<Proveedor>(proveedorId) : usuario.ObtenerProveedorPorId(proveedorId);
+            var proveedor = proveedorId > 0 ? repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(proveedorId) : usuario.ObtenerProveedorPorId(proveedorId);
 
             if (proveedor.TipoProveedor.Nombre != "Granos")
             {
@@ -1035,5 +1035,6 @@ namespace SustitucionMOAUtils.Services
                 return false;
             }
         }
+
     }
 }

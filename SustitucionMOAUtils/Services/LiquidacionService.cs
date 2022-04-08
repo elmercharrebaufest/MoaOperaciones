@@ -10,6 +10,7 @@ using System.Web;
 using SustitucionMOAAssets;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.ViewModel.Liquidacion;
@@ -135,6 +136,16 @@ namespace SustitucionMOAUtils.Services
             return getLiquidacionesNG(proveedor, "OBSERVADA", fechaInicio, fechaFin);
         }
 
+        public LiquidacionNGViewModel getRegistradosNG(string proveedor, string fechaInicio, string fechaFin)
+        {
+            return getLiquidacionesNG(proveedor, "REGISTRADO", fechaInicio, fechaFin);
+        }
+
+        public LiquidacionNGViewModel getPendienteRegistroNG(string proveedor, string fechaInicio, string fechaFin)
+        {
+            return getLiquidacionesNG(proveedor, "PENDIENTE-REGISTRO", fechaInicio, fechaFin);
+        }
+
         public LiquidacionNGViewModel getPagasNG(string proveedor, string fechaInicio, string fechaFin)
         {
             return getLiquidacionesNG(proveedor, "PAGA", fechaInicio, fechaFin);
@@ -144,10 +155,23 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
                 LiquidacionNGViewModel dataView = new LiquidacionNGViewModel();
+               
                 dataView.filtroObservacion = new DropdownContent();
+
+                if (tipo == "PENDIENTE-REGISTRO")
+                {
+                    LiquidacionNGViewModel liquidacionView = new LiquidacionNGViewModel();
+                    var comprobantes = (ComprobantesNGWSMOAResponse)new ComprobantesNGConsumerMOA().request(proveedor, fechas);
+                    validarRespuestaNG(comprobantes);
+                    liquidacionView.comprobantes = comprobantes; 
+                    return liquidacionView;
+                }
+              
                 dataView.data = (LiquidacionNGWSMOAResponse) new LiquidacionesNGConsumerMOA().request(proveedor, fechas);
+
                 validarRespuestaNG(dataView.data);
                 switch (tipo)
                 {
@@ -156,6 +180,10 @@ namespace SustitucionMOAUtils.Services
                         break;
                     case "OBSERVADA":
                         dataView.data.liquidaciones = dataView.data.liquidaciones.Where(x => x.observaciones != "").ToList();
+                        break;
+                    case "REGISTRADO":
+                        break;
+                    case "PENDIENTE-REGISTRO":
                         break;
                     case "PAGA":
                         break;
@@ -177,6 +205,33 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        public ComprobantesNGWSMOAResponse getComprobantesNG(string proveedor, string fechaInicio, string fechaFin)
+        {
+            try
+            {
+                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+
+                ComprobantesNGWSMOAResponse result =  (ComprobantesNGWSMOAResponse)new ComprobantesNGConsumerMOA().request(proveedor, fechas);
+
+                if (result.comprobantes.Count == 0) // <- Repito consulta por el filtrado que se realiza antes
+                    throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Comprobantes"));
+                return result;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
 
         public string downloadAprobadas(string proveedor, string fechaInicio, string fechaFin)
         {
@@ -307,6 +362,60 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        public string downloadRegistradosNG(string proveedor, string fechaInicio, string fechaFin)
+        {
+            try
+            {
+                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                LiquidacionExcelNGWSMOAResponse data = (LiquidacionExcelNGWSMOAResponse)new LiquidacionesExcelNGConsumerMOA().request(proveedor, fechas);
+                validarRespuestaNG(data);
+                data.liquidaciones = data.liquidaciones.ToList();
+                if (data.liquidaciones.Count == 0)
+                    throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Comprobantes"));
+                return ExcelExport.ToExcel(data.liquidaciones, new string[] { "ID", "Vencimiento", "Tipo", "Comprobante", "Total", "Moneda", "Orden de Compra", "Observacion" }, "Reporte Comprobantes Registrados");
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public string downloadPendienteRegistroNG(string proveedor, string fechaInicio, string fechaFin)
+        {
+            try
+            {
+                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                ComprobantesExcelNGWSMOAResponse data = (ComprobantesExcelNGWSMOAResponse)new ComprobantesExcelNGConsumerMOA().request(proveedor, fechas);
+                validarRespuestaNG(data);
+                data.comprobantes = data.comprobantes.ToList();
+                if (data.comprobantes.Count == 0)
+                    throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Comprobantes"));
+                return ExcelExport.ToExcel(data.comprobantes, new string[] { "Fecha de comprobante", "Tipo", "Comprobante", "Total", "Orden de Compra", "Estado" }, "Reporte Comprobantes Pendientes de Registro");
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+
 
         public string downloadPagasNG(string proveedor, string fechaInicio, string fechaFin)
         {
@@ -569,17 +678,33 @@ namespace SustitucionMOAUtils.Services
             if (archivosNoProcesados.Any()) throw new InfoCustomException(string.Join(". ", archivosNoProcesados));
         }
 
-        public IList<LiquidacionInformada> GetLiquidacionInformadas(string codigoProveedor)
+        public IList<LiquidacionInformadaDto> GetLiquidacionInformadas(string codigoProveedor)
         {
             var proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == codigoProveedor);
             //No existe proveedor para la sesión, termino
             if (proveedor == null) throw new InfoCustomException("No existe un proveedor registrado para el código seleccionado");
 
-            var liquidaciones = repositorio.Listar<LiquidacionInformada>(li => li.Proveedor_Id == proveedor.Id);
-            
-            if (!liquidaciones.Any()) throw new InfoCustomException("No se encontraron liquidaciones informadas");
+            var liquidacionesAux = repositorio.Listar<LiquidacionInformada, LiquidacionInformadaDto>(x => new LiquidacionInformadaDto()
+            {
+                Id = x.Id,
+                Proveedor_Id = x.Proveedor_Id,
+                COE = x.COE,
+                FechaComprobante = x.FechaComprobante.ToString(),
+                FechaInformada = x.FechaInformada.ToString(),
+            }, x => x.Proveedor_Id == proveedor.Id).ToList();
 
-            return liquidaciones;
+            var liquidacionesDto = liquidacionesAux.Select(x => new LiquidacionInformadaDto()
+            {
+                Id = x.Id,
+                Proveedor_Id = x.Proveedor_Id,
+                COE = x.COE,
+                FechaComprobante = Convert.ToDateTime(x.FechaComprobante).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                FechaInformada = Convert.ToDateTime(x.FechaInformada).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+            }).ToList();
+
+            if (!liquidacionesDto.Any()) throw new InfoCustomException("No se encontraron liquidaciones informadas");
+
+            return liquidacionesDto;
         }
 
         private void validarRespuesta(LiquidacionExcelWSMOAResponse data)
@@ -597,7 +722,27 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Liquidaciones"));
         }
 
-        private void validarRespuestaNG(LiquidacionNGWSMOAResponse data) {
+        private void validarRespuestaNG(ComprobantesNGWSMOAResponse data) {
+            if (data == null)
+                throw new ValidationCustomException(ErrorMsg.Error);
+            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11")
+                throw new ValidationCustomException(data.error.descripcion);
+            if (data.comprobantes == null || data.comprobantes.Count == 0)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Comprobantes"));
+        }
+
+        private void validarRespuestaNG(ComprobantesExcelNGWSMOAResponse data)
+        {
+            if (data == null)
+                throw new ValidationCustomException(ErrorMsg.Error);
+            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11")
+                throw new ValidationCustomException(data.error.descripcion);
+            if (data.comprobantes == null || data.comprobantes.Count == 0)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Comprobantes"));
+        }
+
+        private void validarRespuestaNG(LiquidacionNGWSMOAResponse data)
+        {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.Error);
             if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11")

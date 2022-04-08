@@ -1,5 +1,7 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.ViewModel.Liquidacion;
+using SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAModel.Models.WSMapMOA.Proforma;
 using SustitucionMOAModel.Models.WSMapMOA.Vincula.Detalle;
@@ -20,6 +22,8 @@ namespace SustitucionMOAUtils.Interfaces
         LiquidacionViewModel getLiquidaciones(string proveedor, string tipo, string fechaInicio, string fechaFin);
         LiquidacionNGViewModel getAprobadasNG(string proveedor, string fechaInicio, string fechaFin);
         LiquidacionNGViewModel getObservadasNG(string proveedor, string fechaInicio, string fechaFin);
+        LiquidacionNGViewModel getRegistradosNG(string proveedor, string fechaInicio, string fechaFin);
+        LiquidacionNGViewModel getPendienteRegistroNG(string proveedor, string fechaInicio, string fechaFin);
         LiquidacionNGViewModel getPagasNG(string proveedor, string fechaInicio, string fechaFin);
         LiquidacionNGViewModel getLiquidacionesNG(string proveedor, string tipo, string fechaInicio, string fechaFin);
         string downloadAprobadas(string proveedor, string fechaInicio, string fechaFin);
@@ -27,6 +31,8 @@ namespace SustitucionMOAUtils.Interfaces
         string downloadPagas(string proveedor, string fechaInicio, string fechaFin);
         string downloadAprobadasNG(string proveedor, string fechaInicio, string fechaFin);
         string downloadObservadasNG(string proveedor, string fechaInicio, string fechaFin);
+        string downloadRegistradosNG(string proveedor, string fechaInicio, string fechaFin);
+        string downloadPendienteRegistroNG(string proveedor, string fechaInicio, string fechaFin);
         string downloadPagasNG(string proveedor, string fechaInicio, string fechaFin);
         VinculaDetalleWSMOAResponse getVinculacion(string proveedor, string contrato, string secuencia);
         string descargaVinculacion(string proveedor, string contrato, string secuencia);
@@ -36,7 +42,9 @@ namespace SustitucionMOAUtils.Interfaces
         ProcedenciaFleteWSMOAResponse getFleteProcedencia(string proveedor, string contrato);
         string descargarFleteProcedencia(string proveedor, string contrato);
         Task NotificarLiquidacionesAsync(HttpFileCollectionBase liquidaciones, string codigoProveedor);
-        IList<LiquidacionInformada> GetLiquidacionInformadas(string codigoProveedor);
+        IList<LiquidacionInformadaDto> GetLiquidacionInformadas(string codigoProveedor);
         LiquidacionViewModel TodasLiquidaciones(string proveedor, string fechaInicio, string fechaFin);
+        ComprobantesNGWSMOAResponse getComprobantesNG(string proveedor, string fechaInicio, string fechaFin);
+
         }
 }

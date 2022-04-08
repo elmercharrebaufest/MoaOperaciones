@@ -42,7 +42,7 @@ namespace SustitucionMOAWS.WSConsumers
                 result.error.codigo = error.CODIGO;
                 result.error.descripcion = error.DESCRIPCION;
                 result.error.tipo = error.TIPO;
-            }
+            }   
 
             result.ccpp = cartaPorte;
             result.aplicacionesTotalAplicados = 0;

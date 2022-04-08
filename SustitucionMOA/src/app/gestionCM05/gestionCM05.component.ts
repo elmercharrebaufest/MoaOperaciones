@@ -59,6 +59,8 @@ export class GestionCM05Component extends ListBaseComponent {
     cuitFiltro: string;
     idConsultaFiltro: string;
     idFiltro: string;
+    idRazonSocialFiltro: string;
+    idSecuenciaFiltro: string;
 
     fechaDesde: Date;
     fechaHasta: Date;
@@ -74,6 +76,8 @@ export class GestionCM05Component extends ListBaseComponent {
     displayDialogCargaCM05: boolean = false;
     uploadedFiles: any[] = [];
 
+    es: any;
+
     constructor(protected service: GestionCM05Service,
         protected navService: NavService,
         protected sessionDataService: SessionDataService,
@@ -87,6 +91,19 @@ export class GestionCM05Component extends ListBaseComponent {
     }
 
     ngOnInit() {
+
+        this.es = {
+            firstDayOfWeek: 0,
+            dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
+            dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            today: 'Hoy',
+            clear: 'Limpiar'
+        };
+    
+
         this.detallesEditando = [];
         this.navService.setSeccionList([]);
 
@@ -160,6 +177,30 @@ export class GestionCM05Component extends ListBaseComponent {
         this.listarCabeceras();
     }
 
+
+    onDateSelect(value, campo) {
+        this.table.filter(this.formatDate(value), campo, 'contains')
+    }
+
+    formatDate(date) {
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+
+        if (month < 10) {
+            month = '0' + month;
+        }
+
+        if (day < 10) {
+            day = '0' + day;
+        }
+
+        return day + '/' + month + '/' +  date.getFullYear();
+    }
+
+    
+    
+
+
     onCabeceraClick(data) {
         this.selectedCabecera = {
             Id: data.Id,
@@ -175,6 +216,8 @@ export class GestionCM05Component extends ListBaseComponent {
             SecuenciaId: data.SecuenciaId,
             ConsultaId: data.ConsultaId,
             RazonSocial: data.RazonSocial,
+            FechaUltimaModificacionString: data.FechaUltimaModificacionString,
+            FechaCargaString: data.FechaCargaString
         };
 
         this.service.listarDetalles(this.selectedCabecera.Id).subscribe(result => {
@@ -183,6 +226,7 @@ export class GestionCM05Component extends ListBaseComponent {
                 x.FechaCese = x.FechaCese == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaCese));
                 x.FechaInicio = x.FechaInicio == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaInicio));
                 x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
+                //x.CoeficienteUnificado = x.CoeficienteUnificado == null ? 0 : x.CoeficienteUnificado;
             });
         });
 
@@ -407,7 +451,12 @@ export class GestionCM05Component extends ListBaseComponent {
                         this.cabeceras.forEach(x => {
                             x.FechaCarga = x.FechaCarga == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaCarga));
                             x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
+
+                            x.FechaCargaString = x.FechaCarga == undefined ? "" : this.formatDate(x.FechaCarga);
+                            x.FechaUltimaModificacionString = this.formatDate(x.FechaUltimaModificacion);
                         });
+
+
                     }
                 },
                 error => {

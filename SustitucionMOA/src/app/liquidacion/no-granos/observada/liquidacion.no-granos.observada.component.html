@@ -41,13 +41,13 @@
                     </div>
                 </div>
                 <div id="showSearch" onClick="openSearch()">
-                    <div style="">
+                    <div >
                         <div class="fa fa-angle-double-right" aria-hidden="true"></div>
                     </div>
                     <div>VER MÁS OPCIONES DE BÚSQUEDA</div>
                 </div>
                 <div id="hideSearch" onClick="closeSearch()">
-                    <div style="">
+                    <div >
                         <div class="fa fa-times" aria-hidden="true"></div>
                     </div>
                     <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
@@ -66,7 +66,7 @@
                 <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate " cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('vencimientoDate')">
+                            <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('vencimientoDate')">
                                 <div>
                                     <span>
                                         <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'vencimientoDate' && orderDirection > 0 }"></i>
@@ -74,7 +74,7 @@
                                     </span>
                                 </div>     
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('tipo')">
+                            <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('tipo')">
                                 Tipo
                                 <div>
                                     <span>
@@ -83,7 +83,7 @@
                                     </span>
                                 </div>     
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('comprobante')">
+                            <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('comprobante')">
                                 Comprobante
                                 <div>
                                     <span>
@@ -92,7 +92,7 @@
                                     </span>
                                 </div>       
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('importe')">
+                            <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('importe')">
                                 Total
                                 <div>
                                     <span>
@@ -101,7 +101,7 @@
                                     </span>
                                 </div> 
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('compra')">
+                            <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('compra')">
                                 Orden de Compra
                                 <div>
                                     <span>
@@ -110,7 +110,7 @@
                                     </span>
                                 </div> 
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('observaciones')">
+                            <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('observaciones')">
                                 Falta
                                 <div>
                                     <span>
@@ -119,7 +119,7 @@
                                     </span>
                                 </div>     
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style=""></th>
+                            <th tabindex="0" rowspan="1" colspan="1" ></th>
                         </tr>
                     </thead>
                     <tbody>

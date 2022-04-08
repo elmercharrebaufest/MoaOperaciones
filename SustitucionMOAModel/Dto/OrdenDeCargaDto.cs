@@ -114,6 +114,8 @@ namespace SustitucionMOAModel.Dto
         public string DescripcionErrorInterno { get; set; }
         public string NumeroPedidoIngresado { get; set; }
 
+        public IEnumerable<OrdenDeCargaCambiosHistorialDto> OrdenDeCargaCambiosHistorial { get; set; }
+
         public override bool Equals(object obj)
         {
             return obj is OrdenDeCargaDetalleDto dto &&
@@ -178,5 +180,17 @@ namespace SustitucionMOAModel.Dto
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MensajeValidacionSAP);
             return hashCode;
         }
+       
+    }
+
+    public class OrdenDeCargaCambiosHistorialDto
+    {
+        public int Id { get; set; }
+        public int OrdenDeCarga_Id { get; set; }
+        public string NombreColumnaCambio { get; set; }
+        public string FechaCambio { get; set; }
+        public string Usuario { get; set; }
+        public string Antes { get; set; }
+        public string Despues { get; set; }
     }
 }

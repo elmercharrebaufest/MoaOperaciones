@@ -167,7 +167,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CpOtrosPuertosController.cs" />
     <Compile Include="Controllers\AccesoQrController.cs" />
+    <Compile Include="Controllers\ActualizarSolpController.cs" />
     <Compile Include="Controllers\LiberacionSolpController.cs" />
+    <Compile Include="Filter\CustomExceptionHandlerAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -186,6 +188,18 @@
     <Content Include="Global.asax" />
     <Content Include="parameters.xml" />
     <Content Include="PROD.DeployParameters.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UPDATE.DeployParameters.Debug.xml">
+      <DependentUpon>UPDATE.DeployParameters.xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UPDATE.DeployParameters.Release.xml">
+      <DependentUpon>UPDATE.DeployParameters.xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UPDATE.DeployParameters.xml">
+      <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="QA.DeployParameters.Debug.xml">

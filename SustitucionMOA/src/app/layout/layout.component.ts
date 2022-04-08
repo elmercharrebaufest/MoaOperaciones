@@ -162,10 +162,10 @@ export class LayoutComponent implements OnDestroy {
                         this.textoTooltip = 'En esta categoría podrás visualizar el detalle de tus entregas y la imagen de las cartas de porte correspondientes.';
                         this.textoTooltip2 = 'En la solapa de "Aplicaciones" podrás ver a qué negocio fueron asignadas. Además, en "Formulario" podrás autocompletar tu carta de porte a partir del CTG e imprimirla con el formulario otorgado por AFIP.';
                         break;
-                    case 'Observadas':
+                    case 'Pendientes de registro':
                     case 'Pagas':
-                    case 'Aprobadas':
-                        this.auxiliarSeccionesVisitadas = 'Aprobadas';
+                    case 'Registrados':
+                        this.auxiliarSeccionesVisitadas = 'Registrados';
                         this.textoTooltip = 'En esta categoría podrás visualizar el estado de tus liquidaciones.';
                         this.textoTooltip2 = 'En la solapa de "Aprobadas" podrás ver aquellas están en condiciones de incluirse en el proceso de pagos. En "Observadas" aquellas que se encuentran en proceso de contabilización o que presentan diferencias que impiden su registración. En "Pagas" aquellas ya fueron pagadas.';
                         break;

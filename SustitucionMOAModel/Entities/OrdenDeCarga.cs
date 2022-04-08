@@ -109,7 +109,13 @@ namespace SustitucionMOAModel.Entities
                         {
                             Estado = EstadoOrdenDeCarga.Confirmado;
                         }
-                        if (!AprobadoCredito || !TransporteExiste)
+
+                        if (!TransporteExiste)
+                        {
+                            Estado = EstadoOrdenDeCarga.Pendiente;
+                        }
+
+                        if (!AprobadoCredito)                     
                         {
                             Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
                         }

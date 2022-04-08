@@ -232,7 +232,15 @@ namespace SustitucionMOAUtils.Services
                 var cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, cambios);
                 string asunto = "Molinos Agro - Edición en su orden de carga n°: " + ordenDeCargaHistorial[0].OrdenDeCarga_Id;
                 var copia = new List<string>() { };
-                var Destinatario = ConfigurationManager.AppSettings["EmailToComerciales"].Split(';').ToList();
+                //var Destinatario = ConfigurationManager.AppSettings["EmailToComerciales"].Split(';').ToList();
+                var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+                var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+
+                var Destinatario = new List<string>
+                {
+                    mailsMesaVentaFas,
+                    mailsComerciales,
+                };
 
                 EmailSender.EnviarMail(Destinatario, asunto, cuerpo, copia, null, null, null);
             }
@@ -536,7 +544,10 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             OrdenDeCargaDetalleDto ordenDto;
+
+            List<OrdenDeCargaCambiosHistorialDto> listado = new List<OrdenDeCargaCambiosHistorialDto>();
             OrdenDeCarga orden;
+
 
             var esAdmin = usuario.TienePermiso("VER TODAS ORDENES DE CARGA");
             var esTercero = usuario.TienePermiso("VER ORDENES DE CARGA DE TERCEROS");
@@ -557,6 +568,19 @@ namespace SustitucionMOAUtils.Services
             }
 
             Proveedor cliente = repositorio.Obtener<Proveedor>(orden.Cliente_Id);
+            //  var ordenDeCargaCambiosHistorial = repositorio.Listar<OrdenDeCargaCambiosHistorial>(ordenes => ordenes.OrdenDeCarga_Id == orden.Id);
+
+            var ordenDeCargaCambiosHistorial = repositorio.Listar<OrdenDeCargaCambiosHistorial>
+        (ordenes => ordenes.OrdenDeCarga_Id == orden.Id).Select(x => new OrdenDeCargaCambiosHistorialDto
+        {
+            Id = x.Id,
+            Antes = x.Antes,
+            Despues = x.Despues,
+            FechaCambio = Convert.ToDateTime(x.FechaCambio).ToString("dd/MM/yyyy HH:mm"),
+            NombreColumnaCambio = x.NombreColumnaCambio,
+            OrdenDeCarga_Id = x.OrdenDeCarga_Id,
+            Usuario = x.Usuario.Mail
+        }).ToList();
 
             ordenDto = new OrdenDeCargaDetalleDto
             {
@@ -592,7 +616,8 @@ namespace SustitucionMOAUtils.Services
                 NumeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? "-" : orden.NumeroPedido,
                 MensajeValidacionSAP = string.IsNullOrEmpty(orden.DescripcionCodigoVerificacionSap) ? "" : orden.DescripcionCodigoVerificacionSap,
                 ContratoSinCantidadPendiente = orden.ContratoSinCantidadPendiente,
-                DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno
+                DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno,
+                OrdenDeCargaCambiosHistorial = ordenDeCargaCambiosHistorial
             };
 
             return ordenDto;
@@ -802,8 +827,14 @@ namespace SustitucionMOAUtils.Services
             if (!TransporteExiste(orden))
             {
                 string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+                string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
 
-                var mails = mailsMesaVentaFas.Split(';').ToList();
+                var mails = new List<string>
+                {
+                    mailsMesaVentaFas,
+                    mailsMesaENTSL,
+                };
+                //var mails = mailsMesaVentaFas.Split(';').ToList();
 
                 string asunto = "ALTA TTE";
 

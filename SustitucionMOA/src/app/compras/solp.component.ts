@@ -317,7 +317,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.nombreDePedido = solp.NombreDeObra || '';
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
         this.solpActual.telefono = solp.Telefono || '';
-        this.solpActual.mail = solp.Email || '';
+        this.solpActual.mail = solp.Email || sessionStorage.getItem("username");
         // this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
         // this.solpActual.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
 
@@ -673,13 +673,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                             if (result.Mensaje == "OK") {
                                 this.finalizarOk = true;
-                                this.displaySAP = true;
 
                                 if (this.solpActual.vincularAPliego) {
                                     this.displaySAPVincularPliego = true;
                                 }
                                 else if (this.solpActual.nroSolp) {
                                     this.displaySAPEditar = true;
+                                }else{
+                                    this.displaySAP = true;
                                 }
                             }
                             else {

@@ -671,6 +671,9 @@ namespace SustitucionMOAWS.DataAgroServices {
         private string CentroField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CesionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ClasificacionField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -684,6 +687,24 @@ namespace SustitucionMOAWS.DataAgroServices {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string CondFijacionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CondicionalField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CondicionalContratoSAPField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CondicionalFechaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CondicionalMonedaIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CondicionalPosicionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<decimal> CondicionalPrecioField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ConfirmaField;
@@ -782,6 +803,12 @@ namespace SustitucionMOAWS.DataAgroServices {
         private string InsumoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> KGMaximoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> KGMinimoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string MaterialField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -824,6 +851,9 @@ namespace SustitucionMOAWS.DataAgroServices {
         private string PagoDirVendField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string PizarraField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string PlantaDestinoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -837,6 +867,9 @@ namespace SustitucionMOAWS.DataAgroServices {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<decimal> PorcentajeDePagoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string PosicionCBOTField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private decimal PrecioField;
@@ -870,6 +903,9 @@ namespace SustitucionMOAWS.DataAgroServices {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string TipoNegocioField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> TipoPosicionCBOTIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ZLSCHField;
@@ -1070,6 +1106,19 @@ namespace SustitucionMOAWS.DataAgroServices {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Cesion {
+            get {
+                return this.CesionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CesionField, value) != true)) {
+                    this.CesionField = value;
+                    this.RaisePropertyChanged("Cesion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string Clasificacion {
             get {
                 return this.ClasificacionField;
@@ -1130,6 +1179,84 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((object.ReferenceEquals(this.CondFijacionField, value) != true)) {
                     this.CondFijacionField = value;
                     this.RaisePropertyChanged("CondFijacion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Condicional {
+            get {
+                return this.CondicionalField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CondicionalField, value) != true)) {
+                    this.CondicionalField = value;
+                    this.RaisePropertyChanged("Condicional");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CondicionalContratoSAP {
+            get {
+                return this.CondicionalContratoSAPField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CondicionalContratoSAPField, value) != true)) {
+                    this.CondicionalContratoSAPField = value;
+                    this.RaisePropertyChanged("CondicionalContratoSAP");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CondicionalFecha {
+            get {
+                return this.CondicionalFechaField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CondicionalFechaField, value) != true)) {
+                    this.CondicionalFechaField = value;
+                    this.RaisePropertyChanged("CondicionalFecha");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CondicionalMonedaId {
+            get {
+                return this.CondicionalMonedaIdField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CondicionalMonedaIdField, value) != true)) {
+                    this.CondicionalMonedaIdField = value;
+                    this.RaisePropertyChanged("CondicionalMonedaId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CondicionalPosicion {
+            get {
+                return this.CondicionalPosicionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CondicionalPosicionField, value) != true)) {
+                    this.CondicionalPosicionField = value;
+                    this.RaisePropertyChanged("CondicionalPosicion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<decimal> CondicionalPrecio {
+            get {
+                return this.CondicionalPrecioField;
+            }
+            set {
+                if ((this.CondicionalPrecioField.Equals(value) != true)) {
+                    this.CondicionalPrecioField = value;
+                    this.RaisePropertyChanged("CondicionalPrecio");
                 }
             }
         }
@@ -1551,6 +1678,32 @@ namespace SustitucionMOAWS.DataAgroServices {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> KGMaximo {
+            get {
+                return this.KGMaximoField;
+            }
+            set {
+                if ((this.KGMaximoField.Equals(value) != true)) {
+                    this.KGMaximoField = value;
+                    this.RaisePropertyChanged("KGMaximo");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> KGMinimo {
+            get {
+                return this.KGMinimoField;
+            }
+            set {
+                if ((this.KGMinimoField.Equals(value) != true)) {
+                    this.KGMinimoField = value;
+                    this.RaisePropertyChanged("KGMinimo");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string Material {
             get {
                 return this.MaterialField;
@@ -1733,6 +1886,19 @@ namespace SustitucionMOAWS.DataAgroServices {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Pizarra {
+            get {
+                return this.PizarraField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PizarraField, value) != true)) {
+                    this.PizarraField = value;
+                    this.RaisePropertyChanged("Pizarra");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string PlantaDestino {
             get {
                 return this.PlantaDestinoField;
@@ -1793,6 +1959,19 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((this.PorcentajeDePagoField.Equals(value) != true)) {
                     this.PorcentajeDePagoField = value;
                     this.RaisePropertyChanged("PorcentajeDePago");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string PosicionCBOT {
+            get {
+                return this.PosicionCBOTField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PosicionCBOTField, value) != true)) {
+                    this.PosicionCBOTField = value;
+                    this.RaisePropertyChanged("PosicionCBOT");
                 }
             }
         }
@@ -1936,6 +2115,19 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((object.ReferenceEquals(this.TipoNegocioField, value) != true)) {
                     this.TipoNegocioField = value;
                     this.RaisePropertyChanged("TipoNegocio");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> TipoPosicionCBOTId {
+            get {
+                return this.TipoPosicionCBOTIdField;
+            }
+            set {
+                if ((this.TipoPosicionCBOTIdField.Equals(value) != true)) {
+                    this.TipoPosicionCBOTIdField = value;
+                    this.RaisePropertyChanged("TipoPosicionCBOTId");
                 }
             }
         }
@@ -2949,6 +3141,9 @@ namespace SustitucionMOAWS.DataAgroServices {
         private string ComercialField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ComercialCreadorField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ContratoSAPField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -2985,6 +3180,9 @@ namespace SustitucionMOAWS.DataAgroServices {
         private string FijacionSAPField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private SustitucionMOAWS.DataAgroServices.FijacionVirtualSAPDto[] FijacionVirtualesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string HORAACTField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -3019,6 +3217,9 @@ namespace SustitucionMOAWS.DataAgroServices {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string TrigoEspecialField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string VirtualField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ZLSCHField;
@@ -3120,6 +3321,19 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((object.ReferenceEquals(this.ComercialField, value) != true)) {
                     this.ComercialField = value;
                     this.RaisePropertyChanged("Comercial");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ComercialCreador {
+            get {
+                return this.ComercialCreadorField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ComercialCreadorField, value) != true)) {
+                    this.ComercialCreadorField = value;
+                    this.RaisePropertyChanged("ComercialCreador");
                 }
             }
         }
@@ -3281,6 +3495,19 @@ namespace SustitucionMOAWS.DataAgroServices {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public SustitucionMOAWS.DataAgroServices.FijacionVirtualSAPDto[] FijacionVirtuales {
+            get {
+                return this.FijacionVirtualesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FijacionVirtualesField, value) != true)) {
+                    this.FijacionVirtualesField = value;
+                    this.RaisePropertyChanged("FijacionVirtuales");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string HORAACT {
             get {
                 return this.HORAACTField;
@@ -3437,6 +3664,19 @@ namespace SustitucionMOAWS.DataAgroServices {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Virtual {
+            get {
+                return this.VirtualField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.VirtualField, value) != true)) {
+                    this.VirtualField = value;
+                    this.RaisePropertyChanged("Virtual");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string ZLSCH {
             get {
                 return this.ZLSCHField;
@@ -3445,6 +3685,67 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((object.ReferenceEquals(this.ZLSCHField, value) != true)) {
                     this.ZLSCHField = value;
                     this.RaisePropertyChanged("ZLSCH");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="FijacionVirtualSAPDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto")]
+    [System.SerializableAttribute()]
+    public partial class FijacionVirtualSAPDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int CantidadField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NumeroFijacionVirtualField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Cantidad {
+            get {
+                return this.CantidadField;
+            }
+            set {
+                if ((this.CantidadField.Equals(value) != true)) {
+                    this.CantidadField = value;
+                    this.RaisePropertyChanged("Cantidad");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string NumeroFijacionVirtual {
+            get {
+                return this.NumeroFijacionVirtualField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NumeroFijacionVirtualField, value) != true)) {
+                    this.NumeroFijacionVirtualField = value;
+                    this.RaisePropertyChanged("NumeroFijacionVirtual");
                 }
             }
         }
@@ -3490,6 +3791,349 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((object.ReferenceEquals(this.FijacionField, value) != true)) {
                     this.FijacionField = value;
                     this.RaisePropertyChanged("Fijacion");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="FijacionVirtualSAP", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto")]
+    [System.SerializableAttribute()]
+    public partial class FijacionVirtualSAP : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ContratoField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Contrato {
+            get {
+                return this.ContratoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ContratoField, value) != true)) {
+                    this.ContratoField = value;
+                    this.RaisePropertyChanged("Contrato");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="CampoDetalleTerceroDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto")]
+    [System.SerializableAttribute()]
+    public partial class CampoDetalleTerceroDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CampaniaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string EstadoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private decimal HectareasCultivablesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private decimal HectareasTotalesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string KMZfileBase64Field;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string KMZnombreField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string LatitudField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int LocalidadIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string LongitudField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NombreField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ProveedorCUITField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private decimal ToneladasAprobadasField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Campania {
+            get {
+                return this.CampaniaField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CampaniaField, value) != true)) {
+                    this.CampaniaField = value;
+                    this.RaisePropertyChanged("Campania");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Estado {
+            get {
+                return this.EstadoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.EstadoField, value) != true)) {
+                    this.EstadoField = value;
+                    this.RaisePropertyChanged("Estado");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public decimal HectareasCultivables {
+            get {
+                return this.HectareasCultivablesField;
+            }
+            set {
+                if ((this.HectareasCultivablesField.Equals(value) != true)) {
+                    this.HectareasCultivablesField = value;
+                    this.RaisePropertyChanged("HectareasCultivables");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public decimal HectareasTotales {
+            get {
+                return this.HectareasTotalesField;
+            }
+            set {
+                if ((this.HectareasTotalesField.Equals(value) != true)) {
+                    this.HectareasTotalesField = value;
+                    this.RaisePropertyChanged("HectareasTotales");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string KMZfileBase64 {
+            get {
+                return this.KMZfileBase64Field;
+            }
+            set {
+                if ((object.ReferenceEquals(this.KMZfileBase64Field, value) != true)) {
+                    this.KMZfileBase64Field = value;
+                    this.RaisePropertyChanged("KMZfileBase64");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string KMZnombre {
+            get {
+                return this.KMZnombreField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.KMZnombreField, value) != true)) {
+                    this.KMZnombreField = value;
+                    this.RaisePropertyChanged("KMZnombre");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Latitud {
+            get {
+                return this.LatitudField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.LatitudField, value) != true)) {
+                    this.LatitudField = value;
+                    this.RaisePropertyChanged("Latitud");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int LocalidadId {
+            get {
+                return this.LocalidadIdField;
+            }
+            set {
+                if ((this.LocalidadIdField.Equals(value) != true)) {
+                    this.LocalidadIdField = value;
+                    this.RaisePropertyChanged("LocalidadId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Longitud {
+            get {
+                return this.LongitudField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.LongitudField, value) != true)) {
+                    this.LongitudField = value;
+                    this.RaisePropertyChanged("Longitud");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Nombre {
+            get {
+                return this.NombreField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NombreField, value) != true)) {
+                    this.NombreField = value;
+                    this.RaisePropertyChanged("Nombre");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ProveedorCUIT {
+            get {
+                return this.ProveedorCUITField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ProveedorCUITField, value) != true)) {
+                    this.ProveedorCUITField = value;
+                    this.RaisePropertyChanged("ProveedorCUIT");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public decimal ToneladasAprobadas {
+            get {
+                return this.ToneladasAprobadasField;
+            }
+            set {
+                if ((this.ToneladasAprobadasField.Equals(value) != true)) {
+                    this.ToneladasAprobadasField = value;
+                    this.RaisePropertyChanged("ToneladasAprobadas");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ResultadoAltaCampoSustentable", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto")]
+    [System.SerializableAttribute()]
+    public partial class ResultadoAltaCampoSustentable : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private SustitucionMOAWS.DataAgroServices.ErrorMessage[] ErroresField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool HayErrorField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public SustitucionMOAWS.DataAgroServices.ErrorMessage[] Errores {
+            get {
+                return this.ErroresField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ErroresField, value) != true)) {
+                    this.ErroresField = value;
+                    this.RaisePropertyChanged("Errores");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool HayError {
+            get {
+                return this.HayErrorField;
+            }
+            set {
+                if ((this.HayErrorField.Equals(value) != true)) {
+                    this.HayErrorField = value;
+                    this.RaisePropertyChanged("HayError");
                 }
             }
         }
@@ -3563,10 +4207,10 @@ namespace SustitucionMOAWS.DataAgroServices {
         System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAP contratoSAP);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ValidarProveedorComercial", ReplyAction="http://tempuri.org/IDataAgroServices/ValidarProveedorComercialResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercial(string cuit, bool? corredor);
+        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercial(string cuit, System.Nullable<bool> corredor);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ValidarProveedorComercial", ReplyAction="http://tempuri.org/IDataAgroServices/ValidarProveedorComercialResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialAsync(string cuit, bool? corredor);
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialAsync(string cuit, System.Nullable<bool> corredor);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/AltaContratoSAP", ReplyAction="http://tempuri.org/IDataAgroServices/AltaContratoSAPResponse")]
         SustitucionMOAWS.DataAgroServices.ResultadoSap AltaContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP);
@@ -3592,6 +4236,12 @@ namespace SustitucionMOAWS.DataAgroServices {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/AnularFijacionSAP", ReplyAction="http://tempuri.org/IDataAgroServices/AnularFijacionSAPResponse")]
         System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularFijacionSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionSAP fijacionSAP);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/AnulaFijacionVirtualSAP", ReplyAction="http://tempuri.org/IDataAgroServices/AnulaFijacionVirtualSAPResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap AnulaFijacionVirtualSAP(SustitucionMOAWS.DataAgroServices.FijacionVirtualSAP fijacionSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/AnulaFijacionVirtualSAP", ReplyAction="http://tempuri.org/IDataAgroServices/AnulaFijacionVirtualSAPResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnulaFijacionVirtualSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionVirtualSAP fijacionSAP);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ProveedorApocrifo", ReplyAction="http://tempuri.org/IDataAgroServices/ProveedorApocrifoResponse")]
         bool ProveedorApocrifo(string cuit);
         
@@ -3603,6 +4253,18 @@ namespace SustitucionMOAWS.DataAgroServices {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/TraerTipoDeCambio", ReplyAction="http://tempuri.org/IDataAgroServices/TraerTipoDeCambioResponse")]
         System.Threading.Tasks.Task<decimal> TraerTipoDeCambioAsync(System.Nullable<System.DateTime> fecha);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ActualizarCesionContratoSAP", ReplyAction="http://tempuri.org/IDataAgroServices/ActualizarCesionContratoSAPResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCesionContratoSAP(string contratoSAP, bool cesion);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ActualizarCesionContratoSAP", ReplyAction="http://tempuri.org/IDataAgroServices/ActualizarCesionContratoSAPResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCesionContratoSAPAsync(string contratoSAP, bool cesion);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/AltaCampoSustentable", ReplyAction="http://tempuri.org/IDataAgroServices/AltaCampoSustentableResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/AltaCampoSustentable", ReplyAction="http://tempuri.org/IDataAgroServices/AltaCampoSustentableResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable> AltaCampoSustentableAsync(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -3704,11 +4366,11 @@ namespace SustitucionMOAWS.DataAgroServices {
             return base.Channel.AnularContratoSAPAsync(contratoSAP);
         }
         
-        public SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercial(string cuit, bool? corredor) {
+        public SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercial(string cuit, System.Nullable<bool> corredor) {
             return base.Channel.ValidarProveedorComercial(cuit, corredor);
         }
         
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialAsync(string cuit, bool? corredor = false) {
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialAsync(string cuit, System.Nullable<bool> corredor) {
             return base.Channel.ValidarProveedorComercialAsync(cuit, corredor);
         }
         
@@ -3744,6 +4406,14 @@ namespace SustitucionMOAWS.DataAgroServices {
             return base.Channel.AnularFijacionSAPAsync(fijacionSAP);
         }
         
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap AnulaFijacionVirtualSAP(SustitucionMOAWS.DataAgroServices.FijacionVirtualSAP fijacionSAP) {
+            return base.Channel.AnulaFijacionVirtualSAP(fijacionSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnulaFijacionVirtualSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionVirtualSAP fijacionSAP) {
+            return base.Channel.AnulaFijacionVirtualSAPAsync(fijacionSAP);
+        }
+        
         public bool ProveedorApocrifo(string cuit) {
             return base.Channel.ProveedorApocrifo(cuit);
         }
@@ -3758,6 +4428,22 @@ namespace SustitucionMOAWS.DataAgroServices {
         
         public System.Threading.Tasks.Task<decimal> TraerTipoDeCambioAsync(System.Nullable<System.DateTime> fecha) {
             return base.Channel.TraerTipoDeCambioAsync(fecha);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCesionContratoSAP(string contratoSAP, bool cesion) {
+            return base.Channel.ActualizarCesionContratoSAP(contratoSAP, cesion);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCesionContratoSAPAsync(string contratoSAP, bool cesion) {
+            return base.Channel.ActualizarCesionContratoSAPAsync(contratoSAP, cesion);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo) {
+            return base.Channel.AltaCampoSustentable(campo);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable> AltaCampoSustentableAsync(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo) {
+            return base.Channel.AltaCampoSustentableAsync(campo);
         }
     }
 }
