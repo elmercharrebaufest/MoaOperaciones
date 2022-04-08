@@ -51,8 +51,9 @@ namespace SustitucionMOAModel.Dto
             CUITCorredor = orden.CUITCorredor;
             CodigoCliente = orden.Cliente.CodigoProveedor;
             CodigoCorredor = orden.Corredor != null ? orden.Corredor.CodigoProveedor : "";
+            
 
-        }
+    }
 
         public int Id { get; set; }
         public string CUITCliente { get; set; }
