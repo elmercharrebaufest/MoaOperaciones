@@ -27,6 +27,7 @@ export class OrdenDeCarga {
     NumeroPedidoIngresado: string;
     NumeroPedido: string;
     PedidosRespuesta: string;
+    ContratosRespuesta: string;
     MensajeValidacionSAP: string;
     ContratoSinCantidadPendiente: boolean;
     DescripcionErrorInterno: string;

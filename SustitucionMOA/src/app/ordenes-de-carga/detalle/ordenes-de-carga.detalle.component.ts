@@ -132,7 +132,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonPedidos = true
             }
 
-            if (this.ordenDeCarga.ContratoSAP === "-") {
+            if (this.ordenDeCarga.ContratoSAP === "-" && this.ordenDeCarga.ContratosRespuesta != "-") {
                 this.mostrarBotonContratos = true;
                 this.mostrarBotonPedidos = false;
             }
