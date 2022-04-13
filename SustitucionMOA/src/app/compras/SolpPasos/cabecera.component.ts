@@ -34,6 +34,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     @Input('locale')
     protected locale: any;
 
+    pruebax: string = "cabecera";
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router,
@@ -58,6 +60,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     selectPosicion: any;
 
     editarDocumento: boolean = false;
+    flagSolpFinalizada: boolean = false;
 
     // solpActual: Solp;
 
@@ -110,7 +113,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
 
-    ngOnInit() {
+    ngOnInit() {         
         this.setTabs();
 
         this.claseDocumento = this.combos.ClaseDocumento;
@@ -142,6 +145,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         if (this.model.vincularAPliego) {
             this.formularioActual.disable();
         }
+        this.flagSolpFinalizada = this.combos.flagSolpFinalizada;
     }
 
     mostrarValidacion(campoAValidar, vacio){

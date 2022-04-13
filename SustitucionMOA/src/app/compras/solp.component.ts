@@ -101,8 +101,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displayErrorSAP: boolean;
     displaySAPVincularPliego: boolean;
     disabledSave = false;
-
     disabled: boolean = false;
+    flagSolpFinalizada: boolean = false;
 
     listadoErrores: string[] = new Array<string>();
     displaySAPEditar: boolean;
@@ -259,8 +259,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             if (this.route.params) {
                 this.route.params.forEach((params: Params) => {
-                    if (params["id"] > 0) this.solpId = params["id"];
+                    // if (params["id"] > 0) this.solpId = params["id"];
+                    if (parseInt(params["id"].split(',')[0]) > 0) this.solpId = parseInt(params["id"].split(',')[0]);
                     if (params["tipoSolp"]) this.solpActual.tipoSolp = params["tipoSolp"];
+                    if (params["id"].split(',')[1] != ""){
+                        this.flagSolpFinalizada = true;
+                        //setTimeout(function () { this.combos.flagSolpFinalizada = true;; }, 500);
+                        
+                    } 
                 });
 
                 if (this.solpId > 0) {
@@ -870,6 +876,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.combos = result;
+                        this.combos.flagSolpFinalizada = this.flagSolpFinalizada;
                         this.obtenerUsuarioCompras();
                     }
                 },

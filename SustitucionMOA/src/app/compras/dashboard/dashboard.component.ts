@@ -50,8 +50,6 @@ export class DashboardComponent extends ListBaseComponent {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
         this.usuario = sessionStorage.getItem("username");
-
-        console.log(this.usuario);
         this.locale = {
             firstDayOfWeek: 0,
             dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
@@ -115,12 +113,26 @@ export class DashboardComponent extends ListBaseComponent {
         return false;
     }
 
+    goToSeccionEdit(path: string, Id: any, NroSolp: any) {
+        $("#mySidenav").css({ 'right': '-270px' });
+        $("#myMenuClose").css({ 'display': 'none' });
+        $("#myMenuOpen").css({ 'display': 'block' });
+        $("#coverAll").fadeOut();
+        let nrosol = ""
+        if(NroSolp != null) nrosol = NroSolp.toString();
+        let obj = Id.toString() + "," + nrosol;
+
+        this.navService.navegarSeccionParam(path, obj);
+        return false;
+    }
+
 
     ngOnInit() {
         this.navService.setSeccionList([]);
         this.getListarSolp();
         this.desdeDashboard = new Date();
         this.hastaDashboard = new Date();
+        
     }
 
     ngAfterViewInit(): void {
@@ -370,7 +382,6 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     vincularAPliego(solpId: number) {
-        debugger;
         this.goToSeccionParam('/compras/solp', solpId);
     }
 
