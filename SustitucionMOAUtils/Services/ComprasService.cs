@@ -1480,6 +1480,7 @@ namespace SustitucionMOAUtils.Services
                 List<TablaSap> unidadesDeMedida = tablaSap.Where(x => x.Tabla == TablasSap.Unidad).ToList();
                 List<TablaSap> clasesDeDocumento = tablaSap.Where(x => x.Tabla == TablasSap.ClaseDocumento).ToList();
                 List<TablaSap> centrosDeCosto = tablaSap.Where(x => x.Tabla == TablasSap.CecoSolpSap).ToList();
+                List<UsuarioDto> usuarios = repositorio.Listar<Usuario, UsuarioDto>(a => new UsuarioDto { Id = a.Id, UsuarioSap = a.UsuarioSap }, a => a.UsuarioSap != null && a.UsuarioSap != "").ToList();
                 ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
                 List<TablaSap> centrosDeBeneficio = tablaSap.Where(x => x.Tabla == TablasSap.CentroBeneficio).ToList();
                 List<TablaSap> cuentasSolpesSap = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
@@ -1524,6 +1525,17 @@ namespace SustitucionMOAUtils.Services
                                     };
 
                             solpsFinales.Add(solp);
+                        }
+                        if (solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solp.TipoSolpSap == (int)TipoSolpSap.Sap)
+                        {
+                            if (solp.UsuarioCreacion_Id == 0 || solp.UsuarioCreacion_Id == null)
+                            {
+                                var usuario = usuarios.Where(a => a.UsuarioSap == posicion.UsuarioCreado).FirstOrDefault();
+                                if (usuario != null)
+                                {
+                                    solp.UsuarioCreacion_Id = usuario.Id;
+                                }
+                            }
                         }
                         var codigoSap = listaEstadosSolpSap.Where(x => x.CodigoSap == posicion.EstadoSolpSap).FirstOrDefault();
                         if (codigoSap != null)
