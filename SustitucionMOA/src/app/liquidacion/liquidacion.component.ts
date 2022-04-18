@@ -76,6 +76,12 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
             return false;
     }
 
+    verVencimiento(){
+        if(){
+            
+        }
+    }
+
     showModal(contrato: string, secuencia: string, comprobante: string) {
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
