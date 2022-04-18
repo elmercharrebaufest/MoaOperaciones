@@ -236,11 +236,9 @@ namespace SustitucionMOAUtils.Services
                 var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
                 var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
 
-                var Destinatario = new List<string>
-                {
-                    mailsMesaVentaFas,
-                    mailsComerciales,
-                };
+                var Destinatario = mailsMesaVentaFas.Split(';').ToList();
+                Destinatario.AddRange(mailsComerciales.Split(';').ToList());
+
 
                 EmailSender.EnviarMail(Destinatario, asunto, cuerpo, copia, null, null, null);
             }
@@ -838,13 +836,8 @@ namespace SustitucionMOAUtils.Services
                 string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
                 string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
 
-                //var mails = new List<string>
-                //{
-                //    mailsMesaVentaFas,
-                //    mailsMesaENTSL,
-                //};
                 var mails = mailsMesaVentaFas.Split(';').ToList();
-                mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
+                mails.AddRange(mailsMesaENTSL.Split(';').ToList());
 
                 string asunto = "ALTA TTE";
 
