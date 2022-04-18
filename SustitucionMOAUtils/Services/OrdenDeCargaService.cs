@@ -838,12 +838,13 @@ namespace SustitucionMOAUtils.Services
                 string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
                 string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
 
-                var mails = new List<string>
-                {
-                    mailsMesaVentaFas,
-                    mailsMesaENTSL,
-                };
-                //var mails = mailsMesaVentaFas.Split(';').ToList();
+                //var mails = new List<string>
+                //{
+                //    mailsMesaVentaFas,
+                //    mailsMesaENTSL,
+                //};
+                var mails = mailsMesaVentaFas.Split(';').ToList();
+                mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
 
                 string asunto = "ALTA TTE";
 
