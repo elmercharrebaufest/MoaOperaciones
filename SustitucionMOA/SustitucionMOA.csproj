@@ -1006,6 +1006,7 @@
     <Compile Include="Controllers\TicketPesadaController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\VendedorController.cs" />
+    <Compile Include="Filter\GZipOrDeflateAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
