@@ -15,10 +15,11 @@ namespace SustitucionMOAWS.WSConsumers
     {
         SI_MPMF_MOAOP_APLICACIONESClient service = new SI_MPMF_MOAOP_APLICACIONESClient();
 
-        public object request(string proveedor, List<FechaWS> fechas)
+        public object request(string proveedor, List<FechaWS> fechas, List<string> contratos)
         {
             try
             {
+                contratos = contratos ?? new List<string>();
                 ZMPES4050[] aplicaciones_out = new ZMPES4050[] { };
                 ZMPES4060[] contratos_in = new ZMPES4060[] { };
                 List<ZMPES4100> fechasSAP = new List<ZMPES4100>() { };
@@ -30,6 +31,8 @@ namespace SustitucionMOAWS.WSConsumers
                         FECHA_OP_HASTA = SAPFormatter.PrepararFecha(fecha.fechaFin)
                     });
                 }
+
+                contratos_in = contratos.Select(x => new ZMPES4060 { CONTRATO = x }).ToArray();
                 ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
 
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
