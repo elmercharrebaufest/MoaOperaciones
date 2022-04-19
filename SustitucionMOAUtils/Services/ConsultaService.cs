@@ -752,7 +752,9 @@ namespace SustitucionMOAUtils.Services
                 return subcategorias.Select(x => new MaterialDto
                 { 
                     MaterialId = x.Id,
-                    Descripcion = x.Nombre
+                    Descripcion = x.Nombre,
+                    CodigoSap = x.CodigoSap
+
                 }).ToList();
             }
             catch (ValidationCustomException e)
