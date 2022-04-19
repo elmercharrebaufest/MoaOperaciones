@@ -210,7 +210,7 @@ namespace SustitucionMOAUtils.Services
                     //LIQUIDACIONES
                     try
                     {
-                        if (todasLiquidaciones == null) todasLiquidaciones = liquidacionService.TodasLiquidaciones(proveedor, fechaInicio, fechaFin);
+                        if (todasLiquidaciones == null) todasLiquidaciones = liquidacionService.TodasLiquidaciones(proveedor, fechaInicio, fechaFin, palabra);
                     }
                     catch (Exception e)
                     {
