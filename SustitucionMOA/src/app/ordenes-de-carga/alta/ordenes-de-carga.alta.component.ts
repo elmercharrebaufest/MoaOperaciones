@@ -82,6 +82,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
 
+    cambioProducto(){
+        let productoActual = this.listaMateriales.find(x => x.MaterialId == this.ordenDeCarga.Producto_Id).CodigoSap;       
+        if (productoActual == "99709"){
+            this.ordenDeCarga.Cantidad = 20000;
+        }else{
+            this.ordenDeCarga.Cantidad = 30000;
+        }
+    }
+
     obtenerMateriales() {
         //Sacamos lo de la lista de campaña, ya que ahora son independientes
         this.subscription = this.service.getMateriales().subscribe(

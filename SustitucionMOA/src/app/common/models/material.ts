@@ -3,6 +3,8 @@
     public Descripcion: string;
     public CampaniaActual: string;
     public CampaniaIdActual: number;
+    public CodigoSap: string;
+    public MaterialId: number;
 
     constructor() { }
 }
