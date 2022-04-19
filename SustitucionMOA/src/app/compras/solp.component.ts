@@ -259,14 +259,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             if (this.route.params) {
                 this.route.params.forEach((params: Params) => {
+                    let numeroSolp = "";
                     // if (params["id"] > 0) this.solpId = params["id"];
                     if (parseInt(params["id"].split(',')[0]) > 0) this.solpId = parseInt(params["id"].split(',')[0]);
                     if (params["tipoSolp"]) this.solpActual.tipoSolp = params["tipoSolp"];
-                    if (params["id"].split(',')[1] != ""){
-                        this.flagSolpFinalizada = true;
-                        //setTimeout(function () { this.combos.flagSolpFinalizada = true;; }, 500);
-                        
-                    } 
+                    if (params["id"].split(',')[1] == undefined){
+                        numeroSolp = "";
+                    }else{
+                        numeroSolp = params["id"].split(',')[1];
+                    }
+
+                    if (numeroSolp != "") this.flagSolpFinalizada = true;
                 });
 
                 if (this.solpId > 0) {
