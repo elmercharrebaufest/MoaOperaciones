@@ -43,8 +43,8 @@ namespace SustitucionMOAUtils.Interfaces
         string descargarFleteProcedencia(string proveedor, string contrato);
         Task NotificarLiquidacionesAsync(HttpFileCollectionBase liquidaciones, string codigoProveedor);
         IList<LiquidacionInformadaDto> GetLiquidacionInformadas(string codigoProveedor);
-        LiquidacionViewModel TodasLiquidaciones(string proveedor, string fechaInicio, string fechaFin);
+        LiquidacionViewModel TodasLiquidaciones(string proveedor, string fechaInicio, string fechaFin, string palabra);
         ComprobantesNGWSMOAResponse getComprobantesNG(string proveedor, string fechaInicio, string fechaFin);
 
-        }
+    }
 }
