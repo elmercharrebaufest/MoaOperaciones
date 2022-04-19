@@ -155,7 +155,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (this.ordenDeCarga.ContratoSinCantidadPendiente) {
                 this.mostrarBotonForzarCreacionPedido = true;
             }
-        }
+        } else if (this.esMesaFas) {this.mostrarBotonAnular = true;}
     }
 
     obtenerOrdenDeCarga() {
