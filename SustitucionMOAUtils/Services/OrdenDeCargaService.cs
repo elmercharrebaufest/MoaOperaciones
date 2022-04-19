@@ -60,7 +60,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (ordenDeCarga.CUITCorredor != null)
                     {
-                        throw new ValidationCustomException("No se encontró el corredor seleccionado");
+                        //throw new ValidationCustomException("No se encontró el corredor seleccionado");
+                         return new Resultado { error = "No se encontró el corredor seleccionado" };
                     }
                 }
             }
@@ -76,7 +77,8 @@ namespace SustitucionMOAUtils.Services
 
                     if (cliente == null)
                     {
-                        throw new ValidationCustomException("Su usuario no está habilitado para operar con ese CUIT");
+                        //throw new ValidationCustomException("Su usuario no está habilitado para operar con ese CUIT");
+                        return new Resultado { error = "Su usuario no está habilitado para operar con ese CUIT" };
                     }
                 }
                 else
@@ -122,7 +124,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (creadaEnSaP)
                 {
-                    VerificarSituacionCrediticia(ordenDeCarga, true);
+                     VerificarSituacionCrediticia(ordenDeCarga, true);                  
                 }
             }
 
@@ -676,7 +678,7 @@ namespace SustitucionMOAUtils.Services
 
         #region Etapa1
 
-        public string SeleccionarContrato(int ordenId, string contratoSAP)
+        public Resultado SeleccionarContrato(int ordenId, string contratoSAP)
         {
             string resultado = SuccessMsg.OrdenDeCargaActualizada;
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
@@ -691,7 +693,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (creadaEnSaP)
                 {
-                    resultado = VerificarSituacionCrediticia(orden, true);
+                   return  VerificarSituacionCrediticia(orden, true);
                 }
             }
             else
@@ -701,7 +703,7 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
-            return resultado;
+            return new Resultado { Mensaje = resultado};
         }
 
 
@@ -874,14 +876,14 @@ namespace SustitucionMOAUtils.Services
 
         #region Etapa2
 
-        public string VerificarSituacionCrediticia(int ordenId)
+        public Resultado VerificarSituacionCrediticia(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
             return VerificarSituacionCrediticia(orden, false);
         }
 
-        private string VerificarSituacionCrediticia(OrdenDeCarga orden, bool notificar)
+        private Resultado VerificarSituacionCrediticia(OrdenDeCarga orden, bool notificar)
         {
             if (orden.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito)
             {
@@ -898,11 +900,11 @@ namespace SustitucionMOAUtils.Services
 
                     if (notificar)
                     {
-                        return "Verifique el crédito del pedido";
+                        return new Resultado { Mensaje = "Verifique el crédito del pedido" } ;
                     }
                     else
                     {
-                        throw new InfoCustomException("Verifique el crédito del pedido.");
+                        return new Resultado { info = "Verifique el crédito del pedido." };
                     }
 
                 }
@@ -910,13 +912,12 @@ namespace SustitucionMOAUtils.Services
                 {
                     orden.DescripcionErrorInterno = "";
                     orden.ActualizarEstado();
-
                     return GenerarEntregaSAP(orden);
                 }
             }
             else
             {
-                return "La orden no está pendiente de aprobación de crédito.";
+                return new Resultado { IdEntidad = orden.Id, Mensaje = "La orden no está pendiente de aprobación de crédito." } ;
             }
         }
 
@@ -953,13 +954,13 @@ namespace SustitucionMOAUtils.Services
             return true;
         }
 
-        private string GenerarEntregaSAP(OrdenDeCarga orden)
+        private Resultado GenerarEntregaSAP(OrdenDeCarga orden)
         {
             orden.TransporteExiste = TransporteExiste(orden);
 
             if (!orden.TransporteExiste)
             {
-                throw new ValidationCustomException("No existe el transportista");
+                return new Resultado { error = "No existe el transportista"};
             }
 
             var conductor = string.Concat(orden.ApellidoChofer, ", ", orden.NombreChofer);
@@ -983,17 +984,18 @@ namespace SustitucionMOAUtils.Services
                     orden.NumeroEntrega = result;
                     orden.ActualizarEstado();
                     repositorio.GuardarCambios();
-
-                    return string.Concat("Se ha generado la entrega ", result, ".");
+                    return new Resultado { Mensaje = string.Concat("Se ha generado la entrega ", result, ".")};
+                    //return string.Concat("Se ha generado la entrega ", result, ".");
 
                 case "OE-01":
                     orden.TransporteExiste = false;
                     orden.ActualizarEstado();
                     repositorio.GuardarCambios();
-                    return string.Concat("No se pudo genera la entrega. No existe el transportista.");
+                    return new Resultado { Mensaje = "No se pudo genera la entrega. No existe el transportista." };
+                    //return string.Concat("No se pudo genera la entrega. No existe el transportista.");
             }
 
-            return "Estado no conocido";
+             return new Resultado { info = "Estado no conocido" };
         }
 
         #endregion

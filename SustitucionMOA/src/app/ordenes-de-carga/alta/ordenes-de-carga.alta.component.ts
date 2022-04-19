@@ -200,7 +200,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.spinnerComponent.hideIt();
                         this.blockUI.stop();
                         if (result.logout == true) {
-                            this.sessionDataService.logout();
+                        this.sessionDataService.logout();
                         } else if (
                             result.error != undefined &&
                             result.error != ""
@@ -208,6 +208,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                             this.mensajeComponent.setErrorMsg(result.error);
                         } else if (result.info != undefined) {
                             this.mensajeComponent.setInfoMsg(result.info);
+                        } else if (
+                            result.data.error != undefined &&
+                            result.data.error != ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(result.data.error);
+                        } else if (result.data.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.data.info);
                         } else {
                             this.mensajeComponent.setMsgsEmpty();
 
@@ -244,6 +251,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                             this.mensajeComponent.setErrorMsg(result.error);
                         } else if (result.info != undefined) {
                             this.mensajeComponent.setInfoMsg(result.info);
+                        } else if (
+                            result.data.error != undefined &&
+                            result.data.error != ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(result.data.error);
+                        } else if (result.data.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.data.info);
                         } else {
                             this.mensajeComponent.setMsgsEmpty();
 
