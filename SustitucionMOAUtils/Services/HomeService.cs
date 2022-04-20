@@ -189,7 +189,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         if (cartasPorteAplicacion == null)
                         {
-                            cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, fechas);
+                            cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS>(), new List<string> { palabra });
                         }
                     }
                     catch (Exception e)
@@ -210,7 +210,7 @@ namespace SustitucionMOAUtils.Services
                     //LIQUIDACIONES
                     try
                     {
-                        if (todasLiquidaciones == null) todasLiquidaciones = liquidacionService.TodasLiquidaciones(proveedor, fechaInicio, fechaFin);
+                        if (todasLiquidaciones == null) todasLiquidaciones = liquidacionService.TodasLiquidaciones(proveedor, fechaInicio, fechaFin, palabra);
                     }
                     catch (Exception e)
                     {
@@ -237,12 +237,12 @@ namespace SustitucionMOAUtils.Services
                     {
                         if (cartasPorteAplicacion == null)
                         {
-                            cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, fechas);
+                            cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS> { new FechaWS { fechaFin = DateTime.Now.Date.AddDays(1), fechaInicio = new DateTime(2010, 1, 1) } }, new List<string> { palabra });
                         }
 
                         if (cartasPorteDescargas == null)
                         {
-                            cartasPorteDescargas = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, fechas);
+                            cartasPorteDescargas = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, new List<FechaWS> { new FechaWS { fechaFin = DateTime.Now.Date.AddDays(1), fechaInicio = new DateTime(2010, 1, 1) } }, new List<string> { palabra });
                         }
                     }
                     catch (Exception e)

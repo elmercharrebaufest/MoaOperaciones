@@ -11,6 +11,10 @@ namespace SustitucionMOAModel.Dto
         public string Mensaje { get; set; }
         public int IdEntidad { get; set; }
 
+        public string error { get; set; }
+
+        public string info { get; set; }
+
         public override bool Equals(object obj)
         {
             return obj is Resultado resultado &&

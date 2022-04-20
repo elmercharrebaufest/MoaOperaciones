@@ -82,6 +82,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
 
+    cambioProducto(){
+        let productoActual = this.listaMateriales.find(x => x.MaterialId == this.ordenDeCarga.Producto_Id).CodigoSap;       
+        if (productoActual == "99709"){
+            this.ordenDeCarga.Cantidad = 20000;
+        }else{
+            this.ordenDeCarga.Cantidad = 30000;
+        }
+    }
+
     obtenerMateriales() {
         //Sacamos lo de la lista de campaña, ya que ahora son independientes
         this.subscription = this.service.getMateriales().subscribe(
@@ -191,7 +200,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.spinnerComponent.hideIt();
                         this.blockUI.stop();
                         if (result.logout == true) {
-                            this.sessionDataService.logout();
+                        this.sessionDataService.logout();
                         } else if (
                             result.error != undefined &&
                             result.error != ""
@@ -199,6 +208,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                             this.mensajeComponent.setErrorMsg(result.error);
                         } else if (result.info != undefined) {
                             this.mensajeComponent.setInfoMsg(result.info);
+                        } else if (
+                            result.data.error != undefined &&
+                            result.data.error != ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(result.data.error);
+                        } else if (result.data.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.data.info);
                         } else {
                             this.mensajeComponent.setMsgsEmpty();
 
@@ -235,6 +251,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                             this.mensajeComponent.setErrorMsg(result.error);
                         } else if (result.info != undefined) {
                             this.mensajeComponent.setInfoMsg(result.info);
+                        } else if (
+                            result.data.error != undefined &&
+                            result.data.error != ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(result.data.error);
+                        } else if (result.data.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.data.info);
                         } else {
                             this.mensajeComponent.setMsgsEmpty();
 

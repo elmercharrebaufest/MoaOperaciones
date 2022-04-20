@@ -15,6 +15,7 @@ namespace SustitucionMOAModel.Models.DataAgro
         public string CampaniaTablero { get; set; }
         public int CampaniaTableroId { get; set; }
         public string Codigo { get; set; }
+        public string CodigoSap { get; set; }
 
         public MaterialDto () { }
     }
