@@ -324,7 +324,7 @@ namespace SustitucionMOAUtils.Services
                             {
                                 SolpSubposicion subposEntity = null;
 
-                                subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Codigo == subpos.Codigo || y.Numero == subpos.Numero);
+                                subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Numero == subpos.Numero);
 
                                 if (subposEntity == null)
                                     subposEntity = new SolpSubposicion();
@@ -643,70 +643,79 @@ namespace SustitucionMOAUtils.Services
 
         public List<SolpDto> ListarSolp(UsuarioDto usuarioActual)
         {
-            var usuariosCompras = repositorio.Listar<UsuarioCompras>();
-            var usuariosComprasRelacion = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id);
-            UsuarioComprasRelacionConUsuarios usuarioComprasRelacionEntity = null;
-            if (!usuariosComprasRelacion.ToList().Any())
+            try
             {
-                usuariosCompras.ToList().ForEach(x =>
+                var usuariosCompras = repositorio.Listar<UsuarioCompras>();
+                var usuariosComprasRelacion = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id);
+                UsuarioComprasRelacionConUsuarios usuarioComprasRelacionEntity = null;
+                if (!usuariosComprasRelacion.ToList().Any())
                 {
-                    usuarioComprasRelacionEntity = new UsuarioComprasRelacionConUsuarios
+                    usuariosCompras.ToList().ForEach(x =>
                     {
-                        Usuario_Id = usuarioActual.Id,
-                        UsuarioCompras_Id = x.Id
-                    };
-                    repositorio.Agregar(usuarioComprasRelacionEntity);
-                });
-                repositorio.GuardarCambios();
+                        usuarioComprasRelacionEntity = new UsuarioComprasRelacionConUsuarios
+                        {
+                            Usuario_Id = usuarioActual.Id,
+                            UsuarioCompras_Id = x.Id
+                        };
+                        repositorio.Agregar(usuarioComprasRelacionEntity);
+                    });
+                    repositorio.GuardarCambios();
+                }
+
+                Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null; //&& x.UsuarioCreacion_Id == usuarioActual.Id;
+
+                if (usuarioActual.Permisos.Contains("VER TODAS SOLPS"))
+                {
+                    filtro = (x => x.FechaBorrado == null);
+                }
+
+                var todasLasSolp = repositorio.Listar<Solp, SolpDto>(x => new SolpDto
+                {
+                    UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
+                    Id = x.Id,
+                    NroSolp = x.NroSolp,
+                    NombreDeObra = x.Pliego == null ? "" : x.Pliego.NombreObra,
+                    FechaCreacion = x.FechaCreacion,
+                    EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Descripcion, Color = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Color, Codigo = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Codigo },
+                    EstadoSolpSapId = x.EstadoSolpSap_Id,
+                    EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "" },
+                    TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
+                    VincularPliego = !x.Pliego_Id.HasValue,
+                    TieneCondicionesGenerales = x.Pliego == null ? (bool?)null : x.Pliego.TieneCondicionesGenerales,
+                    RevisadoPor = x.Pliego == null ? "" : x.Pliego.RevisadoPor,
+                    TipoSolpSap = x.TipoSolpSap,
+                    EstadoPasos = x.EstadoPasos,
+                    PosicionesEstado = x.Posiciones.All(p => p.Estado == false)
+                }, x => x.FechaBorrado == null, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc);
+
+                //var todasLasSolp = repositorio.Listar(filtro)
+                //                .Select(x => new SolpDto
+                //                {
+                //                    UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
+                //                    Id = x.Id,
+                //                    NroSolp = x.NroSolp,
+                //                    NombreDeObra = x.Pliego?.NombreObra,
+                //                    FechaCreacion = x.FechaCreacion,
+                //                    EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento?.Descripcion, Color = x.EstadoDocumento?.Color, Codigo = x.EstadoDocumento?.Codigo },
+                //                    EstadoSolpSapId = x.EstadoSolpSap_Id,
+                //                    EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "" },
+                //                    TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
+                //                    VincularPliego = !x.Pliego_Id.HasValue,
+                //                    TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
+                //                    RevisadoPor = x.Pliego?.RevisadoPor,
+                //                    TipoSolpSap = x.TipoSolpSap,
+                //                    EstadoPasos = x.EstadoPasos,
+                //                    Posiciones = x.Posiciones.Select(p => new SolpPosicionDto { Estado = p.Estado }).ToList()
+                //                }).OrderByDescending(i => i.FechaCreacion).ToList();
+
+                return todasLasSolp;
+            }
+            catch (Exception e)
+            {
+
+                throw;
             }
 
-            Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null; //&& x.UsuarioCreacion_Id == usuarioActual.Id;
-
-            if (usuarioActual.Permisos.Contains("VER TODAS SOLPS"))
-            {
-                filtro = (x => x.FechaBorrado == null);
-            }
-
-            var todasLasSolp = repositorio.Listar<Solp, SolpDto>(x => new SolpDto
-            {
-                UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
-                Id = x.Id,
-                NroSolp = x.NroSolp,
-                NombreDeObra = x.Pliego == null ? "" : x.Pliego.NombreObra,
-                FechaCreacion = x.FechaCreacion,
-                EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Descripcion, Color = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Color, Codigo = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Codigo },
-                EstadoSolpSapId = x.EstadoSolpSap_Id,
-                EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "" },
-                TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
-                VincularPliego = !x.Pliego_Id.HasValue,
-                TieneCondicionesGenerales = x.Pliego == null ? (bool?)null : x.Pliego.TieneCondicionesGenerales,
-                RevisadoPor = x.Pliego == null ? "" : x.Pliego.RevisadoPor,
-                TipoSolpSap = x.TipoSolpSap,
-                EstadoPasos = x.EstadoPasos,
-                PosicionesEstado = x.Posiciones.All(p => p.Estado == false)
-            }, x => x.FechaBorrado == null, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc);
-
-            //var todasLasSolp = repositorio.Listar(filtro)
-            //                .Select(x => new SolpDto
-            //                {
-            //                    UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
-            //                    Id = x.Id,
-            //                    NroSolp = x.NroSolp,
-            //                    NombreDeObra = x.Pliego?.NombreObra,
-            //                    FechaCreacion = x.FechaCreacion,
-            //                    EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento?.Descripcion, Color = x.EstadoDocumento?.Color, Codigo = x.EstadoDocumento?.Codigo },
-            //                    EstadoSolpSapId = x.EstadoSolpSap_Id,
-            //                    EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "" },
-            //                    TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
-            //                    VincularPliego = !x.Pliego_Id.HasValue,
-            //                    TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
-            //                    RevisadoPor = x.Pliego?.RevisadoPor,
-            //                    TipoSolpSap = x.TipoSolpSap,
-            //                    EstadoPasos = x.EstadoPasos,
-            //                    Posiciones = x.Posiciones.Select(p => new SolpPosicionDto { Estado = p.Estado }).ToList()
-            //                }).OrderByDescending(i => i.FechaCreacion).ToList();
-
-            return todasLasSolp;
         }
 
         public SolpDto TraerSolpId(int idSolp)
