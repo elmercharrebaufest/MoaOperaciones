@@ -64,7 +64,7 @@
                     <textarea [disabled]="disable()"
                      type="search" [(ngModel)]="this.detalle" [value]=""
                     class="fourRounded añadirComentario" placeholder="Añadir Comentario" aria-controls="tableModal" rows="8"></textarea>
-                </div>
+                </div>                
                 <div class="col-xs-12 col-sm-12 col-md-2">
                     <input [disabled]="disable()"
                      class="adjuntarArchivo" #fileInput type="image" src="Content/images/buttons/Adjuntar.svg">
@@ -87,6 +87,11 @@
                     <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add" (click)="goToSeccion('/consulta/mis-consultas');">
                         regresar
                     </button> -->
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-9" >
+                    <file-drop dropZoneLabel="Suelte sus archivos aquí" (onFileDrop)="dropped($event)"
+                    (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+                    </file-drop>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <p *ngIf="this.file != null">{{this.file.name}}</p>
