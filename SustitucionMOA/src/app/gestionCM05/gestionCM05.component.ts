@@ -17,6 +17,7 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { MenuItem } from 'primeng/api';
 import { resolve } from 'url';
 import { first } from 'rxjs/operators';
+import { refreshDescendantViews } from '@angular/core/src/render3/instructions';
 
 declare var $: any;
 
@@ -430,9 +431,19 @@ export class GestionCM05Component extends ListBaseComponent {
 
     guardarCabeceraEditada() {
         this.messageService.clear();
+        console.log(this.selectedCabecera);
+        var mov = {
+            IdIngreso: this.selectedCabecera.Id,
+            Persona: sessionStorage.getItem("username"),
+            EstadoNuevo: this.selectedCabecera.EstadoId,
+            Tipo: 4,
+            Origen: 1,
+        }
+        
+        this.insertarMovimiento(mov);
         try {
             if (!this.validarCabeceraEditada()) {
-                this.subscription = this.service.editarCabecera(this.selectedCabecera).subscribe(
+                this.subscription = this.service.editarCabecera(this.selectedCabecera).subscribe(                    
                     (result: any) => {
                         if (result.logout == true) {
                             this.sessionDataService.logout();
@@ -448,7 +459,6 @@ export class GestionCM05Component extends ListBaseComponent {
                             this.editandoCabecera = false;
                             this.cabeceraEditando = null;
                             this.selectedCabecera.Estado = result.estadoCabecera;
-
                             this.listarCabeceras();
                         }
                     },
@@ -463,6 +473,19 @@ export class GestionCM05Component extends ListBaseComponent {
         }
 
         return false; //<-- Prevent Refresh
+    }
+
+    insertarMovimiento(mov){
+        this.service.insertarMovimiento(mov).subscribe(result => {
+            this.movimientos = result;
+            this.movimientos.forEach(x => {
+                x.Fecha = x.Fecha == undefined ? null : new Date(this.getDateFromAspNetFormat(x.Fecha));
+                x.Origen = this.origenesMovimiento.find(origen => origen.value == x.OrigenId).label;
+                x.Tipo = this.tiposMovimiento.find(tipo => tipo.value == x.TipoId).label;
+                x.EstadoAnterior = this.estados.find(estado => estado.value == x.EstadoAnteriorId).label;
+                x.EstadoPosterior = this.estados.find(estado => estado.value == x.EstadoPosteriorId).label;
+            });
+        });
     }
 
     getCombos() {
