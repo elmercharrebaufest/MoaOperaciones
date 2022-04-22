@@ -16,6 +16,7 @@ import { BaseComponent } from '../../common/base-components/base-component';
 import { Comentario, Categoria, EstadoConsulta, Subcategoria, Consulta, Causa } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { UploadEvent, UploadFile, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
 
 declare var $: any;
 
@@ -126,6 +127,50 @@ export class DetalleConsultaComponent extends BaseComponent {
         return this.securityService.tienePermiso(permiso);
     }
 
+    fileOver(event){
+        console.log(event);
+    }
+     
+    fileLeave(event){
+        console.log(event);
+    }
+
+    public dropped(event: UploadEvent) {
+        for (const droppedFile of event.files) {
+     
+          // Is it a file?
+          if (droppedFile.fileEntry.isFile) {
+            const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
+            fileEntry.file((file: File) => {
+                this.listaArchivos.push(file);
+            //   // Here you can access the real file
+            //   console.log(droppedFile.relativePath, file);
+     
+            //   /**
+            //   // You could upload it like this:
+            //   const formData = new FormData()
+            //   formData.append('logo', file, relativePath)
+     
+            //   // Headers
+            //   const headers = new HttpHeaders({
+            //     'security-token': 'mytoken'
+            //   })
+     
+            //   this.http.post('https://mybackend.com/api/upload/sanitize-and-save-logo', formData, { headers: headers, responseType: 'blob' })
+            //   .subscribe(data => {
+            //     // Sanitized logo returned from backend
+            //   })
+            //   **/
+     
+            });
+          } else {
+            // It was a directory (empty directories are added, otherwise only files)
+            const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
+            console.log(droppedFile.relativePath, fileEntry);
+          }
+        }
+      }
+
     cargarArchivo(event: any) {
         let fileList: FileList = event.target.files;
         let file;
@@ -136,6 +181,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                 file = fileList[i];
                 this.listaArchivos.push(file);
             }
+            console.log(this.listaArchivos)
         }
 
         let $formInput = $('input[type=file]');
