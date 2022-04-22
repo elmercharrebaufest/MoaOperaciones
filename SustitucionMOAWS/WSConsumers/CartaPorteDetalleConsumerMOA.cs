@@ -80,6 +80,7 @@ namespace SustitucionMOAWS.WSConsumers
                     resultadoReconsideracion = calidad.RESULTADO_REC
                 });
 
+                result.camaraAPresent = calidad.CAMARA_A_PRESENT;
                 result.calidadTotalAplicados += calidad.KG_APLIC;
                 result.calidadTotalNetos += calidad.KG_NETOS;
                 result.calidadTotalAplicadosUnidad = "KG";

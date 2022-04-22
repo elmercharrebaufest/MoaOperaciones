@@ -44,6 +44,9 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     fotoSrc = "";
     showModalBox = false;
     condicionCamara:any;
+    condicionCalada:any;
+    kgDescuentoString: any;
+    porcentajeDescuento:any;
 
     setTabs() {
         this.setMenuSeccionTab("carta-porte", "Detalle");
@@ -79,8 +82,11 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
+                        debugger;
                         this.data = result.data;
                         this.condicionCamara = result.data.datosCalidad.every(x => x.resultadoCamara ==0);
+                       // this.condicionCalada = result.data.datosCalidad.every(x => x.resultadoCalado == 0);
+                        this.porcentajeDescuento = result.data.datosCalidad.every(x => x.porcentajeDescuento == 0);
                     }
                 },
                 error => {
