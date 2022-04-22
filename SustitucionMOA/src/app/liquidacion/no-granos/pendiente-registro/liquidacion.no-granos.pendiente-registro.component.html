@@ -10,7 +10,7 @@
                 </a>
             </div>
         </div>
-        <!--<div class="alert alert-light" *ngIf="data.TieneModal" [innerHTML]="data.MensajeModal"></div>-->
+        <div class="alert alert-light" *ngIf="data != null && data.TieneModal" [innerHTML]="data.MensajeModal"></div>
         <div class="row myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
                 <div class="col-xs-12 col-md-12 search-header">

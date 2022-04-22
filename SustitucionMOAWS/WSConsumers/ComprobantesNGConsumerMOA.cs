@@ -50,6 +50,8 @@ namespace SustitucionMOAWS.WSConsumers
                 //result.error.tipo = error[0].TIPO;
             }
 
+            comprobantes = comprobantes.Where(x => (x.DELREASON == "01" && x.STATUS == "10") || x.STATUS != "10").ToArray();
+
             foreach (var comprobante in comprobantes)
             {
                 ComprobanteView comprobanteView = new ComprobanteView()
@@ -85,6 +87,8 @@ namespace SustitucionMOAWS.WSConsumers
 
             }
 
+
+            result.comprobantes = result.comprobantes.Where(x => x.CodigoEstadoDocumento != EstadoComprobantesNG.ListoValidacion).ToList();
             return result;
         }
     }
@@ -121,40 +125,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 result.comprobantes.Add(comprobanteView);
             }
-
-
             return result;
         }
-
-
-        //LiquidacionExcelWSMOAResponse result = new LiquidacionExcelWSMOAResponse();
-
-        //result.error = error;
-
-        //    foreach (ZMPES4980 liquidacion in salidas)
-        //    {
-        //        result.liquidaciones.Add(new Liquidacion()
-        //{
-        //    comprobante = liquidacion.COMPROBANTE,
-        //            contrato = liquidacion.CONTRATO,
-        //            emitido = SAPFormatter.FormatearFecha(liquidacion.EMITIDO),
-        //            moneda = liquidacion.MONEDA,
-        //            importe = liquidacion.IMPORTE,
-        //            iva = liquidacion.IVA,
-        //            unidadLiquidado = liquidacion.UNIME,
-        //            liquidado = liquidacion.LIQUIDADO,
-        //            observaciones = liquidacion.OBSERVACIONES,
-        //            producto = liquidacion.PRODUCTO,
-        //            tipo = liquidacion.TIPO,
-        //            secuencia = liquidacion.SECUENCIA,
-        //            solapa = liquidacion.SOLAPA,
-        //            fijacion = liquidacion.FIJACION
-        //        }
-        //        );
-        //    }
-
-        //    return result;
-        //}
-        
     }
 }

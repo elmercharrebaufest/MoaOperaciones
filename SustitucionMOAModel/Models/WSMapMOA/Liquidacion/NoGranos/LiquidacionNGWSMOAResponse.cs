@@ -10,6 +10,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos
     {
         public ErrorWS error { get; set; }
         public List<SalidaView> liquidaciones { get; set; }
+        public bool TieneModal { get; set; } = false;
 
         public LiquidacionNGWSMOAResponse() {
             this.error = new ErrorWS();

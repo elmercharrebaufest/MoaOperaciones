@@ -152,7 +152,7 @@
                             <td>{{liquidacion.comprobante}}</td>
                             <td>{{liquidacion.importeString}}</td>
                             <td>{{liquidacion.compra}}</td>
-                            <td>{{liquidacion.vencimiento}} {{liquidacion.observaciones | shortenString }}</td>
+                            <td>{{liquidacion.estadoRegistradas == 'Aprobada' ? liquidacion.vencimiento : liquidacion.observaciones | shortenString}}</td>
                             <td><span class="fa  fa-info-circle" toggle="tooltip" title="{{liquidacion.observaciones}}"></span></td>
                             <td [ngStyle]="{'color': liquidacion.estadoRegistradas == 'Aprobada' ? 'green' : 'orange'}">{{liquidacion.estadoRegistradas}}</td>
                         </tr>
