@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Contrato;
@@ -74,6 +75,7 @@ namespace SustitucionMOAWS.WSConsumers
                     lugarDescarga = contratoInfo.LUGAR_DESCARGA,
                     cosecha = contratoInfo.COSECHA,
                     material = contratoInfo.MATERIAL,
+                    tipoContrato = getTipoContrato(contratoInfo.CLASE_DOC),
                     estadoBoleto = contratoInfo.ESTADO_BOLETO,
                     aplicacionesString = SAPFormatter.FormatearCantidad(contratoInfo.APLICACIONES, contratoInfo.UNIME_ENTREGADO),
                     aplicaciones = contratoInfo.APLICACIONES,
@@ -108,6 +110,40 @@ namespace SustitucionMOAWS.WSConsumers
                 result.vendedores.Add(vendedor.VENDEDOR);
             }
             
+            return result;
+        }
+
+        private string getTipoContrato(string key)
+        {
+            var result = string.Empty;
+            if (key.Equals(TipoContrato.ZCNV.Item1))
+            {
+                result = TipoContrato.ZCNV.Item2;
+            }
+            else if (key.Equals(TipoContrato.ZFAS.Item1))
+            {
+                result = TipoContrato.ZFAS.Item2;
+            }
+            else if (key.Equals(TipoContrato.ZFJ.Item1))
+            {
+                result = TipoContrato.ZFJ.Item2;
+            }
+            else if (key.Equals(TipoContrato.ZHIJ.Item1))
+            {
+                result = TipoContrato.ZHIJ.Item2;
+            }
+            else if (key.Equals(TipoContrato.ZPAF.Item1))
+            {
+                result = TipoContrato.ZPAF.Item2;
+            }
+            else if (key.Equals(TipoContrato.ZPDV.Item1))
+            {
+                result = TipoContrato.ZPDV.Item2;
+            }
+            else if (key.Equals(TipoContrato.ZVEN.Item1))
+            {
+                result = TipoContrato.ZVEN.Item2;
+            }
             return result;
         }
     }
