@@ -810,10 +810,10 @@ namespace SustitucionMOAUtils.Services
             if (solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Sap)
             {
                 if (solpDevuelta.JornadaLaboral == null || solpDevuelta.JornadaLaboral.Count() == 0)
-                    solpDevuelta.JornadaLaboral = new List<DayOfWeek> {DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
+                    solpDevuelta.JornadaLaboral = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
 
                 if (solpDevuelta.JornadaLaboralDesde == null)
-                    solpDevuelta.JornadaLaboralDesde = new DateTime(DateTime.Now.Year,DateTime.Now.Month, DateTime.Now.Day,7,0,0).ToLocalTime();
+                    solpDevuelta.JornadaLaboralDesde = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 7, 0, 0).ToLocalTime();
 
                 if (solpDevuelta.JornadaLaboralHasta == null)
                     solpDevuelta.JornadaLaboralHasta = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 16, 0, 0).ToLocalTime();
@@ -1244,13 +1244,14 @@ namespace SustitucionMOAUtils.Services
             }).ToList();
         }
 
-        private void ActualizarTablaSap(List<TablaSapDto> listaSap, string tablaSap)
+        private List<TablaSap> ActualizarTablaSap(List<TablaSapDto> listaSap, string tablaSap)
         {
+            List<TablaSap> nuevosItems = new List<TablaSap>();
             if (listaSap.Count > 0)
             {
                 var listaBaseCodigoSAP = repositorio.Listar<TablaSap>(c => c.Tabla == tablaSap).Select(a => a.CodigoSap).ToList();
 
-                var nuevosItems = listaSap.Where(x => !listaBaseCodigoSAP.Contains(x.CodigoSap)).Select(item => new TablaSap()
+                nuevosItems = listaSap.Where(x => !listaBaseCodigoSAP.Contains(x.CodigoSap)).Select(item => new TablaSap()
                 {
                     Codigo = item.Codigo,
                     CodigoSap = item.CodigoSap,
@@ -1259,10 +1260,15 @@ namespace SustitucionMOAUtils.Services
                     Padre_id = null,
                 }).ToList();
 
-                repositorio.AgregarTodos<TablaSap>(nuevosItems);
-
+                foreach (var item in nuevosItems)
+                {
+                    // uso un Agregar en lugar de AgregarTodos para que me devuelva el id de la entidad generar ya que necesito usarlo mas adelante.
+                    //el AgregarTodos no devuelve el id de las entidades agregadas.
+                    repositorio.Agregar(item);
+                }
                 repositorio.GuardarCambios();
             }
+            return nuevosItems;
 
         }
 
@@ -1444,7 +1450,7 @@ namespace SustitucionMOAUtils.Services
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob ServiciosSuposiciones {result.ServiciosSuposiciones.Count()}");
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob TipoImputaciones {result.TipoImputaciones.Count()}");
 
-                List<TablaSap> ordenes;
+                List<TablaSap> ordenes = new List<TablaSap>();
 
                 List<int> subPosicionesBorradas = new List<int>();
 
@@ -1467,8 +1473,8 @@ namespace SustitucionMOAUtils.Services
 
                 if (result.TipoImputaciones.Count > 0)
                 {
-                    var imputacionesTemp = result.TipoImputaciones.ToList();
                     var listaSap = new List<TablaSapDto>();
+                    var imputacionesTemp = result.TipoImputaciones.ToList();
                     foreach (var impTemp in imputacionesTemp)
                     {
                         ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
@@ -1482,7 +1488,8 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
                     }
-                    this.ActualizarTablaSap(listaSap, TablasSap.OrdenSolpSap);
+                    // agrego el resultado a la lista de ordenes de ot para usar
+                    ordenes.AddRange(this.ActualizarTablaSap(listaSap, TablasSap.OrdenSolpSap));
                 }
 
                 IList<Solp> solpsFinales = new List<Solp>();
@@ -1500,7 +1507,6 @@ namespace SustitucionMOAUtils.Services
                 List<TablaSap> clasesDeDocumento = tablaSap.Where(x => x.Tabla == TablasSap.ClaseDocumento).ToList();
                 List<TablaSap> centrosDeCosto = tablaSap.Where(x => x.Tabla == TablasSap.CecoSolpSap).ToList();
                 List<UsuarioDto> usuarios = repositorio.Listar<Usuario, UsuarioDto>(a => new UsuarioDto { Id = a.Id, UsuarioSap = a.UsuarioSap }, a => a.UsuarioSap != null && a.UsuarioSap != "").ToList();
-                ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
                 List<TablaSap> centrosDeBeneficio = tablaSap.Where(x => x.Tabla == TablasSap.CentroBeneficio).ToList();
                 List<TablaSap> cuentasSolpesSap = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
                 var listaEstadosSolpSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.EstadoSolpSap).Select(x => new TablaSapDto(x)).ToList();
