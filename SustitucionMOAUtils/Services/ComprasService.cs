@@ -807,7 +807,17 @@ namespace SustitucionMOAUtils.Services
                 PasoCompletado = x.PasoCompletado,
                 EstadoPasos = x.EstadoPasos
             };
+            if (solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Sap)
+            {
+                if (solpDevuelta.JornadaLaboral == null || solpDevuelta.JornadaLaboral.Count() == 0)
+                    solpDevuelta.JornadaLaboral = new List<DayOfWeek> {DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
 
+                if (solpDevuelta.JornadaLaboralDesde == null)
+                    solpDevuelta.JornadaLaboralDesde = new DateTime(DateTime.Now.Year,DateTime.Now.Month, DateTime.Now.Day,7,0,0).ToLocalTime();
+
+                if (solpDevuelta.JornadaLaboralHasta == null)
+                    solpDevuelta.JornadaLaboralHasta = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 16, 0, 0).ToLocalTime();
+            }
             return solpDevuelta;
 
 
