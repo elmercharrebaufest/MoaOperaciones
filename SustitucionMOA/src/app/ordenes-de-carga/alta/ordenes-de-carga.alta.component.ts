@@ -41,6 +41,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     mensajeSuccess: string = "";
     CodigoCliente: string = "";
     CodigoCorredor: string = "";
+    patentesChasis: any;
+    patentesAcoplados: any;
     private selectUndefinedOptionValue: any;
 
     listaMateriales: Material[];
@@ -63,6 +65,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.getPatentes();
         this.ordenDeCarga.Cantidad = 30000;
 
         this.route.params.forEach((params: Params) => {
@@ -73,15 +76,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
+            
         }
 
+       
         this.obtenerMateriales();
 
         if (this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS')) {
             this.ordenDeCarga.CUITCliente = 0;
         }
+     
     }
 
+  
     cambioProducto(){
         let productoActual = this.listaMateriales.find(x => x.MaterialId == this.ordenDeCarga.Producto_Id).CodigoSap;       
         if (productoActual == "99709"){
@@ -96,6 +103,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.subscription = this.service.getMateriales().subscribe(
             (result) => {
                 this.listaMateriales = result.data;
+                
             },
             (error) => {
                 this.mensajeComponent.setErrorMsg(error.message);
@@ -165,12 +173,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
+                        this.obtenerMateriales();
                         this.ordenDeCarga = result.data;
                         this.CodigoCliente = result.data.CodigoCliente;
                         this.CodigoCorredor = result.data.CodigoCorredor;
                         if (this.esComercial && result.data.ColorSemaforo != "green") {
                             this.puedeEditarContrato = true;
                         }
+                        this.getPatentes();
+                        
                     }
                 },
                 error => {
@@ -297,6 +308,51 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         );
     }
 
+    getPatentes() {
+        this.floatMsgService.setMsgsEmpty();
+        this.unsubscribe();
+        try {
+            this.subscription = this.service.getPatentes(this.ordenDeCarga).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+
+                        this.patentesChasis = result.ordenes;
+                        this.patentesAcoplados = result.ordenes;
+                        console.log(this.patentesChasis);
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }      
+    }
+
+    PatenteChasisSelected(value: any) {
+        this.ordenDeCarga.ChasisAcoplado = value.label;
+    }
+    PatenteAcopladoSelected(value: any) {
+        this.ordenDeCarga.PatenteAcoplado = value.value;
+    }
+
+    generalFormatter(data: any): string {
+        return `${data['label']}`;
+    }
+
+    generalFormatterAcoplado(data: any): string {
+        return `${data['value']}`;
+    }
+
     onCorredorSeleccionado(proveedor: any) {
         console.log(proveedor);
         this.ordenDeCarga.CUITCorredor = proveedor.CUIT;
@@ -304,5 +360,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     onClienteSeleccionado(proveedor: any) {
         this.ordenDeCarga.CUITCliente = proveedor.CUIT;
+        this.getPatentes();
     }
+
+   
 }

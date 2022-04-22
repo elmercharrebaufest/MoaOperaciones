@@ -676,6 +676,54 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.OrdenDeCargaAnulada;
         }
 
+        public OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga ordenDeCarga, string mailUsuario)
+        {
+            Proveedor cliente;
+            OrdenDeCargaDto result = new OrdenDeCargaDto();
+            List<OrdenDeCarga> listOrden = new List<OrdenDeCarga>();
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
+
+            if (esComercial || usuario.EsCorredor())
+            {
+                if (ordenDeCarga.CUITCliente == null)
+                {
+                    result.ordenes.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
+                    return result;
+                }
+                if (usuario.EsCorredor())
+                {
+                    cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
+                    listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
+                }
+                else
+                {
+                    cliente = repositorio.Obtener<Proveedor>(
+                    x => x.CUIT == ordenDeCarga.CUITCliente &&
+                    x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
+                    listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
+                }
+
+            }
+            else
+            {
+                cliente = usuario.ObtenerProveedor();
+                listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
+            }
+
+            foreach (var ordenes in listOrden)
+            {
+                result.ordenes.Add(new AutoCompleteDropdownElement()
+                {
+                    label = ordenes.ChasisAcoplado,
+                    value = ordenes.PatenteAcoplado
+
+                });
+            }
+
+            return result;
+        }
+
         #region Etapa1
 
         public Resultado SeleccionarContrato(int ordenId, string contratoSAP)

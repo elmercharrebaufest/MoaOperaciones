@@ -27,6 +27,7 @@ namespace SustitucionMOAUtils.Interfaces
         Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario);
         List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga();
         string ForzarCreacionOrden(int ordenId);
+        OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);
     }
 
 }
