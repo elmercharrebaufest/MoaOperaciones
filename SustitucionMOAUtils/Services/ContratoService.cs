@@ -58,12 +58,14 @@ namespace SustitucionMOAUtils.Services
                 ContratosNoCumplidosViewModel dataView = new ContratosNoCumplidosViewModel();
                 dataView.filtroProducto = new DropdownContent();
                 dataView.filtroVendedor = new DropdownContent();
+                dataView.filtroTipoContrato = new DropdownContent();
                 dataView.data = (ContratosNoCumplidosWSMOAResponse)new FijacionesConsumerMOA().request(proveedor, contratos, fechas, tipoOperacion);
                 validarRespuesta(dataView.data, tipoOperacionMsj);
                 try
                 {
                     dataView.filtroProducto = new DropdownContent(dataView.data.contratosInfo.GroupBy(i => i.material).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
                     dataView.filtroVendedor = new DropdownContent(dataView.data.contratosInfo.GroupBy(i => i.vendedor).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
+                    dataView.filtroTipoContrato = new DropdownContent(dataView.data.contratosInfo.GroupBy(i => i.tipoContrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
                 }
                 catch { }
                 return dataView;
