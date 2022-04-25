@@ -350,7 +350,7 @@
 
                                                 <ng-container *ngFor="let calidad of data.datosCalidad">
                                                     <tr
-                                                        *ngIf="data.camaraAPresent != '' || data.camaraAPresent != null && ((condicionCamara==false && porcentajeDescuento==false)||(condicionCamara==true && porcentajeDescuento==true));else first">
+                                                        *ngIf="data.camaraAPresent != '' && ((condicionCamara==false && porcentajeDescuento==false)||(condicionCamara==true && porcentajeDescuento==true));else first">
                                                         <!--Camara-->
                                                         <td>{{calidad.caracteristica}}</td>
                                                         <!-- <td>{{calidad.resultadoCalado}}%</td>
@@ -385,7 +385,7 @@
                                                                             class="totalTable CalidadDataExtra"
                                                                             style="">
                                                                             <tr
-                                                                                *ngIf="data.camaraAPresent != '' || data.camaraAPresent != null && ((condicionCamara == false && porcentajeDescuento == false)||(condicionCamara == true && porcentajeDescuento == true));else first">
+                                                                                *ngIf="data.camaraAPresent != '' && ((condicionCamara == false && porcentajeDescuento == false)||(condicionCamara == true && porcentajeDescuento == true));else first">
                                                                                 <!--camara-->
                                                                                 <td>resultado final </td>
                                                                                 <!-- <td width="19.5%">
