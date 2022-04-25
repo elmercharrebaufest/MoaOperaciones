@@ -18,15 +18,26 @@ namespace SustitucionMOAWS.WSConsumers
         SI_MPMF_MOAOP_COMPROB_NOGRANOSClient service = new SI_MPMF_MOAOP_COMPROB_NOGRANOSClient();
 
         public object request(string proveedor, List<FechaWS> listaFechas)
-         {
+        {
             try
             {
                 ZMPES4100[] fechas = new ZMPES4100[] { };
+
+                if (listaFechas.FirstOrDefault() != null)
+                {
+                    fechas = new ZMPES4100[] {
+                        new ZMPES4100 {
+                            FECHA_OP = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaInicio),
+                            FECHA_OP_HASTA = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaFin)
+                        }
+                    };
+                }
+
                 BAPIRET2[] error = new BAPIRET2[] { };
                 string fechahasta = "";
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                if(listaFechas.FirstOrDefault() != null)
+                if (listaFechas.FirstOrDefault() != null)
                 {
                     fechahasta = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaFin);
                 }
@@ -44,7 +55,8 @@ namespace SustitucionMOAWS.WSConsumers
         {
             ComprobantesNGWSMOAResponse result = new ComprobantesNGWSMOAResponse();
 
-            if (error != null && error.Length>0) {
+            if (error != null && error.Length > 0)
+            {
                 result.error.codigo = error[0].MESSAGE;
                 result.error.descripcion = error[0].MESSAGE;
                 //result.error.tipo = error[0].TIPO;
@@ -76,10 +88,10 @@ namespace SustitucionMOAWS.WSConsumers
                     ColorEstado = EstadoComprobantesNGExtensions.ObtenerColorEstado((EstadoComprobantesNG)int.Parse(comprobante.STATUS))
                 };
 
-               result.comprobantes.Add(comprobanteView);
+                result.comprobantes.Add(comprobanteView);
             }
 
-            if(result.comprobantes.Any(x => x.CodigoEstadoDocumento == EstadoComprobantesNG.ListoValidacion))
+            if (result.comprobantes.Any(x => x.CodigoEstadoDocumento == EstadoComprobantesNG.ListoValidacion))
             {
                 result.TieneModal = true;
                 var contador = result.comprobantes.Count(x => x.CodigoEstadoDocumento == EstadoComprobantesNG.ListoValidacion);
