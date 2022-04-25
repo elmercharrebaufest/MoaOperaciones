@@ -12,5 +12,6 @@ namespace SustitucionMOAModel.Models.ViewModel
         public ContratosNoCumplidosWSMOAResponse data { get; set; }
         public DropdownContent filtroProducto { get; set; }
         public DropdownContent filtroVendedor { get; set; }
+        public DropdownContent filtroTipoContrato { get; set; }
     }
 }

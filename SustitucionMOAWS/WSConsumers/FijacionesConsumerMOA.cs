@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Contrato;
@@ -83,6 +84,7 @@ namespace SustitucionMOAWS.WSConsumers
                     liquidadoString = SAPFormatter.FormatearCantidad(contrato.LIQUIDADO, contrato.UNIME_LIQUIDADO),
                     liquidado = contrato.LIQUIDADO,
                     material = contrato.MATERIAL,
+                    tipoContrato = TipoContrato.GetTipoContrato(contrato.CLASE_DOC),
                     nroContrato = contrato.NRO_CONTRATO,
                     importeString = SAPFormatter.FormatearMonto(contrato.IMPORTE, contrato.MONEDA),
                     importe = contrato.IMPORTE,
