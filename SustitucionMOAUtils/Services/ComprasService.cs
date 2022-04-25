@@ -531,6 +531,13 @@ namespace SustitucionMOAUtils.Services
                             pos.CantidadSubposicionesEnSAP = pos.Subposiciones.Count;
                         }
                     }
+                    else
+                    {
+                        //revertir los cambios si da error
+                        ObtenerSolpesDesdeSAPJob(new ObtenerSolpRequest { NumeroSolp = solpEntity.NroSolp, FechaDesde = new DateTime(2010, 01, 01), FechaHasta = DateTime.Now.Date.AddDays(1) });
+                        respuestaGuardarSOLP.Solp = TraerSolpId(solp.Id.Value);
+
+                    }
 
                     repositorio.GuardarCambios();
                 }
