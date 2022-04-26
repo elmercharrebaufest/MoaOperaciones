@@ -7,8 +7,6 @@ import { FloatMsgService } from '../../../common/services/FloatMsgService';
 import { SecurityService } from '../../../common/services/SecurityService';
 import { ModalService } from '../../../common/services/ModalService';
 
-
-
 @Component({
     selector: 'app-liquidacion-no-granos-registrado',
     templateUrl: `liquidacion.no-granos.registrado.component.html`,

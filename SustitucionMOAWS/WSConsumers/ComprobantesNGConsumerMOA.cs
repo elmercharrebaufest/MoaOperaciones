@@ -18,15 +18,26 @@ namespace SustitucionMOAWS.WSConsumers
         SI_MPMF_MOAOP_COMPROB_NOGRANOSClient service = new SI_MPMF_MOAOP_COMPROB_NOGRANOSClient();
 
         public object request(string proveedor, List<FechaWS> listaFechas)
-         {
+        {
             try
             {
                 ZMPES4100[] fechas = new ZMPES4100[] { };
+
+                if (listaFechas.FirstOrDefault() != null)
+                {
+                    fechas = new ZMPES4100[] {
+                        new ZMPES4100 {
+                            FECHA_OP = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaInicio),
+                            FECHA_OP_HASTA = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaFin)
+                        }
+                    };
+                }
+
                 BAPIRET2[] error = new BAPIRET2[] { };
                 string fechahasta = "";
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                if(listaFechas.FirstOrDefault() != null)
+                if (listaFechas.FirstOrDefault() != null)
                 {
                     fechahasta = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaFin);
                 }
@@ -44,11 +55,14 @@ namespace SustitucionMOAWS.WSConsumers
         {
             ComprobantesNGWSMOAResponse result = new ComprobantesNGWSMOAResponse();
 
-            if (error != null && error.Length>0) {
+            if (error != null && error.Length > 0)
+            {
                 result.error.codigo = error[0].MESSAGE;
                 result.error.descripcion = error[0].MESSAGE;
                 //result.error.tipo = error[0].TIPO;
             }
+
+            comprobantes = comprobantes.Where(x => (x.DELREASON == "01" && x.STATUS == "10") || x.STATUS != "10").ToArray();
 
             foreach (var comprobante in comprobantes)
             {
@@ -74,10 +88,10 @@ namespace SustitucionMOAWS.WSConsumers
                     ColorEstado = EstadoComprobantesNGExtensions.ObtenerColorEstado((EstadoComprobantesNG)int.Parse(comprobante.STATUS))
                 };
 
-               result.comprobantes.Add(comprobanteView);
+                result.comprobantes.Add(comprobanteView);
             }
 
-            if(result.comprobantes.Any(x => x.CodigoEstadoDocumento == EstadoComprobantesNG.ListoValidacion))
+            if (result.comprobantes.Any(x => x.CodigoEstadoDocumento == EstadoComprobantesNG.ListoValidacion))
             {
                 result.TieneModal = true;
                 var contador = result.comprobantes.Count(x => x.CodigoEstadoDocumento == EstadoComprobantesNG.ListoValidacion);
@@ -85,6 +99,8 @@ namespace SustitucionMOAWS.WSConsumers
 
             }
 
+
+            result.comprobantes = result.comprobantes.Where(x => x.CodigoEstadoDocumento != EstadoComprobantesNG.ListoValidacion).ToList();
             return result;
         }
     }
@@ -121,40 +137,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 result.comprobantes.Add(comprobanteView);
             }
-
-
             return result;
         }
-
-
-        //LiquidacionExcelWSMOAResponse result = new LiquidacionExcelWSMOAResponse();
-
-        //result.error = error;
-
-        //    foreach (ZMPES4980 liquidacion in salidas)
-        //    {
-        //        result.liquidaciones.Add(new Liquidacion()
-        //{
-        //    comprobante = liquidacion.COMPROBANTE,
-        //            contrato = liquidacion.CONTRATO,
-        //            emitido = SAPFormatter.FormatearFecha(liquidacion.EMITIDO),
-        //            moneda = liquidacion.MONEDA,
-        //            importe = liquidacion.IMPORTE,
-        //            iva = liquidacion.IVA,
-        //            unidadLiquidado = liquidacion.UNIME,
-        //            liquidado = liquidacion.LIQUIDADO,
-        //            observaciones = liquidacion.OBSERVACIONES,
-        //            producto = liquidacion.PRODUCTO,
-        //            tipo = liquidacion.TIPO,
-        //            secuencia = liquidacion.SECUENCIA,
-        //            solapa = liquidacion.SOLAPA,
-        //            fijacion = liquidacion.FIJACION
-        //        }
-        //        );
-        //    }
-
-        //    return result;
-        //}
-        
     }
 }
