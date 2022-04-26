@@ -262,8 +262,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         } else {
                             this.mensajeComponent.setSuccessMsg(result.data);
                         }
-                        // this.mostrarBotonNotificarTransporte = false;
-                        // this.mostrarBotonVerificarTransporte = false;
+                        this.mostrarBotonNotificarTransporte = false;
+                        this.mostrarBotonVerificarTransporte = false;
                         this.obtenerOrdenDeCarga();
 
                     }

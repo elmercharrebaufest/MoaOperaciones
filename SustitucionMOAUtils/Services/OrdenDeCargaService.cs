@@ -311,11 +311,10 @@ namespace SustitucionMOAUtils.Services
             CC-00	'OK'
             */
             string contrato = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP) ? ordenDeCarga.ContratoIngresado : ordenDeCarga.ContratoSAP;
-
             Log.Info("VerificarOrden ControlCargaRequest " + $"cliente.CodigoProveedor {cliente.CodigoProveedor ?? ""}, contrato {contrato ?? ""}, ordenDeCarga.CodigoCorredor {ordenDeCarga.CodigoCorredor ?? ""}, ordenDeCarga.CUITTransporte {ordenDeCarga.CUITTransporte ?? ""}, ordenDeCarga.Producto.CodigoSap {ordenDeCarga.Producto.CodigoSap ?? ""}, ordenDeCarga.NumeroPedido {ordenDeCarga.NumeroPedido ?? ""}");
             var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
             Log.Info("VerificarOrden ControlCargaRequest Result " + result);
-
+            
             //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
             //cual es el contrato correcto que le quiere entregar.
             if (result.Contains(','))
@@ -832,8 +831,7 @@ namespace SustitucionMOAUtils.Services
         public string VerificarTransporte(OrdenDeCarga orden)
         {
             orden.TransporteExiste = TransporteExiste(orden);
-
-            //var resultadoVerificarOrden = VerificarOrden(orden, orden.Cliente);
+            VerificarOrden(orden, orden.Cliente);
 
             if (orden.TransporteExiste)
             {
