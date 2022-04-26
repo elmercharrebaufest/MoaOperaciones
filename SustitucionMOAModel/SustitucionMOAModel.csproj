@@ -49,6 +49,7 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\AutoCompleteDropdownElement.cs" />
     <Compile Include="Dto\ComprobanteNGDto.cs" />
     <Compile Include="Dto\AgregarConsultaResponseDto.cs" />
     <Compile Include="Dto\ArchivoDescargaDto.cs" />

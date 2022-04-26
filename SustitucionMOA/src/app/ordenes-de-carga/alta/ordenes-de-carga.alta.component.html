@@ -96,25 +96,23 @@
             </div>
 
             <div class="col-xs-12 col-md-6">
-              <div class="formulario-label">
-                Patente chasis:
-              </div>
+                <div class="formulario-label">
+                    Patente chasis:
+                </div>
+                <div class="styled-select autocomplete">
+                    <input auto-complete [(ngModel)]="ordenDeCarga.ChasisAcoplado"   (ngModelChange)="ordenDeCarga.ChasisAcoplado = $event.toUpperCase()" maxlength="7" [source]="patentesChasis" (valueChanged)="PatenteChasisSelected($event)" [min-chars]="2" [no-match-found-text]="'No se encontraron resultados'" [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" mask="AAAAAAA"/>
+               </div>
 
-              <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.ChasisAcoplado" mask="AAAAAAA"
-                       (ngModelChange)="ordenDeCarga.ChasisAcoplado = $event.toUpperCase()" maxlength="7">
-              </div>
             </div>
 
             <div class="col-xs-12 col-md-6">
-              <div class="formulario-label">
-                Patente acoplado:
-              </div>
+                <div class="formulario-label">
+                    Patente acoplado:
+                </div>
 
-              <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.PatenteAcoplado" mask="AAAAAAA"
-                       (ngModelChange)="ordenDeCarga.PatenteAcoplado = $event.toUpperCase()" maxlength=" 7">
-              </div>
+                <div class="styled-select autocomplete">
+                    <input auto-complete [(ngModel)]="ordenDeCarga.PatenteAcoplado" (ngModelChange)="ordenDeCarga.PatenteAcoplado= $event.toUpperCase()" maxlength="7" [source]="patentesAcoplados" (valueChanged)="PatenteAcopladoSelected($event)" [min-chars]="2" [no-match-found-text]="'No se encontraron resultados'" [value-formatter]="generalFormatterAcoplado" [list-formatter]="generalFormatterAcoplado" mask="AAAAAAA" />
+                </div>
             </div>
 
             <div class="col-xs-12 col-md-6">
