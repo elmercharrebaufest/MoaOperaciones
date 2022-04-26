@@ -403,18 +403,22 @@ namespace SustitucionMOAWS.LiquidacionesWebServiceMOA {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_CONTRATO;
+        public string IM_COE;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=1)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string PE_PROVEEDOR;
+        public string IM_CONTRATO;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=2)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string PE_PROVEEDOR;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=3)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
         public SustitucionMOAWS.LiquidacionesWebServiceMOA.ZMPES4100[] T_FECHA_IN;
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=3)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=4)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
         public SustitucionMOAWS.LiquidacionesWebServiceMOA.ZMPES4980[] T_SALIDA;
@@ -422,7 +426,8 @@ namespace SustitucionMOAWS.LiquidacionesWebServiceMOA {
         public SI_MPMF_MOAOP_LIQUIDACIONESRequest() {
         }
         
-        public SI_MPMF_MOAOP_LIQUIDACIONESRequest(string IM_CONTRATO, string PE_PROVEEDOR, SustitucionMOAWS.LiquidacionesWebServiceMOA.ZMPES4100[] T_FECHA_IN, SustitucionMOAWS.LiquidacionesWebServiceMOA.ZMPES4980[] T_SALIDA) {
+        public SI_MPMF_MOAOP_LIQUIDACIONESRequest(string IM_COE, string IM_CONTRATO, string PE_PROVEEDOR, SustitucionMOAWS.LiquidacionesWebServiceMOA.ZMPES4100[] T_FECHA_IN, SustitucionMOAWS.LiquidacionesWebServiceMOA.ZMPES4980[] T_SALIDA) {
+            this.IM_COE = IM_COE;
             this.IM_CONTRATO = IM_CONTRATO;
             this.PE_PROVEEDOR = PE_PROVEEDOR;
             this.T_FECHA_IN = T_FECHA_IN;
@@ -491,8 +496,9 @@ namespace SustitucionMOAWS.LiquidacionesWebServiceMOA {
             return base.Channel.SI_MPMF_MOAOP_LIQUIDACIONES(request);
         }
         
-        public string SI_MPMF_MOAOP_LIQUIDACIONES(string IM_CONTRATO, string PE_PROVEEDOR, ref SustitucionMOAWS.LiquidacionesWebServiceMOA.ZMPES4100[] T_FECHA_IN, ref SustitucionMOAWS.LiquidacionesWebServiceMOA.ZMPES4980[] T_SALIDA) {
+        public string SI_MPMF_MOAOP_LIQUIDACIONES(string IM_COE, string IM_CONTRATO, string PE_PROVEEDOR, ref SustitucionMOAWS.LiquidacionesWebServiceMOA.ZMPES4100[] T_FECHA_IN, ref SustitucionMOAWS.LiquidacionesWebServiceMOA.ZMPES4980[] T_SALIDA) {
             SustitucionMOAWS.LiquidacionesWebServiceMOA.SI_MPMF_MOAOP_LIQUIDACIONESRequest inValue = new SustitucionMOAWS.LiquidacionesWebServiceMOA.SI_MPMF_MOAOP_LIQUIDACIONESRequest();
+            inValue.IM_COE = IM_COE;
             inValue.IM_CONTRATO = IM_CONTRATO;
             inValue.PE_PROVEEDOR = PE_PROVEEDOR;
             inValue.T_FECHA_IN = T_FECHA_IN;
