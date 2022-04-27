@@ -262,8 +262,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         } else {
                             this.mensajeComponent.setSuccessMsg(result.data);
                         }
-                        // this.mostrarBotonNotificarTransporte = false;
-                        // this.mostrarBotonVerificarTransporte = false;
+                        this.mostrarBotonNotificarTransporte = false;
+                        this.mostrarBotonVerificarTransporte = false;
                         this.obtenerOrdenDeCarga();
 
                     }
@@ -463,6 +463,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mensajeComponent.setInfoMsg(result.data.info);
                     } else {
                         this.ordenDeCarga.NumeroPedido = this.pedidoSeleccionado;
+                        this.ordenDeCarga.NumeroPedidoIngresado = this.pedidoSeleccionado;
                         this.mostrarBotonPedidos = false;
                         document.getElementById("closemodalSeleccionarPedido").click();
                         this.obtenerOrdenDeCarga();

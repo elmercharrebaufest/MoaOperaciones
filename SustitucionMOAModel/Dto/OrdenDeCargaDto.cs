@@ -25,6 +25,11 @@ namespace SustitucionMOAModel.Dto
         public bool EsFacturaAnticipada { get; set; }
         public string Fecha { get; set; }
         public string PatenteChasis { get; set; }
+        public List<AutoCompleteDropdownElement> ordenes { get; set; }
+        public OrdenDeCargaDto()
+        {
+            this.ordenes = new List<AutoCompleteDropdownElement> { };
+        }
     }
 
     public class OrdenDeCargaEditarDto

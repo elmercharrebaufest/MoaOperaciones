@@ -49,6 +49,7 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\AutoCompleteDropdownElement.cs" />
     <Compile Include="Dto\ComprobanteNGDto.cs" />
     <Compile Include="Dto\AgregarConsultaResponseDto.cs" />
     <Compile Include="Dto\ArchivoDescargaDto.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="Enums\SituacionIVA.cs" />
     <Compile Include="Enums\Tablas.cs" />
     <Compile Include="Enums\TablaSeccionMaterial.cs" />
+    <Compile Include="Enums\TipoContrato.cs" />
     <Compile Include="Models\BuscadorOption.cs" />
     <Compile Include="Models\DataAgro\BasicoContrato.cs" />
     <Compile Include="Models\DataAgro\CookiesDataAgro.cs" />

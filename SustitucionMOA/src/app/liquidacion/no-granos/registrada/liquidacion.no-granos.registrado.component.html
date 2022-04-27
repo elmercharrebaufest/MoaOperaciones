@@ -85,15 +85,6 @@
                                     </span>
                                 </div>
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('vencimientoDate')">
-                                Vencimiento
-                                <div>
-                                    <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'vencimientoDate' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'vencimientoDate' && orderDirection < 0 }"></i>
-                                    </span>
-                                </div>
-                            </th>
                             <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('tipo')">
                                 Tipo
                                 <div>
@@ -131,7 +122,7 @@
                                 </div> 
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('observaciones')">
-                                Falta
+                                Vencimiento
                                 <div>
                                     <span>
                                         <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'observaciones' && orderDirection > 0 }"></i>
@@ -157,12 +148,11 @@
                         | customFilter : 'estadoRegistradas' : (filtroEstados  == 'Todos' ? '' : filtroEstados) 
                         | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
                             <td>{{liquidacion.fechaDocumento}}</td>
-                            <td>{{liquidacion.vencimiento}}</td>
                             <td>{{liquidacion.tipo}}</td>
                             <td>{{liquidacion.comprobante}}</td>
                             <td>{{liquidacion.importeString}}</td>
                             <td>{{liquidacion.compra}}</td>
-                            <td>{{liquidacion.observaciones | shortenString }}</td>
+                            <td>{{liquidacion.estadoRegistradas == 'Aprobada' ? liquidacion.vencimiento : liquidacion.observaciones | shortenString}}</td>
                             <td><span class="fa  fa-info-circle" toggle="tooltip" title="{{liquidacion.observaciones}}"></span></td>
                             <td [ngStyle]="{'color': liquidacion.estadoRegistradas == 'Aprobada' ? 'green' : 'orange'}">{{liquidacion.estadoRegistradas}}</td>
                         </tr>

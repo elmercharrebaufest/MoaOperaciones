@@ -311,11 +311,10 @@ namespace SustitucionMOAUtils.Services
             CC-00	'OK'
             */
             string contrato = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP) ? ordenDeCarga.ContratoIngresado : ordenDeCarga.ContratoSAP;
-
             Log.Info("VerificarOrden ControlCargaRequest " + $"cliente.CodigoProveedor {cliente.CodigoProveedor ?? ""}, contrato {contrato ?? ""}, ordenDeCarga.CodigoCorredor {ordenDeCarga.CodigoCorredor ?? ""}, ordenDeCarga.CUITTransporte {ordenDeCarga.CUITTransporte ?? ""}, ordenDeCarga.Producto.CodigoSap {ordenDeCarga.Producto.CodigoSap ?? ""}, ordenDeCarga.NumeroPedido {ordenDeCarga.NumeroPedido ?? ""}");
             var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
             Log.Info("VerificarOrden ControlCargaRequest Result " + result);
-
+            
             //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
             //cual es el contrato correcto que le quiere entregar.
             if (result.Contains(','))
@@ -676,6 +675,54 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.OrdenDeCargaAnulada;
         }
 
+        public OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga ordenDeCarga, string mailUsuario)
+        {
+            Proveedor cliente;
+            OrdenDeCargaDto result = new OrdenDeCargaDto();
+            List<OrdenDeCarga> listOrden = new List<OrdenDeCarga>();
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
+
+            if (esComercial || usuario.EsCorredor())
+            {
+                if (ordenDeCarga.CUITCliente == null)
+                {
+                    result.ordenes.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
+                    return result;
+                }
+                if (usuario.EsCorredor())
+                {
+                    cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
+                    listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
+                }
+                else
+                {
+                    cliente = repositorio.Obtener<Proveedor>(
+                    x => x.CUIT == ordenDeCarga.CUITCliente &&
+                    x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
+                    listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
+                }
+
+            }
+            else
+            {
+                cliente = usuario.ObtenerProveedor();
+                listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
+            }
+
+            foreach (var ordenes in listOrden)
+            {
+                result.ordenes.Add(new AutoCompleteDropdownElement()
+                {
+                    label = ordenes.ChasisAcoplado,
+                    value = ordenes.PatenteAcoplado
+
+                });
+            }
+
+            return result;
+        }
+
         #region Etapa1
 
         public Resultado SeleccionarContrato(int ordenId, string contratoSAP)
@@ -784,8 +831,7 @@ namespace SustitucionMOAUtils.Services
         public string VerificarTransporte(OrdenDeCarga orden)
         {
             orden.TransporteExiste = TransporteExiste(orden);
-
-            //var resultadoVerificarOrden = VerificarOrden(orden, orden.Cliente);
+            VerificarOrden(orden, orden.Cliente);
 
             if (orden.TransporteExiste)
             {
