@@ -427,6 +427,10 @@ namespace SustitucionMOAUtils.Services
 
             solp.Id = solpEntity.Id;
 
+
+            
+
+
             var rutaArchivo = string.Concat(ObtenerRutaArchivos(solpEntity.Id), "/", FileKeys.EspecificacionesTecnicasPliego, ".txt");
 
             Directory.CreateDirectory(ObtenerRutaArchivos(solpEntity.Id));
@@ -541,6 +545,22 @@ namespace SustitucionMOAUtils.Services
 
                     repositorio.GuardarCambios();
                 }
+            }
+
+            var usuarioComprasRelacionado = repositorio.Obtener<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == solp.UsuarioActual.Id && x.UsuarioCompras_Id == solp.UsuarioCompras.Id);
+            if (usuarioComprasRelacionado == null)
+            {
+                if (solp.UsuarioActual != null && solp.UsuarioCompras != null && solp.UsuarioCompras.Id != null)
+                {
+                    usuarioComprasRelacionado = new UsuarioComprasRelacionConUsuarios()
+                    {
+                        Usuario_Id = solp.UsuarioActual.Id,
+                        UsuarioCompras_Id = (int)solp.UsuarioCompras.Id
+                    };
+                    repositorio.Agregar(usuarioComprasRelacionado);
+                    repositorio.GuardarCambios();
+                }
+
             }
 
             if (solp.Posiciones != null)
