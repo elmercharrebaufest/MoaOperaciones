@@ -124,7 +124,7 @@ namespace SustitucionMOAWS.WSConsumers
                     kgAplicadosTotal = SAPFormatter.FormatearCantidad(x.Sum(r => r.KG_APLI), "KG"),
                     kgNetosTotal = SAPFormatter.FormatearCantidad(x.Sum(r => r.KG_NETOS), "KG"),
                     kgDtoTotal = SAPFormatter.FormatearCantidad(x.Sum(r => r.KG_DTO), "KG"),
-                    dtoPorcTotal = SAPFormatter.FormatearCantidad(x.First().DTO, "%"),
+                    dtoPorcTotal = SAPFormatter.FormatearCantidad(x.Sum(r => r.DTO), "%"),
                     certificado = x.First().NRO_CERT,
                     registros = x.Select(e => new CalidadElement()
                     {
