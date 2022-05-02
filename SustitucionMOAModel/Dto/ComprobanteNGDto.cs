@@ -13,6 +13,7 @@ namespace SustitucionMOAModel.Dto
         //{ "Fecha de comprobante", "Tipo", "Comprobante", "Total", "Orden de Compra", "Estado" }, "Reporte Comprobantes No Registrados");
 
         public string FechaDocumento { get; set; } //BLDAT: corresponde a la fecha de documento del documento // Fecha comprobante
+        public DateTime FechaComprobanteDate { get; set; }
         public string DescripcionTipoDocumento { get; set; } //LTEXT: corresponde a la descripción del tipo de documento
         public string NumeroLegalDocumento { get; set; } //XBLNR: corresponde al número legal del documento
         public string TotalMasMoneda { get; set; }

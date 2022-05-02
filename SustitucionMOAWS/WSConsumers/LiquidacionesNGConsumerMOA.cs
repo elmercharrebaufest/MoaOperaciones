@@ -65,6 +65,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     id = salida.ID,
                     comprobante = salida.COMPROBANTE,
+                    fechaComprobanteDate = SAPFormatter.GetDateTime(salida.FECHA_DOC),
                     importeString = SAPFormatter.FormatearMonto(salida.IMPORTE, salida.MONEDA),
                     importe = salida.IMPORTE,
                     observaciones = salida.OBSERVACIONES,
