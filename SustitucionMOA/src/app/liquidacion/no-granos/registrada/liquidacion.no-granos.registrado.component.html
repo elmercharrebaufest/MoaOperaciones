@@ -130,7 +130,6 @@
                                     </span>
                                 </div>     
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" ></th>
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('solapa')">
                                 Estado
                                 <div>
@@ -152,8 +151,7 @@
                             <td>{{liquidacion.comprobante}}</td>
                             <td>{{liquidacion.importeString}}</td>
                             <td>{{liquidacion.compra}}</td>
-                            <td>{{liquidacion.estadoRegistradas == 'Aprobada' ? liquidacion.vencimiento : liquidacion.observaciones | shortenString}}</td>
-                            <td><span class="fa  fa-info-circle" toggle="tooltip" title="{{liquidacion.observaciones}}"></span></td>
+                            <td>{{liquidacion.estadoRegistradas == 'Aprobada' ? liquidacion.vencimiento : liquidacion.observaciones}}</td>                         
                             <td [ngStyle]="{'color': liquidacion.estadoRegistradas == 'Aprobada' ? 'green' : 'orange'}">{{liquidacion.estadoRegistradas}}</td>
                         </tr>
                     </tbody>
