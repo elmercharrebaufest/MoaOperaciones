@@ -889,7 +889,7 @@ namespace SustitucionMOAUtils.Services
 
         public string AnularConsulta(int consultaId, int usuarioId, string motivoRechazo)
         {
-            this.ActualizarEstadoConsulta(consultaId, (int)EstadosConsulta.Finalizado);
+            this.ActualizarEstadoConsulta(consultaId, (int)EstadosConsulta.Rechazado);
 
             ComentarioDto comentarioDto = new ComentarioDto
             {

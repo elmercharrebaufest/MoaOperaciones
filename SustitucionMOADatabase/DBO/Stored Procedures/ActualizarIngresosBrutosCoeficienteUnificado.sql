@@ -5,7 +5,7 @@ AS
     DECLARE @EstadoIngresosBrutosCoeficienteUnificado_Id_Autorizado INT = 2
     DECLARE @EstadoIngresosBrutosCoeficienteUnificado_Id_Completado INT = 3
 
-    DECLARE @EstadoConsultaCerrado INT = 5
+    DECLARE @EstadoConsultaCerrado INT = 6
     
     DECLARE @TipoMovimientoIngresosBrutosCoeficienteUnificado_ExportacionExitosa INT = 4
     DECLARE @OrigenMovimientoIngresosBrutosCoeficienteUnificado_SAP INT = 2

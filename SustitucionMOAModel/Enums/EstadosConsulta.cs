@@ -8,12 +8,12 @@ namespace SustitucionMOAModel.Enums
 {
     public enum EstadosConsulta
     {
-        Iniciado,
-        Reasignado,
-        EnGestion,
-        SolicitudInformacion,
-        Rechazado,
-        Finalizado
+        Iniciado = 1,
+        Reasignado = 2,
+        EnGestion = 3,
+        SolicitudInformacion = 4,
+        Rechazado = 5,
+        Finalizado = 6
     }
 
     public static class EstadoConsultaExtensions
