@@ -95,8 +95,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 result.TieneModal = true;
                 var contador = result.comprobantes.Count(x => x.CodigoEstadoDocumento == EstadoComprobantesNG.ListoValidacion);
-                result.MensajeModal = "Tiene <strong>" + contador + " comprobantes</strong> pendientes de procesar. El plazo estimado es de 48hs.";
-
+                result.MensajeModal = "Existen <strong>" + contador + " comprobante/s </strong> recibido/s en proceso de lectura de datos. El plazo estimado de procesamiento es de 72 hrs.";
             }
 
 
