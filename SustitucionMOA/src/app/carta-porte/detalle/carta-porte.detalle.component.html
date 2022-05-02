@@ -350,7 +350,7 @@
 
                                                 <ng-container *ngFor="let calidad of data.datosCalidad">
                                                     <tr
-                                                        *ngIf="data.camaraAPresent != '' && ((condicionCamara==false && porcentajeDescuento==false)||(condicionCamara==true && porcentajeDescuento==true));else first">
+                                                        *ngIf="data.camaraAPresent != '' && (condicionCamara==false && porcentajeDescuento==false);else first">
                                                         <!--Camara-->
                                                         <td>{{calidad.caracteristica}}</td>
                                                         <!-- <td>{{calidad.resultadoCalado}}%</td>
@@ -359,7 +359,7 @@
                                                         <td>{{calidad.porcentajeDescuento}}%</td>
                                                     </tr>
                                                     <ng-template #first>
-                                                        <tr>
+                                                        <tr *ngIf="data.camaraAPresent == '' || data.camaraAPresent == null" >
                                                             <!--Calado-->
                                                             <td>{{calidad.caracteristica}}</td>
                                                             <td>{{calidad.resultadoCalado}}%</td>
