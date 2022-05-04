@@ -19,7 +19,7 @@ namespace SustitucionMOAExternalAPI.Controllers
             this.comprasService = comprasService;
         }
         
-        //[Authorize(Roles = "ABM SOLP")]
+        [Authorize(Roles = "ABM SOLP")]
         public IHttpActionResult Post(string nrosolp)
         {
             try
