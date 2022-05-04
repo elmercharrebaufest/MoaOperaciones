@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.CartaPorteDetalleWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -43,10 +43,6 @@ namespace SustitucionMOAWS.CartaPorteDetalleWebServiceMOA {
         private string uNIMEField;
         
         private string cgField;
-        
-        private string cTGField;
-        
-        private string cUIT_SOLICITANTEField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -120,30 +116,6 @@ namespace SustitucionMOAWS.CartaPorteDetalleWebServiceMOA {
             }
         }
         
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=5)]
-        public string CTG {
-            get {
-                return this.cTGField;
-            }
-            set {
-                this.cTGField = value;
-                this.RaisePropertyChanged("CTG");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=6)]
-        public string CUIT_SOLICITANTE {
-            get {
-                return this.cUIT_SOLICITANTEField;
-            }
-            set {
-                this.cUIT_SOLICITANTEField = value;
-                this.RaisePropertyChanged("CUIT_SOLICITANTE");
-            }
-        }
-        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -155,7 +127,7 @@ namespace SustitucionMOAWS.CartaPorteDetalleWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -215,7 +187,7 @@ namespace SustitucionMOAWS.CartaPorteDetalleWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -253,10 +225,6 @@ namespace SustitucionMOAWS.CartaPorteDetalleWebServiceMOA {
         private bool tOTAL_APLICADOSFieldSpecified;
         
         private string cgField;
-        
-        private string cTGField;
-        
-        private string cUIT_SOLICITANTEField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -450,30 +418,6 @@ namespace SustitucionMOAWS.CartaPorteDetalleWebServiceMOA {
             }
         }
         
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=14)]
-        public string CTG {
-            get {
-                return this.cTGField;
-            }
-            set {
-                this.cTGField = value;
-                this.RaisePropertyChanged("CTG");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=15)]
-        public string CUIT_SOLICITANTE {
-            get {
-                return this.cUIT_SOLICITANTEField;
-            }
-            set {
-                this.cUIT_SOLICITANTEField = value;
-                this.RaisePropertyChanged("CUIT_SOLICITANTE");
-            }
-        }
-        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -485,7 +429,7 @@ namespace SustitucionMOAWS.CartaPorteDetalleWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -525,8 +469,6 @@ namespace SustitucionMOAWS.CartaPorteDetalleWebServiceMOA {
         private decimal pORC_DESCField;
         
         private bool pORC_DESCFieldSpecified;
-        
-        private string cAMARA_A_PRESENTField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -729,18 +671,6 @@ namespace SustitucionMOAWS.CartaPorteDetalleWebServiceMOA {
             set {
                 this.pORC_DESCFieldSpecified = value;
                 this.RaisePropertyChanged("PORC_DESCSpecified");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=10)]
-        public string CAMARA_A_PRESENT {
-            get {
-                return this.cAMARA_A_PRESENTField;
-            }
-            set {
-                this.cAMARA_A_PRESENTField = value;
-                this.RaisePropertyChanged("CAMARA_A_PRESENT");
             }
         }
         

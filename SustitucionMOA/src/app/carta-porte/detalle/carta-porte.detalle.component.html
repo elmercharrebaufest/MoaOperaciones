@@ -8,11 +8,11 @@
             <div class="col-xs-12 col-sm-8 fixtwobuttons animate" style="vertical-align:bottom;">
                 <div style="line-height:0.8;">
                     <strong>Carta de Porte:
-                        <span>Nº {{data.ccpp}}</span></strong>
+                    <span>Nº {{data.ccpp}}</span></strong>
                 </div>
                 <div class="titleExtraData titleExtraDataOneLine">
                     Vendedor: <strong>
-                        {{data.entregasDescargas[0].descripcionVendedor}}
+                    {{data.entregasDescargas[0].descripcionVendedor}}
                     </strong>({{data.entregasDescargas[0].vendedor}})
                 </div>
             </div>
@@ -20,16 +20,16 @@
                 <spinner-small #smallSpinner></spinner-small>
                 <!--<a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!isExportVisible()">-->
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
-                    *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg" />
-                    </div>
+                   *ngIf="!this.spinnerSmallComponent.visible">
+                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
                 </a>
-                <button type="button" class="btn-custom btn-add" (click)="abrirModal()">
+                <button type="button" class="btn-custom btn-add"
+                        (click)="abrirModal()"
+                >
                     Ver Carta de Porte
                 </button>
 
-                <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
-                    data-target="#myModal"></button>
+                <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"></button>
                 <!--<a href="#" style="text-decoration:none!important">
                     <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
                 </a>-->
@@ -40,12 +40,12 @@
 
             <!-- Modal -->
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+                 data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                                onClick="abrirModal()">
+                                    onClick="abrirModal()">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                             <h4 class="modal-title" id="myModalLabel">Foto CCPP N°{{data.ccpp}}</h4>
@@ -53,11 +53,11 @@
                         </div>
                         <div class="modal-body">
                             <img src="{{fotoSrc}}" id="CartaPorteImagen" class="img-responsive"
-                                style="display: block; max-width: 100%;" />
+                                 style="display: block; max-width: 100%;" />
                         </div>
                         <div class="modal-footer">
                             <a class="btn btn-primary" id="CartaPorteDescargar" download="{{data.ccpp}}.jpg"
-                                href="{{fotoSrc}}">Descargar</a>
+                               href="{{fotoSrc}}">Descargar</a>
                         </div>
                     </div>
                 </div>
@@ -65,12 +65,11 @@
         </div>
         <!--End Title-->
         <!--Datos de entrega-->
-        <div id="Entrega" class="firstSection row myRow"
-            *ngIf="data.entregasDescargas && data.entregasDescargas[0].cg != ''">
+        <div id="Entrega" class="firstSection row myRow" *ngIf="data.entregasDescargas && data.entregasDescargas[0].cg != ''">
             <div class="row titleSection titleSectionNoBorder">
                 <div class="col-xs-12 col-sm-12"><strong>Datos de entrega</strong></div>
                 <div class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen"
-                    style="padding: 10px 10px;">
+                     style="padding: 10px 10px;">
                     <div>
                         <div class="col-xs-12 col-sm-2">
                             <p class="black" style="text-align: center;">Fecha</p>
@@ -105,12 +104,11 @@
             </div>
         </div>
 
-        <div id="Entrega" class="firstSection row myRow"
-            *ngIf="data.entregasDescargas && data.entregasDescargas[0].cg == ''">
+        <div id="Entrega" class="firstSection row myRow" *ngIf="data.entregasDescargas && data.entregasDescargas[0].cg == ''">
             <div class="row titleSection titleSectionNoBorder">
                 <div class="col-xs-12 col-sm-12"><strong>Datos de entrega</strong></div>
                 <div class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen"
-                    style="padding: 10px 10px;">
+                     style="padding: 10px 10px;">
                     <div>
                         <div class="col-xs-12 col-sm-2">
                             <p class="black" style="text-align: center;">Fecha</p>
@@ -144,16 +142,14 @@
         <div class="row myRow titleSection titleSectionNoBorder">
             <!--aplicaciones-->
             <div id="Aplicaciones" class="col-xs-12 col-sm-7">
-                <div id="showAplicaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate"
-                    onClick="showAplicaciones()">
+                <div id="showAplicaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showAplicaciones()">
                     <div>
                         <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                     </div>
                     <div>Aplicaciones</div>
                 </div>
-                <div id="hideAplicaciones"
-                    class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose"
-                    onClick="closeAplicaciones()">
+                <div id="hideAplicaciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose"
+                     onClick="closeAplicaciones()">
                     <div>
                         <li class="fa fa-times" aria-hidden="true"></li>
                     </div>
@@ -165,8 +161,8 @@
                 <div id="myAplicaciones" class="row myRow hideMobile">
                     <div class="clearfix myTables">
                         <table id=""
-                            class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable"
-                            cellspacing="0" role="grid" style="width: 100%; padding:10px 0;">
+                               class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable"
+                               cellspacing="0" role="grid" style="width: 100%; padding:10px 0;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha de Aplicaci&oacute;n</th>
@@ -179,8 +175,8 @@
                                     <td tabindex="0" class="sorting_1">{{aplicacion.fecha}}</td>
                                     <td>
                                         <a class="animate"
-                                            (click)="goToSeccionParam('/contrato/detalle', aplicacion.contrato)"
-                                            href="#">{{aplicacion.contrato}}</a>
+                                           (click)="goToSeccionParam('/contrato/detalle', aplicacion.contrato)"
+                                           href="#">{{aplicacion.contrato}}</a>
                                     </td>
                                     <td>{{aplicacion.kgAplicadosString}}</td>
                                 </tr>
@@ -206,15 +202,14 @@
             <!-- end aplicaciones -->
             <!-- DESCARGA---->
             <div id="Descarga" class="col-xs-12 col-sm-5" *ngIf="data.entregasDescargas">
-                <div id="showDescarga" class="showBtn height-auto btn-grande btnSection btnInfo animate"
-                    onClick="showDescarga()">
+                <div id="showDescarga" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showDescarga()">
                     <div>
                         <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                     </div>
                     <div>Datos de descarga</div>
                 </div>
                 <div id="hideDescarga" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose"
-                    onClick="closeDescarga()">
+                     onClick="closeDescarga()">
                     <div>
                         <li class="fa fa-times" aria-hidden="true"></li>
                     </div>
@@ -224,7 +219,7 @@
                     <div class="col-xs-12 col-sm-12"><strong>Datos de descarga</strong></div>
                 </div>
                 <div id="myDescarga"
-                    class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen hideMobile">
+                     class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen hideMobile">
                     <div>
                         <div class="col-xs-12 col-sm-4">
                             <p class="black">Vehículo</p>
@@ -273,11 +268,11 @@
                         <tr>
                             <td width="80%" valign="top">
                                 <table class="CalidadCCPPData rounded shadow animate" width="100%" border="0"
-                                    cellspacing="0" cellpadding="0">
+                                       cellspacing="0" cellpadding="0">
                                     <tr>
                                         <td>
                                             <table class="CalidadCCPPDataPaddingBottom" width="100%" border="0"
-                                                cellspacing="0" cellpadding="0">
+                                                   cellspacing="0" cellpadding="0">
                                                 <!--<tr class="CalidadCCPPDataCategoria">
                                                     <th width="20%" rowspan="2" class="">Características</th>
                                                     <th width="20%" rowspan="2">Calado Resultado</th>
@@ -290,105 +285,47 @@
                                                     <th width="10%">Resultado</th>
                                                     <th width="20%">Nº Cert.</th>
                                                 </tr>-->
-                                                <tr *ngIf="data.camaraAPresent != ''  && ((condicionCamara == true && porcentajeDescuento == true));else second"
-                                                    class="CalidadCCPPDataCategoria">
-
+                                                <tr class="CalidadCCPPDataCategoria">
                                                     <th class="black" width="20%" rowspan="2">Características</th>
                                                     <th width="40%" colspan="2" class=" CalidadCCPPDataSub">
-                                                        <div class="black">
-                                                            <p align="center">
-                                                                C&aacute;mara <span
-                                                                    style="color: red;">(Pendiente)</span>
-                                                            </p>
-                                                        </div>
+                                                        <div class="black">Calado</div>
                                                     </th>
-                                                    <!--<th width="40%" colspan="2" class=" CalidadCCPPDataSub">
+                                                    <th width="40%" colspan="2" class=" CalidadCCPPDataSub">
                                                         <div class="black">C&aacute;mara</div>
-                                                    </th>-->
-                                                </tr>
-                                                <ng-template #second>
-                                                    <tr
-                                                        *ngIf="data.camaraAPresent != '' && ((condicionCamara == false && porcentajeDescuento == false));else third">
-                                                        <th class="black" width="20%" rowspan="2">Características</th>
-                                                        <th width="40%" colspan="2" class="CalidadCCPPDataSub">
-                                                            <div class="black">
-                                                                <p align="center">C&aacute;mara</p>
-                                                            </div>
-                                                        </th>
-                                                    </tr>
-                                                </ng-template>
-
-                                                <ng-template #third>
-                                                    <tr>
-                                                        <th class="black" width="20%" rowspan="2">Características</th>
-                                                        <th width="40%" colspan="2" class="CalidadCCPPDataSub">
-                                                            <div class="black">
-                                                                <p align="center">Calado</p>
-                                                            </div>
-                                                        </th>
-                                                    </tr>
-                                                </ng-template>
-
-                                                <tr *ngIf="data.camaraAPresent != '' && ((condicionCamara == false && porcentajeDescuento == false)||(condicionCamara==true && porcentajeDescuento==true));else first"
-                                                    class="CalidadCCPPDataCategoria">
-                                                    <!--Camara-->
-                                                    <th class="black" width="20%" style="text-align:right">Resultado
                                                     </th>
-                                                    <th class="black" width="20%">DTO (%)</th>
-                                                    <!-- <th class="black" width="20%">Resultado</th> -->
-                                                    <!--<th class="black" width="20%">DTO (%)</th>-->
                                                 </tr>
-                                                <ng-template #first>
-                                                    <tr>
-                                                        <!--Calado-->
-                                                        <th class="black" width="1%">
-                                                            <p style="margin-right: -16px;" align="center">Resultado</p>
-                                                        </th>
-                                                        <th class="black" width="26%">Kg DTO.</th>
-                                                    </tr>
-                                                </ng-template>
-
+                                                <tr class="CalidadCCPPDataCategoria">
+                                                    <th class="black" width="20%" style="text-align:right">Resultado</th>
+                                                    <th class="black" width="20%">Kg DTO.</th>
+                                                    <th class="black" width="20%">Resultado</th>
+                                                    <th class="black" width="20%">DTO (%)</th>
+                                                </tr>
                                                 <ng-container *ngFor="let calidad of data.datosCalidad">
-                                                    <tr
-                                                        *ngIf="data.camaraAPresent != '' && (condicionCamara==false && porcentajeDescuento==false);else first">
-                                                        <!--Camara-->
+                                                    <tr>
                                                         <td>{{calidad.caracteristica}}</td>
-                                                        <!-- <td>{{calidad.resultadoCalado}}%</td>
-                                                        <td>{{calidad.kgDescuentoString}}</td> -->
+                                                        <td>{{calidad.resultadoCalado}}%</td>
+                                                        <td>{{calidad.kgDescuentoString}}</td>
                                                         <td>{{calidad.resultadoCamara}}%</td>
                                                         <td>{{calidad.porcentajeDescuento}}%</td>
                                                     </tr>
-                                                    <ng-template #first>
-                                                        <tr *ngIf="data.camaraAPresent == '' || data.camaraAPresent == null" >
-                                                            <!--Calado-->
-                                                            <td>{{calidad.caracteristica}}</td>
-                                                            <td>{{calidad.resultadoCalado}}%</td>
-                                                            <td>{{calidad.kgDescuentoString}}</td>
-                                                            <!-- <td>{{calidad.resultadoCamara}}%</td>
-                                                            <td>{{calidad.porcentajeDescuento}}%</td> -->
-                                                        </tr>
-                                                    </ng-template>
                                                     <tr class="CalidadCCPPDataPlus" *ngIf="showDataPlus(calidad)">
                                                         <td colspan="6" style="border:none">
                                                             <table width="100%" border="0" cellspacing="0"
-                                                                cellpadding="0">
+                                                                   cellpadding="0">
                                                                 <tr>
                                                                     <td width="4%" align="center" valign="top"
                                                                         style="padding-right:0px!important">
-                                                                        <span class="fa fa-caret-down"
-                                                                            aria-hidden="true"
-                                                                            style="font-size:25px; line-height:0;"></span>
+                                                                        <span class="fa fa-caret-down" aria-hidden="true"
+                                                                              style="font-size:25px; line-height:0;"></span>
                                                                     </td>
                                                                     <td width="96%">
                                                                         <table width="100%" border="0" cellspacing="0"
-                                                                            cellpadding="0"
-                                                                            class="totalTable CalidadDataExtra"
-                                                                            style="">
-                                                                            <tr
-                                                                                *ngIf="data.camaraAPresent != '' && ((condicionCamara == false && porcentajeDescuento == false)||(condicionCamara == true && porcentajeDescuento == true));else first">
-                                                                                <!--camara-->
+                                                                               cellpadding="0"
+                                                                               class="totalTable CalidadDataExtra"
+                                                                               style="">
+                                                                            <tr>
                                                                                 <td>resultado final </td>
-                                                                                <!-- <td width="19.5%">
+                                                                                <td width="19.5%">
                                                                                     <p>Kg Netos</p>
                                                                                     {{calidad.kgNetosString}}
                                                                                 </td>
@@ -399,34 +336,12 @@
                                                                                 <td width="19.5%">
                                                                                     <p>Kg Aplicados</p>
                                                                                     {{calidad.kgAplicadosString}}
-                                                                                </td> -->
+                                                                                </td>
                                                                                 <td width="19.5%">
                                                                                     <p>Dto. (%)</p>
                                                                                     {{calidad.porcentajeDescuento}}%
                                                                                 </td>
                                                                             </tr>
-                                                                            <ng-template #first>
-                                                                                <!--Resultado calado netos-->
-                                                                                <tr>
-                                                                                    <td>resultado final </td>
-                                                                                    <!-- <td width="19.5%">
-                                                                                        <p>Kg Netos</p>
-                                                                                        {{calidad.kgNetosString}}
-                                                                                    </td> -->
-                                                                                    <td width="19.5%">
-                                                                                        <p>Kg Dto.</p>
-                                                                                        {{calidad.kgDescuentoString}}
-                                                                                    </td>
-                                                                                    <!-- <td width="19.5%">
-                                                                                        <p>Kg Aplicados</p>
-                                                                                        {{calidad.kgAplicadosString}}
-                                                                                    </td>
-                                                                                    <td width="19.5%">
-                                                                                        <p>Dto. (%)</p>
-                                                                                        {{calidad.porcentajeDescuento}}%
-                                                                                    </td> -->
-                                                                                </tr>
-                                                                            </ng-template>
                                                                         </table>
                                                                     </td>
                                                                 </tr>
