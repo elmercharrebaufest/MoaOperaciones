@@ -59,16 +59,6 @@ export class GestionCM05Service extends BaseService {
             .post('/api/GestionImpuestos/EditarIngresosBrutosCoeficienteUnificado', payload, { headers: this.headers })
     }
 
-    public insertarMovimiento(cabecera): Observable<any> {
-        let cabeceraJson = JSON.stringify(cabecera);
-        var payload = new FormData();
-
-        payload.append('cabeceraJson', cabeceraJson);
-
-        return this.http
-            .post('/api/GestionImpuestos/InsertarMovimientoIngresosBrutosCoeficienteUnificado', payload, { headers: this.headers })
-    }
-
     public getCombos(): Observable<any>{
         return this.http
         .get('/api/GestionImpuestos/GetCombos', { headers: this.headers });
