@@ -16,6 +16,7 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
+import { forEach } from '@angular/router/src/utils/collection';
 
 declare var $: any;
 
@@ -322,8 +323,33 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
 
-                        this.patentesChasis = result.ordenes;
-                        this.patentesAcoplados = result.ordenes;
+                        this.patentesChasis = result.ordenes.map((patente) => {
+                            return { label: patente.label, value: patente.label};
+                        })
+
+                        var flags = [], output = [], l = this.patentesChasis.length, i;
+                        for (i = 0; i < l; i++) {
+                            if (flags[this.patentesChasis[i].value]) continue;
+                            flags[this.patentesChasis[i].value] = true;
+                            output.push(this.patentesChasis[i]);
+                        }
+                        this.patentesChasis = output;
+
+                        this.patentesAcoplados = result.ordenes.map((patente) => {
+                            return { label: patente.value, value: patente.value };
+                        })
+
+                        flags = [], output = [], l = this.patentesAcoplados.length, i;
+                        for (i = 0; i < l; i++) {
+                            if (flags[this.patentesAcoplados[i].value]) continue;
+                            flags[this.patentesAcoplados[i].value] = true;
+                            output.push(this.patentesAcoplados[i]);
+                        }
+                        this.patentesAcoplados = output;
+
+
+                        //this.patentesChasis = result.ordenes;
+                        //this.patentesAcoplados = result.ordenes;
                         console.log(this.patentesChasis);
                     }
                 },
