@@ -13,7 +13,6 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Contrato
         public string contrvend { get; set; }
         public string vendedor { get; set; }
         public string material { get; set; }
-        public string tipoContrato { get; set; }
         public decimal cantKilos { get; set; }
         public string unidadCantKilos { get; set; }
         public decimal precio { get; set; }
