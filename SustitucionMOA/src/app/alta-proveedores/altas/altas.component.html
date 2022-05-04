@@ -280,7 +280,7 @@
                                         data-toggle="modal" data-target="#ModalVieneOperando"></button>
 
                                     <button type="button"
-                                        *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario === 3 && empresa.AltaInterna && puedeAltaInternaNoGranos"
+                                        *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario === 3 && empresa.AltaInterna && puedeAltaInterna"
                                         class="btn-custom btn-add btn-chico" (click)="altaInterna(empresa)">
                                         Alta interna
                                     </button>

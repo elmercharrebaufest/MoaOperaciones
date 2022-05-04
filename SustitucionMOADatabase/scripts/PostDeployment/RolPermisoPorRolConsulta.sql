@@ -73,7 +73,6 @@ IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'EDICION CAMPOS CREADO
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'APIKEY') BEGIN insert into PermisoPorRol values ('APIKEY') END
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'CONSULTA ABM') BEGIN insert into PermisoPorRol values ('CONSULTA ABM') END
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'ALTA INTERNA GRANOS') BEGIN insert into PermisoPorRol values ('ALTA INTERNA GRANOS') END
-IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'ALTA INTERNA NO GRANOS') BEGIN insert into PermisoPorRol values ('ALTA INTERNA NO GRANOS') END
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'GESTION IMPUESTOS CM05') BEGIN insert into PermisoPorRol values ('GESTION IMPUESTOS CM05') END
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'BORRAR CAMPOS CREADOS') BEGIN insert into PermisoPorRol values ('BORRAR CAMPOS CREADOS')  END
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'ABM SOLP') BEGIN insert into PermisoPorRol values ('ABM SOLP') END
