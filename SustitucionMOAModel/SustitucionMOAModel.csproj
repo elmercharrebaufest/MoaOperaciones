@@ -157,7 +157,6 @@
     <Compile Include="Enums\SituacionIVA.cs" />
     <Compile Include="Enums\Tablas.cs" />
     <Compile Include="Enums\TablaSeccionMaterial.cs" />
-    <Compile Include="Enums\TipoContrato.cs" />
     <Compile Include="Models\BuscadorOption.cs" />
     <Compile Include="Models\DataAgro\BasicoContrato.cs" />
     <Compile Include="Models\DataAgro\CookiesDataAgro.cs" />

@@ -35,12 +35,6 @@
                         <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroProducto" (select)="setFiltroProducto($event)"></dropdown>
                     </div>
                 </div>
-                <div id="searchTipoContrato" class="col-xs-12 col-sm-6 col-md-15">
-                    <p>Por Tipo de Contrato</p>
-                    <div class="styled-select">
-                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroTipoContrato" (select)="setFiltroTipoContrato($event)"></dropdown>
-                    </div>
-                </div>
                 <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Por Contrato</p>
                     <div class="styled-select">
@@ -115,15 +109,6 @@
                                     </span>
                                 </div>   
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('tipoContrato')">
-                                Tipo de Contrato
-                                <div>
-                                    <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'tipoContrato' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'tipoContrato' && orderDirection < 0 }"></i>
-                                    </span>
-                                </div>
-                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Pactado')">
                                 Pactado
                                 <div>
@@ -163,12 +148,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let contratoInfo of data.contratosInfo | customFilter : 'material' : productoSelected | customFilter : 'tipoContrato' : tipoContratoSelected | customFilter : 'vendedor' : vendedorSelected | customFilter : 'nroContrato' : filtroContrato | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                        <tr *ngFor="let contratoInfo of data.contratosInfo | customFilter : 'material' : productoSelected | customFilter : 'vendedor' : vendedorSelected | customFilter : 'nroContrato' : filtroContrato | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
                             <td><a (click)="showModalTableResponsive(contratoInfo)" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a> {{contratoInfo.fecha}}</td>
                             <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', contratoInfo.nroContrato)" href="#">{{contratoInfo.nroContrato}}</a></td>
                             <td>{{contratoInfo.contrvend}}</td>
                             <td>{{contratoInfo.material}}</td>
-                            <td>{{contratoInfo.tipoContrato}}</td>
                             <td>{{contratoInfo.cantKilosString}}</td>
                             <td>{{contratoInfo.ampliadoString}}</td>
                             <td>{{contratoInfo.totalString}}</td>

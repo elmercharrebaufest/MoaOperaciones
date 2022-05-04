@@ -184,7 +184,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="ID_VENDEDOR">
             <xsd:annotation>
-              <xsd:documentation>Vendor's account number</xsd:documentation>
+              <xsd:documentation>Vendor Account Number</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
@@ -254,7 +254,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="MATERIAL">
             <xsd:annotation>
-              <xsd:documentation>Material Description</xsd:documentation>
+              <xsd:documentation>Material Description (Short Text)</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
@@ -318,16 +318,6 @@
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
                 <xsd:maxLength value="20" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:element>
-          <xsd:element minOccurs="0" name="CLASE_DOC">
-            <xsd:annotation>
-              <xsd:documentation>Purchasing Document Type</xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:string">
-                <xsd:maxLength value="4" />
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>

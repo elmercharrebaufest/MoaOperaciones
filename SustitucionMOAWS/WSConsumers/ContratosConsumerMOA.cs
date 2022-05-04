@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Contrato;
@@ -75,7 +74,6 @@ namespace SustitucionMOAWS.WSConsumers
                     lugarDescarga = contratoInfo.LUGAR_DESCARGA,
                     cosecha = contratoInfo.COSECHA,
                     material = contratoInfo.MATERIAL,
-                    tipoContrato = TipoContrato.GetTipoContrato(contratoInfo.CLASE_DOC),
                     estadoBoleto = contratoInfo.ESTADO_BOLETO,
                     aplicacionesString = SAPFormatter.FormatearCantidad(contratoInfo.APLICACIONES, contratoInfo.UNIME_ENTREGADO),
                     aplicaciones = contratoInfo.APLICACIONES,

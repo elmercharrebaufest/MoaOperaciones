@@ -23,11 +23,9 @@ export class ContratoBaseComponent extends ListBaseComponent {
 
     filtroProducto: any = null;
     filtroVendedor: any = null;
-    filtroTipoContrato: any = null;
     filtroContrato: string = "";
     productoSelected: string = "";
     vendedorSelected: string = "";
-    tipoContratoSelected: string = "";
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONSULTAR CONTRATOS"); }
 
@@ -54,10 +52,6 @@ export class ContratoBaseComponent extends ListBaseComponent {
         this.vendedorSelected = vendedor;
     }
 
-    setFiltroTipoContrato(tipoContrato: string) {
-        this.tipoContratoSelected = tipoContrato;
-    }
-
     isVisible(): boolean {
         if (this.data && this.data.contratosInfo.length != 0)
             return true;
@@ -68,7 +62,6 @@ export class ContratoBaseComponent extends ListBaseComponent {
     protected vaciarFiltros() {
         this.filtroProducto = null;
         this.filtroVendedor = null;
-        this.filtroTipoContrato = null;
         this.filtroContrato = "";
         this.productoSelected = "";
         this.vendedorSelected = "";
@@ -77,6 +70,5 @@ export class ContratoBaseComponent extends ListBaseComponent {
     protected cargarFiltrosVariables(result: any) {
         if (result.filtroProducto != undefined) this.filtroProducto = result.filtroProducto.options;
         if (result.filtroVendedor != undefined) this.filtroVendedor = result.filtroVendedor.options;
-        if (result.filtroTipoContrato != undefined) this.filtroTipoContrato = result.filtroTipoContrato.options;
     }
 }
