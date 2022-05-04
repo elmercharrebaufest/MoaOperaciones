@@ -22,7 +22,6 @@ import { OverlayPanelModule} from 'primeng/overlaypanel';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
-import { FileDropModule } from 'ngx-file-drop';
 
 @NgModule({
   imports: [
@@ -43,7 +42,6 @@ import { FileDropModule } from 'ngx-file-drop';
     DialogModule,
     TooltipModule,
     ConfirmDialogModule,
-    FileDropModule,
   ],
     declarations: [
         MisConsultasComponent,
