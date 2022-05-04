@@ -114,8 +114,8 @@
                         <tr *ngFor="let liquidacion of filteredfechas | customFilter: 'COE' : filtroCOE | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
                             role="row" [class.odd]="!odd">
                             <td>{{liquidacion.COE}}</td>
-                            <td>{{liquidacion.FechaComprobante}}</td>
-                            <td>{{liquidacion.FechaInformada}}</td>
+                            <td>{{liquidacion.FechaComprobante | date: 'dd/MM/yyyy'}}</td>
+                            <td>{{liquidacion.FechaInformada| date: 'dd/MM/yyyy'}}</td>
                         </tr>
                     </tbody>
                 </table>
