@@ -127,7 +127,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
 
         if (this.esInterno) {
-                this.mostrarBotonVerHistorial = true;
+            this.mostrarBotonVerHistorial = true;
             if (this.ordenDeCarga.NumeroPedido === "-" && this.ordenDeCarga.PedidosRespuesta != "-") {
                 this.mostrarBotonPedidos = true
             }
@@ -155,19 +155,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (this.ordenDeCarga.ContratoSinCantidadPendiente) {
                 this.mostrarBotonForzarCreacionPedido = true;
             }
-        }
-        else if (this.esMesaFas) {
-
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
-                this.mostrarBotonAnular = true;
-            }
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
-                this.mostrarBotonAnular = true;
-            }
-            if (!this.ordenDeCarga.TransporteExiste) {
-                this.mostrarBotonAnular = true;
-            }
-           
         }
     }
 
