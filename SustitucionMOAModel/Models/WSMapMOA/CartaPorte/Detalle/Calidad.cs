@@ -21,7 +21,6 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle
         public decimal kgAplicados { get; set; }
         public string unidadAplicados { get; set; }
         public decimal porcentajeDescuento { get; set; }
-        public string camaraAPresent { get; set; }
     }
 
     public class CalidadView : Calidad
