@@ -24,6 +24,6 @@ export class LiquidacionNGPendienteRegistroComponent extends LiquidacionNGBaseCo
     tituloArchivo = "ReporteComprobantesPendienteRegistro.xls";
 
     setTabs() {
-        this.setMenuSeccionTab("comprobante-ngs", "Pendiente registro");
+        this.setMenuSeccionTab("comprobante-ngs", "Pendientes de registro");
     }
 }

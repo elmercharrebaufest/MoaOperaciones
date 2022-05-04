@@ -74,12 +74,12 @@
                 <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate " cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('FechaDocumento')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('FechaComprobanteDate')">
                                 Fecha de comprobante
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaDocumento' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaDocumento' && orderDirection < 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaComprobanteDate' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaComprobanteDate' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -101,12 +101,12 @@
                                     </span>
                                 </div>       
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('TotalMasMoneda')">
+                            <th tabindex="0" rowspan="1" colspan="1"  (click)="orderColumnBy('TotalDocumento')">
                                 Total
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'ImporteMercaderiaDocumento' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'ImporteMercaderiaDocumento' && orderDirection < 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'TotalDocumento' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'TotalDocumento' && orderDirection < 0 }"></i>
                                     </span>
                                 </div> 
                             </th>

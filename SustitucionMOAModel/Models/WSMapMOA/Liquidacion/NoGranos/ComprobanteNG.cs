@@ -21,6 +21,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos
     public class ComprobanteView : ComprobanteNGLista
     {
         public string FechaDocumento { get; set; } //BLDAT: corresponde a la fecha de documento del documento // Fecha comprobante
+        public DateTime FechaComprobanteDate { get; set; }
         public string DescripcionTipoDocumento { get; set; } //LTEXT: corresponde a la descripción del tipo de documento
         public string NumeroLegalDocumento { get; set; } //XBLNR: corresponde al número legal del documento
         public string TotalMasMoneda { get; set; }
@@ -40,6 +41,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos
         public EstadoComprobantesNG CodigoEstadoDocumento { get; set; } //STATUS: corresponde al código de estado del documento
         public string CodigoRolDocumento { get; set; } //CURR_ROLE: corresponde al código del rol que tiene asignado este documento
         public string CodigoMotivoRechazo { get; set; } //DELREASON: corresponde al código del motivo de rechazo
+        public DateTime fechaComprobanteDate { get; set; }
 
     }
 }

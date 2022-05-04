@@ -72,6 +72,7 @@ namespace SustitucionMOAWS.WSConsumers
                     CodigoProveedorSAP = comprobante.LIFNR, //LIFNR: corresponde al código de proveedor en SAP
                     RazonSocialProveedorSAP = comprobante.VEND_NAME, //VEND_NAME: corresponde a la razón social del proveedor en SAP
                     FechaDocumento = SAPFormatter.FormatearFecha(comprobante.BLDAT), //BLDAT: corresponde a la fecha de documento del documento // Fecha comprobante
+                    FechaComprobanteDate = SAPFormatter.GetDateTime(comprobante.BLDAT),
                     TipoDocumento = comprobante.BLART, //BLART: corresponde al tipo de documento
                     DescripcionTipoDocumento = comprobante.LTEXT,  //LTEXT: corresponde a la descripción del tipo de documento
                     NumeroLegalDocumento = comprobante.XBLNR, //XBLNR: corresponde al número legal del documento
