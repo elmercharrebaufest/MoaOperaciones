@@ -64,7 +64,7 @@ namespace SustitucionMOAUtils.Services
                 LiquidacionViewModel dataView = new LiquidacionViewModel();
                 dataView.filtroProducto = new DropdownContent();
                 dataView.filtroObservacion = new DropdownContent();
-                dataView.data = (LiquidacionWSMOAResponse)new LiquidacionesConsumerMOA().request(proveedor, fechas, palabra,"");
+                dataView.data = (LiquidacionWSMOAResponse)new LiquidacionesConsumerMOA().request(proveedor, fechas, palabra);
                
                 return dataView;
             }
@@ -89,7 +89,7 @@ namespace SustitucionMOAUtils.Services
                 LiquidacionViewModel dataView = new LiquidacionViewModel();
                 dataView.filtroProducto = new DropdownContent();
                 dataView.filtroObservacion = new DropdownContent();
-                dataView.data = (LiquidacionWSMOAResponse) new LiquidacionesConsumerMOA().request(proveedor, fechas,"","");
+                dataView.data = (LiquidacionWSMOAResponse) new LiquidacionesConsumerMOA().request(proveedor, fechas,"");
                 validarRespuesta(dataView.data);
                 switch (tipo) {
                     case "APROBADA":
@@ -238,7 +238,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
-                LiquidacionExcelWSMOAResponse data = (LiquidacionExcelWSMOAResponse) new LiquidacionesExcelConsumerMOA().request(proveedor, fechas,"","");
+                LiquidacionExcelWSMOAResponse data = (LiquidacionExcelWSMOAResponse) new LiquidacionesExcelConsumerMOA().request(proveedor, fechas,"");
                 validarRespuesta(data);
                 data.liquidaciones = data.liquidaciones.Where(x => x.solapa == "A").ToList();
                 if (data.liquidaciones.Count == 0)
@@ -264,7 +264,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
-                LiquidacionExcelWSMOAResponse data = (LiquidacionExcelWSMOAResponse)new LiquidacionesExcelConsumerMOA().request(proveedor, fechas,"","");
+                LiquidacionExcelWSMOAResponse data = (LiquidacionExcelWSMOAResponse)new LiquidacionesExcelConsumerMOA().request(proveedor, fechas,"");
                 validarRespuesta(data);
                 data.liquidaciones = data.liquidaciones.Where(x => x.solapa == "O").ToList();
                 if (data.liquidaciones.Count == 0)
@@ -290,7 +290,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
-                LiquidacionExcelWSMOAResponse data = (LiquidacionExcelWSMOAResponse)new LiquidacionesExcelConsumerMOA().request(proveedor, fechas,"","");
+                LiquidacionExcelWSMOAResponse data = (LiquidacionExcelWSMOAResponse)new LiquidacionesExcelConsumerMOA().request(proveedor, fechas,"");
                 validarRespuesta(data);
                 data.liquidaciones = data.liquidaciones.Where(x => x.solapa == "P").ToList();
                 if (data.liquidaciones.Count == 0)
