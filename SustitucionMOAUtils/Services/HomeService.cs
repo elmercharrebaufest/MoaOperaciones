@@ -235,15 +235,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     //liquidaciones
                     try
-                    {
-                        if (liquidacionWSMOAResponse == null)
-                        {
+                    {                 
                             liquidacionWSMOAResponse = (LiquidacionWSMOAResponse)new LiquidacionesConsumerMOA().request(proveedor, fechas, "", palabra);
-                        }
-                        else
-                        {
-                            liquidacionWSMOAResponse = (LiquidacionWSMOAResponse)new LiquidacionesConsumerMOA().request(proveedor, fechas, "", palabra);
-                        }
+                      
                     }
                     catch (Exception e)
                     {
