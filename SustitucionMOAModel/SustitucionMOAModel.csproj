@@ -74,6 +74,7 @@
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaMasicoDto.cs" />
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaDto.cs" />
     <Compile Include="Dto\LogPesificacion\LogPesificacionDto.cs" />
+    <Compile Include="Dto\MovimientoIngresosBrutosCoeficienteUnificadoCustomDto.cs" />
     <Compile Include="Dto\MovimientoIngresosBrutosCoeficienteUnificadoDto.cs" />
     <Compile Include="Dto\PesificacionSapDto.cs" />
     <Compile Include="Dto\SecuenciaIngresosBrutosCoeficienteUnificadoDto.cs" />
