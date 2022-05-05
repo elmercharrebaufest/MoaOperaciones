@@ -36,8 +36,7 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
     data = null;
     tipoFiltroFecha = 1;
 
-    ngOnInit() {
-        debugger;
+    ngOnInit() {       
         this.setTabs();
         this.checkPermisos();
         this.es = {
@@ -77,12 +76,7 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
         }
     }
 
-    onSelect(event: any) {
-        debugger;
-        // console.log(event);
-        //let d = new Date(Date.parse(event));
-        //   this.fechaInicio = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
-        //   this.fechaFin = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+    onSelect(event: any) {     
 
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
             let d = new Date(Date.parse(event));
@@ -98,8 +92,7 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
         }
     }
 
-    getData() {
-        debugger;
+    getData() {        
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.data = null;
@@ -115,8 +108,7 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        debugger;
+                    } else {                        
                         this.data = { liquidaciones: result.data };
                         this.filteredfechas = this.data.liquidaciones;
                         if (this.fechaInicio != null && this.fechaFin != null) {
@@ -139,8 +131,7 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    actualizarFiltroFecha() {
-        debugger;
+    actualizarFiltroFecha() {       
         var fechaDesde = this.fechaInicio;
         var fechaHasta = this.fechaFin + " 23:59:59";
 
