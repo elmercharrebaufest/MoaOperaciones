@@ -236,7 +236,7 @@ namespace SustitucionMOAUtils.Services
                     //liquidaciones
                     try
                     {                 
-                            liquidacionWSMOAResponse = (LiquidacionWSMOAResponse)new LiquidacionesConsumerMOA().request(proveedor, fechas, "", palabra);
+                            liquidacionWSMOAResponse = (LiquidacionWSMOAResponse)new LiquidacionesConsumerMOA().request(proveedor, new List<FechaWS> { new FechaWS { fechaInicio= new DateTime(2018,01,01),fechaFin = DateTime.Today.AddDays(+1)} }, "", palabra);
                       
                     }
                     catch (Exception e)
