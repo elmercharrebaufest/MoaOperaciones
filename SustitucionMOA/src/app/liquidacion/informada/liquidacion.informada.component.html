@@ -43,7 +43,7 @@
                     <div class="form-group styled-select">
                         <p-calendar showButtonBar="true" [showIcon]="true" #myCalendar dateFormat="dd/mm/yy" [style]="{'width': '70%'}"
                             (onSelect)="onSelect($event)" appendTo="body" [(ngModel)]="rangeDates" selectionMode="range"
-                            [readonlyInput]="true" [locale]="es"></p-calendar>
+                            [readonlyInput]="true" [locale]="es" (onClearClick)="returnToTodaysDate()" ></p-calendar>
                     </div>
                 </div>
                 <div id="showSearch" onClick="openSearch()">
