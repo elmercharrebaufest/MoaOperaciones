@@ -116,6 +116,7 @@ namespace SustitucionMOAUtils.Services
             List<BuscadorOption> listaResultados = new List<BuscadorOption> { };
             ContratoDetalleWSMOAResponse detalleContratoResultado = null;
             LiquidacionViewModel todasLiquidaciones = null;
+            LiquidacionWSMOAResponse liquidacionWSMOAResponse = null;         
             ListarPesificacionesWSMOAResponse historialPesificaciones = null;
             CartaPorteWSMOAResponse cartasPorteAplicacion = null;
             CartaPorteDescargaWSMOAResponse cartasPorteDescargas = null;
@@ -232,6 +233,40 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
+                    //liquidaciones
+                    try
+                    {
+                        if (liquidacionWSMOAResponse == null)
+                        {
+                            liquidacionWSMOAResponse = (LiquidacionWSMOAResponse)new LiquidacionesConsumerMOA().request(proveedor, fechas, "", palabra);
+                        }
+                        else
+                        {
+                            liquidacionWSMOAResponse = (LiquidacionWSMOAResponse)new LiquidacionesConsumerMOA().request(proveedor, fechas, "", palabra);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+
+                    if (liquidacionWSMOAResponse != null && liquidacionWSMOAResponse?.liquidaciones.Count > 0)
+                    {
+                        LiquidacionViewModel dataView = new LiquidacionViewModel();
+                        dataView.data = liquidacionWSMOAResponse;
+                        todasLiquidaciones = dataView;
+
+                        var liquidacion = todasLiquidaciones.data.liquidaciones.Find(lp => lp.comprobante == palabra);
+                        var liquidaciones = todasLiquidaciones.data.liquidaciones.Where(lp => lp.comprobante == palabra).ToList();
+
+                        if (liquidaciones.Count > 0 || liquidaciones != null)
+                        {
+                            listaResultados.Add(new BuscadorOption { Link = "", Tipo = "liquidación emitida", Value = liquidacion.documento + "," + liquidacion.ejercicio, Code = TipoBusqueda.Liquidacion, CtaParams = 1 });
+
+                        }
+                    }
+
+
                     //CARTAS DE PORTE
                     try
                     {
@@ -250,6 +285,7 @@ namespace SustitucionMOAUtils.Services
                         Log.Error(e);
                     }
 
+
                     if (((cartasPorteAplicacion != null && cartasPorteAplicacion?.cartasPorte.Count > 0)
                     || (cartasPorteDescargas != null && cartasPorteDescargas?.cartasPorte.Count > 0))
                     && (!ccppAplicacion && !ccppDescargas))
@@ -264,8 +300,8 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
-            });
 
+            });
 
             return listaResultados.GroupBy(x => x.Tipo).Select(y => y.First()).ToList();
         }
