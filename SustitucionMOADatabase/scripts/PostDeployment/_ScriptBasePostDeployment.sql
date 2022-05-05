@@ -19,6 +19,6 @@ Post-Deployment Script Template
 :r .\PermisoPorRolBuscadorInteligente.sql
 :r .\CategoriaYSubcategoriasConsulta.sql
 :r .\RolesConsulta.sql
-:r .\PermisoPorRolConsulta.sql
 :r .\RolPermisoPorRolConsulta.sql
+:r .\PermisoPorRolConsulta.sql
 :r .\CategoriaRolConsulta.sql
