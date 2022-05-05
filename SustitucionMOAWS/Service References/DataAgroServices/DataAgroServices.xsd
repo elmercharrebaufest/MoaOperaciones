@@ -92,11 +92,18 @@
       <xs:element minOccurs="0" name="CaratulaMAT" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CartaOferta" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Centro" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cesion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Clasificacion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Comercial" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ComercialCreador" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Compensacion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CondFijacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Condicional" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CondicionalContratoSAP" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CondicionalFecha" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CondicionalMonedaId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CondicionalPosicion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CondicionalPrecio" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="Confirma" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Consignatario" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ContrCorr" nillable="true" type="xs:string" />
@@ -129,6 +136,8 @@
       <xs:element minOccurs="0" name="ImporteSPrecio" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="IndOpCanje" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Insumo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="KGMaximo" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="KGMinimo" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Material" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MercDescargada" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Moneda" nillable="true" type="xs:string" />
@@ -143,11 +152,13 @@
       <xs:element minOccurs="0" name="PagoDifArp" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PagoDiferido" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PagoDirVend" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pizarra" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PlantaDestino" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PorcAPrecio" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PorcComision" type="xs:decimal" />
       <xs:element minOccurs="0" name="PorcSPrecio" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PorcentajeDePago" nillable="true" type="xs:decimal" />
+      <xs:element minOccurs="0" name="PosicionCBOT" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Precio" type="xs:decimal" />
       <xs:element minOccurs="0" name="PrecioAjusteComision" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="PrecioNeto" nillable="true" type="xs:decimal" />
@@ -159,6 +170,7 @@
       <xs:element minOccurs="0" name="Sustentable" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoAgenteCompraId" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoNegocio" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TipoPosicionCBOTId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="ZLSCH" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Zona" nillable="true" type="xs:string" />
     </xs:sequence>
@@ -269,6 +281,7 @@
       <xs:element minOccurs="0" name="Cantidad" type="xs:decimal" />
       <xs:element minOccurs="0" name="Centro" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Comercial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ComercialCreador" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ContratoSAP" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Cosecha" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CuitCorredor" nillable="true" type="xs:string" />
@@ -281,6 +294,7 @@
       <xs:element minOccurs="0" name="FechaHasta" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="FechaOperacion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="FijacionSAP" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FijacionVirtuales" nillable="true" type="tns:ArrayOfFijacionVirtualSAPDto" />
       <xs:element minOccurs="0" name="HORAACT" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Material" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Moneda" nillable="true" type="xs:string" />
@@ -293,14 +307,59 @@
       <xs:element minOccurs="0" name="PrecioNeto" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="Proveedor" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TrigoEspecial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Virtual" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ZLSCH" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="FijacionSAPDto" nillable="true" type="tns:FijacionSAPDto" />
+  <xs:complexType name="ArrayOfFijacionVirtualSAPDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FijacionVirtualSAPDto" nillable="true" type="tns:FijacionVirtualSAPDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFijacionVirtualSAPDto" nillable="true" type="tns:ArrayOfFijacionVirtualSAPDto" />
+  <xs:complexType name="FijacionVirtualSAPDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cantidad" type="xs:int" />
+      <xs:element minOccurs="0" name="NumeroFijacionVirtual" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FijacionVirtualSAPDto" nillable="true" type="tns:FijacionVirtualSAPDto" />
   <xs:complexType name="FijacionSAP">
     <xs:sequence>
       <xs:element minOccurs="0" name="Fijacion" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="FijacionSAP" nillable="true" type="tns:FijacionSAP" />
+  <xs:complexType name="FijacionVirtualSAP">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Contrato" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FijacionVirtualSAP" nillable="true" type="tns:FijacionVirtualSAP" />
+  <xs:complexType name="CampoDetalleTerceroDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Campania" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Estado" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="HectareasCultivables" type="xs:decimal" />
+      <xs:element minOccurs="0" name="HectareasTotales" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="KMZfileBase64" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="KMZnombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Latitud" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="LocalidadId" type="xs:int" />
+      <xs:element minOccurs="0" name="Longitud" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProveedorCUIT" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ToneladasAprobadas" type="xs:decimal" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CampoDetalleTerceroDto" nillable="true" type="tns:CampoDetalleTerceroDto" />
+  <xs:complexType name="ResultadoAltaCampoSustentable">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Errores" nillable="true" type="tns:ArrayOfErrorMessage" />
+      <xs:element minOccurs="0" name="HayError" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ResultadoAltaCampoSustentable" nillable="true" type="tns:ResultadoAltaCampoSustentable" />
 </xs:schema>

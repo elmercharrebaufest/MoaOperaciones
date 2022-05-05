@@ -33,6 +33,10 @@ namespace SustitucionMOAModel.Dto
         public int CampoSustentableId { get; set; }
 
         public int CosechaId { get; set; }
+        public string CUIT { get; set; }
+        public int Archivo_Id { get; set; }
+        public int Proveedor_Id { get; set; }
+        public string CodigoProveedor { get; set; }
 
         public override bool Equals(object obj)
         {

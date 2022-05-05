@@ -208,4 +208,15 @@ export class OrdenesDeCargaService extends BaseService {
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
+    public getPatentes(ordenDeCarga: OrdenDeCarga): Observable<any> {
+        let payload = new FormData();
+        console.log(ordenDeCarga)
+        payload.append(
+            "ordenDeCargaJson",
+            JSON.stringify(ordenDeCarga)
+        );
+        return this.http
+            .post('/api/OrdenDeCarga/ObtenerPatentes', payload);
+    }
+
 }

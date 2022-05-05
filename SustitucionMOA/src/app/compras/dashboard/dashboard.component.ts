@@ -17,6 +17,8 @@ import { Table } from 'primeng/table';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
+import { NullAstVisitor } from '@angular/compiler';
+import { zip } from 'rxjs';
 
 
 
@@ -32,14 +34,14 @@ declare var $: any;
 export class DashboardComponent extends ListBaseComponent {
 
     protected locale: any;
-    
+
     @ViewChild("tabla")
     protected tabla: Table;
 
     @BlockUI() blockUI: NgBlockUI;
-    
-    @Input('model') 
-    protected model:Solp;
+
+    @Input('model')
+    protected model: Solp;
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
@@ -47,6 +49,7 @@ export class DashboardComponent extends ListBaseComponent {
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
+        this.usuario = sessionStorage.getItem("username");
         this.locale = {
             firstDayOfWeek: 0,
             dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
@@ -60,8 +63,6 @@ export class DashboardComponent extends ListBaseComponent {
 
     }
 
-
-   
     desdeDashboard: Date;
     hastaDashboard: Date;
     estadoSolpItem: SelectItem[];
@@ -72,9 +73,16 @@ export class DashboardComponent extends ListBaseComponent {
     es: any;
     display: boolean = false;
     tablaSolp: any[];
+    tablaSolpCopy: any[];
     cols: any[];
     serviciosDashboard: any = "Servicios"
     solp: Solp = new Solp();
+    usuario: string;// = "Prueba";
+
+    checkedFilterSap = false;
+    checkedFilterMantenimiento = false;
+
+    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
 
     showDialog() {
         this.display = true;
@@ -107,18 +115,30 @@ export class DashboardComponent extends ListBaseComponent {
         return false;
     }
 
+    goToSeccionEdit(path: string, Id: any, NroSolp: any) {
+        $("#mySidenav").css({ 'right': '-270px' });
+        $("#myMenuClose").css({ 'display': 'none' });
+        $("#myMenuOpen").css({ 'display': 'block' });
+        $("#coverAll").fadeOut();
+        let nrosol = ""
+        if(NroSolp != null) nrosol = NroSolp.toString();
+        let obj = Id.toString() + "," + nrosol;
+
+        this.navService.navegarSeccionParam(path, obj);
+        return false;
+    }
+
 
     ngOnInit() {
         this.navService.setSeccionList([]);
-
         this.getListarSolp();
         this.desdeDashboard = new Date();
         this.hastaDashboard = new Date();
-
         
     }
 
     ngAfterViewInit(): void {
+
         this.getCombos();
 
         this.tabla.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
@@ -130,65 +150,71 @@ export class DashboardComponent extends ListBaseComponent {
                 return value >= filter[0]
             else if (filter[0] == null && filter[1] != null)
                 return value <= filter[1].
-            else
-                return true;
+                    else
+            return true;
         }
 
     }
 
+    getStatusDocumentoSolp(data: any): String {
+        return data.PosicionesEstado && data.NroSolp != null ? 'Borrardo en sap' : data.EstadoSolpSap.Descripcion;
+    }
+
+    public getColorDocumentoSolp(data: any): String {
+        return data.PosicionesEstado && data.NroSolp != null ? '#DD441E' : '#333333';
+    }
+
     getListarSolp(){
-            try {
-                this.spinnerComponent.showIt();
-
-                this.subscription = this.service.getListarSolp().subscribe(
-                    (result:any) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.floatMsgService.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.floatMsgService.setInfoMsg(result.info);
-                        } else { 
-                            this.tablaSolp = result.data;
-                            this.tablaSolp.forEach(x => {
-                                x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
-                                x.VincularPliego = x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP;
-                                x.PliegoVinculado = (x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP) &&
-                                                    this.primerosCuatroPasosCompletados(x);
-                            });
-                            this.spinnerComponent.hideIt();
-                        }
-                    },
-                    error => {
-                        this.floatMsgService.setErrorMsg(error.message);
-                        this.spinnerComponent.hideIt();
-                    }
-    
-                );
-            } catch (e) {
-                this.floatMsgService.setErrorMsg(e);
-                return false; //<-- Prevent Refresh
-            }
-    
-            return false; //<-- Prevent Refresh
-        
-    }
-
-    primerosCuatroPasosCompletados(solp: any): boolean {
-        return solp.EstadoPasos.split(',').slice(0, 4).every(estado => estado == '2');
-    }
-
-    borrarSolp(idSolp){
         try {
-            this.subscription = this.service.borrarSolp(idSolp).subscribe(
-                (result:any) => {
+            this.spinnerComponent.showIt();
+
+            this.subscription = this.service.getListarSolp().subscribe(
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.floatMsgService.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
-                    } else { 
+                    } else {
+                        this.tablaSolp = result.data;
+                        this.tablaSolp.forEach(x => {
+                            x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
+                            x.VincularPliego = x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP;
+                            x.PliegoVinculado = (x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP) &&
+                                x.EstadoDocumento.Codigo == "CREADO";
+
+                        });
+                        this.tablaSolpCopy = result.data;
+                        this.spinnerComponent.hideIt();
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+
+    }
+
+    borrarSolp(idSolp) {
+        try {
+            this.subscription = this.service.borrarSolp(idSolp).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
                         this.getListarSolp();
                     }
                 },
@@ -203,27 +229,27 @@ export class DashboardComponent extends ListBaseComponent {
         }
 
         return false; //<-- Prevent Refresh
-    
+
     }
 
-   
 
-    getCombos(){
+
+    getCombos() {
         try {
             this.subscription = this.service.getCombos().subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.floatMsgService.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
-                    } else { 
+                    } else {
                         this.estadoSolpItem = [];
                         result.EstadosSolpSap.forEach(cd => this.estadoSolpItem.push({
                             label: cd.Descripcion, value: cd.Id
                         }));
-                       
+
                     }
                 },
                 error => {
@@ -240,15 +266,15 @@ export class DashboardComponent extends ListBaseComponent {
 
     }
 
-    setUltimoAnio(){
+    setUltimoAnio() {
         this.desdeDashboard = new Date();
-        this.desdeDashboard.setFullYear(this.desdeDashboard.getFullYear() -1);
+        this.desdeDashboard.setFullYear(this.desdeDashboard.getFullYear() - 1);
         this.hastaDashboard = new Date();
     }
 
-    setUltimoMes(){
+    setUltimoMes() {
         this.desdeDashboard = new Date();
-        this.desdeDashboard.setMonth(this.desdeDashboard.getMonth() -1);
+        this.desdeDashboard.setMonth(this.desdeDashboard.getMonth() - 1);
         this.hastaDashboard = new Date();
     }
 
@@ -256,11 +282,35 @@ export class DashboardComponent extends ListBaseComponent {
         dt.filter([desde, hasta], field, 'dateRangeFilter');
     }
 
-    filtrarPorFecha(){
-        this.filtrarFecha(this.tabla, "FechaCreacion", this.desdeDashboard, this.hastaDashboard);   
+    filtrarPorFecha() {
+        this.filtrarFecha(this.tabla, "FechaCreacion", this.desdeDashboard, this.hastaDashboard);
     }
 
-    
+    filtrarPorSap() {
+        this.checkedFilterSap = !this.checkedFilterSap;
+        this.filtrarTablaPorTipoSolp();
+    }
+
+    filtrarPorMantenimiento() {
+        this.checkedFilterMantenimiento = !this.checkedFilterMantenimiento;
+        this.filtrarTablaPorTipoSolp();
+    }
+
+    filtrarTablaPorTipoSolp() {
+        debugger;
+        let tablaPrincipal = this.tablaSolpCopy;
+        if (this.checkedFilterSap && this.checkedFilterMantenimiento) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
+        } else if (this.checkedFilterMantenimiento) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
+        } else if (this.checkedFilterSap) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP);
+        }
+        this.tablaSolp = tablaPrincipal;
+    }
+
+
+
     eliminarPosicionDashboard(idSolp) {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar la SOLP?',
@@ -272,7 +322,7 @@ export class DashboardComponent extends ListBaseComponent {
         });
     }
 
-    generarZipPliego(idSolp){
+    generarZipPliego(idSolp) {
         this.blockUI.start('Generando ')
         this.service.descargarZipPliego(idSolp)
             .subscribe(

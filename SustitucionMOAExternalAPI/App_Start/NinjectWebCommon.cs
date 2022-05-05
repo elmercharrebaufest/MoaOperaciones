@@ -74,11 +74,18 @@ namespace SustitucionMOAExternalAPI.App_Start
         {
             kernel.Bind<IExternalApiService>().To(typeof(ExternalApiService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IComprasService>().To(typeof(ComprasService)).InScope(ctx => OperationContext.Current);
-            kernel.Bind<IScatoConsumer>().To(typeof(ScatoConsumer)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerCecoSolpConsumerMOA>().To(typeof(ObtenerCecoSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerCuentasSolpConsumerMOA>().To(typeof(ObtenerCuentasSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerOrdenSolpConsumerMOA>().To(typeof(ObtenerOrdenSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerServiciosSolpConsumerMOA>().To(typeof(ObtenerServiciosSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerSolpConsumerMOA>().To(typeof(ObtenerSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<ICrearSolpConsumerMOA>().To(typeof(CrearSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IModificarSolpConsumerMOA>().To(typeof(ModificarSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IScatoConsumer>().To(typeof(ScatoConsumer)).InScope(ctx => OperationContext.Current); 
+            kernel.Bind<ICartaPorteService>().To(typeof(CartaPorteService)).InScope(ctx => OperationContext.Current); 
             kernel.Bind<IScatoComandosConsumer>().To(typeof(ScatoComandosConsumer)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IServicioSuscriptorAccesosConsumer>().To(typeof(ServicioSuscriptorAccesosConsumer)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAuthenticationManager>().To(typeof(AuthenticationManager)).InSingletonScope();
-
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();

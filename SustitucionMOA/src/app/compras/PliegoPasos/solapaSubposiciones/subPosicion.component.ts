@@ -16,6 +16,10 @@ import { ConfirmationService } from 'primeng/api';
 import { type } from 'jquery';
 import { ThrowStmt } from '@angular/compiler';
 
+import es from '@angular/common/locales/es';
+
+import { registerLocaleData } from '@angular/common';
+
 @Component({
     selector: 'subPosicion',
     templateUrl: `subPosicion.component.html`,
@@ -156,6 +160,7 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        registerLocaleData(es);
         this.setTabs();
         this.listadoPosicionActul = this.model.posicionActual.listadoSubPosiciones;
         // this.model.posicionActual = primeraPosicion;
@@ -245,15 +250,27 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
     eliminarSubPosicionIndividual(indice: number): void {
-        this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar la subposición?',
-            accept: () => {
-                this.eliminarSubposiciones(indice);
-            },
-            reject: () => {
-
-            }
-        });
+        if(this.model.posicionActual.listadoSubPosiciones.length === 1 && this.model.nroSolp) {
+            this.confirmationService.confirm({
+                key: 'validarEliminarSubPosicion',
+                message: 'No se puede borrar la subposición, ya que no se permiten posiciones sin subposición',
+                accept: () => {
+                    //this.salir();
+                },
+                reject: () => {
+                }
+            });
+        } else {
+            this.confirmationService.confirm({
+                message: '¿Está seguro que desea eliminar la subposición?',
+                accept: () => {
+                    this.eliminarSubposiciones(indice);
+                },
+                reject: () => {
+    
+                }
+            });
+        }
     }
 
     eliminarSubPosicion() {
@@ -270,7 +287,7 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     onPaste(evento: any, indexColumna: number, rowIndex: number, dt): void {
         let datos = evento.clipboardData.getData("text");
-        if (!datos.includes("Recuperando datos")) {
+        if (!datos.includes("Recuperando datos") && datos.split("\n")[0].split("\t").length == 7) {
             this.spinnerComponent.showIt();
             //separo la informacion por filas 
             let filas = datos.split("\n");

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.ModificarSolpWebServiceMOA;
 
@@ -25,9 +26,9 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public ModificarSolpConsumerMOAResponse Request(Solp solpActual)
+        public ModificarSolpConsumerMOAResponse Request(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas)
         {
-            var solpSAP = ConvertirSOLPModificar(solpActual);
+            var solpSAP = ConvertirSOLPModificar(solpActual, postEntitySubPosicionesEliminadas);
 
             var serxml = new System.Xml.Serialization.XmlSerializer(solpSAP.GetType());
             var ms = new MemoryStream();
@@ -39,7 +40,7 @@ namespace SustitucionMOAWS.WSConsumers
             var nombreArchivoLlamada = string.Concat(solpActual.Id, " - ", fecha, " - llamada modificar.xml");
             var nombreArchivoRespuesta = string.Concat(solpActual.Id, " - ", fecha, " - respuesta modificar.xml");
 
-            var rutaArchivoLlamada = Path.Combine(rutaArchivosXmls,"XMLS", nombreArchivoLlamada);
+            var rutaArchivoLlamada = Path.Combine(rutaArchivosXmls, "XMLS", nombreArchivoLlamada);
             var rutaArchivoRespuesta = Path.Combine(rutaArchivosXmls, "XMLS", nombreArchivoRespuesta);
 
             FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
@@ -88,7 +89,7 @@ namespace SustitucionMOAWS.WSConsumers
             return respuesta;
         }
 
-        public SolpSAPModificarDto ConvertirSOLPModificar(Solp solpActual)
+        public SolpSAPModificarDto ConvertirSOLPModificar(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas)
         {
             SolpSAPModificarDto solpSAP = new SolpSAPModificarDto();
 
@@ -141,6 +142,7 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (var posicion in solpActual.Posiciones.OrderBy(x => x.Id))
             {
                 bool eliminarPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
+                bool eliminarSubPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
 
                 eliminarPosicion = eliminarPosicion ? true : !posicion.Estado;
                 numeroPosicion++;
@@ -175,12 +177,12 @@ namespace SustitucionMOAWS.WSConsumers
 
                 IM_PRITEM.PREQ_ITEM = preqItem;
                 IM_PRITEM.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString();
-                IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion.UsuarioSap;
+                IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion == null ? "" : solpActual.UsuarioCreacion.UsuarioSap;
                 IM_PRITEM.PREQ_NAME = posicion.Solicitante;
                 IM_PRITEM.SHORT_TEXT = posicion.TextoGenerico;
                 IM_PRITEM.MATERIAL = null; //Esto es para el MVP2 ,porque los materiales no tienen sub posiciones
                 IM_PRITEM.PLANT = posicion.Centro.CodigoSap.ToString();
-                IM_PRITEM.STORE_LOC = posicion.Almacen.CodigoSap.ToString();
+                IM_PRITEM.STORE_LOC = solpActual.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ? "" : posicion.Almacen.CodigoSap.ToString();
                 IM_PRITEM.TRACKINGNO = posicion.NroNecesidad;
 
 
@@ -309,7 +311,7 @@ namespace SustitucionMOAWS.WSConsumers
                 foreach (var subPosicion in posicion.Subposiciones.OrderBy(x => x.Id))
                 {
                     numeroSubPosicion++;
-                    serviceLineNumber = $"{numeroSubPosicion:000000000}0";
+                    serviceLineNumber = $"{subPosicion.Numero:000000000}0";
 
 
                     //serialNumberItem = serialNumber;
@@ -320,7 +322,7 @@ namespace SustitucionMOAWS.WSConsumers
                     IM_SERVICELINE.DOC_ITEM = docItem;
                     IM_SERVICELINE.OUTLINE = outlineNumber; //Preguntar a Ulises
                     IM_SERVICELINE.SRV_LINE = serviceLineNumber;
-                    //IM_SERVICELINE.DEL_IND = SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado));
+                    IM_SERVICELINE.DEL_IND = eliminarSubPosicion ? "" : SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado));
                     //IM_SERVICELINE.SERVICE = "000000000003005912";//
                     //IM_SERVICELINE.SERVICE = subPosicion.CodigoServicioSap.Codigo.ToString();
 
@@ -346,7 +348,7 @@ namespace SustitucionMOAWS.WSConsumers
                         DOC_ITEM = docItem,
                         OUTLINE = outlineNumber, //Preguntar a Ulises
                         SRV_LINE = serviceLineNumber,
-                        DEL_IND = SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado)),
+                        DEL_IND = eliminarSubPosicion ? "" : SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado)),
                         SERVICE = (subPosicion.ServicioSolp != null) ? "X" : "",
                         SHORT_TEXT = (subPosicion.ServicioSolp == null) ? "X" : "",
                         QUANTITY = "X",
@@ -447,27 +449,27 @@ namespace SustitucionMOAWS.WSConsumers
 
                 }
 
-                int cantidadSubposicionesAEliminar = (posicion.CantidadSubposicionesEnSAP.HasValue ? posicion.CantidadSubposicionesEnSAP.Value : 0) - posicion.Subposiciones.Count;
-                for (int i = 0; i < cantidadSubposicionesAEliminar; i++)
-                {
-                    numeroSubPosicion++;
-                    serviceLineNumber = $"{numeroSubPosicion:000000000}0";
+                //int cantidadSubposicionesAEliminar = (posicion.CantidadSubposicionesEnSAP.HasValue ? posicion.CantidadSubposicionesEnSAP.Value : 0) - posicion.Subposiciones.Count;
+                //for (int i = 0; i < cantidadSubposicionesAEliminar; i++)
+                //{
+                //    numeroSubPosicion++;
+                //    serviceLineNumber = $"{numeroSubPosicion:000000000}0";
 
-                    solpSAP.IM_SERVICELINESList.Add(new ZMPES5780
-                    {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber, //Preguntar a Ulises
-                        SRV_LINE = serviceLineNumber,
-                        DEL_IND = "X",
-                    });
-                    solpSAP.IM_SERVICELINESXList.Add(new ZMPES5720
-                    {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber, //Preguntar a Ulises
-                        SRV_LINE = serviceLineNumber,
-                        DEL_IND = "X",
-                    });
-                }
+                //    solpSAP.IM_SERVICELINESList.Add(new ZMPES5780
+                //    {
+                //        DOC_ITEM = docItem,
+                //        OUTLINE = outlineNumber, //Preguntar a Ulises
+                //        SRV_LINE = serviceLineNumber,
+                //        DEL_IND = "X",
+                //    });
+                //    solpSAP.IM_SERVICELINESXList.Add(new ZMPES5720
+                //    {
+                //        DOC_ITEM = docItem,
+                //        OUTLINE = outlineNumber, //Preguntar a Ulises
+                //        SRV_LINE = serviceLineNumber,
+                //        DEL_IND = "X",
+                //    });
+                //}
 
                 /*
                  *  PREQ_NO	BANFN	Numero de SOLPED
@@ -500,7 +502,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             return solpSAP;
         }
-        
+
     }
     public class ModificarSolpConsumerMOAResponse
     {
@@ -555,6 +557,6 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface IModificarSolpConsumerMOA
     {
-        ModificarSolpConsumerMOAResponse Request(Solp solpActual);
+        ModificarSolpConsumerMOAResponse Request(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas);
     }
 }

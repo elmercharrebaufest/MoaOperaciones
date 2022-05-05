@@ -154,7 +154,7 @@ namespace SustitucionMOAUtils.Services
         {
             List<string> interno = new List<string>
             {
-                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP", "APIKEY", "AIGRAN", "ADMINPLATCOMPRAS"
+                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP", "APIKEY", "AIGRAN","AINOGRAN", "ADMINPLATCOMPRAS"
             };
 
             List<string> contacto = new List<string>
@@ -162,7 +162,7 @@ namespace SustitucionMOAUtils.Services
                 "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
                 "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
-                "FINDIR", "FINCOR", "FLE"
+                "FINDIR", "FINCOR", "FLE", "CRDECPE"
             };
 
             var roles = repositorio.Listar<Rol>().Where(r => r.EsEditable)
@@ -195,7 +195,7 @@ namespace SustitucionMOAUtils.Services
                 "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
                 "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
-                "FINDIR", "FINCOR", "FLE"
+                "FINDIR", "FINCOR", "FLE", "CRDECPE"
             };
 
             var esAdministradorMolinos = usuario

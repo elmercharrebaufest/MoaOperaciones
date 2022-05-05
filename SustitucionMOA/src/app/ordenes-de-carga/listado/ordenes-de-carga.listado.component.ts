@@ -32,6 +32,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     filtroCliente: any = null;
 
     estadoSelected: string = "Todos";
+
     estadosSelected: string[] = [
         "Pendiente",
         "Confirmado",
@@ -43,8 +44,11 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         "Anulada por vencimiento",
         "Error de datos"
     ];
-    datosAux: any[];
 
+
+
+    datosAux: any[];
+    primerListado: any[];
 
     productoSelected: string = "Todos";
     listaProductos: any = null;
@@ -57,24 +61,51 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
     esPuerto: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA PUERTO');
 
+    
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
 
-    descripcionEstadoOrdenCarga: SelectItem[] =  [
-        { label: "Pendiente", value: "Pendiente" },
-        { label: "Confirmado", value: "Confirmado" },
-        { label: "Pendiente aprobación crédito", value: "Pendiente aprobación crédito" },
-        { label: "Entrega generada", value: "Entrega generada" },
-        { label: "Anulada", value: "Anulada" },
-        { label: "Entregada", value: "Entregada" },
-        { label: "Vencida", value: "Vencida" },
-        { label: "Entrega pendiente", value: "Entrega pendiente" },
-        { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
-        { label: "Error de datos", value: "Error de datos" }
-    ]
+    descripcionEstadoOrdenCarga: any[];
+    entregada: string = "Entregada";
+   
 
 
 
     ngOnInit() {
+
+        if (this.esInterno || this.esComercial || this.esMesaFas || this.esPuerto) {
+            this.descripcionEstadoOrdenCarga = [
+            { label: "Pendiente", value: "Pendiente" },
+            { label: "Confirmado", value: "Confirmado" },
+            { label: "Pendiente aprobación crédito", value: "Pendiente aprobación crédito" },
+            { label: "Entrega generada", value: "Entrega generada" },
+            { label: "Anulada", value: "Anulada" },
+            { label: "Entregada", value: "Entregada" },
+            { label: "Vencida", value: "Vencida" },
+            { label: "Entrega pendiente", value: "Entrega pendiente" },
+            { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
+            { label: "Error de datos", value: "Error de datos" }
+        ]} else {
+            //this.descripcionEstadoOrdenCarga =  [
+            //    { label: "Vencida", value: "Vencida" },
+            //    { label: "Pendiente de carga", value: "Pendiente de carga" },
+            //    { label: "Listo para retirar", value: "Listo para retirar" },
+            //    { label: "Completada", value: "Completada" },
+            //    { label: "Anulada", value: "Anulada" },
+            //    { label: "Sin estado", value: "Sin estado" }
+            //]
+    
+            //this.estadosSelected = [
+            //    "Pendiente de carga",
+            //    "Anulada",
+            //    "Vencida",
+            //    "Sin estado",
+            //    "Listo para retirar",
+            //];
+    
+            this.entregada = "Completada";
+        }
+
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([]);
@@ -82,11 +113,22 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         this.obtenerMateriales();
     }
 
+    
+
     filtrarListado(){
-        if(this.estadosSelected.length < 1 || this.estadosSelected == null){
-            this.data = this.datosAux;
+        debugger
+        this.primerListado = this.datosAux.filter(x => x.DescripcionEstado != this.entregada);
+
+        if (!this.esTercero) {
+            if(this.estadosSelected.length < 1 || this.estadosSelected == null){
+                this.data = this.datosAux;
+            } else {
+                this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.DescripcionEstado) >= 0);
+                //lista filtrada
+                // this.data = this.datosAux.filter(x => x.DescripcionEstado != "Entregada");
+            }
         } else {
-            this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.DescripcionEstado) >= 0);
+            this.data = this.datosAux;
         }
     }
 

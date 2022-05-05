@@ -305,6 +305,8 @@
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
+    <Content Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.html" />
+    <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
     <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.css" />
     <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.html" />
     <Content Include="UPDATE.DeployParameters.Debug.xml">
@@ -1004,6 +1006,7 @@
     <Compile Include="Controllers\TicketPesadaController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\VendedorController.cs" />
+    <Compile Include="Filter\GZipOrDeflateAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1098,6 +1101,10 @@
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.component.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.service.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\no-granos\liquidacion-no-granos-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\no-granos\liquidacion-no-granos.module.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.spec.ts" />

@@ -116,7 +116,7 @@
 	END
 
 	BEGIN
-		insert into Rol values ('PROVGC', 'ROVEEDOR GENERAL CONSULTA', 1)
+		insert into Rol values ('PROVGC', 'PROVEEDOR GENERAL CONSULTA', 1)
 		insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PROVGC'), @ConsultaABM)
 		insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PROVGC'), @ContactoMail)
 		insert into CategoriaRol values ((select Id from Rol where Codigo = 'PROVGC'), (select Id from Categoria where Code = 'PROVG'))

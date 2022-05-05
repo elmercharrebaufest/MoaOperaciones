@@ -66,7 +66,7 @@ export class Solp extends CommonResponse {
 
     //inicio Cabecera == paso 5
     public selectClaseDocumento: any
-
+    public PosicionesEstado: boolean;
     public posiciones: PosicionSolp[];
     public posicionActual: PosicionSolp;
     public pasoCompletado: number;

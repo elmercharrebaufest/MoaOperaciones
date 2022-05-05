@@ -116,13 +116,13 @@
 </p-confirmDialog>
 <!--fin modal Volver a home SOLP-->
 
-<p-dialog [(visible)]="displayFinalizar" [width]="650" [draggable]="false" modal="modal" appendTo="body" positionTop="30" [contentStyle]="{ 'max-height':'1500px', 'min-height':'500px'}">
+<p-dialog [(visible)]="displayFinalizar" [width]="650" [draggable]="false" modal="modal" appendTo="body" positionTop="30" [contentStyle]="{ 'max-height':'1500px', 'min-height':'400px'}">
     <p-header class="headerModal">
         ¡Último paso!
     </p-header>
     <div class="col-md-12 row myRow alinearTitulo margenInput">
         <div class="col-md-12 titulosModal" style="margin-right: 1em;">
-            Revisado por:
+            Revisado por:     *
         </div>
         <div class="col-md-5" style="margin-right: 1em; width: 37%;;">
             <input type="text" pInputText [(ngModel)]="solpActual.revisadoPor" class="styled-select inputComprasFinalizar" placeholder="">

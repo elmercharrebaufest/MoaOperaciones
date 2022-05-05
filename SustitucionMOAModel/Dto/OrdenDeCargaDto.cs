@@ -25,6 +25,11 @@ namespace SustitucionMOAModel.Dto
         public bool EsFacturaAnticipada { get; set; }
         public string Fecha { get; set; }
         public string PatenteChasis { get; set; }
+        public List<AutoCompleteDropdownElement> ordenes { get; set; }
+        public OrdenDeCargaDto()
+        {
+            this.ordenes = new List<AutoCompleteDropdownElement> { };
+        }
     }
 
     public class OrdenDeCargaEditarDto
@@ -51,8 +56,9 @@ namespace SustitucionMOAModel.Dto
             CUITCorredor = orden.CUITCorredor;
             CodigoCliente = orden.Cliente.CodigoProveedor;
             CodigoCorredor = orden.Corredor != null ? orden.Corredor.CodigoProveedor : "";
+            
 
-        }
+    }
 
         public int Id { get; set; }
         public string CUITCliente { get; set; }
@@ -108,9 +114,12 @@ namespace SustitucionMOAModel.Dto
         public string DescripcionEstadoUsuarioFinal { get; set; }
         public string MensajeValidacionSAP { get; set; }
         public string PedidosRespuesta { get; set; }
+        public string ContratosRespuesta { get; set; }
         public bool ContratoSinCantidadPendiente { get; set; }
         public string DescripcionErrorInterno { get; set; }
         public string NumeroPedidoIngresado { get; set; }
+
+        public IEnumerable<OrdenDeCargaCambiosHistorialDto> OrdenDeCargaCambiosHistorial { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -176,5 +185,17 @@ namespace SustitucionMOAModel.Dto
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MensajeValidacionSAP);
             return hashCode;
         }
+       
+    }
+
+    public class OrdenDeCargaCambiosHistorialDto
+    {
+        public int Id { get; set; }
+        public int OrdenDeCarga_Id { get; set; }
+        public string NombreColumnaCambio { get; set; }
+        public string FechaCambio { get; set; }
+        public string Usuario { get; set; }
+        public string Antes { get; set; }
+        public string Despues { get; set; }
     }
 }

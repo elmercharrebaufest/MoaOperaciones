@@ -144,19 +144,19 @@
                                     </span>
                                 </div> 
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="10" style=""></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style=""></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let liquidacion of data.liquidaciones | customFilter : 'producto' : productoSelected | customFilter : 'observaciones' : observacionSelected | customFilterOr : 'contrato' : 'comprobante' : filtroComprobanteOContrato | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
-                            <td><a (click)="showModalTableResponsive(liquidacion)" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a> {{liquidacion.emitido}}</td>
+                            <!-- <td><a (click)="showModalTableResponsive(liquidacion)" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a> {{liquidacion.emitido}}</td> -->
                             <td>{{liquidacion.tipo}}</td>
                             <td><a (click)="descargaPDF(liquidacion.documento, liquidacion.ejercicio)" href="#"><span class="fa  fa-file-pdf-o " *ngIf="liquidacion.comprobante != ''"></span> {{liquidacion.comprobante}}</a></td>
                             <td>{{liquidacion.producto}}</td>
                             <td>{{liquidacion.liquidadoString}}</td>
                             <td>{{liquidacion.importeString}}</td>
                             <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', liquidacion.contrato)" href="#">{{liquidacion.contrato}}</a></td>
-                            <td style="width: 50%;">{{liquidacion.observaciones}}</td>
+                            <td style="width: 25%;">{{liquidacion.observaciones}}</td>
                            <!-- <td><span class="fa  fa-info-circle" toggle="tooltip" title="{{liquidacion.observaciones}}"></span></td>-->
                         </tr>
                     </tbody>

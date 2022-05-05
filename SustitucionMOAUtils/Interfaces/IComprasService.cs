@@ -28,7 +28,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor);
         List<TablaSapDto> ObtenerCecoSap();
         List<TablaSapDto> ObtenerCuentasSap();
-        List<TablaSapDto> ObtenerOrdenesSap();
+        List<TablaSapDto> ObtenerOrdenesSap(string idOrder = "");
         List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos);
         void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion);
         void ActualizarServiciosSolp();

@@ -13,3 +13,23 @@
     margin-right: 5px;
     height: 15px
 }
+
+input:disabled,
+::ng-deep .ui-autocomplete-input:disabled,
+::ng-deep .ui-inputtext:disabled {
+    opacity: 0.9 !important;
+    background-color: #bebebe !important;
+    color: #333232 !important;
+}
+
+::ng-deep .ui-autocomplete-input {    
+    top: 0px;
+}
+
+::ng-deep .ui-autocomplete {
+    top: 0 !important;
+    }
+    
+ ::ng-deep .ui-autocomplete-input {
+    width: calc(99% - 33px) !important;
+    }

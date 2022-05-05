@@ -121,9 +121,12 @@ export class Generacion2Component extends ListBaseComponent  {
         // if(!this.model.supervisorTrabajo){
         //     this.model.supervisorTrabajo = this.model.fiscalContrato;
         // }
-
-
-        
+        if (this.model.supervisorSector[0] == '') {
+            this.model.supervisorSector = [];
+        }
+        if(this.model.supervisorTrabajo[0] == '') {
+            this.model.supervisorTrabajo = [];
+        }
     }
 
     selectionChange(event) {

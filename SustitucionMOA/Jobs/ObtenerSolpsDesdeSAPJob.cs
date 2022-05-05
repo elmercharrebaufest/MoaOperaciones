@@ -23,24 +23,46 @@ namespace SustitucionMOA.Jobs
             _comprasService = comprasService;
             this.repositorio = repositorio;
         }
+        static readonly object _lock = new object();
+
         public void Execute()
         {
-            try
+            lock (_lock)
             {
-                if(ConfigurationManager.AppSettings["ObtenerSolpsDesdeSAPJob_Habilitado"] == "1")
+                try
                 {
-                    ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
+
+                    if (ConfigurationManager.AppSettings["ObtenerSolpsDesdeSAPJob_Habilitado"] == "1")
                     {
-                        FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
-                        FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
-                        CreadoPorUsuarios = new List<string>()
-                    };
-                    _comprasService.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+                        var desde = new DateTime(2018, 01, 01);
+                        var hasta = new DateTime(2022, 12, 01);
+                        while (desde < hasta)
+                        {
+                            try
+                            {
+                                Log.Info($"ObtenerSolpesDesdeSAPJob desde {desde} hasta {desde.AddMonths(3)}");
+                                ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
+                                {
+                                    FechaDesde = desde,
+                                    FechaHasta = desde.AddMonths(3),
+                                    CreadoPorUsuarios = new List<string>()
+                                };
+                                _comprasService.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+                                desde = desde.AddMonths(3);
+                            }
+                            catch (Exception e )
+                            {
+                                Log.Info($"ObtenerSolpesDesdeSAPJob error");
+                                Log.Error(e);
+                            }
+                        }
+                    }
+
                 }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
             }
         }
     }

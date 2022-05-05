@@ -1,0 +1,51 @@
+﻿
+--BEGIN TRAN
+
+--IF NOT EXISTS (SELECT TOP 1 1 FROM Rol WHERE Codigo = 'OBI') 
+--BEGIN
+--    INSERT Rol (Codigo, Nombre, EsEditable) VALUES ('OBI', 'OCULTAR BUSCADOR INTELIGENTE', 1)
+--END
+--GO
+
+--IF NOT EXISTS (SELECT TOP 1 1 FROM PermisoPorRol WHERE Permiso = 'OCULTAR BUSCADOR INTELIGENTE') 
+--BEGIN
+--    INSERT PermisoPorRol (Permiso) VALUES ('OCULTAR BUSCADOR INTELIGENTE')
+--END
+--GO
+
+--DECLARE @IdRol INT = (SELECT TOP 1 Id FROM Rol WHERE Codigo = 'OBI')
+--DECLARE @IdPermisoPorRol INT = (SELECT TOP 1 Id FROM PermisoPorRol WHERE Permiso = 'OCULTAR BUSCADOR INTELIGENTE')
+
+--IF NOT EXISTS (SELECT TOP 1 1 FROM RolPermisoPorRol WHERE Rol_Id = @IdRol AND PermisoPorRol_Id = @IdPermisoPorRol) 
+--BEGIN
+--    INSERT RolPermisoPorRol (Rol_Id, PermisoPorRol_Id) VALUES (@IdRol, @IdPermisoPorRol)
+--END
+--GO
+--COMMIT TRAN
+BEGIN TRAN
+
+DECLARE @IdRol INT = (SELECT TOP 1 Id FROM Rol WHERE Codigo = 'OBI')
+DECLARE @IdPermiso  int  =(SELECT TOP 1 Id FROM PermisoPorRol WHERE PERMISO ='OCULTAR BUSCADOR INTELIGENTE')
+IF EXISTS (SELECT TOP 1 1 FROM Rol WHERE Codigo = 'OBI') 
+BEGIN
+   DELETE RolPermisoPorRol where PermisoPorRol_Id=@IdRol
+   DELETE PermisoPorRol where Id =@IdPermiso
+END
+GO
+IF NOT EXISTS (SELECT TOP 1 1 FROM PermisoPorRol WHERE Permiso = 'MOSTRAR BUSCADOR INTELIGENTE') 
+BEGIN
+    INSERT PermisoPorRol (Permiso) VALUES ('MOSTRAR BUSCADOR INTELIGENTE')
+END
+GO
+ DECLARE @IdPermiso INT = (SELECT TOP 1  Id FROM PermisoPorRol WHERE Permiso = 'MOSTRAR BUSCADOR INTELIGENTE')
+ DECLARE @IdRolNoGrnos INT =(SELECT TOP 1 Id from Rol where Codigo='NOGRAN')
+IF EXISTS (SELECT TOP 1 1 FROM PermisoPorRol WHERE Permiso = 'MOSTRAR BUSCADOR INTELIGENTE') 
+BEGIN 
+   IF NOT EXISTS (SELECT TOP 1 1 FROM RolPermisoPorRol WHERE PermisoPorRol_Id = @IdPermiso) 
+BEGIN 
+   INSERT INTO RolPermisoPorRol (Rol_Id, PermisoPorRol_Id) 
+   SELECT DISTINCT ROL_ID,@IdPermiso FROM RolPermisoPorRol WHERE Rol_Id <> @IdRolNoGrnos
+END
+END
+GO
+COMMIT TRAN

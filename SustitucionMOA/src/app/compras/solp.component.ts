@@ -101,8 +101,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displayErrorSAP: boolean;
     displaySAPVincularPliego: boolean;
     disabledSave = false;
-
     disabled: boolean = false;
+    flagSolpFinalizada: boolean = false;
 
     listadoErrores: string[] = new Array<string>();
     displaySAPEditar: boolean;
@@ -138,7 +138,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Codigo: EnumPasoSolp.PliegoEspecificacion,
         Nombre: 'Especificaciones técnicas',
         Activo: false,
-        Completo: false,
+        Completo: true,
         Iniciado: false,
         Preview: true,
         Numero: 3
@@ -147,7 +147,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Codigo: EnumPasoSolp.PliegoCotizacion,
         Nombre: 'Cotización y plazo de ejecución',
         Activo: false,
-        Completo: false,
+        Completo: true,
         Iniciado: false,
         Preview: true,
         Numero: 4
@@ -259,8 +259,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             if (this.route.params) {
                 this.route.params.forEach((params: Params) => {
-                    if (params["id"] > 0) this.solpId = params["id"];
+                    let numeroSolp = "";
+                    // if (params["id"] > 0) this.solpId = params["id"];
+                    if (parseInt(params["id"].split(',')[0]) > 0) this.solpId = parseInt(params["id"].split(',')[0]);
                     if (params["tipoSolp"]) this.solpActual.tipoSolp = params["tipoSolp"];
+                    if (params["id"].split(',')[1] == undefined) {
+                        numeroSolp = "";
+                    } else {
+                        numeroSolp = params["id"].split(',')[1];
+                    }
+
+                    if (numeroSolp != "") this.flagSolpFinalizada = true;
                 });
 
                 if (this.solpId > 0) {
@@ -317,7 +326,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.nombreDePedido = solp.NombreDeObra || '';
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
         this.solpActual.telefono = solp.Telefono || '';
-        this.solpActual.mail = solp.Email || '';
+        this.solpActual.mail = solp.Email || sessionStorage.getItem("username");
         // this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
         // this.solpActual.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
 
@@ -340,38 +349,40 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.usuarioComprasId = solp.UsuarioCompras.Id || 0;
         this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;
         this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;
-        this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
-        this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+        if (solp.FechaHoraLimiteConsulta != null) {
+            this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+            this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+        }
         this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;
 
         // Paso 3
         this.solpActual.especificacionesViewModel = new EspecificacionesViewModel();
         this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = solp.Adjuntos
-        .filter(x => x.FileKey == "adjuntoSolp")
-        .map(x => {
-            return {
-                id: x.Id,
-                nombreArchivo: x.Nombre
-            }
-        }),
+            .filter(x => x.FileKey == "adjuntoSolp")
+            .map(x => {
+                return {
+                    id: x.Id,
+                    nombreArchivo: x.Nombre
+                }
+            }),
             this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas || this.solpActual.especificacionesViewModel.valorPorDefecto;
 
         this.solpActual.tieneCondicionesGenerales = solp.TieneCondicionesGenerales;
 
         // Paso 4
         this.solpActual.archivosCotizacionesGuardados = solp.Adjuntos
-        .filter(x => x.FileKey == "adjuntoCotizacionesSolp")
-        .map(x => {
-            return {
-                id: x.Id,
-                nombreArchivo: x.Nombre,
-            }
-        });
+            .filter(x => x.FileKey == "adjuntoCotizacionesSolp")
+            .map(x => {
+                return {
+                    id: x.Id,
+                    nombreArchivo: x.Nombre,
+                }
+            });
         this.solpActual.jornadaLaboralDias.forEach(k => {
             k.selected = solp.JornadaLaboral.includes(k.weekDay);
         });
-        this.solpActual.comienzoJornadaLaboral = new Date (this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));
-        this.solpActual.terminoJornadaLaboral = new Date (this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
+        this.solpActual.comienzoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));
+        this.solpActual.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
         this.solpActual.ejecucion = solp.DiasEjecucion || '';
         this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
 
@@ -382,6 +393,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.selectClaseDocumento = solp.ClaseDocumento;
         this.solpActual.pasoCompletado = solp.PasoCompletado;
         this.solpActual.estadoPasos = solp.EstadoPasos;
+
+        this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0 ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId) : this.usuarioComprasList[0];
+
 
         if (solp.Posiciones && solp.Posiciones.length > 0) {
             let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
@@ -454,34 +468,34 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 }
             });
 
-            this.solpActual.setearPosicionPorDefecto();   
+            this.solpActual.setearPosicionPorDefecto();
         }
 
         let estadosPasos = this.solpActual.estadoPasos.split(',');
 
-            let count = 0;
-            estadosPasos.forEach(item => {
-                this.pasos[count].Iniciado = item == '1' || item == '2';
-                this.pasos[count].Completo = item == '2';
-                count+=1;
-            });
+        let count = 0;
+        estadosPasos.forEach(item => {
+            this.pasos[count].Iniciado = item == '1' || item == '2';
+            this.pasos[count].Completo = item == '2';
+            count += 1;
+        });
 
-            this._pasoActual = this.pasos.find(x => x.Numero == 1); 
-            this.cambioPaso(this.pasos[0]);
+        this._pasoActual = this.pasos.find(x => x.Numero == 1);
+        this.cambioPaso(this.pasos[0]);
     }
 
-    validatePasos(): any{
+    validatePasos(): any {
         let estadosPasos = this.solpActual.estadoPasos.split(',');
         this.solpActual.estadoPasos = '';
 
         this.pasos.forEach((p, i) => {
-            estadosPasos[p.Numero -1] = !p.Iniciado ? '0' : p.Completo ? '2' : '1';      
+            estadosPasos[p.Numero - 1] = !p.Iniciado ? '0' : p.Completo ? '2' : '1';
             this.solpActual.estadoPasos += `${estadosPasos[p.Numero - 1]},`;
 
         });
 
 
-        this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
+        this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length - 1);
 
         return {
             completo: estadosPasos.every(x => x === '2'),
@@ -499,27 +513,34 @@ export class SolpComponent extends BaseComponent implements OnInit {
             } else if (p.Codigo == paso.Codigo) {
                 p.Iniciado = true;
                 p.Activo = true;
+                //Esto hace que el paso 3 y 4 se marquen en verde cuando pasas al paso 5
+            } else if (p.Codigo == "PliegoCotizacion" && paso.Numero == 5) {
+                p.Iniciado = true;
+                p.Activo = true;
+            } else if (p.Codigo == "PliegoEspecificacion" && paso.Numero == 5) {
+                p.Iniciado = true;
+                p.Activo = true;
             }
-            estadosPasos[p.Numero -1] = p.Completo ? '2' : '1';      
+            estadosPasos[p.Numero - 1] = p.Completo ? '2' : '1';
         });
 
         this.solpActual.estadoPasos = '';
-       
 
-        estadosPasos.forEach(x=> {
-            this.solpActual.estadoPasos += `${x},` ;
+
+        estadosPasos.forEach(x => {
+            this.solpActual.estadoPasos += `${x},`;
         });
 
-        this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
-    
+        this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length - 1);
+
         this.pasoActual = paso; //aca esta el error
 
-        this.solpActual.pasoCompletado = this.solpActual.pasoCompletado > this.pasoActual.Numero 
-        ? this.solpActual.pasoCompletado
-        : this.pasoActual.Numero;
-       
+        this.solpActual.pasoCompletado = this.solpActual.pasoCompletado > this.pasoActual.Numero
+            ? this.solpActual.pasoCompletado
+            : this.pasoActual.Numero;
+
         this.actualizarPasoCompleto(this.pasoActual);
-       
+
         // this.guardarCambios(false, false, true);
     }
 
@@ -565,9 +586,29 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             let validatePasos = this.validatePasos();
 
-            if(enviarSap) {
+            if (enviarSap) {
                 if (!validatePasos.completo) {
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campos en el paso #${validatePasos.primerPasoIncompleto}` });
+
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                    this.disabledSave = false;
+                    return;
+                }
+
+                if (!this.solpActual.revisadoPor) {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Revisado por` });
+
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                    this.disabledSave = false;
+                    return;
+                }
+
+                if (this.selectUsuarioCompras.Id == null) {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
 
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
@@ -578,7 +619,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
 
             this.solpActual.Finalizar = enviarSap;
-            this.solpActual.usuarioComprasId = this.selectUsuarioCompras.Id;
+            this.solpActual.usuarioComprasId = this.selectUsuarioCompras != null ? this.selectUsuarioCompras.Id : null;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
@@ -609,7 +650,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.id = result.Solp.Id;
                         this.solpActual.NroSolp = result.Solp.NroSolp;
                         this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.length);
-                        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = result.Solp.Adjuntos.filter(x => x.FileKey != 'adjuntoCotizacionesSolp').map(x=> {
+                        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = result.Solp.Adjuntos.filter(x => x.FileKey != 'adjuntoCotizacionesSolp').map(x => {
                             return {
                                 id: x.Id,
                                 nombreArchivo: x.Nombre,
@@ -641,23 +682,33 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                             if (result.Mensaje == "OK") {
                                 this.finalizarOk = true;
-                                this.displaySAP = true;
 
                                 if (this.solpActual.vincularAPliego) {
                                     this.displaySAPVincularPliego = true;
                                 }
                                 else if (this.solpActual.nroSolp) {
                                     this.displaySAPEditar = true;
+                                } else {
+                                    this.displaySAP = true;
                                 }
                             }
                             else {
+                                if (result.Solp.NroSolp != "" && result.Solp.NroSolp != null) {
+                                    this.cargarSolpActual(result.Solp);
+                                    let esto = this;
+                                    setTimeout(function () {
+                                        esto.cambioPaso(esto.pasos[5]);
+                                    }, 500);
+
+                                }
                                 this.listadoErrores = result.Errores;
                                 this.displayErrorSAP = true;
+
                             }
 
-                            if (this.solpActual.nroSolp) {
-                                this.displaySAPEditar = true;
-                            }
+                            // if (this.solpActual.nroSolp) {
+                            //     this.displaySAPEditar = true;
+                            // }
                         }
                     }
                     this.disabledSave = false;
@@ -681,51 +732,47 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     actualizarPasoCompleto(paso: Paso) {
-        if(paso){
+        if (paso) {
             switch (paso.Codigo) {
                 case EnumPasoSolp.PliegoGeneracion1:
                     paso.Completo = true;
 
-                    if(!this.listaStringCompleta([
+                    if (!this.listaStringCompleta([
                         this.solpActual.nombreDePedido,
                         this.solpActual.fiscalContrato,
                         this.solpActual.mail,
                         this.solpActual.fechaEntrega,
                         this.solpActual.horaEntrega
-                    ]))
-                    {
+                    ])) {
                         paso.Completo = false;
-                    }                    
-             
+                    }
+
                     break;
-                 
+
                 case EnumPasoSolp.PliegoGeneracion2:
                     paso.Completo = true;
-                    if(!this.listaStringCompleta([
+                    if (!this.listaStringCompleta([
                         this.solpActual.supervisorSector,
                         this.solpActual.supervisorTrabajo
-                    ]))
-                    {
+                    ])) {
                         paso.Completo = false;
                     }
                     break;
                 case EnumPasoSolp.PliegoEspecificacion:
                     paso.Completo = true;
-                    if(!this.listaStringCompleta([
+                    if (!this.listaStringCompleta([
                         this.solpActual.especificacionesViewModel.observaciones
-                    ]))
-                    {
+                    ])) {
                         return paso.Completo = false;
                     }
                     break;
                 case EnumPasoSolp.PliegoCotizacion:
                     paso.Completo = true;
-                    if(!this.listaStringCompleta([
+                    if (!this.listaStringCompleta([
                         this.solpActual.jornadaLaboralDias,
                         this.solpActual.comienzoJornadaLaboral,
                         this.solpActual.terminoJornadaLaboral
-                    ]))
-                    {
+                    ])) {
                         return paso.Completo = false;
                     }
 
@@ -733,27 +780,30 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 case EnumPasoSolp.SolpCabecera:
                     paso.Completo = true;
                     //Revisa que todos los campos de TODAS las posiciones esten completos
+                    var almacenObligatorio = this.solpActual.tipoSolpSap != EnumTipoSolpSap.Mantenimiento;
                     this.solpActual.posiciones.forEach(x => {
-                        if(!this.listaStringCompleta([
+                        var listaCamposAValidar = [
                             x.servicio,
                             x.textoGenerico,
                             x.fechaEntregaServicio,
                             x.fechaDeLiberacion,
                             x.selectCentroEntrega,
-                            x.selectAlmacenEntrega,
                             x.calleEntrega,
                             x.numeroEntrega,
                             x.selectGrupoCompras,
                             x.selectArticuloCompras,
-                            x.monedaSeleccionada])
-                        || (this.solpActual.posiciones.some(x => !(x.selectCentroEntrega && x.selectCentroEntrega.Id)))
-                        || (this.solpActual.posiciones.some(x => !(x.selectAlmacenEntrega && x.selectAlmacenEntrega.Id)))
-                        || (this.solpActual.posiciones.some(x => !(x.selectGrupoCompras && x.selectGrupoCompras.Id)))
-                        || (this.solpActual.posiciones.some(x => !(x.selectArticuloCompras && x.selectArticuloCompras.Id))))
-                        {
+                            x.monedaSeleccionada]
+                        if (almacenObligatorio)
+                            listaCamposAValidar.push(x.selectAlmacenEntrega)
+
+                        if (!this.listaStringCompleta(listaCamposAValidar)
+                            || (this.solpActual.posiciones.some(x => !(x.selectCentroEntrega && x.selectCentroEntrega.Id)))
+                            || (almacenObligatorio && this.solpActual.posiciones.some(x => !(x.selectAlmacenEntrega && x.selectAlmacenEntrega.Id)))
+                            || (this.solpActual.posiciones.some(x => !(x.selectGrupoCompras && x.selectGrupoCompras.Id)))
+                            || (this.solpActual.posiciones.some(x => !(x.selectArticuloCompras && x.selectArticuloCompras.Id)))) {
                             return paso.Completo = false;
                         }
-                    });    
+                    });
                     break;
                 case EnumPasoSolp.SolpSubposiciones:
                     //paso.Completo = true;
@@ -780,9 +830,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                     break;
                 case EnumPasoSolp.SolpSubposiciones:
-                     break;
-            } 
-        }            
+                    break;
+            }
+        }
     }
 
     listaStringCompleta(lista: any[]) {
@@ -800,15 +850,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
         pasoSolp.Completo = !infomacionSolp.esPasoInvalido;
 
         let estadosPasos = this.solpActual.estadoPasos.split(',');
-        estadosPasos[pasoSolp.Numero -1] = pasoSolp.Completo ? '2': estadosPasos[pasoSolp.Numero -1];
+        estadosPasos[pasoSolp.Numero - 1] = pasoSolp.Completo ? '2' : estadosPasos[pasoSolp.Numero - 1];
 
         this.solpActual.estadoPasos = '';
 
-        estadosPasos.forEach(x=> {
-            this.solpActual.estadoPasos += `${x},` ;
+        estadosPasos.forEach(x => {
+            this.solpActual.estadoPasos += `${x},`;
         });
 
-        this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length -1);
+        this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length - 1);
     }
 
     // funcion para que cuando agregues una posicion, vuelva a la altura posiciones
@@ -834,6 +884,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.combos = result;
+                        this.combos.flagSolpFinalizada = this.flagSolpFinalizada;
                         this.obtenerUsuarioCompras();
                     }
                 },
@@ -864,13 +915,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.usuarioComprasList = [];
                         result.data.forEach(element => {
                             this.usuarioComprasList.push({
-                                Id : element.UsuarioCompras.Id,
+                                Id: element.UsuarioCompras.Id,
                                 CodigoDescripcion: element.UsuarioCompras.Mail
                             });
                         });
+                        this.usuarioComprasList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.usuarioComprasList];
                         this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
-                                                  ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
-                                                  : this.usuarioComprasList[0];
+                            ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
+                            : this.usuarioComprasList[0];
                         this.spinnerComponent.hideIt();
                     }
                 },
@@ -989,7 +1041,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 this.salir();
             },
             reject: () => {
-                
+
             }
         });
 

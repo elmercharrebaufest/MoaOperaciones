@@ -90,6 +90,8 @@ export class LiquidacionObservadaService extends LiquidacionService {
     }
 }
 
+
+
 @Injectable()
 export class LiquidacionPagaService extends LiquidacionService {
 
@@ -103,30 +105,6 @@ export class LiquidacionPagaService extends LiquidacionService {
 }
 
 @Injectable()
-export class LiquidacionNGAprobadaService extends LiquidacionService {
-
-    getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
-        return this.getLiquidacionesCommon(periodo, fecha_inicio, fecha_fin, 'getAprobadasNG');
-    }
-
-    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
-        return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadAprobadasNG');
-    }
-}
-
-@Injectable()
-export class LiquidacionNGObservadaService extends LiquidacionService {
-
-    getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
-        return this.getLiquidacionesCommon(periodo, fecha_inicio, fecha_fin, 'getObservadasNG');
-    }
-
-    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
-        return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadObservadasNG');
-    }
-}
-
-@Injectable()
 export class LiquidacionNGPagaService extends LiquidacionService {
 
     getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
@@ -135,6 +113,30 @@ export class LiquidacionNGPagaService extends LiquidacionService {
 
     exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
         return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadPagasNG');
+    }
+}
+
+@Injectable()
+export class LiquidacionNGRegistradoService extends LiquidacionService {
+
+    getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
+        return this.getLiquidacionesCommon(periodo, fecha_inicio, fecha_fin, 'getRegistradosNG');
+    }
+
+    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
+        return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadRegistradosNG');
+    }
+}
+
+@Injectable()
+export class LiquidacionNGPendienteRegistroService extends LiquidacionService {
+
+    getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
+        return this.getLiquidacionesCommon(periodo, fecha_inicio, fecha_fin, 'getPendienteRegistroNG');
+    }
+
+    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
+        return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadPendienteRegistroNG');
     }
 }
 

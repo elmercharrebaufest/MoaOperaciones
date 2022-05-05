@@ -1,7 +1,11 @@
 ﻿using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using SustitucionMOA.Controllers;
 using SustitucionMOA.Utils;
+using SustitucionMOAAssets;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,6 +15,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace SustitucionMOATest.Controllers
 {
@@ -19,6 +24,11 @@ namespace SustitucionMOATest.Controllers
         private OrdenDeCargaController target;
         private Mock<IOrdenDeCargaService> ordenDeCargaServiceMock;
         private Mock<IConsultaService> consultaServiceMock;
+        private OrdenDeCarga ordenDeCarga;
+        private string expectedJson;
+        private string resultJson;
+        private string mailUsuario = "mail@mail.com";
+        int ordenId = 2041;
 
         [SetUp]
         public void SetUp()
@@ -39,18 +49,37 @@ namespace SustitucionMOATest.Controllers
 
             Thread.CurrentPrincipal = principal;
 
+
         }
 
         [Test()]
         public void AgregarTest()
         {
-            throw new NotImplementedException();
+            var expected = new
+            {
+                data = new Resultado
+                {
+                    IdEntidad = 1,
+                    Mensaje = SuccessMsg.OrdenDeCargaAgregada
+                }
+            };
+
+            var ordenDeCargaJson = JsonConvert.SerializeObject(ordenDeCarga);
+            ordenDeCargaServiceMock.Setup(s => s.Agregar(It.IsAny<OrdenDeCarga>(), It.Is<string>(i => i == mailUsuario))).Returns(expected.data);
+            var result = (JsonResult)target.Agregar(ordenDeCargaJson);
+            expectedJson = JsonConvert.SerializeObject(expected);
+            resultJson = JsonConvert.SerializeObject(result.Data);
+
+            Assert.NotNull(result);
+            Assert.AreEqual(expectedJson, resultJson);
+
         }
 
         [Test()]
         public void GetListadoTest()
         {
             throw new NotImplementedException();
+
         }
 
         [Test()]
@@ -62,13 +91,63 @@ namespace SustitucionMOATest.Controllers
         [Test()]
         public void AnularOrdenTest()
         {
-            throw new NotImplementedException();
+            var expected = new { data = SuccessMsg.OrdenDeCargaAnulada };
+            ordenDeCargaServiceMock.Setup(s => s.AnularOrden(It.Is<int>(i => i == ordenId))).Returns(expected.data);
+            var result = (JsonResult)target.AnularOrden(ordenId);
+            expectedJson = JsonConvert.SerializeObject(expected);
+            resultJson = JsonConvert.SerializeObject(result.Data);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(expectedJson, resultJson);
         }
 
         [Test()]
         public void EditarTest()
         {
-            throw new NotImplementedException();
+            var expected = new
+            {
+                data = new Resultado
+                {
+                    IdEntidad = 1,
+                    Mensaje = SuccessMsg.OrdenDeCargaActualizada
+                }
+            };
+            var ordenDeCargaJson = JsonConvert.SerializeObject(ordenDeCarga);
+            ordenDeCargaServiceMock.Setup(s => s.Editar(It.IsAny<OrdenDeCarga>(), It.Is<string>(i => i == mailUsuario))).Returns(expected.data);
+            var result = (JsonResult)target.Editar(ordenDeCargaJson);
+            expectedJson = JsonConvert.SerializeObject(expected);
+            resultJson = JsonConvert.SerializeObject(result.Data);
+            Assert.NotNull(result);
+            Assert.AreEqual(expectedJson, resultJson);
+        }
+
+        [Test()]
+        public void ObtenerPedidos()
+        {
+            var listaPedidos = "0012059285, 0012059686, 0012060616, 0012061378, 0012061439, 0012061868";
+            var lista = listaPedidos.Split(',').ToList();
+            var pedidos = new 
+            {
+                data = lista
+            };
+
+            ordenDeCargaServiceMock.Setup(s => s.ObtenerPedidos(It.Is<int>(i => i == ordenId))).Returns(pedidos.data);
+            var result = (JsonResult)target.ObtenerPedidos(ordenId);
+            expectedJson = JsonConvert.SerializeObject(pedidos);
+            resultJson = JsonConvert.SerializeObject(result.Data);
+            Assert.AreEqual(expectedJson, resultJson);
+            //ordenDeCargaServiceMock.Verify(s => s.ObtenerPedidos(ordenId));
+        }
+
+        [Test()]
+        public void NotificarTransporteTest()
+        {
+            var mensaje = new { data = "Notificación enviada" };
+            ordenDeCargaServiceMock.Setup(s => s.NotificarTransporte(ordenId)).Returns(mensaje.data);
+            var result = (JsonResult)target.NotificarTransporte(ordenId);
+            expectedJson = JsonConvert.SerializeObject(mensaje);
+            resultJson = JsonConvert.SerializeObject(result.Data);
+            Assert.AreEqual(expectedJson, resultJson);
+
         }
     }
 }

@@ -21,15 +21,20 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 ZMPES6110[] compras = new ZMPES6110[] { };
                 ZMPES6100[] salidas = new ZMPES6100[] { };
-                string fechahasta = "";
+                string fechahasta = SAPFormatter.PrepararFecha(DateTime.Now.Date);
+
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                if(fechas.FirstOrDefault() != null)
+                if (fechas.FirstOrDefault() == null)
                 {
-                    fechahasta = SAPFormatter.PrepararFecha(fechas.FirstOrDefault().fechaFin);
+                    fechas.Add(new FechaWS { 
+                        fechaFin = DateTime.Now.Date,
+                        fechaInicio = DateTime.Now.Date
+                    });
                 }
+                //fechahasta = SAPFormatter.PrepararFecha(fechas.FirstOrDefault().fechaFin);
                 ZMPES4910 error = service.SI_MPMF_MOAOP_LIQUIDACIONES_NG(fechahasta, proveedor, "MOA", out compras, out salidas);
-                return map(error, compras, salidas);
+                return map(error, compras, salidas, fechas);
             }
             catch (Exception e)
             {
@@ -38,17 +43,21 @@ namespace SustitucionMOAWS.WSConsumers
 
         }
 
-        protected virtual object map(ZMPES4910 error, ZMPES6110[] compras, ZMPES6100[] salidas)
+        protected virtual object map(ZMPES4910 error, ZMPES6110[] compras, ZMPES6100[] salidas, List<FechaWS> fechas)
         {
             LiquidacionNGWSMOAResponse result = new LiquidacionNGWSMOAResponse();
 
             List<ZMPES6110> comprasList = compras.ToList();
 
-            if (error != null) {
+            if (error != null)
+            {
                 result.error.codigo = error.CODIGO;
                 result.error.descripcion = error.DESCRIPCION;
                 result.error.tipo = error.TIPO;
             }
+
+            DateTime desde = fechas.FirstOrDefault().fechaInicio;
+            DateTime hasta = fechas.FirstOrDefault().fechaFin;
 
             foreach (ZMPES6100 salida in salidas)
             {
@@ -56,13 +65,16 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     id = salida.ID,
                     comprobante = salida.COMPROBANTE,
+                    fechaComprobanteDate = SAPFormatter.GetDateTime(salida.FECHA_DOC),
                     importeString = SAPFormatter.FormatearMonto(salida.IMPORTE, salida.MONEDA),
                     importe = salida.IMPORTE,
                     observaciones = salida.OBSERVACIONES,
                     tipo = salida.TIPO,
                     vencimiento = SAPFormatter.FormatearFecha(salida.VENCIMIENTO),
                     vencimientoDate = SAPFormatter.GetDateTime(salida.VENCIMIENTO),
-                    compra = ""
+                    compra = "",
+                    fechaDocumento = SAPFormatter.FormatearFecha(salida.FECHA_DOC),
+                    fechaDocFiltro = SAPFormatter.GetDateTime(salida.FECHA_DOC)
                 };
 
                 ZMPES6110 compra = comprasList.Find(c => c.ID == salidaNew.id);
@@ -71,9 +83,13 @@ namespace SustitucionMOAWS.WSConsumers
                     salidaNew.compra = compra.OCOMPRA;
                 }
 
-                result.liquidaciones.Add(salidaNew);
+                if (salidaNew.fechaDocFiltro >= desde && salidaNew.fechaDocFiltro <= hasta)
+                {
+                    result.liquidaciones.Add(salidaNew);
+                }
 
             }
+
 
             return result;
         }
@@ -82,7 +98,7 @@ namespace SustitucionMOAWS.WSConsumers
     public class LiquidacionesExcelNGConsumerMOA : LiquidacionesNGConsumerMOA
     {
 
-        protected override object map(ZMPES4910 error, ZMPES6110[] compras, ZMPES6100[] salidas)
+        protected override object map(ZMPES4910 error, ZMPES6110[] compras, ZMPES6100[] salidas, List<FechaWS> fechas)
         {
             LiquidacionExcelNGWSMOAResponse result = new LiquidacionExcelNGWSMOAResponse();
 
@@ -107,11 +123,13 @@ namespace SustitucionMOAWS.WSConsumers
                     observaciones = salida.OBSERVACIONES,
                     tipo = salida.TIPO,
                     compra = "",
-                    vencimiento = SAPFormatter.FormatearFecha(salida.VENCIMIENTO)
+                    vencimiento = SAPFormatter.FormatearFecha(salida.VENCIMIENTO),
+                    fechaDocumento = SAPFormatter.FormatearFecha(salida.FECHA_DOC)
                 };
 
                 ZMPES6110 compra = comprasList.Find(c => c.ID == salidaNew.id);
-                if (compra != null) {
+                if (compra != null)
+                {
                     salidaNew.compra = compra.OCOMPRA;
                 }
 

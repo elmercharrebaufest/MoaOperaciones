@@ -1,4 +1,6 @@
 ﻿export interface CabeceraCM05 {
+    FechaUltimaModificacionString: string;
+    FechaCargaString: string;
     Id;
     Estado;
     EstadoId;

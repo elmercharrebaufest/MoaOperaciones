@@ -9,7 +9,7 @@ namespace SustitucionMOAModel.Dto
 {
     public class UsuarioComprasDto
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Mail { get; set; }
         public string Nombres { get; set; }
         public bool Habilitado { get; set; }
@@ -18,11 +18,14 @@ namespace SustitucionMOAModel.Dto
 
         public UsuarioComprasDto(UsuarioCompras usuario)
         {
-            Id = usuario.Id;
-            Mail = usuario.Mail;
-            Nombres = usuario.Nombres;
-            Habilitado = usuario.Habilitado;
-            PorDefecto = usuario.PorDefecto;
+            if (usuario != null)
+            {
+                Id = usuario.Id;
+                Mail = usuario.Mail;
+                Nombres = usuario.Nombres;
+                Habilitado = usuario.Habilitado;
+                PorDefecto = usuario.PorDefecto;
+            }
         }
     }
 }

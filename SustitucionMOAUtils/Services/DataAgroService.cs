@@ -7,7 +7,6 @@ using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.DataAgroServices;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ using System.Linq;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class DataAgroService : IDataAgroService
+    public class DataAgroService : SustitucionMOAUtils.Interfaces.IDataAgroService
     {
         protected readonly IRepositorio repositorio;
 
@@ -94,7 +93,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
-                    ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(proveedor.CUIT, null);
+                    SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(proveedor.CUIT, null);
 
                     var tipoUsuarioGranos = ObtenerTipoPorNombreCorto("G");
 
@@ -207,11 +206,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT, bool? corredor = false)
+        public SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT, bool? corredor = false)
         {
             try
             {
-                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUIT, corredor);
+                SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUIT, corredor);
 
                 return respuesta;
             }
@@ -358,7 +357,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUITproveedor);
+                SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUITproveedor);
 
                 if (respuesta.HayError)
                 {
@@ -389,6 +388,26 @@ namespace SustitucionMOAUtils.Services
         public bool ProveedorApocrifo(string CUIT)
         {
             return new DataAgroConsumer().ProveedorApocrifo(CUIT);
+        }
+
+        public SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(CampoProveedor campo, string kmz)
+        {
+            try
+            {
+                var respuesta = new DataAgroConsumer().AltaCampoSustentable(campo,kmz);
+
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                var resultado =new SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable();
+                var error = new SustitucionMOAWS.DataAgroServices.ErrorMessage {Message=ex.Message };
+                var errores = new List<SustitucionMOAWS.DataAgroServices.ErrorMessage>();
+                errores.Add(error);
+                resultado.Errores = errores.ToArray();
+                return resultado;
+            }
         }
 
     }

@@ -752,7 +752,9 @@ namespace SustitucionMOAUtils.Services
                 return subcategorias.Select(x => new MaterialDto
                 {
                     MaterialId = x.Id,
-                    Descripcion = x.Nombre
+                    Descripcion = x.Nombre,
+                    CodigoSap = x.CodigoSap
+
                 }).ToList();
             }
             catch (ValidationCustomException e)
@@ -887,7 +889,7 @@ namespace SustitucionMOAUtils.Services
 
         public string AnularConsulta(int consultaId, int usuarioId, string motivoRechazo)
         {
-            this.ActualizarEstadoConsulta(consultaId, (int)EstadosConsulta.Finalizado);
+            this.ActualizarEstadoConsulta(consultaId, (int)EstadosConsulta.Rechazado);
 
             ComentarioDto comentarioDto = new ComentarioDto
             {

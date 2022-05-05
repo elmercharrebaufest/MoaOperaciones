@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
-    public class SolpSubposicion
+    public class SolpSubposicion: ICloneable
     {
         [Key]
         public int Id { get; set; }
@@ -23,6 +23,7 @@ namespace SustitucionMOAModel.Entities
         public decimal? PrecioBruto { get; set; }
         public int? TipoImputacion_Id { get; set; }
         public bool? Estado { get; set; }
+        public int? CodigoServicioSap_Id { get; set; }
 
         [ForeignKey("SolpPosicion_Id")]
         public virtual SolpPosicion SolpPosicion { get; set; }
@@ -35,5 +36,12 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("CuentaMayor_Id")]
         public virtual TablaSap CuentaMayorSap { get; set; }
+        [ForeignKey("CodigoServicioSap_Id")]
+        public virtual TablaSap CodigoServicioSap { get; set; }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 }

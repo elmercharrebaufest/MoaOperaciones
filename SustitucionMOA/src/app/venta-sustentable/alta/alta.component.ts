@@ -12,379 +12,466 @@ import { SpinnerComponent } from './../../common/view-child/spinner/spinner.comp
 import { CampoProveedor, CampoSustentable, CampoCosecha } from './../sustentable'
 import { DeclaracionConformidadComponent } from '../declaracion-conformidad/declaracion-conformidad.component';
 import { CommonResponse } from '../../common/models/common-response';
+import { AutocompleteLocalidadComponent } from "./../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
+import { isUndefined } from 'util';
 
 @Component({
-  selector: 'app-alta',
-  templateUrl: './alta.component.html',
-  providers: [VentaSustentableService]
+    selector: 'app-alta',
+    templateUrl: './alta.component.html',
+    providers: [VentaSustentableService]
 })
 export class AltaComponent extends BaseComponent implements OnInit {
 
-  @ViewChild(MensajeComponent)
-  protected mensajeComponent: MensajeComponent;
+    @ViewChild(MensajeComponent)
+    protected mensajeComponent: MensajeComponent;
 
-  @ViewChild(SpinnerComponent)
-  protected spinnerComponent: SpinnerComponent;
+    @ViewChild(SpinnerComponent)
+    protected spinnerComponent: SpinnerComponent;
 
-  @ViewChild(DeclaracionConformidadComponent)
-  protected declaracionComformidad: DeclaracionConformidadComponent;
+    @ViewChild(DeclaracionConformidadComponent)
+    protected declaracionComformidad: DeclaracionConformidadComponent;
 
-  @BlockUI() blockUI: NgBlockUI;
+    @BlockUI() blockUI: NgBlockUI;
 
-  constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
-    super(navService, securityService, floatMsgService, modalService);
-    this.mensajeComponent = new MensajeComponent();
-    this.spinnerComponent = new SpinnerComponent();
-  }
-
-  nombreEstablecimiento: string;
-  pais: string;
-  dataLocalidades = [];
-  myLocalidades = <any>[];
-  localidades: any = [];
-
-  cosechas: any[];
-  cosechaId: any;
-
-  localidadId: any;
-  provinciaId: any;
-  nombreCosecha: string;
-  sojaParcial: boolean;
-  sojaTotal: boolean;
-
-  proveedorId: any;
-  proveedorIdCorredor: any;
-  hectareasTotales: number;
-  hectareasSoja: number;
-  latitud: string;
-  longitud: string;
-  CUIT: string = "";
-  CUITInicial: string = "";
-  file: any;
-
-  operarComo: number = 1;
-
-  ingresarProveedorPorCUIT: boolean;
-  proveedorSelected: any;
-  esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
-  codigoProveedor: string = sessionStorage.getItem("proveedor");
-
-  ngOnInit() {
-    this.navService.setSeccionList([]);
-    this.CUIT = "";
-
-    this.proveedorId = this.getProveedorId(this.codigoProveedor);
-    this.CUITInicial = this.CUIT;
-
-    this.declaracionComformidad.esCorredor = this.esCorredor;
-    this.ingresarProveedorPorCUIT = true;
-
-    if (this.esCorredor) {
-      this.ingresarProveedorPorCUIT = false;
+    constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+        super(navService, securityService, floatMsgService, modalService);
+        this.mensajeComponent = new MensajeComponent();
+        this.spinnerComponent = new SpinnerComponent();
     }
 
-    this.operarComo = 1;
-    this.declaracionComformidad.operarComo = 1;
+    nombreEstablecimiento: string;
+    pais: string;
+    dataLocalidades = [];
+    myLocalidades = <any>[];
+    localidades: any = [];
 
-    this.getCosechas();
-  }
+    cosechas: any[];
+    cosechaId: any;
 
-  setTabs() {
-    this.setMenuSeccionTab("Alta", "Dar de Alta");
-  }
+    localidadId: any;
+    provinciaId: any;
+    nombreCosecha: string;
+    sojaParcial: boolean;
+    sojaTotal: boolean;
 
-  cargarArchivo(event: any) {
-    let fileList: FileList = event.target.files;
-    if (fileList.length > 0) {
-      this.file = fileList[0];
-    }
-  }
+    proveedorId: any;
+    proveedorIdCorredor: any;
+    hectareasTotales: number;
+    hectareasSoja: number;
+    latitud: string;
+    longitud: string;
+    CUIT: string = "";
+    CUITInicial: string = "";
+    file: any;
+    Archivo_Id: number;
+    UsarArchivo_Id: boolean = false;
+    Proveedor_Id: number;
+    operarComo: number = 1;
 
-  onselect($event) {
-    this.proveedorSelected = $event;
-    console.log("proveedor:", $event)
-    //this.proveedorId = this.getProveedorId('0071116016');
-    this.proveedorId = this.getProveedorId(this.proveedorSelected.idVendedor);
-  }
+    ingresarProveedorPorCUIT: boolean;
+    proveedorSelected: any;
+    esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    codigoProveedor: string = sessionStorage.getItem("proveedor");
+    campoCosechaId: any;
+    CodigoProveedorEdit: string = "";
+    campoProveedorE: any;
+    ngOnInit() {
 
-  getProveedorId(codigo: string) {
-    this.subscription = this.service.getProveedor(codigo).subscribe(
-      (result:any) => {
-        this.spinnerComponent.hideIt();
-        if (result.logout == true) {
-          this.sessionDataService.logout();
-        } else if (result.error != undefined && result.error != "") {
-          this.mensajeComponent.setErrorMsg(result.error);
-        } else if (result.info != undefined) {
-          this.mensajeComponent.setInfoMsg(result.info);
-        } else {
+        this.navService.setSeccionList([]);
+        this.CUIT = "";
 
-          this.proveedorId = result.Id;
+        this.proveedorId = this.getProveedorId(this.codigoProveedor);
+        this.CUITInicial = this.CUIT;
 
-          //if (!this.esCorredor) {
-          this.CUIT = result.CUIT;
-          this.declaracionComformidad.CUITDeclaracion = result.CUIT;
-          this.declaracionComformidad.razonSocialDeclaracion = result.RazonSocial;
+        this.declaracionComformidad.esCorredor = this.esCorredor;
+        this.ingresarProveedorPorCUIT = true;
 
-          if (this.CUITInicial.length == 0) {
-            this.CUITInicial = this.CUIT;
-          }
-          //}
-
-          this.validarModalDeclaracion();
-
-          return result.Id;
+        if (this.esCorredor) {
+            this.ingresarProveedorPorCUIT = false;
         }
-      },
-      (error) => {
-        this.spinnerComponent.hideIt();
-        this.mensajeComponent.setErrorMsg(error.message);
-      }
-    );
-  }
 
-  onChangeCosecha() {
+        this.operarComo = 1;
+        this.declaracionComformidad.operarComo = 1;
+        this.getParams();
+        this.getCosechas();
 
-    if (this.cosechaId > 0) {
-      if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
-        if (this.CUIT == "" || this.CUIT.length != 11) {
-          this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
-          setTimeout(() => {
+    }
+    getParams() {
+        try {
+            const queryString = window.location.href;
+            this.campoCosechaId = queryString.split('=')[1].split(';')[0];
+            this.proveedorId = queryString.split('=')[2]
+        } catch (e) {
+
+        }
+    }
+
+    cargarDatosCopiar() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        try {
+            this.unsubscribe();
+            this.subscription = this.service.getCampoProveedor(this.proveedorId, this.campoCosechaId).subscribe(
+                (result: any) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.campoProveedorE = result;
+                        this.nombreEstablecimiento = result.NombreCampo;
+                        this.hectareasTotales = result.HectareasTotales;
+                        this.hectareasSoja = result.HectareasSoja;
+                        this.localidadId = result.Localidad_Id;
+                        console.log(this.localidadId);
+
+                        this.latitud = result.Latitud;
+                        this.longitud = result.Longitud;
+                        this.CUIT = result.CUIT;
+                        this.Archivo_Id = result.Archivo_Id;
+                        this.UsarArchivo_Id = true;
+                        this.Proveedor_Id = result.Proveedor_Id;
+
+                        if (this.esCorredor) {
+                            if (this.Proveedor_Id != this.proveedorId) {
+                                this.operarComo = 1;
+                                this.CodigoProveedorEdit = result.CodigoProveedor;
+                            } else {
+                                this.operarComo = 2;
+                                this.cambiarModoOperacion();
+                                this.CUIT = result.CUIT;
+                            }
+                            this.proveedorId = result.Proveedor_Id;
+
+                        }
+                        //this.onselect = result.HectareasSoja;//set autocomplete proveedor
+
+                        this.mensajeComponent.setInfoMsg("Si el contorno del lote presentado este año es diferente al del año anterior adjuntar nuevo KMZ");
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+    setTabs() {
+        this.setMenuSeccionTab("Alta", "Dar de Alta");
+    }
+
+    cargarArchivo(event: any) {
+        let fileList: FileList = event.target.files;
+        if (fileList.length > 0) {
+            this.file = fileList[0];
+        }
+    }
+
+    onselect($event) {
+        this.proveedorSelected = $event;
+        console.log("proveedor:", $event)
+        //this.proveedorId = this.getProveedorId('0071116016');
+        this.proveedorId = this.getProveedorId(this.proveedorSelected.idVendedor);
+    }
+
+    getProveedorId(codigo: string) {
+        this.subscription = this.service.getProveedor(codigo).subscribe(
+            (result: any) => {
+                this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+
+                    this.proveedorId = result.Id;
+
+                    //if (!this.esCorredor) {
+                    this.CUIT = result.CUIT;
+                    this.declaracionComformidad.CUITDeclaracion = result.CUIT;
+                    this.declaracionComformidad.razonSocialDeclaracion = result.RazonSocial;
+
+                    if (this.CUITInicial.length == 0) {
+                        this.CUITInicial = this.CUIT;
+                    }
+                    //}
+
+                    this.validarModalDeclaracion();
+
+                    return result.Id;
+                }
+            },
+            (error) => {
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
+    onChangeCosecha() {
+
+        if (this.cosechaId > 0) {
+            if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
+                if (this.CUIT == "" || this.CUIT.length != 11) {
+                    this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+                    setTimeout(() => {
+                        this.cosechaId = 0;
+                    }, 100);
+                    return false
+                }
+            }
+
+            this.validarModalDeclaracion();
+        }
+    }
+
+    private validarModalDeclaracion() {
+        if (this.cosechaId > 0) {
+            if (this.esCorredor) {
+
+                if (this.operarComo == 2) {
+                    this.declaracionComformidad.CUIT = this.CUIT;
+                    this.declaracionComformidad.razonSocialDeclaracion = "";
+                }
+
+                this.declaracionComformidad.proveedorId = this.proveedorId;
+                this.declaracionComformidad.cosechaId = this.cosechaId;
+                this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
+                this.declaracionComformidad.verificarDeclaracion();
+            }
+            else {
+                if (this.proveedorId > 0) {
+
+                    //Si cambió el CUIT le saco la razón social
+                    if (this.CUITInicial != this.CUIT) {
+                        console.log("Lo limpio")
+                        console.log("this.CUITInicial:", this.CUITInicial)
+                        console.log("this.CUIT:", this.CUIT)
+                        this.declaracionComformidad.razonSocialDeclaracion = "";
+                    }
+                    this.declaracionComformidad.proveedorId = this.proveedorId;
+                    this.declaracionComformidad.cosechaId = this.cosechaId;
+                    this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
+                    this.declaracionComformidad.verificarDeclaracion();
+                }
+            }
+        }
+    }
+
+    campoProveedorAgregar() {
+        debugger;
+        this.blockUI.start('Informando campo sustentable.');
+
+        let campoProveedor: CampoProveedor;
+        let campoSustentable: CampoSustentable;
+        let campoCosecha: CampoCosecha;
+
+
+        if (this.validar()) {
+            this.blockUI.stop();
+            return;
+        }
+
+        campoSustentable = {
+            Nombre: this.nombreEstablecimiento, Localidad_Id: this.localidadId
+        }
+
+        campoCosecha = {
+            Campo: campoSustentable, Cosecha_Id: this.cosechaId
+        }
+
+        campoProveedor = {
+            HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja,
+            CUIT: this.CUIT,
+            Latitud: this.latitud, Longitud: this.longitud, Proveedor_Id: this.proveedorId, CampoCosecha: campoCosecha,
+            Archivo_Id: this.UsarArchivo_Id ? this.Archivo_Id : 0
+        }
+
+
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        try {
+            this.unsubscribe();
+            this.subscription = this.service.campoProveedorAgregar(campoProveedor, this.file).subscribe(
+                (result: any) => {
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
+
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+
+                        this.mensajeComponent.setSuccessMsg(result.Mensaje);
+                        setTimeout(() => {
+                            this.redirigirAListado();
+                        }, 3000);
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            this.blockUI.stop();
+            return false; //<-- Prevent Refresh
+        }
+        this.blockUI.stop();
+        return false; //<-- Prevent Refresh
+
+    }
+
+    verificarCUITIngresado() {
+        this.declaracionComformidad.CUITDeclaracion = this.CUIT;
+
+        if (this.CUIT == "" || this.CUIT.length == 11 && this.cosechaId > 0) {
+            this.declaracionComformidad.verificarDeclaracion();
+        }
+    }
+
+    getCosechas() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        try {
+            this.subscription = this.service.getCosechas().subscribe(
+                (result: any) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.cosechas = result;
+                        this.cosechas = [{ Id: 0, Nombre: "Seleccione" }, ...this.cosechas];
+
+                        this.cosechaId = 0;
+                        this.onChangeCosecha();
+
+                        if (this.campoCosechaId != null && this.campoCosechaId > 0) {
+                            this.cargarDatosCopiar();
+                        } else {
+                            this.campoProveedorE = {};
+                        }
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+    validar() {
+        this.mensajeComponent.setMsgsEmpty();
+
+        if (this.nombreEstablecimiento == "" || !this.nombreEstablecimiento) {
+            this.mensajeComponent.setErrorMsg("Falta completar nombre del establecimiento.");
+            return true;
+        }
+
+        if (!this.localidadId || this.localidadId <= 0) {
+            this.mensajeComponent.setErrorMsg("Falta seleccionar la localidad.");
+            return true;
+        }
+
+        if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
+            if (!this.CUIT) {
+                this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+                return true
+            }
+
+            if (this.CUIT.length != 11) {
+                this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+                return true
+            }
+        }
+
+        if (!this.cosechaId || this.cosechaId <= 0) {
+            this.mensajeComponent.setErrorMsg("Falta seleccionar la cosecha.");
+            return true;
+        }
+
+        if (!this.hectareasTotales) {
+            this.mensajeComponent.setErrorMsg("Falta completar hectareas totales.");
+            return true;
+        }
+        if (this.hectareasTotales <= 0) {
+            this.mensajeComponent.setErrorMsg("Hectareas totales no puede ser 0 o un numero negativo.");
+            return true;
+        }
+        if (!this.hectareasSoja) {
+            this.mensajeComponent.setErrorMsg("Falta completar hectareas de soja.");
+            return true;
+        }
+        if (this.hectareasSoja <= 0) {
+            this.mensajeComponent.setErrorMsg("Hectareas de soja no puede ser 0 o un numero negativo.");
+            return true;
+        }
+        if (this.hectareasSoja > this.hectareasTotales) {
+            this.mensajeComponent.setErrorMsg("Usted declaro mayor cantidad de hectareas de soja que hectareas totales.");
+            return true;
+        }
+        if (!this.latitud || this.latitud == "") {
+            this.mensajeComponent.setErrorMsg("Falta completar Latitud.");
+            return true;
+        }
+        if (!this.longitud || this.longitud == "") {
+            this.mensajeComponent.setErrorMsg("Falta completar Longitud.");
+            return true;
+        }
+        if ((!this.file || this.file.length < 1) && (!this.UsarArchivo_Id || this.Archivo_Id <= 0 || isUndefined(this.Archivo_Id))) {
+            this.mensajeComponent.setErrorMsg("Falta adjuntar el archivo Kmz.");
+            return true;
+        }
+
+        return false
+    }
+
+    redirigirAListado() {
+        debugger;
+        this.goToSeccion('/sustentable/listado-campos');
+
+    }
+
+    onResultadoDeclaracion(result: boolean) {
+        if (!result)
             this.cosechaId = 0;
-          }, 100);
-          return false
-        }
-      }
-
-      this.validarModalDeclaracion();
-    }
-  }
-
-  private validarModalDeclaracion() {
-    if (this.cosechaId > 0) {
-      if (this.esCorredor) {
-
-        if (this.operarComo == 2) {
-          this.declaracionComformidad.CUIT = this.CUIT;
-          this.declaracionComformidad.razonSocialDeclaracion = "";
-        }
-
-        this.declaracionComformidad.proveedorId = this.proveedorId;
-        this.declaracionComformidad.cosechaId = this.cosechaId;
-        this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
-        this.declaracionComformidad.verificarDeclaracion();
-      }
-      else {
-        if (this.proveedorId > 0) {
-
-          //Si cambió el CUIT le saco la razón social
-          if (this.CUITInicial != this.CUIT) {
-            console.log("Lo limpio")
-            console.log("this.CUITInicial:", this.CUITInicial)
-            console.log("this.CUIT:", this.CUIT)
-            this.declaracionComformidad.razonSocialDeclaracion = "";
-          }
-          this.declaracionComformidad.proveedorId = this.proveedorId;
-          this.declaracionComformidad.cosechaId = this.cosechaId;
-          this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
-          this.declaracionComformidad.verificarDeclaracion();
-        }
-      }
-    }
-  }
-
-  campoProveedorAgregar() {
-    this.blockUI.start('Informando campo sustentable.');
-
-    let campoProveedor: CampoProveedor;
-    let campoSustentable: CampoSustentable;
-    let campoCosecha: CampoCosecha;
-
-
-    if (this.validar()) {
-      this.blockUI.stop();
-      return;
     }
 
-    campoSustentable = {
-      Nombre: this.nombreEstablecimiento, Localidad_Id: this.localidadId
+    cambiarModoOperacion() {
+        this.CUIT = "";
+        this.ingresarProveedorPorCUIT = this.operarComo == 2;
+        this.declaracionComformidad.operarComo = this.operarComo;
+
     }
-
-    campoCosecha = {
-      Campo: campoSustentable, Cosecha_Id: this.cosechaId
-    }
-
-    campoProveedor = {
-      HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja,
-      CUIT: this.CUIT,
-      Latitud: this.latitud, Longitud: this.longitud, Proveedor_Id: this.proveedorId, CampoCosecha: campoCosecha
-    }
-
-
-    this.mensajeComponent.setMsgsEmpty();
-    this.spinnerComponent.showIt();
-    try {
-      this.unsubscribe();
-      this.subscription = this.service.campoProveedorAgregar(campoProveedor, this.file).subscribe(
-        (result:any) => {
-          this.spinnerComponent.hideIt();
-          this.blockUI.stop();
-
-          if (result.logout == true) {
-            this.sessionDataService.logout();
-          } else if (result.error != undefined && result.error != "") {
-            this.mensajeComponent.setErrorMsg(result.error);
-          } else if (result.info != undefined) {
-            this.mensajeComponent.setInfoMsg(result.info);
-          } else {
-
-            this.mensajeComponent.setSuccessMsg(result.Mensaje);
-            setTimeout(() => {
-              this.redirigirAListado();
-            }, 3000);
-          }
-        },
-        error => {
-          this.spinnerComponent.hideIt();
-          this.mensajeComponent.setErrorMsg(error.message);
-        }
-
-      );
-    } catch (e) {
-      this.spinnerComponent.hideIt();
-      this.mensajeComponent.setErrorMsg(e);
-      this.blockUI.stop();
-      return false; //<-- Prevent Refresh
-    }
-    this.blockUI.stop();
-    return false; //<-- Prevent Refresh
-
-  }
-
-  verificarCUITIngresado() {
-    this.declaracionComformidad.CUITDeclaracion = this.CUIT;
-
-    if (this.CUIT == "" || this.CUIT.length == 11 && this.cosechaId > 0) {
-      this.declaracionComformidad.verificarDeclaracion();
-    }
-  }
-
-  getCosechas() {
-    this.mensajeComponent.setMsgsEmpty();
-    this.spinnerComponent.showIt();
-    try {
-      this.subscription = this.service.getCosechas().subscribe(
-        (result:any) => {
-          this.spinnerComponent.hideIt();
-          if (result.logout == true) {
-            this.sessionDataService.logout();
-          } else if (result.error != undefined && result.error != "") {
-            this.mensajeComponent.setErrorMsg(result.error);
-          } else if (result.info != undefined) {
-            this.mensajeComponent.setInfoMsg(result.info);
-          } else {
-            this.cosechas = result;
-            this.cosechas = [{ Id: 0, Nombre: "Seleccione" }, ...this.cosechas];
-
-            this.cosechaId = 0;
-            this.onChangeCosecha();
-          }
-        },
-        error => {
-          this.spinnerComponent.hideIt();
-          this.mensajeComponent.setErrorMsg(error.message);
-        }
-
-      );
-    } catch (e) {
-      this.spinnerComponent.hideIt();
-      this.mensajeComponent.setErrorMsg(e);
-      return false; //<-- Prevent Refresh
-    }
-
-    return false; //<-- Prevent Refresh
-  }
-
-  validar() {
-    this.mensajeComponent.setMsgsEmpty();
-
-    if (this.nombreEstablecimiento == "" || !this.nombreEstablecimiento) {
-      this.mensajeComponent.setErrorMsg("Falta completar nombre del establecimiento.");
-      return true;
-    }
-
-    if (!this.localidadId || this.localidadId <= 0) {
-      this.mensajeComponent.setErrorMsg("Falta seleccionar la localidad.");
-      return true;
-    }
-
-    if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
-      if (!this.CUIT) {
-        this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
-        return true
-      }
-
-      if (this.CUIT.length != 11) {
-        this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
-        return true
-      }
-    }
-
-    if (!this.cosechaId || this.cosechaId <= 0) {
-      this.mensajeComponent.setErrorMsg("Falta seleccionar la cosecha.");
-      return true;
-    }
-
-    if (!this.hectareasTotales) {
-      this.mensajeComponent.setErrorMsg("Falta completar hectareas totales.");
-      return true;
-    }
-    if (this.hectareasTotales <= 0) {
-      this.mensajeComponent.setErrorMsg("Hectareas totales no puede ser 0 o un numero negativo.");
-      return true;
-    }
-    if (!this.hectareasSoja) {
-      this.mensajeComponent.setErrorMsg("Falta completar hectareas de soja.");
-      return true;
-    }
-    if (this.hectareasSoja <= 0) {
-      this.mensajeComponent.setErrorMsg("Hectareas de soja no puede ser 0 o un numero negativo.");
-      return true;
-    }
-    if (this.hectareasSoja > this.hectareasTotales) {
-      this.mensajeComponent.setErrorMsg("Usted declaro mayor cantidad de hectareas de soja que hectareas totales.");
-      return true;
-    }
-    if (!this.latitud || this.latitud == "") {
-      this.mensajeComponent.setErrorMsg("Falta completar Latitud.");
-      return true;
-    }
-    if (!this.longitud || this.longitud == "") {
-      this.mensajeComponent.setErrorMsg("Falta completar Longitud.");
-      return true;
-    }
-    if (!this.file || this.file.length < 1) {
-      this.mensajeComponent.setErrorMsg("Falta adjuntar el archivo Kmz.");
-      return true;
-    }
-
-    return false
-  }
-
-  redirigirAListado() {
-    this.goToSeccion('/sustentable/listado-campos');
-
-  }
-
-  onResultadoDeclaracion(result: boolean) {
-    if (!result)
-      this.cosechaId = 0;
-  }
-
-  cambiarModoOperacion() {
-    this.CUIT = "";
-    this.ingresarProveedorPorCUIT = this.operarComo == 2;
-    this.declaracionComformidad.operarComo = this.operarComo;
-
-  }
 }

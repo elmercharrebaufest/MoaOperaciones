@@ -204,7 +204,7 @@
         <div class="logo">
             <img src="/Content/images/header/logo.png" class="img-responsive" (click)="clickLogo()">
         </div>
-        <div *ngIf="!menuSmall" class="col-md-6" style="margin: auto; padding: unset;">
+        <div *ngIf="!menuSmall && isAuthorized('MOSTRAR BUSCADOR INTELIGENTE')" class="col-md-6" style="margin: auto; padding: unset;">
             <app-buscador-inteligente></app-buscador-inteligente>
         </div>
         <div class="User-wrapper">
@@ -331,7 +331,7 @@
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR COMPROBANTES') && isNoGranosSelected()">
-                                <a (click)="goToSeccion('/comprobante-ngs/aprobada')" href="#">
+                                <a (click)="goToSeccion('/comprobante-ngs/registrada')" href="#">
                                     <!--data-toggle="tab">-->Comprobantes
                                 </a>
                             </div>

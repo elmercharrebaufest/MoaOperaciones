@@ -1,6 +1,5 @@
 ﻿using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
-using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +13,11 @@ namespace SustitucionMOAUtils.Interfaces
         DataAgroAuthWSMOAResponse goToDataAgro(string proveedor, string nombre);
         bool ValidarCUITProveedorGranos(ref UsuarioGranos usuario, Proveedor proveedor);
         string ObtenerCBUProveedor(string CUITproveedor);
-        ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT, bool? corredor = false);
+        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT, bool? corredor = false);
         void ValidarNuevoProveedorMultifirma(ref Proveedor nuevoProveedor);
         string VerificarEstadoProveedor(int proveedorID, string usuarioMail);
         bool ProveedorApocrifo(string CUIT);
         decimal TraerTipoDeCambio();
+        SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(CampoProveedor campo, string kmz);
     }
 }
