@@ -195,6 +195,31 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.GESTION_IMPUESTOS_CM05)]
+        [HttpPost]
+        public JsonResult InsertarMovimientoIngresosBrutosCoeficienteUnificado(string cabeceraJson)
+        {
+            try
+            {
+                MovimientoIngresosBrutosCoeficienteUnificadoCustomDto cabecera = JsonConvert.DeserializeObject<MovimientoIngresosBrutosCoeficienteUnificadoCustomDto>(cabeceraJson);
+
+                return JsonCustom(gestionImpuestosService.InsertarMovimientoIngresosBrutosCoeficienteUnificado(cabecera));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.GESTION_IMPUESTOS_CM05)]
         [HttpGet]
         public JsonResult ListarMovimientos(int idCabecera)
         {
