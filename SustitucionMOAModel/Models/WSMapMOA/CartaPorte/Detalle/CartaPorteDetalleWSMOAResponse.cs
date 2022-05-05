@@ -44,6 +44,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle
 
         public string calidadTotalAplicadosString { get; set; }
 
+        public string camaraAPresent { get; set; }
+
         public CartaPorteDetalleWSMOAResponse()
         {
             this.error = new ErrorWS();
