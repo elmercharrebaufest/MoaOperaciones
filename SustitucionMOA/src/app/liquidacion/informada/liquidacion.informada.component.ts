@@ -37,6 +37,7 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
     tipoFiltroFecha = 1;
 
     ngOnInit() {
+        debugger;
         this.setTabs();
         this.checkPermisos();
         this.es = {
@@ -69,9 +70,15 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
 
         this.getData();
     }
+    returnToTodaysDate() {
+        this.filteredfechas = this.data.liquidaciones;
+        if (this.filteredfechas.length > 0) {
+            this.mensajeComponent.setMsgsEmpty();
+        }
+    }
 
-    onSelect(event) {
-
+    onSelect(event: any) {
+        debugger;
         // console.log(event);
         //let d = new Date(Date.parse(event));
         //   this.fechaInicio = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
@@ -92,6 +99,7 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
     }
 
     getData() {
+        debugger;
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.data = null;
@@ -108,11 +116,13 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
+                        debugger;
                         this.data = { liquidaciones: result.data };
                         this.filteredfechas = this.data.liquidaciones;
                         if (this.fechaInicio != null && this.fechaFin != null) {
                             this.actualizarFiltroFecha();
                         }
+
                     }
                 },
                 error => {
@@ -148,7 +158,7 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
             this.mensajeComponent.setMsgsEmpty();
         }
 
-        console.log(this.filteredfechas);
+
     }
 
     setTabs() {
