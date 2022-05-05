@@ -21,6 +21,7 @@ export class ContratoAnulacionComponent extends ContratoBaseComponent {
             { etiqueta: "Contrato Molinos", valor: contratoInfo.nroContrato },
             { etiqueta: "Contrato Proveedor", valor: contratoInfo.contrvend },
             { etiqueta: "Producto", valor: contratoInfo.material },
+            { etiqueta: "TipoContrato", valor: contratoInfo.tipoContrato },
             { etiqueta: "Pactado", valor: contratoInfo.cantKilosString },
             { etiqueta: "Anulado", valor: contratoInfo.anuladoString },
             { etiqueta: "Total", valor: contratoInfo.totalString },
