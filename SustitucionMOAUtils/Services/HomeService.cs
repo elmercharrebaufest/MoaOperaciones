@@ -237,12 +237,12 @@ namespace SustitucionMOAUtils.Services
                     {
                         if (cartasPorteAplicacion == null)
                         {
-                            cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS> { new FechaWS { fechaFin = DateTime.Now.Date.AddDays(1), fechaInicio = new DateTime(2010, 1, 1) } }, new List<string> { palabra });
+                            cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS> { new FechaWS { fechaFin = DateTime.Now.Date.AddDays(1), fechaInicio = DateTime.Now.Date.AddMonths(-6) } }, new List<string> { palabra });
                         }
 
                         if (cartasPorteDescargas == null)
                         {
-                            cartasPorteDescargas = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, new List<FechaWS> { new FechaWS { fechaFin = DateTime.Now.Date.AddDays(1), fechaInicio = new DateTime(2010, 1, 1) } }, new List<string> { palabra });
+                            cartasPorteDescargas = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, new List<FechaWS> { new FechaWS { fechaFin = DateTime.Now.Date.AddDays(1), fechaInicio = DateTime.Now.Date.AddMonths(-6) } }, new List<string> { palabra });
                         }
                     }
                     catch (Exception e)

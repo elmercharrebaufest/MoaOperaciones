@@ -584,6 +584,12 @@
                            /endpoint[@name='SI_MPMF_MOAOP_CONTROL_CARGA']
                            /@address" />
   </parameter>
+  <parameter name="SI_MPMF_MOAOP_COMPROB_NOGRANOS Service Endpoint Address">
+      <parameterEntry kind="XmlFile" scope="Web.config"
+              match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_COMPROB_NOGRANOS']
+                           /@address" />
+  </parameter>
   
 
 </parameters>

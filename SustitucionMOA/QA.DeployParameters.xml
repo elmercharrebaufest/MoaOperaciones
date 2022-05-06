@@ -108,6 +108,7 @@
   <setParameter name="SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CREAR_ORDEN_CARGA&amp;interfaceNamespace=urn%3AOPERACIONES" />
   <setParameter name="SI_MPMF_MOAOP_CONTROL_CARGA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CONTROL_CARGA&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
+  <setParameter name="SI_MPMF_MOAOP_COMPROB_NOGRANOS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_COMPROB_NOGRANOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
 
 </parameters>
