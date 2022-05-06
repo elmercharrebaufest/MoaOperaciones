@@ -147,9 +147,9 @@ namespace SustitucionMOAFotmatter
         public static string FormatearMonto(decimal monto, string moneda)
         {
             if (monto == 0)
-                return string.Format("{0} {1}", FormatearMoneda(moneda), "0,00");
+                return string.Format("{0}{1}", FormatearMoneda(moneda), "0,00");
             else
-                return string.Format("{0} {1}", FormatearMoneda(moneda), monto.ToString("N", new CultureInfo("is-IS")));
+                return string.Format("{0}{1}", FormatearMoneda(moneda), monto.ToString("N", new CultureInfo("is-IS")));
         }
 
         public static string FormatearMonto(decimal montoNumerador, decimal montoDenominador, string moneda)
