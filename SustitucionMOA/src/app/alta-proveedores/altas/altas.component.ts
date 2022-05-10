@@ -219,7 +219,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
         }
     }
     filtrarListadoAlta() {
-        debugger;
         this.data = this.datosAux;
 
         if (this.estadosSelected.length < 1 || this.estadosSelected == null) {
