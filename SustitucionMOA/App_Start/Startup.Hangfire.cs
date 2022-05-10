@@ -30,7 +30,7 @@ namespace SustitucionMOA
             RecurringJob.AddOrUpdate<Jobs.IVerificarTransporteOrdenesDeCargaJob>(
                 "VerificarTransporteOrdenesDeCargaJob",
                 j => j.Execute(),
-                "30 6 * * *", tz);
+                "0 * * * *", tz);
 
             RecurringJob.AddOrUpdate<Jobs.IReporteCamposSustentablesTSAJob>(
                 "ReporteCamposSustentablesTSAJob",
