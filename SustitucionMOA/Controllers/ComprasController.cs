@@ -179,7 +179,7 @@ namespace SustitucionMOA.Controllers
                 //    NumeroSolp = "0212201893"
                 //};
                 //service.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
-                var desde = new DateTime(2018, 01, 01);
+                var desde = new DateTime(2021, 01, 01);
                 var hasta = new DateTime(2022, 12, 01);
                 while (desde < hasta)
                 {
@@ -201,6 +201,7 @@ namespace SustitucionMOA.Controllers
                         Log.Error(e);
                     }
                 }
+                Log.Info($"ObtenerSolpesDesdeSAPJob fin hasta {hasta}");
                 return JsonCustom(new { success = true });
             }
             catch (InfoCustomException e)
