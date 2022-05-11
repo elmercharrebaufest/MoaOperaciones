@@ -951,7 +951,11 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (notificar)
                     {
-                        NotificarSituacionCrediticia(orden);
+                        var emailSenderData = NotificarSituacionCrediticia(orden);
+                        if (emailSenderData != null)
+						{
+                            EmailSender.EnviarMail(emailSenderData.Mails, emailSenderData.Asunto, emailSenderData.Cuerpo, null, null, null, null);
+                        }
                     }
 
                     orden.ActualizarEstado();
@@ -988,28 +992,55 @@ namespace SustitucionMOAUtils.Services
             return result == "CE-00";
         }
 
-        private bool NotificarSituacionCrediticia(OrdenDeCarga orden)
+        public EmailSenderData NotificarSituacionCrediticia(OrdenDeCarga orden)
         {
-            string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-            string mailsCobranzas = ConfigurationManager.AppSettings["EmailToCobranzas"];
-            string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+            var emailSenderData = new EmailSenderData();
+            var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+            var mailsCobranzas = ConfigurationManager.AppSettings["EmailToCobranzas"];
+            var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+            try
+			{
+                if (string.IsNullOrEmpty(mailsMesaVentaFas) &&
+                    string.IsNullOrEmpty(mailsCobranzas) &&
+                    string.IsNullOrEmpty(mailsComerciales))
+				{
+                    return null;
+				}
 
-            var mails = new List<string>();
+                emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
+                emailSenderData.Mails.AddRange(mailsCobranzas.Split(';').ToList());
+                emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
+                if (emailSenderData.Mails.Count == 0)
+				{
+                    return null;
+                }
 
-            mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
-            mails.AddRange(mailsCobranzas.Split(';').ToList());
-            mails.AddRange(mailsComerciales.Split(';').ToList());
+                var cliente = repositorio.Obtener<Proveedor>(orden.Cliente_Id);
+                if (cliente == null)
+				{
+                    return null;
+                }
 
-            var cliente = repositorio.Obtener<Proveedor>(orden.Cliente_Id);
+                var contrato = (string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP) ?? string.Empty;
+                if (string.IsNullOrEmpty(contrato))
+				{
+                    return null;
+                }
 
-            string asunto = string.Concat("Orden de carga #", orden.Id);
-            string cuerpo = string.Format("Orden de carga {0} de cliente {1} no pasó validaciones crediticias. <br> Numero de Contato: {2} <br> Numero de Pedido: {3}"
-                , orden.Id, cliente.RazonSocial, string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP
-                , (string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedidoIngresado : orden.PedidoSAP) ?? "");
+                var pedido = (string.IsNullOrEmpty(orden.PedidoSAP) ? (string.IsNullOrEmpty(orden.NumeroPedido) ? orden.NumeroPedidoIngresado : orden.NumeroPedido) : orden.PedidoSAP) ?? string.Empty;
+                if (string.IsNullOrEmpty(pedido))
+                {
+                    return null;
+                }
 
-            EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
-
-            return true;
+                emailSenderData.Asunto = string.Concat("Orden de carga #", orden.Id);
+                emailSenderData.Cuerpo = string.Format("Orden de carga {0} de cliente {1} no pasó validaciones crediticias. <br> Número de Contrato: {2} <br> Número de Pedido: {3}", orden.Id, cliente.RazonSocial, contrato, pedido);
+                return emailSenderData;
+            }
+            catch
+			{
+                return null;
+			}
         }
 
         private Resultado GenerarEntregaSAP(OrdenDeCarga orden)

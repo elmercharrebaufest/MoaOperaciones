@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
@@ -44,7 +43,6 @@ namespace SustitucionMOAUtils.Email
 
             client.Send(mail);
         }
-
 
         public static void sendFleteEmail(string nroProveedor, string nroFactura, string nroProforma, string importe, byte[] file, string fileName)
         {
@@ -221,7 +219,12 @@ namespace SustitucionMOAUtils.Email
                 throw;
             }
         }
+    }
 
-
+    public class EmailSenderData
+	{
+        public List<string> Mails { get; set; } = new List<string>();
+        public string Asunto { get; set; }
+        public string Cuerpo { get; set; }
     }
 }
