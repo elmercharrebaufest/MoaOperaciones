@@ -7,6 +7,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
 using System;
@@ -35,6 +36,7 @@ namespace SustitucionMOATest.Services
         {
             repositorioMock = new Mock<IRepositorio>();
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
+            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object);
             ordenDeCarga = new OrdenDeCarga
             {
@@ -938,6 +940,214 @@ namespace SustitucionMOATest.Services
 
         }
 
+        [Test()]
+        public void NotificarSituacionCrediticiaTestContratoSAPPedidoSAP()
+		{
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
+            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = "10000000";
+            ordenDeCarga.ContratoIngresado = string.Empty;
+            ordenDeCarga.PedidoSAP = "25250000";
+            ordenDeCarga.NumeroPedido = string.Empty;
+            ordenDeCarga.NumeroPedidoIngresado = string.Empty;
+            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var result = new EmailSenderData()
+            {
+                Asunto = "Orden de carga #1",
+                Cuerpo = "Orden de carga 1 de cliente RS no pasó validaciones crediticias. <br> Número de Contrato: 10000000 <br> Número de Pedido: 25250000"
+            };
+            Assert.AreEqual(result.Asunto, response.Asunto);
+            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
+        }
 
+        [Test()]
+        public void NotificarSituacionCrediticiaTestContratoIngresadoPedidoSAP()
+        {
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
+            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = string.Empty;
+            ordenDeCarga.ContratoIngresado = "10000000";
+            ordenDeCarga.PedidoSAP = "25250000";
+            ordenDeCarga.NumeroPedido = string.Empty;
+            ordenDeCarga.NumeroPedidoIngresado = string.Empty;
+            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var result = new EmailSenderData()
+            {
+                Asunto = "Orden de carga #1",
+                Cuerpo = "Orden de carga 1 de cliente RS no pasó validaciones crediticias. <br> Número de Contrato: 10000000 <br> Número de Pedido: 25250000"
+            };
+            Assert.AreEqual(result.Asunto, response.Asunto);
+            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
+        }
+
+        [Test()]
+        public void NotificarSituacionCrediticiaTestContratoSAPNumeroPedido()
+        {
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
+            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = "10000000";
+            ordenDeCarga.ContratoIngresado = string.Empty;
+            ordenDeCarga.PedidoSAP = string.Empty;
+            ordenDeCarga.NumeroPedido = "25250000";
+            ordenDeCarga.NumeroPedidoIngresado = string.Empty;
+            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var result = new EmailSenderData()
+            {
+                Asunto = "Orden de carga #1",
+                Cuerpo = "Orden de carga 1 de cliente RS no pasó validaciones crediticias. <br> Número de Contrato: 10000000 <br> Número de Pedido: 25250000"
+            };
+            Assert.AreEqual(result.Asunto, response.Asunto);
+            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
+        }
+
+        [Test()]
+        public void NotificarSituacionCrediticiaTestContratoIngresadoNumeroPedido()
+        {
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
+            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = string.Empty;
+            ordenDeCarga.ContratoIngresado = "10000000";
+            ordenDeCarga.PedidoSAP = string.Empty;
+            ordenDeCarga.NumeroPedido = "25250000";
+            ordenDeCarga.NumeroPedidoIngresado = string.Empty;
+            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var result = new EmailSenderData()
+            {
+                Asunto = "Orden de carga #1",
+                Cuerpo = "Orden de carga 1 de cliente RS no pasó validaciones crediticias. <br> Número de Contrato: 10000000 <br> Número de Pedido: 25250000"
+            };
+            Assert.AreEqual(result.Asunto, response.Asunto);
+            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
+        }
+
+        [Test()]
+        public void NotificarSituacionCrediticiaTestContratoSAPNumeroPedidoIngresado()
+        {
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
+            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = "10000000";
+            ordenDeCarga.ContratoIngresado = string.Empty;
+            ordenDeCarga.PedidoSAP = string.Empty;
+            ordenDeCarga.NumeroPedido = string.Empty;
+            ordenDeCarga.NumeroPedidoIngresado = "25250000";
+            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var result = new EmailSenderData()
+            {
+                Asunto = "Orden de carga #1",
+                Cuerpo = "Orden de carga 1 de cliente RS no pasó validaciones crediticias. <br> Número de Contrato: 10000000 <br> Número de Pedido: 25250000"
+            };
+            Assert.AreEqual(result.Asunto, response.Asunto);
+            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
+        }
+
+        [Test()]
+        public void NotificarSituacionCrediticiaTestContratoIngresadoNumeroPedidoIngresado()
+        {
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
+            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = string.Empty;
+            ordenDeCarga.ContratoIngresado = "10000000";
+            ordenDeCarga.PedidoSAP = string.Empty;
+            ordenDeCarga.NumeroPedido = string.Empty;
+            ordenDeCarga.NumeroPedidoIngresado = "25250000";
+            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var result = new EmailSenderData()
+            {
+                Asunto = "Orden de carga #1",
+                Cuerpo = "Orden de carga 1 de cliente RS no pasó validaciones crediticias. <br> Número de Contrato: 10000000 <br> Número de Pedido: 25250000"
+            };
+            Assert.AreEqual(result.Asunto, response.Asunto);
+            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
+        }
+
+        [Test()]
+        public void NotificarSituacionCrediticiaTestAppSettingsNull()
+        {
+            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
+            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            Assert.IsNull(response);
+        }
+
+        [Test()]
+        public void NotificarSituacionCrediticiaTestClientNotFound()
+        {
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
+            ordenDeCarga.Cliente_Id = 1;
+            ordenDeCarga.ContratoSAP = string.Empty;
+            ordenDeCarga.ContratoIngresado = string.Empty;
+            ordenDeCarga.PedidoSAP = string.Empty;
+            ordenDeCarga.NumeroPedido = string.Empty;
+            ordenDeCarga.NumeroPedidoIngresado = string.Empty;
+            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            Assert.IsNull(response);
+        }
+
+        [Test()]
+        public void NotificarSituacionCrediticiaTestContratoNull()
+        {
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
+            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = string.Empty;
+            ordenDeCarga.ContratoIngresado = string.Empty;
+            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            Assert.IsNull(response);
+        }
+
+        [Test()]
+        public void NotificarSituacionCrediticiaTestPedidoNull()
+        {
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
+            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = "10000000";
+            ordenDeCarga.ContratoIngresado = string.Empty;
+            ordenDeCarga.PedidoSAP = string.Empty;
+            ordenDeCarga.NumeroPedido = string.Empty;
+            ordenDeCarga.NumeroPedidoIngresado = string.Empty;
+            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            Assert.IsNull(response);
+        }
+
+        private void AddProvider(int id, EstadoAprobacion estadoAprobacion, string observaciones, string razonSocial, string mail, string cUIT, TipoUsuario tipoProveedor)
+		{
+            var proveedor = new Proveedor
+            {
+                Id = id,
+                EstadoAprobacion = estadoAprobacion,
+                Observaciones = observaciones,
+                RazonSocial = razonSocial,
+                Mail = mail,
+                CUIT = cUIT,
+                TipoProveedor = tipoProveedor,
+            };
+            repositorioMock
+                .Setup(x => x.Obtener<Proveedor>(It.IsIn<int>(id)))
+                .Returns(proveedor);
+        }
     }
 }
