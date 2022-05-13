@@ -34,6 +34,7 @@ namespace SustitucionMOATest.Controllers
         private string expectedJson;
         private string resultJson;
         private string mailUsuario = "mail@mail.com";
+        bool UsarArchivoId = false;
 
         [SetUp]
         public void SetUp()
@@ -68,14 +69,15 @@ namespace SustitucionMOATest.Controllers
             };
 
             HttpPostedFileBase file = null;
+            bool usarArchivo = false;
 
             string campoProveedorJson = JsonConvert.SerializeObject(campoProveedor);
 
             campoSustentableServiceMock.Setup(s => s.Agregar(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<CampoProveedor>(),
-                                                                  It.IsAny<HttpPostedFileBase>())).Returns(expected);
+                                                                  It.IsAny<HttpPostedFileBase>(), It.IsAny<bool>())).Returns(expected);
 
-            var result = target.CampoProveedorAgregar(campoProveedorJson, file);
+            var result = target.CampoProveedorAgregar(campoProveedorJson, file, usarArchivo);
 
 
             expectedJson = JsonConvert.SerializeObject(expected);
@@ -98,9 +100,9 @@ namespace SustitucionMOATest.Controllers
 
             campoSustentableServiceMock.Setup(s => s.Agregar(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<CampoProveedor>(),
-                                                                  It.IsAny<HttpPostedFileBase>())).Throws(new ValidationCustomException("Mensaje de error"));
+                                                                  It.IsAny<HttpPostedFileBase>(), It.IsAny<bool>())).Throws(new ValidationCustomException("Mensaje de error"));
 
-            var result = target.CampoProveedorAgregar(campoProveedorJson, file);
+            var result = target.CampoProveedorAgregar(campoProveedorJson, file, UsarArchivoId);
 
             expectedJson = JsonConvert.SerializeObject(expected);
             resultJson = JsonConvert.SerializeObject(result.Data.ToString());
@@ -123,9 +125,9 @@ namespace SustitucionMOATest.Controllers
 
             campoSustentableServiceMock.Setup(s => s.Agregar(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<CampoProveedor>(),
-                                                                  It.IsAny<HttpPostedFileBase>())).Throws(new InfoCustomException("Mensaje de info"));
+                                                                  It.IsAny<HttpPostedFileBase>(), It.IsAny<bool>())).Throws(new InfoCustomException("Mensaje de info"));
 
-            var result = target.CampoProveedorAgregar(campoProveedorJson, file);
+            var result = target.CampoProveedorAgregar(campoProveedorJson, file,UsarArchivoId);
 
             expectedJson = JsonConvert.SerializeObject(expected);
             resultJson = JsonConvert.SerializeObject(result.Data.ToString());
