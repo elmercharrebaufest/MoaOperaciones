@@ -195,7 +195,7 @@ namespace SustitucionMOAUtils.Services
                     registroHistorial.FechaCambio = DateTime.Now;
                     registroHistorial.Usuario_Id = usuario.Id;
                     registroHistorial.OrdenDeCarga_Id = ordenDeCarga.Id;
-
+                    registroHistorial.NumeroEntrega = ordenDeCarga.NumeroEntrega;
                     historialCambios.Add(registroHistorial);
                 }
             }
@@ -210,9 +210,10 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             NotificarTransporte(ordenEditar.Id);
-
+            
             if (historialCambios.Count > 0)
             {
+                //Aviso de Edición de Orden de Carga
                 var emailSenderData = ConstruirCuerpoEmail(historialCambios);
                 if (emailSenderData != null)
                 {
@@ -966,23 +967,23 @@ namespace SustitucionMOAUtils.Services
             return result == "CE-00";
         }
 
-        private EmailSenderData ConstruirCuerpoEmail(List<OrdenDeCargaCambiosHistorial> ordenDeCargaHistorial)
+        public EmailSenderData ConstruirCuerpoEmail(List<OrdenDeCargaCambiosHistorial> ordenDeCargaHistorial)
         {
             var emailSenderData = new EmailSenderData();
             var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
             var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
             try
             {
-                if (ordenDeCargaHistorial.Count == 0)
-				{
-                    return null;
-				}
-
                 if (string.IsNullOrEmpty(mailsMesaVentaFas) &&
                     string.IsNullOrEmpty(mailsComerciales))
                 {
                     return null;
                 }
+
+                if (ordenDeCargaHistorial.Count == 0)
+				{
+                    return null;
+				}
 
                 emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
                 emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
@@ -998,7 +999,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: {ordenDeCargaHistorial[0].OrdenDeCarga_Id}";
-                emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, cambios);
+                emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, ordenDeCargaHistorial[0].NumeroEntrega, cambios);
                 return emailSenderData;
             }
             catch (Exception ex)
