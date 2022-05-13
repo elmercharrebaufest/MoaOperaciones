@@ -47,9 +47,7 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
             ValidarCampo(usuario, campoProveedor, archivoKmz);
-
             var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == campoProveedor.CampoCosecha.Cosecha_Id && d.CUIT == campoProveedor.CUIT);
-
             campoProveedor.RazonSocial = declaracion.RazonSocial;
             campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
@@ -73,8 +71,7 @@ namespace SustitucionMOAUtils.Services
                 GuardarArchivoKMZ(campoProveedor, archivoKmz);
                 repositorio.GuardarCambios();                
 
-            }
-            //var ruta = ObtenerRutaArchivoKMZ(campoProveedor.CampoCosecha_Id, campoProveedor.Proveedor_Id);
+            }     
             var archivo = archivoKmz == null ? Convert.ToBase64String(System.IO.File.ReadAllBytes(ruta)) : ConvertirArchivo64(archivoKmz);
             InformarCampoSustentable(campoProveedor, archivo);
             return new Resultado { IdEntidad = campoProveedor.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableAgregado };

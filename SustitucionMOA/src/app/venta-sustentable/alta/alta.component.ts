@@ -134,7 +134,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
                         this.Archivo_Id = result.Archivo_Id;
                         this.UsarArchivo_Id = true;
                         this.Proveedor_Id = result.Proveedor_Id;
-                        this.campoCosechaId = result.CampoCosechaId;
+                        
 
                         if (this.esCorredor) {
                             if (this.Proveedor_Id != this.proveedorId) {
