@@ -31,12 +31,12 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpPost]
-        public JsonResult CampoProveedorAgregar(string campoProveedorJson, HttpPostedFileBase archivoKmz)
+        public JsonResult CampoProveedorAgregar(string campoProveedorJson, HttpPostedFileBase archivoKmz, bool UsarArchivoId)
         {
             try
             {
                 var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);               
-                return JsonCustom(campoSustentableService.Agregar(SessionPersister.User.username, campoProveedor, archivoKmz));
+                return JsonCustom(campoSustentableService.Agregar(SessionPersister.User.username, campoProveedor, archivoKmz, UsarArchivoId));
             }
             catch (InfoCustomException e)
             {
