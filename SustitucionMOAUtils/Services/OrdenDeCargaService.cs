@@ -332,7 +332,7 @@ namespace SustitucionMOAUtils.Services
                         ordenDeCarga.ContratoSAP = "";
                         ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
                         NotificarVariosContratos(ordenDeCarga.Id);
-                        
+
                     }
                 }
                 else
@@ -1065,18 +1065,20 @@ namespace SustitucionMOAUtils.Services
 
             try
             {
-                    var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
-                    string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-                    string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
-                    var mails = mailsMesaVentaFas.Split(';').ToList();
-                    mails.AddRange(mailsMesaENTSL.Split(';').ToList());
-                    string asunto = "Varios pedidos pendientes para el mismo cliente";
-                    string cuerpo = string.Format("Se encontraron varios Pedidos pendientes para el mismo cliente. Orden de carga {0} de cliente {1} <br> Numero de Pedido: {2}",
-                         orden.Id, orden.Cliente.RazonSocial, (string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedidoIngresado : orden.PedidoSAP) ?? "");
-                    EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
+                var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
+                string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+                string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
+                string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+                var mails = mailsMesaVentaFas.Split(';').ToList();
+                mails.AddRange(mailsMesaENTSL.Split(';').ToList());
+                mails.AddRange(mailsComerciales.Split(';').ToList());
+                string asunto = "Varios pedidos pendientes para el mismo cliente";
+                string cuerpo = string.Format("Se encontraron varios Pedidos pendientes para el mismo cliente. Orden de carga {0} de cliente {1} <br> Numero de Pedido: {2}",
+                     orden.Id, orden.Cliente.RazonSocial, (string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedidoIngresado : orden.PedidoSAP) ?? "");
+                EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
 
-                    mensaje = "Notificación enviada";
-                
+                mensaje = "Notificación enviada";
+
             }
             catch (Exception e)
             {
@@ -1088,21 +1090,23 @@ namespace SustitucionMOAUtils.Services
 
         public string NotificarVariosContratos(int ordenDeCargaId)
         {
-                    string mensaje = "";
-
+            string mensaje = "";
             try
             {
-                    var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);              
-                    string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-                    string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
-                    var mails = mailsMesaVentaFas.Split(';').ToList();
-                    mails.AddRange(mailsMesaENTSL.Split(';').ToList());
-                    string asunto = "Varios ctto pendientes";
-                    string cuerpo = string.Format("Se encontraron varios contratos pendientes para el mismo cliente. Orden de carga {0} de cliente {1} <br> Numero de Contrato: {2}",
-                        orden.Id, orden.Cliente.RazonSocial, string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP);
-                    EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
 
-                    mensaje = "Notificación enviada";               
+                var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
+                string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+                string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
+                string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+                var mails = mailsMesaVentaFas.Split(';').ToList();
+                mails.AddRange(mailsMesaENTSL.Split(';').ToList());
+                mails.AddRange(mailsComerciales.Split(';').ToList());
+                string asunto = "Varios ctto pendientes";
+                string cuerpo = string.Format("Se encontraron varios contratos pendientes para el mismo cliente. Orden de carga {0} de cliente {1} <br> Numero de Contrato: {2}",
+                    orden.Id, orden.Cliente.RazonSocial, string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP);
+                EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
+
+                mensaje = "Notificación enviada";
 
             }
             catch (Exception e)
