@@ -941,7 +941,7 @@ namespace SustitucionMOATest.Services
         }
 
         [Test()]
-        public void NotificarSituacionCrediticiaTestContratoSAPPedidoSAP()
+        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoSAPPedidoSAP()
 		{
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
@@ -953,7 +953,7 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.PedidoSAP = "25250000";
             ordenDeCarga.NumeroPedido = string.Empty;
             ordenDeCarga.NumeroPedidoIngresado = string.Empty;
-            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             var result = new EmailSenderData()
             {
                 Asunto = "Orden de carga #1",
@@ -964,7 +964,7 @@ namespace SustitucionMOATest.Services
         }
 
         [Test()]
-        public void NotificarSituacionCrediticiaTestContratoIngresadoPedidoSAP()
+        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoIngresadoPedidoSAP()
         {
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
@@ -976,7 +976,7 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.PedidoSAP = "25250000";
             ordenDeCarga.NumeroPedido = string.Empty;
             ordenDeCarga.NumeroPedidoIngresado = string.Empty;
-            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             var result = new EmailSenderData()
             {
                 Asunto = "Orden de carga #1",
@@ -987,7 +987,7 @@ namespace SustitucionMOATest.Services
         }
 
         [Test()]
-        public void NotificarSituacionCrediticiaTestContratoSAPNumeroPedido()
+        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoSAPNumeroPedido()
         {
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
@@ -999,7 +999,7 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.PedidoSAP = string.Empty;
             ordenDeCarga.NumeroPedido = "25250000";
             ordenDeCarga.NumeroPedidoIngresado = string.Empty;
-            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             var result = new EmailSenderData()
             {
                 Asunto = "Orden de carga #1",
@@ -1010,7 +1010,7 @@ namespace SustitucionMOATest.Services
         }
 
         [Test()]
-        public void NotificarSituacionCrediticiaTestContratoIngresadoNumeroPedido()
+        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoIngresadoNumeroPedido()
         {
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
@@ -1022,7 +1022,7 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.PedidoSAP = string.Empty;
             ordenDeCarga.NumeroPedido = "25250000";
             ordenDeCarga.NumeroPedidoIngresado = string.Empty;
-            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             var result = new EmailSenderData()
             {
                 Asunto = "Orden de carga #1",
@@ -1033,7 +1033,7 @@ namespace SustitucionMOATest.Services
         }
 
         [Test()]
-        public void NotificarSituacionCrediticiaTestContratoSAPNumeroPedidoIngresado()
+        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoSAPNumeroPedidoIngresado()
         {
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
@@ -1045,7 +1045,7 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.PedidoSAP = string.Empty;
             ordenDeCarga.NumeroPedido = string.Empty;
             ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             var result = new EmailSenderData()
             {
                 Asunto = "Orden de carga #1",
@@ -1056,7 +1056,7 @@ namespace SustitucionMOATest.Services
         }
 
         [Test()]
-        public void NotificarSituacionCrediticiaTestContratoIngresadoNumeroPedidoIngresado()
+        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoIngresadoNumeroPedidoIngresado()
         {
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
@@ -1068,7 +1068,7 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.PedidoSAP = string.Empty;
             ordenDeCarga.NumeroPedido = string.Empty;
             ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             var result = new EmailSenderData()
             {
                 Asunto = "Orden de carga #1",
@@ -1079,15 +1079,15 @@ namespace SustitucionMOATest.Services
         }
 
         [Test()]
-        public void NotificarSituacionCrediticiaTestAppSettingsNull()
+        public void ConstruirCuerpoEmailOrdenDeCargaCrediticiaTestAppSettingsNull()
         {
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             Assert.IsNull(response);
         }
 
         [Test()]
-        public void NotificarSituacionCrediticiaTestClientNotFound()
+        public void ConstruirCuerpoEmailOrdenDeCargaTestClientNotFound()
         {
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
@@ -1098,12 +1098,12 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.PedidoSAP = string.Empty;
             ordenDeCarga.NumeroPedido = string.Empty;
             ordenDeCarga.NumeroPedidoIngresado = string.Empty;
-            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             Assert.IsNull(response);
         }
 
         [Test()]
-        public void NotificarSituacionCrediticiaTestContratoNull()
+        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoNull()
         {
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
@@ -1112,12 +1112,12 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.Cliente_Id = 301301301;
             ordenDeCarga.ContratoSAP = string.Empty;
             ordenDeCarga.ContratoIngresado = string.Empty;
-            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             Assert.IsNull(response);
         }
 
         [Test()]
-        public void NotificarSituacionCrediticiaTestPedidoNull()
+        public void ConstruirCuerpoEmailOrdenDeCargaTestPedidoNull()
         {
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
@@ -1129,7 +1129,7 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.PedidoSAP = string.Empty;
             ordenDeCarga.NumeroPedido = string.Empty;
             ordenDeCarga.NumeroPedidoIngresado = string.Empty;
-            var response = target.NotificarSituacionCrediticia(ordenDeCarga);
+            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             Assert.IsNull(response);
         }
 
