@@ -12,7 +12,7 @@ namespace SustitucionMOAUtils.Interfaces
     public interface ICampoSustentableService
     {
         string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, int cosechaId, string CUITDeclaracion, HttpPostedFileBase fileSubido);
-        Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz);
+        Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz, bool UsarArchivoId);
         string Borrar(string mailUsuario, int campoCosechaId, int proveedorId);
         Resultado Editar(string mailUsuario, CampoProveedor campoProveedorObj, HttpPostedFileBase archivoKmz);
         string ExportarCamposProveedores(string mailUsuario);
