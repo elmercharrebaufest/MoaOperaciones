@@ -45,6 +45,8 @@ namespace SustitucionMOATest.Services
             var proveedorId = 1;
             var usuarioId = 2;
             var mailUsuario = "mail@mail.com";
+            bool UsarArchivoId = false;
+
 
             var proveedor = new Proveedor
             {
@@ -135,7 +137,7 @@ namespace SustitucionMOATest.Services
 
             ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"] = "C:/ArchivosCampoSustentableTest";
 
-            var result = target.Agregar(mailUsuario, campoCreado, uploadedFile.Object);
+            var result = target.Agregar(mailUsuario, campoCreado, uploadedFile.Object, UsarArchivoId);
 
             repositorioMock
                  .Verify(x => x.Obtener(It.Is<Expression<Func<Usuario, bool>>>(l => l.Compile().Invoke(usuario))), Times.Once);
