@@ -180,7 +180,7 @@ namespace SustitucionMOAUtils.Services
 
             ordenEditar.Observacion = ordenDeCarga.Observacion;
             ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
-
+            
             foreach (var prop in listaValoresDiferentes)
             {
 
@@ -195,7 +195,7 @@ namespace SustitucionMOAUtils.Services
                     registroHistorial.FechaCambio = DateTime.Now;
                     registroHistorial.Usuario_Id = usuario.Id;
                     registroHistorial.OrdenDeCarga_Id = ordenDeCarga.Id;
-
+                    registroHistorial.NumeroEntrega = ordenDeCarga.NumeroEntrega;
                     historialCambios.Add(registroHistorial);
                 }
             }
@@ -210,44 +210,18 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             NotificarTransporte(ordenEditar.Id);
-
+            
             if (historialCambios.Count > 0)
             {
-                EnviarMailEdicionOrdenDeCarga(historialCambios);
-            }
+                //Aviso de Edición de Orden de Carga
+                var emailSenderData = ConstruirCuerpoEmail(historialCambios);
+                if (emailSenderData != null)
+                {
+                    EmailSender.EnviarMail(emailSenderData);
+                }
+			}
 
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
-        }
-
-        private void EnviarMailEdicionOrdenDeCarga(List<OrdenDeCargaCambiosHistorial> ordenDeCargaHistorial)
-        {
-            try
-            {
-                var cambios = new StringBuilder();
-
-                foreach (var cambio in ordenDeCargaHistorial)
-                {
-                    cambios.AppendLine($"<tr><td>{cambio.NombreColumnaCambio}</td><td>{cambio.Antes}</td><td>{cambio.Despues}</td><td>{cambio.FechaCambio}</td></tr>");
-                }
-
-                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                var cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, cambios);
-                string asunto = "Molinos Agro - Edición en su orden de carga n°: " + ordenDeCargaHistorial[0].OrdenDeCarga_Id;
-                var copia = new List<string>() { };
-                //var Destinatario = ConfigurationManager.AppSettings["EmailToComerciales"].Split(';').ToList();
-                var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
-                var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-
-                var Destinatario = mailsMesaVentaFas.Split(';').ToList();
-                Destinatario.AddRange(mailsComerciales.Split(';').ToList());
-
-
-                EmailSender.EnviarMail(Destinatario, asunto, cuerpo, copia, null, null, null);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-            }
         }
 
         private bool CrearOrdenEnSAP(OrdenDeCarga orden, Proveedor cliente, bool forzarCreacion)
@@ -951,10 +925,11 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (notificar)
                     {
-                        var emailSenderData = NotificarSituacionCrediticia(orden);
+                        //Notificar situacion crediticia
+                        var emailSenderData = ConstruirCuerpoEmail(orden);
                         if (emailSenderData != null)
 						{
-                            EmailSender.EnviarMail(emailSenderData.Mails, emailSenderData.Asunto, emailSenderData.Cuerpo, null, null, null, null);
+                            EmailSender.EnviarMail(emailSenderData);
                         }
                     }
 
@@ -992,7 +967,49 @@ namespace SustitucionMOAUtils.Services
             return result == "CE-00";
         }
 
-        public EmailSenderData NotificarSituacionCrediticia(OrdenDeCarga orden)
+        public EmailSenderData ConstruirCuerpoEmail(List<OrdenDeCargaCambiosHistorial> ordenDeCargaHistorial)
+        {
+            var emailSenderData = new EmailSenderData();
+            var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+            var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+            try
+            {
+                if (string.IsNullOrEmpty(mailsMesaVentaFas) &&
+                    string.IsNullOrEmpty(mailsComerciales))
+                {
+                    return null;
+                }
+
+                if (ordenDeCargaHistorial.Count == 0)
+				{
+                    return null;
+				}
+
+                emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
+                emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
+                if (emailSenderData.Mails.Count == 0)
+                {
+                    return null;
+                }
+
+                var cambios = new StringBuilder();
+                foreach (var cambio in ordenDeCargaHistorial)
+                {
+                    cambios.AppendLine($"<tr><td>{cambio.NombreColumnaCambio}</td><td>{cambio.Antes}</td><td>{cambio.Despues}</td><td>{cambio.FechaCambio}</td></tr>");
+                }
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
+                emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: {ordenDeCargaHistorial[0].OrdenDeCarga_Id}";
+                emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, ordenDeCargaHistorial[0].NumeroEntrega, cambios);
+                return emailSenderData;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                return null;
+            }
+        }
+
+        public EmailSenderData ConstruirCuerpoEmail(OrdenDeCarga orden)
         {
             var emailSenderData = new EmailSenderData();
             var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
@@ -1033,8 +1050,8 @@ namespace SustitucionMOAUtils.Services
                     return null;
                 }
 
-                emailSenderData.Asunto = string.Concat("Orden de carga #", orden.Id);
-                emailSenderData.Cuerpo = string.Format("Orden de carga {0} de cliente {1} no pasó validaciones crediticias. <br> Número de Contrato: {2} <br> Número de Pedido: {3}", orden.Id, cliente.RazonSocial, contrato, pedido);
+                emailSenderData.Asunto = $"Orden de carga #{orden.Id}";
+                emailSenderData.Cuerpo = $"Orden de carga {orden.Id} de cliente {cliente.RazonSocial} no pasó validaciones crediticias. <br> Número de Contrato: {contrato} <br> Número de Pedido: {pedido}";
                 return emailSenderData;
             }
             catch
