@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
@@ -44,7 +43,6 @@ namespace SustitucionMOAUtils.Email
 
             client.Send(mail);
         }
-
 
         public static void sendFleteEmail(string nroProveedor, string nroFactura, string nroProforma, string importe, byte[] file, string fileName)
         {
@@ -221,7 +219,69 @@ namespace SustitucionMOAUtils.Email
                 throw;
             }
         }
+        public static void EnviarMail(EmailSenderData emailSenderData)
+        {
+            try
+            {
+                MailMessage oMensaje = new MailMessage
+                {
+                    From = new MailAddress(EmailConfig.getEmailAddFrom()),
+                    Body = emailSenderData.Cuerpo,
+                    Subject = emailSenderData.Asunto,
+                    IsBodyHtml = true,
+                };
+                foreach (string mail in emailSenderData.Mails)
+                {
+                    if (!string.IsNullOrEmpty(mail))
+                    {
+                        oMensaje.To.Add(mail);
+                    }
+                }
+                if (emailSenderData.Mails == null || emailSenderData.Mails.Count() == 0)
+                {
+                    oMensaje.To.Add(EmailConfig.getEmailAddFrom());
+                }
 
+                if (emailSenderData.Copias != null)
+                {
+                    foreach (string copia in emailSenderData.Copias)
+                    {
+                        oMensaje.CC.Add(copia);
+                    }
+                }
+                if (emailSenderData.VistaAlternativa != null)
+                {
+                    oMensaje.AlternateViews.Add(emailSenderData.VistaAlternativa);
+                }
 
+                oMensaje.BodyEncoding = Encoding.UTF8;
+                oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
+                if (emailSenderData.Archivo != null)
+                {
+                    using (var stream = new MemoryStream(emailSenderData.Archivo))
+                    {
+                        Attachment attachment = new Attachment(stream, emailSenderData.NombreArchivo);
+                        oMensaje.Attachments.Add(attachment);
+                    }
+                }
+                SmtpClient oCliente = GetSmtpClient();
+                oCliente.Send(oMensaje);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+    }
+
+    public class EmailSenderData
+	{
+        public List<string> Mails { get; set; } = new List<string>();
+        public string Asunto { get; set; }
+        public string Cuerpo { get; set; }
+        public List<string> Copias { get; set; } = null;
+        public AlternateView VistaAlternativa { get; set; } = null;
+        public byte[] Archivo { get; set; } = null;
+        public string NombreArchivo { get; set; } = null;
     }
 }
