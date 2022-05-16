@@ -7,8 +7,6 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
-using SustitucionMOAUtils.Email;
-using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
 using System;
@@ -30,7 +28,6 @@ namespace SustitucionMOATest.Services
         private Mock<IRepositorio> repositorioMock;
         private Mock<IOrdenCargaConsumerMOA> consumerOrdenCargaMOA;
         private OrdenDeCarga ordenDeCarga;
-        private Mock<IOrdenDeCargaService> ordenDeCargaService;
 
 
         [SetUp]
@@ -38,7 +35,6 @@ namespace SustitucionMOATest.Services
         {
             repositorioMock = new Mock<IRepositorio>();
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
-            ordenDeCargaService = new Mock<IOrdenDeCargaService>();
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object);
             ordenDeCarga = new OrdenDeCarga
             {
@@ -58,16 +54,10 @@ namespace SustitucionMOATest.Services
                 CodigoCorredor = "",
                 Producto = new Material()
                 {
-                    Id = 1,
+                    Id =1,
                     CodigoSap = ""
                 },
-                NumeroPedidoIngresado = "0000988388339",
-                ContratoSAP = "",
-                Cliente = new Proveedor()
-                {
-                    RazonSocial = "prueba"
-                }
-                
+                NumeroPedido = ""
               
             };
         }
@@ -947,121 +937,6 @@ namespace SustitucionMOATest.Services
             Assert.IsTrue(result.ordenes.Count == 1);
 
         }
-
-        [Test()]
-        public void AgregarNotificarVariosPedidosTest()
-        {
-            string mailUsuario = "usuario@test.com";
-
-            var proveedor = new Proveedor
-            {
-                Id = 1,
-                EstadoAprobacion = EstadoAprobacion.Aprobado,
-                Observaciones = "Test",
-                RazonSocial = "RS",
-                Mail = mailUsuario,
-                CUIT = "233333333333",
-                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
-            };
-
-            var permisos = new PermisoPorRol()
-            {
-                Id = 95,
-                Permiso = "VER ORDENES DE CARGA PARA COMERCIALES"
-
-            };
-
-            var roles = new Rol
-            {
-                Id = 1,
-                Nombre = "Administracion",
-                PermisosAsociados = new List<PermisoPorRol>()
-                {
-                   permisos
-                }
-
-            };
-            var usuario = new Usuario
-            {
-                Id = 1,
-                Mail = mailUsuario,
-                CUITRegistro = "233333333333",
-                Proveedores = new List<Proveedor>()
-                {
-                    proveedor
-                },
-
-                Roles = new List<Rol>()
-                {
-                    roles
-                }
-
-
-            };
-
-          
-            repositorioMock
-                .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
-                .Returns(usuario);
-
-            repositorioMock
-                 .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
-                 .Returns(proveedor);
-
-            repositorioMock
-                .Setup(x => x.Obtener<Rol>(It.IsAny<int>()))
-                .Returns(roles);
-
-            repositorioMock
-               .Setup(x => x.Obtener<PermisoPorRol>(It.IsAny<int>()))
-               .Returns(permisos);
-
-            repositorioMock
-               .Setup(x => x.Obtener<Material>(It.IsAny<int>()))
-               .Returns(ordenDeCarga.Producto);
-
-            repositorioMock
-               .Setup(y => y.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>()))
-               .Returns(proveedor);
-
-            consumerOrdenCargaMOA
-                .Setup(x => x.ControlCargaRequest(It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>()))
-                .Returns("0012059285,0012059686,0012060616,0012061378,0012061439,0012061868");
-
-            repositorioMock
-                .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
-                .Returns(ordenDeCarga);
-            
-
-            consumerOrdenCargaMOA
-               .Setup(x => x.OrdenCargaControlEstadoRequest(It.IsAny<string>(),
-               It.IsAny<string>(),
-               It.IsAny<string>()))
-               .Returns("CE-07");
-
-            ordenDeCargaService.Setup(x => x.NotificarVariosPedidos(It.IsAny<int>())).Returns("Notificación enviada");
-
-            ConfigurationManager.AppSettings["CantidadOrdenDeCarga"] = "30000";
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "";
-            ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "";
-
-            var result = target.Agregar(ordenDeCarga, mailUsuario);
-
-            var expected = new Resultado { IdEntidad = 1, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
-
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
-            repositorioMock.Verify(x => x.Agregar(It.IsAny<OrdenDeCarga>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
-
-            Assert.AreEqual(expected, result);
-        }
-
 
 
     }
