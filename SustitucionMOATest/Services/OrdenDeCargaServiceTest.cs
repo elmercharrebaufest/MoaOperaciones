@@ -1145,11 +1145,11 @@ namespace SustitucionMOATest.Services
                     OrdenDeCarga_Id = 636, 
                     NombreColumnaCambio = "PatenteAcoplado", 
                     Antes = "ABC123", 
-                    Despues = "123ABC", 
-                    NumeroEntrega = "E1020"
+                    Despues = "123ABC"
                 }
             };
-            var response = target.ConstruirCuerpoEmail(ordenDeCargaCambiosHistorial);
+            var numeroEntrega = "E1020";
+            var response = target.ConstruirCuerpoEmail(ordenDeCargaCambiosHistorial, numeroEntrega);
             var result = new EmailSenderData()
             {
                 Asunto = "Molinos Agro - Edición en su orden de carga n°: 636",
@@ -1163,7 +1163,7 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void ConstruirCuerpoEmailOrdenDeCargaHistorialCrediticiaTestAppSettingsNull()
         {
-            var response = target.ConstruirCuerpoEmail(new List<OrdenDeCargaCambiosHistorial>());
+            var response = target.ConstruirCuerpoEmail(new List<OrdenDeCargaCambiosHistorial>(), "E1020");
             Assert.IsNull(response);
         }
 
@@ -1173,7 +1173,7 @@ namespace SustitucionMOATest.Services
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
-            var response = target.ConstruirCuerpoEmail(new List<OrdenDeCargaCambiosHistorial>());
+            var response = target.ConstruirCuerpoEmail(new List<OrdenDeCargaCambiosHistorial>(), "E1020");
             Assert.IsNull(response);
         }
 

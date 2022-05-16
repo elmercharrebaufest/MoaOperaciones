@@ -195,7 +195,6 @@ namespace SustitucionMOAUtils.Services
                     registroHistorial.FechaCambio = DateTime.Now;
                     registroHistorial.Usuario_Id = usuario.Id;
                     registroHistorial.OrdenDeCarga_Id = ordenDeCarga.Id;
-                    registroHistorial.NumeroEntrega = ordenDeCarga.NumeroEntrega;
                     historialCambios.Add(registroHistorial);
                 }
             }
@@ -214,7 +213,7 @@ namespace SustitucionMOAUtils.Services
             if (historialCambios.Count > 0)
             {
                 //Aviso de Edición de Orden de Carga
-                var emailSenderData = ConstruirCuerpoEmail(historialCambios);
+                var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega);
                 if (emailSenderData != null)
                 {
                     EmailSender.EnviarMail(emailSenderData);
@@ -967,7 +966,7 @@ namespace SustitucionMOAUtils.Services
             return result == "CE-00";
         }
 
-        public EmailSenderData ConstruirCuerpoEmail(List<OrdenDeCargaCambiosHistorial> ordenDeCargaHistorial)
+        public EmailSenderData ConstruirCuerpoEmail(List<OrdenDeCargaCambiosHistorial> ordenDeCargaHistorial, string numeroPedido)
         {
             var emailSenderData = new EmailSenderData();
             var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
@@ -999,7 +998,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: {ordenDeCargaHistorial[0].OrdenDeCarga_Id}";
-                emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, ordenDeCargaHistorial[0].NumeroEntrega, cambios);
+                emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, numeroPedido, cambios);
                 return emailSenderData;
             }
             catch (Exception ex)
