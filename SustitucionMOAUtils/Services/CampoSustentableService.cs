@@ -491,7 +491,7 @@ namespace SustitucionMOAUtils.Services
 
         public List<Cosecha> ObtenerCosechas()
         {
-            return repositorio.Listar<Cosecha>(c => DateTime.Now >= c.Inicio && DateTime.Now <= c.Fin);
+            return repositorio.Listar<Cosecha>();
         }
 
         public List<CampoProveedorListadoDto> Listar(string mailUsuario)
