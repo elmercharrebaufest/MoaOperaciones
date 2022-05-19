@@ -138,14 +138,13 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"OdenDeCargaService Editar: {ordenDeCarga.ToJson()}");
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var valoresAEditar = new List<string> { "NombreChofer", "ApellidoChofer", "CUITChofer", "PatenteAcoplado", "ChasisAcoplado", "ContratoIngresado",
+            var valoresAEditar = new List<string> { "NombreChofer", "CUITChofer", "PatenteAcoplado", "ChasisAcoplado", "ContratoIngresado",
             "NumeroPedido", "Observacion", "Cantidad", "RazonSocialTransporte", "CUITTransporte", "Producto_Id", "NumeroPedidoIngresado" };
             var ordenEditar = repositorio.Obtener<OrdenDeCarga>(ordenDeCarga.Id);
             var listaValoresDiferentes = ordenEditar.Compare(ordenDeCarga);
             var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
 
             ordenEditar.NombreChofer = ordenDeCarga.NombreChofer;
-            ordenEditar.ApellidoChofer = ordenDeCarga.ApellidoChofer;
             ordenEditar.CUITChofer = ordenDeCarga.CUITChofer;
             ordenEditar.PatenteAcoplado = ordenDeCarga.PatenteAcoplado;
             ordenEditar.ChasisAcoplado = ordenDeCarga.ChasisAcoplado;
@@ -582,7 +581,7 @@ namespace SustitucionMOAUtils.Services
                 AprobadoCredito = orden.AprobadoCredito,
                 Cantidad = orden.Cantidad,
                 ChasisAcoplado = orden.ChasisAcoplado,
-                Chofer = $"{orden.ApellidoChofer}, {orden.NombreChofer} ({orden.CUITChofer})",
+                Chofer = $"{orden.NombreChofer} ({orden.CUITChofer})",
                 ContratoSAP = string.IsNullOrEmpty(orden.ContratoSAP) ? "-" : orden.ContratoSAP,
                 PedidoSAP = string.IsNullOrEmpty(orden.PedidoSAP) ? "-" : orden.PedidoSAP,
                 Corredor = orden.CodigoCorredor,
@@ -1071,7 +1070,7 @@ namespace SustitucionMOAUtils.Services
                 return new Resultado { error = "No existe el transportista" };
             }
 
-            var conductor = string.Concat(orden.ApellidoChofer, ", ", orden.NombreChofer);
+            var conductor = orden.NombreChofer;
 
             var tipoDocumento = "CUIL";
 

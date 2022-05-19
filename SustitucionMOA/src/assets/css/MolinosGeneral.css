@@ -4134,6 +4134,12 @@ div.panel-body a.active {
     margin-left: 10px;
 }
 
+.vertical {
+  border-left: 0.5px solid grey;
+  height: 450px;
+  position:relative;
+  left: 4%;
+}
 
 /*-------TOOLTIPS-----------*/
 
