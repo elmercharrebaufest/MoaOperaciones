@@ -64,6 +64,30 @@ export class LiquidacionService extends BaseService {
                 timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente")))
             );
     }
+
+    descargarComprobanteNGPDF(CodigoProveedorSAP: string, FechaDocumento: string, NumeroLegalDocumento: string): Observable<any> {
+        
+        var dateString = FechaDocumento.substr(6);
+        var currentTime = new Date(parseInt(dateString ));
+        var month = currentTime.getMonth() + 1;
+        var day = currentTime.getDate();
+        var year = currentTime.getFullYear();
+        var date = year + "-" + month + "-" + day;
+        
+
+        
+        let params: HttpParams = new HttpParams();
+        params = params.append('CodigoProveedorSAP', CodigoProveedorSAP);
+        params = params.append('FechaDocumento', date);
+        params = params.append('NumeroLegalDocumento', NumeroLegalDocumento);
+
+        
+
+        return this.http
+            .get('/api/liquidacion/descargaComprobantesNG', { params: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))));
+    }
+
 }
 
 @Injectable()

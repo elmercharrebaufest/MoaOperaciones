@@ -139,6 +139,44 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
         return false;
     }
 
+    descargarComprobanteNGPDF(CodigoProveedorSAP: string, FechaDocumento: string, NumeroLegalDocumento: string) {
+        this.floatMsgService.setMsgsEmpty();
+        this.unsubscribe();
+        this.subscription = this.service.descargarComprobanteNGPDF(CodigoProveedorSAP, FechaDocumento, NumeroLegalDocumento).subscribe(
+            (result:any) => {
+                this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {
+                    var byteArray = new Uint8Array(result.data);
+                    var blob = new Blob([byteArray], { type: 'application/pdf' });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(blob, this.tituloArchivoPDF + NumeroLegalDocumento + ".pdf");
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = this.tituloArchivoPDF + NumeroLegalDocumento + ".pdf"
+                        link.click();
+                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                        return false;
+                    }
+                }
+            },
+            error => {
+                this.floatMsgService.setErrorMsg(error.message);
+            }
+        );
+
+        return false;
+    }
+
     protected vaciarFiltros() {
         this.filtroProducto = null;
         this.filtroObservacion = null;
