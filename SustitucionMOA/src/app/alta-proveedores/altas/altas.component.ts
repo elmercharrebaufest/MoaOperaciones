@@ -116,7 +116,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                     } else {
                         this.data = result.data;
                         this.datosAux = this.data;
-
+                        this.filtrarListadoAlta();
                         setTimeout(function () {
                             $('[data-toggle="popover"]').popover({ trigger: 'focus', delay: { "hide": 3000 } });
 
