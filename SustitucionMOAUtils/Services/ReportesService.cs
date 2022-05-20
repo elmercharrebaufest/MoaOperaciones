@@ -57,10 +57,11 @@ namespace SustitucionMOAUtils.Services
                     Latitud = cp.Latitud,
                     Longitud = cp.Longitud,
                     HectareasSoja = cp.HectareasSoja,
-                    NombreCosecha = cp.CampoCosecha.Cosecha.Nombre
+                    NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
+                    RutaKmz = cp.Archivo.Ruta
                 }
                 , cp => cp.FechaCreacion.HasValue
-                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) >= DbFunctions.TruncateTime(dateToCompare) 
+                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) >= DbFunctions.TruncateTime(dateToCompare)
                     && DbFunctions.TruncateTime(cp.FechaCreacion.Value) < DbFunctions.TruncateTime(DateTime.Today)
             );
 
@@ -95,7 +96,17 @@ namespace SustitucionMOAUtils.Services
                         DateTime = DateTime.Now,
                     };
 
-                    Stream stream = new MemoryStream(File.ReadAllBytes(rutaArchivoKmz));
+                    Stream stream = null;
+                    try
+                    {
+                        stream = new MemoryStream(File.ReadAllBytes(rutaArchivoKmz));
+                    }
+                    catch (Exception)
+                    {
+                        stream = new MemoryStream(File.ReadAllBytes(campo.RutaKmz));
+
+                    }
+
                     zipStream.PutNextEntry(entry);
                     StreamUtils.Copy(stream, zipStream, new byte[4096]);
                     zipStream.CloseEntry();
