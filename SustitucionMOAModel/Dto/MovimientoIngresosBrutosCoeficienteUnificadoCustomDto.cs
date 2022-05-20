@@ -13,5 +13,6 @@ namespace SustitucionMOAModel.Dto
         public int EstadoNuevo { get; set; }
         public int Tipo { get; set; }
         public int Origen { get; set; }
+        public string Accion { get; set; }
     }
 }
