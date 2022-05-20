@@ -155,7 +155,7 @@
                             <td>{{liquidacion.estadoRegistradas == 'Aprobada' ? liquidacion.vencimiento : liquidacion.observaciones}}</td>                         
                             <td [ngStyle]="{'color': liquidacion.estadoRegistradas == 'Aprobada' ? 'green' : 'orange'}">{{liquidacion.estadoRegistradas}}</td>
                             <td>
-                                <a (click)="descargarComprobanteNGPDF(proveedor, liquidacion.fechaComprobanteDate, liquidacion.comprobante)"
+                                <a (click)="descargarComprobanteNGPDF(CodigoProveedorSAP, liquidacion.fechaComprobanteDate, liquidacion.comprobante)"
                                 href="#"><span
                                     class="fa  fa-file-pdf-o "></span></a>
                             </td>

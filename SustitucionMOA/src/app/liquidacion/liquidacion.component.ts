@@ -32,6 +32,8 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
     filtroComprobanteOContrato: string = "";
     tituloArchivoModal: string = "";
     tituloArchivoPDF = "Documento"
+    CodigoProveedorSAP: string = sessionStorage.getItem("proveedor");
+
 
     checkPermisos() {
         this.securityService.tienePermisoRedirect("CONSULTAR LIQUIDACIONES");
@@ -40,6 +42,7 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
+        sessionStorage.getItem("proveedor");
         if (this.securityService.tienePermiso("INFORMAR LIQUIDACION")) {
             this.navService.setSeccionList([
                 new Seccion('/liquidacion/aprobada', 'liquidacion', 'Aprobadas'),
@@ -147,6 +150,7 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
+                    
                 } else if (result.error != undefined && result.error != "") {
                     this.floatMsgService.setErrorMsg(result.error);
                 } else if (result.info != undefined) {
