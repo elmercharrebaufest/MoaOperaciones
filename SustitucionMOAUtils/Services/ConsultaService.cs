@@ -1092,6 +1092,19 @@ namespace SustitucionMOAUtils.Services
                 ingresosBrutosCoeficienteUnificadoDetalles.Any(i => !i.CoeficienteUnificado.HasValue || !i.NumeroJurisdiccion.HasValue || string.IsNullOrWhiteSpace(i.Jurisdiccion));
 
             repositorio.Agregar(ingresosBrutosCoeficienteUnificado);
+
+            MovimientoIngresosBrutosCoeficienteUnificado movimientoIngresosBrutosCoeficienteUnificado = new MovimientoIngresosBrutosCoeficienteUnificado
+            {
+                IngresosBrutosCoeficienteUnificado_Id = ingresosBrutosCoeficienteUnificado.Id,
+                Observaciones = "Creado",
+                Fecha = timeProvider.Now(),
+                TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = 1,
+                OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = 1,
+                EstadoAnterior_Id = 1,
+                EstadoPosterior_Id = 1,
+            };
+            repositorio.Agregar(movimientoIngresosBrutosCoeficienteUnificado);
+
             repositorio.GuardarCambios();
 
             return
