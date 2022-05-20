@@ -42,7 +42,6 @@ namespace SustitucionMOATest.Services
                 Id = 1,
                 CUITCliente = "20266044993",
                 NombreChofer = "Martin",
-                ApellidoChofer = "Pfeiffer",
                 CUITChofer = "20391666687",
                 PatenteAcoplado = "ABC123",
                 ChasisAcoplado = "ABBSM1231412",
