@@ -221,7 +221,7 @@ namespace SustitucionMOAUtils.Services
             MovimientoIngresosBrutosCoeficienteUnificado movimientoIngresosBrutosCoeficienteUnificado = new MovimientoIngresosBrutosCoeficienteUnificado
             {
                 IngresosBrutosCoeficienteUnificado_Id = movimientoIngresosBrutosCoeficienteUnificadoCustomDto.IdIngreso,
-                Observaciones = "Actualizado por: " + movimientoIngresosBrutosCoeficienteUnificadoCustomDto.Persona,
+                Observaciones = $"{movimientoIngresosBrutosCoeficienteUnificadoCustomDto.Accion} por: {movimientoIngresosBrutosCoeficienteUnificadoCustomDto.Persona}",
                 Fecha = timeProvider.Now(),
                 TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = movimientoIngresosBrutosCoeficienteUnificadoCustomDto.Tipo,
                 OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = movimientoIngresosBrutosCoeficienteUnificadoCustomDto.Origen,

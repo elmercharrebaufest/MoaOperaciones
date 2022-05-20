@@ -268,6 +268,12 @@ export class GestionCM05Component extends ListBaseComponent {
             if (this.validarRow(rowData)) {
                 return
             }
+            let mov = {
+                accion : "Editado",
+                tipo: 4,
+            }
+            
+            this.insertarMovimiento(mov.accion, mov.tipo);
 
             this.subscription = this.service.editarRow(rowData).subscribe(
                 (result: any) => {
@@ -364,6 +370,12 @@ export class GestionCM05Component extends ListBaseComponent {
 
     autorizarCabecera() {
         try {
+            let mov = {
+                accion : "Autorizado",
+                tipo: 2,
+            }
+            
+            this.insertarMovimiento(mov.accion, mov.tipo);
             this.service.autorizarCabecera(this.selectedCabecera.Id).subscribe(
                 result => {
                     if (result.logout == true) {
@@ -391,6 +403,12 @@ export class GestionCM05Component extends ListBaseComponent {
     }
 
     descargarFormularioCM05() {
+        let mov = {
+            accion : "Exportado",
+            tipo: 4,
+        }
+        
+        this.insertarMovimiento(mov.accion, mov.tipo);
         this.service.DescargarArchivoFormularioCM05(this.selectedCabecera.Id).subscribe(
             (result) => {
                 if (result.logout == true) {
@@ -480,16 +498,12 @@ export class GestionCM05Component extends ListBaseComponent {
 
     guardarCabeceraEditada() {
         this.messageService.clear();
-        console.log(this.selectedCabecera);
-        var mov = {
-            IdIngreso: this.selectedCabecera.Id,
-            Persona: sessionStorage.getItem("username"),
-            EstadoNuevo: this.selectedCabecera.EstadoId,
-            Tipo: 4,
-            Origen: 1,
+        let mov = {
+            accion : "Cambió de estado",
+            tipo: 4,
         }
         
-        this.insertarMovimiento(mov);
+        this.insertarMovimiento(mov.accion, mov.tipo);
         try {
             if (!this.validarCabeceraEditada()) {
                 this.subscription = this.service.editarCabecera(this.selectedCabecera).subscribe(                    
@@ -524,7 +538,15 @@ export class GestionCM05Component extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    insertarMovimiento(mov){
+    insertarMovimiento(accion, tipo){
+        var mov = {
+            IdIngreso: this.selectedCabecera.Id,
+            Persona: sessionStorage.getItem("username"),
+            EstadoNuevo: this.selectedCabecera.EstadoId,
+            Tipo: tipo,
+            Origen: 1,
+            Accion: accion
+        }
         this.service.insertarMovimiento(mov).subscribe(result => {
             this.movimientos = result;
             this.movimientos.forEach(x => {
