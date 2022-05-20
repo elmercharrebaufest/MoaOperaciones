@@ -20,5 +20,6 @@ namespace SustitucionMOAModel.Dto
         public string Longitud { get; set; }
         public double HectareasSoja { get; set; }
         public string NombreCosecha { get; set; }
+        public string RutaKmz { get; set; }
     }
 }
