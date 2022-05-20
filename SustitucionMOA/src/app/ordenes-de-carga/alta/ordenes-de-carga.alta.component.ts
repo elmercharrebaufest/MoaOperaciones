@@ -66,7 +66,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getPatentes();
         this.ordenDeCarga.Cantidad = 30000;
 
         this.route.params.forEach((params: Params) => {
@@ -77,9 +76,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
-            
+        } else{
+            this.getPatentes();
         }
-
        
         this.obtenerMateriales();
 

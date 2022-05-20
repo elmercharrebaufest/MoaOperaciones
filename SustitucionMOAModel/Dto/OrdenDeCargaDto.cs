@@ -48,6 +48,7 @@ namespace SustitucionMOAModel.Dto
             Observacion = orden.Observacion;
             ContratoIngresado = orden.ContratoIngresado;
             Cantidad = orden.Cantidad;
+            NumeroEntrega = orden.NumeroEntrega;
             NumeroPedidoIngresado = string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedido : orden.NumeroPedidoIngresado;
             ColorSemaforo = orden.Estado.ObtenerSemaforo();
             Cliente_Id = orden.Cliente_Id;
@@ -71,6 +72,7 @@ namespace SustitucionMOAModel.Dto
         public string Observacion { get; set; }
         public string ContratoIngresado { get; set; }
         public int Cantidad { get; set; }
+        public string NumeroEntrega { get; set; }
         public string NumeroPedidoIngresado { get; set; }
         public string ColorSemaforo { get; set; }
         public int Cliente_Id { get; set; }

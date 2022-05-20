@@ -297,7 +297,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
         campoProveedor = {
             HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja,
             CUIT: this.CUIT,
-            Latitud: this.latitud, Longitud: this.longitud, Proveedor_Id: this.proveedorId, CampoCosecha: campoCosecha,
+            Latitud: this.latitud, 
+            Longitud: this.longitud, 
+            Proveedor_Id: this.proveedorId, 
+            CampoCosecha: campoCosecha,
             Archivo_Id: this.UsarArchivo_Id ? this.Archivo_Id : 0
         }
 
