@@ -22,8 +22,6 @@ namespace SustitucionMOAModel.Entities
 
         public string NombreChofer { get; set; }
 
-        public string ApellidoChofer { get; set; }
-
         public string CUITChofer { get; set; }
 
         public string CUITTransporte { get; set; }
@@ -144,7 +142,6 @@ namespace SustitucionMOAModel.Entities
                    FechaCarga == carga.FechaCarga &&
                    CUITCliente == carga.CUITCliente &&
                    NombreChofer == carga.NombreChofer &&
-                   ApellidoChofer == carga.ApellidoChofer &&
                    CUITChofer == carga.CUITChofer &&
                    CUITTransporte == carga.CUITTransporte &&
                    RazonSocialTransporte == carga.RazonSocialTransporte &&
@@ -187,7 +184,6 @@ namespace SustitucionMOAModel.Entities
             hashCode = hashCode * -1521134295 + FechaCarga.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CUITCliente);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NombreChofer);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ApellidoChofer);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CUITChofer);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CUITTransporte);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(RazonSocialTransporte);

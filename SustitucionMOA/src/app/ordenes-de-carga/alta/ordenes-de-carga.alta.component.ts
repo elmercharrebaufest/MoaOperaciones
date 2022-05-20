@@ -125,11 +125,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             return false;
         }
 
-        if (this.ordenDeCarga.ApellidoChofer.trim().length < 2) {
-            this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
-            return false;
-        }
-
         /*VER ESTA VALIDACION, ACA VALIDA COMO SI FUERA UN CUIT PERO EN EL FRONT DICE QUE PONGA EL DNI/CUIL*/
         if (this.ordenDeCarga.CUITChofer.toString().trim().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");

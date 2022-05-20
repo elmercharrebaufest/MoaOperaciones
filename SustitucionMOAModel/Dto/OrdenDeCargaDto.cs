@@ -39,7 +39,6 @@ namespace SustitucionMOAModel.Dto
             Id = orden.Id;
             CUITCliente = orden.CUITCliente;
             NombreChofer = orden.NombreChofer;
-            ApellidoChofer = orden.ApellidoChofer;
             CUITChofer = orden.CUITChofer;
             PatenteAcoplado = orden.PatenteAcoplado;
             ChasisAcoplado = orden.ChasisAcoplado;
@@ -63,7 +62,6 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public string CUITCliente { get; set; }
         public string NombreChofer { get; set; }
-        public string ApellidoChofer { get; set; }
         public string CUITChofer { get; set; }
         public string PatenteAcoplado { get; set; }
         public string ChasisAcoplado { get; set; }
