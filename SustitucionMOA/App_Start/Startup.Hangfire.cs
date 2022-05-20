@@ -53,10 +53,11 @@ namespace SustitucionMOA
                 j => j.Execute(),
                 "0 0 * * *", tz);
 
-            RecurringJob.AddOrUpdate<Jobs.IActualizarEstadoSolpSapJob>(
-                "ActualizarEstadoSolpSapJob",
-                j => j.Execute(),
-                "0 * * * *", tz);
+            //RecurringJob.AddOrUpdate<Jobs.IActualizarEstadoSolpSapJob>(
+            //    "ActualizarEstadoSolpSapJob",
+            //    j => j.Execute(),
+            //    "0 * * * *", tz);
+            RecurringJob.RemoveIfExists("ActualizarEstadoSolpSapJob");
 
             //RecurringJob.AddOrUpdate<Jobs.IObtenerSolpsDesdeSAPJob>(
             //    "ObtenerSolpsDesdeSAPJob",
