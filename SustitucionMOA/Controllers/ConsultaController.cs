@@ -29,7 +29,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
-        [HttpPost]
+        [HttpPost, ValidateInput(false)]
         public JsonResult Comentarios(int consultaId, string comentarioJson)
         {
             try

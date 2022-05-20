@@ -41,17 +41,13 @@ namespace SustitucionMOAUtils.Services
             this.dataAgroService = dataAgroService;
         }
 
-        public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
+        public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz, bool UsarArchivoId)
         {
+            string ruta = "";
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
-
             ValidarCampo(usuario, campoProveedor, archivoKmz);
-
-
             var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == campoProveedor.CampoCosecha.Cosecha_Id && d.CUIT == campoProveedor.CUIT);
-
             campoProveedor.RazonSocial = declaracion.RazonSocial;
             campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
@@ -59,18 +55,24 @@ namespace SustitucionMOAUtils.Services
             {
                 campoProveedor.Archivo = (new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" });
             }
+            else
+            {
+                var archivoCampo = repositorio.Obtener<Archivo>(a => a.Id == campoProveedor.Archivo_Id);
+                ruta = archivoCampo.Ruta;
+            }
             campoProveedor.CampoCosecha.ToneladasAprobadas = -1;
 
             repositorio.Agregar(campoProveedor);
 
             repositorio.GuardarCambios();
 
-            if (campoProveedor.Archivo_Id == 0)
+            if (UsarArchivoId == false)
             {
                 GuardarArchivoKMZ(campoProveedor, archivoKmz);
-                repositorio.GuardarCambios();
-            }
-            var archivo = ConvertirArchivo64(archivoKmz);
+                repositorio.GuardarCambios();                
+
+            }     
+            var archivo = archivoKmz == null ? Convert.ToBase64String(System.IO.File.ReadAllBytes(ruta)) : ConvertirArchivo64(archivoKmz);
             InformarCampoSustentable(campoProveedor, archivo);
             return new Resultado { IdEntidad = campoProveedor.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
         }
@@ -489,7 +491,7 @@ namespace SustitucionMOAUtils.Services
 
         public List<Cosecha> ObtenerCosechas()
         {
-            return repositorio.Listar<Cosecha>(c => DateTime.Now >= c.Inicio && DateTime.Now <= c.Fin);
+            return repositorio.Listar<Cosecha>();
         }
 
         public List<CampoProveedorListadoDto> Listar(string mailUsuario)
