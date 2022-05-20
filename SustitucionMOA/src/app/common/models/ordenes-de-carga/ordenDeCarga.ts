@@ -23,6 +23,7 @@ export class OrdenDeCarga {
     RazonSocialCorredor: string;
     TransporteExiste: boolean;
     ContratoIngresado: string;
+    NumeroEntrega: string;
     NumeroPedidoIngresado: string;
     NumeroPedido: string;
     PedidosRespuesta: string;
