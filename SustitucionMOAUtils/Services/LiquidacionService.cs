@@ -555,6 +555,28 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public PDFResponse descargaComprobantesNG(string CodigoProveedorSAP, string FechaDocumento, string NumeroLegalDocumento)
+        {
+            try
+            {
+                PDFResponse data = new PDFComprobantesNGConsumerMOA().request(CodigoProveedorSAP, FechaDocumento, NumeroLegalDocumento);
+
+                return data;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
         public ProcedenciaFleteWSMOAResponse getFleteProcedencia(string proveedor, string contrato)
         {
             try

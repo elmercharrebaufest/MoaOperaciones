@@ -49,6 +49,7 @@ export class ListBaseComponent extends BaseComponent implements OnInit {
 
     tituloArchivo = "";
     itemsPerPage = sessionStorage.getItem("itemsPerPage") ? sessionStorage.getItem("itemsPerPage") : "10";
+    proveedor = sessionStorage.getItem("proveedor")
     tipoDropdown: string = 'numberItems';
     orderedByColumn: string = "fechaDescargaDate";
     orderDirection: number = 1;
@@ -84,6 +85,7 @@ export class ListBaseComponent extends BaseComponent implements OnInit {
             (result:any) => {
                 this.data = null;
                 this.mensajeComponent.setMsgsEmpty();
+                
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -93,6 +95,7 @@ export class ListBaseComponent extends BaseComponent implements OnInit {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.data = result.data;
+                    console.log(result.data);
                     if(result.data==null && result.comprobantes && result.comprobantes.comprobantes){
                         this.data = result.comprobantes;
 
