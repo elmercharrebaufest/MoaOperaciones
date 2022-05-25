@@ -16,6 +16,7 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId);
         OrdenDeCargaEditarDto ObtenerEditar(string mailUsuario, int ordenId);
         string AnularOrden(int ordenId);
+        string SolicitarAnulacionOrden(int ordenId);
         string NotificarTransporte(int ordenId);
         List<string> ObtenerContratos(int ordenId);
         Resultado SeleccionarContrato(int ordenId, string contratoSAP);

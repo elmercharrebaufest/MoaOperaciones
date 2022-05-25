@@ -71,6 +71,8 @@ namespace SustitucionMOAModel.Enums
                     return "Anulada";
                 case EstadoOrdenDeCarga.AnuladaPorVencimiento:
                     return "Anulada por vencimiento";
+                case EstadoOrdenDeCarga.AnulacionSolicitada:
+                    return "Anulación solicitada";
                 default:
                     return "Sin estado";
             }

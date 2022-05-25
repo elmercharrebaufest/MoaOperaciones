@@ -10,7 +10,7 @@ import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { Material } from '../../common/models/material';
 import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { Formatter } from '../../common/formatter/Formatter';
-import { SelectItem } from 'primeng/api';
+import { SelectItem, ConfirmationService} from 'primeng/api';
 
 @Component({
     selector: 'app-ordenes-de-carga.listado',
@@ -19,7 +19,7 @@ import { SelectItem } from 'primeng/api';
 })
 export class OrdenesDeCargaListado extends ListBaseComponent {
 
-    constructor(protected service: OrdenesDeCargaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    constructor(protected service: OrdenesDeCargaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
@@ -32,7 +32,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     filtroCliente: any = null;
 
     estadoSelected: string = "Todos";
-
     estadosSelected: string[] = [
         "Pendiente",
         "Confirmado",
@@ -42,6 +41,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         "Vencida",
         "Entrega pendiente",
         "Anulada por vencimiento",
+        "Anulación solicitada",
         "Error de datos"
     ];
 
@@ -84,6 +84,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
             { label: "Vencida", value: "Vencida" },
             { label: "Entrega pendiente", value: "Entrega pendiente" },
             { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
+            { label: "Anulación solicitada", value: "Anulación solicitada" },
             { label: "Error de datos", value: "Error de datos" }
         ]} else {
             //this.descripcionEstadoOrdenCarga =  [
@@ -113,7 +114,56 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         this.obtenerMateriales();
     }
 
+    confirmarSA(Id) {
+        //var element = document.getElementsByClassName("ui-widget-overlay ui-dialog-mask");
+        //element[0].remove();
+        this.confirmationService.confirm({    
+            key: 'confirmarSA',        
+            message: '¿Desea solicitar anulación?',
+            accept: () => {
+                this.solicitarAnulacion(Id)
+            },
+            reject: () => {                
+            }
+        });
+    }
     
+    solicitarAnulacion(Id){
+        this.mensajeComponent.setMsgsEmpty();
+
+        this.spinnerComponent.showIt();
+        this.data = null;
+        try {
+            this.unsubscribe();
+            this.subscription = this.service.solicitarAnulacion(Id, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.data = result.data;
+                        this.datosAux = result.data;
+                        this.filtrarListado();
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
 
     filtrarListado(){
         debugger
@@ -131,7 +181,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
             this.data = this.datosAux;
         }
     }
-
 
     setFiltroProducto(producto: string) {
         this.productoSelected = producto;
