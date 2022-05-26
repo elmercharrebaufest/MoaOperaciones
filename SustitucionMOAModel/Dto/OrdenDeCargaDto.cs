@@ -56,9 +56,8 @@ namespace SustitucionMOAModel.Dto
             CUITCorredor = orden.CUITCorredor;
             CodigoCliente = orden.Cliente.CodigoProveedor;
             CodigoCorredor = orden.Corredor != null ? orden.Corredor.CodigoProveedor : "";
-            
-
-    }
+            Estado = (int)orden.Estado;
+        }
 
         public int Id { get; set; }
         public string CUITCliente { get; set; }
@@ -80,6 +79,31 @@ namespace SustitucionMOAModel.Dto
         public string CUITCorredor { get; set; }
         public string CodigoCliente { get; set; }
         public string CodigoCorredor { get; set; }
+        public int Estado { get; set; }
+    }
+
+    public class OrdenDeCargaHistorialDto
+    {
+        public OrdenDeCargaHistorialDto(OrdenDeCargaCambiosHistorial orden)
+        {
+            if(orden != null)
+            {
+                Id = orden.Id;
+                OrdenDeCarga_Id = orden.OrdenDeCarga_Id;
+                Antes = orden.Antes;
+                Despues = orden.Despues;
+                FechaCambio = orden.FechaCambio;
+                Usuario_Id = orden.Usuario_Id;
+                NombreColumnaCambio = orden.NombreColumnaCambio;
+            }           
+        }
+        public int Id { get; set; }
+        public int OrdenDeCarga_Id { get; set; }
+        public string Antes { get; set; }
+        public string Despues { get; set; }
+        public DateTime? FechaCambio { get; set; }
+        public int Usuario_Id { get; set; }
+        public string NombreColumnaCambio { get; set; }
     }
 
     public class OrdenDeCargaDetalleDto

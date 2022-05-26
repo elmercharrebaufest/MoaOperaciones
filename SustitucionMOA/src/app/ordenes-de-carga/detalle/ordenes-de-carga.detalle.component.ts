@@ -34,6 +34,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajeError: string = "";
 
+    ordenDeCargaHistorial: any = {};
+
     corredores: Map<number, string>;
     corredorSeleccionado: number;
 
@@ -413,6 +415,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         document.getElementById("openAnularOrden").click();
     }
 
+    abrirModalEdicionFinalizada() {
+        document.getElementById("openEdicionFinalizada").click();
+    }
+
     abrirModalPedidos() {
         
         this.mensajeComponent.setMsgsEmpty();
@@ -496,6 +502,38 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         document.getElementById("closemodalAnularOrden").click();
+                        this.mensajeComponent.setSuccessMsg(result.data);
+
+                        this.navService.navegarSeccion(
+                            "/ordenes-de-carga"
+                        );
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    edicionFinalizada(resp: string) {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscriptionDropDowns = this.service.edicionFinalizada(this.ordenDeCargaId, resp).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        document.getElementById("closemodalEdicionFinalizada").click();
                         this.mensajeComponent.setSuccessMsg(result.data);
 
                         this.navService.navegarSeccion(

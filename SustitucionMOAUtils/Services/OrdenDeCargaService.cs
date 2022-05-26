@@ -205,6 +205,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(historialCambio);
             }
             ordenEditar.HistorialCambios.Concat(historialCambios);
+            ordenEditar.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
             repositorio.GuardarCambios();
 
             NotificarTransporte(ordenEditar.Id);
@@ -438,6 +439,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.AnulacionSolicitada);
+					filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                 }
 
                 if (esComercial)
@@ -449,6 +451,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.Anulada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                 }
 
                 if (esPuerto)
@@ -469,6 +472,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.Vencida);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaPendiente);
                     filtrosEstados.Add(EstadoOrdenDeCarga.AnuladaPorVencimiento);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ErrorDeCarga);
                 }
 
@@ -648,6 +652,19 @@ namespace SustitucionMOAUtils.Services
             return ordenDto;
         }
 
+        public List<OrdenDeCargaHistorialDto> ObtenerEditarHistorial(string mailUsuario, int ordenId)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var ordenHistorialDtoLista = new List<OrdenDeCargaHistorialDto>();
+            //foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(o => !o.TransporteExiste))
+            foreach (var ordenDeCargaHistorial in repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.OrdenDeCarga_Id == ordenId))
+            {
+                var ordenHistorialDto = new OrdenDeCargaHistorialDto(ordenDeCargaHistorial);
+                ordenHistorialDtoLista.Add(ordenHistorialDto);
+            }
+
+            return ordenHistorialDtoLista;
+        }
         public string AnularOrden(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
@@ -762,6 +779,51 @@ namespace SustitucionMOAUtils.Services
 
             result.ordenes = result.ordenes.Distinct().ToList();
             return result;
+        }
+		
+		public string EdicionFinalizada(OrdenDeCarga ordenDeCarga, int ordenId, string resp)
+        {
+            if(resp == "a")
+            {
+                var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+                orden.Estado = EstadoOrdenDeCarga.EntregaGenerada;
+
+                repositorio.GuardarCambios();
+            }
+            else
+            {
+                var ordenEditar = repositorio.Obtener<OrdenDeCarga>(ordenDeCarga.Id);
+
+                ordenEditar.NombreChofer = ordenDeCarga.NombreChofer;
+                ordenEditar.CUITChofer = ordenDeCarga.CUITChofer;
+                ordenEditar.PatenteAcoplado = ordenDeCarga.PatenteAcoplado;
+                ordenEditar.ChasisAcoplado = ordenDeCarga.ChasisAcoplado;
+                ordenEditar.RazonSocialTransporte = ordenDeCarga.RazonSocialTransporte;
+                ordenEditar.CUITTransporte = ordenDeCarga.CUITTransporte;
+                ordenEditar.ContratoIngresado = ordenDeCarga.ContratoIngresado;
+                ordenEditar.Cantidad = ordenDeCarga.Cantidad;
+                ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
+                ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
+                ordenEditar.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
+                ordenEditar.Observacion = ordenDeCarga.Observacion;
+                ordenEditar.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
+
+                repositorio.GuardarCambios();
+            }         
+
+            return SuccessMsg.OrdenDeCargaActualizada;
+        }
+
+
+        public string SolicitarEdicionOrden(int ordenId)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.OrdenDeCargaActualizada;
         }
 
         #region Etapa1
