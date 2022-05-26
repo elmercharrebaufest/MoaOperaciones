@@ -129,6 +129,14 @@ namespace SustitucionMOAUtils.Services
             }
 
             NotificarTransporte(ordenDeCarga.Id);
+            if(!string.IsNullOrEmpty(ordenDeCarga.PedidosRespuesta))
+            {
+                NotificarVariosPedidos(ordenDeCarga.Id);
+            }
+            if (!string.IsNullOrEmpty(ordenDeCarga.ContratosRespuesta))
+            {
+                NotificarVariosContratos(ordenDeCarga.Id);
+            }
 
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
         }
@@ -312,7 +320,7 @@ namespace SustitucionMOAUtils.Services
                         ordenDeCarga.ContratosRespuesta = result;
                         ordenDeCarga.ContratoSAP = "";
                         ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
-                        NotificarVariosContratos(ordenDeCarga.Id);
+                        
 
                     }
                 }
@@ -321,7 +329,7 @@ namespace SustitucionMOAUtils.Services
                     ordenDeCarga.PedidosRespuesta = result;
                     ordenDeCarga.NumeroPedido = "";
                     ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
-                    NotificarVariosPedidos(ordenDeCarga.Id);
+                   
                 }
 
                 ordenDeCarga.ActualizarEstado();
