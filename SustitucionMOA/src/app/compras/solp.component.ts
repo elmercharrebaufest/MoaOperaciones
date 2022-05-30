@@ -175,6 +175,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     usuarioComprasList: any[] = [];
 
     titulo: string = "";
+    tituloNroSolp: string = "";
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         private messageService: MessageService, private route: ActivatedRoute, private confirmationService: ConfirmationService) {
@@ -258,6 +259,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.getCombos();
 
             if (this.route.params) {
+                debugger
                 this.route.params.forEach((params: Params) => {
                     let numeroSolp = "";
                     // if (params["id"] > 0) this.solpId = params["id"];
@@ -270,12 +272,26 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     }
 
                     if (numeroSolp != "") this.flagSolpFinalizada = true;
+                    this.tituloSolp();
                 });
 
                 if (this.solpId > 0) {
                     this.traerSolpId(this.solpId);
                 }
             }
+        }
+    }
+
+    tituloSolp() {
+        debugger
+        switch (this.solpActual.tipoSolp) {
+            case "CON_PLIEGO":
+                this.titulo = "Generacíon de SOLP con documento de pliego"
+                break;
+            case "SIN_PLIEGO":
+                this.titulo = "Generacíon de SOLP sin documento de pliego"
+                break;
+            default:
         }
     }
 
@@ -321,7 +337,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.tipoSolp = solp.TipoSolp && solp.TipoSolp.Codigo || '';
         this.solpActual.tipoSolpSap = solp.TipoSolpSap || '';
         this.solpActual.vincularAPliego = (this.solpActual.tipoSolpSap == EnumTipoSolpSap.Mantenimiento || this.solpActual.tipoSolpSap == EnumTipoSolpSap.SAP);
-        this.titulo = this.solpActual.vincularAPliego ? "Vincular pliego" : "";
+        this.titulo = this.solpActual.vincularAPliego ? "Vincular pliego" : solp.TipoSolp.Codigo;
+        this.tituloNroSolp = solp.NroSolp ? "| SOLP #" + solp.NroSolp  : "";
         this.solpActual.nroSolp = solp.NroSolp || 0;
         this.solpActual.nombreDePedido = solp.NombreDeObra || '';
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
@@ -469,6 +486,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             });
 
             this.solpActual.setearPosicionPorDefecto();
+            this.tituloSolp();
         }
 
         let estadosPasos = this.solpActual.estadoPasos.split(',');
