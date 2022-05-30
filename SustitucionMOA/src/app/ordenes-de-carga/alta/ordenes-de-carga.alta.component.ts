@@ -175,6 +175,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         if (this.esComercial && result.data.ColorSemaforo != "green") {
                             this.puedeEditarContrato = true;
                         }
+                        if(result.data.Estado == 3){
+                            this.puedeEditarContrato = true;
+                        }
                         this.getPatentes();
                         
                     }
@@ -232,6 +235,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                 .getElementById("openModalNotificacion")
                                 .click();
                         }
+                        this.service.solicitarEdicion(this.ordenDeCargaId);
+
                     },
                     (error) => {
                         this.spinnerComponent.hideIt();

@@ -42,6 +42,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         "Entrega pendiente",
         "Anulada por vencimiento",
         "Anulación solicitada",
+	    "Edición solicitada",
         "Error de datos"
     ];
 
@@ -85,6 +86,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
             { label: "Entrega pendiente", value: "Entrega pendiente" },
             { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
             { label: "Anulación solicitada", value: "Anulación solicitada" },
+	    { label: "Edición solicitada", value: "Edición solicitada" },  
             { label: "Error de datos", value: "Error de datos" }
         ]} else {
             //this.descripcionEstadoOrdenCarga =  [
@@ -128,6 +130,20 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         });
     }
     
+    confirmarSE(Id) {
+        console.log("ss");
+        
+        this.confirmationService.confirm({    
+            key: 'confirmarSE',        
+            message: '¿Desea solicitar edición?',
+            accept: () => {
+               
+            },
+            reject: () => {                
+            }
+        });
+    }
+    
     solicitarAnulacion(Id){
         this.mensajeComponent.setMsgsEmpty();
 
@@ -164,6 +180,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 
         return false; //<-- Prevent Refresh
     }
+    
+    
 
     filtrarListado(){
         debugger

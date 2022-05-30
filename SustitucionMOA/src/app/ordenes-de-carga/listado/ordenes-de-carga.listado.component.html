@@ -95,6 +95,12 @@
             <button type="button" pButton label="Si" class="ui-button-success botonModal" (click)="dialogoSA.accept()"></button>
           </p-footer>
         </p-confirmDialog>
+		<p-confirmDialog #dialogoSE key="confirmarSE" header="Confirmación de solicitud de edición" [responsive]="true" appendTo="body">
+          <p-footer>
+            <button type="button" pButton label="No" class="ui-button-info botonModal" (click)="dialogoSE.reject()"></button>
+            <button type="button" pButton label="Si" class="ui-button-success botonModal" (click)="dialogoSE.accept()"></button>
+        </p-footer>
+        </p-confirmDialog>
         <table #tabla *ngIf="data && data.length != 0;" id="tableModal"
           class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" cellspacing="0"
           role="grid" aria-describedby="tableModal_info"
