@@ -445,6 +445,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaPendiente);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.AnulacionSolicitada);
                 }
 
                 if (esComercial)
@@ -669,6 +670,57 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return SuccessMsg.OrdenDeCargaAnulada;
+        }
+
+        public string SolicitarAnulacionOrden(int ordenId)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            if (orden.InformadaSAP)
+            {
+                throw new ValidationCustomException("La orden no puede anularse debido a que ya fue informada.");
+            }
+
+            orden.Estado = EstadoOrdenDeCarga.AnulacionSolicitada;
+
+            repositorio.GuardarCambios();
+
+            NotificarSolicitudAnulacion(ordenId);
+
+            return SuccessMsg.OrdenDeCargaActualizada;
+        }
+
+        public string NotificarSolicitudAnulacion(int ordenDeCargaId)
+        {
+            string mensaje;
+            try
+            {                
+
+                var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
+
+                string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+
+                string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+
+                var mails = new List<string>
+                {
+                    mailsMesaVentaFas,
+                    mailsComerciales,
+                };
+
+                string asunto = "Solicitud de anulación, Orden de carga N° " + ordenDeCargaId.ToString();
+
+                string cuerpo = string.Format("Razón Social: {0} <br> CUIT: {1}", orden.RazonSocialTransporte, orden.CUITTransporte);
+
+                EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
+
+                mensaje = "Notificación enviada";
+            }
+            catch(Exception ex)
+            {
+                mensaje = "Error al enviar la notificación : " + ex.Message;
+            }
+            return mensaje;
         }
 
         public OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga ordenDeCarga, string mailUsuario)

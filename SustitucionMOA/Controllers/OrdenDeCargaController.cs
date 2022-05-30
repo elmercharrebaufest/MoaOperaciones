@@ -379,6 +379,32 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult SolicitarAnulacion(int ordenDeCargaId, string fechaInicio, string fechaFin)
+        {
+            try
+            {
+                var message = ordenDeCargaService.SolicitarAnulacionOrden(ordenDeCargaId);
+
+                var mailUsuario = SessionPersister.getUsername();
+
+                return JsonCustom(new { data = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public ActionResult ObtenerPatentes(string ordenDeCargaJson)
         {
             try
