@@ -99,9 +99,12 @@ export class DetalleConsultaComponent extends BaseComponent {
     }
 
     Paste(e) {        
-        e.preventDefault();
+        //e.preventDefault();
+        return;
         const divComentario = document.getElementById("divComentario");
         const clipText = e.clipboardData.getData("text/plain");
+        const cbPayload = [...(e.clipboardData || e.originalEvent.clipboardData).items];
+        console.log(cbPayload);
         const rows = clipText.split("\n");
         if(rows.length == 1 && rows[0].split("\t").length == 1){
             divComentario.innerText += clipText;

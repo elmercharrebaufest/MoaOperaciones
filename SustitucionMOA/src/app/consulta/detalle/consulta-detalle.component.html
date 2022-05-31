@@ -25,7 +25,7 @@
                         </div> -->
                         <div class="row myRow" *ngIf="comentario.Detalle != '' ">
                             <div [ngClass]="comentarioPropio(comentario) ? 'comentarioPropio' : 'comentarioRespuesta' " 
-                            class="col-xs-12 col-sm-6 col-md-7" >
+                            class="col-xs-12 col-sm-6 col-md-7"  style="overflow-x: scroll;">
                             </div>
                         </div>
                         <div [ngClass]="comentarioPropio(comentario) ? 'widthAutoConsultaPropio' : 'widthAutoConsultaRespuesta' "
