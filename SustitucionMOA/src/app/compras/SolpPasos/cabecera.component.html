@@ -38,7 +38,7 @@
                             Posiciones
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput">
-                            <p-dropdown [options]="model.posiciones" [(ngModel)]="model.posicionActual" dataKey="id" optionLabel="id" (onFocus)="validarPosicionActual()">
+                            <p-dropdown [options]="model.posiciones" [(ngModel)]="model.posicionActual" dataKey="id" optionLabel="id" (onFocus)="validarPosicionActual()" (onChange)="ValidarNuevaPosicion()">
                                 <ng-template let-item pTemplate="selectedItem">
                                     #{{item.value.numeroPosicion + " " + (item.value.textoGenerico || " ")}}
                                     <i *ngIf="item.value.posicionValida === false" class="fa fa-exclamation" style="color:red"></i>
@@ -83,18 +83,18 @@
                                 </div>
                                 <div>
                                     <div>
-                                        <p-radioButton [disabled] = "flagSolpFinalizada" formControlName="tipoImputacion" [ngModelOptions]="{standalone:true}" name="imputacion" value="centroDeCosto" label="Centro de costo (K)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio">
+                                        <p-radioButton [disabled] = "disabled" formControlName="tipoImputacion" [ngModelOptions]="{standalone:true}" name="imputacion" value="centroDeCosto" label="Centro de costo (K)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio">
                                         </p-radioButton>
                                     </div>
                                     <div>
-                                        <p-radioButton [disabled] = "flagSolpFinalizada" formControlName="tipoImputacion" [ngModelOptions]="{standalone:true}" name="imputacion" value="ordenDeOt" label="Orden de OT (F)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio"></p-radioButton>
+                                        <p-radioButton [disabled] = "disabled" formControlName="tipoImputacion" [ngModelOptions]="{standalone:true}" name="imputacion" value="ordenDeOt" label="Orden de OT (F)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio"></p-radioButton>
                                     </div>
                                     <div>
-                                        <p-radioButton [disabled] = "flagSolpFinalizada" formControlName="tipoImputacion" [ngModelOptions]="{standalone:true}" name="imputacion" value="ordenDeInversion" label="Orden de inversión (F)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio">
+                                        <p-radioButton [disabled] = "disabled" formControlName="tipoImputacion" [ngModelOptions]="{standalone:true}" name="imputacion" value="ordenDeInversion" label="Orden de inversión (F)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio">
                                         </p-radioButton>
                                     </div>
                                     <div>
-                                        <p-radioButton [disabled] = "flagSolpFinalizada" formControlName="tipoImputacion" [ngModelOptions]="{standalone:true}" name="imputacion" value="siniestroBeneficio" label="Siniestro / Centro de beneficio (Y)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio">
+                                        <p-radioButton [disabled] = "disabled" formControlName="tipoImputacion" [ngModelOptions]="{standalone:true}" name="imputacion" value="siniestroBeneficio" label="Siniestro / Centro de beneficio (Y)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio">
                                         </p-radioButton>
                                     </div>
                                     <div *ngIf="mostrarError('tipoImputacion')">
