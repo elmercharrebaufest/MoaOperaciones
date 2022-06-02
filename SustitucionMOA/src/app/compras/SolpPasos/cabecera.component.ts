@@ -241,8 +241,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     validarPosicionActual() {
         this.validFormEliminarPosicion = this.model.posicionActual.estado;
-        this.model.posicionActual.posicionValida = !this.validadorPasoSolpService.esPasoInvalido();
-       
+        this.model.posicionActual.posicionValida = !this.validadorPasoSolpService.esPasoInvalido();      
     }
 
     centroSeleccionado() {
