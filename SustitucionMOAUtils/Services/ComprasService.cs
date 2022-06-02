@@ -289,9 +289,6 @@ namespace SustitucionMOAUtils.Services
                 posEntity.PaisEntrega = pos.PaisEntrega;
                 posEntity.PlazoEntrega = pos.PlazoEntrega;
                 posEntity.Solicitante = pos.Solicitante;
-                if (solp.Finalizar)
-                    posEntity.EsConcluido = true;
-
                 if (pos.TipoPosicion != null)
                     posEntity.TipoPosicion = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoPosicionSolp && x.Codigo == pos.TipoPosicion.Codigo);
 
