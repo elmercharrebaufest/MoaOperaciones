@@ -514,6 +514,10 @@ namespace SustitucionMOAUtils.Services
                     var estadoCreadoCodigo = EstadoDocumentoSolp.Creado.Code();
                     var estadoCreado = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoCreadoCodigo);
                     solpEntity.EstadoDocumento_Id = estadoCreado.Id;
+                    foreach (var posiciones in solpEntity.Posiciones)
+                    {
+                        posiciones.EsConcluido = true;
+                    }
                 }
 
                 repositorio.GuardarCambios();
@@ -540,6 +544,7 @@ namespace SustitucionMOAUtils.Services
                     foreach (var pos in solpEntity.Posiciones)
                     {
                         pos.CantidadSubposicionesEnSAP = pos.Subposiciones.Count;
+                        pos.EsConcluido = true;
                     }
                 }
                 else
