@@ -280,7 +280,6 @@ export class PosicionSolp {
             this.fechaEntregaServicio = posicionADuplicar.fechaEntregaServicio;
             this.fechaDeLiberacion = posicionADuplicar.fechaDeLiberacion;
             this.plazoDeEntrega = posicionADuplicar.plazoDeEntrega;
-            this.concluido = posicionADuplicar.concluido;
             this.indiceFijacion = posicionADuplicar.indiceFijacion;
             this.selectCentroEntrega = posicionADuplicar.selectCentroEntrega;
             this.selectAlmacenEntrega = posicionADuplicar.selectAlmacenEntrega;
