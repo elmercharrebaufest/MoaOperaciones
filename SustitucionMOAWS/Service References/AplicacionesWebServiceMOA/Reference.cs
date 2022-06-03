@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.AplicacionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -63,6 +63,10 @@ namespace SustitucionMOAWS.AplicacionesWebServiceMOA {
         private string iD_VENDEDORField;
         
         private string vENDEDORField;
+        
+        private string cTGField;
+        
+        private string cUIT_SOLICITANTEField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -256,6 +260,30 @@ namespace SustitucionMOAWS.AplicacionesWebServiceMOA {
             }
         }
         
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=13)]
+        public string CTG {
+            get {
+                return this.cTGField;
+            }
+            set {
+                this.cTGField = value;
+                this.RaisePropertyChanged("CTG");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=14)]
+        public string CUIT_SOLICITANTE {
+            get {
+                return this.cUIT_SOLICITANTEField;
+            }
+            set {
+                this.cUIT_SOLICITANTEField = value;
+                this.RaisePropertyChanged("CUIT_SOLICITANTE");
+            }
+        }
+        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -267,7 +295,7 @@ namespace SustitucionMOAWS.AplicacionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -327,7 +355,7 @@ namespace SustitucionMOAWS.AplicacionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -373,7 +401,7 @@ namespace SustitucionMOAWS.AplicacionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -411,19 +439,23 @@ namespace SustitucionMOAWS.AplicacionesWebServiceMOA {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string PE_PROVEEDOR;
+        public string IM_CCPP;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=1)]
-        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4050[] T_APLICACIONES_OUT;
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string PE_PROVEEDOR;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=2)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4060[] T_CONTRATOS_IN;
+        public SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4050[] T_APLICACIONES_OUT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=3)]
+        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
+        public SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4060[] T_CONTRATOS_IN;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=4)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
         public SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4100[] T_FECHA_IN;
@@ -431,7 +463,8 @@ namespace SustitucionMOAWS.AplicacionesWebServiceMOA {
         public SI_MPMF_MOAOP_APLICACIONESRequest() {
         }
         
-        public SI_MPMF_MOAOP_APLICACIONESRequest(string PE_PROVEEDOR, SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4050[] T_APLICACIONES_OUT, SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4060[] T_CONTRATOS_IN, SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4100[] T_FECHA_IN) {
+        public SI_MPMF_MOAOP_APLICACIONESRequest(string IM_CCPP, string PE_PROVEEDOR, SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4050[] T_APLICACIONES_OUT, SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4060[] T_CONTRATOS_IN, SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4100[] T_FECHA_IN) {
+            this.IM_CCPP = IM_CCPP;
             this.PE_PROVEEDOR = PE_PROVEEDOR;
             this.T_APLICACIONES_OUT = T_APLICACIONES_OUT;
             this.T_CONTRATOS_IN = T_CONTRATOS_IN;
@@ -506,8 +539,9 @@ namespace SustitucionMOAWS.AplicacionesWebServiceMOA {
             return base.Channel.SI_MPMF_MOAOP_APLICACIONES(request);
         }
         
-        public SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4910 SI_MPMF_MOAOP_APLICACIONES(string PE_PROVEEDOR, ref SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4050[] T_APLICACIONES_OUT, ref SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4060[] T_CONTRATOS_IN, ref SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4100[] T_FECHA_IN) {
+        public SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4910 SI_MPMF_MOAOP_APLICACIONES(string IM_CCPP, string PE_PROVEEDOR, ref SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4050[] T_APLICACIONES_OUT, ref SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4060[] T_CONTRATOS_IN, ref SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4100[] T_FECHA_IN) {
             SustitucionMOAWS.AplicacionesWebServiceMOA.SI_MPMF_MOAOP_APLICACIONESRequest inValue = new SustitucionMOAWS.AplicacionesWebServiceMOA.SI_MPMF_MOAOP_APLICACIONESRequest();
+            inValue.IM_CCPP = IM_CCPP;
             inValue.PE_PROVEEDOR = PE_PROVEEDOR;
             inValue.T_APLICACIONES_OUT = T_APLICACIONES_OUT;
             inValue.T_CONTRATOS_IN = T_CONTRATOS_IN;
