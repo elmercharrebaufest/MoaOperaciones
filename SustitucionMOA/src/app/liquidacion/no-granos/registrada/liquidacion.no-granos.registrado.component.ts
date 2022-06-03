@@ -19,7 +19,7 @@ export class LiquidacionNGRegistradoComponent extends LiquidacionNGBaseComponent
     }
 
     filtroEstados: string= "Todos";
-
+    
     tituloArchivo = "ReporteComprobantesRegistrados.xls";
 
     setTabs() {

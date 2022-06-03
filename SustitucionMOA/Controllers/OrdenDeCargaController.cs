@@ -105,7 +105,7 @@ namespace SustitucionMOA.Controllers
             {
                 var mailUsuario = SessionPersister.getUsername();
 
-                return JsonCustom(new { data = ordenDeCargaService.Obtener(mailUsuario, ordenDeCargaId) });
+                return JsonCustom(new { data = ordenDeCargaService.Obtener(mailUsuario, ordenDeCargaId), historial = ordenDeCargaService.ObtenerEditarHistorial(mailUsuario, ordenDeCargaId) });
             }
             catch (InfoCustomException e)
             {
@@ -128,7 +128,7 @@ namespace SustitucionMOA.Controllers
             {
                 var mailUsuario = SessionPersister.getUsername();
 
-                return JsonCustom(new { data = ordenDeCargaService.ObtenerEditar(mailUsuario, ordenDeCargaId) });
+                return JsonCustom(new { data = ordenDeCargaService.ObtenerEditar(mailUsuario, ordenDeCargaId)});
             }
             catch (InfoCustomException e)
             {
@@ -151,6 +151,28 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(new { data = ordenDeCargaService.AnularOrden(ordenId) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult EdicionFinalizada(int ordenId, string resp)
+        {
+            try
+            {
+                return JsonCustom(new { data = ordenDeCargaService.EdicionFinalizada(null, ordenId, resp) });
             }
             catch (InfoCustomException e)
             {
@@ -363,6 +385,58 @@ namespace SustitucionMOA.Controllers
                 var mailUsuario = SessionPersister.getUsername();
 
                 return JsonCustom(new { data = ordenDeCargaService.ForzarCreacionOrden(ordenId) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult SolicitarAnulacion(int ordenDeCargaId, string fechaInicio, string fechaFin)
+        {
+            try
+            {
+                var message = ordenDeCargaService.SolicitarAnulacionOrden(ordenDeCargaId);
+
+                var mailUsuario = SessionPersister.getUsername();
+
+                return JsonCustom(new { data = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+		
+		[HttpGet]
+        public ActionResult SolicitarEdicion(int ordenDeCargaId)
+        {
+            try
+            {
+                var message = ordenDeCargaService.SolicitarEdicionOrden(ordenDeCargaId);
+
+                var mailUsuario = SessionPersister.getUsername();
+
+                return JsonCustom(message);
             }
             catch (InfoCustomException e)
             {

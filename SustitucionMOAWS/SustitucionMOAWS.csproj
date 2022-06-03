@@ -278,6 +278,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\PDFComprobantesNGWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\PDFProformaFinalWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -401,6 +406,7 @@
     <Compile Include="WSConsumers\ObtenerServiciosSolpConsumerMOA.cs" />
     <Compile Include="WSConsumers\ListarPesificacionesConsumer.cs" />
     <Compile Include="WSConsumers\ObtenerSolpConsumerMOA.cs" />
+    <Compile Include="WSConsumers\PDFComprobantesNGConsumerMOA.cs" />
     <Compile Include="WSConsumers\PDFProformaFinalConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContratoPDFConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContratosConsumerMOA.cs" />
@@ -839,6 +845,7 @@
     <None Include="Service References\PagosWebServiceMOA\SustitucionMOAWS.PagosWebServiceMOA.ZMPES5310.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\PDFComprobantesNGWebServiceMOA\SI_MPMF_MOAOP_COMP_NOGRANOSPDF.wsdl" />
     <None Include="Service References\PDFProformaFinalWebServiceMOA\SI_MPMF_MOAOP_PDF_PROFORMA.wsdl" />
     <None Include="Service References\PDFProformaFinalWebServiceMOA\SustitucionMOAWS.PDFProformaFinalWebServiceMOA.SI_MPMF_MOAOP_PDF_PROFORMAResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -2184,6 +2191,7 @@
     <WCFMetadataStorage Include="Service References\PagoDetalleWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PagosNGWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PagosWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\PDFComprobantesNGWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PDFProformaFinalWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PDFWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PerfilesWebServiceMOA\" />
@@ -3007,6 +3015,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ComprobantesNGWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PDFComprobantesNGWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PDFComprobantesNGWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PDFComprobantesNGWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

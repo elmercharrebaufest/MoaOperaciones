@@ -61,6 +61,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     editarDocumento: boolean = false;
     flagSolpFinalizada: boolean = false;
+    disabled: boolean = true;
+    concluido: boolean = false;
 
     // solpActual: Solp;
 
@@ -146,6 +148,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.formularioActual.disable();
         }
         this.flagSolpFinalizada = this.combos.flagSolpFinalizada;
+        this.ValidarNuevaPosicion();
     }
 
     mostrarValidacion(campoAValidar, vacio){
@@ -238,7 +241,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     validarPosicionActual() {
         this.validFormEliminarPosicion = this.model.posicionActual.estado;
-        this.model.posicionActual.posicionValida = !this.validadorPasoSolpService.esPasoInvalido();
+        this.model.posicionActual.posicionValida = !this.validadorPasoSolpService.esPasoInvalido();      
     }
 
     centroSeleccionado() {
@@ -311,6 +314,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     agregarPosicion(el: HTMLElement) {
         this.validarPosicionActual();
         this.model.agregarNuevaPosicion();
+        this.ValidarNuevaPosicion();
         el.scrollIntoView();
     }
 
@@ -318,5 +322,13 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         let fechaNueva = new Date(this.model.fechaEntrega);
         fechaNueva.setDate(fechaNueva.getDate() + parseInt(this.model.posicionActual.plazoDeEntrega.toString()));
         this.model.posicionActual.fechaEntregaServicio = fechaNueva;
+    }
+
+    ValidarNuevaPosicion() {
+        if (this.model.posicionActual.concluido == undefined){
+            this.disabled = false;
+        } else {
+            this.disabled = true;
+        }
     }
 }

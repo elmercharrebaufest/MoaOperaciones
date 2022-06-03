@@ -66,7 +66,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getPatentes();
         this.ordenDeCarga.Cantidad = 30000;
 
         this.route.params.forEach((params: Params) => {
@@ -77,9 +76,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
-            
+        } else{
+            this.getPatentes();
         }
-
        
         this.obtenerMateriales();
 
@@ -176,6 +175,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         if (this.esComercial && result.data.ColorSemaforo != "green") {
                             this.puedeEditarContrato = true;
                         }
+                        if(result.data.Estado == 3){
+                            this.puedeEditarContrato = true;
+                        }
                         this.getPatentes();
                         
                     }
@@ -233,6 +235,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                 .getElementById("openModalNotificacion")
                                 .click();
                         }
+                        this.service.solicitarEdicion(this.ordenDeCargaId);
+
                     },
                     (error) => {
                         this.spinnerComponent.hideIt();

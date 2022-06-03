@@ -10,6 +10,7 @@ import { OrdenesDeCargaService } from './ordenes-de-carga.service';
 import { OrdenesDeCargaDetalleComponent } from './detalle/ordenes-de-carga.detalle.component';
 import { ButtonModule } from 'primeng/button';
 import {MultiSelectModule} from 'primeng/multiselect';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
 
 @NgModule({
     imports: [
@@ -19,7 +20,8 @@ import {MultiSelectModule} from 'primeng/multiselect';
         ButtonModule,
         NgxMaskModule,
         OrdenesDeCargaRoutingModule,
-        MultiSelectModule
+        MultiSelectModule,
+        ConfirmDialogModule
     ],
     declarations: [
         OrdenesDeCargaAlta,

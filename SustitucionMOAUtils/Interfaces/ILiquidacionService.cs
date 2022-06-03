@@ -39,6 +39,7 @@ namespace SustitucionMOAUtils.Interfaces
         DetalleCteWSMOAResponse getProforma(string proveedor, string fijacion);
         string descargaProforma(string proveedor, string fijacion);
         PDFResponse descargaProformaFinal(string contrato, string fijacion);
+        PDFResponse descargaComprobantesNG(string CodigoProveedorSAP, string FechaDocumento, string NumeroLegalDocumento);
         ProcedenciaFleteWSMOAResponse getFleteProcedencia(string proveedor, string contrato);
         string descargarFleteProcedencia(string proveedor, string contrato);
         Task NotificarLiquidacionesAsync(HttpFileCollectionBase liquidaciones, string codigoProveedor);

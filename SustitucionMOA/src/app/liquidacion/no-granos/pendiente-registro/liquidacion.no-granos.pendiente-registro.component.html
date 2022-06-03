@@ -128,6 +128,7 @@
                                     </span>
                                 </div> 
                             </th>
+                            <th>PDF</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -140,6 +141,11 @@
                             <td>{{comprobante.TotalMasMoneda}}</td>
                             <td>{{comprobante.OrdenDeCompra}}</td>
                             <td [ngStyle]="{'color': comprobante.ColorEstado}" >{{comprobante.CodigoEstadoDocumentoDescripcion}}</td>
+                            <td>
+                                <a (click)="descargarComprobanteNGPDF(comprobante.CodigoProveedorSAP, comprobante.FechaComprobanteDate, comprobante.NumeroLegalDocumento)"
+                                href="#"><span
+                                    class="fa  fa-file-pdf-o "></span></a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

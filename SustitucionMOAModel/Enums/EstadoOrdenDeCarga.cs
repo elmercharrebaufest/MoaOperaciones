@@ -33,6 +33,7 @@ namespace SustitucionMOAModel.Enums
                 case EstadoOrdenDeCarga.Anulada:
                     return "red";
                 case EstadoOrdenDeCarga.Pendiente:
+                case EstadoOrdenDeCarga.EdicionSolicitada:
                     return "orange";
                 case EstadoOrdenDeCarga.Confirmado:
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
@@ -71,6 +72,10 @@ namespace SustitucionMOAModel.Enums
                     return "Anulada";
                 case EstadoOrdenDeCarga.AnuladaPorVencimiento:
                     return "Anulada por vencimiento";
+                case EstadoOrdenDeCarga.AnulacionSolicitada:
+                    return "Anulación solicitada";
+				case EstadoOrdenDeCarga.EdicionSolicitada:
+                    return "Edición solicitada";
                 default:
                     return "Sin estado";
             }
