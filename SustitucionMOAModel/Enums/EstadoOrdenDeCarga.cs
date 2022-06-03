@@ -95,10 +95,14 @@ namespace SustitucionMOAModel.Enums
                     return "En proceso";
                 case EstadoOrdenDeCarga.EntregaGenerada:
                     return "OK";
+                case EstadoOrdenDeCarga.AnulacionSolicitada:
+                    return "Anulación Solicitada";
+                case EstadoOrdenDeCarga.EdicionSolicitada:
+                    return "Edición Solicitada";
                 //case EstadoOrdenDeCarga.Entregada:
                 //    return "Completada";
-                //case EstadoOrdenDeCarga.Anulada:
-                //    return "Anulada";
+                case EstadoOrdenDeCarga.Anulada:
+                    return "Anulada";
                 default:
                     return "Sin estado";
             }
