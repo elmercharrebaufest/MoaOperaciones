@@ -89,7 +89,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     filtroProducto = new DropdownContent(),
                     filtroVendedor = new DropdownContent(),
-                    data = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, fechas, contratos)
+                    data = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, fechas, contratos,"")
                 };
 
                 ValidarRespuesta(dataView.data);
@@ -132,7 +132,7 @@ namespace SustitucionMOAUtils.Services
             {
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
                 List<string>  contratos = new List<string>();
-                CartaPorteExcelWSMOAResponse data = (CartaPorteExcelWSMOAResponse)new AplicacionesExcelConsumerMOA().request(proveedor, fechas, contratos);
+                CartaPorteExcelWSMOAResponse data = (CartaPorteExcelWSMOAResponse)new AplicacionesExcelConsumerMOA().request(proveedor, fechas, contratos,"");
                 ValidarRespuesta(data);
                 return ExcelExport.ToExcel(data.cartasPorte, new string[] { "Carta Porte", "Contrato Molinos", "Contrato Proveedor", "Fecha Descarga", "Producto", "Descargado", "Unidad Descargado", "Pend. Aplic.", "Unidad Pend. Aplic.", "Liquidar", "Unidad Liquidar", "ID Vendedor", "Vendedor", "Sust", "Titular", "Desc. Titular" }, "Reporte Aplicaciones");
             }

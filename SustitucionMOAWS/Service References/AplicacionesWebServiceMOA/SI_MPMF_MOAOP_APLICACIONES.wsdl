@@ -8,6 +8,13 @@
       <xsd:element name="Z_MPMF_MOAOP_APLICACIONES">
         <xsd:complexType>
           <xsd:all>
+            <xsd:element minOccurs="0" name="IM_CCPP">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="12" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
             <xsd:element name="PE_PROVEEDOR">
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
@@ -141,7 +148,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="PRODUCTO">
             <xsd:annotation>
-              <xsd:documentation>Material Description (Short Text)</xsd:documentation>
+              <xsd:documentation>Material Description</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
@@ -225,7 +232,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="ID_VENDEDOR">
             <xsd:annotation>
-              <xsd:documentation>Vendor Account Number</xsd:documentation>
+              <xsd:documentation>Vendor's account number</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
@@ -240,6 +247,20 @@
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
                 <xsd:maxLength value="35" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="CTG">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="13" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="CUIT_SOLICITANTE">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="11" />
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>

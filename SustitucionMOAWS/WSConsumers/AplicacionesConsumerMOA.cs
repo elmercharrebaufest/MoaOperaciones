@@ -15,14 +15,16 @@ namespace SustitucionMOAWS.WSConsumers
     {
         SI_MPMF_MOAOP_APLICACIONESClient service = new SI_MPMF_MOAOP_APLICACIONESClient();
 
-        public object request(string proveedor, List<FechaWS> fechas, List<string> contratos)
+        public object request(string proveedor, List<FechaWS> fechas, List<string> contratos, string CCPP)
         {
             try
             {
+                CCPP = CCPP ?? "";
                 contratos = contratos ?? new List<string>();
                 ZMPES4050[] aplicaciones_out = new ZMPES4050[] { };
                 ZMPES4060[] contratos_in = new ZMPES4060[] { };
                 List<ZMPES4100> fechasSAP = new List<ZMPES4100>() { };
+
                 foreach (FechaWS fecha in fechas)
                 {
                     fechasSAP.Add(new ZMPES4100()
@@ -37,7 +39,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                ZMPES4910 error = service.SI_MPMF_MOAOP_APLICACIONES(proveedor, ref aplicaciones_out, ref contratos_in, ref fechasSAPArray);
+                ZMPES4910 error = service.SI_MPMF_MOAOP_APLICACIONES(CCPP, proveedor, ref aplicaciones_out, ref contratos_in, ref fechasSAPArray);
                 return map(error, aplicaciones_out);
             }
             catch (Exception e)
