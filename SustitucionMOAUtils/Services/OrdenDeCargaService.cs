@@ -693,11 +693,6 @@ namespace SustitucionMOAUtils.Services
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
-            if (orden.InformadaSAP)
-            {
-                throw new ValidationCustomException("La orden no puede anularse debido a que ya fue informada.");
-            }
-
             orden.Estado = EstadoOrdenDeCarga.AnulacionSolicitada;
 
             repositorio.GuardarCambios();
@@ -711,12 +706,9 @@ namespace SustitucionMOAUtils.Services
         {
             string mensaje;
             try
-            {                
-
+            {
                 var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
-
                 string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-
                 string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
 
                 var mails = new List<string>
@@ -725,10 +717,8 @@ namespace SustitucionMOAUtils.Services
                     mailsComerciales,
                 };
 
-                string asunto = "Solicitud de anulación, Orden de carga N° " + ordenDeCargaId.ToString();
-
-                string cuerpo = string.Format("Razón Social: {0} <br> CUIT: {1}", orden.RazonSocialTransporte, orden.CUITTransporte);
-
+                string asunto = $"Solicitud de anulación, Orden de carga N° {ordenDeCargaId}";
+                string cuerpo = $"Solicitud de anulación para la orden de carga N°: {ordenDeCargaId}";
                 EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
 
                 mensaje = "Notificación enviada";

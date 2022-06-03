@@ -166,7 +166,8 @@
                 </a>
                 <span *ngIf="!(ordenDeCarga.DescripcionEstado == 'Anulada' || 
                                ordenDeCarga.DescripcionEstado == 'Anulada por vencimiento' ||
-                               ordenDeCarga.DescripcionEstado == 'Anulación solicitada')" >&nbsp;|&nbsp;</span>
+                               ordenDeCarga.DescripcionEstado == 'Anulación solicitada' ||
+                               ordenDeCarga.DescripcionEstado == 'Entregada')" >&nbsp;|&nbsp;</span>
                                
                 <a *ngIf="!(ordenDeCarga.DescripcionEstado == 'Anulada' || 
                                ordenDeCarga.DescripcionEstado == 'Anulada por vencimiento' ||
