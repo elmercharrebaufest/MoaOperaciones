@@ -89,7 +89,7 @@
                             <p style="text-align: center;">{{data.entregasDescargas[0].procedencia}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-1">
-                            <p class="black" style="text-align: center;">Total Recibidos</p>
+                            <p class="black" style="text-align: center;">Total descargado</p>
                             <p style="text-align: center;">{{data.entregasDescargas[0].netoDescontadoString}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-1">
@@ -129,7 +129,7 @@
                             <p style="text-align: center;">{{data.entregasDescargas[0].procedencia}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p class="black" style="text-align: center;">Total Recibidos</p>
+                            <p class="black" style="text-align: center;">Total descargado</p>
                             <p style="text-align: center;">{{data.entregasDescargas[0].netoDescontadoString}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
@@ -256,16 +256,19 @@
                         <table width="100%" border="0" cellspacing="0" cellpadding="0">
                             <tr>
                                 <td>resultado final TOTAL</td>
-                                <td width="15%">
-                                    <p>Kg Netos</p>
+                                <td width="20%">
+                                    <p>Kgs Descargados</p>
                                     {{data.calidadTotalNetosString}}
                                 </td>
-                                <td width="15%"></td>
-                                <td width="15%">
+                                <td width="20%">
+                                    <p>Kgs Netos Descontados</p>
+                                    {{data.calidadTotalNetos - data.calidadTotalAplicados}} KG
+                                </td>
+                                <td width="20%">
                                     <p>Kg Aplicados</p>
                                     {{data.calidadTotalAplicadosString}}
                                 </td>
-                                <td width="15%"></td>
+                                <td width="5%"></td>
                             </tr>
                         </table>
                     </div>
@@ -298,7 +301,7 @@
                                                         <div class="black">
                                                             <p align="center">
                                                                 C&aacute;mara <span
-                                                                    style="color: red;">(Pendiente)</span>
+                                                                    style="color: red;">(Pendiente de Resultado)</span>
                                                             </p>
                                                         </div>
                                                     </th>
@@ -334,7 +337,7 @@
                                                     <!--Camara-->
                                                     <th class="black" width="20%" style="text-align:right">Resultado
                                                     </th>
-                                                    <th class="black" width="20%">DTO (%)</th>
+                                                    <!-- <th class="black" width="20%">DTO (%)</th> -->
                                                     <!-- <th class="black" width="20%">Resultado</th> -->
                                                     <!--<th class="black" width="20%">DTO (%)</th>-->
                                                 </tr>
@@ -356,7 +359,7 @@
                                                         <!-- <td>{{calidad.resultadoCalado}}%</td>
                                                         <td>{{calidad.kgDescuentoString}}</td> -->
                                                         <td>{{calidad.resultadoCamara}}%</td>
-                                                        <td>{{calidad.porcentajeDescuento}}%</td>
+                                                        <!-- <td>{{calidad.porcentajeDescuento}}%</td> -->
                                                     </tr>
                                                     <ng-template #first>
                                                         <tr *ngIf="data.camaraAPresent == '' || data.camaraAPresent == null" >
