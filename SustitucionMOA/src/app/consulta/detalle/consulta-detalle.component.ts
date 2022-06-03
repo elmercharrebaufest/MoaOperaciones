@@ -98,36 +98,6 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.setMenuSeccionTab("consulta", "detalle");
     }
 
-    Paste(e) {        
-        e.preventDefault();
-        const divComentario = document.getElementById("divComentario");
-        const clipText = e.clipboardData.getData("text/plain");
-        const rows = clipText.split("\n");
-        if(rows.length == 1 && rows[0].split("\t").length == 1){
-            divComentario.innerText += clipText;
-            return;
-        }
-        
-        //Creación de table
-        let table = document.createElement("table");
-        let tbody = document.createElement("tbody");
-        table.className="table table-bordered"
-        table.appendChild(tbody);
-
-        //Llenado de table
-        rows.forEach(row => {
-            let tr = document.createElement("tr");
-            tbody.appendChild(tr);
-            let cells = row.split("\t");
-            cells.forEach(cell => {
-                let td = document.createElement("td");
-                td.innerHTML = cell;
-                tr.appendChild(td);
-            });
-        });  
-        divComentario.appendChild(table);
-      }
-
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();

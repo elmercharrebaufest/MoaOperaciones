@@ -25,7 +25,7 @@
                         </div> -->
                         <div class="row myRow" *ngIf="comentario.Detalle != '' ">
                             <div [ngClass]="comentarioPropio(comentario) ? 'comentarioPropio' : 'comentarioRespuesta' " 
-                            class="col-xs-12 col-sm-6 col-md-7" >
+                            class="col-xs-12 col-sm-6 col-md-7"  style="overflow-x: scroll;">
                             </div>
                         </div>
                         <div [ngClass]="comentarioPropio(comentario) ? 'widthAutoConsultaPropio' : 'widthAutoConsultaRespuesta' "
@@ -73,7 +73,6 @@
                 <div
                         class="col-xs-12 col-sm-12 col-md-9" 
                         id="divComentario" 
-                        (paste)="Paste($event)" 
                         data-placeholder="Añadir Comentario"
                         aria-controls="tableModal">
                 </div>               
