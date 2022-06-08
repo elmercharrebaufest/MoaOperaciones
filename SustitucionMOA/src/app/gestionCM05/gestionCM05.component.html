@@ -337,13 +337,13 @@
         <p-toast key="toastPopupDetalles"></p-toast>
     </div>
     <div *ngIf="tabPopupActiva.label=='Movimientos'" style="border: 1px solid #c8c8c8;">
-        <p-table [columns]="movimientoCols" [value]="movimientos" dataKey="Id" [scrollable]="true" scrollHeight="flex">
+        <p-table [columns]="movimientoCols" [value]="movimientos" dataKey="Id" [scrollable]="true" scrollHeight="50vh" frozenWidth="min-width">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th class="col-md-1 th-movimiento">Tipo</th>
                     <th class="col-md-1 th-movimiento">Origen</th>
                     <th class="col-md-2 th-movimiento">Fecha</th>
-                    <th class="col-md-6 th-movimiento">Observaciones</th>
+                    <th class="col-md-5 th-movimiento">Observaciones</th>
                     <th class="col-md-1 th-movimiento">Estado Anterior</th>
                     <th class="col-md-1 th-movimiento">Estado Posterior</th>
                 </tr>
@@ -359,7 +359,7 @@
                     <td class="col-md-2 td-movimiento">
                         {{rowData.Fecha| date:'dd/MM/yyyy HH:mm:ss'}}
                     </td>
-                    <td class="col-md-6 td-movimiento">
+                    <td class="col-md-5 td-movimiento">
                         {{rowData.Observaciones}}
                     </td>
                     <td class="col-md-1 td-movimiento">
