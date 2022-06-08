@@ -143,13 +143,15 @@ export class DetalleConsultaComponent extends BaseComponent {
           if (droppedFile.fileEntry.isFile) {
             const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
             fileEntry.file((file: File) => {
-                this.listaArchivos.push(file);     
+
+            this.listaArchivos.push(file);     
             });
           } else {
             // It was a directory (empty directories are added, otherwise only files)
             const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
           }
         }
+        this.file = this.listaArchivos;
       }
 
     cargarArchivo(event: any) {
@@ -215,7 +217,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     postComentario() {
         this.blockUI.start('Enviando comentario');
         let detallecomentario = document.getElementById("divComentario");
-        this.detalle = detallecomentario.innerHTML;
+        this.detalle = detallecomentario.innerHTML.trim() == "Añadir Comentario" ? "" : detallecomentario.innerHTML.trim();
         if (this.validar()) {
             this.blockUI.stop();
             return;
@@ -342,7 +344,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     recordarComentario(){
         let detallecomentario = document.getElementById("divComentario");
-        this.detalle = detallecomentario.innerHTML;
+        this.detalle = detallecomentario.innerHTML.trim() == "Añadir Comentario" ? "" : detallecomentario.innerHTML.trim();;
         this.mensajeComponent.setMsgsEmpty();
         this.subscription = this.service.recordarComentario(this.consultaId).subscribe(
             (result:any) => {
