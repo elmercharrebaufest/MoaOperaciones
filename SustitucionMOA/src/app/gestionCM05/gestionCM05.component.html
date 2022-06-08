@@ -247,10 +247,10 @@
                     </div>
                     <div class="col-5 col-sm-5">
                         <p-dropdown [options]="estados" [(ngModel)]="selectedCabecera.EstadoId" [style]="{'width':'75% !important'}"
-                        [showClear]="true" [autoDisplayFirst]="false" (onChange)="guardarCabeceraEditada()"></p-dropdown>
+                        [showClear]="false" [autoDisplayFirst]="false" (onChange)="guardarCabeceraEditada()"></p-dropdown>
                         <ng-template>
                             <p-dropdown [options]="estados" [(ngModel)]="selectedCabecera.EstadoId" [style]="{'width':'75% !important'}"
-                                        [showClear]="true" [autoDisplayFirst]="false" (onChange)="guardarCabeceraEditada()"></p-dropdown>
+                                        [showClear]="false" [autoDisplayFirst]="false" (onChange)="guardarCabeceraEditada()"></p-dropdown>
                         </ng-template>
                     </div>
                 </div>
