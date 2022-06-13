@@ -34,6 +34,12 @@
       <div class="clearfix myTables">
         <mensaje></mensaje>
         <spinner></spinner>
+        <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de solicitud de anulación" [responsive]="true" appendTo="body">
+          <p-footer>
+            <button type="button" pButton label="No" class="ui-button-info botonModal" (click)="dialogoSA.reject()"></button>
+            <button type="button" pButton label="Si" class="ui-button-success botonModal" (click)="dialogoSA.accept()"></button>
+          </p-footer>
+        </p-confirmDialog>
       </div>
     </div>
     <!-- END tables-->
@@ -428,9 +434,13 @@
                 <input type="button" (click)="abrirModalAnular()" class="btn-custom btn-remove btn-mediano"
                   value="Anular">
               </div>
-              <div class="col-xs-5 col-md-6" *ngIf="ordenDeCarga.Estado == 11">
-                <input type="button" (click)="abrirModalAnular()" class="btn-custom btn-remove btn-mediano"
+              <div class="col-xs-6 col-md-3" *ngIf="mostrarBotonAprobarAnulacion">
+                <input type="button" (click)="abrirModalAnular()" class="btn-custom btn-remove btn-grande"
                   value="Aprobar Anulacion">
+              </div>
+              <div class="col-xs-6 col-md-3" *ngIf="mostrarBotonSolicitarAnulacion">
+                <input type="button" (click)="confirmarSA(ordenDeCarga.Id)" class="btn-custom btn-remove btn-grande"
+                  value="Solicitar Anulación">
               </div>
 			  <div class="col-xs-5 col-md-6" *ngIf="ordenDeCarga.Estado == 10">
                 <input type="button" (click)="abrirModalEdicionFinalizada()" class="btn-custom btn-remove btn-mediano"

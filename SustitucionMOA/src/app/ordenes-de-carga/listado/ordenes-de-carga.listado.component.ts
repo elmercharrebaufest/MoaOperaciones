@@ -116,75 +116,74 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         this.obtenerMateriales();
     }
 
-    confirmarSA(Id) {
-        //var element = document.getElementsByClassName("ui-widget-overlay ui-dialog-mask");
-        //element[0].remove();
-        this.confirmationService.confirm({    
-            key: 'confirmarSA',        
-            message: '¿Desea solicitar anulación?',
-            accept: () => {
-                this.solicitarAnulacion(Id)
-            },
-            reject: () => {                
-            }
-        });
-    }
+    // confirmarSA(Id) {
+    //     //var element = document.getElementsByClassName("ui-widget-overlay ui-dialog-mask");
+    //     //element[0].remove();
+    //     this.confirmationService.confirm({    
+    //         key: 'confirmarSA',        
+    //         message: '¿Desea solicitar anulación?',
+    //         accept: () => {
+    //             this.solicitarAnulacion(Id)
+    //         },
+    //         reject: () => {                
+    //         }
+    //     });
+    // }
     
-    confirmarSE(Id) {
-        console.log("ss");
+    // confirmarSE(Id) {
+    //     console.log("ss");
         
-        this.confirmationService.confirm({    
-            key: 'confirmarSE',        
-            message: '¿Desea solicitar edición?',
-            accept: () => {
+    //     this.confirmationService.confirm({    
+    //         key: 'confirmarSE',        
+    //         message: '¿Desea solicitar edición?',
+    //         accept: () => {
                
-            },
-            reject: () => {                
-            }
-        });
-    }
+    //         },
+    //         reject: () => {                
+    //         }
+    //     });
+    // }
     
-    solicitarAnulacion(Id){
-        this.mensajeComponent.setMsgsEmpty();
+    // solicitarAnulacion(Id){
+    //     this.mensajeComponent.setMsgsEmpty();
 
-        this.spinnerComponent.showIt();
-        this.data = null;
-        try {
-            this.unsubscribe();
-            this.subscription = this.service.solicitarAnulacion(Id, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.data = result.data;
-                        this.datosAux = result.data;
-                        this.filtrarListado();
-                    }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
+    //     this.spinnerComponent.showIt();
+    //     this.data = null;
+    //     try {
+    //         this.unsubscribe();
+    //         this.subscription = this.service.solicitarAnulacion(Id, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
+    //             result => {
+    //                 this.spinnerComponent.hideIt();
+    //                 if (result.logout == true) {
+    //                     this.sessionDataService.logout();
+    //                 } else if (result.error != undefined && result.error != "") {
+    //                     this.mensajeComponent.setErrorMsg(result.error);
+    //                 } else if (result.info != undefined) {
+    //                     this.mensajeComponent.setInfoMsg(result.info);
+    //                 } else {
+    //                     this.data = result.data;
+    //                     this.datosAux = result.data;
+    //                     this.filtrarListado();
+    //                 }
+    //             },
+    //             error => {
+    //                 this.spinnerComponent.hideIt();
+    //                 this.mensajeComponent.setErrorMsg(error.message);
+    //             }
 
-            );
-        } catch (e) {
-            this.spinnerComponent.hideIt();
-            this.mensajeComponent.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
+    //         );
+    //     } catch (e) {
+    //         this.spinnerComponent.hideIt();
+    //         this.mensajeComponent.setErrorMsg(e);
+    //         return false; //<-- Prevent Refresh
+    //     }
 
-        return false; //<-- Prevent Refresh
-    }
+    //     return false; //<-- Prevent Refresh
+    // }
     
     
 
     filtrarListado(){
-        debugger
         this.primerListado = this.datosAux.filter(x => x.DescripcionEstado != this.entregada);
 
         if (!this.esTercero) {
