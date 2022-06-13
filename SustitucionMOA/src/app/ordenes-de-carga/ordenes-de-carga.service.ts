@@ -41,11 +41,9 @@ export class OrdenesDeCargaService extends BaseService {
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
-    public solicitarAnulacion(ordenDeCargaId: Number, fechaInicio: string, fechaFin: string): Observable<any> {
+    public solicitarAnulacion(ordenDeCargaId: Number): Observable<any> {
         let params: HttpParams = new HttpParams()
             .append('ordenDeCargaId', ordenDeCargaId.toString())
-            .append('fechaInicio', fechaInicio)
-            .append('fechaFin', fechaFin);
 
         return this.http
             .get<OrdenDeCarga[]>('/api/OrdenDeCarga/SolicitarAnulacion', { params: params })

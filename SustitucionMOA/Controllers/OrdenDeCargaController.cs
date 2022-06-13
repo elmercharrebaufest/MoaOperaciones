@@ -402,7 +402,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult SolicitarAnulacion(int ordenDeCargaId, string fechaInicio, string fechaFin)
+        public ActionResult SolicitarAnulacion(int ordenDeCargaId)
         {
             try
             {
@@ -410,7 +410,7 @@ namespace SustitucionMOA.Controllers
 
                 var mailUsuario = SessionPersister.getUsername();
 
-                return JsonCustom(new { data = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin) });
+                return JsonCustom(message);
             }
             catch (InfoCustomException e)
             {

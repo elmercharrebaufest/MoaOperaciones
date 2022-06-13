@@ -89,7 +89,7 @@
       <div class="clearfix myTables" style="overflow-x:auto;">
         <mensaje></mensaje>
         <spinner></spinner>
-        <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de solicitud de anulación" [responsive]="true" appendTo="body">
+        <!-- <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de solicitud de anulación" [responsive]="true" appendTo="body">
           <p-footer>
             <button type="button" pButton label="No" class="ui-button-info botonModal" (click)="dialogoSA.reject()"></button>
             <button type="button" pButton label="Si" class="ui-button-success botonModal" (click)="dialogoSA.accept()"></button>
@@ -100,7 +100,7 @@
             <button type="button" pButton label="No" class="ui-button-info botonModal" (click)="dialogoSE.reject()"></button>
             <button type="button" pButton label="Si" class="ui-button-success botonModal" (click)="dialogoSE.accept()"></button>
         </p-footer>
-        </p-confirmDialog>
+        </p-confirmDialog> -->
         <table #tabla *ngIf="data && data.length != 0;" id="tableModal"
           class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" cellspacing="0"
           role="grid" aria-describedby="tableModal_info"
@@ -164,7 +164,7 @@
                 <a class="cursor" style="cursor: pointer;" (click)="goToSeccionParam('/ordenes-de-carga/detalle/', ordenDeCarga.Id)">
                   Ver
                 </a>
-                <span *ngIf="!(ordenDeCarga.DescripcionEstado == 'Anulada' || 
+                <!-- <span *ngIf="!(ordenDeCarga.DescripcionEstado == 'Anulada' || 
                                ordenDeCarga.DescripcionEstado == 'Anulada por vencimiento' ||
                                ordenDeCarga.DescripcionEstado == 'Anulación solicitada' ||
                                ordenDeCarga.DescripcionEstado == 'Entregada')" >&nbsp;|&nbsp;</span>
@@ -172,7 +172,7 @@
                 <a *ngIf="!(ordenDeCarga.DescripcionEstado == 'Anulada' || 
                                ordenDeCarga.DescripcionEstado == 'Anulada por vencimiento' ||
                                ordenDeCarga.DescripcionEstado == 'Anulación solicitada')" 
-                        class="cursor" style="cursor: pointer;" (click)="confirmarSA(ordenDeCarga.Id)">Solicitar Anulación</a>
+                        class="cursor" style="cursor: pointer;" (click)="confirmarSA(ordenDeCarga.Id)">Solicitar Anulación</a> -->
               </td>
             </tr>
           </tbody>
