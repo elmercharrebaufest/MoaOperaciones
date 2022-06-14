@@ -15,6 +15,7 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
+import { SelectItem, ConfirmationService} from 'primeng/api';
 
 @Component({
     selector: 'app-ordenes-de-carga.detalle',
@@ -33,6 +34,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajeError: string = "";
+
+    ordenDeCargaHistorial: any = {};
 
     corredores: Map<number, string>;
     corredorSeleccionado: number;
@@ -63,6 +66,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarListadoMesaFas: boolean = false;
     mostrarListadoPuerto: boolean = false;
 
+    mostrarBotonSolicitarAnulacion: boolean = false;
+    mostrarBotonAprobarAnulacion: boolean = false;
+
     // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS');
@@ -76,7 +82,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         private route: ActivatedRoute,
         protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        public datepipe: DatePipe) {
+        public datepipe: DatePipe,
+        private confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
 
         // this.esInterno = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -92,6 +99,59 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
         }
+    }
+
+    confirmarSA(Id) {
+        //var element = document.getElementsByClassName("ui-widget-overlay ui-dialog-mask");
+        //element[0].remove();
+        this.confirmationService.confirm({    
+            key: 'confirmarSA',        
+            message: '¿Desea solicitar anulación?',
+            accept: () => {
+                this.solicitarAnulacion(Id)
+            },
+            reject: () => {                
+            }
+        });
+    }
+
+    
+
+    solicitarAnulacion(Id){
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+
+        try {
+            this.unsubscribe();
+            this.subscription = this.service.solicitarAnulacion(Id).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                        this.navService.navegarSeccion(
+                            "/ordenes-de-carga"
+                        );
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
     }
 
     //Está función va a desaparecer cuando hagamos el refactor de como mostrar los datos de esta pantalla
@@ -126,8 +186,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return;
         }
 
+        if(!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada)){
+            this.mostrarBotonSolicitarAnulacion = true;
+        }
+
         if (this.esInterno) {
-            this.mostrarBotonVerHistorial = true;
+                this.mostrarBotonVerHistorial = true;
             if (this.ordenDeCarga.NumeroPedido === "-" && this.ordenDeCarga.PedidosRespuesta != "-") {
                 this.mostrarBotonPedidos = true
             }
@@ -156,6 +220,26 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonForzarCreacionPedido = true;
             }
         }
+        else if (this.esMesaFas) {
+
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
+                this.mostrarBotonAnular = true;
+            }
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
+                this.mostrarBotonAnular = true;
+            }
+            if (!this.ordenDeCarga.TransporteExiste) {
+                this.mostrarBotonAnular = true;
+            }
+            if(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada){
+                this.mostrarBotonAnular = false;
+                this.mostrarBotonAprobarAnulacion = true;
+            }           
+        }
+        if(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada){
+            this.mostrarBotonAnular = false;
+            this.mostrarBotonAprobarAnulacion = true;
+        }    
     }
 
     obtenerOrdenDeCarga() {
@@ -400,6 +484,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         document.getElementById("openAnularOrden").click();
     }
 
+    abrirModalEdicionFinalizada() {
+        document.getElementById("openEdicionFinalizada").click();
+    }
+
     abrirModalPedidos() {
         
         this.mensajeComponent.setMsgsEmpty();
@@ -483,6 +571,38 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         document.getElementById("closemodalAnularOrden").click();
+                        this.mensajeComponent.setSuccessMsg(result.data);
+
+                        this.navService.navegarSeccion(
+                            "/ordenes-de-carga"
+                        );
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    edicionFinalizada(resp: string) {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscriptionDropDowns = this.service.edicionFinalizada(this.ordenDeCargaId, resp).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        document.getElementById("closemodalEdicionFinalizada").click();
                         this.mensajeComponent.setSuccessMsg(result.data);
 
                         this.navService.navegarSeccion(

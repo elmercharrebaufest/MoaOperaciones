@@ -34,6 +34,12 @@
       <div class="clearfix myTables">
         <mensaje></mensaje>
         <spinner></spinner>
+        <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de solicitud de anulación" [responsive]="true" appendTo="body">
+          <p-footer>
+            <button type="button" pButton label="No" class="ui-button-info botonModal" (click)="dialogoSA.reject()"></button>
+            <button type="button" pButton label="Si" class="ui-button-success botonModal" (click)="dialogoSA.accept()"></button>
+          </p-footer>
+        </p-confirmDialog>
       </div>
     </div>
     <!-- END tables-->
@@ -59,87 +65,103 @@
           <div class="row myRow firstSection ">
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
-                <div class="col-xs-12 col-md-6" *ngIf="esInterno || esCorredor">
-                  <p class="blue"><strong>Raz&oacute;n social cliente</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.RazonSocialCliente}}</p>
-                </div>
-                <div class="col-xs-12 col-md-6" *ngIf="esInterno && ordenDeCarga.Corredor != ''">
-                  <p class=" blue"><strong>Raz&oacute;n social corredor</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.RazonSocialCorredor}}</p>
+
+                <!-- cliente -->
+                <div class="col-xs-12 col-md-6">
+                  <div class="col-xs-12 col-md-12" *ngIf="esInterno || esCorredor">
+                    <p class="blue"><strong>Raz&oacute;n social cliente</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.RazonSocialCliente}}</p>
+                  </div>
+  
+                  <div class="col-xs-12 col-md-12" *ngIf="esInterno || esCorredor">
+                    <p class="blue"><strong>Cliente</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.Cliente}}</p>
+                  </div>
+  
+                  <div class="col-xs-12 col-md-12" *ngIf="esInterno && ordenDeCarga.Corredor != ''">
+                    <p class=" blue"><strong>Raz&oacute;n social corredor</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.RazonSocialCorredor}}</p>
+                  </div>
+  
+                  <div class="col-xs-12 col-md-12" *ngIf="esInterno && ordenDeCarga.Corredor != ''">
+                    <p class=" blue"><strong>Corredor</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.Corredor}}</p>
+                  </div>
+  
+                  <div class="col-xs-12 col-md-12">
+                    <p class="blue"><strong>Contrato</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.ContratoIngresado}}</p>
+                  </div>
+  
+                  <div class="col-xs-12 col-md-12">
+                    <p class="blue"><strong>Contrato seleccionado</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.ContratoSAP}}</p>
+                  </div>
+  
+                  <div class="col-xs-12 col-md-12" *ngIf="ordenDeCarga.NumeroPedidoIngresado != ''">
+                    <p class="blue"><strong>Pedido</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.NumeroPedidoIngresado}}</p>
+                  </div>
+  
+                  <div class="col-xs-12 col-md-12">
+                    <p class="blue"><strong>Pedido Seleccionado</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.NumeroPedido}}</p>
+                  </div>
+  
+                  <div class="col-xs-12 col-md-12">
+                    <p class="blue"><strong>Entrega</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.NumeroEntrega}}</p>
+                  </div>
+
+                  <div class="col-xs-12 col-md-12">
+                    <p class="blue"><strong>Estado</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.DescripcionEstadoUsuarioFinal}}</p>
+                  </div>
                 </div>
 
-                <div class="col-xs-12 col-md-6" *ngIf="esInterno || esCorredor">
-                  <p class="blue"><strong>Cliente</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.Cliente}}</p>
-                </div>
-                <div class="col-xs-12 col-md-6" *ngIf="esInterno && ordenDeCarga.Corredor != ''">
-                  <p class=" blue"><strong>Corredor</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.Corredor}}</p>
-                </div>
-
+                <!-- Chofer -->   
                 <div class="col-xs-12 col-md-6">
-                  <p class="blue"><strong>Contrato</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.ContratoIngresado}}</p>
-                </div>
-                <div class="col-xs-12 col-md-6">
-                  <p class="blue"><strong>Contrato seleccionado</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.ContratoSAP}}</p>
-                </div>
-                <div class="col-xs-12 col-md-6" *ngIf="ordenDeCarga.NumeroPedidoIngresado != ''">
-                  <p class="blue"><strong>Pedido</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.NumeroPedidoIngresado}}</p>
-                </div>
-                <div class="col-xs-12 col-md-6">
-                  <p class="blue"><strong>Pedido Seleccionado</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.NumeroPedido}}</p>
-                </div>
-
-                <div class="col-xs-12 col-md-6">
-                  <p class="blue"><strong>Entrega</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.NumeroEntrega}}</p>
-                </div>
-
-                <div class="col-xs-12 col-md-6">
-                  <p class="blue"><strong>Chofer</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.Chofer}}</p>
-                </div>
-                <div class="col-xs-12 col-md-6">
-                  <p class="blue"><strong>Patente chasis</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.ChasisAcoplado}}</p>
-                </div>
+                  <div class="col-xs-12 col-md-12">
+                    <p class="blue"><strong>Patente chasis</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.ChasisAcoplado}}</p>
+                  </div>
+                  
+                  <div class="col-xs-12 col-md-12">
+                    <p class="blue"><strong>Patente acoplado</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.PatenteAcoplado}}</p>
+                  </div>
+  
+                  <div class="col-xs-12 col-md-12">
+                    <p class="blue"><strong>Chofer</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.Chofer}}</p>
+                  </div>
+  
+                  <div class="col-xs-12 col-md-12">
+                    <p class="blue"><strong>Transporte</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.Transporte}}</p>
+                  </div>
+  
+                  <div class="col-xs-12 col-md-12">
+                    <p class="blue"><strong>Producto</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.Producto}}</p>
+                  </div>
+  
+                  <div class="col-xs-12 col-md-12">
+                    <p class="blue"><strong>Cantidad</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.Cantidad}}</p>
+                  </div>
+  
+                  <div class="col-xs-12 col-md-12">
+                    <p class="blue"><strong>Fecha</strong></p>
+                    <p style="width:100%">{{ordenDeCarga.FechaCarga}}</p>
+                  </div>                  
+                </div>                
                 
-                <div class="col-xs-12 col-md-6">
-                  <p class="blue"><strong>Patente acoplado</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.PatenteAcoplado}}</p>
-                </div>
-                <div class="col-xs-12 col-md-6">
-                  <p class="blue"><strong>Transporte</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.Transporte}}</p>
-                </div>
-
-                <div class="col-xs-12 col-md-6">
-                  <p class="blue"><strong>Producto</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.Producto}}</p>
-                </div>
-                <div class="col-xs-12 col-md-6">
-                  <p class="blue"><strong>Cantidad</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.Cantidad}}</p>
-                </div>
-
-                <div class="col-xs-12 col-md-6">
-                  <p class="blue"><strong>Fecha</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.FechaCarga}}</p>
-                </div>
-
-                <div class="col-xs-12 col-md-6">
-                  <p class="blue"><strong>Estado</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.DescripcionEstadoUsuarioFinal}}</p>
-                </div>
-
                 <div class="col-xs-12 col-md-12">
                   <p class="blue"><strong>Observaci&oacute;n</strong></p>
                   <p style="width:100%">{{ordenDeCarga.Observacion}}</p>
                 </div>
+
               </div>
             </div>
           </div>
@@ -149,6 +171,7 @@
           <div class="row myRow firstSection" *ngIf="mostrarListadoTercero">
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Nombre chofer</strong></p>
                   <p style="width:100%">{{ordenDeCarga.Chofer}}</p>
@@ -190,58 +213,72 @@
           <div class="row myRow firstSection" *ngIf="mostrarListadoComercial">
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>CUIT cliente</strong></p>
                   <p style="width:100%">{{ordenDeCarga.CUITCliente}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Crédito</strong></p>
                   <p style="width:100%">{{ordenDeCarga.AprobadoCredito}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class=" blue"><strong>Orden</strong></p>
                   <p style="width:100%">{{ordenDeCarga.Orden}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Pedido</strong></p>
                   <p style="width:100%">{{ordenDeCarga.NumeroPedido}}</p>
                 </div>
+                
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Entrega</strong></p>
                   <p style="width:100%">{{ordenDeCarga.NumeroEntrega}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Nombre chofer</strong></p>
                   <p style="width:100%">{{ordenDeCarga.Chofer}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class=" blue"><strong>Tipo doc. chofer</strong></p>
                   <p style="width:100%">{{ordenDeCarga.TipoDocChofer}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Documento de chofer</strong></p>
                   <p style="width:100%">{{ordenDeCarga.CUITChofer}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Patente chasis</strong></p>
                   <p style="width:100%">{{ordenDeCarga.ChasisAcoplado}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Patente acoplado</strong></p>
                   <p style="width:100%">{{ordenDeCarga.PatenteAcoplado}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Transportista</strong></p>
                   <p style="width:100%">{{ordenDeCarga.RazonSocialTransporte}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>CUIT transportista</strong></p>
                   <p style="width:100%">{{ordenDeCarga.CUITTransporte}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-12">
                   <p class="blue"><strong>Observaci&oacute;n</strong></p>
                   <p style="width:100%">{{ordenDeCarga.Observacion}}</p>
                 </div>
+
               </div>
             </div>
           </div>
@@ -251,46 +288,57 @@
           <div class="row myRow firstSection" *ngIf="mostrarListadoPuerto">
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Pedido</strong></p>
                   <p style="width:100%">{{ordenDeCarga.NumeroPedido}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Entrega</strong></p>
                   <p style="width:100%">{{ordenDeCarga.NumeroEntrega}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Nombre chofer</strong></p>
                   <p style="width:100%">{{ordenDeCarga.Chofer}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class=" blue"><strong>Tipo doc. chofer</strong></p>
                   <p style="width:100%">{{ordenDeCarga.TipoDocChofer}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Documento de chofer</strong></p>
                   <p style="width:100%">{{ordenDeCarga.CUITChofer}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Patente chasis</strong></p>
                   <p style="width:100%">{{ordenDeCarga.ChasisAcoplado}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Patente acoplado</strong></p>
                   <p style="width:100%">{{ordenDeCarga.PatenteAcoplado}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Transportista</strong></p>
                   <p style="width:100%">{{ordenDeCarga.RazonSocialTransporte}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>CUIT transportista</strong></p>
                   <p style="width:100%">{{ordenDeCarga.CUITTransporte}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-12">
                   <p class="blue"><strong>Observaci&oacute;n</strong></p>
                   <p style="width:100%">{{ordenDeCarga.Observacion}}</p>
                 </div>
+
               </div>
             </div>
           </div>
@@ -300,38 +348,47 @@
           <div class="row myRow firstSection" *ngIf="mostrarListadoMesaFas">
             <div class="squareInfo animate tablaInformacion">
               <div class="row myRow">
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Nombre chofer</strong></p>
-                  <p style="width:100%">{{ordenDeCarga.Chofer}}</p>
+                  <p style="width:100%">{{ordenDeCarga.Chofer}}</p>                  
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class=" blue"><strong>Tipo doc. chofer</strong></p>
                   <p style="width:100%">{{ordenDeCarga.TipoDocChofer}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Documento de chofer</strong></p>
                   <p style="width:100%">{{ordenDeCarga.CUITChofer}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Patente chasis</strong></p>
                   <p style="width:100%">{{ordenDeCarga.ChasisAcoplado}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Patente acoplado</strong></p>
                   <p style="width:100%">{{ordenDeCarga.PatenteAcoplado}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>Transportista</strong></p>
                   <p style="width:100%">{{ordenDeCarga.RazonSocialTransporte}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-6">
                   <p class="blue"><strong>CUIT transportista</strong></p>
                   <p style="width:100%">{{ordenDeCarga.CUITTransporte}}</p>
                 </div>
+
                 <div class="col-xs-12 col-md-12">
                   <p class="blue"><strong>Observaci&oacute;n</strong></p>
                   <p style="width:100%">{{ordenDeCarga.Observacion}}</p>
                 </div>
+
               </div>
             </div>
           </div>
@@ -377,6 +434,18 @@
                 <input type="button" (click)="abrirModalAnular()" class="btn-custom btn-remove btn-mediano"
                   value="Anular">
               </div>
+              <!--<div class="col-xs-6 col-md-3" *ngIf="mostrarBotonAprobarAnulacion">
+                <input type="button" (click)="abrirModalAnular()" class="btn-custom btn-remove btn-grande"
+                  value="Aprobar Anulacion">
+              </div>-->
+              <!--<div class="col-xs-6 col-md-3" *ngIf="mostrarBotonSolicitarAnulacion">
+                <input type="button" (click)="confirmarSA(ordenDeCarga.Id)" class="btn-custom btn-remove btn-grande"
+                  value="Solicitar Anulación">
+              </div>-->
+			  <!--<div class="col-xs-5 col-md-6" *ngIf="ordenDeCarga.Estado == 10">
+                <input type="button" (click)="abrirModalEdicionFinalizada()" class="btn-custom btn-remove btn-mediano"
+                  value="Edición finalizada">
+              </div>-->
             </div>
           </div>
         </div>
@@ -574,6 +643,42 @@
           <button type="button" class="btn-custom btn-remove btn-mediano" (click)="anularOrden()"
             style="display: inline-flex;">
             Anular orden
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!--Modal edición finalizada-->
+  <button type="button" style="display:none" id="openEdicionFinalizada" data-toggle="modal"
+    data-target="#modalEdicionFinalizada"></button>
+  <!-- Modal -->
+  <div class="modal fade" id="modalEdicionFinalizada" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="modalEdicionFinalizada">Edicion finalizada</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row" class="col-xs-12 col-sm-12 col-md-12 text-center">
+            ¿Está seguro de que desea finalizar la edición de la orden de carga?
+          </div>
+        </div>
+        <div class="modal-footer" style="border-top:none;">
+          <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closemodalEdicionFinalizada"
+            style="display: inline-flex;">Cancelar</button>
+          <button type="button" class="btn-custom btn-success btn-mediano" (click)="edicionFinalizada('a')"
+            style="display: inline-flex;">
+            Aprobar
+          </button>
+          <button type="button" class="btn-custom btn-remove btn-mediano" (click)="edicionFinalizada('r')"
+            style="display: inline-flex;">
+            Rechazar
           </button>
 
         </div>

@@ -15,7 +15,7 @@ namespace SustitucionMOAWS.WSConsumers
     {
         SI_MPMF_MOAOP_LIQUIDACIONESClient service = new SI_MPMF_MOAOP_LIQUIDACIONESClient();
 
-        public object request(string proveedor, List<FechaWS> fechas, string contrato)
+        public object request(string proveedor, List<FechaWS> fechas, string contrato, string liquidacion)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace SustitucionMOAWS.WSConsumers
                 ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                string error = service.SI_MPMF_MOAOP_LIQUIDACIONES("", contrato,proveedor, ref fechasSAPArray, ref salidas);
+                string error = service.SI_MPMF_MOAOP_LIQUIDACIONES(liquidacion,contrato,proveedor, ref fechasSAPArray, ref salidas);
                 return map(error, salidas);
             }
             catch (Exception e)

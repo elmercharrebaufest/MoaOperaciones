@@ -214,5 +214,38 @@ namespace SustitucionMOAUtils.Services
 
             return secuencias;
         }
+
+        public IList<MovimientoIngresosBrutosCoeficienteUnificadoDto> InsertarMovimientoIngresosBrutosCoeficienteUnificado(MovimientoIngresosBrutosCoeficienteUnificadoCustomDto movimientoIngresosBrutosCoeficienteUnificadoCustomDto)
+        {
+            var ingresosBrutosCoeficienteUnificado = repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(movimientoIngresosBrutosCoeficienteUnificadoCustomDto.IdIngreso);
+            MovimientoIngresosBrutosCoeficienteUnificado movimientoIngresosBrutosCoeficienteUnificado = new MovimientoIngresosBrutosCoeficienteUnificado
+            {
+                IngresosBrutosCoeficienteUnificado_Id = movimientoIngresosBrutosCoeficienteUnificadoCustomDto.IdIngreso,
+                Observaciones = $"{movimientoIngresosBrutosCoeficienteUnificadoCustomDto.Accion} por: {movimientoIngresosBrutosCoeficienteUnificadoCustomDto.Persona}",
+                Fecha = timeProvider.Now(),
+                TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = movimientoIngresosBrutosCoeficienteUnificadoCustomDto.Tipo,
+                OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = movimientoIngresosBrutosCoeficienteUnificadoCustomDto.Origen,
+                EstadoAnterior_Id = ingresosBrutosCoeficienteUnificado.EstadoIngresosBrutosCoeficienteUnificado_Id,
+                EstadoPosterior_Id = movimientoIngresosBrutosCoeficienteUnificadoCustomDto.EstadoNuevo,
+            };
+            repositorio.Agregar(movimientoIngresosBrutosCoeficienteUnificado);
+            repositorio.GuardarCambios();
+
+            var result = repositorio.Listar<MovimientoIngresosBrutosCoeficienteUnificado, MovimientoIngresosBrutosCoeficienteUnificadoDto>(
+                x => new MovimientoIngresosBrutosCoeficienteUnificadoDto
+                {
+                    Id = x.Id,
+                    IngresosBrutosCoeficienteUnificado = new IngresosBrutosCoeficienteUnificadoDto { Id = x.IngresosBrutosCoeficienteUnificado_Id },
+                    Observaciones = x.Observaciones,
+                    Fecha = x.Fecha,
+                    TipoId = x.TipoMovimientoIngresosBrutosCoeficienteUnificado_Id,
+                    OrigenId = x.OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id,
+                    EstadoAnteriorId = x.EstadoAnterior_Id,
+                    EstadoPosteriorId = x.EstadoPosterior_Id,
+                },
+                x => x.IngresosBrutosCoeficienteUnificado_Id == movimientoIngresosBrutosCoeficienteUnificadoCustomDto.IdIngreso);
+
+            return result;
+        }
     }
 }

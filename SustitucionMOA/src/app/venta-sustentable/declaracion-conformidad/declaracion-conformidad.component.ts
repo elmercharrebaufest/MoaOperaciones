@@ -96,6 +96,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
     this.mensajeImpresionComponent.setMsgsEmpty();
 
     if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
+      this.razonSocialDeclaracion = this.razonSocialDeclaracion.trim();
       if (this.razonSocialDeclaracion.length < 3) {
         this.mensajeImpresionComponent.setErrorMsg("Debe completar la razón social.");
         return false;

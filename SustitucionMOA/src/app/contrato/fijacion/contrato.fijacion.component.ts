@@ -21,6 +21,7 @@ export class ContratoFijacionComponent extends ContratoBaseComponent {
             { etiqueta: "Contrato Molinos", valor: contratoInfo.nroContrato },
             { etiqueta: "Contrato Proveedor", valor: contratoInfo.contrvend },
             { etiqueta: "Producto", valor: contratoInfo.material },
+            { etiqueta: "TipoContrato", valor: contratoInfo.tipoContrato },
             { etiqueta: "Fijado", valor: contratoInfo.kilosFijadosString },
             { etiqueta: "Precio/TN", valor: contratoInfo.importeString },
             { etiqueta: "Vendedor", valor: contratoInfo.vendedor }

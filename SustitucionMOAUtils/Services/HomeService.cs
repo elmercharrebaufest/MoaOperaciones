@@ -116,6 +116,7 @@ namespace SustitucionMOAUtils.Services
             List<BuscadorOption> listaResultados = new List<BuscadorOption> { };
             ContratoDetalleWSMOAResponse detalleContratoResultado = null;
             LiquidacionViewModel todasLiquidaciones = null;
+            LiquidacionWSMOAResponse liquidacionWSMOAResponse = null;
             ListarPesificacionesWSMOAResponse historialPesificaciones = null;
             CartaPorteWSMOAResponse cartasPorteAplicacion = null;
             CartaPorteDescargaWSMOAResponse cartasPorteDescargas = null;
@@ -189,7 +190,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         if (cartasPorteAplicacion == null)
                         {
-                            cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS>(), new List<string> { palabra });
+                            cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS>(), new List<string> { palabra }, "");
                         }
                     }
                     catch (Exception e)
@@ -232,23 +233,52 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
-                    //CARTAS DE PORTE
+                    //liquidaciones
                     try
-                    {
-                        if (cartasPorteAplicacion == null)
-                        {
-                            cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS> { new FechaWS { fechaFin = DateTime.Now.Date.AddDays(1), fechaInicio = DateTime.Now.Date.AddMonths(-6) } }, new List<string> { palabra });
-                        }
-
-                        if (cartasPorteDescargas == null)
-                        {
-                            cartasPorteDescargas = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, new List<FechaWS> { new FechaWS { fechaFin = DateTime.Now.Date.AddDays(1), fechaInicio = DateTime.Now.Date.AddMonths(-6) } }, new List<string> { palabra });
-                        }
+                    {                 
+                            liquidacionWSMOAResponse = (LiquidacionWSMOAResponse)new LiquidacionesConsumerMOA().request(proveedor, new List<FechaWS> { new FechaWS { fechaInicio= new DateTime(2018,01,01),fechaFin = DateTime.Today.AddDays(+1)} }, "", palabra);
+                      
                     }
                     catch (Exception e)
                     {
                         Log.Error(e);
                     }
+
+                    if (liquidacionWSMOAResponse != null && liquidacionWSMOAResponse?.liquidaciones.Count > 0)
+                    {
+                        LiquidacionViewModel dataView = new LiquidacionViewModel();
+                        dataView.data = liquidacionWSMOAResponse;
+                        todasLiquidaciones = dataView;
+
+                        var liquidacion = todasLiquidaciones.data.liquidaciones.Find(lp => lp.comprobante == palabra);
+                        var liquidaciones = todasLiquidaciones.data.liquidaciones.Where(lp => lp.comprobante == palabra).ToList();
+
+                        if (liquidaciones.Count > 0 || liquidaciones != null)
+                        {
+                            listaResultados.Add(new BuscadorOption { Link = "", Tipo = "liquidación emitida", Value = liquidacion.documento + "," + liquidacion.ejercicio, Code = TipoBusqueda.Liquidacion, CtaParams = 1 });
+
+                        }
+                    }
+
+
+                    //CARTAS DE PORTE
+                    try
+                    {
+                        //if (cartasPorteAplicacion == null)
+                        //{
+                        cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS> {  }, new List<string>(), palabra);
+                        //}
+
+                        //if (cartasPorteDescargas == null)
+                        //{
+                        cartasPorteDescargas = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, new List<FechaWS> { new FechaWS { fechaFin = DateTime.Now.Date.AddDays(1), fechaInicio = new DateTime(2010, 1, 1) } }, new List<string> { palabra });
+                        //}
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+
 
                     if (((cartasPorteAplicacion != null && cartasPorteAplicacion?.cartasPorte.Count > 0)
                     || (cartasPorteDescargas != null && cartasPorteDescargas?.cartasPorte.Count > 0))
@@ -264,8 +294,8 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
-            });
 
+            });
 
             return listaResultados.GroupBy(x => x.Tipo).Select(y => y.First()).ToList();
         }

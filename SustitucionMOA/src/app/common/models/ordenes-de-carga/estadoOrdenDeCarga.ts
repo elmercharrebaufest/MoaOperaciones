@@ -6,5 +6,10 @@ export enum EstadoOrdenDeCarga
         EntregaGenerada,
         Anulada,
         Entregada,
-        Vencida
+        Vencida,
+        EntregaPendiente,
+        AnuladaPorVencimiento,
+        ErrorDeCarga,
+        EdicionSolicitada,
+        AnulacionSolicitada
     }

@@ -78,14 +78,45 @@ namespace SustitucionMOATest.Controllers
         [Test()]
         public void GetListadoTest()
         {
-            throw new NotImplementedException();
+            var orden = new
+            {
+                data = new List<OrdenDeCargaDto>()
+                {
+                    new OrdenDeCargaDto { Id = 1, Cliente ="", PatenteChasis = "", CUITCliente ="" }
+                }
+            
+            };
+           
+            ordenDeCargaServiceMock.Setup(x => x.Listar(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(orden.data);
+            var result = (JsonResult)target.GetListado(DateTime.Now.ToString(),DateTime.Now.ToString());
+            expectedJson = JsonConvert.SerializeObject(orden);
+            resultJson = JsonConvert.SerializeObject(result.Data);
+            Assert.NotNull(result);
+            Assert.AreEqual(expectedJson, resultJson);
 
         }
 
         [Test()]
         public void GetTest()
         {
-            throw new NotImplementedException();
+            var orden = new
+            {
+               data = new OrdenDeCargaDetalleDto
+
+                    { 
+                        Id = 1, 
+                        Cliente = "", 
+                        PatenteAcoplado = "", 
+                        CUITCliente = "" 
+                    }
+            };
+
+            ordenDeCargaServiceMock.Setup(x => x.Obtener(It.IsAny<string>(), It.IsAny<int>())).Returns(orden.data);
+            var result = (JsonResult)target.Get(ordenId);
+            expectedJson = JsonConvert.SerializeObject(orden);
+            resultJson = JsonConvert.SerializeObject(result.Data);
+            Assert.NotNull(result);
+            Assert.AreEqual(expectedJson, resultJson);
         }
 
         [Test()]
@@ -149,5 +180,22 @@ namespace SustitucionMOATest.Controllers
             Assert.AreEqual(expectedJson, resultJson);
 
         }
+
+        [Test()]
+        public void VerificarSituacionCrediticiaTest()
+        {
+            var resultado = new
+            {
+                data = new Resultado { Mensaje = "Verifique el crédito del pedido" }
+            };
+
+            ordenDeCargaServiceMock.Setup(s => s.VerificarSituacionCrediticia(ordenId)).Returns(resultado.data);
+            var result = (JsonResult)target.VerificarSituacionCrediticia(ordenId);
+            expectedJson = JsonConvert.SerializeObject(result.Data);
+            resultJson = JsonConvert.SerializeObject(result.Data);
+            Assert.AreEqual(expectedJson, resultJson);
+
+        }
+        
     }
 }

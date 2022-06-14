@@ -17,10 +17,15 @@
                                 {{comentario.Fecha | date:'dd/MM/yyyy'}}
                             </p>
                         </div>
-                        <div class="row myRow" *ngIf="comentario.Detalle != '' ">
+                        <!-- <div class="row myRow" *ngIf="comentario.Detalle != '' ">
                             <div [ngClass]="comentarioPropio(comentario) ? 'comentarioPropio' : 'comentarioRespuesta' " 
                             class="col-xs-12 col-sm-6 col-md-7" [innerText]="comentario.Detalle">
                                 {{comentario.Detalle}}
+                            </div>
+                        </div> -->
+                        <div class="row myRow" *ngIf="comentario.Detalle != '' ">
+                            <div [ngClass]="comentarioPropio(comentario) ? 'comentarioPropio' : 'comentarioRespuesta' " 
+                            class="col-xs-12 col-sm-6 col-md-7"  style="overflow-x: scroll;">
                             </div>
                         </div>
                         <div [ngClass]="comentarioPropio(comentario) ? 'widthAutoConsultaPropio' : 'widthAutoConsultaRespuesta' "
@@ -60,11 +65,17 @@
             <!--AÑANDIR COMENTARIO-->
             <div class="col-xs-12 col-sm-12 col-md-12 shadow contenedorNuevoComentario" id="contenedorNuevoComentario">
                 <hr>
-                <div class="col-xs-12 col-sm-12 col-md-9">
+                <!-- <div class="col-xs-12 col-sm-12 col-md-9">
                     <textarea [disabled]="disable()"
-                     type="search" [(ngModel)]="this.detalle" [value]=""
+                     type="search" [(ngModel)]="" [value]=""
                     class="fourRounded añadirComentario" placeholder="Añadir Comentario" aria-controls="tableModal" rows="8"></textarea>
-                </div>
+                </div>   -->
+                <div
+                        class="col-xs-12 col-sm-12 col-md-9" 
+                        id="divComentario" 
+                        data-placeholder="Añadir Comentario"
+                        aria-controls="tableModal">
+                </div>               
                 <div class="col-xs-12 col-sm-12 col-md-2">
                     <input [disabled]="disable()"
                      class="adjuntarArchivo" #fileInput type="image" src="Content/images/buttons/Adjuntar.svg">
@@ -87,6 +98,11 @@
                     <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add" (click)="goToSeccion('/consulta/mis-consultas');">
                         regresar
                     </button> -->
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-9" >
+                    <file-drop dropZoneLabel="Suelte sus archivos aquí" (onFileDrop)="dropped($event)"
+                    (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+                    </file-drop>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <p *ngIf="this.file != null">{{this.file.name}}</p>

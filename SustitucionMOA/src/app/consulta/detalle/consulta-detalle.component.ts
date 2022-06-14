@@ -16,6 +16,8 @@ import { BaseComponent } from '../../common/base-components/base-component';
 import { Comentario, Categoria, EstadoConsulta, Subcategoria, Consulta, Causa } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { UploadEvent, UploadFile, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
+import { empty } from 'rxjs';
 
 declare var $: any;
 
@@ -126,6 +128,32 @@ export class DetalleConsultaComponent extends BaseComponent {
         return this.securityService.tienePermiso(permiso);
     }
 
+    fileOver(event){
+        console.log(event);
+    }
+     
+    fileLeave(event){
+        console.log(event);
+    }
+
+    public dropped(event: UploadEvent) {
+        for (const droppedFile of event.files) {
+     
+          // Is it a file?
+          if (droppedFile.fileEntry.isFile) {
+            const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
+            fileEntry.file((file: File) => {
+
+            this.listaArchivos.push(file);     
+            });
+          } else {
+            // It was a directory (empty directories are added, otherwise only files)
+            const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
+          }
+        }
+        this.file = this.listaArchivos;
+      }
+
     cargarArchivo(event: any) {
         let fileList: FileList = event.target.files;
         let file;
@@ -188,7 +216,8 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     postComentario() {
         this.blockUI.start('Enviando comentario');
-
+        let detallecomentario = document.getElementById("divComentario");
+        this.detalle = detallecomentario.innerHTML.trim() == "Añadir Comentario" ? "" : detallecomentario.innerHTML.trim();
         if (this.validar()) {
             this.blockUI.stop();
             return;
@@ -212,7 +241,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                     this.getDetalleConsulta();
                     this.mensajeComponent.setSuccessMsg("Comentario enviado correctamente");
                     this.blockUI.stop();
-
+                    detallecomentario.innerHTML = "";
                     this.detalle = "";
                     this.file = null;
                     this.listaArchivos = [];
@@ -314,6 +343,8 @@ export class DetalleConsultaComponent extends BaseComponent {
     }
 
     recordarComentario(){
+        let detallecomentario = document.getElementById("divComentario");
+        this.detalle = detallecomentario.innerHTML.trim() == "Añadir Comentario" ? "" : detallecomentario.innerHTML.trim();;
         this.mensajeComponent.setMsgsEmpty();
         this.subscription = this.service.recordarComentario(this.consultaId).subscribe(
             (result:any) => {
@@ -440,7 +471,45 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.categoriaId = result.CategoriaId;
                         this.subcategoriaId = result.SubCategoriaId;
                         try{
-                            setTimeout(() => {  this.scrollBottom(); }, 200);
+                            setTimeout(() => {  
+                                this.scrollBottom();
+
+                                //Editar DIV editable para igual a text area
+                                let divComentario = document.getElementById("divComentario");  
+                                let editable = this.disable() ? "false" : "true" ;
+                                divComentario.setAttribute("contenteditable", editable);
+                                
+                                //Agregar placeholder
+                                let placeholder = divComentario.getAttribute('data-placeholder');
+                                divComentario.innerHTML === '' && (divComentario.innerHTML = placeholder);
+                                
+                                divComentario.addEventListener('focus', function (e: Event & { target: Element }) {
+                                    const value = e.target.innerHTML;
+                                    value === placeholder && (e.target.innerHTML = '');
+                                });
+                                divComentario.addEventListener('blur', function (e: Event & { target: Element }) {
+                                    const value = e.target.innerHTML;
+                                    value === '' && (e.target.innerHTML = placeholder);
+                                });
+                                //Agregar estilos al div que reemplaza el textarea
+                                divComentario.style.border = "1px solid #DDDDDD";
+                                divComentario.style.borderRadius = "4px";
+                                divComentario.style.opacity = "1";
+                                divComentario.style.font = "normal normal normal 16px Roboto Regular";
+                                divComentario.style.padding = "5px";
+                                divComentario.style.overflow = "auto";
+                                divComentario.style.margin = "0";
+                                divComentario.style.boxSizing = "border-box";
+                                divComentario.style.height = "100px";
+                                divComentario.style.width = "71%";
+                                divComentario.style.marginLeft = "2%";
+
+
+                                let divs = document.getElementsByClassName("row myRow");
+                                for(let i = 0; i< this.consulta.Comentarios.length; i++){
+                                    divs[i+1].children[0].innerHTML = this.consulta.Comentarios[i].Detalle;
+                                }
+                            }, 200);
                         }
                         catch{
                         }

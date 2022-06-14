@@ -66,7 +66,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getPatentes();
         this.ordenDeCarga.Cantidad = 30000;
 
         this.route.params.forEach((params: Params) => {
@@ -77,9 +76,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
-            
+        } else{
+            this.getPatentes();
         }
-
        
         this.obtenerMateriales();
 
@@ -122,11 +121,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         if (this.ordenDeCarga.NombreChofer.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
-            return false;
-        }
-
-        if (this.ordenDeCarga.ApellidoChofer.trim().length < 2) {
-            this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
             return false;
         }
 
@@ -179,6 +173,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.CodigoCliente = result.data.CodigoCliente;
                         this.CodigoCorredor = result.data.CodigoCorredor;
                         if (this.esComercial && result.data.ColorSemaforo != "green") {
+                            this.puedeEditarContrato = true;
+                        }
+                        if(result.data.Estado == 3){
                             this.puedeEditarContrato = true;
                         }
                         this.getPatentes();
@@ -238,6 +235,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                 .getElementById("openModalNotificacion")
                                 .click();
                         }
+                        //this.service.solicitarEdicion(this.ordenDeCargaId);
+
                     },
                     (error) => {
                         this.spinnerComponent.hideIt();

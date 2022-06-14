@@ -39,7 +39,6 @@ namespace SustitucionMOAModel.Dto
             Id = orden.Id;
             CUITCliente = orden.CUITCliente;
             NombreChofer = orden.NombreChofer;
-            ApellidoChofer = orden.ApellidoChofer;
             CUITChofer = orden.CUITChofer;
             PatenteAcoplado = orden.PatenteAcoplado;
             ChasisAcoplado = orden.ChasisAcoplado;
@@ -49,6 +48,7 @@ namespace SustitucionMOAModel.Dto
             Observacion = orden.Observacion;
             ContratoIngresado = orden.ContratoIngresado;
             Cantidad = orden.Cantidad;
+            NumeroEntrega = orden.NumeroEntrega;
             NumeroPedidoIngresado = string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedido : orden.NumeroPedidoIngresado;
             ColorSemaforo = orden.Estado.ObtenerSemaforo();
             Cliente_Id = orden.Cliente_Id;
@@ -56,14 +56,12 @@ namespace SustitucionMOAModel.Dto
             CUITCorredor = orden.CUITCorredor;
             CodigoCliente = orden.Cliente.CodigoProveedor;
             CodigoCorredor = orden.Corredor != null ? orden.Corredor.CodigoProveedor : "";
-            
-
-    }
+            Estado = (int)orden.Estado;
+        }
 
         public int Id { get; set; }
         public string CUITCliente { get; set; }
         public string NombreChofer { get; set; }
-        public string ApellidoChofer { get; set; }
         public string CUITChofer { get; set; }
         public string PatenteAcoplado { get; set; }
         public string ChasisAcoplado { get; set; }
@@ -73,6 +71,7 @@ namespace SustitucionMOAModel.Dto
         public string Observacion { get; set; }
         public string ContratoIngresado { get; set; }
         public int Cantidad { get; set; }
+        public string NumeroEntrega { get; set; }
         public string NumeroPedidoIngresado { get; set; }
         public string ColorSemaforo { get; set; }
         public int Cliente_Id { get; set; }
@@ -80,6 +79,31 @@ namespace SustitucionMOAModel.Dto
         public string CUITCorredor { get; set; }
         public string CodigoCliente { get; set; }
         public string CodigoCorredor { get; set; }
+        public int Estado { get; set; }
+    }
+
+    public class OrdenDeCargaHistorialDto
+    {
+        public OrdenDeCargaHistorialDto(OrdenDeCargaCambiosHistorial orden)
+        {
+            if(orden != null)
+            {
+                Id = orden.Id;
+                OrdenDeCarga_Id = orden.OrdenDeCarga_Id;
+                Antes = orden.Antes;
+                Despues = orden.Despues;
+                FechaCambio = orden.FechaCambio;
+                Usuario_Id = orden.Usuario_Id;
+                NombreColumnaCambio = orden.NombreColumnaCambio;
+            }           
+        }
+        public int Id { get; set; }
+        public int OrdenDeCarga_Id { get; set; }
+        public string Antes { get; set; }
+        public string Despues { get; set; }
+        public DateTime? FechaCambio { get; set; }
+        public int Usuario_Id { get; set; }
+        public string NombreColumnaCambio { get; set; }
     }
 
     public class OrdenDeCargaDetalleDto

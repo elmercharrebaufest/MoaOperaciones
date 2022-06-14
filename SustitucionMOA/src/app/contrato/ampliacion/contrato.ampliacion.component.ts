@@ -21,6 +21,7 @@ export class ContratoAmpliacionComponent extends ContratoBaseComponent {
             { etiqueta: "Contrato Molinos", valor: contratoInfo.nroContrato },
             { etiqueta: "Contrato Proveedor", valor: contratoInfo.contrvend },
             { etiqueta: "Producto", valor: contratoInfo.material },
+            { etiqueta: "TipoContrato", valor: contratoInfo.tipoContrato },
             { etiqueta: "Pactado", valor: contratoInfo.cantKilosString },
             { etiqueta: "Ampliado", valor: contratoInfo.ampliadoString },
             { etiqueta: "Total", valor: contratoInfo.totalString },

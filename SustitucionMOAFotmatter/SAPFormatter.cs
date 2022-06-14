@@ -92,7 +92,8 @@ namespace SustitucionMOAFotmatter
                 else
                     return string.Format("{0} {1}", cantidad.ToString(fmt.ToString()), unidad);
             }
-            else {
+            else
+            {
                 if (cantidad.ToString(fmt.ToString()) == "")
                     return string.Format("0");
                 else
@@ -180,7 +181,8 @@ namespace SustitucionMOAFotmatter
             return removeZeroDecimal(montoDecimal);
         }
 
-        private static string removeZeroDecimal(decimal monto) {
+        private static string removeZeroDecimal(decimal monto)
+        {
             string montoString = monto.ToString("N", new CultureInfo("is-IS"));
             string[] montoArray = montoString.Split(',');
             try
@@ -194,12 +196,17 @@ namespace SustitucionMOAFotmatter
             return montoString;
         }
 
-        public static string FormatearTipoVehiculo(string tipo) {
-            if (tipo.ToUpper() == "C") {
+        public static string FormatearTipoVehiculo(string tipo)
+        {
+            if (tipo.ToUpper() == "C")
+            {
                 return "Camión";
-            } else if (tipo.ToUpper() == "T") {
+            }
+            else if (tipo.ToUpper() == "T")
+            {
                 return "Tren";
-            } else
+            }
+            else
                 return tipo;
 
         }
@@ -209,10 +216,14 @@ namespace SustitucionMOAFotmatter
             return string.Format(tipoCambio.ToString("F3"));
         }
 
-        public static string FormatearCCPP(string ccpp) {
-            try {
+        public static string FormatearCCPP(string ccpp)
+        {
+            try
+            {
                 return ccpp.Replace("-", "");
-            } catch {
+            }
+            catch
+            {
                 return ccpp;
             }
         }

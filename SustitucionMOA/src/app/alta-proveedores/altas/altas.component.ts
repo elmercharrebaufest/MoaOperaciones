@@ -87,7 +87,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     descripcionEstadoAlta: SelectItem[];
     contieneDocumentacionFisica: number = 0;
     puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
-
+    puedeAltaInternaNoGranos: boolean = this.isAuthorized('ALTA INTERNA NO GRANOS');
     ngOnInit(): void {
         this.getEstados();
         this.navService.setSeccionList([]);
@@ -116,7 +116,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                     } else {
                         this.data = result.data;
                         this.datosAux = this.data;
-
+                        this.filtrarListadoAlta();
                         setTimeout(function () {
                             $('[data-toggle="popover"]').popover({ trigger: 'focus', delay: { "hide": 3000 } });
 
@@ -219,7 +219,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
         }
     }
     filtrarListadoAlta() {
-        debugger;
         this.data = this.datosAux;
 
         if (this.estadosSelected.length < 1 || this.estadosSelected == null) {

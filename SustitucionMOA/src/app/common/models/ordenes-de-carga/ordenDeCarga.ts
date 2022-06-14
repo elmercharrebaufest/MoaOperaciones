@@ -8,7 +8,6 @@ export class OrdenDeCarga {
     CUITCorredor: number;
     RazonSocialCliente: string;
     NombreChofer: string;
-    ApellidoChofer: string;
     CUITChofer: number;
     PatenteAcoplado: string;
     ChasisAcoplado: string;
@@ -24,6 +23,7 @@ export class OrdenDeCarga {
     RazonSocialCorredor: string;
     TransporteExiste: boolean;
     ContratoIngresado: string;
+    NumeroEntrega: string;
     NumeroPedidoIngresado: string;
     NumeroPedido: string;
     PedidosRespuesta: string;
@@ -39,8 +39,7 @@ export class OrdenDeCarga {
 
     llenar() {
         this.CUITCliente = 20266044993;
-        this.NombreChofer = "Martin";
-        this.ApellidoChofer = "Pfeiffer";
+        this.NombreChofer = "Martin Pfeiffer";
         this.CUITChofer = 20391666687;
         this.PatenteAcoplado = "ABC123";
         this.ChasisAcoplado = "ABBSM1231412";

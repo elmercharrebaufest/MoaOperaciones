@@ -7,12 +7,14 @@
         <div class="row titleSection titleSectionTable">
             <div class="col-xs-12 col-sm-8 fixtwobuttons animate" style="vertical-align:bottom;">
                 <div style="line-height:0.8;">
-                    <strong>Carta de Porte:
-                    <span>Nº {{data.ccpp}}</span></strong>
+                    <strong>
+                        Carta de Porte:
+                        <span>Nº {{data.ccpp}}</span>
+                    </strong>
                 </div>
                 <div class="titleExtraData titleExtraDataOneLine">
                     Vendedor: <strong>
-                    {{data.entregasDescargas[0].descripcionVendedor}}
+                        {{data.entregasDescargas[0].descripcionVendedor}}
                     </strong>({{data.entregasDescargas[0].vendedor}})
                 </div>
             </div>
@@ -21,11 +23,10 @@
                 <!--<a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!isExportVisible()">-->
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
                    *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg" /></div>
                 </a>
                 <button type="button" class="btn-custom btn-add"
-                        (click)="abrirModal()"
-                >
+                        (click)="abrirModal()">
                     Ver Carta de Porte
                 </button>
 

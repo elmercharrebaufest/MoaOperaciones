@@ -22,6 +22,7 @@ export class ContratoVigenteComponent extends ContratoBaseComponent {
             { etiqueta: "Contrato Proveedor", valor: Contrato.contrvend },
             { etiqueta: "Estado Boleto", valor: Contrato.estado },
             { etiqueta: "Producto", valor: Contrato.material },
+            { etiqueta: "TipoContrato", valor: Contrato.tipoContrato },
             { etiqueta: "Pactado", valor: Contrato.cantKilosString },
             { etiqueta: "Entregado", valor: Contrato.aplicacionesString },
             { etiqueta: "Liquidado", valor: Contrato.liquidadoString }
