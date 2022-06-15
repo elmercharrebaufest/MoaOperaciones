@@ -213,7 +213,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(historialCambio);
             }
             ordenEditar.HistorialCambios.Concat(historialCambios);
-            ordenEditar.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
+            //ordenEditar.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
             repositorio.GuardarCambios();
 
             NotificarTransporte(ordenEditar.Id);
