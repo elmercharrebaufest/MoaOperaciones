@@ -16,8 +16,6 @@ import { BaseComponent } from '../../common/base-components/base-component';
 import { Comentario, Categoria, EstadoConsulta, Subcategoria, Consulta, Causa } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { UploadEvent, UploadFile, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
-import { empty } from 'rxjs';
 
 declare var $: any;
 
@@ -113,7 +111,7 @@ export class DetalleConsultaComponent extends BaseComponent {
             if (this.consulta.EstadoConsulta.Code == 'INI' && this.esInterno) {
                 this.cambiarEstadoPorCode("GES");
             }
-            if(this.consulta.EstadoConsulta.Code == 'GESRTA' && this.esInterno){
+            if (this.consulta.EstadoConsulta.Code == 'GESRTA' && this.esInterno) {
                 this.cambiarEstadoPorCode("GES");
             }
         }, 500);
@@ -127,32 +125,6 @@ export class DetalleConsultaComponent extends BaseComponent {
     isAuthorized(permiso: string) {
         return this.securityService.tienePermiso(permiso);
     }
-
-    fileOver(event){
-        console.log(event);
-    }
-     
-    fileLeave(event){
-        console.log(event);
-    }
-
-    public dropped(event: UploadEvent) {
-        for (const droppedFile of event.files) {
-     
-          // Is it a file?
-          if (droppedFile.fileEntry.isFile) {
-            const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
-            fileEntry.file((file: File) => {
-
-            this.listaArchivos.push(file);     
-            });
-          } else {
-            // It was a directory (empty directories are added, otherwise only files)
-            const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
-          }
-        }
-        this.file = this.listaArchivos;
-      }
 
     cargarArchivo(event: any) {
         let fileList: FileList = event.target.files;
@@ -186,7 +158,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
         this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId
             , this.causaConsultaId).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.spinnerComponent.hideIt();
                     this.spinnerSmallComponent.hideIt();
                     if (result.logout == true) {
@@ -216,8 +188,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     postComentario() {
         this.blockUI.start('Enviando comentario');
-        let detallecomentario = document.getElementById("divComentario");
-        this.detalle = detallecomentario.innerHTML.trim() == "Añadir Comentario" ? "" : detallecomentario.innerHTML.trim();
+
         if (this.validar()) {
             this.blockUI.stop();
             return;
@@ -226,7 +197,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.mensajeComponent.setMsgsEmpty();
         let comentario: Comentario = { consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date(), Recordado: false, FechaRecordado: new Date() };
         this.subscription = this.service.agregarComentario(this.consultaId, comentario, this.listaArchivos).subscribe(
-            (result:any) => {
+            (result: any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                     this.blockUI.stop();
@@ -241,7 +212,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                     this.getDetalleConsulta();
                     this.mensajeComponent.setSuccessMsg("Comentario enviado correctamente");
                     this.blockUI.stop();
-                    detallecomentario.innerHTML = "";
+
                     this.detalle = "";
                     this.file = null;
                     this.listaArchivos = [];
@@ -253,60 +224,60 @@ export class DetalleConsultaComponent extends BaseComponent {
         );
     }
 
-    setDatosExtra(){
-        this.datosExtra = 
-        [
-            {Nombre: "N° Consulta", Value: this.consulta.Id, NewLine: false},
-            {Nombre: "Mail Usuario", Value: this.consulta.Usuario.Mail, NewLine: false},
-            {Nombre: "CUIT Usuario", Value: this.consulta.Usuario.CUIT, NewLine: false},
-            {Nombre: "Razón Social Corredor", Value: this.consulta.RazonSocialCorredor, NewLine: false},
-            {Nombre: "Codigo Corredor", Value: this.consulta.CodigoCorredor, NewLine: false},
-            {Nombre: "Razón Social Proveedor", Value: this.consulta.RazonSocialProveedor, NewLine: false},
-            {Nombre: "Codigo Proveedor", Value: this.consulta.CodigoProveedor, NewLine: false},
-            {Nombre: "Categoria", Value: this.consulta.Categoria.Nombre, NewLine: false},
-            {Nombre: "SubCategoria", Value: this.consulta.SubCategoria.Nombre, NewLine: false},
-            {Nombre: "N° de Contrato", Value: this.consulta.ContratoNo, NewLine: true},
-            {Nombre: "Importe", Value: this.consulta.Importe, NewLine: false},
-            {Nombre: "Impuesto", Value: this.consulta.Impuesto, NewLine: false},
-            {Nombre: this.getNombreComprobante(), Value: this.consulta.ComprobanteNo, NewLine: true},
-            {Nombre: this.getNombreComprobanteExtra(), Value: this.consulta.OtroComprobanteNo, NewLine: true},
-        ]
+    setDatosExtra() {
+        this.datosExtra =
+            [
+                { Nombre: "N° Consulta", Value: this.consulta.Id, NewLine: false },
+                { Nombre: "Mail Usuario", Value: this.consulta.Usuario.Mail, NewLine: false },
+                { Nombre: "CUIT Usuario", Value: this.consulta.Usuario.CUIT, NewLine: false },
+                { Nombre: "Razón Social Corredor", Value: this.consulta.RazonSocialCorredor, NewLine: false },
+                { Nombre: "Codigo Corredor", Value: this.consulta.CodigoCorredor, NewLine: false },
+                { Nombre: "Razón Social Proveedor", Value: this.consulta.RazonSocialProveedor, NewLine: false },
+                { Nombre: "Codigo Proveedor", Value: this.consulta.CodigoProveedor, NewLine: false },
+                { Nombre: "Categoria", Value: this.consulta.Categoria.Nombre, NewLine: false },
+                { Nombre: "SubCategoria", Value: this.consulta.SubCategoria.Nombre, NewLine: false },
+                { Nombre: "N° de Contrato", Value: this.consulta.ContratoNo, NewLine: true },
+                { Nombre: "Importe", Value: this.consulta.Importe, NewLine: false },
+                { Nombre: "Impuesto", Value: this.consulta.Impuesto, NewLine: false },
+                { Nombre: this.getNombreComprobante(), Value: this.consulta.ComprobanteNo, NewLine: true },
+                { Nombre: this.getNombreComprobanteExtra(), Value: this.consulta.OtroComprobanteNo, NewLine: true },
+            ]
     }
 
-    getNombreComprobanteExtra(){
-        if(this.consulta.Categoria.Code == 'REI' && this.consulta.SubCategoria.Code == 'PER') return "Cliente"
+    getNombreComprobanteExtra() {
+        if (this.consulta.Categoria.Code == 'REI' && this.consulta.SubCategoria.Code == 'PER') return "Cliente"
 
-        if(this.consulta.Categoria.Code == 'APP') return "Material"
+        if (this.consulta.Categoria.Code == 'APP') return "Material"
 
-        if(this.consulta.Categoria.Code == 'MATBA' && this.consulta.SubCategoria.Code == 'CAL') return "Carátula"
+        if (this.consulta.Categoria.Code == 'MATBA' && this.consulta.SubCategoria.Code == 'CAL') return "Carátula"
 
-        if((this.consulta.Categoria.Code == 'FLET' && this.consulta.SubCategoria.Code == 'PDF') ||
-        (this.consulta.Categoria.Code == 'FLET' && this.consulta.SubCategoria.Code == 'CCP')) 
-        return "N° Proforma"
+        if ((this.consulta.Categoria.Code == 'FLET' && this.consulta.SubCategoria.Code == 'PDF') ||
+            (this.consulta.Categoria.Code == 'FLET' && this.consulta.SubCategoria.Code == 'CCP'))
+            return "N° Proforma"
 
         return "Otro Comprobante"
     }
 
-    getNombreComprobante(){
-        if(this.consulta.SubCategoria.Code == 'RET') return "N° Salida de pago"
-        
-        if(this.consulta.SubCategoria.Code == 'PER' || this.consulta.Categoria.Code == 'COM' 
-        || (this.consulta.Categoria.Code == 'PROVG' && this.consulta.SubCategoria.Code == 'VENC') 
-        || (this.consulta.Categoria.Code == 'PROVG' && this.consulta.SubCategoria.Code == 'POTR')
+    getNombreComprobante() {
+        if (this.consulta.SubCategoria.Code == 'RET') return "N° Salida de pago"
+
+        if (this.consulta.SubCategoria.Code == 'PER' || this.consulta.Categoria.Code == 'COM'
+            || (this.consulta.Categoria.Code == 'PROVG' && this.consulta.SubCategoria.Code == 'VENC')
+            || (this.consulta.Categoria.Code == 'PROVG' && this.consulta.SubCategoria.Code == 'POTR')
         ) return "N° de factura"
 
-        if(this.consulta.SubCategoria.Code == 'NROR' || this.consulta.Categoria.Code == 'FINCOR' 
-        || this.consulta.Categoria.Code == 'FINDIR') return "N° COE"
+        if (this.consulta.SubCategoria.Code == 'NROR' || this.consulta.Categoria.Code == 'FINCOR'
+            || this.consulta.Categoria.Code == 'FINDIR') return "N° COE"
 
-        if(this.consulta.Categoria.code == 'CAL' || this.consulta.Categoria.Code == 'APP' 
-        || (this.consulta.Categoria.Code == 'MATBA' && this.consulta.SubCategoria.Code == 'CAL') ||
-        (this.consulta.Categoria.Code == 'FLET' && this.consulta.SubCategoria.Code == 'CCP')) 
-        return "CCPP"
+        if (this.consulta.Categoria.code == 'CAL' || this.consulta.Categoria.Code == 'APP'
+            || (this.consulta.Categoria.Code == 'MATBA' && this.consulta.SubCategoria.Code == 'CAL') ||
+            (this.consulta.Categoria.Code == 'FLET' && this.consulta.SubCategoria.Code == 'CCP'))
+            return "CCPP"
 
         return "Comprobante"
     }
 
-    cambiarEstadoPorCode(code: string){
+    cambiarEstadoPorCode(code: string) {
         var estadoIdGestion;
         this.estados.forEach(x => {
             if (x.Code == code) {
@@ -315,7 +286,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         });
         this.mensajeComponent.setMsgsEmpty();
         this.subscription = this.service.actualizarEstado(estadoIdGestion, this.consultaId).subscribe(
-            (result:any) => {
+            (result: any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -342,27 +313,25 @@ export class DetalleConsultaComponent extends BaseComponent {
         return false;
     }
 
-    recordarComentario(){
-        let detallecomentario = document.getElementById("divComentario");
-        this.detalle = detallecomentario.innerHTML.trim() == "Añadir Comentario" ? "" : detallecomentario.innerHTML.trim();;
+    recordarComentario() {
         this.mensajeComponent.setMsgsEmpty();
         this.subscription = this.service.recordarComentario(this.consultaId).subscribe(
-            (result:any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    }
-                    else{      
-                        this.mensajeComponent.setSuccessMsg(result);
-                    }
-                },
-                error => {
-                    this.spinnerModal.hideIt();
+            (result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
                 }
-            );   
+                else {
+                    this.mensajeComponent.setSuccessMsg(result);
+                }
+            },
+            error => {
+                this.spinnerModal.hideIt();
+            }
+        );
     }
 
     descargarArchivo(archivoId: number) {
@@ -408,7 +377,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     getCombos() {
         try {
             this.subscription = this.service.getCombos(true).subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -447,78 +416,40 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     getDetalleConsulta() {
         this.subscription = this.service.getDetalleConsulta(this.consultaId).subscribe(
-            (result:any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    }
-                    else {
-                        this.consulta = result;
-                        this.consulta.Comentarios.forEach(x => {
-                            x.Fecha = new Date (this.getDateFromAspNetFormat(x.Fecha));
-                            if(x.ComentarioRecordados.length >= 1){
-                                x.ComentarioRecordados.forEach(cr => {
-                                    cr.FechaRecordado = new Date (this.getDateFromAspNetFormat(cr.FechaRecordado));
-                                });
-                            }
-                        });
-                        this.consulta.FechaCreacion = new Date (this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
-                        this.consulta.Fecha = new Date (this.getDateFromAspNetFormat(this.consulta.Fecha));
-                        this.estadoId = result.EstadoConsultaId;
-                        this.categoriaId = result.CategoriaId;
-                        this.subcategoriaId = result.SubCategoriaId;
-                        try{
-                            setTimeout(() => {  
-                                this.scrollBottom();
-
-                                //Editar DIV editable para igual a text area
-                                let divComentario = document.getElementById("divComentario");  
-                                let editable = this.disable() ? "false" : "true" ;
-                                divComentario.setAttribute("contenteditable", editable);
-                                
-                                //Agregar placeholder
-                                let placeholder = divComentario.getAttribute('data-placeholder');
-                                divComentario.innerHTML === '' && (divComentario.innerHTML = placeholder);
-                                
-                                divComentario.addEventListener('focus', function (e: Event & { target: Element }) {
-                                    const value = e.target.innerHTML;
-                                    value === placeholder && (e.target.innerHTML = '');
-                                });
-                                divComentario.addEventListener('blur', function (e: Event & { target: Element }) {
-                                    const value = e.target.innerHTML;
-                                    value === '' && (e.target.innerHTML = placeholder);
-                                });
-                                //Agregar estilos al div que reemplaza el textarea
-                                divComentario.style.border = "1px solid #DDDDDD";
-                                divComentario.style.borderRadius = "4px";
-                                divComentario.style.opacity = "1";
-                                divComentario.style.font = "normal normal normal 16px Roboto Regular";
-                                divComentario.style.padding = "5px";
-                                divComentario.style.overflow = "auto";
-                                divComentario.style.margin = "0";
-                                divComentario.style.boxSizing = "border-box";
-                                divComentario.style.height = "100px";
-                                divComentario.style.width = "71%";
-                                divComentario.style.marginLeft = "2%";
-
-
-                                let divs = document.getElementsByClassName("row myRow");
-                                for(let i = 0; i< this.consulta.Comentarios.length; i++){
-                                    divs[i+1].children[0].innerHTML = this.consulta.Comentarios[i].Detalle;
-                                }
-                            }, 200);
-                        }
-                        catch{
-                        }
-                    }
-                },
-                error => {
-                    this.spinnerModal.hideIt();
+            (result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
                 }
-            );
+                else {
+                    this.consulta = result;
+                    this.consulta.Comentarios.forEach(x => {
+                        x.Fecha = new Date(this.getDateFromAspNetFormat(x.Fecha));
+                        if (x.ComentarioRecordados.length >= 1) {
+                            x.ComentarioRecordados.forEach(cr => {
+                                cr.FechaRecordado = new Date(this.getDateFromAspNetFormat(cr.FechaRecordado));
+                            });
+                        }
+                    });
+                    this.consulta.FechaCreacion = new Date(this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
+                    this.consulta.Fecha = new Date(this.getDateFromAspNetFormat(this.consulta.Fecha));
+                    this.estadoId = result.EstadoConsultaId;
+                    this.categoriaId = result.CategoriaId;
+                    this.subcategoriaId = result.SubCategoriaId;
+                    try {
+                        setTimeout(() => { this.scrollBottom(); }, 200);
+                    }
+                    catch{
+                    }
+                }
+            },
+            error => {
+                this.spinnerModal.hideIt();
+            }
+        );
     }
 
     subcategoriasInicial() {
