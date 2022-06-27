@@ -38,19 +38,19 @@
                         <div *ngIf="(comentarioPropio(comentario) && esCorredor) || esInterno; else elseBlock">
                             <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
                                class="col-xs-12 col-sm-12 col-md-12">
-                                {{comentario.Fecha | date:'hh:mm'}} | {{comentario.Usuario.Mail}}
+                                {{comentario.Fecha | date:'HH:mm'}} | {{comentario.Usuario.Mail}}
                             </p>
                             <div *ngIf="esInterno && comentario.Detalle != '' && comentario.Recordado">
                                 <p *ngFor="let recordado of comentario.ComentarioRecordados" [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
                                    class="col-xs-12 col-sm-12 col-md-12">
-                                    Mensaje recordado el {{recordado.FechaRecordado | date:'dd/MM/yyyy hh:mm'}}<br>
+                                    Mensaje recordado el {{recordado.FechaRecordado | date:'dd/MM/yyyy HH:mm'}}<br>
                                 </p>
                             </div>
                         </div>
                         <ng-template #elseBlock>
                             <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
                                class="col-xs-12 col-sm-12 col-md-12">
-                                {{comentario.Fecha | date:'hh:mm'}}
+                                {{comentario.Fecha | date:'HH:mm'}}
                             </p>
                         </ng-template>
                     </div>
