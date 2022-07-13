@@ -850,10 +850,9 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.NRO_SOLP, solp.NroSolp);
             solpValores.Add(SolpTemplateKeys.FISCAL_CONTRATO, solp.FiscalContrato);
             solpValores.Add(SolpTemplateKeys.TELEFONO, solp.Telefono);
-
-            solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
+            solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, Convert.ToDateTime(solp.FechaHoraEntrega).ToString("dd-MM-yyyy"));
+            solpValores.Add(SolpTemplateKeys.FECHA_CREACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
             solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioCompras.Mail == null ? usuarioCompras.Any() ? usuarioCompras[0].UsuarioCompras.Mail : String.Empty : solp.UsuarioCompras.Mail);
-
             solpValores.Add(SolpTemplateKeys.REVISADO_POR, solp.RevisadoPor);
 
             //solpValores.Add(SolpTemplateKeys.PAGINAS, PageEventHandler.p);
@@ -1780,7 +1779,7 @@ namespace SustitucionMOAUtils.Services
     public static class SolpTemplateKeys
     {
         public const string FECHA_LIBERACION = "FECHA_LIBERACION";
-
+        public const string FECHA_CREACION = "FECHA_CREACION";
         public const string NOMBRE_OBRA = "NOMBRE_OBRA";
         public const string NRO_SOLP = "NRO_SOLP";
         public const string FISCAL_CONTRATO = "FISCAL_CONTRATO";

@@ -27,7 +27,7 @@ declare var $: any;
 @Component({
     selector: 'dashboard',
     templateUrl: `dashboard.component.html`,
-    styleUrls: ['../compras.component.css'],
+    styleUrls: ['../compras.component.css', './dashboard.component.css'],
     providers: [ComprasService]
 
 })
@@ -46,6 +46,9 @@ export class DashboardComponent extends ListBaseComponent {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
+    @ViewChild('myCalendar', undefined) private calendar: any;
+   
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
@@ -57,11 +60,19 @@ export class DashboardComponent extends ListBaseComponent {
             dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
             monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-            today: 'Today',
-            clear: 'Clear'
+            today: 'Hoy',
+            clear: 'Borrar'
         };
 
     }
+
+    filteredfechas: any;
+    solpFecha: any = new Array();
+    fechaInicio: any;
+    fechaFin: any;
+    rangeDates: Date[];
+    tipoFiltroFecha = 1;
+
 
     desdeDashboard: Date;
     hastaDashboard: Date;
@@ -133,26 +144,90 @@ export class DashboardComponent extends ListBaseComponent {
         this.navService.setSeccionList([]);
         this.getListarSolp();
         this.desdeDashboard = new Date();
-        this.hastaDashboard = new Date();
-        
+        this.hastaDashboard = new Date();        
     }
+
+
+    returnToTodaysDate() {
+        this.fechaInicio = null;
+        this.fechaFin = null;
+        this.filtrarTablaPorTipoSolp();
+        if (this.tablaSolp.length > 0) {
+            this.mensajeComponent.setMsgsEmpty();
+        }
+    }
+
+    onSelect(event: any) {     
+        if (this.rangeDates[0] && this.rangeDates[1] == null) {
+            let d = new Date(Date.parse(event));
+            this.fechaInicio = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+        } else {
+            let d = new Date(Date.parse(event));
+            this.fechaFin = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            if (this.rangeDates[1]) { // If second date is selected
+                this.calendar.overlayVisible = false;
+            }
+            this.filtrarTablaPorTipoSolp();
+        }
+    }
+
+    filtrarPorSap() {
+        this.checkedFilterSap = !this.checkedFilterSap;
+        this.filtrarTablaPorTipoSolp();
+    }
+
+    filtrarPorMantenimiento() {
+        this.checkedFilterMantenimiento = !this.checkedFilterMantenimiento;
+        this.filtrarTablaPorTipoSolp();
+    }
+
+    filtrarTablaPorTipoSolp() {
+        var fechaDesde = this.fechaInicio;
+        var fechaHasta = this.fechaFin + " 23:59:59";
+
+        let tablaPrincipal = this.tablaSolpCopy;
+        if (this.checkedFilterSap && this.checkedFilterMantenimiento) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
+        } else if (this.checkedFilterMantenimiento) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
+        } else if (this.checkedFilterSap) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP);
+        } 
+
+        if(fechaDesde != null && fechaHasta != null) {
+            tablaPrincipal = tablaPrincipal.filter(x =>
+                new Date(Date.parse(x.FechaCreacion)) >= new Date(fechaDesde) &&
+                new Date(Date.parse(x.FechaCreacion)) <= new Date(fechaHasta)
+            )
+            this.tabla.first = 0;
+        }       
+        this.tablaSolp = tablaPrincipal;  
+
+        if (this.tablaSolp.length == 0) {
+            this.mensajeComponent.setInfoMsg("No se encontraron Solps")
+        }
+        else {
+            this.mensajeComponent.setMsgsEmpty();
+        }
+    }
+
 
     ngAfterViewInit(): void {
 
         this.getCombos();
 
-        this.tabla.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
+        // this.tabla.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
 
-            if (filter[0] != null && filter[1] != null)
-                return value >= filter[0] &&
-                    value <= filter[1];
-            else if (filter[0] != null && filter[1] == null)
-                return value >= filter[0]
-            else if (filter[0] == null && filter[1] != null)
-                return value <= filter[1].
-                    else
-            return true;
-        }
+        //     if (filter[0] != null && filter[1] != null)
+        //         return value >= filter[0] &&
+        //             value <= filter[1];
+        //     else if (filter[0] != null && filter[1] == null)
+        //         return value >= filter[0]
+        //     else if (filter[0] == null && filter[1] != null)
+        //         return value <= filter[1].
+        //             else
+        //     return true;
+        // }
 
     }
 
@@ -185,7 +260,8 @@ export class DashboardComponent extends ListBaseComponent {
                                 x.EstadoDocumento.Codigo == "CREADO";
 
                         });
-                        this.tablaSolpCopy = result.data;
+                        this.tablaSolpCopy = this.tablaSolp;
+                        this.tabla.first = 0;
                         this.spinnerComponent.hideIt();
                     }
                 },
@@ -265,51 +341,6 @@ export class DashboardComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
 
     }
-
-    setUltimoAnio() {
-        this.desdeDashboard = new Date();
-        this.desdeDashboard.setFullYear(this.desdeDashboard.getFullYear() - 1);
-        this.hastaDashboard = new Date();
-    }
-
-    setUltimoMes() {
-        this.desdeDashboard = new Date();
-        this.desdeDashboard.setMonth(this.desdeDashboard.getMonth() - 1);
-        this.hastaDashboard = new Date();
-    }
-
-    filtrarFecha(dt, field, desde, hasta) {
-        dt.filter([desde, hasta], field, 'dateRangeFilter');
-    }
-
-    filtrarPorFecha() {
-        this.filtrarFecha(this.tabla, "FechaCreacion", this.desdeDashboard, this.hastaDashboard);
-    }
-
-    filtrarPorSap() {
-        this.checkedFilterSap = !this.checkedFilterSap;
-        this.filtrarTablaPorTipoSolp();
-    }
-
-    filtrarPorMantenimiento() {
-        this.checkedFilterMantenimiento = !this.checkedFilterMantenimiento;
-        this.filtrarTablaPorTipoSolp();
-    }
-
-    filtrarTablaPorTipoSolp() {
-        debugger;
-        let tablaPrincipal = this.tablaSolpCopy;
-        if (this.checkedFilterSap && this.checkedFilterMantenimiento) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
-        } else if (this.checkedFilterMantenimiento) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
-        } else if (this.checkedFilterSap) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP);
-        }
-        this.tablaSolp = tablaPrincipal;
-    }
-
-
 
     eliminarPosicionDashboard(idSolp) {
         this.confirmationService.confirm({

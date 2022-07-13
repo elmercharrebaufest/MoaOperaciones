@@ -69,6 +69,7 @@ export class LiquidacionInformadaComponent extends LiquidacionBaseComponent {
 
         this.getData();
     }
+    
     returnToTodaysDate() {
         this.filteredfechas = this.data.liquidaciones;
         if (this.filteredfechas.length > 0) {

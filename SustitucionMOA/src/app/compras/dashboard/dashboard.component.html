@@ -23,60 +23,34 @@
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="row myRow col-xs-12 col-sm-12 col-md-12 col-lg-12 " style="margin-top: 1em; margin-bottom: 15px;">
+                <div class="row myRow col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top: 1em; margin-bottom: 15px;">
 
                     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8" style="margin-left: -46px;">
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                             <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="Buscar por numero de solp">
                         </div>
 
-
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                             <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp" defaultLabel="Estado SOLP" (onChange)="tabla.filter($event.value, 'EstadoSolpSap.Id', 'in')"></p-multiSelect>
-
                         </div>
 
-                        <div>
-                            <p-overlayPanel appendTo="body" #op>
-                                <div>
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            Desde
-                                        </div>
-                                        <div class="col-md-4">
-                                            <p-calendar [(ngModel)]="desdeDashboard" appendTo="body" [locale]="locale" dateFormat="dd-M-yy" [showIcon]="true" [selectOtherMonths]="true" [(ngModel)]="rangeDates" selectionMode="single" readonlyInput="true">
-                                            </p-calendar>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="margin-top: 1em;">
-                                        <div class="col-md-2">
-                                            Hasta
-                                        </div>
-                                        <div class="col-md-4">
-                                            <p-calendar [(ngModel)]="hastaDashboard" appendTo="body" [locale]="locale" dateFormat="dd-M-yy" [showIcon]="true" [selectOtherMonths]="true" [(ngModel)]="rangeDates" selectionMode="single" readonlyInput="true">
-                                            </p-calendar>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="margin-top: 1em; padding-left: 5px; margin-right:-39px">
-                                        <div class="col-md-3">
-                                            <button class="btn" (click)="setUltimoMes()">Ultimo mes</button>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button class="btn" (click)="setUltimoAnio()">Ultimo año</button>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button class="btn btn-success" style="height: 32px;" (click)="filtrarPorFecha() && op.toggle($event)"><i
-                                                    class="pi pi-check"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </p-overlayPanel>
-                        </div>
-
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <button class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura botonFechaDashboard " type="text" pButton (click)="op.toggle($event, actualTarget)">Fecha <span
-                                    class="pull-right fa fa-calendar-o"></span></button>
-                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 estiloCalendarDashboard">
+                            <p-calendar 
+                                showButtonBar="true" 
+                                [showIcon]="true"
+                                #myCalendar 
+                                placeholder="Filtro fechas"
+                                dateFormat="dd/mm/yy" 
+                                (onSelect)="onSelect($event)" 
+                                appendTo="body" 
+                                [(ngModel)]="rangeDates" 
+                                selectionMode="range"
+                                [readonlyInput]="true" 
+                                [locale]="locale" 
+                                (onClearClick)="returnToTodaysDate()"
+                                class="styled-select">
+                            </p-calendar>
+                        </div>                    
                     </div>
 
                     <!-- <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 inputAltura" style="margin-top: 10px;"> -->
@@ -107,7 +81,7 @@
     </section>
 
     <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
-        <p-table #tabla [value]="tablaSolp" [globalFilterFields]="['NroSolp']" [paginator]="true" [rows]="10" sortMode="multiple">
+        <p-table #tabla [value]="tablaSolp" [globalFilterFields]="['NroSolp']" [paginator]="true" [first]="first" [rows]="10" sortMode="multiple">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th [pSortableColumn]="'TipoSolpSap'" data-toggle="tooltip" title="Numero SOLP" style="display: none">
