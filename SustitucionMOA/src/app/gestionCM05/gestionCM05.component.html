@@ -237,7 +237,7 @@
                         </label>
                         <ng-template #elseSecuenciaBlock>
                             <p-dropdown [options]="secuencias" [(ngModel)]="selectedCabecera.SecuenciaId" [style]="{'width':'75% !important'}"
-                                        [showClear]="true" [autoDisplayFirst]="false"></p-dropdown>
+                                        [showClear]="false" [autoDisplayFirst]="false"></p-dropdown>
                         </ng-template>
                     </div>
                     <div class="col-2 col-sm-2 col-sm-offset-5">
@@ -246,11 +246,11 @@
                         </label>
                     </div>
                     <div class="col-5 col-sm-5">
-                        <p-dropdown [options]="estados" [(ngModel)]="selectedCabecera.EstadoId" [style]="{'width':'75% !important'}"
-                        [showClear]="false" [autoDisplayFirst]="false" (onChange)="guardarCabeceraEditada()"></p-dropdown>
+                        <p-dropdown [options]="estados" [(ngModel)]="selectedCabecera.EstadoId" [style]="{'width':'75% !important'}" [disabled]="editandoCabecera || editarEstado"
+                        [showClear]="false" [autoDisplayFirst]="false" (onChange)="guardarCabeceraEditadaPrev('estado')"></p-dropdown>
                         <ng-template>
                             <p-dropdown [options]="estados" [(ngModel)]="selectedCabecera.EstadoId" [style]="{'width':'75% !important'}"
-                                        [showClear]="false" [autoDisplayFirst]="false" (onChange)="guardarCabeceraEditada()"></p-dropdown>
+                                        [showClear]="false" [autoDisplayFirst]="false" (onChange)="guardarCabeceraEditadaPrev('estado')"></p-dropdown>
                         </ng-template>
                     </div>
                 </div>
@@ -258,7 +258,7 @@
             <div class="col-sm-1" style="width:12%" *ngIf="selectedCabecera.Estado.Descripcion=='Pendiente'">
                 <button *ngIf="!editandoCabecera; else elseBotonesBlock" pButton type="button" (click)="editarCabecera()" class="p-button-secondary" style="background-color: #075088;" icon="fa fa-edit"></button>
                 <ng-template #elseBotonesBlock>
-                    <button pButton type="button" (click)="guardarCabeceraEditada()" class="p-button-secondary" style="background-color: #067935 !important;" icon="fa fa-check"></button>
+                    <button pButton type="button" (click)="guardarCabeceraEditadaPrev('cabecera')" class="p-button-secondary" style="background-color: #067935 !important;" icon="fa fa-check"></button>
                     <button pButton type="button" (click)="cancelarEditarCabecera()" class="p-button-secondary" style="background-color: #ff4343 !important;" icon="fa fa-times"></button>
                 </ng-template>
             </div>
@@ -343,7 +343,7 @@
                     <th class="col-md-1 th-movimiento">Tipo</th>
                     <th class="col-md-1 th-movimiento">Origen</th>
                     <th class="col-md-2 th-movimiento">Fecha</th>
-                    <th class="col-md-5 th-movimiento">Observaciones</th>
+                    <th class="col-md-5 th-movimiento">Usuario</th>
                     <th class="col-md-1 th-movimiento">Estado Anterior</th>
                     <th class="col-md-1 th-movimiento">Estado Posterior</th>
                 </tr>
