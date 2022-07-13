@@ -344,9 +344,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
         this.solpActual.telefono = solp.Telefono || '';
         this.solpActual.mail = solp.Email || sessionStorage.getItem("username");
-        // this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
-        // this.solpActual.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
-
+        this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+     
         // Paso 2
         this.solpActual.supervisorSector = solp.SupervisorSector || '';
         this.solpActual.supervisorTrabajo = solp.SupervisorTrabajo || '';
