@@ -79,6 +79,8 @@ export class GestionCM05Component extends ListBaseComponent {
 
     es: any;
 
+    editarEstado: boolean = false;
+
     constructor(protected service: GestionCM05Service,
         protected navService: NavService,
         protected sessionDataService: SessionDataService,
@@ -113,7 +115,10 @@ export class GestionCM05Component extends ListBaseComponent {
             { label: 'Autorización', value: 2 },
             { label: 'Autorización revertida', value: 3 },
             { label: 'Exportación exitosa', value: 4 },
-            { label: 'Error', value: 5 }
+            { label: 'Error', value: 5 },
+            { label: 'Edición de estado', value: 6 },
+            { label: 'Edición de cabecera', value: 7 },
+            { label: 'Edición de detalle', value: 8 },
         ];
 
         this.origenesMovimiento = [
@@ -139,8 +144,6 @@ export class GestionCM05Component extends ListBaseComponent {
             { field: 'Jurisdiccion', header: 'Jurisdicción', },
             { field: 'FechaInicio', header: 'Fecha inicio', },
             { field: 'FechaCese', header: 'Fecha cese', },
-            //{ field: 'CoeficienteIngresos', header: 'Coef. ingresos', },
-            //{ field: 'CoeficienteGastos', header: 'Coef. gastos', },
             { field: 'CoeficienteUnificado', header: 'Coef. unificado', },
             { field: 'FechaUltimaModificacion', header: 'Última modificación', },
         ];
@@ -227,7 +230,6 @@ export class GestionCM05Component extends ListBaseComponent {
                 x.FechaCese = x.FechaCese == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaCese));
                 x.FechaInicio = x.FechaInicio == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaInicio));
                 x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
-                //x.CoeficienteUnificado = x.CoeficienteUnificado == null ? 0 : x.CoeficienteUnificado;
             });
         });
 
@@ -260,6 +262,7 @@ export class GestionCM05Component extends ListBaseComponent {
     editarRow(rowData) {
         rowData.Editar = true;
         this.detallesEditando.push({ ...rowData });
+        this.editarEstado = true;
     }
 
     guardarRow(rowData) {
@@ -269,8 +272,8 @@ export class GestionCM05Component extends ListBaseComponent {
                 return
             }
             let mov = {
-                accion : "Editado",
-                tipo: 4,
+                accion : "Edición de detalle",
+                tipo: 8,
             }
             
             this.insertarMovimiento(mov.accion, mov.tipo);
@@ -291,6 +294,7 @@ export class GestionCM05Component extends ListBaseComponent {
 
                         rowData.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(result.FechaUltimaModificacion));
                         rowData.Editar = false;
+                        this.editarEstado = false;
 
                         this.eliminarDetalleDe(rowData, this.detallesEditando);
                     }
@@ -321,6 +325,7 @@ export class GestionCM05Component extends ListBaseComponent {
 
         rowData.Editar = false;
         this.eliminarDetalleDe(rowData, this.detallesEditando);
+        this.editarEstado = false;
     }
 
     validarRow(rowData) {
@@ -337,68 +342,23 @@ export class GestionCM05Component extends ListBaseComponent {
             return
         }
 
-        /*if(!(regexNumerosDecimales.test(rowData.CoeficienteIngresos))){
-            this.messageService.add({severity:'error', summary:'Coef. Ingresos', detail:'Debe ser un numero entero o decimal.'});
-            return
-        }
-        if(rowData.CoeficienteIngresos == null || rowData.CoeficienteIngresos == ""){
-            this.messageService.add({severity:'error', summary:'Coef. Ingresos', detail:'Esta vacio.'});
-            return
-        }
-
-        if(!(regexNumerosDecimales.test(rowData.CoeficienteGastos))){
-            this.messageService.add({severity:'error', summary:'Coef. Gastos', detail:'Debe ser un numero entero o decimal.'});
-            return
-        }
-        if(rowData.CoeficienteGastos == null || rowData.CoeficienteGastos == ""){
-            this.messageService.add({severity:'error', summary:'Coef. Gastos', detail:'Esta vacio.'});
-            return
-        }*/
-
         if (!(regexNumerosDecimales.test(rowData.CoeficienteUnificado))) {
             this.messageService.add({ severity: 'error', summary: 'Coef. Unificado', detail: 'Debe ser un numero entero o decimal.' });
             return
         }
-        /*
-        if(rowData.CoeficienteUnificado == null || rowData.CoeficienteUnificado == ""){
-            this.messageService.add({severity:'error', summary:'Coef. Unificado', detail:'Esta vacio.'});
-            return
-        }*/
 
         return false
     }
 
     autorizarCabecera() {
         try {
-            let mov = {
-                accion : "Autorizado",
-                tipo: 2,
-            }
             
-            this.insertarMovimiento(mov.accion, mov.tipo);
-            this.service.autorizarCabecera(this.selectedCabecera.Id).subscribe(
-                result => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        this.selectedCabecera.Estado = 'Autorizado';
-                        this.listarCabeceras();
-                        this.floatMsgService.setSuccessMsg("Registro autorizado correctamente");
-                    }
-                },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                }
-            );
+            this.selectedCabecera.EstadoId = 2;
+            this.guardarCabeceraEditadaPrev('estado');
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
-
         return false;
     }
 
@@ -441,7 +401,6 @@ export class GestionCM05Component extends ListBaseComponent {
                 }
             },
             (error) => {
-                //this.spinnerSmallComponent.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         )
@@ -496,14 +455,35 @@ export class GestionCM05Component extends ListBaseComponent {
         this.cabeceraEditando = { ...this.selectedCabecera };
     }
 
+    guardarCabeceraEditadaPrev(tipo){
+        if(tipo == "estado" && this.selectedCabecera.EstadoId != 2){
+            let mov = {
+                accion : "Cambio de estado",
+                tipo: 6,
+            }
+            this.insertarMovimiento(mov.accion, mov.tipo);
+            this.guardarCabeceraEditada();
+        }
+        if(tipo == "estado" && this.selectedCabecera.EstadoId == 2){
+            let mov = {
+                accion : "Autorizado",
+                tipo: 2,
+            }
+            this.insertarMovimiento(mov.accion, mov.tipo);
+            this.guardarCabeceraEditada();
+        }
+        if(tipo=="cabecera"){
+            let mov = {
+                accion : "Edición de cabecera",
+                tipo: 7,
+            }
+            this.insertarMovimiento(mov.accion, mov.tipo);
+            this.guardarCabeceraEditada();
+        }
+    }
+
     guardarCabeceraEditada() {
         this.messageService.clear();
-        let mov = {
-            accion : "Cambió de estado",
-            tipo: 4,
-        }
-        
-        this.insertarMovimiento(mov.accion, mov.tipo);
         try {
             if (!this.validarCabeceraEditada()) {
                 this.subscription = this.service.editarCabecera(this.selectedCabecera).subscribe(                    
@@ -523,6 +503,14 @@ export class GestionCM05Component extends ListBaseComponent {
                             this.cabeceraEditando = null;
                             this.selectedCabecera.Estado = result.estadoCabecera;
                             this.listarCabeceras();
+                            if(this.selectedCabecera.SecuenciaId == 1){
+                                this.selectedCabecera.Secuencia.Id = 1;
+                                this.selectedCabecera.Secuencia.Descripcion = "Original";
+                            }
+                            if(this.selectedCabecera.SecuenciaId == 2){
+                                this.selectedCabecera.Secuencia.Id = 2;
+                                this.selectedCabecera.Secuencia.Descripcion = "Rectificativa";
+                            }
                         }
                     },
                     error => {
