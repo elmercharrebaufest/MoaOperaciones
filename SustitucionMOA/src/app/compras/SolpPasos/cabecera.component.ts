@@ -63,6 +63,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     flagSolpFinalizada: boolean = false;
     disabled: boolean = true;
     concluido: boolean = false;
+    numeroEntregaDif: string;
+    centroDif: string;
 
     // solpActual: Solp;
 
@@ -92,7 +94,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         { campo: 'selectAlmacenEntrega', esObligatorio: false, esFijo: false },
         { campo: 'calleEntrega', esObligatorio: true, esFijo: true },
         { campo: 'paisEntrega', esObligatorio: false, esFijo: true },
-        { campo: 'numeroEntrega', esObligatorio: false, esFijo: true },
+        { campo: 'numeroEntrega', esObligatorio: false, esFijo: false },
         { campo: 'selectGrupoCompras', esObligatorio: false, esFijo: false },
         { campo: 'selectArticuloCompras', esObligatorio: true, esFijo: true },
         { campo: 'selectSolicitanteCompras', esObligatorio: true, esFijo: true },
@@ -132,7 +134,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
         this.model.selectClaseDocumento = this.model.selectClaseDocumento!== undefined && this.model.selectClaseDocumento.Id>0 ? this.model.selectClaseDocumento : 0;
 
-        this.centroSeleccionado();
+         this.centroSeleccionado();
 
         if (this.model.monedaPorDefecto && !this.model.posicionActual.monedaSeleccionada)
             this.model.posicionActual.monedaSeleccionada = this.combos.Moneda.find(x => x.Codigo == this.model.monedaPorDefecto)
@@ -246,7 +248,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     centroSeleccionado() {
         let direccionCentro: any;
-
+        debugger;
         if (!this.model.posicionActual.selectCentroEntrega && this.model.centroPorDefecto) {
             this.model.posicionActual.selectCentroEntrega = this.combos.Centro.find(x => x.Codigo == this.model.centroPorDefecto);
         }
@@ -255,17 +257,32 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
         }
 
-        this.model.posicionActual.nombreEntrega = this.model.posicionActual.nombreEntrega
-            || (this.model.posicionActual.selectCentroEntrega == undefined ? "" : this.model.posicionActual.selectCentroEntrega.Descripcion);
+        this.model.posicionActual.nombreEntrega = this.model.posicionActual.selectCentroEntrega.Descripcion
+            /*|| (this.model.posicionActual.selectCentroEntrega == undefined ? "" : this.model.posicionActual.selectCentroEntrega.Descripcion);*/
+
 
         if (direccionCentro !== undefined) {
             this.model.posicionActual.codigoPostalEntrega = direccionCentro.Cp;
-            this.model.posicionActual.calleEntrega = direccionCentro.Direccion;
-            this.model.posicionActual.numeroEntrega = direccionCentro.Numero;
+            this.model.posicionActual.calleEntrega = direccionCentro.Direccion;          
             this.model.posicionActual.paisEntrega = direccionCentro.Pais;
+                    
+            if (this.model.posicionActual.numeroEntrega == undefined || direccionCentro.Numero == this.model.posicionActual.numeroEntrega) {
+                this.model.posicionActual.numeroEntrega = direccionCentro.Numero;
+            }
+            if ((this.numeroEntregaDif != "") && (this.centroDif == this.model.posicionActual.nombreEntrega || this.centroDif == undefined)) {
+                this.model.posicionActual.numeroEntrega = this.model.posicionActual.numeroEntrega;
+            }
+            else {
+                this.model.posicionActual.numeroEntrega = direccionCentro.Numero;
+            }
+                                          
         }
     }
 
+    setNumeroEntrega() {
+        this.numeroEntregaDif = this.model.posicionActual.numeroEntrega;
+        this.centroDif = this.model.posicionActual.nombreEntrega;
+    }
     eliminarPosicion() {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar la posición?',

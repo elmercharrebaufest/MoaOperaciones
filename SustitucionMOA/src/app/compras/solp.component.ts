@@ -198,8 +198,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
                 monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
                 monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-                today: 'Today',
-                clear: 'Clear'
+                today: 'Hoy',
+                clear: 'Borrar'
             };
 
             this.solpActual.jornadaLaboralDias = [
@@ -344,9 +344,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
         this.solpActual.telefono = solp.Telefono || '';
         this.solpActual.mail = solp.Email || sessionStorage.getItem("username");
-        // this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
-        // this.solpActual.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
-
+        this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+     
         // Paso 2
         this.solpActual.supervisorSector = solp.SupervisorSector || '';
         this.solpActual.supervisorTrabajo = solp.SupervisorTrabajo || '';
@@ -806,10 +805,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             x.fechaEntregaServicio,
                             x.fechaDeLiberacion,
                             x.selectCentroEntrega,
-                            x.calleEntrega,
-                            x.numeroEntrega,
+                            x.calleEntrega,                       
                             x.selectGrupoCompras,
                             x.selectArticuloCompras,
+                            x.selectSolicitanteCompras,
                             x.monedaSeleccionada]
                         if (almacenObligatorio)
                             listaCamposAValidar.push(x.selectAlmacenEntrega)

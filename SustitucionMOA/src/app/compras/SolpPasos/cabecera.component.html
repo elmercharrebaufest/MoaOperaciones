@@ -240,10 +240,7 @@
                             <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 margenInput">
                                 <div class="margenInput" style="margin-top: 72px;">
                                     Nro de tel&eacute;fono
-                                    <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.numeroEntrega" formControlName="numeroEntrega" name="numeroEntrega" id="numeroEntrega" placeholder="" rows="1" />
-                                    <div *ngIf="mostrarError('numeroEntrega')">
-                                        <p class="text-danger">campo obligatorio</p>
-                                    </div>
+                                    <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.numeroEntrega" formControlName="numeroEntrega" name="numeroEntrega" id="numeroEntrega" placeholder="" rows="1" (ngModelChange) ="setNumeroEntrega()" />
                                 </div>
                             </div>
                         </div>
