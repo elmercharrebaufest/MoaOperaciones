@@ -688,7 +688,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                         if (mostrarPreview) {
                             if (result.Solp.Pdf) {
-                                this.pdfPreview = "data:application/pdf;base64," + result.Solp.Pdf;
+                                // result.Solp.Pdf base64 encoded -> decoding the data via atob()
+                                const byteArray = new Uint8Array(atob(result.Solp.Pdf).split('').map(char => char.charCodeAt(0)));
+                                const blob = new Blob([byteArray], {type: 'application/pdf'});
+                                const url = window.URL.createObjectURL(blob);
+                                this.pdfPreview = url;
+
+                                //this.pdfPreview = "data:application/pdf;base64," + result.Solp.Pdf;
                                 this.mostrarPreview = true;
                             } else {
                                 this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar el preview. Por favor contacte con el administrador de sistemas.' });
