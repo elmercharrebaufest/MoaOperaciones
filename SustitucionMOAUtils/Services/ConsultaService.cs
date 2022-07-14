@@ -1093,10 +1093,12 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.Agregar(ingresosBrutosCoeficienteUnificado);
 
+
+
             MovimientoIngresosBrutosCoeficienteUnificado movimientoIngresosBrutosCoeficienteUnificado = new MovimientoIngresosBrutosCoeficienteUnificado
             {
                 IngresosBrutosCoeficienteUnificado_Id = ingresosBrutosCoeficienteUnificado.Id,
-                Observaciones = "Creado",
+                Observaciones = $"Creado por: {cuitProveedor}",
                 Fecha = timeProvider.Now(),
                 TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = 1,
                 OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = 1,
