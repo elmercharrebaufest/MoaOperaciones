@@ -28,6 +28,9 @@ namespace SustitucionMOA.Jobs
         {
             try
             {
+                if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ActualizarBaseDeDatosSolpSapJob").Habilitado == false)
+                    return;
+
                 this.ActualizarTablaSap(_comprasService.ObtenerCecoSap(), TablasSap.CecoSolpSap);
                 this.ActualizarTablaSap(_comprasService.ObtenerCuentasSap(), TablasSap.CuentasSolpSap);
                 this.ActualizarTablaSap(_comprasService.ObtenerOrdenesSap(), TablasSap.OrdenSolpSap);

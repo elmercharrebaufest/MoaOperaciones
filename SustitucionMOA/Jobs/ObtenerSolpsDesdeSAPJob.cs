@@ -31,6 +31,8 @@ namespace SustitucionMOA.Jobs
             {
                 try
                 {
+                    if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ObtenerSolpsDesdeSAPJob").Habilitado == false)
+                        return; 
 
                     if (ConfigurationManager.AppSettings["ObtenerSolpsDesdeSAPJob_Habilitado"] == "1")
                     {

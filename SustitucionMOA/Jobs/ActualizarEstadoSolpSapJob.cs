@@ -13,7 +13,7 @@ namespace SustitucionMOA.Jobs
 {
     public interface IActualizarEstadoSolpSapJob : IHangfireJob { }
 
-    public class ActualizarEstadoSolpSapJob: IActualizarEstadoSolpSapJob
+    public class ActualizarEstadoSolpSapJob : IActualizarEstadoSolpSapJob
     {
         private readonly IComprasService _comprasService;
         private readonly IRepositorio repositorio;
@@ -28,6 +28,9 @@ namespace SustitucionMOA.Jobs
         {
             try
             {
+                if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ActualizarEstadoSolpSapJob").Habilitado == false)
+                    return;
+
                 _comprasService.ActualizarEstadoSolpBulk();
             }
             catch (Exception e)

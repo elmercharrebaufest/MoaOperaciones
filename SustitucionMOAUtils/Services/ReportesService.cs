@@ -30,6 +30,8 @@ namespace SustitucionMOAUtils.Services
         public void EnviarReporteCamposSustentablesTSA()
         {
 
+            if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ReporteCamposSustentablesTSAJob").Habilitado == false)
+                return;
             if (DateTime.Today.DayOfWeek != DayOfWeek.Tuesday && DateTime.Today.DayOfWeek != DayOfWeek.Friday)
             {
                 return;
@@ -149,6 +151,9 @@ namespace SustitucionMOAUtils.Services
 
         public void EnviarReporteLiquidacionesInformadas()
         {
+            if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ReporteLiquidacionesInformadasJob").Habilitado == false)
+                return;
+
             var fechaAReportar = DateTime.Today.AddDays(-1);
             //Vamos a reportar las liquidaciones informadas del día de ayer
             var liquidacionesAReportar = repositorio.Listar<LiquidacionInformada>(li => li.FechaInformada == fechaAReportar);
@@ -172,6 +177,9 @@ namespace SustitucionMOAUtils.Services
 
         public void EnviarReporteConflictosCamposSustentables()
         {
+            if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ReporteConflictosCamposSustentablesJob").Habilitado == false)
+                return;
+
             var fechaAReportar = DateTime.Today.AddDays(-1);
             //Vamos a reportar las liquidaciones informadas del día de ayer
             var campoSustentablesAReportar = repositorio.Listar<ConflictoCampoSustentable>(cc => !cc.Notificado);

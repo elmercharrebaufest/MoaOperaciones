@@ -22,3 +22,4 @@ Post-Deployment Script Template
 :r .\RolPermisoPorRolConsulta.sql
 :r .\PermisoPorRolConsulta.sql
 :r .\CategoriaRolConsulta.sql
+:r .\HabilitacionJob.sql
