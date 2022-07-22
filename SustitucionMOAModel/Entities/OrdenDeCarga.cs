@@ -98,8 +98,8 @@ namespace SustitucionMOAModel.Entities
                 else
                 {
                     if (string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido))
-                    {
-                        Estado = EstadoOrdenDeCarga.Pendiente;
+                    {                                             
+                            Estado = EstadoOrdenDeCarga.Pendiente;                
                     }
                     else
                     {
@@ -113,7 +113,7 @@ namespace SustitucionMOAModel.Entities
                             Estado = EstadoOrdenDeCarga.Pendiente;
                         }
 
-                        if (!AprobadoCredito)                     
+                        if (!AprobadoCredito)
                         {
                             Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
                         }

@@ -1,4 +1,6 @@
-﻿using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
+﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
+using SustitucionMOAWS.ScatoWebService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +13,11 @@ namespace SustitucionMOAWS.Interfaces
     {
         List<CartaPorteFoto> ObtenerFotoCartaPorte(string cartaPorteId);
         List<CartaPorteFoto> ObtenerFotoCartasPorte(List<string> cartaPorteIds);
+        List<LocalidadDto> ObtenerLocalidades();
+        List<ProvinciaDto> ObtenerProvincias();
+
+
+
+
     }
 }

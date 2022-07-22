@@ -458,7 +458,7 @@ export class GestionCM05Component extends ListBaseComponent {
     guardarCabeceraEditadaPrev(tipo){
         if(tipo == "estado" && this.selectedCabecera.EstadoId != 2){
             let mov = {
-                accion : "Cambio de estado",
+                accion : "Cambió de estado",
                 tipo: 6,
             }
             this.insertarMovimiento(mov.accion, mov.tipo);

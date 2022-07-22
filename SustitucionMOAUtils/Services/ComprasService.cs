@@ -831,14 +831,11 @@ namespace SustitucionMOAUtils.Services
         public byte[] GenerarSolpPdf(int idSolp)
         {
             var solp = TraerSolpId(idSolp);
-
             var usuarioCompras = ListarUsuarioCompras(solp.UsuarioActual);
-
             var templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/NewPliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
             var templateCssFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.css");
             var templateCssString = System.IO.File.ReadAllText(templateCssFilePath);
-
             var solpValores = new Dictionary<string, string>();
 
             //aca va la asignacion de valores de la solp que se van a reemplazar en el documento
@@ -902,9 +899,6 @@ namespace SustitucionMOAUtils.Services
                 solpValores.Add(SolpTemplateKeys.DIAS_JORNADA_LABORAL, " ");
             }
 
-
-
-
             if (solp.JornadaLaboralDesde.HasValue && solp.JornadaLaboralHasta.HasValue)
             {
                 var jornadaLaboral = string.Format("{0} a {1}", solp.JornadaLaboralDesde.Value.ToString("HH:mm"), solp.JornadaLaboralHasta.Value.ToString("HH:mm"));
@@ -954,16 +948,9 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, subposiciones.ToString());
             solpValores.Add(SolpTemplateKeys.PLAZO_ENTREGA, plazo.ToString());
 
-
-
-
-
-
             //ADJUNTOS
             solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "");
-
             templateString = CombineTemplateValues(templateString, solpValores);
-
             return ConvertHtmlToPdf(templateString, templateCssString, solp); //agregar solp
         }
 

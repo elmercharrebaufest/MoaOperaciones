@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SustitucionMOAModel.Models;
+using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +14,6 @@ namespace SustitucionMOAWS.Interfaces
         string CrearOrdenRequest(string cliente, string contrato, string corredor, decimal kilos, string material, string pedidoInput, string forzarCreacion, out string pedidoOutput);
         string OrdenCargaControlEstadoRequest(string entrega, string pedido, string transportista);
         string OrdenCargaEntregadaRequest(string documento, decimal kilos, string nombreConductor, string patenteAcoplado, string patenteChasis, string pedido, string tipoDocumento, string transportista, out string mensaje);
+        OrdenCargaVisualizarClienteWSMOAResponse OrdenCargaVisualizarClienteExecute(OrdenCargaVisualizarClienteWSMOARequest request);
     }
 }

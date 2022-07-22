@@ -8,6 +8,7 @@ using SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAModel.Models;
+using SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -66,6 +67,17 @@ namespace SustitucionMOAWS.WSConsumers
                 throw;
             }
         }
+
+        public List<LocalidadDto> ObtenerLocalidades()
+        {
+          return service.ListarLocalidades().ToList();                        
+        }
+
+        public List<ProvinciaDto> ObtenerProvincias()
+        {            
+          return service.ListarProvincias().ToList();                                     
+        }
+
     }
 
 }

@@ -28,8 +28,8 @@
                   Corredor:
                 </div>
                 <div class="styled-select" style="overflow: initial;">
-                  <app-seleccionar-proveedor [tipoProveedorId]="4" [(valorInicial)]="CodigoCorredor"
-                    (onProveedorSeleccionado)="onCorredorSeleccionado($event)" >
+                  <app-seleccionar-proveedor [tipoProveedorId]="4" [(valorInicial)]="CodigoCorredor" [noEditarCliente]="noEditarCliente"
+                    (onProveedorSeleccionado)="onCorredorSeleccionado($event)"  >
                   </app-seleccionar-proveedor>
                 </div>
               </div>
@@ -39,9 +39,14 @@
                   Cliente:
                 </div>
                 <div class="styled-select" style="overflow: initial;">
-                  <app-seleccionar-proveedor [tipoProveedorId]="5" [(valorInicial)]="CodigoCliente"
-                    (onProveedorSeleccionado)="onClienteSeleccionado($event)">
-                  </app-seleccionar-proveedor>
+                    <select name="cmbCliente" [(ngModel)]="CodigoCliente" (ngModelChange)="onClienteSeleccionado()" [disabled]="noEditarCliente">
+                      <option disabled hidden [value]="selectUndefinedOptionValue">
+                        Elegir cliente
+                      </option>
+                      <option *ngFor="let itemCliente of listaClientes" value="{{itemCliente.CUIT}}">
+                        {{itemCliente.RazonSocial}}
+                      </option>
+                    </select>
                 </div>
               </div>
 
@@ -51,7 +56,7 @@
                   Contrato:
                 </div>
                 <div class="styled-select">
-                  <input type="text" [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato)"
+                  <input type="text" [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente"
                     [(ngModel)]="ordenDeCarga.ContratoIngresado" maxlength="25">
                 </div>
               </div>
@@ -61,7 +66,7 @@
                   Número de pedido (fact. anticipada):
                 </div>
                 <div class="styled-select">
-                  <input type="text" [(ngModel)]="ordenDeCarga.NumeroPedidoIngresado" maxlength="25">
+                  <input type="text" [(ngModel)]="ordenDeCarga.NumeroPedidoIngresado" maxlength="25" [disabled]="noEditarCliente">
                 </div>
               </div>
 
@@ -70,7 +75,7 @@
                   Producto:
                 </div>
                 <div class="styled-select">
-                  <select name="product" [(ngModel)]="ordenDeCarga.Producto_Id">
+                  <select name="product" [(ngModel)]="ordenDeCarga.Producto_Id" [disabled]="noEditarCliente">
                     <option disabled hidden [value]="selectUndefinedOptionValue">
                       Grano
                     </option>

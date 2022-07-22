@@ -8,6 +8,7 @@ using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
+using System.Linq;
 using System.Web.Mvc;
 namespace SustitucionMOA.Controllers
 {
@@ -168,11 +169,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult EdicionFinalizada(int ordenId, string resp)
+        public ActionResult EdicionFinalizada(int ordenId)
         {
             try
             {
-                return JsonCustom(new { data = ordenDeCargaService.EdicionFinalizada(null, ordenId, resp) });
+                return JsonCustom(new { data = ordenDeCargaService.EdicionFinalizada(ordenId) });
             }
             catch (InfoCustomException e)
             {
@@ -406,10 +407,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var message = ordenDeCargaService.SolicitarAnulacionOrden(ordenDeCargaId);
-
                 var mailUsuario = SessionPersister.getUsername();
-
+                var message = ordenDeCargaService.SolicitarAnulacionOrden(ordenDeCargaId, mailUsuario);
                 return JsonCustom(message);
             }
             catch (InfoCustomException e)
@@ -426,16 +425,62 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-		
-		[HttpGet]
+
+        [HttpGet]
+        public ActionResult RechazarSolicitudAnulacion(int ordenDeCargaId)
+        {
+            try
+            {
+                var mailUsuario = SessionPersister.getUsername();
+                var message = ordenDeCargaService.RechazarSolicitudAnulacion(ordenDeCargaId, mailUsuario);
+                return JsonCustom(message);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
         public ActionResult SolicitarEdicion(int ordenDeCargaId)
         {
             try
             {
-                var message = ordenDeCargaService.SolicitarEdicionOrden(ordenDeCargaId);
-
                 var mailUsuario = SessionPersister.getUsername();
+                var message = ordenDeCargaService.SolicitarEdicionOrden(ordenDeCargaId, mailUsuario);
+                return JsonCustom(message);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
+        [HttpGet]
+        public ActionResult RechazarSolicitudEdicion(int ordenDeCargaId)
+        {
+            try
+            {
+                var mailUsuario = SessionPersister.getUsername();
+                var message = ordenDeCargaService.RechazarSolicitudEdicion(ordenDeCargaId, mailUsuario);
                 return JsonCustom(message);
             }
             catch (InfoCustomException e)
@@ -477,5 +522,31 @@ namespace SustitucionMOA.Controllers
 
         }
 
+        [HttpGet]
+        public ActionResult VisualizarCliente(string corredor, string fechaInicio, string fechaFin, string pendiente)
+        {
+            try
+            {
+				//var corredor = "C70359905";
+				//var fechaInicio = "2017-01-01";
+				//var fechaFin = "2019-12-31";
+				var response = ordenDeCargaService.VisualizarCliente(string.Empty, string.Empty, corredor, fechaInicio, fechaFin, string.Empty, pendiente, string.Empty);
+
+				return JsonCustom(response);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

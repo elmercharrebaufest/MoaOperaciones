@@ -341,6 +341,17 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.model.posicionActual.fechaEntregaServicio = fechaNueva;
     }
 
+    calcularEntregaCalendario() {
+        // resta de fecha seleccionada menos la fecha minima parseada en dias
+        let plazoNuevo = Math.ceil((this.model.posicionActual.fechaEntregaServicio.getTime() - this.model.fechaEntrega.getTime()) / (1000 * 60 * 60 * 24));
+        if(plazoNuevo >= 0){
+            this.model.posicionActual.plazoDeEntrega = plazoNuevo;          
+        } else {
+            this.model.posicionActual.fechaEntregaServicio = new Date(this.model.fechaEntrega);
+            this.model.posicionActual.plazoDeEntrega = 0;
+        }
+    }
+
     ValidarNuevaPosicion() {
         if (this.model.posicionActual.concluido == undefined){
             this.disabled = false;

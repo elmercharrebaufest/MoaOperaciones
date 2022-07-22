@@ -9,6 +9,8 @@ import { NgxMaskModule } from "ngx-mask";
 import { OrdenesDeCargaService } from './ordenes-de-carga.service';
 import { OrdenesDeCargaDetalleComponent } from './detalle/ordenes-de-carga.detalle.component';
 import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 
@@ -17,7 +19,7 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
         CommonModule,
         SharedModule,
         NgxPaginationModule,
-        ButtonModule,
+        ButtonModule,DropdownModule,AutoCompleteModule,
         NgxMaskModule,
         OrdenesDeCargaRoutingModule,
         MultiSelectModule,

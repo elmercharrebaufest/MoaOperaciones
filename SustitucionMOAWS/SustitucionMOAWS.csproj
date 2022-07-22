@@ -40,6 +40,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -254,6 +257,11 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Service References\ObtenerSolpWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\OrdenCargaVisualizarCliente\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -805,6 +813,7 @@
     <None Include="Service References\ObtenerOrdenSolpWebServiceMOA\SI_MMRFC_OBTENER_ORDEN.wsdl" />
     <None Include="Service References\ObtenerServiciosSolpWebServiceMOA\SI_MMRFC_OBTENER_SERVICIOS.wsdl" />
     <None Include="Service References\ObtenerSolpWebServiceMOA\SI_MMRFC_OBTENER_SOLPED.wsdl" />
+    <None Include="Service References\OrdenCargaVisualizarCliente\SI_MPMF_MOAOP_VISUALIZAR_ZFAS.wsdl" />
     <None Include="Service References\PagoComprobantesWebServiceMOA\SI_MPMF_MOAOP_DET_PAGOS_NG.wsdl" />
     <None Include="Service References\PagoComprobantesWebServiceMOA\SustitucionMOAWS.PagoComprobantesWebServiceMOA.SI_MPMF_MOAOP_DET_PAGOS_NGResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -2187,6 +2196,7 @@
     <WCFMetadataStorage Include="Service References\ObtenerOrdenSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerServiciosSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerSolpWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\OrdenCargaVisualizarCliente\" />
     <WCFMetadataStorage Include="Service References\PagoComprobantesWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PagoDetalleWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PagosNGWebServiceMOA\" />
@@ -3027,6 +3037,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\PDFComprobantesNGWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\OrdenCargaVisualizarCliente\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\OrdenCargaVisualizarCliente\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\OrdenCargaVisualizarCliente\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

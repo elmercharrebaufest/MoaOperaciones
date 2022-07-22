@@ -804,6 +804,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     paso.Completo = true;
                     //Revisa que todos los campos de TODAS las posiciones esten completos
                     var almacenObligatorio = this.solpActual.tipoSolpSap != EnumTipoSolpSap.Mantenimiento;
+
+                    if (!this.listaStringCompleta([
+                        this.solpActual.selectClaseDocumento
+                    ])) {
+                        return paso.Completo = false;
+                    }
+
                     this.solpActual.posiciones.forEach(x => {
                         var listaCamposAValidar = [
                             x.servicio,

@@ -82,7 +82,6 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        debugger;
                         this.data = result.data;
                         this.condicionCamara = result.data.datosCalidad.every(x => x.resultadoCamara ==0);
                        // this.condicionCalada = result.data.datosCalidad.every(x => x.resultadoCalado == 0);
@@ -177,7 +176,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     }
 
     showDataPlus(calidad: any) {
-        return this.tieneData(calidad.kgNetos) || this.tieneData(calidad.kgDescuento) || this.tieneData(calidad.kgAplicados) || this.tieneData(calidad.porcentajeDescuento);
+        return this.tieneData(calidad.porcentajeDescuento);
     }
 
     tieneData(value: any) {

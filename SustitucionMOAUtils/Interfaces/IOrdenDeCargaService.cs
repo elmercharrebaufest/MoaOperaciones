@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +18,11 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCargaEditarDto ObtenerEditar(string mailUsuario, int ordenId);
         List<OrdenDeCargaHistorialDto> ObtenerEditarHistorial(string mailUsuario, int ordenId);        
         string AnularOrden(int ordenId);
-        string SolicitarAnulacionOrden(int ordenId);
-		string EdicionFinalizada(OrdenDeCarga ordenDeCarga, int ordenId, string resp);
-        string SolicitarEdicionOrden(int ordenId);
+        string SolicitarAnulacionOrden(int ordenId, string mailUsuario);
+        string RechazarSolicitudAnulacion(int ordenId, string mailUsuario);
+        string EdicionFinalizada(int ordenId);
+        string SolicitarEdicionOrden(int ordenId, string mailUsuario);
+        string RechazarSolicitudEdicion(int ordenId, string mailUsuario);
         string NotificarTransporte(int ordenId);
         List<string> ObtenerContratos(int ordenId);
         Resultado SeleccionarContrato(int ordenId, string contratoSAP);
@@ -32,6 +35,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga();
         string ForzarCreacionOrden(int ordenId);
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);
+        List<ProveedorDto> VisualizarCliente(string cliente, string contrato, string corredor, string fechaInicio, string fechaFin, string material, string pendiente, string tipoContrato);
         string NotificarVariosPedidos(int ordenDeCargaId);
         string NotificarVariosContratos(int ordenDeCargaId);
 

@@ -135,7 +135,7 @@
                                     Fecha de entrega {{ mostrarAsterisco('fechaEntregaServicio') }}
                                 </div>
                                 <div class="styled-select">
-                                    <p-calendar formControlName="fechaEntregaServicio" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.posicionActual.fechaEntregaServicio" [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>
+                                    <p-calendar formControlName="fechaEntregaServicio" [ngModelOptions]="{standalone:true}" [(ngModel)]="model.posicionActual.fechaEntregaServicio" [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy" (onSelect)="calcularEntregaCalendario()"></p-calendar>
                                 </div>
                                 <div *ngIf="mostrarError('fechaEntregaServicio')">
                                     <p class="text-danger">campo obligatorio</p>

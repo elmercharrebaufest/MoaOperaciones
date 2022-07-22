@@ -23,6 +23,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { FileDropModule } from 'ngx-file-drop';
+import { AngularEditorModule } from '@kolkov/angular-editor';
 
 @NgModule({
   imports: [
@@ -44,6 +45,7 @@ import { FileDropModule } from 'ngx-file-drop';
     TooltipModule,
     ConfirmDialogModule,
     FileDropModule,
+    AngularEditorModule ,
   ],
     declarations: [
         MisConsultasComponent,

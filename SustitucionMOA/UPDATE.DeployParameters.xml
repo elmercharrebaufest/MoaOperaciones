@@ -32,12 +32,14 @@
 	<setParameter name="EmailToUsuariosCompras Config" value="rorlando@baufest.com" />
 
 	<setParameter name="EmailToMesaENTSL Config" value="emartin@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
-	<setParameter name="EmailToMesaVentaFas Config" value="emartin@baufest.com;dylopez@baufest.com;elpacheco@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
+	<setParameter name="EmailToMesaVentaFas Config" value="moaoperaciones@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
 	<setParameter name="EmailToCobranzas Config" value="emartin@baufest.com;dylopez@baufest.com;elpacheco@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
-	<setParameter name="EmailToComerciales Config" value="emartin@baufest.com;dylopez@baufest.com;elpacheco@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
+	<setParameter name="EmailToComerciales Config" value="moaoperaciones@baufest.com;dylopez@baufest.com;elpacheco@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
+
+  <setParameter name="EmailToAuditoria Config" value="alejandra.duarte@molinosagro.com.ar,santiago.barbarotta@molinosagro.com.ar" />
 
 
-	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
+  <setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
 	<setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=webopdevstorage;AccountKey=degh9HC+9hXxFOEU/2HqhP1ZusanUvm9X31YqPQIT68DNsU+GuVnphhYa7Okoexu4R1X5s7xiH5/X3ouTXURew==;EndpointSuffix=core.windows.net" />
 
@@ -113,5 +115,5 @@
   <setParameter name="SI_MPMF_MOAOP_COMP_NOGRANOSPDF Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_COMP_NOGRANOSPDF&amp;interfaceNamespace=urn%3AOPERACIONES" />
   <setParameter name="SI_MPMF_MOAOP_COMPROB_NOGRANOS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_COMPROB_NOGRANOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
-
+  <setParameter name="SI_MPMF_MOAOP_VISUALIZAR_ZFAS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VISUALIZAR_ZFAS&amp;interfaceNamespace=urn%3AOPERACIONES" />
 </parameters>

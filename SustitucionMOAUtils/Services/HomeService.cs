@@ -235,9 +235,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     //liquidaciones
                     try
-                    {                 
-                            liquidacionWSMOAResponse = (LiquidacionWSMOAResponse)new LiquidacionesConsumerMOA().request(proveedor, new List<FechaWS> { new FechaWS { fechaInicio= new DateTime(2018,01,01),fechaFin = DateTime.Today.AddDays(+1)} }, "", palabra);
-                      
+                    {
+                        liquidacionWSMOAResponse = (LiquidacionWSMOAResponse)new LiquidacionesConsumerMOA().request(proveedor, new List<FechaWS> { new FechaWS { fechaInicio = new DateTime(2018, 01, 01), fechaFin = DateTime.Today.AddDays(+1) } }, "", palabra);
+
                     }
                     catch (Exception e)
                     {
@@ -266,7 +266,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         //if (cartasPorteAplicacion == null)
                         //{
-                        cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS> {  }, new List<string>(), palabra);
+                        cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS> { }, new List<string>(), palabra);
                         //}
 
                         //if (cartasPorteDescargas == null)
@@ -284,13 +284,13 @@ namespace SustitucionMOAUtils.Services
                     || (cartasPorteDescargas != null && cartasPorteDescargas?.cartasPorte.Count > 0))
                     && (!ccppAplicacion && !ccppDescargas))
                     {
-                        ccppAplicacion = cartasPorteAplicacion.cartasPorte.Any(c => c.cartaPorte == palabra);
-                        ccppDescargas = cartasPorteDescargas.cartasPorte.Any(c => c.cartaPorte == palabra);
-
+                        ccppAplicacion = cartasPorteAplicacion.cartasPorte.Count > 0;
+                        ccppDescargas = cartasPorteDescargas.cartasPorte.Count > 0;
                         if (ccppAplicacion || ccppDescargas)
                         {
-                            listaResultados.Add(new BuscadorOption { Link = "/carta-porte/detalle", Tipo = "detalle carta de porte", Value = palabra, Code = TipoBusqueda.CCPP, CtaParams = 1 });
-                            listaResultados.Add(new BuscadorOption { Link = "", Tipo = "carta de porte", Value = palabra, Code = TipoBusqueda.CCPP, CtaParams = 1 });
+                            var ccpp = cartasPorteAplicacion.cartasPorte.Count > 0? cartasPorteAplicacion.cartasPorte.First().cartaPorte: cartasPorteDescargas.cartasPorte.First().cartaPorte;
+                            listaResultados.Add(new BuscadorOption { Link = "/carta-porte/detalle", Tipo = "detalle carta de porte", Value = ccpp, Code = TipoBusqueda.CCPP, CtaParams = 1 });
+                            listaResultados.Add(new BuscadorOption { Link = "", Tipo = "carta de porte", Value = ccpp, Code = TipoBusqueda.CCPP, CtaParams = 1 });
                         }
                     }
                 }

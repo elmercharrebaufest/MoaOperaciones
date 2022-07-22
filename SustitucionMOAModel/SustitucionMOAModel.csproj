@@ -314,6 +314,8 @@
     <Compile Include="Models\WSMapMOA\Noticia\Noticia.cs" />
     <Compile Include="Models\WSMapMOA\Noticia\NoticiasDetallesWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Noticia\Notificacion.cs" />
+    <Compile Include="Models\WSMapMOA\OrdenCarga\OrdenCargaVisualizarClienteWSMOARequest.cs" />
+    <Compile Include="Models\WSMapMOA\OrdenCarga\OrdenCargaVisualizarClienteWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Pago\Comprobante\Comprobante.cs" />
     <Compile Include="Models\WSMapMOA\Pago\Comprobante\PagoComprobanteWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Pago\Detalle\Cabecera.cs" />

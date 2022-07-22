@@ -68,6 +68,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     mostrarBotonSolicitarAnulacion: boolean = false;
     mostrarBotonAprobarAnulacion: boolean = false;
+    mostrarBotonEdicionFinalizada: boolean = false;
 
     // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -102,8 +103,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     confirmarSA(Id) {
-        //var element = document.getElementsByClassName("ui-widget-overlay ui-dialog-mask");
-        //element[0].remove();
         this.confirmationService.confirm({    
             key: 'confirmarSA',        
             message: '¿Desea solicitar anulación?',
@@ -113,17 +112,25 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             reject: () => {                
             }
         });
-    }
+    }   
+    confirmarRSA(Id) {
+        this.confirmationService.confirm({    
+            key: 'confirmarRSA',        
+            message: '¿Desea rechazar la solicitud de anulación?',
+            accept: () => {
+                this.rechazarSolicitudAnulacion(Id)
+            },
+            reject: () => {                
+            }
+        });
+    } 
 
-    
-
-    solicitarAnulacion(Id){
+    rechazarSolicitudAnulacion(Id){
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
-
         try {
             this.unsubscribe();
-            this.subscription = this.service.solicitarAnulacion(Id).subscribe(
+            this.subscription = this.service.rechazarSolicitudAnulacion(Id).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -143,14 +150,49 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     this.spinnerComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
-
             );
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
+        return false; //<-- Prevent Refresh
+    }
 
+    solicitarAnulacion(Id){
+        try {
+            this.mensajeComponent.setMsgsEmpty();
+            this.spinnerComponent.showIt();
+            this.unsubscribe();
+            this.blockUI.start('Registrando solicitud...');
+
+            this.subscription = this.service.solicitarAnulacion(Id).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                        this.navService.navegarSeccion(
+                            "/ordenes-de-carga"
+                        );
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
         return false; //<-- Prevent Refresh
     }
 
@@ -186,8 +228,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return;
         }
 
-        if(!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada)){
-            this.mostrarBotonSolicitarAnulacion = true;
+        if(!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)){
+            if(sessionStorage.getItem("tipoUsuario") == "CLI") this.mostrarBotonSolicitarAnulacion = true;
+            this.mostrarBotonEditar = true;
+        }
+        if(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada && !(sessionStorage.getItem("tipoUsuario") == "CLI")){
+            this.mostrarBotonEdicionFinalizada = true;
         }
 
         if (this.esInterno) {
@@ -236,10 +282,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonAprobarAnulacion = true;
             }           
         }
-        if(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada){
-            this.mostrarBotonAnular = false;
-            this.mostrarBotonAprobarAnulacion = true;
-        }    
     }
 
     obtenerOrdenDeCarga() {
@@ -428,6 +470,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.data.error != undefined && result.data.error != "") {
+                        document.getElementById("closemodalSeleccionarContrato").click();
                         this.mensajeComponent.setErrorMsg(result.data.error);
                     } else if (result.data.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.data.info);
@@ -587,33 +630,62 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
-    edicionFinalizada(resp: string) {
+    edicionFinalizada(Tipo) {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
-            this.subscriptionDropDowns = this.service.edicionFinalizada(this.ordenDeCargaId, resp).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        document.getElementById("closemodalEdicionFinalizada").click();
-                        this.mensajeComponent.setSuccessMsg(result.data);
-
-                        this.navService.navegarSeccion(
-                            "/ordenes-de-carga"
-                        );
+            if(Tipo == "A"){
+                console.log(this.ordenDeCargaId);
+                
+                this.subscriptionDropDowns = this.service.edicionFinalizada(this.ordenDeCargaId).subscribe(
+                    result => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            document.getElementById("closemodalEdicionFinalizada").click();
+                            this.mensajeComponent.setSuccessMsg(result.data);
+    
+                            this.navService.navegarSeccion(
+                                "/ordenes-de-carga"
+                            );
+                        }
+                    },
+                    error => {
+                        this.mensajeComponent.setErrorMsg(error.message);
                     }
-                },
-                error => {
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
+                );
+            }
+            else{
+                this.subscriptionDropDowns = this.service.rechazarSolicitudEdicion(this.ordenDeCargaId).subscribe(
+                    result => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            document.getElementById("closemodalEdicionFinalizada").click();
+                            this.mensajeComponent.setSuccessMsg(result.data);
+    
+                            this.navService.navegarSeccion(
+                                "/ordenes-de-carga"
+                            );
+                        }
+                    },
+                    error => {
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                );
+            }
+            
         } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
         }

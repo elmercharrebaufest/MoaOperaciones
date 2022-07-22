@@ -69,9 +69,11 @@ export class SeleccionarProveedorComponent extends BaseComponent {
     @Input() corredorId: number;
     @Input() tipoProveedorId: number;
     @Input() valorInicial: string;
+    @Input() noEditarCliente: boolean;
 
     selectEvent(item) {
         try {
+            // console.log('SeleccionarProveedorComponent::selectEvent::item: ', item);
             this.subscription = this.service.obtenerProveedorPorCodigo(item.idVendedor).subscribe(
                 (result) => {
                     this.spinnerComponent.hideIt();
@@ -82,7 +84,7 @@ export class SeleccionarProveedorComponent extends BaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-
+                        // console.log('SeleccionarProveedorComponent::selectEvent::result: ', result);
                         item = { ...item, proveedorId: result.Id, CUIT: result.CUIT }
 
                         this.onLocalidadSeleccionada.emit(item);
@@ -98,7 +100,7 @@ export class SeleccionarProveedorComponent extends BaseComponent {
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
+            return false;
         }
 
     }
@@ -124,6 +126,7 @@ export class SeleccionarProveedorComponent extends BaseComponent {
         this.tipoProveedorId = this.tipoProveedorId ? this.tipoProveedorId : 0;
 
         try {
+            // console.log('SeleccionarProveedorComponent::getUsuario::tipoProveedorId: ', this.tipoProveedorId);
             this.subscription = this.service.getVendedores("", "", this.tipoProveedorId).subscribe(
                 (result) => {
                     this.spinnerComponent.hideIt();

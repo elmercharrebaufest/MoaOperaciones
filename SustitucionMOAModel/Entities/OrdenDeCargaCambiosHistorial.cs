@@ -15,7 +15,7 @@ namespace SustitucionMOAModel.Entities
         public int OrdenDeCarga_Id { get; set; }
         public string Antes { get; set; }
         public string Despues { get; set; }
-        public DateTime? FechaCambio { get; set; }
+        public DateTime FechaCambio { get; set; }
         public int Usuario_Id { get; set; }
         public string NombreColumnaCambio { get; set; } 
 

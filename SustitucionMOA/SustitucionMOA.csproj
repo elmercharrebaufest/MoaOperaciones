@@ -988,6 +988,7 @@
     <Compile Include="Controllers\CuentaCorrienteController.cs" />
     <Compile Include="Controllers\DataAgroController.cs" />
     <Compile Include="Controllers\GestionImpuestosController.cs" />
+    <Compile Include="Controllers\LocalidadController.cs" />
     <Compile Include="Controllers\LogPesificacionController.cs" />
     <Compile Include="Controllers\DocumentosController.cs" />
     <Compile Include="Controllers\FacturaController.cs" />
@@ -1012,6 +1013,7 @@
     </Compile>
     <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJob.cs" />
     <Compile Include="Jobs\ActualizarEstadoSolpSapJob.cs" />
+    <Compile Include="Jobs\ActualizarLocalidadesJob.cs" />
     <Compile Include="Jobs\ObtenerSolpsDesdeSAPJob.cs" />
     <Compile Include="Jobs\ReporteCamposSustentablesTSAJob.cs" />
     <Compile Include="Jobs\ReporteConflictosCamposSustentablesJob.cs" />
@@ -1329,6 +1331,7 @@
     <Folder Include="Views\Default\" />
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />
+    <Folder Include="Views\Localidad\" />
     <Folder Include="Views\LogPesificacion\" />
     <Folder Include="Views\OrdenDeCarga\" />
     <Folder Include="Views\TicketPesada\" />
