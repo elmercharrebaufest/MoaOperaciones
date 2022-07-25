@@ -38,6 +38,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProveedorDto> VisualizarCliente(string cliente, string contrato, string corredor, string fechaInicio, string fechaFin, string material, string pendiente, string tipoContrato);
         string NotificarVariosPedidos(int ordenDeCargaId);
         string NotificarVariosContratos(int ordenDeCargaId);
+        string NotificarVencimientoOrdenCarga(int ordenId);
 
     }
 

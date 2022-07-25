@@ -43,7 +43,7 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"OdenDeCargaService Agregar: {ordenDeCarga.ToJson()}");
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-          
+
             Proveedor cliente;
             Proveedor corredor;
             ordenDeCarga.Estado = EstadoOrdenDeCarga.ErrorDeCarga;
@@ -93,7 +93,6 @@ namespace SustitucionMOAUtils.Services
                     ordenDeCarga.CUITCorredor = "";
                 }
             }
-
             ordenDeCarga.UsuarioCreacion_Id = usuario.Id;
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente_Id = cliente.Id;
@@ -106,8 +105,11 @@ namespace SustitucionMOAUtils.Services
             ordenDeCarga.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
 
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
-
             ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
+            var dayOfWeek = ordenDeCarga.FechaCarga.DayOfWeek.ToString();
+            ordenDeCarga.FechaVencimiento = dayOfWeek == "Friday" ? ordenDeCarga.FechaCarga.AddDays(4).Date : ordenDeCarga.FechaCarga.AddDays(2);
+
+
 
             var crearPedido = VerificarOrden(ordenDeCarga, cliente, false);
             repositorio.Agregar(ordenDeCarga);
@@ -351,7 +353,7 @@ namespace SustitucionMOAUtils.Services
 
                 ordenDeCarga.ActualizarEstado();
             }
-           
+
             else
             {
                 if (!esJob)
@@ -362,7 +364,7 @@ namespace SustitucionMOAUtils.Services
                         NotificacionContratoVencido(ordenDeCarga, cliente);
                         ordenDeCarga.Estado = EstadoOrdenDeCarga.ContratoVencido;
                         return false;
-                    }                  
+                    }
 
                 }
 
@@ -667,24 +669,102 @@ namespace SustitucionMOAUtils.Services
 
         public List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga()
         {
-
+            var dayOfWeek = DateTime.Now.DayOfWeek.ToString();
             if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaSapJob").Habilitado == false)
                 return null;
 
-            //TODO: Validar 72 horas exactas en cada momento.
-            var fechaActualMenos72Horas = DateTime.Now.AddHours(-72);
-
-            var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaEntregaGenerada <= fechaActualMenos72Horas && o.Estado == EstadoOrdenDeCarga.EntregaGenerada);
-
-            foreach (var orden in ordenes)
+            if (dayOfWeek.Contains("Saturday") || dayOfWeek.Contains("Sunday"))
             {
-                orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
+                return null;
             }
 
-            if (ordenes.Count > 0) repositorio.GuardarCambios();
-
+            var fechaActual = DateTime.Now.Date;
+            var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaVencimiento < fechaActual && o.Estado == EstadoOrdenDeCarga.EntregaGenerada);
+            NotificarVencimientoOrdenCarga(ordenes);
             return ordenes;
         }
+
+        public void NotificarVencimientoOrdenCarga(List<OrdenDeCarga> ordenes)
+        {
+
+            var emailSenderData = ConstruirCuerpoOrdenesVencidas(ordenes);
+            if (emailSenderData != null)
+            {
+                EmailSender.EnviarMail(emailSenderData);
+            }
+
+        }
+        public string NotificarVencimientoOrdenCarga(int ordenId)
+        {
+            var emailSenderData = new EmailSenderData();
+            var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+            var orden = repositorio.Obtener<OrdenDeCarga>(x => x.Id == ordenId);
+            var mail = orden.Cliente.Mail;
+            var ordenVencidas = new StringBuilder();
+            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
+
+
+            var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES_VENCIDAS);
+            emailSenderData.Asunto = $"Molinos Agro - Notificación de ordenes Vencidas- {orden.Cliente.RazonSocial}";
+            emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas);
+            emailSenderData.Mails.AddRange(mail.Split(';').ToList());
+            emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
+            if (emailSenderData != null)
+            {
+                EmailSender.EnviarMail(emailSenderData);
+            }
+            orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.OrdenDeCargaAnulada;
+
+        }
+        public EmailSenderData ConstruirCuerpoOrdenesVencidas(List<OrdenDeCarga> ordenes)
+        {
+            var emailSenderData = new EmailSenderData();
+            var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+            var mailsAuditoriaOrdenesVencidas = ConfigurationManager.AppSettings["EmailToAuditoriaOrdenesVencidas"];
+
+            try
+            {
+                if (string.IsNullOrEmpty(mailsComerciales))
+                {
+                    return null;
+                }
+                emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
+                emailSenderData.Mails.AddRange(mailsAuditoriaOrdenesVencidas.Split(';').ToList());
+                if (emailSenderData.Mails.Count == 0)
+                {
+                    return null;
+                }
+                var ordenVencidas = new StringBuilder();
+                foreach (var orden in ordenes)
+                {
+
+                    ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
+                }
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES_VENCIDAS);
+                emailSenderData.Asunto = $"Molinos Agro - Notificación de ordenes Vencidas";
+                if (ordenes.Count == 0)
+                {
+                    emailSenderData.Cuerpo = $"Se informa que para el dia {DateTime.Now} no hay ordenes de carga vencidas";
+                }
+                else
+                {
+                    emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenes[0].Id, ordenVencidas);
+                }
+
+                return emailSenderData;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                return null;
+            }
+        }
+
+
+
 
         public OrdenDeCargaEditarDto ObtenerEditar(string mailUsuario, int ordenId)
         {
@@ -1042,7 +1122,7 @@ namespace SustitucionMOAUtils.Services
             }
             if (!string.IsNullOrEmpty(orden.ContratoSAP) && orden.TransporteExiste)
             {
-                
+
                 var creadaEnSaP = CrearOrdenEnSAP(orden, orden.Cliente, false);
 
                 if (creadaEnSaP)

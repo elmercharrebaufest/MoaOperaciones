@@ -29,9 +29,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var ordenDeCarga = JsonConvert.DeserializeObject<OrdenDeCarga>(ordenDeCargaJson);
-
                 var mailUsuario = SessionPersister.getUsername();
-
                 return JsonCustom(new { data = ordenDeCargaService.Agregar(ordenDeCarga, mailUsuario) });
             }
             catch (InfoCustomException e)
@@ -548,5 +546,28 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpGet]
+        public ActionResult AnularOrdenPorVencimiento(int ordenId)
+        {
+            try
+            {
+                return JsonCustom(new { data = ordenDeCargaService.NotificarVencimientoOrdenCarga(ordenId) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }
