@@ -333,6 +333,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.validarPosicionActual();
         this.model.agregarNuevaPosicion();
         this.ValidarNuevaPosicion();
+        this.model.posiciones = this.sortPosiciones();
         el.scrollIntoView();
     }
 
