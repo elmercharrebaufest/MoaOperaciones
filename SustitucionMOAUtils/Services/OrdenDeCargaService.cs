@@ -31,7 +31,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IOrdenCargaConsumerMOA consumer;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
-
+        private static readonly string EMAIL_TEMPLATE_ORDENES_VENCIDAS = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionVencimientoOrdenesDeCarga.html");
         public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer)
         {
             this.repositorio = repositorio;
