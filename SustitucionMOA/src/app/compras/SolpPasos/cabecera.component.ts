@@ -151,6 +151,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
         this.flagSolpFinalizada = this.combos.flagSolpFinalizada;
         this.ValidarNuevaPosicion();
+        this.model.posiciones = this.sortPosiciones();
     }
 
     mostrarValidacion(campoAValidar, vacio){
@@ -332,6 +333,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.validarPosicionActual();
         this.model.agregarNuevaPosicion();
         this.ValidarNuevaPosicion();
+        this.model.posiciones = this.sortPosiciones();
         el.scrollIntoView();
     }
 
@@ -359,4 +361,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.disabled = true;
         }
     }
+
+    sortPosiciones() {
+        var sortedPosiciones = this.model.posiciones.sort((p1,p2) => p1.numeroPosicion - p2.numeroPosicion);
+        return sortedPosiciones;
+    }
+
 }
