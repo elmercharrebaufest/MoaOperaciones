@@ -88,9 +88,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
             { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
      //       { label: "Anulación solicitada", value: "Anulación solicitada" },
 	    //{ label: "Edición solicitada", value: "Edición solicitada" },  
-            { label: "Error de datos", value: "Error de datos" }
-         //   { label: "Anulación solicitada", value: "Anulación solicitada" },
-	        //{ label: "Edición solicitada", value: "Edición solicitada" },  
+            { label: "Error de datos", value: "Error de datos" },        
                 { label: "Contrato vencido", value: "Contrato vencido" }
         ]} else {
             //this.descripcionEstadoOrdenCarga =  [
