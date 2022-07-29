@@ -309,6 +309,7 @@
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
     <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.css" />
     <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.html" />
+    <Content Include="Template\NotificacionVencimientoOrdenesDeCarga.html" />
     <Content Include="UPDATE.DeployParameters.Debug.xml">
       <DependentUpon>UPDATE.DeployParameters.xml</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
