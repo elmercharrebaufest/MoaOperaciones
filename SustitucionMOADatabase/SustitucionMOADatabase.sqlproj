@@ -181,6 +181,7 @@
     <None Include="scripts\PostDeployment\TipoSolpPosicionSAP.sql" />
     <None Include="scripts\PostDeployment\PermisoPorRolBuscadorInteligente.sql" />
     <None Include="scripts\Insert Rol PermisoPorRol Buscador Inteligente.sql" />
+    <None Include="scripts\PostDeployment\PermisoRol.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />
