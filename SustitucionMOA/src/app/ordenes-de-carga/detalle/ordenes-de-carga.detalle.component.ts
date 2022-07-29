@@ -238,8 +238,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mostrarBotonEdicionFinalizada = true;
         }
 
-        if (this.esInterno) {
-            debugger;
+        if (this.esInterno) {         
                 this.mostrarBotonVerHistorial = true;
             if (this.ordenDeCarga.NumeroPedido === "-" && this.ordenDeCarga.PedidosRespuesta != "-") {
                 this.mostrarBotonPedidos = true
@@ -282,7 +281,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             }
         }
         else if (this.esMesaFas) {
-            debugger;
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
                 if (this.esAnulador) {
                     this.mostrarBotonAnular = true;
