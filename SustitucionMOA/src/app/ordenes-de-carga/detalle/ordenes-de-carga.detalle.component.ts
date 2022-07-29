@@ -78,6 +78,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
     esPuerto: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA PUERTO');
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    esAnulador: boolean = this.isAuthorized('ANULAR ORDEN DE CARGA');
 
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
@@ -238,6 +239,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
 
         if (this.esInterno) {
+            debugger;
                 this.mostrarBotonVerHistorial = true;
             if (this.ordenDeCarga.NumeroPedido === "-" && this.ordenDeCarga.PedidosRespuesta != "-") {
                 this.mostrarBotonPedidos = true
@@ -250,43 +252,63 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
             if (!this.ordenDeCarga.TransporteExiste) {
                 this.mostrarBotonNotificarTransporte = true;
-                this.mostrarBotonVerificarTransporte = true;
-                this.mostrarBotonAnular = true;
+                if (this.esAnulador) {
+                    this.mostrarBotonAnular = true;
+                }
+               
             }
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
                 this.mostrarBotonVerificarSituacionCrediticia = true;
-                this.mostrarBotonAnular = true;
+                if (this.esAnulador) {
+                    this.mostrarBotonAnular = true;
+                }
             }
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
-                this.mostrarBotonAnular = true;
+                if (this.esAnulador) {
+                    this.mostrarBotonAnular = true;
+                }
             }
 
             if (this.ordenDeCarga.ContratoSinCantidadPendiente) {
                 this.mostrarBotonForzarCreacionPedido = true;
             }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada) {
-                this.mostrarBotonAnularPorVencimiento = true;
+                if (this.esAnulador) {
+                    this.mostrarBotonAnularPorVencimiento = true;
+                }
+               
             }
         }
         else if (this.esMesaFas) {
-
+            debugger;
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
-                this.mostrarBotonAnular = true;
+                if (this.esAnulador) {
+                    this.mostrarBotonAnular = true;
+                }
             }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
-                this.mostrarBotonAnular = true;
+                if (this.esAnulador) {
+                    this.mostrarBotonAnular = true;
+                }
             }
             if (!this.ordenDeCarga.TransporteExiste) {
-                this.mostrarBotonAnular = true;
+                if (this.esAnulador) {
+                    this.mostrarBotonAnular = true;
+                }
             }
             if(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada){
-                this.mostrarBotonAnular = false;
+                if (this.esAnulador) {
+                    this.mostrarBotonAnular = true;
+                }
                 this.mostrarBotonAprobarAnulacion = true;
             }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada) {
-                this.mostrarBotonAnularPorVencimiento = true;
+                if (this.esAnulador) {
+                    this.mostrarBotonAnularPorVencimiento = true;
+                }
+             
             }
         }
     }
