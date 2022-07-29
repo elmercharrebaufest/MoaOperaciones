@@ -11,6 +11,7 @@ export class StepperComponent {
 
     @Input() pasos:Paso[];
     @Output() change = new EventEmitter<Paso>();
+    @Output() save = new EventEmitter();
 
     items: MenuItem[];
     activeIndex: number = 0;
@@ -71,8 +72,16 @@ export class StepperComponent {
 
     itemClick(event, item, index){
         var step = this.pasos[index];
+        this.saveStep(step)
         this.activeIndex = index;
         this.paso = step;
         this.change.emit(step)
     }
+
+    saveStep(step: Paso) {
+        if(step.Numero > this.paso.Numero) {
+            this.save.emit();
+        }
+    }
+
 }
