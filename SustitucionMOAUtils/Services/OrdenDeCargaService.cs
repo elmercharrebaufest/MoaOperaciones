@@ -139,24 +139,7 @@ namespace SustitucionMOAUtils.Services
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
         }
 
-        public bool ValidarVencimientoContrato(string contrato, Proveedor cliente)
-        {
-            var request = new OrdenCargaVisualizarClienteWSMOARequest()
-            {
-                Cliente = cliente.CodigoProveedor,
-                Contrato = contrato
-            };
-
-            var result = consumer.OrdenCargaVisualizarClienteExecute(request);
-            var fechaContrato = result.Resultados.Select(d => d.FechaHasta).Distinct().FirstOrDefault();
-            var fechaHoy = DateTime.Now;
-            if (fechaHoy > Convert.ToDateTime(fechaContrato))
-            {
-                return false;
-            }
-            return true;
-        }
-
+        
         public Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
             Log.Info($"OdenDeCargaService Editar: {ordenDeCarga.ToJson()}");
@@ -556,7 +539,8 @@ namespace SustitucionMOAUtils.Services
                         || n.Estado == EstadoOrdenDeCarga.EntregaPendiente
                         || n.Estado == EstadoOrdenDeCarga.EntregaGenerada
                         || n.Estado == EstadoOrdenDeCarga.EdicionSolicitada
-                        || n.Estado == EstadoOrdenDeCarga.AnulacionSolicitada)
+                        || n.Estado == EstadoOrdenDeCarga.AnulacionSolicitada
+                        || n.Estado == EstadoOrdenDeCarga.ContratoVencido)
                     )
                     .Select(x => new OrdenDeCargaDto
                     {
@@ -1577,15 +1561,36 @@ namespace SustitucionMOAUtils.Services
         {
             string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
             string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+            string mensajeAmbiente = ConfigurationManager.AppSettings["defAmbiente"];
             var mails = mailsMesaVentaFas.Split(';').ToList();
             mails.AddRange(mailsComerciales.Split(';').ToList());
             string asunto = "Contrato vencido Nro :" + ordenDeCarga.ContratoIngresado;
             string cuerpo = $"<b>Contrato vencido N°:</b> {ordenDeCarga.ContratoIngresado} <br>" +
-                                $"<b>Cliente:</b> {cliente.RazonSocial} <br>";
+                                $"<b>Cliente:</b> {cliente.RazonSocial} <br>" +
+                                $"<b>{mensajeAmbiente}</b>";
             EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
 
             return "Email enviado";
         }
+
+        public bool ValidarVencimientoContrato(string contrato, Proveedor cliente)
+        {
+            var request = new OrdenCargaVisualizarClienteWSMOARequest()
+            {
+                Cliente = cliente.CodigoProveedor,
+                Contrato = contrato
+            };
+
+            var result = consumer.OrdenCargaVisualizarClienteExecute(request);
+            var fechaContrato = result.Resultados.Select(d => d.FechaHasta).Distinct().FirstOrDefault();
+            var fechaHoy = DateTime.Now;
+            if (fechaHoy > Convert.ToDateTime(fechaContrato))
+            {
+                return false;
+            }
+            return true;
+        }
+
 
         #endregion
     }
