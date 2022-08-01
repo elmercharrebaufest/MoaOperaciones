@@ -30,13 +30,15 @@ namespace SustitucionMOAUtils.Services
         protected readonly IRepositorio repositorio;
         protected readonly IOrdenCargaConsumerMOA consumer;
         readonly FeriadoService _feriadoService = new FeriadoService();
+        protected readonly IFeriadoService feriadoService;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
         private static readonly string EMAIL_TEMPLATE_ORDENES_VENCIDAS = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionVencimientoOrdenesDeCarga.html");
-        public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer)
+        public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer, IFeriadoService feriadoService)
         {
             this.repositorio = repositorio;
             this.consumer = consumer;
+            this.feriadoService = feriadoService;
 
         }
 
@@ -1591,7 +1593,7 @@ namespace SustitucionMOAUtils.Services
 
         public DateTime CalcularFechaVencimiento(int dias)
         {
-            var feriados = _feriadoService.ObtenerFeriados();
+            var feriados = feriadoService.ObtenerFeriados();
             var fechaHoy = DateTime.Now;
             var fechaFinal = DateTime.Now.AddDays(dias);
             foreach (var fechaFeriado in feriados)
