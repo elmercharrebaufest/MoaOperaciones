@@ -42,11 +42,12 @@ namespace SustitucionMOA
 
 			app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
 
-			app.UseCookieAuthentication(new CookieAuthenticationOptions
-			{
-				// ASP.NET web host compatible cookie manager
-				CookieManager = new SystemWebChunkingCookieManager()
-			});
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                // ASP.NET web host compatible cookie manager
+                CookieManager = new SystemWebChunkingCookieManager(),
+                ExpireTimeSpan = TimeSpan.FromDays(1)
+            });
 
 
 			app.UseOpenIdConnectAuthentication(
@@ -82,8 +83,9 @@ namespace SustitucionMOA
 					CookieManager = new SystemWebCookieManager(),
 
 					// Specify the scope by appending all of the scopes requested into one string (separated by a blank space)
-					Scope = $"openid profile offline_access"
+					Scope = $"openid profile offline_access",
 
+                    UseTokenLifetime = false,
 				}
 			);
 		}
