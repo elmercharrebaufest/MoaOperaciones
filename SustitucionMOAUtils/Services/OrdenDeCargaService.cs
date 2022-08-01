@@ -29,13 +29,17 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IOrdenCargaConsumerMOA consumer;
+        readonly FeriadoService _feriadoService = new FeriadoService();
+        protected readonly IFeriadoService feriadoService;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
         private static readonly string EMAIL_TEMPLATE_ORDENES_VENCIDAS = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionVencimientoOrdenesDeCarga.html");
-        public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer)
+        public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer, IFeriadoService feriadoService)
         {
             this.repositorio = repositorio;
             this.consumer = consumer;
+            this.feriadoService = feriadoService;
+
         }
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
@@ -107,10 +111,7 @@ namespace SustitucionMOAUtils.Services
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
             ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
             var dayOfWeek = ordenDeCarga.FechaCarga.DayOfWeek.ToString();
-            ordenDeCarga.FechaVencimiento = dayOfWeek == "Friday" ? ordenDeCarga.FechaCarga.AddDays(4).Date : ordenDeCarga.FechaCarga.AddDays(2);
-
-
-
+            ordenDeCarga.FechaVencimiento = dayOfWeek == "Friday" ? CalcularFechaVencimiento(4) : CalcularFechaVencimiento(2);
             var crearPedido = VerificarOrden(ordenDeCarga, cliente, false);
             repositorio.Agregar(ordenDeCarga);
             repositorio.GuardarCambios();
@@ -139,7 +140,7 @@ namespace SustitucionMOAUtils.Services
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
         }
 
-        
+     
         public Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
             Log.Info($"OdenDeCargaService Editar: {ordenDeCarga.ToJson()}");
@@ -401,7 +402,6 @@ namespace SustitucionMOAUtils.Services
         public List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin)
         {
             DateTime fechaIncioDateTime, fechaFinDateTime;
-
             try
             {
                 fechaIncioDateTime = DateTime.Parse(fechaInicio);
@@ -1590,6 +1590,26 @@ namespace SustitucionMOAUtils.Services
             }
             return true;
         }
+
+        public DateTime CalcularFechaVencimiento(int dias)
+        {
+            var feriados = feriadoService.ObtenerFeriados();
+            var fechaHoy = DateTime.Now;
+            var fechaFinal = DateTime.Now.AddDays(dias);
+            foreach (var fechaFeriado in feriados)
+            {
+                if (fechaFeriado.DayOfWeek.ToString() == "Saturday" || fechaFeriado.DayOfWeek.ToString() == "Sunday")
+                    continue;
+                if ((fechaFeriado.Date >= fechaHoy) && (fechaFeriado.Date <= fechaFinal))
+                {
+                    dias++;
+                }
+            }
+
+            var fechaVencimiento = DateTime.Now.AddDays(dias);
+            return fechaVencimiento;
+        }
+
 
 
         #endregion

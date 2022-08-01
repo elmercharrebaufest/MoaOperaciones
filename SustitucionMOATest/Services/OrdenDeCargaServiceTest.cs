@@ -8,6 +8,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
 using System;
@@ -29,6 +30,7 @@ namespace SustitucionMOATest.Services
         private Mock<IOrdenCargaConsumerMOA> consumerOrdenCargaMOA;
         private OrdenDeCarga ordenDeCarga;
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
+        private Mock<IFeriadoService> feriadoService;
 
         [SetUp]
         public void SetUp()
@@ -36,7 +38,7 @@ namespace SustitucionMOATest.Services
             repositorioMock = new Mock<IRepositorio>();
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object);
+            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object,feriadoService.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,
