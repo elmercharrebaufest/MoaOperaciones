@@ -88,7 +88,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.ordenDeCarga.CUITCliente = 0;
         }
         console.log(sessionStorage.getItem("tipoUsuario"));
-        if(sessionStorage.getItem("tipoUsuario") == "CLI" && this.ordenDeCargaId > 0){
+        if(this.ordenDeCargaId > 0){
             this.noEditarCliente = true;
         } 
     }
