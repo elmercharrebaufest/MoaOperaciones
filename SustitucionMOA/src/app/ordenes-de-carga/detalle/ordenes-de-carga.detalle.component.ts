@@ -257,21 +257,16 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonVerificarSituacionCrediticia = true;                
             }
 
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
-                if (this.esAnulador) {
-                    this.mostrarBotonAnular = true;
-                }
-            }
+            //if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
+            //    if (this.esAnulador) {
+            //        this.mostrarBotonAnular = true;
+            //    }
+            //}
 
             if (this.ordenDeCarga.ContratoSinCantidadPendiente) {
                 this.mostrarBotonForzarCreacionPedido = true;
             }
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada) {
-                if (this.esAnulador) {
-                    this.mostrarBotonAnularPorVencimiento = true;
-                }
-               
-            }
+            
         }
         else if (this.esMesaFas) {
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
@@ -298,6 +293,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada) {
                 if (this.esAnulador) {
                     this.mostrarBotonAnularPorVencimiento = true;
+                    this.mostrarBotonAnular = true;
                 }
              
             }
