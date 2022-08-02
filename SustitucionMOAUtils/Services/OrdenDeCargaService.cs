@@ -140,7 +140,7 @@ namespace SustitucionMOAUtils.Services
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
         }
 
-     
+
         public Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
             Log.Info($"OdenDeCargaService Editar: {ordenDeCarga.ToJson()}");
@@ -1583,11 +1583,16 @@ namespace SustitucionMOAUtils.Services
 
             var result = consumer.OrdenCargaVisualizarClienteExecute(request);
             var fechaContrato = result.Resultados.Select(d => d.FechaHasta).Distinct().FirstOrDefault();
-            var fechaHoy = DateTime.Now;
+            var fechaHoy = DateTime.Now.Date;
+            if (result.Resultados.Count == 0)
+            {
+                return true;
+            }
             if (fechaHoy > Convert.ToDateTime(fechaContrato))
             {
                 return false;
             }
+
             return true;
         }
 
