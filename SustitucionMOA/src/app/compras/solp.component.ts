@@ -259,7 +259,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.getCombos();
 
             if (this.route.params) {
-                debugger
                 this.route.params.forEach((params: Params) => {
                     let numeroSolp = "";
                     // if (params["id"] > 0) this.solpId = params["id"];
@@ -283,7 +282,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     tituloSolp() {
-        debugger
         switch (this.solpActual.tipoSolp) {
             case "CON_PLIEGO":
                 this.titulo = "Generacíon de SOLP con documento de pliego"
@@ -413,7 +411,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0 ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId) : this.usuarioComprasList[0];
 
 
-        if (solp.Posiciones && solp.Posiciones.length > 0) {
+        if (solp.Posiciones && solp.Posiciones.length > 0 && solp.Posiciones.length !== this.solpActual.posiciones.length) {
             let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
 
             let posActual = this.solpActual.posicionActual;
@@ -722,7 +720,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                     setTimeout(function () {
                                         esto.cambioPaso(esto.pasos[5]);
                                     }, 500);
-
                                 }
                                 this.listadoErrores = result.Errores;
                                 this.displayErrorSAP = true;
