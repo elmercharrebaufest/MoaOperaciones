@@ -173,6 +173,7 @@ export class SubPosicionComponent extends ListBaseComponent {
         this.calcularTotalSubPosicion();
         this.actualizarTipoDeImputacion();
         this.actualizarCamposObligatorios(this.model.selectClaseDocumento);
+        this.model.posiciones = this.sortPosiciones();
     }
 
     validarDatosMinimosPosicionActual(): void {
@@ -558,4 +559,10 @@ export class SubPosicionComponent extends ListBaseComponent {
     endEditCell(dt) {
         dt.closeCellEdit();
     }
+
+    sortPosiciones() {
+        var sortedPosiciones = this.model.posiciones.sort((p1,p2) => p1.numeroPosicion - p2.numeroPosicion);
+        return sortedPosiciones;
+    }
+
 }
