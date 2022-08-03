@@ -329,7 +329,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     cargarSolpActual(solp) {
-
         // Paso 1
         this.solpActual.id = solp.Id;
         this.solpActual.tipoSolp = solp.TipoSolp && solp.TipoSolp.Codigo || '';
@@ -411,11 +410,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0 ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId) : this.usuarioComprasList[0];
 
 
-        if (solp.Posiciones && solp.Posiciones.length > 0 && solp.Posiciones.length !== this.solpActual.posiciones.length) {
+        if (solp.Posiciones && solp.Posiciones.length > 0) {
             let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
 
             let posActual = this.solpActual.posicionActual;
             let solpActual = this.solpActual;
+            solpActual.posiciones = this.solpActual.posiciones.slice(-1);
 
             solp.Posiciones.forEach(x => {
                 posActual.id = x.Codigo;
@@ -481,7 +481,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     posActual = solpActual.posicionActual;
                 }
             });
-
             this.solpActual.setearPosicionPorDefecto();
             this.tituloSolp();
         }
