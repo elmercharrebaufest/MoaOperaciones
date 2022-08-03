@@ -294,7 +294,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
             }
         });
-        this.sortPosiciones()
+        this.model.posiciones = this.sortPosiciones()
     }
 
     recuperarPosicion()
