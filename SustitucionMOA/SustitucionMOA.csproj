@@ -321,6 +321,8 @@
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
     <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.css" />
     <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.html" />
+    <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.css" />
+    <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.html" />
     <Content Include="Template\NotificacionVencimientoOrdenesDeCarga.html" />
     <Content Include="UPDATE.DeployParameters.Debug.xml">
       <DependentUpon>UPDATE.DeployParameters.xml</DependentUpon>
@@ -1140,6 +1142,13 @@
     <TypeScriptCompile Include="src\app\ordenes-de-carga\ordenes-de-carga.module.ts" />
     <TypeScriptCompile Include="src\app\ordenes-de-carga\ordenes-de-carga.service.spec.ts" />
     <TypeScriptCompile Include="src\app\ordenes-de-carga\ordenes-de-carga.service.ts" />
+    <TypeScriptCompile Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.ts" />
+    <TypeScriptCompile Include="src\app\reporte-contrato\reporte-contrato-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\reporte-contrato\reporte-contrato.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\reporte-contrato\reporte-contrato.module.ts" />
+    <TypeScriptCompile Include="src\app\reporte-contrato\reporte-contrato.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\reporte-contrato\reporte-contrato.service.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte-routing.module.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.component.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.module.ts" />

@@ -1,0 +1,188 @@
+<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 "><strong>Reporte Contratos</strong> </div>
+           
+        </div>
+        <!--End Title-->
+        <!--Search-->
+        <div class="row myRow firstSection mySearch">
+            <div class="col-xs-12 col-md-12 rounded shadow animate">
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
+                <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Producto:</p>
+                    <div class="styled-select">
+                        <select name="product">
+                            <option value="Todos">
+                                Todos
+                            </option>
+                            <!--<option *ngFor="let material of listaMateriales" value="{{material.Descripcion}}">
+                    {{material.Descripcion}}
+                </option>-->
+                        </select>
+                    </div>
+                </div>
+
+                <div id="" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Cliente</p>
+                    <div class="styled-select">
+                        <input type="search" class="" placeholder="" aria-controls="">
+                    </div>
+                </div>
+
+                <div id="searchTipoContrato" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Nro Contrato</p>
+                    <div class="styled-select">
+                        <input type="search" class="" placeholder="" aria-controls="">
+                    </div>
+                </div>
+                <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Tipo Contrato</p>
+                    <div class="styled-select">
+                        <input type="search" class="" placeholder="" aria-controls="">
+                    </div>
+                </div>
+                <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Fecha operacion</p>
+                    <filtro-fecha   (ClickEvent)="getListado()"></filtro-fecha>
+                </div>
+
+            </div>
+        </div>
+        <!-- End Search-->
+        <!-- Tables-->
+
+        <div class="row myRow">
+            <div class="">
+
+                <table  id="" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding: 10px 0;">
+                    <thead>
+                        <tr role="row">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('fechaDate')">
+                                Nro de Contrato
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaDate' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaDate' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('nroContrato')">
+                                Tipo de Contrato
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'nroContrato' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'nroContrato' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('')">
+                               Nro Pedido de Cliente
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === '' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === '' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('')">
+                                Fecha
+                                <div>
+                                    <!--<span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === '' &&  > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === '' &&  < 0 }"></i>
+                                    </span>-->
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('material')">
+                                Cliente
+                                <!--<div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === '' &&  > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === '' &&  < 0 }"></i>
+                                    </span>
+                                </div>-->
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('')">
+                                Corredor
+                                <!--<div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === '' &&  > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === '' &&  < 0 }"></i>
+                                    </span>
+                                </div>-->
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('')">
+                                Producto
+                                <!--<div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'cantKilos' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'cantKilos' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>-->
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('')">
+                                Kgs Totales
+                                <!--<div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'ampliado' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'ampliado' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>-->
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('')">
+                                Kgs Entregados
+                                <!--<div>
+        <span>
+            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'liquidado' && orderDirection > 0 }"></i>
+            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'liquidado' && orderDirection < 0 }"></i>
+        </span>
+    </div>-->
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('')">
+                                Kgs Pendientes
+                                <!--<div>
+        <span>
+            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'vendedor' && orderDirection > 0 }"></i>
+            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'vendedor' && orderDirection < 0 }"></i>
+        </span>
+    </div>-->
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><!--<a (click)="showModalTableResponsive(contratoInfo)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>--> </td>
+                            <td><!--<a class="animate" (click)="goToSeccionParam('/contrato/detalle', contratoInfo.nroContrato)" href="#"></a>--></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!--<pagination-template #pT="paginationApi" (pageChange)="p = $event" >
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()" [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                        <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+                            <a class="paginate_button" (click)="pT.setCurrent(page.value)" *ngIf="pT.getCurrent() !== page.value"></a>
+                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value"></a>
+                        </span>
+                        <a id="tableModal_next" class="paginate_button next" (click)="pT.next()" [class.disabled]="pT.isLastPage()"> Siguiente </a>
+                    </div>
+                </pagination-template>-->
+            </div>
+        </div>
+        <!-- END tables-->
+    </section>
+    <!--End CONTENT-->
+</div>

@@ -343,6 +343,7 @@ namespace SustitucionMOAUtils.Services
             {
                 if (!esJob)
                 {
+                    //if (result != "CC-01" && result != "CC-02")
                     if (!ValidarVencimientoContrato(ordenDeCarga.ContratoIngresado, cliente))
                     {
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "";
