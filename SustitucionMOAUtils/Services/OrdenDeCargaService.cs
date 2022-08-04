@@ -111,7 +111,7 @@ namespace SustitucionMOAUtils.Services
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
             ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
             var dayOfWeek = ordenDeCarga.FechaCarga.DayOfWeek.ToString();
-            ordenDeCarga.FechaVencimiento = dayOfWeek == "Friday" ? CalcularFechaVencimiento(4) : CalcularFechaVencimiento(2);
+            ordenDeCarga.FechaVencimiento = (dayOfWeek == "Friday" || dayOfWeek == "Thursday") ? CalcularFechaVencimiento(4) : CalcularFechaVencimiento(2);
             var crearPedido = VerificarOrden(ordenDeCarga, cliente, false);
             repositorio.Agregar(ordenDeCarga);
             repositorio.GuardarCambios();
@@ -685,9 +685,7 @@ namespace SustitucionMOAUtils.Services
             var orden = repositorio.Obtener<OrdenDeCarga>(x => x.Id == ordenId);
             var mail = orden.Cliente.Mail;
             var ordenVencidas = new StringBuilder();
-            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
-
-
+            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PedidoSAP ?? orden.NumeroPedido}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES_VENCIDAS);
             emailSenderData.Asunto = $"Molinos Agro - Notificación de ordenes Vencidas- {orden.Cliente.RazonSocial}";
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas);
@@ -724,8 +722,7 @@ namespace SustitucionMOAUtils.Services
                 var ordenVencidas = new StringBuilder();
                 foreach (var orden in ordenes)
                 {
-
-                    ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
+                    ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PedidoSAP ?? orden.NumeroPedido}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES_VENCIDAS);
                 emailSenderData.Asunto = $"Molinos Agro - Notificación de ordenes Vencidas";
