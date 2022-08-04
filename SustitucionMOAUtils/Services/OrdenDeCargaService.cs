@@ -107,11 +107,12 @@ namespace SustitucionMOAUtils.Services
             ordenDeCarga.Producto = producto;
             ordenDeCarga.NumeroPedido = string.IsNullOrEmpty(ordenDeCarga.NumeroPedidoIngresado) ? "" : ordenDeCarga.NumeroPedidoIngresado;
             ordenDeCarga.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
+            
 
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
             ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
-            var dayOfWeek = ordenDeCarga.FechaCarga.DayOfWeek.ToString();
-            ordenDeCarga.FechaVencimiento = (dayOfWeek == "Friday" || dayOfWeek == "Thursday") ? CalcularFechaVencimiento(4) : CalcularFechaVencimiento(2);
+            var dayOfWeek = ordenDeCarga.FechaCarga.DayOfWeek;
+            ordenDeCarga.FechaVencimiento = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? CalcularFechaVencimiento(4) : CalcularFechaVencimiento(2);
             var crearPedido = VerificarOrden(ordenDeCarga, cliente, false);
             repositorio.Agregar(ordenDeCarga);
             repositorio.GuardarCambios();
@@ -653,11 +654,11 @@ namespace SustitucionMOAUtils.Services
 
         public List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga()
         {
-            var dayOfWeek = DateTime.Now.DayOfWeek.ToString();
+            var dayOfWeek = DateTime.Now.DayOfWeek;
             if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaSapJob").Habilitado == false)
                 return null;
 
-            if (dayOfWeek.Contains("Saturday") || dayOfWeek.Contains("Sunday"))
+            if ((dayOfWeek == DayOfWeek.Saturday || dayOfWeek == DayOfWeek.Sunday))
             {
                 return null;
             }
