@@ -229,6 +229,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Entregada) {
             return;
         }
+        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnuladaPorVencimiento) {
+            return;
+        }
+
 
         if(!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)){
             if(sessionStorage.getItem("tipoUsuario") == "CLI") this.mostrarBotonSolicitarAnulacion = true;
