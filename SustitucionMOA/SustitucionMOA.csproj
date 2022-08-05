@@ -1016,6 +1016,7 @@
     <Compile Include="Controllers\PagoController.cs" />
     <Compile Include="Controllers\PDFController.cs" />
     <Compile Include="Controllers\PesificacionController.cs" />
+    <Compile Include="Controllers\ReporteContratoController.cs" />
     <Compile Include="Controllers\ReportesController.cs" />
     <Compile Include="Controllers\RYDController.cs" />
     <Compile Include="Controllers\RYDMantenimientoController.cs" />
@@ -1356,6 +1357,7 @@
     <Folder Include="Views\Localidad\" />
     <Folder Include="Views\LogPesificacion\" />
     <Folder Include="Views\OrdenDeCarga\" />
+    <Folder Include="Views\ReporteContrato\" />
     <Folder Include="Views\TicketPesada\" />
   </ItemGroup>
   <ItemGroup>

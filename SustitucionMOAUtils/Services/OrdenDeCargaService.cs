@@ -29,7 +29,6 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IOrdenCargaConsumerMOA consumer;
-        readonly FeriadoService _feriadoService = new FeriadoService();
         protected readonly IFeriadoService feriadoService;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
@@ -1588,6 +1587,7 @@ namespace SustitucionMOAUtils.Services
 
             return "Email enviado";
         }
+
 
         public bool ValidarVencimientoContrato(string contrato, Proveedor cliente)
         {

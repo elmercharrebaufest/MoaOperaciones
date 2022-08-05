@@ -30,18 +30,22 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
 
         public decimal KilosTotales { get; set; }
 
+        public string KilosTotalesStr { get; set; }
         //public bool kILOS_TOTALESFieldSpecified
 
         public decimal KilosEntregados { get; set; }
 
+        public string KilosEntregadosStr { get; set; }
         //private bool kILOS_ENTREGADOSFieldSpecified
 
         public decimal KilosFacturados { get; set; }
 
+        public string KilosFacturadosStr { get; set; }
         //private bool kILOS_FACTURADOSFieldSpecified
 
         public decimal KilosPendienteEntrega { get; set; }
 
+        public string KilosPendienteEntregaStr { get; set; }
         //private bool kILOS_PEND_ENTREGAFieldSpecified
 
         public decimal KilosPendienteFactura { get; set; }
@@ -49,6 +53,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
         //private bool kILOS_PEND_FACTURAFieldSpecified
 
         public string FechaDesde { get; set; }
+
 
         public string FechaHasta { get; set; }
 
