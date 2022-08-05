@@ -834,26 +834,43 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 case EnumPasoSolp.SolpSubposiciones:
                     //paso.Completo = true;
                     paso.Completo = this.solpActual.posiciones.every(pos =>
-                        pos.listadoSubPosiciones.every(subPos =>
-                            this.listaStringCompleta([
-                                subPos.tareaSubcontratar,
-                                subPos.cuentaTd,
-                                subPos.precioBruto,
-                                subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
-                                subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
-                                subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
-                            ]) ||
-                            this.listaStringVacia([
-                                subPos.tareaSubcontratar,
-                                subPos.cuentaTd,
-                                subPos.precioBruto,
-                                subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
-                                subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
-                                subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
-                            ])
+                        pos.listadoSubPosiciones.every(subPos => {
+                                if(
+                                    !this.listaStringVacia([
+                                        subPos.tareaSubcontratar,
+                                        subPos.cuentaTd,
+                                        subPos.precioBruto,
+                                        subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
+                                        subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
+                                        subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
+                                    ]) &&
+                                    this.listaStringCompleta([
+                                        subPos.tareaSubcontratar,
+                                        subPos.cuentaTd,
+                                        subPos.precioBruto,
+                                        subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
+                                        subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
+                                        subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
+                                    ])
+                                ) {
+                                    return true
+                                } else if(
+                                    this.listaStringVacia([
+                                        subPos.tareaSubcontratar,
+                                        subPos.cuentaTd,
+                                        subPos.precioBruto,
+                                        subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
+                                        subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
+                                        subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
+                                    ]) && pos.listadoSubPosiciones.length > 1
+                                ) {
+                                    return true
+                                } else {
+                                    return false
+                                }
+                            }
                         )
                     );
-
                     break;
                 case EnumPasoSolp.SolpSubposiciones:
                     break;
