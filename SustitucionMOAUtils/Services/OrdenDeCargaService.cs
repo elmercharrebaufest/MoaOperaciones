@@ -685,11 +685,13 @@ namespace SustitucionMOAUtils.Services
             var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
             var orden = repositorio.Obtener<OrdenDeCarga>(x => x.Id == ordenId);
             var mail = orden.Cliente.Mail;
+            var titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha vencido las siguiente orden de carga:";
+            var cabecera = "Orden :";
             var ordenVencidas = new StringBuilder();
             ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PedidoSAP ?? orden.NumeroPedido}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES_VENCIDAS);
-            emailSenderData.Asunto = $"Molinos Agro - Notificación de ordenes Vencidas- {orden.Cliente.RazonSocial}";
-            emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas);
+            emailSenderData.Asunto = $"Molinos Agro - Notificación de orden vencida- {orden.Cliente.RazonSocial}";
+            emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
             emailSenderData.Mails.AddRange(mail.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             if (emailSenderData != null)
@@ -707,7 +709,8 @@ namespace SustitucionMOAUtils.Services
             var emailSenderData = new EmailSenderData();
             var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
             var mailsAuditoriaOrdenesVencidas = ConfigurationManager.AppSettings["EmailToAuditoriaOrdenesVencidas"];
-
+            var titulo = $"Se informa que el día {DateTime.Now.ToString()} se han vencido las siguientes ordenes de carga:";
+            var cabecera = "Ordenes:";
             try
             {
                 if (string.IsNullOrEmpty(mailsComerciales))
@@ -733,7 +736,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
-                    emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenes[0].Id, ordenVencidas);
+                    emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenes[0].Id, ordenVencidas, titulo,cabecera);
                 }
 
                 return emailSenderData;
