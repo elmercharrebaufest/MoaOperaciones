@@ -17,21 +17,14 @@
                 <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Producto:</p>
                     <div class="styled-select">
-                        <select name="product">
-                            <option value="Todos">
-                                Todos
-                            </option>
-                            <!--<option *ngFor="let material of listaMateriales" value="{{material.Descripcion}}">
-                                {{material.Descripcion}}
-                            </option>-->
-                        </select>
+                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroProducto" (select)="setFiltroProducto($event)"></dropdown>
                     </div>
                 </div>
 
-                <div id="" class="col-xs-12 col-sm-6 col-md-15">
+                <div id="searchVendedor" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Cliente</p>
                     <div class="styled-select">
-                        <input type="search" class="" placeholder="" aria-controls="">
+                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroCliente" (select)="setFiltroCliente($event)"></dropdown>
                     </div>
                 </div>
 
@@ -66,110 +59,128 @@
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Contrato')">
                                 Nro de Contrato
-                                <div>
+                                <!--<div>
                                     <span>
                                         <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Contrato' && orderDirection > 0 }"></i>
                                         <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Contrato' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>
+                                </div>-->
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('TipContrato')">
                                 Tipo de Contrato
-                                <div>
+                                <!--<div>
                                     <span>
                                         <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'TipContrato' && orderDirection > 0 }"></i>
                                         <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'TipContrato' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>
+                                </div-->>
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('PedidoCliente')">
                                 Nro Pedido de Cliente
-                                <div>
+                                <!--<div>
                                     <span>
                                         <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection > 0 }"></i>
                                         <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>
+                                </div>-->
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('FechaDesde')">
                                 Fecha
-                                <div>
+                                <!--<div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection < 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaDesde' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaDesde' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>
+                                </div>-->
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('ClienteNombre')">
                                 Cliente
-                                <div>
+                                <!--<div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection < 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'ClienteNombre' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'ClienteNombre' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>
+                                </div>-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Contrato')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Corredor')">
                                 Corredor
-                                <div>
+                                <!--<div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection < 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Corredor' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Corredor' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>
+                                </div>-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Contrato')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('DescripcionMaterial')">
                                 Producto
-                                <div>
+                                <!--<div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection < 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'DescripcionMaterial' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'DescripcionMaterial' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>
+                                </div>-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Contrato')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('KilosTotalesStr')">
                                 Kgs Totales
-                                <div>
+                                <!--<div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection < 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'KilosTotalesStr' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'KilosTotalesStr' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>
+                                </div>-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Contrato')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('KilosEntregadosStr')">
                                 Kgs Entregados
-                                <div>
+                                <!--<div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection < 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'KilosEntregadosStr' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'KilosEntregadosStr' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>
+                                </div>-->
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Contrato')">
                                 Kgs Pendientes
-                                <div>
+                                <!--<div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection < 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'KilosPendienteEntregaStr' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'KilosPendienteEntregaStr' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>
+                                </div>-->
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let cabeceraContrato of cabecera | orderedColumn : {property: orderedByColumn, direction: orderDirection}
-                                    | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
-                                    ; let odd = odd" role="row" [class.odd]="!odd">
-                            <td>{{cabeceraContrato.Contrato}} <a class="animate" (click)="goToSeccionParam('/contrato/detalle', contratoInfo.nroContrato)" href="#"></a><!--<a (click)="showModalTableResponsive(contratoInfo)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>--> </td>
+                        <tr *ngFor="let cabeceraContrato of cabecera  | customFilter : 'NombreCliente' : clienteSelected | customFilter : 'DescripcionMaterial' : productoSelected | customFilter : 'vendedor' : vendedorSelected | customFilter : 'nroContrato' : filtroContrato | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                            <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', cabeceraContrato.Contrato)" href="#">{{cabeceraContrato.Contrato}}</a></td>
                             <td>{{cabeceraContrato.TipoContrato}}</td>
                             <td>{{cabeceraContrato.PedidoCliente}}</td>
                             <td>{{cabeceraContrato.FechaDesde}}</td>
                             <td>{{cabeceraContrato.NombreCliente}}</td>
                             <td>{{cabeceraContrato.Corredor}}</td>
-                            <td>{{cabeceraContrato.DescripcionMaterial}}</td>
+
+                            <td>
+                                <div [ngStyle]="{'color':getColorProducto(cabeceraContrato.Contrato)}">
+                                    {{cabeceraContrato.DescripcionMaterial}}
+                                </div>
+                            </td>
                             <td>{{cabeceraContrato.KilosTotalesStr}}</td>
                             <td>{{cabeceraContrato.KilosEntregadosStr}}</td>
                             <td>{{cabeceraContrato.KilosPendienteEntregaStr}}</td>
+                        </tr>
+                    </tbody>
+
+                    <tbody>
+                        <tr role="row" class="totalTable">
+                            <td tabindex="0">TOTAL</td>
+                            <td></td>
+                            <td style=""></td>
+                            <td style=""></td>
+                            <td style=""></td>
+                            <td style=""></td>
+                            <td style=""></td>
+                            <td style="">{{getTotalKgEntregados()}}KG</td>
+                            <td style="">100</td>
+                            <td style="">100</td>
                         </tr>
                     </tbody>
                 </table>

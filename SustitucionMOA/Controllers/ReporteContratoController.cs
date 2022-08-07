@@ -16,12 +16,12 @@ namespace SustitucionMOA.Controllers
     public class ReporteContratoController : BaseController
     {
         private readonly IOrdenDeCargaService ordenDeCargaService;
-        protected readonly IOrdenCargaConsumerMOA consumer;
+        protected readonly IReporteContratoService reporteContratoService;
 
-        public ReporteContratoController(IOrdenDeCargaService ordenDeCargaService, IOrdenCargaConsumerMOA consumer)
+        public ReporteContratoController(IOrdenDeCargaService ordenDeCargaService, IReporteContratoService reporteContratoService)
         {
             this.ordenDeCargaService = ordenDeCargaService;
-            this.consumer = consumer;
+            this.reporteContratoService = reporteContratoService;
         }
         // GET: ReporteContrato
         public ActionResult Index()
@@ -34,13 +34,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var request = new OrdenCargaVisualizarClienteWSMOARequest()
-                {
-                    Cliente = "4922730000",
-                    Pendiente= "X"
-                };
-
-                return JsonCustom(new { data = consumer.OrdenCargaVisualizarClienteExecute(request) });
+                var contratos = reporteContratoService.GetContratosReporte(SessionPersister.Proveedor);
+                return JsonCustom(contratos);
             }
             catch (InfoCustomException e)
             {

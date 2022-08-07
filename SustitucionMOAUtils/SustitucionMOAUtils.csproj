@@ -148,6 +148,7 @@
     <Compile Include="Interfaces\ILocalidadService.cs" />
     <Compile Include="Interfaces\INotificacionService.cs" />
     <Compile Include="Interfaces\IOrdenDeCargaService.cs" />
+    <Compile Include="Interfaces\IReporteContratoService.cs" />
     <Compile Include="Interfaces\IReportesService.cs" />
     <Compile Include="Interfaces\ITicketPesadaService.cs" />
     <Compile Include="Interfaces\ILogPesificacionService.cs" />
@@ -191,6 +192,7 @@
     <Compile Include="Services\PagoService.cs" />
     <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\PesificacionService.cs" />
+    <Compile Include="Services\ReporteContratoService.cs" />
     <Compile Include="Services\ReportesService.cs" />
     <Compile Include="Services\RYDMantenimientoService.cs" />
     <Compile Include="Services\RYDService.cs" />

@@ -57,6 +57,7 @@
     <Compile Include="Interfaces\IOrdenCargaConsumerMOA.cs" />
     <Compile Include="Interfaces\IComprasSolpConsumer.cs" />
     <Compile Include="Interfaces\IListarPesificacionesConsumer.cs" />
+    <Compile Include="Interfaces\IReporteContratoConsumerMOA.cs" />
     <Compile Include="Interfaces\IServicioSuscriptorAccesosConsumer.cs" />
     <Compile Include="Interfaces\IScatoComandosConsumer.cs" />
     <Compile Include="Interfaces\IScatoConsumer.cs" />
@@ -446,6 +447,7 @@
     <Compile Include="WSConsumers\PesificacionGuardarConsumerMOA.cs" />
     <Compile Include="WSConsumers\ProformaFleteProcedenciaConsumerMOA.cs" />
     <Compile Include="WSConsumers\RecepcionesConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ReporteContratoConsumerMOA.cs" />
     <Compile Include="WSConsumers\ServicioSuscriptorAccesosConsumer.cs" />
     <Compile Include="WSConsumers\ScatoComandosConsumer.cs" />
     <Compile Include="WSConsumers\ScatoConsumer.cs" />

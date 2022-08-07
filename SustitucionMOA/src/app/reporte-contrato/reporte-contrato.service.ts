@@ -16,8 +16,8 @@ export class ReporteContratoService extends BaseService {
     public getListado(): Observable<any> {
      
         return this.http
-            .get('/api/ReporteContrato/GetContratos')
-            .pipe(timeoutWith(300000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+            .get('/api/ReporteContrato/GetContratos');
+          
     }
   }
 

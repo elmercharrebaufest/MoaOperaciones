@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit , OnDestroy} from '@angular/core';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -7,6 +7,7 @@ import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { SelectItem, ConfirmationService } from 'primeng/api';
 import { ReporteContratoService } from '../reporte-contrato.service';
+
 
 
 
@@ -26,7 +27,11 @@ export class ReporteContratoListado extends ListBaseComponent implements OnDestr
     }
 
     detalle: any[];
-    cabecera: [];
+    cabecera: any[];
+    filtroCliente: any = null;
+    filtroProducto: any = null;
+    clienteSelected: string = "";
+    productoSelected: string = "";
 
     ngOnInit() {
 
@@ -57,9 +62,11 @@ export class ReporteContratoListado extends ListBaseComponent implements OnDestr
                 } else {
                     this.cabecera = result.data.Resultados;
                     console.log(this.cabecera);
-                    result.data.Resultados.Detalles.forEach(x => {
-                        console.log(result.data.Resultados.Detalles);
-                    });
+                    this.cargarFiltrosContratos(result);
+
+                    //result.data.Resultados.Detalles.forEach(x => {
+                    //    console.log(result.data.Resultados.Detalles);
+                    //});
 
                 }
                 
@@ -73,8 +80,30 @@ export class ReporteContratoListado extends ListBaseComponent implements OnDestr
         return false;
     }
 
+    getColorProducto(contrato) {
+        var fila = this.cabecera.find(x => x.Contrato == contrato);
+        return fila.ColorProducto;
+    }
+
     isVisible() {
         return this.cabecera && this.cabecera.length != 0;
     }
 
+    cargarFiltrosContratos(result: any) {
+        if (result.filtroCliente != undefined) this.filtroCliente = result.filtroCliente.options;
+        if (result.filtroProducto != undefined) this.filtroProducto = result.filtroProducto.options;
+        //if (result.filtroTipoContrato != undefined) this.filtroTipoContrato = result.filtroTipoContrato.options;
+    }
+
+    setFiltroCliente(cliente: string) {
+        this.clienteSelected = cliente;
+    }
+
+    setFiltroProducto(producto: string) {
+        this.productoSelected = producto;
+    }
+
+    getTotalKgEntregados() {
+        return this.cabecera.map(t => t.KilosTotales).reduce((acc, value) => acc + value, 0);
+    }
 }
