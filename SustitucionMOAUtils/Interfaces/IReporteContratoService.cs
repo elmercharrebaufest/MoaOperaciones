@@ -11,6 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IReporteContratoService
     {
-        ReporteContratoViewModel GetContratosReporte(string proveedor);
+        ReporteContratoViewModel GetContratosReporte(string proveedor, string fechaInicio, string fechaFin);
+        
     }
 }

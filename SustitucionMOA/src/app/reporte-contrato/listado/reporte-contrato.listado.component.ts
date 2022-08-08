@@ -32,11 +32,20 @@ export class ReporteContratoListado extends ListBaseComponent implements OnDestr
     filtroProducto: any = null;
     clienteSelected: string = "";
     productoSelected: string = "";
+    KilosEntregados: string = "";
+    data: any[];
+    totales: any[];
+    KilosPendienteEntrega: string = "";
+    KilosTotales: string = "";
+  
+
+   
 
     ngOnInit() {
 
         this.getListado();
-         this.navService.setSeccionList([]);
+        
+        
        
     }
 
@@ -47,7 +56,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnDestr
 
         this.spinnerComponent.showIt();
         this.unsubscribe();
-        this.subscription = this.service.getListado().subscribe(
+        this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
             (result: any) => {
                 
                 this.mensajeComponent.setMsgsEmpty();
@@ -61,8 +70,11 @@ export class ReporteContratoListado extends ListBaseComponent implements OnDestr
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.cabecera = result.data.Resultados;
-                    console.log(this.cabecera);
+                    this.data = result.data.Resultados;
+                    this.totales = result.totales;
+                    console.log(result.totales);
                     this.cargarFiltrosContratos(result);
+                    this.getTotalKgEntregados();
 
                     //result.data.Resultados.Detalles.forEach(x => {
                     //    console.log(result.data.Resultados.Detalles);
@@ -97,13 +109,51 @@ export class ReporteContratoListado extends ListBaseComponent implements OnDestr
 
     setFiltroCliente(cliente: string) {
         this.clienteSelected = cliente;
+        //debugger;
+        if (cliente != "") {
+            this.cabecera = this.data.filter(x => x.NombreCliente == cliente);
+            this.getTotalKgEntregados();
+          
+        }
+        else {
+            this.cabecera = this.data;
+            this.getTotalKgEntregados();
+        }
+       
+      
     }
 
     setFiltroProducto(producto: string) {
         this.productoSelected = producto;
+        if (producto != "") {
+            this.cabecera = this.data.filter(x => x.DescripcionMaterial == producto);
+            this.getTotalKgEntregados();
+
+        }
+        else {
+            this.cabecera = this.data;
+            this.getTotalKgEntregados();
+        }
     }
 
     getTotalKgEntregados() {
-        return this.cabecera.map(t => t.KilosTotales).reduce((acc, value) => acc + value, 0);
+        this.KilosEntregados = this.cabecera.map(t => t.KilosEntregados).reduce((acc, value) => acc + value, 0);
+        this.KilosPendienteEntrega = this.cabecera.map(t => t.KilosPendienteEntrega).reduce((acc, value) => acc + value, 0);
+        this.KilosTotales = this.cabecera.map(t => t.KilosTotales).reduce((acc, value) => acc + value, 0);
+
+        this.subscription = this.service.getTotalFormatter(this.KilosEntregados, this.KilosTotales, this.KilosPendienteEntrega).subscribe(
+            (result) => {
+                this.KilosEntregados = result.KilosEntregadosView;
+                this.KilosPendienteEntrega = result.KilosPendienteEntregaView;
+                this.KilosTotales = result.KilosTotalesView;
+                console.log(result);
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+       
     }
+
+   
 }

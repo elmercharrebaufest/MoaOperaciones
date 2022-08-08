@@ -25,20 +25,28 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public ReporteContratoViewModel GetContratosReporte(string proveedor)
+        public ReporteContratoViewModel GetContratosReporte(string proveedor, string fechaInicio, string fechaFin)
         {
+            List<FechaWS> fechas = new List<FechaWS>();
 
             var request = new ReporteContratoWSMOARequest()
             {
                 //Cliente = proveedor,
-                Pendiente = "",
-                Corredor = proveedor
+                Pendiente = "X",
+                Corredor = "",
+                Fechas = new List<FechaWS> { new FechaWS { fechaInicio = Convert.ToDateTime(fechaInicio),
+                                                           fechaFin = Convert.ToDateTime(fechaFin)} 
+                }
 
             };
             ReporteContratoViewModel view = new ReporteContratoViewModel();
             view.data = consumer.ReporteContratoExecute(request);
             view.totales = new List<Totales>();
             validarRespuesta(view.data);
+            view.filtroCliente = new DropdownContent(view.data.Resultados.GroupBy(i => i.NombreCliente).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
+            view.filtroProducto = new DropdownContent(view.data.Resultados.GroupBy(i => i.DescripcionMaterial).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
+            view.filtroTipoContrato = new DropdownContent(view.data.Resultados.GroupBy(i => i.TipoContrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
+            view.filtroNroContrato = new DropdownContent(view.data.Resultados.GroupBy(i => i.Contrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
             var comparacion = view.data.Resultados.OrderByDescending(x => x.DescripcionMaterial).ToList();
             var totales = view.data.Resultados
                 .GroupBy
@@ -46,17 +54,18 @@ namespace SustitucionMOAUtils.Services
                 .Select(x => new
                 {
                     descripcion = x.Key,
-                    suma = x.Sum(i => i.KilosEntregados),
-                    Resultado = view.data.Resultados
+                    kilosEnregados = x.Sum(i => i.KilosEntregados),
+                    kilosPendientes = x.Sum(i => i.KilosPendienteEntrega),
+                    kilosTotales = x.Sum(i => i.KilosTotales)
 
                 }).ToList();
 
+
             foreach (var row in totales)
             {
-
                 foreach (var row1 in comparacion)
                 {
-                    if (row.descripcion != row1.DescripcionMaterial)
+                    if (row.descripcion != row1.DescripcionMaterial || totales.Count == 1)
                     {
                         var res = new Result();
                         res.TipoContrato = "";
@@ -67,20 +76,22 @@ namespace SustitucionMOAUtils.Services
                         res.KilosTotalesStr = "";
                         res.KilosPendienteEntregaStr = "";
                         res.DescripcionMaterial = row.descripcion;
-                        res.KilosEntregadosStr = SAPFormatter.FormatearCantidad(row.suma, "KG");
+                        res.KilosEntregadosStr = SAPFormatter.FormatearCantidad(row.kilosEnregados, "KG");
+                        res.KilosTotalesStr = SAPFormatter.FormatearCantidad(row.kilosTotales, "KG");
+                        res.KilosPendienteEntregaStr = SAPFormatter.FormatearCantidad(row.kilosPendientes, "KG");
+                        res.ColorProducto = consumer.SetearColorProducto((comparacion.FirstOrDefault(x => x.DescripcionMaterial == row.descripcion).Producto).Trim('0'));
                         view.data.Resultados.Add(res);
                         break;
+                        
 
                     }
                 }
 
 
             }
-            view.data.Resultados = view.data.Resultados.OrderByDescending(x => x.DescripcionMaterial).ToList();
-            view.filtroCliente = new DropdownContent(view.data.Resultados.GroupBy(i => i.NombreCliente).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
-            view.filtroProducto = new DropdownContent(view.data.Resultados.GroupBy(i => i.DescripcionMaterial).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
-            view.filtroTipoContrato = new DropdownContent(view.data.Resultados.GroupBy(i => i.TipoContrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
-            view.filtroNroContrato = new DropdownContent(view.data.Resultados.GroupBy(i => i.Contrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
+          
+            view.data.Resultados = view.data.Resultados.OrderByDescending(x => x.FechaDesde).OrderByDescending(y => y.DescripcionMaterial).ToList();
+
 
             return view;
         }
@@ -93,5 +104,11 @@ namespace SustitucionMOAUtils.Services
             if (data.Resultados == null || data.Resultados.Count == 0)
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Contratos"));
         }
+
+        //public List<Result> GetFiltroPorColumna(Result cabecera)
+        //{
+
+        //    return cabecera ;
+        //}
     }
 }

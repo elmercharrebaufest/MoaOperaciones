@@ -13,11 +13,29 @@ import { environment } from '../../environments/environment';
 })
 export class ReporteContratoService extends BaseService {
 
-    public getListado(): Observable<any> {
-     
+    public getListado(fechaInicio: string, fechaFin: string): Observable<any> {
+        let params: HttpParams = new HttpParams()
+            .append('fechaInicio', fechaInicio)
+            .append('fechaFin', fechaFin);
+           
         return this.http
-            .get('/api/ReporteContrato/GetContratos');
+            .get('/api/ReporteContrato/GetContratos', { params: params });
           
     }
+
+
+    public getTotalFormatter(KilosEntregados: string, KilosTotales: string, KilosPendienteEntrega :string): Observable<any> {
+        debugger;
+        let params: HttpParams = new HttpParams()
+            .append('KilosEntregados', KilosEntregados)
+            .append('KilosTotales', KilosTotales)
+            .append('KilosPendienteEntrega', KilosPendienteEntrega);
+
+
+        return this.http
+            .get('/api/ReporteContrato/getTotalFormatter', { params: params })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
+
   }
 

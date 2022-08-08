@@ -10,5 +10,6 @@ namespace SustitucionMOAWS.Interfaces
    public  interface IReporteContratoConsumerMOA
     {
         ReporteContratoWSMOAResponse ReporteContratoExecute(ReporteContratoWSMOARequest request);
+        string SetearColorProducto(string codigoProducto);
     }
 }

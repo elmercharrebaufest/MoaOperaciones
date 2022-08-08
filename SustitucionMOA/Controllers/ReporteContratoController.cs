@@ -1,4 +1,6 @@
-﻿using SustitucionMOAAssets;
+﻿using Newtonsoft.Json;
+using SustitucionMOAAssets;
+using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOASecurity;
@@ -24,17 +26,13 @@ namespace SustitucionMOA.Controllers
             this.reporteContratoService = reporteContratoService;
         }
         // GET: ReporteContrato
-        public ActionResult Index()
-        {
+      
 
-            return View();
-        }
-
-        public JsonResult GetContratos()
+        public JsonResult GetContratos(string fechaInicio, string fechaFin)
         {
             try
             {
-                var contratos = reporteContratoService.GetContratosReporte(SessionPersister.Proveedor);
+                var contratos = reporteContratoService.GetContratosReporte(SessionPersister.Proveedor,fechaInicio,fechaFin);
                 return JsonCustom(contratos);
             }
             catch (InfoCustomException e)
@@ -56,7 +54,14 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
        
+        public ActionResult getTotalFormatter(string KilosEntregados, string KilosTotales,string KilosPendienteEntrega)
+        {
+            var KilosEntregadosView = SAPFormatter.FormatearCantidad(Convert.ToDecimal(KilosEntregados), "KG");
+            var KilosTotalesView = SAPFormatter.FormatearCantidad(Convert.ToDecimal(KilosTotales), "KG");
+            var KilosPendienteEntregaView = SAPFormatter.FormatearCantidad(Convert.ToDecimal(KilosPendienteEntrega), "KG");
+            return JsonCustom(new { KilosEntregadosView, KilosTotalesView, KilosPendienteEntregaView });
+        }
+
     }
 }

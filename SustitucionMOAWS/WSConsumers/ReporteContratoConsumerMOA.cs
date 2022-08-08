@@ -144,6 +144,14 @@ namespace SustitucionMOAWS.WSConsumers
                     return color = "#4AB241";
                 case "99591":
                     return color = "#9D9107";
+                case "99056":
+                    return color = "#530C80";
+                case "98855":
+                    return color = "#C431C4";
+                case "99214":
+                    return color = "#B93232";
+
+
             }
             return color;
         }
