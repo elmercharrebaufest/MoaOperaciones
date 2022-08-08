@@ -208,7 +208,7 @@
 
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 margenInput">
                                 <div class="margenInput">
-                                    Almac&eacute;n {{ mostrarAsterisco('selectAlmacenEntrega') }}
+                                    Almac&eacute;n <!-- {{ mostrarAsterisco('selectAlmacenEntrega') }} -->
                                     <!-- <p-dropdown formControlName="selectAlmacenEntrega"
                                         [ngModelOptions]="{standalone:true}" [options]="almacenEntrega"
                                         [(ngModel)]="model.posicionActual.selectAlmacenEntrega" dataKey="Id"
@@ -217,9 +217,9 @@
                                     <p-autoComplete [disabled] = "disabled" formControlName="selectAlmacenEntrega" [(ngModel)]="model.posicionActual.selectAlmacenEntrega" [suggestions]="almacenEntrega" dataKey="Id" ariaLabel="CodigoDescripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="Ningún almacén encontrado"
                                         [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true" (completeMethod)="buscarCombo($event, 'ALMACEN')" (onFocus)=" $event.target.select()">
                                     </p-autoComplete>
-                                    <div *ngIf="mostrarError('selectAlmacenEntrega')">
+                                    <!-- <div *ngIf="mostrarError('selectAlmacenEntrega')">
                                         <p class="text-danger">campo obligatorio</p>
-                                    </div>
+                                    </div> -->
                                 </div>
 
                                 <div class="margenInput">
