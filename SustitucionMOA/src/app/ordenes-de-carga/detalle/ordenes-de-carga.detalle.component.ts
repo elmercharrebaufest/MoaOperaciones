@@ -296,7 +296,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada) {
                 if (this.esAnulador) {
-                    this.mostrarBotonAnularPorVencimiento = true;
+                    if (this.ordenDeCarga.EsOrdenVencida) {
+                        this.mostrarBotonAnularPorVencimiento = true;
+                    }
                     this.mostrarBotonAnular = true;
                 }
              
