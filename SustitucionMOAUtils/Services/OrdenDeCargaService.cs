@@ -107,7 +107,7 @@ namespace SustitucionMOAUtils.Services
             ordenDeCarga.Producto = producto;
             ordenDeCarga.NumeroPedido = string.IsNullOrEmpty(ordenDeCarga.NumeroPedidoIngresado) ? "" : ordenDeCarga.NumeroPedidoIngresado;
             ordenDeCarga.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
-            
+
 
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
             ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
@@ -646,7 +646,11 @@ namespace SustitucionMOAUtils.Services
                 MensajeValidacionSAP = string.IsNullOrEmpty(orden.DescripcionCodigoVerificacionSap) ? "" : orden.DescripcionCodigoVerificacionSap,
                 ContratoSinCantidadPendiente = orden.ContratoSinCantidadPendiente,
                 DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno,
-                OrdenDeCargaCambiosHistorial = ordenDeCargaCambiosHistorial
+                OrdenDeCargaCambiosHistorial = ordenDeCargaCambiosHistorial,
+                EsOrdenVencida = orden.FechaVencimiento < DateTime.Now.Date ? true : false
+
+
+
             };
 
             return ordenDto;
@@ -655,6 +659,16 @@ namespace SustitucionMOAUtils.Services
         public List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga()
         {
             var dayOfWeek = DateTime.Now.DayOfWeek;
+            var feriados = feriadoService.ObtenerFeriados();
+            var fechaActual = DateTime.Now.Date;
+            foreach (var diasFeriados in feriados)
+            {
+                if (diasFeriados.Date == fechaActual)
+                {
+                    return null;
+                }
+            }
+
             if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaSapJob").Habilitado == false)
                 return null;
 
@@ -663,7 +677,7 @@ namespace SustitucionMOAUtils.Services
                 return null;
             }
 
-            var fechaActual = DateTime.Now.Date;
+            
             var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaVencimiento < fechaActual && o.Estado == EstadoOrdenDeCarga.EntregaGenerada);
             NotificarVencimientoOrdenCarga(ordenes);
             return ordenes;
@@ -736,7 +750,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
-                    emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenes[0].Id, ordenVencidas, titulo,cabecera);
+                    emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenes[0].Id, ordenVencidas, titulo, cabecera);
                 }
 
                 return emailSenderData;

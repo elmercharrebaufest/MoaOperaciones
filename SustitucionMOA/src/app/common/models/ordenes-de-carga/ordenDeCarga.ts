@@ -31,6 +31,7 @@ export class OrdenDeCarga {
     MensajeValidacionSAP: string;
     ContratoSinCantidadPendiente: boolean;
     DescripcionErrorInterno: string;
+    EsOrdenVencida: boolean;
     OrdenDeCargaCambiosHistorial: OrdenDeCargaCambiosHistorial[];
     
     constructor() {

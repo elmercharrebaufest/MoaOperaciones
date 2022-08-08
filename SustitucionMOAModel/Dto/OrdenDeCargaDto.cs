@@ -142,6 +142,7 @@ namespace SustitucionMOAModel.Dto
         public bool ContratoSinCantidadPendiente { get; set; }
         public string DescripcionErrorInterno { get; set; }
         public string NumeroPedidoIngresado { get; set; }
+        public bool EsOrdenVencida { get; set; }
 
         public IEnumerable<OrdenDeCargaCambiosHistorialDto> OrdenDeCargaCambiosHistorial { get; set; }
 

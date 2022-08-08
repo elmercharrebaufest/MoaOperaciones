@@ -415,7 +415,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             let posActual = this.solpActual.posicionActual;
             let solpActual = this.solpActual;
-            solpActual.posiciones = this.solpActual.posiciones.slice(-1);
+            solpActual.posiciones = this.solpActual.posiciones.filter(p => p.numeroPosicion === 1);
 
             solp.Posiciones.forEach(x => {
                 posActual.id = x.Codigo;
@@ -631,7 +631,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return;
                 }
             }
-
             this.solpActual.Finalizar = enviarSap;
             this.solpActual.usuarioComprasId = this.selectUsuarioCompras != null ? this.selectUsuarioCompras.Id : null;
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
@@ -671,7 +670,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 rutaDeAcceso: ''
                             }
                         });
-
                         this.solpActual.archivosCotizacionesNuevos.splice(0, this.solpActual.archivosCotizacionesNuevos.length);
                         this.solpActual.archivosCotizacionesGuardados = result.Solp.Adjuntos.filter(x => x.FileKey == 'adjuntoCotizacionesSolp').map(x => {
                             return {
@@ -724,7 +722,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 this.displayErrorSAP = true;
 
                             }
-
                             // if (this.solpActual.nroSolp) {
                             //     this.displaySAPEditar = true;
                             // }
@@ -834,26 +831,43 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 case EnumPasoSolp.SolpSubposiciones:
                     //paso.Completo = true;
                     paso.Completo = this.solpActual.posiciones.every(pos =>
-                        pos.listadoSubPosiciones.every(subPos =>
-                            this.listaStringCompleta([
-                                subPos.tareaSubcontratar,
-                                subPos.cuentaTd,
-                                subPos.precioBruto,
-                                subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
-                                subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
-                                subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
-                            ]) ||
-                            this.listaStringVacia([
-                                subPos.tareaSubcontratar,
-                                subPos.cuentaTd,
-                                subPos.precioBruto,
-                                subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
-                                subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
-                                subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
-                            ])
+                        pos.listadoSubPosiciones.every(subPos => {
+                                if(
+                                    !this.listaStringVacia([
+                                        subPos.tareaSubcontratar,
+                                        subPos.cuentaTd,
+                                        subPos.precioBruto,
+                                        subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
+                                        subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
+                                        subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
+                                    ]) &&
+                                    this.listaStringCompleta([
+                                        subPos.tareaSubcontratar,
+                                        subPos.cuentaTd,
+                                        subPos.precioBruto,
+                                        subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
+                                        subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
+                                        subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
+                                    ])
+                                ) {
+                                    return true
+                                } else if(
+                                    this.listaStringVacia([
+                                        subPos.tareaSubcontratar,
+                                        subPos.cuentaTd,
+                                        subPos.precioBruto,
+                                        subPos.cuentaMayor && subPos.cuentaMayor.Codigo,
+                                        subPos.tipoImputacion && subPos.tipoImputacion.Codigo,
+                                        subPos.unidadSeleccionada && subPos.unidadSeleccionada.Codigo,
+                                    ]) && pos.listadoSubPosiciones.length > 1
+                                ) {
+                                    return true
+                                } else {
+                                    return false
+                                }
+                            }
                         )
                     );
-
                     break;
                 case EnumPasoSolp.SolpSubposiciones:
                     break;
