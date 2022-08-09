@@ -264,7 +264,7 @@ export class OrdenesDeCargaService extends BaseService {
 
     public getPatentes(ordenDeCarga: OrdenDeCarga): Observable<any> {
         let payload = new FormData();
-        console.log(ordenDeCarga)
+        // console.log(ordenDeCarga)
         payload.append(
             "ordenDeCargaJson",
             JSON.stringify(ordenDeCarga)

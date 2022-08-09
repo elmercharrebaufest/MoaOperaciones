@@ -111,7 +111,9 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _vendedorService.AutocompleteProveedores(SessionPersister.User.username, SessionPersister.Proveedor, fechaInicio, fechaFin, tipoProveedorId) });
+                var username = SessionPersister.User.username;
+                var proveedor = SessionPersister.Proveedor;
+                return JsonCustom(new { data = _vendedorService.AutocompleteProveedores(username, proveedor, fechaInicio, fechaFin, tipoProveedorId) });
             }
             catch (InfoCustomException e)
             {
