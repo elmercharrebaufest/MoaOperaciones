@@ -182,6 +182,7 @@
     <None Include="scripts\PostDeployment\PermisoPorRolBuscadorInteligente.sql" />
     <None Include="scripts\Insert Rol PermisoPorRol Buscador Inteligente.sql" />
     <None Include="scripts\PostDeployment\PermisoRol.sql" />
+    <None Include="DatabasePublishPRE.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />
