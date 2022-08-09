@@ -131,7 +131,7 @@
     "symbol-observable" "1.2.0"
     "yargs-parser" "10.1.0"
 
-"@angular/common@*", "@angular/common@^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0", "@angular/common@^6.0.0", "@angular/common@^6.0.0-rc.0 || ^6.0.0", "@angular/common@^7.0.0", "@angular/common@>=2.3.1", "@angular/common@>=2.4.0", "@angular/common@>=4.3.0 || >5.0.0", "@angular/common@>=6.0.0", "@angular/common@>=7.0.0 <8", "@angular/common@~7.2.16", "@angular/common@7.2.16":
+"@angular/common@*", "@angular/common@^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0", "@angular/common@^6.0.0", "@angular/common@^6.0.0 || ^7.0.0", "@angular/common@^6.0.0-rc.0 || ^6.0.0", "@angular/common@^7.0.0", "@angular/common@>=2.3.1", "@angular/common@>=2.4.0", "@angular/common@>=4.3.0 || >5.0.0", "@angular/common@>=6.0.0", "@angular/common@>=7.0.0 <8", "@angular/common@~7.2.16", "@angular/common@7.2.16":
   "integrity" "sha512-lPo2Vt5zmKeKTdMxHMUuViouMiK4QsmO6dGTIhJ7QAx9mov0QYb4sUVKN9Ix32Aeeznaa97qJnhevyDncJqvSA=="
   "resolved" "https://registry.npmjs.org/@angular/common/-/common-7.2.16.tgz"
   "version" "7.2.16"
@@ -162,7 +162,7 @@
   dependencies:
     "tslib" "^1.9.0"
 
-"@angular/core@*", "@angular/core@^2.0.0", "@angular/core@^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0", "@angular/core@^6.0.0", "@angular/core@^6.0.0-rc.0 || ^6.0.0", "@angular/core@>=2.3.1", "@angular/core@>=2.4.0", "@angular/core@>=4.3.0 || >5.0.0", "@angular/core@>=6.0.0", "@angular/core@>=7.0.0 <8", "@angular/core@~7.2.16", "@angular/core@7.2.16":
+"@angular/core@*", "@angular/core@^2.0.0", "@angular/core@^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0", "@angular/core@^6.0.0", "@angular/core@^6.0.0 || ^7.0.0", "@angular/core@^6.0.0-rc.0 || ^6.0.0", "@angular/core@>=2.3.1", "@angular/core@>=2.4.0", "@angular/core@>=4.3.0 || >5.0.0", "@angular/core@>=6.0.0", "@angular/core@>=7.0.0 <8", "@angular/core@~7.2.16", "@angular/core@7.2.16":
   "integrity" "sha512-z1RuBinuYeC4KLv8Z95YOgIQLd4nkoApdxkIZaWALwSkgeBuHJn4bCBn2cL0gJ/KO2x18TiTU5HuC+uyBt0AVQ=="
   "resolved" "https://registry.npmjs.org/@angular/core/-/core-7.2.16.tgz"
   "version" "7.2.16"
@@ -5544,6 +5544,13 @@
   "integrity" "sha512-1vvqavgJYa06lMAgAniuoaLDCNN4i4M7GzWdSTfndrdtknPUwLlXjmr0uJG7NvgeOnZYICWwx/c/dtgHsMjH/Q=="
   "resolved" "https://registry.npmjs.org/ngx-smart-modal/-/ngx-smart-modal-7.4.1.tgz"
   "version" "7.4.1"
+
+"ngx-spinner@^7.2.0":
+  "integrity" "sha512-E3IVOrSXCC4v/8iy/f1cGWMfRF5HrmuGCGcTTYbEzknTViDqH2kMLYzdwC0MVsyAEafisEIM1rmSUzftIzPJQA=="
+  "resolved" "https://registry.npmjs.org/ngx-spinner/-/ngx-spinner-7.2.0.tgz"
+  "version" "7.2.0"
+  dependencies:
+    "tslib" "^1.9.0"
 
 "nice-try@^1.0.4":
   "integrity" "sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ=="

@@ -284,4 +284,19 @@ export class OrdenesDeCargaService extends BaseService {
             .get('/api/OrdenDeCarga/VisualizarCliente', { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
+
+    public validarCorredorClienteContratoProducto(codigoCliente: string, contrato: string, codigoCorredor: string, productoId: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.append("clienteCuit", codigoCliente);
+        params = params.append("contrato", contrato);
+        params = params.append("corredor", codigoCorredor);
+        params = params.append("fechaInicio", '');
+        params = params.append("fechaFin", '');
+        params = params.append("productoId", productoId);
+        params = params.append("pendiente", 'x');
+
+        return this.http
+            .get('/api/OrdenDeCarga/validarCorredorClienteContratoProducto', { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
 }

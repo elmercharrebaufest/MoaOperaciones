@@ -21,6 +21,15 @@ export class SeleccionarProveedorService extends BaseService {
       )));
   }
 
+  public getAllClientsByType(tipoProveedorId: number): Observable<any> {
+    let params: HttpParams = new HttpParams();
+    params = params.append("tipoProveedorId", tipoProveedorId.toString());
+
+    return this.http
+        .get('/api/vendedor/GetAllClientsByType', { params: params, headers: this.headers })
+        .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+  }
+
   public obtenerProveedorPorCodigo(codigoProveedor: string): Observable<any> {
     let params: HttpParams = new HttpParams();
     params = params.set("codigoProveedor", codigoProveedor);
