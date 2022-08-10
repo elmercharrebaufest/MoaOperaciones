@@ -28,11 +28,12 @@ namespace SustitucionMOA.Controllers
         // GET: ReporteContrato
       
 
-        public JsonResult GetContratos(string fechaInicio, string fechaFin)
+        public JsonResult GetContratos(string fechaInicio, string fechaFin, string cliente, string producto, string tipoContrato ,bool mostrarPendientes,bool esFiltro)
         {
             try
             {
-                var contratos = reporteContratoService.GetContratosReporte(SessionPersister.Proveedor,fechaInicio,fechaFin);
+                var mailUsuario = SessionPersister.getUsername();
+                var contratos = reporteContratoService.GetContratosReporte(SessionPersister.Proveedor,fechaInicio,fechaFin, cliente,producto,tipoContrato,mostrarPendientes,esFiltro,  mailUsuario);
                 return JsonCustom(contratos);
             }
             catch (InfoCustomException e)

@@ -11,6 +11,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { NgxMaskModule } from 'ngx-mask';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { CheckboxModule } from 'primeng/checkbox';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
         NgxPaginationModule,
         ButtonModule, DropdownModule, AutoCompleteModule,
         NgxMaskModule,
-        MultiSelectModule
+        MultiSelectModule,
+        CheckboxModule
         
   ],
     declarations: [

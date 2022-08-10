@@ -13,10 +13,15 @@ import { environment } from '../../environments/environment';
 })
 export class ReporteContratoService extends BaseService {
 
-    public getListado(fechaInicio: string, fechaFin: string): Observable<any> {
+    public getListado(fechaInicio, fechaFin, cliente, producto, esFiltro, mostrarPendientes,tipoContrato): Observable<any> {
         let params: HttpParams = new HttpParams()
             .append('fechaInicio', fechaInicio)
-            .append('fechaFin', fechaFin);
+            .append('fechaFin', fechaFin)
+            .append('cliente', cliente)
+            .append('producto', producto)
+            .append('tipoContrato', tipoContrato)
+            .append('mostrarPendientes', mostrarPendientes)
+            .append('esFiltro', esFiltro);
            
         return this.http
             .get('/api/ReporteContrato/GetContratos', { params: params });

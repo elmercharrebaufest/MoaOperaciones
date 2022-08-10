@@ -5,6 +5,16 @@
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10 "><strong>Reporte Contratos</strong> </div>
 
+            <div class="row align-right">
+                <div class="col-xs-12 col-sm-8 col-md-8" style="display: flex; justify-content: flex-end;">
+                    <a (click)="exportExcelReporteContrato()" style="text-decoration:none!important">
+                        <div class="btnSection animate align-right">
+                            Exportar <img src="Content/images/buttons/EXPORT.svg" />
+                        </div>
+                    </a>
+                </div>
+
+            </div>
         </div>
         <!--End Title-->
         <!--Search-->
@@ -31,20 +41,24 @@
                 <div id="searchTipoContrato" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Nro Contrato</p>
                     <div class="styled-select">
-                        <input type="search" class="" placeholder="" aria-controls="">
+                        <input type="search" class="" placeholder="" [value]="filtroContrato" (input)="filtroContrato = $event.target.value" aria-controls="tableModal">
                     </div>
                 </div>
-                <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15">
-                    <p>Tipo Contrato</p>
+                <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Tipo Contrato:</p>
                     <div class="styled-select">
-                        <input type="search" class="" placeholder="" aria-controls="">
+                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroTipoContrato" (select)="setFiltroTipoContrato($event)"></dropdown>
                     </div>
                 </div>
                 <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Fecha operacion</p>
-                    <filtro-fecha (ClickEvent)="getListado()"></filtro-fecha>
+                    <filtro-fecha (ClickEvent)="getListadoFechas()"></filtro-fecha>
                 </div>
 
+                <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
+                    <p-checkbox [ngModelOptions]="{standalone:true}" label="Mostrar solo contrato con entrega pendiente" [(ngModel)]="mostrarPendientes" (onChange)="filtroPendientes()" binary="false">
+                    </p-checkbox>
+                </div>
             </div>
         </div>
         <!-- End Search-->
@@ -93,7 +107,7 @@
                                     </span>
                                 </div>-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="GetFiltro('ClienteNombre')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="GetFiltro('NombreCliente')">
                                 Cliente
                                 <!--<div>
                                     <span>
@@ -150,7 +164,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let cabeceraContrato of cabecera  | customFilter : 'DescripcionMaterial' : productoSelected | customFilter : 'NombreCliente' : clienteSelected | orderedColumn : {property: (orderedByColumn), direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                        <tr *ngFor="let cabeceraContrato of cabecera | customFilter : 'Contrato' : filtroContrato | orderedColumn : {property: (orderedByColumn), direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
                             <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', cabeceraContrato.Contrato)" href="#">{{cabeceraContrato.Contrato}}</a></td>
                             <td>{{cabeceraContrato.TipoContrato}}</td>
                             <td>{{cabeceraContrato.PedidoCliente}}</td>
@@ -159,13 +173,13 @@
                             <td>{{cabeceraContrato.Corredor}}</td>
 
                             <td>
-                                <div [ngStyle]="{'color':cabeceraContrato.ColorProducto,'font-weight':cabeceraContrato.NombreCliente == '' ? 'bold': ''}">
+                                <div [ngStyle]="{'color':cabeceraContrato.ColorProducto,'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">
                                     {{cabeceraContrato.DescripcionMaterial}}
                                 </div>
                             </td>
-                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? 'bold': ''}">{{cabeceraContrato.KilosTotalesStr}}</td>
-                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? 'bold': ''}">{{cabeceraContrato.KilosEntregadosStr}}</td>
-                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? 'bold': ''}">{{cabeceraContrato.KilosPendienteEntregaStr}}</td>
+                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosTotalesStr}}</td>
+                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosEntregadosStr}}</td>
+                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosPendienteEntregaStr}}</td>
                         </tr>
                     </tbody>
 
@@ -181,7 +195,7 @@
                             <td [ngStyle]="{'font-weight':'bold'}">{{KilosTotales}}</td>
                             <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados}}</td>
                             <td [ngStyle]="{'font-weight':'bold'}">{{KilosPendienteEntrega}}</td>
-                        
+
                         </tr>
                     </tbody>
                 </table>
