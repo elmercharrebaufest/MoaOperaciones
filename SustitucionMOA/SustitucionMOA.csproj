@@ -317,21 +317,6 @@
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
-    <Content Include="src\app\compras\solp\solp.component.js" />
-    <Content Include="src\app\compras\solp\solp.utils.js" />
-    <Content Include="src\app\compras\solp\steps\cotizacion\cotizacion.component.js" />
-    <Content Include="src\app\compras\solp\steps\especificaciones\especificaciones.component.js" />
-    <Content Include="src\app\compras\solp\steps\generacion1\generacion1.component.js" />
-    <Content Include="src\app\compras\solp\steps\generacion2\generacion2.component.js" />
-    <Content Include="src\app\compras\solp\steps\posicion\cabecera.component.js" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.js" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.js" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.js" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-imputaciones\tab-imputaciones.component.js" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.js" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.spec.js" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.js" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.spec.js" />
     <Content Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.html" />
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
     <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.css" />
@@ -981,21 +966,6 @@
     <Content Include="tslint.json" />
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
-    <Content Include="src\app\compras\solp\solp.component.js.map" />
-    <Content Include="src\app\compras\solp\solp.utils.js.map" />
-    <Content Include="src\app\compras\solp\steps\cotizacion\cotizacion.component.js.map" />
-    <Content Include="src\app\compras\solp\steps\especificaciones\especificaciones.component.js.map" />
-    <Content Include="src\app\compras\solp\steps\generacion1\generacion1.component.js.map" />
-    <Content Include="src\app\compras\solp\steps\generacion2\generacion2.component.js.map" />
-    <Content Include="src\app\compras\solp\steps\posicion\cabecera.component.js.map" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.js.map" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.js.map" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.js.map" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-imputaciones\tab-imputaciones.component.js.map" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.js.map" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.spec.js.map" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.js.map" />
-    <Content Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.spec.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
