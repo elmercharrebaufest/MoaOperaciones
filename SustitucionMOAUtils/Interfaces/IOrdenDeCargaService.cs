@@ -30,7 +30,7 @@ namespace SustitucionMOAUtils.Interfaces
         string ForzarCreacionOrden(int ordenId);
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);
         List<ProveedorDto> VisualizarCliente(string corredor, string fechaInicio, string fechaFin, string pendiente);
-        bool ValidarCorredorClienteContratoProducto(string clienteCuit, string contrato, string corredor, string fechaInicio, string fechaFin, string productoId, string pendiente);
+        bool ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string fechaInicio, string fechaFin, string productoId, string pendiente);
         string NotificarVariosPedidos(int ordenDeCargaId);
         string NotificarVariosContratos(int ordenDeCargaId);
         string NotificarVencimientoOrdenCarga(int ordenId);

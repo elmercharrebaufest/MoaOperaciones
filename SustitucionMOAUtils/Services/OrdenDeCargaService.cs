@@ -1103,21 +1103,36 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
-        public bool ValidarCorredorClienteContratoProducto(string clienteCuit, string contrato, string corredor, string fechaInicio, string fechaFin, string productoId, string pendiente)
+        public bool ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string fechaInicio, string fechaFin, string productoId, string pendiente)
         {
-            if (string.IsNullOrEmpty(clienteCuit) || string.IsNullOrEmpty(contrato) || string.IsNullOrEmpty(productoId))
+            if ((string.IsNullOrEmpty(clienteCuit) && string.IsNullOrEmpty(clienteCodigo)) || string.IsNullOrEmpty(contrato) || string.IsNullOrEmpty(productoId))
             {
                 return false;
             }
             try
             {
-                var cliente = repositorio.Obtener<Proveedor>(x => x.CUIT == clienteCuit && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
                 var producto = repositorio.Obtener<Material>(Convert.ToInt32(productoId));
-                if (cliente == null || producto == null)
+                if (producto == null)
                 {
                     return false;
                 }
-                var response = OrdenCargaVisualizarCliente(cliente.CodigoProveedor, contrato, corredor, fechaInicio, fechaFin, producto.CodigoSap, pendiente, string.Empty);
+                var cliente = repositorio.Obtener<Proveedor>(x => (x.CUIT == clienteCuit || x.CodigoProveedor == clienteCodigo) && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
+                if (cliente == null)
+                {
+                    return false;
+                }
+                clienteCuit = cliente.CUIT;
+                clienteCodigo = cliente.CodigoProveedor;
+                //            if (string.IsNullOrEmpty(clienteCodigo))
+                //{
+                //                var cliente = repositorio.Obtener<Proveedor>(x => x.CUIT == clienteCuit && x.EstadoAprobacion == EstadoAprobacion.Aprobado && (x.TipoProveedor.Id == 4 || x.TipoProveedor.Id == 5));
+                //                if (cliente == null)
+                //                {
+                //                    return false;
+                //                }
+                //                clienteCodigo = cliente.CodigoProveedor;
+                //            }
+                var response = OrdenCargaVisualizarCliente(clienteCodigo, contrato, corredor, fechaInicio, fechaFin, producto.CodigoSap, pendiente, string.Empty);
                 if (response.Resultados != null && response.Resultados.Count > 0)
                 {
                     var result = response.Resultados[0];
@@ -1127,18 +1142,21 @@ namespace SustitucionMOAUtils.Services
                         var contratoResult = result.Contrato.ToUpper();
                         var corredorResult = result.Corredor.ToUpper();
                         var productoResult = result.Producto.ToUpper().Substring(13, 5);
-                        if (corredor.ToUpper().Equals(corredorResult) && contrato.ToUpper().Equals(contratoResult) && cliente.CodigoProveedor.ToUpper().Equals(clienteResult) && producto.CodigoSap.ToUpper().Equals(productoResult))
+                        if (corredor.ToUpper().Equals(corredorResult) && contrato.ToUpper().Equals(contratoResult) && clienteCodigo.ToUpper().Equals(clienteResult) && producto.CodigoSap.ToUpper().Equals(productoResult))
                         {
                             return true;
                         }
                     }
-                    else if (!clienteCuit.Equals(string.Empty) && !contrato.Equals(string.Empty) && !productoId.Equals(string.Empty))
+                    else if (!clienteCodigo.Equals(string.Empty) && !contrato.Equals(string.Empty) && !productoId.Equals(string.Empty))
                     {
                         var clienteResult = result.Cliente.ToUpper();
                         var contratoResult = result.Contrato.ToUpper();
                         var productoResult = result.Producto.ToUpper().Substring(13, 5);
-                        if (contrato.ToUpper().Equals(contratoResult) && cliente.CodigoProveedor.ToUpper().Equals(clienteResult) && producto.CodigoSap.ToUpper().Equals(productoResult))
+                        if (contrato.ToUpper().Equals(contratoResult) && clienteCodigo.ToUpper().Equals(clienteResult) && producto.CodigoSap.ToUpper().Equals(productoResult))
+						{
                             return true;
+                        }
+                            
                     }
                     return false;
                 }

@@ -543,11 +543,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ValidarCorredorClienteContratoProducto(string clienteCuit, string contrato, string corredor, string fechaInicio, string fechaFin, string productoId, string pendiente)
+        public ActionResult ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string fechaInicio, string fechaFin, string productoId, string pendiente)
         {
             try
             {
-                var response = ordenDeCargaService.ValidarCorredorClienteContratoProducto(clienteCuit, contrato, corredor, fechaInicio, fechaFin, productoId, pendiente);
+                var response = ordenDeCargaService.ValidarCorredorClienteContratoProducto(clienteCuit, clienteCodigo, contrato, corredor, fechaInicio, fechaFin, productoId, pendiente);
                 return JsonCustom(response);
             }
             catch (InfoCustomException e)
