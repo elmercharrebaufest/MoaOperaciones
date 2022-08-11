@@ -783,15 +783,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     }
                     break;
                 case EnumPasoSolp.PliegoCotizacion:
-                    paso.Completo = true;
-                    if (!this.listaStringCompleta([
-                        this.solpActual.jornadaLaboralDias,
-                        this.solpActual.comienzoJornadaLaboral,
-                        this.solpActual.terminoJornadaLaboral
-                    ])) {
-                        return paso.Completo = false;
+                    paso.Completo = false;
+                    if (this.listaStringCompleta([
+                            this.solpActual.comienzoJornadaLaboral,
+                            this.solpActual.terminoJornadaLaboral
+                        ]) 
+                        &&
+                        this.diasJornadaLaboral(this.solpActual.jornadaLaboralDias)
+                    ) {
+                        return paso.Completo = true;
                     }
-
                     break;
                 case EnumPasoSolp.SolpCabecera:
                     paso.Completo = true;
@@ -873,6 +874,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     break;
             }
         }
+    }
+
+    diasJornadaLaboral(lista: any[]) {
+        return lista.filter(x => x.selected).length >= 1;
     }
 
     listaStringCompleta(lista: any[]) {
