@@ -10,7 +10,7 @@
         </div>
         <!--End Title-->
         <!-- Form-->
-        <div class="row myRow firstSection">
+        <div class="row myRow firstSection" *ngIf="!spinnerComponent.visible">
             <div class="rounded shadow">
                 <stepper [(pasos)]="pasos" (change)="cambioPaso($event)" (save)="guardarCambios(false, false, true)" [(paso)]="pasoActual"></stepper>
             </div>
@@ -18,7 +18,7 @@
         <spinner></spinner>
         <p-toast [style]="{marginTop: '105px'}"></p-toast>
         <div class="row myRow mySearch" style="margin-bottom: 4em;">
-            <div class="col-xs-12 col-md-12 rounded shadow animate">
+            <div class="col-xs-12 col-md-12 rounded shadow animate" *ngIf="!spinnerComponent.visible">
                 <div class="col-xs-12 col-md-12 headerCompras" #headerCompras>
                     <strong>Paso {{pasoActual.Numero}}:</strong> {{pasoActual.Nombre}}
                 </div>
