@@ -171,6 +171,7 @@
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
+    <Compile Include="Models\ViewModel\ReporteContrato\ReporteContratoViewModel.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Ceco.cs" />
     <Compile Include="Models\WSMapMOA\Compras\CecoWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Cuenta.cs" />
@@ -342,6 +343,8 @@
     <Compile Include="Models\WSMapMOA\Proforma\ProcedenciaFlete.cs" />
     <Compile Include="Models\WSMapMOA\Proforma\ProcedenciaFleteWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Proforma\Salida.cs" />
+    <Compile Include="Models\WSMapMOA\ReporteContrato\ReporteContratoWSMOARequest.cs" />
+    <Compile Include="Models\WSMapMOA\ReporteContrato\ReporteContratoWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Reporte\ClaveReporte.cs" />
     <Compile Include="Models\WSMapMOA\Reporte\ReporteBase.cs" />
     <Compile Include="Models\WSMapMOA\Reporte\ReporteCamposSustentables.cs" />

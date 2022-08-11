@@ -29,8 +29,8 @@
     "src/app/common/models/Seccion.ts",
     "src/app/compras/compras.module.ts",
     "src/app/gestionCM05/gestionCM05.module.ts",
-    "src/app/ordenes-de-carga/ordenes-de-carga.module.ts"
-
+    "src/app/ordenes-de-carga/ordenes-de-carga.module.ts",
+    "src/app/reporte-contrato/reporte-contrato.module.ts"
   ],
   "include": [
     "src/**/*.d.ts"

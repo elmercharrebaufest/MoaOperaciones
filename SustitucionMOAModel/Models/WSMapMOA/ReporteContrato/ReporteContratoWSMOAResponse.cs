@@ -1,19 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
+namespace SustitucionMOAModel.Models.WSMapMOA.ReporteContrato
 {
-    public class OrdenCargaVisualizarClienteWSMOAResponse
-	{
+    public class ReporteContratoWSMOAResponse
+    {
+        public ErrorWS error { get; set; }
         public List<Result> Resultados { get; set; }
 
-        public OrdenCargaVisualizarClienteWSMOAResponse()
-		{
+        public List<Totales> Totales { get; set; }
+
+        public ReporteContratoWSMOAResponse()
+        {
             Resultados = new List<Result>();
-		}
+        }
     }
 
     public class Result
-	{
+    {
         public string Contrato { get; set; }
 
         public string PedidoCliente { get; set; }
@@ -74,17 +81,19 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
         public string PuntoExpedicion { get; set; }
 
         public string TipoContrato { get; set; }
-
+        public string ColorProducto { get; set; }
+        public string CodigoProducto { get; set; }
+   
         public List<Detail> Detalles { get; set; }
 
         public Result()
-		{
+        {
             Detalles = new List<Detail>();
-		}
+        }
     }
 
     public class Detail
-	{
+    {
         public string Pedido { get; set; }
 
         public string Entrega { get; set; }
@@ -116,5 +125,12 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
         public string Destinatario { get; set; }
 
         public string NombreDestinatario { get; set; }
+    }
+
+    public class Totales
+    {
+        public string MaterialDescripcion { get; set; }
+        public decimal KilosEntregados { get; set; }      
+
     }
 }

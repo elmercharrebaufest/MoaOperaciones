@@ -29,7 +29,6 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IOrdenCargaConsumerMOA consumer;
-        readonly FeriadoService _feriadoService = new FeriadoService();
         protected readonly IFeriadoService feriadoService;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
@@ -343,6 +342,7 @@ namespace SustitucionMOAUtils.Services
             {
                 if (!esJob)
                 {
+                    //if (result != "CC-01" && result != "CC-02")
                     if (!ValidarVencimientoContrato(ordenDeCarga.ContratoIngresado, cliente))
                     {
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "";
@@ -699,7 +699,7 @@ namespace SustitucionMOAUtils.Services
             var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
             var orden = repositorio.Obtener<OrdenDeCarga>(x => x.Id == ordenId);
             var mail = orden.Cliente.Mail;
-            var titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha vencido las siguiente orden de carga:";
+            var titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha vencido la siguiente orden de carga:";
             var cabecera = "Orden :";
             var ordenVencidas = new StringBuilder();
             ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PedidoSAP ?? orden.NumeroPedido}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
@@ -1587,6 +1587,7 @@ namespace SustitucionMOAUtils.Services
 
             return "Email enviado";
         }
+
 
         public bool ValidarVencimientoContrato(string contrato, Proveedor cliente)
         {
