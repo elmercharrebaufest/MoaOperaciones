@@ -1056,13 +1056,13 @@ namespace SustitucionMOAUtils.Services
                 }
                 var request = new OrdenCargaVisualizarClienteWSMOARequest()
                 {
-                    Cliente = cliente,
-                    Contrato = contrato,
+                    Cliente = string.Empty,
+                    Contrato = string.Empty,
                     Corredor = corredor,
                     Fechas = fechas,
-                    Material = material,
+                    Material = string.Empty,
                     Pendiente = pendiente,
-                    TipoContrato = tipoContrato
+                    TipoContrato = string.Empty
                 };
                 var response = ordenCargaConsumerMOA.OrdenCargaVisualizarClienteExecute(request);
                 var clientesWS = response.Resultados.Select(d => d.Cliente).Distinct().ToList();
@@ -1123,15 +1123,6 @@ namespace SustitucionMOAUtils.Services
                 }
                 clienteCuit = cliente.CUIT;
                 clienteCodigo = cliente.CodigoProveedor;
-                //            if (string.IsNullOrEmpty(clienteCodigo))
-                //{
-                //                var cliente = repositorio.Obtener<Proveedor>(x => x.CUIT == clienteCuit && x.EstadoAprobacion == EstadoAprobacion.Aprobado && (x.TipoProveedor.Id == 4 || x.TipoProveedor.Id == 5));
-                //                if (cliente == null)
-                //                {
-                //                    return false;
-                //                }
-                //                clienteCodigo = cliente.CodigoProveedor;
-                //            }
                 var response = OrdenCargaVisualizarCliente(clienteCodigo, contrato, corredor, fechaInicio, fechaFin, producto.CodigoSap, pendiente, string.Empty);
                 if (response.Resultados != null && response.Resultados.Count > 0)
                 {

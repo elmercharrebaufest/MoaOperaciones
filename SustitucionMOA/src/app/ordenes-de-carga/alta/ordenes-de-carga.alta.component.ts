@@ -77,7 +77,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         super(navService, securytiService, floatMsgService, modalService);;
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         this.ordenDeCarga.Cantidad = 30000;
 
         this.route.params.forEach((params: Params) => {
@@ -89,7 +89,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         console.debug(' tipoUsuario: ', sessionStorage.getItem("tipoUsuario"));
         if (this.esCorredor) {
             this.CodigoCorredor = sessionStorage.getItem("proveedor");
-            this.cargarClientes(this.CodigoCorredor);
+            await this.cargarClientes(this.CodigoCorredor);
         }
 
         if (this.ordenDeCargaId > 0) {
@@ -194,9 +194,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.ordenDeCarga.llenar()
     }
 
-    obtenerOrdenDeCarga() {       
+    async obtenerOrdenDeCarga() {       
         try {
-            this.subscriptionDropDowns = this.service.getEditarOrdenDeCarga(this.ordenDeCargaId).subscribe(
+            this.subscriptionDropDowns = await this.service.getEditarOrdenDeCarga(this.ordenDeCargaId).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -208,15 +208,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.obtenerMateriales();
                         this.ordenDeCarga = result.data;
                         this.CodigoCorredor = result.data.CodigoCorredor;
-                        this.cargarClientes(this.CodigoCorredor);
-                        this.clienteCUIT = result.data.CUITCliente;
-                        this.clienteCodigo = result.data.CodigoCliente;
                         if (this.esComercial && result.data.ColorSemaforo != "green") {
                             this.puedeEditarContrato = true;
                         }
                         if(result.data.Estado == 3){
                             this.puedeEditarContrato = true;
                         }
+                        this.cargarClientes(this.CodigoCorredor);
+                        this.clienteCUIT = result.data.CUITCliente;
+                        this.clienteCodigo = result.data.CodigoCliente;
                         this.getPatentes();
                         console.debug(' ordenDeCarga: ', this.ordenDeCarga);
                         console.debug(' ordenDeCargaId: ', this.ordenDeCargaId);
@@ -254,39 +254,33 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.blockUI.stop();
                         if (result.logout == true) {
                         this.sessionDataService.logout();
-                        } else if (
-                            result.error != undefined &&
-                            result.error != ""
-                        ) {
+                        } else if (result.error != undefined && result.error != "") {
+                            console.error(result.error);
                             this.mensajeComponent.setErrorMsg(result.error);
                         } else if (result.info != undefined) {
+                            console.info(result.info);
                             this.mensajeComponent.setInfoMsg(result.info);
-                        } else if (
-                            result.data.error != undefined &&
-                            result.data.error != ""
-                        ) {
+                        } else if (result.data.error != undefined && result.data.error != "") {
+                            console.error(result.data.error);
                             this.mensajeComponent.setErrorMsg(result.data.error);
                         } else if (result.data.info != undefined) {
+                            console.info(result.data.info);
                             this.mensajeComponent.setInfoMsg(result.data.info);
                         } else {
                             this.mensajeComponent.setMsgsEmpty();
-
                             this.mensajeSuccess = result.data.Mensaje;
-
                             this.ordenDeCargaId = result.data.IdEntidad;
-
-                            document
-                                .getElementById("openModalNotificacion")
+                            document.getElementById("openModalNotificacion")
                                 .click();
                         }
                     },
                     (error) => {
+                        console.error(error);
                         this.spinnerComponent.hideIt();
                         this.mensajeComponent.setErrorMsg(error.message);
                         this.blockUI.stop();
                     }
                 );
-
         }
         else {
             this.subscription = this.service
@@ -459,32 +453,35 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
 
-    cargarClientes = (codigoCorredor: string) => {
+    cargarClientes = async (codigoCorredor: string) => {
         console.debug('cargarClientes');
         console.debug(' codigoCorredor: ', codigoCorredor);
         this.listaClientes = [];
         this.spinner.show();
         this.mensajeComponent.setMsgsEmpty();
         try { 
-            this.service.visualizarCliente(codigoCorredor).subscribe(
-                result => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.listaClientes = result;
+            if (this.noEditarCliente) {
+                await this.service.visualizarCliente(codigoCorredor).subscribe(
+                    result => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            this.listaClientes = result;
+                            this.spinner.hide();
+                        }
+                    },
+                    error => {
+                        console.error(error.message);
+                        this.mensajeComponent.setErrorMsg(error.message);
                         this.spinner.hide();
                     }
-                },
-                error => {
-                    console.error(error.message);
-                    this.mensajeComponent.setErrorMsg(error.message);
-                    this.spinner.hide();
-                }
-            );
+                );
+            }
+            
         } catch (err) {
             console.error(err.message);
             this.mensajeComponent.setErrorMsg(err);
