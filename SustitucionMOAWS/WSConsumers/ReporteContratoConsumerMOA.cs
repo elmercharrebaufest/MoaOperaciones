@@ -93,6 +93,7 @@ namespace SustitucionMOAWS.WSConsumers
                         FechaPedido = detalle.FECHA_PEDIDO,
                         FechaCarga = detalle.FECHA_CARGA,
                         CantidadEntregada = detalle.CANTIDAD_ENTREGADA,
+                        CantidadEntregadaStr = SAPFormatter.FormatearCantidad(detalle.CANTIDAD_ENTREGADA, "KG"),
                         Remito = detalle.REMITO,
                         Factura = detalle.FACTURA,
                         CantidadFactura = detalle.CANTIDAD_FACTURA,

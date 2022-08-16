@@ -29,69 +29,54 @@ namespace SustitucionMOAUtils.Services
         }
 
         public ReporteContratoViewModel GetContratosReporte(
-            string proveedor, 
+            string proveedor,
             string fechaInicio,
-            string fechaFin, 
-            string clienteFiltro, 
-            string productoFiltro,
-            string tipoContrato, 
+            string fechaFin,
             bool mostrarPendientes,
-            bool esFiltro, 
-            string mailUsuario)
+            string mailUsuario,
+            ReporteContratoWSMOAResponse dataFiltro)
         {
             List<FechaWS> fechas = new List<FechaWS>();
             var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
             var request = new ReporteContratoWSMOARequest();
-            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(u => u.Mail == mailUsuario);
-            var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
-            
-            if (esFiltro)
+
+            request = new ReporteContratoWSMOARequest()
             {
-                request = new ReporteContratoWSMOARequest()
-                {
-                    Cliente = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? clienteFiltro :proveedor,
-                    Pendiente = mostrarPendientes ? "X":"",
-                    Corredor = "",
-                    Material = productoFiltro == "" ? "" : productoFiltro,
-                    TipoContrato = tipoContrato,
-                    Fechas = new List<FechaWS> { new FechaWS
-                      {
-                        fechaInicio = Convert.ToDateTime(fechaInicio),
-                        fechaFin = Convert.ToDateTime(fechaFin)
-
-                      }
+                Cliente = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? "" : proveedor,
+                Pendiente = mostrarPendientes == true ? "X" : "",
+                Corredor = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? proveedor : "",
+                Material = "",
+                TipoContrato = "",
+                Contrato = "",
+                Fechas = new List<FechaWS> { new FechaWS { fechaInicio = Convert.ToDateTime(fechaInicio),
+                                                               fechaFin = Convert.ToDateTime(fechaFin)}
                     }
+            };
 
-                };
+            ReporteContratoViewModel view = new ReporteContratoViewModel();
+            if (dataFiltro == null)
+            {
+                view.data = consumer.ReporteContratoExecute(request);
             }
             else
             {
-
-                request = new ReporteContratoWSMOARequest()
-                {
-                    Cliente = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? "" : proveedor,
-                    Pendiente = mostrarPendientes ? "X" : "",
-                    Corredor = (!esComercial && usuario.TipoUsuario.NombreCorto == "CORR") ? proveedor : "",
-                    Material = productoFiltro == "" ? "" : productoFiltro,
-                    TipoContrato = tipoContrato,
-                    Fechas = new List<FechaWS> { new FechaWS { fechaInicio = Convert.ToDateTime(fechaInicio),
-                                                               fechaFin = Convert.ToDateTime(fechaFin)}
-                    }
-                };
+                view.data = dataFiltro;
 
             }
 
+            validarRespuesta(dataFiltro == null ? view.data : dataFiltro);
+            var obtenerAgrupado = obtenerAgrupadoProducto(view);
+            view.data.Resultados = obtenerAgrupado.data.Resultados.OrderByDescending(x => x.FechaDesde).OrderByDescending(y => y.DescripcionMaterial).ToList();
+            return view;
+        }
 
-            ReporteContratoViewModel view = new ReporteContratoViewModel();
-            view.data = consumer.ReporteContratoExecute(request);
-            validarRespuesta(view.data);
-            if (!esFiltro)
-            {
-                view.filtroCliente = new DropdownContent(view.data.Resultados.GroupBy(i => i.NombreCliente).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
-                view.filtroProducto = new DropdownContent(view.data.Resultados.GroupBy(i => i.DescripcionMaterial).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
-                view.filtroTipoContrato = new DropdownContent(view.data.Resultados.GroupBy(i => i.TipoContrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
-                view.filtroNroContrato = new DropdownContent(view.data.Resultados.GroupBy(i => i.Contrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
-            }
+        public ReporteContratoViewModel obtenerAgrupadoProducto(ReporteContratoViewModel view)
+        {
+            view.filtroCliente = new DropdownContent(view.data.Resultados.GroupBy(i => i.NombreCliente).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
+            view.filtroProducto = new DropdownContent(view.data.Resultados.GroupBy(i => i.DescripcionMaterial).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
+            view.filtroTipoContrato = new DropdownContent(view.data.Resultados.GroupBy(i => i.TipoContrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
+            view.filtroNroContrato = new DropdownContent(view.data.Resultados.GroupBy(i => i.Contrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
+
             var listaPorProducto = view.data.Resultados.OrderByDescending(x => x.DescripcionMaterial).ToList();
             var agrupadoProducto = view.data.Resultados.GroupBy(x => x.DescripcionMaterial).Select(x => new
             {
@@ -104,34 +89,23 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var rowAgrupado in agrupadoProducto)
             {
-                foreach (var rowProducto in listaPorProducto)
-                {
-                    if (rowAgrupado.descripcion != rowProducto.DescripcionMaterial)
-                    {
-                        var resultado = new Result();
-                        resultado.TipoContrato = "";
-                        resultado.Contrato = "";
-                        resultado.NombreCliente = "";
-                        resultado.FechaDesde = "";
-                        resultado.Corredor = "";
-                        resultado.KilosTotalesStr = "";
-                        resultado.KilosPendienteEntregaStr = "";
-                        resultado.DescripcionMaterial = rowAgrupado.descripcion;
-                        resultado.KilosEntregadosStr = SAPFormatter.FormatearCantidad(rowAgrupado.kilosEnregados, "KG");
-                        resultado.KilosTotalesStr = SAPFormatter.FormatearCantidad(rowAgrupado.kilosTotales, "KG");
-                        resultado.KilosPendienteEntregaStr = SAPFormatter.FormatearCantidad(rowAgrupado.kilosPendientes, "KG");
-                        resultado.ColorProducto = consumer.SetearColorProducto((listaPorProducto.FirstOrDefault(x => x.DescripcionMaterial == rowAgrupado.descripcion).Producto).Trim('0'));
-                        view.data.Resultados.Add(resultado);
-                        break;
-
-
-                    }
-                }
-
+                var resultado = new Result();
+                resultado.TipoContrato = "";
+                resultado.Contrato = "";
+                resultado.NombreCliente = "";
+                resultado.FechaDesde = "";
+                resultado.Corredor = "Total";
+                resultado.KilosTotalesStr = "";
+                resultado.KilosPendienteEntregaStr = "";
+                resultado.DescripcionMaterial = rowAgrupado.descripcion;
+                resultado.KilosEntregadosStr = SAPFormatter.FormatearCantidad(rowAgrupado.kilosEnregados, "KG");
+                resultado.KilosTotalesStr = SAPFormatter.FormatearCantidad(rowAgrupado.kilosTotales, "KG");
+                resultado.KilosPendienteEntregaStr = SAPFormatter.FormatearCantidad(rowAgrupado.kilosPendientes, "KG");
+                resultado.ColorProducto = consumer.SetearColorProducto((listaPorProducto.FirstOrDefault(x => x.DescripcionMaterial == rowAgrupado.descripcion).Producto).Trim('0'));
+                view.data.Resultados.Add(resultado);
 
             }
 
-            view.data.Resultados = view.data.Resultados.OrderByDescending(x => x.FechaDesde).OrderByDescending(y => y.DescripcionMaterial).ToList();
             return view;
         }
 
@@ -141,6 +115,23 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException(ErrorMsg.Error);
             if (data.Resultados == null || data.Resultados.Count == 0)
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Contratos"));
+        }
+
+        public ReporteContratoViewModel GetContratosDetalle(string contrato, string proveedor)
+        {
+            var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
+            var request = new ReporteContratoWSMOARequest();
+
+            request = new ReporteContratoWSMOARequest()
+            {
+                Cliente = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? "" : proveedor,
+                Corredor = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? proveedor : "",
+                Contrato = contrato
+            };
+
+            ReporteContratoViewModel view = new ReporteContratoViewModel();
+            view.data = consumer.ReporteContratoExecute(request);
+            return view;
         }
     }
 }

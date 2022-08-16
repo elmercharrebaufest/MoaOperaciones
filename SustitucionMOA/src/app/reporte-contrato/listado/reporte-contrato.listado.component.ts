@@ -1,4 +1,4 @@
-import { Component, OnInit , OnDestroy} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -9,6 +9,10 @@ import { SelectItem, ConfirmationService } from 'primeng/api';
 import { ReporteContratoService } from '../reporte-contrato.service';
 import { formatDate } from '@angular/common';
 import * as XLSX from 'xlsx';
+import { DetalleComponent } from '../detalle/reporte-contrato.detalle.component';
+import { BaseComponent } from '../../common/base-components/base-component';
+
+
 
 
 @Component({
@@ -20,10 +24,10 @@ import * as XLSX from 'xlsx';
     //]
 
 })
-export class ReporteContratoListado extends ListBaseComponent implements OnDestroy {
+export class ReporteContratoListado extends ListBaseComponent implements OnInit, OnDestroy {
 
     constructor(protected service: ReporteContratoService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);     
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
     detalle: any[];
@@ -37,63 +41,60 @@ export class ReporteContratoListado extends ListBaseComponent implements OnDestr
     tipoContratoSelected: string = "";
     KilosEntregados: string = "";
     data: any[];
-    totales: any[];
     KilosPendienteEntrega: string = "";
     KilosTotales: string = "";
     codigoCliente: string = "";
-    codigo: any = null;
     codigoProducto: string = "";
     TipoContrato: string = "";
-    esFiltro: boolean = false;
     show: boolean = false;
     mostrarPendientes: boolean = false;
-     
+    columnaCliente: string = "NombreCliente";
+    columnaProducto: string = "DescripcionMaterial";
+    ColumnaTipoContrato: string = "TipoContrato";
+
+
 
     ngOnInit() {
-        this.getListado();                  
+        this.getListado();
     }
-    
+
     getListado() {
         this.detalle = null;
+        this.varciarFiltrosReporte();
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio,
-            this.filtroFechaComponent.fecha_fin, this.codigoCliente, this.codigoProducto, this.esFiltro, this.mostrarPendientes, this.TipoContrato).subscribe(
-            (result: any) => {                
-                this.mensajeComponent.setMsgsEmpty();
-                this.spinnerComponent.hideIt();
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    this.mensajeComponent.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.mensajeComponent.setInfoMsg(result.info);
-                } else {
-                    this.cabecera = result.data.Resultados;               
-                    this.cargarFiltrosContratos(result);
-                    this.getTotalKilogramos();
-                    if (!this.esFiltro) {
+            this.filtroFechaComponent.fecha_fin, this.mostrarPendientes).subscribe(
+                (result: any) => {
+                    this.mensajeComponent.setMsgsEmpty();
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.cabecera = result.data.Resultados;
+                        this.cargarFiltrosContratos(result);
+                        this.getTotalKilogramos();
                         this.data = result.data.Resultados;
+                        this.show = true;
+
+
                     }
-                    this.show = true;
-                    //result.data.Resultados.Detalles.forEach(x => {
-                    //    console.log(result.data.Resultados.Detalles);
-                    //});
 
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
                 }
-                
-            },
-            error => {
-                this.spinnerComponent.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
 
-        );
+            );
         return false;
     }
     getListadoFechas() {
-        this.esFiltro = false;
         this.show = false;
         this.getListado();
     }
@@ -113,59 +114,45 @@ export class ReporteContratoListado extends ListBaseComponent implements OnDestr
         if (result.filtroTipoContrato != undefined) this.filtroTipoContrato = result.filtroTipoContrato.options;
     }
 
-    setParametros() {
-        this.esFiltro = true;
-        this.show = false;
-        this.getListado();
-    }
 
-    //vaciarFiltrosReportes() {
-    //    this.filtroCliente = "";
-    //    this.filtroContrato = "";
-    //    this.filtroProducto = "";
-    //    this.filtroTipoContrato = "";
-    //}
     setFiltroCliente(cliente: string) {
-        if (cliente != "") {
-            this.clienteSelected = cliente;
-            this.codigo = this.cabecera.find(x => x.NombreCliente == cliente) == undefined ? this.data.find(x => x.NombreCliente == cliente) : this.cabecera.find(x => x.NombreCliente == cliente);
-            this.codigoCliente = this.codigo.Cliente;                       
-        }
-        else {
-            this.codigoCliente = "";
-        }
-        this.setParametros();
+        this.clienteSelected = cliente;
+        this.ejecutarFiltro();
     }
 
     setFiltroTipoContrato(tipoContrato: string) {
-        if (tipoContrato != "") {
-            this.tipoContratoSelected = tipoContrato;
-            this.codigo = this.cabecera.find(x => x.TipoContrato == tipoContrato) == undefined ? this.data.find(x => x.TipoContrato == tipoContrato) : this.cabecera.find(x => x.TipoContrato == tipoContrato);
-            this.TipoContrato = this.codigo.TipoContrato;
-        }
-        else {
-            this.TipoContrato = "";
-        }
-        this.setParametros();
+        this.tipoContratoSelected = tipoContrato;
+        this.ejecutarFiltro();
     }
 
     setFiltroProducto(producto: string) {
-        if (producto != "") 
-        {
-            this.productoSelected = producto
-            this.codigo = this.cabecera.find(x => x.DescripcionMaterial == producto) == undefined ? this.data.find(x => x.DescripcionMaterial == producto) : this.cabecera.find(x => x.DescripcionMaterial == producto);
-            this.codigoProducto = this.codigo.Producto;        
-        }
-        else
-        {
-            this.codigoProducto = "";
-        }
-        this.setParametros();        
+        this.productoSelected = producto
+        this.ejecutarFiltro();
     }
 
     filtroPendientes() {
-        this.mostrarPendientes = true;
-        this.setParametros();
+        this.getListado();
+    }
+
+    ejecutarFiltro() {
+        this.cabecera = this.data;
+        var listaFiltro = [{ "campo": this.clienteSelected, "columna": this.columnaCliente },
+        { "campo": this.productoSelected, "columna": this.columnaProducto },
+        { "campo": this.tipoContratoSelected, "columna": this.ColumnaTipoContrato }];
+
+        for (const a of listaFiltro) {
+            if (a.campo == "") {
+                continue;
+            }
+            else {
+                this.cabecera = this.cabecera.filter(x => x[a.columna].toUpperCase().indexOf(a.campo.toUpperCase()) >= 0);
+
+
+            }
+
+        }
+        this.cabecera = this.cabecera.filter(x => x.Corredor != "Total");
+        this.ObtenerContratosFiltro();
     }
 
     getTotalKilogramos() {
@@ -183,7 +170,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnDestr
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         );
-       
+
     }
 
     exportExcelReporteContrato() {
@@ -202,8 +189,8 @@ export class ReporteContratoListado extends ListBaseComponent implements OnDestr
                 "Kgs Totales": info.KilosTotalesStr,
                 "Kgs Entregados": info.KilosEntregadosStr,
                 "Kgs Pendiente de entrega": info.KilosPendienteEntregaStr
-              
-               
+
+
             }
         });
 
@@ -221,10 +208,45 @@ export class ReporteContratoListado extends ListBaseComponent implements OnDestr
         let worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(JSONData);
         let workbook: XLSX.WorkBook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Reporte de contratos');
-
         //escribe el file para ser descargado
         const excelBuffer: any = XLSX.writeFile(workbook, FileTitle + '.xlsx');
     }
 
-   
+    ObtenerContratosFiltro() {
+        this.subscription = this.service.obtenerContratosFiltro(this.filtroFechaComponent.fecha_inicio,
+            this.filtroFechaComponent.fecha_fin, this.mostrarPendientes, this.cabecera).subscribe(
+                (result: any) => {
+                    this.mensajeComponent.setMsgsEmpty();
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.cabecera = result.data.Resultados;
+                        this.cargarFiltrosContratos(result);
+                        this.getTotalKilogramos();
+                        this.show = true;
+
+                    }
+
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+    }
+
+    varciarFiltrosReporte() {
+        this.filtroCliente == null;
+        this.filtroContrato == null;
+        this.filtroProducto == null;
+        this.filtroTipoContrato == null;
+        this.clienteSelected == "";
+        this.productoSelected = "";
+        this.tipoContratoSelected = "";
+    }
+  
 }
