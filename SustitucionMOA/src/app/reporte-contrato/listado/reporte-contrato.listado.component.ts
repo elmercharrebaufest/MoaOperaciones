@@ -9,8 +9,7 @@ import { SelectItem, ConfirmationService } from 'primeng/api';
 import { ReporteContratoService } from '../reporte-contrato.service';
 import { formatDate } from '@angular/common';
 import * as XLSX from 'xlsx';
-import { DetalleComponent } from '../detalle/reporte-contrato.detalle.component';
-import { BaseComponent } from '../../common/base-components/base-component';
+
 
 
 

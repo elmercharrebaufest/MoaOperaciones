@@ -9,6 +9,7 @@ import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { ReporteContratoListado } from '../listado/reporte-contrato.listado.component';
 import { ReporteContratoService } from '../reporte-contrato.service';
+import * as XLSX from 'xlsx';
 
 
 @Component({
@@ -63,6 +64,45 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
             );
 
         });
+    }
+
+
+    exportExcelReporteContratoDetalle() {
+        this.mensajeComponent.setMsgsEmpty();
+        let informacionExportar: any;
+
+        informacionExportar = this.detalle.map(info => {
+            return {
+                "Fecha Pedido": info.FechaPedido || "-",
+                "Fecha Carga": info.FechaCarga || "-",
+                "Cantidad Entregada": info.CantidadEntregadaStr || "-",
+                "Remito": info.Remito,
+                "Factura": info.Factura || "-",
+                "Chasis": info.Chasis || "-",
+                "Acoplado": info.Acoplado || "-",
+                "Chofer": info.Chofer
+              
+
+
+            }
+        });
+
+        if (informacionExportar.length == 0) {
+            this.mensajeComponent.setInfoMsg("No existen datos para exportar.");
+            return
+        }
+
+        this.DownloadJsonData(informacionExportar, "ReporteContratoDetalle");
+    }
+
+    DownloadJsonData(JSONData: any, FileTitle: string) {
+
+        //crea la estructura inicial del archivo
+        let worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(JSONData);
+        let workbook: XLSX.WorkBook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Reporte de contratos detalle');
+        //escribe el file para ser descargado
+        const excelBuffer: any = XLSX.writeFile(workbook, FileTitle + '.xlsx');
     }
 
 }
