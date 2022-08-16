@@ -1,18 +1,17 @@
 ﻿using Newtonsoft.Json;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
-using System.Linq;
 using System.Web.Mvc;
+
 namespace SustitucionMOA.Controllers
 {
-    public class OrdenDeCargaController : BaseController
+	public class OrdenDeCargaController : BaseController
     {
         readonly IOrdenDeCargaService ordenDeCargaService;
         private readonly IConsultaService consultaService;
@@ -119,6 +118,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+        
         [HttpGet]
         public ActionResult GetEditar(int ordenDeCargaId)
         {
@@ -524,12 +524,31 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-				//var corredor = "C70359905";
-				//var fechaInicio = "2017-01-01";
-				//var fechaFin = "2019-12-31";
-				var response = ordenDeCargaService.VisualizarCliente(string.Empty, string.Empty, corredor, fechaInicio, fechaFin, string.Empty, pendiente, string.Empty);
+                var response = ordenDeCargaService.VisualizarCliente(corredor, fechaInicio, fechaFin, pendiente);
+                return JsonCustom(response);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-				return JsonCustom(response);
+        [HttpGet]
+        public ActionResult ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string fechaInicio, string fechaFin, string productoId, string pendiente)
+        {
+            try
+            {
+                var response = ordenDeCargaService.ValidarCorredorClienteContratoProducto(clienteCuit, clienteCodigo, contrato, corredor, fechaInicio, fechaFin, productoId, pendiente);
+                return JsonCustom(response);
             }
             catch (InfoCustomException e)
             {
@@ -567,6 +586,5 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
     }
 }

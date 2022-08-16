@@ -264,7 +264,7 @@ export class OrdenesDeCargaService extends BaseService {
 
     public getPatentes(ordenDeCarga: OrdenDeCarga): Observable<any> {
         let payload = new FormData();
-        console.log(ordenDeCarga)
+        // console.log(ordenDeCarga)
         payload.append(
             "ordenDeCargaJson",
             JSON.stringify(ordenDeCarga)
@@ -282,6 +282,22 @@ export class OrdenesDeCargaService extends BaseService {
 
         return this.http
             .get('/api/OrdenDeCarga/VisualizarCliente', { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
+
+    public validarCorredorClienteContratoProducto(clienteCuit: string, clienteCodigo: string, contrato: string, codigoCorredor: string, productoId: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.append("clienteCuit", clienteCuit);
+        params = params.append("clienteCodigo", clienteCodigo);
+        params = params.append("contrato", contrato);
+        params = params.append("corredor", codigoCorredor);
+        params = params.append("fechaInicio", '');
+        params = params.append("fechaFin", '');
+        params = params.append("productoId", productoId);
+        params = params.append("pendiente", 'x');
+
+        return this.http
+            .get('/api/OrdenDeCarga/validarCorredorClienteContratoProducto', { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 }

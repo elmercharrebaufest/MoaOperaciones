@@ -1,16 +1,10 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Interfaces
 {
-    public interface IOrdenDeCargaService
+	public interface IOrdenDeCargaService
     {
         Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
         List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin);
@@ -35,11 +29,10 @@ namespace SustitucionMOAUtils.Interfaces
         List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga();
         string ForzarCreacionOrden(int ordenId);
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);
-        List<ProveedorDto> VisualizarCliente(string cliente, string contrato, string corredor, string fechaInicio, string fechaFin, string material, string pendiente, string tipoContrato);
+        List<ProveedorDto> VisualizarCliente(string corredor, string fechaInicio, string fechaFin, string pendiente);
+        bool ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string fechaInicio, string fechaFin, string productoId, string pendiente);
         string NotificarVariosPedidos(int ordenDeCargaId);
         string NotificarVariosContratos(int ordenDeCargaId);
         string NotificarVencimientoOrdenCarga(int ordenId);
-
     }
-
 }

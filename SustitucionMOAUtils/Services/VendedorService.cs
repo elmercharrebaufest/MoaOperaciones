@@ -18,9 +18,8 @@ using Models = SustitucionMOAModel.Models;
 namespace SustitucionMOAUtils.Services
 {
 
-    public class VendedorService : IVendedorService
+	public class VendedorService : IVendedorService
     {
-
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
         protected readonly IVendedorHabilitadoConsumerMOA vendedorHabilitadoConsumer;
@@ -65,7 +64,6 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
-
         public VendedoresWSMOAResponse GetVendedores(string usuariomail, string codigoProveedor, string fechaInicio, string fechaFin)
         {
             if (fechaInicio == "")
@@ -134,7 +132,45 @@ namespace SustitucionMOAUtils.Services
                 .ToList();
             return response;
         }
-
+        public List<ProveedorDto> GetAllClientsByType(int tipoProveedorId)
+        {
+            try
+            {
+                var clientesBD = repositorio.Listar<Proveedor>(p => p.TipoProveedor.Id == (tipoProveedorId > 0 ? tipoProveedorId : p.TipoProveedor.Id) && p.EstadoAprobacion == EstadoAprobacion.Aprobado)
+                   .ToList();
+                var clientesDto = clientesBD.Select(prov => new ProveedorDto
+                {
+                    CodigoProveedor = prov.CodigoProveedor ?? "",
+                    CUIT = prov.CUIT,
+                    EstadoAprobacion = prov.EstadoAprobacion,
+                    EstadoAprobacionDescripcion = prov.EstadoAprobacion.ToFriendlyString(),
+                    Id = prov.Id,
+                    IdComercialDataAgro = prov.IdComercialDataAgro,
+                    IdDataAgro = prov.IdDataAgro,
+                    Mail = prov.Mail ?? "",
+                    Observaciones = prov.Observaciones,
+                    RazonSocial = prov.RazonSocial ?? "",
+                    FechaSolicitud = prov.FechaSolicitud,
+                    Comercial = prov.Comercial,
+                    EstadoSIPER = prov.EstadoSIPER,
+                    ContieneDocumentacionFisica = prov.ContieneDocumentacionFisica,
+                    IdTipoProveedor = prov.TipoProveedor.Id
+                }).ToList();
+                return clientesDto;
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
         public VendedoresWSMOAResponse AutocompleteProveedores(string usuariomail, string codigoProveedor, string fechaInicio, string fechaFin, int tipoProveedorId)
         {
             VendedoresWSMOAResponse response = new VendedoresWSMOAResponse();
@@ -198,7 +234,6 @@ namespace SustitucionMOAUtils.Services
                 .ToList();
             return response;
         }
-
         public VendedorHabilitadoWSMOAResponse GetVendedorStatus(string cuit, string user)
         {
             try
@@ -232,8 +267,6 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
-
-
         public List<EstadoVendedorDto> GetVariosVendedoresStatus(List<string> cuitsVendedores, string user)
         {
             try
@@ -301,12 +334,10 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
-
         public List<ProveedorDto> GetVendedores(string mailUsuario)
         {
             return GetVendedores(mailUsuario, x => x.EstadoAprobacion == EstadoAprobacion.Aprobado);
         }
-
         public List<ProveedorDto> GetVendedoresPendientes(string mailUsuario, string codigoProveedor)
         {
 
@@ -331,7 +362,6 @@ namespace SustitucionMOAUtils.Services
             }
             return proveedorDtos;
         }
-
         private List<ProveedorDto> GetVendedores(string mailUsuario, Func<Proveedor, bool> filtro = null)
         {
 
@@ -404,7 +434,6 @@ namespace SustitucionMOAUtils.Services
             }
             return listadoProveedores.Distinct().ToList();
         }
-
         public string AgregarVendedor(string mailUsuario, string cuit, int tipoProveedor)
         {
             var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
@@ -520,7 +549,6 @@ namespace SustitucionMOAUtils.Services
 
             return SuccessMsg.AltaVendedorOK;
         }
-
         public string EliminarVendedor(string mailUsuario, int proveedorId)
         {
             var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
@@ -548,14 +576,10 @@ namespace SustitucionMOAUtils.Services
 
             return SuccessMsg.VendedorBorradoOK;
         }
-
         private string FormatearCodigoProveedor(string CUIT)
         {
             return string.Concat("00", CUIT.Substring(2, 8));
         }
-
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto) => repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
-
-
     }
 }
