@@ -83,5 +83,6 @@ namespace SustitucionMOAModel.Entities
         public int? IdSolicitanteInternoAltaGranos { get; set; }
         [ForeignKey("IdSolicitanteInternoAltaGranos")]
         public virtual Usuario SolicitanteInternoAltaGranos { get; set; }
+        public string EstadoSISA { get; set; }
     }
 }

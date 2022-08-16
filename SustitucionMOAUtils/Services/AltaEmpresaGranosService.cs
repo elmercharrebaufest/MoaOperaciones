@@ -705,7 +705,11 @@ namespace SustitucionMOAUtils.Services
                     AltaInterna = true,
                     IdSolicitanteInternoAltaGranos = usuario.Id
                 };
-
+                var result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+                if (result != null)
+                {
+                    proveedor.EstadoSISA = result.ProveedorSISAEstadoCuit;
+                }
                 var hist = new ProveedorHistorialAprobacion
                 {
                     Fecha = DateTime.Now,

@@ -103,6 +103,7 @@ namespace SustitucionMOAUtils.Services
                             IngresoBruto = ((IngresosBrutos)(proveedor.IdIngresoBruto ?? 0)).ToFriendlyString(),
                             SiperObligatorio = proveedor.SiperObligatorio,
                             ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
+                            SISAEstadoCuit = proveedor.EstadoSISA
                         })
                         .ToList();
 
@@ -112,28 +113,28 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 //TODO: Deprecar esto y obtener la razon social a través de la FK del proveedor al proveedor que lo dio de alta
-                foreach (var proveedorDto in proveedorDtos)
-                {
-                    //var corredorAsociado = repositorio.Listar<Proveedor>(p => p.CodigoProveedor.Contains("C") && p.Mail == proveedorDto.Mail).FirstOrDefault();
-                    //if (corredorAsociado != null) proveedorDto.RazonSocialCorredor = corredorAsociado.RazonSocial;
+                //foreach (var proveedorDto in proveedorDtos)
+                //{
+                //    //var corredorAsociado = repositorio.Listar<Proveedor>(p => p.CodigoProveedor.Contains("C") && p.Mail == proveedorDto.Mail).FirstOrDefault();
+                //    //if (corredorAsociado != null) proveedorDto.RazonSocialCorredor = corredorAsociado.RazonSocial;
 
-                    if ((proveedorDto.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
-                        || proveedorDto.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
-                        || proveedorDto.EstadoAprobacion == EstadoAprobacion.EtapaFinal
-                        || proveedorDto.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
-                        || proveedorDto.EstadoAprobacion == EstadoAprobacion.Aprobado)
-                        &&
-                        (proveedorDto.IdTipoUsuario == 2 || proveedorDto.IdTipoUsuario == 4)
-                        )
-                    {
-                        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedorDto.CUIT);
-                        if (result != null)
-                        {
-                            proveedorDto.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
-                        }
-                    }
+                //    if ((proveedorDto.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
+                //        || proveedorDto.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
+                //        || proveedorDto.EstadoAprobacion == EstadoAprobacion.EtapaFinal
+                //        || proveedorDto.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
+                //        || proveedorDto.EstadoAprobacion == EstadoAprobacion.Aprobado)
+                //        &&
+                //        (proveedorDto.IdTipoUsuario == 2 || proveedorDto.IdTipoUsuario == 4)
+                //        )
+                //    {
+                //        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedorDto.CUIT);
+                //        if (result != null)
+                //        {
+                //            proveedorDto.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
+                //        }
+                //    }
 
-                }
+                //}
 
                 return proveedorDtos;
             }

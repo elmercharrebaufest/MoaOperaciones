@@ -7,4 +7,5 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'VencimientoOr
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ActualizarEstadoSolpSapJob') BEGIN    INSERT into HabilitacionJob VALUES ('ActualizarEstadoSolpSapJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ObtenerSolpsDesdeSAPJob') BEGIN    INSERT into HabilitacionJob VALUES ('ObtenerSolpsDesdeSAPJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ActualizarLocalidades') BEGIN    INSERT into HabilitacionJob VALUES ('ActualizarLocalidades',1)END
+IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ActualizarSISAJob') BEGIN    INSERT into HabilitacionJob VALUES ('ActualizarSISAJob',1)END
 

@@ -67,6 +67,9 @@ namespace SustitucionMOA
             
             RecurringJob.AddOrUpdate<Jobs.IActualizarLocalidades>("ActualizarLocalidades", j => j.Execute(),
                  "0 0 * * *", tz);
+
+            RecurringJob.AddOrUpdate<Jobs.IActualizarSISAJob>("ActualizarSISAJob", j => j.Execute(),
+                 "0 12 * * *", tz);
         }
     }
 }
