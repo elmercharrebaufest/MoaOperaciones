@@ -269,33 +269,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             
         }
          if (this.esMesaFas) {
-            //if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
-            //    if (this.esAnulador) {
-            //        this.mostrarBotonAnular = true;
-            //    }
-            //}
-            //if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
-            //    if (this.esAnulador) {
-            //        this.mostrarBotonAnular = true;
-            //    }
-            //}
-            //if (!this.ordenDeCarga.TransporteExiste) {
-            //    if (this.esAnulador) {
-            //        this.mostrarBotonAnular = true;
-            //    }
-            //}
             if(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada){               
                 this.mostrarBotonAprobarAnulacion = true;
             }
-            //if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada) {
-            //    if (this.esAnulador) {
-            //        if (this.ordenDeCarga.EsOrdenVencida) {
-            //            this.mostrarBotonAnularPorVencimiento = true;
-            //        }
-            //        this.mostrarBotonAnular = true;
-            //    }
-             
-            //}
+          
         }
 
         if (this.esAnulador) {
