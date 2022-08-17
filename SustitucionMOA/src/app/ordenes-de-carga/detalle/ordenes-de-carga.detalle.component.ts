@@ -283,6 +283,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonVerificarSituacionCrediticia = true;
             }
 
+
             if (this.ordenDeCarga.ContratoSinCantidadPendiente) {
                 this.mostrarBotonForzarCreacionPedido = true;
             }
@@ -333,6 +334,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
                 this.mostrarBotonAnular = true;
             }
+
         }
     }
 
