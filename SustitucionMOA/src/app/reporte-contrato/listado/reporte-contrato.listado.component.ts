@@ -147,7 +147,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
             }
 
         }
-        this.cabecera = this.cabecera.filter(x => x.Corredor != "Total");
+        this.cabecera = this.cabecera.filter(x => x.Corredor != "TOTAL");
         this.ObtenerContratosFiltro();
     }
 

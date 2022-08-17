@@ -90,8 +90,8 @@ namespace SustitucionMOAWS.WSConsumers
                     {
                         Pedido = detalle.PEDIDO,
                         Entrega = detalle.ENTREGA,
-                        FechaPedido = detalle.FECHA_PEDIDO,
-                        FechaCarga = detalle.FECHA_CARGA,
+                        FechaPedido = SAPFormatter.FormatearFecha(detalle.FECHA_PEDIDO),
+                        FechaCarga = SAPFormatter.FormatearFecha(detalle.FECHA_CARGA),
                         CantidadEntregada = detalle.CANTIDAD_ENTREGADA,
                         CantidadEntregadaStr = SAPFormatter.FormatearCantidad(detalle.CANTIDAD_ENTREGADA, "KG"),
                         Remito = detalle.REMITO,

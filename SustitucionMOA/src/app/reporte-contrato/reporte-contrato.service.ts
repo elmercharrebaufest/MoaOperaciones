@@ -23,7 +23,8 @@ export class ReporteContratoService extends BaseService {
             
            
         return this.http
-            .get('/api/ReporteContrato/GetContratos', { params: params });
+            .get('/api/ReporteContrato/GetContratos', { params: params }).pipe(
+                timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
           
     }
 
