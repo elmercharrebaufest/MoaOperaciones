@@ -242,8 +242,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mostrarBotonEdicionFinalizada = true;
         }
 
-        if (this.esInterno) {         
-                this.mostrarBotonVerHistorial = true;
+        if (this.esInterno) {
+            this.mostrarBotonVerHistorial = true;
+                         
             if (this.ordenDeCarga.NumeroPedido === "-" && this.ordenDeCarga.PedidosRespuesta != "-") {
                 this.mostrarBotonPedidos = true
             }
@@ -261,48 +262,67 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonVerificarSituacionCrediticia = true;                
             }
 
-            //if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
-            //    if (this.esAnulador) {
-            //        this.mostrarBotonAnular = true;
-            //    }
-            //}
 
             if (this.ordenDeCarga.ContratoSinCantidadPendiente) {
                 this.mostrarBotonForzarCreacionPedido = true;
             }
             
         }
-        else if (this.esMesaFas) {
+         if (this.esMesaFas) {
+            //if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
+            //    if (this.esAnulador) {
+            //        this.mostrarBotonAnular = true;
+            //    }
+            //}
+            //if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
+            //    if (this.esAnulador) {
+            //        this.mostrarBotonAnular = true;
+            //    }
+            //}
+            //if (!this.ordenDeCarga.TransporteExiste) {
+            //    if (this.esAnulador) {
+            //        this.mostrarBotonAnular = true;
+            //    }
+            //}
+            if(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada){               
+                this.mostrarBotonAprobarAnulacion = true;
+            }
+            //if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada) {
+            //    if (this.esAnulador) {
+            //        if (this.ordenDeCarga.EsOrdenVencida) {
+            //            this.mostrarBotonAnularPorVencimiento = true;
+            //        }
+            //        this.mostrarBotonAnular = true;
+            //    }
+             
+            //}
+        }
+
+        if (this.esAnulador) {
+
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
                 if (this.esAnulador) {
                     this.mostrarBotonAnular = true;
                 }
             }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
-                if (this.esAnulador) {
-                    this.mostrarBotonAnular = true;
-                }
+                this.mostrarBotonAnular = true;
+
             }
             if (!this.ordenDeCarga.TransporteExiste) {
-                if (this.esAnulador) {
-                    this.mostrarBotonAnular = true;
-                }
+                this.mostrarBotonAnular = true;
+
             }
-            if(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada){
-                if (this.esAnulador) {
-                    this.mostrarBotonAnular = true;
-                }
-                this.mostrarBotonAprobarAnulacion = true;
-            }
+
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada) {
-                if (this.esAnulador) {
-                    if (this.ordenDeCarga.EsOrdenVencida) {
-                        this.mostrarBotonAnularPorVencimiento = true;
-                    }
-                    this.mostrarBotonAnular = true;
+
+                if (this.ordenDeCarga.EsOrdenVencida) {
+                    this.mostrarBotonAnularPorVencimiento = true;
+
                 }
-             
+                this.mostrarBotonAnular = true;
             }
+
         }
     }
 
