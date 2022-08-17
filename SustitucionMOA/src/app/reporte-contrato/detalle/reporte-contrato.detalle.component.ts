@@ -35,7 +35,6 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
     }
 
     getDetalleContrato() {
-        debugger;
         this.data = null;
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();

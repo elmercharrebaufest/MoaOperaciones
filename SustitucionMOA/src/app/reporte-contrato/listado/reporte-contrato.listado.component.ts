@@ -18,9 +18,7 @@ import * as XLSX from 'xlsx';
     selector: 'app-reporte-contrato.listado',
     templateUrl: './reporte-contrato.listado.component.html',
     styleUrls: ['./reporte-contrato.listado.component.css'],
-    //providers: [
-    //    ReporteContratoService
-    //]
+   
 
 })
 export class ReporteContratoListado extends ListBaseComponent implements OnInit, OnDestroy {
@@ -80,7 +78,6 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
                         this.getTotalKilogramos();
                         this.data = result.data.Resultados;
                         this.show = true;
-
 
                     }
 
