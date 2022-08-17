@@ -314,9 +314,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 }
             }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
-                if (this.esAnulador) {
-                    this.mostrarBotonAnular = true;
-                }
+                this.mostrarBotonAnular = true;
+
             }
             if (!this.ordenDeCarga.TransporteExiste) {
                 if (this.esAnulador) {
