@@ -59,6 +59,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     puedeEditarContrato: boolean = false;
     resultadoValidacionCorCliConPro: boolean = false;
+    mensajeValidacionCorCliConPro: string = "";
 
     public patternPatente = { '0': { pattern: new RegExp('\[a-zA-Z0-9\]') } };
 
@@ -142,6 +143,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     validar() {
+        console.debug('validar');
         if (this.esCorredor) {
             if (this.ordenDeCarga.CUITCliente.toString().trim().length != 11) {
                 this.mensajeComponent.setInfoMsg("Ingrese un CUIT de cliente válido.");
@@ -181,8 +183,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
 
         if (this.ordenDeCargaId == 0) {
+            console.debug(' resultadoValidacionCorCliConPro: ', this.resultadoValidacionCorCliConPro);
             if (this.resultadoValidacionCorCliConPro == false) {
-                this.mensajeComponent.setInfoMsg("Hubo un error en la validación cliente - contrato - corredor - producto");
+                this.mensajeComponent.setErrorMsg(this.mensajeValidacionCorCliConPro);
                 return false;
             }
         }
@@ -495,12 +498,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.ordenDeCarga.CUITCliente = Number(this.clienteCUIT);
         this.getPatentes();
         if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
+            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
         } else if (this.clienteCUIT && this.Contrato && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
+            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
         } else if (this.clienteCodigo && this.Contrato && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
+            this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
         } 
+        console.debug(' resultadoValidacionCorCliConPro: ', this.resultadoValidacionCorCliConPro);
     }
 
     onContratoFocusOut = (contrato: any) => {
@@ -508,12 +512,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         console.debug(' contrato: ', contrato);
         this.Contrato = contrato;
         if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
+            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
         } else if (this.clienteCUIT && this.Contrato && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
+            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
         } else if (this.clienteCodigo && this.Contrato && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
+            this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
         } 
+        console.debug(' resultadoValidacionCorCliConPro: ', this.resultadoValidacionCorCliConPro);
     }
 
     onProductoFocusOut = (producto: any) => {
@@ -521,12 +526,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         console.debug(' producto: ', producto);
         this.Producto = producto;
         if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
+            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
         } else if (this.clienteCUIT && this.Contrato && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
+            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
         } else if (this.clienteCodigo && this.Contrato && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
+            this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
         } 
+        console.debug(' resultadoValidacionCorCliConPro: ', this.resultadoValidacionCorCliConPro);
     }
     
     validarCorredorClienteContratoProducto = (clienteCuit: string, clienteCodigo: string, contrato: string, codigoCorredor: string, productoId: string) => {
@@ -545,31 +551,36 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
-                        return false;
+                        // return false;
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
-                        return false;
+                        // return false;
                     } else {
                         let resultValidacion = result;
+                        this.mensajeValidacionCorCliConPro = "";
+                        console.debug(' resultValidacion: ', resultValidacion);
                         if (resultValidacion == false) {
                             if (codigoCorredor) {
-                                console.error('Hubo un error en la validación corredor - cliente - contrato - producto');
-                                this.mensajeComponent.setErrorMsg('Hubo un error en la validacion corredor - cliente - contrato - producto');
+                                this.mensajeValidacionCorCliConPro = "Hubo un error en la validación corredor - cliente - contrato - producto";
+                                console.error(this.mensajeValidacionCorCliConPro);
+                                this.mensajeComponent.setErrorMsg(this.mensajeValidacionCorCliConPro);
                             }
                             else {
-                                console.error('Hubo un error en la validación cliente - contrato - producto');
-                                this.mensajeComponent.setErrorMsg('Hubo un error en la validacion cliente - contrato - producto');
+                                this.mensajeValidacionCorCliConPro = "Hubo un error en la validación cliente - contrato - producto";
+                                console.error(this.mensajeValidacionCorCliConPro);
+                                this.mensajeComponent.setErrorMsg(this.mensajeValidacionCorCliConPro);
                             }
                         }
                         this.spinner.hide();
-                        return resultValidacion;
+                        this.resultadoValidacionCorCliConPro = resultValidacion;
+                        // return resultValidacion;
                     }
                 },
                 error => {
                     console.error(error.message);
                     this.mensajeComponent.setErrorMsg(error.message);
                     this.spinner.hide();
-                    return false;
+                    // return false;
                 }
             );
         } catch (err) {
