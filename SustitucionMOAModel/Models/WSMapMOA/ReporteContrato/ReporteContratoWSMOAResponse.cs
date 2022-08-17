@@ -112,6 +112,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.ReporteContrato
 
         public decimal CantidadFactura { get; set; }
 
+       public string CantidadEntregadaStr { get; set; }
+
         //public bool cANTIDAD_FACTURAFieldSpecified
 
         public string FacturaLegal { get; set; }

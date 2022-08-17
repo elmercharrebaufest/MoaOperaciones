@@ -3,7 +3,7 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>Reporte Contratos</strong> </div>
+            <div class="col-xs-12 col-sm-10 "><strong>Reporte de Contratos</strong> </div>
 
             <div class="row align-right">
                 <div class="col-xs-12 col-sm-8 col-md-8" style="display: flex; justify-content: flex-end;">
@@ -54,7 +54,12 @@
                     <p>Fecha operacion</p>
                     <filtro-fecha (ClickEvent)="getListadoFechas()"></filtro-fecha>
                 </div>
-
+                <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Mostrar</p>
+                    <div class="styled-select">
+                        <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
+                    </div>
+                </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                     <p-checkbox [ngModelOptions]="{standalone:true}" label="Mostrar solo contrato con entrega pendiente" [(ngModel)]="mostrarPendientes" (onChange)="filtroPendientes()" binary="false">
                     </p-checkbox>
@@ -71,7 +76,7 @@
                 <table id="tableModal" *ngIf="isVisible()" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:30px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Contrato')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="">
                                 Nro de Contrato
                                 <!--<div>
                                     <span>
@@ -80,7 +85,7 @@
                                     </span>
                                 </div>-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('TipContrato')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" >
                                 Tipo de Contrato
                                 <!--<div>
                                     <span>
@@ -89,7 +94,7 @@
                                     </span>
                                 </div-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('PedidoCliente')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" >
                                 Nro Pedido de Cliente
                                 <!--<div>
                                     <span>
@@ -98,7 +103,7 @@
                                     </span>
                                 </div>-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('FechaDesde')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" >
                                 Fecha
                                 <!--<div>
                                     <span>
@@ -107,7 +112,7 @@
                                     </span>
                                 </div>-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="GetFiltro('NombreCliente')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" >
                                 Cliente
                                 <!--<div>
                                     <span>
@@ -116,7 +121,7 @@
                                     </span>
                                 </div>-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Corredor')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" >
                                 Corredor
                                 <!--<div>
                                     <span>
@@ -125,7 +130,7 @@
                                     </span>
                                 </div>-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('DescripcionMaterial')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="">
                                 Producto
                                 <!--<div>
                                     <span>
@@ -134,7 +139,7 @@
                                     </span>
                                 </div>-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('KilosTotalesStr')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="">
                                 Kgs Totales
                                 <!--<div>
                                     <span>
@@ -143,7 +148,7 @@
                                     </span>
                                 </div>-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('KilosEntregadosStr')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="">
                                 Kgs Entregados
                                 <!--<div>
                                     <span>
@@ -152,7 +157,7 @@
                                     </span>
                                 </div>-->
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Contrato')">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" >
                                 Kgs Pendientes
                                 <!--<div>
                                     <span>
@@ -164,13 +169,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let cabeceraContrato of cabecera | customFilter : 'Contrato' : filtroContrato | orderedColumn : {property: (orderedByColumn), direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
-                            <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', cabeceraContrato.Contrato)" href="#">{{cabeceraContrato.Contrato}}</a></td>
+                        <tr *ngFor="let cabeceraContrato of cabecera |  orderedColumn : {property: (orderedByColumn), direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                            <td><a class="animate" (click)="goToSeccionParam('/reporte-contrato/detalle', cabeceraContrato.Contrato)">{{cabeceraContrato.Contrato}}</a></td>
                             <td>{{cabeceraContrato.TipoContrato}}</td>
                             <td>{{cabeceraContrato.PedidoCliente}}</td>
                             <td>{{cabeceraContrato.FechaDesde}}</td>
                             <td>{{cabeceraContrato.NombreCliente}}</td>
-                            <td>{{cabeceraContrato.Corredor}}</td>
+                            <td [ngStyle]="{'font-weight':cabeceraContrato.Corredor == 'TOTAL' ? '900': ''}">{{cabeceraContrato.Corredor}}</td>
 
                             <td>
                                 <div [ngStyle]="{'color':cabeceraContrato.ColorProducto,'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">
@@ -185,13 +190,13 @@
 
                     <tbody>
                         <tr role="row" class="totalTable">
-                            <td tabindex="0">TOTAL</td>
+                            <td ></td>
                             <td></td>
                             <td style=""></td>
                             <td style=""></td>
                             <td style=""></td>
                             <td style=""></td>
-                            <td style=""></td>
+                            <td style="text-align :center" tabindex="0">TOTAL</td>
                             <td [ngStyle]="{'font-weight':'bold'}">{{KilosTotales}}</td>
                             <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados}}</td>
                             <td [ngStyle]="{'font-weight':'bold'}">{{KilosPendienteEntrega}}</td>
