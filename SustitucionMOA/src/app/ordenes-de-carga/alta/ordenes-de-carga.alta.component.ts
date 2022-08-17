@@ -182,7 +182,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         if (this.ordenDeCargaId == 0) {
             if (this.resultadoValidacionCorCliConPro == false) {
-                this.mensajeComponent.setInfoMsg("Hubo una error en la validacion cliente - contrato - corredor - producto");
+                this.mensajeComponent.setInfoMsg("Hubo un error en la validación cliente - contrato - corredor - producto");
                 return false;
             }
         }
@@ -563,12 +563,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         let resultValidacion = result;
                         if (resultValidacion == false) {
                             if (codigoCorredor) {
-                                console.error('Hubo una error en la validacion corredor - cliente - contrato - producto');
-                                this.mensajeComponent.setErrorMsg('Hubo una error en la validacion corredor - cliente - contrato - producto');
+                                console.error('Hubo un error en la validación corredor - cliente - contrato - producto');
+                                this.mensajeComponent.setErrorMsg('Hubo un error en la validacion corredor - cliente - contrato - producto');
                             }
                             else {
-                                console.error('Hubo una error en la validacion cliente - contrato - producto');
-                                this.mensajeComponent.setErrorMsg('Hubo una error en la validacion cliente - contrato - producto');
+                                console.error('Hubo un error en la validación cliente - contrato - producto');
+                                this.mensajeComponent.setErrorMsg('Hubo un error en la validacion cliente - contrato - producto');
                             }
                         }
                         this.spinner.hide();
