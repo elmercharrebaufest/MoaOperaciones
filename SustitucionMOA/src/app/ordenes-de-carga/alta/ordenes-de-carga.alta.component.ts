@@ -682,14 +682,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         console.debug(' resultValidacion: ', resultValidacion);
                         if (resultValidacion == false) {
                             if (codigoCorredor) {
-                                this.mensajeValidacionCorCliConPro = "Hubo un error en la validación corredor - cliente - contrato - producto";
                                 console.error(this.mensajeValidacionCorCliConPro);
-                                this.mensajeComponent.setErrorMsg(this.mensajeValidacionCorCliConPro);
-                            }
-                            else {
-                                this.mensajeValidacionCorCliConPro = "Hubo un error en la validación cliente - contrato - producto";
-                                console.error(this.mensajeValidacionCorCliConPro);
-                                this.mensajeComponent.setErrorMsg(this.mensajeValidacionCorCliConPro);
                             }
                         }
                         // this.spinner.hide();
