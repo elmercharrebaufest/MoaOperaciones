@@ -12,6 +12,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { NgxMaskModule } from 'ngx-mask';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { CheckboxModule } from 'primeng/checkbox';
+import { DetalleComponent } from './detalle/reporte-contrato.detalle.component';
+
 
 
 @NgModule({
@@ -28,12 +30,14 @@ import { CheckboxModule } from 'primeng/checkbox';
         
   ],
     declarations: [
-        ReporteContratoListado
+        ReporteContratoListado,
+        DetalleComponent
        
 
     ],
     providers :[
-      ReporteContratoService
+        ReporteContratoService
+  
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
