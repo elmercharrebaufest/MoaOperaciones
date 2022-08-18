@@ -91,22 +91,22 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
             { label: "Error de datos", value: "Error de datos" },        
                 { label: "Contrato vencido", value: "Contrato vencido" }
         ]} else {
-            //this.descripcionEstadoOrdenCarga =  [
+            this.descripcionEstadoOrdenCarga =  [
             //    { label: "Vencida", value: "Vencida" },
             //    { label: "Pendiente de carga", value: "Pendiente de carga" },
             //    { label: "Listo para retirar", value: "Listo para retirar" },
             //    { label: "Completada", value: "Completada" },
             //    { label: "Anulada", value: "Anulada" },
             //    { label: "Sin estado", value: "Sin estado" }
-            //]
+            ]
     
-            //this.estadosSelected = [
+            this.estadosSelected = [
             //    "Pendiente de carga",
             //    "Anulada",
             //    "Vencida",
             //    "Sin estado",
             //    "Listo para retirar",
-            //];
+            ];
     
             this.entregada = "Completada";
         }
