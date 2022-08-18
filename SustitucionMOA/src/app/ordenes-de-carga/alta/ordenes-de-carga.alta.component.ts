@@ -58,7 +58,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     noEditarCliente : boolean = false;
 
     puedeEditarContrato: boolean = false;
-    resultadoValidacionCorCliConPro: boolean = false;
+    resultadoValidacionCorCliConPro: boolean = true;
 
     public patternPatente = { '0': { pattern: new RegExp('\[a-zA-Z0-9\]') } };
 
@@ -407,11 +407,16 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         return `${data['value']}`;
     }
 
-    onCorredorSeleccionado = (proveedor: any) => {
-        console.debug('onCorredorSeleccionado');
+    //onCorredorSeleccionado = (proveedor: any) => {
+    //    console.debug('onCorredorSeleccionado');
+    //    this.ordenDeCarga.CUITCorredor = proveedor.CUIT;
+    //    this.CodigoCorredor = proveedor.idVendedor;
+    //    this.cargarClientes(proveedor.idVendedor);
+    //}
+
+    onCorredorSeleccionado(proveedor: any) {
+        console.log(proveedor);
         this.ordenDeCarga.CUITCorredor = proveedor.CUIT;
-        this.CodigoCorredor = proveedor.idVendedor;
-        this.cargarClientes(proveedor.idVendedor);
     }
 
     onCorredorFocusOut = (proveedor: any) => {
@@ -422,7 +427,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             if (proveedor == '') {
                 this.CodigoCorredor = '';
                 this.listaClientes = [];
-                this.spinner.show();
+                //this.spinner.show();
                 this.mensajeComponent.setMsgsEmpty();
                 this.seleccionarProveedorService.getAllClientsByType(5).subscribe(
                     (result) => {
@@ -457,7 +462,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         console.debug('cargarClientes');
         console.debug(' codigoCorredor: ', codigoCorredor);
         this.listaClientes = [];
-        this.spinner.show();
+        //this.spinner.show();
         this.mensajeComponent.setMsgsEmpty();
         try { 
             if (this.noEditarCliente) {
@@ -489,44 +494,49 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
 
-    onClienteSeleccionado = () => {
-        console.debug('onClienteSeleccionado');
-        console.debug(' clienteCUIT: ', this.clienteCUIT);
-        this.ordenDeCarga.CUITCliente = Number(this.clienteCUIT);
+    //onClienteSeleccionado = () => {
+    //    console.debug('onClienteSeleccionado');
+    //    console.debug(' clienteCUIT: ', this.clienteCUIT);
+    //    this.ordenDeCarga.CUITCliente = Number(this.clienteCUIT);
+    //    this.getPatentes();
+    //    if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
+    //        this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
+    //    } else if (this.clienteCUIT && this.Contrato && this.Producto) {
+    //        this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
+    //    } else if (this.clienteCodigo && this.Contrato && this.Producto) {
+    //        this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
+    //    } 
+    //}
+
+    onClienteSeleccionado(proveedor: any) {
+        this.ordenDeCarga.CUITCliente = proveedor.CUIT;
         this.getPatentes();
-        if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
-        } else if (this.clienteCUIT && this.Contrato && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
-        } else if (this.clienteCodigo && this.Contrato && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
-        } 
     }
 
     onContratoFocusOut = (contrato: any) => {
-        console.debug('onContratoFocusOut');
-        console.debug(' contrato: ', contrato);
-        this.Contrato = contrato;
-        if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
-        } else if (this.clienteCUIT && this.Contrato && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
-        } else if (this.clienteCodigo && this.Contrato && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
-        } 
+        //console.debug('onContratoFocusOut');
+        //console.debug(' contrato: ', contrato);
+        //this.Contrato = contrato;
+        //if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
+        //    this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
+        //} else if (this.clienteCUIT && this.Contrato && this.Producto) {
+        //    this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
+        //} else if (this.clienteCodigo && this.Contrato && this.Producto) {
+        //    this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
+        //} 
     }
 
     onProductoFocusOut = (producto: any) => {
-        console.debug('onProductoFocusOut');
-        console.debug(' producto: ', producto);
-        this.Producto = producto;
-        if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
-        } else if (this.clienteCUIT && this.Contrato && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
-        } else if (this.clienteCodigo && this.Contrato && this.Producto) {
-            this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
-        } 
+        //console.debug('onProductoFocusOut');
+        //console.debug(' producto: ', producto);
+        //this.Producto = producto;
+        //if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
+        //    this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
+        //} else if (this.clienteCUIT && this.Contrato && this.Producto) {
+        //    this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
+        //} else if (this.clienteCodigo && this.Contrato && this.Producto) {
+        //    this.resultadoValidacionCorCliConPro = this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
+        //} 
     }
     
     validarCorredorClienteContratoProducto = (clienteCuit: string, clienteCodigo: string, contrato: string, codigoCorredor: string, productoId: string) => {
@@ -536,7 +546,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         console.debug(' contrato: ', contrato);
         console.debug(' codigoCorredor: ', codigoCorredor);
         console.debug(' productoId: ', productoId);
-        this.spinner.show();
+        //this.spinner.show();
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.service.validarCorredorClienteContratoProducto(clienteCuit, clienteCodigo, contrato, codigoCorredor, productoId).subscribe(
