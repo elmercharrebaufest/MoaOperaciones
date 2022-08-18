@@ -702,8 +702,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         } catch (err) {
             console.error(' validarCorredorClienteContratoProducto: ', err);
             this.mensajeComponent.setErrorMsg(err);
-            // this.spinner.hide();
             this.blockUI.stop();
+            // this.spinner.hide();
         }
     }
 }

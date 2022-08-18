@@ -1,13 +1,99 @@
 <div class="content-wraper">
-    <!-- CONTENT-->
-    <section class="container-fluid clearfix">
-        <!--Title-->
-        <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">
-                <strong *ngIf="ordenDeCargaId == 0"> Nueva orden de carga</strong>
-                <strong *ngIf="ordenDeCargaId > 0"> Editar orden de carga #{{ordenDeCargaId}}</strong>
-                <!-- <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
-                <strong *ngIf="notificacion.Id > 0">Editar notificación</strong> -->
+  <!-- CONTENT-->
+  <section class="container-fluid clearfix">
+    <!--Title-->
+    <div class="row titleSection">
+      <div class="col-xs-12 col-sm-10 ">
+        <strong *ngIf="ordenDeCargaId == 0"> Nueva orden de carga</strong>
+        <strong *ngIf="ordenDeCargaId > 0"> Editar orden de carga #{{ordenDeCargaId}}</strong>
+        <!-- <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
+        <strong *ngIf="notificacion.Id > 0">Editar notificación</strong> -->
+      </div>
+    </div>
+    <!--End Title-->
+    <!--Search-->
+    <div class="mySearch">
+
+      <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
+        <div class="formulario-campo">
+          <div class="col-xs-12 col-md-12 search-header">
+            <title-caps>Información de la orden de carga</title-caps>
+          </div>
+          <div class="formulario">
+
+            <div class="col-xs-12 col-md-5 no-padding-left-right" style="margin-left: 3em;">
+
+              <div class=" col-xs-12 col-md-12" *ngIf="esComercial">
+                <div class="formulario-label" style="margin-bottom: 8px;">
+                  Corredor:
+                </div>
+                <div class="styled-select" style="overflow: initial;">
+                  <app-seleccionar-proveedor [tipoProveedorId]="4" [(valorInicial)]="CodigoCorredor" [noEditarCliente]="noEditarCliente"
+                    (onProveedorSeleccionado)="onCorredorSeleccionado($event)" (focusout)="onCorredorFocusOut($event.target.value)" >
+                  </app-seleccionar-proveedor>
+                </div>
+              </div>
+
+              <div class="col-xs-12 col-md-12" *ngIf="esComercial || esCorredor">
+                <div class="formulario-label" style="margin-bottom: 8px;">
+                  Cliente:
+                </div>
+                <div class="styled-select" style="overflow: initial;">
+                    <select name="cmbCliente" [(ngModel)]="clienteCUIT" (ngModelChange)="onClienteSeleccionado()" [disabled]="noEditarCliente">
+                      <option [value]="selectUndefinedOptionValue">
+                        Elegir cliente
+                      </option>
+                      <option *ngFor="let itemCliente of listaClientes" value="{{itemCliente.CUIT}}">
+                        {{itemCliente.RazonSocial}}
+                      </option>
+                    </select>
+                </div>
+              </div>
+
+              <div class="clearfix"></div>
+              <div class="col-xs-12 col-md-12">
+                <div class="formulario-label">
+                  Contrato:
+                </div>
+                <div class="styled-select">
+                  <input type="text" [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente" [(ngModel)]="ordenDeCarga.ContratoIngresado" maxlength="25" (change)="onContratoChange($event.target.value)">
+                </div>
+              </div>
+
+              <div class="col-xs-12 col-md-12">
+                <div class="formulario-label">
+                  Número de pedido (fact. anticipada):
+                </div>
+                <div class="styled-select">
+                  <input type="text" [(ngModel)]="ordenDeCarga.NumeroPedidoIngresado" maxlength="25" [disabled]="noEditarCliente">
+                </div>
+              </div>
+
+              <div class="col-xs-12 col-md-12">
+                <div class="formulario-label">
+                  Producto:
+                </div>
+                <div class="styled-select">
+                  <select name="product" [(ngModel)]="ordenDeCarga.Producto_Id" [disabled]="noEditarCliente" (change)="onProductoChange($event.target.value)">
+                    <option [value]="selectUndefinedOptionValue">
+                      Elegir Grano
+                    </option>
+                    <option *ngFor="let material of listaMateriales" value="{{material.MaterialId}}">
+                      {{material.Descripcion}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+  
+              <div class="col-xs-12 col-md-12">
+                <div class="formulario-label">
+                  Cantidad:
+                </div>
+                <div class="styled-select">
+                  <input type="text" [(ngModel)]="ordenDeCarga.Cantidad" disabled>
+                </div>
+              </div>
+  
             </div>
 
             <div class="col-xs-1 col-md-1 vertical"></div>
