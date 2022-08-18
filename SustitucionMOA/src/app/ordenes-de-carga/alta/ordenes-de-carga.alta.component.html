@@ -56,7 +56,7 @@
                   Contrato:
                 </div>
                 <div class="styled-select">
-                  <input type="text" [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente" [(ngModel)]="ordenDeCarga.ContratoIngresado" maxlength="25" (focusout)="onContratoFocusOut($event.target.value)">
+                  <input type="text" [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente" [(ngModel)]="ordenDeCarga.ContratoIngresado" maxlength="25" (change)="onContratoChange($event.target.value)">
                 </div>
               </div>
 
@@ -74,7 +74,7 @@
                   Producto:
                 </div>
                 <div class="styled-select">
-                  <select name="product" [(ngModel)]="ordenDeCarga.Producto_Id" [disabled]="noEditarCliente" (focusout)="onProductoFocusOut($event.target.value)">
+                  <select name="product" [(ngModel)]="ordenDeCarga.Producto_Id" [disabled]="noEditarCliente" (change)="onProductoChange($event.target.value)">
                     <option [value]="selectUndefinedOptionValue">
                       Elegir Grano
                     </option>
