@@ -1095,6 +1095,10 @@ namespace SustitucionMOAUtils.Services
                     TipoContrato = string.Empty
                 };
                 var response = ordenCargaConsumerMOA.OrdenCargaVisualizarClienteExecute(request);
+                if (response == null)
+                {
+					throw new WSCustomException(ErrorMsg.ErrorWS, new Exception("RFC no devuelve datos"));
+				}
                 var clientesWS = response.Resultados.Select(d => d.Cliente).Distinct().ToList();
                 var clientesBD = repositorio.Listar<Proveedor>()
                     .Where(w => clientesWS.Contains(w.CodigoProveedor))
@@ -1154,7 +1158,11 @@ namespace SustitucionMOAUtils.Services
                 clienteCuit = cliente.CUIT;
                 clienteCodigo = cliente.CodigoProveedor;
                 var response = OrdenCargaVisualizarCliente(clienteCodigo, contrato, corredor, fechaInicio, fechaFin, producto.CodigoSap, pendiente, string.Empty);
-                if (response.Resultados != null && response.Resultados.Count > 0)
+				if (response == null)
+				{
+					throw new WSCustomException(ErrorMsg.ErrorWS, new Exception("RFC no devuelve datos"));
+				}
+				if (response.Resultados != null && response.Resultados.Count > 0)
                 {
                     var result = response.Resultados[0];
                     if (!clienteCuit.Equals(string.Empty) && !contrato.Equals(string.Empty) && !corredor.Equals(string.Empty) && !productoId.Equals(string.Empty))
