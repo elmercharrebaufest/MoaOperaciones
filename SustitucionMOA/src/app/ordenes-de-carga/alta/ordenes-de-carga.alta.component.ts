@@ -87,6 +87,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.hasta = this.getFecha(0);
         console.debug(' desde: ', this.desde);
         console.debug(' hasta: ', this.hasta);
+        // console.debug('ngOnInit()');
         this.ordenDeCarga.Cantidad = 30000;
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
@@ -107,6 +108,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         } else{
             this.getPatentes();
         }
+
         if (this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS')) {
             this.ordenDeCarga.CUITCliente = 0;
         }
@@ -500,6 +502,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     cargarClientes = (codigoCorredor: string) => {
         console.debug('cargarClientes()');
         console.debug(' codigoCorredor: ', codigoCorredor);
+        console.debug(' noEditarCliente: ', this.noEditarCliente);
         console.debug(' noEditarCliente: ', this.noEditarCliente);
         // this.spinner.show();
         this.blockUI.start('');
