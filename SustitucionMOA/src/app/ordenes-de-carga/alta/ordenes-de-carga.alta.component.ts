@@ -79,14 +79,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     async ngOnInit() {
+        // console.debug('ngOnInit()');
         this.ordenDeCarga.Cantidad = 30000;
-
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
         });
-
         this.navService.setSeccionList([]);
-
         console.debug(' tipoUsuario: ', sessionStorage.getItem("tipoUsuario"));
         if (this.esCorredor) {
             this.CodigoCorredor = sessionStorage.getItem("proveedor");
@@ -98,13 +96,14 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         } else{
             this.getPatentes();
         }
+
        
         this.obtenerMateriales();
 
         if (this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS')) {
             this.ordenDeCarga.CUITCliente = 0;
         }
-        
+
         if (sessionStorage.getItem("tipoUsuario") == "CLI") {
             console.debug(' proveedor: ', sessionStorage.getItem("proveedor"));
             this.onCorredorFocusOut('');
@@ -131,15 +130,21 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     obtenerMateriales() {
         //Sacamos lo de la lista de campaña, ya que ahora son independientes
-        this.subscription = this.service.getMateriales().subscribe(
-            (result) => {
-                this.listaMateriales = result.data;
-                
-            },
-            (error) => {
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        );
+        try {
+            this.subscription = this.service.getMateriales().subscribe(
+                (result) => {
+                    this.listaMateriales = result.data;
+                },
+                (error) => {
+                    console.error(error);
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            console.error(e);
+            this.mensajeComponent.setErrorMsg(e);
+        }
+        
     }
 
     validar() {
@@ -197,15 +202,18 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.ordenDeCarga.llenar()
     }
 
-    async obtenerOrdenDeCarga() {       
+    async obtenerOrdenDeCarga() {   
+        console.debug('obtenerOrdenDeCarga()');
         try {
             this.subscriptionDropDowns = await this.service.getEditarOrdenDeCarga(this.ordenDeCargaId).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
+                        console.error(result.error);
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
+                        console.info(result.info);
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.obtenerMateriales();
@@ -217,7 +225,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         if(result.data.Estado == 3){
                             this.puedeEditarContrato = true;
                         }
-                        this.cargarClientes(this.CodigoCorredor);
+                        if (this.CodigoCorredor) {
+                            this.cargarClientes(this.CodigoCorredor);
+                        } else {
+                            this.onCorredorFocusOut('');
+                        }
                         this.clienteCUIT = result.data.CUITCliente;
                         this.clienteCodigo = result.data.CodigoCliente;
                         this.getPatentes();
@@ -231,10 +243,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     }
                 },
                 error => {
+                    console.error(error);
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
         } catch (e) {
+            console.error(e);
             this.mensajeComponent.setErrorMsg(e);
         }
     }
@@ -248,84 +262,83 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.spinnerComponent.showIt();
         this.unsubscribe();
         this.blockUI.start('Grabando...');
-        if (this.ordenDeCargaId > 0) {
-            this.subscription = this.service
-                .editar(this.ordenDeCarga)
-                .subscribe(
-                    (result) => {
-                        this.spinnerComponent.hideIt();
-                        this.blockUI.stop();
-                        if (result.logout == true) {
-                        this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            console.error(result.error);
-                            this.mensajeComponent.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            console.info(result.info);
-                            this.mensajeComponent.setInfoMsg(result.info);
-                        } else if (result.data.error != undefined && result.data.error != "") {
-                            console.error(result.data.error);
-                            this.mensajeComponent.setErrorMsg(result.data.error);
-                        } else if (result.data.info != undefined) {
-                            console.info(result.data.info);
-                            this.mensajeComponent.setInfoMsg(result.data.info);
-                        } else {
-                            this.mensajeComponent.setMsgsEmpty();
-                            this.mensajeSuccess = result.data.Mensaje;
-                            this.ordenDeCargaId = result.data.IdEntidad;
-                            document.getElementById("openModalNotificacion")
-                                .click();
+        try {
+            if (this.ordenDeCargaId > 0) {
+                this.subscription = this.service
+                    .editar(this.ordenDeCarga)
+                    .subscribe(
+                        (result) => {
+                            this.spinnerComponent.hideIt();
+                            this.blockUI.stop();
+                            if (result.logout == true) {
+                                this.sessionDataService.logout();
+                            } else if (result.error != undefined && result.error != "") {
+                                console.error(result.error);
+                                this.mensajeComponent.setErrorMsg(result.error);
+                            } else if (result.info != undefined) {
+                                console.info(result.info);
+                                this.mensajeComponent.setInfoMsg(result.info);
+                            } else if (result.data.error != undefined && result.data.error != "") {
+                                console.error(result.data.error);
+                                this.mensajeComponent.setErrorMsg(result.data.error);
+                            } else if (result.data.info != undefined) {
+                                console.info(result.data.info);
+                                this.mensajeComponent.setInfoMsg(result.data.info);
+                            } else {
+                                this.mensajeComponent.setMsgsEmpty();
+                                this.mensajeSuccess = result.data.Mensaje;
+                                this.ordenDeCargaId = result.data.IdEntidad;
+                                document.getElementById("openModalNotificacion")
+                                    .click();
+                            }
+                        },
+                        (error) => {
+                            console.error(error);
+                            this.spinnerComponent.hideIt();
+                            this.mensajeComponent.setErrorMsg(error.message);
+                            this.blockUI.stop();
                         }
-                    },
-                    (error) => {
-                        console.error(error);
-                        this.spinnerComponent.hideIt();
-                        this.mensajeComponent.setErrorMsg(error.message);
-                        this.blockUI.stop();
-                    }
-                );
-        }
-        else {
-            this.subscription = this.service
-                .agregar(this.ordenDeCarga)
-                .subscribe(
-                    (result) => {
-                        this.spinnerComponent.hideIt();
-                        this.blockUI.stop();
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (
-                            result.error != undefined &&
-                            result.error != ""
-                        ) {
-                            this.mensajeComponent.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.mensajeComponent.setInfoMsg(result.info);
-                        } else if (
-                            result.data.error != undefined &&
-                            result.data.error != ""
-                        ) {
-                            this.mensajeComponent.setErrorMsg(result.data.error);
-                        } else if (result.data.info != undefined) {
-                            this.mensajeComponent.setInfoMsg(result.data.info);
-                        } else {
-                            this.mensajeComponent.setMsgsEmpty();
-
-                            this.mensajeSuccess = result.data.Mensaje;
-
-                            this.ordenDeCargaId = result.data.IdEntidad;
-
-                            document
-                                .getElementById("openModalNotificacion")
-                                .click();
+                    );
+            } else {
+                this.subscription = this.service
+                    .agregar(this.ordenDeCarga)
+                    .subscribe(
+                        (result) => {
+                            this.spinnerComponent.hideIt();
+                            this.blockUI.stop();
+                            if (result.logout == true) {
+                                this.sessionDataService.logout();
+                            } else if (result.error != undefined && result.error != "") {
+                                console.error(result.error);
+                                this.mensajeComponent.setErrorMsg(result.error);
+                            } else if (result.info != undefined) {
+                                console.info(result.info);
+                                this.mensajeComponent.setInfoMsg(result.info);
+                            } else if (result.data.error != undefined && result.data.error != "") {
+                                console.error(result.error);
+                                this.mensajeComponent.setErrorMsg(result.data.error);
+                            } else if (result.data.info != undefined) {
+                                console.error(result.error);
+                                this.mensajeComponent.setInfoMsg(result.data.info);
+                            } else {
+                                this.mensajeComponent.setMsgsEmpty();
+                                this.mensajeSuccess = result.data.Mensaje;
+                                this.ordenDeCargaId = result.data.IdEntidad;
+                                document.getElementById("openModalNotificacion")
+                                    .click();
+                            }
+                        },
+                        (error) => {
+                            console.error(error);
+                            this.spinnerComponent.hideIt();
+                            this.mensajeComponent.setErrorMsg(error.message);
+                            this.blockUI.stop();
                         }
-                    },
-                    (error) => {
-                        this.spinnerComponent.hideIt();
-                        this.mensajeComponent.setErrorMsg(error.message);
-                        this.blockUI.stop();
-                    }
-                );
+                    );
+            }
+        } catch (e) {
+            console.error(e);
+            this.mensajeComponent.setErrorMsg(e);
         }
     }
 
@@ -345,6 +358,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     getPatentes() {
+        console.debug('getPatentes()');
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         try {
@@ -353,11 +367,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
+                        console.error(' getPatentes: ', result.error);
                         this.floatMsgService.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
+                        console.info(' getPatentes: ', result.info);
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-
                         this.patentesChasis = result.ordenes.map((patente) => {
                             return { label: patente.label, value: patente.label};
                         })
@@ -385,12 +400,14 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     }
                 },
                 error => {
+                    console.error(' getPatentes: ', error.message);
                     this.floatMsgService.setErrorMsg(error.message);
                 }
 
             );
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
+        } catch (err) {
+            console.error(' getPatentes: ', err);
+            this.floatMsgService.setErrorMsg(err);
             return false; //<-- Prevent Refresh
         }      
     }
@@ -418,7 +435,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     onCorredorFocusOut = (proveedor: any) => {
-        console.debug('onCorredorFocusOut');
+        console.debug('onCorredorFocusOut()');
         console.debug(' proveedor: ', proveedor);
         console.debug(' CodigoCorredor: ', this.CodigoCorredor);
         try{
@@ -433,8 +450,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
+                            console.error(' onCorredorFocusOut: ', result.error);
                             this.floatMsgService.setErrorMsg(result.error);
                         } else if (result.info != undefined) {
+                            console.info(' onCorredorFocusOut: ', result.info);
                             this.floatMsgService.setInfoMsg(result.info);
                         } else {
                             console.debug('  result: ', result);
@@ -443,34 +462,37 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         }
                     },
                     (error) => {
-                        console.error(error.message);
+                        console.error(' onCorredorFocusOut: ', error.message);
                         this.mensajeComponent.setErrorMsg(error.message);
                         this.spinner.hide();
                     }
                 );
             }
         } catch (err) {
-            console.error(err.message);
+            console.error(' onCorredorFocusOut: ', err);
             this.mensajeComponent.setErrorMsg(err);
             this.spinner.hide();
         }
     }
 
     cargarClientes = async (codigoCorredor: string) => {
-        console.debug('cargarClientes');
+        console.debug('cargarClientes()');
         console.debug(' codigoCorredor: ', codigoCorredor);
+        console.debug(' noEditarCliente: ', this.noEditarCliente);
         this.listaClientes = [];
         //this.spinner.show();
         this.mensajeComponent.setMsgsEmpty();
         try { 
-            if (this.noEditarCliente) {
+            // if (!this.noEditarCliente) {
                 await this.service.visualizarCliente(codigoCorredor).subscribe(
                     result => {
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
+                            console.error(' cargarClientes: ', result.error);
                             this.mensajeComponent.setErrorMsg(result.error);
                         } else if (result.info != undefined) {
+                            console.info(' cargarClientes: ', result.info);
                             this.mensajeComponent.setInfoMsg(result.info);
                         } else {
                             this.listaClientes = result;
@@ -478,15 +500,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         }
                     },
                     error => {
-                        console.error(error.message);
+                        console.error(' cargarClientes: ', error.message);
                         this.mensajeComponent.setErrorMsg(error.message);
                         this.spinner.hide();
                     }
                 );
-            }
+            // }
             
         } catch (err) {
-            console.error(err.message);
+            console.error(' cargarClientes: ', err);
             this.mensajeComponent.setErrorMsg(err);
             this.spinner.hide();
         }
@@ -507,8 +529,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         console.debug(' resultadoValidacionCorCliConPro: ', this.resultadoValidacionCorCliConPro);
     }
 
-    onContratoFocusOut = (contrato: any) => {
-        console.debug('onContratoFocusOut');
+    onContratoChange = (contrato: any) => {
+        console.debug('onContratoChange');
         console.debug(' contrato: ', contrato);
         this.Contrato = contrato;
         if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
@@ -521,8 +543,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         console.debug(' resultadoValidacionCorCliConPro: ', this.resultadoValidacionCorCliConPro);
     }
 
-    onProductoFocusOut = (producto: any) => {
-        console.debug('onProductoFocusOut');
+    onProductoChange = (producto: any) => {
+        console.debug('onProductoChange');
         console.debug(' producto: ', producto);
         this.Producto = producto;
         if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
@@ -536,7 +558,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
     
     validarCorredorClienteContratoProducto = (clienteCuit: string, clienteCodigo: string, contrato: string, codigoCorredor: string, productoId: string) => {
-        console.debug('validarCorredorClienteContratoProducto');
+        console.debug('validarCorredorClienteContratoProducto()');
         console.debug(' clienteCuit: ', clienteCuit);
         console.debug(' clienteCodigo: ', clienteCodigo);
         console.debug(' contrato: ', contrato);
@@ -550,9 +572,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
+                        console.error(' validarCorredorClienteContratoProducto: ', result.error);
                         this.mensajeComponent.setErrorMsg(result.error);
-                        // return false;
                     } else if (result.info != undefined) {
+                        console.info(' validarCorredorClienteContratoProducto: ', result.info);
                         this.mensajeComponent.setInfoMsg(result.info);
                         // return false;
                     } else {
@@ -577,17 +600,16 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     }
                 },
                 error => {
-                    console.error(error.message);
+                    console.error(' validarCorredorClienteContratoProducto: ', error.message);
                     this.mensajeComponent.setErrorMsg(error.message);
                     this.spinner.hide();
                     // return false;
                 }
             );
         } catch (err) {
-            console.error(err.message);
+            console.error(' validarCorredorClienteContratoProducto: ', err);
             this.mensajeComponent.setErrorMsg(err);
             this.spinner.hide();
-            return false;
         }
     }
 }
