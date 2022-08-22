@@ -44,7 +44,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         "Anulación solicitada",
 	    "Edición solicitada",
         "Error de datos",
-        "Contrato vencido"
+        "Contrato vencido",
+        "Edición rechazada"
     ];
 
 
@@ -82,14 +83,15 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
             { label: "Pendiente aprobación crédito", value: "Pendiente aprobación crédito" },
             { label: "Entrega generada", value: "Entrega generada" },
             { label: "Anulada", value: "Anulada" },
-            { label: "Entregada", value: "Entregada" },
+        /*    { label: "Entregada", value: "Entregada" },*/
             { label: "Vencida", value: "Vencida" },
             { label: "Entrega pendiente", value: "Entrega pendiente" },
             { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
-     //       { label: "Anulación solicitada", value: "Anulación solicitada" },
-	    //{ label: "Edición solicitada", value: "Edición solicitada" },  
+            { label: "Anulación solicitada", value: "Anulación solicitada" },
+	        { label: "Edición solicitada", value: "Edición solicitada" },  
             { label: "Error de datos", value: "Error de datos" },        
-                { label: "Contrato vencido", value: "Contrato vencido" }
+                { label: "Contrato vencido", value: "Contrato vencido" },
+                { label: "Edición rechazada", value: "Edición rechazada" }
         ]} else {
             this.descripcionEstadoOrdenCarga =  [
             //    { label: "Vencida", value: "Vencida" },
