@@ -8,8 +8,8 @@ import { CampoObligatorioViewModel } from "./campo-obligatorio-viewModel";
 import { FormGroup } from "@angular/forms";
 import { SubPosicionViewModel } from "./PliegoPasos/solapaSubposiciones/subPosicionViewModel";
 import { CommonResponse } from "../common/models/common-response";
-import { AdjuntosCotizaciones } from "./PliegoPasos/adjuntos-Cotizaciones";
 import { EnumTipoSolpSap } from "./enum-tipo-solp-sap";
+import { ArchivoModel } from "./PliegoPasos/archivo-model";
 
 export class Solp extends CommonResponse {
     public id: number;
@@ -62,7 +62,7 @@ export class Solp extends CommonResponse {
     public observacionesCotizacion: string;
 
     public archivosCotizacionesNuevos: Array<File>;
-    public archivosCotizacionesGuardados: Array<AdjuntosCotizaciones>
+    public archivosCotizaciones: Array<ArchivoModel>
 
     //inicio Cabecera == paso 5
     public selectClaseDocumento: any
