@@ -82,8 +82,8 @@ export class ComprasService extends BaseService {
             UsuarioCompras: {
                 Id: solp.usuarioComprasId
             },
-            Adjuntos:   solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x => { return { Id: x.id } })
-                .concat(solp.archivosCotizacionesGuardados.map(x => { return { Id: x.id } })),
+            Adjuntos:   solp.especificacionesViewModel.archivosEspecificaciones.map(x => { return { Id: x.id } })
+                .concat(solp.archivosCotizaciones.map(x => { return { Id: x.id } })),
 
             DiasEjecucion: solp.ejecucion,
             JornadaLaboral: solp.jornadaLaboralDias.filter(x => x.selected).map(x => x.weekDay),
@@ -152,11 +152,12 @@ export class ComprasService extends BaseService {
 
         var payload = new FormData();
 
-        var archivos = solp.especificacionesViewModel.archivosAdjuntosNuevos;
+        var archivos = solp.especificacionesViewModel.archivosEspecificacionesNuevos;
         if (archivos != null) {
             for (let i = 0; i < archivos.length; i++) {
                 let fileToUpload = archivos[i];
                 payload.append("fileEspecificaciones", fileToUpload, fileToUpload.name);
+              
             }
         }
 
