@@ -1,11 +1,11 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { animate, style, transition, trigger } from '@angular/animations';
 import { WeekDay } from '@angular/common';
-import { Component, HostListener, ModuleWithComponentFactories, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../common/base-components/base-component';
 import { Paso } from '../common/models/paso';
 import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
-import { PosicionSolp, Solp } from './Solp';
+import { Solp } from './Solp';
 import * as uuid from 'uuid';
 import { ComprasService } from './compras.service';
 import { NavService } from '../common/services/NavService';
@@ -14,22 +14,17 @@ import { SecurityService } from '../common/services/SecurityService';
 import { FloatMsgService } from '../common/services/FloatMsgService';
 import { ModalService } from '../common/services/ModalService';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { ConfirmationService, Message } from 'primeng/components/common/api';
+import { ConfirmationService } from 'primeng/components/common/api';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { SelectItem } from 'primeng/api';
-import { CampoObligatorioViewModel } from './campo-obligatorio-viewModel';
-import { FacturaComponent } from '../factura/factura.component';
 import { EnumPasoSolp } from './enum-paso-solp';
 import { CabeceraComponent } from './SolpPasos/cabecera.component';
 import { ActivatedRoute, Params } from '@angular/router';
 import { EspecificacionesViewModel } from './PliegoPasos/solapaTres/especificacionesViewModel';
 import { SubPosicionViewModel } from './PliegoPasos/solapaSubposiciones/subPosicionViewModel';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { DialogModule } from 'primeng/dialog';
-import { FormGroup } from '@angular/forms';
-import { AdjuntosCotizaciones } from './PliegoPasos/adjuntos-Cotizaciones';
-import { forEach } from '@angular/router/src/utils/collection';
 import { EnumTipoSolpSap } from './enum-tipo-solp-sap';
+import { ArchivoModel } from './PliegoPasos/archivo-model';
 
 @Component({
     selector: 'app-solp',
@@ -251,7 +246,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
 
             this.solpActual.archivosCotizacionesNuevos = new Array<File>();
-            this.solpActual.archivosCotizacionesGuardados = new Array<AdjuntosCotizaciones>();
+            this.solpActual.archivosCotizaciones = new Array<ArchivoModel>();
 
             this.solpActual.centroPorDefecto = 1029;
             this.solpActual.monedaPorDefecto = "ARP";
@@ -370,7 +365,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         // Paso 3
         this.solpActual.especificacionesViewModel = new EspecificacionesViewModel();
-        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = solp.Adjuntos
+        this.solpActual.especificacionesViewModel.archivosEspecificaciones = solp.Adjuntos
             .filter(x => x.FileKey == "adjuntoSolp")
             .map(x => {
                 return {
@@ -383,7 +378,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.tieneCondicionesGenerales = solp.TieneCondicionesGenerales;
 
         // Paso 4
-        this.solpActual.archivosCotizacionesGuardados = solp.Adjuntos
+        this.solpActual.archivosCotizaciones = solp.Adjuntos
             .filter(x => x.FileKey == "adjuntoCotizacionesSolp")
             .map(x => {
                 return {
@@ -659,11 +654,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.messageService.add({ severity: 'success', detail: 'Los datos se guardaron correctamente' });
                         }
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
-
                         this.solpActual.id = result.Solp.Id;
                         this.solpActual.NroSolp = result.Solp.NroSolp;
-                        this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.length);
-                        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = result.Solp.Adjuntos.filter(x => x.FileKey != 'adjuntoCotizacionesSolp').map(x => {
+                        this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.length);
+                        this.solpActual.especificacionesViewModel.archivosEspecificaciones = result.Solp.Adjuntos.filter(x => x.FileKey == 'adjuntoSolp' || x.FileKey == 'especificacionesTecnicasPliego').map(x => {
                             return {
                                 id: x.Id,
                                 nombreArchivo: x.Nombre,
@@ -671,7 +665,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             }
                         });
                         this.solpActual.archivosCotizacionesNuevos.splice(0, this.solpActual.archivosCotizacionesNuevos.length);
-                        this.solpActual.archivosCotizacionesGuardados = result.Solp.Adjuntos.filter(x => x.FileKey == 'adjuntoCotizacionesSolp').map(x => {
+                        this.solpActual.archivosCotizaciones = result.Solp.Adjuntos.filter(x => x.FileKey == 'adjuntoCotizacionesSolp').map(x => {
                             return {
                                 id: x.Id,
                                 nombreArchivo: x.Nombre,

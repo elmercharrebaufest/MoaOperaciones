@@ -273,7 +273,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     campoProveedorAgregar() {
-        debugger;
         this.blockUI.start('Informando campo sustentable.');
 
         let campoProveedor: CampoProveedor;
@@ -462,7 +461,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     redirigirAListado() {
-        debugger;
         this.goToSeccion('/sustentable/listado-campos');
 
     }
