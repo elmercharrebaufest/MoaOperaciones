@@ -7,7 +7,7 @@
                 <strong *ngIf="esInterno || (esMesaFas && ordenDeCarga.DescripcionEstado=='Contrato vencido')">
                     Orden de carga #{{ordenDeCarga.Id}} - {{ordenDeCarga.DescripcionEstado}}
                     <!-- <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
-                    <strong *ngIf="notificacion.Id > 0">Editar notificación</strong> -->
+        <strong *ngIf="notificacion.Id > 0">Editar notificación</strong> -->
                     <strong *ngIf="ordenDeCarga.DescripcionEstado=='Error de datos'">- Valide los datos ingresados al cargar la orden</strong>
                     <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
 
