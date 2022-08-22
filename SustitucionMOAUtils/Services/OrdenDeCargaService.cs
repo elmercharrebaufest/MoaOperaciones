@@ -471,6 +471,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.AnulacionSolicitada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                 }
 
                 if (esComercial)
