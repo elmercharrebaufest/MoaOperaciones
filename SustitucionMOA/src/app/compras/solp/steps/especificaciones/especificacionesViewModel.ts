@@ -1,4 +1,4 @@
-import { ArchivoModel } from "../archivo.model";
+import { ArchivoModel } from "../archivo-model";
 
 export class EspecificacionesViewModel {
 

@@ -232,6 +232,7 @@ namespace SustitucionMOAUtils.Services
 
             pliegoEntity = GuardarEspecificacionesTecnicasPliego(solp, solpEntity, pliegoEntity);
             solp = GuardarAdjuntosSolp(solp, adjuntos, pliegoEntity);
+            //repositorio.GuardarCambios();
 
             var respuestaGuardarSOLP = new RespuestaGuardarSOLP
             {
@@ -535,6 +536,8 @@ namespace SustitucionMOAUtils.Services
 
                 file.SaveAs(rutaArchivo);
             }
+
+            repositorio.GuardarCambios();
 
             repositorio.GuardarCambios();
 
