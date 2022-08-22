@@ -681,7 +681,7 @@ namespace SustitucionMOAUtils.Services
                 return null;
             }
 
-            
+
             var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaVencimiento < fechaActual && o.Estado == EstadoOrdenDeCarga.EntregaGenerada);
             NotificarVencimientoOrdenCarga(ordenes);
             return ordenes;
@@ -744,7 +744,7 @@ namespace SustitucionMOAUtils.Services
                 var ordenVencidas = new StringBuilder();
                 foreach (var orden in ordenes)
                 {
-                    ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido:orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
+                    ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES_VENCIDAS);
                 emailSenderData.Asunto = $"Molinos Agro - Notificación de ordenes Vencidas";
@@ -1010,17 +1010,18 @@ namespace SustitucionMOAUtils.Services
                     result.ordenes.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
                     return result;
                 }
-                if (usuario.EsCorredor())
-                {
-                    cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
-                    listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
-                }
-                else
+                if (esComercial)
                 {
                     cliente = repositorio.Obtener<Proveedor>(
                     x => x.CUIT == ordenDeCarga.CUITCliente &&
                     x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
                     listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
+                }
+                else
+                {
+                    cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
+                    if (cliente != null)
+                        listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
                 }
 
             }
@@ -1067,8 +1068,8 @@ namespace SustitucionMOAUtils.Services
                 var response = ordenCargaConsumerMOA.OrdenCargaVisualizarClienteExecute(request);
                 if (response == null)
                 {
-					throw new WSCustomException(ErrorMsg.ErrorWS, new Exception("RFC no devuelve datos"));
-				}
+                    throw new WSCustomException(ErrorMsg.ErrorWS, new Exception("RFC no devuelve datos"));
+                }
                 var clientesWS = response.Resultados.Select(d => d.Cliente).Distinct().ToList();
                 var clientesBD = repositorio.Listar<Proveedor>()
                     .Where(w => clientesWS.Contains(w.CodigoProveedor))
@@ -1128,11 +1129,11 @@ namespace SustitucionMOAUtils.Services
                 clienteCuit = cliente.CUIT;
                 clienteCodigo = cliente.CodigoProveedor;
                 var response = OrdenCargaVisualizarCliente(clienteCodigo, contrato, corredor, fechaInicio, fechaFin, producto.CodigoSap, pendiente, string.Empty);
-				if (response == null)
-				{
-					throw new WSCustomException(ErrorMsg.ErrorWS, new Exception("RFC no devuelve datos"));
-				}
-				if (response.Resultados != null && response.Resultados.Count > 0)
+                if (response == null)
+                {
+                    throw new WSCustomException(ErrorMsg.ErrorWS, new Exception("RFC no devuelve datos"));
+                }
+                if (response.Resultados != null && response.Resultados.Count > 0)
                 {
                     var result = response.Resultados[0];
                     if (!clienteCuit.Equals(string.Empty) && !contrato.Equals(string.Empty) && !corredor.Equals(string.Empty) && !productoId.Equals(string.Empty))
@@ -1152,10 +1153,10 @@ namespace SustitucionMOAUtils.Services
                         var contratoResult = result.Contrato.ToUpper();
                         var productoResult = result.Producto.ToUpper().Substring(13, 5);
                         if (contrato.ToUpper().Equals(contratoResult) && clienteCodigo.ToUpper().Equals(clienteResult) && producto.CodigoSap.ToUpper().Equals(productoResult))
-						{
+                        {
                             return true;
                         }
-                            
+
                     }
                     return false;
                 }

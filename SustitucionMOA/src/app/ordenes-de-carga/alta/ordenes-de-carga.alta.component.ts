@@ -198,10 +198,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         return true;
     }
 
-    cargaFalsa() {
-        this.ordenDeCarga.llenar()
-    }
-
+   
     async obtenerOrdenDeCarga() {   
         console.debug('obtenerOrdenDeCarga()');
         try {
