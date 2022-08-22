@@ -249,7 +249,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     centroSeleccionado() {
         let direccionCentro: any;
-        debugger;
         if (!this.model.posicionActual.selectCentroEntrega && this.model.centroPorDefecto) {
             this.model.posicionActual.selectCentroEntrega = this.combos.Centro.find(x => x.Codigo == this.model.centroPorDefecto);
         }
