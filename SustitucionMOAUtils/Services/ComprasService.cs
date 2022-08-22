@@ -10,10 +10,15 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using iTextSharp.text;
+using iTextSharp.text.html.simpleparser;
 using iTextSharp.text.pdf;
+using System.Net;
+using System.Net.Mail;
 using iTextSharp.tool.xml;
 using iTextSharp.tool.xml.parser;
 using iTextSharp.tool.xml.pipeline.html;
@@ -21,11 +26,13 @@ using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.css;
 using iTextSharp.tool.xml.html;
 using Image = iTextSharp.text.Image;
+using SustitucionMOAAssets;
 using System.IO.Compression;
 using SustitucionMOAWS.WSConsumers;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Helpers;
+using System.Web.UI.WebControls;
 using System.Data;
 using HandlebarsDotNet;
 
@@ -536,6 +543,8 @@ namespace SustitucionMOAUtils.Services
 
                 file.SaveAs(rutaArchivo);
             }
+
+            repositorio.GuardarCambios();
 
             repositorio.GuardarCambios();
 
