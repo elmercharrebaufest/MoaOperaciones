@@ -467,6 +467,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.AnulacionSolicitada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                 }
 
@@ -481,6 +482,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                 }
 
                 if (esPuerto)
@@ -504,6 +506,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ErrorDeCarga);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                 }
 
                 Expression<Func<OrdenDeCarga, bool>> filtro =
@@ -546,7 +549,8 @@ namespace SustitucionMOAUtils.Services
                         || n.Estado == EstadoOrdenDeCarga.EntregaGenerada
                         || n.Estado == EstadoOrdenDeCarga.EdicionSolicitada
                         || n.Estado == EstadoOrdenDeCarga.AnulacionSolicitada
-                        || n.Estado == EstadoOrdenDeCarga.ContratoVencido)
+                        || n.Estado == EstadoOrdenDeCarga.ContratoVencido
+                        || n.Estado== EstadoOrdenDeCarga.EdicionRechazada)
                     )
                     .Select(x => new OrdenDeCargaDto
                     {
@@ -984,8 +988,8 @@ namespace SustitucionMOAUtils.Services
                     orden.GetType().GetProperty(dato.NombreColumnaCambio).SetValue(orden, dato.Antes, null);
                 }
 
-                orden.Estado = (EstadoOrdenDeCarga)int.Parse(estadoAnterior);
-
+                //orden.Estado = (EstadoOrdenDeCarga)int.Parse(estadoAnterior);
+                orden.Estado = EstadoOrdenDeCarga.EdicionRechazada;
                 repositorio.GuardarCambios();
 
                 return SuccessMsg.OrdenDeCargaActualizada;
@@ -1490,9 +1494,9 @@ namespace SustitucionMOAUtils.Services
 
                 var cambios = new StringBuilder();
                 var contrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
-                foreach (var cambio in ordenDeCargaHistorial)
-                {
-                    cambios.AppendLine($"<tr><td>{cambio.NombreColumnaCambio}</td><td>{cambio.Antes}</td><td>{cambio.Despues}</td><td>{cambio.FechaCambio}</td></tr>");
+                foreach (var cambio in ordenDeCargaHistorial.OrderByDescending(x => x.NombreColumnaCambio == "ChasisAcoplado").ThenByDescending(x =>x.NombreColumnaCambio == "PatenteAcoplado"))                                                           
+                {                          
+                    cambios.AppendLine($"<tr><td>{(cambio.NombreColumnaCambio == "ChasisAcoplado" ? "PatenteChasis" : cambio.NombreColumnaCambio)}</td><td>{cambio.Antes}</td><td>{cambio.Despues}</td><td>{cambio.FechaCambio}</td></tr>");
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: {ordenDeCargaHistorial[0].OrdenDeCarga_Id}";

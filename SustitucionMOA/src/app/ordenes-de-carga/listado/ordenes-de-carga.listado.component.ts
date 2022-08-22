@@ -44,7 +44,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         "Anulación solicitada",
 	    "Edición solicitada",
         "Error de datos",
-        "Contrato vencido"
+        "Contrato vencido",
+        "Edición rechazada"
     ];
 
 
@@ -82,31 +83,23 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
             { label: "Pendiente aprobación crédito", value: "Pendiente aprobación crédito" },
             { label: "Entrega generada", value: "Entrega generada" },
             { label: "Anulada", value: "Anulada" },
-            { label: "Entregada", value: "Entregada" },
+        /*    { label: "Entregada", value: "Entregada" },*/
             { label: "Vencida", value: "Vencida" },
             { label: "Entrega pendiente", value: "Entrega pendiente" },
             { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
-     //       { label: "Anulación solicitada", value: "Anulación solicitada" },
-	    //{ label: "Edición solicitada", value: "Edición solicitada" },  
+            { label: "Anulación solicitada", value: "Anulación solicitada" },
+	        { label: "Edición solicitada", value: "Edición solicitada" },  
             { label: "Error de datos", value: "Error de datos" },        
-                { label: "Contrato vencido", value: "Contrato vencido" }
+                { label: "Contrato vencido", value: "Contrato vencido" },
+                { label: "Edición rechazada", value: "Edición rechazada" }
         ]} else {
-            //this.descripcionEstadoOrdenCarga =  [
-            //    { label: "Vencida", value: "Vencida" },
-            //    { label: "Pendiente de carga", value: "Pendiente de carga" },
-            //    { label: "Listo para retirar", value: "Listo para retirar" },
-            //    { label: "Completada", value: "Completada" },
-            //    { label: "Anulada", value: "Anulada" },
-            //    { label: "Sin estado", value: "Sin estado" }
-            //]
+            this.descripcionEstadoOrdenCarga = [
+
+            ];
     
-            //this.estadosSelected = [
-            //    "Pendiente de carga",
-            //    "Anulada",
-            //    "Vencida",
-            //    "Sin estado",
-            //    "Listo para retirar",
-            //];
+            this.estadosSelected = [
+               
+            ];
     
             this.entregada = "Completada";
         }
