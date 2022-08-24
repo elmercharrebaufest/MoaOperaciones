@@ -1214,7 +1214,6 @@ namespace SustitucionMOAUtils.Services
         }
 
         #region Etapa1
-
         public Resultado SeleccionarContrato(int ordenId, string contratoSAP)
         {
             string resultado = SuccessMsg.OrdenDeCargaActualizada;
@@ -1504,8 +1503,8 @@ namespace SustitucionMOAUtils.Services
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: {ordenDeCargaHistorial[0].OrdenDeCarga_Id}";
-                emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, numeroPedido, cambios);
-                return emailSenderData;
+				emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, numeroPedido, cambios, orden.Cliente.RazonSocial, contrato);
+				return emailSenderData;
             }
             catch (Exception ex)
             {
