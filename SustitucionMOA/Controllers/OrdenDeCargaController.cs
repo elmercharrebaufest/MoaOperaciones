@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
@@ -524,7 +525,15 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var response = ordenDeCargaService.VisualizarCliente(corredor, fechaInicio, fechaFin, pendiente);
+				//var response = ordenDeCargaService.VisualizarClienteProducto(corredor, fechaInicio, fechaFin, pendiente);
+				var request = new VisualizarClienteRequest()
+                {
+                    Corredor = corredor,
+                    FechaInicio = fechaInicio,
+                    FechaFin = fechaFin,
+                    Pendiente = pendiente
+                };
+				var response = ordenDeCargaService.VisualizarCliente(request);
                 return JsonCustom(response);
             }
             catch (InfoCustomException e)
@@ -542,12 +551,54 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [HttpGet]
+		[HttpGet]
+		public ActionResult VisualizarProducto(string clienteCuit, string contrato, string fechaInicio, string fechaFin, string pendiente)
+		{
+			try
+			{
+				var request = new VisualizarProductoRequest()
+                {
+                    ClienteCuit = clienteCuit,
+                    Contrato = contrato,
+					FechaInicio = fechaInicio,
+					FechaFin = fechaFin,
+					Pendiente = pendiente
+				};
+				var response = ordenDeCargaService.VisualizarProducto(request);
+				return JsonCustom(response);
+			}
+			catch (InfoCustomException e)
+			{
+				return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+			}
+			catch (ValidationCustomException e)
+			{
+				return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+			}
+			catch (Exception e)
+			{
+				Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+				return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+			}
+		}
+
+		[HttpGet]
         public ActionResult ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string fechaInicio, string fechaFin, string productoId, string pendiente)
         {
             try
             {
-                var response = ordenDeCargaService.ValidarCorredorClienteContratoProducto(clienteCuit, clienteCodigo, contrato, corredor, fechaInicio, fechaFin, productoId, pendiente);
+                var request = new ValidarCorredorClienteContratoProductoRequest()
+                {
+                    ClienteCuit = clienteCuit,
+                    ClienteCodigo = clienteCodigo,
+                    Contrato = contrato,
+                    Corredor = corredor,
+                    FechaInicio = fechaInicio,
+                    FechaFin = fechaFin,
+                    ProductoId = productoId,
+                    Pendiente = pendiente
+                };
+                var response = ordenDeCargaService.ValidarCorredorClienteContratoProducto(request);
                 return JsonCustom(response);
             }
             catch (InfoCustomException e)

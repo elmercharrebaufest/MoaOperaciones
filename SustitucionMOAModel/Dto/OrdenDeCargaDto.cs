@@ -1,4 +1,4 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using Ent = SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
@@ -34,7 +34,7 @@ namespace SustitucionMOAModel.Dto
 
     public class OrdenDeCargaEditarDto
     {
-        public OrdenDeCargaEditarDto(OrdenDeCarga orden)
+        public OrdenDeCargaEditarDto(Ent.OrdenDeCarga orden)
         {
             Id = orden.Id;
             CUITCliente = orden.CUITCliente;
@@ -84,7 +84,7 @@ namespace SustitucionMOAModel.Dto
 
     public class OrdenDeCargaHistorialDto
     {
-        public OrdenDeCargaHistorialDto(OrdenDeCargaCambiosHistorial orden)
+        public OrdenDeCargaHistorialDto(Ent.OrdenDeCargaCambiosHistorial orden)
         {
             if(orden != null)
             {
