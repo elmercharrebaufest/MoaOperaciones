@@ -254,6 +254,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return;
         }
 
+        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada) {
+            return;
+        }
 
         if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
             if (sessionStorage.getItem("tipoUsuario") == "CLI") this.mostrarBotonSolicitarAnulacion = true;
