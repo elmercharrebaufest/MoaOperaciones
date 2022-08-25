@@ -80,6 +80,12 @@
     <Compile Include="Dto\LogPesificacion\LogPesificacionDto.cs" />
     <Compile Include="Dto\MovimientoIngresosBrutosCoeficienteUnificadoCustomDto.cs" />
     <Compile Include="Dto\MovimientoIngresosBrutosCoeficienteUnificadoDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ValidarCorredorClienteContratoProductoRequest.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ValidarCorredorClienteContratoProductoResponse.cs" />
+    <Compile Include="Dto\OrdenDeCarga\VisualizarClienteRequest.cs" />
+    <Compile Include="Dto\OrdenDeCarga\VisualizarClienteResponse.cs" />
+    <Compile Include="Dto\OrdenDeCarga\VisualizarProductoRequest.cs" />
+    <Compile Include="Dto\OrdenDeCarga\VisualizarProductoResponse.cs" />
     <Compile Include="Dto\PesificacionSapDto.cs" />
     <Compile Include="Dto\SecuenciaIngresosBrutosCoeficienteUnificadoDto.cs" />
     <Compile Include="Dto\ServicioSolpDto.cs" />
