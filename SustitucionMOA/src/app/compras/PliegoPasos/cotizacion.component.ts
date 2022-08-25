@@ -104,8 +104,8 @@ export class CotizacionComponent extends ListBaseComponent {
         this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoCotizacion, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
     }
 
-    uploadHandler(filesUploaad: any): void {
-        this.model.archivosCotizacionesNuevos = filesUploaad["files"];
+    uploadHandler(filesUpload: any): void {
+        this.model.archivosCotizacionesNuevos = filesUpload["files"];
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
@@ -165,8 +165,8 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     eliminarAdjuntoGuardado(archivo): void {
-        var indice = this.model.archivosCotizacionesGuardados.indexOf(archivo)
-        this.model.archivosCotizacionesGuardados.splice(indice, 1)
+        var indice = this.model.archivosCotizaciones.indexOf(archivo)
+        this.model.archivosCotizaciones.splice(indice, 1)
     }
 
     eliminarArchivo(esAdjuntoNuevo: boolean, archivo: any) {

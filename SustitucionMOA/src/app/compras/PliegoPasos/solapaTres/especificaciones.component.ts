@@ -97,13 +97,13 @@ export class EspecificacionesComponent extends ListBaseComponent {
 
     //elimno el archivo, llamar al servicio de eliminacion
     eliminarAdjuntoNuevo(archivo): void {
-        var indice = this.viewModel.archivosAdjuntosNuevos.indexOf(archivo)
-        this.viewModel.archivosAdjuntosNuevos.splice(indice, 1)
+        var indice = this.viewModel.archivosEspecificacionesNuevos.indexOf(archivo)
+        this.viewModel.archivosEspecificacionesNuevos.splice(indice, 1)
     }
 
     eliminarAdjuntoGuardado(archivo): void {
-        var indice = this.viewModel.archivosGuardadosEspecificaciones.indexOf(archivo)
-        this.viewModel.archivosGuardadosEspecificaciones.splice(indice, 1)
+        var indice = this.viewModel.archivosEspecificaciones.indexOf(archivo)
+        this.viewModel.archivosEspecificaciones.splice(indice, 1)
     }
 
 
@@ -137,8 +137,8 @@ export class EspecificacionesComponent extends ListBaseComponent {
         }
     }
 
-    uploadHandler(filesUploaad: any): void {
-        this.viewModel.archivosAdjuntosNuevos = filesUploaad["files"];
+    uploadHandler(filesUpload: any): void {
+        this.viewModel.archivosEspecificacionesNuevos = filesUpload["files"];
     }
 
     selectionChange(event): void {

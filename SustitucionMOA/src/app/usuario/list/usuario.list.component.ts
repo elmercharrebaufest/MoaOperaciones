@@ -251,7 +251,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     }
 
     abrirModalEditarRoles(usuario: any) {
-        debugger;
         this.usuarioSeleccionado = usuario;
         this.usuarioSap = usuario.UsuarioSap;
         this.rolesUsuarioSeleccionado = new Array<Rol>();

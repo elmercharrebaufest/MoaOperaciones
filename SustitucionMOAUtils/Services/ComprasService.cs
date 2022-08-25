@@ -220,7 +220,7 @@ namespace SustitucionMOAUtils.Services
 
             pliegoEntity = GuardarEspecificacionesTecnicasPliego(solp, solpEntity, pliegoEntity);
             solp = GuardarAdjuntosSolp(solp, adjuntos, pliegoEntity);
-            repositorio.GuardarCambios();
+            //repositorio.GuardarCambios();
 
             var respuestaGuardarSOLP = new RespuestaGuardarSOLP
             {
@@ -417,9 +417,9 @@ namespace SustitucionMOAUtils.Services
             Directory.CreateDirectory(ObtenerRutaArchivos(solpEntity.Id));
             File.WriteAllText(rutaArchivo, solp.EspecificacionesTecnicas);
 
-            var archivoEspecificacionesTecnicasPliego = pliegoEntity.Archivos.FirstOrDefault(x => x.FileKey == FileKeys.EspecificacionesTecnicasPliego);
+            var archivosEspecificacionesTecnicasPliego = pliegoEntity.Archivos.FirstOrDefault(x => x.FileKey == FileKeys.EspecificacionesTecnicasPliego);
 
-            if (archivoEspecificacionesTecnicasPliego == null)
+            if (archivosEspecificacionesTecnicasPliego == null)
             {
                 pliegoEntity.Archivos.Add(new Archivo
                 {
@@ -479,6 +479,8 @@ namespace SustitucionMOAUtils.Services
 
                 file.SaveAs(rutaArchivo);
             }
+
+            repositorio.GuardarCambios();
 
 
             solp.Adjuntos = pliego.Archivos.Where(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(x => new ArchivoDto()
