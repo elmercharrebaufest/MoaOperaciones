@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using System.Collections.Generic;
 
@@ -29,8 +30,9 @@ namespace SustitucionMOAUtils.Interfaces
         List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga();
         string ForzarCreacionOrden(int ordenId);
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);
-        List<ProveedorDto> VisualizarCliente(string corredor, string fechaInicio, string fechaFin, string pendiente);
-        bool ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string fechaInicio, string fechaFin, string productoId, string pendiente);
+		VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request);
+		VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request);
+		ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request);
         string NotificarVariosPedidos(int ordenDeCargaId);
         string NotificarVariosContratos(int ordenDeCargaId);
         string NotificarVencimientoOrdenCarga(int ordenId);

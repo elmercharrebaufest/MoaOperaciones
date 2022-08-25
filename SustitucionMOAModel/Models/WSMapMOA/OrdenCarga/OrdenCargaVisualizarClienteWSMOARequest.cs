@@ -11,5 +11,15 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
 		public string Material { get; set; }
 		public string Pendiente { get; set; }
 		public string TipoContrato { get; set; }
+
+		public OrdenCargaVisualizarClienteWSMOARequest()
+		{
+			Cliente = string.Empty;
+			Contrato = string.Empty;
+			Corredor = string.Empty;
+			Material = string.Empty;
+			Pendiente = string.Empty;
+			TipoContrato = string.Empty;
+		}
 	}
 }
