@@ -1117,7 +1117,7 @@ namespace SustitucionMOAUtils.Services
 
 
                 response = new VisualizarClienteResponse();
-                response.Clientes = GetClientesFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse);
+                response.Clientes = GetClientesFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse, request);
                 //response.Productos = GetProductosFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse);
 
 
@@ -1176,7 +1176,7 @@ namespace SustitucionMOAUtils.Services
 			}
             return validation;
         }
-        private List<ProveedorDto> GetClientesFromVisualizarClienteProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse)
+        private List<ProveedorDto> GetClientesFromVisualizarClienteProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse, VisualizarClienteRequest request)
         {
             var clientesDto = new List<ProveedorDto>();
 			var clientesWS = ordenCargaVisualizarClienteWSMOAResponse.Resultados.Select(d => d.Cliente).Distinct().ToList();
@@ -1224,7 +1224,7 @@ namespace SustitucionMOAUtils.Services
 				{
 					throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "cliente"));
 				}
-				var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(cliente.CodigoProveedor, request.Contrato, string.Empty, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, string.Empty, 1);
+				var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(cliente.CodigoProveedor, request.Contrato, string.Empty, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, string.Empty, 2);
 
 				response = new VisualizarProductoResponse();
                 response.Productos = GetProductosFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse);
@@ -1306,7 +1306,7 @@ namespace SustitucionMOAUtils.Services
 				}
                 request.ClienteCuit = cliente.CUIT;
                 request.ClienteCodigo = cliente.CodigoProveedor;
-                var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(request.ClienteCodigo, request.Contrato, request.Corredor, request.FechaInicio, request.FechaFin, producto.CodigoSap, request.Pendiente, string.Empty, 2);
+                var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(request.ClienteCodigo, request.Contrato, request.Corredor, request.FechaInicio, request.FechaFin, producto.CodigoSap, request.Pendiente, string.Empty, 3);
                 //if (response == null)
                 //{
                 //    throw new WSCustomException(ErrorMsg.ErrorWS, new Exception("RFC no devuelve datos"));
@@ -1436,13 +1436,21 @@ namespace SustitucionMOAUtils.Services
                     TipoContrato = tipoContrato
                 };
                 var ordenCargaVisualizarClienteWSMOAResponse = ordenCargaConsumerMOA.OrdenCargaVisualizarClienteExecute(request);
-                if (type == 1)
-                {
-					if (ordenCargaVisualizarClienteWSMOAResponse == null || ordenCargaVisualizarClienteWSMOAResponse.Resultados == null || ordenCargaVisualizarClienteWSMOAResponse.Resultados.Count == 0)
-					{
-						throw new ValidationCustomException("RFC no devuelve datos");
-					}
+				if (ordenCargaVisualizarClienteWSMOAResponse == null)
+				{
+					throw new ValidationCustomException("La RFC no se encuentra habilitada, verifique la conexión con la RFC");
 				}
+				if (ordenCargaVisualizarClienteWSMOAResponse.Resultados == null || ordenCargaVisualizarClienteWSMOAResponse.Resultados.Count == 0)
+					{
+                        if (type == 1)
+                        {
+							throw new ValidationCustomException("RFC no devuelve datos, no se encontraron clientes para dicho corredor");
+						}
+						if (type == 2)
+						{
+							throw new ValidationCustomException("RFC no devuelve datos, no se encontró una relacion entre el cliente y el contrato");
+						}
+					}
 				return ordenCargaVisualizarClienteWSMOAResponse;
             }
             catch (InfoCustomException)
