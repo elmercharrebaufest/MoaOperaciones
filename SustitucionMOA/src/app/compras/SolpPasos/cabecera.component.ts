@@ -91,11 +91,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         { campo: 'selectCentroEntrega', esObligatorio: false, esFijo: false },
         { campo: 'nombreEntrega', esObligatorio: false, esFijo: true },
         { campo: 'codigoPostalEntrega', esObligatorio: false, esFijo: true },
-        { campo: 'selectAlmacenEntrega', esObligatorio: false, esFijo: false },
+        { campo: 'selectAlmacenEntrega', esObligatorio: true, esFijo: false },
         { campo: 'calleEntrega', esObligatorio: true, esFijo: true },
         { campo: 'paisEntrega', esObligatorio: false, esFijo: true },
         { campo: 'numeroEntrega', esObligatorio: false, esFijo: false },
-        { campo: 'selectGrupoCompras', esObligatorio: false, esFijo: false },
+        { campo: 'selectGrupoCompras', esObligatorio: true, esFijo: false },
         { campo: 'selectArticuloCompras', esObligatorio: true, esFijo: true },
         { campo: 'selectSolicitanteCompras', esObligatorio: true, esFijo: true },
         { campo: 'necesidadCompras', esObligatorio: false, esFijo: true },
@@ -139,8 +139,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         if (this.model.monedaPorDefecto && !this.model.posicionActual.monedaSeleccionada)
             this.model.posicionActual.monedaSeleccionada = this.combos.Moneda.find(x => x.Codigo == this.model.monedaPorDefecto)
 
-        if (!this.model.posicionActual.selectSolicitanteCompras)
-            this.model.posicionActual.selectSolicitanteCompras = this.model.fiscalContrato;
+        // if (!this.model.posicionActual.selectSolicitanteCompras)
+        //     this.model.posicionActual.selectSolicitanteCompras = this.model.fiscalContrato;
 
         this.model.cargoPasoCinco = true;
 
@@ -154,10 +154,13 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.model.posiciones = this.sortPosiciones();
     }
 
-    mostrarValidacion(campoAValidar, vacio){
+    mostrarValidacion(campoAValidar, vacio, validaError){
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
+        if(validaError) {
+            return (camposVacios != null && this.mostrarError(campoAValidar) !== null);
+        }
         return (camposVacios != null && vacio == 0);
-      }
+    }
 
     disableDocumento(){
         if(this.model.nroSolp){

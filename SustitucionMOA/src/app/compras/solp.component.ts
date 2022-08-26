@@ -335,7 +335,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.nombreDePedido = solp.NombreDeObra || '';
         this.solpActual.fiscalContrato = solp.FiscalContrato || '';
         this.solpActual.telefono = solp.Telefono || '';
-        this.solpActual.mail = solp.Email || sessionStorage.getItem("username");
+        this.solpActual.mail = solp.Email || ''; //sessionStorage.getItem("username");
         this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
      
         // Paso 2
@@ -421,7 +421,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.concluido = x.EsConcluido;
                 posActual.indiceFijacion = x.EsFijacion;
                 posActual.selectCentroEntrega = x.Centro;
-                posActual.selectAlmacenEntrega = x.Almacen;
+                posActual.selectAlmacenEntrega = x.Almacen.Codigo === null ? '' : x.Almacen;
                 posActual.nombreEntrega = x.NombreEntrega;
                 posActual.calleEntrega = x.CalleEntrega;
                 posActual.numeroEntrega = x.NumeroEntrega;
@@ -429,8 +429,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.paisEntrega = x.PaisEntrega;
                 posActual.selectSolicitanteCompras = x.Solicitante;
                 posActual.necesidadCompras = x.NroNecesidad;
-                posActual.selectGrupoCompras = x.GrupoCompras;
-                posActual.selectArticuloCompras = x.GrupoArticulo;
+                posActual.selectGrupoCompras = x.GrupoCompras.Codigo === null ? '' : x.GrupoCompras;
+                posActual.selectArticuloCompras = x.GrupoArticulo.Codigo === null ? '' : x.GrupoArticulo;
                 posActual.monedaSeleccionada = x.Moneda;
                 posActual.servicio = x.TipoPosicion && x.TipoPosicion.Codigo;
                 posActual.tipoImputacion = x.TipoImputacion && x.TipoImputacion.Codigo;

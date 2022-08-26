@@ -33,7 +33,7 @@
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                             Mail *
                             <div class="styled-select">
-                                <input id="txtUsuarioMail" type="text" formControlName="mail" (blur)="onBlur('mail')" pInputText [(ngModel)]="model.mail" class="fourRounded" placeholder="" aria-controls="tableModal">
+                                <input id="txtUsuarioMail" type="text" formControlName="mail" (blur)="onBlur('mail')" pInputText [(ngModel)]="model.mail" class="fourRounded" placeholder="Ingrese el mail" aria-controls="tableModal">
                             </div>
                             <div *ngIf="mostrarError('mail')">
                                 <p class="text-danger">campo obligatorio</p>

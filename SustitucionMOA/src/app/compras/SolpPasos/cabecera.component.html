@@ -7,7 +7,7 @@
         <div *ngIf="this.model.vincularAPliego" class="ui-messages ui-widget ui-corner-all ng-tns-c24-70 ui-messages-warn ng-trigger ng-trigger-messageAnimation ng-star-inserted" style="display: block; transform: translateY(0px); opacity: 1;" ng-reflect-ng-class="[object Object]">
             <span class="ui-messages-icon pi pi-exclamation-triangle" ng-reflect-klass="ui-messages-icon pi" ng-reflect-ng-class="pi-exclamation-triangle"></span>
             <ul class="ng-tns-c24-70">
-                <li class="ng-tns-c24-70 ng-star-inserted" style="">
+                <li class="ng-tns-c24-70 ng-star-inserted">
                     <span class="ui-messages-detail ng-tns-c24-70 ng-star-inserted">No es posible editar esta pantalla desde la plataforma. Para editar dirijase a SAP</span>
                 </li>
             </ul>
@@ -208,18 +208,18 @@
 
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 margenInput">
                                 <div class="margenInput">
-                                    Almac&eacute;n <!-- {{ mostrarAsterisco('selectAlmacenEntrega') }} -->
+                                    Almac&eacute;n {{ mostrarAsterisco('selectAlmacenEntrega') }}
                                     <!-- <p-dropdown formControlName="selectAlmacenEntrega"
                                         [ngModelOptions]="{standalone:true}" [options]="almacenEntrega"
                                         [(ngModel)]="model.posicionActual.selectAlmacenEntrega" dataKey="Id"
                                         optionLabel="CodigoDescripcion" autoDisplayFirst="false" placeholder="Seleccionar"
                                         [filter]="true" filterBy="label" [showClear]="true"></p-dropdown> -->
                                     <p-autoComplete [disabled] = "disabled" formControlName="selectAlmacenEntrega" [(ngModel)]="model.posicionActual.selectAlmacenEntrega" [suggestions]="almacenEntrega" dataKey="Id" ariaLabel="CodigoDescripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="Ningún almacén encontrado"
-                                        [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true" (completeMethod)="buscarCombo($event, 'ALMACEN')" (onFocus)=" $event.target.select()">
+                                        [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="false" (completeMethod)="buscarCombo($event, 'ALMACEN')" (onFocus)=" $event.target.select()">
                                     </p-autoComplete>
-                                    <!-- <div *ngIf="mostrarError('selectAlmacenEntrega')">
+                                    <div *ngIf="mostrarValidacion('selectAlmacenEntrega', null, true)">
                                         <p class="text-danger">campo obligatorio</p>
-                                    </div> -->
+                                    </div>
                                 </div>
 
                                 <div class="margenInput">
@@ -260,10 +260,10 @@
                                         [filter]="true" filterBy="label" [showClear]="true"></p-dropdown> -->
 
                                     <p-autoComplete formControlName="selectGrupoCompras" [(ngModel)]="model.posicionActual.selectGrupoCompras" [suggestions]="grupoCompras" dataKey="Id" ariaLabel="CodigoDescripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="Ningún grupo de compras encontrado"
-                                        [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true" (completeMethod)="buscarCombo($event, 'GRUPO COMPRAS')" (onFocus)=" $event.target.select()">
+                                        [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="false" (completeMethod)="buscarCombo($event, 'GRUPO COMPRAS')" (onFocus)=" $event.target.select()">
                                     </p-autoComplete>
 
-                                    <div *ngIf="mostrarError('selectGrupoCompras')">
+                                    <div *ngIf="mostrarValidacion('selectGrupoCompras', null, true)">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div>
                                 </div>
@@ -277,9 +277,9 @@
                                         [filter]="true" filterBy="label" [showClear]="true"></p-dropdown> -->
 
                                     <p-autoComplete formControlName="selectArticuloCompras" [(ngModel)]="model.posicionActual.selectArticuloCompras" [suggestions]="articuloCompras" dataKey="Id" ariaLabel="CodigoDescripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true"
-                                        emptyMessage="Ningún articulo de compras encontrado" [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true" (completeMethod)="buscarCombo($event, 'ARTICULO COMPRAS')" (onFocus)=" $event.target.select()">
+                                        emptyMessage="Ningún articulo de compras encontrado" [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="false" (completeMethod)="buscarCombo($event, 'ARTICULO COMPRAS')" (onFocus)=" $event.target.select()">
                                     </p-autoComplete>
-                                    <div *ngIf="mostrarError('selectArticuloCompras')">
+                                    <div *ngIf="mostrarValidacion('selectArticuloCompras', null, true)">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div>
                                 </div>
@@ -290,7 +290,7 @@
                                     Solicitante*
                                     <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.selectSolicitanteCompras" formControlName="selectSolicitanteCompras" name="selectSolicitanteCompras" id="selectSolicitanteCompras" placeholder=""
                                         rows="1" />
-                                    <div *ngIf="mostrarError('selectSolicitanteCompras')">
+                                    <div *ngIf="mostrarValidacion('selectSolicitanteCompras', null, true)">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div>
                                 </div>
