@@ -1478,6 +1478,17 @@ namespace SustitucionMOAUtils.Services
 						throw new ValidationCustomException("RFC no devuelve datos, no se encontró el producto para dicho contrato");
 					}
 				}
+				if (ordenCargaVisualizarClienteWSMOAResponse.Resultados == null || ordenCargaVisualizarClienteWSMOAResponse.Resultados.Count == 0)
+					{
+                        if (type == 1)
+                        {
+							throw new ValidationCustomException("RFC no devuelve datos, no se encontraron clientes para dicho corredor");
+						}
+						if (type == 2)
+						{
+							throw new ValidationCustomException("RFC no devuelve datos, no se encontró una relacion entre el cliente y el contrato");
+						}
+					}
 				return ordenCargaVisualizarClienteWSMOAResponse;
             }
             catch (InfoCustomException)
