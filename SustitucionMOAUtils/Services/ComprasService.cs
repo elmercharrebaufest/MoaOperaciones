@@ -296,16 +296,34 @@ namespace SustitucionMOAUtils.Services
                     posEntity.TipoImputacion = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoImputacionSolp && x.Codigo == pos.TipoImputacion.Codigo);
 
                 if (pos.Almacen != null)
+                {
                     posEntity.Almacen = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Almacen && x.Codigo == pos.Almacen.Codigo);
+                }
+                else
+                {
+                    posEntity.Almacen_Id = null;
+                }
 
                 if (pos.Centro != null)
                     posEntity.Centro = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Centro && x.Codigo == pos.Centro.Codigo);
 
                 if (pos.GrupoCompras != null)
+                {
                     posEntity.GrupoCompras = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.GrupoCompras && x.Codigo == pos.GrupoCompras.Codigo);
+                } 
+                else
+                {
+                    posEntity.GrupoCompras_Id = null;
+                }
 
                 if (pos.GrupoArticulo != null)
+                {
                     posEntity.GrupoArticulo = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.GrupoArticulo && x.Codigo == pos.GrupoArticulo.Codigo);
+                }
+                else
+                {
+                    posEntity.GrupoArticulo_Id = null;
+                }
 
                 if (pos.Moneda != null)
                     posEntity.Moneda = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Moneda && x.Codigo == pos.Moneda.Codigo);
