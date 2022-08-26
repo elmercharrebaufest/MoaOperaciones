@@ -500,10 +500,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
                             console.error(' cargarClientes: ', result.error);
+                            this.CodigoCorredor = '';
                             this.mensajeComponent.setErrorMsg(result.error);
                             this.blockUI.stop();
                         } else if (result.info != undefined) {
-                            console.info(' cargarClientes: ', result.info);
+                            console.info(' cargarClientes; ', result.info);
                             this.mensajeComponent.setInfoMsg(result.info);
                             this.blockUI.stop();
                         } else {
@@ -533,6 +534,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     onClienteSeleccionado = () => {
         console.debug('onClienteSeleccionado');
         console.debug(' clienteCUIT: ', this.clienteCUIT);
+
+        // console.debug(' clienteCodigo: ', this.clienteCodigo);
+        // console.debug(' contrato: ', this.Contrato);
+        // console.debug(' codigoCorredor: ', this.CodigoCorredor);
+        // console.debug(' productoId: ', this.Producto);
         this.ordenDeCarga.CUITCliente = Number(this.clienteCUIT);
         this.getPatentes();
         if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
@@ -547,16 +553,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     onContratoChange = (contrato: any) => {
         console.debug('onContratoChange');
+        // console.debug(' clienteCUIT: ', this.clienteCUIT);
         console.debug(' contrato: ', contrato);
         this.Contrato = contrato;
+        if (this.clienteCUIT && this.Contrato) {
+            // console.debug( 'call => this.cargarProducto()');
+            this.cargarProducto();
+        }
         if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
             this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
         } else if (this.clienteCUIT && this.Contrato && this.Producto) {
             this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
         } else if (this.clienteCodigo && this.Contrato && this.Producto) {
             this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
-        } else if (this.clienteCUIT && this.Contrato) {
-            this.cargarProducto();
         } else if (!this.Contrato) {
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
         }
@@ -588,8 +597,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     } else {
                         console.debug(' result: ', result);
                         // this.listaMateriales = result.Productos;
+                        this.Producto = result.Productos[0].MaterialId;
                         this.ordenDeCarga.Producto_Id = result.Productos[0].MaterialId;
-                        this.blockUI.stop();
                         if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
                             this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
                         } else if (this.clienteCUIT && this.Contrato && this.Producto) {
@@ -597,6 +606,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         } else if (this.clienteCodigo && this.Contrato && this.Producto) {
                             this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
                         } 
+                        this.blockUI.stop();
                     }
                 },
                 error => {
@@ -667,8 +677,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                             }
                         }
                         // this.spinner.hide();
-                        this.blockUI.stop();
                         this.resultadoValidacionCorCliConPro = resultValidacion;
+                        this.blockUI.stop();
                         // return resultValidacion;
                     }
                 },
