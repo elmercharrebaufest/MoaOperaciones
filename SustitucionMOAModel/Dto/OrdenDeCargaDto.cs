@@ -145,6 +145,7 @@ namespace SustitucionMOAModel.Dto
         public bool EsOrdenVencida { get; set; }
 
         public IEnumerable<OrdenDeCargaCambiosHistorialDto> OrdenDeCargaCambiosHistorial { get; set; }
+        public bool FechaVencimientoAmpliada { get; set; }
 
         public override bool Equals(object obj)
         {

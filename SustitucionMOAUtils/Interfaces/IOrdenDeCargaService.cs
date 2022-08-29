@@ -34,5 +34,6 @@ namespace SustitucionMOAUtils.Interfaces
         string NotificarVariosPedidos(int ordenDeCargaId);
         string NotificarVariosContratos(int ordenDeCargaId);
         string NotificarVencimientoOrdenCarga(int ordenId);
+        string ActivarOC(int ordenId,string mailUsuario);
     }
 }

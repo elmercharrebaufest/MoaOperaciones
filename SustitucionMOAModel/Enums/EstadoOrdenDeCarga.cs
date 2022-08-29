@@ -43,10 +43,10 @@ namespace SustitucionMOAModel.Enums
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                 case EstadoOrdenDeCarga.EntregaPendiente:
                 case EstadoOrdenDeCarga.ContratoVencido:
+                case EstadoOrdenDeCarga.Vencida:
                     return "yellow";
                 case EstadoOrdenDeCarga.EntregaGenerada:
                 case EstadoOrdenDeCarga.Entregada:
-                case EstadoOrdenDeCarga.Vencida:
                     return "green";
                 default:
                     return "white";
@@ -94,8 +94,8 @@ namespace SustitucionMOAModel.Enums
         {
             switch (me)
             {
-                case EstadoOrdenDeCarga.Vencida:
-                    return "Vencida";
+                //case EstadoOrdenDeCarga.Vencida:
+                //    return "Vencida";
                 case EstadoOrdenDeCarga.ErrorDeCarga:
                 case EstadoOrdenDeCarga.Pendiente:
                 case EstadoOrdenDeCarga.Confirmado:
@@ -103,6 +103,7 @@ namespace SustitucionMOAModel.Enums
                 case EstadoOrdenDeCarga.EntregaPendiente:
                 case EstadoOrdenDeCarga.ContratoVencido:
                     return "En proceso";
+                case EstadoOrdenDeCarga.Vencida:
                 case EstadoOrdenDeCarga.EntregaGenerada:
                     return "OK";
                 case EstadoOrdenDeCarga.AnulacionSolicitada:

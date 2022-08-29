@@ -469,6 +469,8 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.Vencida);
+
                 }
 
                 if (esComercial)
@@ -656,7 +658,8 @@ namespace SustitucionMOAUtils.Services
                 ContratoSinCantidadPendiente = orden.ContratoSinCantidadPendiente,
                 DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno,
                 OrdenDeCargaCambiosHistorial = ordenDeCargaCambiosHistorial,
-                EsOrdenVencida = orden.FechaVencimiento < DateTime.Now.Date ? true : false
+                EsOrdenVencida = orden.FechaVencimiento < DateTime.Now.Date ? true : false,
+                FechaVencimientoAmpliada = orden.FechaVencimientoAmpliada
 
 
 
@@ -686,9 +689,27 @@ namespace SustitucionMOAUtils.Services
                 return null;
             }
 
+            int Usuario_Id = repositorio.Obtener<Usuario>(a => a.Mail == "moaoperaciones@molinosagro.com.ar").Id;
 
-            var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaVencimiento < fechaActual && o.Estado == EstadoOrdenDeCarga.EntregaGenerada);
+            var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaVencimiento < fechaActual && (o.Estado == EstadoOrdenDeCarga.EntregaGenerada || o.Estado == EstadoOrdenDeCarga.Vencida));
+            foreach (var orden in ordenes)
+            {
+                if (orden.Estado == EstadoOrdenDeCarga.EntregaGenerada)
+                {
+                    orden.Estado = EstadoOrdenDeCarga.Vencida;
+                    orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
+                    {
+                        Antes = EstadoOrdenDeCarga.EntregaGenerada.ToFriendlyString(),
+                        Despues = EstadoOrdenDeCarga.Vencida.ToFriendlyString(),
+                        FechaCambio = DateTime.Now,
+                        NombreColumnaCambio = "Estado",
+                        Usuario_Id = Usuario_Id
+                    });
+                }
+            }
+            repositorio.GuardarCambios();
             NotificarVencimientoOrdenCarga(ordenes);
+
             return ordenes;
         }
 
@@ -1719,5 +1740,44 @@ namespace SustitucionMOAUtils.Services
             return fechaVencimiento;
         }
         #endregion
+
+        public string ActivarOC(int ordenId, string mailUsuario)
+        {
+            var Usuario_Id = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario).Id;
+
+            var orden = repositorio.Obtener<OrdenDeCarga>(x => x.Id == ordenId);
+
+            orden.Estado = EstadoOrdenDeCarga.EntregaGenerada;
+            orden.FechaVencimiento = orden.FechaVencimiento.Value.AddDays(2);
+            orden.FechaVencimientoAmpliada = true;
+            orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
+            {
+                Antes = EstadoOrdenDeCarga.Vencida.ToFriendlyString(),
+                Despues = EstadoOrdenDeCarga.EntregaGenerada.ToFriendlyString(),
+                FechaCambio = DateTime.Now,
+                NombreColumnaCambio = "Estado",
+                Usuario_Id = Usuario_Id
+            });
+            orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
+            {
+                Antes = "No",
+                Despues = "Si",
+                FechaCambio = DateTime.Now,
+                NombreColumnaCambio = "FechaVencimientoAmpliada",
+                Usuario_Id = Usuario_Id
+            });
+            orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
+            {
+                Antes = orden.FechaVencimiento.Value.AddDays(-2).ToString(),
+                Despues = orden.FechaVencimiento.ToString(),
+                FechaCambio = DateTime.Now,
+                NombreColumnaCambio = "FechaVencimiento",
+                Usuario_Id = Usuario_Id
+            });
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.OrdenDeCargaActualizada;
+
+        }
     }
 }

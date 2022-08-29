@@ -122,6 +122,14 @@ export class OrdenesDeCargaService extends BaseService {
             .get('/api/OrdenDeCarga/AnularOrdenPorVencimiento', { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
+    public activarOC(ordenId: Number): Observable<any> {
+        let params: HttpParams = new HttpParams()
+            .append('ordenId', ordenId.toString());
+
+        return this.http
+            .get('/api/OrdenDeCarga/ActivarOC', { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
 
     public edicionFinalizada(ordenId: Number): Observable<any> {
         let params: HttpParams = new HttpParams()
