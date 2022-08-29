@@ -109,7 +109,12 @@ export class Generacion1Component extends ListBaseComponent  {
 
     mostrarValidacion(campoAValidar, vacio){
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-        return (camposVacios != null && vacio == 0);
+        if(vacio !== undefined) {
+            return (camposVacios != null && vacio == 0);
+        }
+
+        return true;
+
     }
 
     onBlur(control: string)
