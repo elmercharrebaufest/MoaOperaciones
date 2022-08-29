@@ -48,9 +48,11 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
     columnaCliente: string = "NombreCliente";
     columnaProducto: string = "DescripcionMaterial";
     ColumnaTipoContrato: string = "TipoContrato";
-
-
-
+    esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
+    esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
+    esAdmin: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+    esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    esInterno: boolean = (this.esComercial || this.esMesaFas || this.esAdmin);
     ngOnInit() {
         this.getListado();
     }
