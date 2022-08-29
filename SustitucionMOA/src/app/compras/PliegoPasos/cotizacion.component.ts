@@ -33,6 +33,10 @@ export class CotizacionComponent extends ListBaseComponent {
     //validaciones
     formularioCotizacion: FormGroup;
 
+    camposObligatorios: any[] = [
+        { campo: 'dias', esObligatorio: true}
+    ];
+
     @Output() onEstCompleto = new EventEmitter<any>();
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -41,6 +45,11 @@ export class CotizacionComponent extends ListBaseComponent {
         , private formBuilder: FormBuilder, private confirmationService: ConfirmationService,
         private validadorPasoSolpService : ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+    }
+
+    mostrarValidacion(campoAValidar){
+        let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
+        return (camposVacios != null && this.mostrarError(campoAValidar) !== null);
     }
 
     mostrarError(nombreCampo: string): boolean {
