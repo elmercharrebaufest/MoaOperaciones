@@ -550,7 +550,7 @@ namespace SustitucionMOAUtils.Services
                         || n.Estado == EstadoOrdenDeCarga.EdicionSolicitada
                         || n.Estado == EstadoOrdenDeCarga.AnulacionSolicitada
                         || n.Estado == EstadoOrdenDeCarga.ContratoVencido
-                        || n.Estado== EstadoOrdenDeCarga.EdicionRechazada)
+                        || n.Estado == EstadoOrdenDeCarga.EdicionRechazada)
                     )
                     .Select(x => new OrdenDeCargaDto
                     {
@@ -686,7 +686,7 @@ namespace SustitucionMOAUtils.Services
                 return null;
             }
 
-            
+
             var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaVencimiento < fechaActual && o.Estado == EstadoOrdenDeCarga.EntregaGenerada);
             NotificarVencimientoOrdenCarga(ordenes);
             return ordenes;
@@ -749,7 +749,7 @@ namespace SustitucionMOAUtils.Services
                 var ordenVencidas = new StringBuilder();
                 foreach (var orden in ordenes)
                 {
-                    ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido:orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
+                    ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES_VENCIDAS);
                 emailSenderData.Asunto = $"Molinos Agro - Notificación de ordenes Vencidas";
@@ -1004,46 +1004,50 @@ namespace SustitucionMOAUtils.Services
         {
             Proveedor cliente;
             OrdenDeCargaDto result = new OrdenDeCargaDto();
-            List<OrdenDeCarga> listOrden = new List<OrdenDeCarga>();
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
+            //List<OrdenDeCarga> listOrden = new List<OrdenDeCarga>();
+            //var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            //var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
 
-            if (esComercial || usuario.EsCorredor())
+            //if (esComercial || usuario.EsCorredor())
+            //{
+            if (ordenDeCarga.CUITCliente == null)
             {
-                if (ordenDeCarga.CUITCliente == null)
-                {
-                    result.ordenes.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
-                    return result;
-                }
-                if (usuario.EsCorredor())
-                {
-                    cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
-                    listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
-                }
-                else
-                {
-                    cliente = repositorio.Obtener<Proveedor>(
-                    x => x.CUIT == ordenDeCarga.CUITCliente &&
-                    x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
-                    listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
-                }
-
+                result.ordenes.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
+                return result;
             }
-            else
+            //    if (usuario.EsCorredor())
+            //    {
+            //        cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
+            //        listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
+            //    }
+            //    else
+            //    {
+            cliente = repositorio.Obtener<Proveedor>(
+            x => x.CUIT == ordenDeCarga.CUITCliente &&
+            x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
+            result.ordenes = repositorio.Listar<OrdenDeCarga, AutoCompleteDropdownElement>(x => new AutoCompleteDropdownElement
             {
-                cliente = usuario.ObtenerProveedor();
-                listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
-            }
+                label = x.ChasisAcoplado,
+                value = x.PatenteAcoplado
+            }, x => x.Cliente_Id == cliente.Id);
+            //    }
 
-            foreach (var ordenes in listOrden)
-            {
-                result.ordenes.Add(new AutoCompleteDropdownElement()
-                {
-                    label = ordenes.ChasisAcoplado,
-                    value = ordenes.PatenteAcoplado
+            //}
+            //else
+            //{
+            //cliente = usuario.ObtenerProveedor();
+            //listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
+            //}
 
-                });
-            }
+            //foreach (var ordenes in listOrden)
+            //{
+            //    result.ordenes.Add(new AutoCompleteDropdownElement()
+            //    {
+            //        label = ordenes.ChasisAcoplado,
+            //        value = ordenes.PatenteAcoplado
+
+            //    });
+            //}
 
             result.ordenes = result.ordenes.Distinct().ToList();
             return result;
@@ -1149,10 +1153,10 @@ namespace SustitucionMOAUtils.Services
                         var contratoResult = result.Contrato.ToUpper();
                         var productoResult = result.Producto.ToUpper().Substring(13, 5);
                         if (contrato.ToUpper().Equals(contratoResult) && clienteCodigo.ToUpper().Equals(clienteResult) && producto.CodigoSap.ToUpper().Equals(productoResult))
-						{
+                        {
                             return true;
                         }
-                            
+
                     }
                     return false;
                 }
@@ -1494,8 +1498,8 @@ namespace SustitucionMOAUtils.Services
 
                 var cambios = new StringBuilder();
                 var contrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
-                foreach (var cambio in ordenDeCargaHistorial.OrderByDescending(x => x.NombreColumnaCambio == "ChasisAcoplado").ThenByDescending(x =>x.NombreColumnaCambio == "PatenteAcoplado"))                                                           
-                {                          
+                foreach (var cambio in ordenDeCargaHistorial.OrderByDescending(x => x.NombreColumnaCambio == "ChasisAcoplado").ThenByDescending(x => x.NombreColumnaCambio == "PatenteAcoplado"))
+                {
                     cambios.AppendLine($"<tr><td>{(cambio.NombreColumnaCambio == "ChasisAcoplado" ? "PatenteChasis" : cambio.NombreColumnaCambio)}</td><td>{cambio.Antes}</td><td>{cambio.Despues}</td><td>{cambio.FechaCambio}</td></tr>");
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
