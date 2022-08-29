@@ -469,6 +469,8 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.Vencida);
+
                 }
 
                 if (esComercial)
@@ -550,7 +552,7 @@ namespace SustitucionMOAUtils.Services
                         || n.Estado == EstadoOrdenDeCarga.EdicionSolicitada
                         || n.Estado == EstadoOrdenDeCarga.AnulacionSolicitada
                         || n.Estado == EstadoOrdenDeCarga.ContratoVencido
-                        || n.Estado== EstadoOrdenDeCarga.EdicionRechazada)
+                        || n.Estado == EstadoOrdenDeCarga.EdicionRechazada)
                     )
                     .Select(x => new OrdenDeCargaDto
                     {
@@ -656,7 +658,8 @@ namespace SustitucionMOAUtils.Services
                 ContratoSinCantidadPendiente = orden.ContratoSinCantidadPendiente,
                 DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno,
                 OrdenDeCargaCambiosHistorial = ordenDeCargaCambiosHistorial,
-                EsOrdenVencida = orden.FechaVencimiento < DateTime.Now.Date ? true : false
+                EsOrdenVencida = orden.FechaVencimiento < DateTime.Now.Date ? true : false,
+                FechaVencimientoAmpliada = orden.FechaVencimientoAmpliada
 
 
 
@@ -686,9 +689,27 @@ namespace SustitucionMOAUtils.Services
                 return null;
             }
 
-            
-            var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaVencimiento < fechaActual && o.Estado == EstadoOrdenDeCarga.EntregaGenerada);
+            int Usuario_Id = repositorio.Obtener<Usuario>(a => a.Mail == "moaoperaciones@molinosagro.com.ar").Id;
+
+            var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaVencimiento < fechaActual && (o.Estado == EstadoOrdenDeCarga.EntregaGenerada || o.Estado == EstadoOrdenDeCarga.Vencida));
+            foreach (var orden in ordenes)
+            {
+                if (orden.Estado == EstadoOrdenDeCarga.EntregaGenerada)
+                {
+                    orden.Estado = EstadoOrdenDeCarga.Vencida;
+                    orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
+                    {
+                        Antes = EstadoOrdenDeCarga.EntregaGenerada.ToFriendlyString(),
+                        Despues = EstadoOrdenDeCarga.Vencida.ToFriendlyString(),
+                        FechaCambio = DateTime.Now,
+                        NombreColumnaCambio = "Estado",
+                        Usuario_Id = Usuario_Id
+                    });
+                }
+            }
+            repositorio.GuardarCambios();
             NotificarVencimientoOrdenCarga(ordenes);
+
             return ordenes;
         }
 
@@ -749,7 +770,7 @@ namespace SustitucionMOAUtils.Services
                 var ordenVencidas = new StringBuilder();
                 foreach (var orden in ordenes)
                 {
-                    ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido:orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
+                    ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES_VENCIDAS);
                 emailSenderData.Asunto = $"Molinos Agro - Notificación de ordenes Vencidas";
@@ -1149,10 +1170,10 @@ namespace SustitucionMOAUtils.Services
                         var contratoResult = result.Contrato.ToUpper();
                         var productoResult = result.Producto.ToUpper().Substring(13, 5);
                         if (contrato.ToUpper().Equals(contratoResult) && clienteCodigo.ToUpper().Equals(clienteResult) && producto.CodigoSap.ToUpper().Equals(productoResult))
-						{
+                        {
                             return true;
                         }
-                            
+
                     }
                     return false;
                 }
@@ -1494,8 +1515,8 @@ namespace SustitucionMOAUtils.Services
 
                 var cambios = new StringBuilder();
                 var contrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
-                foreach (var cambio in ordenDeCargaHistorial.OrderByDescending(x => x.NombreColumnaCambio == "ChasisAcoplado").ThenByDescending(x =>x.NombreColumnaCambio == "PatenteAcoplado"))                                                           
-                {                          
+                foreach (var cambio in ordenDeCargaHistorial.OrderByDescending(x => x.NombreColumnaCambio == "ChasisAcoplado").ThenByDescending(x => x.NombreColumnaCambio == "PatenteAcoplado"))
+                {
                     cambios.AppendLine($"<tr><td>{(cambio.NombreColumnaCambio == "ChasisAcoplado" ? "PatenteChasis" : cambio.NombreColumnaCambio)}</td><td>{cambio.Antes}</td><td>{cambio.Despues}</td><td>{cambio.FechaCambio}</td></tr>");
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
@@ -1715,5 +1736,44 @@ namespace SustitucionMOAUtils.Services
             return fechaVencimiento;
         }
         #endregion
+
+        public string ActivarOC(int ordenId, string mailUsuario)
+        {
+            var Usuario_Id = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario).Id;
+
+            var orden = repositorio.Obtener<OrdenDeCarga>(x => x.Id == ordenId);
+
+            orden.Estado = EstadoOrdenDeCarga.EntregaGenerada;
+            orden.FechaVencimiento = orden.FechaVencimiento.Value.AddDays(2);
+            orden.FechaVencimientoAmpliada = true;
+            orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
+            {
+                Antes = EstadoOrdenDeCarga.Vencida.ToFriendlyString(),
+                Despues = EstadoOrdenDeCarga.EntregaGenerada.ToFriendlyString(),
+                FechaCambio = DateTime.Now,
+                NombreColumnaCambio = "Estado",
+                Usuario_Id = Usuario_Id
+            });
+            orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
+            {
+                Antes = "No",
+                Despues = "Si",
+                FechaCambio = DateTime.Now,
+                NombreColumnaCambio = "FechaVencimientoAmpliada",
+                Usuario_Id = Usuario_Id
+            });
+            orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
+            {
+                Antes = orden.FechaVencimiento.Value.AddDays(-2).ToString(),
+                Despues = orden.FechaVencimiento.ToString(),
+                FechaCambio = DateTime.Now,
+                NombreColumnaCambio = "FechaVencimiento",
+                Usuario_Id = Usuario_Id
+            });
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.OrdenDeCargaActualizada;
+
+        }
     }
 }

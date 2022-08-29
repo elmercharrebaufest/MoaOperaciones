@@ -33,7 +33,7 @@ export class OrdenDeCarga {
     DescripcionErrorInterno: string;
     EsOrdenVencida: boolean;
     OrdenDeCargaCambiosHistorial: OrdenDeCargaCambiosHistorial[];
-    
+    FechaVencimientoAmpliada: boolean;
     constructor() {
     }
 

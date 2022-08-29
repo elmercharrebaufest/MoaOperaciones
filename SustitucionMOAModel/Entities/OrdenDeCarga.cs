@@ -87,6 +87,8 @@ namespace SustitucionMOAModel.Entities
         public string DescripcionErrorInterno { get; set; }
         public string CUITCorredor { get; set; }
         public DateTime ? FechaVencimiento { get; set; }
+        public bool FechaVencimientoAmpliada { get; set; }
+
         public void ActualizarEstado()
         {
             if (Estado != EstadoOrdenDeCarga.Entregada)

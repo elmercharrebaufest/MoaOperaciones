@@ -7,7 +7,7 @@
                 <strong *ngIf="esInterno || (esMesaFas && ordenDeCarga.DescripcionEstado=='Contrato vencido')">
                     Orden de carga #{{ordenDeCarga.Id}} - {{ordenDeCarga.DescripcionEstado}}
                     <!-- <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
-        <strong *ngIf="notificacion.Id > 0">Editar notificación</strong> -->
+                    <strong *ngIf="notificacion.Id > 0">Editar notificación</strong> -->
                     <strong *ngIf="ordenDeCarga.DescripcionEstado=='Error de datos'">- Valide los datos ingresados al cargar la orden</strong>
                     <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
 
@@ -442,6 +442,10 @@
                                 <input type="button" (click)="abrirModalAnularVencimiento()" class="btn-custom btn-remove btn-lg"
                                        value="Anular por vencimiento">
                             </div>
+                            <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonActivarOC">
+                                <input type="button" (click)="abrirModalActivarOC()" class="btn-custom btn-remove btn-lg"
+                                       value="Activar OC">
+                            </div>
                             <div class="col-xs-6 col-md-3" *ngIf="mostrarBotonAprobarAnulacion">
                                 <input type="button" (click)="abrirModalAnular()" class="btn-custom btn-remove btn-grande"
                                        value="Aprobar Anulacion">
@@ -768,6 +772,39 @@
                     <button type="button" class="btn-custom btn-add btn-mediano" (click)="forzarCreacionPedido()"
                             style="display: inline-flex;">
                         Crear pedido
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" style="display:none" id="openModalActivarOC" data-toggle="modal"
+            data-target="#modalActivarOC"></button>
+    <!-- Modal -->
+    <div class="modal fade" id="modalActivarOC" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="modalActivarOC">Anular orden</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" class="col-xs-12 col-sm-12 col-md-12">
+                        ¿Está seguro de que desea anular la orden de carga?
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top:none;">
+                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closemodalActivarOC"
+                            style="display: inline-flex;">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn-custom btn-remove btn-mediano" (click)="activarOC()"
+                            style="display: inline-flex;">
+                        Activar orden
                     </button>
 
                 </div>
