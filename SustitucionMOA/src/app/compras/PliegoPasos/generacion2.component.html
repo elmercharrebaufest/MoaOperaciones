@@ -61,7 +61,7 @@
                                 <div class="col-md-12 ui-fluid" style="padding-left: 0em;">
                                     <p-chips [(ngModel)]="model.supervisorSector" formControlName="supervisorSector" name="supervisorSector" placeholder="Ingrese responsable" id="supervisorSector" [suggestions]="resultadoSupervisorSector" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorSector')"></p-chips>
                                 </div>
-                                <div  *ngIf="mostrarError('supervisorSector')">
+                                <div  *ngIf="mostrarValidacion('supervisorSector', model.supervisorSector)">
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
@@ -70,7 +70,7 @@
                                 <div class="col-md-12 ui-fluid" style="padding-left: 0em;">
                                     <p-chips [(ngModel)]="model.supervisorTrabajo" formControlName="supervisorTrabajo" name="supervisorTrabajo" placeholder="Ingrese responsable" id="supervisorTrabajo" [suggestions]="resultadoSupervisorTrabajo" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorTrabajo')"></p-chips>
                                 </div>
-                                <div *ngIf="mostrarError('supervisorTrabajo')">
+                                <div *ngIf="mostrarValidacion('supervisorTrabajo', model.supervisorTrabajo)">
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>

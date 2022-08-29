@@ -39,6 +39,12 @@ export class Generacion1Component extends ListBaseComponent  {
     horaEntrega: any;
     hoy: Date = new Date();
 
+    camposObligatorios: any[] = [
+        { campo: 'nombreDePedido', esObligatorio: true},
+        { campo: 'fiscalContrato', esObligatorio: true},
+        { campo: 'mail', esObligatorio: true},
+    ];
+
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -99,6 +105,11 @@ export class Generacion1Component extends ListBaseComponent  {
         }
 
         return false;
+    }
+
+    mostrarValidacion(campoAValidar, vacio){
+        let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
+        return (camposVacios != null && vacio == 0);
     }
 
     onBlur(control: string)

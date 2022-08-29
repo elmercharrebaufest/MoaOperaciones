@@ -63,10 +63,10 @@
                         <div class="inline-flex">
                             <div class="col-flex">
                                 <span style="line-height: 2em; margin-right: 0.7em;"><strong>Jornada laboral * </strong></span>
-                                <weekday-select id="jornadaLaboral" [class.errorDias]="mostrarError('dias')" formControlName="dias"
+                                <weekday-select id="jornadaLaboral" [class.errorDias]="mostrarValidacion('dias')" formControlName="dias"
                                                 [(model)]="model.jornadaLaboralDias"></weekday-select>
 
-                                <div *ngIf="mostrarError('dias')">
+                                <div *ngIf="mostrarValidacion('dias')">
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>

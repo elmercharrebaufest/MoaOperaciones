@@ -38,6 +38,11 @@ export class Generacion2Component extends ListBaseComponent  {
     //validaciones
     formulario2 : FormGroup;
 
+    camposObligatorios: any[] = [
+        { campo: 'supervisorSector', esObligatorio: true},
+        { campo: 'supervisorTrabajo', esObligatorio: true}
+    ];
+
     @Output() onEstCompleto = new EventEmitter<any>();
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, 
@@ -181,6 +186,10 @@ export class Generacion2Component extends ListBaseComponent  {
         return false;
     }
 
+    mostrarValidacion(campoAValidar, vacio){
+        let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
+        return (camposVacios != null && vacio == 0);
+    }
     
     ngOnDestroy()
     {

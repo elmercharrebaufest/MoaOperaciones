@@ -14,7 +14,7 @@
                                 <input formControlName="nombreDePedido" pInputText type="text" (blur)="onBlur('nombreDePedido')" [(ngModel)]="model.nombreDePedido" placeholder="Ingrese nombre de obra o material" aria-controls="tableModal">
                             </div>
 
-                            <div *ngIf="mostrarError('nombreDePedido')">
+                            <div *ngIf="mostrarValidacion('nombreDePedido', model.nombreDePedido)">
                                 <p class="text-danger">campo obligatorio</p>
                             </div>
                         </div>
@@ -25,7 +25,7 @@
                                 <!-- Va a ser un select a futuro -->
                                 <input pInputText type="text" formControlName="fiscalContrato" (blur)="onBlur('fiscalContrato')" [(ngModel)]="model.fiscalContrato" class="fourRounded" placeholder="Ingrese nombre de fiscal" aria-controls="tableModal">
                             </div>
-                            <div *ngIf="mostrarError('fiscalContrato')">
+                            <div *ngIf="mostrarValidacion('fiscalContrato', model.fiscalContrato)">
                                 <p class="text-danger">campo obligatorio</p>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                             <div class="styled-select">
                                 <input id="txtUsuarioMail" type="text" formControlName="mail" (blur)="onBlur('mail')" pInputText [(ngModel)]="model.mail" class="fourRounded" placeholder="Ingrese el mail" aria-controls="tableModal">
                             </div>
-                            <div *ngIf="mostrarError('mail')">
+                            <div *ngIf="mostrarValidacion('mail', model.mail)">
                                 <p class="text-danger">campo obligatorio</p>
                             </div>
                         </div>
