@@ -31,10 +31,10 @@
                     </div>
                 </div>
 
-                <div id="searchVendedor" class="col-xs-12 col-sm-6 col-md-15">
+                <div id="searchVendedor" class="col-xs-12 col-sm-6 col-md-15" *ngIf="esInterno || esCorredor">
                     <p>Cliente</p>
                     <div class="styled-select">
-                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroCliente" (select)="setFiltroCliente($event)"></dropdown>
+                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroCliente" (select)="setFiltroCliente($event)" ></dropdown>
                     </div>
                 </div>
 
