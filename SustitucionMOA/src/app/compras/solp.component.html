@@ -127,6 +127,9 @@
         <div class="col-md-5" style="margin-right: 1em; width: 37%;;">
             <input type="text" pInputText [(ngModel)]="solpActual.revisadoPor" class="styled-select inputComprasFinalizar" placeholder="">
         </div>
+        <div class="col-md-12" *ngIf="mostrarValidacion('revisadoPor', solpActual.revisadoPor)">
+            <p class="text-danger">campo obligatorio</p>
+        </div>
     </div>
     <div class="col-md-12 row myRow alinearTitulo margenInput">
         <div class="col-md-12 titulosModal" style="margin-right: 1em;">

@@ -172,6 +172,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
     titulo: string = "";
     tituloNroSolp: string = "";
 
+    camposObligatorios: any[] = [
+        { campo: 'revisadoPor', esObligatorio: true}
+    ];
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         private messageService: MessageService, private route: ActivatedRoute, private confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
@@ -581,6 +585,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
         } else if (paso.descripcion == 'FINALIZAR') {
             //guardar - finalizar
         }
+    }
+
+    mostrarValidacion(campoAValidar, vacio){
+        let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
+        return (camposVacios != null && vacio == 0);
     }
 
     guardarCambios(mostrarPreview = false, enviarSap = false, guardarPorPaso = false) {
