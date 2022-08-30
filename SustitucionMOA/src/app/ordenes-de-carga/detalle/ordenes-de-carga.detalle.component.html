@@ -400,22 +400,22 @@
 
                     <div class="formulario">
                         <div class="containerBotones">
-                            <div class="col-xs-0 col-md-6" *ngIf="mostrarBotonContratos">
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonContratos">
                                 <input type="button" (click)="abrirModalContratos()" class="btn-custom btn-add btn-mediano"
                                        value="Contratos">
                             </div>
 
-                            <div class="col-xs-0 col-md-6" *ngIf="mostrarBotonPedidos">
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonPedidos">
                                 <input type="button" (click)="abrirModalPedidos()" class="btn-custom btn-add btn-mediano"
                                        value="Pedidos">
                             </div>
 
-                            <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonNotificarTransporte">
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonNotificarTransporte">
                                 <input type="button" (click)="notificarTransporte()" class="btn-custom btn-add btn-grande"
                                        value="Notificar Transporte">
                             </div>
 
-                            <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonVerificarTransporte">
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerificarTransporte">
                                 <input type="button" (click)="verificarTransporte()" class="btn-custom btn-add btn-grande"
                                        value="Verificar Transporte">
                             </div>
@@ -429,36 +429,36 @@
                                        value="Ver Historial">
                             </div>
 
-                            <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonForzarCreacionPedido">
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonForzarCreacionPedido">
                                 <input type="button" (click)="abrirModalForzarCreacion()" class="btn-custom btn-add btn-grande"
                                        value="Crear Pedido">
                             </div>
 
-                            <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonAnular">
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonAnular">
                                 <input type="button" (click)="abrirModalAnular()" class="btn-custom btn-remove btn-mediano"
                                        value="Anular">
                             </div>
-                            <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonAnularPorVencimiento">
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonAnularPorVencimiento">
                                 <input type="button" (click)="abrirModalAnularVencimiento()" class="btn-custom btn-remove btn-lg"
                                        value="Anular por vencimiento">
                             </div>
-                            <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonActivarOC">
-                                <input type="button" (click)="abrirModalActivarOC()" class="btn-custom btn-remove btn-lg"
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonActivarOC">
+                                <input type="button" (click)="abrirModalActivarOC()" class="btn-custom btn-add btn-grande"
                                        value="Activar OC">
                             </div>
-                            <div class="col-xs-6 col-md-3" *ngIf="mostrarBotonAprobarAnulacion">
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonAprobarAnulacion">
                                 <input type="button" (click)="abrirModalAnular()" class="btn-custom btn-remove btn-grande"
                                        value="Aprobar Anulacion">
                             </div>
-                            <div class="col-xs-6 col-md-3" *ngIf="mostrarBotonAprobarAnulacion">
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonAprobarAnulacion">
                                 <input type="button" (click)="confirmarRSA(ordenDeCarga.Id)" class="btn-custom btn-remove btn-grande"
                                        value="Rechazar Anulacion">
                             </div>
-                            <div class="col-xs-6 col-md-3" *ngIf="mostrarBotonSolicitarAnulacion">
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonSolicitarAnulacion">
                                 <input type="button" (click)="confirmarSA(ordenDeCarga.Id)" class="btn-custom btn-remove btn-grande"
                                        value="Solicitar Anulación">
                             </div>
-                            <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonEdicionFinalizada">
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonEdicionFinalizada">
                                 <input type="button" (click)="abrirModalEdicionFinalizada()" class="btn-custom btn-remove btn-grande"
                                        value="Edición finalizada">
                             </div>
@@ -674,6 +674,7 @@
         </div>
     </div>
 
+
     <button type="button" style="display:none" id="openAnularOrdenVencimiento" data-toggle="modal"
             data-target="#modalAnularOrdenVencimiento"></button>
     <!-- Modal -->
@@ -700,8 +701,7 @@
                     <button type="button" class="btn-custom btn-remove btn-mediano" (click)="anularOrdenPorVencimiento()"
                             style="display: inline-flex;">
                         Anular orden
-                    </button>
-
+                    </button>                    
                 </div>
             </div>
         </div>
@@ -779,6 +779,7 @@
         </div>
     </div>
 
+
     <button type="button" style="display:none" id="openModalActivarOC" data-toggle="modal"
             data-target="#modalActivarOC"></button>
     <!-- Modal -->
@@ -790,11 +791,11 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="modalActivarOC">Anular orden</h4>
+                    <h4 class="modal-title" id="modalActivarOCtitle">Activar orden</h4>
                 </div>
                 <div class="modal-body">
                     <div class="row" class="col-xs-12 col-sm-12 col-md-12">
-                        ¿Está seguro de que desea anular la orden de carga?
+                        ¿Está seguro de que desea activar la orden de carga?
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top:none;">
@@ -802,11 +803,10 @@
                             style="display: inline-flex;">
                         Cancelar
                     </button>
-                    <button type="button" class="btn-custom btn-remove btn-mediano" (click)="activarOC()"
+                    <button type="button" class="btn-custom btn-add btn-mediano" (click)="activarOC()"
                             style="display: inline-flex;">
                         Activar orden
                     </button>
-
                 </div>
             </div>
         </div>
