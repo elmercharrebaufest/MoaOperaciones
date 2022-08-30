@@ -41,7 +41,7 @@
                 <div id="searchTipoContrato" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Nro Contrato</p>
                     <div class="styled-select">
-                        <input type="search" class="" placeholder="" [value]="filtroContrato" (input)="filtroContrato = $event.target.value" aria-controls="tableModal">
+                        <input type="search" class="" placeholder="" [(ngModel)]="filtroContrato" (ngModelChange)="setFiltroContrato($event)" aria-controls="tableModal" [disabled] ="disabled">
                     </div>
                 </div>
                 <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
@@ -78,93 +78,43 @@
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1" style="">
                                 Nro de Contrato
-                                <!--<div>
-                                    <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Contrato' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Contrato' && orderDirection < 0 }"></i>
-                                    </span>
-                                </div>-->
+       
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" >
                                 Tipo de Contrato
-                                <!--<div>
-                                    <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'TipContrato' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'TipContrato' && orderDirection < 0 }"></i>
-                                    </span>
-                                </div-->
+                               
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" >
                                 Nro Pedido de Cliente
-                                <!--<div>
-                                    <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'PedidoCliente' && orderDirection < 0 }"></i>
-                                    </span>
-                                </div>-->
+                              
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" >
                                 Fecha
-                                <!--<div>
-                                    <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaDesde' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaDesde' && orderDirection < 0 }"></i>
-                                    </span>
-                                </div>-->
+                               
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" >
                                 Cliente
-                                <!--<div>
-                                    <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'ClienteNombre' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'ClienteNombre' && orderDirection < 0 }"></i>
-                                    </span>
-                                </div>-->
+                               
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" >
                                 Corredor
-                                <!--<div>
-                                    <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Corredor' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Corredor' && orderDirection < 0 }"></i>
-                                    </span>
-                                </div>-->
+                               
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">
                                 Producto
-                                <!--<div>
-                                    <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'DescripcionMaterial' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'DescripcionMaterial' && orderDirection < 0 }"></i>
-                                    </span>
-                                </div>-->
+                                
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">
                                 Kgs Totales
-                                <!--<div>
-                                    <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'KilosTotalesStr' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'KilosTotalesStr' && orderDirection < 0 }"></i>
-                                    </span>
-                                </div>-->
+                                
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">
                                 Kgs Entregados
-                                <!--<div>
-                                    <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'KilosEntregadosStr' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'KilosEntregadosStr' && orderDirection < 0 }"></i>
-                                    </span>
-                                </div>-->
+                                
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" >
                                 Kgs Pendientes
-                                <!--<div>
-                                    <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'KilosPendienteEntregaStr' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'KilosPendienteEntregaStr' && orderDirection < 0 }"></i>
-                                    </span>
-                                </div>-->
+                               
                             </th>
                         </tr>
                     </thead>
@@ -182,9 +132,9 @@
                                     {{cabeceraContrato.DescripcionMaterial}}
                                 </div>
                             </td>
-                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosTotalesStr}}</td>
-                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosEntregadosStr}}</td>
-                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosPendienteEntregaStr}}</td>
+                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosTotales | number}} KG</td>
+                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosEntregados | number}} KG</td>
+                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosPendienteEntrega | number}} KG</td>
                         </tr>
                     </tbody>
 
@@ -197,9 +147,9 @@
                             <td style=""></td>
                             <td style=""></td>
                             <td style="text-align :center" tabindex="0">TOTAL</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosTotales}}</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados}}</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosPendienteEntrega}}</td>
+                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosTotales | number}} KG</td>
+                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados | number}} KG</td>
+                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosPendienteEntrega | number}} KG</td>
 
                         </tr>
                     </tbody>
