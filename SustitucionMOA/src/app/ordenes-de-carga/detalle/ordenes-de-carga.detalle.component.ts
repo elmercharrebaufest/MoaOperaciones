@@ -201,6 +201,13 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     //Está función va a desaparecer cuando hagamos el refactor de como mostrar los datos de esta pantalla
     verificarListado() {
+
+        this.mostrarListadoTercero= false;
+        this.mostrarListadoComercial = false;
+        this.mostrarListadoMesaFas = false;
+        this.mostrarListadoPuerto= false;
+
+
         if (this.esComercial) {
             this.mostrarListadoComercial = true;
             return;
@@ -222,6 +229,19 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
     verificarBotones() {
+
+        this.mostrarBotonContratos = false;
+        this.mostrarBotonVerHistorial = false;
+        this.mostrarBotonAprobarAnulacion = false;
+        this.mostrarBotonAnularPorVencimiento = false;
+        this.mostrarBotonAnular = false;
+        this.mostrarBotonActivarOC = false;
+        this.mostrarBotonForzarCreacionPedido = false;
+        this.mostrarBotonVerificarSituacionCrediticia = false;
+        this.mostrarBotonNotificarTransporte = false;
+        this.mostrarBotonPedidos = false;
+        this.mostrarBotonEditar = false;
+        this.mostrarBotonEdicionFinalizada = false;
 
         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada) {
             return;
@@ -262,18 +282,21 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonVerificarSituacionCrediticia = true;
             }
 
-            //if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
-            //    if (this.esAnulador) {
-            //        this.mostrarBotonAnular = true;
-            //    }
-            //}
-
             if (this.ordenDeCarga.ContratoSinCantidadPendiente) {
                 this.mostrarBotonForzarCreacionPedido = true;
             }
 
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida) {
+                this.mostrarBotonAnularPorVencimiento = true;
+                if (this.ordenDeCarga.FechaVencimientoAmpliada == false) {
+                    this.mostrarBotonActivarOC = true;
+                }
+                this.mostrarBotonAnular = true;
+            }
+
         }
-        else if (this.esMesaFas) {
+
+        if (this.esMesaFas) {
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
                 if (this.esAnulador) {
                     this.mostrarBotonAnular = true;
@@ -297,7 +320,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida && this.esAnulador) {
                 this.mostrarBotonAnularPorVencimiento = true;
-                if (this.ordenDeCarga.FechaVencimientoAmpliada == true) {
+                if (this.ordenDeCarga.FechaVencimientoAmpliada == false) {
                     this.mostrarBotonActivarOC = true;
                 }
 
@@ -812,7 +835,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        document.getElementById("closemodalAnularOrdenVencimiento").click();
+                        document.getElementById("closemodalActivarOC").click();
                         this.mensajeComponent.setSuccessMsg(result.data);
 
                         this.navService.navegarSeccion(
