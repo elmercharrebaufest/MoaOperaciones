@@ -450,6 +450,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         try{
             if (proveedor == '') {
                 this.CodigoCorredor = '';
+                this.ordenDeCarga.CUITCorredor = 0;
                 this.listaClientes = [];
                 // this.listaMateriales = [];
                 this.clienteCUIT = this.selectUndefinedOptionValue;
