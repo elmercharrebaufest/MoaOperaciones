@@ -153,10 +153,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     validar() {
         console.debug('validar');
         if (this.esCorredor) {
-            if (this.ordenDeCarga.CUITCliente.toString().trim().length != 11) {
-                this.mensajeComponent.setInfoMsg("Ingrese un CUIT de cliente válido.");
-                return false;
-            }
+            // if (this.ordenDeCarga.CUITCliente.toString().trim().length != 11) {
+            //     this.mensajeComponent.setInfoMsg("Ingrese un CUIT de cliente válido.");
+            //     return false;
+            // }
         }
 
         if (this.ordenDeCarga.NombreChofer.trim().length < 2) {
@@ -358,7 +358,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     getPatentes() {
-        console.debug('getPatentes()');
+        // console.debug('getPatentes()');
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         try {
@@ -450,7 +450,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         try{
             if (proveedor == '') {
                 this.CodigoCorredor = '';
-                this.ordenDeCarga.CUITCorredor = 0;
+                this.ordenDeCarga.CUITCorredor = undefined;
                 this.listaClientes = [];
                 // this.listaMateriales = [];
                 this.clienteCUIT = this.selectUndefinedOptionValue;
