@@ -99,6 +99,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         if (this.esCorredor) {
             this.CodigoCorredor = sessionStorage.getItem("proveedor");
             console.debug(' CodigoCorredor: ', this.CodigoCorredor);
+            console.debug(' CodigoCorredor: ', this.CodigoCorredor);
             if (this.ordenDeCargaId == 0) {
                 this.cargarClientes(this.CodigoCorredor);
             }
@@ -108,7 +109,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         } else{
             this.getPatentes();
         }
-
         if (this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS')) {
             this.ordenDeCarga.CUITCliente = 0;
         }
