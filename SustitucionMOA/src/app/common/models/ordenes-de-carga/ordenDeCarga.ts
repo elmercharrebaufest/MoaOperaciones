@@ -5,7 +5,7 @@ export class OrdenDeCarga {
     Id: number;
     CUITTercero: number;
     CUITCliente: number;
-    CUITCorredor: number;
+    CUITCorredor?: number;
     RazonSocialCliente: string;
     NombreChofer: string;
     CUITChofer: number;
