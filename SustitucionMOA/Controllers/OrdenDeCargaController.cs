@@ -552,13 +552,13 @@ namespace SustitucionMOA.Controllers
         }
 
 		[HttpGet]
-		public ActionResult VisualizarProducto(string clienteCuit, string contrato, string fechaInicio, string fechaFin, string pendiente)
+		public ActionResult VisualizarProducto(string contrato, string fechaInicio, string fechaFin, string pendiente)
 		{
 			try
 			{
 				var request = new VisualizarProductoRequest()
                 {
-                    ClienteCuit = clienteCuit,
+                    //ClienteCuit = clienteCuit,
                     Contrato = contrato,
 					FechaInicio = fechaInicio,
 					FechaFin = fechaFin,

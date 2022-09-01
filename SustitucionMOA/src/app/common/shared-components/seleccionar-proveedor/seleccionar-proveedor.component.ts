@@ -126,7 +126,7 @@ export class SeleccionarProveedorComponent extends BaseComponent {
         this.tipoProveedorId = this.tipoProveedorId ? this.tipoProveedorId : 0;
 
         try {
-            // console.log('SeleccionarProveedorComponent::getUsuario::tipoProveedorId: ', this.tipoProveedorId);
+            // console.debug(' tipoProveedorId: ', this.tipoProveedorId);
             this.subscription = this.service.getVendedores("", "", this.tipoProveedorId).subscribe(
                 (result) => {
                     this.spinnerComponent.hideIt();
@@ -137,6 +137,7 @@ export class SeleccionarProveedorComponent extends BaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
+                        // console.debug(' vendedores: ', result.data.vendedores);
                         this.data = result.data.vendedores;
                         if (this.valorInicial != "") {
                             let seleccionado = result.data.vendedores.filter(a => a.idVendedor == this.valorInicial);
