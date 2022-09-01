@@ -69,7 +69,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarListadoPuerto: boolean = false;
 
     mostrarBotonSolicitarAnulacion: boolean = false;
-    mostrarBotonAprobarAnulacion: boolean = false;
+    mostrarBotonAprobarRechazarAnulacion: boolean = false;
     mostrarBotonEdicionFinalizada: boolean = false;
 
     // esInterno: boolean = false;
@@ -232,7 +232,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
         this.mostrarBotonContratos = false;
         this.mostrarBotonVerHistorial = false;
-        this.mostrarBotonAprobarAnulacion = false;
+        this.mostrarBotonAprobarRechazarAnulacion = false;
         this.mostrarBotonAnularPorVencimiento = false;
         this.mostrarBotonAnular = false;
         this.mostrarBotonActivarOC = false;
@@ -259,11 +259,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (sessionStorage.getItem("tipoUsuario") == "CLI") this.mostrarBotonSolicitarAnulacion = true;
             this.mostrarBotonEditar = true;
         }
-        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada && !(sessionStorage.getItem("tipoUsuario") == "CLI")) {
-            this.mostrarBotonEdicionFinalizada = true;
-        }
+     
 
         if (this.esInterno) {
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada ) {
+                this.mostrarBotonEdicionFinalizada = true;
+            }
             this.mostrarBotonVerHistorial = true;
             if (this.ordenDeCarga.NumeroPedido === "-" && this.ordenDeCarga.PedidosRespuesta != "-") {
                 this.mostrarBotonPedidos = true
@@ -293,10 +294,16 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 }
                 this.mostrarBotonAnular = true;
             }
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada) {
+                this.mostrarBotonAprobarRechazarAnulacion = true;
+            }
 
         }
 
         if (this.esMesaFas) {
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada) {
+                this.mostrarBotonEdicionFinalizada = true;
+            }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
                 if (this.esAnulador) {
                     this.mostrarBotonAnular = true;
@@ -316,7 +323,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 if (this.esAnulador) {
                     this.mostrarBotonAnular = true;
                 }
-                this.mostrarBotonAprobarAnulacion = true;
+                this.mostrarBotonAprobarRechazarAnulacion = true;
             }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida && this.esAnulador) {
                 this.mostrarBotonAnularPorVencimiento = true;
