@@ -30,6 +30,7 @@ using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using System.Diagnostics.Contracts;
+using System.Web;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -238,7 +239,10 @@ namespace SustitucionMOAUtils.Services
                 var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega);
                 if (emailSenderData != null)
                 {
-                    EmailSender.EnviarMail(emailSenderData);
+                    if (!HttpContext.Current.IsDebuggingEnabled)
+                    {
+                        EmailSender.EnviarMail(emailSenderData);
+                    }
                 }
             }
 
@@ -723,7 +727,10 @@ namespace SustitucionMOAUtils.Services
             var emailSenderData = ConstruirCuerpoOrdenesVencidas(ordenes);
             if (emailSenderData != null)
             {
-                EmailSender.EnviarMail(emailSenderData);
+                if (!HttpContext.Current.IsDebuggingEnabled)
+                {
+                    EmailSender.EnviarMail(emailSenderData);
+                }
             }
 
         }
@@ -744,7 +751,10 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             if (emailSenderData != null)
             {
-                EmailSender.EnviarMail(emailSenderData);
+                if (!HttpContext.Current.IsDebuggingEnabled)
+                {
+                    EmailSender.EnviarMail(emailSenderData);
+                }
             }
             orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
             repositorio.GuardarCambios();
@@ -911,9 +921,10 @@ namespace SustitucionMOAUtils.Services
                 string cuerpo = $"Solicitud de anulación para la orden de carga N°: {ordenDeCargaId} <br>" +
                                 $"Cliente: {orden.Cliente.RazonSocial} <br>" +
                                 $"Numero de entrega: {orden.NumeroEntrega} <br>";
-
-                EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
-
+                if (!HttpContext.Current.IsDebuggingEnabled)
+                {
+                    EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
+                }
                 return "Notificación enviada";
             }
             catch (Exception ex)
@@ -1219,12 +1230,12 @@ namespace SustitucionMOAUtils.Services
 				{
 					throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateVisualizarProductoRequest));
 				}
-				var cliente = repositorio.Obtener<Proveedor>(x => x.CUIT == request.ClienteCuit && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
-				if (cliente == null)
-				{
-					throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "cliente"));
-				}
-				var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(cliente.CodigoProveedor, request.Contrato, string.Empty, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, string.Empty, 2);
+				//var cliente = repositorio.Obtener<Proveedor>(x => x.CUIT == request.ClienteCuit && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
+				//if (cliente == null)
+				//{
+				//	throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "cliente"));
+				//}
+				var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(string.Empty, request.Contrato, string.Empty, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, string.Empty, 2);
 
 				response = new VisualizarProductoResponse();
                 response.Productos = GetProductosFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse);
@@ -1246,10 +1257,10 @@ namespace SustitucionMOAUtils.Services
 		private string ValidateVisualizarProductoRequest(VisualizarProductoRequest request)
 		{
 			string validation = string.Empty;
-			if (string.IsNullOrEmpty(request.ClienteCuit))
-			{
-				validation = "ClienteCuit";
-			}
+			//if (string.IsNullOrEmpty(request.ClienteCuit))
+			//{
+			//	validation = "ClienteCuit";
+			//}
 			if (string.IsNullOrEmpty(request.Contrato))
 			{
 				validation = "Contrato";
@@ -1441,16 +1452,16 @@ namespace SustitucionMOAUtils.Services
 					throw new ValidationCustomException("La RFC no se encuentra habilitada, verifique la conexión con la RFC");
 				}
 				if (ordenCargaVisualizarClienteWSMOAResponse.Resultados == null || ordenCargaVisualizarClienteWSMOAResponse.Resultados.Count == 0)
-					{
-                        if (type == 1)
-                        {
-							throw new ValidationCustomException("RFC no devuelve datos, no se encontraron clientes para dicho corredor");
-						}
-						if (type == 2)
-						{
-							throw new ValidationCustomException("RFC no devuelve datos, no se encontró una relacion entre el cliente y el contrato");
-						}
+				{
+                    if (type == 1)
+                    {
+						throw new ValidationCustomException("RFC no devuelve datos, no se encontraron clientes para dicho corredor");
 					}
+					if (type == 2)
+					{
+						throw new ValidationCustomException("RFC no devuelve datos, no se encontró el producto para dicho contrato");
+					}
+				}
 				return ordenCargaVisualizarClienteWSMOAResponse;
             }
             catch (InfoCustomException)
@@ -1631,8 +1642,10 @@ namespace SustitucionMOAUtils.Services
 
                     string cuerpo = string.Format("Razón Social: {0} <br> CUIT: {1}", orden.RazonSocialTransporte, orden.CUITTransporte);
 
-                    EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
-
+                    if (!HttpContext.Current.IsDebuggingEnabled)
+                    {
+                        EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
+                    }
                     mensaje = "Notificación enviada";
                 }
                 else
@@ -1687,7 +1700,10 @@ namespace SustitucionMOAUtils.Services
                         var emailSenderData = ConstruirCuerpoEmail(orden);
                         if (emailSenderData != null)
                         {
-                            EmailSender.EnviarMail(emailSenderData);
+                            if (!HttpContext.Current.IsDebuggingEnabled)
+                            {
+                                EmailSender.EnviarMail(emailSenderData);
+                            }
                         }
                     }
 
@@ -1875,10 +1891,11 @@ namespace SustitucionMOAUtils.Services
                 string asunto = "Varios pedidos pendientes para el mismo cliente";
                 string cuerpo = string.Format("Se encontraron varios Pedidos pendientes para el mismo cliente. Orden de carga {0} de cliente {1} <br> Numero de Pedido: {2}",
                      orden.Id, orden.Cliente.RazonSocial, (string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedidoIngresado : orden.PedidoSAP) ?? "");
-                EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
-
+                if (!HttpContext.Current.IsDebuggingEnabled)
+                {
+                    EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
+                }
                 mensaje = "Notificación enviada";
-
             }
             catch (Exception e)
             {
@@ -1903,8 +1920,10 @@ namespace SustitucionMOAUtils.Services
                 string asunto = "Varios ctto pendientes";
                 string cuerpo = string.Format("Se encontraron varios contratos pendientes para el mismo cliente. Orden de carga {0} de cliente {1} <br> Numero de Contrato: {2}",
                     orden.Id, orden.Cliente.RazonSocial, string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP);
-                EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
-
+				if (!HttpContext.Current.IsDebuggingEnabled)
+                {
+					EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
+				}
                 mensaje = "Notificación enviada";
 
             }
@@ -1926,8 +1945,10 @@ namespace SustitucionMOAUtils.Services
             string cuerpo = $"<b>Contrato vencido N°:</b> {ordenDeCarga.ContratoIngresado} <br>" +
                                 $"<b>Cliente:</b> {cliente.RazonSocial} <br>" +
                                 $"<b>{mensajeAmbiente}</b>";
-            EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
-
+			if (!HttpContext.Current.IsDebuggingEnabled)
+            {
+				EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
+			}
             return "Email enviado";
         }
 
