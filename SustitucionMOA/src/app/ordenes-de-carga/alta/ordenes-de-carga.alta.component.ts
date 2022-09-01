@@ -85,6 +85,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         // console.debug('ngOnInit()');
         this.desde = this.getFecha(8);
         this.hasta = this.getFecha(0);
+        console.debug(' desde: ', this.desde);
+        console.debug(' hasta: ', this.hasta);
         this.ordenDeCarga.Cantidad = 30000;
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
@@ -96,7 +98,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         if (this.esCorredor) {
             this.CodigoCorredor = sessionStorage.getItem("proveedor");
             console.debug(' CodigoCorredor: ', this.CodigoCorredor);
-            this.cargarClientes(this.CodigoCorredor);
+            if (this.ordenDeCargaId == 0) {
+                this.cargarClientes(this.CodigoCorredor);
+            }
         }
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
@@ -496,13 +500,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         console.debug('cargarClientes()');
         console.debug(' codigoCorredor: ', codigoCorredor);
         console.debug(' noEditarCliente: ', this.noEditarCliente);
-        this.listaClientes = [];
         // this.spinner.show();
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
         try { 
-            console.debug(this.desde);
-            console.debug(this.hasta);
+            
             this.service.visualizarCliente(codigoCorredor, this.desde, this.hasta).subscribe(
                 result => {
                     if (result.logout == true) {
@@ -511,6 +513,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     } else if (result.error != undefined && result.error != "") {
                         console.error(' cargarClientes: ', result.error);
                         this.CodigoCorredor = '';
+                        this.listaClientes = [];
                         this.mensajeComponent.setErrorMsg(result.error);
                         this.blockUI.stop();
                     } else if (result.info != undefined) {
@@ -604,7 +607,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                         this.blockUI.stop();
                     } else {
-                        console.debug(' result: ', result);
+                        console.debug(' cargarProducto result: ', result);
                         // this.listaMateriales = result.Productos;
                         this.Producto = result.Productos[0].MaterialId;
                         this.ordenDeCarga.Producto_Id = result.Productos[0].MaterialId;
