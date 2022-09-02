@@ -732,6 +732,28 @@ namespace SustitucionMOAUtils.Services
             }
 
         }
+
+
+        public string NotificarEventosPorMailOrdenCarga(int ordenId, string emailTo, string titulo, string cabecera,string asunto)
+        {
+
+            var emailSenderData = new EmailSenderData();
+            var orden = repositorio.Obtener<OrdenDeCarga>(x => x.Id == ordenId);
+            var ordenVencidas = new StringBuilder();
+            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
+            var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES_VENCIDAS);
+            emailSenderData.Asunto = asunto;
+            emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
+            emailSenderData.Mails.AddRange(emailTo.Split(';').ToList());
+            if (emailSenderData != null)
+            {
+                EmailSender.EnviarMail(emailSenderData);
+            }
+            orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.OrdenDeCargaAnulada;
+        }
         public string NotificarVencimientoOrdenCarga(int ordenId)
         {
             var emailSenderData = new EmailSenderData();
@@ -909,11 +931,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
-
                 var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-
                 var mails = mailsMesaVentaFas.Split(';').ToList();
-
                 string asunto = $"Solicitud de anulación, Orden de carga N° {ordenDeCargaId}";
 
                 string cuerpo = $"Solicitud de anulación para la orden de carga N°: {ordenDeCargaId} <br>" +
