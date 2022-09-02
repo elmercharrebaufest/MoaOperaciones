@@ -914,8 +914,11 @@ namespace SustitucionMOAUtils.Services
                 var ordenVencidas = new StringBuilder();
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
                 var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+                var mails = mailsMesaVentaFas.Split(';').ToList();
                 emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
                 string asunto = $"Solicitud de anulación, Orden de carga N° {ordenDeCargaId}";
+                string titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha solicitado la anulación de la siguiente orden de carga:";
+                var cabecera = "Orden :";
 
                 ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
                 emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
