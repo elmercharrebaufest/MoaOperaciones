@@ -1,6 +1,8 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
+using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ListarPesificaciones;
@@ -16,11 +18,14 @@ namespace SustitucionMOAWS.WSConsumers
     public class ListarPesificacionesConsumer : IListarPesificacionesConsumer
     {
         readonly SI_MPMF_MOAOP_LISTAR_PESIFClient service = new SI_MPMF_MOAOP_LISTAR_PESIFClient();
+        private readonly IRepositorio repositorio;
 
-        public ListarPesificacionesConsumer()
+        public ListarPesificacionesConsumer(IRepositorio repositorio)
         {
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            this.repositorio = repositorio;
+
         }
 
         public ListarPesificacionesWSMOAResponse Request(string proveedor)
@@ -36,7 +41,8 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (ZMPES6500 pesificacion in pesificaciones)
             {
                 var FechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_PESIFICACION, "yyyy-MM-dd", null);
-                if (FechaPesificacionDate.Date == new DateTime(2015,01,01))
+                var Soja200FechaCotizacion = repositorio.Obtener<Configuracion>(a => a.Code == "Soja200FechaCotizacion").Value;
+                if (FechaPesificacionDate.Date == DateTime.ParseExact(Soja200FechaCotizacion, "yyyy-MM-dd", null))
                 {
                     FechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_CARGA, "yyyy-MM-dd", null);
                 }
