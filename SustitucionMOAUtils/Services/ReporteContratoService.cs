@@ -81,7 +81,7 @@ namespace SustitucionMOAUtils.Services
             var agrupadoProducto = view.data.Resultados.GroupBy(x => x.DescripcionMaterial).Select(x => new
             {
                 descripcion = x.Key,
-                kilosEnregados = x.Sum(i => i.KilosEntregados),
+                kilosEntregados = x.Sum(i => i.KilosEntregados),
                 kilosPendientes = x.Sum(i => i.KilosPendienteEntrega),
                 kilosTotales = x.Sum(i => i.KilosTotales)
 
@@ -98,9 +98,12 @@ namespace SustitucionMOAUtils.Services
                 resultado.KilosTotalesStr = "";
                 resultado.KilosPendienteEntregaStr = "";
                 resultado.DescripcionMaterial = rowAgrupado.descripcion;
-                resultado.KilosEntregadosStr = SAPFormatter.FormatearCantidad(rowAgrupado.kilosEnregados, "KG");
+                resultado.KilosEntregadosStr = SAPFormatter.FormatearCantidad(rowAgrupado.kilosEntregados, "KG");
                 resultado.KilosTotalesStr = SAPFormatter.FormatearCantidad(rowAgrupado.kilosTotales, "KG");
                 resultado.KilosPendienteEntregaStr = SAPFormatter.FormatearCantidad(rowAgrupado.kilosPendientes, "KG");
+                resultado.KilosEntregados = rowAgrupado.kilosEntregados;
+                resultado.KilosTotales = rowAgrupado.kilosTotales;
+                resultado.KilosPendienteEntrega = rowAgrupado.kilosPendientes;
                 resultado.ColorProducto = consumer.SetearColorProducto((listaPorProducto.FirstOrDefault(x => x.DescripcionMaterial == rowAgrupado.descripcion).Producto).Trim('0'));
                 view.data.Resultados.Add(resultado);
 
@@ -124,6 +127,7 @@ namespace SustitucionMOAUtils.Services
 
             request = new ReporteContratoWSMOARequest()
             {
+                //Se envia corredor o Cliente para efectos de mas rapidez en la consulta a la rfc
                 Cliente = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? "" : proveedor,
                 Corredor = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? proveedor : "",
                 Contrato = contrato

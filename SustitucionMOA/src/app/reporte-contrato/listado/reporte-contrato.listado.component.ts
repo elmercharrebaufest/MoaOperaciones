@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, OnChanges, SimpleChanges, Input } from '@angular/core';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -9,6 +9,7 @@ import { SelectItem, ConfirmationService } from 'primeng/api';
 import { ReporteContratoService } from '../reporte-contrato.service';
 import { formatDate } from '@angular/common';
 import * as XLSX from 'xlsx';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 
 
@@ -21,7 +22,8 @@ import * as XLSX from 'xlsx';
    
 
 })
-export class ReporteContratoListado extends ListBaseComponent implements OnInit, OnDestroy {
+export class ReporteContratoListado extends ListBaseComponent {
+    @BlockUI() blockUI: NgBlockUI;
 
     constructor(protected service: ReporteContratoService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -32,7 +34,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
     filtroCliente: any = null;
     filtroProducto: any = null;
     filtroTipoContrato: any = null;
-    filtroContrato = "";
+    filtroContrato :string = "";
     clienteSelected: string = "";
     productoSelected: string = "";
     tipoContratoSelected: string = "";
@@ -44,46 +46,57 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
     codigoProducto: string = "";
     TipoContrato: string = "";
     show: boolean = false;
+    disabled: boolean = false;
     mostrarPendientes: boolean = false;
     columnaCliente: string = "NombreCliente";
     columnaProducto: string = "DescripcionMaterial";
     ColumnaTipoContrato: string = "TipoContrato";
-
-
+    columnaContrato: string = "Contrato";
+    esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
+    esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
+    esAdmin: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+    esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    esInterno: boolean = (this.esComercial || this.esMesaFas || this.esAdmin);
 
     ngOnInit() {
+        this.navService.setSeccionList([]);
         this.getListado();
     }
 
+ 
     getListado() {
         this.detalle = null;
         this.varciarFiltrosReporte();
         this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
+        this.blockUI.start('');
         this.unsubscribe();
+        this.disabled = true;
         this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio,
             this.filtroFechaComponent.fecha_fin, this.mostrarPendientes).subscribe(
                 (result: any) => {
                     this.mensajeComponent.setMsgsEmpty();
-                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
+                        this.varciarFiltrosReporte();
                     } else {
                         this.cabecera = result.data.Resultados;
                         this.cargarFiltrosContratos(result);
                         this.getTotalKilogramos();
                         this.data = result.data.Resultados;
                         this.show = true;
+                        this.disabled = false;
+                    
 
                     }
 
                 },
                 error => {
-                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
 
@@ -130,11 +143,18 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
         this.getListado();
     }
 
+
+    setFiltroContrato(contrato: string) {
+        this.filtroContrato = contrato;
+        this.ejecutarFiltro();
+    }
+
     ejecutarFiltro() {
         this.cabecera = this.data;
         var listaFiltro = [{ "campo": this.clienteSelected, "columna": this.columnaCliente },
         { "campo": this.productoSelected, "columna": this.columnaProducto },
-        { "campo": this.tipoContratoSelected, "columna": this.ColumnaTipoContrato }];
+        { "campo": this.tipoContratoSelected, "columna": this.ColumnaTipoContrato },
+        { "campo": this.filtroContrato, "columna": this.columnaContrato }];
 
         for (const a of listaFiltro) {
             if (a.campo == "") {
@@ -152,21 +172,9 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
     }
 
     getTotalKilogramos() {
-        this.KilosEntregados = this.cabecera.map(t => t.KilosEntregados).reduce((acc, value) => acc + value, 0);
-        this.KilosPendienteEntrega = this.cabecera.map(t => t.KilosPendienteEntrega).reduce((acc, value) => acc + value, 0);
-        this.KilosTotales = this.cabecera.map(t => t.KilosTotales).reduce((acc, value) => acc + value, 0);
-
-        this.subscription = this.service.getTotalFormatter(this.KilosEntregados, this.KilosTotales, this.KilosPendienteEntrega).subscribe(
-            (result) => {
-                this.KilosEntregados = result.KilosEntregadosView;
-                this.KilosPendienteEntrega = result.KilosPendienteEntregaView;
-                this.KilosTotales = result.KilosTotalesView;
-            },
-            (error) => {
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        );
-
+        this.KilosEntregados = this.cabecera.filter(x => x.Corredor !="TOTAL").map(t => t.KilosEntregados).reduce((acc, value) => acc + value, 0);
+        this.KilosPendienteEntrega = this.cabecera.filter(x => x.Corredor != "TOTAL").map(t => t.KilosPendienteEntrega).reduce((acc, value) => acc + value, 0);
+        this.KilosTotales = this.cabecera.filter(x => x.Corredor != "TOTAL").map(t => t.KilosTotales).reduce((acc, value) => acc + value, 0);
     }
 
     exportExcelReporteContrato() {
@@ -209,38 +217,43 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
     }
 
     ObtenerContratosFiltro() {
+        if (this.filtroContrato == "") {this.blockUI.start(''); }       
         this.subscription = this.service.obtenerContratosFiltro(this.filtroFechaComponent.fecha_inicio,
             this.filtroFechaComponent.fecha_fin, this.mostrarPendientes, this.cabecera).subscribe(
                 (result: any) => {
                     this.mensajeComponent.setMsgsEmpty();
-                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
+                        this.varciarFiltrosReporte();
+                        this.show = false;
                     } else {
                         this.cabecera = result.data.Resultados;
                         this.cargarFiltrosContratos(result);
                         this.getTotalKilogramos();
                         this.show = true;
-
+                       
                     }
 
                 },
                 (error) => {
+                    this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
+
                 }
             );
     }
 
     varciarFiltrosReporte() {
-        this.filtroCliente == null;
-        this.filtroContrato == null;
-        this.filtroProducto == null;
-        this.filtroTipoContrato == null;
-        this.clienteSelected == "";
+        this.filtroCliente =null;
+        this.filtroContrato = "";
+        this.filtroProducto =null;
+        this.filtroTipoContrato = null;
+        this.clienteSelected = "";
         this.productoSelected = "";
         this.tipoContratoSelected = "";
     }
