@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
 using System.Collections.Generic;
@@ -15,12 +16,15 @@ namespace SustitucionMOATest.Services
 
         private IPesificacionService target;
         private Mock<IListarPesificacionesConsumer> pesificacionConsumerMock;
+        private Mock<IRepositorio> repositorioMock;
+
 
         [SetUp]
         public void SetUp()
         {
             pesificacionConsumerMock = new Mock<IListarPesificacionesConsumer>();
-            target = new PesificacionService(pesificacionConsumerMock.Object);
+            repositorioMock = new Mock<IRepositorio>();
+            target = new PesificacionService(pesificacionConsumerMock.Object, repositorioMock.Object);
         }
 
         [Test()]
