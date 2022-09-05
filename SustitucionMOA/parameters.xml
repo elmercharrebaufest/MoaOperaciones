@@ -629,5 +629,12 @@
                         /endpoint[@name='SI_MMRFC_OBTENER_MATERIALES']
                         /@address" />
   </parameter>
+
+	<parameter name="SI_MMRFC_OBTENER_FUENTE_APROV Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MMRFC_OBTENER_FUENTE_APROV']
+                        /@address" />
+	</parameter>
 </parameters>
 
