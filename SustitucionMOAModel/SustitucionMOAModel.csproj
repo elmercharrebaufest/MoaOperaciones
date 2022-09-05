@@ -54,6 +54,7 @@
     <Compile Include="Dto\AgregarConsultaResponseDto.cs" />
     <Compile Include="Dto\ArchivoDescargaDto.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
+    <Compile Include="Dto\Soja200Dto.cs" />
     <Compile Include="Dto\CorredorContratoDto.cs" />
     <Compile Include="Dto\CampoProveedorDto.cs" />
     <Compile Include="Dto\CampoProveedorListadoDto.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Dto\TablaSapDto.cs" />
     <Compile Include="Dto\UsuarioComprasDto.cs" />
     <Compile Include="Dto\UsuarioComprasRelacionConUsuariosDto.cs" />
+    <Compile Include="Entities\Configuracion.cs" />
     <Compile Include="Entities\HabilitacionJob.cs" />
     <Compile Include="Entities\Categoria.cs" />
     <Compile Include="Entities\CausaConsulta.cs" />

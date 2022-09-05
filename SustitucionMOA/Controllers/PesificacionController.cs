@@ -41,6 +41,19 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        public JsonResult GetSoja200()
+        {
+            try
+            {
+                return JsonCustom(pesificacionService.GetSoja200());
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.PESIFICACION)]
         public ActionResult SetComprobante(string contrato)
         {

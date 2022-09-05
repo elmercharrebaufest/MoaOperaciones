@@ -167,6 +167,7 @@
     <Build Include="DBO\Tables\HabilitacionJob.sql" />
     <None Include="scripts\PostDeployment\HabilitacionJob.sql" />
     <None Include="scripts\PostDeployment\Varios.sql" />
+    <Build Include="DBO\Tables\Configuracion.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

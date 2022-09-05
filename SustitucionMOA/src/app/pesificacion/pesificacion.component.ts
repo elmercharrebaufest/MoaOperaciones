@@ -48,7 +48,8 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
     itemsPerPage = "10";
     orderedByColumn: string = "NroContrato";
     permitirCarga: boolean = false;
-
+    visibleSoja200: boolean = false;
+    soja200: any = null;
     ngOnInit() {
         super.ngOnInit();
         this.setTabs();
@@ -141,6 +142,33 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
                     this.cantidad = 0;
                     this.verificarPermiso();
                     this.getListaContratos();
+                }
+            },
+            error => {
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+                return false;
+            },
+
+        );
+
+
+        this.subscription = this.service.getDataSoja200().subscribe(
+            (result: any) => {
+                this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.soja200 = result;
+                    let hoy = new Date();
+                    hoy.setHours(0, 0, 0, 0);
+                    if (new Date(parseInt(result.Desde.substr(6))) <= hoy && new Date(parseInt(result.Hasta.substr(6))) >= hoy) {
+                        this.visibleSoja200 = true;
+                    }
                 }
             },
             error => {
