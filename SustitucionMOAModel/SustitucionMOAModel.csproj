@@ -182,6 +182,8 @@
     <Compile Include="Models\WSMapMOA\Compras\CecoWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Cuenta.cs" />
     <Compile Include="Models\WSMapMOA\Compras\CuentaWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\FuenteAprovisionamiento.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\FuenteAprovisionamientoWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Orden.cs" />
     <Compile Include="Models\WSMapMOA\Compras\OrdenWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Material.cs" />
