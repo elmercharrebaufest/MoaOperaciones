@@ -55,36 +55,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-        }
-
-        public ActionResult getTotalFormatter(string KilosEntregados, string KilosTotales, string KilosPendienteEntrega)
-        {
-            try
-            {
-                var KilosEntregadosView = SAPFormatter.FormatearCantidad(Convert.ToDecimal(KilosEntregados), "KG");
-                var KilosTotalesView = SAPFormatter.FormatearCantidad(Convert.ToDecimal(KilosTotales), "KG");
-                var KilosPendienteEntregaView = SAPFormatter.FormatearCantidad(Convert.ToDecimal(KilosPendienteEntrega), "KG");
-                return JsonCustom(new { KilosEntregadosView, KilosTotalesView, KilosPendienteEntregaView });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
+        }   
 
         public ActionResult ObtenerContratosFiltro(string fechaInicio, string fechaFin, string cliente, string producto, string tipoContrato, bool mostrarPendientes, string dataContrato)
         {
