@@ -1,7 +1,9 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
+using SustitucionMOARepositorio;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.PesificacionGuadarWebServiceMOA;
 using SustitucionMOAWS.WSConsumers;
@@ -18,10 +20,12 @@ namespace SustitucionMOAUtils.Services
     {
         readonly FeriadoService _feriadoService = new FeriadoService();
         readonly IListarPesificacionesConsumer pesificacionesConsumer;
+        readonly IRepositorio repositorio;
 
-        public PesificacionService(IListarPesificacionesConsumer pesificacionesConsumer)
+        public PesificacionService(IListarPesificacionesConsumer pesificacionesConsumer, IRepositorio repositorio)
         {
             this.pesificacionesConsumer = pesificacionesConsumer;
+            this.repositorio = repositorio;
         }
 
         public Fecha GetFechaPesificacion(string formatoFecha)
@@ -90,7 +94,7 @@ namespace SustitucionMOAUtils.Services
                     throw new InfoCustomException("No se encontraron contratos para pesificar");
                 }
 
-                Contrato contratoEncontrado = 
+                Contrato contratoEncontrado =
                         responseGet.Contratos.
                         Find(x => x.NroContrato.TrimStart(new Char[] { '0' }) == contrato
                         && x.Fijacion.TrimStart(new Char[] { '0' }) == fijacion
@@ -112,6 +116,16 @@ namespace SustitucionMOAUtils.Services
                                                   + " por pesificar. Por favor ingrese una cantidad igual o menor a la pendiente");
                 }
 
+                string FechaPesificacion = GetFechaPesificacion("yyyyMMdd").FechaPesificacion;
+
+                if (int.Parse(contratoEncontrado.NroContrato) >= 25000000 && int.Parse(contratoEncontrado.NroContrato) < 27000000)
+                {
+                    var soja200 = GetSoja200();
+                    if (soja200.Desde <= DateTime.Now.Date && soja200.Hasta >= DateTime.Now.Date)
+                    {
+                        FechaPesificacion = soja200.FechaCotizacion.ToString("yyyy-MM-dd");
+                    }
+                }
                 List<ZMPES5480> comprobantes = new List<ZMPES5480>
                 {
                     new ZMPES5480()
@@ -119,7 +133,7 @@ namespace SustitucionMOAUtils.Services
                         CONTRATO = contratoEncontrado.NroContrato,
                         FIJACION = contratoEncontrado.Fijacion,
                         CANTIDAD = cantidad,
-                        FECHA = GetFechaPesificacion("yyyyMMdd").FechaPesificacion,
+                        FECHA = FechaPesificacion,
                         IMPORTE = contratoEncontrado.Precio,
                         MONEDA = contratoEncontrado.Moneda,
                         UNIDAD = contratoEncontrado.Unidad,
@@ -258,6 +272,26 @@ namespace SustitucionMOAUtils.Services
             catch (ValidationCustomException)
             {
                 throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public Soja200Dto GetSoja200()
+        {
+            try
+            {
+                Soja200Dto soja200 = new Soja200Dto
+                {
+                    Desde = DateTime.ParseExact(repositorio.Obtener<Configuracion>(a => a.Code == "Soja200Desde").Value, "yyyy-MM-dd", null),
+                    Hasta = DateTime.ParseExact(repositorio.Obtener<Configuracion>(a => a.Code == "Soja200Hasta").Value, "yyyy-MM-dd", null),
+                    FechaCotizacion = DateTime.ParseExact(repositorio.Obtener<Configuracion>(a => a.Code == "Soja200FechaCotizacion").Value, "yyyy-MM-dd", null),
+                    Cotizacion = double.Parse(repositorio.Obtener<Configuracion>(a => a.Code == "Soja200Cotizacion").Value),
+                };
+
+                return soja200;
             }
             catch (Exception e)
             {

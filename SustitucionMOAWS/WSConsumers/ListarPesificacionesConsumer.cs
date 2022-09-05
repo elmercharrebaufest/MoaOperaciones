@@ -35,6 +35,11 @@ namespace SustitucionMOAWS.WSConsumers
 
             foreach (ZMPES6500 pesificacion in pesificaciones)
             {
+                var FechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_PESIFICACION, "yyyy-MM-dd", null);
+                if (FechaPesificacionDate.Date == new DateTime(2015,01,01))
+                {
+                    FechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_CARGA, "yyyy-MM-dd", null);
+                }
                 result.Pesificaciones.Add(new PesificacionSapDto
                 {
                     FechaCarga = SAPFormatter.FormatearFecha(pesificacion.FECHA_CARGA),
@@ -45,8 +50,8 @@ namespace SustitucionMOAWS.WSConsumers
                     KilosString = SAPFormatter.FormatearCantidad(pesificacion.KILOS, "KG"),
                     Precio = pesificacion.PRECIO,
                     PrecioString = SAPFormatter.FormatearMonto(pesificacion.PRECIO, "USD"),
-                    FechaPesificacion = SAPFormatter.FormatearFecha(pesificacion.FECHA_PESIFICACION),
-                    FechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_PESIFICACION, "yyyy-MM-dd", null).ToString("yyyy-MM-ddTHH:mm:ss"),
+                    FechaPesificacion = SAPFormatter.FormatearFecha(FechaPesificacionDate),
+                    FechaPesificacionDate = FechaPesificacionDate.ToString("yyyy-MM-ddTHH:mm:ss"),
                     TipoCambio = SAPFormatter.FormatearMonto(pesificacion.TIPO_CAMBIO, "ARP"),
                 });
             }
