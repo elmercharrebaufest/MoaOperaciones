@@ -118,8 +118,8 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 string FechaPesificacion = GetFechaPesificacion("yyyyMMdd").FechaPesificacion;
-
-                if (int.Parse(contratoEncontrado.NroContrato) >= 25000000 && int.Parse(contratoEncontrado.NroContrato) < 27000000)
+                
+                if (int.Parse(contratoEncontrado.NroContrato) >= 2500000 && int.Parse(contratoEncontrado.NroContrato) < 2700000)
                 {
                     var soja200 = GetSoja200();
                     if (soja200.Desde <= DateTime.Now.Date && soja200.Hasta >= DateTime.Now.Date)
