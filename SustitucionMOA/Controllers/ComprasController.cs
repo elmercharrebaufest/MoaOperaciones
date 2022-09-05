@@ -105,12 +105,18 @@ namespace SustitucionMOA.Controllers
                     EstadosSolpSap = service.ObtenerTablaSap(TablasSap.EstadoSolpSap),
                     CentroBeneficio = service.ObtenerTablaSap(TablasSap.CentroBeneficio),
                     EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),
-                    TipoPosicionSolp = service.ObtenerTablaEstado(TablasGenerales.TipoPosicionSolp),
+                    TipoPosicionSolp = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
+                    TipoPosicion = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
+                    TipoImputacion = service.ObtenerTablaGeneral(TablasGenerales.TipoImputacionSolp),
                     CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
                     {
                         ClaseDocumentoCodigo = x.Padre.Codigo,
                         Codigo = x.Codigo
-                    })
+                    }),
+
+                    Provincia = service.ListarProvincia(),
+
+
                 });
             }
             catch (InfoCustomException e)
@@ -141,10 +147,10 @@ namespace SustitucionMOA.Controllers
 
         [HttpGet]
         public ActionResult ListarSolp()
-        {
+        {   
             try
-            {
-                return JsonCustom(new { data = service.ListarSolp(ObtenerUsuarioActual()) });
+            {               
+                return JsonCustom(new { data = service.ListarSolp(ObtenerUsuarioActual())});
             }
             catch (InfoCustomException e)
             {
@@ -165,6 +171,19 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        //[HttpGet]
+        //public ActionResult FiltrarMateriales() {
+        //    try
+        //    {
+        //        return JsonCustom(new { data = service.FiltrarMateriales() });
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+        //}
 
         [HttpGet]
         public ActionResult ObtenerSolpDeSap()
@@ -407,6 +426,33 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult DescargarPliegoDesdeLink(int solpId, Guid? token)
+        {
+            SolpDescargaZipPorLink puedeDescargar = service.PuedeDescargarPliegoDesdeLink(solpId, token);
+            if (puedeDescargar != SolpDescargaZipPorLink.PuedeDescargar)
+            {
+                string errorMsg = puedeDescargar == SolpDescargaZipPorLink.SolpIdNoExiste 
+                                                        ? "Solp no disponible para descarga." 
+                                                        : "Token no coincide, no tiene permiso para realizar la descarga";
+                return Json(new { error = errorMsg }, JsonRequestBehavior.AllowGet);
+            }
+            var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+            Directory.CreateDirectory(path);
+
+            string rutaZip = service.GenerarZipPliego(solpId, path);
+            byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
+            string fileName = Path.GetFileName(rutaZip);
+            string fileExt = Path.GetExtension(fileName);
+
+            //Para evitar sobrecargar el server con zips, una vez cargado lo borro
+            Directory.Delete(path, true);
+            string mimeType = fileExt.ToLower() == ".pdf" ? System.Net.Mime.MediaTypeNames.Application.Pdf : System.Net.Mime.MediaTypeNames.Application.Zip;
+
+            return File(fileBytes, mimeType, fileName);
+        }
+
         [ValidateInput(false)]
         public JsonResult ObtenerDatosPorCodigosSap(string codigosSap)
         {
@@ -476,5 +522,50 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+        [HttpGet]
+        public JsonResult AutocompleteMaterialSolp(string valor, int centroId)
+        {
+            try
+            {
+                return JsonCustom(service.AutocompleteMaterialSolp(valor, centroId));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EnviarEmail(string emailCompose)
+        {
+            try
+            {
+                var emailComposeDto = JsonConvert.DeserializeObject<EmailComposeDto>(emailCompose);
+                service.EnviarEmailSolp(emailComposeDto);
+                return JsonCustom(new { success = true });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, 
+                    SessionPersister.getUsername(), 
+                    this.GetType().Name, 
+                    System.Reflection.MethodBase.GetCurrentMethod().Name, 
+                    e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
     }
 }

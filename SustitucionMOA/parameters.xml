@@ -620,6 +620,14 @@
 								match="/configuration/system.serviceModel/client
 							/endpoint[@name='SI_MPMF_MOAOP_VISUALIZAR_ZFAS']
 							/@address" />
-	</parameter>
+  </parameter>
+
+
+  <parameter name="SI_MMRFC_OBTENER_MATERIALES Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MMRFC_OBTENER_MATERIALES']
+                        /@address" />
+  </parameter>
 </parameters>
 

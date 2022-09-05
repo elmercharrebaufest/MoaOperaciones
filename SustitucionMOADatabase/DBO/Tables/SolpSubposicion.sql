@@ -10,7 +10,7 @@
 	[CuentaMayor_Id] INT NULL,
 	[Cantidad] [decimal] NULL,
 	[Unidad_Id] [int] NULL,
-	[PrecioBruto] [decimal] NULL,
+	[PrecioBruto] [decimal](18, 6) NULL,
 
 
 [TipoImputacion_Id] INT NULL, 

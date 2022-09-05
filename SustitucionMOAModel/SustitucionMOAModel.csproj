@@ -49,7 +49,10 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\ProvinciaDTO.cs" />
     <Compile Include="Dto\AutoCompleteDropdownElement.cs" />
+    <Compile Include="Dto\EmailComposeDto.cs" />
+    <Compile Include="Dto\MaterialSolpDto.cs" />
     <Compile Include="Dto\ComprobanteNGDto.cs" />
     <Compile Include="Dto\AgregarConsultaResponseDto.cs" />
     <Compile Include="Dto\ArchivoDescargaDto.cs" />
@@ -115,6 +118,7 @@
     <Compile Include="Entities\CampoSustentable.cs" />
     <Compile Include="Entities\DeclaracionCampoSustentable.cs" />
     <Compile Include="Entities\EstadoIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Entities\MaterialSolp.cs" />
     <Compile Include="Entities\TipoSolpPosicionSAP.cs" />
     <Compile Include="Entities\TipoMovimientoIngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Entities\OrigenMovimientoIngresosBrutosCoeficienteUnificado.cs" />
@@ -180,7 +184,9 @@
     <Compile Include="Models\WSMapMOA\Compras\CuentaWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Orden.cs" />
     <Compile Include="Models\WSMapMOA\Compras\OrdenWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\Material.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Servicio.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\MaterialWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\ServicioWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\ConsultaVM.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\EstadoConsultaVM.cs" />

@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -29,6 +26,7 @@ namespace SustitucionMOAModel.Entities
         public int? TipoSolp_Id { get; set; }
         public int? UsuarioCompras_Id { get; set; }
         public int? TipoSolpSap { get; set; }
+        public Guid? EmailLinkToken { get; set; }
 
         [ForeignKey("UsuarioCreacion_Id")]
         public virtual Usuario UsuarioCreacion { get; set; }

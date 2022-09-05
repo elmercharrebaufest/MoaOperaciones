@@ -95,6 +95,7 @@ namespace SustitucionMOA
 		//Agrego esta función del callback. Ya que esta es llamada desde el registro y desde el login. 
 		private Task OnSecurityTokenValidated(SecurityTokenValidatedNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
 		{
+		
 			ValidarLogin(notification.AuthenticationTicket.Identity);
 
 			return Task.FromResult(0);

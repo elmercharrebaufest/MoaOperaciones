@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute, RouteReuseStrategy } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { SecurityService } from './../../common/services/SecurityService';
@@ -8,26 +8,19 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { ComprasService } from '../compras.service';
 import { ConfirmationService, SelectItem } from 'primeng/api';
-import { Solp } from '../Solp';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
-import { CrearContratoModule } from '../../crear-contrato/crear-contrato.module';
-import { formatDate } from '@angular/common';
-import { SortEvent } from 'primeng/api';
+import { Solp } from '../solp/solp';
 import { Table } from 'primeng/table';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
-import { NullAstVisitor } from '@angular/compiler';
-import { zip } from 'rxjs';
-
-
 
 declare var $: any;
 
 @Component({
     selector: 'dashboard',
     templateUrl: `dashboard.component.html`,
-    styleUrls: ['../compras.component.css', './dashboard.component.css'],
+    styleUrls: ['../compras.component.css',
+     './dashboard.component.css'],
     providers: [ComprasService]
 
 })
@@ -46,7 +39,8 @@ export class DashboardComponent extends ListBaseComponent {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    @ViewChild('myCalendar', undefined) private calendar: any;
+    @ViewChild('myCalendar', undefined) 
+    private calendar: any;
    
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
@@ -92,6 +86,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     checkedFilterSap = false;
     checkedFilterMantenimiento = false;
+    checkedFilterWeb = false;
 
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
 
@@ -101,12 +96,17 @@ export class DashboardComponent extends ListBaseComponent {
 
     cards = [
         { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
+        { nombre: "Sin pliego", path: "/compras/solp/0", tipoSolp: "SIN_PLIEGO" },
         // { nombre: "Con documentos requerimientos", path: ""},
         // { nombre: "Sin documento", path: ""},
         // { nombre: "Emergencia", path: ""},
         // { nombre: "Adicional", path: ""}
     ]
 
+    subtitulos = [
+        { nombre: "Servicio y/o Material catalogado y sin catalogar" },
+        { nombre: "Servicio y/o Material catalogado" },
+    ]
 
     goToSeccion(path: string) {
         $("#mySidenav").css({ 'right': '-270px' });
@@ -139,7 +139,6 @@ export class DashboardComponent extends ListBaseComponent {
         return false;
     }
 
-
     ngOnInit() {
         this.navService.setSeccionList([]);
         this.getListarSolp();
@@ -149,13 +148,13 @@ export class DashboardComponent extends ListBaseComponent {
 
 
     returnToTodaysDate() {
-        this.fechaInicio = null;
-        this.fechaFin = null;
-        this.filtrarTablaPorTipoSolp();
+        this.tablaSolp = this.tablaSolpCopy;
+        this.tabla.first = 0;
         if (this.tablaSolp.length > 0) {
             this.mensajeComponent.setMsgsEmpty();
         }
     }
+
 
     onSelect(event: any) {     
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
@@ -181,19 +180,41 @@ export class DashboardComponent extends ListBaseComponent {
         this.filtrarTablaPorTipoSolp();
     }
 
+    filtrarPorWeb() {
+        this.checkedFilterWeb = !this.checkedFilterWeb;
+        this.filtrarTablaPorTipoSolp();
+    }
+
     filtrarTablaPorTipoSolp() {
+      
         var fechaDesde = this.fechaInicio;
         var fechaHasta = this.fechaFin + " 23:59:59";
 
         let tablaPrincipal = this.tablaSolpCopy;
-        if (this.checkedFilterSap && this.checkedFilterMantenimiento) {
+        if (this.checkedFilterMantenimiento && this.checkedFilterWeb && this.checkedFilterSap) {
+            tablaPrincipal = tablaPrincipal;
+            this.tabla.first = 0;
+        } else if (this.checkedFilterSap && this.checkedFilterMantenimiento) {
             tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
+            this.tabla.first = 0;
+        } else if (this.checkedFilterSap && this.checkedFilterWeb) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Web);
+            this.tabla.first = 0;
+        } else if (this.checkedFilterMantenimiento && this.checkedFilterWeb) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap === EnumTipoSolpSap.Web);
+            this.tabla.first = 0;
         } else if (this.checkedFilterMantenimiento) {
             tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
+            this.tabla.first = 0;
         } else if (this.checkedFilterSap) {
             tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP);
-        } 
+            this.tabla.first = 0;
+        } else if (this.checkedFilterWeb) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Web);
+            this.tabla.first = 0;
+        }  this.tabla.first = 0;
 
+        
         if(fechaDesde != null && fechaHasta != null) {
             tablaPrincipal = tablaPrincipal.filter(x =>
                 new Date(Date.parse(x.FechaCreacion)) >= new Date(fechaDesde) &&
@@ -277,7 +298,6 @@ export class DashboardComponent extends ListBaseComponent {
         }
 
         return false; //<-- Prevent Refresh
-
     }
 
     borrarSolp(idSolp) {
@@ -307,8 +327,6 @@ export class DashboardComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
 
     }
-
-
 
     getCombos() {
         try {

@@ -4,18 +4,24 @@ namespace SustitucionMOAModel.Dto
 {
     public class ServicioSolpDto
     {
-        public ServicioSolpDto() {}
+        //public ServicioSolpDto(object servicioSolp) {}
         public ServicioSolpDto(ServicioSolp servicioSolp)
         {
-            Id = servicioSolp.Id;
-            Codigo = servicioSolp.CodigoSap;
-            Descripcion= servicioSolp.Descripcion;
-            GrupoArticulos = servicioSolp.GrupoArticulos;
-            TipoServicio = servicioSolp.TipoServicio;
-            AmbitoServicio = servicioSolp.AmbitoServicio;
-            Edicion = servicioSolp.Edicion;
-            UnidadMedidaBase = servicioSolp.UnidadMedidaBase;
-            SSCItem = servicioSolp.SSCItem;
+            if (servicioSolp != null) {
+
+                Id = servicioSolp.Id;
+                Codigo = servicioSolp.CodigoSap;
+                Descripcion = servicioSolp.Descripcion;
+                GrupoArticulos = servicioSolp.GrupoArticulos;
+                TipoServicio = servicioSolp.TipoServicio;
+                AmbitoServicio = servicioSolp.AmbitoServicio;
+                Edicion = servicioSolp.Edicion;
+                UnidadMedidaBase = servicioSolp.UnidadMedidaBase;
+                SSCItem = servicioSolp.SSCItem;
+
+            }
+
+           
         }
 
         public int Id { get; set; }

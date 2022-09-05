@@ -1,46 +1,53 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SharedModule } from '../common/shared.module';
-import { ComprasService } from './compras.service';
-import { Generacion2Component } from './PliegoPasos/generacion2.component';
-import { Generacion1Component } from './PliegoPasos/generacion1.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { SolpComponent } from './solp.component';
-import { FormsModule } from '@angular/forms';
-import { ComprasRoutingModule } from './compras-routing.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
 import { EditorModule } from 'primeng/editor';
-import { PliegoPreviewComponent } from './preview/pliego.preview.component';
 import { SidebarModule } from 'primeng/sidebar';
 import { CheckboxModule } from 'primeng/checkbox';
-import { CotizacionComponent } from './PliegoPasos/cotizacion.component';
-import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { EspecificacionesComponent } from './PliegoPasos/solapaTres/especificaciones.component'
 import { FileUploadModule } from 'primeng/fileupload';
-import { QuillModule } from 'ngx-quill'
-import { CabeceraComponent } from './SolpPasos/cabecera.component';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { DropdownModule } from 'primeng/dropdown';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ValidadorPasoSolpService } from './validadorPasoSolpService';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { ChipsModule } from 'primeng/chips';
 import { TableModule } from 'primeng/table';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { SubPosicionComponent } from './PliegoPasos/solapaSubposiciones/subPosicion.component';
-import {ConfirmationService, SortEvent} from 'primeng/api';
-import {MultiSelectModule} from 'primeng/multiselect';
-import {OverlayPanelModule} from 'primeng/overlaypanel';
-import {PanelModule} from 'primeng/panel';
-import {InputSwitchModule} from 'primeng/inputswitch';
+import { ConfirmationService, SortEvent } from 'primeng/api';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { PanelModule } from 'primeng/panel';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { TabMenuModule } from 'primeng/tabmenu';
+import { QuillModule } from 'ngx-quill'
 
-    
+import { SharedModule } from '../common/shared.module';
+import { ComprasRoutingModule } from './compras-routing.module';
+import { ComprasService } from './compras.service';
+import { Generacion2Component } from './solp/steps/generacion2/generacion2.component';
+import { Generacion1Component } from './solp/steps/generacion1/generacion1.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { SolpComponent } from './solp/solp.component';
+import { PliegoPreviewComponent } from './preview/pliego.preview.component';
+import { CotizacionComponent } from './solp/steps/cotizacion/cotizacion.component';
+import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
+import { EspecificacionesComponent } from './solp/steps/especificaciones/especificaciones.component'
+import { CabeceraComponent } from './solp/steps/posicion/cabecera.component';
+import { ValidadorPasoSolpService } from './validadorPasoSolpService';
+import { TabFechasComponent } from './solp/steps/posicion/tab-fechas/tab-fechas.component';
+import { TabDatosPosicionComponent } from './solp/steps/posicion/tab-datos-posicion/tab-datos-posicion.component';
+import { TabDireccionEntregaComponent } from './solp/steps/posicion/tab-direccion-entrega/tab-direccion-entrega.component';
+import { TabImputacionesComponent } from './solp/steps/posicion/tab-imputaciones/tab-imputaciones.component';
+import { TabProveedoresComponent } from './solp/steps/posicion/tab-proveedores/tab-proveedores.component';
+import { TabSubposicionComponent } from './solp/steps/posicion/tab-subposicion/tab-subposicion.component';
+import { StepperActionsComponent } from './solp/stepper-actions/stepper-actions.component';
+import { FinalizarSolpComponent } from './solp/finalizar/finalizar-solp.component';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -69,7 +76,8 @@ import {InputSwitchModule} from 'primeng/inputswitch';
         TableModule,
         ConfirmDialogModule,
         PanelModule,
-        InputSwitchModule
+        InputSwitchModule,
+        TabMenuModule
     ],
     declarations: [
         SolpComponent,
@@ -81,7 +89,14 @@ import {InputSwitchModule} from 'primeng/inputswitch';
         CotizacionComponent,
         DragAndDropDirective,
         CabeceraComponent,
-        SubPosicionComponent
+        TabFechasComponent,
+        TabDatosPosicionComponent,
+        TabDireccionEntregaComponent,
+        TabProveedoresComponent,
+        TabSubposicionComponent,
+        TabImputacionesComponent,
+        StepperActionsComponent,
+        FinalizarSolpComponent
     ],
     providers: [
         ComprasService,

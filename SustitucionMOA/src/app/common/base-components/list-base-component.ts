@@ -9,7 +9,6 @@ import { DropdownComponent, DropdownOption } from './../view-child/dropdown/drop
 import { SessionDataService } from './../services/SessionDataService';
 import { NavService } from './../services/NavService';
 import { SecurityService } from './../services/SecurityService';
-import { ServiceLocator } from './../services/ServiceLocator';
 import { FloatMsgService } from './../services/FloatMsgService';
 import { ModalService } from './../services/ModalService';
 
@@ -95,7 +94,6 @@ export class ListBaseComponent extends BaseComponent implements OnInit {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.data = result.data;
-                    console.log(result.data);
                     if(result.data==null && result.comprobantes && result.comprobantes.comprobantes){
                         this.data = result.comprobantes;
 

@@ -166,13 +166,21 @@ namespace SustitucionMOAUtils.Email
                     + "Importe: $" + importe;
         }
 
-        public static void EnviarMail(List<string> enviarA, string asunto, string cuerpo, List<string> copia = null, AlternateView vistaAlternativa = null, byte[] archivo = null, string nombreArchivo = null)
+        public static void EnviarMail(List<string> enviarA, 
+            string asunto, 
+            string cuerpo, 
+            List<string> copia = null, 
+            AlternateView vistaAlternativa = null, 
+            byte[] archivo = null, 
+            string nombreArchivo = null,
+            string enviarDesde = null,
+            List<string> copiaOculta = null)
         {
             try
             {
                 MailMessage oMensaje = new MailMessage
                 {
-                    From = new MailAddress(EmailConfig.getEmailAddFrom()),
+                    From = new MailAddress(string.IsNullOrEmpty(enviarDesde) ? EmailConfig.getEmailAddFrom() : enviarDesde),
                     Body = cuerpo,
                     Subject = asunto,
                     IsBodyHtml = true,
@@ -194,6 +202,13 @@ namespace SustitucionMOAUtils.Email
                     foreach (string mail in copia)
                     {
                         oMensaje.CC.Add(mail);
+                    }
+                }
+                if (copiaOculta != null)
+                {
+                    foreach (string mail in copiaOculta)
+                    {
+                        oMensaje.Bcc.Add(mail);
                     }
                 }
                 if (vistaAlternativa != null)

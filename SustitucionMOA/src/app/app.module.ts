@@ -8,11 +8,9 @@ import { FormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { AutocompleteLibModule } from "angular-ng-autocomplete";
 
 import { ReCaptchaModule } from "angular2-recaptcha";
 import { BlockUIModule } from 'ng-block-ui';
-import { Ng2AutoCompleteModule } from "ng2-auto-complete";
 import { SelectModule } from "ng2-select";
 import { NgxMaskModule } from "ngx-mask";
 import { ModalModule } from "ngx-modal";

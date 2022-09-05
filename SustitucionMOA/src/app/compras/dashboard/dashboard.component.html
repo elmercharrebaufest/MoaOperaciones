@@ -9,9 +9,27 @@
             <div class="row">
                 <!--Cards-->
                 <div class="col-md-4" *ngFor="let card of cards" (click)="goToSeccionParam(card.path, card.tipoSolp)">
-                    <div class="card cardCompra">
-                        <h3 class="cardText">{{card.nombre}}</h3>
+
+                    <div *ngIf="card.nombre == 'Con pliego'; else sinpliego" class="card cardCompra">
+                        <h3 class="cardText">
+                            {{card.nombre}}
+                            <h6>
+                                {{subtitulos[0].nombre}}
+                            </h6>
+                        </h3>
                     </div>
+
+                    <ng-template #sinpliego>
+                        <div class="card cardCompra">
+                            <h3 class="cardText">
+                                {{card.nombre}}
+                                <h6>
+                                    {{subtitulos[1].nombre}}
+                                </h6>
+                            </h3>
+                        </div>
+                    </ng-template>
+
                 </div>
                 <!--End Cards-->
             </div>
@@ -23,18 +41,20 @@
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="row myRow col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top: 1em; margin-bottom: 15px;">
+                <div class="row myRow col-xs-12 col-sm-12 col-md-12 col-lg-12 " style="margin-top: 1em; margin-bottom: 15px;">
 
                     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8" style="margin-left: -46px;">
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                             <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="Buscar por numero de solp">
                         </div>
 
+
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                             <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp" defaultLabel="Estado SOLP" (onChange)="tabla.filter($event.value, 'EstadoSolpSap.Id', 'in')"></p-multiSelect>
+
                         </div>
 
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 estiloCalendarDashboard">
+                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 estiloCalendarDashboard">
                             <p-calendar 
                                 showButtonBar="true" 
                                 [showIcon]="true"
@@ -50,21 +70,26 @@
                                 (onClearClick)="returnToTodaysDate()"
                                 class="styled-select">
                             </p-calendar>
-                        </div>                    
+                        </div>             
+
+                        <!-- <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                            <button class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura botonFechaDashboard " type="text" pButton (click)="op.toggle($event, actualTarget)">
+                                Fecha <span class="pull-right fa fa-calendar-o"></span>
+                            </button>
+                        </div> -->
                     </div>
 
                     <!-- <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 inputAltura" style="margin-top: 10px;"> -->
                     <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"> -->
                     <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="color: rgb(209, 199, 199)">
-                                <p-radioButton name="dashboard" value="Materiales" label="Materiales" inputId="materialesDashboard" disabled></p-radioButton>
-                            </div> -->
+                <p-radioButton name="dashboard" value="Materiales" label="Materiales" inputId="materialesDashboard" disabled></p-radioButton>
+            </div> -->
                     <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                <p-radioButton name="dashboard" value="Servicios" label="Servicios" [(ngModel)]="serviciosDashboard" inputId="serviciosDashboard"></p-radioButton>
-                            </div>
-                        </div> -->
-
+                <p-radioButton name="dashboard" value="Servicios" label="Servicios" [(ngModel)]="serviciosDashboard" inputId="serviciosDashboard"></p-radioButton>
+            </div>
+        </div> -->
                     <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="border-left: 1px solid black;"> -->
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="border-left: 1px solid black; margin-top: 8px;">
+                    <!--<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="border-left: 1px solid black; margin-top: 8px;">
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                             <p-checkbox class="checkboxFechas" binary="true" label="SAP" (onChange)="filtrarPorSap()">
                             </p-checkbox>
@@ -72,6 +97,28 @@
                         <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                             <p-checkbox class="checkboxFechas" binary="true" label="Mantenimiento" (onChange)="filtrarPorMantenimiento()"></p-checkbox>
                         </div>
+                    </div>-->
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 padding1" style="margin-top: 11px;">
+                        <!--<span class="padding1">
+                            <p-checkbox class="checkboxFechas" binary="false" name="Materiales" inputId="Materiales" label="Materiales" [(ngModel)]="Materiales"
+                                        (onChange)="filtrarGrilla()">
+                            </p-checkbox>
+                        </span>
+                        <span class="padding1">
+                            <p-checkbox class="checkboxFechas" binary="false" label="Servicios" [(ngModel)]="Servicios"
+                                        (onChange)="filtrarGrilla()"></p-checkbox>
+                        </span>-->
+                     
+                        <span style="border-left: 1px solid black;margin-top: 1px;padding-left: 9px;padding-right: 1px;margin-left: 8px;">
+                            <p-checkbox class="checkboxFechas" binary="true" label="SAP" (onChange)="filtrarPorSap()">
+                            </p-checkbox>
+                        </span>
+                        <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
+                            <p-checkbox class="checkboxFechas" binary="true" label="Mantenimiento" (onChange)="filtrarPorMantenimiento()"></p-checkbox>
+                        </span>
+                        <span class="padding1" style="margin-right: 5px;">
+                            <p-checkbox class="checkboxFechas" binary="true" label="Web" (onChange)="filtrarPorWeb()"></p-checkbox>
+                        </span>
                     </div>
                     <!-- </div>     -->
                 </div>

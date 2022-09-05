@@ -164,10 +164,15 @@
     <None Include="scripts\PostDeployment\RolesConsulta.sql" />
     <None Include="scripts\PostDeployment\RolPermisoPorRolConsulta.sql" />
     <Build Include="DBO\Tables\LogActualizarToneladasAprobadasCampo.sql" />
+    <Build Include="DBO\Tables\MaterialSolp.sql" />
+    <Build Include="DBO\Tables\PaisesSAP.sql" />
+    <None Include="scripts\PaisesSAP.sql" />
     <Build Include="DBO\Tables\HabilitacionJob.sql" />
     <None Include="scripts\PostDeployment\HabilitacionJob.sql" />
     <None Include="scripts\PostDeployment\Varios.sql" />
     <Build Include="DBO\Tables\Configuracion.sql" />
+    <None Include="scripts\PostDeployment\PaisesSAP.sql" />
+    <None Include="scripts\PostDeployment\SolpFixDataToNewColumnEmailLinkToken.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -185,6 +190,7 @@
     <None Include="scripts\Insert Rol PermisoPorRol Buscador Inteligente.sql" />
     <None Include="scripts\PostDeployment\PermisoRol.sql" />
     <None Include="DatabasePublishPRE.xml" />
+    <None Include="DatabasePublishUPDATE.xml" />
     <None Include="DatabasePublishPREHotFix.xml" />
     <None Include="DatabasePublishQAHotFix.xml" />
   </ItemGroup>

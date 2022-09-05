@@ -22,6 +22,8 @@ Post-Deployment Script Template
 :r .\RolPermisoPorRolConsulta.sql
 :r .\PermisoPorRolConsulta.sql
 :r .\CategoriaRolConsulta.sql
+:r .\PaisesSAP.sql
 :r .\HabilitacionJob.sql
 :r .\PermisoRol.sql
 :r .\Varios.sql
+:r .\SolpFixDataToNewColumnEmailLinkToken.sql

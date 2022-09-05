@@ -50,7 +50,7 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
     declarations: [
         MisConsultasComponent,
         CrearConsultaComponent,
-        DetalleConsultaComponent
+        DetalleConsultaComponent,
     ],
     providers: [
         ConsultaService,

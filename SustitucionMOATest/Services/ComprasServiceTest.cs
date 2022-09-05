@@ -39,19 +39,19 @@ namespace SustitucionMOATest.Services
         private Mock<IModificarSolpConsumerMOA> modificarSolpConsumerMOAMock;
 
         [SetUp]
-        public void SetUp()
-        {
-            repositorioMock = new Mock<IRepositorio>();
-            cecoConsumerMock = new Mock<IObtenerCecoSolpConsumerMOA>();
-            cuentasConsumerMock = new Mock<IObtenerCuentasSolpConsumerMOA>();
-            ordenesConsumerMock = new Mock<IObtenerOrdenSolpConsumerMOA>();
-            serviciosConsumerMock = new Mock<IObtenerServiciosSolpConsumerMOA>();
-            obtenerSolpConsumerMOAMock = new Mock<IObtenerSolpConsumerMOA>();
-            crearSolpConsumerMOAMock = new Mock<ICrearSolpConsumerMOA>();
-            modificarSolpConsumerMOAMock = new Mock<IModificarSolpConsumerMOA>();
+        //public void SetUp()
+        //{
+        //    repositorioMock = new Mock<IRepositorio>();
+        //    cecoConsumerMock = new Mock<IObtenerCecoSolpConsumerMOA>();
+        //    cuentasConsumerMock = new Mock<IObtenerCuentasSolpConsumerMOA>();
+        //    ordenesConsumerMock = new Mock<IObtenerOrdenSolpConsumerMOA>();
+        //    serviciosConsumerMock = new Mock<IObtenerServiciosSolpConsumerMOA>();
+        //    obtenerSolpConsumerMOAMock = new Mock<IObtenerSolpConsumerMOA>();
+        //    crearSolpConsumerMOAMock = new Mock<ICrearSolpConsumerMOA>();
+        //    modificarSolpConsumerMOAMock = new Mock<IModificarSolpConsumerMOA>();
             
-            target = new ComprasService(repositorioMock.Object, cecoConsumerMock.Object, cuentasConsumerMock.Object, ordenesConsumerMock.Object, serviciosConsumerMock.Object, obtenerSolpConsumerMOAMock.Object, crearSolpConsumerMOAMock.Object, modificarSolpConsumerMOAMock.Object);
-        }
+        //    target = new ComprasService(repositorioMock.Object, cecoConsumerMock.Object, cuentasConsumerMock.Object, ordenesConsumerMock.Object, serviciosConsumerMock.Object, obtenerSolpConsumerMOAMock.Object, crearSolpConsumerMOAMock.Object, modificarSolpConsumerMOAMock.Object);
+        //}
 
 
         /*

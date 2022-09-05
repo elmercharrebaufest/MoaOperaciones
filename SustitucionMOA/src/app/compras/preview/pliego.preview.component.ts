@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { jsPDF } from "jspdf";
-import { Solp } from '../Solp';
+import { Solp } from '../solp/solp';
 import { ComprasService } from '../compras.service';
 import { NavService } from '../../common/services/NavService';
 import { SecurityService } from '../../common/services/SecurityService';

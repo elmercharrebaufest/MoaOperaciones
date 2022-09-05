@@ -1,0 +1,45 @@
+<div class="row" style="margin: 15px 0;">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="col-xs-8 col-sm-6 col-md-4 col-lg-4 margenInput">
+      <strong>Orden/CeCo/CeBe *</strong>
+      <p-autoComplete class="inputGrilla" 
+          [(ngModel)]="posicion.valorImputacion" 
+          [suggestions]="autocomplete" dataKey="Id" 
+          ariaLabel="Descripcion" 
+          field="CodigoDescripcion" 
+          appendTo="body" 
+          [autoHighlight]="true" 
+          emptyMessage="" 
+          [minLength]="2" 
+          [forceSelection]="true" 
+          (completeMethod)="autocompleteSap($event, '')"
+          (onFocus)=" $event.target.select()"
+          >
+      </p-autoComplete>
+      <div *ngIf="mostrarValidacion('valorImputacion', posicion.valorImputacion)">
+        <p class="text-danger">campo obligatorio</p>
+      </div>
+    </div>
+
+    <div class="col-xs-8 col-sm-6 col-md-4 col-lg-4 margenInput">
+      <strong>Cuenta de Mayor *</strong>
+      <p-autoComplete [(ngModel)]="posicion.cuentaMayor" 
+          [suggestions]="autocomplete" 
+          dataKey="Id" 
+          ariaLabel="CuentaMayor" 
+          field="CodigoDescripcion" 
+          appendTo="body" 
+          [autoHighlight]="true" 
+          emptyMessage="" 
+          [minLength]="2" 
+          [forceSelection]="true" 
+          (completeMethod)="autocompleteSap($event, 'CuentasSolpSap')"
+          (onFocus)=" $event.target.select()"
+          >
+      </p-autoComplete>
+      <div *ngIf="mostrarValidacion('cuentaMayor', posicion.cuentaMayor)">
+        <p class="text-danger">campo obligatorio</p>
+          </div>
+    </div>
+  </div>
+</div>

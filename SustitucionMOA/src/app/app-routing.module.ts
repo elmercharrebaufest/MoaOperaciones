@@ -19,8 +19,6 @@ import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { FaqComponent } from "./faq/faq.component"
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
 import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
-import { SolpComponent } from "./compras/solp.component";
-import { DashboardComponent } from './compras/dashboard/dashboard.component'
 import { GestionCM05Component } from "./gestionCM05/gestionCM05.component";
 import { ApikeyComponent } from "./apikey/apikey.component";
 import { PesificacionesGuardadasComponent } from "./pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component";

@@ -6,12 +6,9 @@
 	[FechaBaja] [datetime] NULL,
 	[TipoPosicion_Id] [int] NULL,
 	[TipoImputacion_Id] [int] NULL,
-	[TextoGenerico] [nvarchar](max) NULL,
 	[FechaEntregaServicio] [datetime] NULL,
 	[FechaLiberacion] [datetime] NULL,
 	[PlazoEntrega] [int] NULL,
-	[EsConcluido] [bit] NULL,
-	[EsFijacion] [bit] NULL,
 	[Centro_Id] [int] NULL,
 	[Almacen_Id] [int] NULL,
 	[NombreEntrega] [nvarchar](max) NULL,
@@ -23,12 +20,24 @@
 	[Solicitante] [nvarchar](max) NULL,
 	[NroNecesidad] [nvarchar](max) NULL,
 	[GrupoArticulo_Id] [int] NULL,
-	[CodigosProveedores] [nvarchar](max) NULL,
 	[Moneda_Id] [int] NULL,
 
 [Estado] BIT NULL DEFAULT 1, 
     [Indice] INT NULL, 
+    [TextoSuministro] NVARCHAR(MAX) NULL, 
+    [Motivo] NVARCHAR(MAX) NULL, 
+    [Modelo] NVARCHAR(MAX) NULL, 
+    [ServicioSolp_Id] INT NULL, 
+    [Tarea] NVARCHAR(MAX) NULL, 
+    [Cantidad] DECIMAL NULL, 
+    [Unidad_Id] INT NULL, 
+    [PrecioBruto] DECIMAL(18, 6) NULL, 
+    [CuentaMayor_Id] INT NULL, 
+    [ValorTipoImputacion_Id] INT NULL, 
     [CantidadSubposicionesEnSAP] INT NULL , 
+    [MaterialSolp_Id] INT NULL, 
+    [EsConcluido] BIT NULL, 
+    [ProvinciaId] INT NULL, 
     CONSTRAINT [PK_dbo.SolpPosicion] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -41,4 +50,5 @@
 	CONSTRAINT [FK_SolpPosicion_TablaSap_GrupoCompras] FOREIGN KEY (GrupoCompras_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_SolpPosicion_TablaSap_GrupoArticulo] FOREIGN KEY (GrupoArticulo_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_SolpPosicion_TablaSap_Moneda] FOREIGN KEY (Moneda_Id) REFERENCES [TablaSap]([Id]),
+	CONSTRAINT [FK_SolpPosicion_ServicioSolp] FOREIGN KEY (ServicioSolp_Id) REFERENCES [ServicioSolp]([Id])
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]

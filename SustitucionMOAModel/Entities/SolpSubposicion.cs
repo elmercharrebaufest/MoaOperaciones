@@ -25,6 +25,7 @@ namespace SustitucionMOAModel.Entities
         public bool? Estado { get; set; }
         public int? CodigoServicioSap_Id { get; set; }
 
+
         [ForeignKey("SolpPosicion_Id")]
         public virtual SolpPosicion SolpPosicion { get; set; }
         [ForeignKey("ServicioSolp_Id")]

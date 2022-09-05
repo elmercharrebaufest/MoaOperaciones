@@ -33,7 +33,7 @@ namespace SustitucionMOAModel.Dto
         public int? DiasEjecucion { get; set; }
         public string ObservacionesCotizacion { get; set; }
         public List<DayOfWeek> JornadaLaboral { get; set; }
-        public DateTimeOffset? JornadaLaboralDesde { get; set; } 
+        public DateTimeOffset? JornadaLaboralDesde { get; set; }
         public DateTimeOffset? JornadaLaboralHasta { get; set; }
         public TablaSapDto ClaseDocumento { get; set; }
         public int? ClaseDocumentoId { get; set; }
@@ -59,8 +59,10 @@ namespace SustitucionMOAModel.Dto
         public int? TipoSolpSap { get; set; }
         public bool PosicionesEstado { get; set; }
 
-        public SolpDto() {}
-        public SolpDto(Solp entity) 
+        public Guid? EmailLinkToken { get; set; }
+
+        public SolpDto() { }
+        public SolpDto(Solp entity)
         {
             this.UsuarioActual = new UsuarioDto(entity.UsuarioCreacion);
             this.Id = entity.Id;
@@ -69,7 +71,7 @@ namespace SustitucionMOAModel.Dto
             this.Telefono = entity.Pliego.Telefono;
             this.Email = entity.Pliego.Email;
             this.FechaHoraEntrega = entity.Pliego.FechaHoraEntrega;
-            this.SupervisorSector = entity.Pliego.SupervisorSector.Split(',').ToList(); 
+            this.SupervisorSector = entity.Pliego.SupervisorSector.Split(',').ToList();
             this.SupervisorTrabajo = entity.Pliego.SupervisorTrabajo.Split(',').ToList();
             this.VisitasObraMasiva = new List<VisitaObraDto>();
             this.TieneVisitaObra = entity.Pliego.TieneVisitaObra.HasValue && entity.Pliego.TieneVisitaObra.Value;
@@ -111,9 +113,10 @@ namespace SustitucionMOAModel.Dto
         public string Codigo { get; set; }
         public DateTime FechaHora { get; set; }
 
-        public VisitaObraDto() {}
+        public VisitaObraDto() { }
 
-        public VisitaObraDto(PliegoVisita entity) {
+        public VisitaObraDto(PliegoVisita entity)
+        {
             this.Codigo = entity.Codigo;
             this.FechaHora = entity.FechaHora.HasValue ? entity.FechaHora.Value : DateTime.MinValue;
         }
@@ -121,9 +124,10 @@ namespace SustitucionMOAModel.Dto
     }
 
 
-    public class RespuestaGuardarSOLP 
+    public class RespuestaGuardarSOLP
     {
         public SolpDto Solp { get; set; }
+        //public enum TipoSolp { get; set; } (Para diferenciar tipo de solp a la hora de mandar a sap)
 
         public List<string> Errores { get; set; }
 
@@ -138,12 +142,9 @@ namespace SustitucionMOAModel.Dto
         public string Codigo { get; set; }
         public int? TipoPosicionId { get; set; }
         public int? TipoImputacionId { get; set; }
-        public string TextoGenerico { get; set; }
         public DateTime? FechaEntregaServicio { get; set; }
         public DateTime? FechaLiberacion { get; set; }
         public int? PlazoEntrega { get; set; }
-        public bool? EsConcluido { get; set; }
-        public bool? EsFijacion { get; set; }
         public int? CentroId { get; set; }
         public int? AlmacenId { get; set; }
         public string NombreEntrega { get; set; }
@@ -155,10 +156,23 @@ namespace SustitucionMOAModel.Dto
         public string Solicitante { get; set; }
         public string NroNecesidad { get; set; }
         public int? GrupoArticuloId { get; set; }
-        public string CodigosProveedores { get; set; }
+        public string TextoSuministro { get; set; }
+        public string Motivo { get; set; }
+        public string Modelo { get; set; }
         public int? MonedaId { get; set; }
         public bool Estado { get; set; }
         public int? Indice { get; set; }
+        public int? CodigoServicioSapId { get; set; }
+        public int? CodigoMaterialSapId { get; set; }
+
+        public string Tarea { get; set; }
+        public decimal? Cantidad { get; set; }
+        public int? UnidadId { get; set; }
+        public decimal? PrecioBruto { get; set; }
+
+        public bool? EsConcluido { get; set; }
+
+        public TablaSapDto Unidad { get; set; }
         public TablaGeneralDto TipoPosicion { get; set; }
         public TablaGeneralDto TipoImputacion { get; set; }
         public TablaSapDto Centro { get; set; }
@@ -166,25 +180,28 @@ namespace SustitucionMOAModel.Dto
         public TablaSapDto GrupoCompras { get; set; }
         public TablaSapDto GrupoArticulo { get; set; }
         public TablaSapDto Moneda { get; set; }
+        public ServicioSolpDto CodigoServicioSap { get; set; }
+        public MaterialSolpDto CodigoMaterialSap { get; set; }
+
+        public TablaSapDto CuentaMayor { get; set; }
+        public TablaSapDto TipoImputacionValor { get; set; }
 
         public List<SolpSubposicionDto> Subposiciones { get; set; }
         public List<SolpProveedorDto> Proveedores { get; set; }
+        public ProvinciaDTO Provincia { get; set; }
 
         public SolpPosicionDto() { }
 
         public SolpPosicionDto(SolpPosicion entity)
         {
-            if(entity != null)
+            if (entity != null)
             {
                 this.Codigo = entity.Codigo;
                 this.TipoPosicionId = entity.TipoPosicion_Id;
                 this.TipoImputacionId = entity.TipoImputacion_Id;
-                this.TextoGenerico = entity.TextoGenerico;
                 this.FechaEntregaServicio = entity.FechaEntregaServicio;
                 this.FechaLiberacion = entity.FechaLiberacion;
                 this.PlazoEntrega = entity.PlazoEntrega;
-                this.EsConcluido = entity.EsConcluido;
-                this.EsFijacion = entity.EsFijacion;
                 this.CentroId = entity.Centro_Id;
                 this.AlmacenId = entity.Almacen_Id;
                 this.NombreEntrega = entity.NombreEntrega;
@@ -195,8 +212,10 @@ namespace SustitucionMOAModel.Dto
                 this.GrupoComprasId = entity.GrupoCompras_Id;
                 this.Solicitante = entity.Solicitante;
                 this.NroNecesidad = entity.NroNecesidad;
+                this.TextoSuministro = entity.TextoSuministro;
+                this.Motivo = entity.Motivo;
+                this.Modelo = entity.Modelo;
                 this.GrupoArticuloId = entity.GrupoArticulo_Id;
-                this.CodigosProveedores = entity.CodigosProveedores;
                 this.MonedaId = entity.Moneda_Id;
                 this.TipoPosicion = new TablaGeneralDto(entity.TipoPosicion);
                 this.TipoImputacion = new TablaGeneralDto(entity.TipoImputacion);
@@ -209,6 +228,24 @@ namespace SustitucionMOAModel.Dto
                 this.Proveedores = new List<SolpProveedorDto>();
                 this.Estado = entity.Estado;
                 this.Indice = entity.Indice;
+                this.EsConcluido = entity.EsConcluido;
+
+                this.CodigoServicioSap = entity.ServicioSolp != null ? new ServicioSolpDto(entity.ServicioSolp) : null;
+
+                this.CodigoMaterialSap = entity.MaterialSolp != null ? new MaterialSolpDto(entity.MaterialSolp) : null;
+
+                this.Tarea = entity.Tarea;
+                this.Cantidad = entity.Cantidad;
+                this.UnidadId = entity.Unidad_Id;
+                this.Unidad = entity.Unidad != null ? new TablaSapDto(entity.Unidad) : null;
+                this.PrecioBruto = entity.PrecioBruto;
+
+                this.CuentaMayor = entity.CuentaMayorSap != null ? new TablaSapDto(entity.CuentaMayorSap) : null;
+                this.TipoImputacionValor = entity.TipoImputacionSap != null ? new TablaSapDto(entity.TipoImputacionSap) : null;
+
+                this.Provincia = entity.ProvinciaId != null ? new ProvinciaDTO(entity.Provincia) : null;
+
+
 
                 if (entity.Subposiciones != null)
                 {
@@ -243,13 +280,14 @@ namespace SustitucionMOAModel.Dto
         public TablaSapDto TipoImputacionValor { get; set; }
 
         public ServicioSolpDto CodigoServicioSap { get; set; }
+
         public TablaSapDto Unidad { get; set; }
 
         public SolpSubposicionDto() { }
 
         public SolpSubposicionDto(SolpSubposicion entity)
         {
-            if(entity != null)
+            if (entity != null)
             {
                 this.Codigo = entity.Codigo;
                 this.Numero = entity.Numero;
@@ -275,11 +313,11 @@ namespace SustitucionMOAModel.Dto
         public virtual ProveedorDto Proveedor { get; set; }
         public virtual TablaGeneralDto TipoFiltroProveedorSolp { get; set; }
 
-        public SolpProveedorDto(){}
+        public SolpProveedorDto() { }
 
         public SolpProveedorDto(SolpProveedor entity)
         {
-            if(entity != null)
+            if (entity != null)
             {
                 this.Codigo = entity.Id.ToString();
                 this.ProveedorId = entity.Proveedor_Id;

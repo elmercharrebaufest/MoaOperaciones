@@ -35,10 +35,12 @@ namespace SustitucionMOA.Jobs
                 this.ActualizarTablaSap(_comprasService.ObtenerCuentasSap(), TablasSap.CuentasSolpSap);
                 this.ActualizarTablaSap(_comprasService.ObtenerOrdenesSap(), TablasSap.OrdenSolpSap);
 
+                this._comprasService.ActualizarMaterialesSolp();
                 this._comprasService.ActualizarServiciosSolp();
             }
             catch (Exception e)
             {
+
                 Log.Error(e);
             }
         }

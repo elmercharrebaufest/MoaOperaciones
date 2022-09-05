@@ -1,10 +1,9 @@
-import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
-import { Solp } from './Solp';
-import { HttpParams } from '@angular/common/http';
-import { Formatter } from '../common/formatter/Formatter';
+import { Solp } from './solp/solp';
+import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 
 @Injectable()
 export class ComprasService extends BaseService {
@@ -32,7 +31,6 @@ export class ComprasService extends BaseService {
     public traerSolpId(idSolp: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('idSolp', idSolp.toString());
-
         return this.http
             .get('/api/compras/TraerSolpId', { params: params, headers: this.headers });
     }
@@ -93,16 +91,13 @@ export class ComprasService extends BaseService {
             RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
             Finalizar: solp.Finalizar,
-            Posiciones: solp.posiciones.filter(x => x.textoGenerico).map(x => {
-       
+            Posiciones: solp.posiciones.filter(x => x.numeroPosicion).map(x => {
+                
                 return {
                     Codigo: x.id,
-                    TextoGenerico: x.textoGenerico,
                     PlazoEntrega: x.plazoDeEntrega,
                     FechaEntregaServicio: x.fechaEntregaServicio,
                     FechaLiberacion: x.fechaDeLiberacion,
-                    EsConcluido: x.concluido,
-                    EsFijacion: x.indiceFijacion,
                     Centro: this.getObjetoCodigo(x.selectCentroEntrega && x.selectCentroEntrega.Codigo),
                     Almacen: this.getObjetoCodigo(x.selectAlmacenEntrega && x.selectAlmacenEntrega.Codigo),
                     NombreEntrega: x.nombreEntrega,
@@ -114,12 +109,29 @@ export class ComprasService extends BaseService {
                     Solicitante: x.selectSolicitanteCompras,
                     NroNecesidad: x.necesidadCompras,
                     GrupoArticulo: this.getObjetoCodigo(x.selectArticuloCompras && x.selectArticuloCompras.Codigo),
-                    CodigosProveedores: this.getCodigosProveedores(x.rubroElectrico, x.rubroConsultoria, x.rubroCivil, x.rubroIngenieria, x.rubroMecanico),
+                    //CodigosProveedores: this.getCodigosProveedores(x.rubroElectrico, x.rubroConsultoria, x.rubroCivil, x.rubroIngenieria, x.rubroMecanico),
                     Moneda: this.getObjetoCodigo(x.monedaSeleccionada && x.monedaSeleccionada.Codigo),
-                    TipoImputacion: this.getObjetoCodigo(x.tipoImputacion),
-                    TipoPosicion: this.getObjetoCodigo('SERVICIO'),
+                    TipoImputacion: this.getObjetoCodigo(x.tipoImputacion && x.tipoImputacion.Codigo),
+                    TipoPosicion: x.tipoPosicion != null ? this.getObjetoCodigo(x.tipoPosicion.Codigo) : null,
                     Estado: x.estado,
                     Indice: x.numeroPosicion,
+
+                    TextoSuministro: x.textoSuministro,
+                    Motivo: x.motivo,
+                    Modelo: x.modelo,
+                    CodigoMaterialSap: this.getObjetoCodigo(x.codigoServicio && x.codigoServicio.Codigo), // pepito
+
+                    CodigoServicioSap: this.getObjetoCodigo(x.codigoServicio && x.codigoServicio.Codigo), // pepito
+                    Tarea: x.tareaSubcontratar,
+                    Cantidad: x.cuentaTd,
+                    PrecioBruto: x.precioBruto,
+                    Unidad: this.getObjetoCodigo(x.unidadSeleccionada && x.unidadSeleccionada.Codigo),
+
+                    CuentaMayor: this.getObjetoCodigo(x.cuentaMayor && x.cuentaMayor.Codigo),
+                    TipoImputacionValor: this.getObjetoCodigo(x.valorImputacion && x.valorImputacion.Codigo, x.valorImputacion && x.valorImputacion.Tabla),
+                    Provincia: x.selectProvincia,
+
+
                     Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.filter(sp => {
                         return !!((sp.codigoServicio && sp.codigoServicio.Codigo) ||
                             sp.tareaSubcontratar ||
@@ -183,17 +195,17 @@ export class ComprasService extends BaseService {
         return fechaHora;
     }
 
-    getCodigosProveedores(electrico, consultoria, civil, ingenieria, mecanico) {
-        let list = [];
+    // getCodigosProveedores(electrico, consultoria, civil, ingenieria, mecanico) {
+    //     let list = [];
 
-        if (electrico) list.push('ELECTRICO');
-        if (consultoria) list.push('CONSULTORIA');
-        if (civil) list.push('CIVIL');
-        if (ingenieria) list.push('INGENIERIA');
-        if (mecanico) list.push('MECANICO');
+    //     if (electrico) list.push('ELECTRICO');
+    //     if (consultoria) list.push('CONSULTORIA');
+    //     if (civil) list.push('CIVIL');
+    //     if (ingenieria) list.push('INGENIERIA');
+    //     if (mecanico) list.push('MECANICO');
 
-        return list.join(',');
-    }
+    //     return list.join(',');
+    // }
 
     getProveedores(proveedores, codigo) {
         if (proveedores)
@@ -249,6 +261,15 @@ export class ComprasService extends BaseService {
             .get<any[]>("/api/compras/AutocompleteServicioSolp", { params: params })
     }
 
+    autocompleteMaterialSolp(valor: string, centroId: number) {
+        let params: HttpParams = new HttpParams()
+            .append('valor', valor)
+            .append('centroId', centroId.toString());
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteMaterialSolp", { params: params })
+    }
+
     obtenerDatosPorCodigosSap(codigos: any[]) {
         var payload = new FormData();
         payload.append('codigosSap', JSON.stringify(codigos));
@@ -271,5 +292,12 @@ export class ComprasService extends BaseService {
             .get("/api/compras/ListarUsuarioCompras", {
                 headers: this.headers,
             });
+    }
+
+    enviarEmail(emailCompose: EmailComposeModel) {
+        var payload = new FormData();
+        payload.append('emailCompose', JSON.stringify(emailCompose));
+        return this.http
+            .post<any>('/api/compras/EnviarEmail', payload, { headers: this.headersPost });
     }
 }

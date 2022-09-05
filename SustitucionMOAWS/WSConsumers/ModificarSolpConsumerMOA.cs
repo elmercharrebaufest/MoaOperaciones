@@ -11,19 +11,23 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.ModificarSolpWebServiceMOA;
+using SustitucionMOARepositorio;
+using SustitucionMOAModel.Dto;
 
 namespace SustitucionMOAWS.WSConsumers
 {
     public class ModificarSolpConsumerMOA : IModificarSolpConsumerMOA
     {
+        private readonly IRepositorio repositorio;
         private readonly SI_MMRFC_MODIFICAR_SOLPEDClient service;
         private readonly string rutaArchivosXmls = ConfigurationManager.AppSettings["RutaArchivosCompras"];
 
-        public ModificarSolpConsumerMOA()
+        public ModificarSolpConsumerMOA(IRepositorio repositorio)
         {
             service = new SI_MMRFC_MODIFICAR_SOLPEDClient();
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            this.repositorio = repositorio;
         }
 
         public ModificarSolpConsumerMOAResponse Request(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas)
@@ -89,6 +93,52 @@ namespace SustitucionMOAWS.WSConsumers
             return respuesta;
         }
 
+        private string getCodigoTablaSap(TablaSap imputacion)
+        {
+            var result = "";
+
+            if (imputacion != null)
+            {
+                result = imputacion.Codigo;
+            }
+            return result;
+        }
+
+        private string getCodigoTablaGeneral(TablaGeneral imputacion)
+        {
+            var result = "";
+
+            if (imputacion != null)
+            {
+                result = imputacion.Codigo;
+            }
+            return result;
+        }
+
+        private List<string> getLinesFromTextoSuministro(string texto)
+        {
+            const int maxLengthPerLine = 132;
+            var result = new List<string>();
+
+            if (!string.IsNullOrEmpty(texto))
+            {
+                var line = string.Empty;
+
+                while (texto.Length > maxLengthPerLine)
+                {
+                    line = texto.Substring(0, maxLengthPerLine - 1);
+                    result.Add(line);
+                    texto = texto.Substring(maxLengthPerLine - 1, texto.Length - (maxLengthPerLine - 1));
+                }
+
+                if (!string.IsNullOrEmpty(texto))
+                {
+                    result.Add(texto);
+                }
+            }
+            return result;
+        }
+
         public SolpSAPModificarDto ConvertirSOLPModificar(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas)
         {
             SolpSAPModificarDto solpSAP = new SolpSAPModificarDto();
@@ -130,6 +180,9 @@ namespace SustitucionMOAWS.WSConsumers
             string serviceAccountSerialNumber = "01";
 
             string docItem = "";
+
+            string textId = "B03";
+            string formatText = "*";
 
             /* Algunas cuestiones con los números que se mandan:
              * DOC_ITEM, PREQ_ITEM, OUTLINE, SERIAL_NO, PCKG_NO, corresponden al número de la posicion pero formateados de distintas formas
@@ -179,8 +232,12 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_PRITEM.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString();
                 IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion == null ? "" : solpActual.UsuarioCreacion.UsuarioSap;
                 IM_PRITEM.PREQ_NAME = posicion.Solicitante;
-                IM_PRITEM.SHORT_TEXT = posicion.TextoGenerico;
-                IM_PRITEM.MATERIAL = null; //Esto es para el MVP2 ,porque los materiales no tienen sub posiciones
+                IM_PRITEM.SHORT_TEXT = posicion.Tarea;
+
+
+                IM_PRITEM.MATERIAL = posicion.MaterialSolp != null && posicion.TipoPosicion.Codigo == "MATERIALES" ? posicion.MaterialSolp.CodigoSap.ToString() : ""; //Esto es para el MVP2 ,porque los materiales no tienen sub posiciones
+
+
                 IM_PRITEM.PLANT = posicion.Centro.CodigoSap.ToString();
                 IM_PRITEM.STORE_LOC = solpActual.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ? "" : posicion.Almacen.CodigoSap.ToString();
                 IM_PRITEM.TRACKINGNO = posicion.NroNecesidad;
@@ -201,7 +258,13 @@ namespace SustitucionMOAWS.WSConsumers
 
                 IM_PRITEM.MATL_GROUP = "30015";
                 IM_PRITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString();
-                //QUANTITY = null,
+
+
+                if (posicion.TipoPosicion.Codigo == "MATERIALES") {
+                    IM_PRITEM.QUANTITY = (Decimal)posicion.Cantidad;
+                    IM_PRITEM.QUANTITYSpecified = true;
+                }
+                
                 //UNIT = null,
                 //PREQ_UNIT_ISO = null,
                 IM_PRITEM.PREQ_DATE = SAPFormatter.PrepararFecha(DateTime.Now);
@@ -217,26 +280,34 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_PRITEM.ITEM_CAT = "9";
                         break;
 
-                    case "material":
+                    case "materiales":
                     default:
                         IM_PRITEM.ITEM_CAT = "0";
                         break;
                 }
 
-                switch (posicion.TipoImputacion.Codigo.ToLower())
+                if (posicion.TipoImputacion != null)
                 {
-                    case "centrodecosto":
-                        IM_PRITEM.ACCTASSCAT = "K";
-                        break;
-                    case "ordendeot":
-                        IM_PRITEM.ACCTASSCAT = "F";
-                        break;
-                    case "ordendeinversion":
-                        IM_PRITEM.ACCTASSCAT = "F";
-                        break;
-                    case "siniestrobeneficio":
-                        IM_PRITEM.ACCTASSCAT = "Y";
-                        break;
+                    
+                    switch (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower())
+                    {
+                        case "centrodecosto":
+                            IM_PRITEM.ACCTASSCAT = "K";
+                            break;
+                        case "ordendeot":
+                            IM_PRITEM.ACCTASSCAT = "F";
+                            break;
+                        case "ordendeinversion":
+                            IM_PRITEM.ACCTASSCAT = "F";
+                            break;
+                        case "siniestrobeneficio":
+                            IM_PRITEM.ACCTASSCAT = "Y";
+                            break;
+                    }
+                }
+                else
+                {
+                    IM_PRITEM.ACCTASSCAT = "";
                 }
 
 
@@ -284,7 +355,7 @@ namespace SustitucionMOAWS.WSConsumers
                     CURRENCY = "X",
                     PLND_DELRY = "X",
                     PCKG_NO = "X",
-                    DELETE_IND = "X",
+                    DELETE_IND = posicion.TipoPosicion.Codigo != "MATERIALES" ? SAPFormatter.FormatearBooleano(eliminarPosicion) : "",
                     CREATED_BY = "X"
                 });
 
@@ -303,6 +374,19 @@ namespace SustitucionMOAWS.WSConsumers
                 CURRENCY	WAERS	Clave de moneda
                 MATL_GROUP	MATKL_SRV	Grupo artículos
                  */
+
+                var linesTextoSuministro = getLinesFromTextoSuministro(posicion.TextoSuministro);
+
+                linesTextoSuministro.ForEach(texto =>
+                {
+                    solpSAP.IM_PRITEMTEXTList.Add(new BAPIMEREQITEMTEXT
+                    {
+                        PREQ_ITEM = preqItem,
+                        TEXT_ID = textId,
+                        TEXT_FORM = formatText,
+                        TEXT_LINE = texto
+                    });
+                });
 
                 var numeroSubPosicion = 0;
                 var numeroSerialNumberItem = 0;
@@ -381,10 +465,12 @@ namespace SustitucionMOAWS.WSConsumers
                     if (!solpSAP.IM_PRACCOUNTList.Any(x =>
                             x.PREQ_ITEM == preqItem &&
                             x.SERIAL_NO == serialNumber &&
-                            x.GL_ACCOUNT == subPosicion.CuentaMayorSap.Codigo &&//"0000607034" && 
-                            x.COSTCENTER == subPosicion.TipoImputacionSap.Codigo &&
-                            x.ORDERID == subPosicion.TipoImputacionSap.Codigo
+                            x.GL_ACCOUNT == getCodigoTablaSap(subPosicion.CuentaMayorSap) &&//"0000607034" && 
+                            x.COSTCENTER == getCodigoTablaSap(subPosicion.TipoImputacionSap) &&
+                            x.ORDERID == getCodigoTablaSap(subPosicion.TipoImputacionSap)
                         ))
+
+                        
                     {
                         numeroSerialNumberItem++;
 
@@ -396,9 +482,9 @@ namespace SustitucionMOAWS.WSConsumers
                             PREQ_ITEM = preqItem,
                             SERIAL_NO = serialNumberItem,
                             QUANTITY = subPosicion.Cantidad.Value,
-                            GL_ACCOUNT = subPosicion.CuentaMayorSap.Codigo, //"0000607034",
-                            COSTCENTER = subPosicion.TipoImputacionSap.Codigo,
-                            ORDERID = subPosicion.TipoImputacionSap.Codigo,
+                            GL_ACCOUNT = getCodigoTablaSap(subPosicion.CuentaMayorSap), //"0000607034",
+                            COSTCENTER = getCodigoTablaSap(subPosicion.TipoImputacionSap),
+                            ORDERID = getCodigoTablaSap(subPosicion.TipoImputacionSap),
                         }); ;
 
                         solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
@@ -409,8 +495,8 @@ namespace SustitucionMOAWS.WSConsumers
                             SERIAL_NOX = "X",
                             QUANTITY = "X",
                             GL_ACCOUNT = "X",
-                            COSTCENTER = (posicion.TipoImputacion.Codigo.ToLower() == "centrodecosto") ? "X" : "",
-                            ORDERID = (posicion.TipoImputacion.Codigo.ToLower() == "ordendeot" || posicion.TipoImputacion.Codigo.ToLower() == "ordendeinversion") ? "X" : ""
+                            COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
+                            ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : ""
                         });
                     }
                     else
@@ -418,9 +504,9 @@ namespace SustitucionMOAWS.WSConsumers
                         serialNumberItem = solpSAP.IM_PRACCOUNTList.FirstOrDefault(x =>
                             x.PREQ_ITEM == preqItem &&
                             x.SERIAL_NO == serialNumber &&
-                            x.GL_ACCOUNT == subPosicion.CuentaMayorSap.Codigo &&//"0000607034" && 
-                            x.COSTCENTER == subPosicion.TipoImputacionSap.Codigo &&
-                            x.ORDERID == subPosicion.TipoImputacionSap.Codigo
+                            x.GL_ACCOUNT == getCodigoTablaSap(subPosicion.CuentaMayorSap) &&//"0000607034" && 
+                            x.COSTCENTER == getCodigoTablaSap(subPosicion.TipoImputacionSap) &&
+                            x.ORDERID == getCodigoTablaSap(subPosicion.TipoImputacionSap)
                         ).SERIAL_NO;
                     }
 
@@ -483,7 +569,18 @@ namespace SustitucionMOAWS.WSConsumers
                     TEL1_NUMBR	AD_TLNMBR1	Primer número teléfono: Prefijo + número
                     */
 
-                solpSAP.IM_PRADDRDELIVERYList.Add(
+                CentroDireccion centroPorDefecto = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
+                TablaSap centroPorDefecto2 = repositorio.Obtener<TablaSap>(x => x.Id == posicion.Centro_Id);
+
+
+                if (centroPorDefecto2.Descripcion != posicion.NombreEntrega ||
+                    centroPorDefecto.Cp != posicion.CpEntrega ||
+                    centroPorDefecto2.Descripcion != posicion.Centro.Descripcion ||
+                    centroPorDefecto.Direccion != posicion.CalleEntrega ||
+                    centroPorDefecto.Numero != posicion.NumeroEntrega)
+                {
+
+                    solpSAP.IM_PRADDRDELIVERYList.Add(
                     new ZMPES5750
                     {
                         PREQ_NO = preqItem,
@@ -495,6 +592,7 @@ namespace SustitucionMOAWS.WSConsumers
                         TEL1_NUMBR = posicion.NumeroEntrega, //Validar si es el numero entrega o de donde lo sacamos
                     }
                 );
+                }
             }
 
             #endregion

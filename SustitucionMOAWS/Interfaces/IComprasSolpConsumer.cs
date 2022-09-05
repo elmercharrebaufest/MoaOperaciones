@@ -1,4 +1,6 @@
-﻿using SustitucionMOAWS.WSConsumers;
+﻿using System.Collections.Generic;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAWS.Interfaces
 {
@@ -21,6 +23,13 @@ namespace SustitucionMOAWS.Interfaces
     {
         object request();
     }
+
+
+    public interface IObtenerMaterialesSolpConsumerMOA
+    {
+        MaterialWSMOAResponse request(List<string> CentroCodigo, string NombreDeMaterial);
+    }
+
 
     public interface IObtenerSolpConsumerMOA
     {

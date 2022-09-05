@@ -5,5 +5,6 @@ export enum EnumColumnaSubPosicion {
     CuentaTd ,
     UnidadMedida,
     PrecioBruto,
-    TipoImputacion 
+    TipoImputacion,
+    valorNeto
 }

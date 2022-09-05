@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerCuentasSap();
         List<TablaSapDto> ObtenerOrdenesSap(string idOrder = "");
         List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos);
+        void ActualizarMaterialesSolp();
         void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion);
         void ActualizarServiciosSolp();
         List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos);
@@ -38,5 +40,9 @@ namespace SustitucionMOAUtils.Interfaces
         void ActualizarEstadoSolp(string nroSolp, int idEstado);
         List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual);
         void ObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
+        List<MaterialSolpDto> AutocompleteMaterialSolp(string valor, int centroId);
+        List<ProvinciaDTO> ListarProvincia();
+        void EnviarEmailSolp(EmailComposeDto emailCompose);
+        SolpDescargaZipPorLink PuedeDescargarPliegoDesdeLink(int solpId, Guid? token);
     }
 }
