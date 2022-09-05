@@ -327,7 +327,7 @@
     <Content Include="src\app\reporte-contrato\detalle\reporte-contrato.detalle.component.html" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.css" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.html" />
-    <Content Include="Template\NotificacionVencimientoOrdenesDeCarga.html" />
+    <Content Include="Template\NotificacionOrdenesDeCarga.html" />
     <Content Include="UPDATE.DeployParameters.Debug.xml">
       <DependentUpon>UPDATE.DeployParameters.xml</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
