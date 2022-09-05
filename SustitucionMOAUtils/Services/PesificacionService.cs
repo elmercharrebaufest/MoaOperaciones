@@ -4,6 +4,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Helpers;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.PesificacionGuadarWebServiceMOA;
 using SustitucionMOAWS.WSConsumers;
@@ -142,6 +143,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 };
 
+                try{Logger.Log.Debug("PesificacionService", "SetContrato", comprobantes.ToJson());}catch (Exception e){}
                 PesificacionSetContratosWSMOAResponse responseSet = (PesificacionSetContratosWSMOAResponse)new PesificacionGuardarConsumerMOA().request(comprobantes.ToArray());
                 if (responseSet == null)
                 {
