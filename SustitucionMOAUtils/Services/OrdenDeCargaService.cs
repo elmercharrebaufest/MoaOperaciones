@@ -914,7 +914,6 @@ namespace SustitucionMOAUtils.Services
                 var ordenVencidas = new StringBuilder();
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
                 var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-                var mails = mailsMesaVentaFas.Split(';').ToList();
                 emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
                 string asunto = $"Solicitud de anulación, Orden de carga N° {ordenDeCargaId}";
                 string titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha solicitado la anulación de la siguiente orden de carga:";
