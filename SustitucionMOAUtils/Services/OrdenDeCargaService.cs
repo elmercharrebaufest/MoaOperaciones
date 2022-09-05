@@ -559,8 +559,7 @@ namespace SustitucionMOAUtils.Services
                         || n.Estado == EstadoOrdenDeCarga.EntregaGenerada
                         || n.Estado == EstadoOrdenDeCarga.EdicionSolicitada
                         || n.Estado == EstadoOrdenDeCarga.AnulacionSolicitada
-                        || n.Estado == EstadoOrdenDeCarga.ContratoVencido
-                        || n.Estado == EstadoOrdenDeCarga.EdicionRechazada)
+(??)                        || n.Estado == EstadoOrdenDeCarga.ContratoVencido)
                     )
                     .Select(x => new OrdenDeCargaDto
                     {
