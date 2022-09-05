@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
@@ -23,13 +24,13 @@ namespace SustitucionMOAWS.WSConsumers
             fuenteAprov.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public FuenteAprovisionamientoWSMOAResponse request(string numMaterial, string centro)
+        public FuenteAprovisionamientoWSMOAResponse request(string fechaEntregaPosicion, string numeroMaterial, string centro)
         {
             try
             {
 
-                string IM_DELIV_DATE = "";
-                string IM_MATERIAL = numMaterial;
+                string IM_DELIV_DATE = SAPFormatter.FormatearFecha(fechaEntregaPosicion);
+                string IM_MATERIAL = numeroMaterial;
                 string IM_PLANT = centro;
                 string IM_VENDOR = "";
                 ZMPES5850[] EX_FUENTE = new ZMPES5850[] { };
@@ -80,7 +81,7 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface IObtenerFuenteAprovisionamientoConsumerMOA
     {
-        FuenteAprovisionamientoWSMOAResponse request(string numMaterial, string centro);
+        FuenteAprovisionamientoWSMOAResponse request(string fechaEntregaPosicion, string numeroMaterial, string centro);
 
     }
 }
