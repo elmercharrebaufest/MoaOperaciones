@@ -2020,7 +2020,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            var fechaVencimiento = DateTime.Now.AddDays(dias);
+            var fechaVencimiento = desde.AddDays(dias);
             return fechaVencimiento;
         }
         #endregion
