@@ -1746,7 +1746,7 @@ namespace SustitucionMOAUtils.Services
             var Usuario_Id = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario).Id;
 
             var orden = repositorio.Obtener<OrdenDeCarga>(x => x.Id == ordenId);
-
+            var fechaVencimientoOriginal = orden.FechaVencimiento.Value;
             orden.Estado = EstadoOrdenDeCarga.EntregaGenerada;
             var dayOfWeek = orden.FechaVencimiento.Value.DayOfWeek;
             orden.FechaVencimiento = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? CalcularFechaVencimiento(4, orden.FechaVencimiento.Value) : CalcularFechaVencimiento(2, orden.FechaVencimiento.Value);
@@ -1769,7 +1769,7 @@ namespace SustitucionMOAUtils.Services
             });
             orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
             {
-                Antes = orden.FechaVencimiento.Value.AddDays(-2).ToString(),
+                Antes = fechaVencimientoOriginal.ToString(),
                 Despues = orden.FechaVencimiento.ToString(),
                 FechaCambio = DateTime.Now,
                 NombreColumnaCambio = "FechaVencimiento",
