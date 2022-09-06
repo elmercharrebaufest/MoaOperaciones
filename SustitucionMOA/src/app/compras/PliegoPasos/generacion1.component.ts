@@ -57,9 +57,9 @@ export class Generacion1Component extends ListBaseComponent  {
     ngOnInit() {
         this.setTabs();
 
-        // if (!this.model.mail || this.model.mail === undefined) {             
-        //     this.model.mail = sessionStorage.getItem("username");
-        // };
+        if (this.model.mail === undefined) {           //if (!this.model.mail || this.model.mail === undefined) {   
+            this.model.mail = sessionStorage.getItem("username");
+        };
 
         //declaro las validaciones para los campos
         this.formulario = this.formBuilder.group({
