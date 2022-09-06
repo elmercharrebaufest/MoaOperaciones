@@ -116,7 +116,7 @@ namespace SustitucionMOAUtils.Services
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
             ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
             var dayOfWeek = ordenDeCarga.FechaCarga.DayOfWeek;
-            ordenDeCarga.FechaVencimiento = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? CalcularFechaVencimiento(4) : CalcularFechaVencimiento(2);
+            ordenDeCarga.FechaVencimiento = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? CalcularFechaVencimiento(4, DateTime.Now) : CalcularFechaVencimiento(2, DateTime.Now);
             var crearPedido = VerificarOrden(ordenDeCarga, cliente, false);
             repositorio.Agregar(ordenDeCarga);
             repositorio.GuardarCambios();
@@ -1721,11 +1721,11 @@ namespace SustitucionMOAUtils.Services
 
             return true;
         }
-        public DateTime CalcularFechaVencimiento(int dias)
+        public DateTime CalcularFechaVencimiento(int dias, DateTime desde)
         {
             var feriados = feriadoService.ObtenerFeriados();
-            var fechaHoy = DateTime.Now;
-            var fechaFinal = DateTime.Now.AddDays(dias);
+            var fechaHoy = desde;
+            var fechaFinal = desde.AddDays(dias);
             foreach (var fechaFeriado in feriados)
             {
                 if (fechaFeriado.DayOfWeek.ToString() == "Saturday" || fechaFeriado.DayOfWeek.ToString() == "Sunday")
@@ -1748,7 +1748,8 @@ namespace SustitucionMOAUtils.Services
             var orden = repositorio.Obtener<OrdenDeCarga>(x => x.Id == ordenId);
 
             orden.Estado = EstadoOrdenDeCarga.EntregaGenerada;
-            orden.FechaVencimiento = orden.FechaVencimiento.Value.AddDays(2);
+            var dayOfWeek = orden.FechaVencimiento.Value.DayOfWeek;
+            orden.FechaVencimiento = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? CalcularFechaVencimiento(4, orden.FechaVencimiento.Value) : CalcularFechaVencimiento(2, orden.FechaVencimiento.Value);
             orden.FechaVencimientoAmpliada = true;
             orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
             {
