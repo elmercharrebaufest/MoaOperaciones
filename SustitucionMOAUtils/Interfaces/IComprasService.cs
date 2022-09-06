@@ -44,5 +44,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProvinciaDTO> ListarProvincia();
         void EnviarEmailSolp(EmailComposeDto emailCompose);
         SolpDescargaZipPorLink PuedeDescargarPliegoDesdeLink(int solpId, Guid? token);
+        List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro);
     }
 }

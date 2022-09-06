@@ -45,6 +45,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IModificarSolpConsumerMOA modificarSolpConsumerMOA;
         private readonly IObtenerMaterialesSolpConsumerMOA obtenerMaterialesSolpConsumerMOA;
         private readonly ICrearPedidoConsumerMOA crearPedidoConsumerMOA;
+        private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
@@ -58,7 +59,8 @@ namespace SustitucionMOAUtils.Services
             ICrearSolpConsumerMOA crearSolpConsumerMOA, 
             IModificarSolpConsumerMOA modificarSolpConsumerMOA, 
             IObtenerMaterialesSolpConsumerMOA obtenerMaterialesSolpConsumerMOA, 
-            ICrearPedidoConsumerMOA crearPedidoConsumerMOA)
+            ICrearPedidoConsumerMOA crearPedidoConsumerMOA,
+            IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -70,6 +72,7 @@ namespace SustitucionMOAUtils.Services
             this.modificarSolpConsumerMOA = modificarSolpConsumerMOA;
             this.obtenerMaterialesSolpConsumerMOA = obtenerMaterialesSolpConsumerMOA;
             this.crearPedidoConsumerMOA = crearPedidoConsumerMOA;
+            this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
         }
      
 
@@ -1979,7 +1982,27 @@ namespace SustitucionMOAUtils.Services
                   .Select(s => new ProvinciaDTO(s)).ToList();
             return lista;
         }
+
+        public List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro)
+        {
+            var result = obtenerFuenteAprovisionamientoConsumerMOA.request(fechaEntregaPosicion, numeroMaterial, centro);
+            return result.ContratosAprovisionamiento.Select(item => new FuenteAprovisionamientoDto
+            {
+                ProveedorFijo = item.ProveedorFijo,
+                NombreProveedor = item.NombreProveedor,
+                CentroAprovisionamiento = item.CentroAprovisionamiento,
+                NumeroContratoSuperior = item.NumeroContratoSuperior,
+                NumeroPosicionContratoSuperior = item.NumeroPosicionContratoSuperior,
+                NumeroRegistroInfoCompras = item.NumeroRegistroInfoCompras,
+                TipoDocumentoCompras = item.TipoDocumentoCompras,
+                OrganizacionCompras = item.OrganizacionCompras,
+                UnidadMedida =item.UnidadMedida,
+                TipoPosicionDocumento = item.TipoPosicionDocumento,
+                NumeroMaterial = item.NumeroMaterial,
+                TipoPosicionDocumentoCompras = item.TipoPosicionDocumentoCompras
+            }).ToList();
     }
+}
 
     public static class SolpTemplateKeys
     {
