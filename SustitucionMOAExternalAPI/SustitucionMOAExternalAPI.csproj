@@ -204,15 +204,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="QAHotFix.DeployParameters.xml" />
-    <Content Include="UPDATE.DeployParameters.Debug.xml">
-      <DependentUpon>UPDATE.DeployParameters.xml</DependentUpon>
+    <Content Include="NOTUSE_UPDATE.DeployParameters.Debug.xml">
+      <DependentUpon>NOTUSE_UPDATE.DeployParameters.xml</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="UPDATE.DeployParameters.Release.xml">
-      <DependentUpon>UPDATE.DeployParameters.xml</DependentUpon>
+    <Content Include="NOTUSE_UPDATE.DeployParameters.Release.xml">
+      <DependentUpon>NOTUSE_UPDATE.DeployParameters.xml</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="UPDATE.DeployParameters.xml">
+    <Content Include="NOTUSE_UPDATE.DeployParameters.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -236,7 +236,7 @@
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="STAGING.DeployParameters.xml">
+    <Content Include="NOTUSE_STAGING.DeployParameters.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Web.config" />
