@@ -149,7 +149,7 @@ namespace SustitucionMOAUtils.Services
                     IdDataAgro = prov.IdDataAgro,
                     Mail = prov.Mail ?? "",
                     Observaciones = prov.Observaciones,
-                    RazonSocial = prov.RazonSocial ?? "",
+                    RazonSocial = !String.IsNullOrEmpty(prov.RazonSocial) ? prov.RazonSocial : prov.CUIT,
                     FechaSolicitud = prov.FechaSolicitud,
                     Comercial = prov.Comercial,
                     EstadoSIPER = prov.EstadoSIPER,

@@ -254,6 +254,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return;
         }
 
+        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada) {
+            return;
+        }
 
         if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
             if (sessionStorage.getItem("tipoUsuario") == "CLI") this.mostrarBotonSolicitarAnulacion = true;
@@ -283,6 +286,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonVerificarSituacionCrediticia = true;
             }
 
+
             if (this.ordenDeCarga.ContratoSinCantidadPendiente) {
                 this.mostrarBotonForzarCreacionPedido = true;
             }
@@ -310,9 +314,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 }
             }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
-                if (this.esAnulador) {
-                    this.mostrarBotonAnular = true;
-                }
+                this.mostrarBotonAnular = true;
+
             }
             if (!this.ordenDeCarga.TransporteExiste) {
                 if (this.esAnulador) {
@@ -333,6 +336,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
                 this.mostrarBotonAnular = true;
             }
+
         }
     }
 
