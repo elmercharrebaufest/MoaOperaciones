@@ -49,6 +49,7 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\FuenteAprovisionamientoDto.cs" />
     <Compile Include="Dto\ProvinciaDTO.cs" />
     <Compile Include="Dto\AutoCompleteDropdownElement.cs" />
     <Compile Include="Dto\EmailComposeDto.cs" />
