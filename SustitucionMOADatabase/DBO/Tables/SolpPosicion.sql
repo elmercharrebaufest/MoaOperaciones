@@ -38,6 +38,9 @@
     [MaterialSolp_Id] INT NULL, 
     [EsConcluido] BIT NULL, 
     [ProvinciaId] INT NULL, 
+    [NumeroContratoSuperior] NVARCHAR(50) NULL, 
+    [NombreProveedor] NVARCHAR(MAX) NULL, 
+    [OrganizacionCompras] NVARCHAR(50) NULL, 
     CONSTRAINT [PK_dbo.SolpPosicion] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

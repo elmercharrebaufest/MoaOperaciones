@@ -210,44 +210,17 @@ namespace SustitucionMOAWS.WSConsumers
                 serialNumber = $"{numeroPosicion:00}";
 
                 var IM_PRITEM = new ZMPES5700();
-                    //PREQ_ITEM BNFPO Número de posición de la solicitud de pedido
-                    //PUR_GROUP EKGRP Grupo de compras
-                    //CREATED_BY ERNAM Nombre del responsable que ha añadido el objeto
-                    //PREQ_NAME AFNAM Nombre del solicitante
-                    //SHORT_TEXT TXZ01 Texto breve
-                    //MATERIAL MATNR18 Número de material(18 caracteres)
-                    //PLANT EWERK   Centro
-                    //STORE_LOC   LGORT_D Almacén
-                    //TRACKINGNO BEDNR   Número de necesidad
-
-                IM_PRITEM.PREQ_ITEM = preqItem;
-                IM_PRITEM.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString();
-                IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion != null ? solpActual.UsuarioCreacion.UsuarioSap : repositorio.Obtener<Usuario>(solpActual.UsuarioCreacion_Id).UsuarioSap;
-                IM_PRITEM.PREQ_NAME = posicion.Solicitante;
-                IM_PRITEM.SHORT_TEXT = posicion.Tarea;
-
-
-                //if (posicion.TipoPosicion.Codigo == "MATERIALES")
-                //{
-                //    if (posicion.MaterialSolp != null)
-                //    {
-                //        IM_PRITEM.MATERIAL = posicion.MaterialSolp.CodigoSap.ToString();
-                //    }                
-                //}
-
-                //Esto es para el MVP2 ,porque los materiales no tienen sub posiciones
-
-
-                //if (subposicion.serviciosolp != null)
-                //    im_serviceline.service = subposicion.serviciosolp.codigo.tostring();
-                //else
-                //    im_serviceline.short_text = subposicion.tarea;
-
-
-
-                IM_PRITEM.PLANT = posicion.Centro.CodigoSap.ToString();
-                IM_PRITEM.STORE_LOC = posicion.Almacen.CodigoSap.ToString();
-                IM_PRITEM.TRACKINGNO = posicion.NroNecesidad;
+                    
+                                                        
+                IM_PRITEM.PREQ_ITEM = preqItem; //PREQ_ITEM BNFPO Número de posición de la solicitud de pedido
+                IM_PRITEM.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP EKGRP Grupo de compras
+                IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion != null ? solpActual.UsuarioCreacion.UsuarioSap : repositorio.Obtener<Usuario>(solpActual.UsuarioCreacion_Id).UsuarioSap; //CREATED_BY ERNAM Nombre del responsable que ha añadido el objeto
+                IM_PRITEM.PREQ_NAME = posicion.Solicitante; //PREQ_NAME AFNAM Nombre del solicitante
+                IM_PRITEM.SHORT_TEXT = posicion.Tarea; //SHORT_TEXT TXZ01 Texto breve          
+               
+                IM_PRITEM.PLANT = posicion.Centro.CodigoSap.ToString(); //PLANT EWERK   Centro
+                IM_PRITEM.STORE_LOC = posicion.Almacen.CodigoSap.ToString(); //STORE_LOC   LGORT_D Almacén
+                IM_PRITEM.TRACKINGNO = posicion.NroNecesidad; //TRACKINGNO BEDNR   Número de necesidad
 
 
                 //MATL_GROUP  MATKL Grupo de artículos
@@ -325,10 +298,16 @@ namespace SustitucionMOAWS.WSConsumers
                 //CURRENCY_ISO BAPIISOCD   Código ISO para moneda
                 //PLND_DELRY PLIFZ   Plazo de entrega previsto en días
                 //PCKG_NO PACKNO  Nº paquete
-                
-                IM_PRITEM.AGREEMENT = null; //Contrato marco? No está en este MVP
-                IM_PRITEM.AGMT_ITEM = null;//Contrato marco? No está en este MVP
-                IM_PRITEM.CLOSED = null; //Contrato marco? No está en este MVP
+
+
+                //Contrato marco 
+                IM_PRITEM.AGREEMENT = posicion.NumeroContratoSuperior;
+                IM_PRITEM.AGMT_ITEM = posicion.NumeroPosicionContratoSuperior; 
+                IM_PRITEM.FIXED_VEND = posicion.ProveedorFijo;
+                IM_PRITEM.PURCH_ORG = posicion.OrganizacionCompras; 
+
+
+                IM_PRITEM.CLOSED = null;
                 IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap;
                 IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega;
                 IM_PRITEM.PLND_DELRYSpecified = true;
@@ -343,7 +322,7 @@ namespace SustitucionMOAWS.WSConsumers
                     //IM_PRITEM.PRICE_UNIT =
                     //IM_PRITEM.PRICE_UNITSpecified = true;
                     IM_PRITEM.UNIT = posicion.Unidad.CodigoSap.ToString();
-                    IM_PRITEM.MATERIAL = posicion.MaterialSolp != null && posicion.TipoPosicion.Codigo == "MATERIALES" ? posicion.MaterialSolp.CodigoSap.ToString() : "";
+                    IM_PRITEM.MATERIAL = posicion.MaterialSolp != null && posicion.TipoPosicion.Codigo == "MATERIALES" ? posicion.MaterialSolp.CodigoSap.ToString() : ""; //MATERIAL MATNR18 Número de material(18 caracteres)
                     IM_PRITEM.QUANTITY = (Decimal)posicion.Cantidad;
                     IM_PRITEM.QUANTITYSpecified = true;
                     //IM_PRITEM.ACCTASSCAT = "";
@@ -367,7 +346,7 @@ namespace SustitucionMOAWS.WSConsumers
                     DELIV_DATE = "X",
                     ITEM_CAT = "X",
                     ACCTASSCAT = (IM_PRITEM.ACCTASSCAT != null) ? "X" : "",
-                    //PURCH_ORG = "X",
+                    PURCH_ORG = (IM_PRITEM.PURCH_ORG != null) ? "X" : "",
                     CURRENCY = "X",
                     PLND_DELRY = "X",
                     PCKG_NO = "X",
