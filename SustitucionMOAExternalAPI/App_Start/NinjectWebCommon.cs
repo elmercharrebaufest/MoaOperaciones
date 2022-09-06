@@ -90,6 +90,7 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
+            kernel.Bind<IObtenerFuenteAprovisionamientoConsumerMOA>().To(typeof(ObtenerFuenteAprovisionamientoConsumerMOA)).InScope(ctx => OperationContext.Current);
         }
     }
 }
