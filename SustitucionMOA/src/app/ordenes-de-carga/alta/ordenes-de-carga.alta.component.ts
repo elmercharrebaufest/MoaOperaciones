@@ -87,7 +87,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.hasta = this.getFecha(0);
         console.debug(' desde: ', this.desde);
         console.debug(' hasta: ', this.hasta);
-        // console.debug('ngOnInit()');
         this.ordenDeCarga.Cantidad = 30000;
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
@@ -98,7 +97,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         console.debug(' tipoUsuario: ', sessionStorage.getItem("tipoUsuario"));
         if (this.esCorredor) {
             this.CodigoCorredor = sessionStorage.getItem("proveedor");
-            console.debug(' CodigoCorredor: ', this.CodigoCorredor);
             console.debug(' CodigoCorredor: ', this.CodigoCorredor);
             if (this.ordenDeCargaId == 0) {
                 this.cargarClientes(this.CodigoCorredor);
@@ -503,7 +501,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         console.debug('cargarClientes()');
         console.debug(' codigoCorredor: ', codigoCorredor);
         console.debug(' noEditarCliente: ', this.noEditarCliente);
-        console.debug(' noEditarCliente: ', this.noEditarCliente);
         // this.spinner.show();
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
@@ -682,7 +679,14 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         console.debug(' resultValidacion: ', resultValidacion);
                         if (resultValidacion == false) {
                             if (codigoCorredor) {
+                                this.mensajeValidacionCorCliConPro = "Hubo un error en la validación corredor - cliente - contrato - producto";
                                 console.error(this.mensajeValidacionCorCliConPro);
+                                this.mensajeComponent.setErrorMsg(this.mensajeValidacionCorCliConPro);
+                            }
+                            else {
+                                this.mensajeValidacionCorCliConPro = "Hubo un error en la validación cliente - contrato - producto";
+                                console.error(this.mensajeValidacionCorCliConPro);
+                                this.mensajeComponent.setErrorMsg(this.mensajeValidacionCorCliConPro);
                             }
                         }
                         // this.spinner.hide();
@@ -702,8 +706,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         } catch (err) {
             console.error(' validarCorredorClienteContratoProducto: ', err);
             this.mensajeComponent.setErrorMsg(err);
-            this.blockUI.stop();
             // this.spinner.hide();
+            this.blockUI.stop();
         }
     }
 }
