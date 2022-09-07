@@ -14,6 +14,7 @@ using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace SustitucionMOATest.Services
         private OrdenDeCarga ordenDeCarga;
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
         private Mock<IFeriadoService> feriadoService;
-        private static readonly string EMAIL_TEMPLATE_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
+
         [SetUp]
         public void SetUp()
         {
@@ -1322,9 +1323,9 @@ namespace SustitucionMOATest.Services
             result.Cuerpo = result.Cuerpo + "";
             Assert.AreEqual(result.Asunto, response.Asunto);
             Assert.AreEqual(result.Cuerpo.Trim(), response.Cuerpo.Trim());
+        
 
-
-        }
+    }
 
         [Test()]
         public void ConstruirCuerpoEmailOrdenDeCargaHistorialCrediticiaTestAppSettingsNull()
@@ -1455,6 +1456,7 @@ namespace SustitucionMOATest.Services
             asunto += $"</html>";
             return asunto;
         }
+
 
         private string CrearAsuntoNotificacionSolicitudAnulacion()
         {
