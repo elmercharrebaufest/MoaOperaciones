@@ -202,10 +202,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     //Está función va a desaparecer cuando hagamos el refactor de como mostrar los datos de esta pantalla
     verificarListado() {
 
-        this.mostrarListadoTercero= false;
+        this.mostrarListadoTercero = false;
         this.mostrarListadoComercial = false;
         this.mostrarListadoMesaFas = false;
-        this.mostrarListadoPuerto= false;
+        this.mostrarListadoPuerto = false;
 
 
         if (this.esComercial) {
@@ -262,13 +262,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (sessionStorage.getItem("tipoUsuario") == "CLI") this.mostrarBotonSolicitarAnulacion = true;
             this.mostrarBotonEditar = true;
         }
-     
 
-        if (this.esInterno) {
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada ) {
+
+        if (this.esInterno || this.esMesaFas) {
+            this.mostrarBotonVerHistorial = true;
+
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada) {
                 this.mostrarBotonEdicionFinalizada = true;
             }
-            this.mostrarBotonVerHistorial = true;
             if (this.ordenDeCarga.NumeroPedido === "-" && this.ordenDeCarga.PedidosRespuesta != "-") {
                 this.mostrarBotonPedidos = true
             }
@@ -280,10 +281,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
             if (!this.ordenDeCarga.TransporteExiste) {
                 this.mostrarBotonNotificarTransporte = true;
+                if (this.esAnulador) {
+                    this.mostrarBotonAnular = true;
+                }
             }
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
                 this.mostrarBotonVerificarSituacionCrediticia = true;
+                this.mostrarBotonAnular = true;
             }
 
 
@@ -296,48 +301,24 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 if (this.ordenDeCarga.FechaVencimientoAmpliada == false) {
                     this.mostrarBotonActivarOC = true;
                 }
-                this.mostrarBotonAnular = true;
+                if (this.esAnulador) {
+                    this.mostrarBotonAnular = true;
+                }
             }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada) {
                 this.mostrarBotonAprobarRechazarAnulacion = true;
-            }
-
-        }
-
-        if (this.esMesaFas) {
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada) {
-                this.mostrarBotonEdicionFinalizada = true;
+                if (this.esAnulador) {
+                    this.mostrarBotonAnular = true;
+                }
             }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
                 if (this.esAnulador) {
                     this.mostrarBotonAnular = true;
                 }
             }
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
-                this.mostrarBotonAnular = true;
-
-            }
-            if (!this.ordenDeCarga.TransporteExiste) {
-                if (this.esAnulador) {
-                    this.mostrarBotonAnular = true;
-                }
-            }
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada) {
-                if (this.esAnulador) {
-                    this.mostrarBotonAnular = true;
-                }
-                this.mostrarBotonAprobarRechazarAnulacion = true;
-            }
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida && this.esAnulador) {
-                this.mostrarBotonAnularPorVencimiento = true;
-                if (this.ordenDeCarga.FechaVencimientoAmpliada == false) {
-                    this.mostrarBotonActivarOC = true;
-                }
-
-                this.mostrarBotonAnular = true;
-            }
 
         }
+
     }
 
     obtenerOrdenDeCarga() {
