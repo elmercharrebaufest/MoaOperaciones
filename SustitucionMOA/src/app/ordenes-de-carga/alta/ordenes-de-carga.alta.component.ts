@@ -517,6 +517,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.listaClientes = [];
                         this.mensajeComponent.setErrorMsg(result.error);
                         this.blockUI.stop();
+                        this.onCorredorFocusOut('');
                     } else if (result.info != undefined) {
                         console.info(' cargarClientes; ', result.info);
                         this.mensajeComponent.setInfoMsg(result.info);
