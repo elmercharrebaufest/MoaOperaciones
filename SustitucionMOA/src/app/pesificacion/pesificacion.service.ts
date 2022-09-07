@@ -11,6 +11,10 @@ export class PesificacionService extends BaseService {
         return this.getFechaPesificacion();
     }
 
+    public getDataSoja200() {
+        return this.getSoja200();
+    }
+
     public setData(contrato: string, fijacion: string, cantidad: number) {
         return this.setComprobantePesificacion(contrato, fijacion, cantidad);
     }
@@ -22,6 +26,12 @@ export class PesificacionService extends BaseService {
     protected getFechaPesificacion() {
         return this.http
             .get('/api/pesificacion/getFechaPesificacion')
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+    }
+
+    protected getSoja200() {
+        return this.http
+            .get('/api/pesificacion/getSoja200')
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 
