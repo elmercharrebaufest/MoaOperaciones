@@ -358,7 +358,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     getPatentes() {
-        // console.debug('getPatentes()');
+        console.debug('getPatentes()');
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         try {
