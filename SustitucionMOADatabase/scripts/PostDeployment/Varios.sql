@@ -5,7 +5,7 @@ END
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'Soja200Desde') 
 BEGIN
-	insert into Configuracion values ('Soja200Desde','2022-09-01')
+	insert into Configuracion values ('Soja200Desde','2022-09-05')
 END
 IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'Soja200Hasta') 
 BEGIN
@@ -13,7 +13,7 @@ BEGIN
 END
 IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'Soja200FechaCotizacion') 
 BEGIN
-	insert into Configuracion values ('Soja200FechaCotizacion','2015-01-01')
+	insert into Configuracion values ('Soja200FechaCotizacion','2015-09-01')
 END
 IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'Soja200Cotizacion') 
 BEGIN
