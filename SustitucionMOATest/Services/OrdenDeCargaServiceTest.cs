@@ -14,6 +14,7 @@ using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
@@ -31,12 +32,13 @@ namespace SustitucionMOATest.Services
         private OrdenDeCarga ordenDeCarga;
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
         private Mock<IFeriadoService> feriadoService;
-
+        private static readonly string EMAIL_TEMPLATE_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
         [SetUp]
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
+            feriadoService = new Mock<IFeriadoService>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object,feriadoService.Object);
             ordenDeCarga = new OrdenDeCarga
@@ -1072,7 +1074,7 @@ namespace SustitucionMOATest.Services
             var result = new EmailSenderData()
             {
                 Asunto = "Orden de carga #1",
-                Cuerpo = "Orden de carga 1 de cliente RS no pasó validaciones crediticias. <br> Número de Contrato: 10000000 <br> Número de Pedido: 25250000"
+                Cuerpo = CrearAsuntoNotificacionValidacionCrediticia()
             };
             Assert.AreEqual(result.Asunto, response.Asunto);
             Assert.AreEqual(result.Cuerpo, response.Cuerpo);
@@ -1138,6 +1140,9 @@ namespace SustitucionMOATest.Services
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
+            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
+            
+            
             ordenDeCargaCambiosHistorial = new List<OrdenDeCargaCambiosHistorial>
             {
                 new OrdenDeCargaCambiosHistorial
@@ -1159,7 +1164,9 @@ namespace SustitucionMOATest.Services
             result.Cuerpo = result.Cuerpo + "";
             Assert.AreEqual(result.Asunto, response.Asunto);
             Assert.AreEqual(result.Cuerpo.Trim(), response.Cuerpo.Trim());
-        }
+        
+
+    }
 
         [Test()]
         public void ConstruirCuerpoEmailOrdenDeCargaHistorialCrediticiaTestAppSettingsNull()
@@ -1235,6 +1242,61 @@ namespace SustitucionMOATest.Services
             asunto += $"</html>";
             return asunto;
 		}
+
+        private string CrearAsuntoNotificacionValidacionCrediticia()
+        {
+            var fecha = DateTime.Now.ToString();
+            string asunto = string.Empty;
+            asunto += $"<!DOCTYPE html>\r\n";
+            asunto += $"<html>\r\n";
+            asunto += $"<head>\r\n    ";
+            asunto += $"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n";
+            asunto += $"</head>\r\n";
+            asunto += $"<body style=\"width: 100%; font-family: Helvetica; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;\">\r\n    ";
+            asunto += $"<p>Buenos d&iacute;as,</p>\r\n    ";
+            asunto += $"<br />\r\n    ";
+            asunto += $"<p>Se informa que la siguiente orden de carga no pasó las validaciones crediticias.</p>\r\n    ";
+            asunto += $"<br />\r\n\r\n    ";
+            asunto += $"<table cellspacing=\"5\" cellpadding=\"5\" border=\"3\">\r\n        ";
+            asunto += $"<caption>Orden :</caption>\r\n        ";
+            asunto += $"<thead style=\"background-color: #adacac;\">\r\n            ";
+            asunto += $"<tr>\r\n                ";
+            asunto += $"<td scope=\"col\">Número de orden</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Número de contrato</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Cliente</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Corredor</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Chofer</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Patente acoplado</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Patente Chasis</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Numero de pedido</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Numero de entrega</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Fecha carga</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Fecha Vencimiento</td>\r\n            ";
+            asunto += $"</tr>\r\n        ";
+            asunto += $"</thead>\r\n\r\n        ";
+            asunto += $"<tbody>\r\n            ";
+            asunto += $"<tr>";
+            asunto += $"<td>1</td>";
+            asunto += $"<td>10000000</td>";
+            asunto += $"<td>RS</td>";
+            asunto += $"<td></td>";
+            asunto += $"<td>Martin</td>";
+            asunto += $"<td>ABC123</td>";
+            asunto += $"<td>ABBSM1231412</td>";
+            asunto += $"<td></td>";
+            asunto += $"<td></td>";
+            asunto += $"<td>1/1/0001 00:00:00</td>";
+            asunto += $"<td></td>";
+            asunto += $"</tr>\r\n        ";
+            asunto += $"</tbody>\r\n    ";
+            asunto += $"</table>\r\n\r\n    ";
+            asunto += $"<br />\r\n    ";
+            asunto += $"<p>Saludos,</p>\r\n    ";
+            asunto += $"<p>Moa Operaciones</p>\r\n";
+            asunto += $"</body>\r\n";
+            asunto += $"</html>";
+            return asunto;
+        }
 
 
         //[Test()]
