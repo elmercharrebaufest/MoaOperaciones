@@ -47,6 +47,7 @@ import { TabProveedoresComponent } from './solp/steps/posicion/tab-proveedores/t
 import { TabSubposicionComponent } from './solp/steps/posicion/tab-subposicion/tab-subposicion.component';
 import { StepperActionsComponent } from './solp/stepper-actions/stepper-actions.component';
 import { FinalizarSolpComponent } from './solp/finalizar/finalizar-solp.component';
+import { ContratoMarcoComponent } from './solp/steps/posicion/contrato-marco/contrato-marco.component';
 
 @NgModule({
     imports: [
@@ -96,7 +97,8 @@ import { FinalizarSolpComponent } from './solp/finalizar/finalizar-solp.componen
         TabSubposicionComponent,
         TabImputacionesComponent,
         StepperActionsComponent,
-        FinalizarSolpComponent
+        FinalizarSolpComponent,
+        ContratoMarcoComponent
     ],
     providers: [
         ComprasService,
