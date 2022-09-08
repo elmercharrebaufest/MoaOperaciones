@@ -17,6 +17,7 @@ import { SubPosicionViewModel } from './tab-subposicion/sub-posicion-view-model'
 import { EnumColumnaSubPosicion } from '../../../enum-columna-subPosiciones';
 import { Solp } from '../../solp';
 import { SolpPosicion } from '../../solp-posicion';
+import { ContratoMarco } from './contrato-marco/contrato-marco';
 
 declare var $: any;
 
@@ -93,6 +94,13 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     // tituloColumnaTipoDeImputacion: string;
     // enumTipoImputacion: typeof EnumTipoImputacion = EnumTipoImputacion;
     enumColumnaSubPosicion: typeof EnumColumnaSubPosicion = EnumColumnaSubPosicion;
+
+    // Lista de asociar contrato marco
+    listaContratos: ContratoMarco[] = [];
+    // Booleano para popup contrato marco
+    displayAsociar: boolean = false;
+    // Booleano para mostrar boton de asociar
+    displayBotonAsociar: boolean = false;
 
     tipoPosicion: SelectItem[];
 
@@ -415,6 +423,50 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     cambiarClaseDocumento() {
         this.setControlesObligatorios(this.model.selectClaseDocumento);
         this.validarPosicionActual();
+    }
+
+    cargarContratosAsociados(contratos) {
+        this.listaContratos = [];
+        this.listaContratos = contratos.filter(contrato => contrato.NumeroContratoSuperior);
+        
+        if(this.listaContratos.length > 0) {
+            this.displayBotonAsociar = true;
+        }
+    }
+
+    validarFuenteAprovisionamiento() {
+        console.log(this.model.posicionActual);
+        // codigo material SAP
+        if(this.model.posicionActual.codigoServicio.CodigoSap.length >= 8) {
+            console.log(this.model.fechaEntrega.toISOString().substring(0, 10), this.model.posicionActual.codigoServicio.CodigoSap.substr(-8) , this.model.posicionActual.selectCentroEntrega.CodigoSap)
+            try {
+                this.subscription = this.service.ListarFuenteAprovisionamiento(this.model.fechaEntrega.toISOString().substring(0, 10), this.model.posicionActual.codigoServicio.CodigoSap.substr(-8) , this.model.posicionActual.selectCentroEntrega.CodigoSap).subscribe(
+                    (result: any) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            if (result) {
+                                console.log(result)
+                                this.cargarContratosAsociados(result.data);
+                            }
+                        }
+                    },
+                    error => {
+                        this.displayBotonAsociar = false;
+                        this.floatMsgService.setErrorMsg(error.message);
+                    }
+                );
+            } catch (e) {
+                this.displayBotonAsociar = false;
+                this.floatMsgService.setErrorMsg(e);
+            }
+        } else {
+            this.displayBotonAsociar = false;
+        }
     }
 
     buscarCombo(event, type) {
@@ -794,6 +846,20 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             });
             this.model.calcularValorTotalPorMoneda();
         }
+    }
+
+    // Abre el modal de Asociar contrato
+    showAsociarDialog() {
+        this.displayAsociar = true;
+    }
+
+    cancelarAsociar() {
+        this.displayAsociar = false;
+    }
+
+    // Todos los Modal
+    finalizar() {
+        this.displayAsociar = false;
     }
 
     public get esTipoMaterial(): boolean  {
