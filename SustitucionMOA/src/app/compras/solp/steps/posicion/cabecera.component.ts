@@ -19,6 +19,8 @@ import { EnumColumnaSubPosicion } from '../../../enum-columna-subPosiciones';
 import { Solp } from '../../solp';
 import { SolpPosicion } from '../../solp-posicion';
 import { ContratoMarco } from './contrato-marco/contrato-marco';
+import { mergeMap, map } from 'rxjs/operators';
+import { from } from 'rxjs';
 
 declare var $: any;
 
@@ -431,10 +433,31 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.validarPosicionActual();
     }
 
+    // Se cargan los contratos asociados a la grilla de posiciones
     cargarContratosAsociados(contratos, posicion: SolpPosicion) {
+        var arrayContratos = [];
         this.listaContratos = [];
-        this.listaContratos = contratos.filter(contrato => contrato.NumeroContratoSuperior);
+
+        var obj = JSON.stringify(contratos, function(key, value) {
+            const contrato = {
+                ProveedorFijo: value[0].ProveedorFijo,
+                NombreProveedor: value[0].NombreProveedor,
+                NumeroContratoSuperior: value[0].NumeroContratoSuperior,
+                UnidadMedida: value[0].UnidadMedida,
+                OrganizacionCompras: value[0].OrganizacionCompras,
+                CentroAprovisionamiento: value[0].CentroAprovisionamiento,
+                ClaveMoneda: value.ClaveMoneda,
+                PeriodoValidez: value.FinPeriodoValidez,
+                PrecioBruto: value.ImporteMonedaBapi,
+                Almacen: value.Almacen,
+                GrupoArticulo: value.GrupoArticuloMateriales,
+                GrupoCompras: value.GrupoCompras
+            }
+            arrayContratos.push(contrato);
+        })
+
         this.asociarContrato.onChangeContrato(posicion);
+        this.listaContratos = arrayContratos;
 
         if(this.listaContratos.length > 0) {
             this.textoAsociarBtn = 'ASOCIAR CONTRATO'
@@ -444,10 +467,24 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
     }
 
+    // Se consumen los endpoints de contrato marco y fuente de aprovisionamiento
     validarFuenteAprovisionamiento(posicion: SolpPosicion) {
         try {
-            this.subscription = this.service.ListarFuenteAprovisionamiento(posicion.fechaEntregaServicio.toISOString().substring(0, 10), posicion.codigoServicio.CodigoSap.substr(-8) , posicion.selectCentroEntrega.CodigoSap).subscribe(
-                (result: any) => {
+            this.subscription = this.service.ListarFuenteAprovisionamiento(posicion.fechaEntregaServicio.toISOString().substring(0, 10), posicion.codigoServicio.CodigoSap.substr(-8) , posicion.selectCentroEntrega.CodigoSap).pipe(
+                mergeMap((result: any) =>
+                    from(result.data.filter(contrato => contrato.NumeroContratoSuperior)).pipe(
+                        mergeMap(
+                            (data:any) => this.service.ObtenerContratoMarco(data.NumeroContratoSuperior,posicion.selectCentroEntrega.CodigoSap).pipe(
+                                map((contrato:any) => ({
+                                    ...result.data.filter(contrato => contrato.NumeroContratoSuperior),
+                                    ...contrato.data[0],
+                                    ...contrato.data[0].Posiciones.find(material => material.NumeroMaterial == posicion.codigoServicio.CodigoSap)
+                                }))
+                            )
+                        )
+                    )
+                )
+            ).subscribe((result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -456,15 +493,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         if (result) {
-                            this.cargarContratosAsociados(result.data, posicion);
+                            this.cargarContratosAsociados(result, posicion);
                         }
                     }
-                },
-                error => {
+                }, error => {
                     this.displayBotonAsociar = false;
                     this.floatMsgService.setErrorMsg(error.message);
                 }
-            );
+            )
         } catch (e) {
             this.displayBotonAsociar = false;
             this.floatMsgService.setErrorMsg(e);
@@ -859,7 +895,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.displayAsociar = false;
     }
 
-    // Todos los Modal
+    // Se asocian los datos de la grilla a su respectiva posicion
     asociarCM($event) {
         let posicionIndex = this.model.posiciones.findIndex(posicion => posicion.id == $event.posicionSeleccionada.id);
         
@@ -868,9 +904,23 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.model.posiciones[posicionIndex].provedorFijo          = $event.contrato.ProveedorFijo;
         this.model.posiciones[posicionIndex].nombreProveedor       = $event.contrato.NombreProveedor;
         this.model.posiciones[posicionIndex].orgCompras            = $event.contrato.OrganizacionCompras;
-    
+        this.model.posiciones[posicionIndex].precioBruto           = $event.contrato.PrecioBruto;
+
+        // Set Combos
         var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == $event.contrato.UnidadMedida);
         this.model.posiciones[posicionIndex].unidadSeleccionada    = unidadSeleccionadaAux;
+
+        var monedaSeleccionadaAux = this.combos.Moneda.find(x => x.Codigo == $event.contrato.ClaveMoneda);
+        this.model.posiciones[posicionIndex].monedaSeleccionada    = monedaSeleccionadaAux;
+
+        var almacenSeleccionadoAux = this.combos.Almacen.find(x => x.Codigo == $event.contrato.Almacen);
+        this.model.posiciones[posicionIndex].selectAlmacenEntrega  = almacenSeleccionadoAux;
+
+        var grupoArticuloSeleccionadoAux = this.combos.GrupoArticulo.find(x => x.Codigo == $event.contrato.GrupoArticulo);
+        this.model.posiciones[posicionIndex].selectArticuloCompras = grupoArticuloSeleccionadoAux;
+
+        var grupoComprasSeleccionadoAux = this.combos.GrupoCompras.find(x => x.Codigo == $event.contrato.GrupoCompras);
+        this.model.posiciones[posicionIndex].selectGrupoCompras = grupoComprasSeleccionadoAux;
 
         this.displayAsociar = false;
         this.textoAsociarBtn = 'EDITAR CONTRATO'

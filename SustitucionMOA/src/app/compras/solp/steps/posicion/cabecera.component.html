@@ -236,7 +236,7 @@
                                                 [forceSelection]="false"
                                                 (completeMethod)="autocompleteMaterialSolp($event)" 
                                                 (onFocus)="$event.target.select(); posicion.setTabPosicion();" 
-                                                (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio, rowIndex, dt)" 
+                                                (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio, rowIndex, dt)"
                                                 (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion();validarFuenteAprovisionamiento(posicion);"
                                                 >
                                             </p-autoComplete>
