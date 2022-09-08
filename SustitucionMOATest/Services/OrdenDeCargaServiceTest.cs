@@ -1300,8 +1300,8 @@ namespace SustitucionMOATest.Services
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-
-
+            
+            
             ordenDeCargaCambiosHistorial = new List<OrdenDeCargaCambiosHistorial>
             {
                 new OrdenDeCargaCambiosHistorial
