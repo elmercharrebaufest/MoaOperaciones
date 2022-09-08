@@ -34,7 +34,7 @@ namespace SustitucionMOATest.Services
         private OrdenDeCarga ordenDeCarga;
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
         private Mock<IFeriadoService> feriadoService;
-        private static readonly string EMAIL_TEMPLATE_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
+
         [SetUp]
         public void SetUp()
         {
@@ -1299,8 +1299,8 @@ namespace SustitucionMOATest.Services
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-
-
+            
+            
             ordenDeCargaCambiosHistorial = new List<OrdenDeCargaCambiosHistorial>
             {
                 new OrdenDeCargaCambiosHistorial
@@ -1455,6 +1455,7 @@ namespace SustitucionMOATest.Services
             asunto += $"</html>";
             return asunto;
         }
+
 
         private string CrearAsuntoNotificacionSolicitudAnulacion()
         {
