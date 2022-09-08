@@ -24,7 +24,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public object request() 
+        public object request()
         {
             try
             {
@@ -43,9 +43,9 @@ namespace SustitucionMOAWS.WSConsumers
                 ZMPES5910[] EX_SUB_ITEM = new ZMPES5910[] { };
 
 
-                string contratoObtenido = service.SI_MMRFC_OBTENER_CONTRATO(IM_COMP_CODE, IM_CONTRACT, IM_DETAIL, IM_ITEM_NO, IM_MATERIAL, IM_NOM_VENDOR,  IM_PLANT,  IM_TEXT_POS,  IM_VENDOR, out EX_HEADER, out EX_ITEM, out EX_RETURN, out EX_SUB_ITEM);
+                string resultado = service.SI_MMRFC_OBTENER_CONTRATO(IM_COMP_CODE, IM_CONTRACT, IM_DETAIL, IM_ITEM_NO, IM_MATERIAL, IM_NOM_VENDOR, IM_PLANT, IM_TEXT_POS, IM_VENDOR, out EX_HEADER, out EX_ITEM, out EX_RETURN, out EX_SUB_ITEM);
 
-                return map(contratoObtenido, EX_HEADER, EX_ITEM, EX_RETURN, EX_SUB_ITEM);
+                return map(resultado, EX_HEADER, EX_ITEM, EX_RETURN, EX_SUB_ITEM);
             }
             catch (Exception e)
             {
@@ -53,39 +53,79 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-        protected virtual object map(string contratoObtenido, ZMPES5890[] EX_HEADER, ZMPES5900[] EX_ITEM, BAPIRETURN[] EX_RETURN, ZMPES5910[] EX_SUB_ITEM)
+        protected virtual object map(string resultado, ZMPES5890[] EX_HEADER, ZMPES5900[] EX_ITEM, BAPIRETURN[] EX_RETURN, ZMPES5910[] EX_SUB_ITEM)
         {
             ContratoSolpWSMOAResponse result = new ContratoSolpWSMOAResponse();
             result.ContratosSolp = new List<ContratoSolp> { };
 
-            foreach (var contrato in contratoObtenido)
+            if (EX_HEADER == null && (EX_ITEM == null || EX_SUB_ITEM == null)) 
             {
-                ContratoSolp contratoSolp = new ContratoSolp()
-                {
-                    //Nombre: ZMMTT_HEADER Denominación:	Resultado de Cabera de Contratos Marco
-                    //Nombre Dominio / Tipo  Denominación
-                    //NUMBER  EBELN Número del documento de compras
-                    //COMP_CODE BUKRS   Sociedad
-                    //DELETE_IND_HDR  ELOEK Indicador de borrado en el documento de compras
-                    //VENDOR  ELIFN Número de cuenta del proveedor
-                    //NAM_VENDOR LFA1-NAME1  Nombre del Proveedor
-                    //PURCH_ORG   EKORG Organización de compras
-                    //PUR_GROUP BKGRP   Grupo de compras
-                    //CURRENCY    WAERS Clave de moneda
-                    //VPER_START KDATB   In.período validez
-                    //VPER_END KDATE   Fin período validez
-
-                    //Resultado de Cabera de Contratos Marco
-                    
-
-                };
-                result.ContratosSolp.Add(contratoSolp);
+                EX_HEADER = new ZMPES5890[] { };
+                EX_ITEM = new ZMPES5900[] { };         
+                EX_SUB_ITEM = new ZMPES5910[] { };
             }
+
+            foreach (var contratoCabecera in EX_HEADER)
+            {
+                var contrato = new ContratoSolp()
+                {
+                    //Resultado de Cabecera de Contratos Marco
+                    NumeroDocumentoCompras = contratoCabecera.NUMBER, //NUMBER  EBELN Número del documento de compras
+                    Sociedad = contratoCabecera.COMP_CODE, //COMP_CODE BUKRS   Sociedad
+                    IndicadorDeBorrado = contratoCabecera.DELETE_IND_HDR, //DELETE_IND_HDR  ELOEK Indicador de borrado en el documento de compras
+                    NumeroCuentaProveedor = contratoCabecera.VENDOR, //VENDOR  ELIFN Número de cuenta del proveedor
+                    NombreProveedor = contratoCabecera.NAM_VENDOR,  //NAM_VENDOR LFA1-NAME1  Nombre del Proveedor
+                    OrganizacionCompras = contratoCabecera.PURCH_ORG, //PURCH_ORG   EKORG Organización de compras
+                    GrupoCompras = contratoCabecera.PUR_GROUP, //PUR_GROUP BKGRP   Grupo de compras
+                    ClaveMoneda = contratoCabecera.CURRENCY, //CURRENCY    WAERS Clave de moneda
+                    InicioPeriodoValidez = contratoCabecera.VPER_START, //VPER_START KDATB   In.período validez
+                    FinPeriodoValidez = contratoCabecera.VPER_END//VPER_END KDATE   Fin período validez
+                };
+
+                contrato.Posiciones = EX_ITEM.Where(x => x.NUMBER == contrato.NumeroDocumentoCompras).Select(pos => new ContratoSolpPosicion {
+                    NumeroDocumentoCompras = pos.NUMBER, //NUMBER  EBELN   Número del documento de compras
+                    NumeroPosicionDocumentoCompras = pos.ITEM_NO, //ITEM_NO EBELP   Número de posición del documento de compras
+                    IndicadorDeBorrado = pos.DELETE_IND, //DELETE_IND  ELOEK   Indicador de borrado en el documento de compras
+                    NumeroMaterial = pos.MATERIAL, //MATERIAL    MATNR18 Número de material (18 caracteres)
+                    TextoMaterialOServicio = pos.SHORT_TEXT, //SHORT_TEXT  TXZ01   Texto de Material o Servicio
+                    Centro = pos.PLANT, //PLANT   WERKS_D Centro
+                    Almacen = pos.STGE_LOC, //STGE_LOC    LGORT_D Almacén
+                    CantidadPrevista = pos.TARGET_QTY, //TARGET_QTY  KTMNG   Cantidad prevista
+                    UnidadMedida = pos.PO_UNIT, //PO_UNIT BSTME   Unidad de medida de pedido
+                    ImporteMonedaBapi = pos.NET_PRICE, //NET_PRICE   BAPICUREXT  Importe de moneda para BAPIs (con 9 decimales)
+                    TipoPosicionDocumentoCompras = pos.ITEM_CAT, //ITEM_CAT    PSTYP   Tipo de posición del documento de compras
+                    TipoImputacionCompras = pos.ACCTASSCAT, //ACCTASSCAT  KNTTP   Tipo de imputación
+                    NumeroPaquete = pos.PCKG_NO, //PCKG_NO PACKNO  Nº paquete
+                    GrupoArticuloMateriales = pos.MATKL, //MATKL   MATKL   Grupo de Articulo de Materiales
+                    SubPosiciones = ObtenerSubPosiciones(pos, EX_SUB_ITEM)
+                }).ToList();
+
+                result.ContratosSolp.Add(contrato);
+            }      
+
+            result.error = resultado;
 
             return result;
         }
 
-    }  
+        private List<ContratoSolpSubposicion> ObtenerSubPosiciones(ZMPES5900 posicion, ZMPES5910[] subPosiciones)
+        {
+            return subPosiciones.Where(x => x.NUMBER == posicion.NUMBER && x.ITEM_NO == posicion.ITEM_NO).Select(subPos => new ContratoSolpSubposicion {
+
+                //Resultado de Subosiciones del Contratos Marco           
+                NumeroDocumentoCompras = subPos.NUMBER, //NUMBER  EBELN   Número del documento de compras
+                NumeroPosicionDocumentoCompras = subPos.ITEM_NO, //ITEM_NO EBELP   Número de posición del documento de compras
+                Subposicion = subPos.EXTROW, //EXTROW  EXTROW  Subposición
+                NumeroServicio = subPos.SRVPOS, //SRVPOS  ASNUM   Número de servicio
+                TextoBreve = subPos.KTEXT1, //KTEXT1  SH_TEXT1    Texto breve
+                CantidadPositivoONegativo = subPos.MENGE, //MENGE   MENGEV  Cantidad con signo +/-
+                UnidadMedidaBase = subPos.MEINS, //MEINS   MEINS   Unidad de medida base
+                PrecioUnitario = subPos.TBTWR, //TBTWR   SBRTWR  Precio Unitario
+                PrecioTotal = subPos.NETWR, //NETWR   SNETWR  Precio total
+                GrupoArticulo = subPos.MATKL_SRV//MATKL_SRV   MATKL_SRV   Grupo de Articulo
+            }).ToList();
+        }
+    }
 }
 
 
