@@ -71,6 +71,8 @@ export class ReporteContratoListado extends ListBaseComponent {
         this.blockUI.start('');
         this.unsubscribe();
         this.disabled = true;
+        this.cabecera = null;
+        this.data = null;
         this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio,
             this.filtroFechaComponent.fecha_fin, this.mostrarPendientes).subscribe(
                 (result: any) => {
@@ -145,7 +147,7 @@ export class ReporteContratoListado extends ListBaseComponent {
 
 
     setFiltroContrato(contrato: string) {
-        this.filtroContrato = contrato;
+        this.filtroContrato = contrato.split(' ').join('');
         this.ejecutarFiltro();
     }
 
@@ -162,8 +164,6 @@ export class ReporteContratoListado extends ListBaseComponent {
             }
             else {
                 this.cabecera = this.cabecera.filter(x => x[a.columna].toUpperCase().indexOf(a.campo.toUpperCase()) >= 0);
-
-
             }
 
         }
@@ -249,8 +249,7 @@ export class ReporteContratoListado extends ListBaseComponent {
     }
 
     varciarFiltrosReporte() {
-        this.filtroCliente =null;
-        this.filtroContrato = "";
+        this.filtroCliente = null;
         this.filtroProducto =null;
         this.filtroTipoContrato = null;
         this.clienteSelected = "";
