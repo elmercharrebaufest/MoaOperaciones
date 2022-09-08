@@ -184,11 +184,13 @@
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\ContratoSolp.cs" />
     <Compile Include="Models\ViewModel\ReporteContrato\ReporteContratoViewModel.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Ceco.cs" />
     <Compile Include="Models\WSMapMOA\Compras\CecoWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Cuenta.cs" />
     <Compile Include="Models\WSMapMOA\Compras\CuentaWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\ContratoSolpWSMOAResponse .cs" />
     <Compile Include="Models\WSMapMOA\Compras\FuenteAprovisionamiento.cs" />
     <Compile Include="Models\WSMapMOA\Compras\FuenteAprovisionamientoWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Orden.cs" />
