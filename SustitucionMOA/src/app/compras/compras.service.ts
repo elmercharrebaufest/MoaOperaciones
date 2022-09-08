@@ -186,6 +186,15 @@ export class ComprasService extends BaseService {
             .post<Solp>('/api/compras/GuardarSolp', payload, { headers: this.headers });
     }
 
+    public ListarFuenteAprovisionamiento(fecha: string, noMaterial: string, centro: string) : Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('fechaEntregaPosicion', fecha);
+        params = params.set('numeroMaterial', noMaterial);
+        params = params.set('centro', centro);
+        return this.http
+            .get('/api/compras/ListarFuenteAprovisionamiento', { params: params, headers: this.headers });
+    }
+
     getFechaHora(fecha: Date, hora: Date) {
         let fechaHora = new Date(fecha);
         fechaHora.setHours(hora.getHours());
