@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAUtils.Email;
 using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -34,7 +35,7 @@ namespace SustitucionMOAUtils.Interfaces
 		VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request);
 		ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request);
         string NotificarVariosPedidos(int ordenDeCargaId);
-        string NotificarVariosContratos(int ordenDeCargaId);
+        string NotificarVariosContratos(EmailSenderData emailSenderData);
         string NotificarVencimientoOrdenCarga(int ordenId);
         string ActivarOC(int ordenId,string mailUsuario);
     }

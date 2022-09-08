@@ -158,12 +158,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Debug\Templates\MailHog_windows_amd64.exe" />
     <Content Include="bin\Debug\Template\AvisoEdicionOrdenDeCarga.html" />
     <Content Include="bin\Debug\Template\NotificacionOrdenesDeCarga.html" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="bin\Debug\Templates\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

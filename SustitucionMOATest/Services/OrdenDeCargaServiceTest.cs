@@ -14,10 +14,12 @@ using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,7 +42,7 @@ namespace SustitucionMOATest.Services
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
             feriadoService = new Mock<IFeriadoService>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object,feriadoService.Object);
+            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,
@@ -61,7 +63,11 @@ namespace SustitucionMOATest.Services
                     Id = 1,
                     CodigoSap = ""
                 },
-                NumeroPedido = ""
+                NumeroPedido = "",
+                Cliente = new Proveedor 
+                {
+                    RazonSocial ="ClientePrueba"                
+                }
 
             };
         }
@@ -98,7 +104,7 @@ namespace SustitucionMOATest.Services
                 {
                    permisos
                 }
-              
+
             };
             var usuario = new Usuario
             {
@@ -109,13 +115,13 @@ namespace SustitucionMOATest.Services
                 {
                     proveedor
                 },
-               
-                  Roles = new List<Rol>()
+
+                Roles = new List<Rol>()
                 {
                     roles
                 }
-                
-                          
+
+
             };
 
             repositorioMock
@@ -143,11 +149,11 @@ namespace SustitucionMOATest.Services
                .Returns(proveedor);
 
             consumerOrdenCargaMOA
-                .Setup(x => x.ControlCargaRequest(It.IsAny<string>(), 
-                It.IsAny<string>(), 
+                .Setup(x => x.ControlCargaRequest(It.IsAny<string>(),
                 It.IsAny<string>(),
-                It.IsAny<string>(), 
-                It.IsAny<string>(), 
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
                 It.IsAny<string>()))
                 .Returns("CC-00");
 
@@ -160,7 +166,7 @@ namespace SustitucionMOATest.Services
                It.IsAny<string>(),
                It.IsAny<string>()))
                .Returns("CE-07");
-            
+
 
 
             ConfigurationManager.AppSettings["CantidadOrdenDeCarga"] = "30000";
@@ -274,7 +280,7 @@ namespace SustitucionMOATest.Services
                 .Returns(usuario);
 
             repositorioMock.Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
-            
+
             repositorioMock
                .Setup(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
                                 It.IsAny<int>(),
@@ -548,7 +554,7 @@ namespace SustitucionMOATest.Services
                 .Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
                 .Returns(usuario);
 
-            
+
             repositorioMock
                .Setup(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
                                 It.IsAny<int>(),
@@ -566,7 +572,7 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<DirOrden>(),
                                 It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()), Times.Once);
             repositorioMock.Verify(x => x.Obtener<Proveedor>(It.IsAny<int>()), Times.Once);
-            
+
             Assert.AreEqual(expected.Id, result.Id);
             Assert.AreEqual(expected.CUITCliente, result.CUITCliente);
         }
@@ -747,7 +753,7 @@ namespace SustitucionMOATest.Services
 
             var result = target.ObtenerPatentes(ordenDeCarga, mailUsuario);
             Assert.IsTrue(result.ordenes.Count == 1);
-           
+
         }
 
         [Test()]
@@ -944,7 +950,7 @@ namespace SustitucionMOATest.Services
 
         [Test()]
         public void ConstruirCuerpoEmailOrdenDeCargaTestContratoSAPPedidoSAP()
-		{
+        {
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
@@ -1079,7 +1085,159 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(result.Asunto, response.Asunto);
             Assert.AreEqual(result.Cuerpo, response.Cuerpo);
         }
+        [Test()]
+        public void ConstruirCuerpoMailSolicitudAnulacionTest()
+        {
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = string.Empty;
+            ordenDeCarga.ContratoIngresado = "10000000";
+            ordenDeCarga.PedidoSAP = string.Empty;
+            ordenDeCarga.NumeroPedido = string.Empty;
+            ordenDeCarga.NumeroPedidoIngresado = "25250000";
+            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
+            var response = target.ConstruirCuerpoMailSolicitudAnulacion(ordenDeCarga.Id);
+            var result = new EmailSenderData()
+            {
+                Asunto = "Solicitud de anulación, Orden de carga N° 1",
+                Cuerpo = CrearAsuntoNotificacionSolicitudAnulacion()
+            };
+            Assert.AreEqual(result.Asunto, response.Asunto);
+            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
+        }
 
+        [Test()]
+        public void ConstruirCuerpoMailNotificacionVariosContratosTest()
+        {
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"]= "ariera@baufest.com";
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = string.Empty;
+            ordenDeCarga.ContratoIngresado = "10000000";
+            ordenDeCarga.PedidoSAP = string.Empty;
+            ordenDeCarga.NumeroPedido = string.Empty;
+            ordenDeCarga.NumeroPedidoIngresado = "25250000";
+            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
+            var response = target.ConstruirCuerpoMailNotificacionVariosContratos(ordenDeCarga.Id);
+            var result = new EmailSenderData()
+            {
+                Asunto = "Varios ctto pendientes",
+                Cuerpo = CrearAsuntoNotificacionVariosContratos()
+            };
+            Assert.AreEqual(result.Asunto, response.Asunto);
+            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
+        }
+
+        [Test()]
+        public void NotificarVariosContratosTest()
+        {
+            EjecutarServidoMail();
+            var expected = "Notificación enviada";
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["HostEmail"] = "127.0.0.1"; 
+            ConfigurationManager.AppSettings["PortEmail"] = "1025";
+            ConfigurationManager.AppSettings["EmailFrom"] = "moaoperaciones@molinosagro.com.ar";
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = string.Empty;
+            ordenDeCarga.ContratoIngresado = "10000000";
+            ordenDeCarga.PedidoSAP = string.Empty;
+            ordenDeCarga.NumeroPedido = string.Empty;
+            ordenDeCarga.NumeroPedidoIngresado = "25250000";
+            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
+            var emailSender = target.ConstruirCuerpoMailNotificacionVariosContratos(ordenDeCarga.Id);
+            var response = target.NotificarVariosContratos(emailSender);
+            Assert.AreEqual(expected,response);
+        }
+
+        [Test()]
+        public void ConstruirCuerpoMailNotificacionVariosPedidosTest()
+        {
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = string.Empty;
+            ordenDeCarga.ContratoIngresado = "10000000";
+            ordenDeCarga.PedidoSAP = string.Empty;
+            ordenDeCarga.NumeroPedido = string.Empty;
+            ordenDeCarga.NumeroPedidoIngresado = "25250000";
+            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
+            var response = target.ConstruirCuerpoMailNotificacionVariosPedidos(ordenDeCarga.Id);
+            var result = new EmailSenderData()
+            {
+                Asunto = "Varios pedidos pendientes",
+                Cuerpo = CrearAsuntoNotificacionVariosPedidos()
+            };
+            Assert.AreEqual(result.Asunto, response.Asunto);
+            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
+        }
+
+        [Test()]
+        public void NotificarVariosPedidosTest()
+        {
+            EjecutarServidoMail();
+            var expected = "Notificación enviada";
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["HostEmail"] = "127.0.0.1";
+            ConfigurationManager.AppSettings["PortEmail"] = "1025";
+            ConfigurationManager.AppSettings["EmailFrom"] = "moaoperaciones@molinosagro.com.ar";
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = string.Empty;
+            ordenDeCarga.ContratoIngresado = "10000000";
+            ordenDeCarga.PedidoSAP = string.Empty;
+            ordenDeCarga.NumeroPedido = string.Empty;
+            ordenDeCarga.NumeroPedidoIngresado = "25250000";
+            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
+            var response = target.NotificarVariosPedidos(ordenDeCarga.Id);
+            Assert.AreEqual(expected, response);
+        }
+        [Test()]
+        public void ConstruirCuerpoMailNotificacionContratoVencidoTest()
+        {
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = string.Empty;
+            ordenDeCarga.ContratoIngresado = "10000000";
+            ordenDeCarga.PedidoSAP = string.Empty;
+            ordenDeCarga.NumeroPedido = string.Empty;
+            ordenDeCarga.NumeroPedidoIngresado = "25250000";
+            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
+            var response = target.ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga, ordenDeCarga.Cliente);
+            var result = new EmailSenderData()
+            {
+                Asunto = "Contrato Vencido",
+                Cuerpo = CrearAsuntoNotificacionContratoVencido()
+            };
+            Assert.AreEqual(result.Asunto, response.Asunto);
+            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
+        }
+        [Test()]
+        public void NotificarContratoVencidoTest()
+        {
+            EjecutarServidoMail();
+            var expected = "Notificación enviada";
+            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["HostEmail"] = "127.0.0.1";
+            ConfigurationManager.AppSettings["PortEmail"] = "1025";
+            ConfigurationManager.AppSettings["EmailFrom"] = "moaoperaciones@molinosagro.com.ar";
+            ordenDeCarga.Cliente_Id = 301301301;
+            ordenDeCarga.ContratoSAP = string.Empty;
+            ordenDeCarga.ContratoIngresado = "10000000";
+            ordenDeCarga.PedidoSAP = string.Empty;
+            ordenDeCarga.NumeroPedido = string.Empty;
+            ordenDeCarga.NumeroPedidoIngresado = "25250000";
+            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
+            var emailSenderData = target.ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga,ordenDeCarga.Cliente);
+            var response = target.NotificacionContratoVencido(emailSenderData);
+            Assert.AreEqual(expected, response);
+        }
         [Test()]
         public void ConstruirCuerpoEmailOrdenDeCargaTestAppSettingsNull()
         {
@@ -1141,16 +1299,16 @@ namespace SustitucionMOATest.Services
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            
-            
+
+
             ordenDeCargaCambiosHistorial = new List<OrdenDeCargaCambiosHistorial>
             {
                 new OrdenDeCargaCambiosHistorial
                 {
-                    Id = 1, 
-                    OrdenDeCarga_Id = 636, 
-                    NombreColumnaCambio = "PatenteAcoplado", 
-                    Antes = "ABC123", 
+                    Id = 1,
+                    OrdenDeCarga_Id = 636,
+                    NombreColumnaCambio = "PatenteAcoplado",
+                    Antes = "ABC123",
                     Despues = "123ABC"
                 }
             };
@@ -1164,9 +1322,9 @@ namespace SustitucionMOATest.Services
             result.Cuerpo = result.Cuerpo + "";
             Assert.AreEqual(result.Asunto, response.Asunto);
             Assert.AreEqual(result.Cuerpo.Trim(), response.Cuerpo.Trim());
-        
 
-    }
+
+        }
 
         [Test()]
         public void ConstruirCuerpoEmailOrdenDeCargaHistorialCrediticiaTestAppSettingsNull()
@@ -1186,7 +1344,7 @@ namespace SustitucionMOATest.Services
         }
 
         private void AddProvider(int id, EstadoAprobacion estadoAprobacion, string observaciones, string razonSocial, string mail, string cUIT, TipoUsuario tipoProveedor)
-		{
+        {
             var proveedor = new Proveedor
             {
                 Id = id,
@@ -1204,7 +1362,7 @@ namespace SustitucionMOATest.Services
 
         private string CrearAsuntoEdicionOrdenDeCarga()
 		{
-            var fecha = DateTime.Now.ToString();
+            var fecha = DateTime.Now.Date;
             string asunto = string.Empty;
             asunto += $"<!DOCTYPE html>\r\n";
             asunto += $"<html>\r\n";
@@ -1298,120 +1456,238 @@ namespace SustitucionMOATest.Services
             return asunto;
         }
 
+        private string CrearAsuntoNotificacionSolicitudAnulacion()
+        {
+            var fecha = DateTime.Now.Date;
+            string asunto = string.Empty;
+            asunto += $"<!DOCTYPE html>\r\n";
+            asunto += $"<html>\r\n";
+            asunto += $"<head>\r\n    ";
+            asunto += $"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n";
+            asunto += $"</head>\r\n";
+            asunto += $"<body style=\"width: 100%; font-family: Helvetica; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;\">\r\n    ";
+            asunto += $"<p>Buenos d&iacute;as,</p>\r\n    ";
+            asunto += $"<br />\r\n    ";
+            asunto += $"<p>Se informa que el día {fecha} se ha solicitado la anulación de la siguiente orden de carga:</p>\r\n    ";
+            asunto += $"<br />\r\n\r\n    ";
+            asunto += $"<table cellspacing=\"5\" cellpadding=\"5\" border=\"3\">\r\n        ";
+            asunto += $"<caption>Orden :</caption>\r\n        ";
+            asunto += $"<thead style=\"background-color: #adacac;\">\r\n            ";
+            asunto += $"<tr>\r\n                ";
+            asunto += $"<td scope=\"col\">Número de orden</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Número de contrato</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Cliente</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Corredor</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Chofer</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Patente acoplado</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Patente Chasis</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Numero de pedido</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Numero de entrega</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Fecha carga</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Fecha Vencimiento</td>\r\n            ";
+            asunto += $"</tr>\r\n        ";
+            asunto += $"</thead>\r\n\r\n        ";
+            asunto += $"<tbody>\r\n            ";
+            asunto += $"<tr>";
+            asunto += $"<td>1</td>";
+            asunto += $"<td>10000000</td>";
+            asunto += $"<td>ClientePrueba</td>";
+            asunto += $"<td></td>";
+            asunto += $"<td>Martin</td>";
+            asunto += $"<td>ABC123</td>";
+            asunto += $"<td>ABBSM1231412</td>";
+            asunto += $"<td></td>";
+            asunto += $"<td></td>";
+            asunto += $"<td>1/1/0001 00:00:00</td>";
+            asunto += $"<td></td>";
+            asunto += $"</tr>\r\n        ";
+            asunto += $"</tbody>\r\n    ";
+            asunto += $"</table>\r\n\r\n    ";
+            asunto += $"<br />\r\n    ";
+            asunto += $"<p>Saludos,</p>\r\n    ";
+            asunto += $"<p>Moa Operaciones</p>\r\n";
+            asunto += $"</body>\r\n";
+            asunto += $"</html>";
+            return asunto;
+        }
+        private string CrearAsuntoNotificacionVariosContratos()
+        {
+            var fecha = DateTime.Now.Date;
+            string asunto = string.Empty;
+            asunto += $"<!DOCTYPE html>\r\n";
+            asunto += $"<html>\r\n";
+            asunto += $"<head>\r\n    ";
+            asunto += $"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n";
+            asunto += $"</head>\r\n";
+            asunto += $"<body style=\"width: 100%; font-family: Helvetica; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;\">\r\n    ";
+            asunto += $"<p>Buenos d&iacute;as,</p>\r\n    ";
+            asunto += $"<br />\r\n    ";
+            asunto += $"<p>Se econtraron varios contratos para el mismo cliente</p>\r\n    ";
+            asunto += $"<br />\r\n\r\n    ";
+            asunto += $"<table cellspacing=\"5\" cellpadding=\"5\" border=\"3\">\r\n        ";
+            asunto += $"<caption>Orden :</caption>\r\n        ";
+            asunto += $"<thead style=\"background-color: #adacac;\">\r\n            ";
+            asunto += $"<tr>\r\n                ";
+            asunto += $"<td scope=\"col\">Número de orden</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Número de contrato</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Cliente</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Corredor</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Chofer</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Patente acoplado</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Patente Chasis</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Numero de pedido</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Numero de entrega</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Fecha carga</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Fecha Vencimiento</td>\r\n            ";
+            asunto += $"</tr>\r\n        ";
+            asunto += $"</thead>\r\n\r\n        ";
+            asunto += $"<tbody>\r\n            ";
+            asunto += $"<tr>";
+            asunto += $"<td>1</td>";
+            asunto += $"<td>10000000</td>";
+            asunto += $"<td>ClientePrueba</td>";
+            asunto += $"<td></td>";
+            asunto += $"<td>Martin</td>";
+            asunto += $"<td>ABC123</td>";
+            asunto += $"<td>ABBSM1231412</td>";
+            asunto += $"<td></td>";
+            asunto += $"<td></td>";
+            asunto += $"<td>1/1/0001 00:00:00</td>";
+            asunto += $"<td></td>";
+            asunto += $"</tr>\r\n        ";
+            asunto += $"</tbody>\r\n    ";
+            asunto += $"</table>\r\n\r\n    ";
+            asunto += $"<br />\r\n    ";
+            asunto += $"<p>Saludos,</p>\r\n    ";
+            asunto += $"<p>Moa Operaciones</p>\r\n";
+            asunto += $"</body>\r\n";
+            asunto += $"</html>";
+            return asunto;
+        }
 
-        //[Test()]
-        //public void AgregarNotificarVariosPedidosTest()
-        //{
-        //    string mailUsuario = "usuario@test.com";
+        private string CrearAsuntoNotificacionVariosPedidos()
+        {
+            var fecha = DateTime.Now.Date;
+            string asunto = string.Empty;
+            asunto += $"<!DOCTYPE html>\r\n";
+            asunto += $"<html>\r\n";
+            asunto += $"<head>\r\n    ";
+            asunto += $"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n";
+            asunto += $"</head>\r\n";
+            asunto += $"<body style=\"width: 100%; font-family: Helvetica; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;\">\r\n    ";
+            asunto += $"<p>Buenos d&iacute;as,</p>\r\n    ";
+            asunto += $"<br />\r\n    ";
+            asunto += $"<p>Se encontraron varios pedidos pendientes para el mismo cliente</p>\r\n    ";
+            asunto += $"<br />\r\n\r\n    ";
+            asunto += $"<table cellspacing=\"5\" cellpadding=\"5\" border=\"3\">\r\n        ";
+            asunto += $"<caption>Orden :</caption>\r\n        ";
+            asunto += $"<thead style=\"background-color: #adacac;\">\r\n            ";
+            asunto += $"<tr>\r\n                ";
+            asunto += $"<td scope=\"col\">Número de orden</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Número de contrato</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Cliente</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Corredor</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Chofer</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Patente acoplado</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Patente Chasis</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Numero de pedido</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Numero de entrega</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Fecha carga</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Fecha Vencimiento</td>\r\n            ";
+            asunto += $"</tr>\r\n        ";
+            asunto += $"</thead>\r\n\r\n        ";
+            asunto += $"<tbody>\r\n            ";
+            asunto += $"<tr>";
+            asunto += $"<td>1</td>";
+            asunto += $"<td>10000000</td>";
+            asunto += $"<td>ClientePrueba</td>";
+            asunto += $"<td></td>";
+            asunto += $"<td>Martin</td>";
+            asunto += $"<td>ABC123</td>";
+            asunto += $"<td>ABBSM1231412</td>";
+            asunto += $"<td></td>";
+            asunto += $"<td></td>";
+            asunto += $"<td>1/1/0001 00:00:00</td>";
+            asunto += $"<td></td>";
+            asunto += $"</tr>\r\n        ";
+            asunto += $"</tbody>\r\n    ";
+            asunto += $"</table>\r\n\r\n    ";
+            asunto += $"<br />\r\n    ";
+            asunto += $"<p>Saludos,</p>\r\n    ";
+            asunto += $"<p>Moa Operaciones</p>\r\n";
+            asunto += $"</body>\r\n";
+            asunto += $"</html>";
+            return asunto;
+        }
 
-        //    var proveedor = new Proveedor
-        //    {
-        //        Id = 1,
-        //        EstadoAprobacion = EstadoAprobacion.Aprobado,
-        //        Observaciones = "Test",
-        //        RazonSocial = "RS",
-        //        Mail = mailUsuario,
-        //        CUIT = "233333333333",
-        //        TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
-        //    };
+        private string CrearAsuntoNotificacionContratoVencido()
+        {
+            var fecha = DateTime.Now.Date;
+            string asunto = string.Empty;
+            asunto += $"<!DOCTYPE html>\r\n";
+            asunto += $"<html>\r\n";
+            asunto += $"<head>\r\n    ";
+            asunto += $"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n";
+            asunto += $"</head>\r\n";
+            asunto += $"<body style=\"width: 100%; font-family: Helvetica; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;\">\r\n    ";
+            asunto += $"<p>Buenos d&iacute;as,</p>\r\n    ";
+            asunto += $"<br />\r\n    ";
+            asunto += $"<p>Contrato vencido Nro :10000000</p>\r\n    ";
+            asunto += $"<br />\r\n\r\n    ";
+            asunto += $"<table cellspacing=\"5\" cellpadding=\"5\" border=\"3\">\r\n        ";
+            asunto += $"<caption>Orden :</caption>\r\n        ";
+            asunto += $"<thead style=\"background-color: #adacac;\">\r\n            ";
+            asunto += $"<tr>\r\n                ";
+            asunto += $"<td scope=\"col\">Número de orden</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Número de contrato</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Cliente</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Corredor</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Chofer</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Patente acoplado</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Patente Chasis</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Numero de pedido</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Numero de entrega</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Fecha carga</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Fecha Vencimiento</td>\r\n            ";
+            asunto += $"</tr>\r\n        ";
+            asunto += $"</thead>\r\n\r\n        ";
+            asunto += $"<tbody>\r\n            ";
+            asunto += $"<tr>";
+            asunto += $"<td>1</td>";
+            asunto += $"<td>10000000</td>";
+            asunto += $"<td>ClientePrueba</td>";
+            asunto += $"<td></td>";
+            asunto += $"<td>Martin</td>";
+            asunto += $"<td>ABC123</td>";
+            asunto += $"<td>ABBSM1231412</td>";
+            asunto += $"<td></td>";
+            asunto += $"<td></td>";
+            asunto += $"<td>1/1/0001 00:00:00</td>";
+            asunto += $"<td></td>";
+            asunto += $"</tr>\r\n        ";
+            asunto += $"</tbody>\r\n    ";
+            asunto += $"</table>\r\n\r\n    ";
+            asunto += $"<br />\r\n    ";
+            asunto += $"<p>Saludos,</p>\r\n    ";
+            asunto += $"<p>Moa Operaciones</p>\r\n";
+            asunto += $"</body>\r\n";
+            asunto += $"</html>";
+            return asunto;
+        }
+        public void EjecutarServidoMail()
+        {
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.UseShellExecute = true;
+            info.FileName = "MailHog_windows_amd64.exe";
+            info.WorkingDirectory = "C:/Repositorios/Web Operaciones/SustitucionMOATest/bin/Debug/Templates";
+            Process.Start(info);
 
-        //    var permisos = new PermisoPorRol()
-        //    {
-        //        Id = 95,
-        //        Permiso = "VER ORDENES DE CARGA PARA COMERCIALES"
+        }
 
-        //    };
-
-        //    var roles = new Rol
-        //    {
-        //        Id = 1,
-        //        Nombre = "Administracion",
-        //        PermisosAsociados = new List<PermisoPorRol>()
-        //        {
-        //           permisos
-        //        }
-
-        //    };
-        //    var usuario = new Usuario
-        //    {
-        //        Id = 1,
-        //        Mail = mailUsuario,
-        //        CUITRegistro = "233333333333",
-        //        Proveedores = new List<Proveedor>()
-        //        {
-        //            proveedor
-        //        },
-
-        //        Roles = new List<Rol>()
-        //        {
-        //            roles
-        //        }
-
-
-        //    };
-
-
-        //    repositorioMock
-        //        .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
-        //        .Returns(usuario);
-
-        //    repositorioMock
-        //         .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
-        //         .Returns(proveedor);
-
-        //    repositorioMock
-        //        .Setup(x => x.Obtener<Rol>(It.IsAny<int>()))
-        //        .Returns(roles);
-
-        //    repositorioMock
-        //       .Setup(x => x.Obtener<PermisoPorRol>(It.IsAny<int>()))
-        //       .Returns(permisos);
-
-        //    repositorioMock
-        //       .Setup(x => x.Obtener<Material>(It.IsAny<int>()))
-        //       .Returns(ordenDeCarga.Producto);
-
-        //    repositorioMock
-        //       .Setup(y => y.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>()))
-        //       .Returns(proveedor);
-
-        //    consumerOrdenCargaMOA
-        //        .Setup(x => x.ControlCargaRequest(It.IsAny<string>(),
-        //        It.IsAny<string>(),
-        //        It.IsAny<string>(),
-        //        It.IsAny<string>(),
-        //        It.IsAny<string>(),
-        //        It.IsAny<string>()))
-        //        .Returns("0012059285,0012059686,0012060616,0012061378,0012061439,0012061868");
-
-        //    repositorioMock
-        //        .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
-        //        .Returns(ordenDeCarga);
-
-
-        //    consumerOrdenCargaMOA
-        //       .Setup(x => x.OrdenCargaControlEstadoRequest(It.IsAny<string>(),
-        //       It.IsAny<string>(),
-        //       It.IsAny<string>()))
-        //       .Returns("CE-07");
-
-        //    ordenDeCargaService.Setup(x => x.NotificarVariosPedidos(It.IsAny<int>())).Returns("Notificación enviada");
-
-        //    ConfigurationManager.AppSettings["CantidadOrdenDeCarga"] = "30000";
-        //    ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "";
-        //    ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "";
-        //    ConfigurationManager.AppSettings["EmailToComerciales"] = "";
-
-        //    var result = target.Agregar(ordenDeCarga, mailUsuario);
-
-        //    var expected = new Resultado { IdEntidad = 1, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
-
-        //    repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
-        //    repositorioMock.Verify(x => x.Agregar(It.IsAny<OrdenDeCarga>()), Times.Once);
-        //    repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
-
-        //    Assert.AreEqual(expected, result);
-        //}
-
+        public void DetenerServidorMail()
+        {
+            Process[] proc = Process.GetProcessesByName("MailHog_windows_amd64");
+            proc[0].Kill();
+        }
     }
 }
