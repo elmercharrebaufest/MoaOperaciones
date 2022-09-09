@@ -2009,9 +2009,9 @@ namespace SustitucionMOAUtils.Services
 		}
 
 
-		public List<ContratoSolp> ObtenerContratoMarco(string numeroContrato)
+		public List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro)
 		{		
-            var result = obtenerContratoSolpConsumerMOA.Request(numeroContrato);
+            var result = obtenerContratoSolpConsumerMOA.Request(numeroContrato, centro);
             return result.ContratosSolp;
         }
 	}

@@ -24,17 +24,17 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        ContratoSolpWSMOAResponse IObtenerContratoSolpConsumerMOA.Request(string numeroContrato)
+        ContratoSolpWSMOAResponse IObtenerContratoSolpConsumerMOA.Request(string numeroContrato, string centro)
         {
             try
             {
-                string IM_COMP_CODE = "";
+                string IM_COMP_CODE = "MOA";
                 string IM_CONTRACT = numeroContrato;
-                string IM_DETAIL = "";
-                string IM_ITEM_NO = "";
+                string IM_DETAIL = "X";
+                string IM_ITEM_NO = "00000";
                 ZMPES5800[] IM_MATERIAL = new ZMPES5800[] { };
                 ZMPES5880[] IM_NOM_VENDOR = new ZMPES5880[] { };
-                string IM_PLANT = "";
+                string IM_PLANT = centro;
                 ZMPES5810[] IM_TEXT_POS = new ZMPES5810[] { };
                 ZMPES5870[] IM_VENDOR = new ZMPES5870[] { };
                 ZMPES5890[] EX_HEADER = new ZMPES5890[] { };
@@ -61,46 +61,53 @@ namespace SustitucionMOAWS.WSConsumers
             if (EX_HEADER.Length == 0 && EX_ITEM.Length == 0)
             {
                 return result;
-            }              
+            }
+
+            var numeroDocumentoCompras = "";
 
             foreach (var contratoCabecera in EX_HEADER)
             {
-                var contrato = new ContratoSolp()
+                if (numeroDocumentoCompras != contratoCabecera.NUMBER)
                 {
-                    //Resultado de Cabecera de Contratos Marco
-                    NumeroDocumentoCompras = contratoCabecera.NUMBER, //NUMBER  EBELN Número del documento de compras
-                    Sociedad = contratoCabecera.COMP_CODE, //COMP_CODE BUKRS   Sociedad
-                    IndicadorDeBorrado = contratoCabecera.DELETE_IND_HDR, //DELETE_IND_HDR  ELOEK Indicador de borrado en el documento de compras
-                    NumeroCuentaProveedor = contratoCabecera.VENDOR, //VENDOR  ELIFN Número de cuenta del proveedor
-                    NombreProveedor = contratoCabecera.NAM_VENDOR,  //NAM_VENDOR LFA1-NAME1  Nombre del Proveedor
-                    OrganizacionCompras = contratoCabecera.PURCH_ORG, //PURCH_ORG   EKORG Organización de compras
-                    GrupoCompras = contratoCabecera.PUR_GROUP, //PUR_GROUP BKGRP   Grupo de compras
-                    ClaveMoneda = contratoCabecera.CURRENCY, //CURRENCY    WAERS Clave de moneda
-                    InicioPeriodoValidez = contratoCabecera.VPER_START, //VPER_START KDATB   In.período validez
-                    FinPeriodoValidez = contratoCabecera.VPER_END//VPER_END KDATE   Fin período validez
-                };
+                    numeroDocumentoCompras = contratoCabecera.NUMBER;
 
-                contrato.Posiciones = EX_ITEM.Where(x => x.NUMBER == contrato.NumeroDocumentoCompras).Select(pos => new ContratoSolpPosicion {
-                    NumeroDocumentoCompras = pos.NUMBER, //NUMBER  EBELN   Número del documento de compras
-                    NumeroPosicionDocumentoCompras = pos.ITEM_NO, //ITEM_NO EBELP   Número de posición del documento de compras
-                    IndicadorDeBorrado = pos.DELETE_IND, //DELETE_IND  ELOEK   Indicador de borrado en el documento de compras
-                    NumeroMaterial = pos.MATERIAL, //MATERIAL    MATNR18 Número de material (18 caracteres)
-                    TextoMaterialOServicio = pos.SHORT_TEXT, //SHORT_TEXT  TXZ01   Texto de Material o Servicio
-                    Centro = pos.PLANT, //PLANT   WERKS_D Centro
-                    Almacen = pos.STGE_LOC, //STGE_LOC    LGORT_D Almacén
-                    CantidadPrevista = pos.TARGET_QTY, //TARGET_QTY  KTMNG   Cantidad prevista
-                    UnidadMedida = pos.PO_UNIT, //PO_UNIT BSTME   Unidad de medida de pedido
-                    ImporteMonedaBapi = pos.NET_PRICE, //NET_PRICE   BAPICUREXT  Importe de moneda para BAPIs (con 9 decimales)
-                    TipoPosicionDocumentoCompras = pos.ITEM_CAT, //ITEM_CAT    PSTYP   Tipo de posición del documento de compras
-                    TipoImputacionCompras = pos.ACCTASSCAT, //ACCTASSCAT  KNTTP   Tipo de imputación
-                    NumeroPaquete = pos.PCKG_NO, //PCKG_NO PACKNO  Nº paquete
-                    GrupoArticuloMateriales = pos.MATKL, //MATKL   MATKL   Grupo de Articulo de Materiales
-                    SubPosiciones = EX_SUB_ITEM.Length > 0 ? ObtenerSubPosiciones(pos, EX_SUB_ITEM) : new List<ContratoSolpSubposicion>()
-            }).ToList();
+                    var contrato = new ContratoSolp()
+                    {
+                        //Resultado de Cabecera de Contratos Marco
+                        NumeroDocumentoCompras = contratoCabecera.NUMBER, //NUMBER  EBELN Número del documento de compras
+                        Sociedad = contratoCabecera.COMP_CODE, //COMP_CODE BUKRS   Sociedad
+                        IndicadorDeBorrado = contratoCabecera.DELETE_IND_HDR, //DELETE_IND_HDR  ELOEK Indicador de borrado en el documento de compras
+                        NumeroCuentaProveedor = contratoCabecera.VENDOR, //VENDOR  ELIFN Número de cuenta del proveedor
+                        NombreProveedor = contratoCabecera.NAM_VENDOR,  //NAM_VENDOR LFA1-NAME1  Nombre del Proveedor
+                        OrganizacionCompras = contratoCabecera.PURCH_ORG, //PURCH_ORG   EKORG Organización de compras
+                        GrupoCompras = contratoCabecera.PUR_GROUP, //PUR_GROUP BKGRP   Grupo de compras
+                        ClaveMoneda = contratoCabecera.CURRENCY, //CURRENCY    WAERS Clave de moneda
+                        InicioPeriodoValidez = contratoCabecera.VPER_START, //VPER_START KDATB   In.período validez
+                        FinPeriodoValidez = contratoCabecera.VPER_END//VPER_END KDATE   Fin período validez
+                    };
 
-                result.ContratosSolp.Add(contrato);
+                    contrato.Posiciones = EX_ITEM.Where(x => x.NUMBER == contrato.NumeroDocumentoCompras).Select(pos => new ContratoSolpPosicion
+                    {
+                        NumeroDocumentoCompras = pos.NUMBER, //NUMBER  EBELN   Número del documento de compras
+                        NumeroPosicionDocumentoCompras = pos.ITEM_NO, //ITEM_NO EBELP   Número de posición del documento de compras
+                        IndicadorDeBorrado = pos.DELETE_IND, //DELETE_IND  ELOEK   Indicador de borrado en el documento de compras
+                        NumeroMaterial = pos.MATERIAL, //MATERIAL    MATNR18 Número de material (18 caracteres)
+                        TextoMaterialOServicio = pos.SHORT_TEXT, //SHORT_TEXT  TXZ01   Texto de Material o Servicio
+                        Centro = pos.PLANT, //PLANT   WERKS_D Centro
+                        Almacen = pos.STGE_LOC, //STGE_LOC    LGORT_D Almacén
+                        CantidadPrevista = pos.TARGET_QTY, //TARGET_QTY  KTMNG   Cantidad prevista
+                        UnidadMedida = pos.PO_UNIT, //PO_UNIT BSTME   Unidad de medida de pedido
+                        ImporteMonedaBapi = pos.NET_PRICE, //NET_PRICE   BAPICUREXT  Importe de moneda para BAPIs (con 9 decimales)
+                        TipoPosicionDocumentoCompras = pos.ITEM_CAT, //ITEM_CAT    PSTYP   Tipo de posición del documento de compras
+                        TipoImputacionCompras = pos.ACCTASSCAT, //ACCTASSCAT  KNTTP   Tipo de imputación
+                        NumeroPaquete = pos.PCKG_NO, //PCKG_NO PACKNO  Nº paquete
+                        GrupoArticuloMateriales = pos.MATKL, //MATKL   MATKL   Grupo de Articulo de Materiales
+                        SubPosiciones = EX_SUB_ITEM.Length > 0 ? ObtenerSubPosiciones(pos, EX_SUB_ITEM) : new List<ContratoSolpSubposicion>()
+                    }).ToList();
+
+                    result.ContratosSolp.Add(contrato);
+                }
             }      
-
             result.error = resultado;
 
             return result;

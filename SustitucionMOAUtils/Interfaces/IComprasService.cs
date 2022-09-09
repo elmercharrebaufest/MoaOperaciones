@@ -46,6 +46,6 @@ namespace SustitucionMOAUtils.Interfaces
         void EnviarEmailSolp(EmailComposeDto emailCompose);
         SolpDescargaZipPorLink PuedeDescargarPliegoDesdeLink(int solpId, Guid? token);
         List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro);
-        List<ContratoSolp> ObtenerContratoMarco(string numeroContrato);
+        List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro);
     }
 }

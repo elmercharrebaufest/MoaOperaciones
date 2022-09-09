@@ -590,13 +590,13 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ObtenerContratoMarco(string numeroContrato)
+        public ActionResult ObtenerContratoMarco(string numeroContrato, string centro)
         {
             try
             {
                 if (string.IsNullOrEmpty(numeroContrato)) return Json(new { info = "Numero Contrato inválido" }, JsonRequestBehavior.AllowGet);             
 
-                return JsonCustom(new { data = service.ObtenerContratoMarco(numeroContrato) });
+                return JsonCustom(new { data = service.ObtenerContratoMarco(numeroContrato, centro) });
             }
             catch (WSCustomException e)
             {
