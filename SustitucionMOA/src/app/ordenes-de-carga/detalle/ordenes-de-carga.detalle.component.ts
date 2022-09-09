@@ -318,6 +318,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonAprobarRechazarAnulacion = true;
             }
         }
+
+        if (this.esAnulador) {
+            this.mostrarBotonAnular = true;
+        }
     }
 
     obtenerOrdenDeCarga() {
