@@ -24,7 +24,6 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Compras
 
     public class ContratoSolpPosicion
     {
-
         //Resultado de Posiciones del Contratos Marco
         public string NumeroDocumentoCompras { get; set; } //NUMBER EBELN   Número del documento de compras
         public string NumeroPosicionDocumentoCompras { get; set; } //ITEM_NO EBELP Número de posición del documento de compras
@@ -41,11 +40,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Compras
         public string NumeroPaquete { get; set; } //PCKG_NO PACKNO  Nº paquete
         public string GrupoArticuloMateriales { get; set; } //MATKL MATKL   Grupo de Articulo de Materiales
         public List<ContratoSolpSubposicion> SubPosiciones { get; set; } = new List<ContratoSolpSubposicion>();
-
-
     }
-
-
 
     public class ContratoSolpSubposicion
     {

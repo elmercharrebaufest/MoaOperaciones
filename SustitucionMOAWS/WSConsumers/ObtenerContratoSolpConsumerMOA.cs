@@ -24,12 +24,12 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public object request()
+        ContratoSolpWSMOAResponse IObtenerContratoSolpConsumerMOA.Request(string numeroContrato)
         {
             try
             {
                 string IM_COMP_CODE = "";
-                string IM_CONTRACT = "";
+                string IM_CONTRACT = numeroContrato;
                 string IM_DETAIL = "";
                 string IM_ITEM_NO = "";
                 ZMPES5800[] IM_MATERIAL = new ZMPES5800[] { };
@@ -45,7 +45,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 string resultado = service.SI_MMRFC_OBTENER_CONTRATO(IM_COMP_CODE, IM_CONTRACT, IM_DETAIL, IM_ITEM_NO, IM_MATERIAL, IM_NOM_VENDOR, IM_PLANT, IM_TEXT_POS, IM_VENDOR, out EX_HEADER, out EX_ITEM, out EX_RETURN, out EX_SUB_ITEM);
 
-                return map(resultado, EX_HEADER, EX_ITEM, EX_RETURN, EX_SUB_ITEM);
+                return Map(resultado, EX_HEADER, EX_ITEM, EX_RETURN, EX_SUB_ITEM);
             }
             catch (Exception e)
             {
@@ -53,17 +53,15 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-        protected virtual object map(string resultado, ZMPES5890[] EX_HEADER, ZMPES5900[] EX_ITEM, BAPIRETURN[] EX_RETURN, ZMPES5910[] EX_SUB_ITEM)
+        protected ContratoSolpWSMOAResponse Map(string resultado, ZMPES5890[] EX_HEADER, ZMPES5900[] EX_ITEM, BAPIRETURN[] EX_RETURN, ZMPES5910[] EX_SUB_ITEM)
         {
             ContratoSolpWSMOAResponse result = new ContratoSolpWSMOAResponse();
             result.ContratosSolp = new List<ContratoSolp> { };
 
-            if (EX_HEADER == null && (EX_ITEM == null || EX_SUB_ITEM == null)) 
+            if (EX_HEADER.Length == 0 && EX_ITEM.Length == 0)
             {
-                EX_HEADER = new ZMPES5890[] { };
-                EX_ITEM = new ZMPES5900[] { };         
-                EX_SUB_ITEM = new ZMPES5910[] { };
-            }
+                return result;
+            }              
 
             foreach (var contratoCabecera in EX_HEADER)
             {
@@ -97,8 +95,8 @@ namespace SustitucionMOAWS.WSConsumers
                     TipoImputacionCompras = pos.ACCTASSCAT, //ACCTASSCAT  KNTTP   Tipo de imputación
                     NumeroPaquete = pos.PCKG_NO, //PCKG_NO PACKNO  Nº paquete
                     GrupoArticuloMateriales = pos.MATKL, //MATKL   MATKL   Grupo de Articulo de Materiales
-                    SubPosiciones = ObtenerSubPosiciones(pos, EX_SUB_ITEM)
-                }).ToList();
+                    SubPosiciones = EX_SUB_ITEM.Length > 0 ? ObtenerSubPosiciones(pos, EX_SUB_ITEM) : new List<ContratoSolpSubposicion>()
+            }).ToList();
 
                 result.ContratosSolp.Add(contrato);
             }      

@@ -223,12 +223,9 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Service References\ObtenerContratoSolpWebServiceMOA\Reference.cs">
-      <SubType>code</SubType>
-    </Compile>
-    <Compile Include="Service References\ObtenerContratoSolpWebServiceMOA\Reference1.cs">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Service References\ObtenerFuenteAprovisionamientoWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -2221,6 +2218,7 @@
     <WCFMetadataStorage Include="Service References\ModificarSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\MovimientoBalanzaWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\NoticiasDetalleWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ObtenerContratoSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerFuenteAprovisionamientoWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerMaterialesSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\OrdenCargaControlEstadoSAP\" />
@@ -3130,12 +3128,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Service References\ObtenerContratoSolpWebServiceMOA\configuration.svcinfo" />
-    <Content Include="Service References\ObtenerContratoSolpWebServiceMOA\configuration91.svcinfo" />
-    <Content Include="Service References\ObtenerContratoSolpWebServiceMOA\Reference.svcmap">
+    <None Include="Service References\ObtenerContratoSolpWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerContratoSolpWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerContratoSolpWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference1.cs</LastGenOutput>
-    </Content>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
