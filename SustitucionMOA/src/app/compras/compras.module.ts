@@ -99,7 +99,7 @@ import { ObtenerContratoMarcoComponent } from './solp/steps/posicion/obtener-con
         TabImputacionesComponent,
         StepperActionsComponent,
         FinalizarSolpComponent,
-        ContratoMarcoComponent
+        ContratoMarcoComponent,
         ObtenerContratoMarcoComponent
     ],
     providers: [
