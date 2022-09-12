@@ -16,82 +16,20 @@
       <span class="blue" aria-hidden="true">Vincular contrato marco</span>
     </p-header>
     <p-body>
-      <section class="container-fluid">
-        <form [formGroup]="formGroupEmail">
-          <div class="col-xs-2 col-md-2">
-            <label class="e-label">De:</label>
-          </div>
-          <div class="col-xs-4 col-md-4 ui-fluid">
-            <p-dropdown 
-              dataKey="Id"
-              filter="true"
-              formControlName="centroEntrega"
-              [(ngModel)]="centroEntrega" 
-              [options]="centrosEntrega" 
-              placeholder="Centro" 
-              optionLabel="CodigoDescripcion" 
-              appendTo="body"                      
-              emptyMessage="Ningún centro encontrado" 
-              [minLength]="1" 
-              [dropdown]="true">
-
-              <ng-template let-item pTemplate="selectedItem">
-                  <span>{{item.value.Codigo}} - {{item.value.Descripcion}}</span>
-              </ng-template>
-              <ng-template let-item pTemplate="item">
-                  <div>
-                      <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
-                  </div>
-              </ng-template>
-            </p-dropdown>
-          </div>
-
-          <div class="row" style="margin-bottom: 0.4em;">
-            <div class="col-xs-2 col-md-2">
-              <label class="e-label">De:</label>
-            </div>
-            <div class="col-xs-4 col-md-4 ui-fluid">
-              <input type="text" pInputText 
-                class="e-disabled"
-                formControlName="numeroContrato"
-                [(ngModel)]="numeroContrato" >
-            </div>
-          </div>
-        </form>
-      </section>
-      <section>
-        <p-table #dt [value]="contratoMarco.posiciones" [rows]="20"  dataKey="id" [scrollable]="true">
-          <ng-template pTemplate="header" let-columns>
-            <tr>
-                <th class="textCenter"></th>
-                <th class="textCenter">
-                    <p-checkbox name="posiciones" [binary]="true" [(ngModel)]="todasPosicionesSeleccionadas" (click)="seleccionarTodo()"></p-checkbox>
-                </th>
-                <th class="textCenter" data-toggle="tooltip" title="Posición SOLP">Pos. SOLP</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-posicion let-expanded="expanded" let-columns="columns" let-rowIndex="rowIndex">
-          <tr>
-              <td>
-                  <a style="cursor: pointer;" [pRowToggler]="posicion" (click)="posicion.setTabPosicion();">
-                      <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-                  </a>
-              </td>
-              <td style="text-align: center;">
-                  <p-checkbox name="posiciones" binary="false" [(ngModel)]="posicion.posicionCheck"></p-checkbox>
-              </td>
-              <td>{{posicion.numeroPosicion}}</td>
-          </tr>
-        </ng-template>
-        
-        <ng-template pTemplate="rowexpansion" let-posicion let-columns="col" let-rowIndex="rowIndex">
-            <div style="width: 890px;">
-
-            </div>
-        </ng-template>
-        </p-table>
-      </section>
-      
+      <form [formGroup]="formGroupEmail">
+          <section class="container-fluid">
+              <div class="row" style="margin-bottom: 0.4em;">
+                <div class="col-xs-2 col-md-2">
+                  <label class="e-label">De:</label>
+                </div>
+                <div class="col-xs-10 col-md-10 ui-fluid">
+                  <input type="text" pInputText 
+                    class="e-disabled"
+                    formControlName="numeroContrato">
+                </div>
+              </div>
+          </section>
+      </form>
     </p-body>
     <p-footer class="e-footer">
       <button class="btn btn-secondary btn-custom-secondary" (click)="onClose()">CANCELAR</button>
