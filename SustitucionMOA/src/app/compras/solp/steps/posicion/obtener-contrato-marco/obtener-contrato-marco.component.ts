@@ -29,9 +29,9 @@ export class ObtenerContratoMarcoComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.formGroup = this.formBuilder.group({
+    this.formGroup = this.formBuilder.group({    
       centroEntrega: new FormControl('', Validators.required),
-      numeroContrato: new FormControl('', Validators.required)
+      numeroContrato: new FormControl('', Validators.required)    
     });
   }
 
