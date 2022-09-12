@@ -1,0 +1,39 @@
+<div *ngIf="visible">
+  <p-dialog 
+    [(visible)]="visible" 
+    [responsive]="true"
+    [draggable]="false" 
+    [modal]="true" 
+    appendTo="body" 
+    [width]="750"
+    [height]="600"
+    [max]
+    positionTop="30"
+    [contentStyle]="{ 
+      'max-height':'750px', 
+      'min-height':'400px'}">
+    <p-header class="headerModal">
+      <span class="blue" aria-hidden="true">Vincular contrato marco</span>
+    </p-header>
+    <p-body>
+      <form [formGroup]="formGroupEmail">
+          <section class="container-fluid">
+              <div class="row" style="margin-bottom: 0.4em;">
+                <div class="col-xs-2 col-md-2">
+                  <label class="e-label">De:</label>
+                </div>
+                <div class="col-xs-10 col-md-10 ui-fluid">
+                  <input type="text" pInputText 
+                    class="e-disabled"
+                    formControlName="numeroContrato">
+                </div>
+              </div>
+          </section>
+      </form>
+    </p-body>
+    <p-footer class="e-footer">
+      <button class="btn btn-secondary btn-custom-secondary" (click)="onClose()">CANCELAR</button>
+      <button class="btn btn-primary btn-custom-primary" (click)="onAgregarItems()" [disabled]="!canSendEmail">AGREGAR ITEMS</button>
+    </p-footer>
+  </p-dialog>
+  </div>      
