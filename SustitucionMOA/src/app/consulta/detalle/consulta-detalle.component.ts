@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild, ElementRef, Input } from "@angular/core";
+﻿import { Component, OnInit, ViewChild, ElementRef, Input, HostListener } from "@angular/core";
 import { Router, ActivatedRoute, Params } from "@angular/router";
 import { MensajeComponent } from "./../../common/view-child/mensaje/mensaje.component";
 import { SpinnerComponent } from "./../../common/view-child/spinner/spinner.component";
@@ -34,6 +34,7 @@ import {
 } from "ngx-file-drop";
 import { empty } from "rxjs";
 import { AngularEditorConfig } from "@kolkov/angular-editor";
+import { DomSanitizer } from '@angular/platform-browser';
 
 declare var $: any;
 
@@ -63,6 +64,23 @@ export class DetalleConsultaComponent extends BaseComponent {
     @ViewChild("detalleConsulta")
     protected detalleConsulta: ElementRef;
 
+
+    @HostListener('document:click', ['$event'])
+    public onDocumentClick(event: MouseEvent): void {
+        const targetElement = event.target as HTMLElement;
+        var img = targetElement;
+        if (img.className == "galeryimg col-md-12 cursor-pointer") {
+            console.log(img);
+            $('#myModal2').modal('show');
+            var modalImg = document.getElementById("img01");
+            $(modalImg).attr("src", $(img).attr("src"));
+            $(document.getElementsByClassName("modal-backdrop")[0]).css("z-index", "0");
+            $(document.getElementsByClassName("modal-backdrop")[0]).css("background-color", "none");
+        } else {
+            $('#myModal2').modal('hide');
+        }
+    }
+
     constructor(
         private route: ActivatedRoute,
         protected service: ConsultaService,
@@ -70,7 +88,8 @@ export class DetalleConsultaComponent extends BaseComponent {
         protected securityService: SecurityService,
         protected sessionDataService: SessionDataService,
         protected floatMsgService: FloatMsgService,
-        protected modalService: ModalService
+        protected modalService: ModalService,
+        protected html_sanitizer: DomSanitizer
     ) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
@@ -712,8 +731,33 @@ export class DetalleConsultaComponent extends BaseComponent {
                                 // );
 
                                 this.eliminarBotonesExtra();
+
+                                //// Get the modal
+                                //var modal = document.getElementById("myModal");
+
+                                //// Get the image and insert it inside the modal - use its "alt" text as a caption
+                                //var img = document.getElementsByClassName("galeryimg");
+                                //var modalImg = document.getElementById("img01");
+                                //var captionText = document.getElementById("caption");
+                                //for (let i = 0; i < img.length; i++) {
+                                //    $(img[i]).click(function () {
+                                //        modal.style.display = "block";
+                                //        $(modalImg).attr("src", $(img[i]).attr("src"));
+                                //        captionText.innerHTML = "";
+                                //    });
+                                //}
+
+
+                                //// Get the <span> element that closes the modal
+                                //var span = document.getElementsByClassName("close")[0];
+
+                                //// When the user clicks on <span> (x), close the modal
+                                //$(span).click(function () {
+                                //    modal.style.display = "none";
+                                //});
+
                             }, 200);
-                        } catch {}
+                        } catch { }
                     }
                 },
                 (error) => {
@@ -721,6 +765,10 @@ export class DetalleConsultaComponent extends BaseComponent {
                 }
             );
     }
+    sameAsHtml(html_content) {
+        return this.html_sanitizer.bypassSecurityTrustHtml(html_content);
+    }
+
     removerEstilos(ele) {
         ele.removeAttribute("style");
 
@@ -749,9 +797,9 @@ export class DetalleConsultaComponent extends BaseComponent {
             let borderNuevo = `border=${String.fromCharCode(
                 34
             )}1${String.fromCharCode(34)}`;
-    
+
             divComentario.innerHTML = divComentario.innerHTML.replace(borderAnterior, borderNuevo);
-    
+
         }, 200);
     }
 
@@ -793,6 +841,12 @@ export class DetalleConsultaComponent extends BaseComponent {
             divToolBar.removeChild(toolBar11);
             divToolBar.removeChild(toolBar13);
         }
+        
+        $("#subscript-").hide();
+        $("#superscript-").hide();
+
+        $(".angular-editor-textarea").css("font-size", "large");
+        $(".angular-editor-button").css("font-size", "large");
     }
 
     subcategoriasInicial() {

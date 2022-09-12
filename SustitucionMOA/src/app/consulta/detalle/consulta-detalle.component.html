@@ -1,4 +1,5 @@
-﻿<div class="container-fluid" style="margin-top: 20px; margin-bottom: 20px;">
+﻿
+<div class="container-fluid" style="margin-top: 20px; margin-bottom: 20px;">
     <!-- CONTENT-->
     <div class="col-xs-12 col-sm-12 col-md-12">
         <mensaje></mensaje>
@@ -16,8 +17,8 @@
                             </p>
                         </div>
                         <div class="row myRow" *ngIf="comentario.Detalle != '' ">
-                            <div [ngClass]="comentarioPropio(comentario) ? 'comentarioPropio' : 'comentarioRespuesta' " 
-                            class="col-xs-12 col-sm-6 col-md-7"  style="overflow-x: scroll;" [innerHTML]="comentario.Detalle">
+                            <div [ngClass]="comentarioPropio(comentario) ? 'comentarioPropio' : 'comentarioRespuesta' "
+                                 class="col-xs-12 col-sm-6 col-md-7" style="overflow-x: scroll;" [innerHTML]="comentario.Detalle">
                             </div>
                         </div>
                         <div [ngClass]="comentarioPropio(comentario) ? 'widthAutoConsultaPropio' : 'widthAutoConsultaRespuesta' "
@@ -78,9 +79,9 @@
                         <div class="btn-custom btn-mediano btn-add animate align-center btn-recordar">Recordar mensaje</div>
                     </button>
                 </div>
-                <div *ngIf="false" class="col-xs-12 col-sm-6 col-md-9" >
+                <div *ngIf="false" class="col-xs-12 col-sm-6 col-md-9">
                     <file-drop dropZoneLabel="Suelte sus archivos aquí" (onFileDrop)="dropped($event)"
-                    (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+                               (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
                     </file-drop>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6">
