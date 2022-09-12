@@ -112,12 +112,15 @@ namespace SustitucionMOAModel.Entities
 
                         if (!TransporteExiste)
                         {
-                            Estado = EstadoOrdenDeCarga.Pendiente;
+                            Estado = EstadoOrdenDeCarga.TransporteNoExiste;
                         }
 
                         if (!AprobadoCredito)
                         {
-                            Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
+                            if (TransporteExiste)
+                            {
+                                Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
+                            }
                         }
                         else
                         {

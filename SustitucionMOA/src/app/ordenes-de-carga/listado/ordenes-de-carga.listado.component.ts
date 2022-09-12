@@ -45,7 +45,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 	    "Edición solicitada",
         "Error de datos",
         "Contrato vencido",
-        "Edición rechazada"
+        "Edición rechazada",
+        "Transporte no existe"
     ];
 
 
@@ -91,7 +92,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 	        { label: "Edición solicitada", value: "Edición solicitada" },  
             { label: "Error de datos", value: "Error de datos" },        
                 { label: "Contrato vencido", value: "Contrato vencido" },
-                { label: "Edición rechazada", value: "Edición rechazada" }
+                { label: "Edición rechazada", value: "Edición rechazada" },
+                { label: "Transporte no existe", value: "Transporte no existe" }
         ]} else {
             this.descripcionEstadoOrdenCarga = [
 
