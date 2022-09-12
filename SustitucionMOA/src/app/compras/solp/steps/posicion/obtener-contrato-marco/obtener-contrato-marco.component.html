@@ -16,7 +16,7 @@
       <span class="blue" aria-hidden="true">Vincular contrato marco</span>
     </p-header>
     <p-body>
-      <section class="container-fluid">
+          <section class="container-fluid">
         <form [formGroup]="formGroupEmail">
           <div class="col-xs-2 col-md-2">
             <label class="e-label">De:</label>
@@ -31,7 +31,7 @@
               placeholder="Centro" 
               optionLabel="CodigoDescripcion" 
               appendTo="body"                      
-              emptyMessage="Ningún centro encontrado" 
+              emptyMessage="Ning�n centro encontrado" 
               [minLength]="1" 
               [dropdown]="true">
 
@@ -46,17 +46,16 @@
             </p-dropdown>
           </div>
 
-          <div class="row" style="margin-bottom: 0.4em;">
-            <div class="col-xs-2 col-md-2">
-              <label class="e-label">De:</label>
-            </div>
+              <div class="row" style="margin-bottom: 0.4em;">
+                <div class="col-xs-2 col-md-2">
+                  <label class="e-label">De:</label>
+                </div>
+                <div class="col-xs-10 col-md-10 ui-fluid">
             <div class="col-xs-4 col-md-4 ui-fluid">
-              <input type="text" pInputText 
-                class="e-disabled"
-                formControlName="numeroContrato"
-                [(ngModel)]="numeroContrato" >
-            </div>
-          </div>
+                  <input type="text" pInputText 
+                    class="e-disabled"
+                    formControlName="numeroContrato">
+                </div>
         </form>
       </section>
       <section>
@@ -67,7 +66,7 @@
                 <th class="textCenter">
                     <p-checkbox name="posiciones" [binary]="true" [(ngModel)]="todasPosicionesSeleccionadas" (click)="seleccionarTodo()"></p-checkbox>
                 </th>
-                <th class="textCenter" data-toggle="tooltip" title="Posición SOLP">Pos. SOLP</th>
+                <th class="textCenter" data-toggle="tooltip" title="Posici�n SOLP">Pos. SOLP</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-posicion let-expanded="expanded" let-columns="columns" let-rowIndex="rowIndex">
@@ -87,10 +86,10 @@
         <ng-template pTemplate="rowexpansion" let-posicion let-columns="col" let-rowIndex="rowIndex">
             <div style="width: 890px;">
 
-            </div>
+              </div>
         </ng-template>
         </p-table>
-      </section>
+          </section>
       
     </p-body>
     <p-footer class="e-footer">
