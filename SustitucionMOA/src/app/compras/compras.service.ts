@@ -115,7 +115,11 @@ export class ComprasService extends BaseService {
                     TipoPosicion: x.tipoPosicion != null ? this.getObjetoCodigo(x.tipoPosicion.Codigo) : null,
                     Estado: x.estado,
                     Indice: x.numeroPosicion,
-
+                    ProveedorFijo: x.provedorFijo,
+                    NombreProveedor: x.nombreProveedor,
+                    NumeroContratoSuperior: x.noContrato,
+                    NumeroPosicionContratoSuperior: x.noPosicionContrato,
+                    OrganizacionCompras: x.orgCompras,
                     TextoSuministro: x.textoSuministro,
                     Motivo: x.motivo,
                     Modelo: x.modelo,
