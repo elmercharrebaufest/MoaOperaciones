@@ -885,8 +885,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     public get esTipoContratoMarco(){
-        return true
-        // return this.model.posicionActual.tipoPosicion == "CONTRATO MARCO";
+        return this.model.posicionActual.tipoPosicion == "CONTRATO MARCO";
     }
 
     public get tienePosicionSeleccionada(): boolean {
