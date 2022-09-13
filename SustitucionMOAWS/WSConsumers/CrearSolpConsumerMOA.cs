@@ -244,7 +244,7 @@ namespace SustitucionMOAWS.WSConsumers
                 //IM_PRITEM.FIXED_VEND = null; //FIXED_VEND FLIEF   Proveedor fijo
                 //IM_PRITEM.PURCH_ORG = null; //PURCH_ORG EKORG   Organización de compras        
                 IM_PRITEM.AGREEMENT = null; //AGREEMENT   KONNR Número del contrato superior
-                IM_PRITEM.AGMT_ITEM = null; //AGMT_ITEM   KTPNR Número de posición del contrato superior
+                IM_PRITEM.AGMT_ITEM 
                 //IM_PRITEM.INFO_REC = null; //INFO_REC    INFNR Número del registro info de compras                            
                 IM_PRITEM.CLOSED = null; //CLOSED  EBAKZ Solicitud de pedido concluida
                 IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap; //CURRENCY    WAERS Clave de moneda

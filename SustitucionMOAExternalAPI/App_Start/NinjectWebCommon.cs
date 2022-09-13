@@ -87,7 +87,9 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IScatoComandosConsumer>().To(typeof(ScatoComandosConsumer)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IServicioSuscriptorAccesosConsumer>().To(typeof(ServicioSuscriptorAccesosConsumer)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerFuenteAprovisionamientoConsumerMOA>().To(typeof(ObtenerFuenteAprovisionamientoConsumerMOA)).InScope(ctx => OperationContext.Current);
-         
+            kernel.Bind<IObtenerContratoSolpConsumerMOA>().To(typeof(ObtenerContratoSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
+
+
             kernel.Bind<IAuthenticationManager>().To(typeof(AuthenticationManager)).InSingletonScope();
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
