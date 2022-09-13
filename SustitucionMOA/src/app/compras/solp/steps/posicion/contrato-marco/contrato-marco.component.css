@@ -2,6 +2,12 @@
     font-size: 12px !important;
 }
 
+.as-input {
+    border: 1px solid #c8c8c8;
+    border-radius: 3px;
+    padding: 0.75rem;
+}
+
 .tabla-contrato-marco th, .tabla-contrato-marco td {
     padding: 0 5px;
     text-transform: none;

@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ContratoMarco } from './contrato-marco';
-import { Solp } from '../../../solp';
 import { SolpPosicion } from '../../../solp-posicion';
 
 @Component({
@@ -19,16 +18,17 @@ export class ContratoMarcoComponent implements OnInit {
 
   @Input() posiciones: SolpPosicion[];
 
-  @Input() solpActual: Solp;
-
   @Output() cancelarAsociarEmitter = new EventEmitter();
 
   @Output() asociarEmitter = new EventEmitter();
 
-  posicionSeleccionada: any;
-  contratoSeleccionado: any;
+  posicionSeleccionada: SolpPosicion;
+  contratoSeleccionado: any = null;
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  onChangeContrato(posicionActual) {
+    this.posicionSeleccionada = this.posiciones.find(posicion => posicion.id == posicionActual.id);
   }
 
   onCancelarAsociar() {
@@ -36,7 +36,10 @@ export class ContratoMarcoComponent implements OnInit {
   }
 
   onAsociar() {
-    this.asociarEmitter.next();
+    this.asociarEmitter.emit({
+      contrato: this.contratoSeleccionado, 
+      posicionSeleccionada:this.posicionSeleccionada
+    });
   }
 
   onHideAsociarDialog() {
