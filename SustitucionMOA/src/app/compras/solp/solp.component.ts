@@ -405,7 +405,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         if (solp.Posiciones && solp.Posiciones.length > 0) {
             let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
-
+            
+            this.solpActual.posiciones = [];
+            
             this.solpActual.agregarNuevaPosicion(null as SolpPosicion);
 
             let posActual = this.solpActual.posicionActual;
@@ -657,6 +659,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.messageService.add({ severity: 'success', detail: 'Los datos se guardaron correctamente' });
                         }
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
+                        debugger
                         this.solpActual.id = result.Solp.Id;
                         this.solpActual.NroSolp = result.Solp.NroSolp;
                         this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.length);

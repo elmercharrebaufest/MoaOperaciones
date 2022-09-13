@@ -191,7 +191,6 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_PRITEM.PLANT = posicion.Centro.CodigoSap.ToString(); //PLANT EWERK   Centro
                 IM_PRITEM.STORE_LOC = solpActual.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ? "" : posicion.Almacen.CodigoSap.ToString(); //STORE_LOC   LGORT_D Almacén
                 IM_PRITEM.TRACKINGNO = posicion.NroNecesidad; //TRACKINGNO BEDNR   Número de necesidad
-                IM_PRITEM.MATL_GROUP = "30015"; //Definimos un grupo de articulos por defecto
                 IM_PRITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString(); //MATL_GROUP  MATKL Grupo de artículos
 
                 if (posicion.TipoPosicion.Codigo == "MATERIALES") {
@@ -201,7 +200,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 //IM_PRITEM.UNIT = null; //UNIT BAMEI   Unidad de medida de solicitud pedido
                 //IM_PRITEM.PREQ_UNIT_ISO = null; //PREQ_UNIT_ISO BAMEI_ISO   Código ISO p.la unidad de medida en la solicitud de pedido
-                IM_PRITEM.PREQ_DATE = SAPFormatter.PrepararFecha(DateTime.Now); //PREQ_DATE   BADAT Fecha de solicitud
+                IM_PRITEM.PREQ_DATE = SAPFormatter.PrepararFecha(solpActual.FechaCreacion);  //PREQ_DATE   BADAT Fecha de solicitud
                 IM_PRITEM.DELIV_DATE = SAPFormatter.PrepararFecha(posicion.FechaEntregaServicio ?? DateTime.Now); 
                 IM_PRITEM.REL_DATE = null; //REL_DATE    FRGDT Fecha de liberación de la solicitud de pedido
                                            // IM_PRITEM.GR_PR_TIME = null; //GR_PR_TIME  WEBAZ Tiempo de tratamiento para la entrada de mercancía en días

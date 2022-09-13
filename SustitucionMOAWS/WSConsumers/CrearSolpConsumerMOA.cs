@@ -152,7 +152,9 @@ namespace SustitucionMOAWS.WSConsumers
             string numeroPaquete = "";
             string preqItem = "";
             string serialNumber = "";
-            string serviceAccountSerialNumber = "01";
+
+             
+            string serviceAccountSerialNumber = "01";     
 
             string docItem = "";
 
@@ -192,8 +194,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_PRITEM.SHORT_TEXT = posicion.Tarea; //SHORT_TEXT TXZ01 Texto breve
                 IM_PRITEM.PLANT = posicion.Centro.CodigoSap.ToString(); //PLANT EWERK   Centro
                 IM_PRITEM.STORE_LOC = posicion.Almacen.CodigoSap.ToString(); //STORE_LOC   LGORT_D Almacén
-                IM_PRITEM.TRACKINGNO = posicion.NroNecesidad; //TRACKINGNO BEDNR   Número de necesidad
-                IM_PRITEM.MATL_GROUP = "30015"; //Definimos un grupo de articulos por defecto
+                IM_PRITEM.TRACKINGNO = posicion.NroNecesidad; //TRACKINGNO BEDNR   Número de necesidad           
                 IM_PRITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString(); //MATL_GROUP  MATKL Grupo de artículos
                 IM_PRITEM.PREQ_DATE = SAPFormatter.PrepararFecha(DateTime.Now); //PREQ_DATE   BADAT Fecha de solicitud
                 IM_PRITEM.DELIV_DATE = SAPFormatter.PrepararFecha(posicion.FechaEntregaServicio??DateTime.Now); //DELIV_DATE EINDT   Fecha de entrega de posición
@@ -376,6 +377,7 @@ namespace SustitucionMOAWS.WSConsumers
                 solpSAP.IM_SERVICEACCOUNTList.Add(new ZMPES5790
                 {
                     DOC_ITEM = docItem,
+                    OUTLINE = outlineNumber,
                     SERIAL_NO = serviceAccountSerialNumber,
                     SERIAL_NO_ITEM = serialNumber,
                     //Siempre mandar esto en 100. Lo autocalcula SAP
@@ -385,12 +387,13 @@ namespace SustitucionMOAWS.WSConsumers
                 solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
                 {
                     DOC_ITEM = docItem,
+                    OUTLINE = outlineNumber,
                     SERIAL_NO = serviceAccountSerialNumber,
                     SERIAL_NO_ITEM = "X",
                     //Siempre mandar esto en 100. Lo autocalcula SAP
                     PERCENT = "X"
                 });
-
+              
                 //Desde aca empiezan las subposiciones
                 var numeroSubPosicion = 0;
                 var numeroSerialNumberItem = 0;
@@ -420,7 +423,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                     IM_SERVICELINE.QUANTITY = (decimal)subPosicion.Cantidad.Value; //QUANTITY MENGEV  Cantidad con signo +/ -
                     IM_SERVICELINE.QUANTITYSpecified = true;
-                    IM_SERVICELINE.UOM = subPosicion.Unidad.CodigoSap; //UOM MEINS Unidad de medida base
+                    IM_SERVICELINE.UOM = posicion.TipoPosicion.Codigo != "MATERIALES" ? subPosicion.Unidad.CodigoSap : ""; //UOM MEINS Unidad de medida base
                     //IM_SERVICELINE.UOM_ISO = null; //UOM_ISO MEINS_ISO   Unidad medida base en código ISO
                     IM_SERVICELINE.GROSS_PRICE = (decimal)subPosicion.PrecioBruto.Value; //GROSS_PRICE SBRTWR Precio bruto Unitario
                     IM_SERVICELINE.GROSS_PRICESpecified = true;
