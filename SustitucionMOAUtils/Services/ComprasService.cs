@@ -366,8 +366,16 @@ namespace SustitucionMOAUtils.Services
 					posEntity.ProvinciaId = null;
 				}
 
-				if (posEntity.Subposiciones == null)
-					posEntity.Subposiciones = new List<SolpSubposicion>();
+                //Contrato Marco
+                posEntity.NumeroContratoSuperior = pos.NumeroContratoSuperior;
+                posEntity.NumeroPosicionContratoSuperior = pos.NumeroPosicionContratoSuperior;
+                posEntity.NombreProveedor = pos.NombreProveedor;
+                posEntity.ProveedorFijo = pos.ProveedorFijo;
+                posEntity.OrganizacionCompras = pos.OrganizacionCompras;
+                
+
+                if (posEntity.Subposiciones == null)
+                    posEntity.Subposiciones = new List<SolpSubposicion>();
 
 				if (pos.Subposiciones != null)
 				{
@@ -1719,22 +1727,22 @@ namespace SustitucionMOAUtils.Services
 							solp.Posiciones.Add(posicionEntity);
 						}
 
-						posicionEntity.TipoPosicion_Id = tipoSolpPosicion_Id;
-						posicionEntity.TipoImputacion_Id = tipoImputacionPosicion?.TablaGeneral_Id;
-						posicionEntity.PlazoEntrega = (int)posicion.CantidadDiasEntrega;
-						posicionEntity.FechaEntregaServicio = posicion.FechaEntregaDate;
-						posicionEntity.Centro_Id = centro?.Id;
-						posicionEntity.Almacen_Id = almacen?.Id;
-						posicionEntity.NombreEntrega = direccion?.NombreUbicacion ?? string.Empty;
-						posicionEntity.CalleEntrega = direccion?.Calle ?? string.Empty;
-						posicionEntity.NumeroEntrega = direccion?.Numero ?? string.Empty;
-						posicionEntity.CpEntrega = direccion?.CodigoPostal ?? string.Empty;
-						posicionEntity.GrupoCompras_Id = grupoCompras?.Id;
-						posicionEntity.Solicitante = posicion.NombreSolicitante;
-						posicionEntity.GrupoArticulo_Id = grupoArticulo?.Id;
-						posicionEntity.Moneda_Id = moneda?.Id;
-						posicionEntity.Estado = posicion.EstadoPosicion != "X";
-						posicionEntity.Cantidad = posicion.Cantidad;
+                        posicionEntity.TipoPosicion_Id = tipoSolpPosicion_Id;
+                        posicionEntity.TipoImputacion_Id = tipoImputacionPosicion?.TablaGeneral_Id;
+                        posicionEntity.PlazoEntrega = (int)posicion.CantidadDiasEntrega;
+                        posicionEntity.FechaEntregaServicio = posicion.FechaEntregaDate;
+                        posicionEntity.Centro_Id = centro?.Id;
+                        posicionEntity.Almacen_Id = almacen?.Id;
+                        posicionEntity.NombreEntrega = direccion?.NombreUbicacion ?? string.Empty;
+                        posicionEntity.CalleEntrega = direccion?.Calle ?? string.Empty;
+                        posicionEntity.NumeroEntrega = direccion?.Numero ?? string.Empty;
+                        posicionEntity.CpEntrega = direccion?.CodigoPostal ?? string.Empty;
+                        posicionEntity.GrupoCompras_Id = grupoCompras?.Id;
+                        posicionEntity.Solicitante = posicion.NombreSolicitante;
+                        posicionEntity.GrupoArticulo_Id = grupoArticulo?.Id;
+                        posicionEntity.Moneda_Id = moneda?.Id;
+                        posicionEntity.Estado = posicion.EstadoPosicion != "X";
+                        posicionEntity.Cantidad = posicion.Cantidad;                     
 
 						IList<SuposicionServicioSAP> subPosicionesDeLaPosicion =
 							result.ServiciosSuposiciones.Where(x => x.NumeroPosicion == posicion.NumeroPosicion &&

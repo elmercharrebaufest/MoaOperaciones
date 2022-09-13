@@ -323,10 +323,15 @@ namespace SustitucionMOAWS.WSConsumers
                 //PLND_DELRY PLIFZ   Plazo de entrega previsto en días
                 //PCKG_NO PACKNO  Nº paquete
 
-                //IM_PRITEM.PURCH_ORG = posicion.GrupoCompras.CodigoSap;
-                IM_PRITEM.AGREEMENT = null; //Contrato marco? No está en este MVP
-                IM_PRITEM.AGMT_ITEM = null;//Contrato marco? No está en este MVP
-                IM_PRITEM.CLOSED = null; //Contrato marco? No está en este MVP
+
+                //Contrato marco 
+                IM_PRITEM.AGREEMENT = posicion.NumeroContratoSuperior;
+                IM_PRITEM.AGMT_ITEM = posicion.NumeroPosicionContratoSuperior;
+                IM_PRITEM.FIXED_VEND = posicion.ProveedorFijo;
+                IM_PRITEM.PURCH_ORG = posicion.OrganizacionCompras;
+
+
+                IM_PRITEM.CLOSED = null;
                 IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap;
                 IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega;
                 IM_PRITEM.PLND_DELRYSpecified = true;
@@ -339,8 +344,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     PREQ_ITEM = preqItem,
                     PREQ_ITEMX = "X",
-                    PUR_GROUP = "X",
-                    //CREATED_BY = "X",
+                    PUR_GROUP = "X",                 
                     PREQ_NAME = "X",
                     SHORT_TEXT = "X",
                     PLANT = "X",
@@ -351,7 +355,7 @@ namespace SustitucionMOAWS.WSConsumers
                     DELIV_DATE = "X",
                     ITEM_CAT = "X",
                     ACCTASSCAT = "X",
-                    //PURCH_ORG = "X",
+                    PURCH_ORG = (IM_PRITEM.PURCH_ORG != null) ? "X" : "",
                     CURRENCY = "X",
                     PLND_DELRY = "X",
                     PCKG_NO = "X",
