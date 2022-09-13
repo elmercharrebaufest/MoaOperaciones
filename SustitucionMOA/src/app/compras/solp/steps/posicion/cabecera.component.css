@@ -60,7 +60,7 @@
 .tabla-servicio th, .tabla-grid-servicio td, .tabla-material th, .tabla-grid-material td{
     padding: 0 5px;
     text-transform: none;
-    font-size: 14px;
+    font-size: 12px;
     height: 40px;
     border: solid #DDD;
     border-width: 1px 0px 0px 1px;
@@ -68,7 +68,7 @@
 
 /* Tamaños dependiento si la tabla es servicio o material, algunas columnas comparten el mismo tamaño*/
 .tabla-servicio th:nth-of-type(1), .tabla-grid-servicio td:nth-of-type(1), .tabla-material th:nth-of-type(1), .tabla-grid-material td:nth-of-type(1) {
-    width: 35px;
+    width: 30px;
 }
 
 .tabla-servicio th:nth-of-type(2), .tabla-grid-servicio td:nth-of-type(2), .tabla-material th:nth-of-type(2), .tabla-grid-material td:nth-of-type(2) {
@@ -76,7 +76,7 @@
 }
 
 .tabla-servicio th:nth-of-type(3), .tabla-grid-servicio td:nth-of-type(3), .tabla-material th:nth-of-type(3), .tabla-grid-material td:nth-of-type(3) {
-    width: 45px;
+    width: 40px;
 }
 
 /* Posicion 4 hidden */
@@ -87,7 +87,8 @@
 
 /* Posicion 5 materiales tipo imp */
 .tabla-material th:nth-of-type(5), .tabla-grid-material td:nth-of-type(5) {
-    width: 75px;
+    width: 45px;
+    padding: 0;
 }
 
 .tabla-servicio th:nth-of-type(6), .tabla-grid-servicio td:nth-of-type(6) {
@@ -96,7 +97,8 @@
 
 /* Posicion 6 materiales centro */
 .tabla-material th:nth-of-type(6), .tabla-grid-material td:nth-of-type(6) {
-    width: 75px;
+    width: 65px;
+    padding: 0;
 }
 
 .tabla-servicio th:nth-of-type(7), .tabla-grid-servicio td:nth-of-type(7) {
@@ -105,7 +107,8 @@
 
 /* Posicion 7 materiales almacén */
 .tabla-material th:nth-of-type(7), .tabla-grid-material td:nth-of-type(7) {
-    width: 80px;
+    width: 70px;
+    padding: 0;
 }
 
 .tabla-servicio th:nth-of-type(8), .tabla-grid-servicio td:nth-of-type(8) {
@@ -114,7 +117,7 @@
 
 /* Posicion 8 materiales código */
 .tabla-material th:nth-of-type(8), .tabla-grid-material td:nth-of-type(8) {
-    width: 80px;
+    width: 75px;
 }
 
 .tabla-servicio th:nth-of-type(9), .tabla-grid-servicio td:nth-of-type(9) {
@@ -123,7 +126,7 @@
 
 /* Posición 9 materiales descripción */
 .tabla-material th:nth-of-type(9), .tabla-grid-material td:nth-of-type(9) {
-    width: 150px;
+    width: 80px;
 }
 
 .tabla-servicio th:nth-of-type(10), .tabla-grid-servicio td:nth-of-type(10) {
@@ -142,5 +145,21 @@
 }
 
 .tabla-material th:nth-of-type(13), .tabla-grid-material td:nth-of-type(13), .tabla-material th:nth-of-type(14), .tabla-grid-material td:nth-of-type(14) {
-    width: 65px;
+    width: 60px;
+}
+
+.tabla-material th:nth-of-type(13), .tabla-grid-material td:nth-of-type(13), .tabla-material th:nth-of-type(14), .tabla-grid-material td:nth-of-type(14) {
+    width: 60px;
+}
+
+.tabla-material th:nth-of-type(15), .tabla-grid-material td:nth-of-type(15) {
+    width: 50px;
+}
+
+.tabla-material th:nth-of-type(16), .tabla-grid-material td:nth-of-type(16) {
+    width: 60px;
+}
+
+.tabla-material th:nth-of-type(17), .tabla-grid-material td:nth-of-type(17) {
+    width: 45px;
 }
