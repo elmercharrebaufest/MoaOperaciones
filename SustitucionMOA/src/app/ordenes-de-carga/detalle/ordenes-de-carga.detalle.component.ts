@@ -80,6 +80,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     esPuerto: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA PUERTO');
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esAnulador: boolean = this.isAuthorized('ANULAR ORDEN DE CARGA');
+    
 
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
@@ -258,10 +259,13 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         //    return;
         //}
 
-        if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada)) {
-            if (sessionStorage.getItem("tipoUsuario") == "CLI")
-            this.mostrarBotonSolicitarAnulacion = true;
-            this.mostrarBotonEditar = true;
+        if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
+            if (this.esTercero)
+                this.mostrarBotonSolicitarAnulacion = true;
+            if (this.ordenDeCarga.Estado != EstadoOrdenDeCarga.EdicionRechazada) {
+                this.mostrarBotonEditar = true;
+            }
+            
         }
 
 

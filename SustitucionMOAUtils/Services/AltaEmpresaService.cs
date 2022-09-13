@@ -239,6 +239,22 @@ namespace SustitucionMOAUtils.Services
                 {
 
                     var usuario = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
+                    if (usuario == null)
+                    {
+                        if (proveedor.TipoProveedor.NombreCorto == "G")
+                        {
+                            usuario = new UsuarioGranos { Mail = proveedor.Mail, CUITRegistro = proveedor.CUIT, Habilitado = true, TipoUsuario = proveedor.TipoProveedor, Roles = new List<Rol>(), SeccionesVisitadas = "", AceptoTyC = false };
+                        }
+                        else if (proveedor.TipoProveedor.NombreCorto == "NG")
+                        {
+                            usuario = new UsuarioNoGranos { Mail = proveedor.Mail, CUITRegistro = proveedor.CUIT, Habilitado = true, TipoUsuario = proveedor.TipoProveedor, Roles = new List<Rol>(), SeccionesVisitadas = "", AceptoTyC = false };
+                        }
+                        else
+                        {
+                            usuario = new Usuario { Mail = proveedor.Mail, CUITRegistro = proveedor.CUIT, Habilitado = true, TipoUsuario = proveedor.TipoProveedor, Roles = new List<Rol>(), SeccionesVisitadas = "", AceptoTyC = false };
+                        }
+                        repositorio.Agregar(usuario);
+                    }
                     var rolUsuarioGranos = ObtenerRolPorCodigo("GRAN");
 
                     switch (proveedor.TipoProveedor.Nombre)
@@ -401,7 +417,7 @@ namespace SustitucionMOAUtils.Services
                 return mensajeResultado;
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
@@ -538,7 +554,7 @@ namespace SustitucionMOAUtils.Services
 
             if (proveedor.AltaInterna ?? false)
             {
-                if(proveedor.TipoProveedor.NombreCorto == "G")
+                if (proveedor.TipoProveedor.NombreCorto == "G")
                 {
                     var usuario = repositorio.Obtener<Usuario>(U => U.Id == proveedor.IdSolicitanteInternoAltaGranos);
                     copia.Add(usuario.Mail);

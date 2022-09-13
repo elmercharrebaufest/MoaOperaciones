@@ -12,5 +12,6 @@ export enum EstadoOrdenDeCarga {
     EdicionSolicitada,
     AnulacionSolicitada,
     ContratoVencido,
-    EdicionRechazada
+    EdicionRechazada,
+    TransporteNoExiste
 }

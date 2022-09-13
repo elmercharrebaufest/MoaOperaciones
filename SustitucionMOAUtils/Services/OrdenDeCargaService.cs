@@ -133,8 +133,8 @@ namespace SustitucionMOAUtils.Services
                 var creadaEnSaP = CrearOrdenEnSAP(ordenDeCarga, cliente, false);
 
                 if (creadaEnSaP)
-                {
-                    VerificarSituacionCrediticia(ordenDeCarga, true);
+                {                   
+                        VerificarSituacionCrediticia(ordenDeCarga, true);                    
                 }
             }
 
@@ -478,6 +478,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Vencida);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
 
                 }
 
@@ -493,12 +494,14 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
                 }
 
                 if (esPuerto)
                 {
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
+
                 }
 
                 if (esAdmin)
@@ -517,6 +520,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.ErrorDeCarga);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
                 }
 
                 Expression<Func<OrdenDeCarga, bool>> filtro =
@@ -906,7 +910,7 @@ namespace SustitucionMOAUtils.Services
             var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
             emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
             string asunto = $"Solicitud de anulación, Orden de carga N° {ordenDeCargaId}";
-            string titulo = $"Se informa que el día {DateTime.Now.Date} se ha solicitado la anulación de la siguiente orden de carga:";
+            string titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha solicitado la anulación de la siguiente orden de carga:";
             var cabecera = "Orden :";
             ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
@@ -1854,7 +1858,7 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsMesaENTSL.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
-            string titulo = "Se econtraron varios contratos para el mismo cliente";
+            string titulo = "Se encontraron varios contratos para el mismo cliente";
             var cabecera = "Orden :";
             ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
