@@ -307,6 +307,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
+    private getSelectedTipoPosicion(posiciones: any) {
+        debugger;
+        let tipoPosicion = undefined;
+        if (posiciones != undefined && posiciones.length > 0) {
+            let posicion = posiciones.filter(p => p.TipoPosicion.Codigo != undefined);
+            if (posicion != undefined) {
+                tipoPosicion = posicion[0].TipoPosicion.Codigo;
+            }
+        }
+        return tipoPosicion;
+    }
+
+
     cargarSolpActual(solp) {
         // Paso 1
         this.solpActual.id = solp.Id;
@@ -322,6 +335,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.mail = solp.Email || ''; //sessionStorage.getItem("username");
         this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
         this.solpActual.emailLinkToken = solp.EmailLinkToken;
+        this.solpActual.selectTipoPosicion = this.getSelectedTipoPosicion(solp.Posiciones);
 
         // Paso 2
         this.solpActual.supervisorSector = solp.SupervisorSector || '';
@@ -396,7 +410,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             let posActual = this.solpActual.posicionActual;
             let solpActual = this.solpActual;
-            solpActual.posiciones = this.solpActual.posiciones.filter(p => p.numeroPosicion === 1);
+            // solpActual.posiciones = this.solpActual.posiciones.filter(p => p.numeroPosicion === 1);
+
+            this.solpActual.selectTipoPosicion = solp.Posiciones[0].TipoPosicion;
 
             solp.Posiciones.forEach(x => {
                 posActual.id = x.Codigo;

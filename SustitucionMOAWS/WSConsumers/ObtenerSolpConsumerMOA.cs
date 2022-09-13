@@ -36,6 +36,7 @@ namespace SustitucionMOAWS.WSConsumers
             //            en el periodo de tiempo ingresado en IM_PREQ_DATE_I y IM_PREQ_DATE_F.
             string IM_PREQ_NO = req.NumeroSolp;
 
+
             string IM_SERVICES = "X";
             string IM_ACCOUNT_ASSIGNMENT = "X";
             string IM_DELIVERY_ADDRESS = "X";
@@ -619,6 +620,7 @@ namespace SustitucionMOAWS.WSConsumers
         public string IndicadorDeLiberacion { get; set; }
         public bool ObtenerServicios { get; set; }
         public List<string> CreadoPorUsuarios { get; set; }
+      
     }
 
     public class ErrorObtenerSOLP
