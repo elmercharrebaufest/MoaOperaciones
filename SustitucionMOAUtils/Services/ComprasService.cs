@@ -46,6 +46,7 @@ namespace SustitucionMOAUtils.Services
 		private readonly IObtenerMaterialesSolpConsumerMOA obtenerMaterialesSolpConsumerMOA;
 		private readonly ICrearPedidoConsumerMOA crearPedidoConsumerMOA;
 		private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
+		private readonly IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA;
 
 		private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
 		private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
@@ -60,7 +61,8 @@ namespace SustitucionMOAUtils.Services
 			IModificarSolpConsumerMOA modificarSolpConsumerMOA,
 			IObtenerMaterialesSolpConsumerMOA obtenerMaterialesSolpConsumerMOA,
 			ICrearPedidoConsumerMOA crearPedidoConsumerMOA,
-			IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA)
+			IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
+			IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA)
 		{
 			this.repositorio = repositorio;
 			this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -73,6 +75,7 @@ namespace SustitucionMOAUtils.Services
 			this.obtenerMaterialesSolpConsumerMOA = obtenerMaterialesSolpConsumerMOA;
 			this.crearPedidoConsumerMOA = crearPedidoConsumerMOA;
 			this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
+			this.obtenerContratoSolpConsumerMOA = obtenerContratoSolpConsumerMOA;
 		}
 
 
@@ -2012,6 +2015,13 @@ namespace SustitucionMOAUtils.Services
 				TipoPosicionDocumentoCompras = item.TipoPosicionDocumentoCompras
 			}).ToList();
 		}
+
+
+		public List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro)
+		{		
+            var result = obtenerContratoSolpConsumerMOA.Request(numeroContrato, centro);
+            return result.ContratosSolp;
+        }
 	}
 
 	public static class SolpTemplateKeys

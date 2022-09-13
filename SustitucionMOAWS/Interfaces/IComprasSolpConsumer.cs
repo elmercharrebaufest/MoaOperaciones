@@ -30,10 +30,14 @@ namespace SustitucionMOAWS.Interfaces
         MaterialWSMOAResponse request(List<string> CentroCodigo, string NombreDeMaterial);
     }
 
-
     public interface IObtenerSolpConsumerMOA
     {
         ObtenerSolpSAPResponse Request(ObtenerSolpRequest req);
         ObtenerSolpSAPResponse RequestSolpWithNroAndDates(ObtenerSolpRequest req);
+    }
+
+    public interface IObtenerContratoSolpConsumerMOA
+    {
+        ContratoSolpWSMOAResponse Request(string numeroContrato, string centro);
     }
 }
