@@ -248,10 +248,11 @@ namespace SustitucionMOAWS.WSConsumers
                 }
 
                 //IM_PRITEM.DES_VENDOR = null; //DES_VENDOR WLIEF   Proveedor deseado
-                //IM_PRITEM.FIXED_VEND = null; //FIXED_VEND FLIEF   Proveedor fijo
-                //IM_PRITEM.PURCH_ORG = posicion.GrupoCompras.CodigoSap; //PURCH_ORG EKORG   Organización de compras
-                IM_PRITEM.AGREEMENT = null; //Contrato marco? No está en este MVP //AGREEMENT   KONNR Número del contrato superior
-                IM_PRITEM.AGMT_ITEM = null;//Contrato marco? No está en este MVP //AGMT_ITEM   KTPNR Número de posición del contrato superior
+                //Contrato marco          
+                //IM_PRITEM.FIXED_VEND = posicion.ProveedorFijo;; //FIXED_VEND FLIEF   Proveedor fijo
+                //IM_PRITEM.PURCH_ORG = posicion.OrganizacionCompras; //PURCH_ORG EKORG   Organización de compras        
+                //IM_PRITEM.AGREEMENT = posicion.NumeroContratoSuperior; //AGREEMENT   KONNR Número del contrato superior
+                //IM_PRITEM.AGMT_ITEM = posicion.NumeroPosicionContratoSuperior; //AGMT_ITEM   KTPNR Número de posición del contrato superior
                 //IM_PRITEM.INFO_REC = null; //INFO_REC    INFNR Número del registro info de compras
                 IM_PRITEM.CLOSED = null; //Contrato marco? No está en este MVP //CLOSED  EBAKZ Solicitud de pedido concluida
                 IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap; //CURRENCY    WAERS Clave de moneda

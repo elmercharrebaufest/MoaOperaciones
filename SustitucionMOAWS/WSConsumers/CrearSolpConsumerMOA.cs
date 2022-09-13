@@ -241,10 +241,16 @@ namespace SustitucionMOAWS.WSConsumers
                 }
 
                 //IM_PRITEM.DES_VENDOR = null; //DES_VENDOR WLIEF   Proveedor deseado
-                //IM_PRITEM.FIXED_VEND = null; //FIXED_VEND FLIEF   Proveedor fijo
-                //IM_PRITEM.PURCH_ORG = null; //PURCH_ORG EKORG   Organización de compras        
-                IM_PRITEM.AGREEMENT = null; //AGREEMENT   KONNR Número del contrato superior
-                IM_PRITEM.AGMT_ITEM 
+                //Contrato marco          
+                //IM_PRITEM.FIXED_VEND = posicion.ProveedorFijo;; //FIXED_VEND FLIEF   Proveedor fijo
+                //IM_PRITEM.PURCH_ORG = posicion.OrganizacionCompras; //PURCH_ORG EKORG   Organización de compras        
+                //IM_PRITEM.AGREEMENT = posicion.NumeroContratoSuperior; //AGREEMENT   KONNR Número del contrato superior
+                //IM_PRITEM.AGMT_ITEM = posicion.NumeroPosicionContratoSuperior; //AGMT_ITEM   KTPNR Número de posición del contrato superior
+                //IM_PRITEM.INFO_REC = null; //INFO_REC    INFNR Número del registro info de compras                            
+                IM_PRITEM.CLOSED = null; //CLOSED  EBAKZ Solicitud de pedido concluida
+                IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap; //CURRENCY    WAERS Clave de moneda
+                //IM_PRITEM.CURRENCY_ISO = null; //CURRENCY_ISO BAPIISOCD   Código ISO para moneda
+                IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega; //PLND_DELRY PLIFZ   Plazo de entrega previsto en días
                 //IM_PRITEM.INFO_REC = null; //INFO_REC    INFNR Número del registro info de compras                            
                 IM_PRITEM.CLOSED = null; //CLOSED  EBAKZ Solicitud de pedido concluida
                 IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap; //CURRENCY    WAERS Clave de moneda
