@@ -21,7 +21,8 @@ namespace SustitucionMOAModel.Enums
         EdicionSolicitada,
         AnulacionSolicitada,
         ContratoVencido, 
-        EdicionRechazada
+        EdicionRechazada,
+        TransporteNoExiste
     }
 
     public static class EstadoOrdenDeCargaExtensions
@@ -36,14 +37,15 @@ namespace SustitucionMOAModel.Enums
                 case EstadoOrdenDeCarga.EdicionRechazada:
                     return "red";
                 case EstadoOrdenDeCarga.Pendiente:
-                case EstadoOrdenDeCarga.EdicionSolicitada:
-              
+                case EstadoOrdenDeCarga.Vencida:
+                case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                     return "orange";
                 case EstadoOrdenDeCarga.Confirmado:
-                case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                 case EstadoOrdenDeCarga.EntregaPendiente:
                 case EstadoOrdenDeCarga.ContratoVencido:
-                case EstadoOrdenDeCarga.Vencida:
+                case EstadoOrdenDeCarga.TransporteNoExiste:
+                case EstadoOrdenDeCarga.EdicionSolicitada:
+                case EstadoOrdenDeCarga.AnulacionSolicitada:
                     return "yellow";
                 case EstadoOrdenDeCarga.EntregaGenerada:
                 case EstadoOrdenDeCarga.Entregada:
@@ -85,6 +87,8 @@ namespace SustitucionMOAModel.Enums
                     return "Contrato vencido";
                 case EstadoOrdenDeCarga.EdicionRechazada:
                     return "Edición rechazada";
+                case EstadoOrdenDeCarga.TransporteNoExiste:
+                    return "Transporte no existe";
                 default:
                     return "Sin estado";
             }
@@ -102,6 +106,7 @@ namespace SustitucionMOAModel.Enums
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                 case EstadoOrdenDeCarga.EntregaPendiente:
                 case EstadoOrdenDeCarga.ContratoVencido:
+                case EstadoOrdenDeCarga.TransporteNoExiste:
                     return "En proceso";
                 case EstadoOrdenDeCarga.Vencida:
                 case EstadoOrdenDeCarga.EntregaGenerada:
