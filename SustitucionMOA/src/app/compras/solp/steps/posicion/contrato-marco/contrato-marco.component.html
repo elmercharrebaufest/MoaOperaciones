@@ -13,19 +13,7 @@
 	<div class="row myRow">
 		<div class="col-md-5">
 			<strong>Posici&oacute;n</strong>
-			<p-dropdown 
-			[options]="posiciones" 
-			[(ngModel)]="solpActual" 
-			optionLabel="numeroPosicion">
-				<ng-template let-item pTemplate="selectedItem">
-					<div>{{item.value.numeroPosicion}}</div>
-				</ng-template>
-				<ng-template let-item pTemplate="item">
-					<div>
-						<div>{{item.value.numeroPosicion}}</div>
-					</div>
-				</ng-template>
-			</p-dropdown>
+			<div class="as-input" *ngIf="posicionSeleccionada">{{posicionSeleccionada.numeroPosicion}} - {{posicionSeleccionada.tareaSubcontratar}}</div>
 		</div>
 	</div>
 	<div class="row myRow">
@@ -107,6 +95,6 @@
 
 	<p-footer>
 		<button type="button" class="btn btn-danger botonesComprasColor" (click)="onCancelarAsociar()">CANCELAR</button>
-		<button type="button" class="btn btn-primary botonesComprasColor" (click)="onAsociar()">ASOCIAR</button>
+		<button type="button" class="btn btn-primary botonesComprasColor" (click)="onAsociar()" *ngIf="contratoSeleccionado">ASOCIAR</button>
 	</p-footer>
 </p-dialog>
