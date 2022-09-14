@@ -589,5 +589,26 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult ObtenerContratoMarco(string numeroContrato, string centro)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(numeroContrato)) return Json(new { info = "Numero Contrato inválido" }, JsonRequestBehavior.AllowGet);             
+
+                return JsonCustom(new { data = service.ObtenerContratoMarco(numeroContrato, centro) });
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }

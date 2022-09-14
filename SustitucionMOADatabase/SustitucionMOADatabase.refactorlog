@@ -294,4 +294,32 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="ProvinciaId" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="5f482fc2-e839-4d21-8b1c-17383fe481ce" ChangeDateTime="09/06/2022 18:58:55">
+    <Property Name="ElementName" Value="[dbo].[SolpPosicion].[ContratoMarco]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SolpPosicion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="NumeroContratoMarco" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="ed119b9a-0f86-428d-940b-d654c31fc2d1" ChangeDateTime="09/06/2022 18:59:02">
+    <Property Name="ElementName" Value="[dbo].[SolpPosicion].[Proveedor]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SolpPosicion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="NombreProveedor" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="089dafaa-ce9a-4c1a-9c0c-eebf7368b667" ChangeDateTime="09/06/2022 18:59:51">
+    <Property Name="ElementName" Value="[dbo].[SolpPosicion].[NumeroContratoMarco]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SolpPosicion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="NumeroContratoSuperior" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="310aeb30-44f6-41fc-a1f0-7f60ad77cd1a" ChangeDateTime="09/06/2022 19:00:03">
+    <Property Name="ElementName" Value="[dbo].[SolpPosicion].[OrgCompras]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SolpPosicion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="OrganizacionCompras" />
+  </Operation>
 </Operations>
