@@ -254,7 +254,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             }
 
             if (!this.ordenDeCarga.TransporteExiste) {
-                this.mostrarBotonNotificarTransporte = true;              
+                this.mostrarBotonNotificarTransporte = true;
+                this.mostrarBotonVerificarTransporte = false;
             }
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
