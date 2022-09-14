@@ -49,6 +49,13 @@ namespace SustitucionMOAModel.Entities
         public bool? EsConcluido { get; set; }
         public int? ProvinciaId { get; set; }
 
+        //Contrato Marco
+        public string NumeroContratoSuperior { get; set; }
+        public string NumeroPosicionContratoSuperior { get; set; }
+        public string NombreProveedor { get; set; }
+        public string ProveedorFijo { get; set; }
+        public string OrganizacionCompras { get; set; }
+
 
 
         public int? CantidadSubposicionesEnSAP { get; set; }

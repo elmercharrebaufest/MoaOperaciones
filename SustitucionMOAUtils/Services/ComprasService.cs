@@ -46,6 +46,7 @@ namespace SustitucionMOAUtils.Services
 		private readonly IObtenerMaterialesSolpConsumerMOA obtenerMaterialesSolpConsumerMOA;
 		private readonly ICrearPedidoConsumerMOA crearPedidoConsumerMOA;
 		private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
+		private readonly IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA;
 
 		private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
 		private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
@@ -60,7 +61,8 @@ namespace SustitucionMOAUtils.Services
 			IModificarSolpConsumerMOA modificarSolpConsumerMOA,
 			IObtenerMaterialesSolpConsumerMOA obtenerMaterialesSolpConsumerMOA,
 			ICrearPedidoConsumerMOA crearPedidoConsumerMOA,
-			IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA)
+			IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
+			IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA)
 		{
 			this.repositorio = repositorio;
 			this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -73,6 +75,7 @@ namespace SustitucionMOAUtils.Services
 			this.obtenerMaterialesSolpConsumerMOA = obtenerMaterialesSolpConsumerMOA;
 			this.crearPedidoConsumerMOA = crearPedidoConsumerMOA;
 			this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
+			this.obtenerContratoSolpConsumerMOA = obtenerContratoSolpConsumerMOA;
 		}
 
 
@@ -366,8 +369,16 @@ namespace SustitucionMOAUtils.Services
 					posEntity.ProvinciaId = null;
 				}
 
-				if (posEntity.Subposiciones == null)
-					posEntity.Subposiciones = new List<SolpSubposicion>();
+                //Contrato Marco
+                posEntity.NumeroContratoSuperior = pos.NumeroContratoSuperior;
+                posEntity.NumeroPosicionContratoSuperior = pos.NumeroPosicionContratoSuperior;
+                posEntity.NombreProveedor = pos.NombreProveedor;
+                posEntity.ProveedorFijo = pos.ProveedorFijo;
+                posEntity.OrganizacionCompras = pos.OrganizacionCompras;
+                
+
+                if (posEntity.Subposiciones == null)
+                    posEntity.Subposiciones = new List<SolpSubposicion>();
 
 				if (pos.Subposiciones != null)
 				{
@@ -1719,22 +1730,22 @@ namespace SustitucionMOAUtils.Services
 							solp.Posiciones.Add(posicionEntity);
 						}
 
-						posicionEntity.TipoPosicion_Id = tipoSolpPosicion_Id;
-						posicionEntity.TipoImputacion_Id = tipoImputacionPosicion?.TablaGeneral_Id;
-						posicionEntity.PlazoEntrega = (int)posicion.CantidadDiasEntrega;
-						posicionEntity.FechaEntregaServicio = posicion.FechaEntregaDate;
-						posicionEntity.Centro_Id = centro?.Id;
-						posicionEntity.Almacen_Id = almacen?.Id;
-						posicionEntity.NombreEntrega = direccion?.NombreUbicacion ?? string.Empty;
-						posicionEntity.CalleEntrega = direccion?.Calle ?? string.Empty;
-						posicionEntity.NumeroEntrega = direccion?.Numero ?? string.Empty;
-						posicionEntity.CpEntrega = direccion?.CodigoPostal ?? string.Empty;
-						posicionEntity.GrupoCompras_Id = grupoCompras?.Id;
-						posicionEntity.Solicitante = posicion.NombreSolicitante;
-						posicionEntity.GrupoArticulo_Id = grupoArticulo?.Id;
-						posicionEntity.Moneda_Id = moneda?.Id;
-						posicionEntity.Estado = posicion.EstadoPosicion != "X";
-						posicionEntity.Cantidad = posicion.Cantidad;
+                        posicionEntity.TipoPosicion_Id = tipoSolpPosicion_Id;
+                        posicionEntity.TipoImputacion_Id = tipoImputacionPosicion?.TablaGeneral_Id;
+                        posicionEntity.PlazoEntrega = (int)posicion.CantidadDiasEntrega;
+                        posicionEntity.FechaEntregaServicio = posicion.FechaEntregaDate;
+                        posicionEntity.Centro_Id = centro?.Id;
+                        posicionEntity.Almacen_Id = almacen?.Id;
+                        posicionEntity.NombreEntrega = direccion?.NombreUbicacion ?? string.Empty;
+                        posicionEntity.CalleEntrega = direccion?.Calle ?? string.Empty;
+                        posicionEntity.NumeroEntrega = direccion?.Numero ?? string.Empty;
+                        posicionEntity.CpEntrega = direccion?.CodigoPostal ?? string.Empty;
+                        posicionEntity.GrupoCompras_Id = grupoCompras?.Id;
+                        posicionEntity.Solicitante = posicion.NombreSolicitante;
+                        posicionEntity.GrupoArticulo_Id = grupoArticulo?.Id;
+                        posicionEntity.Moneda_Id = moneda?.Id;
+                        posicionEntity.Estado = posicion.EstadoPosicion != "X";
+                        posicionEntity.Cantidad = posicion.Cantidad;                     
 
 						IList<SuposicionServicioSAP> subPosicionesDeLaPosicion =
 							result.ServiciosSuposiciones.Where(x => x.NumeroPosicion == posicion.NumeroPosicion &&
@@ -2004,6 +2015,13 @@ namespace SustitucionMOAUtils.Services
 				TipoPosicionDocumentoCompras = item.TipoPosicionDocumentoCompras
 			}).ToList();
 		}
+
+
+		public List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro)
+		{		
+            var result = obtenerContratoSolpConsumerMOA.Request(numeroContrato, centro);
+            return result.ContratosSolp;
+        }
 	}
 
 	public static class SolpTemplateKeys

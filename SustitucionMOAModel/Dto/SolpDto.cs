@@ -172,6 +172,14 @@ namespace SustitucionMOAModel.Dto
 
         public bool? EsConcluido { get; set; }
 
+        //Contrato Marco
+        public string NumeroContratoSuperior { get; set; }
+        public string NumeroPosicionContratoSuperior { get; set; }
+        public string NombreProveedor { get; set; }
+        public string ProveedorFijo { get; set; }
+        public string OrganizacionCompras { get; set; } 
+
+
         public TablaSapDto Unidad { get; set; }
         public TablaGeneralDto TipoPosicion { get; set; }
         public TablaGeneralDto TipoImputacion { get; set; }
@@ -244,6 +252,13 @@ namespace SustitucionMOAModel.Dto
                 this.TipoImputacionValor = entity.TipoImputacionSap != null ? new TablaSapDto(entity.TipoImputacionSap) : null;
 
                 this.Provincia = entity.ProvinciaId != null ? new ProvinciaDTO(entity.Provincia) : null;
+
+                //Contrato Marco
+                this.NumeroContratoSuperior = entity.NumeroContratoSuperior;
+                this.NombreProveedor = entity.NombreProveedor;
+                this.OrganizacionCompras = entity.OrganizacionCompras;
+                this.ProveedorFijo = entity.ProveedorFijo;
+                this.NumeroPosicionContratoSuperior = entity.NumeroPosicionContratoSuperior;
 
 
 
