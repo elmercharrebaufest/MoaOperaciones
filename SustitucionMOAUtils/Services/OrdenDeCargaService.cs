@@ -485,7 +485,6 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Vencida);
                     filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
-
                 }
 
                 if (esComercial)
@@ -507,7 +506,6 @@ namespace SustitucionMOAUtils.Services
                 {
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
-
                 }
 
                 if (esAdmin)
@@ -515,7 +513,6 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.Pendiente);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Confirmado);
                     filtrosEstados.Add(EstadoOrdenDeCarga.PendienteAprobacionCredito);
-                    filtrosEstados.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Anulada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
@@ -527,7 +524,8 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
-                }
+                    filtrosEstados.Add(EstadoOrdenDeCarga.AnulacionSolicitada);
+				}
 
                 Expression<Func<OrdenDeCarga, bool>> filtro =
                     o => o.FechaCarga <= fechaFinDateTime
