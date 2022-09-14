@@ -321,37 +321,35 @@ namespace SustitucionMOAWS.WSConsumers
 
 
                 //Estos datos de imputacion se envian solo para materiales por que en servicio va a nivel de subposicion
-                if (posicion.TipoPosicion.Codigo == "MATERIALES") 
+                if (posicion.TipoPosicion.Codigo == "MATERIALES")
                 {
                     if (!solpSAP.IM_PRACCOUNTList.Any(x =>
                             x.PREQ_ITEM == preqItem && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            x.SERIAL_NO == serialNumber && //SERIAL_NO	DZEKKN	Número actual de la imputación
+                            x.SERIAL_NO == "01" && //SERIAL_NO	DZEKKN	Número actual de la imputación                      
                             x.GL_ACCOUNT == getCodigoTablaSap(posicion.CuentaMayorSap) &&//GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             x.COSTCENTER == getCodigoTablaSap(posicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
                             x.ORDERID == getCodigoTablaSap(posicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
                             x.PROFIT_CTR == getCodigoTablaSap(posicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
 
-                    )) 
+                    ))
                     {
                         solpSAP.IM_PRACCOUNTList.Add(new ZMPES5690
                         {
                             PREQ_ITEM = preqItem, //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            SERIAL_NO = serialNumber, //SERIAL_NO	DZEKKN	Número actual de la imputación
-                            QUANTITY = posicion.Cantidad.Value, //QUANTITY	MENGE_D	Cantidad
+                            SERIAL_NO = "01", //SERIAL_NO	DZEKKN	Número actual de la imputación                        
                             GL_ACCOUNT = getCodigoTablaSap(posicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             COSTCENTER = getCodigoTablaSap(posicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
                             ORDERID = getCodigoTablaSap(posicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
                             PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
-                        }); 
+                        });
                     }
 
                     solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
                     {
                         PREQ_ITEM = preqItem,
-                        SERIAL_NO = serialNumber,
+                        SERIAL_NO = "01",
                         PREQ_ITEMX = "X",
                         SERIAL_NOX = "X",
-                        QUANTITY = "X",
                         GL_ACCOUNT = "X",
                         COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
                         ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
@@ -363,36 +361,35 @@ namespace SustitucionMOAWS.WSConsumers
 
                     linesTextoSuministro.ForEach(texto =>
                     {
-                       solpSAP.IM_PRITEMTEXTList.Add(new BAPIMEREQITEMTEXT
-                       {
-                           PREQ_ITEM = preqItem,
-                           TEXT_ID = textId,
-                           TEXT_FORM = formatText,
-                           TEXT_LINE = texto
-                       });
-                   });
-                    
-                }               
+                        solpSAP.IM_PRITEMTEXTList.Add(new BAPIMEREQITEMTEXT
+                        {
+                            PREQ_ITEM = preqItem,
+                            TEXT_ID = textId,
+                            TEXT_FORM = formatText,
+                            TEXT_LINE = texto
+                        });
+                    });
 
-                solpSAP.IM_SERVICEACCOUNTList.Add(new ZMPES5790
-                {
-                    DOC_ITEM = docItem,
-                    OUTLINE = outlineNumber,
-                    SERIAL_NO = serviceAccountSerialNumber,
-                    SERIAL_NO_ITEM = serialNumber,
-                    //Siempre mandar esto en 100. Lo autocalcula SAP
-                    PERCENT = 100
-                });
+                    solpSAP.IM_SERVICEACCOUNTList.Add(new ZMPES5790
+                    {
+                        DOC_ITEM = docItem,
+                        OUTLINE = outlineNumber,
+                        SERIAL_NO = "01",
+                        SERIAL_NO_ITEM = serialNumber,
+                        //Siempre mandar esto en 100. Lo autocalcula SAP
+                        PERCENT = 100
+                    });
 
-                solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
-                {
-                    DOC_ITEM = docItem,
-                    OUTLINE = outlineNumber,
-                    SERIAL_NO = serviceAccountSerialNumber,
-                    SERIAL_NO_ITEM = "X",
-                    //Siempre mandar esto en 100. Lo autocalcula SAP
-                    PERCENT = "X"
-                });
+                    solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
+                    {
+                        DOC_ITEM = docItem,
+                        OUTLINE = outlineNumber,
+                        SERIAL_NO = "01",
+                        SERIAL_NO_ITEM = "X",
+                        //Siempre mandar esto en 100. Lo autocalcula SAP
+                        PERCENT = "X"
+                    });
+                }
               
                 //Desde aca empiezan las subposiciones
                 var numeroSubPosicion = 0;

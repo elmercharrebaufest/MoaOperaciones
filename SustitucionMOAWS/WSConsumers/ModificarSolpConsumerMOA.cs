@@ -194,8 +194,16 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_PRITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString(); //MATL_GROUP  MATKL Grupo de artículos
 
                 if (posicion.TipoPosicion.Codigo == "MATERIALES") {
+               
+                    IM_PRITEM.MATERIAL = posicion.MaterialSolp != null && posicion.TipoPosicion.Codigo == "MATERIALES" ? posicion.MaterialSolp.CodigoSap.ToString() : ""; //MATERIAL MATNR18 Número de material(18 caracteres)
                     IM_PRITEM.QUANTITY = (Decimal)posicion.Cantidad; //QUANTITY BAMNG   Cantidad solicitud de pedido
                     IM_PRITEM.QUANTITYSpecified = true;
+                    IM_PRITEM.UNIT = posicion.Unidad.CodigoSap.ToString(); //UNIT BAMEI   Unidad de medida de solicitud pedido
+                    //IM_PRITEM.PREQ_UNIT_ISO = null; //PREQ_UNIT_ISO BAMEI_ISO   Código ISO p.la unidad de medida en la solicitud de pedido
+                    IM_PRITEM.PREQ_PRICE = (Decimal)posicion.PrecioBruto; //PREQ_PRICE  BAPICUREXT Importe de moneda para BAPIs(con 9 decimales)
+                    IM_PRITEM.PREQ_PRICESpecified = true;
+                    //IM_PRITEM.PRICE_UNIT = null; //PRICE_UNIT EPEIN   Cantidad base  
+                    //IM_PRITEM.PRICE_UNITSpecified = true;
                 }
 
                 //IM_PRITEM.UNIT = null; //UNIT BAMEI   Unidad de medida de solicitud pedido
@@ -308,7 +316,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     if (!solpSAP.IM_PRACCOUNTList.Any(x =>
                             x.PREQ_ITEM == preqItem && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            x.SERIAL_NO == serialNumber && //SERIAL_NO	DZEKKN	Número actual de la imputación
+                            x.SERIAL_NO == "01" && //SERIAL_NO	DZEKKN	Número actual de la imputación
                             x.GL_ACCOUNT == getCodigoTablaSap(posicion.CuentaMayorSap) &&//GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             x.COSTCENTER == getCodigoTablaSap(posicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
                             x.ORDERID == getCodigoTablaSap(posicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
@@ -319,28 +327,30 @@ namespace SustitucionMOAWS.WSConsumers
                         solpSAP.IM_PRACCOUNTList.Add(new ZMPES5690
                         {
                             PREQ_ITEM = preqItem, //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            SERIAL_NO = serialNumber, //SERIAL_NO	DZEKKN	Número actual de la imputación
-                            QUANTITY = posicion.Cantidad.Value, //QUANTITY	MENGE_D	Cantidad
+                            SERIAL_NO = "01", //SERIAL_NO	DZEKKN	Número actual de la imputación               
                             GL_ACCOUNT = getCodigoTablaSap(posicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             COSTCENTER = getCodigoTablaSap(posicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
                             ORDERID = getCodigoTablaSap(posicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
-                            PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
+                            PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
+                            BUS_AREA = "GENE",
+                            CO_AREA = "MOA"
+                        });
+
+
+                        solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
+                        {
+                            PREQ_ITEM = preqItem,
+                            SERIAL_NO = "01",
+                            PREQ_ITEMX = "X",
+                            SERIAL_NOX = "X",
+                            GL_ACCOUNT = "X",
+                            COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
+                            ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
+                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : "",
+                            BUS_AREA = "X",
+                            CO_AREA = "X"
                         });
                     }
-
-                    solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
-                    {
-                        PREQ_ITEM = preqItem,
-                        SERIAL_NO = serialNumber,
-                        PREQ_ITEMX = "X",
-                        SERIAL_NOX = "X",
-                        QUANTITY = "X",
-                        GL_ACCOUNT = "X",
-                        COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
-                        ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
-                        PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : ""
-                    });
-
                     //Este metodo lo usamos para enviar el texto de suministro. Solo se pueden enviar 132 caracteres por linea
                     var linesTextoSuministro = getLinesFromTextoSuministro(posicion.TextoSuministro);
 
@@ -353,6 +363,24 @@ namespace SustitucionMOAWS.WSConsumers
                             TEXT_FORM = formatText,
                             TEXT_LINE = texto
                         });
+                    });
+
+                    solpSAP.IM_SERVICEACCOUNTList.Add(new ZMPES5790
+                    {
+                        DOC_ITEM = docItem,
+                        OUTLINE = outlineNumber,                    
+                        SERIAL_NO = "01",                     
+                        //Siempre mandar esto en 100. Lo autocalcula SAP
+                        PERCENT = 100
+                    });
+
+                    solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
+                    {
+                        DOC_ITEM = docItem,
+                        OUTLINE = outlineNumber, //Preguntar a Ulises          
+                        SERIAL_NO = "01",                     
+                        //Siempre mandar esto en 100. Lo autocalcula SAP
+                        PERCENT = "X"
                     });
 
                 }            
@@ -430,7 +458,7 @@ namespace SustitucionMOAWS.WSConsumers
                             QUANTITY = subPosicion.Cantidad.Value, //QUANTITY	MENGE_D	Cantidad
                             GL_ACCOUNT = getCodigoTablaSap(subPosicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             COSTCENTER = getCodigoTablaSap(subPosicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
-                            ORDERID = getCodigoTablaSap(subPosicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
+                            ORDERID = getCodigoTablaSap(subPosicion.TipoImputacionSap) //ORDERID	AUFNR	Número de orden                          
                         }); ;
 
                         solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
@@ -442,7 +470,7 @@ namespace SustitucionMOAWS.WSConsumers
                             QUANTITY = "X",
                             GL_ACCOUNT = "X",
                             COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
-                            ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : ""
+                            ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : ""                        
                         });
                     }
                     else
