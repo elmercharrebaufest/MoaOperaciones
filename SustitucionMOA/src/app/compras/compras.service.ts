@@ -91,7 +91,7 @@ export class ComprasService extends BaseService {
             RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
             Finalizar: solp.Finalizar,
-            Posiciones: solp.posiciones.filter(x => x.numeroPosicion).map(x => {
+            Posiciones: solp.posiciones.map(x => {
                 
                 return {
                     Codigo: x.id,

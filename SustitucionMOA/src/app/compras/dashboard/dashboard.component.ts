@@ -253,7 +253,7 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     getStatusDocumentoSolp(data: any): String {
-        return data.PosicionesEstado && data.NroSolp != null ? 'Borrardo en sap' : data.EstadoSolpSap.Descripcion;
+        return data.PosicionesEstado && data.NroSolp != null ? 'Borrado en sap' : data.EstadoSolpSap.Descripcion;
     }
 
     public getColorDocumentoSolp(data: any): String {
