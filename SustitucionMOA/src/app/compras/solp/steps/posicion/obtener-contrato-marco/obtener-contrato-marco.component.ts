@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ObtenerContratoMarcoService } from './obtener-contrato-marco.service';
 
@@ -9,7 +9,18 @@ import { ObtenerContratoMarcoService } from './obtener-contrato-marco.service';
 })
 export class ObtenerContratoMarcoComponent implements OnInit {
 
+  @Input() 
+  centrosEntrega: any;
+
+  @Input() 
+  contratoMarco: any;
+
+  @Output()
+  searchContratoMarcoEmitter = new EventEmitter<any>(); 
+
   public visible: boolean;
+  public centroEntrega: any;
+  public numeroContrato: any;
   formGroup: FormGroup
 
   constructor(private obtenerContratoMarcoService: ObtenerContratoMarcoService,
@@ -18,8 +29,9 @@ export class ObtenerContratoMarcoComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.formGroup = this.formBuilder.group({    
-      numeroContrato: new FormControl('', Validators.required)    
+    this.formGroup = this.formBuilder.group({
+      centroEntrega: new FormControl('', Validators.required),
+      numeroContrato: new FormControl('', Validators.required)
     });
   }
 
