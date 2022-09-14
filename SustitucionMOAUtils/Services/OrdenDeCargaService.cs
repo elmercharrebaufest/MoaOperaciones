@@ -174,6 +174,7 @@ namespace SustitucionMOAUtils.Services
             ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
             ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
             ordenEditar.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
+            
 
             if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
             {
@@ -195,7 +196,12 @@ namespace SustitucionMOAUtils.Services
             }
 
             ordenEditar.Observacion = ordenDeCarga.Observacion;
-            ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
+            ordenEditar.TransporteExiste = TransporteExiste(ordenDeCarga);
+            ordenEditar.ActualizarEstado();
+            if(ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega))
+            {
+                VerificarSituacionCrediticia(ordenEditar, true);
+            }
 
             foreach (var prop in listaValoresDiferentes)
             {
