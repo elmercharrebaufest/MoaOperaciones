@@ -54,7 +54,7 @@ namespace SustitucionMOAUtils.Services
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
-             Log.Info($"OdenDeCargaService Agregar: {ordenDeCarga.ToJson()}");
+            Log.Info($"OdenDeCargaService Agregar: {ordenDeCarga.ToJson()}");
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
@@ -133,8 +133,8 @@ namespace SustitucionMOAUtils.Services
                 var creadaEnSaP = CrearOrdenEnSAP(ordenDeCarga, cliente, false);
 
                 if (creadaEnSaP)
-                {                   
-                        VerificarSituacionCrediticia(ordenDeCarga, true);                    
+                {
+                    VerificarSituacionCrediticia(ordenDeCarga, true);
                 }
             }
 
@@ -174,7 +174,7 @@ namespace SustitucionMOAUtils.Services
             ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
             ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
             ordenEditar.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
-            
+
 
             if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
             {
@@ -249,7 +249,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     //if (!HttpContext.Current.IsDebuggingEnabled)
                     //{
-                        EmailSender.EnviarMail(emailSenderData);
+                    EmailSender.EnviarMail(emailSenderData);
                     //}
                 }
             }
@@ -371,7 +371,7 @@ namespace SustitucionMOAUtils.Services
                     if (!ValidarVencimientoContrato(ordenDeCarga.ContratoIngresado, cliente))
                     {
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "";
-                        NotificacionContratoVencido(ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga,cliente));
+                        NotificacionContratoVencido(ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga, cliente));
                         ordenDeCarga.Estado = EstadoOrdenDeCarga.ContratoVencido;
                         return false;
                     }
@@ -534,7 +534,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
                     filtrosEstados.Add(EstadoOrdenDeCarga.AnulacionSolicitada);
-				}
+                }
 
                 Expression<Func<OrdenDeCarga, bool>> filtro =
                     o => o.FechaCarga <= fechaFinDateTime
@@ -746,7 +746,7 @@ namespace SustitucionMOAUtils.Services
             {
                 //if (!HttpContext.Current.IsDebuggingEnabled)
                 //{
-                    EmailSender.EnviarMail(emailSenderData);
+                EmailSender.EnviarMail(emailSenderData);
                 //}
             }
 
@@ -771,7 +771,7 @@ namespace SustitucionMOAUtils.Services
             {
                 //if (!HttpContext.Current.IsDebuggingEnabled)
                 //{
-                    EmailSender.EnviarMail(emailSenderData);
+                EmailSender.EnviarMail(emailSenderData);
                 //}
             }
             orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
@@ -1112,293 +1112,293 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-		public VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request)
-		{
-			OrdenCargaConsumerMOA ordenCargaConsumerMOA;
-			VisualizarClienteResponse response;
-			List<Mod.FechaWS> fechas = null;
-			try
-			{
-				var validateVisualizarClienteRequest = ValidateVisualizarClienteRequest(request);
-				if (!string.IsNullOrEmpty(validateVisualizarClienteRequest))
-				{
-					throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateVisualizarClienteRequest));
-				}
-				var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(string.Empty, string.Empty, request.Corredor, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, string.Empty, 1);
-				response = new VisualizarClienteResponse();
-				response.Clientes = GetClientesFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse, request);
-				return response;
-			}
-			catch (InfoCustomException)
-			{
-				throw;
-			}
-			catch (ValidationCustomException)
-			{
-				throw;
-			}
-			catch (Exception e)
-			{
-				throw new WSCustomException(ErrorMsg.ErrorWS, e);
-			}
-		}
-		private string ValidateVisualizarClienteRequest(VisualizarClienteRequest request)
-		{
-			string validation = string.Empty;
-			if (string.IsNullOrEmpty(request.Corredor))
-			{
-				validation = "Corredor";
-			}
-			if (string.IsNullOrEmpty(request.Pendiente))
-			{
-				validation = "Pendiente";
-			}
-			return validation;
-		}
-		private List<ProveedorDto> GetClientesFromVisualizarClienteProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse, VisualizarClienteRequest request)
-		{
-			var clientesDto = new List<ProveedorDto>();
-			var clientesWS = ordenCargaVisualizarClienteWSMOAResponse.Resultados.Select(d => d.Cliente).Distinct().ToList();
-			if (clientesWS != null && clientesWS.Count > 0)
-			{
-				var clientesBD = repositorio.Listar<Proveedor>()
-											.Where(w => clientesWS.Contains(w.CodigoProveedor))
-											.ToList();
-				clientesDto = clientesBD.Select(prov => new ProveedorDto
-				{
-					CodigoProveedor = prov.CodigoProveedor ?? "",
-					CUIT = prov.CUIT,
-					EstadoAprobacion = prov.EstadoAprobacion,
-					EstadoAprobacionDescripcion = prov.EstadoAprobacion.ToFriendlyString(),
-					Id = prov.Id,
-					IdComercialDataAgro = prov.IdComercialDataAgro,
-					IdDataAgro = prov.IdDataAgro,
-					Mail = prov.Mail ?? "",
-					Observaciones = prov.Observaciones,
-					RazonSocial = !String.IsNullOrEmpty(prov.RazonSocial) ? prov.RazonSocial : prov.CUIT,
-					FechaSolicitud = prov.FechaSolicitud,
-					Comercial = prov.Comercial,
-					EstadoSIPER = prov.EstadoSIPER,
-					ContieneDocumentacionFisica = prov.ContieneDocumentacionFisica,
-					IdTipoProveedor = prov.TipoProveedor.Id
-				}).ToList();
-			}
-			return clientesDto;
-		}
+        public VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request)
+        {
+            OrdenCargaConsumerMOA ordenCargaConsumerMOA;
+            VisualizarClienteResponse response;
+            List<Mod.FechaWS> fechas = null;
+            try
+            {
+                var validateVisualizarClienteRequest = ValidateVisualizarClienteRequest(request);
+                if (!string.IsNullOrEmpty(validateVisualizarClienteRequest))
+                {
+                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateVisualizarClienteRequest));
+                }
+                var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(string.Empty, string.Empty, request.Corredor, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, string.Empty, 1);
+                response = new VisualizarClienteResponse();
+                response.Clientes = GetClientesFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse, request);
+                return response;
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+        private string ValidateVisualizarClienteRequest(VisualizarClienteRequest request)
+        {
+            string validation = string.Empty;
+            if (string.IsNullOrEmpty(request.Corredor))
+            {
+                validation = "Corredor";
+            }
+            if (string.IsNullOrEmpty(request.Pendiente))
+            {
+                validation = "Pendiente";
+            }
+            return validation;
+        }
+        private List<ProveedorDto> GetClientesFromVisualizarClienteProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse, VisualizarClienteRequest request)
+        {
+            var clientesDto = new List<ProveedorDto>();
+            var clientesWS = ordenCargaVisualizarClienteWSMOAResponse.Resultados.Select(d => d.Cliente).Distinct().ToList();
+            if (clientesWS != null && clientesWS.Count > 0)
+            {
+                var clientesBD = repositorio.Listar<Proveedor>()
+                                            .Where(w => clientesWS.Contains(w.CodigoProveedor))
+                                            .ToList();
+                clientesDto = clientesBD.Select(prov => new ProveedorDto
+                {
+                    CodigoProveedor = prov.CodigoProveedor ?? "",
+                    CUIT = prov.CUIT,
+                    EstadoAprobacion = prov.EstadoAprobacion,
+                    EstadoAprobacionDescripcion = prov.EstadoAprobacion.ToFriendlyString(),
+                    Id = prov.Id,
+                    IdComercialDataAgro = prov.IdComercialDataAgro,
+                    IdDataAgro = prov.IdDataAgro,
+                    Mail = prov.Mail ?? "",
+                    Observaciones = prov.Observaciones,
+                    RazonSocial = !String.IsNullOrEmpty(prov.RazonSocial) ? prov.RazonSocial : prov.CUIT,
+                    FechaSolicitud = prov.FechaSolicitud,
+                    Comercial = prov.Comercial,
+                    EstadoSIPER = prov.EstadoSIPER,
+                    ContieneDocumentacionFisica = prov.ContieneDocumentacionFisica,
+                    IdTipoProveedor = prov.TipoProveedor.Id
+                }).ToList();
+            }
+            return clientesDto;
+        }
 
-		public VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request)
-		{
-			OrdenCargaConsumerMOA ordenCargaConsumerMOA;
-			VisualizarProductoResponse response;
-			List<Mod.FechaWS> fechas = null;
-			try
-			{
-				var validateVisualizarProductoRequest = ValidateVisualizarProductoRequest(request);
-				if (!string.IsNullOrEmpty(validateVisualizarProductoRequest))
-				{
-					throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateVisualizarProductoRequest));
-				}
-				var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(string.Empty, request.Contrato, string.Empty, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, string.Empty, 2);
+        public VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request)
+        {
+            OrdenCargaConsumerMOA ordenCargaConsumerMOA;
+            VisualizarProductoResponse response;
+            List<Mod.FechaWS> fechas = null;
+            try
+            {
+                var validateVisualizarProductoRequest = ValidateVisualizarProductoRequest(request);
+                if (!string.IsNullOrEmpty(validateVisualizarProductoRequest))
+                {
+                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateVisualizarProductoRequest));
+                }
+                var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(string.Empty, request.Contrato, string.Empty, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, string.Empty, 2);
 
-				response = new VisualizarProductoResponse();
-				response.Productos = GetProductosFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse);
-				return response;
-			}
-			catch (InfoCustomException)
-			{
-				throw;
-			}
-			catch (ValidationCustomException)
-			{
-				throw;
-			}
-			catch (Exception e)
-			{
-				throw new WSCustomException(ErrorMsg.ErrorWS, e);
-			}
-		}
-		private string ValidateVisualizarProductoRequest(VisualizarProductoRequest request)
-		{
-			string validation = string.Empty;
-			if (string.IsNullOrEmpty(request.Contrato))
-			{
-				validation = "Contrato";
-			}
-			return validation;
-		}
-		private List<MaterialDto> GetProductosFromVisualizarClienteProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse)
-		{
-			var productosDto = new List<MaterialDto>();
-			var productosWS = ordenCargaVisualizarClienteWSMOAResponse.Resultados.Select(d => d.Producto).Distinct().ToList();
-			if (productosWS != null && productosWS.Count > 0)
-			{
-				for (int i = 0; i < productosWS.Count; i++)
-				{
-					var producto = productosWS[i].Trim().TrimStart('0');
-					productosWS[i] = producto;
-				}
-				var productosBD = repositorio.Listar<Material>()
-											.Where(w => productosWS.Contains(w.CodigoSap))
-											.ToList();
-				productosDto = productosBD.Select(prod => new MaterialDto
-				{
-					MaterialId = prod.Id,
-					Descripcion = prod.Nombre,
-					CodigoSap = prod.CodigoSap
-				}).ToList();
-			}
-			return productosDto;
-		}
+                response = new VisualizarProductoResponse();
+                response.Productos = GetProductosFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse);
+                return response;
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+        private string ValidateVisualizarProductoRequest(VisualizarProductoRequest request)
+        {
+            string validation = string.Empty;
+            if (string.IsNullOrEmpty(request.Contrato))
+            {
+                validation = "Contrato";
+            }
+            return validation;
+        }
+        private List<MaterialDto> GetProductosFromVisualizarClienteProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse)
+        {
+            var productosDto = new List<MaterialDto>();
+            var productosWS = ordenCargaVisualizarClienteWSMOAResponse.Resultados.Select(d => d.Producto).Distinct().ToList();
+            if (productosWS != null && productosWS.Count > 0)
+            {
+                for (int i = 0; i < productosWS.Count; i++)
+                {
+                    var producto = productosWS[i].Trim().TrimStart('0');
+                    productosWS[i] = producto;
+                }
+                var productosBD = repositorio.Listar<Material>()
+                                            .Where(w => productosWS.Contains(w.CodigoSap))
+                                            .ToList();
+                productosDto = productosBD.Select(prod => new MaterialDto
+                {
+                    MaterialId = prod.Id,
+                    Descripcion = prod.Nombre,
+                    CodigoSap = prod.CodigoSap
+                }).ToList();
+            }
+            return productosDto;
+        }
 
-		public ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request)
-		{
-			ValidarCorredorClienteContratoProductoResponse response;
-			try
-			{
-				var validateValidarCorredorClienteContratoProductoRequest = ValidateValidarCorredorClienteContratoProductoRequest(request);
-				if (!string.IsNullOrEmpty(validateValidarCorredorClienteContratoProductoRequest))
-				{
-					throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateValidarCorredorClienteContratoProductoRequest));
-				}
-				var producto = repositorio.Obtener<Material>(Convert.ToInt32(request.ProductoId));
-				if (producto == null)
-				{
-					throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Producto"));
-				}
-				var cliente = repositorio.Obtener<Proveedor>(x => (x.CUIT == request.ClienteCuit || x.CodigoProveedor == request.ClienteCodigo) && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
-				if (cliente == null)
-				{
-					throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Cliente"));
-				}
-				request.ClienteCuit = cliente.CUIT;
-				request.ClienteCodigo = cliente.CodigoProveedor;
+        public ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request)
+        {
+            ValidarCorredorClienteContratoProductoResponse response;
+            try
+            {
+                var validateValidarCorredorClienteContratoProductoRequest = ValidateValidarCorredorClienteContratoProductoRequest(request);
+                if (!string.IsNullOrEmpty(validateValidarCorredorClienteContratoProductoRequest))
+                {
+                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateValidarCorredorClienteContratoProductoRequest));
+                }
+                var producto = repositorio.Obtener<Material>(Convert.ToInt32(request.ProductoId));
+                if (producto == null)
+                {
+                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Producto"));
+                }
+                var cliente = repositorio.Obtener<Proveedor>(x => (x.CUIT == request.ClienteCuit || x.CodigoProveedor == request.ClienteCodigo) && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
+                if (cliente == null)
+                {
+                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Cliente"));
+                }
+                request.ClienteCuit = cliente.CUIT;
+                request.ClienteCodigo = cliente.CodigoProveedor;
                 request.Contrato = request.Contrato.TrimStart(new Char[] { '0' });
-				var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(request.ClienteCodigo, request.Contrato, request.Corredor, request.FechaInicio, request.FechaFin, producto.CodigoSap, request.Pendiente, string.Empty, 3);
-				response = new ValidarCorredorClienteContratoProductoResponse();
-				response.ResultValidation = GetResultFromValidarCorredorClienteContratoProducto(ordenCargaVisualizarClienteWSMOAResponse, request, producto);
-				if (ordenCargaVisualizarClienteWSMOAResponse.Resultados.Count == 0)
-				{
-					response.ResultValidation = false;
-				}
-				return response;
-			}
-			catch (InfoCustomException)
-			{
-				throw;
-			}
-			catch (ValidationCustomException)
-			{
-				throw;
-			}
-			catch (Exception e)
-			{
-				throw new WSCustomException(ErrorMsg.ErrorWS, e);
-			}
-		}
-		private string ValidateValidarCorredorClienteContratoProductoRequest(ValidarCorredorClienteContratoProductoRequest request)
-		{
-			string validation = string.Empty;
-			if (string.IsNullOrEmpty(request.ClienteCuit))
-			{
-				validation = "ClienteCuit";
-			}
-			if (string.IsNullOrEmpty(request.Contrato))
-			{
-				validation = "Contrato";
-			}
-			if (string.IsNullOrEmpty(request.ProductoId))
-			{
-				validation = "ProductoId";
-			}
-			return validation;
-		}
-		private Boolean GetResultFromValidarCorredorClienteContratoProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse, ValidarCorredorClienteContratoProductoRequest request, Material producto)
-		{
-			var result = false;
-			if (ordenCargaVisualizarClienteWSMOAResponse.Resultados != null && ordenCargaVisualizarClienteWSMOAResponse.Resultados.Count > 0)
-			{
-				var res = ordenCargaVisualizarClienteWSMOAResponse.Resultados[0];
-				if (!request.ClienteCuit.Equals(string.Empty) && !request.Contrato.Equals(string.Empty) && !request.Corredor.Equals(string.Empty) && !request.ProductoId.Equals(string.Empty))
-				{
-					var clienteResult = res.Cliente.ToUpper();
-					var contratoResult = res.Contrato.ToUpper().TrimStart(new Char[] { '0' });
-					var corredorResult = res.Corredor.ToUpper();
-					var productoResult = res.Producto.ToUpper().Substring(13, 5);
-					if (request.Corredor.ToUpper().Equals(corredorResult) && request.Contrato.ToUpper().Equals(contratoResult) && request.ClienteCodigo.ToUpper().Equals(clienteResult) && producto.CodigoSap.ToUpper().Equals(productoResult))
-					{
-						result = true;
-					}
-				}
-				else if (!request.ClienteCodigo.Equals(string.Empty) && !request.Contrato.Equals(string.Empty) && !request.ProductoId.Equals(string.Empty))
-				{
-					var clienteResult = res.Cliente.ToUpper();
-					var contratoResult = res.Contrato.ToUpper().TrimStart(new Char[] { '0' });
-					var productoResult = res.Producto.ToUpper().Substring(13, 5);
-					if (request.Contrato.ToUpper().Equals(contratoResult) && request.ClienteCodigo.ToUpper().Equals(clienteResult) && producto.CodigoSap.ToUpper().Equals(productoResult))
-					{
-						result = true;
-					}
-				}
-			}
-			return result;
-		}
+                var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(request.ClienteCodigo, request.Contrato, request.Corredor, request.FechaInicio, request.FechaFin, producto.CodigoSap, request.Pendiente, string.Empty, 3);
+                response = new ValidarCorredorClienteContratoProductoResponse();
+                response.ResultValidation = GetResultFromValidarCorredorClienteContratoProducto(ordenCargaVisualizarClienteWSMOAResponse, request, producto);
+                if (ordenCargaVisualizarClienteWSMOAResponse.Resultados.Count == 0)
+                {
+                    response.ResultValidation = false;
+                }
+                return response;
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+        private string ValidateValidarCorredorClienteContratoProductoRequest(ValidarCorredorClienteContratoProductoRequest request)
+        {
+            string validation = string.Empty;
+            if (string.IsNullOrEmpty(request.ClienteCuit))
+            {
+                validation = "ClienteCuit";
+            }
+            if (string.IsNullOrEmpty(request.Contrato))
+            {
+                validation = "Contrato";
+            }
+            if (string.IsNullOrEmpty(request.ProductoId))
+            {
+                validation = "ProductoId";
+            }
+            return validation;
+        }
+        private Boolean GetResultFromValidarCorredorClienteContratoProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse, ValidarCorredorClienteContratoProductoRequest request, Material producto)
+        {
+            var result = false;
+            if (ordenCargaVisualizarClienteWSMOAResponse.Resultados != null && ordenCargaVisualizarClienteWSMOAResponse.Resultados.Count > 0)
+            {
+                var res = ordenCargaVisualizarClienteWSMOAResponse.Resultados[0];
+                if (!request.ClienteCuit.Equals(string.Empty) && !request.Contrato.Equals(string.Empty) && !request.Corredor.Equals(string.Empty) && !request.ProductoId.Equals(string.Empty))
+                {
+                    var clienteResult = res.Cliente.ToUpper();
+                    var contratoResult = res.Contrato.ToUpper().TrimStart(new Char[] { '0' });
+                    var corredorResult = res.Corredor.ToUpper();
+                    var productoResult = res.Producto.ToUpper().Substring(13, 5);
+                    if (request.Corredor.ToUpper().Equals(corredorResult) && request.Contrato.ToUpper().Equals(contratoResult) && request.ClienteCodigo.ToUpper().Equals(clienteResult) && producto.CodigoSap.ToUpper().Equals(productoResult))
+                    {
+                        result = true;
+                    }
+                }
+                else if (!request.ClienteCodigo.Equals(string.Empty) && !request.Contrato.Equals(string.Empty) && !request.ProductoId.Equals(string.Empty))
+                {
+                    var clienteResult = res.Cliente.ToUpper();
+                    var contratoResult = res.Contrato.ToUpper().TrimStart(new Char[] { '0' });
+                    var productoResult = res.Producto.ToUpper().Substring(13, 5);
+                    if (request.Contrato.ToUpper().Equals(contratoResult) && request.ClienteCodigo.ToUpper().Equals(clienteResult) && producto.CodigoSap.ToUpper().Equals(productoResult))
+                    {
+                        result = true;
+                    }
+                }
+            }
+            return result;
+        }
 
-		private OrdenCargaVisualizarClienteWSMOAResponse OrdenCargaVisualizarCliente(string cliente, string contrato, string corredor, string fechaInicio, string fechaFin, string material, string pendiente, string tipoContrato, int type)
-		{
-			try
-			{
-				List<Mod.FechaWS> fechas = null;
-				OrdenCargaConsumerMOA ordenCargaConsumerMOA = new OrdenCargaConsumerMOA();
-				if (!string.IsNullOrEmpty(fechaInicio) && !string.IsNullOrEmpty(fechaFin))
-				{
-					fechas = CommonService.toDateList(fechaInicio, fechaFin);
-				}
-				var request = new OrdenCargaVisualizarClienteWSMOARequest()
-				{
-					Cliente = cliente,
-					Contrato = contrato,
-					Corredor = corredor,
-					Fechas = fechas,
-					Material = material,
-					Pendiente = pendiente,
-					TipoContrato = tipoContrato
-				};
+        private OrdenCargaVisualizarClienteWSMOAResponse OrdenCargaVisualizarCliente(string cliente, string contrato, string corredor, string fechaInicio, string fechaFin, string material, string pendiente, string tipoContrato, int type)
+        {
+            try
+            {
+                List<Mod.FechaWS> fechas = null;
+                OrdenCargaConsumerMOA ordenCargaConsumerMOA = new OrdenCargaConsumerMOA();
+                if (!string.IsNullOrEmpty(fechaInicio) && !string.IsNullOrEmpty(fechaFin))
+                {
+                    fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                }
+                var request = new OrdenCargaVisualizarClienteWSMOARequest()
+                {
+                    Cliente = cliente,
+                    Contrato = contrato,
+                    Corredor = corredor,
+                    Fechas = fechas,
+                    Material = material,
+                    Pendiente = pendiente,
+                    TipoContrato = tipoContrato
+                };
                 Log.Info("OrdenCargaVisualizarCliente request " + request.ToJson());
                 var ordenCargaVisualizarClienteWSMOAResponse = ordenCargaConsumerMOA.OrdenCargaVisualizarClienteExecute(request);
                 Log.Info("OrdenCargaVisualizarCliente  result " + ordenCargaVisualizarClienteWSMOAResponse.ToJson());
-				if (ordenCargaVisualizarClienteWSMOAResponse == null)
-				{
-					throw new ValidationCustomException("La RFC no se encuentra habilitada, verifique la conexión con la RFC");
-				}
-				if (ordenCargaVisualizarClienteWSMOAResponse.Resultados == null || ordenCargaVisualizarClienteWSMOAResponse.Resultados.Count == 0)
-				{
-					if (type == 1)
-					{
-						throw new ValidationCustomException("RFC no devuelve datos, no se encontraron clientes para dicho corredor");
-					}
-					if (type == 2)
-					{
-						throw new ValidationCustomException("RFC no devuelve datos, no se encontró el producto para dicho contrato");
-					}
-				}
-				return ordenCargaVisualizarClienteWSMOAResponse;
-			}
-			catch (InfoCustomException)
-			{
-				throw;
-			}
-			catch (ValidationCustomException)
-			{
-				throw;
-			}
-			catch (Exception e)
-			{
-				throw new WSCustomException(ErrorMsg.ErrorWS, e);
-			}
-		}
+                if (ordenCargaVisualizarClienteWSMOAResponse == null)
+                {
+                    throw new ValidationCustomException("La RFC no se encuentra habilitada, verifique la conexión con la RFC");
+                }
+                if (ordenCargaVisualizarClienteWSMOAResponse.Resultados == null || ordenCargaVisualizarClienteWSMOAResponse.Resultados.Count == 0)
+                {
+                    if (type == 1)
+                    {
+                        throw new ValidationCustomException("RFC no devuelve datos, no se encontraron clientes para dicho corredor");
+                    }
+                    if (type == 2)
+                    {
+                        throw new ValidationCustomException("RFC no devuelve datos, no se encontró el producto para dicho contrato");
+                    }
+                }
+                return ordenCargaVisualizarClienteWSMOAResponse;
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
 
-		#region Etapa1
-		public Resultado SeleccionarContrato(int ordenId, string contratoSAP)
+        #region Etapa1
+        public Resultado SeleccionarContrato(int ordenId, string contratoSAP)
         {
             string resultado = SuccessMsg.OrdenDeCargaActualizada;
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
@@ -1569,7 +1569,7 @@ namespace SustitucionMOAUtils.Services
 
                     //if (!HttpContext.Current.IsDebuggingEnabled)
                     //{
-                        EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
+                    EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
                     //}
                     mensaje = "Notificación enviada";
                 }
@@ -1627,7 +1627,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             //if (!HttpContext.Current.IsDebuggingEnabled)
                             //{
-                                EmailSender.EnviarMail(emailSenderData);
+                            EmailSender.EnviarMail(emailSenderData);
                             //}
                         }
                     }
@@ -1701,8 +1701,8 @@ namespace SustitucionMOAUtils.Services
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: { ordenDeCargaHistorial[0].OrdenDeCarga_Id }, { orden.Cliente.RazonSocial }, { contrato }";
-				emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, numeroPedido, cambios);
-				return emailSenderData;
+                emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, numeroPedido, cambios);
+                return emailSenderData;
             }
             catch (Exception ex)
             {
@@ -1754,11 +1754,11 @@ namespace SustitucionMOAUtils.Services
                 {
                     return null;
                 }
-               
+
 
                 ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
                 emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
-                emailSenderData.Asunto = $"Orden de carga #{orden.Id}";
+                emailSenderData.Asunto = $"Orden de carga #{orden.Id}  Pedido Bloqueado {orden.Cliente.RazonSocial}";
                 return emailSenderData;
             }
             catch
@@ -1895,9 +1895,9 @@ namespace SustitucionMOAUtils.Services
             return emailSenderData;
         }
 
-        
+
         public string NotificacionContratoVencido(EmailSenderData emailSenderData)
-        {           
+        {
             if (emailSenderData != null)
             {
                 EmailSender.EnviarMail(emailSenderData);
