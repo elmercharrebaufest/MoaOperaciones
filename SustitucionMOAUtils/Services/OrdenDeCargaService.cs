@@ -1847,7 +1847,7 @@ namespace SustitucionMOAUtils.Services
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
             emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
-            emailSenderData.Mails.AddRange(mailsMesaENTSL.Split(';').ToList());
+            //emailSenderData.Mails.AddRange(mailsMesaENTSL.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             string titulo = "Se encontraron varios pedidos pendientes para el mismo cliente";
             var cabecera = "Orden :";
@@ -1885,7 +1885,7 @@ namespace SustitucionMOAUtils.Services
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
             emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
-            emailSenderData.Mails.AddRange(mailsMesaENTSL.Split(';').ToList());
+            //emailSenderData.Mails.AddRange(mailsMesaENTSL.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             string titulo = "Se encontraron varios contratos para el mismo cliente";
             var cabecera = "Orden :";
