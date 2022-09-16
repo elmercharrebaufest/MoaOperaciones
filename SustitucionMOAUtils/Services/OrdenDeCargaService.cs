@@ -197,8 +197,10 @@ namespace SustitucionMOAUtils.Services
 
             ordenEditar.Observacion = ordenDeCarga.Observacion;
             ordenEditar.TransporteExiste = TransporteExiste(ordenDeCarga);
+            Log.Info("Editar ActualizarEstado " + ordenEditar.ToJson());
             ordenEditar.ActualizarEstado();
-            if(ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega))
+            Log.Info("Editar ActualizarEstado Nuevo " + ordenEditar.Estado.ToString());
+            if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega))
             {
                 VerificarSituacionCrediticia(ordenEditar, true);
             }
@@ -261,14 +263,14 @@ namespace SustitucionMOAUtils.Services
             //OV-02   'Verificar cantidad pendiente de Contratada'
             //OV-03   'Pedido creado - Verificar Crédito de pedido'
             //OV-00   'OK'
-            var forzarCreacionStr = forzarCreacion ? "" : "X";
+            var validarKg = forzarCreacion ? "" : "X";
             string contrato = null;
             if (orden.ContratoSAP != null)
             {
                 contrato = orden.ContratoSAP.Split('|').First();
             }
-            Log.Info("CrearOrdenEnSAP CrearOrdenRequest" + $"cliente.CodigoProveedor {cliente.CodigoProveedor ?? ""}, orden.ContratoSAP {orden.ContratoSAP ?? ""}, orden.CodigoCorredor {orden.CodigoCorredor ?? ""}, orden.Cantidad {orden.Cantidad}, orden.Producto.CodigoSap {orden.Producto.CodigoSap ?? ""}, orden.NumeroPedidoIngresado {orden.NumeroPedidoIngresado ?? ""}, forzarCreacionStr {forzarCreacionStr ?? ""}");
-            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, contrato, orden.CodigoCorredor, orden.Cantidad, orden.Producto.CodigoSap, orden.NumeroPedidoIngresado, forzarCreacionStr, out string numeroPedido);
+            Log.Info("CrearOrdenEnSAP CrearOrdenRequest" + $"cliente.CodigoProveedor {cliente.CodigoProveedor ?? ""}, orden.ContratoSAP {orden.ContratoSAP ?? ""}, orden.CodigoCorredor {orden.CodigoCorredor ?? ""}, orden.Cantidad {orden.Cantidad}, orden.Producto.CodigoSap {orden.Producto.CodigoSap ?? ""}, orden.NumeroPedidoIngresado {orden.NumeroPedidoIngresado ?? ""}, validarKg {validarKg ?? ""}, forzarCreacion {forzarCreacion.ToString() ?? ""}");
+            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, contrato, orden.CodigoCorredor, orden.Cantidad, orden.Producto.CodigoSap, orden.NumeroPedidoIngresado, validarKg, out string numeroPedido);
             Log.Info("CrearOrdenEnSAP CrearOrdenRequest Result " + result);
 
             var resultadoCrearOrden = false;
@@ -306,7 +308,10 @@ namespace SustitucionMOAUtils.Services
 
             }
 
+            Log.Info("CrearOrdenEnSAP ActualizarEstado " + orden.ToJson());
             orden.ActualizarEstado();
+            Log.Info("CrearOrdenEnSAP ActualizarEstado Nuevo " + orden.Estado.ToString());
+
             repositorio.GuardarCambios();
 
             return resultadoCrearOrden;
@@ -354,7 +359,9 @@ namespace SustitucionMOAUtils.Services
 
                 }
 
+                Log.Info("VerificarOrden ActualizarEstado " + ordenDeCarga.ToJson());
                 ordenDeCarga.ActualizarEstado();
+                Log.Info("VerificarOrden ActualizarEstado Nuevo " + ordenDeCarga.Estado.ToString());
             }
 
             else
@@ -414,7 +421,9 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+            Log.Info("VerificarOrden ActualizarEstado " + ordenDeCarga.ToJson());
             ordenDeCarga.ActualizarEstado();
+            Log.Info("VerificarOrden ActualizarEstado Nuevo " + ordenDeCarga.Estado.ToString());
             return false;
         }
 
@@ -1354,7 +1363,9 @@ namespace SustitucionMOAUtils.Services
 					Pendiente = pendiente,
 					TipoContrato = tipoContrato
 				};
-				var ordenCargaVisualizarClienteWSMOAResponse = ordenCargaConsumerMOA.OrdenCargaVisualizarClienteExecute(request);
+                Log.Info("OrdenCargaVisualizarCliente request " + request.ToJson());
+                var ordenCargaVisualizarClienteWSMOAResponse = ordenCargaConsumerMOA.OrdenCargaVisualizarClienteExecute(request);
+                Log.Info("OrdenCargaVisualizarCliente  result " + ordenCargaVisualizarClienteWSMOAResponse.ToJson());
 				if (ordenCargaVisualizarClienteWSMOAResponse == null)
 				{
 					throw new ValidationCustomException("La RFC no se encuentra habilitada, verifique la conexión con la RFC");
@@ -1394,8 +1405,9 @@ namespace SustitucionMOAUtils.Services
 
             orden.ContratoSAP = contratoSAP;
             orden.DescripcionErrorInterno = "";
+            Log.Info("SeleccionarContrato ActualizarEstado " + orden.ToJson());
             orden.ActualizarEstado();
-
+            Log.Info("SeleccionarContrato ActualizarEstado Nuevo " + orden.Estado.ToString());
             if (!ValidarVencimientoContrato(contratoSAP, orden.Cliente))
             {
                 orden.ContratoSAP = "";
@@ -1422,6 +1434,7 @@ namespace SustitucionMOAUtils.Services
         }
         public string ForzarCreacionOrden(int ordenId)
         {
+            Log.Info($"ForzarCreacionOrden " + ordenId.ToJson());
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
             var creadaEnSaP = CrearOrdenEnSAP(orden, orden.Cliente, true);
@@ -1454,7 +1467,9 @@ namespace SustitucionMOAUtils.Services
 
             orden.NumeroPedido = pedido;
 
+            Log.Info("SeleccionarPedido ActualizarEstado " + orden.ToJson());
             orden.ActualizarEstado();
+            Log.Info("SeleccionarPedido ActualizarEstado Nuevo " + orden.Estado.ToString());
 
             if (!string.IsNullOrEmpty(orden.NumeroPedido) && orden.TransporteExiste)
             {
@@ -1496,7 +1511,9 @@ namespace SustitucionMOAUtils.Services
 
             if (orden.TransporteExiste)
             {
+                Log.Info("VerificarTransporte ActualizarEstado " + orden.ToJson());
                 orden.ActualizarEstado();
+                Log.Info("VerificarTransporte ActualizarEstado Nuevo " + orden.Estado.ToString());
                 repositorio.GuardarCambios();
                 return SuccessMsg.OrdenDeCargaActualizada;
             }
@@ -1615,8 +1632,9 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
 
+                    Log.Info("VerificarSituacionCrediticia ActualizarEstado " + orden.ToJson());
                     orden.ActualizarEstado();
-
+                    Log.Info("VerificarSituacionCrediticia ActualizarEstado Nuevo " + orden.Estado.ToString());
                     if (notificar)
                     {
                         return new Resultado { Mensaje = "Verifique el crédito del pedido" };
@@ -1630,7 +1648,9 @@ namespace SustitucionMOAUtils.Services
                 else
                 {
                     orden.DescripcionErrorInterno = "";
+                    Log.Info("VerificarSituacionCrediticia ActualizarEstado " + orden.ToJson());
                     orden.ActualizarEstado();
+                    Log.Info("VerificarSituacionCrediticia ActualizarEstado Nuevo " + orden.Estado.ToString());
                     return GenerarEntregaSAP(orden);
                 }
             }
@@ -1762,6 +1782,7 @@ namespace SustitucionMOAUtils.Services
             Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest " + $"orden.CUITChofer {orden.CUITChofer ?? ""}, orden.Cantidad {orden.Cantidad}, conductor {conductor ?? ""}, orden.PatenteAcoplado {orden.PatenteAcoplado ?? ""}, orden.ChasisAcoplado {orden.ChasisAcoplado ?? ""}, orden.NumeroPedido {orden.NumeroPedido ?? ""}, tipoDocumento {tipoDocumento ?? ""}, orden.CUITTransporte {orden.CUITTransporte ?? ""}");
             var result = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, conductor, orden.PatenteAcoplado, orden.ChasisAcoplado, orden.NumeroPedido, tipoDocumento, orden.CUITTransporte, out string respuesta);
             Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Result " + result);
+            Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Respuesta " + respuesta);
 
             //OE-00   'OK'
             //OE-01   'No existe tranportista
@@ -1774,15 +1795,19 @@ namespace SustitucionMOAUtils.Services
                     orden.TransporteExiste = true;
                     orden.FechaEntregaGenerada = DateTime.Now;
                     orden.NumeroEntrega = result;
+                    Log.Info("GenerarEntregaSAP ActualizarEstado " + orden.ToJson());
                     orden.ActualizarEstado();
+                    Log.Info("GenerarEntregaSAP ActualizarEstado Nuevo " + orden.Estado.ToString());
+
                     repositorio.GuardarCambios();
                     return new Resultado { Mensaje = string.Concat("Se ha generado la entrega ", result, ".") };
                 //return string.Concat("Se ha generado la entrega ", result, ".");
 
                 case "OE-01":
                     orden.TransporteExiste = false;
+                    Log.Info("GenerarEntregaSAP ActualizarEstado " + orden.ToJson());
                     orden.ActualizarEstado();
-                    repositorio.GuardarCambios();
+                    Log.Info("GenerarEntregaSAP ActualizarEstado Nuevo " + orden.Estado.ToString()); repositorio.GuardarCambios();
                     return new Resultado { Mensaje = "No se pudo genera la entrega. No existe el transportista." };
                     //return string.Concat("No se pudo genera la entrega. No existe el transportista.");
             }
@@ -1905,8 +1930,10 @@ namespace SustitucionMOAUtils.Services
                 Cliente = cliente.CodigoProveedor,
                 Contrato = contrato
             };
-
+            Log.Info($"ValidarVencimientoContrato request: {request.ToJson()}");
             var result = consumer.OrdenCargaVisualizarClienteExecute(request);
+            Log.Info($"ValidarVencimientoContrato result: {result.ToJson()}");
+
             var fechaContrato = result.Resultados.Select(d => d.FechaHasta).Distinct().FirstOrDefault();
             var fechaHoy = DateTime.Now.Date;
             if (result.Resultados.Count == 0)
