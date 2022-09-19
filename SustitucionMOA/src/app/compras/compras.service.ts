@@ -300,4 +300,13 @@ export class ComprasService extends BaseService {
         return this.http
             .post<any>('/api/compras/EnviarEmail', payload, { headers: this.headersPost });
     }
+
+    obtenerContratoMarco(centro: string, numeroContrato: string): Observable<any> {
+        let params: HttpParams = new HttpParams()
+            .append('numeroContrato', numeroContrato)        
+            .append('centro', centro);
+
+        return this.http
+            .get("/api/compras/ObtenerContratoMarco", { params: params })
+    }
 }
