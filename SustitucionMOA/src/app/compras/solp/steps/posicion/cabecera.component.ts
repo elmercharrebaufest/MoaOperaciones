@@ -1058,4 +1058,21 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     public get tieneCodigoServicio(): boolean  {
         return this.model.selectTipoPosicion.Codigo == "MATERIALES" && this.model.posicionActual.codigoServicio != null;
     }
+
+    public openObtenerContratoMarco() {
+        this.obtenerContratoMarcoService.show(true);
+    }
+
+    public obtenerContratoMarco(args: ObtenerContratoMarco) {
+        this.service.obtenerContratoMarco(args.centro, args.numeroContrato).subscribe((res: any) => {
+            console.log(res.data);
+            if (res.data) {
+                this.contratoMarco = res.data[0];
+            }
+        });
+    }
+
+    public agregarPosicionesContratoMarco(args: Array<ContratoMarcoPosicion>) {
+
+    }
 }
