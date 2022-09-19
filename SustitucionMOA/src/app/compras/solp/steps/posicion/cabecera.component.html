@@ -62,7 +62,7 @@
                             <div class="col-xs-6 col-md-8" style="margin-top: 14px; padding: 1px; display: flex; justify-content: flex-end;" *ngIf="tienePosicionSeleccionada">
                                 <div style="margin-bottom: 2px;">
                                     <div style="margin-top: 5px; margin-right: 8px;">Contrato marco</div>
-                                    <button class="btn btn-secondary botonesComprasColor align-right">
+                                    <button class="btn btn-secondary botonesComprasColor align-right" (click)="openObtenerContratoMarco()">
                                         CREAR POSICIÓN DESDE CONTRATO
                                     </button>
                                 </div>
@@ -407,3 +407,10 @@
     </p-footer>
 </p-confirmDialog>
 <!--fin modal eliminacion de posicion-->
+
+<app-obtener-contrato-marco
+    [(centroEntrega)]="centroEntrega"
+    [(contratoMarco)]="contratoMarco"
+    (obtenerContratoMarcoEmitter)="obtenerContratoMarco($event)"
+    (agregarPosicionesContratoMarcoEmitter)="agregarPosicionesContratoMarco($event)">
+</app-obtener-contrato-marco>

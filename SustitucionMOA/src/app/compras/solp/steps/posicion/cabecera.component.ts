@@ -17,6 +17,8 @@ import { SubPosicionViewModel } from './tab-subposicion/sub-posicion-view-model'
 import { EnumColumnaSubPosicion } from '../../../enum-columna-subPosiciones';
 import { Solp } from '../../solp';
 import { SolpPosicion } from '../../solp-posicion';
+import { ObtenerContratoMarcoService } from './obtener-contrato-marco/obtener-contrato-marco.service';
+import { ContratoMarco, ContratoMarcoPosicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
 
 declare var $: any;
 
@@ -140,12 +142,16 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     items: MenuItem[];
     activeItem: MenuItem;
+
+    contratoMarco: ContratoMarco = null;
+
     @ViewChild('menuItems') menu: MenuItem[];    
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router,
-        private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService) {
+        private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService,
+        private obtenerContratoMarcoService: ObtenerContratoMarcoService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }    
 
@@ -814,5 +820,22 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     public get tieneCodigoServicio(): boolean  {
         return this.model.selectTipoPosicion.Codigo == "MATERIALES" && this.model.posicionActual.codigoServicio != null;
+    }
+
+    public openObtenerContratoMarco() {
+        this.obtenerContratoMarcoService.show(true);
+    }
+
+    public obtenerContratoMarco(args: ObtenerContratoMarco) {
+        this.service.obtenerContratoMarco(args.centro, args.numeroContrato).subscribe((res: any) => {
+            console.log(res.data);
+            if (res.data) {
+                this.contratoMarco = res.data[0];
+            }
+        });
+    }
+
+    public agregarPosicionesContratoMarco(args: Array<ContratoMarcoPosicion>) {
+
     }
 }
