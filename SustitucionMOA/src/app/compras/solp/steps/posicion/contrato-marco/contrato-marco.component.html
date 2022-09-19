@@ -35,8 +35,8 @@
 						</th>
 						<th data-toggle="tooltip" title="contrato">Contrato</th>
 						<th data-toggle="tooltip" title="unidad de Medida">UM</th>
-						<th data-toggle="tooltip" title="cantidad">Ctd.</th>
-						<th data-toggle="tooltip" title="precio total">Precio total</th>
+						<th data-toggle="tooltip" title="cantidad" hidden>Ctd.</th>
+						<th data-toggle="tooltip" title="precio total">Precio</th>
 						<th data-toggle="tooltip" title="moneda">Moneda</th>
 						<th data-toggle="tooltip" title="fecha de validez">
 							Fecha de validez
@@ -67,17 +67,17 @@
 						<td>
 							{{contrato.UnidadMedida}}
 						</td>
-						<td>
-							<!-- {{contrato.cantidad}} -->
+						<td hidden>
+							{{contrato.cantidad}}
 						</td>
 						<td>
-							<!-- {{contrato.precioTotal}}  -->
+							{{contrato.PrecioBruto}} 
 						</td>
 						<td>
-							<!-- {{contrato.moneda}} -->
+							{{contrato.ClaveMoneda}}
 						</td>
 						<td>
-							<!-- {{contrato.fechaValidez}} -->
+							{{contrato.PeriodoValidez}}
 						</td>
 						<td>
 							{{contrato.OrganizacionCompras}}
