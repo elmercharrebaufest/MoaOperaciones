@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ContratoMarco, ContratoMarcoPosicion, ObtenerContratoMarco } from './contrato-marco.model';
 import { ObtenerContratoMarcoService } from './obtener-contrato-marco.service';
 
 @Component({
@@ -9,19 +10,23 @@ import { ObtenerContratoMarcoService } from './obtener-contrato-marco.service';
 })
 export class ObtenerContratoMarcoComponent implements OnInit {
 
-  @Input() 
-  centrosEntrega: any;
+  @Input()
+  set centroEntrega(value: Array<any>) {
+      this.centrosEntrega = value;
+  }
 
   @Input() 
-  contratoMarco: any;
+  contratoMarco: ContratoMarco = null;
 
   @Output()
-  searchContratoMarcoEmitter = new EventEmitter<any>(); 
+  obtenerContratoMarcoEmitter = new EventEmitter<ObtenerContratoMarco>();
+
+  @Output()
+  agregarPosicionesContratoMarcoEmitter = new EventEmitter<Array<ContratoMarcoPosicion>>();
 
   public visible: boolean;
-  public centroEntrega: any;
-  public numeroContrato: any;
-  formGroup: FormGroup
+  public centrosEntrega: Array<any>;
+  public formGroup: FormGroup
 
   constructor(private obtenerContratoMarcoService: ObtenerContratoMarcoService,
     private formBuilder: FormBuilder) {
@@ -44,8 +49,13 @@ export class ObtenerContratoMarcoComponent implements OnInit {
   }
 
   onSearchContrato(){
-    if (!this.formGroup.valid) {
-      return;
+    if (this.centroEntregaValue && this.numeroContratoValue) {
+      const payload = {
+        centro: this.centroEntregaValue, 
+        numeroContrato: this.numeroContratoValue
+      } as ObtenerContratoMarco;
+
+      this.obtenerContratoMarcoEmitter.next(payload);
     }
   }
 
@@ -53,8 +63,18 @@ export class ObtenerContratoMarcoComponent implements OnInit {
     this.obtenerContratoMarcoService.close();
   }
   
-  onAgregarItems() {
+  onAgregarPosiciones() {
+    let posicionesSeleccionas = Array<ContratoMarcoPosicion>();
+    this.agregarPosicionesContratoMarcoEmitter.next(posicionesSeleccionas);
+  }
 
+  get centroEntregaValue() {
+    let centroSeleccionado = this.formGroup.get('centroEntrega').value;
+    let centro = centroSeleccionado != undefined && centroSeleccionado != null ? centroSeleccionado.Codigo : "";
+    return centro;
+  }
+  get numeroContratoValue() {
+      return this.formGroup.get('numeroContrato').value;
   }
 
 }
