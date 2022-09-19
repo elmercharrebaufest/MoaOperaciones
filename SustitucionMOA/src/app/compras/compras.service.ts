@@ -199,6 +199,16 @@ export class ComprasService extends BaseService {
             .get('/api/compras/ListarFuenteAprovisionamiento', { params: params, headers: this.headers });
     }
 
+    public ObtenerContratoMarco(noContrato: string, centro: string) : Observable<any> {
+
+        let params: HttpParams = new HttpParams();
+        params = params.set('numeroContrato', noContrato)
+        params = params.set('centro', centro);
+
+        return this.http
+            .get('/api/compras/ObtenerContratoMarco', { params: params, headers: this.headers });
+    }
+
     getFechaHora(fecha: Date, hora: Date) {
         let fechaHora = new Date(fecha);
         fechaHora.setHours(hora.getHours());
