@@ -7,7 +7,6 @@
     [Pliego_Id]              INT            NULL,
     [ClaseDocumento_Id]      INT            NULL,
     [NroSolp]                NVARCHAR (MAX) NULL,
-    [NroPedido]              NVARCHAR (MAX) NULL,
     [EstadoSolpSap_Id]       INT            NULL,
     [EstadoDocumento_Id]     INT            NULL,
     [FechaBorrado]           DATETIME2 (7)  NULL,

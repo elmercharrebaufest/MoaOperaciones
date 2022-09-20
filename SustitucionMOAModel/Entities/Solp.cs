@@ -16,7 +16,6 @@ namespace SustitucionMOAModel.Entities
         public int? Pliego_Id { get; set; }
         public int? ClaseDocumento_Id { get; set; }
         public string NroSolp { get; set; }
-        public string NroPedido { get; set; }
         public int? EstadoSolpSap_Id { get; set; }
         public int? EstadoDocumento_Id { get; set; }
         public DateTime? FechaBorrado { get; set; }

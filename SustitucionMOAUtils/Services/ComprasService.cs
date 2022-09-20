@@ -376,6 +376,7 @@ namespace SustitucionMOAUtils.Services
                 posEntity.NombreProveedor = pos.NombreProveedor;
                 posEntity.ProveedorFijo = pos.ProveedorFijo;
                 posEntity.OrganizacionCompras = pos.OrganizacionCompras;
+				posEntity.NumeroPedido = pos.NumeroPedido;
                 
 
                 if (posEntity.Subposiciones == null)
@@ -576,6 +577,30 @@ namespace SustitucionMOAUtils.Services
 			return !string.IsNullOrEmpty(solpEntity.NroSolp) && solpEntity.Posiciones.Any(p => string.IsNullOrEmpty(p.NumeroContratoSuperior));
 		}
 
+		private Dictionary<string, List<SolpPosicion>> getPosicionesByProveedor(Solp solpEntity)
+		{
+			Func<SolpPosicion, bool> hasProveedorAndContrato = (p) => !string.IsNullOrEmpty(p.ProveedorFijo) &&
+								 !string.IsNullOrEmpty(p.NumeroContratoSuperior);
+
+			var proveedorPosiciones = new Dictionary<string, List<SolpPosicion>>();
+
+			var proveedores = solpEntity.Posiciones.Where(p => hasProveedorAndContrato(p)
+								 //&& string.IsNullOrEmpty(p.NumeroPedido)
+								 )
+								 .Select(p => p.ProveedorFijo)
+								 .Distinct()
+								 .ToList();
+			if (proveedores.Any())
+			{
+				proveedores.ForEach(proveedorFijo =>
+				{
+					proveedorPosiciones.Add(proveedorFijo, solpEntity.Posiciones.Where(p => hasProveedorAndContrato(p) && p.ProveedorFijo.Equals(proveedorFijo)).ToList());
+				});
+			}
+			return proveedorPosiciones;
+		}
+
+
 		private RespuestaGuardarSOLP FinalizarSolp(SolpDto solp, Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas, RespuestaGuardarSOLP respuestaGuardarSOLP)
 		{
 			var crearPedidoConsumer = crearPedido(solpEntity);
@@ -648,29 +673,31 @@ namespace SustitucionMOAUtils.Services
 
 			if (crearPedidoConsumer) 
 			{
-				var resultadoCrearPedido = crearPedidoConsumerMOA.Request(solpEntity, postEntitySubPosicionesEliminadas);
+				var proveedorPosiciones = getPosicionesByProveedor(solpEntity);
 
-				respuestaGuardarSOLP.Errores = new List<string>();
-
-				foreach (var error in resultadoCrearPedido.Errores.Where(x => x.Tipo == "E"))
+				if (proveedorPosiciones.Any())
 				{
-					var mensaje = error.Mensaje.Trim();
-					respuestaGuardarSOLP.Errores.Add(mensaje);
-				}
-				if (respuestaGuardarSOLP.Errores.Count == 0)
-				{
-					respuestaGuardarSOLP.Mensaje = "OK";
-					solpEntity.NroPedido = resultadoCrearPedido.NumeroPedido;
-					respuestaGuardarSOLP.Solp.NroPedido = resultadoCrearPedido.NumeroPedido;
-					var estadoCreadoCodigo = EstadoDocumentoSolp.Creado.Code();
-					var estadoCreado = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoCreadoCodigo);
-					solpEntity.EstadoDocumento_Id = estadoCreado.Id;
-					foreach (var posiciones in solpEntity.Posiciones)
+					proveedorPosiciones.AsEnumerable().ToList().ForEach(proveedorConPosiciones =>
 					{
-						posiciones.EsConcluido = true;
-					}
-				}
-				repositorio.GuardarCambios();
+						var resultadoCrearPedido = crearPedidoConsumerMOA.Request(solpEntity, postEntitySubPosicionesEliminadas, proveedorConPosiciones.Value);
+
+						respuestaGuardarSOLP.Errores = new List<string>();
+
+						foreach (var error in resultadoCrearPedido.Errores.Where(x => x.Tipo == "E"))
+						{
+							var mensaje = error.Mensaje.Trim();
+							respuestaGuardarSOLP.Errores.Add(mensaje);
+						}
+
+						if (respuestaGuardarSOLP.Errores.Count == 0)
+						{
+							proveedorConPosiciones.Value.ForEach(posicion => posicion.NumeroPedido = resultadoCrearPedido.NumeroPedido);
+
+							respuestaGuardarSOLP.Mensaje = "OK";
+							repositorio.GuardarCambios();
+						}
+					});
+				}		
 			}
 			respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
 			return respuestaGuardarSOLP;
@@ -775,7 +802,6 @@ namespace SustitucionMOAUtils.Services
 					UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
 					Id = x.Id,
 					NroSolp = x.NroSolp,
-					NroPedido = x.NroPedido,
 					NombreDeObra = x.Pliego == null ? "" : x.Pliego.NombreObra,
 					FechaCreacion = x.FechaCreacion,
 					EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Descripcion, Color = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Color, Codigo = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Codigo },
@@ -860,8 +886,7 @@ namespace SustitucionMOAUtils.Services
 
 				UsuarioActual = x.UsuarioCreacion != null ? new UsuarioDto(x.UsuarioCreacion) : new UsuarioDto(),
 				Id = x.Id,
-				NroSolp = x.NroSolp,
-				NroPedido = x.NroPedido,
+				NroSolp = x.NroSolp,			
 				FechaCreacion = x.FechaCreacion,
 				EstadoDocumento = new TablaEstadoDto(x.EstadoDocumento),
 				EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),

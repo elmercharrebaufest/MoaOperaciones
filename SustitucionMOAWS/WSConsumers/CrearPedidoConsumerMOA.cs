@@ -25,9 +25,9 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public CrearPedidoConsumerMOAResponse Request(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas)
+        public CrearPedidoConsumerMOAResponse Request(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas, List<SolpPosicion> proveedorConPosiciones)
         {
-            var solpPedidoSAP = ConvertirSOLP(solpActual, postEntitySubPosicionesEliminadas);
+            var solpPedidoSAP = ConvertirSOLP(solpActual, postEntitySubPosicionesEliminadas, proveedorConPosiciones);
 
             var serxml = new System.Xml.Serialization.XmlSerializer(solpPedidoSAP.GetType());
             var ms = new MemoryStream();
@@ -118,7 +118,7 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
-        public SolpPedidoSAPDto ConvertirSOLP(Solp solp, SolpPosicion postEntitySubPosicionesEliminadas)
+        public SolpPedidoSAPDto ConvertirSOLP(Solp solp, SolpPosicion postEntitySubPosicionesEliminadas, List<SolpPosicion> proveedorConPosiciones)
         {
             SolpPedidoSAPDto solpPedidoSAP = new SolpPedidoSAPDto();
             int numeroPosicion = 0;   
@@ -128,7 +128,9 @@ namespace SustitucionMOAWS.WSConsumers
            
             string docItem = "";
         
-            foreach (var posicion in solp.Posiciones.Where(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior)).OrderBy(x => x.Id))
+
+
+            foreach (var posicion in proveedorConPosiciones.OrderBy(x => x.Id))
             {
             
                 bool eliminarPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
@@ -469,7 +471,7 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface ICrearPedidoConsumerMOA
     {
-        CrearPedidoConsumerMOAResponse Request(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas);
+        CrearPedidoConsumerMOAResponse Request(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas, List<SolpPosicion> proveedorConPosiciones);
 
     }
 }

@@ -91,8 +91,7 @@ namespace SustitucionMOAModel.Dto
             this.ClaseDocumento = new TablaSapDto(entity.ClaseDocumento);
             this.ClaseDocumentoId = entity.ClaseDocumento.Id;
             this.Adjuntos = new List<ArchivoDto>();
-            this.NroSolp = entity.NroSolp;
-            this.NroPedido = entity.NroPedido;
+            this.NroSolp = entity.NroSolp;          
             this.EstadoSolpSapId = entity.EstadoSolpSap_Id;
             this.EstadoDocumentoId = entity.EstadoDocumento_Id;
             this.FechaCreacion = entity.FechaCreacion;
@@ -179,7 +178,8 @@ namespace SustitucionMOAModel.Dto
         public string NumeroPosicionContratoSuperior { get; set; }
         public string NombreProveedor { get; set; }
         public string ProveedorFijo { get; set; }
-        public string OrganizacionCompras { get; set; } 
+        public string OrganizacionCompras { get; set; }
+        public string NumeroPedido { get; set; }
 
 
         public TablaSapDto Unidad { get; set; }
@@ -261,6 +261,7 @@ namespace SustitucionMOAModel.Dto
                 this.OrganizacionCompras = entity.OrganizacionCompras;
                 this.ProveedorFijo = entity.ProveedorFijo;
                 this.NumeroPosicionContratoSuperior = entity.NumeroPosicionContratoSuperior;
+                this.NumeroPedido = entity.NumeroPedido;
 
 
 

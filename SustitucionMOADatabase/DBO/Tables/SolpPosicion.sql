@@ -21,8 +21,8 @@
 	[NroNecesidad] [nvarchar](max) NULL,
 	[GrupoArticulo_Id] [int] NULL,
 	[Moneda_Id] [int] NULL,
-
-[Estado] BIT NULL DEFAULT 1, 
+	[NumeroPedido] [nvarchar](max) NULL,
+	[Estado] BIT NULL DEFAULT 1, 
     [Indice] INT NULL, 
     [TextoSuministro] NVARCHAR(MAX) NULL, 
     [Motivo] NVARCHAR(MAX) NULL, 
