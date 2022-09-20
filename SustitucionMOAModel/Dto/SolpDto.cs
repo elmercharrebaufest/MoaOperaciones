@@ -39,6 +39,7 @@ namespace SustitucionMOAModel.Dto
         public int? ClaseDocumentoId { get; set; }
         public List<ArchivoDto> Adjuntos { get; set; }
         public string NroSolp { get; set; }
+        public string NroPedido { get; set; }
         public int? EstadoSolpSapId { get; set; }
         public int? EstadoDocumentoId { get; set; }
         public DateTime FechaCreacion { get; set; }
@@ -91,6 +92,7 @@ namespace SustitucionMOAModel.Dto
             this.ClaseDocumentoId = entity.ClaseDocumento.Id;
             this.Adjuntos = new List<ArchivoDto>();
             this.NroSolp = entity.NroSolp;
+            this.NroPedido = entity.NroPedido;
             this.EstadoSolpSapId = entity.EstadoSolpSap_Id;
             this.EstadoDocumentoId = entity.EstadoDocumento_Id;
             this.FechaCreacion = entity.FechaCreacion;

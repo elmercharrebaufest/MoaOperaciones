@@ -71,7 +71,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             var respuesta = new CrearPedidoConsumerMOAResponse();
 
-            respuesta.NumeroSolp = EX_PO_NUMBER;
+            respuesta.NumeroPedido = EX_PO_NUMBER;
             respuesta.Resultado = result;
             respuesta.Errores = new List<CrearPedidoConsumerMOAError>();
 
@@ -96,7 +96,29 @@ namespace SustitucionMOAWS.WSConsumers
             return respuesta;
         }
 
-        public SolpPedidoSAPDto ConvertirSOLP(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas)
+        private string getCodigoTablaSap(TablaSap imputacion)
+        {
+            var result = "";
+
+            if (imputacion != null)
+            {
+                result = imputacion.Codigo;
+            }
+            return result;
+        }
+
+        private string getCodigoTablaGeneral(TablaGeneral imputacion)
+        {
+            var result = "";
+
+            if (imputacion != null)
+            {
+                result = imputacion.Codigo;
+            }
+            return result;
+        }
+
+        public SolpPedidoSAPDto ConvertirSOLP(Solp solp, SolpPosicion postEntitySubPosicionesEliminadas)
         {
             SolpPedidoSAPDto solpPedidoSAP = new SolpPedidoSAPDto();
             int numeroPosicion = 0;   
@@ -106,7 +128,7 @@ namespace SustitucionMOAWS.WSConsumers
            
             string docItem = "";
         
-            foreach (var posicion in solpActual.Posiciones.OrderBy(x => x.Id))
+            foreach (var posicion in solp.Posiciones.Where(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior)).OrderBy(x => x.Id))
             {
             
                 bool eliminarPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
@@ -117,10 +139,85 @@ namespace SustitucionMOAWS.WSConsumers
                 docItem = preqItem;
                 numeroPaquete = $"{numeroPosicion:0000000000}";
                 serialNumber = $"{numeroPosicion:00}";
+                
+                //Nombre: ZBAPIMEPOHEADER Denominación:	Cabecera del Pedido de Compras
+                solpPedidoSAP.IM_POHEADERList = new ZMPES6780
+                {
+                    PO_NUMBER = "", //PO_NUMBER   EBELN Número del documento de compras
+                    COMP_CODE = "MOA", //COMP_CODE BUKRS   Sociedad
+                    DOC_TYPE = solp.ClaseDocumento.CodigoSap, //DOC_TYPE    ESART Clase de documento de compras
+                    DELETE_IND = posicion.TipoPosicion.Codigo != "MATERIALES" ? SAPFormatter.FormatearBooleano(eliminarPosicion) : "", //DELETE_IND ELOEK   Indicador de borrado en el documento de compras
+                    STATUS = "", //STATUS ESTAK   Status del documento de compras
+                    CREAT_DATE = "", //SAPFormatter.PrepararFecha(solp.FechaCreacion), //CREAT_DATE  ERDAT Fecha de creación del registro
+                    CREATED_BY = solp.UsuarioCreacion.UsuarioSap, //CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto
+                    VENDOR = posicion.ProveedorFijo, //VENDOR ELIFN   Número de cuenta del proveedor
+                    PMNTTRMS = "", //"BASE", //PMNTTRMS    DZTERM Clave de condiciones de pago
+                    PURCH_ORG = posicion.OrganizacionCompras, //PURCH_ORG EKORG   Organización de compras
+                    PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(), //PUR_GROUP   BKGRP Grupo de compras
+                    CURRENCY = posicion.Moneda.Codigo, //CURRENCY WAERS   Clave de moneda
+                    EXCH_RATE = 0, //EXCH_RATE   WKURS Tipo de cambio de moneda
+                    EX_RATE_FX = "", //EX_RATE_FX KUFIX   Indicador tipo de cambio fijo
+                    DOC_DATE = SAPFormatter.PrepararFecha(DateTime.Now) //DOC_DATE    EBDAT Fecha del documento de compras
+                };
 
-        
+                solpPedidoSAP.IM_POHEADERXList = new ZMPES6790
+                {
+                    PO_NUMBER = "",
+                    COMP_CODE = "X",
+                    DOC_TYPE = "X",
+                    DELETE_IND = (eliminarPosicion == true) ? "X" : "",
+                    STATUS = "",
+                    CREAT_DATE = "",
+                    CREATED_BY = "X",
+                    VENDOR = "X",
+                    PMNTTRMS = "",
+                    PURCH_ORG = "X",
+                    PUR_GROUP = "X",
+                    CURRENCY = "X",
+                    EXCH_RATE = "X",
+                    EX_RATE_FX = "",
+                    DOC_DATE = "X"
+                };
+
+                //Nombre: ZBAPIMEPOITEM Denominación:	Posición de PEDIDOS
                 var IM_POITEM = new ZMPES6800();
         
+                IM_POITEM.PO_ITEM = preqItem;
+                IM_POITEM.DELETE_IND = posicion.TipoPosicion.Codigo != "MATERIALES" ? SAPFormatter.FormatearBooleano(eliminarPosicion) : ""; //Indica si la posicion esta borrada;
+                IM_POITEM.SHORT_TEXT = posicion.Tarea;
+                IM_POITEM.MATERIAL = posicion.MaterialSolp != null && posicion.TipoPosicion.Codigo == "MATERIALES" ? posicion.MaterialSolp.CodigoSap.ToString() : "";
+                IM_POITEM.PLANT = posicion.Centro.CodigoSap.ToString();
+                IM_POITEM.STGE_LOC = posicion.Almacen.CodigoSap.ToString();
+                IM_POITEM.TRACKINGNO = posicion.NroNecesidad; ;
+                IM_POITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString();
+                IM_POITEM.INFO_REC = "";
+                IM_POITEM.QUANTITY = (decimal)posicion.Cantidad;
+                IM_POITEM.QUANTITYSpecified = true;
+                IM_POITEM.PO_UNIT = posicion.Unidad.Descripcion;
+                IM_POITEM.NET_PRICE = (decimal)posicion.PrecioBruto;
+                IM_POITEM.NET_PRICESpecified = true;
+                IM_POITEM.PRICE_UNIT = 1;
+                //IM_POITEM.PRICE_UNITSpecified = true;
+                IM_POITEM.GR_PR_TIME = 0;
+                //IM_POITEM.GR_PR_TIMESpecified = true; 
+                IM_POITEM.TAX_CODE = "";
+                IM_POITEM.VAL_TYPE = SAPFormatter.FormatearBooleano(eliminarPosicion);
+                IM_POITEM.NO_MORE_GR = "";
+                IM_POITEM.FINAL_INV = "";
+
+                switch (posicion.TipoPosicion.Codigo.ToLower())
+                //ITEM_CAT PSTYP   Tipo de posición del documento de compras
+                {
+                    case "servicio":
+                        IM_POITEM.ITEM_CAT = "9";
+                        break;
+
+                    case "materiales":
+                    default:
+                        IM_POITEM.ITEM_CAT = "0";
+                        break;
+                }
+
                 switch (posicion.TipoImputacion.Codigo.ToLower())
                 {
                     case "centrodecosto":
@@ -137,25 +234,6 @@ namespace SustitucionMOAWS.WSConsumers
                         break;
                 }
 
-                IM_POITEM.PO_ITEM = preqItem;
-                IM_POITEM.DELETE_IND = "";
-                IM_POITEM.SHORT_TEXT = "";
-                IM_POITEM.MATERIAL =  posicion.MaterialSolp.CodigoSap.ToString();
-                IM_POITEM.PLANT = posicion.Centro.CodigoSap.ToString();
-                IM_POITEM.STGE_LOC = "";
-                IM_POITEM.TRACKINGNO = "";
-                IM_POITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString();
-                IM_POITEM.INFO_REC = "";
-                IM_POITEM.QUANTITY = (decimal)posicion.Cantidad;
-                IM_POITEM.PO_UNIT = posicion.Unidad.Descripcion;
-                IM_POITEM.NET_PRICE = (decimal)posicion.PrecioBruto;
-                IM_POITEM.PRICE_UNIT = 1;
-                IM_POITEM.GR_PR_TIME = 0;
-                IM_POITEM.TAX_CODE = "";
-                IM_POITEM.VAL_TYPE = "";
-                IM_POITEM.NO_MORE_GR = "";
-                IM_POITEM.FINAL_INV = "";
-                IM_POITEM.ITEM_CAT = "";
                 IM_POITEM.DISTRIB = "";
                 IM_POITEM.PART_INV = "";
                 IM_POITEM.GR_IND = "";
@@ -165,39 +243,38 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.GR_BASEDIV = "";
                 IM_POITEM.ACKN_REQD = "";
                 IM_POITEM.ACKNOWL_NO = "";
-                IM_POITEM.AGREEMENT = "";
-                IM_POITEM.AGMT_ITEM = "";
+                IM_POITEM.AGREEMENT = posicion.NumeroContratoSuperior; ;
+                IM_POITEM.AGMT_ITEM = posicion.NumeroPosicionContratoSuperior; ;
                 IM_POITEM.RFQ_NO = "";
                 IM_POITEM.RFQ_ITEM = "";
                 IM_POITEM.PREQ_NO = "";
-                IM_POITEM.PREQ_ITEM = "";
-                IM_POITEM.PCKG_NO = "";
-                IM_POITEM.QUANTITYSpecified = true;
-
+                IM_POITEM.PREQ_ITEM = preqItem;
+                IM_POITEM.PCKG_NO = numeroPaquete;
+                
                 solpPedidoSAP.IM_POITEMList.Add(IM_POITEM);
                                     
                 solpPedidoSAP.IM_POITEMXList.Add(new ZMPES6810
                 {
                     PO_ITEM = preqItem,
-                    DELETE_IND = "",
-                    SHORT_TEXT = "",
+                    DELETE_IND = (IM_POITEM.DELETE_IND != null) ? "X" : "",
+                    SHORT_TEXT = "X",
                     MATERIAL = "X",
                     PLANT = "X",
-                    STGE_LOC = "",
-                    TRACKINGNO = "",
+                    STGE_LOC = "X",
+                    TRACKINGNO = "X",
                     MATL_GROUP = "X",
                     INFO_REC = "",
-                    QUANTITY = "X",
+                    QUANTITY = ((decimal)IM_POITEM.QUANTITY == 0) ? "" : "X",
                     PO_UNIT = "X",
                     NET_PRICE = "X",
                     PRICE_UNIT = "X",
                     GR_PR_TIME = "",
                     TAX_CODE = "",
-                    VAL_TYPE = "",
+                    VAL_TYPE = (IM_POITEM.VAL_TYPE != null) ? "X" : "",
                     NO_MORE_GR = "",
                     FINAL_INV = "",
-                    ITEM_CAT = "",
-                    ACCTASSCAT = "X",
+                    ITEM_CAT = "X",
+                    ACCTASSCAT = (IM_POITEM.ACCTASSCAT != null) ? "X" : "",
                     DISTRIB = "",
                     PART_INV = "",
                     GR_IND = "",
@@ -207,179 +284,130 @@ namespace SustitucionMOAWS.WSConsumers
                     GR_BASEDIV = "",
                     ACKN_REQD = "",
                     ACKNOWL_NO = "",
-                    AGREEMENT = "",
-                    AGMT_ITEM = "",
+                    AGREEMENT = "X",
+                    AGMT_ITEM = "X",
                     RFQ_NO = "",
                     RFQ_ITEM = "",
                     PREQ_NO = "",
-                    PREQ_ITEM = "",
-                    PCKG_NO = ""
-                   
+                    PREQ_ITEM = "X",
+                    PCKG_NO = "X"
                 });
-         
 
+                //Nombre: ZBAPIMEPOACCOUNT Denominación:	Imputación
                 solpPedidoSAP.IM_POACCOUNTList.Add(new ZMPES6830
                 {
                     PO_ITEM = preqItem,
                     SERIAL_NO = serialNumber,
-                    DELETE_IND = "",
-                    //QUANTITY = 0,
+                    DELETE_IND = SAPFormatter.FormatearBooleano(eliminarPosicion),
+                    QUANTITY = 0,
                     GL_ACCOUNT = posicion.CuentaMayorSap.Codigo, //"0000607034",
                     BUS_AREA = "GENE",
-                    COSTCENTER = "",
+                    COSTCENTER = getCodigoTablaSap(posicion.TipoImputacionSap),
                     ASSET_NO = "",
                     SUB_NUMBER = "",
-                    ORDERID = "",
+                    ORDERID = getCodigoTablaSap(posicion.TipoImputacionSap),
                     CO_AREA = "MOA",
                     COSTOBJECT = "",
-                    PROFIT_CTR = posicion.TipoImputacionSap.Codigo
+                    PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap)
                 });
 
                 solpPedidoSAP.IM_POACCOUNTXList.Add(new ZMPES6840
                 {
                     PO_ITEM = preqItem,
                     SERIAL_NO = serialNumber,
-                    DELETE_IND = "",
-                    //QUANTITY = "X",
-                    GL_ACCOUNT = "X", //"0000607034",
+                    DELETE_IND = (IM_POITEM.DELETE_IND != null) ? "X" : "",
+                    QUANTITY = "X",
+                    GL_ACCOUNT = "X",
                     BUS_AREA = "X",
-                    COSTCENTER = "",
+                    COSTCENTER = (posicion.TipoImputacion.Codigo.ToLower() == "centrodecosto") ? "X" : "",
                     ASSET_NO = "",
                     SUB_NUMBER = "",
-                    ORDERID = "",
+                    ORDERID = (posicion.TipoImputacion.Codigo.ToLower() == "ordendeot") ? "X" : "",
                     CO_AREA = "X",
                     COSTOBJECT = "",
                     PROFIT_CTR = (posicion.TipoImputacion.Codigo.ToLower() == "siniestrobeneficio") ? "X" : ""
                 });
 
-                solpPedidoSAP.IM_POHEADERList = new ZMPES6780
+                //Nombre: ZBAPIMEPOADDREDELIVERY Denominación:	Direcciones de entrega
+                solpPedidoSAP.IM_POADDREDELIVERYList.Add(new ZMPES6820
                 {
+                    PO_ITEM = preqItem,
+                    POSTL_COD1 = posicion.CpEntrega,
+                    CITY = posicion.Centro.Descripcion,
+                    ADDR_NO = posicion.CalleEntrega,
+                    NAME = posicion.NombreEntrega,
+                    TEL1_NUMBR = "",
+                    STREET = posicion.CalleEntrega,
+                    STREET_NO = posicion.NumeroEntrega
+                });
 
-                    PO_NUMBER = "",
-                    COMP_CODE = "MOA",
-                    DOC_TYPE ="ZPE1",
-                    DELETE_IND = "",
-                    STATUS = "",
-                    CREAT_DATE = SAPFormatter.PrepararFecha(solpActual.FechaCreacion),
-                    CREATED_BY = solpActual.UsuarioCreacion.UsuarioSap,
-                    VENDOR = "0070947667",
-                    PMNTTRMS = "BASE",
-                    PURCH_ORG = "1600",//organizacion de compra
-                    PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(),
-                    CURRENCY = posicion.Moneda.Codigo,
-                    //EXCH_RATE = 0,
-                    EX_RATE_FX = "",
-                    DOC_DATE = ""
-
-                };
-
-                solpPedidoSAP.IM_POHEADERXList = new ZMPES6790
-                {
-                    PO_NUMBER = "",
-                    COMP_CODE = "X",
-                    DOC_TYPE = "X",
-                    DELETE_IND = "",
-                    STATUS = "",
-                    CREAT_DATE = "X",
-                    CREATED_BY = "X",
-                    VENDOR = "X",
-                    PMNTTRMS = "X",
-                    PURCH_ORG = "X",
-                    PUR_GROUP = "X",
-                    CURRENCY = "X",
-                    //EXCH_RATE = "",
-                    EX_RATE_FX = "",
-                    DOC_DATE = ""
-
-                };
-
-                //solpPedidoSAP.IM_POADDREDELIVERYList.Add(new ZMPES6820
+                //Nombre: ZBAPIMEPOCONDHEADER Denominación:	Posición de Servicio
+                //solpPedidoSAP.IM_POCONDHEADERList.Add(new ZMPES6850
                 //{
-                //    PO_ITEM = preqItem,
-                //    POSTL_COD1 = posicion.CpEntrega,
-                //    CITY = posicion.Centro.Descripcion,
-                //    ADDR_NO = posicion.CalleEntrega,
-                //    NAME = posicion.NombreEntrega,
-                //    //TEL1_NUMBR = posicion.n,
-                //    STREET = posicion.CalleEntrega,
-                //    STREET_NO = posicion.NumeroEntrega
-
+                //    CONDITION_NO = "", //CONDITION_NO    KNUMV Número de la condición de documento
+                //    ITM_NUMBER = "", //ITM_NUMBER  KPOSN Número de posición de la condición
+                //    COND_ST_NO = null, //COND_ST_NO  STUNR Número de paso
+                //    COND_COUNT = null, //COND_COUNT DZAEHK_SHORT    Contador de condiciones(longitud corta)
+                //    COND_TYPE = null, //COND_TYPE KSCHA   Clase de condición
+                //    COND_VALUE = 0, //COND_VALUE  BAPIKBETR1 Importe de condición
+                //    CURRENCY = null, //CURRENCY WAERS   Clase de Moneda
+                //    CHANGE_ID = null, //CHANGE_ID   MEINS Unidad de medida base
+                //    CALCTYPCON = null, //CALCTYPCON KRECH   Regla de cálculo para la condición
+                //    CONDCLASS = null, //CONDCLASS KOAID   Categoría de condición
                 //});
 
-
-
-
-                // FIN de tabla  ZBAPIMEPOITEM
-
-
-
-                //if (!solpPedidoSAP.IM_POACCOUNTList.Any(x =>
-                //           x.PREQ_ITEM == preqItem &&
-                //           x.SERIAL_NO == serialNumber &&
-                //           x.GL_ACCOUNT == posicion.CuentaMayorSap.Codigo &&//"0000607034" && 
-                //           x.COSTCENTER == posicion.TipoImputacionSap.Codigo &&
-                //           x.ORDERID == posicion.TipoImputacionSap.Codigo &&
-                //           x.PROFIT_CTR == posicion.TipoImputacionSap.Codigo
-
-                //       ))
+                //solpPedidoSAP.IM_POCONDHEADERXList.Add(new ZMPES6860
                 //{
-                //    numeroSerialNumberItem++;
+                //    CONDITION_NO = "X",
+                //    ITM_NUMBER = "X",
+                //    COND_ST_NO = "X",
+                //    COND_COUNT = "X",
+                //    COND_TYPE = "X",
+                //    COND_VALUE = "X",
+                //    CURRENCY = "X",
+                //    CHANGE_ID = "X",
+                //    CALCTYPCON = "X",
+                //    CONDCLASS = "X"
+                //});
 
-                //    serialNumberItem = $"{numeroSerialNumberItem:00}";
-
-
-                //    solpPedidoSAP.IM_POACCOUNTList.Add(new ZMPES6830
-                //    {
-                //        PREQ_ITEM = preqItem,
-                //        SERIAL_NO = serialNumberItem,
-                //        QUANTITY = posicion.Cantidad.Value,
-                //        GL_ACCOUNT = posicion.CuentaMayorSap.Codigo, //"0000607034",
-                //        COSTCENTER = posicion.TipoImputacionSap.Codigo,
-                //        ORDERID = posicion.TipoImputacionSap.Codigo,
-                //        PROFIT_CTR = posicion.TipoImputacionSap.Codigo
-                //    }); ;
-
-
-                //    solpPedidoSAP.IM_POACCOUNTXList.Add(new ZMPES5680
-                //    {
-                //        PREQ_ITEM = preqItem,
-                //        SERIAL_NO = serialNumberItem,
-                //        PREQ_ITEMX = "X",
-                //        SERIAL_NOX = "X",
-                //        QUANTITY = "X",
-                //        GL_ACCOUNT = "X",
-                //        COSTCENTER = (posicion.TipoImputacion.Codigo.ToLower() == "centrodecosto") ? "X" : "",
-                //        ORDERID = (posicion.TipoImputacion.Codigo.ToLower() == "ordendeot" || posicion.TipoImputacion.Codigo.ToLower() == "ordendeinversion") ? "X" : "",
-                //        PROFIT_CTR = (posicion.TipoImputacion.Codigo.ToLower() == "siniestrobeneficio") ? "X" : ""
-                //    });
-                //}
-                //else
+                //Nombre: ZBAPIMEPOCOND Denominación:	Posición de Servicio          
+                //solpPedidoSAP.IM_POCONDList.Add( new ZMPES6870
                 //{
-                //    serialNumberItem = solpPedidoSAP.IM_POACCOUNTList.FirstOrDefault(x =>
-                //        x.PREQ_ITEM == preqItem &&
-                //        x.SERIAL_NO == serialNumber &&
-                //        x.GL_ACCOUNT == posicion.CuentaMayorSap.Codigo &&//"0000607034" && 
-                //        x.COSTCENTER == posicion.TipoImputacionSap.Codigo &&
-                //        x.ORDERID == posicion.TipoImputacionSap.Codigo &&
-                //        x.PROFIT_CTR == posicion.TipoImputacionSap.Codigo
-                //    ).SERIAL_NO;
-                //}
+                //    CONDITION_NO = null,  //CONDITION_NO    KNUMV Número de la condición de documento
+                //    ITM_NUMBER = null, //ITM_NUMBER  KPOSN Número de posición de la condición
+                //    COND_ST_NO = null, //COND_ST_NO  STUNR Número de paso
+                //    COND_COUNT = null, //COND_COUNT DZAEHK_SHORT    Contador de condiciones(longitud corta)
+                //    COND_TYPE = null, //COND_TYPE KSCHA   Clase de condición
+                //    COND_VALUE = 0, //COND_VALUE  BAPIKBETR1 Importe de condición
+                //    CURRENCY = null, //CURRENCY WAERS   Clase de Moneda
+                //    CHANGE_ID = null, //CHANGE_ID   MEINS Unidad de medida base
+                //    CALCTYPCON = null, //CALCTYPCON KRECH   Regla de cálculo para la condición
+                //    CONDCLASS = null //CONDCLASS KOAID   Categoría de condición
+                //});
 
+                //solpPedidoSAP.IM_POCONDXList.Add(new ZMPES6880
+                //{
+                //    CONDITION_NO = "X",
+                //    ITM_NUMBER = "X",
+                //    COND_ST_NO = "X",
+                //    COND_COUNT = "X",
+                //    COND_TYPE = "X",
+                //    COND_VALUE = "X",
+                //    CURRENCY = "X",
+                //    CHANGE_ID = "X",
+                //    CALCTYPCON = "X",
+                //    CONDCLASS = "X"
+                //});
 
             }
 
-                return solpPedidoSAP;
+            return solpPedidoSAP;
         }
     }
 
-        
-
-
-
-
     public class CrearPedidoConsumerMOAResponse
     {
-        public string NumeroSolp { get; set; }
+        public string NumeroPedido { get; set; }
         public List<CrearPedidoConsumerMOAError> Errores { get; set; }
         public string Resultado { get; internal set; }
     }
@@ -445,258 +473,3 @@ namespace SustitucionMOAWS.WSConsumers
 
     }
 }
-
-
-//Nombre Campo    Tipo Tipo    Opcional Texto
-//IM_POHEADER ZBAPIMEPOHEADER Estructura Si  Cabecera de PEDIDO
-//IM_POHEADERX    ZBAPIMEPOHEADERX Estructura  SI Cabecera de PEDIDO(ind de contenido)
-//IM_POITEM ZBAPIMEPOITEM   Tabla Si  Posición del Pedido
-//IM_POITEMX  ZBAPIMEPOITEMX Tabla   Si Posición del Pedido(Ind.de contenido)
-//IM_POACCOUNT ZBAPIMEPOACCOUNT    Tabla Si  Asignación de Imputación
-//IM_POACCOUNTX   ZBAPIMEPOACCOUNTX Tabla   Si Asignación de Imputación(Ind.Cont)
-//IM_POADDREDELIVERY ZBAPIMEPOADDREDELIVERY  Tabla Si  Dirección entrega
-//IM_POCONDHEADER ZBAPIMEPOCONDHEADER Tabla Si  Condiciones a nivel Cabecera
-//IM_POCONDHEADERX ZBAPIMEPOCONDHEADERX    Tabla Si  Condiciones a nivel Cabecera(ind cont)
-//IM_POCOND ZBAPIMEPOCOND   Tabla Si  Condiciones de posición
-//IM_POCONDX  ZBAPIMEPOCONDX Tabla   Si Condiciones de posición(ind.Cont)
-//IM_POSCHEDULE ZBAPIMEPOSCHEDULE   Tabla Si  Reparto
-//IM_POSCHEDULEX  ZBAPIMEPOSCHEDULEX Tabla   Si Reparto(Ind.Cont)
-//IM_SERVICES BAPIESLLC   Tabla Si  Servicios
-//IM_POSRVACCESSVALUES    BAPIESKLC Tabla   Si Valores de Servicios
-//IM_POTEXTHEADER BAPIMEPOTEXTHEADER  Tabla SI  Textos Cabecera
-//IM_POTEXTITEM BAPIMEPOTEXT    Tabla SI  Textos Posición
-//IM_URL STRING  String SI  Texto largo para url
-
-
-//Nombre Campo    Tipo Texto
-//EX_Exito INT1    Resultado Ejecución[200 = Existo / 400 = Error]
-//EX_RETURN BAPIRET2    Return parameters
-//EX_PO_NUMBER EBELN   Numero de Pedido   
-
-
-//Nombre: ZBAPIMEPOHEADER Denominación:	Cabecera del Pedido de Compras
-//Nombre  Dominio / Tipo  Denominación
-//PO_NUMBER   EBELN Número del documento de compras
-//COMP_CODE BUKRS   Sociedad
-//DOC_TYPE    ESART Clase de documento de compras
-//DELETE_IND ELOEK   Indicador de borrado en el documento de compras
-//STATUS ESTAK   Status del documento de compras
-//CREAT_DATE  ERDAT Fecha de creación del registro
-//CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto
-//VENDOR ELIFN   Número de cuenta del proveedor
-//PMNTTRMS    DZTERM Clave de condiciones de pago
-//PURCH_ORG EKORG   Organización de compras
-//PUR_GROUP   BKGRP Grupo de compras
-//CURRENCY WAERS   Clave de moneda
-//EXCH_RATE   WKURS Tipo de cambio de moneda
-//EX_RATE_FX KUFIX   Indicador tipo de cambio fijo
-//DOC_DATE    EBDAT Fecha del documento de compras
-
-
-//Nombre: ZBAPIMEPOHEADERX Denominación:	Cabecera del Pedido de Compras
-//Nombre  Dominio / Tipo  Denominación
-//PO_NUMBER   BAPIUPDATE Número del documento de compras
-//COMP_CODE BAPIUPDATE  Sociedad
-//DOC_TYPE    BAPIUPDATE Clase de documento de compras
-//DELETE_IND BAPIUPDATE  Indicador de borrado en el documento de compras
-//STATUS BAPIUPDATE  Status del documento de compras
-//CREAT_DATE  BAPIUPDATE Fecha de creación del registro
-//CREATED_BY BAPIUPDATE  Nombre del responsable que ha añadido el objeto
-//VENDOR BAPIUPDATE  Número de cuenta del proveedor
-//PMNTTRMS    BAPIUPDATE Clave de condiciones de pago
-//PURCH_ORG BAPIUPDATE  Organización de compras
-//PUR_GROUP   BAPIUPDATE Grupo de compras
-//CURRENCY BAPIUPDATE  Clave de moneda
-//EXCH_RATE   BAPIUPDATE Tipo de cambio de moneda
-//EX_RATE_FX BAPIUPDATE  Indicador tipo de cambio fijo
-//DOC_DATE    BAPIUPDATE Fecha del documento de compras
-
-//Nombre: ZBAPIMEPOITEM Denominación:	Posición de PEDIDOS
-//Nombre  Dominio / Tipo  Denominación
-//PO_ITEM EBELP Número de posición del documento de compras
-//DELETE_IND ELOEK   Indicador de borrado en el documento de compras
-//SHORT_TEXT TXZ01   Texto breve
-//MATERIAL MATNR18 Número de material(18 caracteres)
-//PLANT EWERK   Centro
-//STGE_LOC    LGORT_D Almacén
-//TRACKINGNO BEDNR   Número de necesidad
-//MATL_GROUP  MATKL Grupo de artículos
-//TRACKINGNO BEDNR   Número de necesidad
-//INFO_REC    INFNR Número del registro info de compras
-//QUANTITY    BSTMG Cantidad de pedido
-//PO_UNIT BSTME   Unidad de medida de pedido
-//NET_PRICE   BAPICUREXT Importe de moneda para BAPIs(con 9 decimales)
-//PRICE_UNIT EPEIN   Cantidad base
-//GR_PR_TIME WEBAZ   Tiempo de tratamiento para la entrada de mercancía en días
-//TAX_CODE MWSKZ   Indicador IVA
-//VAL_TYPE BWTAR_D Clase de valoración
-//NO_MORE_GR  ELIKZ Indicador de entrega final
-//FINAL_INV   EREKZ Indicador de factura final
-//ITEM_CAT    PSTYP Tipo de posición del documento de compras
-//ACCTASSCAT KNTTP   Tipo de imputación
-//DISTRIB VRTKZ Indicador de distribución en la imputación múltiple
-//PART_INV TWRKZ   Indicador de factura parcial
-//GR_IND WEPOS   Indicador de entrada de mercancías
-//GR_NON_VAL  WEUNB Entrada de mercancías no valorada
-//IR_IND REPOS   Indicador de recepción de factura
-//FREE_ITEM   UMSON Posición sin cargo
-//GR_BASEDIV WEBRE   Indicador p.verificación de facturas sobre la base de la EM
-//ACKN_REQD   KZABS Indicador de obligación de confirmación de pedido
-//ACKNOWL_NO LABNR   Número de confirmación de pedido
-//AGREEMENT   KONNR Número del contrato superior
-//AGMT_ITEM   KTPNR Número de posición del contrato superior
-//RFQ_NO  ANFNR Núm.petición oferta
-//RFQ_ITEM ANFPS   Número de posición de la petición de oferta
-//PREQ_NO BANFN   Número de la solicitud de pedido
-//PREQ_ITEM BNFPO   Número de posición de la solicitud de pedido
-//PCKG_NO PACKNO  Numero de Paquete
-
-//Nombre: ZBAPIMEPOITEMx Denominación:	Posición de PEDIDOS
-//Nombre  Dominio / Tipo  Denominación
-//PO_ITEM EBELP Número de posición del documento de compras
-//PO_ITEMX BAPIUPDATE  Indicadores de edición o agregado de la posición
-//DELETE_IND BAPIUPDATE  Indicador de borrado en el documento de compras
-//SHORT_TEXT BAPIUPDATE  Texto breve
-//MATERIAL BAPIUPDATE  Número de material(18 caracteres)
-//PLANT BAPIUPDATE  Centro
-//STGE_LOC    BAPIUPDATE Almacén
-//TRACKINGNO BAPIUPDATE  Número de necesidad
-//MATL_GROUP  BAPIUPDATE Grupo de artículos
-//TRACKINGNO BAPIUPDATE  Número de necesidad
-//INFO_REC    BAPIUPDATE Número del registro info de compras
-//QUANTITY    BAPIUPDATE Cantidad de pedido
-//PO_UNIT BAPIUPDATE  Unidad de medida de pedido
-//NET_PRICE   BAPIUPDATE Importe de moneda para BAPIs(con 9 decimales)
-//PRICE_UNIT BAPIUPDATE  Cantidad base
-//GR_PR_TIME BAPIUPDATE  Tiempo de tratamiento para la entrada de mercancía en días
-//TAX_CODE BAPIUPDATE  Indicador IVA
-//VAL_TYPE BAPIUPDATE  Clase de valoración
-//NO_MORE_GR  BAPIUPDATE Indicador de entrega final
-//FINAL_INV   BAPIUPDATE Indicador de factura final
-//ITEM_CAT    BAPIUPDATE Tipo de posición del documento de compras
-//ACCTASSCAT BAPIUPDATE  Tipo de imputación
-//DISTRIB BAPIUPDATE Indicador de distribución en la imputación múltiple
-//PART_INV BAPIUPDATE  Indicador de factura parcial
-//GR_IND BAPIUPDATE  Indicador de entrada de mercancías
-//GR_NON_VAL  BAPIUPDATE Entrada de mercancías no valorada
-//IR_IND BAPIUPDATE  Indicador de recepción de factura
-//FREE_ITEM   BAPIUPDATE Posición sin cargo
-//GR_BASEDIV BAPIUPDATE  Indicador p.verificación de facturas sobre la base de la EM
-//ACKN_REQD   BAPIUPDATE Indicador de obligación de confirmación de pedido
-//ACKNOWL_NO BAPIUPDATE  Número de confirmación de pedido
-//AGREEMENT   BAPIUPDATE Número del contrato superior
-//AGMT_ITEM   BAPIUPDATE Número de posición del contrato superior
-//RFQ_NO  BAPIUPDATE Núm.petición oferta
-//RFQ_ITEM BAPIUPDATE  Número de posición de la petición de oferta
-//PREQ_NO BAPIUPDATE  Número de la solicitud de pedido
-//PREQ_ITEM BAPIUPDATE  Número de posición de la solicitud de pedido
-//PCKG_NO BAPIUPDATE  Numero de Paquete
-
-//Nombre: ZBAPIMEPOADDREDELIVERY Denominación:	Direcciones de entrega
-//Nombre  Dominio / Tipo  Denominación
-//PO_ITEM EBELP Número de posición de pedido
-//ADDR_NO AD_ADDRNUM  Nº dirección
-//NAME AD_NAME1    Nombre 1
-//POSTL_COD1 AD_PSTCD1   Código postal de la población
-//CITY    AD_CITY1 Población
-//STREET AD_STREET   Calle
-//STREET_NO   AD_STRNUM Codificación de la calle para fichero de población y calle
-//TEL1_NUMBR  AD_TLNMBR1 Primer número teléfono: Prefijo + número
-
-
-//Nombre: ZBAPIMEPOACCOUNT Denominación:	Imputación
-//Nombre  Dominio / Tipo  Denominación
-//PI_ITEM EBELP Numero de posición del pedido
-//SERIAL_NO DZEKKN  Número actual de la imputación
-//DELETE_IND  KLOEK Indicador de borrado imputación del documento de compras
-//QUANTITY    MENGE_D Cantidad
-//GL_ACCOUNT SAKNR   Número de la cuenta de mayor
-//BUS_AREA GSBER   División
-//COSTCENTER  KOSTL Centro de coste
-//ASSET_NO ANLN1   Número principal de activo fijo
-//SUB_NUMBER  ANLN2 Subnúmero de activo fijo
-//ORDERID AUFNR Número de orden
-//CO_AREA KOKRS   Sociedad CO
-//COSTOBJECT KSTRG   Objeto de coste
-//PROFIT_CTR  PRCTR Centro de beneficio
-
-
-//Nombre: ZBAPIMEREQACCOUNTX Denominación:	Change Toolbar for Enjoy Purchase Req. - Imputación
-//Nombre  Dominio / Tipo  Denominación
-//PO_ITEM EBELP   Número de posición de pedido
-//SERIAL_NO   DZEKKN  Número actual de la imputación
-//PO_ITEMX    BAPIUPDATE  Posición con cambios
-//SERIAL_NOX  BAPIUPDATE
-//DELETE_IND  BAPIUPDATE  Indicador de borrado imputación del documento de compras
-//QUANTITY    BAPIUPDATE  Cantidad
-//GL_ACCOUNT  BAPIUPDATE  Número de la cuenta de mayor
-//BUS_AREA    BAPIUPDATE  División
-//COSTCENTER  BAPIUPDATE  Centro de coste
-//ASSET_NO    BAPIUPDATE  Número principal de activo fijo
-//SUB_NUMBER  BAPIUPDATE  Subnúmero de activo fijo
-//ORDERID BAPIUPDATE  Número de orden
-//CO_AREA BAPIUPDATE  Sociedad CO
-//COSTOBJECT  BAPIUPDATE  Objeto de coste
-
-
-//Nombre: ZBAPIMEPOCONDHEADER Denominación:	Posición de Servicio
-//Nombre  Dominio / Tipo  Denominación
-//CONDITION_NO    KNUMV Número de la condición de documento
-//ITM_NUMBER  KPOSN Número de posición de la condición
-//COND_ST_NO  STUNR Número de paso
-//COND_COUNT DZAEHK_SHORT    Contador de condiciones(longitud corta)
-//COND_TYPE KSCHA   Clase de condición
-//COND_VALUE  BAPIKBETR1 Importe de condición
-//CURRENCY WAERS   Clase de Moneda
-//CHANGE_ID   MEINS Unidad de medida base
-//CALCTYPCON KRECH   Regla de cálculo para la condición
-//CONDCLASS KOAID   Categoría de condición
-
-
-
-//Nombre: ZBAPIMEPOCONDHEADERX Denominación:	Posición de Servicio
-//Nombre  Dominio / Tipo  Denominación
-//CONDITION_NO    KNUMV Número de la condición de documento
-//ITM_NUMBER  KPOSN Número de posición de la condición
-//COND_ST_NO  STUNR Número de paso
-//CONDITION_NOX BAPIUPDATE
-//COND_COUNT BAPIUPDATE  Contador de condiciones(longitud corta)
-//COND_TYPE BAPIUPDATE  Clase de condición
-//COND_VALUE  BAPIUPDATE Importe de condición
-//CURRENCY BAPIUPDATE  Clase de Moneda
-//CHANGE_ID   BAPIUPDATE Unidad de medida base
-//CALCTYPCON BAPIUPDATE  Regla de cálculo para la condición
-//CONDCLASS BAPIUPDATE  Categoría de condición
-
-
-//Nombre: ZBAPIMEPOCOND Denominación:	Posición de Servicio
-//Nombre  Dominio / Tipo  Denominación
-//CONDITION_NO    KNUMV Número de la condición de documento
-//ITM_NUMBER  KPOSN Número de posición de la condición
-//COND_ST_NO  STUNR Número de paso
-//COND_COUNT DZAEHK_SHORT    Contador de condiciones(longitud corta)
-//COND_TYPE KSCHA   Clase de condición
-//COND_VALUE  BAPIKBETR1 Importe de condición
-//CURRENCY WAERS   Clase de Moneda
-//CHANGE_ID   MEINS Unidad de medida base
-//CALCTYPCON KRECH   Regla de cálculo para la condición
-//CONDCLASS KOAID   Categoría de condición
-
-
-//Nombre: ZBAPIMEPOCONDX       Denominación: Posición de Servicio
-//Nombre  Dominio / Tipo  Denominación
-//CONDITION_NO    KNUMV Número de la condición de documento
-//ITM_NUMBER  KPOSN Número de posición de la condición
-//COND_ST_NO  STUNR Número de paso
-//CONDITION_NOX BAPIUPDATE
-//COND_COUNT BAPIUPDATE  Contador de condiciones(longitud corta)
-//COND_TYPE BAPIUPDATE  Clase de condición
-//COND_VALUE  BAPIUPDATE Importe de condición
-//CURRENCY BAPIUPDATE  Clase de Moneda
-//CHANGE_ID   BAPIUPDATE Unidad de medida base
-//CALCTYPCON BAPIUPDATE  Regla de cálculo para la condición
-//CONDCLASS BAPIUPDATE  Categoría de condición
-
-
-
-

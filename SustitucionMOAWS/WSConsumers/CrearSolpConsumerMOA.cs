@@ -169,7 +169,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             solpSAP.IM_PR_TYPE = solpActual.ClaseDocumento.CodigoSap;
 
-            foreach (var posicion in solpActual.Posiciones.OrderBy(x => x.Id))
+            foreach (var posicion in solpActual.Posiciones.Where(p => string.IsNullOrEmpty(p.NumeroContratoSuperior)).OrderBy(x => x.Id))
             {
          
                 bool eliminarPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
@@ -241,12 +241,12 @@ namespace SustitucionMOAWS.WSConsumers
                     IM_PRITEM.ACCTASSCAT = "";
                 }
 
-                //IM_PRITEM.DES_VENDOR = null; //DES_VENDOR WLIEF   Proveedor deseado
                 //Contrato marco          
-                //IM_PRITEM.FIXED_VEND = posicion.ProveedorFijo;; //FIXED_VEND FLIEF   Proveedor fijo
-                //IM_PRITEM.PURCH_ORG = posicion.OrganizacionCompras; //PURCH_ORG EKORG   Organización de compras        
-                //IM_PRITEM.AGREEMENT = posicion.NumeroContratoSuperior; //AGREEMENT   KONNR Número del contrato superior
-                //IM_PRITEM.AGMT_ITEM = posicion.NumeroPosicionContratoSuperior; //AGMT_ITEM   KTPNR Número de posición del contrato superior
+                //IM_PRITEM.DES_VENDOR = null; //DES_VENDOR WLIEF   Proveedor deseado
+                IM_PRITEM.FIXED_VEND = posicion.ProveedorFijo; //FIXED_VEND FLIEF   Proveedor fijo
+                IM_PRITEM.PURCH_ORG = posicion.OrganizacionCompras; //PURCH_ORG EKORG   Organización de compras        
+                IM_PRITEM.AGREEMENT = posicion.NumeroContratoSuperior; //AGREEMENT   KONNR Número del contrato superior
+                IM_PRITEM.AGMT_ITEM = posicion.NumeroPosicionContratoSuperior; //AGMT_ITEM   KTPNR Número de posición del contrato superior
                 //IM_PRITEM.INFO_REC = null; //INFO_REC    INFNR Número del registro info de compras                            
                 IM_PRITEM.CLOSED = null; //CLOSED  EBAKZ Solicitud de pedido concluida
                 IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap; //CURRENCY    WAERS Clave de moneda
