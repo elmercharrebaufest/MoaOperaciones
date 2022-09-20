@@ -132,7 +132,8 @@ namespace SustitucionMOAUtils.Services
 				solpEntity.Posiciones = new List<SolpPosicion>();
 				pliegoEntity = solpEntity.Pliego;
 
-				solpEntity.NroSolp = solp.NroSolp;
+				solpEntity.NroSolp = solp.NroSolp;				
+
 
 				repositorio.Agregar(solpEntity);
 			}
@@ -375,6 +376,7 @@ namespace SustitucionMOAUtils.Services
                 posEntity.NombreProveedor = pos.NombreProveedor;
                 posEntity.ProveedorFijo = pos.ProveedorFijo;
                 posEntity.OrganizacionCompras = pos.OrganizacionCompras;
+				posEntity.NumeroPedido = pos.NumeroPedido;
                 
 
                 if (posEntity.Subposiciones == null)
@@ -560,13 +562,57 @@ namespace SustitucionMOAUtils.Services
 			return solp;
 		}
 
+		private bool crearPedido(Solp solpEntity)
+		{
+			return solpEntity.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior) && !p.EsConcluido.Value);
+		}
+
+		private bool crearSolp(Solp solpEntity)
+		{
+			return string.IsNullOrEmpty(solpEntity.NroSolp) && solpEntity.Posiciones.Any(p => string.IsNullOrEmpty(p.NumeroContratoSuperior));
+		}
+
+		private bool modificarSolp(Solp solpEntity)
+		{
+			return !string.IsNullOrEmpty(solpEntity.NroSolp) && solpEntity.Posiciones.Any(p => string.IsNullOrEmpty(p.NumeroContratoSuperior));
+		}
+
+		private Dictionary<string, List<SolpPosicion>> getPosicionesByProveedor(Solp solpEntity)
+		{
+			Func<SolpPosicion, bool> hasProveedorAndContrato = (p) => !string.IsNullOrEmpty(p.ProveedorFijo) &&
+								 !string.IsNullOrEmpty(p.NumeroContratoSuperior);
+
+			var proveedorPosiciones = new Dictionary<string, List<SolpPosicion>>();
+
+			var proveedores = solpEntity.Posiciones.Where(p => hasProveedorAndContrato(p)
+								 //&& string.IsNullOrEmpty(p.NumeroPedido)
+								 )
+								 .Select(p => p.ProveedorFijo)
+								 .Distinct()
+								 .ToList();
+			if (proveedores.Any())
+			{
+				proveedores.ForEach(proveedorFijo =>
+				{
+					proveedorPosiciones.Add(proveedorFijo, solpEntity.Posiciones.Where(p => hasProveedorAndContrato(p) && p.ProveedorFijo.Equals(proveedorFijo)).ToList());
+				});
+			}
+			return proveedorPosiciones;
+		}
+
+
 		private RespuestaGuardarSOLP FinalizarSolp(SolpDto solp, Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas, RespuestaGuardarSOLP respuestaGuardarSOLP)
 		{
+			var crearPedidoConsumer = crearPedido(solpEntity);
+			var crearSolpComsumer = crearSolp(solpEntity);
+			var modificarSolpConsumer = modificarSolp(solpEntity);
+
 
 			//var respuestaGuardarSOLP = new RespuestaGuardarSOLP();
-			if (string.IsNullOrEmpty(solpEntity.NroSolp))
+			if (crearSolpComsumer)
 			{
 				var resultadoCrearSolp = crearSolpConsumerMOA.Request(solpEntity, postEntitySubPosicionesEliminadas);
+
 				respuestaGuardarSOLP.Errores = new List<string>();
 
 				foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Tipo == "E"))
@@ -589,10 +635,12 @@ namespace SustitucionMOAUtils.Services
 				}
 				repositorio.GuardarCambios();
 			}
-			else
+			else if (modificarSolpConsumer)
 			{
 				var resultadoEditarSolp = modificarSolpConsumerMOA.Request(solpEntity, postEntitySubPosicionesEliminadas);
+
 				respuestaGuardarSOLP.Errores = new List<string>();
+				
 				foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
 				{
 					var mensaje = "No se pudo procesar la SOLP";
@@ -621,6 +669,35 @@ namespace SustitucionMOAUtils.Services
 					respuestaGuardarSOLP.Solp = TraerSolpId(solp.Id.Value);
 				}
 				repositorio.GuardarCambios();
+			}
+
+			if (crearPedidoConsumer) 
+			{
+				var proveedorPosiciones = getPosicionesByProveedor(solpEntity);
+
+				if (proveedorPosiciones.Any())
+				{
+					proveedorPosiciones.AsEnumerable().ToList().ForEach(proveedorConPosiciones =>
+					{
+						var resultadoCrearPedido = crearPedidoConsumerMOA.Request(solpEntity, postEntitySubPosicionesEliminadas, proveedorConPosiciones.Value);
+
+						respuestaGuardarSOLP.Errores = new List<string>();
+
+						foreach (var error in resultadoCrearPedido.Errores.Where(x => x.Tipo == "E"))
+						{
+							var mensaje = error.Mensaje.Trim();
+							respuestaGuardarSOLP.Errores.Add(mensaje);
+						}
+
+						if (respuestaGuardarSOLP.Errores.Count == 0)
+						{
+							proveedorConPosiciones.Value.ForEach(posicion => posicion.NumeroPedido = resultadoCrearPedido.NumeroPedido);
+
+							respuestaGuardarSOLP.Mensaje = "OK";
+							repositorio.GuardarCambios();
+						}
+					});
+				}		
 			}
 			respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
 			return respuestaGuardarSOLP;
@@ -809,7 +886,7 @@ namespace SustitucionMOAUtils.Services
 
 				UsuarioActual = x.UsuarioCreacion != null ? new UsuarioDto(x.UsuarioCreacion) : new UsuarioDto(),
 				Id = x.Id,
-				NroSolp = x.NroSolp,
+				NroSolp = x.NroSolp,			
 				FechaCreacion = x.FechaCreacion,
 				EstadoDocumento = new TablaEstadoDto(x.EstadoDocumento),
 				EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
@@ -924,6 +1001,7 @@ namespace SustitucionMOAUtils.Services
 			solpValores.Add(SolpTemplateKeys.FECHA_LIBERACION, ""); //crear campo fecha de liberacion en tabla
 			solpValores.Add(SolpTemplateKeys.NOMBRE_OBRA, solp.NombreDeObra);
 			solpValores.Add(SolpTemplateKeys.NRO_SOLP, solp.NroSolp);
+			solpValores.Add(SolpTemplateKeys.NRO_PEDIDO, solp.NroPedido);
 			solpValores.Add(SolpTemplateKeys.FISCAL_CONTRATO, solp.FiscalContrato);
 			solpValores.Add(SolpTemplateKeys.TELEFONO, solp.Telefono);
 
@@ -2031,6 +2109,8 @@ namespace SustitucionMOAUtils.Services
 
 		public const string NOMBRE_OBRA = "NOMBRE_OBRA";
 		public const string NRO_SOLP = "NRO_SOLP";
+		public const string NRO_PEDIDO = "NRO_PEDIDO";
+
 		public const string FISCAL_CONTRATO = "FISCAL_CONTRATO";
 		public const string TELEFONO = "TELEFONO";
 

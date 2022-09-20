@@ -55,6 +55,8 @@ namespace SustitucionMOAModel.Entities
         public string NombreProveedor { get; set; }
         public string ProveedorFijo { get; set; }
         public string OrganizacionCompras { get; set; }
+        public string NumeroPedido { get; set; }
+
 
 
 
