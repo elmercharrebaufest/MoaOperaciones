@@ -29,7 +29,7 @@ namespace SustitucionMOAWS.WSConsumers
             try
             {
 
-                string IM_DELIV_DATE = SAPFormatter.FormatearFecha(fechaEntregaPosicion);
+                string IM_DELIV_DATE = fechaEntregaPosicion;
                 string IM_MATERIAL = numeroMaterial;
                 string IM_PLANT = centro;
                 string IM_VENDOR = "";

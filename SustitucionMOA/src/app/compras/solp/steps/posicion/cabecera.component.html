@@ -21,7 +21,7 @@
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
                             Clase documento *
                             <div>
-                                <p-dropdown [options]="claseDocumento" [(ngModel)]="model.selectClaseDocumento" placeholder="Elegir clase documento" dataKey="Id" optionLabel="CodigoDescripcion" (onChange)="cambiarClaseDocumento()" [(disabled)]="editarDocumento || model.vincularAPliego" styleClass="claseDocumento">
+                                <p-dropdown [options]="claseDocumento" [(ngModel)]="model.selectClaseDocumento" placeholder="Elegir clase documento" dataKey="Id" optionLabel="CodigoDescripcion" (onChange)="cambiarClaseDocumento();" [(disabled)]="editarDocumento || model.vincularAPliego" styleClass="claseDocumento">
                                 </p-dropdown>
                             </div>
                             <!--<div *ngIf="mostrarValidacion('selectClaseDocumento', model.selectClaseDocumento)">
@@ -59,12 +59,25 @@
                                 </div>
                             </div>
                            
-                            <div class="col-xs-6 col-md-8" style="margin-top: 14px; padding: 1px; display: flex; justify-content: flex-end;" *ngIf="tienePosicionSeleccionada">
-                                <div style="margin-bottom: 2px;">
-                                    <div style="margin-top: 5px; margin-right: 8px;">Contrato marco</div>
-                                    <button class="btn btn-secondary botonesComprasColor align-right">
-                                        CREAR POSICIÓN DESDE CONTRATO
-                                    </button>
+                            <div class="col-xs-6 col-md-8 col-xs-offset-2 col-md-offset-2" style="margin-top: 14px; padding: 1px; display: flex; justify-content: flex-end;" *ngIf="tienePosicionSeleccionada">
+                                <div class="row col-lg-offset-3" style="display:flex; align-items: end;">
+                                    <div [ngClass]="displayBotonAsociar ? 'col-xs-7' : 'col-xs-12'" style="margin-bottom: 2px;">
+                                        <div style="margin-top: 5px; margin-right: 8px;">
+                                            Contrato marco
+                                        </div>
+                                        <button class="btn btn-secondary botonesComprasColor align-right">
+                                            CREAR POSICIÓN DESDE CONTRATO
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-5" style="margin-bottom: 2px;" *ngIf="displayBotonAsociar">
+                                        <div style="margin-top: 5px; margin-right: 8px; display: flex;">
+                                            <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: #c9302c;font-size: x-large; display: flex; align-items: center; margin-right: 10px;"></i>
+                                            Tiene un contrato marco para asociar
+                                        </div>
+                                        <button class="btn btn-secondary botonesComprasColor align-right" style="width:100%; text-align:center;" (click)="showAsociarDialog()">
+                                            {{textoAsociarBtn}}
+                                        </button>
+                                    </div>
                                 </div>
                            </div>                       
                         </div>                      
@@ -80,10 +93,6 @@
                                 <p-checkbox name="posiciones" [binary]="true" [(ngModel)]="todasPosicionesSeleccionadas" (click)="seleccionarTodo()"></p-checkbox>
                             </th>
                             <th class="textCenter" data-toggle="tooltip" title="Posición SOLP">Pos. SOLP</th>
-                            <th class="textCenter" *ngIf="esTipoContratoMarco" data-toggle="tooltip" title="Contrato">Contrato</th>
-                            <th class="textCenter" *ngIf="esTipoContratoMarco" data-toggle="tooltip" title="Posición contrato">Posición contrato</th>
-                            <th class="textCenter" *ngIf="esTipoContratoMarco" data-toggle="tooltip" title="Nombre prov.">Nombre prov.</th>
-                            <th class="textCenter" *ngIf="esTipoContratoMarco" data-toggle="tooltip" title="Org. compra">Org. compra</th>
                             <th class="textCenter" data-toggle="tooltip" title="Tipo" hidden >Tipo</th>
                             <th class="textCenter" data-toggle="tooltip" title="Tipo de imputacion">Tipo imp.</th>
                             <th class="textCenter" data-toggle="tooltip" title="Centro">Centro</th>
@@ -95,6 +104,10 @@
                             <th class="textCenter" data-toggle="tooltip" title="Moneda">Moneda</th>
                             <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Precio bruto">Precio bruto</th>
                             <th class="textCenter" data-toggle="tooltip" title="Valor total">Valor Total</th>
+                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Contrato" style="padding: 0;">Contrato marco</th>
+                            <!-- <th class="textCenter" *ngIf="esTipoContratoMarco" data-toggle="tooltip" title="Posición contrato">Posición contrato</th> -->
+                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Nombre prov." style="padding: 0;">Provedoor</th>
+                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Org. compra" style="padding: 0;">Org. compra</th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-posicion let-expanded="expanded" let-columns="columns" let-rowIndex="rowIndex">
@@ -108,10 +121,6 @@
                                     <p-checkbox name="posiciones" binary="false" [(ngModel)]="posicion.posicionCheck"></p-checkbox>
                                 </td>
                                 <td>{{posicion.numeroPosicion}}</td>
-                                <td *ngIf="esTipoContratoMarco" >Contrato</td>
-                                <td *ngIf="esTipoContratoMarco" >Posición contrato</td>
-                                <td *ngIf="esTipoContratoMarco" >Nombre proveedor</td>
-                                <td *ngIf="esTipoContratoMarco" >Org Compra</td>
                                 <td hidden>
                                     <p-dropdown [options]="tipoPosicion" 
                                         [(ngModel)]="posicion.tipoPosicion" 
@@ -225,10 +234,10 @@
                                                 [width]="400" 
                                                 [minLength]="4" 
                                                 [forceSelection]="false"
-                                                (completeMethod)="autocompleteMaterialSolp($event)" 
-                                                (onFocus)="$event.target.select(); posicion.setTabPosicion();" 
-                                                (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio, rowIndex, dt)" 
-                                                (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion();"
+                                                (completeMethod)="autocompleteMaterialSolp($event)"
+                                                (onFocus)="$event.target.select(); posicion.setTabPosicion();"
+                                                (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio, rowIndex, dt)"
+                                                (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion();validarFuenteAprovisionamiento(posicion);"
                                                 >
                                             </p-autoComplete>
                                         </ng-template>
@@ -237,7 +246,7 @@
                                         </ng-template>
                                     </p-cellEditor>
                                 </td>                      
-                                <td [pEditableColumn]="posicion" style="word-wrap:break-word">
+                                <td [pEditableColumn]="posicion" style="word-break: break-all; word-wrap:break-word">
                                     <p-cellEditor>
                                         <ng-template pTemplate="input" *ngIf="esTipoMaterial">
                                             <p-autoComplete [(ngModel)]="posicion.tareaSubcontratarObj"
@@ -342,6 +351,10 @@
                                         {{posicion.valorTotal | number:'1.2-2'}}
                                     </p-cell>
                                 </td>
+                                <td style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial" [ngStyle]="{'background-color': posicion.noContrato ? '#fff' : '#f4f4f4'}">{{posicion.noContrato}}</td>
+                                <!-- <td *ngIf="esTipoContratoMarco" >{{posicion.noPosicionContrato}}</td> -->
+                                <td style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial" [ngStyle]="{'background-color': posicion.nombreProveedor ? '#fff' : '#f4f4f4'}">{{posicion.nombreProveedor}}</td>
+                                <td style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial" [ngStyle]="{'background-color': posicion.orgCompras ? '#fff' : '#f4f4f4'}">{{posicion.orgCompras}}</td>
                             </tr>
                     </ng-template>
                     
@@ -407,3 +420,17 @@
     </p-footer>
 </p-confirmDialog>
 <!--fin modal eliminacion de posicion-->
+
+<!-- Modal asociar contrato marco -->
+<asociar-contrato-marco
+    [(locale)]="es"
+    [(displayAsociar)]="displayAsociar"
+    [(selectUsuarioCompras)]="model.selectUsuarioCompras"
+    [(usuarioComprasList)]="model.usuarioComprasList"
+    (cancelarAsociarEmitter)="cancelarAsociar()"
+    (asociarEmitter)="asociarCM($event)"
+    [(nroSolp)]="model.nroSolp"
+    [(listaContratos)]="listaContratos"
+    [(posiciones)]="model.posiciones">
+</asociar-contrato-marco>
+<!-- Fin modal asociar contrato marco -->
