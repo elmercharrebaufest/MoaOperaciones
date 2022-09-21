@@ -5,12 +5,11 @@
     [draggable]="false" 
     [modal]="true" 
     appendTo="body" 
-    [width]="750"
-    [height]="600"
-    [max]
+    [width]="700"
+    [height]="500"
     positionTop="30"
     [contentStyle]="{ 
-      'max-height':'750px', 
+      'max-height':'500px', 
       'min-height':'400px'}">
     <p-header class="headerModal">
       <span class="blue" aria-hidden="true">Vincular contrato marco</span>
@@ -21,13 +20,13 @@
           <div class="row myRow" style="padding-top: 2px;">
             <div class="row" style="margin-bottom: 0.4em;">          
               <div class="col-xs-5 col-md-5 ui-fluid">
-                <label>Centro:</label>
+                <label class="m-label"><b>Centro</b></label>
                 <p-dropdown 
                   dataKey="Id"
                   filter="true"
                   formControlName="centroEntrega"
                   [options]="centrosEntrega" 
-                  placeholder="Centro" 
+                  placeholder="Seleccione centro" 
                   optionLabel="CodigoDescripcion" 
                   appendTo="body"                      
                   emptyMessage="Ningún centro encontrado" 
@@ -48,24 +47,28 @@
               </div>
 
               <div class="col-xs-4 col-md-4 ui-fluid">
-                <label>Contrato:</label>
-                <input type="text" pInputText 
+                <label class="m-label"><b>Nro de Contrato</b></label>
+                <input type="text" pInputText class="input-text"
                   formControlName="numeroContrato">
                 <div *ngIf="showInputError('numeroContrato')">
                     <p class="text-danger">campo obligatorio</p>
                 </div>
               </div>
               <div class="col-xs-3 col-md-3 ui-fluid" style="padding-top: 24px;">
-                <button class="btn btn-primary" (click)="onSearchContrato()">Buscar</button>
+                <button class="btn btn-primary btn-custom-primary" (click)="onSearchContrato()">BUSCAR</button>
               </div>
+            </div>
+            <div *ngIf="contratoMarco">
+              Fin periodo de validez: {{contratoMarco?.finPeriodoValidez}}
             </div>
           </div>
         </form>
       </section>
-      <section class="container-fluid">
+
+      <section class="container-fluid" *ngIf="contratoMarco">
         <div class="row">
           <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12 margenInput">
-            Seleccionar Item/Posición
+            <label class="m-label"><b>Seleccionar Item/Posición</b></label>
             <div>
                 <p-dropdown>
                 </p-dropdown>
@@ -74,20 +77,28 @@
         </div>
       </section>
       <section class="container-fluid">
-        <p-table  [value]="contratoMarco?.Posiciones" [rows]="20"  dataKey="numeroPosicionDocumentoCompras" [scrollable]="true">
+        <p-table [value]="contratoMarco?.posiciones" [rows]="20"
+          dataKey="numeroPosicionDocumentoCompras" 
+          [scrollable]="true" 
+          class="table-contrato">
 
-          <ng-template pTemplate="body" let-posicion let-expanded="expanded" let-columns="columns" let-rowIndex="rowIndex">
+          <ng-template pTemplate="body" let-posicion let-expanded="expanded" let-columns="columns" let-rowIndex="rowIndex" >
             <tr>
-              <td style="text-align: center;">
-                  <p-checkbox name="posiciones" binary="false" [(ngModel)]="posicion.posicionCheck"></p-checkbox>
+              <td style="width: 30px;">
+                <p-checkbox name="posiciones" binary="false" 
+                  [(ngModel)]="posicion.selected" 
+                  (click)="onClickSelectPosicion(posicion)">
+                </p-checkbox>
               </td>
-              <td>
-                {{posicion.NumeroPosicionDocumentoCompras}}&nbsp;
-                {{posicion.TextoMaterialOServicio}}
+              <td style="width: 75%;">
+                <strong>{{posicion.numeroPosicionDocumentoCompras}}</strong> &nbsp;
+                {{posicion.textoMaterialOServicio}} &nbsp;
               </td>
-              <td>
+              <td *ngIf="posicion?.subPosiciones">
                 <a style="cursor: pointer;" [pRowToggler]="posicion" >
-                    <i [ngClass]="expanded ? 'fa fa-chevron-down' : 'fa fa-chevron-up'"></i>
+                    <b>
+                      <i [ngClass]="expanded ? 'fa fa-chevron-down' : 'fa fa-chevron-up'"></i>
+                    </b>
                 </a>
             </td>              
           </tr>
@@ -95,26 +106,38 @@
         
         <ng-template pTemplate="rowexpansion" let-posicion let-columns="col" let-rowIndex="rowIndex">
             <div style="width: 400px;">
-              <p-table #dt [value]="posicion?.SubPosiciones" [rows]="20"  dataKey="numeroPosicionDocumentoCompras" [scrollable]="true">
-                <ng-template pTemplate="header" let-columns>
-                  <tr>
-                      <th class="textCenter">
-                          <p-checkbox name="all-subposiciones" [binary]="true"></p-checkbox>
-                      </th>
-                      <th class="textCenter" >Seleccionar todo</th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-subposicion let-columns="columns" let-rowIndex="rowIndex">
-                  <tr>
-                    <td style="text-align: center;">
-                        <p-checkbox name="subposiciones" binary="false" [(ngModel)]="subposicion.posicionCheck"></p-checkbox>
-                    </td>
-                    <td>
-                      {{subposicion?.TextoBreve}}
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
+              <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                  <div style="margin-left: 45px !important">
+                    <p-checkbox name="all-subposiciones" [binary]="true" 
+                      [(ngModel)]="posicion.allSubPosicionesSelected"
+                      (click)="onClickSelectAllSubPosiciones(posicion)">
+                    </p-checkbox> &nbsp;
+                    Seleccionar todo
+                  </div>
+                </div>
+              </div>
+              <div style="margin-left: 32px !important">
+                <p-table #dt class="table-contrato" 
+                  [value]="posicion?.subPosiciones" 
+                  [rows]="20" 
+                  dataKey="numeroPosicionDocumentoCompras" 
+                  [scrollable]="true">
+                  <ng-template pTemplate="body" let-subPosiciones let-columns="columns" let-rowIndex="rowIndex">
+                    <tr>
+                      <td style="width: 30px;">
+                        <p-checkbox name="subposiciones" binary="false" 
+                          [(ngModel)]="subPosiciones.selected" 
+                          (click)="onClickSelectSubPosicion(posicion)">
+                        </p-checkbox>
+                      </td>
+                      <td>
+                        {{subPosiciones?.textoBreve}}
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
             </div>
         </ng-template>
         </p-table>
@@ -122,8 +145,8 @@
       
     </p-body>
     <p-footer class="e-footer">
-      <button class="btn btn-secondary btn-custom-secondary" (click)="onClose()">CANCELAR</button>
-      <button class="btn btn-primary btn-custom-primary" (click)="onAgregarPosiciones()" [disabled]="!canSendEmail">AGREGAR ITEMS</button>
+      <button class="btn btn-danger" (click)="onClose()">CANCELAR</button>
+      <button class="btn btn-primary btn-custom-primary" (click)="onAgregarPosiciones()" [disabled]="!canAddItems">AGREGAR ITEMS</button>
     </p-footer>
   </p-dialog>
-  </div>      
+</div>      

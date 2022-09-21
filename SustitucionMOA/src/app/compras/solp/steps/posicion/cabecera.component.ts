@@ -21,7 +21,7 @@ import { SolpPosicion } from '../../solp-posicion';
 import { mergeMap, map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ObtenerContratoMarcoService } from './obtener-contrato-marco/obtener-contrato-marco.service';
-import { ContratoMarco, ContratoMarcoPosicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
+import { ContratoMarco, ContratoMarcoPosicion, ContratoMarcoSubposicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
 
 declare var $: any;
 
