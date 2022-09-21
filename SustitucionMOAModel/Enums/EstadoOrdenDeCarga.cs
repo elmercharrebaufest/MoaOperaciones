@@ -22,7 +22,7 @@ namespace SustitucionMOAModel.Enums
         AnulacionSolicitada,
         ContratoVencido, 
         EdicionRechazada,
-        TransporteNoExiste
+        //TransporteNoExiste
     }
 
     public static class EstadoOrdenDeCargaExtensions
@@ -43,7 +43,7 @@ namespace SustitucionMOAModel.Enums
                 case EstadoOrdenDeCarga.Confirmado:
                 case EstadoOrdenDeCarga.EntregaPendiente:
                 case EstadoOrdenDeCarga.ContratoVencido:
-                case EstadoOrdenDeCarga.TransporteNoExiste:
+                //case EstadoOrdenDeCarga.TransporteNoExiste:
                 case EstadoOrdenDeCarga.EdicionSolicitada:
                 case EstadoOrdenDeCarga.AnulacionSolicitada:
                     return "yellow";
@@ -87,8 +87,8 @@ namespace SustitucionMOAModel.Enums
                     return "Contrato vencido";
                 case EstadoOrdenDeCarga.EdicionRechazada:
                     return "Edición rechazada";
-                case EstadoOrdenDeCarga.TransporteNoExiste:
-                    return "Transporte no existe";
+                //case EstadoOrdenDeCarga.TransporteNoExiste:
+                //    return "Transporte no existe";
                 default:
                     return "Sin estado";
             }
@@ -106,7 +106,7 @@ namespace SustitucionMOAModel.Enums
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                 case EstadoOrdenDeCarga.EntregaPendiente:
                 case EstadoOrdenDeCarga.ContratoVencido:
-                case EstadoOrdenDeCarga.TransporteNoExiste:
+                //case EstadoOrdenDeCarga.TransporteNoExiste:
                     return "En proceso";
                 case EstadoOrdenDeCarga.Vencida:
                 case EstadoOrdenDeCarga.EntregaGenerada:

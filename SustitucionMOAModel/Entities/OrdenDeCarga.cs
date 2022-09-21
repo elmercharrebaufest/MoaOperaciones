@@ -86,7 +86,7 @@ namespace SustitucionMOAModel.Entities
         public bool ContratoSinCantidadPendiente { get; set; }
         public string DescripcionErrorInterno { get; set; }
         public string CUITCorredor { get; set; }
-        public DateTime ? FechaVencimiento { get; set; }
+        public DateTime? FechaVencimiento { get; set; }
         public bool FechaVencimientoAmpliada { get; set; }
 
         public void ActualizarEstado()
@@ -100,8 +100,8 @@ namespace SustitucionMOAModel.Entities
                 else
                 {
                     if (string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido))
-                    {                                             
-                            Estado = EstadoOrdenDeCarga.Pendiente;                
+                    {
+                        Estado = EstadoOrdenDeCarga.Pendiente;
                     }
                     else
                     {
@@ -112,15 +112,12 @@ namespace SustitucionMOAModel.Entities
 
                         if (!TransporteExiste)
                         {
-                            Estado = EstadoOrdenDeCarga.TransporteNoExiste;
+                            Estado = EstadoOrdenDeCarga.Pendiente;
                         }
 
                         if (!AprobadoCredito)
                         {
-                            if (TransporteExiste)
-                            {
-                                Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
-                            }
+                            Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
                         }
                         else
                         {

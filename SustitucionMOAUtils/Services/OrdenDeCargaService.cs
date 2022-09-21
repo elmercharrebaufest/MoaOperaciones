@@ -200,10 +200,10 @@ namespace SustitucionMOAUtils.Services
             Log.Info("Editar ActualizarEstado " + ordenEditar.ToJson());
             ordenEditar.ActualizarEstado();
             Log.Info("Editar ActualizarEstado Nuevo " + ordenEditar.Estado.ToString());
-            if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega))
-            {
-                VerificarSituacionCrediticia(ordenEditar, true);
-            }
+            //if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega))
+            //{
+            //    VerificarSituacionCrediticia(ordenEditar, true);
+            //}
 
             foreach (var prop in listaValoresDiferentes)
             {
@@ -493,7 +493,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Vencida);
-                    filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
+                    //filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
                 }
 
                 if (esComercial)
@@ -508,7 +508,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
-                    filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
+                   // filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
                 }
 
                 if (esPuerto)
@@ -532,7 +532,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.ErrorDeCarga);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
-                    filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
+                    //filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
                     filtrosEstados.Add(EstadoOrdenDeCarga.AnulacionSolicitada);
                 }
 
