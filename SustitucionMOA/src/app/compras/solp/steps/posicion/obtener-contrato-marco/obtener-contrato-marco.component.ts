@@ -22,7 +22,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
   obtenerContratoMarcoEmitter = new EventEmitter<ObtenerContratoMarco>();
 
   @Output()
-  agregarPosicionesContratoMarcoEmitter = new EventEmitter<Array<ContratoMarcoPosicion>>();
+  agregarPosicionesContratoMarcoEmitter = new EventEmitter<ContratoMarco>();
 
   public visible: boolean;
   public centrosEntrega: Array<any>;
@@ -43,10 +43,42 @@ export class ObtenerContratoMarcoComponent implements OnInit {
   showInputError(fieldName: string): boolean {
     if (this.formGroup && this.formGroup.controls) {
         return (this.formGroup.controls[fieldName].invalid || (this.formGroup.controls[fieldName].errors && this.formGroup.controls[fieldName].errors.required))
-            && (this.formGroup.controls[fieldName].dirty || this.formGroup.controls[fieldName].touched)
+            //&& (this.formGroup.controls[fieldName].dirty || this.formGroup.controls[fieldName].touched)
     }
     return false;
   }
+
+  onClickSelectPosicion(posicion: ContratoMarcoPosicion) {
+    if (posicion && !posicion.selected) {
+      posicion.subPosiciones.forEach(subpos => {
+        subpos.selected = false;
+      });
+      posicion.allSubPosicionesSelected = false;
+    }
+  }
+
+  onClickSelectAllSubPosiciones(posicion: ContratoMarcoPosicion) {
+    if (posicion) {
+      posicion.subPosiciones.forEach(subpos => {
+        subpos.selected = posicion.allSubPosicionesSelected;
+      });
+      if (posicion.allSubPosicionesSelected) {
+        posicion.selected = true;
+      }
+    }
+  }
+
+  onClickSelectSubPosicion(posicion: ContratoMarcoPosicion) {
+    if (posicion) {
+      let hasSubPosicionesSeleccionadas = posicion.subPosiciones.filter(subpos => subpos.selected == true).length > 0;
+      if (hasSubPosicionesSeleccionadas) {
+        posicion.selected = true;
+      }
+      else {
+        posicion.allSubPosicionesSelected = false;
+      }
+    }
+  }  
 
   onSearchContrato(){
     if (this.centroEntregaValue && this.numeroContratoValue) {
@@ -64,8 +96,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
   }
   
   onAgregarPosiciones() {
-    let posicionesSeleccionas = Array<ContratoMarcoPosicion>();
-    this.agregarPosicionesContratoMarcoEmitter.next(posicionesSeleccionas);
+    this.agregarPosicionesContratoMarcoEmitter.next(this.contratoMarco);
   }
 
   get centroEntregaValue() {
@@ -75,6 +106,14 @@ export class ObtenerContratoMarcoComponent implements OnInit {
   }
   get numeroContratoValue() {
       return this.formGroup.get('numeroContrato').value;
+  }
+
+  get canAddItems() {
+      let posicionesSeleccionadas = new Array<ContratoMarcoPosicion>();
+      if (this.contratoMarco != null) {
+        posicionesSeleccionadas = this.contratoMarco.posiciones.filter(p => p.selected);
+      }
+      return posicionesSeleccionadas.length > 0;
   }
 
 }
