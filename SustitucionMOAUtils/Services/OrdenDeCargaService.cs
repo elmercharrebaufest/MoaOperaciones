@@ -1087,6 +1087,7 @@ namespace SustitucionMOAUtils.Services
             var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
             var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
             emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mailsComerciales, mailsMesaVentaFas });
+            emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             string asunto = $"Solicitud de anulación, Orden de carga N° {ordenDeCargaId}";
             string titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha solicitado la anulación de la siguiente orden de carga:";
             var cabecera = "Orden :";
