@@ -878,8 +878,11 @@ namespace SustitucionMOAUtils.Services
                 var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
 
                 var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+                var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
 
                 var mails = mailsMesaVentaFas.Split(';').ToList();
+                mails.AddRange(mailsComerciales.Split(';').ToList());
+
 
                 string asunto = $"Solicitud de anulación, Orden de carga N° {ordenDeCargaId}";
 
