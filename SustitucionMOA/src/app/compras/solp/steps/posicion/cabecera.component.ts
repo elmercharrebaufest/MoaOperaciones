@@ -18,7 +18,7 @@ import { EnumColumnaSubPosicion } from '../../../enum-columna-subPosiciones';
 import { Solp } from '../../solp';
 import { SolpPosicion } from '../../solp-posicion';
 import { ObtenerContratoMarcoService } from './obtener-contrato-marco/obtener-contrato-marco.service';
-import { ContratoMarco, ContratoMarcoPosicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
+import { ContratoMarco, ContratoMarcoPosicion, ContratoMarcoSubposicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
 
 declare var $: any;
 
@@ -827,15 +827,52 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     public obtenerContratoMarco(args: ObtenerContratoMarco) {
-        this.service.obtenerContratoMarco(args.centro, args.numeroContrato).subscribe((res: any) => {
-            console.log(res.data);
-            if (res.data) {
-                this.contratoMarco = res.data[0];
+        this.service.obtenerContratoMarco(args.centro, args.numeroContrato).subscribe((response: any) => {
+            if (response.data && response.data.length) {
+                let cm = new ContratoMarco(response.data[0]);
+                cm.posiciones.forEach(p => {
+                    p.subPosiciones = new Array<ContratoMarcoSubposicion>();
+                    let subposicion = new ContratoMarcoSubposicion();
+                    subposicion.numeroDocumentoCompras = p.numeroDocumentoCompras;
+                    subposicion.numeroPosicionDocumentoCompras = p.numeroPosicionDocumentoCompras;
+                    subposicion.textoBreve = p.textoMaterialOServicio;
+                    p.subPosiciones.push(subposicion);
+                })
+                this.contratoMarco = cm;
             }
         });
     }
 
-    public agregarPosicionesContratoMarco(args: Array<ContratoMarcoPosicion>) {
+    public agregarPosicionesContratoMarco(contratoMarco: ContratoMarco) {
+        if (contratoMarco != null) {
+            contratoMarco.posiciones.filter(pos => pos.selected == true).forEach(pos => {
+                let centro = this.combos.Centro.find(x => x.Codigo == pos.centro);
+                let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == centro.CodigoSap);
+                let moneda = this.combos.Moneda.find(x => x.Codigo == contratoMarco.claveMoneda);
+                let unidadMedidaObj = pos.unidadMedida != null ? this.combos.Unidades.find(u => u.Descripcion == pos.unidadMedida) : {};
 
+                let servicioMaterialObj = {
+                    Codigo: pos.numeroMaterial, 
+                    Descripcion: pos.textoMaterialOServicio,
+                    UnidadMedidaBase: pos.unidadMedida
+                };
+
+                let newPos = this.model.nuevaPosicion(null, centro, direccionCentro, moneda);
+
+                newPos.codigoServicio = servicioMaterialObj;
+                newPos.tareaSubcontratar = servicioMaterialObj.Descripcion;
+                newPos.tareaSubcontratarObj = { ...servicioMaterialObj };
+
+                if (unidadMedidaObj) {
+                    newPos.unidadSeleccionada = unidadMedidaObj;
+                }
+
+                newPos.selectAlmacenEntrega = this.combos.Almacen.filter(x => x.IdPadre == centro.Id && x.Codigo == pos.almacen);
+
+                this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
+
+            });
+        }
+        this.obtenerContratoMarcoService.close();
     }
 }

@@ -6,6 +6,7 @@ import { CommonResponse } from "../../common/models/common-response";
 import { ArchivoModel } from "./steps/archivo.model";
 import { EnumTipoSolpSap } from "../enum-tipo-solp-sap";
 import { SolpPosicion } from "./solp-posicion";
+import { ContratoMarcoPosicion } from "./steps/posicion/obtener-contrato-marco/contrato-marco.model";
 
 export class Solp extends CommonResponse {
     public id: number;
@@ -106,20 +107,35 @@ export class Solp extends CommonResponse {
         this._ultimaPosicion = this.posicionActual;
     }
 
+    nuevaPosicion(posicion: any, centro: any, direccionCentro: any, moneda: any) {
+        let numeroPosicion = this.posiciones.length + 1;        
+        return new SolpPosicion(numeroPosicion, 
+            this.fiscalContrato, 
+            this.fechaEntrega, 
+            posicion, 
+            centro, 
+            direccionCentro,
+            moneda,
+            this.selectTipoPosicion
+            );
+    }
+
     agregarNuevaPosicion(posicion: SolpPosicion) {
-        let numeroPosicion = this.posiciones.length + 1;
         this.posiciones = [...this.posiciones,
-                           new SolpPosicion(numeroPosicion, 
-                                this.fiscalContrato, 
-                                this.fechaEntrega, 
-                                posicion, 
+                            this.nuevaPosicion(posicion, 
                                 this.centroPorDefecto, 
                                 this.direccionCentroPorDefecto,
-                                this.monedaPorDefecto,
-                                this.selectTipoPosicion
-                                )];
+                                this.monedaPorDefecto)];
         this.posicionActual = this.posiciones[this.posiciones.length - 1];
         this._ultimaPosicion = this.posicionActual;
+    }
+
+    agregarNuevaPosicionDesdeContratoMarco(posicion: SolpPosicion){
+        if (posicion != null) {
+            this.posiciones = [...this.posiciones, posicion];
+            this.posicionActual = this.posiciones[this.posiciones.length - 1];
+            this._ultimaPosicion = this.posicionActual;        
+        }
     }
 
     eliminarPosicion(posicionBorrar: any) {
