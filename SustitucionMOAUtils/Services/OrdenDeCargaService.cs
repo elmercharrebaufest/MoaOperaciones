@@ -921,7 +921,9 @@ namespace SustitucionMOAUtils.Services
             var ordenVencidas = new StringBuilder();
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
             var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+            var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
             emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
+            emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             string asunto = $"Solicitud de anulación, Orden de carga N° {ordenDeCargaId}";
             string titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha solicitado la anulación de la siguiente orden de carga:";
             var cabecera = "Orden :";
@@ -1842,12 +1844,10 @@ namespace SustitucionMOAUtils.Services
             var emailSenderData = new EmailSenderData();
             var ordenVencidas = new StringBuilder();
             string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-            string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
             string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
             emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
-            //emailSenderData.Mails.AddRange(mailsMesaENTSL.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             string titulo = "Se encontraron varios pedidos pendientes para el mismo cliente";
             var cabecera = "Orden :";
@@ -1880,12 +1880,10 @@ namespace SustitucionMOAUtils.Services
             var emailSenderData = new EmailSenderData();
             var ordenVencidas = new StringBuilder();
             string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-            string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
             string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
             emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
-            //emailSenderData.Mails.AddRange(mailsMesaENTSL.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             string titulo = "Se encontraron varios contratos para el mismo cliente";
             var cabecera = "Orden :";
