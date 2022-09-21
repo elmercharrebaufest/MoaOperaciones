@@ -718,7 +718,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 }
                                 this.listadoErrores = result.Errores;
                                 this.displayErrorSAP = true;
-
                             }
                             // if (this.solpActual.nroSolp) {
                             //     this.displaySAPEditar = true;
