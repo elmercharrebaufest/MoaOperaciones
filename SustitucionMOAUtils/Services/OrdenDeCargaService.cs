@@ -1617,10 +1617,8 @@ namespace SustitucionMOAUtils.Services
             {
                 var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
                 string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-                string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
                 string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
                 var mails = mailsMesaVentaFas.Split(';').ToList();
-                mails.AddRange(mailsMesaENTSL.Split(';').ToList());
                 mails.AddRange(mailsComerciales.Split(';').ToList());
                 string asunto = "Varios pedidos pendientes para el mismo cliente";
                 string cuerpo = string.Format("Se encontraron varios Pedidos pendientes para el mismo cliente. Orden de carga {0} de cliente {1} <br> Numero de Pedido: {2}",
@@ -1645,10 +1643,8 @@ namespace SustitucionMOAUtils.Services
 
                 var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
                 string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-                string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
                 string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
                 var mails = mailsMesaVentaFas.Split(';').ToList();
-                mails.AddRange(mailsMesaENTSL.Split(';').ToList());
                 mails.AddRange(mailsComerciales.Split(';').ToList());
                 string asunto = "Varios ctto pendientes";
                 string cuerpo = string.Format("Se encontraron varios contratos pendientes para el mismo cliente. Orden de carga {0} de cliente {1} <br> Numero de Contrato: {2}",
