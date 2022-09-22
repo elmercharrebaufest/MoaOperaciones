@@ -899,12 +899,12 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     asociarCM($event) {
         let posicionIndex = this.model.posiciones.findIndex(posicion => posicion.id == $event.posicionSeleccionada.id);
         
-        this.model.posiciones[posicionIndex].noContrato            = $event.contrato.NumeroContratoSuperior;
-        this.model.posiciones[posicionIndex].noPosicionContrato    = $event.contrato.NumeroPosicionContratoSuperior;
-        this.model.posiciones[posicionIndex].provedorFijo          = $event.contrato.ProveedorFijo;
-        this.model.posiciones[posicionIndex].nombreProveedor       = $event.contrato.NombreProveedor;
-        this.model.posiciones[posicionIndex].orgCompras            = $event.contrato.OrganizacionCompras;
-        this.model.posiciones[posicionIndex].precioBruto           = $event.contrato.PrecioBruto;
+        this.model.posiciones[posicionIndex].numeroContratoSuperior         = $event.contrato.NumeroContratoSuperior;
+        this.model.posiciones[posicionIndex].numeroPosicionContratoSuperior = $event.contrato.NumeroPosicionContratoSuperior;
+        this.model.posiciones[posicionIndex].provedorFijo                   = $event.contrato.ProveedorFijo;
+        this.model.posiciones[posicionIndex].nombreProveedor                = $event.contrato.NombreProveedor;
+        this.model.posiciones[posicionIndex].orgCompras                     = $event.contrato.OrganizacionCompras;
+        this.model.posiciones[posicionIndex].precioBruto                    = $event.contrato.PrecioBruto;
 
         // Set Combos
         var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == $event.contrato.UnidadMedida);

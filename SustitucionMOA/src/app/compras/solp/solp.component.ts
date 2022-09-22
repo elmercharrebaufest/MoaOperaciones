@@ -453,11 +453,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.valorImputacion = x.TipoImputacionValor;
                 posActual.cuentaMayor = x.CuentaMayor;
 
-                posActual.provedorFijo          = x.ProveedorFijo,
-                posActual.nombreProveedor       = x.NombreProveedor,
-                posActual.noContrato            = x.NumeroContratoSuperior,
-                posActual.noPosicionContrato    = x.NumeroPosicionContratoSuperior,
-                posActual.orgCompras            = x.OrganizacionCompras,
+                posActual.provedorFijo                      = x.ProveedorFijo,
+                posActual.nombreProveedor                   = x.NombreProveedor,
+                posActual.numeroContratoSuperior            = x.NumeroContratoSuperior,
+                posActual.numeroPosicionContratoSuperior    = x.NumeroPosicionContratoSuperior,
+                posActual.orgCompras                        = x.OrganizacionCompras,
 
                 posActual.proveedoresValidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial);
                 posActual.proveedoresNoSugeridos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial);
