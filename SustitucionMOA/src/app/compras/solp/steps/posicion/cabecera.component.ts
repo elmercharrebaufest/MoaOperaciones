@@ -949,7 +949,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 let centro = this.combos.Centro.find(x => x.Codigo == pos.centro);
                 let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == centro.CodigoSap);
                 let moneda = this.combos.Moneda.find(x => x.Codigo == contratoMarco.claveMoneda);
-                let unidadMedidaObj = pos.unidadMedida != null ? this.combos.Unidades.find(u => u.Descripcion == pos.unidadMedida) : {};
 
                 let servicioMaterialObj = {
                     Codigo: pos.numeroMaterial, 
@@ -963,11 +962,38 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 newPos.tareaSubcontratar = servicioMaterialObj.Descripcion;
                 newPos.tareaSubcontratarObj = { ...servicioMaterialObj };
 
+                newPos.numeroContratoSuperior = pos.numeroDocumentoCompras;
+                newPos.numeroPosicionContratoSuperior = pos.numeroPosicionDocumentoCompras;
+                newPos.provedorFijo = contratoMarco.numeroCuentaProveedor;
+                newPos.nombreProveedor = contratoMarco.nombreProveedor;
+                newPos.orgCompras = contratoMarco.organizacionCompras;
+                newPos.precioBruto = pos.importeMonedaBapi;
+
+                let unidadMedidaObj = this.combos.Unidades.find(u => u.Descripcion == pos.unidadMedida);
                 if (unidadMedidaObj) {
                     newPos.unidadSeleccionada = unidadMedidaObj;
                 }
 
-                newPos.selectAlmacenEntrega = this.combos.Almacen.filter(x => x.IdPadre == centro.Id && x.Codigo == pos.almacen);
+                let tipoImputacionObj = this.combos.TipoImputacion.find(m => m.CodigoSap == pos.tipoImputacionCompras);
+                if (tipoImputacionObj) {
+                    newPos.tipoImputacion = tipoImputacionObj;
+                }
+        
+                let almacenSeleccionadoObj = this.combos.Almacen.find(x => x.Codigo == pos.almacen);
+                debugger;
+                if (almacenSeleccionadoObj) {
+                    newPos.selectAlmacenEntrega  = almacenSeleccionadoObj;
+                }
+        
+                let grupoArticuloSeleccionadoObj = this.combos.GrupoArticulo.find(x => x.Codigo == pos.grupoArticuloMateriales);
+                if (grupoArticuloSeleccionadoObj) {
+                    newPos.selectArticuloCompras = grupoArticuloSeleccionadoObj;
+                }
+        
+                let grupoComprasSeleccionadoObj = this.combos.GrupoCompras.find(x => x.Codigo == contratoMarco.grupoCompras);
+                if (grupoComprasSeleccionadoObj) {
+                    newPos.selectGrupoCompras = grupoComprasSeleccionadoObj;
+                }
 
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
             });
