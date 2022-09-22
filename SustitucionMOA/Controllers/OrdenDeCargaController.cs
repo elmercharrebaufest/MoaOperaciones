@@ -583,7 +583,7 @@ namespace SustitucionMOA.Controllers
 		}
 
 		[HttpGet]
-        public ActionResult ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string fechaInicio, string fechaFin, string productoId, string pendiente)
+        public ActionResult ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string usuarioEmail, string fechaInicio, string fechaFin, string productoId, string pendiente)
         {
             try
             {
@@ -593,6 +593,7 @@ namespace SustitucionMOA.Controllers
                     ClienteCodigo = clienteCodigo,
                     Contrato = contrato,
                     Corredor = corredor,
+                    UsuarioEmail = usuarioEmail,
                     FechaInicio = fechaInicio,
                     FechaFin = fechaFin,
                     ProductoId = productoId,

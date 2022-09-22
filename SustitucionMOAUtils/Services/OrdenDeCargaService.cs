@@ -66,8 +66,8 @@ namespace SustitucionMOAUtils.Services
 
             if (esComercial)
             {
-                cliente = repositorio.Obtener<Proveedor>(x => x.CUIT == ordenDeCarga.CUITCliente && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
-                corredor = repositorio.Obtener<Proveedor>(x => x.CUIT == ordenDeCarga.CUITCorredor && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 4);
+                cliente = repositorio.Obtener<Proveedor>(x => x.CUIT == ordenDeCarga.CUITCliente && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int) TipoUsuarioEnum.Cliente);
+                corredor = repositorio.Obtener<Proveedor>(x => x.CUIT == ordenDeCarga.CUITCorredor && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int) TipoUsuarioEnum.Corredor);
 
                 if (corredor != null)
                 {
@@ -236,7 +236,7 @@ namespace SustitucionMOAUtils.Services
             ordenEditar.HistorialCambios.Concat(historialCambios);
 
             //Solicitud de edición
-            if (usuario.TipoUsuario.Id == 5)
+            if (usuario.TipoUsuario.Id == (int) TipoUsuarioEnum.Cliente)
             {
                 SolicitarEdicionOrden(ordenDeCarga.Id, mailUsuario);
             }
@@ -1089,7 +1089,7 @@ namespace SustitucionMOAUtils.Services
             //    {
             cliente = repositorio.Obtener<Proveedor>(
             x => x.CUIT == ordenDeCarga.CUITCliente &&
-            x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
+            x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int) TipoUsuarioEnum.Cliente);
             result.ordenes = repositorio.Listar<OrdenDeCarga, AutoCompleteDropdownElement>(x => new AutoCompleteDropdownElement
             {
                 label = x.ChasisAcoplado,
@@ -1271,7 +1271,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Producto"));
                 }
-                var cliente = repositorio.Obtener<Proveedor>(x => (x.CUIT == request.ClienteCuit || x.CodigoProveedor == request.ClienteCodigo) && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == 5);
+                var cliente = repositorio.Obtener<Proveedor>(x => (x.CUIT == request.ClienteCuit || x.CodigoProveedor == request.ClienteCodigo) && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int) TipoUsuarioEnum.Cliente);
                 if (cliente == null)
                 {
                     throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Cliente"));
@@ -1280,12 +1280,23 @@ namespace SustitucionMOAUtils.Services
                 request.ClienteCodigo = cliente.CodigoProveedor;
                 request.Contrato = request.Contrato.TrimStart(new Char[] { '0' });
                 var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(request.ClienteCodigo, request.Contrato, request.Corredor, request.FechaInicio, request.FechaFin, producto.CodigoSap, request.Pendiente, string.Empty, 3);
-                response = new ValidarCorredorClienteContratoProductoResponse();
-                response.ResultValidation = GetResultFromValidarCorredorClienteContratoProducto(ordenCargaVisualizarClienteWSMOAResponse, request, producto);
-                if (ordenCargaVisualizarClienteWSMOAResponse.Resultados.Count == 0)
-                {
-                    response.ResultValidation = false;
+				response = new ValidarCorredorClienteContratoProductoResponse();
+				if (ordenCargaVisualizarClienteWSMOAResponse.Resultados.Count == 0)
+				{
+					response.ResultValidation = false;
                 }
+                else
+                {
+                    var corredorCodigo = ordenCargaVisualizarClienteWSMOAResponse.Resultados[0].Corredor;
+                    var corredorEmail = request.UsuarioEmail;
+					var corredor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == corredorCodigo && x.Mail == corredorEmail && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int) TipoUsuarioEnum.Corredor);
+					response.ResultValidation = GetResultFromValidarCorredorClienteContratoProducto(ordenCargaVisualizarClienteWSMOAResponse, request, producto);
+                    if (response.ResultValidation)
+                    {
+                        CrearRelacionCorredorCliente(corredor, cliente);
+					}
+				}
+				
                 return response;
             }
             catch (InfoCustomException)
@@ -1348,6 +1359,30 @@ namespace SustitucionMOAUtils.Services
             }
             return result;
         }
+        private void CrearRelacionCorredorCliente(Proveedor corredor, Proveedor cliente)
+        {
+            try
+            {
+				//var usuarioCorredor = repositorio.Obtener<Usuario>(q => q.CUITRegistro == corredor.CUIT && q.Mail == corredor.Mail && q.TipoUsuario.Id == (int) TipoUsuarioEnum.Corredor && q.Habilitado == true);
+				var usuariosCorredores = repositorio.Listar<Usuario>(q => q.Mail == corredor.Mail && q.TipoUsuario.Id == (int) TipoUsuarioEnum.Corredor && q.Habilitado == true);
+				if (usuariosCorredores != null && usuariosCorredores.Count > 0)
+                {
+                    foreach (var usuarioCorredor in usuariosCorredores)
+                    {
+						var existProveedor = usuarioCorredor.Proveedores.Any(q => q.Id == cliente.Id);
+						if (!existProveedor)
+						{
+							usuarioCorredor.Proveedores.Add(cliente);
+							repositorio.GuardarCambios();
+						}
+					}
+				} 
+            }
+			catch (Exception e)
+			{
+				throw new WSCustomException(ErrorMsg.ErrorWS, e);
+			}
+		}
 
         private OrdenCargaVisualizarClienteWSMOAResponse OrdenCargaVisualizarCliente(string cliente, string contrato, string corredor, string fechaInicio, string fechaFin, string material, string pendiente, string tipoContrato, int type)
         {
