@@ -91,8 +91,8 @@ export class SolpPosicion {
     public unidadSeleccionada: any;
     public tipoImputacion: any;
     public tareaSubcontratarObj: any;
-    public noContrato: any;
-    public noPosicionContrato: any;
+    public numeroContratoSuperior: any;
+    public numeroPosicionContratoSuperior: any;
     public provedorFijo: any;
     public nombreProveedor: any;
     public orgCompras: any;
