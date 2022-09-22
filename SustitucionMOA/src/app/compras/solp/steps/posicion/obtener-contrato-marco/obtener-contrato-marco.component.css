@@ -1,0 +1,39 @@
+::ng-deep .table-contrato, td {
+    border: none !important;
+}
+
+.m-label {
+    text-align: left;
+    font-size: 16px !important;
+    font-family: Roboto Regular !important;
+    letter-spacing: 0px;
+    color: #1A1A1A;
+    font-weight: 900;
+    /* margin: 0; */
+}
+
+.m-footer {
+    display: inline-flex;
+}
+
+.input-text {
+    height: 38px !important;
+    font-weight: 400;
+  }
+
+.btn-custom-primary {
+    text-align: left;
+    letter-spacing: 0;
+    font-size: 14px !important;
+    font-family: Roboto Regular !important;
+    font-weight: bold;
+}
+
+.btn-custom-secondary {
+    color: #666666;
+    text-align: left;
+    letter-spacing: 0;
+    font-size: 14px !important;
+    font-family: Roboto Regular !important;
+    font-weight:bold;
+}

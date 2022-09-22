@@ -18,9 +18,10 @@ import { SubPosicionViewModel } from './tab-subposicion/sub-posicion-view-model'
 import { EnumColumnaSubPosicion } from '../../../enum-columna-subPosiciones';
 import { Solp } from '../../solp';
 import { SolpPosicion } from '../../solp-posicion';
-import { ContratoMarco } from './contrato-marco/contrato-marco';
 import { mergeMap, map } from 'rxjs/operators';
 import { from } from 'rxjs';
+import { ObtenerContratoMarcoService } from './obtener-contrato-marco/obtener-contrato-marco.service';
+import { ContratoMarco, ContratoMarcoSubposicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
 
 declare var $: any;
 
@@ -156,12 +157,16 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     items: MenuItem[];
     activeItem: MenuItem;
+
+    contratoMarco: ContratoMarco = null;
+
     @ViewChild('menuItems') menu: MenuItem[];    
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router,
-        private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService) {
+        private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService,
+        private obtenerContratoMarcoService: ObtenerContratoMarcoService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }    
 
@@ -926,6 +931,76 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.textoAsociarBtn = 'EDITAR CONTRATO'
     }
 
+    public showObtenerContratoMarcoDialog() {
+        this.obtenerContratoMarcoService.show(true);
+    }
+
+    public obtenerContratoMarco(args: ObtenerContratoMarco) {
+        this.service.obtenerContratoMarco(args.centro, args.numeroContrato).subscribe((response: any) => {
+            if (response.data && response.data.length) {
+                this.contratoMarco = new ContratoMarco(response.data[0]);
+            }
+        });
+    }
+
+    public agregarPosicionesContratoMarco(contratoMarco: ContratoMarco) {
+        if (contratoMarco != null) {
+            contratoMarco.posiciones.filter(pos => pos.selected == true).forEach(pos => {
+                let centro = this.combos.Centro.find(x => x.Codigo == pos.centro);
+                let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == centro.CodigoSap);
+                let moneda = this.combos.Moneda.find(x => x.Codigo == contratoMarco.claveMoneda);
+
+                let servicioMaterialObj = {
+                    Codigo: pos.numeroMaterial, 
+                    Descripcion: pos.textoMaterialOServicio,
+                    UnidadMedidaBase: pos.unidadMedida
+                };
+
+                let newPos = this.model.nuevaPosicion(null, centro, direccionCentro, moneda);
+
+                newPos.codigoServicio = servicioMaterialObj;
+                newPos.tareaSubcontratar = servicioMaterialObj.Descripcion;
+                newPos.tareaSubcontratarObj = { ...servicioMaterialObj };
+
+                newPos.numeroContratoSuperior = pos.numeroDocumentoCompras;
+                newPos.numeroPosicionContratoSuperior = pos.numeroPosicionDocumentoCompras;
+                newPos.provedorFijo = contratoMarco.numeroCuentaProveedor;
+                newPos.nombreProveedor = contratoMarco.nombreProveedor;
+                newPos.orgCompras = contratoMarco.organizacionCompras;
+                newPos.precioBruto = pos.importeMonedaBapi;
+
+                let unidadMedidaObj = this.combos.Unidades.find(u => u.Descripcion == pos.unidadMedida);
+                if (unidadMedidaObj) {
+                    newPos.unidadSeleccionada = unidadMedidaObj;
+                }
+
+                let tipoImputacionObj = this.combos.TipoImputacion.find(m => m.CodigoSap == pos.tipoImputacionCompras);
+                if (tipoImputacionObj) {
+                    newPos.tipoImputacion = tipoImputacionObj;
+                }
+        
+                let almacenSeleccionadoObj = this.combos.Almacen.find(x => x.Codigo == pos.almacen);
+                debugger;
+                if (almacenSeleccionadoObj) {
+                    newPos.selectAlmacenEntrega  = almacenSeleccionadoObj;
+                }
+        
+                let grupoArticuloSeleccionadoObj = this.combos.GrupoArticulo.find(x => x.Codigo == pos.grupoArticuloMateriales);
+                if (grupoArticuloSeleccionadoObj) {
+                    newPos.selectArticuloCompras = grupoArticuloSeleccionadoObj;
+                }
+        
+                let grupoComprasSeleccionadoObj = this.combos.GrupoCompras.find(x => x.Codigo == contratoMarco.grupoCompras);
+                if (grupoComprasSeleccionadoObj) {
+                    newPos.selectGrupoCompras = grupoComprasSeleccionadoObj;
+                }
+
+                this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
+            });
+        }
+        this.obtenerContratoMarcoService.close();
+    }
+
     public get esTipoMaterial(): boolean  {
         return this.tienePosicionSeleccionada && this.model.selectTipoPosicion.Codigo == "MATERIALES";
     }
@@ -945,4 +1020,5 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     public get tieneCodigoServicio(): boolean  {
         return this.model.selectTipoPosicion.Codigo == "MATERIALES" && this.model.posicionActual.codigoServicio != null;
     }
+
 }

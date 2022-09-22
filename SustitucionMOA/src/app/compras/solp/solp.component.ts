@@ -308,7 +308,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     private getSelectedTipoPosicion(posiciones: any) {
-        debugger;
         let tipoPosicion = undefined;
         if (posiciones != undefined && posiciones.length > 0) {
             let posicion = posiciones.filter(p => p.TipoPosicion.Codigo != undefined);
@@ -665,7 +664,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.messageService.add({ severity: 'success', detail: 'Los datos se guardaron correctamente' });
                         }
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
-                        debugger
                         this.solpActual.id = result.Solp.Id;
                         this.solpActual.NroSolp = result.Solp.NroSolp;
                         this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.length);
@@ -720,7 +718,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 }
                                 this.listadoErrores = result.Errores;
                                 this.displayErrorSAP = true;
-
                             }
                             // if (this.solpActual.nroSolp) {
                             //     this.displaySAPEditar = true;
