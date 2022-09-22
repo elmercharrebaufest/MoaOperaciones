@@ -34,7 +34,6 @@ namespace SustitucionMOAModel.Enums
                 case EstadoOrdenDeCarga.ErrorDeCarga:
                 case EstadoOrdenDeCarga.AnuladaPorVencimiento:
                 case EstadoOrdenDeCarga.Anulada:
-                case EstadoOrdenDeCarga.EdicionRechazada:
                     return "red";
                 case EstadoOrdenDeCarga.Pendiente:
                 case EstadoOrdenDeCarga.Vencida:
@@ -49,6 +48,7 @@ namespace SustitucionMOAModel.Enums
                     return "yellow";
                 case EstadoOrdenDeCarga.EntregaGenerada:
                 case EstadoOrdenDeCarga.Entregada:
+                case EstadoOrdenDeCarga.EdicionRechazada:
                     return "green";
                 default:
                     return "white";
