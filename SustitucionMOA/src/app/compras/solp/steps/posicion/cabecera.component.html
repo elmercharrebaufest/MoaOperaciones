@@ -37,14 +37,13 @@
                         </div>
                         
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput" style="margin: 0px 0px 0px 0px; display: flex;">
-                            <!-- <div class="col-xs-2 col-md-1" style="margin-top: 28px; padding: 0; text-align: center;" *ngIf="tienePosicionSeleccionada">
-                                <button class="btn btn-success botonesComprasColor ng-tns-c3-26 ng-star-inserted" (click)="agregarPosicion()">
-                                    Nueva Posición
-                                </button>&nbsp;
-                            </div> -->
 
                             <div class="col-xs-6 col-md-4" style="margin-top:8px; padding: 1px;" *ngIf="tienePosicionSeleccionada">
                                 <div style="position: absolute; bottom: 3px;">
+                                    <button class="btn btn-success botonesComprasColor ng-tns-c3-26 ng-star-inserted" (click)="agregarPosicion()">
+                                        NUEVA POSICIÓN
+                                    </button>&nbsp;
+                                    
                                     <button class="btn btn-success botonesComprasColor" style="margin-right: 4px;" (click)="duplicarPosicion(headerPosiciones)">
                                         DUPLICAR
                                     </button>
@@ -351,7 +350,7 @@
                                         {{posicion.valorTotal | number:'1.2-2'}}
                                     </p-cell>
                                 </td>
-                                <td style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial" [ngStyle]="{'background-color': posicion.noContrato ? '#fff' : '#f4f4f4'}">{{posicion.noContrato}}</td>
+                                <td style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial" [ngStyle]="{'background-color': posicion.numeroContratoSuperior ? '#fff' : '#f4f4f4'}">{{posicion.numeroContratoSuperior}}</td>
                                 <!-- <td *ngIf="esTipoContratoMarco" >{{posicion.noPosicionContrato}}</td> -->
                                 <td style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial" [ngStyle]="{'background-color': posicion.nombreProveedor ? '#fff' : '#f4f4f4'}">{{posicion.nombreProveedor}}</td>
                                 <td style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial" [ngStyle]="{'background-color': posicion.orgCompras ? '#fff' : '#f4f4f4'}">{{posicion.orgCompras}}</td>
