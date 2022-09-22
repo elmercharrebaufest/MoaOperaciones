@@ -1002,16 +1002,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     public obtenerContratoMarco(args: ObtenerContratoMarco) {
         this.service.obtenerContratoMarco(args.centro, args.numeroContrato).subscribe((response: any) => {
             if (response.data && response.data.length) {
-                let cm = new ContratoMarco(response.data[0]);
-                cm.posiciones.forEach(p => {
-                    p.subPosiciones = new Array<ContratoMarcoSubposicion>();
-                    let subposicion = new ContratoMarcoSubposicion();
-                    subposicion.numeroDocumentoCompras = p.numeroDocumentoCompras;
-                    subposicion.numeroPosicionDocumentoCompras = p.numeroPosicionDocumentoCompras;
-                    subposicion.textoBreve = p.textoMaterialOServicio;
-                    p.subPosiciones.push(subposicion);
-                })
-                this.contratoMarco = cm;
+                this.contratoMarco = new ContratoMarco(response.data[0]);
             }
         });
     }
@@ -1043,9 +1034,28 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 newPos.selectAlmacenEntrega = this.combos.Almacen.filter(x => x.IdPadre == centro.Id && x.Codigo == pos.almacen);
 
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
-
             });
         }
         this.obtenerContratoMarcoService.close();
+    }
+
+    public get esTipoMaterial(): boolean  {
+        return this.tienePosicionSeleccionada && this.model.selectTipoPosicion.Codigo == "MATERIALES";
+    }
+
+    public get esTipoServicio(): boolean  {
+        return  this.tienePosicionSeleccionada && this.model.selectTipoPosicion.Codigo == "SERVICIO";
+    }
+
+    public get esTipoContratoMarco(){
+        return this.model.posicionActual.tipoPosicion == "CONTRATO MARCO";
+    }
+
+    public get tienePosicionSeleccionada(): boolean {
+        return (this.model.selectTipoPosicion != undefined && this.model.selectTipoPosicion != null && this.model.selectTipoPosicion.Id != "");
+    }
+
+    public get tieneCodigoServicio(): boolean  {
+        return this.model.selectTipoPosicion.Codigo == "MATERIALES" && this.model.posicionActual.codigoServicio != null;
     }
 }
