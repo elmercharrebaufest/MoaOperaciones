@@ -127,6 +127,10 @@ namespace SustitucionMOAUtils.Services
             repositorio.Agregar(ordenDeCarga);
             repositorio.GuardarCambios();
 
+            if(ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido)
+            {
+                NotificacionContratoVencido(ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga, cliente));
+            }
             if (crearPedido)
             {
                 ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
@@ -336,6 +340,7 @@ namespace SustitucionMOAUtils.Services
 
             Log.Info("VerificarOrden ControlCargaRequest " + $"cliente.CodigoProveedor {cliente.CodigoProveedor ?? ""}, contrato {contrato ?? ""}, ordenDeCarga.CodigoCorredor {ordenDeCarga.CodigoCorredor ?? ""}, ordenDeCarga.CUITTransporte {ordenDeCarga.CUITTransporte ?? ""}, ordenDeCarga.Producto.CodigoSap {ordenDeCarga.Producto.CodigoSap ?? ""}, ordenDeCarga.NumeroPedido {ordenDeCarga.NumeroPedido ?? ""}");
             var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
+            
             Log.Info("VerificarOrden ControlCargaRequest Result " + result);
             //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
             //cual es el contrato correcto que le quiere entregar.
@@ -371,7 +376,6 @@ namespace SustitucionMOAUtils.Services
                     if (!ValidarVencimientoContrato(ordenDeCarga.ContratoIngresado, cliente))
                     {
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "";
-                        NotificacionContratoVencido(ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga, cliente));
                         ordenDeCarga.Estado = EstadoOrdenDeCarga.ContratoVencido;
                         return false;
                     }
@@ -1599,7 +1603,7 @@ namespace SustitucionMOAUtils.Services
                 VerificarTransporte(ordenDeCarga);
             }
 
-            foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(o => o.Estado == EstadoOrdenDeCarga.EntregaGenerada))
+            foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(o => o.Estado == EstadoOrdenDeCarga.EntregaGenerada || (o.Estado == EstadoOrdenDeCarga.EdicionRechazada && !string.IsNullOrEmpty(o.NumeroEntrega))))
             {
                 VerificarEstadoEntrega(ordenDeCarga);
             }
