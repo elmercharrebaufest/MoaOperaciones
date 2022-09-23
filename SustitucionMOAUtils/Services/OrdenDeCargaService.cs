@@ -1370,17 +1370,19 @@ namespace SustitucionMOAUtils.Services
                 Log.Info("OrdenCargaVisualizarCliente  result " + ordenCargaVisualizarClienteWSMOAResponse.ToJson());
                 if (ordenCargaVisualizarClienteWSMOAResponse == null)
                 {
-                    throw new ValidationCustomException("La RFC no se encuentra habilitada, verifique la conexión con la RFC");
+                    throw new ValidationCustomException(ErrorMsg.Error);
                 }
                 if (ordenCargaVisualizarClienteWSMOAResponse.Resultados == null || ordenCargaVisualizarClienteWSMOAResponse.Resultados.Count == 0)
                 {
                     if (type == 1)
                     {
-                        throw new ValidationCustomException("RFC no devuelve datos, no se encontraron clientes para dicho corredor");
+                        throw new ValidationCustomException("No se encontraron clientes para dicho corredor");
                     }
                     if (type == 2)
                     {
-                        throw new ValidationCustomException("RFC no devuelve datos, no se encontró el producto para dicho contrato");
+                        // buscar el nombre del cliente
+                        var razonSocial = repositorio.Obtener<Proveedor, string>(a => a.CodigoProveedor == cliente, a => a.RazonSocial);
+                        throw new ValidationCustomException($"El contrato {contrato} no corresponde al cliente {(string.IsNullOrEmpty(razonSocial) ? "" : razonSocial)}");
                     }
                 }
                 return ordenCargaVisualizarClienteWSMOAResponse;
