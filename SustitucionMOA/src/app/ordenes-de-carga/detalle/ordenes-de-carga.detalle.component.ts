@@ -267,11 +267,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             }
         }
 
-        if (this.esInterno || this.esMesaFas) {
+        if (this.esInterno || this.esComercial || this.esMesaFas) {
             this.mostrarBotonVerHistorial = true;
 
             if (this.esAnulador) {
-                if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Confirmado || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ErrorDeCarga || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida ) {
+                if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Confirmado || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ErrorDeCarga || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada) {
                     this.mostrarBotonAnular = true;
                 } 
             }

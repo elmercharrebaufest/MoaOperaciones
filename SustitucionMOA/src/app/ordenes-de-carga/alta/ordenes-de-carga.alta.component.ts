@@ -80,8 +80,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.debug("ngOnInit()");
-        console.debug(" username: " , sessionStorage.getItem("username"));
         this.userEmail = sessionStorage.getItem("username");
         this.desde = this.getFecha(8);
         this.hasta = this.getFecha(0);
