@@ -980,7 +980,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
         
                 let almacenSeleccionadoObj = this.combos.Almacen.find(x => x.Codigo == pos.almacen);
-                debugger;
                 if (almacenSeleccionadoObj) {
                     newPos.selectAlmacenEntrega  = almacenSeleccionadoObj;
                 }
@@ -995,8 +994,38 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     newPos.selectGrupoCompras = grupoComprasSeleccionadoObj;
                 }
 
+                let canAddSubPos = newPos.esTipoPosicionServicio && pos.subPosiciones.length && pos.subPosiciones.filter(subpos => subpos.selected).length;
+                if (canAddSubPos) {
+                    newPos.listadoSubPosiciones = [];
+                    pos.subPosiciones.filter(subpos => subpos.selected).forEach(subPos => {
+                        let newSubPos = newPos.crearSubPosicion();
+
+                        let codigoServicioObj = {
+                            Codigo: subPos.numeroServicio,
+                            Descripcion: subPos.textoBreve,
+                            UnidadMedidaBase: subPos.unidadMedidaBase
+                        };
+                        newSubPos.codigoServicio =  { ...codigoServicioObj }
+                        newSubPos.tareaSubcontratar = subPos.textoBreve;
+                        newSubPos.tareaSubcontratarObj = { ...codigoServicioObj };
+                
+                        var unidadSeleccionadaObj = this.combos.Unidades.find(x => x.Descripcion == subPos.unidadMedidaBase);
+                        if (unidadSeleccionadaObj) {
+                            newSubPos.unidadSeleccionada = unidadSeleccionadaObj;
+                            newSubPos.unidadMedida = unidadSeleccionadaObj.Descripcion;
+                        }
+
+                        newSubPos.cuentaTd = subPos.cantidadPositivoONegativo;
+                        newSubPos.precioBruto = subPos.precioUnitario;
+                        newSubPos.calcularValorNeto();
+                        newPos.agregarSubPosicion(newSubPos);
+                        newPos.calcularValorTotal();
+                    });
+                }
+
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
             });
+            this.model.calcularValorTotalPorMoneda();
         }
         this.obtenerContratoMarcoService.close();
     }
