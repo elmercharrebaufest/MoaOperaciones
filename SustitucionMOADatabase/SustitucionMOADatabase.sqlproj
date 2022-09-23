@@ -173,6 +173,7 @@
     <Build Include="DBO\Tables\Configuracion.sql" />
     <None Include="scripts\PostDeployment\PaisesSAP.sql" />
     <None Include="scripts\PostDeployment\SolpFixDataToNewColumnEmailLinkToken.sql" />
+    <None Include="scripts\HABILITAR MENU COMPRAS.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
