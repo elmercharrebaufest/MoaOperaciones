@@ -1043,7 +1043,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.displaySAP = false;
         this.displaySAPEditar = false;
         const emailModel = new EmailComposeModel();
-        emailModel.from = this.solpActual.mail;
+        emailModel.from = this.fromEmail;
         emailModel.to = this.emailTo;
         emailModel.subject = this.getEmailSubject(esPrimeraFinalizacion, esPosteriorFinalizacion);
         emailModel.body = this.emailBody;
@@ -1071,15 +1071,24 @@ export class SolpComponent extends BaseComponent implements OnInit {
         });
     }
 
+    private get fromEmail(): string {
+        return this.solpActual.mail != undefined && this.solpActual.mail != null ? this.solpActual.mail : "";
+    }
+
+    private get nombreDePedido(): string {
+        return this.solpActual.nombreDePedido != undefined && this.solpActual.nombreDePedido != null ? this.solpActual.nombreDePedido : "";
+    }
+
     private getEmailSubject(esPrimeraFinalizacion: boolean, esPosteriorFinalizacion: boolean): string {
         let subject = "";
+        
         if (esPrimeraFinalizacion) {
             //SOLP N°” + *nnnnn* + “PLIEGO:” + *detalle del pliego*
-            subject = `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.solpActual.nombreDePedido}`;
+            subject = `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;
         }
         if (esPosteriorFinalizacion) {
             //ACTUALIZACIÓN SOLP N°” + *nnnnn* + “PLIEGO:” + *detalle del pliego*
-            subject = `ACTUALIZACIÓN SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.solpActual.nombreDePedido}`;
+            subject = `ACTUALIZACIÓN SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;
         }
         return subject;
     }
@@ -1096,7 +1105,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     private get emailBody(): string {
-        return `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.solpActual.nombreDePedido}`;
+        return `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;
     }
 
     private get downloadLinkUrl(): string {
