@@ -52,8 +52,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
 
   showInputError(fieldName: string): boolean {
     if (this.formGroup && this.formGroup.controls) {
-        return (this.formGroup.controls[fieldName].invalid || (this.formGroup.controls[fieldName].errors && this.formGroup.controls[fieldName].errors.required))
-            //&& (this.formGroup.controls[fieldName].dirty || this.formGroup.controls[fieldName].touched)
+        return (this.formGroup.controls[fieldName].invalid || (this.formGroup.controls[fieldName].errors && this.formGroup.controls[fieldName].errors.required));
     }
     return false;
   }

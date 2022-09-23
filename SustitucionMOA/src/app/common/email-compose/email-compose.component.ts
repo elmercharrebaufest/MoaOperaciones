@@ -40,8 +40,7 @@ export class EmailComposeComponent implements OnInit {
 
   showInputError(fieldName: string): boolean {
     if (this.formGroupEmail && this.formGroupEmail.controls) {
-        return (this.formGroupEmail.controls[fieldName].invalid || (this.formGroupEmail.controls[fieldName].errors && this.formGroupEmail.controls[fieldName].errors.required))
-            && (this.formGroupEmail.controls[fieldName].dirty || this.formGroupEmail.controls[fieldName].touched)
+        return (this.formGroupEmail.controls[fieldName].invalid || (this.formGroupEmail.controls[fieldName].errors && this.formGroupEmail.controls[fieldName].errors.required));
     }
 
     return false;
@@ -91,7 +90,7 @@ export class EmailComposeComponent implements OnInit {
 
   public get isValidFromEmailDomain(): boolean {
     if (!this.model.from) {
-      return false;
+      return true;
     }
     const molinosAgroDomain = "molinosagro.com.ar";
     const fromEmaildomain = this.model.from.substring(this.model.from.lastIndexOf("@") +1);
