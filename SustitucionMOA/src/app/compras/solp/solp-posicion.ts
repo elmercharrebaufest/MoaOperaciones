@@ -119,7 +119,7 @@ export class SolpPosicion {
         this.listadoSubPosiciones = new Array<SubPosicionViewModel>();
 
         //agrega un fila por defecto
-        this.listadoSubPosiciones.push(new SubPosicionViewModel(1));
+        this.agregarSubPosicion(this.crearSubPosicion());
 
         this.selectSolicitanteCompras = fiscalContrato;
         this.estado = true;
@@ -177,6 +177,17 @@ export class SolpPosicion {
         }
 
         this.isNewRow = true;
+    }
+
+    public crearSubPosicion() {
+        let subPosNumber = this.listadoSubPosiciones.length + 1;
+        return new SubPosicionViewModel(subPosNumber);
+    }
+
+    public agregarSubPosicion(subPosicion: SubPosicionViewModel) {
+        if (subPosicion) {
+            this.listadoSubPosiciones.push(subPosicion);
+        }
     }
 
     private setupValoresPorDefecto(centroPorDefecto, direccionCentroPorDefecto, monedaPorDefecto, selectTipoPosicion) {

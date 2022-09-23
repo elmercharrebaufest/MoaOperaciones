@@ -114,7 +114,7 @@
                 {{posicion.textoMaterialOServicio}} &nbsp;
               </td>
               <td>
-                <a style="cursor: pointer;" [pRowToggler]="posicion" >
+                <a style="cursor: pointer;" [pRowToggler]="posicion" *ngIf="posicion?.subPosiciones.length">
                     <b>
                       <i [ngClass]="expanded ? 'fa fa-chevron-down' : 'fa fa-chevron-up'"></i>
                     </b>
