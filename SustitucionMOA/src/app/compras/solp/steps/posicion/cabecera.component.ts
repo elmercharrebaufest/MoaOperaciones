@@ -912,19 +912,19 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.model.posiciones[posicionIndex].precioBruto                    = $event.contrato.PrecioBruto;
 
         // Set Combos
-        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == $event.contrato.UnidadMedida);
+        let unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == $event.contrato.UnidadMedida);
         this.model.posiciones[posicionIndex].unidadSeleccionada    = unidadSeleccionadaAux;
 
-        var monedaSeleccionadaAux = this.combos.Moneda.find(x => x.Codigo == $event.contrato.ClaveMoneda);
+        let monedaSeleccionadaAux = this.combos.Moneda.find(x => x.Codigo == $event.contrato.ClaveMoneda);
         this.model.posiciones[posicionIndex].monedaSeleccionada    = monedaSeleccionadaAux;
 
-        var almacenSeleccionadoAux = this.combos.Almacen.find(x => x.Codigo == $event.contrato.Almacen);
+        let almacenSeleccionadoAux = this.combos.Almacen.find(x => x.Codigo == $event.contrato.Almacen);
         this.model.posiciones[posicionIndex].selectAlmacenEntrega  = almacenSeleccionadoAux;
 
-        var grupoArticuloSeleccionadoAux = this.combos.GrupoArticulo.find(x => x.Codigo == $event.contrato.GrupoArticulo);
+        let grupoArticuloSeleccionadoAux = this.combos.GrupoArticulo.find(x => x.Codigo == $event.contrato.GrupoArticulo);
         this.model.posiciones[posicionIndex].selectArticuloCompras = grupoArticuloSeleccionadoAux;
 
-        var grupoComprasSeleccionadoAux = this.combos.GrupoCompras.find(x => x.Codigo == $event.contrato.GrupoCompras);
+        let grupoComprasSeleccionadoAux = this.combos.GrupoCompras.find(x => x.Codigo == $event.contrato.GrupoCompras);
         this.model.posiciones[posicionIndex].selectGrupoCompras = grupoComprasSeleccionadoAux;
 
         this.displayAsociar = false;

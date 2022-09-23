@@ -20,7 +20,9 @@
           <div class="row myRow" style="padding-top: 2px;">
             <div class="row" style="margin-bottom: 0.4em;">          
               <div class="col-xs-5 col-md-5 ui-fluid">
-                <label class="m-label"><b>Centro</b></label>
+                <label class="m-label">
+                  <b>Centro</b>
+                </label>
                 <p-dropdown 
                   dataKey="Id"
                   filter="true"
@@ -47,7 +49,9 @@
               </div>
 
               <div class="col-xs-4 col-md-4 ui-fluid">
-                <label class="m-label"><b>Nro de Contrato</b></label>
+                <label class="m-label">
+                  <b>Nro de Contrato</b>
+                </label>
                 <input type="text" pInputText class="input-text"
                   formControlName="numeroContrato">
                 <div *ngIf="showInputError('numeroContrato')">
@@ -58,26 +62,41 @@
                 <button class="btn btn-primary btn-custom-primary" (click)="onSearchContrato()">BUSCAR</button>
               </div>
             </div>
-            <div *ngIf="contratoMarco">
-              Fin periodo de validez: {{contratoMarco?.finPeriodoValidez}}
+            <div *ngIf="contratoMarcoModel">
+              Fin periodo de validez: {{contratoMarcoModel?.finPeriodoValidez}}
             </div>
           </div>
         </form>
       </section>
 
-      <section class="container-fluid" *ngIf="contratoMarco">
+      <section class="container-fluid" *ngIf="contratoMarcoModel">
         <div class="row">
           <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12 margenInput">
             <label class="m-label"><b>Seleccionar Item/Posición</b></label>
             <div>
-                <p-dropdown>
+                <p-dropdown [options]="posicionesAsOptions"
+                  id="numeroPosicion" 
+                  appendTo="body" 
+                  ariaLabel="textoMaterialOServicio" 
+                  optionLabel="fullTextoMaterialOServicio" 
+                  field="numeroPosicion"
+                  placeholder="Seleccione posición"
+                  (onChange)="onSelectPosicion($event.value)">
+                  <ng-template let-item pTemplate="selectedItem">
+                    <span>{{item.value.fullTextoMaterialOServicio}}</span>
+                  </ng-template>
+                  <ng-template let-item pTemplate="item">
+                    <div>
+                      <b>{{item.value.numeroPosicion}}</b> - {{item.value.textoMaterialOServicio}}
+                    </div>
+                  </ng-template>
                 </p-dropdown>
             </div>
           </div>
         </div>
       </section>
       <section class="container-fluid">
-        <p-table [value]="contratoMarco?.posiciones" [rows]="20"
+        <p-table [value]="contratoMarcoModel?.posiciones" [rows]="20"
           dataKey="numeroPosicionDocumentoCompras" 
           [scrollable]="true" 
           class="table-contrato">
@@ -94,7 +113,7 @@
                 <strong>{{posicion.numeroPosicionDocumentoCompras}}</strong> &nbsp;
                 {{posicion.textoMaterialOServicio}} &nbsp;
               </td>
-              <td *ngIf="posicion?.subPosiciones">
+              <td>
                 <a style="cursor: pointer;" [pRowToggler]="posicion" >
                     <b>
                       <i [ngClass]="expanded ? 'fa fa-chevron-down' : 'fa fa-chevron-up'"></i>
@@ -105,7 +124,7 @@
         </ng-template>
         
         <ng-template pTemplate="rowexpansion" let-posicion let-columns="col" let-rowIndex="rowIndex">
-            <div style="width: 400px;">
+            <div style="width: 400px;" *ngIf="posicion?.subPosiciones.length">
               <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                   <div style="margin-left: 45px !important">
@@ -145,8 +164,15 @@
       
     </p-body>
     <p-footer class="e-footer">
-      <button class="btn btn-danger" (click)="onClose()">CANCELAR</button>
-      <button class="btn btn-primary btn-custom-primary" (click)="onAgregarPosiciones()" [disabled]="!canAddItems">AGREGAR ITEMS</button>
+      <div class="row">
+        <div class="col-md-4 flex-start">
+          <button class="btn btn-secondary btn-custom-secondary" (click)="onClear()">LIMPIAR BÚSQUEDA</button>
+        </div>
+        <div class="col-md-8 flex-end">
+          <button class="btn btn-danger" (click)="onClose()">CANCELAR</button>
+          <button class="btn btn-primary btn-custom-primary" (click)="onAgregarPosiciones()" [disabled]="!canAddItems">AGREGAR ITEMS</button>
+        </div>
+      </div>
     </p-footer>
   </p-dialog>
 </div>      

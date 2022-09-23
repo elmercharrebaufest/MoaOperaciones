@@ -16,7 +16,10 @@ export class ObtenerContratoMarcoComponent implements OnInit {
   }
 
   @Input() 
-  contratoMarco: ContratoMarco = null;
+  set contratoMarco(value: ContratoMarco) {
+    this.contratoMarcoModel = value;
+    this.fillPosicionesAsOptions();
+  };
 
   @Output()
   obtenerContratoMarcoEmitter = new EventEmitter<ObtenerContratoMarco>();
@@ -26,11 +29,18 @@ export class ObtenerContratoMarcoComponent implements OnInit {
 
   public visible: boolean;
   public centrosEntrega: Array<any>;
+  public contratoMarcoModel: ContratoMarco  = null;
+  public posicionesAsOptions: Array<any> = [];
   public formGroup: FormGroup
 
   constructor(private obtenerContratoMarcoService: ObtenerContratoMarcoService,
     private formBuilder: FormBuilder) {
-    this.obtenerContratoMarcoService.toogleOn.subscribe(value => this.visible = value);
+    this.obtenerContratoMarcoService.toogleOn.subscribe(value => {
+      this.visible = value;
+      if (!value) {
+        this.onClear();
+      }
+    });
   }
 
   ngOnInit() {
@@ -46,6 +56,27 @@ export class ObtenerContratoMarcoComponent implements OnInit {
             //&& (this.formGroup.controls[fieldName].dirty || this.formGroup.controls[fieldName].touched)
     }
     return false;
+  }
+
+  private fillPosicionesAsOptions() {
+    this.posicionesAsOptions = [];
+    if (this.contratoMarcoModel) {
+      this.posicionesAsOptions = this.contratoMarcoModel.posiciones.map(pos => {
+        return { 
+          numeroPosicion: pos.numeroPosicionDocumentoCompras,
+          textoMaterialOServicio: pos.textoMaterialOServicio,
+          fullTextoMaterialOServicio: `${pos.numeroPosicionDocumentoCompras} - ${pos.textoMaterialOServicio}`
+        }
+      });
+    }
+  }
+
+  onSelectPosicion(event) {
+    if (event) {
+      this.contratoMarcoModel.posiciones
+        .filter(pos => pos.numeroPosicionDocumentoCompras == event.numeroPosicion)
+        .forEach(pos => pos.selected = true);
+      }
   }
 
   onClickSelectPosicion(posicion: ContratoMarcoPosicion) {
@@ -91,13 +122,24 @@ export class ObtenerContratoMarcoComponent implements OnInit {
     }
   }
 
+  onClear() {
+    this.setCentroEntrega('');
+    this.setNumeroContrato('');
+    this.contratoMarcoModel = null;
+    this.posicionesAsOptions = [];
+  }
+
   onClose() {
+    this.onClear();
     this.obtenerContratoMarcoService.close();
   }
   
   onAgregarPosiciones() {
-    this.agregarPosicionesContratoMarcoEmitter.next(this.contratoMarco);
+    this.agregarPosicionesContratoMarcoEmitter.next(this.contratoMarcoModel);
   }
+
+  private setCentroEntrega(value: any) { this.formGroup.get('centroEntrega').setValue(value); }
+  private setNumeroContrato(value: any) { this.formGroup.get('numeroContrato').setValue(value); }
 
   get centroEntregaValue() {
     let centroSeleccionado = this.formGroup.get('centroEntrega').value;
@@ -110,8 +152,8 @@ export class ObtenerContratoMarcoComponent implements OnInit {
 
   get canAddItems() {
       let posicionesSeleccionadas = new Array<ContratoMarcoPosicion>();
-      if (this.contratoMarco != null) {
-        posicionesSeleccionadas = this.contratoMarco.posiciones.filter(p => p.selected);
+      if (this.contratoMarcoModel != null) {
+        posicionesSeleccionadas = this.contratoMarcoModel.posiciones.filter(p => p.selected);
       }
       return posicionesSeleccionadas.length > 0;
   }
