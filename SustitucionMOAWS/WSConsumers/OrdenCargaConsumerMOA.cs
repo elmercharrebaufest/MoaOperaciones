@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-	public class OrdenCargaConsumerMOA : IOrdenCargaConsumerMOA
+    public class OrdenCargaConsumerMOA : IOrdenCargaConsumerMOA
     {
 
         /*
@@ -90,7 +90,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-            return service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(cliente, contrato, corredor, kilos, material, pedidoInput, forzarCreacion, out pedidoOutput).Trim();
+            return service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(cliente, contrato, corredor, kilos, material, pedidoInput, "CACERESN", forzarCreacion, out pedidoOutput).Trim();
         }
 
 
@@ -129,7 +129,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-            var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista, out mensaje).Trim();
+            var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista, "CACERESN", out mensaje).Trim();
 
             return entrega;
         }
@@ -176,9 +176,9 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
         public OrdenCargaVisualizarClienteWSMOAResponse OrdenCargaVisualizarClienteExecute(OrdenCargaVisualizarClienteWSMOARequest request)
-		{
+        {
             try
-			{
+            {
                 var service = new SI_MPMF_MOAOP_VISUALIZAR_ZFASClient();
 
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
@@ -186,7 +186,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 List<ZMPES4100> fechasSAP = new List<ZMPES4100>() { };
                 if (request.Fechas != null)
-				{
+                {
                     foreach (var fecha in request.Fechas)
                     {
                         fechasSAP.Add(new ZMPES4100()
@@ -202,17 +202,17 @@ namespace SustitucionMOAWS.WSConsumers
                 return response;
             }
             catch (Exception ex)
-			{
+            {
                 return null;
-			}
-		}
+            }
+        }
 
         protected virtual OrdenCargaVisualizarClienteWSMOAResponse MapOrdenCargaVisualizarCliente(ZMPES6750[] result)
-		{
+        {
             var response = new OrdenCargaVisualizarClienteWSMOAResponse();
             var resultados = new List<Result>();
             foreach (var item in result)
-			{
+            {
                 var resultado = new Result()
                 {
                     Contrato = item.CONTRATO,
@@ -243,7 +243,7 @@ namespace SustitucionMOAWS.WSConsumers
                 };
                 var detalles = new List<Detail>();
                 foreach (var detalle in item.DETALLE)
-				{
+                {
                     detalles.Add(new Detail()
                     {
                         Pedido = detalle.PEDIDO,
@@ -263,24 +263,24 @@ namespace SustitucionMOAWS.WSConsumers
                     });
                 }
                 if (detalles != null)
-				{
+                {
                     if (detalles.Count > 0)
-					{
+                    {
                         resultado.Detalles = detalles;
                     }
-				}
+                }
                 resultados.Add(resultado);
             }
 
             if (resultados != null)
-			{
+            {
                 if (resultados.Count > 0)
-				{
+                {
 
                     response.Resultados = resultados;
-				}
-			}
+                }
+            }
             return response;
-		}
+        }
     }
 }

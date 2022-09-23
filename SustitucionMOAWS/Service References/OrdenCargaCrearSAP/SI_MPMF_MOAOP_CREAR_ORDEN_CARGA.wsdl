@@ -51,6 +51,13 @@
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
+            <xsd:element name="IM_USUARIO">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="12" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
             <xsd:element minOccurs="0" name="IM_VALIDA_KG">
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
