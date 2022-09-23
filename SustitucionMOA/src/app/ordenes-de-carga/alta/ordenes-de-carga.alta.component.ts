@@ -47,6 +47,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     Producto: string = "";
     desde: string = "";
     hasta: string = "";
+    userEmail: string = "";
     patentesChasis: any;
     patentesAcoplados: any;
     private selectUndefinedOptionValue: any;
@@ -79,6 +80,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.debug("ngOnInit()");
+        console.debug(" username: " , sessionStorage.getItem("username"));
+        this.userEmail = sessionStorage.getItem("username");
         this.desde = this.getFecha(8);
         this.hasta = this.getFecha(0);
         this.ordenDeCarga.Cantidad = 30000;
@@ -576,7 +580,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
         try {
-            this.service.validarCorredorClienteContratoProducto(clienteCuit, clienteCodigo, contrato, codigoCorredor, this.desde, this.hasta, productoId).subscribe(
+            this.service.validarCorredorClienteContratoProducto(clienteCuit, clienteCodigo, contrato, codigoCorredor, this.userEmail, this.desde, this.hasta, productoId).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();

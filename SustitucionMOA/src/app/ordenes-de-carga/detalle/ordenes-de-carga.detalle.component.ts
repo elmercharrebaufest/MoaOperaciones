@@ -15,7 +15,7 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
-import { SelectItem, ConfirmationService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
     selector: 'app-ordenes-de-carga.detalle',
@@ -265,15 +265,13 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (this.ordenDeCarga.Estado != EstadoOrdenDeCarga.EdicionRechazada) {
                 this.mostrarBotonEditar = true;
             }
-            
         }
-
 
         if (this.esInterno || this.esMesaFas) {
             this.mostrarBotonVerHistorial = true;
 
             if (this.esAnulador) {
-                if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Confirmado || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ErrorDeCarga || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida) {
+                if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Confirmado || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ErrorDeCarga || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida ) {
                     this.mostrarBotonAnular = true;
                 } 
             }
@@ -296,7 +294,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
             if (!this.ordenDeCarga.TransporteExiste) {
                 this.mostrarBotonNotificarTransporte = true;
-                this.mostrarBotonVerificarTransporte = true;
             }
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
@@ -788,9 +785,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     abrirModalDetalleHistorialCompras() {
         document.getElementById("openModalDetalleHistorial").click();
     }
-
-
-
 
     forzarCreacionPedido() {
         this.mensajeComponent.setMsgsEmpty();
