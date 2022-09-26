@@ -146,8 +146,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.pasos[0].Iniciado = true;
             this.pasoActual = this.pasos[0];
 
-            this.setupSolpActual();
-
             if (this.route.params) {
                 this.route.params.forEach((params: Params) => {
                     let numeroSolp = "";
@@ -189,32 +187,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     public get esEdicionSolp(): boolean {
       return this.getComponentMode() === ComponentMode.Edition;
-    }
-
-    private setupSolpActual(): void {
-        let fechaLimiteFecha = new Date();
-        this.solpActual.tipoSolpSap = EnumTipoSolpSap.Web;       
-        this.solpActual.estadoPasos = "0,0,0,0,0";
-        this.solpActual.jornadaLaboralDias = setupJornadaLaboralDias();
-        this.solpActual.horaEntrega = new Date(1, 1, 1, 10, 0, 0, 0);
-        this.solpActual.fechaLimiteFecha = this.sumarDias(fechaLimiteFecha, 6);
-        this.solpActual.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
-        this.solpActual.visitaDeObraFecha = new Date();
-        this.solpActual.visitaDeObraHora = new Date(1, 1, 1, 10, 0, 0, 0);
-        this.solpActual.listaVisitas = [
-            {
-                id: uuid.v4(),
-                visitaDeObraFecha: new Date(),
-                visitaDeObraHora: new Date(1, 1, 1, 10, 0, 0, 0)
-            }];
-
-        this.solpActual.comienzoJornadaLaboral = new Date(1, 1, 1, 7, 0, 0, 0);
-        this.solpActual.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
-        this.solpActual.ejecucion = "30";
-        this.solpActual.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
-
-        this.solpActual.archivosCotizacionesNuevos = new Array<File>();
-        this.solpActual.archivosCotizaciones = new Array<ArchivoModel>();
     }
 
     private setupCentroPorDefecto(): void {
@@ -291,7 +263,21 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.cargarSolpActual(result.data);
+                        this.solpActual = new Solp(result.data)
+                        let estadosPasos = this.solpActual.estadoPasos.split(',');
+                        
+                        let count = 0;
+                        estadosPasos.forEach(item => {
+                            if (this.pasos[count]) {
+                                this.pasos[count].Iniciado = item == '1' || item == '2';
+                                this.pasos[count].Completo = item == '2';
+                                count += 1;
+                            }
+                        });
+
+                        this._pasoActual = this.pasos.find(x => x.Numero == 1) as Paso;
+                        this.cambioPaso(this.pasos[0]);
+                        this.setearPasos();
                         this.blockUI.stop();
                     }
                 },
@@ -316,204 +302,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
         }
         return tipoPosicion;
-    }
-
-
-    cargarSolpActual(solp) {
-        // Paso 1
-        this.solpActual.id = solp.Id;
-        this.solpActual.tipoSolp = solp.TipoSolp && solp.TipoSolp.Codigo || '';
-        this.solpActual.tipoSolpSap = solp.TipoSolpSap || '';
-        this.solpActual.vincularAPliego = (this.solpActual.tipoSolpSap == EnumTipoSolpSap.Mantenimiento || this.solpActual.tipoSolpSap == EnumTipoSolpSap.SAP);
-        this.titulo = this.solpActual.vincularAPliego ? "Vincular pliego" : solp.TipoSolp.Codigo;
-        this.tituloNroSolp = solp.NroSolp ? "| SOLP #" + solp.NroSolp  : "";
-        this.solpActual.nroSolp = solp.NroSolp || 0;
-        this.solpActual.nombreDePedido = solp.NombreDeObra || '';
-        this.solpActual.fiscalContrato = solp.FiscalContrato || '';
-        this.solpActual.telefono = solp.Telefono || '';
-        this.solpActual.mail = solp.Email || ''; //sessionStorage.getItem("username");
-        this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
-        this.solpActual.emailLinkToken = solp.EmailLinkToken;
-        this.solpActual.selectTipoPosicion = this.getSelectedTipoPosicion(solp.Posiciones);
-
-        // Paso 2
-        this.solpActual.supervisorSector = solp.SupervisorSector || '';
-        this.solpActual.supervisorTrabajo = solp.SupervisorTrabajo || '';
-        this.solpActual.listaVisitas = solp.VisitasObraMasiva.map(x => {
-            return {
-                id: x.Codigo,
-                visitaDeObraFecha: new Date(this.getDateFromAspNetFormat(x.FechaHora)),
-                visitaDeObraHora: new Date(this.getDateFromAspNetFormat(x.FechaHora))
-            } || '';
-        });
-        this.solpActual.visitaDeObraMasiva = solp.TieneVisitaObraMasiva;
-        this.solpActual.visitaDeObra = solp.TieneVisitaObra;
-        this.solpActual.obradores = solp.TieneObradores;
-        this.solpActual.modoElevacion = solp.TieneMedioElevacion;
-        this.solpActual.andamio = solp.TieneAndamio;
-        this.solpActual.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
-        this.solpActual.usuarioComprasId = solp.UsuarioCompras.Id || 0;
-        this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;
-        this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;
-        if (solp.FechaHoraLimiteConsulta != null) {
-            this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
-            this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
-        }
-        this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;
-
-        // Paso 3
-        this.solpActual.especificacionesViewModel = new EspecificacionesViewModel();
-        this.solpActual.especificacionesViewModel.archivosEspecificaciones = solp.Adjuntos
-            .filter(x => x.FileKey == "adjuntoSolp")
-            .map(x => {
-                return {
-                    id: x.Id,
-                    nombreArchivo: x.Nombre
-                }
-            }),
-            this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas || this.solpActual.especificacionesViewModel.valorPorDefecto;
-
-        this.solpActual.tieneCondicionesGenerales = solp.TieneCondicionesGenerales;
-
-        // Paso 4
-        this.solpActual.archivosCotizaciones = solp.Adjuntos
-            .filter(x => x.FileKey == "adjuntoCotizacionesSolp")
-            .map(x => {
-                return {
-                    id: x.Id,
-                    nombreArchivo: x.Nombre,
-                }
-            });
-        this.solpActual.jornadaLaboralDias.forEach(k => {
-            k.selected = solp.JornadaLaboral.includes(k.weekDay);
-        });
-        this.solpActual.comienzoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));
-        this.solpActual.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
-        this.solpActual.ejecucion = solp.DiasEjecucion || '';
-        this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
-
-        //pop up finalizar
-        this.solpActual.revisadoPor = solp.RevisadoPor || '';
-
-        // Paso 5
-        this.solpActual.selectClaseDocumento = solp.ClaseDocumento;
-        this.solpActual.pasoCompletado = solp.PasoCompletado;
-        this.solpActual.estadoPasos = solp.EstadoPasos;
-
-        this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0 ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId) : this.usuarioComprasList[0];
-
-        if (solp.Posiciones && solp.Posiciones.length > 0) {
-            let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
-            
-            this.solpActual.posiciones = [];
-            
-            this.solpActual.agregarNuevaPosicion(null as SolpPosicion);
-
-            let posActual = this.solpActual.posicionActual;
-            let solpActual = this.solpActual;
-            // solpActual.posiciones = this.solpActual.posiciones.filter(p => p.numeroPosicion === 1);
-
-            this.solpActual.selectTipoPosicion = solp.Posiciones[0].TipoPosicion;
-
-            solp.Posiciones.forEach(x => {
-                posActual.id = x.Codigo;
-                posActual.plazoDeEntrega = x.PlazoEntrega;
-                posActual.fechaEntregaServicio = new Date(this.getDateFromAspNetFormat(x.FechaEntregaServicio));
-                posActual.fechaDeLiberacion = new Date(this.getDateFromAspNetFormat(x.FechaLiberacion));
-                posActual.selectCentroEntrega = x.Centro;
-                posActual.selectAlmacenEntrega = x.Almacen.Codigo === null ? '' : x.Almacen;
-                posActual.nombreEntrega = x.NombreEntrega;
-                posActual.calleEntrega = x.CalleEntrega;
-                posActual.numeroEntrega = x.NumeroEntrega;
-                posActual.codigoPostalEntrega = x.CpEntrega;
-                posActual.paisEntrega = x.PaisEntrega;
-                posActual.selectSolicitanteCompras = x.Solicitante;
-                posActual.necesidadCompras = x.NroNecesidad;
-                posActual.selectGrupoCompras = x.GrupoCompras;
-                posActual.selectArticuloCompras = x.GrupoArticulo;
-                posActual.textoSuministro = x.TextoSuministro;
-                posActual.motivo = x.Motivo;
-                posActual.modelo = x.Modelo;
-                posActual.monedaSeleccionada = x.Moneda;
-                posActual.tipoPosicion = x.TipoPosicion;
-                posActual.tipoImputacion = x.TipoImputacion;
-                posActual.estado = x.Estado;
-                posActual.indice = x.numeroPosicion;
-                posActual.concluido = x.EsConcluido;
-                this.solpActual.selectTipoPosicion = x.TipoPosicion;
-                posActual.codigoServicio = this.solpActual.tipoSolp == "SERVICIO" ? x.CodigoServicioSap : x.CodigoMaterialSap;
-                posActual.tareaSubcontratarObj = { Descripcion: x.Tarea };
-                posActual.tareaSubcontratar = x.Tarea;
-                posActual.cuentaTd = x.Cantidad;
-                posActual.unidadSeleccionada = x.Unidad;
-                posActual.precioBruto = x.PrecioBruto;
-                posActual.selectProvincia = x.Provincia;
-
-                posActual.valorImputacion = x.TipoImputacionValor;
-                posActual.cuentaMayor = x.CuentaMayor;
-
-                posActual.provedorFijo                      = x.ProveedorFijo,
-                posActual.nombreProveedor                   = x.NombreProveedor,
-                posActual.numeroContratoSuperior            = x.NumeroContratoSuperior,
-                posActual.numeroPosicionContratoSuperior    = x.NumeroPosicionContratoSuperior,
-                posActual.orgCompras                        = x.OrganizacionCompras,
-
-                posActual.proveedoresValidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial);
-                posActual.proveedoresNoSugeridos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial);
-                posActual.proveedoresInvalidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'INVALIDO').map(p => p.RazonSocial);
-
-                if (x.Subposiciones) {
-                    posActual.listadoSubPosiciones = [];
-                    let i = 1;
-
-                    x.Subposiciones.forEach(sp => {
-                        let subpos = new SubPosicionViewModel(i);
-
-                        subpos.id = sp.Codigo;
-                        subpos.codigoServicio = sp.CodigoServicioSap;
-                        subpos.tareaSubcontratarObj = { Descripcion: sp.Tarea };
-                        subpos.tareaSubcontratar = sp.Tarea;
-                        subpos.cuentaMayor = sp.CuentaMayor;
-                        subpos.cuentaTd = sp.Cantidad;
-                        subpos.unidadSeleccionada = sp.Unidad;
-                        subpos.tipoImputacion = sp.TipoImputacionValor;
-                        subpos.precioBruto = sp.PrecioBruto;
-                        subpos.subPosicion = sp.Numero;
-                        subpos.monedaSeleccionada = x.Moneda;
-                        subpos.calcularValorNeto();
-
-                        posActual.listadoSubPosiciones.push(subpos);
-                        i++;
-                    });
-                }
-                posActual.isNewRow = false;
-                posActual.calcularValorTotal();
-
-                if (ultimaPos.Codigo != x.Codigo) {
-                    solpActual.agregarNuevaPosicion(null as SolpPosicion);
-                    posActual = solpActual.posicionActual;
-                }
-            });
-            this.solpActual.calcularValorTotalPorMoneda();
-
-            this.solpActual.setearPosicionPorDefecto();
-            this.tituloSolp();
-        }
-
-        let estadosPasos = this.solpActual.estadoPasos.split(',');
-
-        let count = 0;
-        estadosPasos.forEach(item => {
-            if (this.pasos[count]) {
-                this.pasos[count].Iniciado = item == '1' || item == '2';
-                this.pasos[count].Completo = item == '2';
-                count += 1;
-            }
-        });
-
-        this._pasoActual = this.pasos.find(x => x.Numero == 1) as Paso;
-        this.cambioPaso(this.pasos[0]);
-        this.setearPasos();
     }
 
     validatePasos(): any {
@@ -710,7 +498,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             }
                             else {
                                 if (result.Solp.NroSolp != "" && result.Solp.NroSolp != null) {
-                                    this.cargarSolpActual(result.Solp);
+                                    this.solpActual = new Solp(result.Solp)
                                     let esto = this;
                                     setTimeout(function () {
                                         esto.cambioPaso(esto.pasos[5]);
