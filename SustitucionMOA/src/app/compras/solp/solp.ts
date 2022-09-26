@@ -1,12 +1,14 @@
 import { Time } from "@angular/common";
 import { WeekDayItem } from "../../common/models/weekDayItem";
 
+import * as uuid from 'uuid';
 import { EspecificacionesViewModel } from "./steps/especificaciones/especificacionesViewModel";
 import { CommonResponse } from "../../common/models/common-response";
 import { ArchivoModel } from "./steps/archivo.model";
 import { EnumTipoSolpSap } from "../enum-tipo-solp-sap";
 import { SolpPosicion } from "./solp-posicion";
-import { ContratoMarcoPosicion } from "./steps/posicion/obtener-contrato-marco/contrato-marco.model";
+import { SubPosicionViewModel } from './steps/posicion/tab-subposicion/sub-posicion-view-model';
+import { setupJornadaLaboralDias } from "./solp.utils";
 
 export class Solp extends CommonResponse {
     public id: number;
@@ -99,12 +101,224 @@ export class Solp extends CommonResponse {
 
     public emailLinkToken: string;
 
-    constructor() {
+    public titulo: string = "";
+    public tituloNroSolp: string = "";
+
+    public selectUsuarioCompras: any;
+    public usuarioComprasList: any[] = [];
+
+    constructor(solp: any = null) {
+
         super();
-        this.posiciones = [];
-        this.fechaEntrega = new Date();
-        this.fechaEntrega.setDate(this.fechaEntrega.getDate() + 7);
-        this._ultimaPosicion = this.posicionActual;
+
+        let fechaLimiteFecha = new Date();
+
+        this.tipoSolpSap = EnumTipoSolpSap.Web;       
+        this.estadoPasos = "0,0,0,0,0";
+        this.jornadaLaboralDias = setupJornadaLaboralDias();
+        this.horaEntrega = new Date(1, 1, 1, 10, 0, 0, 0);
+        this.fechaLimiteFecha = this.sumarDias(fechaLimiteFecha, 6);
+        this.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
+        this.visitaDeObraFecha = new Date();
+        this.visitaDeObraHora = new Date(1, 1, 1, 10, 0, 0, 0);
+        this.listaVisitas = [
+            {
+                id: uuid.v4(),
+                visitaDeObraFecha: new Date(),
+                visitaDeObraHora: new Date(1, 1, 1, 10, 0, 0, 0)
+            }];
+
+        this.comienzoJornadaLaboral = new Date(1, 1, 1, 7, 0, 0, 0);
+        this.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
+        this.ejecucion = "30";
+        this.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
+
+        this.archivosCotizacionesNuevos = new Array<File>();
+        this.archivosCotizaciones = new Array<ArchivoModel>();
+
+        if (solp != null) {
+            // Paso 1
+            this.id = solp.Id;
+            this.tipoSolp = solp.TipoSolp && solp.TipoSolp.Codigo || '';
+            this.tipoSolpSap = solp.TipoSolpSap || '';
+            this.vincularAPliego = (this.tipoSolpSap == EnumTipoSolpSap.Mantenimiento || this.tipoSolpSap == EnumTipoSolpSap.SAP);
+            this.titulo = this.vincularAPliego ? "Vincular pliego" : solp.TipoSolp.Codigo;
+            this.tituloNroSolp = solp.NroSolp ? "| SOLP #" + solp.NroSolp  : "";
+            this.nroSolp = solp.NroSolp || 0;
+            this.nombreDePedido = solp.NombreDeObra || '';
+            this.fiscalContrato = solp.FiscalContrato || '';
+            this.telefono = solp.Telefono || '';
+            this.mail = solp.Email || ''; //sessionStorage.getItem("username");
+            this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+            this.emailLinkToken = solp.EmailLinkToken;
+            this.selectTipoPosicion = this.getSelectedTipoPosicion(solp.Posiciones);
+
+            // Paso 2
+            this.supervisorSector = solp.SupervisorSector || '';
+            this.supervisorTrabajo = solp.SupervisorTrabajo || '';
+            this.listaVisitas = solp.VisitasObraMasiva.map(x => {
+                return {
+                    id: x.Codigo,
+                    visitaDeObraFecha: new Date(this.getDateFromAspNetFormat(x.FechaHora)),
+                    visitaDeObraHora: new Date(this.getDateFromAspNetFormat(x.FechaHora))
+                } || '';
+            });
+            this.visitaDeObraMasiva = solp.TieneVisitaObraMasiva;
+            this.visitaDeObra = solp.TieneVisitaObra;
+            this.obradores = solp.TieneObradores;
+            this.modoElevacion = solp.TieneMedioElevacion;
+            this.andamio = solp.TieneAndamio;
+            this.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
+            this.usuarioComprasId = solp.UsuarioCompras.Id || 0;
+            this.descripcionTecnica = solp.TieneDescripcionTecnica;
+            this.entregaDocumentacion = solp.TieneDocumentacionTecnica;
+            if (solp.FechaHoraLimiteConsulta != null) {
+                this.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+                this.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+            }
+            this.observacionesGeneracion = solp.ObservacionesGeneracion;
+
+            // Paso 3
+            this.especificacionesViewModel = new EspecificacionesViewModel();
+            this.especificacionesViewModel.archivosEspecificaciones = solp.Adjuntos
+                .filter(x => x.FileKey == "adjuntoSolp")
+                .map(x => {
+                    return {
+                        id: x.Id,
+                        nombreArchivo: x.Nombre
+                    }
+                }),
+                this.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas || this.especificacionesViewModel.valorPorDefecto;
+
+            this.tieneCondicionesGenerales = solp.TieneCondicionesGenerales;
+
+            // Paso 4
+            this.archivosCotizaciones = solp.Adjuntos
+                .filter(x => x.FileKey == "adjuntoCotizacionesSolp")
+                .map(x => {
+                    return {
+                        id: x.Id,
+                        nombreArchivo: x.Nombre,
+                    }
+                });
+            this.jornadaLaboralDias.forEach(k => {
+                k.selected = solp.JornadaLaboral.includes(k.weekDay);
+            });
+            this.comienzoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));
+            this.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
+            this.ejecucion = solp.DiasEjecucion || '';
+            this.observacionesCotizacion = solp.ObservacionesCotizacion;
+
+            //pop up finalizar
+            this.revisadoPor = solp.RevisadoPor || '';
+
+            // Paso 5
+            this.selectClaseDocumento = solp.ClaseDocumento;
+            this.pasoCompletado = solp.PasoCompletado;
+            this.estadoPasos = solp.EstadoPasos;
+
+            this.selectUsuarioCompras = this.usuarioComprasId > 0 ? this.usuarioComprasList.find(x => x.Id === this.usuarioComprasId) : this.usuarioComprasList[0];
+
+            if (solp.Posiciones && solp.Posiciones.length > 0) {
+                let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
+                
+                this.posiciones = [];
+                
+                this.agregarNuevaPosicion(null as SolpPosicion);
+
+                let posActual = this.posicionActual;
+
+                this.selectTipoPosicion = solp.Posiciones[0].TipoPosicion;
+
+                solp.Posiciones.forEach(x => {
+                    posActual.id = x.Codigo;
+                    posActual.plazoDeEntrega = x.PlazoEntrega;
+                    posActual.fechaEntregaServicio = new Date(this.getDateFromAspNetFormat(x.FechaEntregaServicio));
+                    posActual.fechaDeLiberacion = new Date(this.getDateFromAspNetFormat(x.FechaLiberacion));
+                    posActual.selectCentroEntrega = x.Centro;
+                    posActual.selectAlmacenEntrega = x.Almacen.Codigo === null ? '' : x.Almacen;
+                    posActual.nombreEntrega = x.NombreEntrega;
+                    posActual.calleEntrega = x.CalleEntrega;
+                    posActual.numeroEntrega = x.NumeroEntrega;
+                    posActual.codigoPostalEntrega = x.CpEntrega;
+                    posActual.paisEntrega = x.PaisEntrega;
+                    posActual.selectSolicitanteCompras = x.Solicitante;
+                    posActual.necesidadCompras = x.NroNecesidad;
+                    posActual.selectGrupoCompras = x.GrupoCompras;
+                    posActual.selectArticuloCompras = x.GrupoArticulo;
+                    posActual.textoSuministro = x.TextoSuministro;
+                    posActual.motivo = x.Motivo;
+                    posActual.modelo = x.Modelo;
+                    posActual.monedaSeleccionada = x.Moneda;
+                    posActual.tipoPosicion = x.TipoPosicion;
+                    posActual.tipoImputacion = x.TipoImputacion;
+                    posActual.estado = x.Estado;
+                    posActual.indice = x.numeroPosicion;
+                    posActual.concluido = x.EsConcluido;
+                    this.selectTipoPosicion = x.TipoPosicion;
+                    posActual.codigoServicio = this.tipoSolp == "SERVICIO" ? x.CodigoServicioSap : x.CodigoMaterialSap;
+                    posActual.tareaSubcontratarObj = { Descripcion: x.Tarea };
+                    posActual.tareaSubcontratar = x.Tarea;
+                    posActual.cuentaTd = x.Cantidad;
+                    posActual.unidadSeleccionada = x.Unidad;
+                    posActual.precioBruto = x.PrecioBruto;
+                    posActual.selectProvincia = x.Provincia;
+
+                    posActual.valorImputacion = x.TipoImputacionValor;
+                    posActual.cuentaMayor = x.CuentaMayor;
+                    posActual.provedorFijo                      = x.ProveedorFijo,
+                    posActual.nombreProveedor                   = x.NombreProveedor,
+                    posActual.numeroContratoSuperior            = x.NumeroContratoSuperior,
+                    posActual.numeroPosicionContratoSuperior    = x.NumeroPosicionContratoSuperior,
+                    posActual.orgCompras                        = x.OrganizacionCompras,
+
+                    posActual.proveedoresValidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial);
+                    posActual.proveedoresNoSugeridos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial);
+                    posActual.proveedoresInvalidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'INVALIDO').map(p => p.RazonSocial);
+
+                    if (x.Subposiciones) {
+                        posActual.listadoSubPosiciones = [];
+                        let i = 1;
+
+                        x.Subposiciones.forEach(sp => {
+                            let subpos = new SubPosicionViewModel(i);
+
+                            subpos.id = sp.Codigo;
+                            subpos.codigoServicio = sp.CodigoServicioSap;
+                            subpos.tareaSubcontratarObj = { Descripcion: sp.Tarea };
+                            subpos.tareaSubcontratar = sp.Tarea;
+                            subpos.cuentaMayor = sp.CuentaMayor;
+                            subpos.cuentaTd = sp.Cantidad;
+                            subpos.unidadSeleccionada = sp.Unidad;
+                            subpos.tipoImputacion = sp.TipoImputacionValor;
+                            subpos.precioBruto = sp.PrecioBruto;
+                            subpos.subPosicion = sp.Numero;
+                            subpos.monedaSeleccionada = x.Moneda;
+                            subpos.calcularValorNeto();
+
+                            posActual.listadoSubPosiciones.push(subpos);
+                            i++;
+                        });
+                    }
+                    posActual.isNewRow = false;
+                    posActual.calcularValorTotal();
+
+                    if (ultimaPos.Codigo != x.Codigo) {
+                        this.agregarNuevaPosicion(null as SolpPosicion);
+                        posActual = this.posicionActual;
+                    }
+                });
+                this.calcularValorTotalPorMoneda();
+                this.setearPosicionPorDefecto();
+                this.tituloSolp();
+            }
+            
+        } else {
+            this.posiciones = [];
+            this.fechaEntrega = new Date();
+            this.fechaEntrega.setDate(this.fechaEntrega.getDate() + 7);
+            this._ultimaPosicion = this.posicionActual;
+        }
     }
 
     nuevaPosicion(posicion: any, centro: any, direccionCentro: any, moneda: any) {
@@ -117,7 +331,7 @@ export class Solp extends CommonResponse {
             direccionCentro,
             moneda,
             this.selectTipoPosicion
-            );
+        );
     }
 
     agregarNuevaPosicion(posicion: SolpPosicion) {
@@ -199,6 +413,43 @@ export class Solp extends CommonResponse {
             }
             this.valorTotalPorMoneda.push({moneda, valorTotal} as ValorTotalPorMoneda);
         });
+    }
+
+    tituloSolp() {
+        switch (this.tipoSolp) {
+            case "CON_PLIEGO":
+                this.titulo = "Generación de SOLP con documento de pliego"
+                break;
+            case "SIN_PLIEGO":
+                this.titulo = "Generación de SOLP sin documento de pliego"
+                break;
+            default:
+        }
+    }
+
+    sumarDias(fecha, dias) {
+        fecha.setDate(fecha.getDate() + dias);
+        return fecha;
+    }
+
+    public getSelectedTipoPosicion(posiciones: any) {
+        let tipoPosicion = undefined;
+        if (posiciones != undefined && posiciones.length > 0) {
+            let posicion = posiciones.filter(p => p.TipoPosicion.Codigo != undefined);
+            if (posicion != undefined) {
+                tipoPosicion = posicion[0].TipoPosicion.Codigo;
+            }
+        }
+        return tipoPosicion;
+    }
+
+    public getDateFromAspNetFormat(date: string): number {
+        if (date){
+            const re = /-?\d+/;
+            const m = re.exec(date);
+            return parseInt(m[0], 10);
+        }
+        return null
     }
 
 }
