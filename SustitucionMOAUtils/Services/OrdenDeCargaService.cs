@@ -1291,7 +1291,7 @@ namespace SustitucionMOAUtils.Services
                     var corredorEmail = request.UsuarioEmail;
 					var corredor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == corredorCodigo && x.Mail == corredorEmail && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int) TipoUsuarioEnum.Corredor);
 					response.ResultValidation = GetResultFromValidarCorredorClienteContratoProducto(ordenCargaVisualizarClienteWSMOAResponse, request, producto);
-                    if (response.ResultValidation)
+                    if (response.ResultValidation && corredor != null)
                     {
                         CrearRelacionCorredorCliente(corredor, cliente);
 					}
