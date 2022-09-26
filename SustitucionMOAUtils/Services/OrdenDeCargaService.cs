@@ -127,7 +127,7 @@ namespace SustitucionMOAUtils.Services
             repositorio.Agregar(ordenDeCarga);
             repositorio.GuardarCambios();
 
-            if(ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido)
+            if (ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido)
             {
                 NotificacionContratoVencido(ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga, cliente));
             }
@@ -204,10 +204,7 @@ namespace SustitucionMOAUtils.Services
             Log.Info("Editar ActualizarEstado " + ordenEditar.ToJson());
             ordenEditar.ActualizarEstado();
             Log.Info("Editar ActualizarEstado Nuevo " + ordenEditar.Estado.ToString());
-            //if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega))
-            //{
-            //    VerificarSituacionCrediticia(ordenEditar, true);
-            //}
+
 
             foreach (var prop in listaValoresDiferentes)
             {
@@ -244,7 +241,10 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             NotificarTransporte(ordenEditar.Id);
-
+            if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega) && ordenEditar.AprobadoCredito)
+            {
+                GenerarEntregaSAP(ordenEditar);
+            }
             if (historialCambios.Count > 0)
             {
                 //Aviso de Edición de Orden de Carga
@@ -340,7 +340,7 @@ namespace SustitucionMOAUtils.Services
 
             Log.Info("VerificarOrden ControlCargaRequest " + $"cliente.CodigoProveedor {cliente.CodigoProveedor ?? ""}, contrato {contrato ?? ""}, ordenDeCarga.CodigoCorredor {ordenDeCarga.CodigoCorredor ?? ""}, ordenDeCarga.CUITTransporte {ordenDeCarga.CUITTransporte ?? ""}, ordenDeCarga.Producto.CodigoSap {ordenDeCarga.Producto.CodigoSap ?? ""}, ordenDeCarga.NumeroPedido {ordenDeCarga.NumeroPedido ?? ""}");
             var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
-            
+
             Log.Info("VerificarOrden ControlCargaRequest Result " + result);
             //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
             //cual es el contrato correcto que le quiere entregar.
@@ -512,7 +512,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
-                   // filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
+                    // filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
                 }
 
                 if (esPuerto)
@@ -1554,7 +1554,8 @@ namespace SustitucionMOAUtils.Services
 
             if (orden.TransporteExiste)
             {
-                Log.Info("VerificarTransporte ActualizarEstado " + orden.ToJson());
+                Log.Info("VerificarTransporte ActualizarEstado " + orden.ToJson());                
+                VerificarSituacionCrediticia(orden.Id);                                                     
                 orden.ActualizarEstado();
                 Log.Info("VerificarTransporte ActualizarEstado Nuevo " + orden.Estado.ToString());
                 repositorio.GuardarCambios();
@@ -1811,17 +1812,8 @@ namespace SustitucionMOAUtils.Services
         }
         private Resultado GenerarEntregaSAP(OrdenDeCarga orden)
         {
-            orden.TransporteExiste = TransporteExiste(orden);
-
-            if (!orden.TransporteExiste)
-            {
-                return new Resultado { error = "No existe el transportista" };
-            }
-
             var conductor = orden.NombreChofer;
-
             var tipoDocumento = "CUIL";
-
             Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest " + $"orden.CUITChofer {orden.CUITChofer ?? ""}, orden.Cantidad {orden.Cantidad}, conductor {conductor ?? ""}, orden.PatenteAcoplado {orden.PatenteAcoplado ?? ""}, orden.ChasisAcoplado {orden.ChasisAcoplado ?? ""}, orden.NumeroPedido {orden.NumeroPedido ?? ""}, tipoDocumento {tipoDocumento ?? ""}, orden.CUITTransporte {orden.CUITTransporte ?? ""}");
             var result = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, conductor, orden.PatenteAcoplado, orden.ChasisAcoplado, orden.NumeroPedido, tipoDocumento, orden.CUITTransporte, out string respuesta);
             Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Result " + result);
@@ -1838,20 +1830,22 @@ namespace SustitucionMOAUtils.Services
                     orden.TransporteExiste = true;
                     orden.FechaEntregaGenerada = DateTime.Now;
                     orden.NumeroEntrega = result;
+                    orden.DescripcionCodigoVerificacionSap = "";
                     Log.Info("GenerarEntregaSAP ActualizarEstado " + orden.ToJson());
                     orden.ActualizarEstado();
                     Log.Info("GenerarEntregaSAP ActualizarEstado Nuevo " + orden.Estado.ToString());
-
                     repositorio.GuardarCambios();
                     return new Resultado { Mensaje = string.Concat("Se ha generado la entrega ", result, ".") };
                 //return string.Concat("Se ha generado la entrega ", result, ".");
 
                 case "OE-01":
                     orden.TransporteExiste = false;
+                    orden.DescripcionCodigoVerificacionSap = "No se pudo generar la entrega. No existe el transportista.";
                     Log.Info("GenerarEntregaSAP ActualizarEstado " + orden.ToJson());
                     orden.ActualizarEstado();
-                    Log.Info("GenerarEntregaSAP ActualizarEstado Nuevo " + orden.Estado.ToString()); repositorio.GuardarCambios();
-                    return new Resultado { Mensaje = "No se pudo genera la entrega. No existe el transportista." };
+                    Log.Info("GenerarEntregaSAP ActualizarEstado Nuevo " + orden.Estado.ToString());
+                    repositorio.GuardarCambios();
+                    return new Resultado { Mensaje = "No se pudo generar la entrega. No existe el transportista." };
                     //return string.Concat("No se pudo genera la entrega. No existe el transportista.");
             }
 
