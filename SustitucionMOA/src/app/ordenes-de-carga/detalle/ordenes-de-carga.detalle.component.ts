@@ -230,7 +230,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
     verificarBotones() {
-
         this.mostrarBotonContratos = false;
         this.mostrarBotonVerHistorial = false;
         this.mostrarBotonAprobarRechazarAnulacion = false;
@@ -244,17 +243,15 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mostrarBotonEditar = false;
         this.mostrarBotonEdicionFinalizada = false;
 
-        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada) {
-            return;
-        }
-
+        // if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada) {
+        //     return;
+        // }
         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Entregada) {
             return;
         }
-        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnuladaPorVencimiento) {
-            return;
-        }
-
+        // if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnuladaPorVencimiento) {
+        //     return;
+        // }
         //if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada) {
         //    return;
         //}
@@ -298,7 +295,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
                 this.mostrarBotonVerificarSituacionCrediticia = true;
-                // this.mostrarBotonAnular = true;
             }
 
 
@@ -311,23 +307,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 if (this.ordenDeCarga.FechaVencimientoAmpliada == false) {
                     this.mostrarBotonActivarOC = true;
                 }
-                // if (this.esAnulador) {
-                //     this.mostrarBotonAnular = true;
-                // }
             }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada) {
                 this.mostrarBotonAprobarRechazarAnulacion = true;
-                // if (this.esAnulador) {
-                //     this.mostrarBotonAnular = true;
-                // }
             }
-            // if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
-            //     if (this.esAnulador) {
-            //         this.mostrarBotonAnular = true;
-            //     }
-            // }
         }
-
     }
 
     obtenerOrdenDeCarga() {
