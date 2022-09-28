@@ -1554,8 +1554,12 @@ namespace SustitucionMOAUtils.Services
 
             if (orden.TransporteExiste)
             {
-                Log.Info("VerificarTransporte ActualizarEstado " + orden.ToJson());                
-                VerificarSituacionCrediticia(orden.Id);                                                     
+                Log.Info("VerificarTransporte ActualizarEstado " + orden.ToJson());
+                var aprobadoCredito = ObtenerSituacionCrediticia(orden);
+                if(aprobadoCredito && string.IsNullOrEmpty(orden.NumeroEntrega))
+                {
+                    GenerarEntregaSAP(orden);
+                }
                 orden.ActualizarEstado();
                 Log.Info("VerificarTransporte ActualizarEstado Nuevo " + orden.Estado.ToString());
                 repositorio.GuardarCambios();
@@ -1848,8 +1852,8 @@ namespace SustitucionMOAUtils.Services
                     return new Resultado { Mensaje = "No se pudo generar la entrega. No existe el transportista." };
                     //return string.Concat("No se pudo genera la entrega. No existe el transportista.");
             }
-
-            return new Resultado { info = "Estado no conocido" };
+            orden.DescripcionCodigoVerificacionSap = respuesta;
+            return new Resultado { info = "Estado no conocido"};
         }
         public string NotificarVariosPedidos(int ordenDeCargaId)
         {
