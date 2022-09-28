@@ -1691,5 +1691,75 @@ namespace SustitucionMOATest.Services
             Process[] proc = Process.GetProcessesByName("MailHog_windows_amd64");
             proc[0].Kill();
         }
+        [Test()]
+        public void GenerarEntregaSAPOkTest()
+        {
+            string value = "OE-00";
+            var respuesta = "OE-00";
+            ordenDeCarga.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
+            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
+            consumerOrdenCargaMOA.Setup(x => x.OrdenCargaEntregadaRequest(It.IsAny<string>(),
+                It.IsAny<decimal>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                out value)).Returns("OE-00");
+
+            consumerOrdenCargaMOA.Setup(x => x.OrdenCargaControlEstadoRequest(
+              It.IsAny<string>(),
+              It.IsAny<string>(),
+              It.IsAny<string>())).Returns("CE-00");
+
+            
+            var response = target.VerificarSituacionCrediticia(ordenDeCarga.Id);
+            
+            var result = new Resultado()
+            {
+                Mensaje = string.Concat("Se ha generado la entrega ", respuesta, ".")
+            };
+           
+            Assert.AreEqual(result.Mensaje, response.Mensaje);
+           
+
+        }
+
+        [Test()]
+        public void GenerarEntregaSAPTransporteNoExisteTest()
+        {
+            string value = "OE-01";
+            ordenDeCarga.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
+            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
+            consumerOrdenCargaMOA.Setup(x => x.OrdenCargaEntregadaRequest(It.IsAny<string>(),
+                It.IsAny<decimal>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                out value)).Returns("OE-01");
+
+            consumerOrdenCargaMOA.Setup(x => x.OrdenCargaControlEstadoRequest(
+              It.IsAny<string>(),
+              It.IsAny<string>(),
+              It.IsAny<string>())).Returns("CE-00");
+
+
+            var response = target.VerificarSituacionCrediticia(ordenDeCarga.Id);
+
+            var result = new Resultado()
+            {
+                Mensaje = "No se pudo generar la entrega. No existe el transportista."
+            };
+
+            Assert.AreEqual(result.Mensaje, response.Mensaje);
+
+
+        }
+
+
     }
 }
