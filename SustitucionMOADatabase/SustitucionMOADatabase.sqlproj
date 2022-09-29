@@ -160,9 +160,6 @@
     <Build Include="DBO\Tables\TipoSolpPosicionSAP.sql" />
     <None Include="scripts\PostDeployment\CategoriaRolConsulta.sql" />
     <None Include="scripts\PostDeployment\CategoriaYSubcategoriasConsulta.sql" />
-    <None Include="scripts\PostDeployment\RolPermisoPorRol.sql" />
-    <None Include="scripts\PostDeployment\Rol.sql" />
-    <None Include="scripts\PostDeployment\PermisoPorRol.sql" />
     <Build Include="DBO\Tables\LogActualizarToneladasAprobadasCampo.sql" />
     <Build Include="DBO\Tables\MaterialSolp.sql" />
     <Build Include="DBO\Tables\PaisesSAP.sql" />
@@ -174,6 +171,9 @@
     <None Include="scripts\PostDeployment\PaisesSAP.sql" />
     <None Include="scripts\PostDeployment\SolpFixDataToNewColumnEmailLinkToken.sql" />
     <None Include="scripts\HABILITAR MENU COMPRAS.sql" />
+    <None Include="scripts\PostDeployment\PermisoPorRol.sql" />
+    <None Include="scripts\PostDeployment\Rol.sql" />
+    <None Include="scripts\PostDeployment\RolPermisoPorRol.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
