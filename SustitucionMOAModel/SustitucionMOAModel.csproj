@@ -205,6 +205,7 @@
     <Compile Include="Models\WSMapMOA\ContactoMail\ConsultaVM.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\EstadoConsultaVM.cs" />
     <Compile Include="Models\ConsultaTicketPesada.cs" />
+    <Compile Include="Models\WSMapMOA\Echeq\EcheqDocumento.cs" />
     <Compile Include="Models\WSMapMOA\Echeq\EcheqVisualizacionPendientePago.cs" />
     <Compile Include="Models\WSMapMOA\Echeq\EcheqVisualizacionDisponibleCheque.cs" />
     <Compile Include="Models\WSMapMOA\FechaFeriado.cs" />

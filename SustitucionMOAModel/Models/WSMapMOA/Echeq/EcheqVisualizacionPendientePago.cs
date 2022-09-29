@@ -9,6 +9,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Echeq
     public class EcheqVisualizacionPendientePago
     {
         public string Contrato { get; set; }
+        public List<EcheqDocumento> Documentos { get; set; }
         public string Pedido { get; set; }
         public decimal Kilos { get; set; }
         public bool kILOSFieldSpecified { get; set; }
@@ -23,4 +24,6 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Echeq
         public string zLSCHField { get; set; }
   
     }
+
+    
 }

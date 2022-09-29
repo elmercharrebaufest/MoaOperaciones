@@ -45,7 +45,7 @@ namespace SustitucionMOAWS.WSConsumers
                     fechahasta = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaFin);
                 }
 
-                string IM_CONTRATO = "";               
+                string IM_CONTRATO = "";
 
 
                 var response = service.SI_MPRFC_VISU_PENDIENTE_PAGO(IM_CONTRATO, fechas, proveedor);
@@ -79,7 +79,23 @@ namespace SustitucionMOAWS.WSConsumers
                     Material = pagosPendientes.MATERIAL,
                     DescripcionMaterial = pagosPendientes.DESC_MATERIAL,
                     Fecha = SAPFormatter.FormatearFecha(pagosPendientes.FECHA),
-                    zLSCHField = pagosPendientes.ZLSCH
+                    zLSCHField = pagosPendientes.ZLSCH,
+                    Documentos = pagosPendientes.DOCUMENTOS == null ? new List<EcheqDocumento>() : pagosPendientes.DOCUMENTOS.Select(x => new EcheqDocumento
+                    {
+                        Contrato = x.CONTRATO,
+                        Pedido = x.PEDIDO,
+                        DMBTR = x.DMBTR,
+                        DMBTRSpecified = x.DMBTRSpecified,
+                        Documento = x.DOCUMENTO,
+                        Ejercicio = x.EJERCICIO,
+                        Fecha = x.FECHA,
+                        Moneda = x.MONEDA,
+                        Sociedad = x.SOCIEDAD,
+                        Solapa = x.SOLAPA,
+                        WRBTR = x.WRBTR,
+                        WRBTRSpecified = x.WRBTRSpecified,
+                        NumeroCOE = x.XBLNR
+                    }).ToList()
                 });
             }
             return listaPendientesPago;
