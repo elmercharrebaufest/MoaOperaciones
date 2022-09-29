@@ -1455,7 +1455,7 @@ namespace SustitucionMOAUtils.Services
                 orden.ContratoSAP = "";
                 return new Resultado { error = "El contrato seleccionado esta vencido" };
             }
-            if (!string.IsNullOrEmpty(orden.ContratoSAP) && orden.TransporteExiste)
+            if (!string.IsNullOrEmpty(orden.ContratoSAP))
             {
 
                 var creadaEnSaP = CrearOrdenEnSAP(orden, orden.Cliente, false);
