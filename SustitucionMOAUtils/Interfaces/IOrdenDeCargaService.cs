@@ -13,7 +13,7 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId);
         OrdenDeCargaEditarDto ObtenerEditar(string mailUsuario, int ordenId);
         List<OrdenDeCargaHistorialDto> ObtenerEditarHistorial(string mailUsuario, int ordenId);        
-        string AnularOrden(int ordenId);
+        string AnularOrden(int ordenId, string mailUsuario);
         string SolicitarAnulacionOrden(int ordenId, string mailUsuario);
         string RechazarSolicitudAnulacion(int ordenId, string mailUsuario);
         string EdicionFinalizada(int ordenId);

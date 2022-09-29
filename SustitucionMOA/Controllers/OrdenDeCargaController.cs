@@ -149,8 +149,10 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = ordenDeCargaService.AnularOrden(ordenId) });
-            }
+				var mailUsuario = SessionPersister.getUsername();
+				var response = ordenDeCargaService.AnularOrden(ordenId, mailUsuario);
+				return JsonCustom(new { data = response });
+			}
             catch (InfoCustomException e)
             {
                 return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
