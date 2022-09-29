@@ -18,9 +18,9 @@ Post-Deployment Script Template
 :r .\PermisosNotificaciones.sql
 :r .\PermisoPorRolBuscadorInteligente.sql
 :r .\CategoriaYSubcategoriasConsulta.sql
-:r .\RolesConsulta.sql
-:r .\RolPermisoPorRolConsulta.sql
-:r .\PermisoPorRolConsulta.sql
+:r .\Rol.sql
+:r .\PermisoPorRol.sql
+:r .\RolPermisoPorRol.sql
 :r .\CategoriaRolConsulta.sql
 :r .\PaisesSAP.sql
 :r .\HabilitacionJob.sql
