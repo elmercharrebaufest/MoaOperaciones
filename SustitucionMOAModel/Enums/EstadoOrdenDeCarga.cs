@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SustitucionMOAModel.Enums
+﻿namespace SustitucionMOAModel.Enums
 {
     public enum EstadoOrdenDeCarga
     {
@@ -22,7 +16,7 @@ namespace SustitucionMOAModel.Enums
         AnulacionSolicitada,
         ContratoVencido, 
         EdicionRechazada,
-        //TransporteNoExiste
+        SinEnviarASAP
     }
 
     public static class EstadoOrdenDeCargaExtensions
@@ -42,7 +36,6 @@ namespace SustitucionMOAModel.Enums
                 case EstadoOrdenDeCarga.Confirmado:
                 case EstadoOrdenDeCarga.EntregaPendiente:
                 case EstadoOrdenDeCarga.ContratoVencido:
-                //case EstadoOrdenDeCarga.TransporteNoExiste:
                 case EstadoOrdenDeCarga.EdicionSolicitada:
                 case EstadoOrdenDeCarga.AnulacionSolicitada:
                     return "yellow";
@@ -50,6 +43,8 @@ namespace SustitucionMOAModel.Enums
                 case EstadoOrdenDeCarga.Entregada:
                 case EstadoOrdenDeCarga.EdicionRechazada:
                     return "green";
+                case EstadoOrdenDeCarga.SinEnviarASAP:
+                    return "blue";
                 default:
                     return "white";
             }
@@ -87,9 +82,9 @@ namespace SustitucionMOAModel.Enums
                     return "Contrato vencido";
                 case EstadoOrdenDeCarga.EdicionRechazada:
                     return "Edición rechazada";
-                //case EstadoOrdenDeCarga.TransporteNoExiste:
-                //    return "Transporte no existe";
-                default:
+				case EstadoOrdenDeCarga.SinEnviarASAP:
+					return "Sin Enviar a SAP";
+				default:
                     return "Sin estado";
             }
         }
@@ -98,15 +93,12 @@ namespace SustitucionMOAModel.Enums
         {
             switch (me)
             {
-                //case EstadoOrdenDeCarga.Vencida:
-                //    return "Vencida";
                 case EstadoOrdenDeCarga.ErrorDeCarga:
                 case EstadoOrdenDeCarga.Pendiente:
                 case EstadoOrdenDeCarga.Confirmado:
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                 case EstadoOrdenDeCarga.EntregaPendiente:
                 case EstadoOrdenDeCarga.ContratoVencido:
-                //case EstadoOrdenDeCarga.TransporteNoExiste:
                     return "En proceso";
                 case EstadoOrdenDeCarga.Vencida:
                 case EstadoOrdenDeCarga.EntregaGenerada:
@@ -115,15 +107,15 @@ namespace SustitucionMOAModel.Enums
                     return "Anulación Solicitada";
                 case EstadoOrdenDeCarga.EdicionSolicitada:
                     return "Edición Solicitada";
-                //case EstadoOrdenDeCarga.Entregada:
-                //    return "Completada";
                 case EstadoOrdenDeCarga.Anulada:
                     return "Anulada";
                 case EstadoOrdenDeCarga.AnuladaPorVencimiento:
                     return  "Anulada por vencimiento";
                 case EstadoOrdenDeCarga.EdicionRechazada:
                     return "Edición rechazada";
-                default:
+				case EstadoOrdenDeCarga.SinEnviarASAP:
+					return "Sin Enviar a SAP";
+				default:
                     return "Sin estado";
             }
         }

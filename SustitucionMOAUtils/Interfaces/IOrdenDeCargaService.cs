@@ -9,7 +9,9 @@ namespace SustitucionMOAUtils.Interfaces
 	public interface IOrdenDeCargaService
     {
         Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
-        List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin);
+        Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario);
+		//Resultado CrearOrdenEnSAP(CrearOrdenEnSAPRequest request);
+		List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin);
         OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId);
         OrdenDeCargaEditarDto ObtenerEditar(string mailUsuario, int ordenId);
         List<OrdenDeCargaHistorialDto> ObtenerEditarHistorial(string mailUsuario, int ordenId);        
@@ -27,7 +29,6 @@ namespace SustitucionMOAUtils.Interfaces
         Resultado VerificarSituacionCrediticia(int ordenId);
         string VerificarTransporte(int ordenId);
         void VerificarTransporteBulk();
-        Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario);
         List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga();
         string ForzarCreacionOrden(int ordenId);
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -79,7 +80,8 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var mailUsuario = SessionPersister.getUsername();
-                return JsonCustom(new { data = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin) });
+                var result = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin);
+				return JsonCustom(result);
             }
             catch (InfoCustomException e)
             {
@@ -95,6 +97,28 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+  //      [HttpPost]
+  //      public ActionResult CrearOrdenEnSAP(CrearOrdenEnSAPRequest request)
+  //      {
+  //          try
+  //          {
+
+  //          }
+		//	catch (InfoCustomException e)
+		//	{
+		//		return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+		//	}
+		//	catch (ValidationCustomException e)
+		//	{
+		//		return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+		//	}
+		//	catch (Exception e)
+		//	{
+		//		Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+		//		return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+		//	}
+		//}
 
         [HttpGet]
         public ActionResult Get(int ordenDeCargaId)

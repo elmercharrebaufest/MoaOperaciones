@@ -229,6 +229,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return;
         }
     }
+    
     verificarBotones() {
         this.mostrarBotonContratos = false;
         this.mostrarBotonVerHistorial = false;
