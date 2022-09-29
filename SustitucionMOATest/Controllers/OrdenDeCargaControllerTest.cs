@@ -123,7 +123,7 @@ namespace SustitucionMOATest.Controllers
         public void AnularOrdenTest()
         {
             var expected = new { data = SuccessMsg.OrdenDeCargaAnulada };
-            ordenDeCargaServiceMock.Setup(s => s.AnularOrden(It.Is<int>(i => i == ordenId))).Returns(expected.data);
+            ordenDeCargaServiceMock.Setup(s => s.AnularOrden(It.Is<int>(i => i == ordenId), It.IsAny<string>())).Returns(expected.data);
             var result = (JsonResult)target.AnularOrden(ordenId);
             expectedJson = JsonConvert.SerializeObject(expected);
             resultJson = JsonConvert.SerializeObject(result.Data);

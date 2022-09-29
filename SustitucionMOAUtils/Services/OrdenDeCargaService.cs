@@ -843,24 +843,31 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var ordenHistorialDtoLista = new List<OrdenDeCargaHistorialDto>();
-            //foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(o => !o.TransporteExiste))
             foreach (var ordenDeCargaHistorial in repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.OrdenDeCarga_Id == ordenId))
             {
                 var ordenHistorialDto = new OrdenDeCargaHistorialDto(ordenDeCargaHistorial);
                 ordenHistorialDtoLista.Add(ordenHistorialDto);
             }
-
             return ordenHistorialDtoLista;
         }
 
-        public string AnularOrden(int ordenId)
+        public string AnularOrden(int ordenId, string mailUsuario)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-
-            orden.Estado = EstadoOrdenDeCarga.Anulada;
-
+			var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+			var ordenHistorial = new OrdenDeCargaCambiosHistorial()
+			{
+				Id = 0,
+				Antes = ((int)orden.Estado).ToString(),
+				Despues = ((int)EstadoOrdenDeCarga.Anulada).ToString(),
+				NombreColumnaCambio = "estado",
+				FechaCambio = DateTime.Now,
+				Usuario_Id = usuario.Id,
+				OrdenDeCarga_Id = orden.Id
+			};
+			repositorio.Agregar(ordenHistorial);
+			orden.Estado = EstadoOrdenDeCarga.Anulada;
             repositorio.GuardarCambios();
-
             return SuccessMsg.OrdenDeCargaAnulada;
         }
 
@@ -869,9 +876,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-
                 var ordenHistorial = new OrdenDeCargaCambiosHistorial()
                 {
                     Id = 0,
@@ -881,17 +886,11 @@ namespace SustitucionMOAUtils.Services
                     FechaCambio = DateTime.Now,
                     Usuario_Id = usuario.Id,
                     OrdenDeCarga_Id = orden.Id
-
                 };
-
                 repositorio.Agregar(ordenHistorial);
-
                 orden.Estado = EstadoOrdenDeCarga.AnulacionSolicitada;
-
                 repositorio.GuardarCambios();
-
                 NotificarSolicitudAnulacion(ordenId);
-
                 return SuccessMsg.OrdenDeCargaActualizada;
 
             }

@@ -304,8 +304,9 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void AnularOrdenTest()
         {
-            int orderId = 1;
-            var orden = new OrdenDeCarga
+			int orderId = 1;
+			var mailUsuario = "usuario@test.com";
+			var orden = new OrdenDeCarga
             {
                 Id = orderId,
                 Estado = EstadoOrdenDeCarga.Pendiente,
@@ -314,7 +315,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(orden);
 
-            var result = target.AnularOrden(orderId);
+            var result = target.AnularOrden(orderId, mailUsuario);
 
             var expected = SuccessMsg.OrdenDeCargaAnulada;
 
@@ -328,7 +329,8 @@ namespace SustitucionMOATest.Services
         public void AnularOrdenInformadaTest()
         {
             int orderId = 1;
-            var orden = new OrdenDeCarga
+			var mailUsuario = "usuario@test.com";
+			var orden = new OrdenDeCarga
             {
                 Id = orderId,
                 Estado = EstadoOrdenDeCarga.Confirmado,
@@ -339,7 +341,7 @@ namespace SustitucionMOATest.Services
 
             var expected = "La orden no puede anularse debido a que ya fue informada.";
 
-            var ex = Assert.Throws<ValidationCustomException>(() => target.AnularOrden(orderId));
+            var ex = Assert.Throws<ValidationCustomException>(() => target.AnularOrden(orderId, mailUsuario));
 
             var result = ex.Message;
 
