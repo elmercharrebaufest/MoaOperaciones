@@ -19,7 +19,7 @@ declare var $: any;
   selector: 'app-buscador-inteligente',
   templateUrl: './buscador.component.html',
   styleUrls: ['./buscador.component.css'],
-  providers: [BuscadorService, MessageService],
+  providers: [MessageService],
 })
 export class BuscadorComponent extends BaseComponent implements OnInit {
 
@@ -32,7 +32,7 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
   @ViewChild(SpinnerSmallComponent)
   public spinnerSmallComponent: SpinnerSmallComponent;
 
-  constructor(protected service: BuscadorService, protected navService: NavService,
+  constructor(protected readonly service: BuscadorService, protected navService: NavService,
     protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
     protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
 
@@ -70,14 +70,14 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
     overlaypanel.show(event);
     this.unsubscribe();
 
-    if(this.palabraABuscar == undefined || this.palabraABuscar != this.palabraABuscarAuxiliar || this.resultados.length < 1){
+    if(this.service.palabraABuscar == undefined || this.service.palabraABuscar != this.palabraABuscarAuxiliar || this.resultados.length < 1){
       this.resultados = [];
       this.spinnerSmallComponent.showIt();
-      this.palabraABuscarAuxiliar = this.palabraABuscar;
+      this.palabraABuscarAuxiliar = this.service.palabraABuscar;
       this.hayResultados = true;
 
       try {
-        this.subscription = this.service.getResultados(this.palabraABuscar).subscribe(
+        this.subscription = this.service.getResultados(this.service.palabraABuscar).subscribe(
             (result: any) => {
               if (result.logout == true) {
                 this.sessionDataService.logout();

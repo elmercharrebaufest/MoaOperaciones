@@ -1,6 +1,6 @@
 <div clickOutside (clickOutside)="op.hide($event)">
   <div>
-    <p-autoComplete #buscador [minLength]="6" [(ngModel)]="palabraABuscar" [suggestions]="resultados" 
+    <p-autoComplete #buscador [minLength]="6" [(ngModel)]="service.palabraABuscar" [suggestions]="resultados" 
     (completeMethod)="autoBusqueda($event, op)" (onFocus)="autoBusqueda($event, op)" placeholder="Ingresar contrato o CCPP o liquidacion">
     </p-autoComplete>
   </div>
