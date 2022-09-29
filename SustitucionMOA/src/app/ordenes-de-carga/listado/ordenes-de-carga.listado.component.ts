@@ -46,34 +46,30 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         "Error de datos",
         "Contrato vencido",
         "Edición rechazada",
-    //    "Transporte no existe"
+        "Sin Enviar a SAP"
     ];
-
-
 
     datosAux: any[];
     primerListado: any[];
+    listaEnviarASAP: any[];
 
     productoSelected: string = "Todos";
     listaProductos: any = null;
     private selectUndefinedOptionValue: any;
     pedidoAnticipado: number = 0;
+    seleccionaTodos: boolean = false;
 
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS');
     esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
     esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
     esPuerto: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA PUERTO');
-
     
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
 
     descripcionEstadoOrdenCarga: any[];
     entregada: string = "Entregada";
-   
-
-
 
     ngOnInit() {
 
@@ -84,25 +80,18 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
             { label: "Pendiente aprobación crédito", value: "Pendiente aprobación crédito" },
             { label: "Entrega generada", value: "Entrega generada" },
             { label: "Anulada", value: "Anulada" },
-        /*    { label: "Entregada", value: "Entregada" },*/
             { label: "Vencida", value: "Vencida" },
             { label: "Entrega pendiente", value: "Entrega pendiente" },
             { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
             { label: "Anulación solicitada", value: "Anulación solicitada" },
 	        { label: "Edición solicitada", value: "Edición solicitada" },  
             { label: "Error de datos", value: "Error de datos" },        
-                { label: "Contrato vencido", value: "Contrato vencido" },
-                { label: "Edición rechazada", value: "Edición rechazada" },
-        //        { label: "Transporte no existe", value: "Transporte no existe" }
+            { label: "Contrato vencido", value: "Contrato vencido" },
+            { label: "Edición rechazada", value: "Edición rechazada" },
+            { label: "Sin Enviar a SAP", value: "Sin Enviar a SAP" },
         ]} else {
-            this.descripcionEstadoOrdenCarga = [
-
-            ];
-    
-            this.estadosSelected = [
-               
-            ];
-    
+            this.descripcionEstadoOrdenCarga = [];
+            this.estadosSelected = [];
             this.entregada = "Completada";
         }
 
@@ -113,73 +102,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         this.obtenerMateriales();
     }
 
-    // confirmarSA(Id) {
-    //     //var element = document.getElementsByClassName("ui-widget-overlay ui-dialog-mask");
-    //     //element[0].remove();
-    //     this.confirmationService.confirm({    
-    //         key: 'confirmarSA',        
-    //         message: '¿Desea solicitar anulación?',
-    //         accept: () => {
-    //             this.solicitarAnulacion(Id)
-    //         },
-    //         reject: () => {                
-    //         }
-    //     });
-    // }
-    
-    // confirmarSE(Id) {
-    //     console.log("ss");
-        
-    //     this.confirmationService.confirm({    
-    //         key: 'confirmarSE',        
-    //         message: '¿Desea solicitar edición?',
-    //         accept: () => {
-               
-    //         },
-    //         reject: () => {                
-    //         }
-    //     });
-    // }
-    
-    // solicitarAnulacion(Id){
-    //     this.mensajeComponent.setMsgsEmpty();
-
-    //     this.spinnerComponent.showIt();
-    //     this.data = null;
-    //     try {
-    //         this.unsubscribe();
-    //         this.subscription = this.service.solicitarAnulacion(Id, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
-    //             result => {
-    //                 this.spinnerComponent.hideIt();
-    //                 if (result.logout == true) {
-    //                     this.sessionDataService.logout();
-    //                 } else if (result.error != undefined && result.error != "") {
-    //                     this.mensajeComponent.setErrorMsg(result.error);
-    //                 } else if (result.info != undefined) {
-    //                     this.mensajeComponent.setInfoMsg(result.info);
-    //                 } else {
-    //                     this.data = result.data;
-    //                     this.datosAux = result.data;
-    //                     this.filtrarListado();
-    //                 }
-    //             },
-    //             error => {
-    //                 this.spinnerComponent.hideIt();
-    //                 this.mensajeComponent.setErrorMsg(error.message);
-    //             }
-
-    //         );
-    //     } catch (e) {
-    //         this.spinnerComponent.hideIt();
-    //         this.mensajeComponent.setErrorMsg(e);
-    //         return false; //<-- Prevent Refresh
-    //     }
-
-    //     return false; //<-- Prevent Refresh
-    // }
-    
-    
-
     filtrarListado(){
         this.primerListado = this.datosAux.filter(x => x.DescripcionEstado != this.entregada);
 
@@ -188,8 +110,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
                 this.data = this.datosAux;
             } else {
                 this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.DescripcionEstado) >= 0);
-                //lista filtrada
-                // this.data = this.datosAux.filter(x => x.DescripcionEstado != "Entregada");
             }
         } else {
             this.data = this.datosAux;
@@ -229,9 +149,13 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.data = result.data;
-                        this.datosAux = result.data;
+                        this.data = result;
+                        this.datosAux = result;
                         this.filtrarListado();
+                        this.listaEnviarASAP = [];
+                        this.data.forEach((value, index) => {
+                            this.listaEnviarASAP.push(value.NoEstaEnSAP);
+                        });
                     }
                 },
                 error => {
@@ -247,5 +171,25 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         }
 
         return false; //<-- Prevent Refresh
+    }
+
+    seleccionarTodos = () => {
+        console.debug('call seleccionarTodos()');
+        this.seleccionaTodos = !this.seleccionaTodos;
+        console.debug(' value: ', this.seleccionaTodos);
+        this.data.forEach((value, index) => {
+            if (value.NoEstaEnSAP){
+                value.EstaSeleccionado = this.seleccionaTodos;
+            }
+        });
+    }
+
+    enviarASAP = () => {
+        console.debug('call enviarASAP()');
+        this.data.forEach((value, index) => {
+            if (value.EstaSeleccionado && value.NoEstaEnSAP){
+                console.debug(' value: ', value);
+            }
+        });
     }
 }

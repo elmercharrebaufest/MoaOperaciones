@@ -31,7 +31,8 @@ using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using System.Diagnostics.Contracts;
 using System.Web;
-
+using SustitucionMOAUtils.Validadores.OrdenDeCarga;
+using FluentValidation;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -261,6 +262,10 @@ namespace SustitucionMOAUtils.Services
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
         }
 
+        //public Resultado CrearOrdenEnSAP(CrearOrdenEnSAPRequest request)
+        //{
+        //    return new NotImplementedException();
+        //}
         private bool CrearOrdenEnSAP(OrdenDeCarga orden, Proveedor cliente, bool forzarCreacion)
         {
             //OV-01   'Verificar Contrato, Material, Cliente'
@@ -483,7 +488,6 @@ namespace SustitucionMOAUtils.Services
             List<OrdenDeCargaDto> listado = new List<OrdenDeCargaDto>();
             if (esInterno)
             {
-
                 var filtrosEstados = new List<EstadoOrdenDeCarga>();
                 if (esMesaFas)
                 {
@@ -497,8 +501,8 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Vencida);
-                    //filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
-                }
+					filtrosEstados.Add(EstadoOrdenDeCarga.SinEnviarASAP);
+				}
 
                 if (esComercial)
                 {
@@ -512,8 +516,8 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
-                    // filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
-                }
+					filtrosEstados.Add(EstadoOrdenDeCarga.SinEnviarASAP);
+				}
 
                 if (esPuerto)
                 {
@@ -532,13 +536,13 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.Vencida);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaPendiente);
                     filtrosEstados.Add(EstadoOrdenDeCarga.AnuladaPorVencimiento);
-                    filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
-                    filtrosEstados.Add(EstadoOrdenDeCarga.ErrorDeCarga);
-                    filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
+					filtrosEstados.Add(EstadoOrdenDeCarga.ErrorDeCarga);
+					filtrosEstados.Add(EstadoOrdenDeCarga.EdicionSolicitada);
+					filtrosEstados.Add(EstadoOrdenDeCarga.AnulacionSolicitada);
+					filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
-                    //filtrosEstados.Add(EstadoOrdenDeCarga.TransporteNoExiste);
-                    filtrosEstados.Add(EstadoOrdenDeCarga.AnulacionSolicitada);
-                }
+					filtrosEstados.Add(EstadoOrdenDeCarga.SinEnviarASAP);
+				}
 
                 Expression<Func<OrdenDeCarga, bool>> filtro =
                     o => o.FechaCarga <= fechaFinDateTime
@@ -563,7 +567,9 @@ namespace SustitucionMOAUtils.Services
                         DescripcionEstado = x.Estado.ToFriendlyString(),
                         ColorSemaforo = x.Estado.ObtenerSemaforo(),
                         EsFacturaAnticipada = (x.NumeroPedidoIngresado != null),
-                        PatenteChasis = x.ChasisAcoplado
+                        PatenteChasis = x.ChasisAcoplado,
+                        NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Contrato vencido"),
+                        EstaSeleccionado = false
                     }).OrderByDescending(y => y.Id).ToList();
             }
             else
@@ -581,7 +587,8 @@ namespace SustitucionMOAUtils.Services
                         || n.Estado == EstadoOrdenDeCarga.EdicionSolicitada
                         || n.Estado == EstadoOrdenDeCarga.AnulacionSolicitada
                         || n.Estado == EstadoOrdenDeCarga.ContratoVencido
-                        || n.Estado == EstadoOrdenDeCarga.EdicionRechazada)
+                        || n.Estado == EstadoOrdenDeCarga.EdicionRechazada 
+                        || n.Estado == EstadoOrdenDeCarga.SinEnviarASAP)
                     )
                     .Select(x => new OrdenDeCargaDto
                     {
@@ -594,9 +601,10 @@ namespace SustitucionMOAUtils.Services
                         Material = x.Producto.Nombre,
                         DescripcionEstado = x.Estado.ToUserFriendlyString(),
                         EsFacturaAnticipada = (x.NumeroPedidoIngresado != null),
-                        PatenteChasis = x.ChasisAcoplado
-
-                    }).OrderByDescending(y => y.Id).ToList();
+                        PatenteChasis = x.ChasisAcoplado,
+						NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Contrato vencido"),
+						EstaSeleccionado = false
+					}).OrderByDescending(y => y.Id).ToList();
             }
 
             if (listado == null || listado.Count == 0)
@@ -1124,12 +1132,14 @@ namespace SustitucionMOAUtils.Services
             List<Mod.FechaWS> fechas = null;
             try
             {
-                var validateVisualizarClienteRequest = ValidateVisualizarClienteRequest(request);
-                if (!string.IsNullOrEmpty(validateVisualizarClienteRequest))
-                {
-                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateVisualizarClienteRequest));
-                }
-                var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(string.Empty, string.Empty, request.Corredor, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, string.Empty, 1);
+				var validator = new VisualizarClienteRequestValidator();
+				validator.ValidateAndThrow(request);
+				//var validateVisualizarClienteRequest = ValidateVisualizarClienteRequest(request);
+				//if (!string.IsNullOrEmpty(validateVisualizarClienteRequest))
+				//{
+				//    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateVisualizarClienteRequest));
+				//}
+				var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(string.Empty, string.Empty, request.Corredor, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, string.Empty, 1);
                 response = new VisualizarClienteResponse();
                 response.Clientes = GetClientesFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse, request);
                 return response;
@@ -1455,7 +1465,7 @@ namespace SustitucionMOAUtils.Services
                 orden.ContratoSAP = "";
                 return new Resultado { error = "El contrato seleccionado esta vencido" };
             }
-            if (!string.IsNullOrEmpty(orden.ContratoSAP))
+            if (!string.IsNullOrEmpty(orden.ContratoSAP) && orden.TransporteExiste)
             {
 
                 var creadaEnSaP = CrearOrdenEnSAP(orden, orden.Cliente, false);
