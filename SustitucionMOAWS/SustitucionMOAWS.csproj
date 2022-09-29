@@ -152,6 +152,36 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\EcheqAnularAperturaChequeWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\EcheqCargaAperturaChequeWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\EcheqModificarContratoWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\EcheqModificarFijacionWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\EcheqVisualizarDisponibleChequeWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\EcheqVisualizarPendientePagoWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\FijacionDetalleWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -427,6 +457,12 @@
     <Compile Include="WSConsumers\ContratoDetalleConsumerMOA.cs" />
     <Compile Include="WSConsumers\ComprobantesNGConsumerMOA.cs" />
     <Compile Include="WSConsumers\CrearPedidoConsumerMOA.cs" />
+    <Compile Include="WSConsumers\EcheqAnularAperturaChequeConsumerMOA.cs" />
+    <Compile Include="WSConsumers\EcheqCargaAperturaChequeConsumerMOA.cs" />
+    <Compile Include="WSConsumers\EcheqModificarContratoConsumerMOA.cs" />
+    <Compile Include="WSConsumers\EcheqModificarFijacionConsumerMOA.cs" />
+    <Compile Include="WSConsumers\EcheqVisualizarDisponibleChequeConsumerMOA.cs" />
+    <Compile Include="WSConsumers\EcheqVisualizarPendientePagoConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerContratoSolpConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerFuenteAprovisionamientoConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerMaterialesSolpConsumerMOA.cs" />
@@ -703,6 +739,12 @@
     <None Include="Service References\DetalleCteWebServiceMOA\SustitucionMOAWS.DetalleCteWebServiceMOA.ZMPES5450.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\EcheqAnularAperturaChequeWebServiceMOA\SI_MPRFC_ANULAR_APERTURA_CHEQUE.wsdl" />
+    <None Include="Service References\EcheqCargaAperturaChequeWebServiceMOA\SI_MPRFC_CARGA_APERTURA_CHEQUE.wsdl" />
+    <None Include="Service References\EcheqModificarContratoWebServiceMOA\SI_MPRFC_MOAOP_MOD_CONTRATO.wsdl" />
+    <None Include="Service References\EcheqModificarFijacionWebServiceMOA\SI_MPRFC_MOAOP_MOD_FIJACION.wsdl" />
+    <None Include="Service References\EcheqVisualizarDisponibleChequeWebServiceMOA\SI_MPRFC_VISU_DISPONIBLE_CHEQUE.wsdl" />
+    <None Include="Service References\EcheqVisualizarPendientePagoWebServiceMOA\SI_MPRFC_VISU_PENDIENTE_PAGO.wsdl" />
     <None Include="Service References\FijacionDetalleWebServiceMOA\SI_MPMF_MOAOP_DET_FIJACIONES.wsdl" />
     <None Include="Service References\FijacionDetalleWebServiceMOA\SustitucionMOAWS.FijacionDetalleWebServiceMOA.SI_MPMF_MOAOP_DET_FIJACIONESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -2204,6 +2246,12 @@
     <WCFMetadataStorage Include="Service References\DataAgroAuthWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\DataAgroServices\" />
     <WCFMetadataStorage Include="Service References\DetalleCteWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\EcheqAnularAperturaChequeWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\EcheqCargaAperturaChequeWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\EcheqModificarContratoWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\EcheqModificarFijacionWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\EcheqVisualizarDisponibleChequeWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\EcheqVisualizarPendientePagoWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\FijacionDetalleWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\FijacionesWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\FletesRelacionWebServiceMOA\" />
@@ -3135,6 +3183,78 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ObtenerContratoSolpWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqModificarContratoWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqModificarContratoWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqModificarContratoWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqModificarFijacionWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqModificarFijacionWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqModificarFijacionWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqVisualizarPendientePagoWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqVisualizarPendientePagoWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqVisualizarPendientePagoWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqVisualizarDisponibleChequeWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqVisualizarDisponibleChequeWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqVisualizarDisponibleChequeWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqCargaAperturaChequeWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqCargaAperturaChequeWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqCargaAperturaChequeWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqAnularAperturaChequeWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqAnularAperturaChequeWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqAnularAperturaChequeWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
