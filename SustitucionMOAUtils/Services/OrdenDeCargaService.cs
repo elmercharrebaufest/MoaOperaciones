@@ -658,13 +658,18 @@ namespace SustitucionMOAUtils.Services
             Usuario = x.Usuario.Mail
         }).ToList();
 
+            var estadoAnterior = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == orden.Id)
+                                            .OrderByDescending(x => x.FechaCambio)
+                                            .Take(1)
+                                            .FirstOrDefault().Antes;
+
             ordenDto = new OrdenDeCargaDetalleDto
             {
                 Id = orden.Id,
                 CUITCliente = orden.CUITCliente,
-                DescripcionEstado = orden.Estado.ToFriendlyString(),
+                DescripcionEstado = (orden.Estado == EstadoOrdenDeCarga.EdicionRechazada) ? (EstadoOrdenDeCarga)int.Parse(estadoAnterior) + "(" + orden.Estado.ToFriendlyString() + ")" : orden.Estado.ToFriendlyString(),
                 DescripcionEstadoUsuarioFinal = orden.Estado.ToUserFriendlyString(),
-                ColorSemaforo = orden.Estado.ObtenerSemaforo(),
+                ColorSemaforo = (orden.Estado == EstadoOrdenDeCarga.EdicionRechazada && (EstadoOrdenDeCarga)int.Parse(estadoAnterior) == EstadoOrdenDeCarga.EntregaGenerada) ? "green" : orden.Estado.ObtenerSemaforo(),
                 ContratoIngresado = orden.ContratoIngresado,
                 NumeroPedidoIngresado = orden.NumeroPedidoIngresado,
                 Cliente = orden.Cliente.CodigoProveedor,
@@ -704,6 +709,21 @@ namespace SustitucionMOAUtils.Services
 
             return ordenDto;
         }
+
+        //public string ObtenerDescripcionEstadoToFriendly(OrdenDeCarga orden)
+        //{
+        //    if(orden.Estado == EstadoOrdenDeCarga.EdicionRechazada)
+        //    {
+        //        var estadoAnterior = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == orden.Id)
+        //                                       .OrderByDescending(x => x.FechaCambio)
+        //                                       .Take(1)
+        //                                       .FirstOrDefault().Antes;
+
+        //        return (EstadoOrdenDeCarga)int.Parse(estadoAnterior) + "("+ orden.Estado.ToFriendlyString()+ ")";
+        //    }
+
+        //    return orden.Estado.ToFriendlyString();
+        //}
 
         public List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga()
         {
