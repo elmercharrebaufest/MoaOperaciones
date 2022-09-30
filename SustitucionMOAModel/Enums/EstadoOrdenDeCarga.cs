@@ -28,6 +28,7 @@
                 case EstadoOrdenDeCarga.ErrorDeCarga:
                 case EstadoOrdenDeCarga.AnuladaPorVencimiento:
                 case EstadoOrdenDeCarga.Anulada:
+                case EstadoOrdenDeCarga.EdicionRechazada:
                     return "red";
                 case EstadoOrdenDeCarga.Pendiente:
                 case EstadoOrdenDeCarga.Vencida:
@@ -41,7 +42,7 @@
                     return "yellow";
                 case EstadoOrdenDeCarga.EntregaGenerada:
                 case EstadoOrdenDeCarga.Entregada:
-                case EstadoOrdenDeCarga.EdicionRechazada:
+               
                     return "green";
                 case EstadoOrdenDeCarga.SinEnviarASAP:
                     return "blue";
