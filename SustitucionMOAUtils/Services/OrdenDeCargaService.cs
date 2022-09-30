@@ -893,9 +893,9 @@ namespace SustitucionMOAUtils.Services
             var ordenHistorial = new OrdenDeCargaCambiosHistorial()
             {
                 Id = 0,
-                Antes = ((int)orden.Estado).ToString(),
-                Despues = ((int)EstadoOrdenDeCarga.Anulada).ToString(),
-                NombreColumnaCambio = "estado",
+				Antes = EstadoOrdenDeCargaExtensions.ToFriendlyString(orden.Estado),
+				Despues = EstadoOrdenDeCargaExtensions.ToFriendlyString(EstadoOrdenDeCarga.Anulada),
+				NombreColumnaCambio = "estado",
                 FechaCambio = DateTime.Now,
                 Usuario_Id = usuario.Id,
                 OrdenDeCarga_Id = orden.Id
@@ -915,9 +915,9 @@ namespace SustitucionMOAUtils.Services
                 var ordenHistorial = new OrdenDeCargaCambiosHistorial()
                 {
                     Id = 0,
-                    Antes = ((int)orden.Estado).ToString(),
-                    Despues = ((int)EstadoOrdenDeCarga.AnulacionSolicitada).ToString(),
-                    NombreColumnaCambio = "estado",
+					Antes = EstadoOrdenDeCargaExtensions.ToFriendlyString(orden.Estado),
+					Despues = EstadoOrdenDeCargaExtensions.ToFriendlyString(EstadoOrdenDeCarga.AnulacionSolicitada),
+					NombreColumnaCambio = "estado",
                     FechaCambio = DateTime.Now,
                     Usuario_Id = usuario.Id,
                     OrdenDeCarga_Id = orden.Id
@@ -996,41 +996,35 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public string SolicitarEdicionOrden(int ordenId, string mailUsuario)
-        {
-            try
-            {
-                var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+		public string SolicitarEdicionOrden(int ordenId, string mailUsuario)
+		{
+			try
+			{
+				var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+				var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+				var ordenHistorial = new OrdenDeCargaCambiosHistorial()
+				{
+					Id = 0,
+					Antes = EstadoOrdenDeCargaExtensions.ToFriendlyString(orden.Estado),
+					Despues = EstadoOrdenDeCargaExtensions.ToFriendlyString(EstadoOrdenDeCarga.EdicionSolicitada),
+					NombreColumnaCambio = "estado",
+					FechaCambio = DateTime.Now,
+					Usuario_Id = usuario.Id,
+					OrdenDeCarga_Id = orden.Id
 
-                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+				};
+				repositorio.Agregar(ordenHistorial);
+				orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
+				repositorio.GuardarCambios();
+				return SuccessMsg.OrdenDeCargaActualizada;
+			}
+			catch (Exception ex)
+			{
+				return ex.Message;
+			}
+		}
 
-                var ordenHistorial = new OrdenDeCargaCambiosHistorial()
-                {
-                    Id = 0,
-                    Antes = ((int)orden.Estado).ToString(),
-                    Despues = ((int)EstadoOrdenDeCarga.AnulacionSolicitada).ToString(),
-                    NombreColumnaCambio = "estado",
-                    FechaCambio = DateTime.Now,
-                    Usuario_Id = usuario.Id,
-                    OrdenDeCarga_Id = orden.Id
-
-                };
-
-                repositorio.Agregar(ordenHistorial);
-
-                orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
-
-                repositorio.GuardarCambios();
-
-                return SuccessMsg.OrdenDeCargaActualizada;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
-
-        public string EdicionFinalizada(int ordenId)
+		public string EdicionFinalizada(int ordenId)
         {
             try
             {
@@ -1053,74 +1047,59 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string RechazarSolicitudEdicion(int ordenId, string mailUsuario)
-        {
-            try
-            {
-                string fechaFormat = repositorio.Listar<OrdenDeCargaCambiosHistorial>(x => x.OrdenDeCarga_Id == ordenId && x.NombreColumnaCambio != "estado")
-                                                                                        .OrderByDescending(x => x.Id)
-                                                                                        .Take(1)
-                                                                                        .FirstOrDefault()
-                                                                                        .FechaCambio.ToString("yyyyMMddHHmm");
+		public string RechazarSolicitudEdicion(int ordenId, string mailUsuario)
+		{
+			try
+			{
+				string fechaFormat = repositorio.Listar<OrdenDeCargaCambiosHistorial>(x => x.OrdenDeCarga_Id == ordenId && x.NombreColumnaCambio != "estado").OrderByDescending(x => x.Id).Take(1).FirstOrDefault().FechaCambio.ToString("yyyyMMddHHmm");
+				var listaPrevia = repositorio.Listar<OrdenDeCargaCambiosHistorial>(x => x.OrdenDeCarga_Id == ordenId).Select(x => new
+				{
+					FechaCambio = x.FechaCambio.ToString("yyyyMMddHHmm"),
+					x.NombreColumnaCambio,
+					x.Antes,
+					x.Despues
+				});
+				var datosAnteriores = listaPrevia.Where(x => x.FechaCambio == fechaFormat && x.NombreColumnaCambio != "estado").ToList();
+				var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+				var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+				var estadoAnterior = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == ordenId)
+												.OrderByDescending(x => x.FechaCambio)
+												.Take(1)
+												.FirstOrDefault().Antes;
+				foreach (var dato in datosAnteriores)
+				{
+					orden.GetType().GetProperty(dato.NombreColumnaCambio).SetValue(orden, dato.Antes, null);
+				}
+				var ordenHistorial = new OrdenDeCargaCambiosHistorial()
+				{
+					Id = 0,
+					Antes = EstadoOrdenDeCargaExtensions.ToFriendlyString((EstadoOrdenDeCarga)int.Parse(estadoAnterior)),
+					Despues = EstadoOrdenDeCargaExtensions.ToFriendlyString(EstadoOrdenDeCarga.EdicionRechazada),
+					NombreColumnaCambio = "estado",
+					FechaCambio = DateTime.Now,
+					Usuario_Id = usuario.Id,
+					OrdenDeCarga_Id = orden.Id
+				};
+				repositorio.Agregar(ordenHistorial);
+				orden.Estado = EstadoOrdenDeCarga.EdicionRechazada;
+				repositorio.GuardarCambios();
+				return SuccessMsg.OrdenDeCargaActualizada;
+			}
+			catch (Exception ex)
+			{
+				return ex.Message;
+			}
+		}
 
-                var listaPrevia = repositorio.Listar<OrdenDeCargaCambiosHistorial>(x => x.OrdenDeCarga_Id == ordenId).Select(x => new
-                {
-                    FechaCambio = x.FechaCambio.ToString("yyyyMMddHHmm"),
-                    x.NombreColumnaCambio,
-                    x.Antes,
-                    x.Despues
-                });
-
-                var datosAnteriores = listaPrevia.Where(x => x.FechaCambio == fechaFormat && x.NombreColumnaCambio != "estado").ToList();
-
-                var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-
-                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-
-                var estadoAnterior = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == ordenId)
-                                                .OrderByDescending(x => x.FechaCambio)
-                                                .Take(1)
-                                                .FirstOrDefault().Antes;
-
-                foreach (var dato in datosAnteriores)
-                {
-                    orden.GetType().GetProperty(dato.NombreColumnaCambio).SetValue(orden, dato.Antes, null);
-                }
-
-                //orden.Estado = (EstadoOrdenDeCarga)int.Parse(estadoAnterior);
-                orden.Estado = EstadoOrdenDeCarga.EdicionRechazada;
-                repositorio.GuardarCambios();
-
-                return SuccessMsg.OrdenDeCargaActualizada;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
-
-        public OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga ordenDeCarga, string mailUsuario)
+		public OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
             Proveedor cliente;
             OrdenDeCargaDto result = new OrdenDeCargaDto();
-            //List<OrdenDeCarga> listOrden = new List<OrdenDeCarga>();
-            //var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            //var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
-
-            //if (esComercial || usuario.EsCorredor())
-            //{
             if (ordenDeCarga.CUITCliente == null)
             {
                 result.ordenes.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
                 return result;
             }
-            //    if (usuario.EsCorredor())
-            //    {
-            //        cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
-            //        listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
-            //    }
-            //    else
-            //    {
             cliente = repositorio.Obtener<Proveedor>(
             x => x.CUIT == ordenDeCarga.CUITCliente &&
             x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
@@ -1129,25 +1108,6 @@ namespace SustitucionMOAUtils.Services
                 label = x.ChasisAcoplado,
                 value = x.PatenteAcoplado
             }, x => x.Cliente_Id == cliente.Id);
-            //    }
-
-            //}
-            //else
-            //{
-            //cliente = usuario.ObtenerProveedor();
-            //listOrden = repositorio.Listar<OrdenDeCarga>(x => x.Cliente_Id == cliente.Id).ToList();
-            //}
-
-            //foreach (var ordenes in listOrden)
-            //{
-            //    result.ordenes.Add(new AutoCompleteDropdownElement()
-            //    {
-            //        label = ordenes.ChasisAcoplado,
-            //        value = ordenes.PatenteAcoplado
-
-            //    });
-            //}
-
             result.ordenes = result.ordenes.Distinct().ToList();
             return result;
         }
