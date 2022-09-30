@@ -1157,19 +1157,19 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
-        private string ValidateVisualizarClienteRequest(VisualizarClienteRequest request)
-        {
-            string validation = string.Empty;
-            if (string.IsNullOrEmpty(request.Corredor))
-            {
-                validation = "Corredor";
-            }
-            if (string.IsNullOrEmpty(request.Pendiente))
-            {
-                validation = "Pendiente";
-            }
-            return validation;
-        }
+        //private string ValidateVisualizarClienteRequest(VisualizarClienteRequest request)
+        //{
+        //    string validation = string.Empty;
+        //    if (string.IsNullOrEmpty(request.Corredor))
+        //    {
+        //        validation = "Corredor";
+        //    }
+        //    if (string.IsNullOrEmpty(request.Pendiente))
+        //    {
+        //        validation = "Pendiente";
+        //    }
+        //    return validation;
+        //}
         private List<ProveedorDto> GetClientesFromVisualizarClienteProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse, VisualizarClienteRequest request)
         {
             var clientesDto = new List<ProveedorDto>();
@@ -1208,12 +1208,14 @@ namespace SustitucionMOAUtils.Services
             List<Mod.FechaWS> fechas = null;
             try
             {
-                var validateVisualizarProductoRequest = ValidateVisualizarProductoRequest(request);
-                if (!string.IsNullOrEmpty(validateVisualizarProductoRequest))
-                {
-                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateVisualizarProductoRequest));
-                }
-                var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(string.Empty, request.Contrato, string.Empty, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, string.Empty, 2);
+				var validator = new VisualizarProductoRequestValidator();
+				validator.ValidateAndThrow(request);
+				//var validateVisualizarProductoRequest = ValidateVisualizarProductoRequest(request);
+				//if (!string.IsNullOrEmpty(validateVisualizarProductoRequest))
+				//{
+				//    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateVisualizarProductoRequest));
+				//}
+				var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(string.Empty, request.Contrato, string.Empty, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, string.Empty, 2);
 
                 response = new VisualizarProductoResponse();
                 response.Productos = GetProductosFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse);
@@ -1232,15 +1234,15 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
-        private string ValidateVisualizarProductoRequest(VisualizarProductoRequest request)
-        {
-            string validation = string.Empty;
-            if (string.IsNullOrEmpty(request.Contrato))
-            {
-                validation = "Contrato";
-            }
-            return validation;
-        }
+        //private string ValidateVisualizarProductoRequest(VisualizarProductoRequest request)
+        //{
+        //    string validation = string.Empty;
+        //    if (string.IsNullOrEmpty(request.Contrato))
+        //    {
+        //        validation = "Contrato";
+        //    }
+        //    return validation;
+        //}
         private List<MaterialDto> GetProductosFromVisualizarClienteProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse)
         {
             var productosDto = new List<MaterialDto>();
@@ -1270,12 +1272,14 @@ namespace SustitucionMOAUtils.Services
             ValidarCorredorClienteContratoProductoResponse response;
             try
             {
-                var validateValidarCorredorClienteContratoProductoRequest = ValidateValidarCorredorClienteContratoProductoRequest(request);
-                if (!string.IsNullOrEmpty(validateValidarCorredorClienteContratoProductoRequest))
-                {
-                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateValidarCorredorClienteContratoProductoRequest));
-                }
-                var producto = repositorio.Obtener<Material>(Convert.ToInt32(request.ProductoId));
+				var validator = new ValidarCorredorClienteContratoProductoRequestValidator();
+				validator.ValidateAndThrow(request);
+				//var validateValidarCorredorClienteContratoProductoRequest = ValidateValidarCorredorClienteContratoProductoRequest(request);
+				//if (!string.IsNullOrEmpty(validateValidarCorredorClienteContratoProductoRequest))
+				//{
+				//    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateValidarCorredorClienteContratoProductoRequest));
+				//}
+				var producto = repositorio.Obtener<Material>(Convert.ToInt32(request.ProductoId));
                 if (producto == null)
                 {
                     throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Producto"));
@@ -1321,23 +1325,23 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
-        private string ValidateValidarCorredorClienteContratoProductoRequest(ValidarCorredorClienteContratoProductoRequest request)
-        {
-            string validation = string.Empty;
-            if (string.IsNullOrEmpty(request.ClienteCuit))
-            {
-                validation = "ClienteCuit";
-            }
-            if (string.IsNullOrEmpty(request.Contrato))
-            {
-                validation = "Contrato";
-            }
-            if (string.IsNullOrEmpty(request.ProductoId))
-            {
-                validation = "ProductoId";
-            }
-            return validation;
-        }
+        //private string ValidateValidarCorredorClienteContratoProductoRequest(ValidarCorredorClienteContratoProductoRequest request)
+        //{
+        //    string validation = string.Empty;
+        //    if (string.IsNullOrEmpty(request.ClienteCuit))
+        //    {
+        //        validation = "ClienteCuit";
+        //    }
+        //    if (string.IsNullOrEmpty(request.Contrato))
+        //    {
+        //        validation = "Contrato";
+        //    }
+        //    if (string.IsNullOrEmpty(request.ProductoId))
+        //    {
+        //        validation = "ProductoId";
+        //    }
+        //    return validation;
+        //}
         private Boolean GetResultFromValidarCorredorClienteContratoProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse, ValidarCorredorClienteContratoProductoRequest request, Material producto)
         {
             var result = false;
