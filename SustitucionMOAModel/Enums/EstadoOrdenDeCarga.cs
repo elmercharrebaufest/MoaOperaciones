@@ -31,12 +31,12 @@
                 case EstadoOrdenDeCarga.EdicionRechazada:
                     return "red";
                 case EstadoOrdenDeCarga.Pendiente:
-                case EstadoOrdenDeCarga.Vencida:
+                case EstadoOrdenDeCarga.ContratoVencido:
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                     return "orange";
                 case EstadoOrdenDeCarga.Confirmado:
-                case EstadoOrdenDeCarga.EntregaPendiente:
-                case EstadoOrdenDeCarga.ContratoVencido:
+                case EstadoOrdenDeCarga.Vencida:
+                case EstadoOrdenDeCarga.EntregaPendiente:               
                 case EstadoOrdenDeCarga.EdicionSolicitada:
                 case EstadoOrdenDeCarga.AnulacionSolicitada:
                     return "yellow";
