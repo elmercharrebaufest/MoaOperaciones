@@ -210,7 +210,10 @@
     <Compile Include="Services\ExternalApiService.cs" />
     <Compile Include="Services\UsuarioService.cs" />
     <Compile Include="Services\VendedorService.cs" />
+    <Compile Include="Validadores\OrdenDeCarga\CrearOrdenEnSAPRequestValidator.cs" />
+    <Compile Include="Validadores\OrdenDeCarga\ValidarCorredorClienteContratoProductoRequestValidator.cs" />
     <Compile Include="Validadores\OrdenDeCarga\VisualizarClienteRequestValidator.cs" />
+    <Compile Include="Validadores\OrdenDeCarga\VisualizarProductoRequestValidator.cs" />
     <Compile Include="Validadores\ResultadoValidacionPesificacion.cs" />
     <Compile Include="Validadores\ValidadorPesificacion.cs" />
     <Compile Include="Wrappers\FileWrapper.cs" />
