@@ -13,6 +13,7 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public string CUITCliente { get; set; }
         public string DescripcionEstado { get; set; }
+        public string DescripcionEstadoListado { get; set; }
         public string ColorSemaforo { get; set; }
         public string Material { get; set; }
         public string Cliente { get; set; }

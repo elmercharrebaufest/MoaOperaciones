@@ -115,7 +115,8 @@
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.RazonSocialCliente}}</td>
               <td *ngIf="esMesaFas">{{ordenDeCarga.CUITCliente}}</td>
               <td *ngIf="esInterno">{{ordenDeCarga.RazonSocialCorredor}}</td>
-              <td>{{ordenDeCarga.DescripcionEstado}}</td>
+              <td>{{ordenDeCarga.DescripcionEstadoListado}}</td>
+              <!-- <td *ngIf="esTercero || esPuerto">{{ordenDeCarga.Orden}}</td> -->
               <td>{{ordenDeCarga.Fecha}}</td>
               <td>{{ordenDeCarga.Contrato}}</td>
               <td *ngIf="esInterno || esMesaFas">{{ordenDeCarga.Pedido}}</td>
