@@ -709,6 +709,7 @@ namespace SustitucionMOAUtils.Services
 
         public string ObtenerDescripcionEstado(OrdenDeCarga orden, bool esUsuarioFinal)
         {
+            
             var ordenDeCargaCambiosHistorial = repositorio.Listar<OrdenDeCargaCambiosHistorial>
              (ordenes => ordenes.OrdenDeCarga_Id == orden.Id).ToList();
 
@@ -716,13 +717,14 @@ namespace SustitucionMOAUtils.Services
             {
                 if (orden.Estado == EstadoOrdenDeCarga.EdicionRechazada)
                 {
-                    var estadoAnterior = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == orden.Id)
+                     var estadoAnterior = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == orden.Id)
                                                    .OrderByDescending(x => x.FechaCambio)
                                                    .Take(1)
                                                    .FirstOrDefault().Antes;
-                    orden.Estado = (EstadoOrdenDeCarga)int.Parse(estadoAnterior);
+                    var descripcion = new EstadoOrdenDeCarga();
+                    descripcion = (EstadoOrdenDeCarga)int.Parse(estadoAnterior);
 
-                    return  !esUsuarioFinal ? orden.Estado.ToFriendlyString() + "(" + EstadoOrdenDeCarga.EdicionRechazada.ToFriendlyString() + ")" : orden.Estado.ToUserFriendlyString() + "(" + EstadoOrdenDeCarga.EdicionRechazada.ToUserFriendlyString() + ")";
+                    return  !esUsuarioFinal ? (EstadoOrdenDeCarga)int.Parse(estadoAnterior) + "(" + EstadoOrdenDeCarga.EdicionRechazada.ToFriendlyString() + ")" : descripcion.ToUserFriendlyString() + "(" + EstadoOrdenDeCarga.EdicionRechazada.ToUserFriendlyString() + ")";
                 }
             }
 
