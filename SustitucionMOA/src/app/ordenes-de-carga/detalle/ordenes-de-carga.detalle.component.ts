@@ -244,25 +244,23 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mostrarBotonEditar = false;
         this.mostrarBotonEdicionFinalizada = false;
 
-        // if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada) {
-        //     return;
-        // }
+         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada) {
+             this.mostrarBotonVerHistorial = true;
+         }
         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Entregada) {
-            return;
+            this.mostrarBotonVerHistorial = true;
         }
-        // if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnuladaPorVencimiento) {
-        //     return;
-        // }
-        //if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada) {
-        //    return;
-        //}
+         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnuladaPorVencimiento) {
+             this.mostrarBotonVerHistorial = true;
+         }
+        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada) {
+            this.mostrarBotonVerHistorial = true;
+        }
 
-        if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
+        if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnuladaPorVencimiento || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
             if (this.esTercero)
                 this.mostrarBotonSolicitarAnulacion = true;
-            if (this.ordenDeCarga.Estado != EstadoOrdenDeCarga.EdicionRechazada) {
-                this.mostrarBotonEditar = true;
-            }
+            
         }
 
         if (this.esInterno || this.esComercial || this.esMesaFas) {
