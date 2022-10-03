@@ -33,10 +33,12 @@ export class EcheqBaseComponent extends ListBaseComponent {
         this.checkPermisos();
         sessionStorage.getItem("proveedor");
         this.navService.setSeccionList([
-            new Seccion('/echeq/gestion', 'echeq', 'Gestion'),
+                new Seccion('/echeq/gestion', 'echeq', 'Gestion'),
             new Seccion('/echeq/mis-cheq', 'echeq', 'Mis Echeq')
-        ]);    
+            ]);
     }
 
-   
+        // this.getData();
+    }
+
 }

@@ -16,7 +16,7 @@ namespace SustitucionMOAWS.WSConsumers
     {
         SI_MPRFC_VISU_PENDIENTE_PAGOClient service = new SI_MPRFC_VISU_PENDIENTE_PAGOClient();
 
-        public EcheqVisualizarPendientePagoConsumerMOA()
+        public echeqVisualizarPendientePagoConsumerMOA()
         {
             service = new SI_MPRFC_VISU_PENDIENTE_PAGOClient();
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
