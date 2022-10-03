@@ -1,28 +1,28 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../common/shared.module';
-
-import { MisEcheqComponent } from './mis-echeq/mis-echeq.component';
-import { GestionEcheqComponent } from './gestion/gestion.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { ReCaptchaModule } from 'angular2-recaptcha';
+import { CalendarModule } from 'primeng/calendar';
 import { EcheqRoutingModule } from './echeq-routing.module';
 import { EcheqService } from './echeq.service';
-import { EcheqComponent } from './echeq.component';
+import { EcheqGestionComponent } from './gestion/echeq.gestion.component';
 
 @NgModule({
     imports: [
         CommonModule,
+        EcheqRoutingModule,
         SharedModule,
-        EcheqRoutingModule
-   
+        NgxPaginationModule,
+        ReCaptchaModule,
+        CalendarModule
     ],
-    declarations: [     
-        EcheqComponent,
-        MisEcheqComponent,
-        GestionEcheqComponent
+    declarations: [
+        EcheqGestionComponent
     ],
     providers: [
         EcheqService
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class EcheqModule { }
