@@ -24,7 +24,7 @@ namespace SustitucionMOA.Controllers
     {
         private readonly IEcheqService service;
         private readonly IUsuarioService usuarioService;
-
+             
         public EcheqController(IEcheqService echeqService, IUsuarioService usuarioService)
         {
             this.service = echeqService;
@@ -52,7 +52,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
+      
         [HttpPost]
         public ActionResult MarcarContrato(string contrato, string pedido)
         {
