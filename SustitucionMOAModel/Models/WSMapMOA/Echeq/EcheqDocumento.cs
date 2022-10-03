@@ -16,8 +16,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Echeq
         public string Fecha { get; set; }
         public string NumeroCOE { get; set; }
         public string Solapa { get; set; }
-        public decimal WRBTR { get; set; }
-        public decimal DMBTR { get; set; }
+        public decimal ImporteMonedaDocumento { get; set; }
+        public decimal ImporteEnPesos { get; set; }
         public string Moneda { get; set; }
         public bool DMBTRSpecified { get; set; }
         public bool WRBTRSpecified { get; set; }

@@ -11,11 +11,11 @@ using SustitucionMOAWS.EcheqVisualizarPendientePagoWebServiceMOA;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    class EcheqVisualizarPendientePagoConsumerMOA : IEcheqVisualizarPendientePagoConsumerMOA
+    public class echeqVisualizarPendientePagoConsumerMOA : IEcheqVisualizarPendientePagoConsumerMOA
     {
         SI_MPRFC_VISU_PENDIENTE_PAGOClient service = new SI_MPRFC_VISU_PENDIENTE_PAGOClient();
 
-        public EcheqVisualizarPendientePagoConsumerMOA()
+        public echeqVisualizarPendientePagoConsumerMOA()
         {
             service = new SI_MPRFC_VISU_PENDIENTE_PAGOClient();
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
@@ -58,7 +58,7 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-        private List<EcheqVisualizacionPendientePago> Map(ZMPES6900[] EX_SALIDA)
+        public List<EcheqVisualizacionPendientePago> Map(ZMPES6900[] EX_SALIDA)
         {
             List<EcheqVisualizacionPendientePago> listaPendientesPago = new List<EcheqVisualizacionPendientePago>() { };
 
@@ -84,7 +84,7 @@ namespace SustitucionMOAWS.WSConsumers
                     {
                         Contrato = x.CONTRATO,
                         Pedido = x.PEDIDO,
-                        DMBTR = x.DMBTR,
+                        ImporteEnPesos = x.DMBTR,
                         DMBTRSpecified = x.DMBTRSpecified,
                         Documento = x.DOCUMENTO,
                         Ejercicio = x.EJERCICIO,
@@ -92,7 +92,7 @@ namespace SustitucionMOAWS.WSConsumers
                         Moneda = x.MONEDA,
                         Sociedad = x.SOCIEDAD,
                         Solapa = x.SOLAPA,
-                        WRBTR = x.WRBTR,
+                        ImporteMonedaDocumento = x.WRBTR,
                         WRBTRSpecified = x.WRBTRSpecified,
                         NumeroCOE = x.XBLNR
                     }).ToList()
@@ -102,7 +102,7 @@ namespace SustitucionMOAWS.WSConsumers
         }
     }
 
-    internal interface IEcheqVisualizarPendientePagoConsumerMOA
+    public interface IEcheqVisualizarPendientePagoConsumerMOA
     {
         List<EcheqVisualizacionPendientePago> Request(string proveedor, List<FechaWS> listaFechas);
     }
