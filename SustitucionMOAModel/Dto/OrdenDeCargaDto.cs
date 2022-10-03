@@ -13,6 +13,7 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public string CUITCliente { get; set; }
         public string DescripcionEstado { get; set; }
+        public string DescripcionEstadoListado { get; set; }
         public string ColorSemaforo { get; set; }
         public string Material { get; set; }
         public string Cliente { get; set; }
@@ -25,7 +26,10 @@ namespace SustitucionMOAModel.Dto
         public bool EsFacturaAnticipada { get; set; }
         public string Fecha { get; set; }
         public string PatenteChasis { get; set; }
-        public List<AutoCompleteDropdownElement> ordenes { get; set; }
+        public bool NoEstaEnSAP { get; set; }
+        public bool EstaSeleccionado { get; set; }
+		public List<AutoCompleteDropdownElement> ordenes { get; set; }
+        
         public OrdenDeCargaDto()
         {
             this.ordenes = new List<AutoCompleteDropdownElement> { };
