@@ -24,7 +24,7 @@ import {ConfirmationService} from 'primeng/api';
         CheckboxModule,
         ConfirmDialogModule
     ],
-    declarations: [
+    declarations: [     
         EcheqGestionComponent,
         FiltrosComponent,
         GrillaComponent
