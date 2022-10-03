@@ -21,6 +21,7 @@
     "src/app/factura/factura.module.ts",
     "src/app/flete/flete.module.ts",
     "src/app/liquidacion/liquidacion.module.ts",
+    "src/app/echeq/echeq.module.ts",
     "src/app/liquidacion/no-granos/liquidacion-no-granos.module.ts",
     "src/app/pago/pago.module.ts",
     "src/app/pago/no-granos/pago-no-granos.module.ts",
