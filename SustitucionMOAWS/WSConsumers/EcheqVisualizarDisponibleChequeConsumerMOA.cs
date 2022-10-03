@@ -77,9 +77,9 @@ namespace SustitucionMOAWS.WSConsumers
                    Fecha = SAPFormatter.FormatearFecha(cheque.FECHA),
                    NumeroCOE = cheque.XBLNR,
                    Solapa = cheque.SOLAPA,
-                   wRBTRField = cheque.WRBTR,
+                   ImporteMonedaDocumento = cheque.WRBTR,
                    wRBTRFieldSpecified = cheque.WRBTRSpecified,
-                   dMBTRField = cheque.DMBTR,
+                   ImporteEnPesos = cheque.DMBTR,
                    dMBTRFieldSpecified = cheque.DMBTRSpecified,
                    Moneda = cheque.MONEDA
 

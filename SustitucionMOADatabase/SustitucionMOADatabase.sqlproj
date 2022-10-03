@@ -171,9 +171,9 @@
     <None Include="scripts\PostDeployment\PaisesSAP.sql" />
     <None Include="scripts\PostDeployment\SolpFixDataToNewColumnEmailLinkToken.sql" />
     <None Include="scripts\HABILITAR MENU COMPRAS.sql" />
-    <None Include="scripts\PostDeployment\PermisoPorRol.sql" />
-    <None Include="scripts\PostDeployment\Rol.sql" />
     <None Include="scripts\PostDeployment\RolPermisoPorRol.sql" />
+    <None Include="scripts\PostDeployment\Rol.sql" />
+    <None Include="scripts\PostDeployment\PermisoPorRol.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
