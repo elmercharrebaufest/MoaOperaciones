@@ -207,7 +207,7 @@ namespace SustitucionMOAUtils.Services
             ordenEditar.Observacion = ordenDeCarga.Observacion;
             ordenEditar.TransporteExiste = TransporteExiste(ordenDeCarga);
             Log.Info("Editar ActualizarEstado " + ordenEditar.ToJson());
-            ordenEditar.ActualizarEstado();
+            //ordenEditar.ActualizarEstado();
             Log.Info("Editar ActualizarEstado Nuevo " + ordenEditar.Estado.ToString());
 
 
@@ -242,7 +242,7 @@ namespace SustitucionMOAUtils.Services
             {
                 SolicitarEdicionOrden(ordenDeCarga.Id, mailUsuario);
             }
-
+            
             repositorio.GuardarCambios();
 
             NotificarTransporte(ordenEditar.Id);
@@ -533,7 +533,8 @@ namespace SustitucionMOAUtils.Services
             var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
             var esMesaFas = usuario.TienePermiso("VER ORDENES DE CARGA PARA MESA FAS");
             var esPuerto = usuario.TienePermiso("VER ORDENES DE CARGA PARA PUERTO");
-
+            var descripcion = EstadoOrdenDeCarga.EdicionRechazada;
+            
             var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
 
             fechaFinDateTime = fechaFinDateTime.AddDays(1);
@@ -617,8 +618,8 @@ namespace SustitucionMOAUtils.Services
                         Pedido = x.NumeroPedido ?? "-",
                         Entrega = x.NumeroEntrega ?? "-",
                         Material = x.Producto.Nombre,
-                        DescripcionEstado = x.Estado.ToFriendlyString(),
-                        DescripcionEstadoListado = ObtenerDescripcionEstado(x,false),
+                        DescripcionEstado = x.EdicionRechazada ? descripcion.ToFriendlyString() : x.Estado.ToFriendlyString(),
+                        DescripcionEstadoListado =  x.EdicionRechazada ? x.Estado.ToFriendlyString() +"(Edición Rechazada)" : x.Estado.ToFriendlyString(),
                         ColorSemaforo = x.Estado.ObtenerSemaforo(),
                         EsFacturaAnticipada = (x.NumeroPedidoIngresado != null),
                         PatenteChasis = x.ChasisAcoplado,
@@ -653,8 +654,8 @@ namespace SustitucionMOAUtils.Services
                         Pedido = x.NumeroPedido ?? "-",
                         Entrega = x.NumeroEntrega ?? "-",
                         Material = x.Producto.Nombre,
-                        DescripcionEstado = x.Estado.ToUserFriendlyString(),
-                        DescripcionEstadoListado = ObtenerDescripcionEstado(x, true),
+                        DescripcionEstado = x.EdicionRechazada ? descripcion.ToUserFriendlyString() : x.Estado.ToUserFriendlyString(),
+                        DescripcionEstadoListado = x.EdicionRechazada ? x.Estado.ToUserFriendlyString() +"(Edición Rechazada)" : x.Estado.ToUserFriendlyString(),
                         EsFacturaAnticipada = (x.NumeroPedidoIngresado != null),
                         PatenteChasis = x.ChasisAcoplado,
 						NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Sin Enviar a SAP"),
@@ -717,8 +718,8 @@ namespace SustitucionMOAUtils.Services
             {
                 Id = orden.Id,
                 CUITCliente = orden.CUITCliente,
-                DescripcionEstado = ObtenerDescripcionEstado(orden,false), /*(orden.Estado == EstadoOrdenDeCarga.EdicionRechazada) ? (EstadoOrdenDeCarga)int.Parse(estadoAnterior) + "(" + orden.Estado.ToFriendlyString() + ")" : orden.Estado.ToFriendlyString(),*/
-                DescripcionEstadoUsuarioFinal = ObtenerDescripcionEstado(orden, true),
+                DescripcionEstado = orden.EdicionRechazada ? orden.Estado.ToFriendlyString() + "(Edición Rechazada)" : orden.Estado.ToFriendlyString(),
+                DescripcionEstadoUsuarioFinal = orden.EdicionRechazada ? orden.Estado.ToUserFriendlyString() + "(Edición Rechazada)" : orden.Estado.ToUserFriendlyString(),
                 ColorSemaforo = orden.Estado.ObtenerSemaforo(),
                 ContratoIngresado = orden.ContratoIngresado,
                 NumeroPedidoIngresado = orden.NumeroPedidoIngresado,
@@ -760,30 +761,7 @@ namespace SustitucionMOAUtils.Services
             return ordenDto;
         }
 
-        public string ObtenerDescripcionEstado(OrdenDeCarga orden, bool esUsuarioFinal)
-        {
-            
-            var ordenDeCargaCambiosHistorial = repositorio.Listar<OrdenDeCargaCambiosHistorial>
-             (ordenes => ordenes.OrdenDeCarga_Id == orden.Id).ToList();
-
-            if (ordenDeCargaCambiosHistorial.Count > 0)
-            {
-                if (orden.Estado == EstadoOrdenDeCarga.EdicionRechazada)
-                {
-                     var estadoAnterior = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == orden.Id)
-                                                   .OrderByDescending(x => x.FechaCambio)
-                                                   .Take(1)
-                                                   .FirstOrDefault().Antes;
-                    var descripcion = new EstadoOrdenDeCarga();
-                    descripcion = (EstadoOrdenDeCarga)int.Parse(estadoAnterior);
-
-                    return  !esUsuarioFinal ? (EstadoOrdenDeCarga)int.Parse(estadoAnterior) + "(" + EstadoOrdenDeCarga.EdicionRechazada.ToFriendlyString() + ")" : descripcion.ToUserFriendlyString() + "(" + EstadoOrdenDeCarga.EdicionRechazada.ToUserFriendlyString() + ")";
-                }
-            }
-
-            return !esUsuarioFinal ? orden.Estado.ToFriendlyString(): orden.Estado.ToUserFriendlyString();
-        }
-
+        
       
         public List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga()
         {
@@ -1089,6 +1067,7 @@ namespace SustitucionMOAUtils.Services
                                                 .FirstOrDefault().Antes;
 
                 orden.Estado = (EstadoOrdenDeCarga)System.Enum.Parse(typeof(EstadoOrdenDeCarga), estadoAnterior);
+                orden.EdicionRechazada = false;
 
                 repositorio.GuardarCambios();
 
@@ -1135,7 +1114,8 @@ namespace SustitucionMOAUtils.Services
 				};
 				repositorio.Agregar(ordenHistorial);
 				orden.Estado = EstadoOrdenDeCarga.EdicionRechazada;
-				repositorio.GuardarCambios();
+                orden.EdicionRechazada = true;
+                repositorio.GuardarCambios();
 				return SuccessMsg.OrdenDeCargaActualizada;
 			}
 			catch (Exception ex)
