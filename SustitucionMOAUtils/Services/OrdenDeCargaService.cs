@@ -33,6 +33,10 @@ using System.Diagnostics.Contracts;
 using System.Web;
 using SustitucionMOAUtils.Validadores.OrdenDeCarga;
 using FluentValidation;
+//using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using Newtonsoft.Json;
+using SustitucionMOAUtils.Extensions;
+using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -262,10 +266,59 @@ namespace SustitucionMOAUtils.Services
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
         }
 
-        //public Resultado CrearOrdenEnSAP(CrearOrdenEnSAPRequest request)
-        //{
-        //    return new NotImplementedException();
-        //}
+        public CrearOrdenEnSAPResponse CrearOrdenEnSAP(CrearOrdenEnSAPRequest request)
+        {
+            Log.Info($"CrearOrdenEnSAP(request: { request.GetStringJson() })");
+			var response = new CrearOrdenEnSAPResponse();
+			response.ResultCreation = false;
+			try
+            {
+				var ordenDeCarga = repositorio.Obtener<OrdenDeCarga>(q => q.Id == request.IdOrdenDeCarga);
+				Log.Info($" ordenDeCarga: { ordenDeCarga.GetStringJson() }");
+				//var result = consumer.CrearOrdenRequest(request.ClienteCodigo, request.ContratoSAP, request.CorredorCodigo, request.Cantidad, request.MaterialCodigoSAP, request.NumeroPedidoIngresado, request.ValidarKg, out string numeroPedido);
+				//Log.Info($" response: {result.GetStringJson()}");
+    //            if (!string.IsNullOrEmpty(result))
+    //            {
+				//	if (result == "OV-00" || result == "OV-03")
+				//	{
+				//		ordenDeCarga.InformadaSAP = true;
+				//		ordenDeCarga.NumeroPedido = numeroPedido;
+				//		ordenDeCarga.DescripcionErrorInterno = "";
+				//		ordenDeCarga.DescripcionCodigoVerificacionSap = "";
+				//		ordenDeCarga.CodigoVerificacionSap = "";
+    //                    response.ResultCreation = true;
+    //                }
+    //                else
+    //                {
+				//		ordenDeCarga.CodigoVerificacionSap = result;
+				//		if (result == "OV-02")
+				//		{
+				//			ordenDeCarga.ContratoSinCantidadPendiente = true;
+				//			ordenDeCarga.CodigoVerificacionSap = "CC-01";
+				//			ordenDeCarga.DescripcionErrorInterno = "El contrato ingresado tiene menos de 15 toneladas disponibles. Puede elegir forzar la creación del pedido desde \"Crear pedido\" o anularlo.";
+				//		}
+				//		else
+				//		{
+				//			ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
+				//		}
+				//	}
+    //            }
+    //            else
+    //            {
+				//	ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
+				//}
+				Log.Info($" ordenDeCarga: { ordenDeCarga.GetStringJson() }");
+				Log.Info(" ActualizarEstado, inicial: " + ordenDeCarga.Estado.ToJson());
+				ordenDeCarga.ActualizarEstado();
+				Log.Info(" ActualizarEstado, final: " + ordenDeCarga.Estado.ToJson());
+				repositorio.GuardarCambios();
+			}
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+			return response;
+		}
         private bool CrearOrdenEnSAP(OrdenDeCarga orden, Proveedor cliente, bool forzarCreacion)
         {
             //OV-01   'Verificar Contrato, Material, Cliente'
@@ -569,7 +622,7 @@ namespace SustitucionMOAUtils.Services
                         ColorSemaforo = x.Estado.ObtenerSemaforo(),
                         EsFacturaAnticipada = (x.NumeroPedidoIngresado != null),
                         PatenteChasis = x.ChasisAcoplado,
-                        NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Contrato vencido"),
+                        NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Sin Enviar a SAP"),
                         EstaSeleccionado = false
                     }).OrderByDescending(y => y.Id).ToList();
             }
@@ -604,7 +657,7 @@ namespace SustitucionMOAUtils.Services
                         DescripcionEstadoListado = ObtenerDescripcionEstado(x, true),
                         EsFacturaAnticipada = (x.NumeroPedidoIngresado != null),
                         PatenteChasis = x.ChasisAcoplado,
-						NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Contrato vencido"),
+						NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Sin Enviar a SAP"),
 						EstaSeleccionado = false
 					}).OrderByDescending(y => y.Id).ToList();
             }

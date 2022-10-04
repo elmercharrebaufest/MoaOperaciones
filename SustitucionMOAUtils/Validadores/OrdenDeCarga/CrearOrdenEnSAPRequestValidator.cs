@@ -9,7 +9,7 @@ namespace SustitucionMOAUtils.Validadores.OrdenDeCarga
 	{
 		public CrearOrdenEnSAPRequestValidator()
 		{
-			RuleFor(dto => dto.Id).GreaterThan(0).OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Id")));
+			RuleFor(dto => dto.IdOrdenDeCarga).GreaterThan(0).OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Id de Orden de Carga")));
 
 			RuleFor(dto => dto.ClienteCodigo).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Codigo de Cliente")));
 			RuleFor(dto => dto.ContratoSAP).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Codigo de Contrato SAP")));
