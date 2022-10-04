@@ -1123,10 +1123,10 @@ namespace SustitucionMOAUtils.Services
 				{
 					orden.GetType().GetProperty(dato.NombreColumnaCambio).SetValue(orden, dato.Antes, null);
 				}
-				var ordenHistorial = new OrdenDeCargaCambiosHistorial()
+                var ordenHistorial = new OrdenDeCargaCambiosHistorial()
 				{
 					Id = 0,
-					Antes = EstadoOrdenDeCargaExtensions.ToFriendlyString((EstadoOrdenDeCarga)int.Parse(estadoAnterior)),
+					Antes = estadoAnterior,
 					Despues = EstadoOrdenDeCargaExtensions.ToFriendlyString(EstadoOrdenDeCarga.EdicionRechazada),
 					NombreColumnaCambio = "estado",
 					FechaCambio = DateTime.Now,
