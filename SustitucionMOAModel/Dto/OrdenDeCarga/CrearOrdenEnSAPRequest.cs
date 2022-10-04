@@ -2,7 +2,7 @@
 {
 	public class CrearOrdenEnSAPRequest
 	{
-		public int Id { get; set; }
+		public int IdOrdenDeCarga { get; set; }
 		public string ClienteCodigo { get; set; }
 		public string ContratoSAP { get; set; }
 		public string CorredorCodigo { get; set; }
