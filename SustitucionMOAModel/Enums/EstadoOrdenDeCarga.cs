@@ -45,7 +45,7 @@
                
                     return "green";
                 case EstadoOrdenDeCarga.SinEnviarASAP:
-                    return "blue";
+                    return "bluesap";
                 default:
                     return "white";
             }

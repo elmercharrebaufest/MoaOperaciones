@@ -10,8 +10,8 @@ namespace SustitucionMOAUtils.Interfaces
     {
         Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
         Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario);
-		//Resultado CrearOrdenEnSAP(CrearOrdenEnSAPRequest request);
-		List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin);
+		CrearOrdenEnSAPResponse CrearOrdenEnSAP(CrearOrdenEnSAPRequest request);
+        List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin);
         OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId);
         OrdenDeCargaEditarDto ObtenerEditar(string mailUsuario, int ordenId);
         List<OrdenDeCargaHistorialDto> ObtenerEditarHistorial(string mailUsuario, int ordenId);        

@@ -9,6 +9,7 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { Material } from '../../common/models/material';
 import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { CrearOrdenEnSAPRequest } from '../../common/models/ordenes-de-carga/crearOrdenEnSAPRequest';
 import { Formatter } from '../../common/formatter/Formatter';
 import { SelectItem, ConfirmationService} from 'primeng/api';
 
@@ -25,9 +26,10 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 
     listaMateriales: Material[];
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
+    crearOrdenEnSAPRequest: CrearOrdenEnSAPRequest;
 
     filtroEstado: any = null;
-    filtroProducto: any = null;
+    filtroProducto: any = null
     filtroAlta: any = null;
     filtroCliente: any = null;
 
@@ -189,6 +191,32 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         this.data.forEach((value, index) => {
             if (value.EstaSeleccionado && value.NoEstaEnSAP){
                 console.debug(' value: ', value);
+                this.crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest();
+                this.crearOrdenEnSAPRequest.IdOrdenDeCarga = value.Id;
+                this.crearOrdenEnSAPRequest.ClienteCodigo = value.Cliente;
+                this.crearOrdenEnSAPRequest.ContratoSAP = value.Contrato;
+                this.crearOrdenEnSAPRequest.CorredorCodigo = value.Corredor;
+                this.crearOrdenEnSAPRequest.Cantidad = value.Cantidad;
+                this.crearOrdenEnSAPRequest.MaterialCodigoSAP = value.Material;
+                this.crearOrdenEnSAPRequest.NumeroPedidoIngresado = value.NumeroPedidoIngresado;
+                this.crearOrdenEnSAPRequest.ValidarKg = "X";
+                console.debug(' crearOrdenEnSAPRequest: ', this.crearOrdenEnSAPRequest);
+                this.service.crearOrdenEnSAP(this.crearOrdenEnSAPRequest).subscribe(
+                    result => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            console.error(' validarCorredorClienteContratoProducto: ', result.error);
+                        } else if (result.info != undefined) {
+                            console.error(' validarCorredorClienteContratoProducto: ', result.info);
+                        } else {
+                            console.debug(' result: ' + result);
+                        }
+                    },
+                    error => {
+                        console.error(' enviarASAP: ', error.message);
+                    }
+                );
             }
         });
     }
