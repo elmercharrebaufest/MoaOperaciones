@@ -1068,6 +1068,7 @@ namespace SustitucionMOAUtils.Services
 
                 orden.Estado = (EstadoOrdenDeCarga)System.Enum.Parse(typeof(EstadoOrdenDeCarga), estadoAnterior);
                 orden.EdicionRechazada = false;
+
                 repositorio.GuardarCambios();
 
                 return SuccessMsg.OrdenDeCargaActualizada;
