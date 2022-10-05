@@ -89,6 +89,8 @@ namespace SustitucionMOAModel.Entities
         public DateTime? FechaVencimiento { get; set; }
         public bool FechaVencimientoAmpliada { get; set; }
 
+        public bool EdicionRechazada { get; set; }
+
         public void ActualizarEstado()
         {
             if (Estado != EstadoOrdenDeCarga.Entregada)
@@ -101,6 +103,7 @@ namespace SustitucionMOAModel.Entities
                 {
                     if (string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido))
                     {
+                        
                         Estado = EstadoOrdenDeCarga.Pendiente;
                     }
                     else

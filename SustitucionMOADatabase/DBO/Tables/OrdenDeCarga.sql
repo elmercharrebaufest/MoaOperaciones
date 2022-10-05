@@ -38,6 +38,7 @@
     [CUITCorredor] VARCHAR(15) NULL, 
     [FechaVencimiento] DATETIME NULL, 
     [FechaVencimientoAmpliada] BIT NOT NULL DEFAULT 0, 
+    [EdicionRechazada] BIT NOT NULL DEFAULT 0, 
     CONSTRAINT [FK_OrdenDeCarga_Material] FOREIGN KEY (Producto_Id) REFERENCES Material(Id),
     CONSTRAINT [FK_OrdenDeCarga_Corredor] FOREIGN KEY (Corredor_Id) REFERENCES Proveedor(Id), 
     CONSTRAINT [FK_OrdenDeCarga_Usuario] FOREIGN KEY (UsuarioCreacion_Id) REFERENCES Usuario(Id), 

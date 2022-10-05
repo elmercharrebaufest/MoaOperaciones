@@ -16,7 +16,8 @@
         AnulacionSolicitada,
         ContratoVencido, 
         EdicionRechazada,
-        SinEnviarASAP
+        SinEnviarASAP,
+        SinEstado
     }
 
     public static class EstadoOrdenDeCargaExtensions
@@ -90,6 +91,8 @@
             }
         }
 
+   
+
         public static string ToUserFriendlyString(this EstadoOrdenDeCarga me)
         {
             switch (me)
@@ -120,5 +123,46 @@
                     return "Sin estado";
             }
         }
+
+        public static EstadoOrdenDeCarga ObtenerDescripcionEstado(string estado)
+        {
+
+            switch (estado)
+            {
+                case "Error de datos":
+                    return EstadoOrdenDeCarga.ErrorDeCarga;
+                case "Pendiente":
+                    return EstadoOrdenDeCarga.Pendiente;
+                case "Vencida":
+                    return EstadoOrdenDeCarga.Vencida;
+                case "Confirmada":
+                    return EstadoOrdenDeCarga.Confirmado;
+                case "Pendiente aprobación crédito":
+                    return EstadoOrdenDeCarga.PendienteAprobacionCredito;
+                case "Entrega pendiente":
+                    return EstadoOrdenDeCarga.EntregaPendiente;
+                case "Entrega generada":
+                    return EstadoOrdenDeCarga.EntregaGenerada;
+                case "Entregada":
+                    return EstadoOrdenDeCarga.Entregada;
+                case "Anulada":
+                    return EstadoOrdenDeCarga.Anulada;
+                case "Anulada por vencimiento":
+                    return EstadoOrdenDeCarga.AnuladaPorVencimiento;
+                case "Anulación solicitada":
+                    return EstadoOrdenDeCarga.AnulacionSolicitada;
+                case "Edición solicitada":
+                    return EstadoOrdenDeCarga.EdicionSolicitada;
+                case "Contrato vencido":
+                    return EstadoOrdenDeCarga.ContratoVencido;
+                case "Edición rechazada":
+                    return EstadoOrdenDeCarga.EdicionRechazada;
+                case "Sin Enviar a SAP":
+                    return EstadoOrdenDeCarga.SinEnviarASAP;
+                default:
+                    return EstadoOrdenDeCarga.SinEstado;
+            }
+        }
+        
     }
 }
