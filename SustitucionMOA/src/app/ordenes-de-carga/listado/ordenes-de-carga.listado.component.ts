@@ -26,7 +26,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 
     listaMateriales: Material[];
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
-    crearOrdenEnSAPRequest: CrearOrdenEnSAPRequest;
+    corredorCodigo: string = "";
 
     filtroEstado: any = null;
     filtroProducto: any = null
@@ -74,7 +74,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     entregada: string = "Entregada";
 
     ngOnInit() {
-
+        this.corredorCodigo = sessionStorage.getItem("proveedor");
         if (this.esInterno || this.esComercial || this.esMesaFas || this.esPuerto) {
             this.descripcionEstadoOrdenCarga = [
             { label: "Pendiente", value: "Pendiente" },
@@ -188,27 +188,31 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
 
     enviarASAP = () => {
         console.debug('call enviarASAP()');
+        console.debug(' corredorCodigo: ', this.corredorCodigo);
         this.data.forEach((value, index) => {
             if (value.EstaSeleccionado && value.NoEstaEnSAP){
-                console.debug(' value: ', value);
-                this.crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest();
-                this.crearOrdenEnSAPRequest.IdOrdenDeCarga = value.Id;
-                this.crearOrdenEnSAPRequest.ClienteCodigo = value.Cliente;
-                this.crearOrdenEnSAPRequest.ContratoSAP = value.Contrato;
-                this.crearOrdenEnSAPRequest.CorredorCodigo = value.Corredor;
-                this.crearOrdenEnSAPRequest.Cantidad = value.Cantidad;
-                this.crearOrdenEnSAPRequest.MaterialCodigoSAP = value.Material;
-                this.crearOrdenEnSAPRequest.NumeroPedidoIngresado = value.NumeroPedidoIngresado;
-                this.crearOrdenEnSAPRequest.ValidarKg = "X";
-                console.debug(' crearOrdenEnSAPRequest: ', this.crearOrdenEnSAPRequest);
-                this.service.crearOrdenEnSAP(this.crearOrdenEnSAPRequest).subscribe(
+                // console.debug(' value: ', value);
+                let crearOrdenEnSAPRequest: CrearOrdenEnSAPRequest;
+                crearOrdenEnSAPRequest = {
+                    IdOrdenDeCarga: value.Id,
+                    ClienteCodigo: value.Cliente,
+                    ContratoSAP: value.Contrato,
+                    CorredorCodigo: this.corredorCodigo,
+                    Cantidad: value.Cantidad,
+                    MaterialCodigoSAP: value.Material,
+                    NumeroPedidoIngresado: value.NumeroPedidoIngresado,
+                    ValidarKg: "X",
+                    UsuarioSAP: ""
+                }
+                console.debug(' crearOrdenEnSAPRequest: ', crearOrdenEnSAPRequest);
+                this.service.crearOrdenEnSAP(crearOrdenEnSAPRequest).subscribe(
                     result => {
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
-                            console.error(' validarCorredorClienteContratoProducto: ', result.error);
+                            console.error(' enviarASAP: ', result.error);
                         } else if (result.info != undefined) {
-                            console.error(' validarCorredorClienteContratoProducto: ', result.info);
+                            console.error(' enviarASAP: ', result.info);
                         } else {
                             console.debug(' result: ' + result);
                         }
