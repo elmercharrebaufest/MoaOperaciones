@@ -7,6 +7,7 @@ import { timeoutWith, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
 import { CrearOrdenEnSAPRequest } from '../common/models/ordenes-de-carga/crearOrdenEnSAPRequest';
+// import { CrearOrdenEnSAPResponse } from '../common/models/ordenes-de-carga/crearOrdenEnSAPResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -107,11 +108,9 @@ export class OrdenesDeCargaService extends BaseService {
 
     public crearOrdenEnSAP(request: CrearOrdenEnSAPRequest): Observable<any>{
         let payload = new FormData();
-        payload.append(
-            "ordenDeCargaJson",
-            JSON.stringify(request)
-        );
-        let response = this.http.post('/api/OrdenDeCarga/Editar', payload);
+        payload.append("request", JSON.stringify(request));
+        // console.debug(' payload: ', payload);
+        let response = this.http.post('/api/OrdenDeCarga/CrearOrdenEnSAP', request);
         return response;
     }
 

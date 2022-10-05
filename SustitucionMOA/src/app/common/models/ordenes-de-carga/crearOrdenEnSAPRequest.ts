@@ -1,4 +1,4 @@
-export class CrearOrdenEnSAPRequest {
+export interface CrearOrdenEnSAPRequest {
     IdOrdenDeCarga: number;
     ClienteCodigo: string;
     ContratoSAP: string;
@@ -8,6 +8,4 @@ export class CrearOrdenEnSAPRequest {
     NumeroPedidoIngresado: string;
     ValidarKg: string;
     UsuarioSAP: string;
-    
-    constructor() { }
 }
