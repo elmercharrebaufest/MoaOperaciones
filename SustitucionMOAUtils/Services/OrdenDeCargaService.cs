@@ -1014,7 +1014,7 @@ namespace SustitucionMOAUtils.Services
                                                 .Take(1)
                                                 .FirstOrDefault().Antes;
 
-                orden.Estado = (EstadoOrdenDeCarga)int.Parse(estadoAnterior);
+                orden.Estado = EstadoOrdenDeCargaExtensions.ObtenerDescripcionEstado(estadoAnterior);
 
                 repositorio.GuardarCambios();
 
@@ -1068,7 +1068,6 @@ namespace SustitucionMOAUtils.Services
 
                 orden.Estado = (EstadoOrdenDeCarga)System.Enum.Parse(typeof(EstadoOrdenDeCarga), estadoAnterior);
                 orden.EdicionRechazada = false;
-
                 repositorio.GuardarCambios();
 
                 return SuccessMsg.OrdenDeCargaActualizada;
@@ -1103,17 +1102,17 @@ namespace SustitucionMOAUtils.Services
 					orden.GetType().GetProperty(dato.NombreColumnaCambio).SetValue(orden, dato.Antes, null);
 				}
                 var ordenHistorial = new OrdenDeCargaCambiosHistorial()
-				{
-					Id = 0,
-					Antes = estadoAnterior,
-					Despues = EstadoOrdenDeCargaExtensions.ToFriendlyString(EstadoOrdenDeCarga.EdicionRechazada),
+                {
+                    Id = 0,
+                    Antes = estadoAnterior,
+                    Despues = EstadoOrdenDeCarga.EdicionRechazada.ToFriendlyString(),
 					NombreColumnaCambio = "estado",
 					FechaCambio = DateTime.Now,
 					Usuario_Id = usuario.Id,
 					OrdenDeCarga_Id = orden.Id
 				};
 				repositorio.Agregar(ordenHistorial);
-				orden.Estado = EstadoOrdenDeCarga.EdicionRechazada;
+				orden.Estado = EstadoOrdenDeCargaExtensions.ObtenerDescripcionEstado(estadoAnterior);
                 orden.EdicionRechazada = true;
                 repositorio.GuardarCambios();
 				return SuccessMsg.OrdenDeCargaActualizada;
