@@ -24,7 +24,6 @@ export class EcheqBaseComponent extends ListBaseComponent {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
-
     checkPermisos() {
         this.securityService.tienePermisoRedirect("VER ECHEQ");
     }
@@ -35,6 +34,9 @@ export class EcheqBaseComponent extends ListBaseComponent {
         sessionStorage.getItem("proveedor");
         this.navService.setSeccionList([
             new Seccion('/echeq/gestion', 'echeq', 'Gestion'),
-        ]);
+            new Seccion('/echeq/mis-cheq', 'echeq', 'Mis Echeq')
+        ]);    
     }
+
+   
 }

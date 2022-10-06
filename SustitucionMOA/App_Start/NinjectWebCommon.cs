@@ -112,6 +112,11 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IExcelExportWrapper>().To(typeof(ExcelExportWrapper)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IFileWrapper>().To(typeof(FileWrapper)).InScope(ctx => OperationContext.Current);
 
+
+            kernel.Bind<IEcheqService>().To(typeof(EcheqService)).InScope(ctx => OperationContext.Current);
+
+
+
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IOrdenCargaConsumerMOA>().To(typeof(OrdenCargaConsumerMOA)).InScope(ctx => OperationContext.Current);
@@ -129,6 +134,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<ICrearPedidoConsumerMOA>().To(typeof(CrearPedidoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerFuenteAprovisionamientoConsumerMOA>().To(typeof(ObtenerFuenteAprovisionamientoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerContratoSolpConsumerMOA>().To(typeof(ObtenerContratoSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IEcheqVisualizarPendientePagoConsumerMOA>().To(typeof(EcheqVisualizarPendientePagoConsumerMOA)).InScope(ctx => OperationContext.Current);
+
 
             #endregion
 

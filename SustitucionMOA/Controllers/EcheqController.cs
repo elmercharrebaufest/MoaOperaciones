@@ -21,6 +21,7 @@ namespace SustitucionMOA.Controllers
     public class EcheqController : BaseController
     {
         private readonly IEcheqService service;
+
              
         public EcheqController(IEcheqService echeqService)
         {

@@ -116,7 +116,7 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     ApikeyComponent,
     PesificacionesGuardadasComponent,
     PesificacionBaseComponent
-  ],
+    ],
   providers: [
     DatePipe,
     SessionDataService,
