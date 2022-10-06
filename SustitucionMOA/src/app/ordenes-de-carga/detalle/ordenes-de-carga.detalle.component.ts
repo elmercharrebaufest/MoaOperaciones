@@ -244,38 +244,37 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mostrarBotonEditar = false;
         this.mostrarBotonEdicionFinalizada = false;
 
-        // if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada) {
-        //     return;
-        // }
+         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada) {
+             this.mostrarBotonVerHistorial = true;
+             return;
+         }
         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Entregada) {
+            this.mostrarBotonVerHistorial = true;
             return;
         }
-        // if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnuladaPorVencimiento) {
-        //     return;
-        // }
-        //if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada) {
-        //    return;
-        //}
+         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnuladaPorVencimiento) {
+             this.mostrarBotonVerHistorial = true;
+             return;
+         }
+        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada) {
+            this.mostrarBotonVerHistorial = true;
+            return;
+        }
 
-        if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
+        if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada ||  this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
             if (this.esTercero)
                 this.mostrarBotonSolicitarAnulacion = true;
-            if (this.ordenDeCarga.Estado != EstadoOrdenDeCarga.EdicionRechazada) {
                 this.mostrarBotonEditar = true;
-            }
+          
         }
 
         if (this.esInterno || this.esComercial || this.esMesaFas) {
             this.mostrarBotonVerHistorial = true;
 
             if (this.esAnulador) {
-                if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Confirmado || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ErrorDeCarga || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada) {
+                if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Confirmado || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ErrorDeCarga || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada) {
                     this.mostrarBotonAnular = true;
                 } 
-            }
-
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada) {
-                this.mostrarBotonEditar = true;
             }
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada) {

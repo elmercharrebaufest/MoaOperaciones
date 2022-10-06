@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace SustitucionMOAUtils.Extensions
 {
@@ -6,7 +7,8 @@ namespace SustitucionMOAUtils.Extensions
 	{
 		public static string GetStringJson<T>(this T t) where T : class
 		{
-			return JsonConvert.SerializeObject(t);
+			var result = JsonConvert.SerializeObject(t, Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+			return result;
 		}
 	}
 }
