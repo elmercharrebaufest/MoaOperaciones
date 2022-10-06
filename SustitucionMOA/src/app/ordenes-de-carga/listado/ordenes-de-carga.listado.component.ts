@@ -72,6 +72,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
+    puedeEnviarASAP: boolean = false;
 
     descripcionEstadoOrdenCarga: any[];
     entregada: string = "Entregada";
@@ -81,8 +82,11 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.debug('OrdenesDeCargaAlta ngOnInit()');
+        console.debug(' puedeEnviarASAP: ', this.isAuthorized('ENVIAR A SAP'));
         this.corredorCodigo = sessionStorage.getItem("proveedor");
         this.mailUsuarioSAP = sessionStorage.getItem("username");
+        this.puedeEnviarASAP = this.isAuthorized('ENVIAR A SAP');
         if (this.esInterno || this.esComercial || this.esMesaFas || this.esPuerto) {
             this.descripcionEstadoOrdenCarga = [
             { label: "Pendiente", value: "Pendiente" },
@@ -172,7 +176,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
                     this.spinnerComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
-
             );
         } catch (e) {
             this.spinnerComponent.hideIt();

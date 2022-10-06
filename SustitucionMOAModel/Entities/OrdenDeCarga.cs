@@ -101,9 +101,8 @@ namespace SustitucionMOAModel.Entities
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido))
+                    if ((string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido)) && Estado != EstadoOrdenDeCarga.SinEnviarASAP)
                     {
-                        
                         Estado = EstadoOrdenDeCarga.Pendiente;
                     }
                     else
