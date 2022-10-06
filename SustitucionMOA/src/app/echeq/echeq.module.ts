@@ -6,7 +6,9 @@ import { ReCaptchaModule } from 'angular2-recaptcha';
 import { CalendarModule } from 'primeng/calendar';
 import { EcheqRoutingModule } from './echeq-routing.module';
 import { EcheqService } from './echeq.service';
-import { EcheqGestionComponent } from './gestion/echeq.gestion.component';
+import { EcheqGestionComponent } from './gestion/echeq-gestion.component';
+import { GrillaComponent } from './gestion/echeq.grilla/echeq-grilla.component';
+import { FiltrosComponent } from './gestion/echeq.filtros/echeq-filtros.component';
 
 @NgModule({
     imports: [
@@ -18,7 +20,9 @@ import { EcheqGestionComponent } from './gestion/echeq.gestion.component';
         CalendarModule
     ],
     declarations: [
-        EcheqGestionComponent
+        EcheqGestionComponent,
+        FiltrosComponent,
+        GrillaComponent
     ],
     providers: [
         EcheqService
