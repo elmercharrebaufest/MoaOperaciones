@@ -6,6 +6,6 @@ export interface CrearOrdenEnSAPRequest {
     Cantidad: number;
     MaterialCodigoSAP: string;
     NumeroPedidoIngresado: string;
-    ValidarKg: string;
-    UsuarioSAP: string;
+    // ValidarKg: string;
+    MailUsuarioSAP: string;
 }

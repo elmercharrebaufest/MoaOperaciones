@@ -19,8 +19,8 @@ namespace SustitucionMOAUtils.Validadores.OrdenDeCarga
 
 			RuleFor(dto => dto.MaterialCodigoSAP).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Codigo SAP de Material")));
 			RuleFor(dto => dto.NumeroPedidoIngresado).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Numero de Pedido Ingresado")));
-			RuleFor(dto => dto.ValidarKg).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Kilos ingresados")));
-			RuleFor(dto => dto.UsuarioSAP).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Usuario SAP")));
+			//RuleFor(dto => dto.ValidarKg).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Kilos ingresados")));
+			RuleFor(dto => dto.MailUsuarioSAP).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Usuario SAP")));
 		}
 	}
 }
