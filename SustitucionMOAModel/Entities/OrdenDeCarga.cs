@@ -93,7 +93,7 @@ namespace SustitucionMOAModel.Entities
 
         public void ActualizarEstado()
         {
-            if (Estado != EstadoOrdenDeCarga.Entregada)
+			if (Estado != EstadoOrdenDeCarga.Entregada)
             {
                 if (CodigoVerificacionSap == "CC-01")
                 {
