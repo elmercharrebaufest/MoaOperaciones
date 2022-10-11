@@ -65,21 +65,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     public patternPatente = { '0': { pattern: new RegExp('\[a-zA-Z0-9\]') } };
 
-    constructor(protected service: OrdenesDeCargaService,
-        protected usuarioService: UsuarioService, 
-        protected navService: NavService,
-        protected seleccionarProveedorService: SeleccionarProveedorService,
-        private route: ActivatedRoute,
-        protected sessionDataService: SessionDataService, 
-        protected securytiService: SecurityService,
-        protected floatMsgService: FloatMsgService, 
-        protected modalService: ModalService,
-        protected empresaGranosService: EmpresaGranosService,
-        public datepipe: DatePipe) {
-        super(navService, securytiService, floatMsgService, modalService);;
+    constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService,  protected securytiService: SecurityService, protected floatMsgService: FloatMsgService,  protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
+        super(navService, securytiService, floatMsgService, modalService);
     }
 
     ngOnInit() {
+        console.debug('OrdenesDeCargaAlta ngOnInit()');
+        // console.debug(' username: ', sessionStorage.getItem("username"));
+        // console.debug(' tipoUsuario: ', sessionStorage.getItem("tipoUsuario"));
+        // console.debug(' proveedor: ', sessionStorage.getItem("proveedor"));
         this.userEmail = sessionStorage.getItem("username");
         this.desde = this.getFecha(8);
         this.hasta = this.getFecha(0);

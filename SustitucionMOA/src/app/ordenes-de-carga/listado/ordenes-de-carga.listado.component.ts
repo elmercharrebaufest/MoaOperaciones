@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CartaPorteService } from '../../carta-porte/carta-porte2.service';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
@@ -12,21 +12,24 @@ import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga'
 import { CrearOrdenEnSAPRequest } from '../../common/models/ordenes-de-carga/crearOrdenEnSAPRequest';
 import { Formatter } from '../../common/formatter/Formatter';
 import { SelectItem, ConfirmationService} from 'primeng/api';
+import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
+import { NgBlockUI, BlockUI } from 'ng-block-ui';
 
 @Component({
     selector: 'app-ordenes-de-carga.listado',
     templateUrl: './ordenes-de-carga.listado.component.html',
     styleUrls: ['./ordenes-de-carga.listado.component.css']
 })
-export class OrdenesDeCargaListado extends ListBaseComponent {
+export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
+    @BlockUI() blockUI: NgBlockUI;
 
-    constructor(protected service: OrdenesDeCargaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,private confirmationService: ConfirmationService) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-    }
+    @ViewChild(MensajeComponent)
+    protected mensajeComponent: MensajeComponent;
 
     listaMateriales: Material[];
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     corredorCodigo: string = "";
+    mailUsuarioSAP: string = "";
 
     filtroEstado: any = null;
     filtroProducto: any = null
@@ -69,12 +72,21 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
+    puedeEnviarASAP: boolean = false;
 
     descripcionEstadoOrdenCarga: any[];
     entregada: string = "Entregada";
 
+    constructor(protected service: OrdenesDeCargaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,private confirmationService: ConfirmationService) {
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+    }
+
     ngOnInit() {
+        console.debug('OrdenesDeCargaAlta ngOnInit()');
+        console.debug(' puedeEnviarASAP: ', this.isAuthorized('ENVIAR A SAP'));
         this.corredorCodigo = sessionStorage.getItem("proveedor");
+        this.mailUsuarioSAP = sessionStorage.getItem("username");
+        this.puedeEnviarASAP = this.isAuthorized('ENVIAR A SAP');
         if (this.esInterno || this.esComercial || this.esMesaFas || this.esPuerto) {
             this.descripcionEstadoOrdenCarga = [
             { label: "Pendiente", value: "Pendiente" },
@@ -164,7 +176,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
                     this.spinnerComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
-
             );
         } catch (e) {
             this.spinnerComponent.hideIt();
@@ -186,42 +197,62 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
         });
     }
 
-    enviarASAP = () => {
+    enviarASAP = async () => {
+        this.blockUI.start('');
         console.debug('call enviarASAP()');
         console.debug(' corredorCodigo: ', this.corredorCodigo);
-        this.data.forEach((value, index) => {
-            if (value.EstaSeleccionado && value.NoEstaEnSAP){
-                // console.debug(' value: ', value);
-                let crearOrdenEnSAPRequest: CrearOrdenEnSAPRequest;
-                crearOrdenEnSAPRequest = {
-                    IdOrdenDeCarga: value.Id,
-                    ClienteCodigo: value.Cliente,
-                    ContratoSAP: value.Contrato,
-                    CorredorCodigo: this.corredorCodigo,
-                    Cantidad: value.Cantidad,
-                    MaterialCodigoSAP: value.Material,
-                    NumeroPedidoIngresado: value.NumeroPedidoIngresado,
-                    ValidarKg: "X",
-                    UsuarioSAP: ""
-                }
-                console.debug(' crearOrdenEnSAPRequest: ', crearOrdenEnSAPRequest);
-                this.service.crearOrdenEnSAP(crearOrdenEnSAPRequest).subscribe(
-                    result => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            console.error(' enviarASAP: ', result.error);
-                        } else if (result.info != undefined) {
-                            console.error(' enviarASAP: ', result.info);
-                        } else {
-                            console.debug(' result: ' + result);
-                        }
-                    },
-                    error => {
-                        console.error(' enviarASAP: ', error.message);
+        let resultado = false;
+        try{
+            await this.data.forEach((value, index) => {
+                if (value.EstaSeleccionado && value.NoEstaEnSAP){
+                    // console.debug(' value: ', value);
+                    let crearOrdenEnSAPRequest: CrearOrdenEnSAPRequest;
+                    crearOrdenEnSAPRequest = {
+                        IdOrdenDeCarga: value.Id,
+                        ClienteCodigo: value.Cliente,
+                        ContratoSAP: value.Contrato,
+                        CorredorCodigo: this.corredorCodigo,
+                        Cantidad: value.Cantidad,
+                        MaterialCodigoSAP: value.Material,
+                        NumeroPedidoIngresado: value.NumeroPedidoIngresado,
+                        // ValidarKg: "X",
+                        MailUsuarioSAP: this.mailUsuarioSAP
                     }
-                );
+                    console.debug(' crearOrdenEnSAPRequest: ', crearOrdenEnSAPRequest);
+                    this.service.crearOrdenEnSAP(crearOrdenEnSAPRequest).subscribe(
+                        result => {
+                            if (result.logout == true) {
+                                this.sessionDataService.logout();
+                            } else if (result.error != undefined && result.error != "") {
+                                console.error(' enviarASAP: ', result.error);
+                                this.blockUI.stop();
+                            } else if (result.info != undefined) {
+                                console.error(' enviarASAP: ', result.info);
+                                this.blockUI.stop();
+                            } else {
+                                console.debug(' result: ', result);
+                                resultado = result.ResultValidation;
+                                if (!resultado){
+                                    return;
+                                }
+                            }
+                        },
+                        error => {
+                            console.error(' enviarASAP: ', error.message);
+                            this.mensajeComponent.setErrorMsg(error.message);
+                            this.blockUI.stop();
+                        }
+                    );
+                }
+            });
+            if (resultado) {
+                this.mensajeComponent.setSuccessMsg('Los datos han sido enviados a SAP con éxito');
+                this.blockUI.stop();
+                this.getListado();
             }
-        });
+        } catch{
+            this.mensajeComponent.setErrorMsg('Ocurrio un error al Enviar a SAP');
+            this.blockUI.stop();
+        }
     }
 }

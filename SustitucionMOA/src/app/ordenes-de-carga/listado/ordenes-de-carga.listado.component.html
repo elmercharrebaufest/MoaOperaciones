@@ -91,7 +91,7 @@
         <table #tabla *ngIf="data && data.length != 0;" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0; background: white !important;">
           <thead>
             <tr role="row">
-              <th><input type="checkbox" [(ngModel)]="seleccionaTodos" (click)="seleccionarTodos()" /></th>
+              <th *ngIf="puedeEnviarASAP"><input type="checkbox" [(ngModel)]="seleccionaTodos" (click)="seleccionarTodos()" /></th>
               <th>Id</th>
               <th *ngIf="esMesaFas || esInterno">Entrega</th>
               <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas">Cliente</th>
@@ -109,7 +109,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let ordenDeCarga of data | customFilter : 'Contrato' : filtroAlta | customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected) | customFilter : 'Cliente' : filtroCliente | customFilterBoolean : 'EsFacturaAnticipada' : (pedidoAnticipado == 0 ? null:  (pedidoAnticipado != 2)) : true | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p }; let odd = odd" role="row" [class.odd]="!odd">
-              <td><input type="checkbox" [(ngModel)]="ordenDeCarga.EstaSeleccionado" [disabled]="!ordenDeCarga.NoEstaEnSAP" /></td>
+              <td *ngIf="puedeEnviarASAP"><input type="checkbox" [(ngModel)]="ordenDeCarga.EstaSeleccionado" [disabled]="!ordenDeCarga.NoEstaEnSAP" /></td>
               <td>{{ordenDeCarga.Id}}</td>
               <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.RazonSocialCliente}}</td>
@@ -143,7 +143,7 @@
               <td></td>
               <td></td>
               <td></td>
-              <td colspan="3">
+              <td colspan="3" *ngIf="puedeEnviarASAP">
                 <button type="button" class="btn btn-custom btn-success btn-mediano" (click)="enviarASAP()">Enviar a SAP</button>
               </td>
             </tr>
