@@ -1,4 +1,4 @@
-import { Component, Output, ViewChild, EventEmitter} from '@angular/core';
+import { Component, Output, ViewChild, EventEmitter, OnInit} from '@angular/core';
 import { DropdownComponent } from '../../../common/view-child/dropdown/dropdown.component';
 import { FiltroFechaComponent } from '../../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { EcheqFilter } from './echeq-filter.model';
@@ -9,7 +9,7 @@ import { EcheqFilter } from './echeq-filter.model';
   templateUrl: './echeq-filtros.component.html',
   styleUrls: ['./echeq-filtros.component.css']
 })
-export class FiltrosComponent {
+export class FiltrosComponent implements OnInit {
 
   //Con esto paso el evento a distintos componentes
   @Output() applyFilterEmitter = new EventEmitter<EcheqFilter>();
@@ -28,16 +28,23 @@ export class FiltrosComponent {
     this.echeqFilterModel = new EcheqFilter();
   }
 
+  ngOnInit(): void {
+    this.onChangeFecha();
+    
+  }
+  
   //Ejecuta el evento
   public onApplyFilter(){
     this.applyFilterEmitter.next(this.echeqFilterModel);
   }
 
   public onChangeFecha(){
-    console.log("Hola Soy la fecha!");
+    if(this.filtroFechaComponent.getFechaIncio() == "undefined" || this.filtroFechaComponent.getFechaFin() == "undefined"){
+      return;
+    }
     this.echeqFilterModel.periodo = this.filtroFechaComponent.periodo;
-    this.echeqFilterModel.fechaInicio = this.filtroFechaComponent.fecha_inicio;
-    this.echeqFilterModel.fechaFin = this.filtroFechaComponent.fecha_fin;
+    this.echeqFilterModel.fechaInicio = this.filtroFechaComponent.getFechaIncio();
+    this.echeqFilterModel.fechaFin = this.filtroFechaComponent.getFechaFin();
   
     this.searchDataEmitter.next(this.echeqFilterModel);
   }
@@ -52,7 +59,6 @@ export class FiltrosComponent {
   }
 
   public buscarBoton(){
-    console.log("Llamando fecha");
     this.onChangeFecha();
   }
 }

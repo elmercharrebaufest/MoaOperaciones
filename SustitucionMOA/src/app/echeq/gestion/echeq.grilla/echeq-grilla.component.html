@@ -9,6 +9,9 @@
             <thead>
                 <tr role="row">
                     <th tabindex="0" rowspan="1" colspan="1">
+                         
+                    </th>
+                    <th tabindex="0" rowspan="1" colspan="1">
                         Echeq  
                     </th>
                     <th tabindex="0" rowspan="1" colspan="1">
@@ -35,20 +38,50 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let pagosPendientes of listaContratosPendientesPago | 
-                            customFilter : 'usuario' : usuarioSelected |
-                            customFilter : 'tipoContrato' : tipoContratoSelected |                                 
-                            customFilter : 'nroContrato' : filtroContrato | 
-                            paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
-                    <td></td>
-                    <td>{{pagosPendientes.Contrato}}</td>
-                    <td>{{pagosPendientes.Pedido}}</td>
-                    <td>{{pagosPendientes.Moneda}}</td>
-                    <td>{{pagosPendientes.Material}}</td>
-                    <td>{{pagosPendientes.Kilos}}</td>
-                    <td>{{pagosPendientes.KilosPagados}}</td>
-                    <td>{{pagosPendientes.Fecha}}</td>
-                </tr>
+                <ng-container *ngFor="let pagoPendiente of echeqContratos | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                    <tr >
+                        <td style="width: 30px;">
+                            <i style="color: #1C7CD5;" [ngClass]="pagoPendiente.expanded ? 'fa fa-chevron-up' : 'fa fa-chevron-right'" (click)="pagoPendiente.expanded = !pagoPendiente.expanded" *ngIf="pagoPendiente.documentos.length"></i>  
+                        </td>
+                        <td style="width: 30px;">
+                            <p-checkbox name="selectedContrato" binary="false" [(ngModel)]="pagoPendiente.selected" (click)="onClickSelectContrato(pagoPendiente)" ></p-checkbox>
+                        </td>
+                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.pedido == "" ? pagoPendiente.contrato : pagoPendiente.pedido}}</td>
+                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.tipoContrato}}</td>
+                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.moneda}}</td>
+                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.descripcionMaterial}}</td>
+                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.kilos | number:'1.0':'es'}}</td>
+                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.kilosPagados | number:'1.0':'es'}}</td>
+                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.fecha}}</td>
+                    </tr>
+                    <ng-container *ngIf="pagoPendiente.expanded && pagoPendiente.documentos.length" >
+                        <tr>
+                            <td colspan="9" style="padding-left: 120px !important; border: 0">
+                                <table style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Echeq</th>
+                                            <th>N° Liquidación</th>
+                                            <th>Fecha Liquidación</th>
+                                            <th>Importe Mercadería</th>
+                                            <th>Aperturar Liquidación</th>                                
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let documento of pagoPendiente.documentos">
+                                            <td><p-checkbox name="selectedDocumento" binary="false" [(ngModel)]="documento.selected" (click)="onClickSelectDocumento(documento)"></p-checkbox></td>
+                                            <td>{{documento.documento}}</td>
+                                            <td>{{documento.fecha}}</td>
+                                            <td>{{documento.importeEnPesos | number:'1.2-2':'es'}}</td>
+                                            <td><button type="button" class="btn" style="background-color: #009688; color: white;">GENERAR ECHEQS</button></td>                                       
+                                        </tr>
+                                    </tbody>
+                                </table>  
+                            </td>
+                        </tr>
+                    </ng-container>                        
+                
+                </ng-container>
             </tbody>
         </table>
 

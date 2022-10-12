@@ -1,6 +1,12 @@
 import { Component } from '@angular/core';
+import { FloatMsgService } from '../../common/services/FloatMsgService';
+import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
+import { SecurityService } from '../../common/services/SecurityService';
+import { SessionDataService } from '../../common/services/SessionDataService';
+import { EcheqBaseComponent } from '../echeq.component';
 import { EcheqService } from '../echeq.service';
+import { EcheqContrato } from './echeq-contrato.model';
 import { EcheqFilter } from './echeq.filtros/echeq-filter.model';
 
 
@@ -9,42 +15,78 @@ import { EcheqFilter } from './echeq.filtros/echeq-filter.model';
     templateUrl: `echeq-gestion.component.html`,
     providers: [EcheqService]
 })
-export class EcheqGestionComponent {
+export class EcheqGestionComponent extends EcheqBaseComponent{
 
-    constructor(protected echeqService: EcheqService, protected navService: NavService){}
 
+    constructor(protected echeqService: EcheqService, 
+                protected navService: NavService,  
+                protected sessionDataService: SessionDataService, 
+                protected securityService: SecurityService,
+                protected floatMsgService: FloatMsgService, 
+                protected modalService: ModalService) {
+                    super(echeqService, navService, sessionDataService, securityService, floatMsgService, modalService);
+                }
+
+                
     setTabs() {
         this.navService.setMenuSeccionTab("echeq", "Gestion");
-    }
-
-    ngOnInit(): void {
-        let filter = new EcheqFilter();
-        //setear fecha por defecto
-        //aca 
-
-        this.getContratoPendientePago(filter);
     }
 
     //buscar tema tabs
 
     //Aca se me va a llenar la lista de contratos con lo que me devuelve el servicio
-    public dataListaCompleta : Array<any> = new Array<any>();
+    public echeqContratos : Array<EcheqContrato> = new Array<EcheqContrato>();
 
+    //Lo voy a usar para filtros
+    public contratosFiltrados : Array<EcheqContrato> = new Array<EcheqContrato>();
+
+    //Este es el que me trae la info apenas entro al modulo
     public getContratoPendientePago(filter: EcheqFilter) {
-        this.echeqService.getData(filter.periodo, filter.fechaInicio, filter.fechaFin).subscribe(response => {
-            this.dataListaCompleta = response.data;
-        });
+        try {
+            this.echeqService.getData(filter.periodo, filter.fechaInicio, filter.fechaFin).subscribe(response => {
+               
+                if (response.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (response.error != undefined && response.error != "") {
+                    this.floatMsgService.setErrorMsg(response.error);
+                } else if (response.info != undefined) {
+                    this.floatMsgService.setInfoMsg(response.info);
+                } else {
+                    console.log(response.data);
+                    //para mapear el model  
+                    this.echeqContratos = response.data.map( res => {
+                        return new EcheqContrato(res)
+                    });
+                    this.contratosFiltrados = this.echeqContratos;
+            }
+                    },  
+            error => {
+                this.floatMsgService.setErrorMsg(error.message);
+            });
+           
+        } 
+        catch (e) {
+            this.floatMsgService.setErrorMsg(e);          
+        }   
     }
 
     //Aplica el filtro a la lista 
     public applyFilter(filter: EcheqFilter){
-        this.echeqService.getData(filter.periodo, filter.fechaInicio, filter.fechaFin).subscribe(response => {
-            this.dataListaCompleta = response.data;
-        });
+       this.contratosFiltrados = this.echeqContratos;
+
+       if(filter.tipoContrato != "Todos"){
+        this.contratosFiltrados = this.contratosFiltrados.filter( item => item.tipoContrato == filter.tipoContrato);
+       }
+        
+       if(filter.contrato != "" && filter.contrato != undefined){
+        console.log(filter.contrato)
+        this.contratosFiltrados = this.contratosFiltrados.filter( item => item.contrato.indexOf(filter.contrato) != -1);
+       }        
     }
 
+    //
     public searchData(filter: EcheqFilter){
-        console.log("Me llamaron? Estoy aca!!")
         this.getContratoPendientePago(filter);
     }
+
 }
