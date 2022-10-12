@@ -22,36 +22,36 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public List<EcheqVisualizacionPendientePago> Request(string proveedor, string fechaInicio, string fechaFin)
+        public List<EcheqVisualizacionPendientePago> Request(string proveedor, List<FechaWS> listaFechas)
         {
             try
             {
                 ZMPES4100[] fechas = new ZMPES4100[] { };
 
-                fechas = new ZMPES4100[] {
-                        new ZMPES4100 {
-                            FECHA_OP = SAPFormatter.PrepararFecha(Convert.ToDateTime(fechaInicio)),
-                            FECHA_OP_HASTA = SAPFormatter.PrepararFecha(Convert.ToDateTime(fechaFin))
-                        }
-                    };
-
-
-                //if (listaFechas.FirstOrDefault() != null)
-                //{
-                //    fechas = new ZMPES4100[] {
+                //fechas = new ZMPES4100[] {
                 //        new ZMPES4100 {
-                //            FECHA_OP = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaInicio),
-                //            FECHA_OP_HASTA = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaFin)
+                //            FECHA_OP = SAPFormatter.PrepararFecha(Convert.ToDateTime(fechaInicio)),
+                //            FECHA_OP_HASTA = SAPFormatter.PrepararFecha(Convert.ToDateTime(fechaFin))
                 //        }
                 //    };
-                //}
 
-                //string fechahasta = "";
 
-                //if (listaFechas.FirstOrDefault() != null)
-                //{
-                //    fechahasta = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaFin);
-                //}
+                if (listaFechas.FirstOrDefault() != null)
+                {
+                    fechas = new ZMPES4100[] {
+                        new ZMPES4100 {
+                            FECHA_OP = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaInicio),
+                            FECHA_OP_HASTA = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaFin)
+                        }
+                    };
+                }
+
+                string fechahasta = "";
+
+                if (listaFechas.FirstOrDefault() != null)
+                {
+                    fechahasta = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaFin);
+                }
 
                 string IM_CONTRATO = "";
 
@@ -96,7 +96,7 @@ namespace SustitucionMOAWS.WSConsumers
                         DMBTRSpecified = x.DMBTRSpecified,
                         Documento = x.DOCUMENTO,
                         Ejercicio = x.EJERCICIO,
-                        Fecha = x.FECHA,
+                        Fecha = SAPFormatter.FormatearFecha(x.FECHA),
                         Moneda = x.MONEDA,
                         Sociedad = x.SOCIEDAD,
                         Solapa = x.SOLAPA,
@@ -112,6 +112,6 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface IEcheqVisualizarPendientePagoConsumerMOA
     {
-        List<EcheqVisualizacionPendientePago> Request(string proveedor, string fechaInicio, string fechaFin);
+        List<EcheqVisualizacionPendientePago> Request(string proveedor, List<FechaWS> listaFechas);
     }
 }

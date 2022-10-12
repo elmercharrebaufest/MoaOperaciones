@@ -1,47 +1,39 @@
-        <!--Search-->
-        <div class="row myRow firstSection mySearch">
-          <div class="col-xs-12 col-md-12 rounded shadow animate">
-              <div class="col-xs-12 col-md-12 search-header">
-                  <title-caps>Refinar resultados</title-caps>
-              </div>
+<!--Search-->
+<div class="row myRow firstSection mySearch">
+    <div class="col-xs-12 col-md-12 rounded shadow animate">
+        <div class="col-xs-12 col-md-12 search-header">
+            <title-caps>Refinar resultados</title-caps>
+        </div>
 
-              <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15">
-                  <p>N° Contrato</p>
-                  <div class="styled-select">
-                      <input type="search" [(ngModel)]="echeqFilterModel.contrato" [value]="echeqFilterModel.contrato" aria-controls="tableModal" (change)="onChangeContrato()">
-                  </div>
-              </div>
+        <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+            <p>N° Contrato</p>
+            <div class="styled-select">
+                <input type="search" [(ngModel)]="echeqFilterModel.contrato" [value]="echeqFilterModel.contrato"  aria-controls="tableModal" (keyup)="onChangeContrato()">
+            </div>
+        </div>
 
-              <div id="searchTipoContrato" class="col-xs-12 col-sm-6 col-md-15">
-                  <p>Por Tipo de Contrato</p>
-                  <div class="styled-select">   
-                      <select [(ngModel)]="echeqFilterModel.tipoContrato" [value]="echeqFilterModel.tipoContrato"
-                          class="dropdown-granos ng-pristine ng-valid ng-touched" (select)="onChangeTipoContrato()">
-                          <option value="Todos" selected="selected" selected>
-                              Todos</option>
-                          <option value="Fijo">Fijo</option>
-                          <option value="Fijación">Fijación</option>
-                      </select>
-                  </div>
-              </div>
+        <div id="searchTipoContrato" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+            <p>Por Tipo de Contrato</p>
+            <div class="styled-select" (change)="onChangeTipoContrato()">   
+                <select [(ngModel)]="echeqFilterModel.tipoContrato" [value]="echeqFilterModel.tipoContrato"
+                    class="dropdown-granos ng-pristine ng-valid ng-touched" (select)="onChangeTipoContrato()" (change)="onChangeTipoContrato()">
+                    <option value="Todos" selected="selected">Todos</option>
+                    <option value="Fijo">Fijo</option>
+                    <option value="Fijación">Fijación</option>
+                </select>
+            </div>
+        </div>
 
-              <!-- <div id="searchUsuario" class="col-xs-12 col-sm-6 col-md-15">
-                  <p>Usuario</p>
-                  <div class="styled-select">
-                      <input type="search"  [(ngModel)]="echeqFilterModel.usuario" [value]="echeqFilterModel.uontrato" aria-controls="tableModal">
-                  </div>
-              </div> -->
+        <div id="searchFecha" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+            <p>Fecha eCheqs</p>
+            <filtro-fecha (ClickEvent)="onChangeFecha()" ></filtro-fecha>
+        </div>       
 
-              <div id="searchFecha" class="col-xs-12 col-sm-6 col-md-15">
-                  <p>Fecha eCheqs</p>
-                  <filtro-fecha (ClickEvent)="onChangeFecha()" ></filtro-fecha>
-              </div>       
-
-              <div>
-                  <button (click)="buscarBoton()">
-                      <div>Buscar</div>
-                  </button>
-              </div>
-          </div>
-      </div>
-      <!-- End Search-->
+        <!-- <div>
+            <button id="searchBotton" class="col-xs-12 col-sm-6 col-md-15" (click)="buscarBoton()" style="padding-left: 20px;">
+                <div>Buscar</div>
+            </button>
+        </div> -->
+    </div>
+</div>
+<!-- End Search-->

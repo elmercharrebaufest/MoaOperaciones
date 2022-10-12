@@ -33,7 +33,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(service.ObtenerPendientePago(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(new { data = service.ObtenerPendientePago(SessionPersister.Proveedor, fechaInicio, fechaFin) });
+
             }
             catch (InfoCustomException e)
             {

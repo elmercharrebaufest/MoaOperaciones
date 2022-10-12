@@ -25,9 +25,9 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                //List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
 
-                List<EcheqVisualizacionPendientePago> result = echeqVisualizarPendientePagoConsumerMOA.Request(proveedor, fechaInicio, fechaFin);
+                List<EcheqVisualizacionPendientePago> result = echeqVisualizarPendientePagoConsumerMOA.Request(proveedor, fechas);
 
                 return result;
             }

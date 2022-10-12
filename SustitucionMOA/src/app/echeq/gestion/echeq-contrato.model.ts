@@ -1,5 +1,9 @@
+import * as uuid from 'uuid';
+
 export class EcheqContrato {
 
+    public id: any;
+    public selected: boolean;
     public contrato: string;
     public pedido: string;
     public moneda: string;
@@ -8,28 +12,42 @@ export class EcheqContrato {
     public kilosPagados: number;
     public fecha: string;
     public documentos: Array<EcheqDocumento> = new Array<EcheqDocumento>();
+    public tipoContrato: string;
+    public expanded: boolean;
 
     constructor(entity: any =  null) {
         if (entity != null) {
             this.contrato = entity.Contrato;
-            this.pedido = entity.Pedido;
+            this.pedido = entity.Pedido
             this.moneda = entity.Moneda;
             this.descripcionMaterial = entity.DescripcionMaterial;
             this.kilos = entity.Kilos;
             this.kilosPagados = entity.KilosPagados;
             this.fecha = entity.Fecha;
-            if (entity.Contrato && entity.Contrato.length) {
+            this.id = uuid.v4();
+            if (entity.Documentos && entity.Documentos.length) {
                 this.documentos = new Array<EcheqDocumento>();
-                entity.Contrato.forEach(pos => {
-                    this.documentos.push(new EcheqDocumento(pos));
+                entity.Documentos.forEach(pos => {
+                    this.documentos.push(new EcheqDocumento(pos, this.id));
                 });
+            }
+            
+            if(this.pedido == ""){
+                this.tipoContrato = "Fijo"
+            } else {
+                this.tipoContrato = "Fijación"
             }
         }
     }
 }
 
+
+
+
 export class EcheqDocumento {
 
+    public parentId: any;
+    public selected: boolean;
     public contrato: string;
     public pedido: string;
     public sociedad: string;
@@ -42,8 +60,9 @@ export class EcheqDocumento {
     public importeEnPesos: number;
     public moneda: number;
 
-    constructor(entity: any = null) {
+    constructor(entity: any = null, parentId: any) {
         if (entity != null) {
+            this.parentId = parentId;
             this.contrato = entity.Contrato;
             this.pedido = entity.Pedido;
             this.sociedad = entity.Sociedad;

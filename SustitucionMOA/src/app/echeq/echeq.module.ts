@@ -9,6 +9,7 @@ import { EcheqService } from './echeq.service';
 import { EcheqGestionComponent } from './gestion/echeq-gestion.component';
 import { GrillaComponent } from './gestion/echeq.grilla/echeq-grilla.component';
 import { FiltrosComponent } from './gestion/echeq.filtros/echeq-filtros.component';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
     imports: [
@@ -17,7 +18,8 @@ import { FiltrosComponent } from './gestion/echeq.filtros/echeq-filtros.componen
         SharedModule,
         NgxPaginationModule,
         ReCaptchaModule,
-        CalendarModule
+        CalendarModule,
+        CheckboxModule
     ],
     declarations: [
         EcheqGestionComponent,
