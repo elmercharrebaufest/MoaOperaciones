@@ -104,6 +104,8 @@ namespace SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA {
         
         private string mONEDAField;
         
+        private string cLASIFICACIONField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
         public string CONTRATO {
@@ -260,6 +262,18 @@ namespace SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA {
             }
         }
         
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=11)]
+        public string CLASIFICACION {
+            get {
+                return this.cLASIFICACIONField;
+            }
+            set {
+                this.cLASIFICACIONField = value;
+                this.RaisePropertyChanged("CLASIFICACION");
+            }
+        }
+        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -278,11 +292,11 @@ namespace SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_CONTRATO;
+        public string IM_COE;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=1)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_DOCUMENTO;
+        public string IM_CONTRATO;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=2)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
@@ -296,9 +310,9 @@ namespace SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA {
         public SI_MPRFC_VISU_DISPONIBLE_CHEQUERequest() {
         }
         
-        public SI_MPRFC_VISU_DISPONIBLE_CHEQUERequest(string IM_CONTRATO, string IM_DOCUMENTO, SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.ZMPES4100[] IM_FECHA, string IM_PROVEEDOR) {
+        public SI_MPRFC_VISU_DISPONIBLE_CHEQUERequest(string IM_COE, string IM_CONTRATO, SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.ZMPES4100[] IM_FECHA, string IM_PROVEEDOR) {
+            this.IM_COE = IM_COE;
             this.IM_CONTRATO = IM_CONTRATO;
-            this.IM_DOCUMENTO = IM_DOCUMENTO;
             this.IM_FECHA = IM_FECHA;
             this.IM_PROVEEDOR = IM_PROVEEDOR;
         }
@@ -355,10 +369,10 @@ namespace SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA {
             return base.Channel.SI_MPRFC_VISU_DISPONIBLE_CHEQUE(request);
         }
         
-        public SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.ZMPES6890[] SI_MPRFC_VISU_DISPONIBLE_CHEQUE(string IM_CONTRATO, string IM_DOCUMENTO, SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.ZMPES4100[] IM_FECHA, string IM_PROVEEDOR) {
+        public SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.ZMPES6890[] SI_MPRFC_VISU_DISPONIBLE_CHEQUE(string IM_COE, string IM_CONTRATO, SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.ZMPES4100[] IM_FECHA, string IM_PROVEEDOR) {
             SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.SI_MPRFC_VISU_DISPONIBLE_CHEQUERequest inValue = new SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.SI_MPRFC_VISU_DISPONIBLE_CHEQUERequest();
+            inValue.IM_COE = IM_COE;
             inValue.IM_CONTRATO = IM_CONTRATO;
-            inValue.IM_DOCUMENTO = IM_DOCUMENTO;
             inValue.IM_FECHA = IM_FECHA;
             inValue.IM_PROVEEDOR = IM_PROVEEDOR;
             SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.SI_MPRFC_VISU_DISPONIBLE_CHEQUEResponse retVal = ((SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.SI_MPRFC_VISU_DISPONIBLE_CHEQUE)(this)).SI_MPRFC_VISU_DISPONIBLE_CHEQUE(inValue);
@@ -370,10 +384,10 @@ namespace SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA {
             return base.Channel.SI_MPRFC_VISU_DISPONIBLE_CHEQUEAsync(request);
         }
         
-        public System.Threading.Tasks.Task<SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.SI_MPRFC_VISU_DISPONIBLE_CHEQUEResponse> SI_MPRFC_VISU_DISPONIBLE_CHEQUEAsync(string IM_CONTRATO, string IM_DOCUMENTO, SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.ZMPES4100[] IM_FECHA, string IM_PROVEEDOR) {
+        public System.Threading.Tasks.Task<SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.SI_MPRFC_VISU_DISPONIBLE_CHEQUEResponse> SI_MPRFC_VISU_DISPONIBLE_CHEQUEAsync(string IM_COE, string IM_CONTRATO, SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.ZMPES4100[] IM_FECHA, string IM_PROVEEDOR) {
             SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.SI_MPRFC_VISU_DISPONIBLE_CHEQUERequest inValue = new SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.SI_MPRFC_VISU_DISPONIBLE_CHEQUERequest();
+            inValue.IM_COE = IM_COE;
             inValue.IM_CONTRATO = IM_CONTRATO;
-            inValue.IM_DOCUMENTO = IM_DOCUMENTO;
             inValue.IM_FECHA = IM_FECHA;
             inValue.IM_PROVEEDOR = IM_PROVEEDOR;
             return ((SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA.SI_MPRFC_VISU_DISPONIBLE_CHEQUE)(this)).SI_MPRFC_VISU_DISPONIBLE_CHEQUEAsync(inValue);

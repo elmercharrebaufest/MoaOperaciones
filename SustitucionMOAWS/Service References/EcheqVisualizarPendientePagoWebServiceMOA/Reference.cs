@@ -104,6 +104,8 @@ namespace SustitucionMOAWS.EcheqVisualizarPendientePagoWebServiceMOA {
         
         private string mONEDAField;
         
+        private string cLASIFICACIONField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
         public string CONTRATO {
@@ -260,6 +262,18 @@ namespace SustitucionMOAWS.EcheqVisualizarPendientePagoWebServiceMOA {
             }
         }
         
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=11)]
+        public string CLASIFICACION {
+            get {
+                return this.cLASIFICACIONField;
+            }
+            set {
+                this.cLASIFICACIONField = value;
+                this.RaisePropertyChanged("CLASIFICACION");
+            }
+        }
+        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -305,6 +319,8 @@ namespace SustitucionMOAWS.EcheqVisualizarPendientePagoWebServiceMOA {
         private string zLSCHField;
         
         private ZMPES6890[] dOCUMENTOSField;
+        
+        private string cLASIFICACIONField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -472,6 +488,18 @@ namespace SustitucionMOAWS.EcheqVisualizarPendientePagoWebServiceMOA {
             set {
                 this.dOCUMENTOSField = value;
                 this.RaisePropertyChanged("DOCUMENTOS");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=11)]
+        public string CLASIFICACION {
+            get {
+                return this.cLASIFICACIONField;
+            }
+            set {
+                this.cLASIFICACIONField = value;
+                this.RaisePropertyChanged("CLASIFICACION");
             }
         }
         
