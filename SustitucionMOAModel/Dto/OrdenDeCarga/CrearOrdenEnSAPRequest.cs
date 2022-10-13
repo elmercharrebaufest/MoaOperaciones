@@ -9,7 +9,7 @@
 		public int Cantidad { get; set; }
 		public string MaterialCodigoSAP { get; set; }
 		public string NumeroPedidoIngresado { get; set; }
-		public string ValidarKg { get; set; }
-		public string UsuarioSAP { get; set; }
+		//public string ValidarKg { get; set; }
+		public string MailUsuarioSAP { get; set; }
 	}
 }

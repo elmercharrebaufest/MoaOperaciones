@@ -93,7 +93,7 @@ namespace SustitucionMOAModel.Entities
 
         public void ActualizarEstado()
         {
-            if (Estado != EstadoOrdenDeCarga.Entregada)
+			if (Estado != EstadoOrdenDeCarga.Entregada)
             {
                 if (CodigoVerificacionSap == "CC-01")
                 {
@@ -101,9 +101,8 @@ namespace SustitucionMOAModel.Entities
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido))
+                    if ((string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido)) && Estado != EstadoOrdenDeCarga.SinEnviarASAP)
                     {
-                        
                         Estado = EstadoOrdenDeCarga.Pendiente;
                     }
                     else
