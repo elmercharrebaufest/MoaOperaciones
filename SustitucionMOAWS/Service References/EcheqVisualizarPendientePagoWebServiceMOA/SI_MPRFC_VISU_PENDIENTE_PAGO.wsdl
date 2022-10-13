@@ -179,6 +179,13 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
+          <xsd:element minOccurs="0" name="CLASIFICACION">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="20" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
         </xsd:sequence>
       </xsd:complexType>
       <xsd:complexType name="ZMPES6900">
@@ -282,6 +289,13 @@
             </xsd:simpleType>
           </xsd:element>
           <xsd:element minOccurs="0" name="DOCUMENTOS" type="rfc:ZMPTT8240" />
+          <xsd:element minOccurs="0" name="CLASIFICACION">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="20" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
         </xsd:sequence>
       </xsd:complexType>
     </xsd:schema>
