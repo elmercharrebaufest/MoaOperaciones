@@ -85,7 +85,14 @@ namespace SustitucionMOAWS.WSConsumers
                     vendedor = recepcionInfo.VENDEDOR,
                     vendedorId = recepcionInfo.ID_VENDEDOR,
                     contrnum = recepcionInfo.CONTRNUM,
-                    cg = recepcionInfo.CG
+                    cg = recepcionInfo.CG,
+                    pesoBrutoOrigen = recepcionInfo.BRUTO_ORIGEN,
+                    taraOrigen = recepcionInfo.TARA_ORIGEN,
+                    netoOrigen = recepcionInfo.NETO_ORIGEN,
+                    brutoDestino = recepcionInfo.BRUTO,
+                    taraDestino = recepcionInfo.TARA,
+                    netoDestino = recepcionInfo.NETO,
+                    mermas = recepcionInfo.MERMAS,
                 });
             }
             

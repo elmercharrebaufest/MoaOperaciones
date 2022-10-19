@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -57,7 +57,7 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -117,7 +117,7 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -149,7 +149,7 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -195,6 +195,38 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
         private string dESC_TITULARField;
         
         private string cgField;
+        
+        private string cTGField;
+        
+        private string cUIT_SOLICITANTEField;
+        
+        private decimal bRUTOField;
+        
+        private bool bRUTOFieldSpecified;
+        
+        private decimal tARAField;
+        
+        private bool tARAFieldSpecified;
+        
+        private decimal nETOField;
+        
+        private bool nETOFieldSpecified;
+        
+        private decimal mERMASField;
+        
+        private bool mERMASFieldSpecified;
+        
+        private decimal bRUTO_ORIGENField;
+        
+        private bool bRUTO_ORIGENFieldSpecified;
+        
+        private decimal tARA_ORIGENField;
+        
+        private bool tARA_ORIGENFieldSpecified;
+        
+        private decimal nETO_ORIGENField;
+        
+        private bool nETO_ORIGENFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -436,6 +468,198 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
             }
         }
         
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=17)]
+        public string CTG {
+            get {
+                return this.cTGField;
+            }
+            set {
+                this.cTGField = value;
+                this.RaisePropertyChanged("CTG");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=18)]
+        public string CUIT_SOLICITANTE {
+            get {
+                return this.cUIT_SOLICITANTEField;
+            }
+            set {
+                this.cUIT_SOLICITANTEField = value;
+                this.RaisePropertyChanged("CUIT_SOLICITANTE");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=19)]
+        public decimal BRUTO {
+            get {
+                return this.bRUTOField;
+            }
+            set {
+                this.bRUTOField = value;
+                this.RaisePropertyChanged("BRUTO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool BRUTOSpecified {
+            get {
+                return this.bRUTOFieldSpecified;
+            }
+            set {
+                this.bRUTOFieldSpecified = value;
+                this.RaisePropertyChanged("BRUTOSpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=20)]
+        public decimal TARA {
+            get {
+                return this.tARAField;
+            }
+            set {
+                this.tARAField = value;
+                this.RaisePropertyChanged("TARA");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool TARASpecified {
+            get {
+                return this.tARAFieldSpecified;
+            }
+            set {
+                this.tARAFieldSpecified = value;
+                this.RaisePropertyChanged("TARASpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=21)]
+        public decimal NETO {
+            get {
+                return this.nETOField;
+            }
+            set {
+                this.nETOField = value;
+                this.RaisePropertyChanged("NETO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool NETOSpecified {
+            get {
+                return this.nETOFieldSpecified;
+            }
+            set {
+                this.nETOFieldSpecified = value;
+                this.RaisePropertyChanged("NETOSpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=22)]
+        public decimal MERMAS {
+            get {
+                return this.mERMASField;
+            }
+            set {
+                this.mERMASField = value;
+                this.RaisePropertyChanged("MERMAS");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MERMASSpecified {
+            get {
+                return this.mERMASFieldSpecified;
+            }
+            set {
+                this.mERMASFieldSpecified = value;
+                this.RaisePropertyChanged("MERMASSpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=23)]
+        public decimal BRUTO_ORIGEN {
+            get {
+                return this.bRUTO_ORIGENField;
+            }
+            set {
+                this.bRUTO_ORIGENField = value;
+                this.RaisePropertyChanged("BRUTO_ORIGEN");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool BRUTO_ORIGENSpecified {
+            get {
+                return this.bRUTO_ORIGENFieldSpecified;
+            }
+            set {
+                this.bRUTO_ORIGENFieldSpecified = value;
+                this.RaisePropertyChanged("BRUTO_ORIGENSpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=24)]
+        public decimal TARA_ORIGEN {
+            get {
+                return this.tARA_ORIGENField;
+            }
+            set {
+                this.tARA_ORIGENField = value;
+                this.RaisePropertyChanged("TARA_ORIGEN");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool TARA_ORIGENSpecified {
+            get {
+                return this.tARA_ORIGENFieldSpecified;
+            }
+            set {
+                this.tARA_ORIGENFieldSpecified = value;
+                this.RaisePropertyChanged("TARA_ORIGENSpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=25)]
+        public decimal NETO_ORIGEN {
+            get {
+                return this.nETO_ORIGENField;
+            }
+            set {
+                this.nETO_ORIGENField = value;
+                this.RaisePropertyChanged("NETO_ORIGEN");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool NETO_ORIGENSpecified {
+            get {
+                return this.nETO_ORIGENFieldSpecified;
+            }
+            set {
+                this.nETO_ORIGENFieldSpecified = value;
+                this.RaisePropertyChanged("NETO_ORIGENSpecified");
+            }
+        }
+        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -447,7 +671,7 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -479,7 +703,7 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -525,7 +749,7 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
