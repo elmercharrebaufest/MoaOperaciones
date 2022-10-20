@@ -133,22 +133,13 @@
               </td>
             </tr>
           </tbody>
-          <tfoot>
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td colspan="3" *ngIf="puedeEnviarASAP">
-                <button type="button" class="btn btn-custom btn-success btn-mediano" (click)="enviarASAP()">Enviar a SAP</button>
-              </td>
-            </tr>
-          </tfoot>
         </table>
+
+        <div>
+          <div style="float: right; height: 70px;">
+            <button type="button" class="btn btn-custom btn-success btn-mediano" (click)="enviarASAP()">Enviar a SAP</button>
+          </div>
+        </div>
 
         <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="data && data.length != 0">
           <div class="dataTables_paginate paging_simple_numbers">

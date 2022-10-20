@@ -247,9 +247,9 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
             });
             if (resultado) {
                 this.mensajeComponent.setSuccessMsg('Los datos han sido enviados a SAP con éxito');
-                this.blockUI.stop();
                 this.getListado();
             }
+            this.blockUI.stop();
         } catch{
             this.mensajeComponent.setErrorMsg('Ocurrio un error al Enviar a SAP');
             this.blockUI.stop();
