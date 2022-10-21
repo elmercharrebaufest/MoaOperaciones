@@ -83,7 +83,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.debug('OrdenesDeCargaAlta ngOnInit()');
+        console.debug('OrdenesDeCargaListado - ngOnInit()');
         console.debug(' puedeEnviarASAP: ', this.isAuthorized('ENVIAR A SAP'));
         this.corredorCodigo = sessionStorage.getItem("proveedor");
         this.mailUsuarioSAP = sessionStorage.getItem("username");
@@ -118,6 +118,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     }
 
     filtrarListado(){
+        console.debug('filtrarListado()');
         this.primerListado = this.datosAux.filter(x => x.DescripcionEstado != this.entregada);
 
         console.debug(' datosAux: ', this.datosAux);
@@ -152,6 +153,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     }
 
     getListado() {
+        console.debug('getListado()');
         this.mensajeComponent.setMsgsEmpty();
 
         this.spinnerComponent.showIt();
@@ -161,6 +163,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
             this.unsubscribe();
             this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
                 result => {
+                    console.debug(' result: ', result);
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
