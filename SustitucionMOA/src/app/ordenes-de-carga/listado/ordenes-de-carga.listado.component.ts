@@ -255,4 +255,13 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
             this.blockUI.stop();
         }
     }
+    validarSiNoEstaEnSAP = () => {
+        console.debug('call validarSiNoEstaEnSAP()');
+        this.data.forEach((value, index) => {
+            if (value.NoEstaEnSAP){
+                return true;
+            }
+        });
+        return false;
+    }
 }
