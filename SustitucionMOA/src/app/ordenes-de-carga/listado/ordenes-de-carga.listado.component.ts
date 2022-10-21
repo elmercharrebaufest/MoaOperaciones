@@ -120,11 +120,15 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     filtrarListado(){
         this.primerListado = this.datosAux.filter(x => x.DescripcionEstado != this.entregada);
 
+        console.debug(' datosAux: ', this.datosAux);
         if (!this.esTercero) {
             if(this.estadosSelected.length < 1 || this.estadosSelected == null){
                 this.data = this.datosAux;
             } else {
-                this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.DescripcionEstado) >= 0);
+                console.debug(' estadosSelected: ', this.estadosSelected);
+                if (this.estadosSelected) {
+                    this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.DescripcionEstado) >= 0);
+                }
             }
         } else {
             this.data = this.datosAux;
