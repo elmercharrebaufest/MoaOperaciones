@@ -63,6 +63,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     private selectUndefinedOptionValue: any;
     pedidoAnticipado: number = 0;
     seleccionaTodos: boolean = false;
+    validarSiNoEstaEnSAP: boolean = false;
 
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS');
@@ -151,6 +152,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
 
         this.spinnerComponent.showIt();
         this.data = null;
+        this.puedeEnviarASAP = false;
         try {
             this.unsubscribe();
             this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
@@ -167,9 +169,14 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
                         this.datosAux = result;
                         this.filtrarListado();
                         this.listaEnviarASAP = [];
-                        this.data.forEach((value, index) => {
-                            this.listaEnviarASAP.push(value.NoEstaEnSAP);
-                        });
+                        if (this.data){
+                            this.data.forEach((value, index) => {
+                                this.listaEnviarASAP.push(value.NoEstaEnSAP);
+                                if (value.NoEstaEnSAP) {
+                                    this.puedeEnviarASAP = true;
+                                }
+                            });
+                        }
                     }
                 },
                 error => {
@@ -256,16 +263,5 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg('Ocurrio un error al Enviar a SAP');
             this.blockUI.stop();
         }
-    }
-    validarSiNoEstaEnSAP = () => {
-        console.debug('call validarSiNoEstaEnSAP()');
-        if (this.data) {
-            this.data.forEach((value, index) => {
-                if (value.NoEstaEnSAP){
-                    return false;
-                }
-            });
-        }
-        return true;
     }
 }
