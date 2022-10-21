@@ -63,60 +63,7 @@ namespace SustitucionMOAUtils.Services
                 cliente = llenarOrdenDeCarga.Item2;
 				Log.Debug(this.GetType().Name, "Agregar", $" esComercial: { esComercial }");
 				Log.Debug(this.GetType().Name, "Agregar", $" puedeEnviarASAP: { puedeEnviarASAP }");
-				//corredor = llenarOrdenDeCarga.Item3;
 
-				//ordenDeCarga.Estado = EstadoOrdenDeCarga.ErrorDeCarga;
-				//if (esComercial)
-				//{
-				//	cliente = repositorio.Obtener<Proveedor>(x => x.CUIT == ordenDeCarga.CUITCliente && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
-				//	corredor = repositorio.Obtener<Proveedor>(x => x.CUIT == ordenDeCarga.CUITCorredor && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Corredor);
-				//	if (corredor != null)
-				//	{
-				//		ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
-				//		ordenDeCarga.Corredor_Id = corredor.Id;
-				//	}
-				//	else
-				//	{
-				//		if (ordenDeCarga.CUITCorredor != null)
-				//		{
-				//			return new Resultado { error = "No se encontró el corredor seleccionado" };
-				//		}
-				//	}
-				//}
-				//else
-				//{
-				//	if (usuario.EsCorredor())
-				//	{
-				//		corredor = usuario.ObtenerCorredor();
-				//		ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
-				//		ordenDeCarga.Corredor_Id = corredor.Id;
-				//		ordenDeCarga.CUITCorredor = corredor.CUIT;
-				//		cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
-
-				//		if (cliente == null)
-				//		{
-				//			return new Resultado { error = "Su usuario no está habilitado para operar con ese CUIT" };
-				//		}
-				//	}
-				//	else
-				//	{
-				//		ordenDeCarga.CodigoCorredor = "";
-				//		cliente = usuario.ObtenerProveedor();
-				//		ordenDeCarga.CUITCliente = cliente.CUIT;
-				//		ordenDeCarga.CUITCorredor = "";
-				//	}
-				//}
-				//ordenDeCarga.UsuarioCreacion_Id = usuario.Id;
-				//ordenDeCarga.FechaCarga = DateTime.Now;
-				//ordenDeCarga.Cliente_Id = cliente.Id;
-				//ordenDeCarga.ContratoSinCantidadPendiente = false;
-				//ordenDeCarga.Producto = producto;
-				//ordenDeCarga.NumeroPedido = string.IsNullOrEmpty(ordenDeCarga.NumeroPedidoIngresado) ? "" : ordenDeCarga.NumeroPedidoIngresado;
-				//ordenDeCarga.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
-				//ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
-				//ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
-				//var dayOfWeek = ordenDeCarga.FechaCarga.DayOfWeek;
-				//ordenDeCarga.FechaVencimiento = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? CalcularFechaVencimiento(4, DateTime.Now) : CalcularFechaVencimiento(2, DateTime.Now);
 				var crearPedido = VerificarOrden(ordenDeCarga, cliente, false, puedeEnviarASAP);
 				Log.Debug(this.GetType().Name, "Agregar", $" crearPedido: { crearPedido }");
 				repositorio.Agregar(ordenDeCarga);
@@ -231,44 +178,12 @@ namespace SustitucionMOAUtils.Services
 				var cargarDatosOCEditar = CargarDatosOCEditar(ordenDeCarga, usuario);
 				var ordenEditar = cargarDatosOCEditar.Item1;
 				var listaValoresDiferentes = cargarDatosOCEditar.Item2;
-				//var ordenEditar = repositorio.Obtener<OrdenDeCarga>(ordenDeCarga.Id);
-				//var listaValoresDiferentes = ordenEditar.Compare(ordenDeCarga);
-				//var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
-				//var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
-				//ordenEditar.NombreChofer = ordenDeCarga.NombreChofer;
-				//ordenEditar.CUITChofer = ordenDeCarga.CUITChofer;
-				//ordenEditar.PatenteAcoplado = ordenDeCarga.PatenteAcoplado;
-				//ordenEditar.ChasisAcoplado = ordenDeCarga.ChasisAcoplado;
-				//ordenEditar.RazonSocialTransporte = ordenDeCarga.RazonSocialTransporte;
-				//ordenEditar.CUITTransporte = ordenDeCarga.CUITTransporte;
-				//ordenEditar.ContratoIngresado = ordenDeCarga.ContratoIngresado;
-				//ordenEditar.Cantidad = ordenDeCarga.Cantidad;
-				//ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
-				//ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
-				//ordenEditar.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
-				//if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
-				//{
-				//	var crearPedido = !string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP) || VerificarOrden(ordenEditar, ordenEditar.Cliente, false, puedeEnviarASAP);
-				//	if (puedeEnviarASAP && crearPedido)
-				//	{
-				//		if (string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP))
-				//		{
-				//			ordenEditar.ContratoSAP = ordenEditar.ContratoIngresado;
-				//		}
 
-				//		var creadaEnSaP = CrearOrdenEnSAP(ordenEditar, ordenEditar.Cliente, false, puedeEnviarASAP);
-
-				//		if (creadaEnSaP)
-				//		{
-				//			VerificarSituacionCrediticia(ordenEditar, true);
-				//		}
-				//	}
-				//}
-				//ordenEditar.Observacion = ordenDeCarga.Observacion;
-				//ordenEditar.TransporteExiste = TransporteExiste(ordenDeCarga);
-				//Log.Info("Editar ActualizarEstado " + ordenEditar.ToJson());
-				//ordenEditar.ActualizarEstado();
-				//Log.Info("Editar ActualizarEstado Nuevo " + ordenEditar.Estado.ToString());
+				//Solicitud de edición
+				if (usuario.TipoUsuario.Id == (int)TipoUsuarioEnum.Cliente)
+				{
+					SolicitarEdicionOrden(ordenDeCarga.Id, mailUsuario);
+				}
 				foreach (var prop in listaValoresDiferentes)
 				{
 					if (valoresAEditar.Contains(prop.PropertyName))
@@ -292,14 +207,7 @@ namespace SustitucionMOAUtils.Services
 					repositorio.Agregar(historialCambio);
 				}
 				ordenEditar.HistorialCambios.Concat(historialCambios);
-
-				//Solicitud de edición
-				if (usuario.TipoUsuario.Id == (int)TipoUsuarioEnum.Cliente)
-				{
-					SolicitarEdicionOrden(ordenDeCarga.Id, mailUsuario);
-				}
-				repositorio.GuardarCambios();
-
+                repositorio.GuardarCambios();
 				NotificarTransporte(ordenEditar.Id);
 				if (puedeEnviarASAP)
 				{
@@ -1230,21 +1138,34 @@ namespace SustitucionMOAUtils.Services
 												.OrderByDescending(x => x.FechaCambio)
 												.Take(1)
 												.FirstOrDefault().Antes;
-				foreach (var dato in datosAnteriores)
+				var ordenHistorial = new OrdenDeCargaCambiosHistorial()
 				{
-					orden.GetType().GetProperty(dato.NombreColumnaCambio).SetValue(orden, dato.Antes, null);
-				}
-                var ordenHistorial = new OrdenDeCargaCambiosHistorial()
-                {
-                    Id = 0,
-                    Antes = estadoAnterior,
-                    Despues = EstadoOrdenDeCarga.EdicionRechazada.ToFriendlyString(),
+					Id = 0,
+					Antes = estadoAnterior,
+					Despues = EstadoOrdenDeCarga.EdicionRechazada.ToFriendlyString(),
 					NombreColumnaCambio = "estado",
 					FechaCambio = DateTime.Now,
 					Usuario_Id = usuario.Id,
 					OrdenDeCarga_Id = orden.Id
 				};
 				repositorio.Agregar(ordenHistorial);
+				repositorio.GuardarCambios();
+				foreach (var dato in datosAnteriores)
+				{
+					orden.GetType().GetProperty(dato.NombreColumnaCambio).SetValue(orden, dato.Antes, null);
+					ordenHistorial = new OrdenDeCargaCambiosHistorial()
+					{
+						Id = 0,
+						Antes = dato.Despues,
+						Despues = dato.Antes,
+						NombreColumnaCambio = dato.NombreColumnaCambio,
+						FechaCambio = DateTime.Now,
+						Usuario_Id = usuario.Id,
+						OrdenDeCarga_Id = orden.Id
+					};
+					repositorio.Agregar(ordenHistorial);
+					repositorio.GuardarCambios();
+				}
 				orden.Estado = EstadoOrdenDeCargaExtensions.ObtenerDescripcionEstado(estadoAnterior);
                 orden.EdicionRechazada = true;
                 repositorio.GuardarCambios();

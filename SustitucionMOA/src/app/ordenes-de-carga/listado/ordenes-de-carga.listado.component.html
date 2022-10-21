@@ -137,7 +137,7 @@
 
         <div>
           <div style="float: right; height: 70px;">
-            <button type="button" class="btn btn-custom btn-success btn-mediano" (click)="enviarASAP()">Enviar a SAP</button>
+            <button type="button" class="btn btn-custom btn-success btn-mediano" *ngIf="validarSiNoEstaEnSAP()" (click)="enviarASAP()">Enviar a SAP</button>
           </div>
         </div>
 
