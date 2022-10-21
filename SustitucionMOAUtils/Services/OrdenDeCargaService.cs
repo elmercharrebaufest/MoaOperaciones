@@ -621,8 +621,10 @@ namespace SustitucionMOAUtils.Services
                 Expression<Func<OrdenDeCarga, bool>> filtro = o => o.FechaCarga <= fechaFinDateTime 
                     && o.FechaCarga >= fechaIncioDateTime
                     && filtrosEstados.Contains(o.Estado);
-				listado = repositorio.Listar<OrdenDeCarga>(filtro)
-                    .Select(x => new OrdenDeCargaDto
+                var listadoConFiltro = repositorio.Listar<OrdenDeCarga>(filtro);
+				Log.Debug(this.GetType().Name, "Listar", $" listadoConFiltro: { listadoConFiltro.ToJson() }");
+				listado = listadoConFiltro
+					.Select(x => new OrdenDeCargaDto
                     {
                         Id = x.Id,
                         Cliente = x.Cliente.CodigoProveedor,
@@ -647,22 +649,24 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 var clientes = usuario.Proveedores.Select(c => c.Id);
-                listado = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id) && n.FechaCarga <= fechaFinDateTime
-                    && n.FechaCarga >= fechaIncioDateTime
-                    && (n.Estado == EstadoOrdenDeCarga.Vencida
-                        || n.Estado == EstadoOrdenDeCarga.ErrorDeCarga
-                        || n.Estado == EstadoOrdenDeCarga.Pendiente
-                        || n.Estado == EstadoOrdenDeCarga.Confirmado
-                        || n.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito
-                        || n.Estado == EstadoOrdenDeCarga.EntregaPendiente
-                        || n.Estado == EstadoOrdenDeCarga.EntregaGenerada
-                        || n.Estado == EstadoOrdenDeCarga.EdicionSolicitada
-                        || n.Estado == EstadoOrdenDeCarga.AnulacionSolicitada
-                        || n.Estado == EstadoOrdenDeCarga.ContratoVencido
-                        || n.Estado == EstadoOrdenDeCarga.EdicionRechazada 
-                        || n.Estado == EstadoOrdenDeCarga.SinEnviarASAP)
-                    )
-                    .Select(x => new OrdenDeCargaDto
+				var listadoSinFiltro = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id) && n.FechaCarga <= fechaFinDateTime
+					&& n.FechaCarga >= fechaIncioDateTime
+					&& (n.Estado == EstadoOrdenDeCarga.Vencida
+						|| n.Estado == EstadoOrdenDeCarga.ErrorDeCarga
+						|| n.Estado == EstadoOrdenDeCarga.Pendiente
+						|| n.Estado == EstadoOrdenDeCarga.Confirmado
+						|| n.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito
+						|| n.Estado == EstadoOrdenDeCarga.EntregaPendiente
+						|| n.Estado == EstadoOrdenDeCarga.EntregaGenerada
+						|| n.Estado == EstadoOrdenDeCarga.EdicionSolicitada
+						|| n.Estado == EstadoOrdenDeCarga.AnulacionSolicitada
+						|| n.Estado == EstadoOrdenDeCarga.ContratoVencido
+						|| n.Estado == EstadoOrdenDeCarga.EdicionRechazada
+						|| n.Estado == EstadoOrdenDeCarga.SinEnviarASAP)
+					);
+				Log.Debug(this.GetType().Name, "Listar", $" listadoSinFiltro: {listadoSinFiltro.ToJson()}");
+				listado = listadoSinFiltro
+					.Select(x => new OrdenDeCargaDto
                     {
                         Id = x.Id,
                         CUITCliente = x.CUITCliente,
