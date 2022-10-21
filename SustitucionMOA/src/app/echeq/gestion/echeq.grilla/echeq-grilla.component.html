@@ -48,7 +48,7 @@
                         </td>
                         <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.pedido == "" ? pagoPendiente.contrato : pagoPendiente.pedido}}</td>
                         <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.tipoContrato}}</td>
-                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.moneda}}</td>
+                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.clasificacion}}</td>
                         <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.descripcionMaterial}}</td>
                         <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.kilos | number:'1.0':'es'}}</td>
                         <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.kilosPagados | number:'1.0':'es'}}</td>
@@ -69,12 +69,14 @@
                                     </thead>
                                     <tbody>
                                         <tr *ngFor="let documento of pagoPendiente.documentos">
-                                            <td><p-checkbox name="selectedDocumento" binary="false" [(ngModel)]="documento.selected" (click)="onClickSelectDocumento(documento)"></p-checkbox></td>
+                                            <td><p-checkbox name="selectedDocumento" binary="false" [(ngModel)]="documento.selected" (click)="onClickSelectDocumento(documento)" [disabled]="isProductor(pagoPendiente)"></p-checkbox></td>
                                             <td>{{documento.documento}}</td>
                                             <td>{{documento.fecha}}</td>
                                             <td>{{documento.importeEnPesos | number:'1.2-2':'es'}}</td>
-                                            <td><button type="button" class="btn" style="background-color: #009688; color: white;">GENERAR ECHEQS</button></td>                                       
-                                        </tr>
+                                            <td><button type="button" class="btn" style="background-color: #009688; color: white;">GENERAR ECHEQS</button></td>      
+                                                                       
+                                        </tr>  
+                                        <!-- <tr>Las liquidaciones marcadas con Echeq requieren apertura, si desea cobrar alguna liquidación por transferencia debe desmarcarla</tr>                                    -->
                                     </tbody>
                                 </table>  
                             </td>
@@ -84,6 +86,10 @@
                 </ng-container>
             </tbody>
         </table>
+
+        <p-confirmDialog header="ConfirmationContrato" key="confimationContrato" appendTo="body"></p-confirmDialog>
+        <p-confirmDialog header="ConfirmationDocumento" key="confimationDocumento" appendTo="body"></p-confirmDialog>
+
 
         <pagination-template #pT="paginationApi" (pageChange)="p = $event">
             <div class="dataTables_paginate paging_simple_numbers">

@@ -162,6 +162,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\EcheqModificacionDocumentoChequeWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\EcheqModificarContratoWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -459,6 +464,7 @@
     <Compile Include="WSConsumers\CrearPedidoConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqAnularAperturaChequeConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqCargaAperturaChequeConsumerMOA.cs" />
+    <Compile Include="WSConsumers\EcheqModificacionDocumentoChequeConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqModificarContratoConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqModificarFijacionConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqVisualizarDisponibleChequeConsumerMOA.cs" />
@@ -741,6 +747,7 @@
     </None>
     <None Include="Service References\EcheqAnularAperturaChequeWebServiceMOA\SI_MPRFC_ANULAR_APERTURA_CHEQUE.wsdl" />
     <None Include="Service References\EcheqCargaAperturaChequeWebServiceMOA\SI_MPRFC_CARGA_APERTURA_CHEQUE.wsdl" />
+    <None Include="Service References\EcheqModificacionDocumentoChequeWebServiceMOA\SI_MPRFC_MODI_DOC_CHEQUE.wsdl" />
     <None Include="Service References\EcheqModificarContratoWebServiceMOA\SI_MPRFC_MOAOP_MOD_CONTRATO.wsdl" />
     <None Include="Service References\EcheqModificarFijacionWebServiceMOA\SI_MPRFC_MOAOP_MOD_FIJACION.wsdl" />
     <None Include="Service References\EcheqVisualizarDisponibleChequeWebServiceMOA\SI_MPRFC_VISU_DISPONIBLE_CHEQUE.wsdl" />
@@ -2248,6 +2255,7 @@
     <WCFMetadataStorage Include="Service References\DetalleCteWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\EcheqAnularAperturaChequeWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\EcheqCargaAperturaChequeWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\EcheqModificacionDocumentoChequeWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\EcheqModificarContratoWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\EcheqModificarFijacionWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\EcheqVisualizarDisponibleChequeWebServiceMOA\" />
@@ -3255,6 +3263,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\EcheqAnularAperturaChequeWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqModificacionDocumentoChequeWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqModificacionDocumentoChequeWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\EcheqModificacionDocumentoChequeWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

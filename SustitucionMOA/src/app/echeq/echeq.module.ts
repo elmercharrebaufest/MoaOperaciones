@@ -10,6 +10,8 @@ import { EcheqGestionComponent } from './gestion/echeq-gestion.component';
 import { GrillaComponent } from './gestion/echeq.grilla/echeq-grilla.component';
 import { FiltrosComponent } from './gestion/echeq.filtros/echeq-filtros.component';
 import { CheckboxModule } from 'primeng/checkbox';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {ConfirmationService} from 'primeng/api';
 
 @NgModule({
     imports: [
@@ -19,7 +21,8 @@ import { CheckboxModule } from 'primeng/checkbox';
         NgxPaginationModule,
         ReCaptchaModule,
         CalendarModule,
-        CheckboxModule
+        CheckboxModule,
+        ConfirmDialogModule
     ],
     declarations: [
         EcheqGestionComponent,
@@ -27,7 +30,8 @@ import { CheckboxModule } from 'primeng/checkbox';
         GrillaComponent
     ],
     providers: [
-        EcheqService
+        EcheqService,
+        ConfirmationService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

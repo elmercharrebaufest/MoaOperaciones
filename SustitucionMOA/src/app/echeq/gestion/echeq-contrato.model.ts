@@ -14,9 +14,12 @@ export class EcheqContrato {
     public documentos: Array<EcheqDocumento> = new Array<EcheqDocumento>();
     public tipoContrato: string;
     public expanded: boolean;
+    public clasificacion: string;
 
     constructor(entity: any =  null) {
         if (entity != null) {
+            console.log("Entidad: ", entity, "MarcaCheque: ", this.selected, entity.MarcaCheque)
+            this.selected = entity.MarcaCheque;
             this.contrato = entity.Contrato;
             this.pedido = entity.Pedido
             this.moneda = entity.Moneda;
@@ -25,18 +28,15 @@ export class EcheqContrato {
             this.kilosPagados = entity.KilosPagados;
             this.fecha = entity.Fecha;
             this.id = uuid.v4();
+            this.clasificacion = entity.Clasificacion;
             if (entity.Documentos && entity.Documentos.length) {
                 this.documentos = new Array<EcheqDocumento>();
                 entity.Documentos.forEach(pos => {
                     this.documentos.push(new EcheqDocumento(pos, this.id));
                 });
             }
-            
-            if(this.pedido == ""){
-                this.tipoContrato = "Fijo"
-            } else {
-                this.tipoContrato = "Fijación"
-            }
+
+            console.log("id: ", this.id)
         }
     }
 }
@@ -59,9 +59,11 @@ export class EcheqDocumento {
     public importeMonedaDocumento: string;
     public importeEnPesos: number;
     public moneda: number;
+    public clasificacion: string;
 
     constructor(entity: any = null, parentId: any) {
         if (entity != null) {
+            this.selected = entity.MarcaCheque;
             this.parentId = parentId;
             this.contrato = entity.Contrato;
             this.pedido = entity.Pedido;
@@ -74,6 +76,7 @@ export class EcheqDocumento {
             this.importeMonedaDocumento = entity.ImporteMonedaDocumento;
             this.importeEnPesos = entity.ImporteEnPesos;
             this.moneda = entity.Moneda;
+             this.clasificacion = entity.Clasificacion;
         }
     }
 }

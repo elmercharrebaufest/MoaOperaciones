@@ -50,8 +50,9 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
-    <Compile Include="Dto\Echeq\EcheqDocumentoDTO.cs" />
-    <Compile Include="Dto\Echeq\EcheqObtenerContratoDTO.cs" />
+    <Compile Include="Dto\Echeq\EcheqLiquidacionDto.cs" />
+    <Compile Include="Dto\Echeq\EcheqAperturaDto.cs" />
+    <Compile Include="Dto\Echeq\EcheqNegocioDto.cs" />
     <Compile Include="Dto\FuenteAprovisionamientoDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\CrearOrdenEnSAPRequest.cs" />
     <Compile Include="Dto\OrdenDeCarga\CrearOrdenEnSAPResponse.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Dto\TablaSapDto.cs" />
     <Compile Include="Dto\UsuarioComprasDto.cs" />
     <Compile Include="Dto\UsuarioComprasRelacionConUsuariosDto.cs" />
+    <Compile Include="Models\EcheqRequestModel.cs" />
     <Compile Include="Entities\Configuracion.cs" />
     <Compile Include="Entities\HabilitacionJob.cs" />
     <Compile Include="Entities\Categoria.cs" />
@@ -131,6 +133,7 @@
     <Compile Include="Entities\CampoSustentable.cs" />
     <Compile Include="Entities\DeclaracionCampoSustentable.cs" />
     <Compile Include="Entities\EstadoIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Entities\MaterialFason.cs" />
     <Compile Include="Entities\MaterialSolp.cs" />
     <Compile Include="Entities\TipoSolpPosicionSAP.cs" />
     <Compile Include="Entities\TipoMovimientoIngresosBrutosCoeficienteUnificado.cs" />
@@ -210,9 +213,9 @@
     <Compile Include="Models\WSMapMOA\ContactoMail\EstadoConsultaVM.cs" />
     <Compile Include="Models\ConsultaTicketPesada.cs" />
     <Compile Include="Models\WSMapMOA\Echeq\EcheqContratoWSMOAResponse.cs" />
-    <Compile Include="Models\WSMapMOA\Echeq\EcheqDocumento.cs" />
-    <Compile Include="Models\WSMapMOA\Echeq\EcheqVisualizacionPendientePago.cs" />
-    <Compile Include="Models\WSMapMOA\Echeq\EcheqVisualizacionDisponibleCheque.cs" />
+    <Compile Include="Entities\EcheqLiquidacion.cs" />
+    <Compile Include="Entities\EcheqNegocio.cs" />
+    <Compile Include="Entities\EcheqApertura.cs" />
     <Compile Include="Models\WSMapMOA\FechaFeriado.cs" />
     <Compile Include="Dto\LocalidadCombo.cs" />
     <Compile Include="Dto\EstadoAprobacionDto.cs" />

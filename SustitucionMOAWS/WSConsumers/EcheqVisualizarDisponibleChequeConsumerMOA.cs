@@ -8,7 +8,8 @@ using SustitucionMOAModel.Models;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Echeq;
-
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -23,7 +24,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public List<EcheqVisualizacionDisponibleCheque> Request(string proveedor, List<FechaWS> listaFechas)
+        public List<EcheqLiquidacionDto> Request(string proveedor, List<FechaWS> listaFechas)
         {
             try
             {
@@ -60,29 +61,29 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-        private List<EcheqVisualizacionDisponibleCheque> Map(ZMPES6890[] EX_SALIDA)
+        private List<EcheqLiquidacionDto> Map(ZMPES6890[] EX_SALIDA)
         {      
-            List<EcheqVisualizacionDisponibleCheque> listaChequesdisponibles = new List<EcheqVisualizacionDisponibleCheque>() { };
+            List<EcheqLiquidacionDto> listaChequesdisponibles = new List<EcheqLiquidacionDto>() { };
          
 
             foreach (ZMPES6890 cheque in EX_SALIDA)
             {
-                listaChequesdisponibles.Add(new EcheqVisualizacionDisponibleCheque()
+                listaChequesdisponibles.Add(new EcheqLiquidacionDto()
                 {
-                   Contrato = cheque.CONTRATO,
-                   Pedido = cheque.PEDIDO,
-                   Sociedad = cheque.SOCIEDAD,
+                   //Contrato = cheque.CONTRATO,
+                   //Pedido = cheque.PEDIDO,
+                   //Sociedad = cheque.SOCIEDAD,
                    Documento = cheque.DOCUMENTO,
                    Ejercicio = cheque.EJERCICIO,
                    Fecha = SAPFormatter.FormatearFecha(cheque.FECHA),
                    NumeroCOE = cheque.XBLNR,
                    Solapa = cheque.SOLAPA,
                    ImporteMonedaDocumento = cheque.WRBTR,
-                   wRBTRFieldSpecified = cheque.WRBTRSpecified,
+                   //wRBTRFieldSpecified = cheque.WRBTRSpecified,
                    ImporteEnPesos = cheque.DMBTR,
-                   dMBTRFieldSpecified = cheque.DMBTRSpecified,
-                   Moneda = cheque.MONEDA
-
+                   //dMBTRFieldSpecified = cheque.DMBTRSpecified,
+                   Moneda = cheque.MONEDA,
+                   //Clasificacion = cheque.CLASIFICACION
                 });
             }
                 return listaChequesdisponibles;            
@@ -91,6 +92,6 @@ namespace SustitucionMOAWS.WSConsumers
     }
         internal interface IEcheqVisualizarDisponibleChequeConsumerMOA
         {
-        List<EcheqVisualizacionDisponibleCheque> Request(string proveedor, List<FechaWS> listaFechas);
+        List<EcheqLiquidacionDto> Request(string proveedor, List<FechaWS> listaFechas);
         }
 }
