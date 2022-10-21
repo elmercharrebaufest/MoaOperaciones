@@ -190,11 +190,13 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         console.debug('call seleccionarTodos()');
         this.seleccionaTodos = !this.seleccionaTodos;
         console.debug(' value: ', this.seleccionaTodos);
-        this.data.forEach((value, index) => {
-            if (value.NoEstaEnSAP){
-                value.EstaSeleccionado = this.seleccionaTodos;
-            }
-        });
+        if (this.data) {
+            this.data.forEach((value, index) => {
+                if (value.NoEstaEnSAP){
+                    value.EstaSeleccionado = this.seleccionaTodos;
+                }
+            });
+        }
     }
 
     enviarASAP = async () => {
@@ -257,11 +259,13 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     }
     validarSiNoEstaEnSAP = () => {
         console.debug('call validarSiNoEstaEnSAP()');
-        this.data.forEach((value, index) => {
-            if (value.NoEstaEnSAP){
-                return false;
-            }
-        });
+        if (this.data) {
+            this.data.forEach((value, index) => {
+                if (value.NoEstaEnSAP){
+                    return false;
+                }
+            });
+        }
         return true;
     }
 }
