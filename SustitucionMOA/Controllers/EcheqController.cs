@@ -2,7 +2,9 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -21,11 +23,12 @@ namespace SustitucionMOA.Controllers
     public class EcheqController : BaseController
     {
         private readonly IEcheqService service;
+        private readonly IUsuarioService usuarioService;
 
-             
-        public EcheqController(IEcheqService echeqService)
+        public EcheqController(IEcheqService echeqService, IUsuarioService usuarioService)
         {
             this.service = echeqService;
+            this.usuarioService = usuarioService;
         }
 
 
@@ -33,7 +36,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = service.ObtenerPendientePago(SessionPersister.Proveedor, fechaInicio, fechaFin) });
+                return JsonCustom(new { data = service.ObtenerPendientePago(SessionPersister.Proveedor, fechaInicio, fechaFin, "") });
 
             }
             catch (InfoCustomException e)
@@ -49,6 +52,132 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-      
+
+        [HttpPost]
+        public ActionResult MarcarContrato(string contrato, string pedido)
+        {
+            try
+            {
+                EcheqRequestModel request = new EcheqRequestModel(pedido, contrato);
+                request.ProveedorId = SessionPersister.ProveedorId;
+                request.CodigoProveedor = SessionPersister.Proveedor;
+                request.UsuarioCreacionId = ObtenerUsuarioActual().Id;
+
+                return JsonCustom(service.MarcarContrato(request));
+
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult DesmarcarContrato(string contrato, string pedido)
+        {
+            try
+            {
+                EcheqRequestModel request = new EcheqRequestModel(pedido, contrato);
+                request.ProveedorId = SessionPersister.ProveedorId;
+                request.UsuarioCreacionId = ObtenerUsuarioActual().Id;
+
+                return JsonCustom(service.DesmarcarContrato(request));
+
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult MarcarDocumento(string documento, string pedido, string contrato)
+        {
+            try
+            {
+                EcheqRequestModel request = new EcheqRequestModel()
+                {
+                    Documento = documento,
+                    Pedido = pedido,
+                    Contrato = contrato,
+                    ProveedorId = SessionPersister.ProveedorId,
+                    UsuarioCreacionId = ObtenerUsuarioActual().Id,
+                    CodigoProveedor = SessionPersister.Proveedor
+                };
+
+                return JsonCustom(service.MarcarDocumento(request));
+
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult DesmarcarDocumento(string documento, string pedido, string contrato)
+        {
+            try
+            {
+                EcheqRequestModel request = new EcheqRequestModel()
+                {
+                    Documento = documento,
+                    Pedido = pedido,
+                    ProveedorId = SessionPersister.ProveedorId,
+                    UsuarioCreacionId = ObtenerUsuarioActual().Id,
+                    CodigoProveedor = SessionPersister.Proveedor,
+                    Contrato = contrato
+                };
+
+                return JsonCustom(service.DesmarcarDocumento(request));
+
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        private UsuarioDto ObtenerUsuarioActual()
+        {
+            string userMail = SessionPersister.getUsername();
+            return usuarioService.GetUsuario(userMail);
+        }
     }
 }

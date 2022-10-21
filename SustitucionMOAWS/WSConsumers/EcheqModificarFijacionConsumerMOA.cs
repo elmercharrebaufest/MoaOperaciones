@@ -5,7 +5,7 @@ using SustitucionMOAModel.Dto;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    class EcheqModificarFijacionConsumerMOA : IEcheqModificarFijacionConsumerMOA
+    public class EcheqModificarFijacionConsumerMOA : IEcheqModificarFijacionConsumerMOA
     {
         SI_MPRFC_MOAOP_MOD_FIJACIONClient service = new SI_MPRFC_MOAOP_MOD_FIJACIONClient();
 
@@ -38,7 +38,7 @@ namespace SustitucionMOAWS.WSConsumers
         }
     }
 
-    internal interface IEcheqModificarFijacionConsumerMOA
+    public interface IEcheqModificarFijacionConsumerMOA
     {
         ResultadoGenerico Request(string IM_CONTRATO, string IM_CUENTA_MRP, string IM_FIJACION, string IM_ZLSCH);
     }

@@ -5,7 +5,7 @@ using SustitucionMOAWS.EcheqModificarContratoWebServiceMOA;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    class EcheqModificarContratoConsumerMOA : IEcheqModificarContratoConsumerMOA
+    public class EcheqModificarContratoConsumerMOA : IEcheqModificarContratoConsumerMOA
     {
         SI_MPRFC_MOAOP_MOD_CONTRATOClient service = new SI_MPRFC_MOAOP_MOD_CONTRATOClient();
 
@@ -16,6 +16,9 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
+        //IM_CUENTA_MRP: es el CBU por ahora se envia un string vacio
+        //IM_ZLSCH: es para indicar si tiene la marca o no de cheque. En el caso de que tengo se envia un "=" y sino tiene "" (string vacio);
+
         public ResultadoGenerico Request(string IM_CONTRATO, string IM_CUENTA_MRP, string IM_ZLSCH)
         {
             try
@@ -24,9 +27,9 @@ namespace SustitucionMOAWS.WSConsumers
 
                 ResultadoGenerico resultado = new ResultadoGenerico();
 
-                if (response != "Ok")
+                if (EX_MENSAJE != "Ok")
                 {
-                    resultado.Error("", response);
+                    resultado.Error("", EX_MENSAJE);
                 }
 
                 return resultado;
@@ -38,7 +41,10 @@ namespace SustitucionMOAWS.WSConsumers
         }
     }
 
-    internal interface IEcheqModificarContratoConsumerMOA
+    public interface IEcheqModificarContratoConsumerMOA
     {
+        ResultadoGenerico Request(string IM_CONTRATO, string IM_CUENTA_MRP, string IM_ZLSCH);
     }
 }
+
+

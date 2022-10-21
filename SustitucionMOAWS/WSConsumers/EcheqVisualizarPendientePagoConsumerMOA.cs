@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.Echeq;
 using SustitucionMOAWS.CredentialService;
@@ -22,19 +23,11 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public List<EcheqVisualizacionPendientePago> Request(string proveedor, List<FechaWS> listaFechas)
+        public List<EcheqNegocioDto> Request(string proveedor, List<FechaWS> listaFechas, string contrato)
         {
             try
             {
-                ZMPES4100[] fechas = new ZMPES4100[] { };
-
-                //fechas = new ZMPES4100[] {
-                //        new ZMPES4100 {
-                //            FECHA_OP = SAPFormatter.PrepararFecha(Convert.ToDateTime(fechaInicio)),
-                //            FECHA_OP_HASTA = SAPFormatter.PrepararFecha(Convert.ToDateTime(fechaFin))
-                //        }
-                //    };
-
+                ZMPES4100[] fechas = new ZMPES4100[] { };            
 
                 if (listaFechas.FirstOrDefault() != null)
                 {
@@ -51,12 +44,9 @@ namespace SustitucionMOAWS.WSConsumers
                 if (listaFechas.FirstOrDefault() != null)
                 {
                     fechahasta = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaFin);
-                }
+                }                    
 
-                string IM_CONTRATO = "";
-
-
-                var response = service.SI_MPRFC_VISU_PENDIENTE_PAGO(IM_CONTRATO, fechas, proveedor);
+                var response = service.SI_MPRFC_VISU_PENDIENTE_PAGO(contrato??"", fechas, proveedor);
                 return Map(response);
 
             }
@@ -66,43 +56,46 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-        public List<EcheqVisualizacionPendientePago> Map(ZMPES6900[] EX_SALIDA)
+        public List<EcheqNegocioDto> Map(ZMPES6900[] EX_SALIDA)
         {
-            List<EcheqVisualizacionPendientePago> listaPendientesPago = new List<EcheqVisualizacionPendientePago>() { };
+            List<EcheqNegocioDto> listaPendientesPago = new List<EcheqNegocioDto>() { };
 
 
             foreach (ZMPES6900 pagosPendientes in EX_SALIDA)
             {
-                listaPendientesPago.Add(new EcheqVisualizacionPendientePago()
+                listaPendientesPago.Add(new EcheqNegocioDto()
                 {
                     Contrato = pagosPendientes.CONTRATO,
                     Pedido = pagosPendientes.PEDIDO,
                     Kilos = pagosPendientes.KILOS,
-                    kILOSFieldSpecified = pagosPendientes.KILOSSpecified,
+                    //kILOSFieldSpecified = pagosPendientes.KILOSSpecified,
                     KilosPagados = pagosPendientes.KILOS_PAGADOS,
-                    kILOS_PAGADOSFieldSpecified = pagosPendientes.KILOS_PAGADOSSpecified,
+                    //kILOS_PAGADOSFieldSpecified = pagosPendientes.KILOS_PAGADOSSpecified,
                     Precio = pagosPendientes.PRECIO,
-                    pRECIOFieldSpecified = pagosPendientes.PRECIOSpecified,
+                    //pRECIOFieldSpecified = pagosPendientes.PRECIOSpecified,
                     Moneda = pagosPendientes.MONEDA,
-                    Material = pagosPendientes.MATERIAL,
+                    MaterialId = Int32.Parse(pagosPendientes.MATERIAL),
                     DescripcionMaterial = pagosPendientes.DESC_MATERIAL,
                     Fecha = SAPFormatter.FormatearFecha(pagosPendientes.FECHA),
-                    zLSCHField = pagosPendientes.ZLSCH,
-                    Documentos = pagosPendientes.DOCUMENTOS == null ? new List<EcheqDocumento>() : pagosPendientes.DOCUMENTOS.Select(x => new EcheqDocumento
+                    MarcaCheque = string.IsNullOrWhiteSpace(pagosPendientes.ZLSCH) ? false : true,
+                    Clasificacion = pagosPendientes.CLASIFICACION,
+                    TipoContrato = string.IsNullOrWhiteSpace(pagosPendientes.PEDIDO) ? "Fijo" : "Fijación",
+                    Documentos = pagosPendientes.DOCUMENTOS == null ? new List<EcheqLiquidacionDto>() : pagosPendientes.DOCUMENTOS.Select(x => new EcheqLiquidacionDto
                     {
                         Contrato = x.CONTRATO,
                         Pedido = x.PEDIDO,
                         ImporteEnPesos = x.DMBTR,
-                        DMBTRSpecified = x.DMBTRSpecified,
+                        //DMBTRSpecified = x.DMBTRSpecified,
                         Documento = x.DOCUMENTO,
                         Ejercicio = x.EJERCICIO,
                         Fecha = SAPFormatter.FormatearFecha(x.FECHA),
                         Moneda = x.MONEDA,
-                        Sociedad = x.SOCIEDAD,
+                        //Sociedad = x.SOCIEDAD,
                         Solapa = x.SOLAPA,
                         ImporteMonedaDocumento = x.WRBTR,
-                        WRBTRSpecified = x.WRBTRSpecified,
-                        NumeroCOE = x.XBLNR
+                        //WRBTRSpecified = x.WRBTRSpecified,
+                        NumeroCOE = x.XBLNR,
+                        //Clasificacion = x.CLASIFICACION
                     }).ToList()
                 });
             }
@@ -112,6 +105,6 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface IEcheqVisualizarPendientePagoConsumerMOA
     {
-        List<EcheqVisualizacionPendientePago> Request(string proveedor, List<FechaWS> listaFechas);
+        List<EcheqNegocioDto> Request(string proveedor, List<FechaWS> listaFechas, string contrato);
     }
 }

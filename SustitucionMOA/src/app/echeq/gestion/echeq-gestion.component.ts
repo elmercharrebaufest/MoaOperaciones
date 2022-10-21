@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ConfirmationService } from 'primeng/api';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -23,7 +24,8 @@ export class EcheqGestionComponent extends EcheqBaseComponent{
                 protected sessionDataService: SessionDataService, 
                 protected securityService: SecurityService,
                 protected floatMsgService: FloatMsgService, 
-                protected modalService: ModalService) {
+                protected modalService: ModalService,
+                public confirmationService: ConfirmationService) {
                     super(echeqService, navService, sessionDataService, securityService, floatMsgService, modalService);
                 }
 
@@ -43,7 +45,7 @@ export class EcheqGestionComponent extends EcheqBaseComponent{
     //Este es el que me trae la info apenas entro al modulo
     public getContratoPendientePago(filter: EcheqFilter) {
         try {
-            this.echeqService.getData(filter.periodo, filter.fechaInicio, filter.fechaFin).subscribe(response => {
+            this.echeqService.GetData(filter.periodo, filter.fechaInicio, filter.fechaFin).subscribe(response => {
                
                 if (response.logout == true) {
                     this.sessionDataService.logout();
@@ -52,7 +54,7 @@ export class EcheqGestionComponent extends EcheqBaseComponent{
                 } else if (response.info != undefined) {
                     this.floatMsgService.setInfoMsg(response.info);
                 } else {
-                    console.log(response.data);
+                    // console.log(response.data);
                     //para mapear el model  
                     this.echeqContratos = response.data.map( res => {
                         return new EcheqContrato(res)
@@ -79,7 +81,6 @@ export class EcheqGestionComponent extends EcheqBaseComponent{
        }
         
        if(filter.contrato != "" && filter.contrato != undefined){
-        console.log(filter.contrato)
         this.contratosFiltrados = this.contratosFiltrados.filter( item => item.contrato.indexOf(filter.contrato) != -1);
        }        
     }
