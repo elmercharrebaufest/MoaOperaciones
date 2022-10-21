@@ -622,7 +622,13 @@ namespace SustitucionMOAUtils.Services
                     && o.FechaCarga >= fechaIncioDateTime
                     && filtrosEstados.Contains(o.Estado);
                 var listadoConFiltro = repositorio.Listar<OrdenDeCarga>(filtro);
-				Log.Debug(this.GetType().Name, "Listar", $" listadoConFiltro: { listadoConFiltro.ToJson() }");
+				
+                
+                foreach (var item in listadoConFiltro)
+                {
+					Log.Debug(this.GetType().Name, "Listar", $" item:[Id: {item.Id}, Cliente: {item.Cliente.CodigoProveedor}, RazonSocialCliente: {item.Cliente.RazonSocial}, Fecha: {item.FechaCarga}, CUITCliente: {item.CUITCliente}, Corredor: {item.CodigoCorredor}, RazonSocialCorredor: {item.Corredor?.RazonSocial}], ContratoSAP: {item.ContratoSAP}, ContratoIngresado: {item.ContratoIngresado}");
+				}
+
 				listado = listadoConFiltro
 					.Select(x => new OrdenDeCargaDto
                     {
@@ -633,7 +639,7 @@ namespace SustitucionMOAUtils.Services
                         CUITCliente = x.CUITCliente,
                         Corredor = x.CodigoCorredor,
                         RazonSocialCorredor = string.IsNullOrWhiteSpace(x.Corredor?.RazonSocial) ? "-" : x.Corredor?.RazonSocial,
-						Contrato = !string.IsNullOrEmpty(x.ContratoSAP.Trim()) ? x.ContratoSAP.Trim() : x.ContratoIngresado.Trim(),
+						Contrato = !string.IsNullOrEmpty(x.ContratoSAP?.Trim()) ? x.ContratoSAP?.Trim() : x.ContratoIngresado?.Trim(),
 						Pedido = x.NumeroPedido ?? "-",
                         Entrega = x.NumeroEntrega ?? "-",
                         Material = x.Producto.Nombre,
@@ -671,7 +677,7 @@ namespace SustitucionMOAUtils.Services
                         Id = x.Id,
                         CUITCliente = x.CUITCliente,
                         Fecha = x.FechaCarga.ToString("dd/MM/yyyy HH:mm"),
-                        Contrato = !string.IsNullOrEmpty(x.ContratoSAP.Trim()) ? x.ContratoSAP.Trim() : x.ContratoIngresado.Trim(),
+                        Contrato = !string.IsNullOrEmpty(x.ContratoSAP?.Trim()) ? x.ContratoSAP?.Trim() : x.ContratoIngresado?.Trim(),
                         Pedido = x.NumeroPedido ?? "-",
                         Entrega = x.NumeroEntrega ?? "-",
                         Material = x.Producto.Nombre,
