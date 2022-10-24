@@ -88,6 +88,7 @@ namespace SustitucionMOA.Controllers
             {
                 EcheqRequestModel request = new EcheqRequestModel(pedido, contrato);
                 request.ProveedorId = SessionPersister.ProveedorId;
+                request.CodigoProveedor = SessionPersister.Proveedor;
                 request.UsuarioCreacionId = ObtenerUsuarioActual().Id;
 
                 return JsonCustom(service.DesmarcarContrato(request));

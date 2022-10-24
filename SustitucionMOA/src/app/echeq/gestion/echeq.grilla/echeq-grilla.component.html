@@ -73,7 +73,7 @@
                                             <td>{{documento.documento}}</td>
                                             <td>{{documento.fecha}}</td>
                                             <td>{{documento.importeEnPesos | number:'1.2-2':'es'}}</td>
-                                            <td><button type="button" class="btn" style="background-color: #009688; color: white;">GENERAR ECHEQS</button></td>      
+                                            <td><button type="button" class="btn" style="background-color: #009688; color: white;" *ngIf="documento.selected">GENERAR ECHEQS</button></td>      
                                                                        
                                         </tr>  
                                         <!-- <tr>Las liquidaciones marcadas con Echeq requieren apertura, si desea cobrar alguna liquidación por transferencia debe desmarcarla</tr>                                    -->

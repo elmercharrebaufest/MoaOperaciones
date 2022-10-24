@@ -21,7 +21,7 @@ namespace SustitucionMOAModel.Dto
         public decimal KilosPagados { get; set; }
         public decimal Precio { get; set; }
         public string Moneda { get; set; }
-        public int MaterialId { get; set; }
+        public string MaterialCodigo { get; set; }
         public string Fecha { get; set; }
         public bool MarcaCheque { get; set; }
         public string Clasificacion { get; set; }
@@ -49,7 +49,6 @@ namespace SustitucionMOAModel.Dto
             this.KilosPagados = echeqNegocio.KilosPagados;
             this.Precio = echeqNegocio.Precio;
             this.Moneda = echeqNegocio.Moneda;
-            this.MaterialId = echeqNegocio.MaterialId;
             this.Fecha = echeqNegocio.Fecha;
             this.MarcaCheque = echeqNegocio.MarcaCheque;
             this.Clasificacion = echeqNegocio.Clasificacion;
