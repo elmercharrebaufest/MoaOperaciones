@@ -9,3 +9,7 @@ export interface CrearOrdenEnSAPRequest {
     // ValidarKg: string;
     MailUsuarioSAP: string;
 }
+
+export interface CrearOrdenEnSAPResponse {
+    ResultCreation: boolean;
+}

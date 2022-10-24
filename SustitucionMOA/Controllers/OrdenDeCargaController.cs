@@ -103,7 +103,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-				var response = ordenDeCargaService.CrearOrdenEnSAP(request);
+				var response = ordenDeCargaService.CrearOrdenEnSAP(request, true);
 				return JsonCustom(response);
 			}
             catch (InfoCustomException e)
