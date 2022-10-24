@@ -2332,11 +2332,11 @@
       <Name>SustitucionMOAFotmatter</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
+      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">
-      <Project>{17CF0FDF-2900-470D-8F5E-E64A8583B61F}</Project>
+      <Project>{17cf0fdf-2900-470d-8f5e-e64a8583b61f}</Project>
       <Name>SustitucionMOARepositorio</Name>
     </ProjectReference>
   </ItemGroup>
