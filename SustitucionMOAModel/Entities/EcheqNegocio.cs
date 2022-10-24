@@ -60,7 +60,6 @@ namespace SustitucionMOAModel.Entities
             this.KilosPagados = echeqNegocio.KilosPagados;
             this.Precio = echeqNegocio.Precio;
             this.Moneda = echeqNegocio.Moneda;
-            this.MaterialId = echeqNegocio.MaterialId;
             this.Fecha = echeqNegocio.Fecha;
             this.MarcaCheque = echeqNegocio.MarcaCheque;
             this.Clasificacion = echeqNegocio.Clasificacion;

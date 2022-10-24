@@ -110,8 +110,12 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
 
   public checkDocumento(documento, check){
     documento.selected = check;
-
+    
     let contrato = this.echeqContratos.find(contrato => contrato.id == documento.parentId);
+    if(contrato.clasificacion == "PRODUCTOR"){
+      documento.selected = contrato.selected;
+      return;
+    }
 
     let documentosSelected = contrato.documentos.filter(documento => documento.parentId == contrato.id && documento.selected);
     contrato.selected = documentosSelected.length > 0;
@@ -132,17 +136,13 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
           } else if (response.info != undefined) {
               this.floatMsgService.setInfoMsg(response.info);
           } else {
-              if(response.HayError){
-                echeqContrato.selected = true;
-                echeqContrato.documentos.forEach(docs => {
-                  docs.selected = true;
-                });
-              } else {
-                this.floatMsgService.setErrorMsg(response.error);
-              }
-              return response;
-        }
-              },  
+              echeqContrato.selected = true;
+              echeqContrato.documentos.forEach(docs => {
+                docs.selected = true;
+              });
+              this.floatMsgService.setSuccessMsg(response);
+          }
+      },  
       error => {
           this.floatMsgService.setErrorMsg(error.message);
       });
@@ -168,6 +168,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
                 echeqContrato.documentos.forEach(docs => {
                   docs.selected = false;
                 });
+              this.floatMsgService.setSuccessMsg(response)             
               return response;
         }
               },  
@@ -193,7 +194,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
               this.floatMsgService.setInfoMsg(response.info);
           } else {
               echeqDocumento.selected = true;             
-
+              this.floatMsgService.setSuccessMsg(response)             
               return response;
         }
               },  
@@ -218,11 +219,8 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
           } else if (response.info != undefined) {
               this.floatMsgService.setInfoMsg(response.info);
           } else {
-              if(response.HayError){
                 echeqDocumento.selected = false;             
-              } else {
-                this.floatMsgService.setErrorMsg(response.error);
-              }
+                this.floatMsgService.setSuccessMsg(response)             
               return response;
         }
               },  

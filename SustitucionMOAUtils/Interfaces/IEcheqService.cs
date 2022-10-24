@@ -14,8 +14,8 @@ namespace SustitucionMOAUtils.Interfaces
     {
         List<EcheqNegocioDto> ObtenerPendientePago(string proveedor, string fechaInicio, string fechaFin, string contrato);
         string MarcarContrato(EcheqRequestModel request);
-        ResultadoGenerico DesmarcarContrato(EcheqRequestModel request);
-        ResultadoGenerico MarcarDocumento(EcheqRequestModel request);
-        ResultadoGenerico DesmarcarDocumento(EcheqRequestModel request);
+        string DesmarcarContrato(EcheqRequestModel request);
+        string MarcarDocumento(EcheqRequestModel request);
+        string DesmarcarDocumento(EcheqRequestModel request);
     }
 }

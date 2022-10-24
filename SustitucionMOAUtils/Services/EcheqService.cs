@@ -45,6 +45,8 @@ namespace SustitucionMOAUtils.Services
 
                 List<EcheqNegocioDto> result = echeqVisualizarPendientePagoConsumerMOA.Request(proveedor, fechas, contrato);
 
+                result.Where(x => x.Clasificacion == "PRODUCTOR" && x.MarcaCheque == true).ToList().ForEach(x => x.Documentos.ForEach(k => k.MarcaCheque = true));
+
                 return result;
             }
             catch (ValidationCustomException e)
@@ -66,7 +68,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 //1- Obtener contrato desde la RFC y setear echeq
-                EcheqNegocioDto echeqNegocio = this.SetTipoNegocio(request);
+                EcheqNegocioDto echeqNegocio = this.ObtieneTipoNegocio(request);
 
 
                 //2- validar si es productor o acopiador
@@ -147,61 +149,58 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public ResultadoGenerico DesmarcarContrato(EcheqRequestModel request)
-        {
-            try
-            {
-                ResultadoGenerico result = echeqModificarContratoConsumerMOA.Request(request.Contrato, "", "");
-
-                if (result.HayError)
-                {
-                    throw new ValidationCustomException(result.Errores[0].Message);
-                }
-
-                if (!repositorio.Existe<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido)) 
-                {
-                    throw new ValidationCustomException("El contrato no se encuentra");
-                }
-
-                this.UpdateEcheq(request, false);            
-
-                return result;
-            }
-            catch (ValidationCustomException e)
-            {
-                throw e;
-            }
-            catch (InfoCustomException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
-
-        public ResultadoGenerico MarcarDocumento(EcheqRequestModel request)
+        public string DesmarcarContrato(EcheqRequestModel request)
         {
             try
             {
                 //1- Obtener contrato desde la RFC y setear echeq
-                EcheqNegocioDto echeqNegocio = this.SetTipoNegocio(request);
-                bool checkLiquidacion = true;
-                AgregarEcheq(request, echeqNegocio, checkLiquidacion);
+                EcheqNegocioDto echeqNegocio = this.ObtieneTipoNegocio(request);
 
-                EcheqLiquidacion liquidacionExistente = this.ObtenerLiquidacionPorDocumento(request.Documento);
-
-                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, "", "MOA", request.UsuarioCreacionId.ToString(), "=");
-
-                if (result.HayError)
+                //2- validar si es productor o acopiador
+                if (echeqNegocio.Clasificacion == "PRODUCTOR")
                 {
-                    throw new ValidationCustomException(result.Errores[0].Message);
+                    ResultadoGenerico modificarNegocio;
+
+                    if (echeqNegocio.Pedido == "")
+                    {
+                        modificarNegocio = echeqModificarContratoConsumerMOA.Request(request.Contrato, "", "");
+                    }
+                    else
+                    {
+                        modificarNegocio = echeqModificarFijacionConsumerMOA.Request(request.Contrato, "", request.Pedido, "");
+                    }
+
+                    if (modificarNegocio.HayError)
+                    {
+                        throw new ValidationCustomException(string.Join(", ", modificarNegocio.Errores.Select(x => x.Message).ToList()));
+                    }
+                    else
+                    {
+                        this.UpdateEcheq(request, false);
+                    }
+                }
+                else if (echeqNegocio.Clasificacion == "ACOPIADOR")//3.2- Si es acopiador por cada una de las liquidaciones llamar a la rfc de marcar documento
+                {
+                    ResultadoGenerico modificarNegocio = new ResultadoGenerico();
+
+                    foreach (var liquidacion in echeqNegocio.Documentos)
+                    {
+                        modificarNegocio = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, "", "MOA", "", "");
+
+                        if (modificarNegocio.HayError)
+                        {
+                            throw new ValidationCustomException(string.Join(", ", modificarNegocio.Errores.Select(x => x.Message).ToList()));
+                        }
+                    }
+                    
+                    this.UpdateEcheq(request, false);
+                }
+                else
+                {
+                    throw new ValidationCustomException("Clasificacion de contrato no valida");
                 }
 
-                this.UpdateLiquidacion(request, true, liquidacionExistente);
-
-                return result;
+                return "El contrato se desmarco correctamente";
             }
             catch (ValidationCustomException e)
             {
@@ -217,14 +216,107 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public ResultadoGenerico DesmarcarDocumento(EcheqRequestModel request)
+        public string MarcarDocumento(EcheqRequestModel request)
+        {
+            try
+            {
+                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, "2022", DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, "", "MOA", "", "=");
+
+                if (result.HayError)
+                {
+                    throw new ValidationCustomException(result.Errores[0].Message);
+                }
+
+                //1- Obtener contrato desde la RFC y setear echeq
+                EcheqNegocioDto echeqNegocioSAP = this.ObtieneTipoNegocio(request);
+
+                EcheqNegocio echeqDB = repositorio.Obtener<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido);
+
+                if (echeqDB != null)
+                {
+                    echeqDB.MarcaCheque = true;
+                    echeqDB.FechaModificacion = DateTime.Now;
+                    echeqDB.UsuarioModificacionId = request.UsuarioCreacionId;
+
+                    var docDB = echeqDB.Documentos.Where(x => x.Documento == request.Documento).SingleOrDefault();
+
+                    if (docDB != null)
+                    {
+                        docDB.MarcaCheque = true;
+                        docDB.FechaModificacion = DateTime.Now;
+                        docDB.UsuarioModificacionId = request.UsuarioCreacionId;
+                    }
+                    else
+                    {
+                        //generar nuevo documento y agregar nuevo documento
+                        var documentoDto = echeqNegocioSAP.Documentos.Where(x => x.Documento == request.Documento).SingleOrDefault();
+                        var echeqLiquidacion = new EcheqLiquidacion(documentoDto);
+
+                        echeqLiquidacion.MarcaCheque = true;
+                        echeqLiquidacion.FechaModificacion = DateTime.Now;
+                        echeqLiquidacion.UsuarioModificacionId = request.UsuarioCreacionId;
+
+                        echeqDB.Documentos.Add(echeqLiquidacion);
+
+
+                    }
+                }
+                else
+                {
+                    //generar echeqNegocio
+                    EcheqNegocio negocio = new EcheqNegocio(echeqNegocioSAP);
+                    MaterialFason material = repositorio.Obtener<MaterialFason>(x => x.CodigoSap == echeqNegocioSAP.MaterialCodigo);
+
+                    if (material == null)
+                    {
+                        negocio.Material = new MaterialFason { CodigoSap = echeqNegocioSAP.MaterialCodigo, Nombre = echeqNegocioSAP.DescripcionMaterial };
+                    }
+                    else
+                    {
+                        negocio.MaterialId = material.Id;
+                    }
+
+                    negocio.MarcaCheque = true;
+                    negocio.FechaCreacion = DateTime.Now;
+                    negocio.UsuarioCreacionId = request.UsuarioCreacionId;
+                    negocio.ProveedorId = request.ProveedorId;
+                    negocio.Documentos = negocio.Documentos.Where(x => x.Documento == request.Documento).ToList();
+
+                    var echeqLiquidacion = negocio.Documentos.Where(x => x.Documento == request.Documento).SingleOrDefault();
+
+                    echeqLiquidacion.MarcaCheque = true;
+                    echeqLiquidacion.FechaCreacion = DateTime.Now;
+                    echeqLiquidacion.UsuarioCreacionId = request.UsuarioCreacionId;
+
+                    repositorio.Agregar(negocio);
+                   
+                }
+                repositorio.GuardarCambios();
+
+                return "El documento se marco correctamente";
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public string DesmarcarDocumento(EcheqRequestModel request)
         {
             try
             {
 
                 EcheqLiquidacion liquidacionExistente = ObtenerLiquidacionPorDocumento(request.Documento);
 
-                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, "", "MOA", request.UsuarioCreacionId.ToString(), "");
+                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, "", "MOA", "", "");
 
                 if (result.HayError)
                 {
@@ -233,14 +325,14 @@ namespace SustitucionMOAUtils.Services
 
                 UpdateLiquidacion(request, false, liquidacionExistente);
 
-                EcheqNegocioDto echeqNegocio = SetTipoNegocio(request);
+                EcheqNegocioDto echeqNegocio = ObtieneTipoNegocio(request);
 
                 if (echeqNegocio.Documentos.Where(x => x.MarcaCheque).Count() == 0)
                 {
                     DesmarcarContrato(request);
                 }
 
-                return result;
+                return "El documento se desmarco correctamente";
             }
             catch (ValidationCustomException e)
             {
@@ -256,7 +348,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private EcheqNegocioDto SetTipoNegocio(EcheqRequestModel request)
+        private EcheqNegocioDto ObtieneTipoNegocio(EcheqRequestModel request)
         {
             List<EcheqNegocioDto> contratosEcheq = ObtenerPendientePago(request.CodigoProveedor, DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"), DateTime.Now.ToString("yyyy-MM-dd"), request.Contrato);
             EcheqNegocioDto echeqNegocio = null;
@@ -278,41 +370,35 @@ namespace SustitucionMOAUtils.Services
             return echeqNegocio;
         }
 
-        private int AgregarEcheq(EcheqRequestModel request, EcheqNegocioDto echeqNegocio, bool checkLiquidacion = false)
+        private int AgregarEcheq(EcheqRequestModel request, EcheqNegocioDto echeqNegocio)
         {
             EcheqNegocio negocio = new EcheqNegocio(echeqNegocio);
+          
 
-            MaterialFason material = repositorio.Obtener<MaterialFason>(x => x.CodigoSap == echeqNegocio.MaterialId.ToString());
+            MaterialFason material = repositorio.Obtener<MaterialFason>(x => x.CodigoSap == echeqNegocio.MaterialCodigo);
 
             if (material == null)
             {
-                throw new ValidationCustomException("El material es una poronga");
+                negocio.Material = new MaterialFason { CodigoSap = echeqNegocio.MaterialCodigo, Nombre = echeqNegocio.DescripcionMaterial };
             }
-
-            negocio.MaterialId = material.Id;
+            else
+            {
+                negocio.MaterialId = material.Id;
+            }
+           
             negocio.MarcaCheque = true;
             negocio.FechaCreacion = DateTime.Now;
             negocio.UsuarioCreacionId = request.UsuarioCreacionId;
             negocio.ProveedorId = request.ProveedorId;
 
-            if (checkLiquidacion)
+          
+            foreach (var liquidacion in negocio.Documentos)
             {
-                foreach (var liquidacion in negocio.Documentos)
-                {
-                    liquidacion.MarcaCheque = liquidacion.MarcaCheque;
-                    liquidacion.FechaCreacion = DateTime.Now;
-                    liquidacion.UsuarioCreacionId = request.UsuarioCreacionId;
-                }
+                liquidacion.MarcaCheque = true;
+                liquidacion.FechaCreacion = DateTime.Now;
+                liquidacion.UsuarioCreacionId = request.UsuarioCreacionId;
             }
-            else
-            {
-                foreach (var liquidacion in negocio.Documentos)
-                {
-                    liquidacion.MarcaCheque = true;
-                    liquidacion.FechaCreacion = DateTime.Now;
-                    liquidacion.UsuarioCreacionId = request.UsuarioCreacionId;
-                }
-            }
+       
 
             //4- Grabar en la base de datos
             repositorio.Agregar(negocio);
@@ -331,25 +417,14 @@ namespace SustitucionMOAUtils.Services
             echeqExistente.FechaModificacion = DateTime.Now;
             echeqExistente.UsuarioModificacionId = request.UsuarioCreacionId;
             echeqExistente.MarcaCheque = marcaCheck;
-
-            if (echeqExistente.Clasificacion == "ACOPIADOR")
+     
+            foreach (var liquidacion in echeqExistente.Documentos)
             {
-                foreach (var liquidacion in echeqExistente.Documentos)
-                {
-                    liquidacion.FechaModificacion = DateTime.Now;
-                    liquidacion.UsuarioModificacionId = request.UsuarioCreacionId;
-                }
+                liquidacion.MarcaCheque = marcaCheck;
+                liquidacion.FechaModificacion = DateTime.Now;
+                liquidacion.UsuarioModificacionId = request.UsuarioCreacionId;
             }
-            else 
-            { 
-                foreach (var liquidacion in echeqExistente.Documentos)
-                {
-                    liquidacion.MarcaCheque = marcaCheck;
-                    liquidacion.FechaModificacion = DateTime.Now;
-                    liquidacion.UsuarioModificacionId = request.UsuarioCreacionId;
-                }
 
-            }
             return repositorio.GuardarCambios();
         }
 
