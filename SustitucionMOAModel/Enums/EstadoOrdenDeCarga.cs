@@ -103,6 +103,7 @@
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                 case EstadoOrdenDeCarga.EntregaPendiente:
                 case EstadoOrdenDeCarga.ContratoVencido:
+				case EstadoOrdenDeCarga.SinEnviarASAP:
                     return "En proceso";
                 case EstadoOrdenDeCarga.Vencida:
                 case EstadoOrdenDeCarga.EntregaGenerada:
@@ -117,8 +118,6 @@
                     return  "Anulada por vencimiento";
                 case EstadoOrdenDeCarga.EdicionRechazada:
                     return "Edición rechazada";
-				case EstadoOrdenDeCarga.SinEnviarASAP:
-					return "Sin Enviar a SAP";
 				default:
                     return "Sin estado";
             }
