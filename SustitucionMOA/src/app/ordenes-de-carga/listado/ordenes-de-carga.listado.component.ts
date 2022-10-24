@@ -11,7 +11,7 @@ import { Material } from '../../common/models/material';
 import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { CrearOrdenEnSAPRequest } from '../../common/models/ordenes-de-carga/crearOrdenEnSAPRequest';
 import { Formatter } from '../../common/formatter/Formatter';
-import { SelectItem, ConfirmationService} from 'primeng/api';
+import { SelectItem, ConfirmationService } from 'primeng/api';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 
@@ -47,7 +47,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         "Entrega pendiente",
         "Anulada por vencimiento",
         "Anulación solicitada",
-	    "Edición solicitada",
+        "Edición solicitada",
         "Error de datos",
         "Contrato vencido",
         "Edición rechazada",
@@ -69,7 +69,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
     esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
     esPuerto: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA PUERTO');
-    
+
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
     puedeEnviarASAP: boolean = this.isAuthorized('ENVIAR A SAP');
@@ -77,7 +77,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     descripcionEstadoOrdenCarga: any[];
     entregada: string = "Entregada";
 
-    constructor(protected service: OrdenesDeCargaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,private confirmationService: ConfirmationService) {
+    constructor(protected service: OrdenesDeCargaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
@@ -88,21 +88,22 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         this.mailUsuarioSAP = sessionStorage.getItem("username");
         if (this.esInterno || this.esComercial || this.esMesaFas || this.esPuerto) {
             this.descripcionEstadoOrdenCarga = [
-            { label: "Pendiente", value: "Pendiente" },
-            { label: "Confirmado", value: "Confirmado" },
-            { label: "Pendiente aprobación crédito", value: "Pendiente aprobación crédito" },
-            { label: "Entrega generada", value: "Entrega generada" },
-            { label: "Anulada", value: "Anulada" },
-            { label: "Vencida", value: "Vencida" },
-            { label: "Entrega pendiente", value: "Entrega pendiente" },
-            { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
-            { label: "Anulación solicitada", value: "Anulación solicitada" },
-	        { label: "Edición solicitada", value: "Edición solicitada" },  
-            { label: "Error de datos", value: "Error de datos" },        
-            { label: "Contrato vencido", value: "Contrato vencido" },
-            { label: "Edición rechazada", value: "Edición rechazada" },
-            { label: "Sin Enviar a SAP", value: "Sin Enviar a SAP" },
-        ]} else {
+                { label: "Pendiente", value: "Pendiente" },
+                { label: "Confirmado", value: "Confirmado" },
+                { label: "Pendiente aprobación crédito", value: "Pendiente aprobación crédito" },
+                { label: "Entrega generada", value: "Entrega generada" },
+                { label: "Anulada", value: "Anulada" },
+                { label: "Vencida", value: "Vencida" },
+                { label: "Entrega pendiente", value: "Entrega pendiente" },
+                { label: "Anulada por vencimiento", value: "Anulada por vencimiento" },
+                { label: "Anulación solicitada", value: "Anulación solicitada" },
+                { label: "Edición solicitada", value: "Edición solicitada" },
+                { label: "Error de datos", value: "Error de datos" },
+                { label: "Contrato vencido", value: "Contrato vencido" },
+                { label: "Edición rechazada", value: "Edición rechazada" },
+                { label: "Sin Enviar a SAP", value: "Sin Enviar a SAP" },
+            ]
+        } else {
             this.descripcionEstadoOrdenCarga = [];
             this.estadosSelected = [];
             this.entregada = "Completada";
@@ -115,13 +116,13 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         this.obtenerMateriales();
     }
 
-    filtrarListado(){
+    filtrarListado() {
         console.debug('filtrarListado()');
         this.primerListado = this.datosAux.filter(x => x.DescripcionEstado != this.entregada);
 
         console.debug(' datosAux: ', this.datosAux);
         if (!this.esTercero) {
-            if(this.estadosSelected.length < 1 || this.estadosSelected == null){
+            if (this.estadosSelected.length < 1 || this.estadosSelected == null) {
                 this.data = this.datosAux;
             } else {
                 console.debug(' estadosSelected: ', this.estadosSelected);
@@ -174,7 +175,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
                         this.datosAux = result;
                         this.filtrarListado();
                         this.listaEnviarASAP = [];
-                        if (this.data){
+                        if (this.data) {
                             this.data.forEach((value, index) => {
                                 this.listaEnviarASAP.push(value.NoEstaEnSAP);
                                 if (value.NoEstaEnSAP) {
@@ -204,7 +205,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         console.debug(' value: ', this.seleccionaTodos);
         if (this.data) {
             this.data.forEach((value, index) => {
-                if (value.NoEstaEnSAP){
+                if (value.NoEstaEnSAP) {
                     value.EstaSeleccionado = this.seleccionaTodos;
                 }
             });
@@ -216,9 +217,9 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         console.debug('call enviarASAP()');
         console.debug(' corredorCodigo: ', this.corredorCodigo);
         let resultado = false;
-        try{
+        try {
             await this.data.forEach((value, index) => {
-                if (value.EstaSeleccionado && value.NoEstaEnSAP){
+                if (value.EstaSeleccionado && value.NoEstaEnSAP) {
                     // console.debug(' value: ', value);
                     let crearOrdenEnSAPRequest: CrearOrdenEnSAPRequest;
                     crearOrdenEnSAPRequest = {
@@ -247,7 +248,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
                                 console.debug(' result: ', result);
                                 resultado = result.ResultValidation;
                                 if (!resultado){
-                                    return;
+                                    //return;
+                                    //guardar mensaje
                                 }
                             }
                         },
@@ -259,12 +261,13 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
                     );
                 }
             });
+
             if (resultado) {
                 this.mensajeComponent.setSuccessMsg('Los datos han sido enviados a SAP con éxito');
-                this.getListado();
             }
+            this.getListado();
             this.blockUI.stop();
-        } catch{
+        } catch {
             this.mensajeComponent.setErrorMsg('Ocurrio un error al Enviar a SAP');
             this.blockUI.stop();
         }
