@@ -12,4 +12,5 @@ export interface CrearOrdenEnSAPRequest {
 
 export interface CrearOrdenEnSAPResponse {
     ResultCreation: boolean;
+    Error: string;
 }

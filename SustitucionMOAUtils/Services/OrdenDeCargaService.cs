@@ -277,8 +277,10 @@ namespace SustitucionMOAUtils.Services
         {
 			Log.Info($"CrearOrdenEnSAP(request: { request.ToJson() }, puedeEnviarASAP: { puedeEnviarASAP })");
 			var response = new CrearOrdenEnSAPResponse();
-			response.ResultCreation = false;
-			try
+			response.ResultCreation = true;
+            var creadaEnSAP = false;
+
+            try
             {
 				var ordenDeCarga = repositorio.Obtener<OrdenDeCarga>(q => q.Id == request.IdOrdenDeCarga);
                 var mailUsuarioSAP = puedeEnviarASAP ? request.MailUsuarioSAP : _usuarioAutomaticoSAP;
@@ -296,7 +298,7 @@ namespace SustitucionMOAUtils.Services
                         ordenDeCarga.DescripcionErrorInterno = "";
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "";
                         ordenDeCarga.CodigoVerificacionSap = "";
-                        response.ResultCreation = true;
+                        creadaEnSAP = true;
                     }
                     else
                     {
@@ -321,13 +323,15 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.ActualizarEstado();
                 Log.Debug(this.GetType().Name, "CrearOrdenEnSAP", $" actualizarEstado, final: " + EstadoOrdenDeCargaExtensions.ToFriendlyString(ordenDeCarga.Estado));
                 repositorio.GuardarCambios();
-                if (response.ResultCreation)
+                if (creadaEnSAP)
                 {
                     VerificarSituacionCrediticia(ordenDeCarga, true);
                 }
             }
             catch (Exception ex)
             {
+                response.ResultCreation = false;
+                response.Error = $"Error al enviar la orden {request.IdOrdenDeCarga}";
                 Log.Error(ex);
             }
 			return response;
