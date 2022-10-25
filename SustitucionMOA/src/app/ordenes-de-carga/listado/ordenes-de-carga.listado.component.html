@@ -109,7 +109,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let ordenDeCarga of data | customFilter : 'Contrato' : filtroAlta | customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected) | customFilter : 'Cliente' : filtroCliente | customFilterBoolean : 'EsFacturaAnticipada' : (pedidoAnticipado == 0 ? null:  (pedidoAnticipado != 2)) : true | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p }; let odd = odd" role="row" [class.odd]="!odd">
-              <td *ngIf="puedeEnviarASAP"><input type="checkbox" [(ngModel)]="ordenDeCarga.EstaSeleccionado" [disabled]="!ordenDeCarga.NoEstaEnSAP" /></td>
+              <td *ngIf="puedeEnviarASAP"><input type="checkbox" [(ngModel)]="ordenDeCarga.EstaSeleccionado" [disabled]="!ordenDeCarga.NoEstaEnSAP" (click)="seleccionarItem(ordenDeCarga)" /></td>
               <td>{{ordenDeCarga.Id}}</td>
               <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.RazonSocialCliente}}</td>

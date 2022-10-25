@@ -7,7 +7,7 @@ import { timeoutWith, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
 import { CrearOrdenEnSAPRequest } from '../common/models/ordenes-de-carga/crearOrdenEnSAPRequest';
-// import { CrearOrdenEnSAPResponse } from '../common/models/ordenes-de-carga/crearOrdenEnSAPResponse';
+import { CrearOrdenEnSAPResponse } from '../common/models/ordenes-de-carga/crearOrdenEnSAPResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -106,11 +106,12 @@ export class OrdenesDeCargaService extends BaseService {
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
-    public crearOrdenEnSAP(request: CrearOrdenEnSAPRequest): Observable<any>{
+    public crearOrdenEnSAP(request: CrearOrdenEnSAPRequest): Observable<CrearOrdenEnSAPResponse>{
         let payload = new FormData();
         payload.append("request", JSON.stringify(request));
         // console.debug(' payload: ', payload);
-        let response = this.http.post('/api/OrdenDeCarga/CrearOrdenEnSAP', request);
+        let response = this.http.post<CrearOrdenEnSAPResponse>('/api/OrdenDeCarga/CrearOrdenEnSAP', request);
+        // let response = this.http.post('/api/OrdenDeCarga/CrearOrdenEnSAP', request);
         return response;
     }
 

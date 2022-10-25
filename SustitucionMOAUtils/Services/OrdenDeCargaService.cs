@@ -279,7 +279,6 @@ namespace SustitucionMOAUtils.Services
 			var response = new CrearOrdenEnSAPResponse();
 			response.ResultCreation = true;
             var creadaEnSAP = false;
-
             try
             {
 				var ordenDeCarga = repositorio.Obtener<OrdenDeCarga>(q => q.Id == request.IdOrdenDeCarga);
@@ -327,12 +326,12 @@ namespace SustitucionMOAUtils.Services
                 {
                     VerificarSituacionCrediticia(ordenDeCarga, true);
                 }
-            }
+			}
             catch (Exception ex)
             {
-                response.ResultCreation = false;
+				Log.Error(ex);
+				response.ResultCreation = false;
                 response.Error = $"Error al enviar la orden {request.IdOrdenDeCarga}";
-                Log.Error(ex);
             }
 			return response;
 		}
@@ -817,8 +816,7 @@ namespace SustitucionMOAUtils.Services
             return !esUsuarioFinal ? orden.Estado.ToFriendlyString(): orden.Estado.ToUserFriendlyString();
         }
 
-      
-        public List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga()
+         public List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga()
         {
             var dayOfWeek = DateTime.Now.DayOfWeek;
             var feriados = feriadoService.ObtenerFeriados();
