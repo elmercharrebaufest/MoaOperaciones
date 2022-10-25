@@ -5,6 +5,7 @@ import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import {ConfirmationService} from 'primeng/api';
 import { EcheqGestionComponent } from '../echeq-gestion.component';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 
 
@@ -24,6 +25,7 @@ import { EcheqGestionComponent } from '../echeq-gestion.component';
 export class GrillaComponent extends EcheqGestionComponent implements OnInit{
 
   @Input() echeqContratos: Array<EcheqContrato>;
+  @BlockUI() blockUI: NgBlockUI;
 
   public itemsPerPage: string;
   msgs: { severity: string; summary: string; detail: string; }[];
@@ -127,6 +129,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
 
   marcarContrato(echeqContrato: EcheqContrato){
     try {
+      this.blockUI.start('Grabando...');
       this.echeqService.MarcarContrato(echeqContrato.contrato, echeqContrato.pedido).subscribe(response => {
          
           if (response.logout == true) {
@@ -146,7 +149,8 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
       error => {
           this.floatMsgService.setErrorMsg(error.message);
       });
-     
+      this.blockUI.stop();
+
     } 
     catch (e) {
         this.floatMsgService.setErrorMsg(e);          
@@ -155,8 +159,8 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
 
   desmarcarContrato(echeqContrato: EcheqContrato){
     try {
+      this.blockUI.start('Grabando...');
       this.echeqService.DesmarcarContrato(echeqContrato.contrato, echeqContrato.pedido).subscribe(response => {
-         
           if (response.logout == true) {
               this.sessionDataService.logout();
           } else if (response.error != undefined && response.error != "") {
@@ -175,7 +179,8 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
       error => {
           this.floatMsgService.setErrorMsg(error.message);
       });
-     
+      this.blockUI.stop();
+
     } 
     catch (e) {
         this.floatMsgService.setErrorMsg(e);          
@@ -184,6 +189,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
 
   marcarDocumento(echeqDocumento: EcheqDocumento){
     try {
+      this.blockUI.start('Grabando...');
       this.echeqService.MarcarDocumento(echeqDocumento.documento, echeqDocumento.pedido, echeqDocumento.contrato).subscribe(response => {
          
           if (response.logout == true) {
@@ -194,22 +200,25 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
               this.floatMsgService.setInfoMsg(response.info);
           } else {
               echeqDocumento.selected = true;             
-              this.floatMsgService.setSuccessMsg(response)             
+              this.floatMsgService.setSuccessMsg(response)
+                           
               return response;
         }
               },  
       error => {
           this.floatMsgService.setErrorMsg(error.message);
       });
-     
+      this.blockUI.stop();
     } 
     catch (e) {
+        this.blockUI.stop();
         this.floatMsgService.setErrorMsg(e);          
     }  
   }
 
   desmarcarDocumento(echeqDocumento: EcheqDocumento){
     try {
+      this.blockUI.start('Grabando...');
       this.echeqService.DesmarcarDocumento(echeqDocumento.documento, echeqDocumento.pedido, echeqDocumento.contrato).subscribe(response => {
          
           if (response.logout == true) {
@@ -227,7 +236,8 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
       error => {
           this.floatMsgService.setErrorMsg(error.message);
       });
-     
+      this.blockUI.stop();
+
     } 
     catch (e) {
         this.floatMsgService.setErrorMsg(e);          
