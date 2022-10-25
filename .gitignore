@@ -264,6 +264,8 @@ Thumbs.db
 
 /SustitucionMOA/app/**/*.js
 /SustitucionMOA/app/**/*.map
+/SustitucionMOA/app/common/models/ordenes-de-carga/*.js
+/SustitucionMOA/app/common/models/ordenes-de-carga/*.map
 SustitucionMOA/main.js
 
 SustitucionMOA/main.js.map
