@@ -61,10 +61,14 @@ namespace SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP {
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string IM_TRANSPORTISTA;
         
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=8)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_USUARIO;
+        
         public SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest() {
         }
         
-        public SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest(string IM_DOCUMENTO, decimal IM_KILOS, string IM_NOMBRECONDUCTOR, string IM_PATENTEACOPLADO, string IM_PATENTECHASIS, string IM_PEDIDO, string IM_TIPODOCUMENTO, string IM_TRANSPORTISTA) {
+        public SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest(string IM_DOCUMENTO, decimal IM_KILOS, string IM_NOMBRECONDUCTOR, string IM_PATENTEACOPLADO, string IM_PATENTECHASIS, string IM_PEDIDO, string IM_TIPODOCUMENTO, string IM_TRANSPORTISTA, string IM_USUARIO) {
             this.IM_DOCUMENTO = IM_DOCUMENTO;
             this.IM_KILOS = IM_KILOS;
             this.IM_NOMBRECONDUCTOR = IM_NOMBRECONDUCTOR;
@@ -73,6 +77,7 @@ namespace SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP {
             this.IM_PEDIDO = IM_PEDIDO;
             this.IM_TIPODOCUMENTO = IM_TIPODOCUMENTO;
             this.IM_TRANSPORTISTA = IM_TRANSPORTISTA;
+            this.IM_USUARIO = IM_USUARIO;
         }
     }
     
@@ -130,7 +135,7 @@ namespace SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP {
             return base.Channel.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(request);
         }
         
-        public string SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(string IM_DOCUMENTO, decimal IM_KILOS, string IM_NOMBRECONDUCTOR, string IM_PATENTEACOPLADO, string IM_PATENTECHASIS, string IM_PEDIDO, string IM_TIPODOCUMENTO, string IM_TRANSPORTISTA, out string EX_MENSAJE) {
+        public string SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(string IM_DOCUMENTO, decimal IM_KILOS, string IM_NOMBRECONDUCTOR, string IM_PATENTEACOPLADO, string IM_PATENTECHASIS, string IM_PEDIDO, string IM_TIPODOCUMENTO, string IM_TRANSPORTISTA, string IM_USUARIO, out string EX_MENSAJE) {
             SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest inValue = new SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest();
             inValue.IM_DOCUMENTO = IM_DOCUMENTO;
             inValue.IM_KILOS = IM_KILOS;
@@ -140,6 +145,7 @@ namespace SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP {
             inValue.IM_PEDIDO = IM_PEDIDO;
             inValue.IM_TIPODOCUMENTO = IM_TIPODOCUMENTO;
             inValue.IM_TRANSPORTISTA = IM_TRANSPORTISTA;
+            inValue.IM_USUARIO = IM_USUARIO;
             SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTREResponse retVal = ((SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE)(this)).SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(inValue);
             EX_MENSAJE = retVal.EX_MENSAJE;
             return retVal.EX_ENTREGA;

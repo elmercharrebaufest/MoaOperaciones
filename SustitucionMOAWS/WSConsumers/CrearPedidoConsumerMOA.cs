@@ -129,7 +129,7 @@ namespace SustitucionMOAWS.WSConsumers
             string docItem = "";
         
 
-
+            //aca el metodo agruparia las posiciones por el numero del proveedor que tengo cada posicion
             foreach (var posicion in proveedorConPosiciones.OrderBy(x => x.Id))
             {
             

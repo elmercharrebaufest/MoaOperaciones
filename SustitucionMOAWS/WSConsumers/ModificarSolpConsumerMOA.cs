@@ -166,7 +166,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             solpSAP.IM_PR_TYPE = solpActual.ClaseDocumento.CodigoSap;
 
-            foreach (var posicion in solpActual.Posiciones.Where(p => string.IsNullOrEmpty(p.NumeroContratoSuperior)).OrderBy(x => x.Id))
+            foreach (var posicion in solpActual.Posiciones.OrderBy(x => x.Id))
             {
                 bool eliminarPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
                 bool eliminarSubPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;

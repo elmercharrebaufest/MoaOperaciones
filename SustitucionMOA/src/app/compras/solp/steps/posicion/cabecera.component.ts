@@ -18,9 +18,10 @@ import { SubPosicionViewModel } from './tab-subposicion/sub-posicion-view-model'
 import { EnumColumnaSubPosicion } from '../../../enum-columna-subPosiciones';
 import { Solp } from '../../solp';
 import { SolpPosicion } from '../../solp-posicion';
-import { ContratoMarco } from './contrato-marco/contrato-marco';
 import { mergeMap, map } from 'rxjs/operators';
 import { from } from 'rxjs';
+import { ObtenerContratoMarcoService } from './obtener-contrato-marco/obtener-contrato-marco.service';
+import { ContratoMarco, ContratoMarcoSubposicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
 
 declare var $: any;
 
@@ -156,12 +157,16 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     items: MenuItem[];
     activeItem: MenuItem;
+
+    contratoMarco: ContratoMarco = null;
+
     @ViewChild('menuItems') menu: MenuItem[];    
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router,
-        private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService) {
+        private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService,
+        private obtenerContratoMarcoService: ObtenerContratoMarcoService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }    
 
@@ -899,31 +904,130 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     asociarCM($event) {
         let posicionIndex = this.model.posiciones.findIndex(posicion => posicion.id == $event.posicionSeleccionada.id);
         
-        this.model.posiciones[posicionIndex].noContrato            = $event.contrato.NumeroContratoSuperior;
-        this.model.posiciones[posicionIndex].noPosicionContrato    = $event.contrato.NumeroPosicionContratoSuperior;
-        this.model.posiciones[posicionIndex].provedorFijo          = $event.contrato.ProveedorFijo;
-        this.model.posiciones[posicionIndex].nombreProveedor       = $event.contrato.NombreProveedor;
-        this.model.posiciones[posicionIndex].orgCompras            = $event.contrato.OrganizacionCompras;
-        this.model.posiciones[posicionIndex].precioBruto           = $event.contrato.PrecioBruto;
+        this.model.posiciones[posicionIndex].numeroContratoSuperior         = $event.contrato.NumeroContratoSuperior;
+        this.model.posiciones[posicionIndex].numeroPosicionContratoSuperior = $event.contrato.NumeroPosicionContratoSuperior;
+        this.model.posiciones[posicionIndex].provedorFijo                   = $event.contrato.ProveedorFijo;
+        this.model.posiciones[posicionIndex].nombreProveedor                = $event.contrato.NombreProveedor;
+        this.model.posiciones[posicionIndex].orgCompras                     = $event.contrato.OrganizacionCompras;
+        this.model.posiciones[posicionIndex].precioBruto                    = $event.contrato.PrecioBruto;
 
         // Set Combos
-        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == $event.contrato.UnidadMedida);
+        let unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == $event.contrato.UnidadMedida);
         this.model.posiciones[posicionIndex].unidadSeleccionada    = unidadSeleccionadaAux;
 
-        var monedaSeleccionadaAux = this.combos.Moneda.find(x => x.Codigo == $event.contrato.ClaveMoneda);
+        let monedaSeleccionadaAux = this.combos.Moneda.find(x => x.Codigo == $event.contrato.ClaveMoneda);
         this.model.posiciones[posicionIndex].monedaSeleccionada    = monedaSeleccionadaAux;
 
-        var almacenSeleccionadoAux = this.combos.Almacen.find(x => x.Codigo == $event.contrato.Almacen);
+        let almacenSeleccionadoAux = this.combos.Almacen.find(x => x.Codigo == $event.contrato.Almacen);
         this.model.posiciones[posicionIndex].selectAlmacenEntrega  = almacenSeleccionadoAux;
 
-        var grupoArticuloSeleccionadoAux = this.combos.GrupoArticulo.find(x => x.Codigo == $event.contrato.GrupoArticulo);
+        let grupoArticuloSeleccionadoAux = this.combos.GrupoArticulo.find(x => x.Codigo == $event.contrato.GrupoArticulo);
         this.model.posiciones[posicionIndex].selectArticuloCompras = grupoArticuloSeleccionadoAux;
 
-        var grupoComprasSeleccionadoAux = this.combos.GrupoCompras.find(x => x.Codigo == $event.contrato.GrupoCompras);
+        let grupoComprasSeleccionadoAux = this.combos.GrupoCompras.find(x => x.Codigo == $event.contrato.GrupoCompras);
         this.model.posiciones[posicionIndex].selectGrupoCompras = grupoComprasSeleccionadoAux;
 
         this.displayAsociar = false;
         this.textoAsociarBtn = 'EDITAR CONTRATO'
+    }
+
+    public showObtenerContratoMarcoDialog() {
+        this.obtenerContratoMarcoService.show(true);
+    }
+
+    public obtenerContratoMarco(args: ObtenerContratoMarco) {
+        this.service.obtenerContratoMarco(args.centro, args.numeroContrato).subscribe((response: any) => {
+            if (response.data && response.data.length) {
+                this.contratoMarco = new ContratoMarco(response.data[0]);
+            }
+        });
+    }
+
+    public agregarPosicionesContratoMarco(contratoMarco: ContratoMarco) {
+        if (contratoMarco != null) {
+            contratoMarco.posiciones.filter(pos => pos.selected == true).forEach(pos => {
+                let centro = this.combos.Centro.find(x => x.Codigo == pos.centro);
+                let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == centro.CodigoSap);
+                let moneda = this.combos.Moneda.find(x => x.Codigo == contratoMarco.claveMoneda);
+
+                let servicioMaterialObj = {
+                    Codigo: pos.numeroMaterial, 
+                    Descripcion: pos.textoMaterialOServicio,
+                    UnidadMedidaBase: pos.unidadMedida
+                };
+
+                let newPos = this.model.nuevaPosicion(null, centro, direccionCentro, moneda);
+
+                newPos.codigoServicio = servicioMaterialObj;
+                newPos.tareaSubcontratar = servicioMaterialObj.Descripcion;
+                newPos.tareaSubcontratarObj = { ...servicioMaterialObj };
+
+                newPos.numeroContratoSuperior = pos.numeroDocumentoCompras;
+                newPos.numeroPosicionContratoSuperior = pos.numeroPosicionDocumentoCompras;
+                newPos.provedorFijo = contratoMarco.numeroCuentaProveedor;
+                newPos.nombreProveedor = contratoMarco.nombreProveedor;
+                newPos.orgCompras = contratoMarco.organizacionCompras;
+                newPos.precioBruto = pos.importeMonedaBapi;
+
+                let unidadMedidaObj = this.combos.Unidades.find(u => u.Descripcion == pos.unidadMedida);
+                if (unidadMedidaObj) {
+                    newPos.unidadSeleccionada = unidadMedidaObj;
+                }
+
+                let tipoImputacionObj = this.combos.TipoImputacion.find(m => m.CodigoSap == pos.tipoImputacionCompras);
+                if (tipoImputacionObj) {
+                    newPos.tipoImputacion = tipoImputacionObj;
+                }
+        
+                let almacenSeleccionadoObj = this.combos.Almacen.find(x => x.Codigo == pos.almacen);
+                if (almacenSeleccionadoObj) {
+                    newPos.selectAlmacenEntrega  = almacenSeleccionadoObj;
+                }
+        
+                let grupoArticuloSeleccionadoObj = this.combos.GrupoArticulo.find(x => x.Codigo == pos.grupoArticuloMateriales);
+                if (grupoArticuloSeleccionadoObj) {
+                    newPos.selectArticuloCompras = grupoArticuloSeleccionadoObj;
+                }
+        
+                let grupoComprasSeleccionadoObj = this.combos.GrupoCompras.find(x => x.Codigo == contratoMarco.grupoCompras);
+                if (grupoComprasSeleccionadoObj) {
+                    newPos.selectGrupoCompras = grupoComprasSeleccionadoObj;
+                }
+
+                let canAddSubPos = newPos.esTipoPosicionServicio && pos.subPosiciones.length && pos.subPosiciones.filter(subpos => subpos.selected).length;
+                if (canAddSubPos) {
+                    newPos.listadoSubPosiciones = [];
+                    pos.subPosiciones.filter(subpos => subpos.selected).forEach(subPos => {
+                        let newSubPos = newPos.crearSubPosicion();
+
+                        let codigoServicioObj = {
+                            Codigo: subPos.numeroServicio,
+                            Descripcion: subPos.textoBreve,
+                            UnidadMedidaBase: subPos.unidadMedidaBase
+                        };
+                        newSubPos.codigoServicio =  { ...codigoServicioObj }
+                        newSubPos.tareaSubcontratar = subPos.textoBreve;
+                        newSubPos.tareaSubcontratarObj = { ...codigoServicioObj };
+                
+                        var unidadSeleccionadaObj = this.combos.Unidades.find(x => x.Descripcion == subPos.unidadMedidaBase);
+                        if (unidadSeleccionadaObj) {
+                            newSubPos.unidadSeleccionada = unidadSeleccionadaObj;
+                            newSubPos.unidadMedida = unidadSeleccionadaObj.Descripcion;
+                        }
+
+                        newSubPos.cuentaTd = subPos.cantidadPositivoONegativo;
+                        newSubPos.precioBruto = subPos.precioUnitario;
+                        newSubPos.calcularValorNeto();
+                        newPos.agregarSubPosicion(newSubPos);
+                        newPos.calcularValorTotal();
+                    });
+                }
+
+                this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
+            });
+            this.model.calcularValorTotalPorMoneda();
+        }
+        this.obtenerContratoMarcoService.close();
     }
 
     public get esTipoMaterial(): boolean  {
@@ -945,4 +1049,5 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     public get tieneCodigoServicio(): boolean  {
         return this.model.selectTipoPosicion.Codigo == "MATERIALES" && this.model.posicionActual.codigoServicio != null;
     }
+
 }

@@ -117,8 +117,8 @@ export class ComprasService extends BaseService {
                     Indice: x.numeroPosicion,
                     ProveedorFijo: x.provedorFijo,
                     NombreProveedor: x.nombreProveedor,
-                    NumeroContratoSuperior: x.noContrato,
-                    NumeroPosicionContratoSuperior: x.noPosicionContrato,
+                    NumeroContratoSuperior: x.numeroContratoSuperior,
+                    NumeroPosicionContratoSuperior: x.numeroPosicionContratoSuperior,
                     OrganizacionCompras: x.orgCompras,
                     TextoSuministro: x.textoSuministro,
                     Motivo: x.motivo,
@@ -322,5 +322,14 @@ export class ComprasService extends BaseService {
         payload.append('emailCompose', JSON.stringify(emailCompose));
         return this.http
             .post<any>('/api/compras/EnviarEmail', payload, { headers: this.headersPost });
+    }
+
+    obtenerContratoMarco(centro: string, numeroContrato: string): Observable<any> {
+        let params: HttpParams = new HttpParams()
+            .append('numeroContrato', numeroContrato)        
+            .append('centro', centro);
+
+        return this.http
+            .get("/api/compras/ObtenerContratoMarco", { params: params })
     }
 }

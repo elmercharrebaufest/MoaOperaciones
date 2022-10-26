@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.ContratosWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -57,7 +57,7 @@ namespace SustitucionMOAWS.ContratosWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -89,7 +89,7 @@ namespace SustitucionMOAWS.ContratosWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -121,7 +121,7 @@ namespace SustitucionMOAWS.ContratosWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -167,7 +167,7 @@ namespace SustitucionMOAWS.ContratosWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -199,7 +199,7 @@ namespace SustitucionMOAWS.ContratosWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -251,6 +251,24 @@ namespace SustitucionMOAWS.ContratosWebServiceMOA {
         private string eSTADOField;
         
         private string cLASE_DOCField;
+        
+        private string pAGO_DIFERIDOField;
+        
+        private string dOL_EXPRESSField;
+        
+        private string dOL_CORREDORField;
+        
+        private string fECHA_LIMITEField;
+        
+        private string pAGO_DIF_ARPField;
+        
+        private string dIAS_DIFERIMField;
+        
+        private string cANJEField;
+        
+        private string cESIONField;
+        
+        private string cOMPENSACIONField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -525,6 +543,114 @@ namespace SustitucionMOAWS.ContratosWebServiceMOA {
             set {
                 this.cLASE_DOCField = value;
                 this.RaisePropertyChanged("CLASE_DOC");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=19)]
+        public string PAGO_DIFERIDO {
+            get {
+                return this.pAGO_DIFERIDOField;
+            }
+            set {
+                this.pAGO_DIFERIDOField = value;
+                this.RaisePropertyChanged("PAGO_DIFERIDO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=20)]
+        public string DOL_EXPRESS {
+            get {
+                return this.dOL_EXPRESSField;
+            }
+            set {
+                this.dOL_EXPRESSField = value;
+                this.RaisePropertyChanged("DOL_EXPRESS");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=21)]
+        public string DOL_CORREDOR {
+            get {
+                return this.dOL_CORREDORField;
+            }
+            set {
+                this.dOL_CORREDORField = value;
+                this.RaisePropertyChanged("DOL_CORREDOR");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=22)]
+        public string FECHA_LIMITE {
+            get {
+                return this.fECHA_LIMITEField;
+            }
+            set {
+                this.fECHA_LIMITEField = value;
+                this.RaisePropertyChanged("FECHA_LIMITE");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=23)]
+        public string PAGO_DIF_ARP {
+            get {
+                return this.pAGO_DIF_ARPField;
+            }
+            set {
+                this.pAGO_DIF_ARPField = value;
+                this.RaisePropertyChanged("PAGO_DIF_ARP");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=24)]
+        public string DIAS_DIFERIM {
+            get {
+                return this.dIAS_DIFERIMField;
+            }
+            set {
+                this.dIAS_DIFERIMField = value;
+                this.RaisePropertyChanged("DIAS_DIFERIM");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=25)]
+        public string CANJE {
+            get {
+                return this.cANJEField;
+            }
+            set {
+                this.cANJEField = value;
+                this.RaisePropertyChanged("CANJE");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=26)]
+        public string CESION {
+            get {
+                return this.cESIONField;
+            }
+            set {
+                this.cESIONField = value;
+                this.RaisePropertyChanged("CESION");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=27)]
+        public string COMPENSACION {
+            get {
+                return this.cOMPENSACIONField;
+            }
+            set {
+                this.cOMPENSACIONField = value;
+                this.RaisePropertyChanged("COMPENSACION");
             }
         }
         

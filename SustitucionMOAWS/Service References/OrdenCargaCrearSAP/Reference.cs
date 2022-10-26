@@ -55,18 +55,23 @@ namespace SustitucionMOAWS.OrdenCargaCrearSAP {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=6)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_USUARIO;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=7)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string IM_VALIDA_KG;
         
         public SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest() {
         }
         
-        public SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, decimal IM_KILOS, string IM_MATERIAL, string IM_PEDIDO, string IM_VALIDA_KG) {
+        public SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, decimal IM_KILOS, string IM_MATERIAL, string IM_PEDIDO, string IM_USUARIO, string IM_VALIDA_KG) {
             this.IM_CLIENTE = IM_CLIENTE;
             this.IM_CONTRATO = IM_CONTRATO;
             this.IM_CORREDOR = IM_CORREDOR;
             this.IM_KILOS = IM_KILOS;
             this.IM_MATERIAL = IM_MATERIAL;
             this.IM_PEDIDO = IM_PEDIDO;
+            this.IM_USUARIO = IM_USUARIO;
             this.IM_VALIDA_KG = IM_VALIDA_KG;
         }
     }
@@ -125,7 +130,7 @@ namespace SustitucionMOAWS.OrdenCargaCrearSAP {
             return base.Channel.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(request);
         }
         
-        public string SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, decimal IM_KILOS, string IM_MATERIAL, string IM_PEDIDO, string IM_VALIDA_KG, out string EX_PEDIDO) {
+        public string SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, decimal IM_KILOS, string IM_MATERIAL, string IM_PEDIDO, string IM_USUARIO, string IM_VALIDA_KG, out string EX_PEDIDO) {
             SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest inValue = new SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest();
             inValue.IM_CLIENTE = IM_CLIENTE;
             inValue.IM_CONTRATO = IM_CONTRATO;
@@ -133,6 +138,7 @@ namespace SustitucionMOAWS.OrdenCargaCrearSAP {
             inValue.IM_KILOS = IM_KILOS;
             inValue.IM_MATERIAL = IM_MATERIAL;
             inValue.IM_PEDIDO = IM_PEDIDO;
+            inValue.IM_USUARIO = IM_USUARIO;
             inValue.IM_VALIDA_KG = IM_VALIDA_KG;
             SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGAResponse retVal = ((SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA)(this)).SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(inValue);
             EX_PEDIDO = retVal.EX_PEDIDO;

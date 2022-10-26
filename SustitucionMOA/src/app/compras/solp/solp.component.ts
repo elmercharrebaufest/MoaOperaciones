@@ -308,7 +308,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     private getSelectedTipoPosicion(posiciones: any) {
-        debugger;
         let tipoPosicion = undefined;
         if (posiciones != undefined && posiciones.length > 0) {
             let posicion = posiciones.filter(p => p.TipoPosicion.Codigo != undefined);
@@ -453,11 +452,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.valorImputacion = x.TipoImputacionValor;
                 posActual.cuentaMayor = x.CuentaMayor;
 
-                posActual.provedorFijo          = x.ProveedorFijo,
-                posActual.nombreProveedor       = x.NombreProveedor,
-                posActual.noContrato            = x.NumeroContratoSuperior,
-                posActual.noPosicionContrato    = x.NumeroPosicionContratoSuperior,
-                posActual.orgCompras            = x.OrganizacionCompras,
+                posActual.provedorFijo                      = x.ProveedorFijo,
+                posActual.nombreProveedor                   = x.NombreProveedor,
+                posActual.numeroContratoSuperior            = x.NumeroContratoSuperior,
+                posActual.numeroPosicionContratoSuperior    = x.NumeroPosicionContratoSuperior,
+                posActual.orgCompras                        = x.OrganizacionCompras,
 
                 posActual.proveedoresValidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial);
                 posActual.proveedoresNoSugeridos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial);
@@ -665,7 +664,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.messageService.add({ severity: 'success', detail: 'Los datos se guardaron correctamente' });
                         }
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
-                        debugger
                         this.solpActual.id = result.Solp.Id;
                         this.solpActual.NroSolp = result.Solp.NroSolp;
                         this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.length);
@@ -720,7 +718,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 }
                                 this.listadoErrores = result.Errores;
                                 this.displayErrorSAP = true;
-
                             }
                             // if (this.solpActual.nroSolp) {
                             //     this.displaySAPEditar = true;
@@ -1046,7 +1043,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.displaySAP = false;
         this.displaySAPEditar = false;
         const emailModel = new EmailComposeModel();
-        emailModel.from = this.solpActual.mail;
+        emailModel.from = this.fromEmail;
         emailModel.to = this.emailTo;
         emailModel.subject = this.getEmailSubject(esPrimeraFinalizacion, esPosteriorFinalizacion);
         emailModel.body = this.emailBody;
@@ -1074,15 +1071,24 @@ export class SolpComponent extends BaseComponent implements OnInit {
         });
     }
 
+    private get fromEmail(): string {
+        return this.solpActual.mail != undefined && this.solpActual.mail != null ? this.solpActual.mail : "";
+    }
+
+    private get nombreDePedido(): string {
+        return this.solpActual.nombreDePedido != undefined && this.solpActual.nombreDePedido != null ? this.solpActual.nombreDePedido : "";
+    }
+
     private getEmailSubject(esPrimeraFinalizacion: boolean, esPosteriorFinalizacion: boolean): string {
         let subject = "";
+        
         if (esPrimeraFinalizacion) {
             //SOLP N°” + *nnnnn* + “PLIEGO:” + *detalle del pliego*
-            subject = `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.solpActual.nombreDePedido}`;
+            subject = `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;
         }
         if (esPosteriorFinalizacion) {
             //ACTUALIZACIÓN SOLP N°” + *nnnnn* + “PLIEGO:” + *detalle del pliego*
-            subject = `ACTUALIZACIÓN SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.solpActual.nombreDePedido}`;
+            subject = `ACTUALIZACIÓN SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;
         }
         return subject;
     }
@@ -1099,7 +1105,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     private get emailBody(): string {
-        return `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.solpActual.nombreDePedido}`;
+        return `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;
     }
 
     private get downloadLinkUrl(): string {

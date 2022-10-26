@@ -577,6 +577,7 @@ namespace SustitucionMOAUtils.Services
 			return !string.IsNullOrEmpty(solpEntity.NroSolp) && solpEntity.Posiciones.Any(p => string.IsNullOrEmpty(p.NumeroContratoSuperior));
 		}
 
+		//metodos para obtener las solp que tienen numero de contrato y las agrupamos por el mismo proveedor
 		private Dictionary<string, List<SolpPosicion>> getPosicionesByProveedor(Solp solpEntity)
 		{
 			Func<SolpPosicion, bool> hasProveedorAndContrato = (p) => !string.IsNullOrEmpty(p.ProveedorFijo) &&
@@ -603,16 +604,15 @@ namespace SustitucionMOAUtils.Services
 
 		private RespuestaGuardarSOLP FinalizarSolp(SolpDto solp, Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas, RespuestaGuardarSOLP respuestaGuardarSOLP)
 		{
-			var crearPedidoConsumer = crearPedido(solpEntity);
-			var crearSolpComsumer = crearSolp(solpEntity);
-			var modificarSolpConsumer = modificarSolp(solpEntity);
-
+			//variables para ver a que request accedemos
+			//var crearPedidoConsumer = crearPedido(solpEntity);
+			//var crearSolpComsumer = crearSolp(solpEntity);
+			//var modificarSolpConsumer = modificarSolp(solpEntity);
 
 			//var respuestaGuardarSOLP = new RespuestaGuardarSOLP();
-			if (crearSolpComsumer)
+			if (string.IsNullOrEmpty(solpEntity.NroSolp))
 			{
 				var resultadoCrearSolp = crearSolpConsumerMOA.Request(solpEntity, postEntitySubPosicionesEliminadas);
-
 				respuestaGuardarSOLP.Errores = new List<string>();
 
 				foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Tipo == "E"))
@@ -635,12 +635,10 @@ namespace SustitucionMOAUtils.Services
 				}
 				repositorio.GuardarCambios();
 			}
-			else if (modificarSolpConsumer)
+			else
 			{
 				var resultadoEditarSolp = modificarSolpConsumerMOA.Request(solpEntity, postEntitySubPosicionesEliminadas);
-
 				respuestaGuardarSOLP.Errores = new List<string>();
-				
 				foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
 				{
 					var mensaje = "No se pudo procesar la SOLP";
@@ -670,37 +668,46 @@ namespace SustitucionMOAUtils.Services
 				}
 				repositorio.GuardarCambios();
 			}
-
-			if (crearPedidoConsumer) 
-			{
-				var proveedorPosiciones = getPosicionesByProveedor(solpEntity);
-
-				if (proveedorPosiciones.Any())
-				{
-					proveedorPosiciones.AsEnumerable().ToList().ForEach(proveedorConPosiciones =>
-					{
-						var resultadoCrearPedido = crearPedidoConsumerMOA.Request(solpEntity, postEntitySubPosicionesEliminadas, proveedorConPosiciones.Value);
-
-						respuestaGuardarSOLP.Errores = new List<string>();
-
-						foreach (var error in resultadoCrearPedido.Errores.Where(x => x.Tipo == "E"))
-						{
-							var mensaje = error.Mensaje.Trim();
-							respuestaGuardarSOLP.Errores.Add(mensaje);
-						}
-
-						if (respuestaGuardarSOLP.Errores.Count == 0)
-						{
-							proveedorConPosiciones.Value.ForEach(posicion => posicion.NumeroPedido = resultadoCrearPedido.NumeroPedido);
-
-							respuestaGuardarSOLP.Mensaje = "OK";
-							repositorio.GuardarCambios();
-						}
-					});
-				}		
-			}
 			respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
 			return respuestaGuardarSOLP;
+
+			//TODO: Esto de crear pedido queda comentado por que todavia falta las definiciones del requerimiento.
+			//NO BORRAR EL CODIGO COMENTADO EN EL BLOQUE DE ABAJO
+
+			//Esto estaria temporal ya que despues de haber desarrollado esta parte nos comentaron que el flujo en realidad no es tan directo, sino que 
+			//necesitamos que la solp tengo numero de solp y que el estado sea liberado
+			//if (crearPedidoConsumer) 
+			//{
+			//	//Aca obtenemos las posiciones que tienen en mismo proveedor
+			//	var proveedorPosiciones = getPosicionesByProveedor(solpEntity);
+
+
+			//	//al obtener las posiciones agrupadas por proveedor definimos que vamos a tener un numero de pedido para todas las posiciones con el mismo proveedor y numeros de pedido 
+			//	//distintos si cambia el proveedor
+			//	if (proveedorPosiciones.Any())
+			//	{
+			//		proveedorPosiciones.AsEnumerable().ToList().ForEach(proveedorConPosiciones =>
+			//		{
+			//			var resultadoCrearPedido = crearPedidoConsumerMOA.Request(solpEntity, postEntitySubPosicionesEliminadas, proveedorConPosiciones.Value);
+
+			//			respuestaGuardarSOLP.Errores = new List<string>();
+
+			//			foreach (var error in resultadoCrearPedido.Errores.Where(x => x.Tipo == "E"))
+			//			{
+			//				var mensaje = error.Mensaje.Trim();
+			//				respuestaGuardarSOLP.Errores.Add(mensaje);
+			//			}
+
+			//			if (respuestaGuardarSOLP.Errores.Count == 0)
+			//			{
+			//				proveedorConPosiciones.Value.ForEach(posicion => posicion.NumeroPedido = resultadoCrearPedido.NumeroPedido);
+
+			//				respuestaGuardarSOLP.Mensaje = "OK";
+			//				repositorio.GuardarCambios();
+			//			}
+			//		});
+			//	}		
+		
 		}
 
 		private void GuardarUsuarioComprasRelacionado(SolpDto solp)
@@ -2074,6 +2081,7 @@ namespace SustitucionMOAUtils.Services
 			return lista;
 		}
 
+		//Fuente de aprovisionamiento es donde consultamos cuando ponemos un numero de material y asociamos un contrato
 		public List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro)
 		{
 			var result = obtenerFuenteAprovisionamientoConsumerMOA.request(fechaEntregaPosicion, numeroMaterial, centro);
@@ -2094,7 +2102,7 @@ namespace SustitucionMOAUtils.Services
 			}).ToList();
 		}
 
-
+		//Obtener contrato es lo que consultamos cuando vamos a crear una posicion desde contrato marco
 		public List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro)
 		{		
             var result = obtenerContratoSolpConsumerMOA.Request(numeroContrato, centro);
