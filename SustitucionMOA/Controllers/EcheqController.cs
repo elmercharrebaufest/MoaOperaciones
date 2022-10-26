@@ -25,7 +25,7 @@ namespace SustitucionMOA.Controllers
         private readonly IEcheqService service;
         private readonly IUsuarioService usuarioService;
              
-        public EcheqController(IEcheqService echeqService)
+        public EcheqController(IEcheqService echeqService, IUsuarioService usuarioService)
         {
             this.service = echeqService;
             this.usuarioService = usuarioService;
@@ -36,7 +36,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(service.ObtenerPendientePago(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(new { data = service.ObtenerPendientePago(SessionPersister.Proveedor, fechaInicio, fechaFin, "") });
+
             }
             catch (InfoCustomException e)
             {

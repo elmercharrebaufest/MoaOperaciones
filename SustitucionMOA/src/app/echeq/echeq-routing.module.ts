@@ -5,6 +5,7 @@ import { EcheqGestionComponent } from './gestion/echeq-gestion.component';
 const routes: Routes = [
     { path: '', component: EcheqGestionComponent },
     { path: "gestion", component: EcheqGestionComponent }
+
 ];
 
 @NgModule({
