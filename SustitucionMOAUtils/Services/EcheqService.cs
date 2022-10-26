@@ -28,27 +28,27 @@ namespace SustitucionMOAUtils.Services
                             IEcheqModificarFijacionConsumerMOA echeqModificarFijacionConsumerMOA,
                             IEcheqModificacionDocumentoChequeConsumerMOA echeqModificacionDocumentoChequeConsumerMOA,
                             IRepositorio repositorio)
-		{
-			this.echeqVisualizarPendientePagoConsumerMOA = echeqVisualizarPendientePagoConsumerMOA;
+        {
+            this.echeqVisualizarPendientePagoConsumerMOA = echeqVisualizarPendientePagoConsumerMOA;
             this.echeqModificarContratoConsumerMOA = echeqModificarContratoConsumerMOA;
             this.echeqModificarFijacionConsumerMOA = echeqModificarFijacionConsumerMOA;
             this.echeqModificacionDocumentoChequeConsumerMOA = echeqModificacionDocumentoChequeConsumerMOA;
             this.repositorio = repositorio;
 
-		}
+        }
 
         public List<EcheqNegocioDto> ObtenerPendientePago(string proveedor, string fechaInicio, string fechaFin, string contrato)
         {
             try
             {
-            List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
 
                 List<EcheqNegocioDto> result = echeqVisualizarPendientePagoConsumerMOA.Request(proveedor, fechas, contrato);
-         
+
                 result.Where(x => x.Clasificacion == "PRODUCTOR" && x.MarcaCheque == true).ToList().ForEach(x => x.Documentos.ForEach(k => k.MarcaCheque = true));
 
-            return result;
-        }
+                return result;
+            }
             catch (ValidationCustomException e)
             {
                 throw e;
@@ -260,7 +260,7 @@ namespace SustitucionMOAUtils.Services
 
 
                     }
-    }
+                }
                 else
                 {
                     //generar echeqNegocio

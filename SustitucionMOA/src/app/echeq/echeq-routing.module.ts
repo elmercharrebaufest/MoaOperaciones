@@ -6,10 +6,6 @@ const routes: Routes = [
     { path: '', component: EcheqGestionComponent },
     { path: "gestion", component: EcheqGestionComponent }
 
-const routes: Routes = [
-    { path: '', component: GestionEcheqComponent },
-    { path: 'gestion', component: GestionEcheqComponent },
-    { path: 'mis-echeq', component: MisEcheqComponent },
 ];
 
 @NgModule({

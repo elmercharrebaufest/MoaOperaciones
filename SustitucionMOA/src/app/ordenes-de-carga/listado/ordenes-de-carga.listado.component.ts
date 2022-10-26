@@ -159,6 +159,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
             this.mensajeComponent.setMsgsEmpty();
         }
         this.data = null;
+        //this.puedeEnviarASAP = false;
         try {
             this.unsubscribe();
             this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(

@@ -4,7 +4,7 @@ import { BaseService } from './../common/services/BaseService';
 import { HttpParams } from '@angular/common/http';
 import {timeoutWith, map} from 'rxjs/operators';
 import { EcheqContrato } from './gestion/echeq-contrato.model';
- 
+
 
 @Injectable()
 export class EcheqService extends BaseService {
@@ -62,7 +62,7 @@ export class EcheqService extends BaseService {
 
         return this.http
             .post('/api/echeq/DesmarcarDocumento', payload)
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedi� el tiempo de espera, por favor int�ntelo m�s tarde "))));
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 }
 
