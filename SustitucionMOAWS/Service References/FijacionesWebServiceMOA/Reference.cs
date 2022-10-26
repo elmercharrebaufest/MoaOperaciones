@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.FijacionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -57,7 +57,7 @@ namespace SustitucionMOAWS.FijacionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -117,7 +117,7 @@ namespace SustitucionMOAWS.FijacionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -149,7 +149,7 @@ namespace SustitucionMOAWS.FijacionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -181,7 +181,7 @@ namespace SustitucionMOAWS.FijacionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -237,6 +237,18 @@ namespace SustitucionMOAWS.FijacionesWebServiceMOA {
         private string mONEDAField;
         
         private string cLASE_DOCField;
+        
+        private string dOLARIZADOField;
+        
+        private string dOL_EXPRESSField;
+        
+        private string dOL_CORREDORField;
+        
+        private string fECHA_LIMITEField;
+        
+        private string pAGO_DIF_ARPField;
+        
+        private string dIAS_DIFERIMField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -538,6 +550,78 @@ namespace SustitucionMOAWS.FijacionesWebServiceMOA {
             }
         }
         
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=19)]
+        public string DOLARIZADO {
+            get {
+                return this.dOLARIZADOField;
+            }
+            set {
+                this.dOLARIZADOField = value;
+                this.RaisePropertyChanged("DOLARIZADO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=20)]
+        public string DOL_EXPRESS {
+            get {
+                return this.dOL_EXPRESSField;
+            }
+            set {
+                this.dOL_EXPRESSField = value;
+                this.RaisePropertyChanged("DOL_EXPRESS");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=21)]
+        public string DOL_CORREDOR {
+            get {
+                return this.dOL_CORREDORField;
+            }
+            set {
+                this.dOL_CORREDORField = value;
+                this.RaisePropertyChanged("DOL_CORREDOR");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=22)]
+        public string FECHA_LIMITE {
+            get {
+                return this.fECHA_LIMITEField;
+            }
+            set {
+                this.fECHA_LIMITEField = value;
+                this.RaisePropertyChanged("FECHA_LIMITE");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=23)]
+        public string PAGO_DIF_ARP {
+            get {
+                return this.pAGO_DIF_ARPField;
+            }
+            set {
+                this.pAGO_DIF_ARPField = value;
+                this.RaisePropertyChanged("PAGO_DIF_ARP");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=24)]
+        public string DIAS_DIFERIM {
+            get {
+                return this.dIAS_DIFERIMField;
+            }
+            set {
+                this.dIAS_DIFERIMField = value;
+                this.RaisePropertyChanged("DIAS_DIFERIM");
+            }
+        }
+        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -549,7 +633,7 @@ namespace SustitucionMOAWS.FijacionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
