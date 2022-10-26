@@ -335,7 +335,6 @@
     <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.css" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.html" />
-    <Content Include="src\app\echeq\gestion\echeq.gestion.component.html" />
     <Content Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.html" />
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
     <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.css" />
@@ -1145,7 +1144,6 @@
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.component.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.service.ts" />
-    <TypeScriptCompile Include="src\app\echeq\gestion\echeq.gestion.component.ts" />
     <TypeScriptCompile Include="src\app\echeq\echeq-routing.module.ts" />
     <TypeScriptCompile Include="src\app\echeq\echeq.component.ts" />
     <TypeScriptCompile Include="src\app\echeq\echeq.module.ts" />
@@ -1384,6 +1382,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="dist\assets\css\" />
+    <Folder Include="src\app\echeq\gestion\" />
     <Folder Include="Views\Default\" />
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />
