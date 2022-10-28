@@ -1,0 +1,47 @@
+<p-dialog [(visible)]="displayAperturarEcheq"
+    modal="modal" 
+    [width]="550"
+    [draggable]="false" 
+    [closable]="true"
+    (onHide)="onHideAperturarEcheqDialog()"
+    appendTo="body" 
+    positionTop="30" 
+    [contentStyle]="{ 'max-height':'1500px', 'min-height':'400px'}"
+    onshow="">
+	<p-header>
+		Apertura Liquidación #{{documento.documento}}
+	</p-header>
+	
+	<div *ngIf="documento != null" class="row myRow">
+		<div class="col-md-12">
+			<strong>Total ${{documento.importeEnPesos}} (100%)</strong>
+		</div>
+    <div *ngFor="let cheque of documento.listaChequesApertura" class="col-md-12 row myRow alinearTitulo margenInput">
+      <div class="col-md-12 titulosModal" style="margin-right: 1em;">
+        Echeq {{cheque.ordenCheque}}
+        <input type="text" [(ngModel)]="cheque.importeCheque" class="styled-echeq" [disabled]="cheque.ordenCheque == 1">
+        <span *ngIf="cheque.ordenCheque != 1" (click)="eliminarEcheq(cheque.ordenCheque)">
+          <img src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="pointer" style="height:25px;"/>
+        </span>
+        <span *ngIf="cheque.ordenCheque == 1">
+          (30%) Aforo
+        </span>
+        <span *ngIf="cheque.ordenCheque != 1" (click)="calcularPorcentaje(cheque)">
+          ({{porcentaje}}%) 
+        </span>
+      </div>
+    </div>
+    <div class="col-md-12 row myRow alinearTitulo margenInput">
+      <div *ngIf="documento.listaChequesApertura.length < 4" class="col-md-12 titulosModal" style="margin-right: 1em;">
+        <span (click)="agregarInputEcheq()" class="pointer">
+          <i class="fa fa-plus-square"></i>
+          &nbsp; Agregar Echeq
+        </span>
+      </div>
+    </div>
+	</div>
+	<p-footer>
+		<button type="button" class="btn btn-danger" (click)="onCancelarAperturarEcheq()">CANCELAR</button>
+		<button type="button" class="btn btn-success" (click)="onAperturar()">GUARDAR</button>
+	</p-footer>
+</p-dialog>

@@ -1,0 +1,20 @@
+.styled-echeq {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #3f4845;
+    overflow: hidden;
+    font-family: "Roboto Condensed", Arial, sans-serif;
+}
+
+.titulosModal {
+    text-align: left;
+    font: normal normal bold 16px/24px Roboto Regular;
+    letter-spacing: 0px;
+    color: #1A1A1A;
+    opacity: 1;
+    margin: 0;
+  }
+
+  .pointer {
+    cursor: pointer;
+  }

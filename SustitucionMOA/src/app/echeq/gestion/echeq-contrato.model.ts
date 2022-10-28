@@ -1,4 +1,5 @@
 import * as uuid from 'uuid';
+import { EcheqApertura } from './echeq.popup/echeqApertura-model';
 
 export class EcheqContrato {
 
@@ -18,7 +19,6 @@ export class EcheqContrato {
 
     constructor(entity: any =  null) {
         if (entity != null) {
-            console.log("Entidad: ", entity, "MarcaCheque: ", this.selected, entity.MarcaCheque)
             this.selected = entity.MarcaCheque;
             this.contrato = entity.Contrato;
             this.pedido = entity.Pedido
@@ -35,8 +35,6 @@ export class EcheqContrato {
                     this.documentos.push(new EcheqDocumento(pos, this.id));
                 });
             }
-
-            console.log("id: ", this.id)
         }
     }
 }
@@ -60,6 +58,7 @@ export class EcheqDocumento {
     public importeEnPesos: number;
     public moneda: number;
     public clasificacion: string;
+    public listaChequesApertura: EcheqApertura[];
 
     constructor(entity: any = null, parentId: any) {
         if (entity != null) {
@@ -76,7 +75,7 @@ export class EcheqDocumento {
             this.importeMonedaDocumento = entity.ImporteMonedaDocumento;
             this.importeEnPesos = entity.ImporteEnPesos;
             this.moneda = entity.Moneda;
-             this.clasificacion = entity.Clasificacion;
+            this.clasificacion = entity.Clasificacion;
         }
     }
 }

@@ -54,7 +54,6 @@ export class EcheqGestionComponent extends EcheqBaseComponent{
                 } else if (response.info != undefined) {
                     this.floatMsgService.setInfoMsg(response.info);
                 } else {
-                    // console.log(response.data);
                     //para mapear el model  
                     this.echeqContratos = response.data.map( res => {
                         return new EcheqContrato(res)

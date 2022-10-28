@@ -6,6 +6,7 @@ import es from '@angular/common/locales/es';
 import {ConfirmationService} from 'primeng/api';
 import { EcheqGestionComponent } from '../echeq-gestion.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { EcheqApertura } from '../echeq.popup/echeqApertura-model';
 
 
 
@@ -27,9 +28,12 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
   @Input() echeqContratos: Array<EcheqContrato>;
   @BlockUI() blockUI: NgBlockUI;
 
+  documentoSelect: EcheqDocumento;
   public itemsPerPage: string;
   msgs: { severity: string; summary: string; detail: string; }[];
-
+  
+  displayAperturarEcheq: boolean = false;
+  echeqApertura: EcheqApertura;
 
   ngOnInit() {
     registerLocaleData(es);
@@ -243,5 +247,32 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
         this.floatMsgService.setErrorMsg(e);          
     }  
   }
+
+  showAperturarEcheqDialog(echeqDocumento: EcheqDocumento ) {
+    this.documentoSelect = echeqDocumento;
+    this.displayAperturarEcheq = true;
+
+    if(echeqDocumento.listaChequesApertura == null){
+      echeqDocumento.listaChequesApertura = new Array<EcheqApertura>();
+    }
+
+    if(echeqDocumento.listaChequesApertura.length == 0){
+      let aforo = {
+        ordenCheque: 1,
+        importeCheque: echeqDocumento.importeEnPesos * 0.3,
+        porcentaje: 0
+      };
+      echeqDocumento.listaChequesApertura.push(aforo);
+    }
+  }
+
+  cancelarEcheqApertura() {
+    this.displayAperturarEcheq = false;
+}
+
+ // Se asocian los datos del echeq
+ aperturarEcheq($event) {
+  this.displayAperturarEcheq = false;
+}
 
 }

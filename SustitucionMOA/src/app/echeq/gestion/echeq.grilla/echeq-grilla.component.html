@@ -73,7 +73,7 @@
                                             <td>{{documento.documento}}</td>
                                             <td>{{documento.fecha}}</td>
                                             <td>{{documento.importeEnPesos | number:'1.2-2':'es'}}</td>
-                                            <td><button type="button" class="btn" style="background-color: #009688; color: white;" *ngIf="documento.selected">GENERAR ECHEQS</button></td>      
+                                            <td><button type="button" class="btn" style="background-color: #009688; color: white;" *ngIf="documento.selected" (click)="showAperturarEcheqDialog(documento)">GENERAR ECHEQS</button></td>      
                                                                        
                                         </tr>  
                                         <!-- <tr>Las liquidaciones marcadas con Echeq requieren apertura, si desea cobrar alguna liquidación por transferencia debe desmarcarla</tr>                                    -->
@@ -89,6 +89,13 @@
 
         <p-confirmDialog header="ConfirmationContrato" key="confimationContrato" appendTo="body"></p-confirmDialog>
         <p-confirmDialog header="ConfirmationDocumento" key="confimationDocumento" appendTo="body"></p-confirmDialog>
+        
+        <app-echeq-popup
+            [(displayAperturarEcheq)]="displayAperturarEcheq"
+            (cancelarAperturarEcheqEmitter)="cancelarEcheqApertura()"
+            (AperturarEcheqEmitter)="aperturarEcheq($event)"
+            [(documento)]="documentoSelect">
+        </app-echeq-popup>
 
 
         <pagination-template #pT="paginationApi" (pageChange)="p = $event">
