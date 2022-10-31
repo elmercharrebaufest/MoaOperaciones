@@ -45,7 +45,7 @@ export class EcheqPopupComponent implements OnInit {
   }
 
   eliminarEcheq(ordenCheque) {
-    this.documento.listaChequesApertura.splice(ordenCheque, 1);
+    this.documento.listaChequesApertura.splice(ordenCheque - 1, 1);
     this.reEnumerarEcheq(this.documento.listaChequesApertura)
   }
 
@@ -58,13 +58,16 @@ export class EcheqPopupComponent implements OnInit {
   porcentaje: number;
 
   calcularPorcentaje(echeqApertura: EcheqApertura){
-    debugger
-    
     let porcentaje = (echeqApertura.importeCheque * 100) / this.documento.importeEnPesos
     var intPorcentaje = Math.round( porcentaje );
     this.porcentaje = intPorcentaje;
   }
 
+  //listaOriginal y copia lista
+  //validar que no quede en 0 ni en blanco
+  //Calcular 100% ni de mas ni de menos (mensaje de aviso)
+  //La cantidad de cheques y el aforo tiene que consultar de la tabla de configuraciones en la db
+  
 
 
 }

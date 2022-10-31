@@ -19,16 +19,15 @@
     <div *ngFor="let cheque of documento.listaChequesApertura" class="col-md-12 row myRow alinearTitulo margenInput">
       <div class="col-md-12 titulosModal" style="margin-right: 1em;">
         Echeq {{cheque.ordenCheque}}
-        <input type="text" [(ngModel)]="cheque.importeCheque" class="styled-echeq" [disabled]="cheque.ordenCheque == 1">
+        <input type="text" [(ngModel)]="cheque.importeCheque" class="styled-echeq" [disabled]="cheque.ordenCheque == 1" (click)="calcularPorcentaje(cheque)">
         <span *ngIf="cheque.ordenCheque != 1" (click)="eliminarEcheq(cheque.ordenCheque)">
           <img src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="pointer" style="height:25px;"/>
         </span>
-        <span *ngIf="cheque.ordenCheque == 1">
-          (30%) Aforo
-        </span>
-        <span *ngIf="cheque.ordenCheque != 1" (click)="calcularPorcentaje(cheque)">
+        <span>
           ({{porcentaje}}%) 
+          <span *ngIf="cheque.ordenCheque == 1">Aforo</span>
         </span>
+        
       </div>
     </div>
     <div class="col-md-12 row myRow alinearTitulo margenInput">

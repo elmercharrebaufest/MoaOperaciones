@@ -259,7 +259,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
     if(echeqDocumento.listaChequesApertura.length == 0){
       let aforo = {
         ordenCheque: 1,
-        importeCheque: echeqDocumento.importeEnPesos * 0.3,
+        importeCheque: echeqDocumento.importeEnPesos * 30 / 100,
         porcentaje: 0
       };
       echeqDocumento.listaChequesApertura.push(aforo);
