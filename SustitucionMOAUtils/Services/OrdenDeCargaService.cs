@@ -875,10 +875,11 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public string NotificarVencimientoOrdenCarga(int ordenId)
+       public string NotificarVencimientoOrdenCarga(int ordenId)
         {
             var emailSenderData = new EmailSenderData();
             var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+            var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
             var orden = repositorio.Obtener<OrdenDeCarga>(x => x.Id == ordenId);
             var mail = orden.Cliente.Mail;
             var titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha vencido la siguiente orden de carga:";
@@ -890,6 +891,7 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
             emailSenderData.Mails.AddRange(mail.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
+            emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
             if (emailSenderData != null)
             {
                 //if (!HttpContext.Current.IsDebuggingEnabled)
@@ -900,9 +902,8 @@ namespace SustitucionMOAUtils.Services
             orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
             repositorio.GuardarCambios();
 
-            return SuccessMsg.OrdenDeCargaAnulada;
-
-        }
+           return SuccessMsg.OrdenDeCargaAnulada;
+       }
         public EmailSenderData ConstruirCuerpoOrdenesVencidas(List<OrdenDeCarga> ordenes)
         {
             var emailSenderData = new EmailSenderData();
