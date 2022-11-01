@@ -76,6 +76,12 @@ export class EcheqDocumento {
             this.importeEnPesos = entity.ImporteEnPesos;
             this.moneda = entity.Moneda;
             this.clasificacion = entity.Clasificacion;
+            if (entity.Apereturas && entity.Apereturas.length) {
+                this.listaChequesApertura = new Array<EcheqApertura>();
+                entity.Apereturas.forEach(ape => {
+                    this.listaChequesApertura.push(new EcheqApertura(ape));
+                });
+            }
         }
     }
 }

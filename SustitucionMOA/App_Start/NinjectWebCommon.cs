@@ -138,6 +138,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IEcheqModificarContratoConsumerMOA>().To(typeof(EcheqModificarContratoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEcheqModificarFijacionConsumerMOA>().To(typeof(EcheqModificarFijacionConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEcheqModificacionDocumentoChequeConsumerMOA>().To(typeof(EcheqModificacionDocumentoChequeConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IEcheqAnularAperturaChequeConsumerMOA>().To(typeof(EcheqAnularAperturaChequeConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IEcheqCargaAperturaChequeConsumerMOA>().To(typeof(EcheqCargaAperturaChequeConsumerMOA)).InScope(ctx => OperationContext.Current);
 
 
             #endregion
