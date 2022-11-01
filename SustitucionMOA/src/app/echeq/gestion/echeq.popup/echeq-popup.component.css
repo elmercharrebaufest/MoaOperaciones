@@ -15,6 +15,12 @@
     margin: 0;
   }
 
-  .pointer {
-    cursor: pointer;
-  }
+.pointer {
+  cursor: pointer;
+}
+
+.advertenciaPopup {
+  font-size: small;
+  font-weight: lighter;
+  color: red;
+}

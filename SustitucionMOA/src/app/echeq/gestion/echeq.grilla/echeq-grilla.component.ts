@@ -260,7 +260,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
       let aforo = {
         ordenCheque: 1,
         importeCheque: echeqDocumento.importeEnPesos * 30 / 100,
-        porcentaje: 0
+        porcentaje: 30
       };
       echeqDocumento.listaChequesApertura.push(aforo);
     }

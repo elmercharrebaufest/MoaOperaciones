@@ -23,11 +23,15 @@
         <span *ngIf="cheque.ordenCheque != 1" (click)="eliminarEcheq(cheque.ordenCheque)">
           <img src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="pointer" style="height:25px;"/>
         </span>
-        <span>
-          ({{porcentaje}}%) 
-          <span *ngIf="cheque.ordenCheque == 1">Aforo</span>
+        <span *ngIf="cheque.ordenCheque == 1">
+          (30%) Aforo
         </span>
-        
+        <span *ngIf="cheque.ordenCheque != 1" (click)="calcularCienPorCiento(documento.listaChequesApertura, cheque)">
+          ({{cheque.porcentaje}}%) 
+        </span>
+        <p *ngIf="cheque.importeCheque == 0 || cheque.importeCheque ==''" class="advertenciaPopup">
+          El campo esta incompleto
+        </p>
       </div>
     </div>
     <div class="col-md-12 row myRow alinearTitulo margenInput">
