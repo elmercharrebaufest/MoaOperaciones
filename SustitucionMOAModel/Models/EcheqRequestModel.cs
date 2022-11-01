@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAModel.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ namespace SustitucionMOAModel.Models
         public string Contrato { get; set; }
         public string Pedido { get; set; }
         public string Documento { get; set; }
+        public List<EcheqAperturaDto> Apertura { get; set; }
 
         public EcheqRequestModel(string pedido, string contrato) {
             this.Pedido = pedido;

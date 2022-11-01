@@ -175,6 +175,40 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult AgregarApertura(string documento, string pedido, string contrato, List<EcheqAperturaDto> aperturaDtos)
+        {
+            try
+            {
+                EcheqRequestModel request = new EcheqRequestModel()
+                {
+                    Documento = documento,
+                    Pedido = pedido,
+                    ProveedorId = SessionPersister.ProveedorId,
+                    UsuarioCreacionId = ObtenerUsuarioActual().Id,
+                    CodigoProveedor = SessionPersister.Proveedor,
+                    Contrato = contrato,
+                    Apertura = aperturaDtos
+                };
+
+                return JsonCustom("ok");
+
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         private UsuarioDto ObtenerUsuarioActual()
         {
             string userMail = SessionPersister.getUsername();
