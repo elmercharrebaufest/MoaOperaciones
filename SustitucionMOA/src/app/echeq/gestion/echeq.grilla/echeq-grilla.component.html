@@ -74,11 +74,10 @@
                                             <td>{{documento.fecha}}</td>
                                             <td>{{documento.importeEnPesos | number:'1.2-2':'es'}}</td>
                                             <td>
-                                                <button type="button" class="btn" style="background-color: #009688; color: white;" *ngIf="documento.selected && documento.listaChequesApertura.length == 0" (click)="showAperturarEcheqDialog(documento)">GENERAR ECHEQS</button>
-                                                <button type="button" class="btn" style="background-color: #009688; color: white;" *ngIf="documento.selected && documento.listaChequesApertura.length != 0" (click)="showAperturarEcheqDialog(documento)">EDITAR ECHEQS</button>
-                                                <span *ngIf="documento.selected && documento.listaChequesApertura.length != 0" class="glyphicon glyphicon-info-sign" style="font-size:20px;padding-left:10px;top:5px;" pTooltip="{{documento.aperturas()}}" tooltipPosition="top" [escape]="false">
-                                                    <!---->
-
+                                                <button type="button" class="btn" style="background-color: #009688; color: white;" *ngIf="documento.selected && (documento.listaChequesApertura == null || documento.listaChequesApertura.length == 0)" (click)="showAperturarEcheqDialog(documento)">GENERAR ECHEQS</button>
+                                                <button type="button" class="btn" style="background-color: #009688; color: white;" *ngIf="documento.selected && documento.listaChequesApertura != null  && documento.listaChequesApertura.length != 0" (click)="showAperturarEcheqDialog(documento)">EDITAR ECHEQS</button>
+                                                <span *ngIf="documento.selected && documento.listaChequesApertura != null  && documento.listaChequesApertura.length != 0" class="glyphicon glyphicon-info-sign" style="font-size:20px;padding-left:10px;top:5px;" pTooltip="{{documento.aperturas()}}" tooltipPosition="top" [escape]="false">
+                                                   
                                                 </span>
                                             </td>
 
