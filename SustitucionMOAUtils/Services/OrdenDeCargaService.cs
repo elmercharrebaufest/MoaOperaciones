@@ -875,11 +875,10 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-       public string NotificarVencimientoOrdenCarga(int ordenId)
+        public string NotificarVencimientoOrdenCarga(int ordenId)
         {
             var emailSenderData = new EmailSenderData();
             var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
-            var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
             var orden = repositorio.Obtener<OrdenDeCarga>(x => x.Id == ordenId);
             var mail = orden.Cliente.Mail;
             var titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha vencido la siguiente orden de carga:";
@@ -891,7 +890,6 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
             emailSenderData.Mails.AddRange(mail.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
-            emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
             if (emailSenderData != null)
             {
                 //if (!HttpContext.Current.IsDebuggingEnabled)
@@ -902,8 +900,9 @@ namespace SustitucionMOAUtils.Services
             orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
             repositorio.GuardarCambios();
 
-           return SuccessMsg.OrdenDeCargaAnulada;
-       }
+            return SuccessMsg.OrdenDeCargaAnulada;
+
+        }
         public EmailSenderData ConstruirCuerpoOrdenesVencidas(List<OrdenDeCarga> ordenes)
         {
             var emailSenderData = new EmailSenderData();
@@ -1759,36 +1758,15 @@ namespace SustitucionMOAUtils.Services
                 VerificarTransporte(ordenDeCarga);
             }
 
-            foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(o => o.Estado == EstadoOrdenDeCarga.EntregaGenerada || (o.Estado == EstadoOrdenDeCarga.EdicionRechazada && !string.IsNullOrEmpty(o.NumeroEntrega))))
+            foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(o => o.Estado == EstadoOrdenDeCarga.Vencida || o.Estado == EstadoOrdenDeCarga.EntregaGenerada || (o.Estado == EstadoOrdenDeCarga.EdicionRechazada && !string.IsNullOrEmpty(o.NumeroEntrega))))
             {
                 VerificarEstadoEntrega(ordenDeCarga);
             }
         }
-		public void CrearOrdenEnSAPBulk()
-		{
-			if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "EnviarASAPOrdenDeCargaJob").Habilitado == false)
-				return;
+        #endregion
 
-			foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(q => q.Estado == EstadoOrdenDeCarga.SinEnviarASAP))
-			{
-                var crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest()
-                {
-                    IdOrdenDeCarga = ordenDeCarga.Id,
-                    ClienteCodigo = ordenDeCarga.Cliente.CodigoProveedor,
-                    ContratoSAP = ordenDeCarga.ContratoSAP,
-                    CorredorCodigo = ordenDeCarga.Corredor.CodigoProveedor,
-                    Cantidad = ordenDeCarga.Cantidad,
-                    MaterialCodigoSAP = ordenDeCarga.Producto.CodigoSap,
-                    NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado,
-                    MailUsuarioSAP = String.Empty
-                };
-				CrearOrdenEnSAP(crearOrdenEnSAPRequest);
-			}
-		}
-		#endregion
-
-		#region Etapa2
-		public Resultado VerificarSituacionCrediticia(int ordenId)
+        #region Etapa2
+        public Resultado VerificarSituacionCrediticia(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
