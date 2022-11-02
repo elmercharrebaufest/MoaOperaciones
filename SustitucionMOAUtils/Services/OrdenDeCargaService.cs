@@ -885,7 +885,7 @@ namespace SustitucionMOAUtils.Services
             var titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha vencido la siguiente orden de carga:";
             var cabecera = "Orden :";
             var ordenVencidas = new StringBuilder();
-            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
+            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
             emailSenderData.Asunto = $"Molinos Agro - Notificación de orden vencida- {orden.Cliente.RazonSocial}";
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
@@ -926,7 +926,7 @@ namespace SustitucionMOAUtils.Services
                 var ordenVencidas = new StringBuilder();
                 foreach (var orden in ordenes)
                 {
-                    ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
+                    ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
                 emailSenderData.Asunto = $"Molinos Agro - Notificación de ordenes Vencidas";
@@ -1050,7 +1050,7 @@ namespace SustitucionMOAUtils.Services
             string asunto = $"Solicitud de anulación, Orden de carga N° {ordenDeCargaId}";
             string titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha solicitado la anulación de la siguiente orden de carga:";
             var cabecera = "Orden :";
-            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
+            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
             emailSenderData.Asunto = $"Solicitud de anulación, Orden de carga N° {ordenDeCargaId}";
             return emailSenderData;
@@ -1939,7 +1939,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
 
-                ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
+                ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
                 emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
                 emailSenderData.Asunto = $"Orden de carga #{orden.Id}  Pedido Bloqueado {orden.Cliente.RazonSocial}";
                 return emailSenderData;
@@ -2025,7 +2025,7 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             string titulo = "Se encontraron varios pedidos pendientes para el mismo cliente";
             var cabecera = "Orden :";
-            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
+            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
             emailSenderData.Asunto = "Varios pedidos pendientes";
             return emailSenderData;
@@ -2061,7 +2061,7 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             string titulo = "Se encontraron varios contratos para el mismo cliente";
             var cabecera = "Orden :";
-            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.PatenteAcoplado}</td><td>{orden.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
+            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
             emailSenderData.Asunto = "Varios ctto pendientes";
             return emailSenderData;
@@ -2089,7 +2089,7 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             string titulo = "Contrato vencido Nro :" + ordenDeCarga.ContratoIngresado;
             var cabecera = "Orden :";
-            ordenVencidas.Append($"<tr><td>{ordenDeCarga.Id}</td><td>{ordenDeCarga.ContratoIngresado}</td><td>{cliente.RazonSocial}</td><td>{ordenDeCarga.CodigoCorredor}</td><td>{ordenDeCarga.NombreChofer}</td><td>{ordenDeCarga.PatenteAcoplado}</td><td>{ordenDeCarga.ChasisAcoplado}</td><td>{(string.IsNullOrEmpty(ordenDeCarga.PedidoSAP) ? ordenDeCarga.NumeroPedido : ordenDeCarga.PedidoSAP)}</td><td>{ordenDeCarga.NumeroEntrega}</td><td>{ordenDeCarga.FechaCarga}</td><td>{ordenDeCarga.FechaVencimiento}</td></tr>");
+            ordenVencidas.Append($"<tr><td>{ordenDeCarga.Id}</td><td>{ordenDeCarga.ContratoIngresado}</td><td>{cliente.RazonSocial}</td><td>{ordenDeCarga.CodigoCorredor}</td><td>{ordenDeCarga.NombreChofer}</td><td>{ordenDeCarga.ChasisAcoplado}</td><td>{ordenDeCarga.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(ordenDeCarga.PedidoSAP) ? ordenDeCarga.NumeroPedido : ordenDeCarga.PedidoSAP)}</td><td>{ordenDeCarga.NumeroEntrega}</td><td>{ordenDeCarga.FechaCarga}</td><td>{ordenDeCarga.FechaVencimiento}</td></tr>");
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCarga.Id, ordenVencidas, titulo, cabecera);
             emailSenderData.Asunto = "Contrato Vencido";
             return emailSenderData;
