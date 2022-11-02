@@ -14,6 +14,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService} from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
     imports: [
@@ -26,6 +27,7 @@ import { DialogModule } from 'primeng/dialog';
         CheckboxModule,
         ConfirmDialogModule,
         DialogModule,
+        TooltipModule
     ],
     declarations: [
         EcheqGestionComponent,

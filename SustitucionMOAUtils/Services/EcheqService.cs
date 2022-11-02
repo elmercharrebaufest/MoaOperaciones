@@ -339,7 +339,7 @@ namespace SustitucionMOAUtils.Services
                     throw new ValidationCustomException(result.Errores[0].Message);
                 }
 
-                foreach (var apertura in liquidacionExistente.Aperturas.Where(a=>a.Estado))
+                foreach (var apertura in liquidacionExistente.Aperturas.Where(a => a.Estado))
                 {
                     result = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacionExistente.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
                     apertura.Estado = false;
@@ -486,6 +486,45 @@ namespace SustitucionMOAUtils.Services
             }
 
             return liquidacionExistente;
+        }
+
+        public string AgregarApertura(EcheqRequestModel request)
+        {
+            EcheqLiquidacion liquidacion = repositorio.Obtener<EcheqLiquidacion>(x =>
+            x.Documento == request.Documento &&
+            x.EcheqNegocio.Contrato == request.Contrato &&
+            x.EcheqNegocio.Pedido == request.Pedido &&
+            x.MarcaCheque);
+
+            if (liquidacion == null)
+                throw new ValidationCustomException("No se encontro la liquidacion");
+
+            //ANULAR APETURAS ANTERIORES
+            foreach (var apertura in liquidacion.Aperturas)
+            {
+                apertura.Estado = false;
+                apertura.Estado = false;
+                apertura.UsuarioModificacionId = request.UsuarioCreacionId;
+                apertura.FechaModificacion = DateTime.Now;
+                var result = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
+            }
+
+            //Agregar Aperturas Nuevas
+            foreach (var apertura in request.Apertura)
+            {
+                var result = echeqCargaAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(),liquidacion.EcheqNegocio.Contrato, liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"),apertura.ImporteCheque,"ARP  ",liquidacion.EcheqNegocio.Pedido,liquidacion.EcheqNegocio.Proveedor.CUIT,"", "MOA", "");
+                liquidacion.Aperturas.Add(new EcheqApertura
+                {
+                    Estado = true,
+                    FechaCreacion = DateTime.Now,
+                    ImporteCheque = apertura.ImporteCheque,
+                    OrdenCheque = apertura.OrdenCheque,
+                    UsuarioCreacionId = request.UsuarioCreacionId
+                });
+            }
+
+            repositorio.GuardarCambios();
+            return "La apertura se grabo correctamente.";
         }
     }
 

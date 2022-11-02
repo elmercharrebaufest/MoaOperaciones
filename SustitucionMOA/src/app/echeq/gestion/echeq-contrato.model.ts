@@ -76,13 +76,25 @@ export class EcheqDocumento {
             this.importeEnPesos = entity.ImporteEnPesos;
             this.moneda = entity.Moneda;
             this.clasificacion = entity.Clasificacion;
-            if (entity.Apereturas && entity.Apereturas.length) {
+            if (entity.Aperturas && entity.Aperturas.length) {
                 this.listaChequesApertura = new Array<EcheqApertura>();
-                entity.Apereturas.forEach(ape => {
+                entity.Aperturas.forEach(ape => {
                     this.listaChequesApertura.push(new EcheqApertura(ape));
                 });
             }
         }
+    }
+
+
+    aperturas() {
+        let result = "";
+        let formatNumber = Intl.NumberFormat('es-AR');
+        if (this.listaChequesApertura.length > 0) {
+            this.listaChequesApertura.sort((a, b) => a.ordenCheque - b.ordenCheque).forEach(ape => {
+                result += `Echeq ${ape.ordenCheque}: $${formatNumber.format(ape.importeCheque)}<br>`;
+            });
+        }
+        return result;
     }
 }
 

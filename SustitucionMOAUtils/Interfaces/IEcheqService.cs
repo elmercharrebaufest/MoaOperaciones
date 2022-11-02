@@ -17,5 +17,6 @@ namespace SustitucionMOAUtils.Interfaces
         string DesmarcarContrato(EcheqRequestModel request);
         string MarcarDocumento(EcheqRequestModel request);
         string DesmarcarDocumento(EcheqRequestModel request);
+        string AgregarApertura(EcheqRequestModel request);
     }
 }

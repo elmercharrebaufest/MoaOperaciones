@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Dto;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.EcheqCargaAperturaChequeWebServiceMOA;
+using SustitucionMOAWS.Logger;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -20,7 +21,9 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
+                Log.Info($"SI_MPRFC_CARGA_APERTURA_CHEQUE Request: {new { IM_CHEQUE, IM_CONTRATO, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA, IM_HORA, IM_IMPORTE, IM_MONEDA, IM_PEDIDO, IM_PROVEEDOR, IM_REFERENCIA, IM_SOCIEDAD, IM_USUARIO }}");
                 string response = service.SI_MPRFC_CARGA_APERTURA_CHEQUE(IM_CHEQUE, IM_CONTRATO, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA, IM_HORA, IM_IMPORTE, IM_MONEDA, IM_PEDIDO, IM_PROVEEDOR, IM_REFERENCIA, IM_SOCIEDAD, IM_USUARIO);
+                Log.Info($"SI_MPRFC_CARGA_APERTURA_CHEQUE Response: {response}");
 
                 ResultadoGenerico resultado = new ResultadoGenerico();
 

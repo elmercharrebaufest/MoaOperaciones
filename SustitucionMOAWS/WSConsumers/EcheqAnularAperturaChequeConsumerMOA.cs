@@ -21,9 +21,9 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
-                Log.Info($"Echeck Anular Apertura Request: {new { IM_CHEQUE, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA_ANULACION, IM_HORA_ANULACION, IM_SOCIEDAD, IM_USUARIO }}");
+                Log.Info($"SI_MPRFC_ANULAR_APERTURA_CHEQUE Request: {new { IM_CHEQUE, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA_ANULACION, IM_HORA_ANULACION, IM_SOCIEDAD, IM_USUARIO }}");
                 string response = service.SI_MPRFC_ANULAR_APERTURA_CHEQUE(IM_CHEQUE, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA_ANULACION, IM_HORA_ANULACION, IM_SOCIEDAD, IM_USUARIO);
-                Log.Info($"Echeck Anular Apertura Response: {response}");
+                Log.Info($"SI_MPRFC_ANULAR_APERTURA_CHEQUE Response: {response}");
                 ResultadoGenerico resultado = new ResultadoGenerico();
 
                 if (response != "Datos actualizados correctamente")

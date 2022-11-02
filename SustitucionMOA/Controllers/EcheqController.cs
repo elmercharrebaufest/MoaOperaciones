@@ -191,7 +191,7 @@ namespace SustitucionMOA.Controllers
                     Apertura = aperturaDtos
                 };
 
-                return JsonCustom("ok");
+                return JsonCustom(service.AgregarApertura(request));
 
             }
             catch (InfoCustomException e)
