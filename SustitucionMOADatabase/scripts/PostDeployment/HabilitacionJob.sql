@@ -1,5 +1,11 @@
 ﻿IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ReporteLiquidacionesInformadasJob') BEGIN    INSERT into HabilitacionJob VALUES ('ReporteLiquidacionesInformadasJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'VerificarTransporteOrdenesDeCargaJob') BEGIN    INSERT into HabilitacionJob VALUES ('VerificarTransporteOrdenesDeCargaJob',1)END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'EnviarASAPOrdenDeCargaJob') 
+BEGIN 
+	INSERT INTO HabilitacionJob VALUES ('EnviarASAPOrdenDeCargaJob', 1) 
+END
+
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ReporteCamposSustentablesTSAJob') BEGIN    INSERT into HabilitacionJob VALUES ('ReporteCamposSustentablesTSAJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ReporteConflictosCamposSustentablesJob') BEGIN    INSERT into HabilitacionJob VALUES ('ReporteConflictosCamposSustentablesJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ActualizarBaseDeDatosSolpSapJob') BEGIN    INSERT into HabilitacionJob VALUES ('ActualizarBaseDeDatosSolpSapJob',1)END

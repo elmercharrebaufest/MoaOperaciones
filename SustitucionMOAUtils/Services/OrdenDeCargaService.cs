@@ -1764,10 +1764,31 @@ namespace SustitucionMOAUtils.Services
                 VerificarEstadoEntrega(ordenDeCarga);
             }
         }
-        #endregion
+		public void CrearOrdenEnSAPBulk()
+		{
+			if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "EnviarASAPOrdenDeCargaJob").Habilitado == false)
+				return;
 
-        #region Etapa2
-        public Resultado VerificarSituacionCrediticia(int ordenId)
+			foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(q => q.Estado == EstadoOrdenDeCarga.SinEnviarASAP))
+			{
+                var crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest()
+                {
+                    IdOrdenDeCarga = ordenDeCarga.Id,
+                    ClienteCodigo = ordenDeCarga.Cliente.CodigoProveedor,
+                    ContratoSAP = ordenDeCarga.ContratoSAP,
+                    CorredorCodigo = ordenDeCarga.Corredor.CodigoProveedor,
+                    Cantidad = ordenDeCarga.Cantidad,
+                    MaterialCodigoSAP = ordenDeCarga.Producto.CodigoSap,
+                    NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado,
+                    MailUsuarioSAP = String.Empty
+                };
+				CrearOrdenEnSAP(crearOrdenEnSAPRequest);
+			}
+		}
+		#endregion
+
+		#region Etapa2
+		public Resultado VerificarSituacionCrediticia(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
