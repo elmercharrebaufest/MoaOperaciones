@@ -29,7 +29,8 @@ namespace SustitucionMOAUtils.Interfaces
         Resultado VerificarSituacionCrediticia(int ordenId);
         string VerificarTransporte(int ordenId);
         void VerificarTransporteBulk();
-        List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga();
+        void CrearOrdenEnSAPBulk();
+		List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga();
         string ForzarCreacionOrden(int ordenId);
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);
 		VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request);
