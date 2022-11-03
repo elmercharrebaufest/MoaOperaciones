@@ -1774,11 +1774,11 @@ namespace SustitucionMOAUtils.Services
                 var crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest()
                 {
                     IdOrdenDeCarga = ordenDeCarga.Id,
-                    ClienteCodigo = ordenDeCarga.Cliente.CodigoProveedor,
+                    ClienteCodigo = ordenDeCarga.Cliente?.CodigoProveedor,
                     ContratoSAP = ordenDeCarga.ContratoSAP,
-                    CorredorCodigo = ordenDeCarga.Corredor.CodigoProveedor,
+                    CorredorCodigo = ordenDeCarga.Corredor?.CodigoProveedor,
                     Cantidad = ordenDeCarga.Cantidad,
-                    MaterialCodigoSAP = ordenDeCarga.Producto.CodigoSap,
+                    MaterialCodigoSAP = ordenDeCarga.Producto?.CodigoSap,
                     NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado,
                     MailUsuarioSAP = String.Empty
                 };
