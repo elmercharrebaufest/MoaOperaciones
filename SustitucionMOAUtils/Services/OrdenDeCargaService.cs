@@ -1202,6 +1202,10 @@ namespace SustitucionMOAUtils.Services
             cliente = repositorio.Obtener<Proveedor>(
             x => x.CUIT == ordenDeCarga.CUITCliente &&
             x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
+            if (cliente == null)
+            {
+                return new OrdenDeCargaDto();
+            }
             result.ordenes = repositorio.Listar<OrdenDeCarga, AutoCompleteDropdownElement>(x => new AutoCompleteDropdownElement
             {
                 label = x.ChasisAcoplado,
@@ -1360,7 +1364,12 @@ namespace SustitucionMOAUtils.Services
 
         public ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request)
         {
-			Log.Info($"ValidarCorredorClienteContratoProducto(request: { request.ToJson() })");
+            request.Contrato = request.Contrato?.Trim();
+            request.ClienteCodigo = request.ClienteCodigo?.Trim();
+            request.Corredor = request.Corredor?.Trim();
+            request.ProductoId = request.ProductoId?.Trim();
+            request.UsuarioEmail = request.UsuarioEmail?.Trim();
+            Log.Info($"ValidarCorredorClienteContratoProducto(request: { request.ToJson() })");
 			ValidarCorredorClienteContratoProductoResponse response;
             try
             {
@@ -1402,6 +1411,10 @@ namespace SustitucionMOAUtils.Services
                     var corredorCodigo = ordenCargaVisualizarClienteWSMOAResponse.Resultados[0].Corredor;
                     var corredorEmail = request.UsuarioEmail;
                     var corredor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == corredorCodigo && x.Mail == corredorEmail && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Corredor);
+                    if (corredor == null)
+                    {
+                        corredor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == corredorCodigo && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Corredor);
+                    }
                     response.ResultValidation = GetResultFromValidarCorredorClienteContratoProducto(ordenCargaVisualizarClienteWSMOAResponse, request, producto);
                     if (response.ResultValidation && corredor != null)
                     {
@@ -1462,8 +1475,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     var clienteResult = res.Cliente.ToUpper();
                     var contratoResult = res.Contrato.ToUpper().TrimStart(new Char[] { '0' });
-                    var productoResult = res.Producto.ToUpper().Substring(13, 5);
-                    if (request.Contrato.ToUpper().Equals(contratoResult) && request.ClienteCodigo.ToUpper().Equals(clienteResult) && producto.CodigoSap.ToUpper().Equals(productoResult))
+                    var productoResult = res.Producto.ToUpper().TrimStart(new Char[] { '0' });
+                    if (request.Contrato.Trim().ToUpper().Equals(contratoResult.Trim()) && request.ClienteCodigo.Trim().ToUpper().Equals(clienteResult.Trim()) && producto.CodigoSap.Trim().ToUpper().Equals(productoResult.Trim()))
                     {
                         result = true;
                     }
@@ -1477,7 +1490,7 @@ namespace SustitucionMOAUtils.Services
 			try
             {
                 //var usuarioCorredor = repositorio.Obtener<Usuario>(q => q.CUITRegistro == corredor.CUIT && q.Mail == corredor.Mail && q.TipoUsuario.Id == (int) TipoUsuarioEnum.Corredor && q.Habilitado == true);
-                var usuariosCorredores = repositorio.Listar<Usuario>(q => q.Mail == corredor.Mail && q.TipoUsuario.Id == (int)TipoUsuarioEnum.Corredor && q.Habilitado == true);
+                var usuariosCorredores = repositorio.Listar<Usuario>(q => q.CUITRegistro == corredor.CUIT && q.TipoUsuario.Id == (int)TipoUsuarioEnum.Corredor && q.Habilitado == true);
                 if (usuariosCorredores != null && usuariosCorredores.Count > 0)
                 {
                     foreach (var usuarioCorredor in usuariosCorredores)
