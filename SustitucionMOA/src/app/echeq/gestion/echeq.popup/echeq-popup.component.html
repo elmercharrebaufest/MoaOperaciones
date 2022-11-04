@@ -15,7 +15,7 @@
             <div class="col-md-12">
                 <strong>Total ${{documento.importeEnPesos  | number:'1.2-2':'es'}} (100%)</strong>
             </div>
-            <div *ngFor="let cheque of documento.listaChequesApertura" class="col-md-12 row myRow alinearTitulo margenInput">
+            <div *ngFor="let cheque of listaChequesAux" class="col-md-12 row myRow alinearTitulo margenInput">
                 <div class="col-md-12 titulosModal" style="margin-right: 1em;">
                     Echeq {{cheque.ordenCheque}}
                     <input type="text" 
@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="col-md-12 row myRow alinearTitulo margenInput">
-                <div *ngIf="documento.listaChequesApertura.length < cantidadEcheq" 
+                <div *ngIf="listaChequesAux.length < cantidadEcheq" 
                     class="col-md-12 titulosModal" 
                     style="margin-right: 1em;">
                     <span (click)="agregarInputEcheq()" class="pointer">

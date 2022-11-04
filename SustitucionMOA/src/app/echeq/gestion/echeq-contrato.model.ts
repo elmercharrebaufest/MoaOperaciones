@@ -82,6 +82,8 @@ export class EcheqDocumento {
                     this.listaChequesApertura.push(new EcheqApertura(ape));
                 });
             }
+        } else {
+            this.listaChequesApertura = new Array<EcheqApertura>();
         }
     }
 
