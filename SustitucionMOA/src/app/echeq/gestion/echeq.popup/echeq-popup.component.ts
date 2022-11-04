@@ -104,4 +104,6 @@ export class EcheqPopupComponent implements OnInit {
   }
 
   //hacer todos los flujos
+  //cuando se desmarca el cheque no se borran los echeq
+  
 }
