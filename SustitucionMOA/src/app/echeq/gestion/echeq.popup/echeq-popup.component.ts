@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { EcheqContrato, EcheqDocumento } from '../echeq-contrato.model';
+import { EcheqDocumento } from '../echeq-contrato.model';
 import { EcheqApertura } from './echeqApertura-model';
+import { registerLocaleData } from '@angular/common';
+import es from '@angular/common/locales/es';
 
 @Component({
   selector: 'app-echeq-popup',
@@ -10,14 +12,22 @@ import { EcheqApertura } from './echeqApertura-model';
 export class EcheqPopupComponent implements OnInit {
 
   @Input() displayAperturarEcheq: boolean;
-  @Input() documento: EcheqDocumento;
- 
-  @Output() cancelarAperturarEcheqEmitter = new EventEmitter();
+  @Input() set echeqDocumento(value: EcheqDocumento) {
+    this.documento = value;
+    this.calcularPorcentajes();
+  }
 
+  @Input() aforoConf: number;
+  @Input() cantidadEcheq: number;
+  @Output() cancelarAperturarEcheqEmitter = new EventEmitter();
   @Output() AperturarEcheqEmitter = new EventEmitter();
+  
+  documento: EcheqDocumento;
+  porcentajeRestante = 0;
+  pesosPendientes = 0;
 
   ngOnInit() {
-    console.log("Documento" , this.documento);
+    registerLocaleData(es);
   }
 
   onCancelarAperturarEcheq() {
@@ -25,14 +35,11 @@ export class EcheqPopupComponent implements OnInit {
   }
 
   onAperturar() {
-    this.AperturarEcheqEmitter.emit({
-      // contrato: this.contratoSeleccionado, 
-      // posicionSeleccionada:this.posicionSeleccionada
-    });
-  }
-
-  onHideAperturarEcheqDialog() {
-    this.cancelarAperturarEcheqEmitter.next();
+    //validar cuando guarde que sea el 100%
+    if(this.mostrarMensaje() == ""){
+      this.AperturarEcheqEmitter.emit({   
+      });
+    }
   }
 
   agregarInputEcheq(){
@@ -46,7 +53,7 @@ export class EcheqPopupComponent implements OnInit {
 
   eliminarEcheq(ordenCheque) {
     this.documento.listaChequesApertura.splice(ordenCheque - 1, 1);
-    this.reEnumerarEcheq(this.documento.listaChequesApertura)
+    this.reEnumerarEcheq(this.documento.listaChequesApertura);
   }
 
   reEnumerarEcheq(listaChequesApertura: Array<EcheqApertura>) {
@@ -55,39 +62,46 @@ export class EcheqPopupComponent implements OnInit {
     }
   }
 
+  calcularPorcentajes(){
+    this.documento.listaChequesApertura.forEach(echeqApertura => {
+      this.calcularPorcentaje(echeqApertura)
+    });
+  }
 
   calcularPorcentaje(echeqApertura: EcheqApertura){
     echeqApertura.porcentaje = (echeqApertura.importeCheque * 100) / this.documento.importeEnPesos
   }
 
-
-  //listaOriginal y copia lista
-
-
-  //validar que no quede en 0 ni en blanco
-  // validarValorCheque(importeCheque){
-  //   debugger
-  //   let estaCompleto: Boolean = true;
-  //   if(importeCheque == 0 || importeCheque == ""){
-  //     estaCompleto = false;
-  //   }
-  // }
-
-
   //Calcular 100% ni de mas ni de menos (mensaje de aviso)
-  calcularCienPorCiento(listaChequesApertura: Array<EcheqApertura>){
+  mostrarMensaje(){
     let total = 0;
-    listaChequesApertura.forEach(x => {
-      total += x.porcentaje
+    let mensaje = "";
+
+    this.documento.listaChequesApertura.forEach(x => {
+      total += Number(x.importeCheque)
     });
 
-    if(total != 100){
+    if(total != this.documento.importeEnPesos){
       
-    }
+      this.porcentajeRestante = 100 - total; 
+      this.pesosPendientes = total - this.documento.importeEnPesos; 
+      
+      let formatNumber = Intl.NumberFormat('es-AR');
+
+      if(this.pesosPendientes < 0){
+        this.pesosPendientes = this.pesosPendientes * -1;
+      }
+
+      if(this.pesosPendientes != 0){
+        if(total < this.documento.importeEnPesos){
+          mensaje = `Tiene pendiente $${formatNumber.format(this.pesosPendientes)} por aperturar`
+        } else {
+          mensaje = `Tiene exceso de $${formatNumber.format(this.pesosPendientes)} en sus Echeq`
+        }     
+      }
+    } else {
+    } return mensaje;
   }
 
-  //La cantidad de cheques y el aforo tiene que consultar de la tabla de configuraciones en la db
-  
-
-
+  //hacer todos los flujos
 }

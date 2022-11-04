@@ -7,6 +7,7 @@ import {ConfirmationService} from 'primeng/api';
 import { EcheqGestionComponent } from '../echeq-gestion.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EcheqApertura } from '../echeq.popup/echeqApertura-model';
+import { Resultado } from '../../../common/shared-components/buscador/Buscador';
 
 
 
@@ -28,16 +29,22 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
   @Input() echeqContratos: Array<EcheqContrato>;
   @BlockUI() blockUI: NgBlockUI;
 
+
   documentoSelect: EcheqDocumento;
   public itemsPerPage: string;
   msgs: { severity: string; summary: string; detail: string; }[];
   
   displayAperturarEcheq: boolean = false;
   echeqApertura: EcheqApertura;
+  listaChequesAux: EcheqApertura[];
+
+  aforoConf: number;
+  cantidadEcheq: number;
 
   ngOnInit() {
     registerLocaleData(es);
     this.itemsPerPage = sessionStorage.getItem("itemsPerPage") ? sessionStorage.getItem("itemsPerPage") : "10";
+    this.configuracionEcheq();
   }
 
   onClickSelectContrato(contrato: EcheqContrato) {
@@ -57,8 +64,14 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
   }
 
   onClickSelectDocumento(documento: EcheqDocumento){
+    let contrato = this.echeqContratos.find(contrato => contrato.id == documento.parentId);
+  
+    if(this.isProductor(contrato))
+    {
+      return 
+    }
+
     if(documento.selected){
-      let contrato = this.echeqContratos.find(contrato => contrato.id == documento.parentId);
       //mandar contratos a sap y db
 
       if(contrato != null){
@@ -70,6 +83,8 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
       documento.selected = true;
       this.confirmDocumento(documento);
     }
+
+    
   }
 
   confirmContrato(contrato: EcheqContrato) {
@@ -95,7 +110,6 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
       accept: () => {
         debugger
         this.checkDocumento(documento, false);
-
         //toDo falta back, db y RFC 
         },
         reject: () => {}
@@ -249,30 +263,93 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit{
   }
 
   showAperturarEcheqDialog(echeqDocumento: EcheqDocumento ) {
+    debugger
     this.documentoSelect = echeqDocumento;
     this.displayAperturarEcheq = true;
-
+    
     if(echeqDocumento.listaChequesApertura == null){
       echeqDocumento.listaChequesApertura = new Array<EcheqApertura>();
     }
+    
+    this.listaChequesAux = echeqDocumento.listaChequesApertura.map(f => f);
 
     if(echeqDocumento.listaChequesApertura.length == 0){
       let aforo = {
         ordenCheque: 1,
-        importeCheque: echeqDocumento.importeEnPesos * 30 / 100,
-        porcentaje: 30
+        importeCheque: Number((echeqDocumento.importeEnPesos * this.aforoConf / 100).toFixed(2)),
+        porcentaje: this.aforoConf
       };
+      
       echeqDocumento.listaChequesApertura.push(aforo);
     }
   }
 
   cancelarEcheqApertura() {
+    console.log("Documento :", this.documentoSelect.listaChequesApertura);
+    console.log("Lista AUX :", this.listaChequesAux);
+
+    this.documentoSelect.listaChequesApertura = this.listaChequesAux.map(f => f);
+
     this.displayAperturarEcheq = false;
 }
 
  // Se asocian los datos del echeq
  aperturarEcheq($event) {
+  this.agregarApertura();
   this.displayAperturarEcheq = false;
-}
+  }
+
+  configuracionEcheq() {
+    try {
+        this.subscription = this.service.ConfiguracionEcheq().subscribe(
+            (result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {
+                    this.aforoConf = Number(result.find(x => x.Code == "EcheqAforo").Value);
+                    this.cantidadEcheq = Number(result.find(x => x.Code == "EcheqLimiteCantidadAperturas").Value);
+                    this.spinnerComponent.hideIt();
+                }
+            },
+            error => {
+                this.floatMsgService.setErrorMsg(error.message);
+            }
+        );
+    } catch (e) {
+        this.floatMsgService.setErrorMsg(e);
+    }
+  }
+
+  agregarApertura() {
+    try {
+        this.subscription = this.service.AgregarApertura(this.documentoSelect.documento, this.documentoSelect.pedido, this.documentoSelect.contrato, this.documentoSelect.listaChequesApertura).subscribe(
+            (result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.documentoSelect.listaChequesApertura = this.listaChequesAux.map(f => f);
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.documentoSelect.listaChequesApertura = this.listaChequesAux.map(f => f);
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {              
+                    this.floatMsgService.setSuccessMsg(result);                                  
+                    this.spinnerComponent.hideIt();
+                }
+            },
+            error => {
+                this.documentoSelect.listaChequesApertura = this.listaChequesAux.map(f => f);
+                this.floatMsgService.setErrorMsg(error.message);
+            }
+        );
+    } catch (e) {
+        this.documentoSelect.listaChequesApertura = this.listaChequesAux.map(f => f);
+        this.floatMsgService.setErrorMsg(e);
+    }
+  }
 
 }

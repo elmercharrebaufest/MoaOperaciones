@@ -176,10 +176,12 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult AgregarApertura(string documento, string pedido, string contrato, List<EcheqAperturaDto> aperturaDtos)
+        public ActionResult AgregarApertura(string documento, string pedido, string contrato, string aperturaDtos)
         {
             try
             {
+                List<EcheqAperturaDto> aperturas = JsonConvert.DeserializeObject<List<EcheqAperturaDto>>(aperturaDtos);
+
                 EcheqRequestModel request = new EcheqRequestModel()
                 {
                     Documento = documento,
@@ -188,7 +190,7 @@ namespace SustitucionMOA.Controllers
                     UsuarioCreacionId = ObtenerUsuarioActual().Id,
                     CodigoProveedor = SessionPersister.Proveedor,
                     Contrato = contrato,
-                    Apertura = aperturaDtos
+                    Apertura = aperturas
                 };
 
                 return JsonCustom(service.AgregarApertura(request));
@@ -213,6 +215,29 @@ namespace SustitucionMOA.Controllers
         {
             string userMail = SessionPersister.getUsername();
             return usuarioService.GetUsuario(userMail);
+        }
+
+        public ActionResult ObtenerConfiguracion() 
+        {
+            try 
+            { 
+                return JsonCustom(service.ObtenerConfiguracion());
+            
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+            
         }
     }
 }

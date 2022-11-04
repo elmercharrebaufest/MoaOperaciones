@@ -526,6 +526,19 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
             return "La apertura se grabo correctamente.";
         }
+
+        public List<ConfiguracionDto> ObtenerConfiguracion()
+        {
+            var configuracionEcheq = repositorio.Listar<Configuracion>(a => a.Code == "EcheqLimiteCantidadAperturas" || a.Code == "EcheqAforo")
+                .Select(x => new ConfiguracionDto
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Value = x.Value
+                }).ToList();
+
+            return configuracionEcheq;
+        }
     }
 
 }

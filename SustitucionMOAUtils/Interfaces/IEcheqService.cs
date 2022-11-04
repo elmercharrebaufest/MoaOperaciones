@@ -18,5 +18,6 @@ namespace SustitucionMOAUtils.Interfaces
         string MarcarDocumento(EcheqRequestModel request);
         string DesmarcarDocumento(EcheqRequestModel request);
         string AgregarApertura(EcheqRequestModel request);
+        List<ConfiguracionDto> ObtenerConfiguracion();
     }
 }
