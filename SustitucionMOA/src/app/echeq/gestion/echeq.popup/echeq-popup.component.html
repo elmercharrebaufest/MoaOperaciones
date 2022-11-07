@@ -12,12 +12,6 @@
         </p-header>
 
         <div *ngIf="documento != null" class="row myRow">
-            <div class="col-md-12">
-                <h4>
-                    <strong>Total ${{documento.importeEnPesos  | number:'1.2-2':'es'}} (100%)</strong>
-                </h4>
-                    
-            </div>
             <div *ngFor="let cheque of listaChequesAux" class="col-md-12 row myRow alinearTitulo margenInput">
                 <div class="col-md-12 titulosModal" style="margin-right: 1em;">
                     Echeq {{cheque.ordenCheque}}
@@ -47,11 +41,16 @@
                 <div *ngIf="listaChequesAux.length < cantidadEcheq" 
                     class="col-md-12 titulosModal" 
                     style="margin-right: 1em;">
-                    <span (click)="agregarInputEcheq()" class="pointer">
-                        <i class="fa fa-plus-square"></i>
+                    <span (click)="agregarInputEcheq()" class="pointer" style="color: #1C7CD5;">
+                        <b class="masIcon">+</b>
                         &nbsp; Agregar Echeq
                     </span>
                 </div>
+            </div>
+            <div class="col-md-12">
+                <h4>
+                    <strong>Total ${{documento.importeEnPesos  | number:'1.2-2':'es'}} (100%)</strong>
+                </h4>
             </div>
             <div>
                 <span style="color: red;">
@@ -60,6 +59,7 @@
                     </h4> 
                 </span>
             </div>
+          
         </div>
         <p-footer>
             <button type="button" class="btn btn-danger" (click)="onCancelarAperturarEcheq()">CANCELAR</button>

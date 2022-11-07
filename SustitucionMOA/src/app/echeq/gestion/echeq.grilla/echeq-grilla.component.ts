@@ -187,6 +187,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                     echeqContrato.selected = false;
                     echeqContrato.documentos.forEach(docs => {
                         docs.selected = false;
+                        docs.listaChequesApertura = [];
                     });
                     this.floatMsgService.setSuccessMsg(response)
                     return response;
@@ -245,6 +246,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                     this.floatMsgService.setInfoMsg(response.info);
                 } else {
                     echeqDocumento.selected = false;
+                    echeqDocumento.listaChequesApertura = [];
                     this.floatMsgService.setSuccessMsg(response)
                     return response;
                 }

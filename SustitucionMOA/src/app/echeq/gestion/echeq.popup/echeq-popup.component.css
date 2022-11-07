@@ -26,3 +26,12 @@
   color: red;
   margin-left: 6em;
 }
+
+.masIcon {
+  font-size: 24px;
+  vertical-align: middle;
+  color: white;
+  background: #1C7CD5;
+  padding: 2px 10px 2px 10px;
+  border-radius: 42px;
+}

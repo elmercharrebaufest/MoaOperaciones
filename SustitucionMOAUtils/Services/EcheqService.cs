@@ -84,7 +84,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 //1- Obtener contrato desde la RFC y setear echeq
-                EcheqNegocioDto echeqNegocio = this.ObtieneTipoNegocio(request);
+                EcheqNegocioDto echeqNegocio = this.ObtieneNegocio(request);
 
 
                 //2- validar si es productor o acopiador
@@ -170,7 +170,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 //1- Obtener contrato desde la RFC y setear echeq
-                EcheqNegocioDto echeqNegocio = this.ObtieneTipoNegocio(request);
+                EcheqNegocioDto echeqNegocio = this.ObtieneNegocio(request);
 
                 //2- validar si es productor o acopiador
                 if (echeqNegocio.Clasificacion == "PRODUCTOR")
@@ -244,7 +244,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 //1- Obtener contrato desde la RFC y setear echeq
-                EcheqNegocioDto echeqNegocioSAP = this.ObtieneTipoNegocio(request);
+                EcheqNegocioDto echeqNegocioSAP = this.ObtieneNegocio(request);
 
                 EcheqNegocio echeqDB = repositorio.Obtener<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido);
 
@@ -348,7 +348,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 UpdateLiquidacion(request, false, liquidacionExistente);
 
-                EcheqNegocioDto echeqNegocio = ObtieneTipoNegocio(request);
+                EcheqNegocioDto echeqNegocio = ObtieneNegocio(request);
 
                 if (echeqNegocio.Documentos.Where(x => x.MarcaCheque).Count() == 0)
                 {
@@ -371,7 +371,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private EcheqNegocioDto ObtieneTipoNegocio(EcheqRequestModel request)
+        private EcheqNegocioDto ObtieneNegocio(EcheqRequestModel request)
         {
             List<EcheqNegocioDto> contratosEcheq = ObtenerPendientePago(request.CodigoProveedor, DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"), DateTime.Now.ToString("yyyy-MM-dd"), request.Contrato);
             EcheqNegocioDto echeqNegocio = null;
