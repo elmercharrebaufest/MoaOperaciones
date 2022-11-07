@@ -1,9 +1,10 @@
 .styled-echeq {
-    font-size: 1.5rem;
-    font-weight: 400;
-    color: #3f4845;
-    overflow: hidden;
-    font-family: "Roboto Condensed", Arial, sans-serif;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  font-weight: 400;
+  margin: 5px;
 }
 
 .titulosModal {
@@ -23,4 +24,5 @@
   font-size: small;
   font-weight: lighter;
   color: red;
+  margin-left: 6em;
 }
