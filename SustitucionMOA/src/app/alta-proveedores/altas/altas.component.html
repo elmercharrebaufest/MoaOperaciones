@@ -915,6 +915,12 @@
                                     *ngIf="empresaSeleccionada.EstadoAprobacion != 2 || !isAuthorized('ABM EMPRESAS OPERADOR')">
                                     Estado en SIPER: <label>{{empresaSeleccionada.EstadoSIPER}}</label>
                                 </div>
+                                <div class="guardarSIPER" style="text-align: center;"
+                                *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                                    <span class="adjuntar col-xs-12 col-sm-5" (click)="guardarSIPER()">
+                                        Guardar SIPER
+                                    </span>
+                                </div>
                             </mdb-step>
                         </div>
 
