@@ -34,6 +34,7 @@ export class OrdenDeCarga {
     EsOrdenVencida: boolean;
     OrdenDeCargaCambiosHistorial: OrdenDeCargaCambiosHistorial[];
     FechaVencimientoAmpliada: boolean;
+    EdicionRechazada: boolean;
     constructor() {
     }
 

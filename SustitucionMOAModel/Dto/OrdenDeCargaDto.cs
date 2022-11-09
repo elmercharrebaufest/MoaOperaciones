@@ -26,7 +26,8 @@ namespace SustitucionMOAModel.Dto
         public bool NoEstaEnSAP { get; set; }
         public bool EstaSeleccionado { get; set; }
 		public List<AutoCompleteDropdownElement> ordenes { get; set; }
-        
+        public bool EdicionRechazada { get; set; }
+
         public OrdenDeCargaDto()
         {
             this.ordenes = new List<AutoCompleteDropdownElement> { };
@@ -147,6 +148,7 @@ namespace SustitucionMOAModel.Dto
 
         public IEnumerable<OrdenDeCargaCambiosHistorialDto> OrdenDeCargaCambiosHistorial { get; set; }
         public bool FechaVencimientoAmpliada { get; set; }
+        public bool EdicionRechazada { get; set; }
 
         public override bool Equals(object obj)
         {

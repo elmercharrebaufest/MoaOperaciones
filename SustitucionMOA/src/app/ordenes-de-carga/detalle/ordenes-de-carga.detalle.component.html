@@ -545,7 +545,7 @@
 
                     <tbody *ngFor="let OrdenDeCargaCambiosHistorial of ordenDeCarga.OrdenDeCargaCambiosHistorial">
                         <tr *ngIf="OrdenDeCargaCambiosHistorial.Antes && OrdenDeCargaCambiosHistorial.Despues">
-                            <td>{{OrdenDeCargaCambiosHistorial.NombreColumnaCambio}}</td>
+                            <td>{{OrdenDeCargaCambiosHistorial.NombreColumnaCambio == "Chasis Acoplado" ? "Patente Chasis" : OrdenDeCargaCambiosHistorial.NombreColumnaCambio}}</td>
                             <td>{{OrdenDeCargaCambiosHistorial.FechaCambio }}</td>
                             <td>{{OrdenDeCargaCambiosHistorial.Usuario}}</td>
                             <td>{{OrdenDeCargaCambiosHistorial.Antes}}</td>
@@ -699,7 +699,7 @@
                     <button type="button" class="btn-custom btn-remove btn-mediano" (click)="anularOrdenPorVencimiento()"
                             style="display: inline-flex;">
                         Anular orden
-                    </button>                    
+                    </button>
                 </div>
             </div>
         </div>

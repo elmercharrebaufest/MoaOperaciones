@@ -649,7 +649,8 @@ namespace SustitucionMOAUtils.Services
                         EsFacturaAnticipada = (x.NumeroPedidoIngresado != null),
                         PatenteChasis = x.ChasisAcoplado,
                         NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Sin Enviar a SAP"),
-                        EstaSeleccionado = false
+                        EstaSeleccionado = false,
+                        EdicionRechazada = x.EdicionRechazada
                     }).OrderByDescending(y => y.Id).ToList();
             }
             else
@@ -686,7 +687,8 @@ namespace SustitucionMOAUtils.Services
                         EsFacturaAnticipada = (x.NumeroPedidoIngresado != null),
                         PatenteChasis = x.ChasisAcoplado,
                         NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Sin Enviar a SAP"),
-                        EstaSeleccionado = false
+                        EstaSeleccionado = false,
+                        EdicionRechazada = x.EdicionRechazada
                     }).OrderByDescending(y => y.Id).ToList();
             }
             if (listado == null || listado.Count == 0)
@@ -780,10 +782,8 @@ namespace SustitucionMOAUtils.Services
                 DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno,
                 OrdenDeCargaCambiosHistorial = ordenDeCargaCambiosHistorial,
                 EsOrdenVencida = orden.FechaVencimiento < DateTime.Now.Date ? true : false,
-                FechaVencimientoAmpliada = orden.FechaVencimientoAmpliada
-
-
-
+                FechaVencimientoAmpliada = orden.FechaVencimientoAmpliada,
+                EdicionRechazada = orden.EdicionRechazada
             };
 
             return ordenDto;
@@ -1065,8 +1065,20 @@ namespace SustitucionMOAUtils.Services
                                                 .Take(1)
                                                 .FirstOrDefault().Antes;
 
-                orden.Estado = EstadoOrdenDeCargaExtensions.ObtenerDescripcionEstado(estadoAnterior);
+                var estadoAnteriorDespues = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == ordenId)
+                                                .OrderByDescending(x => x.FechaCambio)
+                                                .Take(1)
+                                                .FirstOrDefault().Despues;
 
+                orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
+                {
+                    Antes = estadoAnteriorDespues,
+                    Despues = estadoAnterior,
+                    FechaCambio = DateTime.Now,
+                    NombreColumnaCambio = "estado",
+                    Usuario_Id = usuario.Id
+                });
+                orden.Estado = EstadoOrdenDeCargaExtensions.ObtenerDescripcionEstado(estadoAnterior);
                 repositorio.GuardarCambios();
 
                 return SuccessMsg.OrdenDeCargaActualizada;

@@ -428,9 +428,13 @@ namespace SustitucionMOAUtils.Services
             }
 
 
-            foreach (var item in listadoProveedores.Where(a => a.CUIT == null))
+            foreach (var item in listadoProveedores.Where(a => a.CUIT == null || a.CUIT == ""))
             {
                 item.CUIT = "-";
+            }
+            foreach (var item in listadoProveedores.Where(a => a.RazonSocial == null || a.RazonSocial == ""))
+            {
+                item.RazonSocial = "-";
             }
             return listadoProveedores.Distinct().ToList();
         }

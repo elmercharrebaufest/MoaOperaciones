@@ -41,6 +41,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     mensajeError: string = "";
     mensajeSuccess: string = "";
     clienteCUIT: string = "";
+    clienteSeleccionado: any = "";
     clienteCodigo: string = "";
     CodigoCorredor: string = "";
     Contrato: string = "";
@@ -57,15 +58,17 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
     esAdmin: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     listaClientes: any[];
-    noEditarCliente : boolean = false;
+    noEditarCliente: boolean = false;
 
     puedeEditarContrato: boolean = false;
     resultadoValidacionCorCliConPro: boolean = false;
     mensajeValidacionCorCliConPro: string = "";
 
+    listaCorredores: any[];
+    corredorSeleccionado: any;
     public patternPatente = { '0': { pattern: new RegExp('\[a-zA-Z0-9\]') } };
 
-    constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService,  protected securytiService: SecurityService, protected floatMsgService: FloatMsgService,  protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
+    constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
         super(navService, securytiService, floatMsgService, modalService);
     }
 
@@ -82,7 +85,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
         });
         this.navService.setSeccionList([]);
-        this.onCorredorFocusOut('');
+        this.onCorredorFocusOut('', false);
         this.obtenerMateriales();
         if (this.esCorredor) {
             this.CodigoCorredor = sessionStorage.getItem("proveedor");
@@ -90,9 +93,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 this.cargarClientes(this.CodigoCorredor);
             }
         }
+
+        this.obtenerCorredores();
+
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
-        } else{
+            this.noEditarCliente = true;
+        } else {
             this.getPatentes();
         }
         if (this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS')) {
@@ -104,16 +111,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 this.noEditarCliente = true;
             }
         }
-        if(this.ordenDeCargaId > 0){
-            this.noEditarCliente = true;
-        } 
     }
-    
-    cambioProducto(){
-        let productoActual = this.listaMateriales.find(x => x.MaterialId == this.ordenDeCarga.Producto_Id).CodigoSap;       
-        if (productoActual == "99709"){
+
+    cambioProducto() {
+        let productoActual = this.listaMateriales.find(x => x.MaterialId == this.ordenDeCarga.Producto_Id).CodigoSap;
+        if (productoActual == "99709") {
             this.ordenDeCarga.Cantidad = 20000;
-        }else{
+        } else {
             this.ordenDeCarga.Cantidad = 30000;
         }
     }
@@ -134,7 +138,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             console.error(e);
             this.mensajeComponent.setErrorMsg(e);
         }
-        
+
     }
 
     validar() {
@@ -172,8 +176,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         return true;
     }
 
-   
-    obtenerOrdenDeCarga() {   
+
+    obtenerOrdenDeCarga() {
         try {
             this.subscriptionDropDowns = this.service.getEditarOrdenDeCarga(this.ordenDeCargaId).subscribe(
                 result => {
@@ -192,16 +196,22 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         if (this.esComercial && result.data.ColorSemaforo != "green") {
                             this.puedeEditarContrato = true;
                         }
-                        if(result.data.Estado == 3){
+                        if (result.data.Estado == 3) {
                             this.puedeEditarContrato = true;
-                        }
-                        if (this.CodigoCorredor) {
-                            this.cargarClientes(this.CodigoCorredor);
-                        } else {
-                            this.onCorredorFocusOut('');
                         }
                         this.clienteCUIT = result.data.CUITCliente;
                         this.clienteCodigo = result.data.CodigoCliente;
+                        console.log("obtener orden");
+                        console.log("this.clienteCUIT", this.clienteCUIT);
+                        console.log("this.clienteCodigo", this.clienteCodigo);
+                        console.log("this.CodigoCorredor", this.CodigoCorredor);
+                        if (this.CodigoCorredor) {
+                            console.log("obtener orden cargarClientes");
+                            this.cargarClientes(this.CodigoCorredor);
+                        } else {
+                            console.log("this.onCorredorFocusOut");
+                            this.onCorredorFocusOut('', true);
+                        }
                         this.getPatentes();
                     }
                 },
@@ -216,7 +226,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
 
-    submit() {        
+    submit() {
         if (!this.validar()) {
             this.spinnerComponent.hideIt();
             return;
@@ -336,7 +346,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.patentesChasis = result.ordenes.map((patente) => {
-                            return { label: patente.label, value: patente.label};
+                            return { label: patente.label, value: patente.label };
                         })
 
                         var flags = [], output = [], l = this.patentesChasis.length, i;
@@ -370,7 +380,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             console.error(' getPatentes: ', err);
             this.floatMsgService.setErrorMsg(err);
             return false; //<-- Prevent Refresh
-        }      
+        }
     }
 
     PatenteChasisSelected(value: any) {
@@ -393,23 +403,26 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         var anho = fecha.toLocaleString("default", { year: "numeric" });
         var mes = fecha.toLocaleString("default", { month: "2-digit" });
         var dia = fecha.toLocaleString("default", { day: "2-digit" });
-        let stringFecha =  anho + '-' + mes + '-' + dia;
+        let stringFecha = anho + '-' + mes + '-' + dia;
         return stringFecha;
     }
 
     onCorredorSeleccionado = (proveedor: any) => {
-        this.ordenDeCarga.CUITCorredor = proveedor.CUIT;
-        this.CodigoCorredor = proveedor.idVendedor;
-        this.cargarClientes(proveedor.idVendedor);
+        this.CodigoCorredor = this.corredorSeleccionado.idVendedor;
+        this.obtenerCorredor(this.CodigoCorredor);
+
     }
 
-    onCorredorFocusOut = (proveedor: any) => {
-        try{
+    onCorredorFocusOut = (proveedor: any, edit: boolean) => {
+        try {
             if (proveedor == '') {
                 this.CodigoCorredor = '';
                 this.ordenDeCarga.CUITCorredor = undefined;
                 this.listaClientes = [];
-                this.clienteCUIT = this.selectUndefinedOptionValue;
+                if (edit != true) {
+                    this.clienteCUIT = this.selectUndefinedOptionValue;
+                }
+                this.clienteSeleccionado = null;
                 this.mensajeComponent.setMsgsEmpty();
                 this.seleccionarProveedorService.getAllClientsByType(5).subscribe(
                     (result) => {
@@ -422,7 +435,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                             console.info(' onCorredorFocusOut: ', result.info);
                             this.floatMsgService.setInfoMsg(result.info);
                         } else {
-                            this.listaClientes = result;
+                            this.listaClientes = this.ordenarYFiltrarClientes(result);
+                            console.log("this.listaClientes", this.listaClientes);
+                            console.log("this.clienteCUIT", this.clienteCUIT);
+                            if (this.clienteCUIT != null && this.clienteCUIT.length > 0) {
+                                this.clienteSeleccionado = this.listaClientes.find(x => x.CUIT == this.clienteCUIT);
+                            }
                         }
                     },
                     (error) => {
@@ -449,8 +467,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     cargarClientes = (codigoCorredor: string) => {
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
-        try { 
-            
+        try {
+
             this.service.visualizarCliente(codigoCorredor, this.desde, this.hasta).subscribe(
                 result => {
                     if (result.logout == true) {
@@ -462,13 +480,18 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.listaClientes = [];
                         this.mensajeComponent.setErrorMsg(result.error);
                         this.blockUI.stop();
-                        this.onCorredorFocusOut('');
+                        this.onCorredorFocusOut('', false);
                     } else if (result.info != undefined) {
                         console.info(' cargarClientes; ', result.info);
                         this.mensajeComponent.setInfoMsg(result.info);
                         this.blockUI.stop();
                     } else {
-                        this.listaClientes = result.Clientes;
+                        console.log("cargar clientes");
+                        console.log("this.clienteCUIT", this.clienteCUIT);
+                        this.listaClientes = this.ordenarYFiltrarClientes(result.Clientes);
+                        if (this.clienteCUIT != null && this.clienteCUIT.length > 0) {
+                            this.clienteSeleccionado = this.listaClientes.find(x => x.CUIT == this.clienteCUIT);
+                        }
                         this.blockUI.stop();
                     }
                 },
@@ -486,6 +509,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     onClienteSeleccionado = () => {
+        if (this.clienteSeleccionado) {
+            this.clienteCUIT = this.clienteSeleccionado.CUIT;
+        }
         this.ordenDeCarga.CUITCliente = Number(this.clienteCUIT);
         this.getPatentes();
         if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
@@ -494,7 +520,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
         } else if (this.clienteCodigo && this.Contrato && this.Producto) {
             this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
-        } 
+        }
     }
 
     onContratoChange = (contrato: any) => {
@@ -502,6 +528,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         if (this.Contrato) {
             this.cargarProducto();
         }
+        console.log("onContratoChange",this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
         if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
             this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
         } else if (this.clienteCUIT && this.Contrato && this.Producto) {
@@ -516,7 +543,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     cargarProducto = () => {
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
-        try { 
+        try {
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
             this.service.visualizarProducto(this.Contrato, this.desde, this.hasta).subscribe(
                 result => {
@@ -540,7 +567,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                             this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
                         } else if (this.clienteCodigo && this.Contrato && this.Producto) {
                             this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
-                        } 
+                        }
                         this.blockUI.stop();
                     }
                 },
@@ -565,9 +592,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
         } else if (this.clienteCodigo && this.Contrato && this.Producto) {
             this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
-        } 
+        }
     }
-    
+
     validarCorredorClienteContratoProducto = (clienteCuit: string, clienteCodigo: string, contrato: string, codigoCorredor: string, productoId: string) => {
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
@@ -615,4 +642,120 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.blockUI.stop();
         }
     }
+
+    ordenarYFiltrarClientes(result: any): any[] {
+        result.filter((thing, i, arr) => {
+            return arr.indexOf(arr.find(t => t.CUIT === thing.CUIT)) === i;
+        });
+        result.sort((a, b) => {
+            const nameA = a.RazonSocial.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.RazonSocial.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+            return 0;
+        });
+        result.forEach((cliente: any) => {
+            cliente.RazonSocial = cliente.RazonSocial + " (" + cliente.CUIT + ")";
+        });
+        return result;
+    }
+
+    ordenarYFiltrarCorredores(result: any): any[] {
+
+        result = result.filter(
+            (thing, i, arr) => arr.findIndex(t => t.idVendedor === thing.idVendedor) === i
+        );
+
+        result.sort((a, b) => {
+            const nameA = a.descVendedor.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.descVendedor.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+            return 0;
+        });
+        result.forEach((cliente: any) => {
+            cliente.descVendedor = cliente.descVendedor + " (" + cliente.idVendedor + ")";
+        });
+
+        return result;
+    }
+
+
+    obtenerCorredor(CodigoCorredor: string) {
+        
+        try {
+            this.seleccionarProveedorService.obtenerProveedorPorCodigo(CodigoCorredor).subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {  
+                        this.ordenDeCarga.CUITCorredor = result.CUIT;
+                        this.cargarClientes(this.corredorSeleccionado.idVendedor);
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );     
+        } catch (err) {
+            this.mensajeComponent.setErrorMsg(err);
+        }
+    }
+
+
+    obtenerCorredores() {
+        //this.blockUI.start('');
+        this.mensajeComponent.setMsgsEmpty();
+        try {
+
+            this.seleccionarProveedorService.getVendedores("", "", 4).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        //this.blockUI.stop();
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.CodigoCorredor = '';
+                        this.listaClientes = [];
+                        this.mensajeComponent.setErrorMsg(result.error);
+                        //this.blockUI.stop();
+                        this.onCorredorFocusOut('', false);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                        //this.blockUI.stop();
+                    } else {
+                        this.listaCorredores = this.ordenarYFiltrarCorredores(result.data.vendedores);
+                        if (this.CodigoCorredor != "") {
+                            let seleccionado = result.data.vendedores.filter(a => a.idVendedor == this.CodigoCorredor);
+                            if (seleccionado != null && seleccionado.length > 0) {
+                                this.corredorSeleccionado = seleccionado[0];
+                            }
+                        }
+                        //this.blockUI.stop();
+                    }
+                },
+                error => {
+                    console.error(' cargarClientes: ', error.message);
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    //this.blockUI.stop();
+                }
+            );
+        } catch (err) {
+            console.error(' cargarClientes: ', err);
+            this.mensajeComponent.setErrorMsg(err);
+            this.blockUI.stop();
+        }
+    }
 }
+

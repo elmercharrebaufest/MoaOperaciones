@@ -26,9 +26,29 @@
                                 <div class="formulario-label" style="margin-bottom: 8px;">
                                     Corredor:
                                 </div>
-                                
+
                                 <div class="styled-select" style="overflow: initial;">
-                                    <app-seleccionar-proveedor [tipoProveedorId]="4" [(valorInicial)]="CodigoCorredor" [noEditarCliente]="noEditarCliente" (onProveedorSeleccionado)="onCorredorSeleccionado($event)" (focusout)="onCorredorFocusOut($event.target.value)"></app-seleccionar-proveedor>
+                                    <!--<app-seleccionar-proveedor
+                                    [tipoProveedorId]="4"
+                                    [(valorInicial)]="CodigoCorredor"
+                                    [noEditarCliente]="noEditarCliente"
+                                    (onProveedorSeleccionado)="onCorredorSeleccionado($event)"
+                                    (focusout)="onCorredorFocusOut($event.target.value,false)">
+                                    </app-seleccionar-proveedor>-->
+                                    <!--(onProveedorSeleccionado)="onCorredorSeleccionado($event)"
+                                                (focusout)="onCorredorFocusOut($event.target.value,false)"
+                                                (ngModelChange)="onCorredorSeleccionado($event)"
+                                        
+                                        -->
+                                    <p-dropdown name="cmbCorredores"
+                                                [(ngModel)]="corredorSeleccionado"
+                                                [options]="listaCorredores"
+                                                placeholder="Seleccione un Corredor"
+                                                [disabled]="noEditarCliente"
+                                                optionLabel="descVendedor"
+                                                (ngModelChange)="onCorredorSeleccionado()"
+                                                [filter]="true" filterBy="value.descVendedor">
+                                    </p-dropdown>
                                 </div>
                             </div>
 
@@ -37,14 +57,23 @@
                                     Cliente:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <select name="cmbCliente" [(ngModel)]="clienteCUIT" (ngModelChange)="onClienteSeleccionado()" [disabled]="noEditarCliente">
+                                    <!--<select name="cmbCliente" [(ngModel)]="clienteCUIT" (ngModelChange)="onClienteSeleccionado()" [disabled]="noEditarCliente">
                                         <option [value]="selectUndefinedOptionValue">
                                             Elegir cliente
                                         </option>
                                         <option *ngFor="let itemCliente of listaClientes" value="{{itemCliente.CUIT}}">
                                             {{itemCliente.RazonSocial}}
                                         </option>
-                                    </select>
+                                    </select>-->
+                                    <p-dropdown name="cmbCliente2"
+                                                [(ngModel)]="clienteSeleccionado"
+                                                (ngModelChange)="onClienteSeleccionado()"
+                                                [options]="listaClientes"
+                                                optionLabel="RazonSocial"
+                                                placeholder="Seleccione un Cliente"
+                                                [disabled]="noEditarCliente"
+                                                [filter]="true" filterBy="value.RazonSocial">
+                                    </p-dropdown>
                                 </div>
                             </div>
 

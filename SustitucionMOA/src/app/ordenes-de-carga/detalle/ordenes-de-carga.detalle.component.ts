@@ -264,6 +264,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada ||  this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
             if (this.esTercero)
                 this.mostrarBotonSolicitarAnulacion = true;
+
+            if (this.ordenDeCarga.EdicionRechazada != true)
                 this.mostrarBotonEditar = true;
           
         }
