@@ -10,6 +10,7 @@ import { SecurityService } from './../common/services/SecurityService';
 import { Seccion } from './../common/models/seccion';
 import { ModalService } from './../common/services/ModalService';
 import { EcheqService } from './echeq.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 
@@ -31,10 +32,12 @@ export class EcheqBaseComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
+
         sessionStorage.getItem("proveedor");
+
         this.navService.setSeccionList([
             new Seccion('/echeq/gestion', 'echeq', 'Gestion'),
-            new Seccion('/echeq/mis-cheq', 'echeq', 'Mis Echeq')
+            new Seccion('/echeq/mis-echeq', 'echeq', 'Mis Echeq')
         ]);    
     }
 

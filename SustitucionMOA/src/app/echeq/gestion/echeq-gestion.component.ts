@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -16,7 +17,7 @@ import { EcheqFilter } from './echeq.filtros/echeq-filter.model';
     templateUrl: `echeq-gestion.component.html`,
     providers: [EcheqService]
 })
-export class EcheqGestionComponent extends EcheqBaseComponent{
+export class EcheqGestionComponent extends EcheqBaseComponent implements OnInit{
 
 
     constructor(protected echeqService: EcheqService, 
@@ -25,13 +26,24 @@ export class EcheqGestionComponent extends EcheqBaseComponent{
                 protected securityService: SecurityService,
                 protected floatMsgService: FloatMsgService, 
                 protected modalService: ModalService,
-                public confirmationService: ConfirmationService) {
+                public confirmationService: ConfirmationService,
+                protected route: ActivatedRoute, 
+                protected router: Router) {
                     super(echeqService, navService, sessionDataService, securityService, floatMsgService, modalService);
                 }
 
+           
+
                 
-    setTabs() {
-        this.navService.setMenuSeccionTab("echeq", "Gestion");
+    // setTabs() {
+    //     this.navService.setMenuSeccionTab();
+    // }
+
+    ngOnInit() {
+        super.ngOnInit();
+        this.setTabs();
+        this.checkPermisos();
+        this.setMenuSeccionTab("echeq", "Gestion");
     }
 
     //buscar tema tabs

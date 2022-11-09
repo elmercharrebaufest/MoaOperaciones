@@ -222,6 +222,12 @@ export class LayoutComponent implements OnDestroy {
                         this.textoTooltip = 'En esta categoría podrás pesificar tus negocios en dólares, individual o masivamente, y consultar aquellos negocios pendientes de pesificar.';
                         this.textoTooltip2 = '';
                         break;
+                    case 'Gestion':
+                    case 'Mis Echeq':
+                        this.auxiliarSeccionesVisitadas = 'Gestion';
+                        this.textoTooltip = 'En esta categoría podrás cargar tus eheqs';
+                        this.textoTooltip2 = '';
+                        break;
                     case 'Carga de Negocios':
                         this.auxiliarSeccionesVisitadas = 'Carga de Negocios';
                         this.textoTooltip = 'En esta pantalla podrás seleccionar el tipo de negocio que deseas operar.';
