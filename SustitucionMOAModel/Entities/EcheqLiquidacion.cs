@@ -37,6 +37,9 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("EcheqNegocioId")]
         public virtual EcheqNegocio EcheqNegocio { get; set; }
 
+        [InverseProperty("EcheqLiquidacion")]
+        public virtual List<EcheqApertura> Aperturas { get; set; }
+
         public EcheqLiquidacion() { }
 
         public EcheqLiquidacion(EcheqLiquidacionDto echeqLiquidacion)

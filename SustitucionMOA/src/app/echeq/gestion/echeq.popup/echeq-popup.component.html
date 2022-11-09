@@ -1,0 +1,69 @@
+<div *ngIf="documento != null">
+    <p-dialog [(visible)]="displayAperturarEcheq"
+              modal="modal"
+              [width]="550"
+              [draggable]="false"
+              [closable]="true"
+              appendTo="body"
+              positionTop="30"
+              [contentStyle]="{ 'max-height':'1500px', 'min-height':'500px'}">
+        <p-header>
+            Apertura Liquidación #{{documento.documento}}
+        </p-header>
+
+        <div *ngIf="documento != null" class="row myRow">
+            <div *ngFor="let cheque of listaChequesAux" class="col-md-12 row myRow alinearTitulo margenInput">
+                <div class="col-md-12 titulosModal" style="margin-right: 1em;">
+                    Echeq {{cheque.ordenCheque}}
+                    <input type="text" 
+                        [(ngModel)]="cheque.importeCheque" 
+                        class="styled-echeq" 
+                        [disabled]="cheque.ordenCheque == 1" 
+                        (keyup)="calcularPorcentaje(cheque);" 
+                        numeric decimals="2"
+                        >
+                        <!-- onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false; " -->
+                    <span *ngIf="cheque.ordenCheque != 1" (click)="eliminarEcheq(cheque.ordenCheque)">
+                        <img src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="pointer" style="height:25px;"/>
+                    </span>
+                    <span *ngIf="cheque.ordenCheque == 1">
+                        ({{aforoConf}}%) Aforo
+                    </span>
+                    <span *ngIf="cheque.ordenCheque != 1" >
+                        ({{cheque.porcentaje | number:'1.2-2':'es'}}%)
+                    </span>
+                    <p *ngIf="cheque.importeCheque == 0 || cheque.importeCheque ==''" class="advertenciaPopup">
+                        El campo es obligatorio
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-12 row myRow alinearTitulo margenInput">
+                <div *ngIf="listaChequesAux.length < cantidadEcheq" 
+                    class="col-md-12 titulosModal" 
+                    style="margin-right: 1em;">
+                    <span (click)="agregarInputEcheq()" class="pointer" style="color: #1C7CD5;">
+                        <b class="masIcon">+</b>
+                        &nbsp; Agregar Echeq
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <h4>
+                    <strong>Total ${{documento.importeEnPesos  | number:'1.2-2':'es'}} (100%)</strong>
+                </h4>
+            </div>
+            <div>
+                <span style="color: red;">
+                    <h4 style="margin: 1em;">
+                        {{mostrarMensaje()}}
+                    </h4> 
+                </span>
+            </div>
+          
+        </div>
+        <p-footer>
+            <button type="button" class="btn btn-danger" (click)="onCancelarAperturarEcheq()">CANCELAR</button>
+            <button type="button" class="btn btn-success" (click)="onAperturar()">GUARDAR</button>
+        </p-footer>
+    </p-dialog>
+</div>

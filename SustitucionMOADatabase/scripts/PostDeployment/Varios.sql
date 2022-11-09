@@ -19,6 +19,14 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'Soja200Cotizacion
 BEGIN
 	insert into Configuracion values ('Soja200Cotizacion','200')
 END
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'EcheqLimiteCantidadAperturas') 
+BEGIN
+	insert into Configuracion values ('EcheqLimiteCantidadAperturas','4')
+END
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'EcheqAforo') 
+BEGIN
+	insert into Configuracion values ('EcheqAforo','30')
+END
 
 IF EXISTS (SELECT *FROM OrdenDeCarga WHERE Estado = 13)
 BEGIN

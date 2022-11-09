@@ -4,6 +4,8 @@ import { BaseService } from './../common/services/BaseService';
 import { HttpParams } from '@angular/common/http';
 import {timeoutWith, map} from 'rxjs/operators';
 import { EcheqContrato } from './gestion/echeq-contrato.model';
+import { Configuracion } from '../common/models/configuracion';
+import { EcheqApertura } from './gestion/echeq.popup/echeqApertura-model';
 
 
 @Injectable()
@@ -62,6 +64,25 @@ export class EcheqService extends BaseService {
 
         return this.http
             .post('/api/echeq/DesmarcarDocumento', payload)
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+    }
+
+    public ConfiguracionEcheq(): Observable<Configuracion[]> {
+        return this.http
+            .get<Configuracion[]>('/api/echeq/ObtenerConfiguracion', { headers: this.headers });
+    }
+
+    
+    public AgregarApertura(documento: string, pedido: string, contrato: string, listaChequesApertura: EcheqApertura[]): Observable<any> {
+        let payload = new FormData();
+        payload.append("documento", documento);
+        payload.append("pedido", pedido);
+        payload.append("contrato", contrato);
+        payload.append("aperturaDtos", JSON.stringify(listaChequesApertura));
+
+
+        return this.http
+            .post('/api/echeq/AgregarApertura', payload)
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 }

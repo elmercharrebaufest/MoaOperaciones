@@ -1,0 +1,37 @@
+.styled-echeq {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  font-weight: 400;
+  margin: 5px;
+}
+
+.titulosModal {
+    text-align: left;
+    font: normal normal bold 16px/24px Roboto Regular;
+    letter-spacing: 0px;
+    color: #1A1A1A;
+    opacity: 1;
+    margin: 0;
+  }
+
+.pointer {
+  cursor: pointer;
+}
+
+.advertenciaPopup {
+  font-size: small;
+  font-weight: lighter;
+  color: red;
+  margin-left: 6em;
+}
+
+.masIcon {
+  font-size: 24px;
+  vertical-align: middle;
+  color: white;
+  background: #1C7CD5;
+  padding: 2px 10px 2px 10px;
+  border-radius: 42px;
+}

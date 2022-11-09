@@ -50,6 +50,7 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\ConfiguracionDto.cs" />
     <Compile Include="Dto\Echeq\EcheqLiquidacionDto.cs" />
     <Compile Include="Dto\Echeq\EcheqAperturaDto.cs" />
     <Compile Include="Dto\Echeq\EcheqNegocioDto.cs" />

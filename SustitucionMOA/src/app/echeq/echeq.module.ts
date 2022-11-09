@@ -9,9 +9,12 @@ import { EcheqService } from './echeq.service';
 import { EcheqGestionComponent } from './gestion/echeq-gestion.component';
 import { GrillaComponent } from './gestion/echeq.grilla/echeq-grilla.component';
 import { FiltrosComponent } from './gestion/echeq.filtros/echeq-filtros.component';
+import { EcheqPopupComponent } from './gestion/echeq.popup/echeq-popup.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService} from 'primeng/api';
+import { DialogModule } from 'primeng/dialog';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
     imports: [
@@ -22,12 +25,15 @@ import {ConfirmationService} from 'primeng/api';
         ReCaptchaModule,
         CalendarModule,
         CheckboxModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        DialogModule,
+        TooltipModule
     ],
     declarations: [
         EcheqGestionComponent,
         FiltrosComponent,
-        GrillaComponent
+        GrillaComponent,
+        EcheqPopupComponent
     ],
     providers: [
         EcheqService,

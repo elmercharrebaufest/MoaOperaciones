@@ -7,6 +7,7 @@
     [FechaModificacion]      DATETIME2 (7)  NULL,
     [EcheqLiquidacionId]              INT            NOT NULL,
     [ImporteCheque] DECIMAL(18, 2) NOT NULL, 
+    [Estado] BIT NOT NULL, 
     CONSTRAINT [FK.EcheqApertura_Usuario_UsuarioCreacionId] FOREIGN KEY ([UsuarioCreacionId]) REFERENCES [Usuario]([Id]),
     CONSTRAINT [FK.EcheqApertura_Usuario_UsuarioModificacionId] FOREIGN KEY ([UsuarioModificacionId]) REFERENCES [Usuario]([Id]),
 

@@ -29,5 +29,6 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("EcheqLiquidacionId")]
         public virtual EcheqLiquidacion EcheqLiquidacion { get; set; }
+        public bool Estado { get; set; }
     }
 }

@@ -25,11 +25,12 @@ namespace SustitucionMOAModel.Dto
         public decimal ImporteEnPesos { get; set; }
         public string Moneda { get; set; }
         public bool MarcaCheque { get; set; }
-        public Usuario UsuarioCreacion { get; set; }     
+        public Usuario UsuarioCreacion { get; set; }
         public Usuario UsuarioModificacion { get; set; }
         public string Contrato { get; set; }
         public string Pedido { get; set; }
 
+        public List<EcheqAperturaDto> Aperturas { get; set; } = new List<EcheqAperturaDto>();
 
 
         public EcheqLiquidacionDto() { }
