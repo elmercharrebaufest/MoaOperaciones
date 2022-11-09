@@ -14,27 +14,29 @@ export class EcheqPopupComponent implements OnInit {
 
     @Input() displayAperturarEcheq: boolean;
     @Input() set echeqDocumento(value: EcheqDocumento) {
-        this.documento = value;
-        this.documento.listaChequesApertura;
-        this.listaChequesAux = new Array<EcheqApertura>();        
-        for (var i in this.documento.listaChequesApertura) {
-            var item = this.documento.listaChequesApertura[i];
-            this.listaChequesAux.push({
-                importeCheque: item.importeCheque,
-                ordenCheque: item.ordenCheque,
-                porcentaje: item.porcentaje
-            });
+        if(value != undefined && value != null ){
+            this.documento = value;
+            // this.documento.listaChequesApertura;
+            this.listaChequesAux = new Array<EcheqApertura>();        
+            for (var i in this.documento.listaChequesApertura) {
+                var item = this.documento.listaChequesApertura[i];
+                this.listaChequesAux.push({
+                    importeCheque: item.importeCheque,
+                    ordenCheque: item.ordenCheque,
+                    porcentaje: item.porcentaje
+                });
+            }
+            if (this.listaChequesAux.length == 0) {
+                let aforo = {
+                    ordenCheque: 1,
+                    importeCheque: Number((this.documento.importeEnPesos * this.aforoConf / 100).toFixed(2)),
+                    porcentaje: this.aforoConf
+                };
+    
+                this.listaChequesAux.push(aforo);
+            }
+            this.calcularPorcentajes();
         }
-        if (this.listaChequesAux.length == 0) {
-            let aforo = {
-                ordenCheque: 1,
-                importeCheque: Number((this.documento.importeEnPesos * this.aforoConf / 100).toFixed(2)),
-                porcentaje: this.aforoConf
-            };
-
-            this.listaChequesAux.push(aforo);
-        }
-        this.calcularPorcentajes();
     }
     @Input() aforoConf: number;
     @Input() cantidadEcheq: number;

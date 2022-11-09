@@ -225,7 +225,7 @@ export class LayoutComponent implements OnDestroy {
                     case 'Gestion':
                     case 'Mis Echeq':
                         this.auxiliarSeccionesVisitadas = 'Gestion';
-                        this.textoTooltip = 'En esta categoría podrás cargar tus eheqs';
+                        this.textoTooltip = 'En esta categoría podrás cargar tus echeqs';
                         this.textoTooltip2 = '';
                         break;
                     case 'Carga de Negocios':
