@@ -644,7 +644,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     ordenarYFiltrarClientes(result: any): any[] {
-        result.filter((thing, i, arr) => {
+        result = result.filter((thing, i, arr) => {
             return arr.indexOf(arr.find(t => t.CUIT === thing.CUIT)) === i;
         });
         result.sort((a, b) => {

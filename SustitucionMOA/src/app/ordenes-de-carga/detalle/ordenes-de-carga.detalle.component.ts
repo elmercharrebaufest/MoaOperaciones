@@ -265,10 +265,13 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (this.esTercero)
                 this.mostrarBotonSolicitarAnulacion = true;
 
-            if (this.ordenDeCarga.EdicionRechazada != true)
+            if (this.ordenDeCarga.EdicionRechazada != true )
                 this.mostrarBotonEditar = true;
           
         }
+
+        if (this.esInterno || this.esComercial || this.esMesaFas)
+            this.mostrarBotonEditar = true;
 
         if (this.esInterno || this.esComercial || this.esMesaFas) {
             this.mostrarBotonVerHistorial = true;
