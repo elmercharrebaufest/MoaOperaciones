@@ -120,7 +120,7 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let cabeceraContrato of cabecera | customFilter : 'Contrato' : filtroContrato  | orderedColumn : {property: (orderedByColumn), direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
-                            <td><a class="animate" (click)="goToSeccionParam('/reporte-contrato/detalle', cabeceraContrato.Contrato)">{{cabeceraContrato.Contrato}}</a></td>
+                            <td><a class="animate" style="cursor:pointer;" (click)="goToSeccionParam('/reporte-contrato/detalle', cabeceraContrato.Contrato)">{{cabeceraContrato.Contrato}}</a></td>
                             <td>{{cabeceraContrato.TipoContrato}}</td>
                             <td>{{cabeceraContrato.PedidoCliente}}</td>
                             <td>{{cabeceraContrato.FechaDesde}}</td>

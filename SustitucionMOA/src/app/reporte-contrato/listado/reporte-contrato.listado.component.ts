@@ -74,7 +74,7 @@ export class ReporteContratoListado extends ListBaseComponent {
         this.cabecera = null;
         this.data = null;
         this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio,
-            this.filtroFechaComponent.fecha_fin, this.mostrarPendientes).subscribe(
+            this.filtroFechaComponent.fecha_fin, /*this.mostrarPendientes*/false).subscribe(
                 (result: any) => {
                     this.mensajeComponent.setMsgsEmpty();
                     this.blockUI.stop();
@@ -90,10 +90,10 @@ export class ReporteContratoListado extends ListBaseComponent {
                         this.cargarFiltrosContratos(result);
                         this.getTotalKilogramos();
                         this.data = result.data.Resultados;
+                        this.ejecutarFiltro();
                         this.show = true;
                         this.disabled = false;
                     
-
                     }
 
                 },
@@ -142,7 +142,8 @@ export class ReporteContratoListado extends ListBaseComponent {
     }
 
     filtroPendientes() {
-        this.getListado();
+        /*this.getListado();*/
+        this.ejecutarFiltro();
     }
 
 
@@ -168,7 +169,11 @@ export class ReporteContratoListado extends ListBaseComponent {
 
         }
         this.cabecera = this.cabecera.filter(x => x.Corredor != "TOTAL");
+        if (this.mostrarPendientes == true) {
+            this.cabecera = this.cabecera.filter(x => x.KilosPendienteEntrega > 0);
+        }
         this.ObtenerContratosFiltro();
+        this.getTotalKilogramos();
     }
 
     getTotalKilogramos() {
@@ -217,6 +222,7 @@ export class ReporteContratoListado extends ListBaseComponent {
     }
 
     ObtenerContratosFiltro() {
+        return;
         if (this.filtroContrato == "") {this.blockUI.start(''); }       
         this.subscription = this.service.obtenerContratosFiltro(this.filtroFechaComponent.fecha_inicio,
             this.filtroFechaComponent.fecha_fin, this.mostrarPendientes, this.cabecera).subscribe(
