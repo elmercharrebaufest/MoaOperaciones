@@ -445,7 +445,8 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                if (!esJob)
+                //solo en el caso que el result de ok para crear la orden tiene que verificar el vencimiento
+                if (!esJob && (result == "CC-00" || result == "CC-02"))
                 {
                     if (!ValidarVencimientoContrato(ordenDeCarga.ContratoIngresado, cliente))
                     {
