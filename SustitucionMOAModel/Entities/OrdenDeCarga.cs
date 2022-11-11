@@ -95,13 +95,13 @@ namespace SustitucionMOAModel.Entities
         {
 			if (Estado != EstadoOrdenDeCarga.Entregada)
             {
-                if (CodigoVerificacionSap == "CC-01")
+                if (CodigoVerificacionSap == "CC-01" || CodigoVerificacionSap == "CC-06")
                 {
                     Estado = EstadoOrdenDeCarga.ErrorDeCarga;
                 }
                 else
                 {
-                    if ((string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido)) && Estado != EstadoOrdenDeCarga.SinEnviarASAP)
+                    if (((string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido)) && Estado != EstadoOrdenDeCarga.SinEnviarASAP) || CodigoVerificacionSap == "CC-07")
                     {
                         Estado = EstadoOrdenDeCarga.Pendiente;
                     }

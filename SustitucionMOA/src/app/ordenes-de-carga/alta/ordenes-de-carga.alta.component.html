@@ -102,7 +102,7 @@
                                     Producto:
                                 </div>
                                 <div class="styled-select">
-                                    <select name="product" [(ngModel)]="ordenDeCarga.Producto_Id" [disabled]="noEditarCliente" (change)="onProductoChange($event.target.value)">
+                                    <select name="product" [(ngModel)]="ordenDeCarga.Producto_Id" [disabled]="true" (change)="onProductoChange($event.target.value)">
                                         <option [value]="selectUndefinedOptionValue">
                                             Elegir Grano
                                         </option>

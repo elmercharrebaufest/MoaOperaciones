@@ -656,7 +656,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
                 .Returns(ordenDeCarga);
 
-            var result = target.SeleccionarPedido(ordenId, pedido);
+            var result = target.SeleccionarPedido(ordenId, pedido,"");
 
             Assert.AreEqual(result, expected);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);

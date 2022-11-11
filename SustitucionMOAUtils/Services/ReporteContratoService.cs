@@ -52,7 +52,10 @@ namespace SustitucionMOAUtils.Services
                                                                fechaFin = Convert.ToDateTime(fechaFin)}
                     }
             };
-
+            if ((Convert.ToDateTime(fechaInicio) - Convert.ToDateTime(fechaFin)).TotalDays > 180)
+            {
+                throw new ValidationCustomException("El rango de fecha no puede ser mayor a 180 dias.");
+            }
             ReporteContratoViewModel view = new ReporteContratoViewModel();
             if (dataFiltro == null)
             {

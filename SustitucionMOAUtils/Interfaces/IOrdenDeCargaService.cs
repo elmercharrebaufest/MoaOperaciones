@@ -23,15 +23,15 @@ namespace SustitucionMOAUtils.Interfaces
         string RechazarSolicitudEdicion(int ordenId, string mailUsuario);
         string NotificarTransporte(int ordenId);
         List<string> ObtenerContratos(int ordenId);
-        Resultado SeleccionarContrato(int ordenId, string contratoSAP);
+        Resultado SeleccionarContrato(int ordenId, string contratoSAP, string mailUsuario);
         List<string> ObtenerPedidos(int ordenId);
-        string SeleccionarPedido(int ordenId, string pedido);
+        string SeleccionarPedido(int ordenId, string pedido, string mailUsuario);
         Resultado VerificarSituacionCrediticia(int ordenId);
         string VerificarTransporte(int ordenId);
         void VerificarTransporteBulk();
         void CrearOrdenEnSAPBulk();
 		List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga();
-        string ForzarCreacionOrden(int ordenId);
+        string ForzarCreacionOrden(int ordenId, string mailUsuario);
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);
 		VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request);
 		VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request);

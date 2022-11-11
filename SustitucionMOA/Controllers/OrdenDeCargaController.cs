@@ -268,7 +268,7 @@ namespace SustitucionMOA.Controllers
             {
                 var mailUsuario = SessionPersister.getUsername();
 
-                return JsonCustom(new { data = ordenDeCargaService.SeleccionarContrato(ordenId, contratoSAP) });
+                return JsonCustom(new { data = ordenDeCargaService.SeleccionarContrato(ordenId, contratoSAP, mailUsuario) });
             }
             catch (InfoCustomException e)
             {
@@ -314,7 +314,7 @@ namespace SustitucionMOA.Controllers
             {
                 var mailUsuario = SessionPersister.getUsername();
 
-                return JsonCustom(new { data = ordenDeCargaService.SeleccionarPedido(ordenId, pedido) });
+                return JsonCustom(new { data = ordenDeCargaService.SeleccionarPedido(ordenId, pedido, mailUsuario) });
             }
             catch (InfoCustomException e)
             {
@@ -410,7 +410,7 @@ namespace SustitucionMOA.Controllers
             {
                 var mailUsuario = SessionPersister.getUsername();
 
-                return JsonCustom(new { data = ordenDeCargaService.ForzarCreacionOrden(ordenId) });
+                return JsonCustom(new { data = ordenDeCargaService.ForzarCreacionOrden(ordenId, mailUsuario) });
             }
             catch (InfoCustomException e)
             {
