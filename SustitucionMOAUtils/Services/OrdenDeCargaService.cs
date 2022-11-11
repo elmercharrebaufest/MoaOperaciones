@@ -305,7 +305,7 @@ namespace SustitucionMOAUtils.Services
                 var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
                 emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
                 emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
-                string titulo = $"Se informa que el día {DateTime.Now.ToString()} se el contrato de la siguiente orden no tiene los Km cargados:";
+                string titulo = $"Se informa que el día {DateTime.Now.ToString()} el contrato de la siguiente orden no tiene los Km cargados:";
                 var cabecera = "Orden :";
                 var contrato = !string.IsNullOrEmpty(orden.ContratoSAP?.Trim()) ? orden.ContratoSAP?.Trim() : orden.ContratoIngresado?.Trim();
                 ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{contrato}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
