@@ -473,6 +473,7 @@ namespace SustitucionMOAUtils.Services
             if (result.Contains(','))
             {
                 ordenDeCarga.CodigoVerificacionSap = "";
+                ordenDeCarga.DescripcionCodigoVerificacionSap = "";
                 result = string.Join(",", result.Split(',').Select(a => a.Split('|')[0]).ToList());
                 if (string.IsNullOrEmpty(ordenDeCarga.NumeroPedido))
                 {
