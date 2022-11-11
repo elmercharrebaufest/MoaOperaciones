@@ -29,6 +29,13 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Contrato
         public decimal total { get; set; }
         public string unidadTotal { get; set; }
         public string estado { get; set; }
+        public string dolarizado { get; set; }
+        public string dolarExpress { get; set; }
+        public string dolarCorredor { get; set; }
+        public string fechaLimite { get; set; }
+        public string pagoDiferidoArp { get; set; }
+        public string diasDiferim { get; set; }
+
     }
 
     public class ContratoNoCumplidoView : ContratoNoCumplido
