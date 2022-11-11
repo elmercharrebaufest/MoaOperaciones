@@ -2410,6 +2410,10 @@ namespace SustitucionMOAWS.ContratoDetalleWebServiceMOA {
         
         private string cUIT_SOLICITANTEField;
         
+        private decimal nETO_DESCONTADOField;
+        
+        private bool nETO_DESCONTADOFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
         public string FECHA {
@@ -2575,6 +2579,30 @@ namespace SustitucionMOAWS.ContratoDetalleWebServiceMOA {
             set {
                 this.cUIT_SOLICITANTEField = value;
                 this.RaisePropertyChanged("CUIT_SOLICITANTE");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=11)]
+        public decimal NETO_DESCONTADO {
+            get {
+                return this.nETO_DESCONTADOField;
+            }
+            set {
+                this.nETO_DESCONTADOField = value;
+                this.RaisePropertyChanged("NETO_DESCONTADO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool NETO_DESCONTADOSpecified {
+            get {
+                return this.nETO_DESCONTADOFieldSpecified;
+            }
+            set {
+                this.nETO_DESCONTADOFieldSpecified = value;
+                this.RaisePropertyChanged("NETO_DESCONTADOSpecified");
             }
         }
         

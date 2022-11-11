@@ -84,12 +84,18 @@ namespace SustitucionMOAWS.WSConsumers
                     liquidadoString = SAPFormatter.FormatearCantidad(contrato.LIQUIDADO, contrato.UNIME_LIQUIDADO),
                     liquidado = contrato.LIQUIDADO,
                     material = contrato.MATERIAL,
-                    tipoContrato = TipoContrato.GetTipoContrato(contrato.CLASE_DOC),
+                    tipoContrato = TipoContrato.GetTipoContrato(contrato.CLASE_DOC, "", contrato.DOL_EXPRESS, contrato.DOL_CORREDOR, contrato.PAGO_DIF_ARP, "", "", "", contrato.DOLARIZADO),
                     nroContrato = contrato.NRO_CONTRATO,
                     importeString = SAPFormatter.FormatearMonto(contrato.IMPORTE, contrato.MONEDA),
                     importe = contrato.IMPORTE,
                     totalString = SAPFormatter.FormatearCantidad(contrato.KILOS_PACTADOS - contrato.ANULADO + contrato.AMPLIADO, contrato.UNIME_PACTADO),
-                    total = contrato.KILOS_PACTADOS - contrato.ANULADO + contrato.AMPLIADO
+                    total = contrato.KILOS_PACTADOS - contrato.ANULADO + contrato.AMPLIADO,
+                    dolarizado = contrato.DOLARIZADO,
+                    dolarExpress = contrato.DOL_EXPRESS,
+                    dolarCorredor = contrato.DOL_CORREDOR,
+                    fechaLimite = contrato.FECHA_LIMITE,
+                    pagoDiferidoArp = contrato.PAGO_DIF_ARP,
+                    diasDiferim = contrato.DIAS_DIFERIM
 
                 }
                 );

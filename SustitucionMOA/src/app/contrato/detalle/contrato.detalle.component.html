@@ -266,11 +266,11 @@
                         </thead>
                         <tbody>
                             <tr role="row" class="odd" *ngIf="data.boleto">
-                                <td style="">{{data.boleto.estado}}</td>
-                                <td style="">{{data.boleto.fechaRecepcion}}</td>
-                                <td style="">{{data.boleto.tipoBoleto}}</td>
-                                <td style="">{{data.boleto.bolsa}}</td>
-                                <td style="">{{data.boleto.devAcop}}</td>
+                                <td>{{data.boleto.estado}}</td>
+                                <td>{{data.boleto.fechaRecepcion}}</td>
+                                <td>{{data.boleto.tipoBoleto}}</td>
+                                <td>{{data.boleto.bolsa}}</td>
+                                <td>{{data.boleto.devAcop}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -295,15 +295,15 @@
                         </thead>
                         <tbody>
                             <tr role="row" class="odd" *ngIf="data.boleto.envioBolsa">
-                                <td tabindex="0" style=""><a (click)="showModalTableBoletosResponsive(data.boleto)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{data.boleto.envioBolsa}}</td>
+                                <td tabindex="0"><a (click)="showModalTableBoletosResponsive(data.boleto)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{data.boleto.envioBolsa}}</td>
                                 <td>{{data.boleto.vueltaBolsa}}</td>
-                                <td style="">{{data.boleto.obleaBolsa}}</td>
-                                <td style="">{{data.boleto.envioAfip}}</td>
-                                <td style="">{{data.boleto.vueltaAfip}}</td>
-                                <td style="">{{data.boleto.obleaAfip}}</td>
-                                <td style="">{{data.boleto.provPlanCanje}}</td>
-                                <td style="">{{data.boleto.envioSellado}}</td>
-                                <td style="">{{data.boleto.vueltaSellado}}</td>
+                                <td>{{data.boleto.obleaBolsa}}</td>
+                                <td>{{data.boleto.envioAfip}}</td>
+                                <td>{{data.boleto.vueltaAfip}}</td>
+                                <td>{{data.boleto.obleaAfip}}</td>
+                                <td>{{data.boleto.provPlanCanje}}</td>
+                                <td>{{data.boleto.envioSellado}}</td>
+                                <td>{{data.boleto.vueltaSellado}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -350,10 +350,10 @@
                                 <tr *ngFor="let pago of data.pagos" role="row" class="odd">
                                     <td tabindex="0"><a (click)="showModalTablePagosResponsive(pago)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{pago.fecha}}</td>
                                     <td><a class="animate" (click)="goToSeccionParam('/pago/detalle', pago.idPago)" href="#">{{pago.idPago}}</a></td>
-                                    <td style="">{{pago.brutoString}}</td>
-                                    <td style="">{{pago.ivaString}}</td>
-                                    <td style=""><a (click)="goToSeccionParam('/cuenta-corriente/simple', pago.idPago)" href="#"><span class="fa  fa-file-pdf-o "></span>{{pago.retencionesString}}</a></td>
-                                    <td style="">{{pago.netoString}}</td>
+                                    <td>{{pago.brutoString}}</td>
+                                    <td>{{pago.ivaString}}</td>
+                                    <td><a (click)="goToSeccionParam('/cuenta-corriente/simple', pago.idPago)" href="#"><span class="fa  fa-file-pdf-o "></span>{{pago.retencionesString}}</a></td>
+                                    <td>{{pago.netoString}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -458,8 +458,8 @@
                                 <tr *ngFor="let fijacion of data.fijaciones" role="row" class="odd">
                                     <td tabindex="0"><a (click)="showModalTableLFijacionesResponsive(fijacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{fijacion.fecha}}</td>
                                     <td><a class="animate" (click)="goToSeccionParamDos('/contrato/detalle-fijacion', data.contrato, fijacion.nroFija)" href="#">{{fijacion.nroFija}}</a></td>
-                                    <td style="">{{fijacion.kilosFijaString}}</td>
-                                    <td style="">{{fijacion.precioString}}</td>
+                                    <td>{{fijacion.kilosFijaString}}</td>
+                                    <td>{{fijacion.precioString}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -497,10 +497,10 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let ampliacionAnulacion of data.ampliacionesAnulaciones" role="row" class="odd">
-                                    <td tabindex="0" style=""><a (click)="showModalTableAmpliacionesAnulacionesResponsive(ampliacionAnulacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{ampliacionAnulacion.tipo}}</td>
+                                    <td tabindex="0"><a (click)="showModalTableAmpliacionesAnulacionesResponsive(ampliacionAnulacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{ampliacionAnulacion.tipo}}</td>
                                     <td>{{ampliacionAnulacion.fecha}}</td>
-                                    <td style="">{{ampliacionAnulacion.cantidadString}}</td>
-                                    <td style="">{{ampliacionAnulacion.importeString}}</td>
+                                    <td>{{ampliacionAnulacion.cantidadString}}</td>
+                                    <td>{{ampliacionAnulacion.importeString}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -546,17 +546,17 @@
                                     <td tabindex="0"><a (click)="showModalTableAplicacionesResponsive(aplicacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{aplicacion.fecha}}</td>
                                     <td><a class="animate" (click)="goToSeccionParam('/carta-porte/detalle', aplicacion.ccpp)" href="#">{{aplicacion.ccpp}}</a></td>
                                     <td>{{aplicacion.descarga}}</td>
-                                    <td style="">{{aplicacion.kgBrutosString}}</td>
-                                    <td style="">{{aplicacion.kgNetosString}}</td>
+                                    <td>{{aplicacion.kgBrutosString}}</td>
+                                    <td>{{aplicacion.kgNetosString}}</td>
                                 </tr>
                             </tbody>
                             <tbody>
                                 <tr role="row" class="totalTable">
                                     <td tabindex="0">TOTAL</td>
                                     <td></td>
-                                    <td style=""></td>
-                                    <td style="">{{data.aplicacionesTotalBrutosString}}</td>
-                                    <td style="">{{data.aplicacionesTotalAplicadosString}}</td>
+                                    <td></td>
+                                    <td>{{data.aplicacionesTotalBrutosString}}</td>
+                                    <td>{{data.aplicacionesTotalAplicadosString}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -600,9 +600,9 @@
                                 <tr *ngFor="let hijo of data.hijos" role="row" class="odd">
                                     <td tabindex="0"><a (click)="showModalTableHijosResponsive(hijo)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{hijo.fecha}}</td>
                                     <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', hijo.contrMolinos)" href="#">{{hijo.contrMolinos}}</a></td>
-                                    <td style="">{{hijo.contrProve}}</td>
+                                    <td>{{hijo.contrProve}}</td>
                                     <td>{{hijo.cantidadString}}</td>
-                                    <td style="">{{hijo.precioString}}</td>
+                                    <td>{{hijo.precioString}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -752,7 +752,7 @@
                                                         <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                             <tr>
                                                                 <td width="100%">
-                                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="totalTable CalidadDataExtra" style="">
+                                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="totalTable CalidadDataExtra">
                                                                         <tr>
                                                                             <td width="20%">resultado final </td>
                                                                             <td width="20%">

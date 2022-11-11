@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div id="searchTipoContrato" class="col-xs-12 col-sm-6 col-md-15">
-                    <p>Por Tipo de Contrato</p>
+                    <p>Clase de Negocio</p>
                     <div class="styled-select">
                         <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroTipoContrato" (select)="setFiltroTipoContrato($event)"></dropdown>
                     </div>
@@ -54,13 +54,13 @@
                     </div>
                 </div>
                 <div id="showSearch" onClick="openSearch()">
-                    <div style="">
+                    <div>
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                     </div>
                     <div>VER MÁS OPCIONES DE BÚSQUEDA</div>
                 </div>
                 <div id="hideSearch" onClick="closeSearch()">
-                    <div style="">
+                    <div>
                         <i class="fa fa-times" aria-hidden="true"></i>
                     </div>
                     <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
@@ -79,7 +79,7 @@
                 <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-ampliacion-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('fechaDate')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('fechaDate')">
                                 Fecha de ampliaci&oacute;n
                                 <div>
                                     <span>
@@ -88,7 +88,7 @@
                                     </span>
                                 </div>    
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('nroContrato')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('nroContrato')">
                                 Contrato Molinos
                                 <div>
                                     <span>
@@ -97,7 +97,7 @@
                                     </span>
                                 </div>    
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('contrvend')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('contrvend')">
                                 Contrato Proveedor
                                 <div>
                                     <span>
@@ -106,7 +106,7 @@
                                     </span>
                                 </div>     
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('material')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('material')">
                                 Producto
                                 <div>
                                     <span>
@@ -115,8 +115,8 @@
                                     </span>
                                 </div>   
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('tipoContrato')">
-                                Tipo de Contrato
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('tipoContrato')">
+                                Clase de Negocio
                                 <div>
                                     <span>
                                         <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'tipoContrato' && orderDirection > 0 }"></i>
@@ -124,7 +124,7 @@
                                     </span>
                                 </div>
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Pactado')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Pactado')">
                                 Pactado
                                 <div>
                                     <span>
@@ -133,7 +133,7 @@
                                     </span>
                                 </div>      
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('ampliado')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('ampliado')">
                                 Ampliado
                                 <div>
                                     <span>
@@ -142,7 +142,7 @@
                                     </span>
                                 </div>      
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('total')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('total')">
                                 Total
                                 <div>
                                     <span>
@@ -151,7 +151,7 @@
                                     </span>
                                 </div>    
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('vendedor')" *ngIf="isCorredor()">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('vendedor')" *ngIf="isCorredor()">
                                 Vendedor
                                 <div>
                                     <span>
