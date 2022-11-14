@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Enums;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -220,6 +221,11 @@ namespace SustitucionMOAModel.Entities
             hashCode = hashCode * -1521134295 + ContratoSinCantidadPendiente.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DescripcionErrorInterno);
             return hashCode;
+        }
+
+        public OrdenDeCargaEditarDto ToDto()
+        {
+            return new OrdenDeCargaEditarDto(this);
         }
     }
 }
