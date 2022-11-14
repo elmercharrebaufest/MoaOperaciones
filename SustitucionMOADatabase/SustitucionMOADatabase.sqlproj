@@ -178,6 +178,7 @@
     <Build Include="DBO\Tables\EcheqLiquidacion.sql" />
     <Build Include="DBO\Tables\EcheqApertura.sql" />
     <Build Include="DBO\Tables\MaterialFason.sql" />
+    <Build Include="DBO\Tables\OrdenDeCargaFason.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

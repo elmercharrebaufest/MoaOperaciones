@@ -112,7 +112,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IPesificacionService>().To(typeof(PesificacionService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IExcelExportWrapper>().To(typeof(ExcelExportWrapper)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IFileWrapper>().To(typeof(FileWrapper)).InScope(ctx => OperationContext.Current);
-
+            kernel.Bind<IOrdenDeCargaFasonService>().To(typeof(OrdenDeCargaFasonService)).InScope(ctx => OperationContext.Current);
 
             kernel.Bind<IEcheqService>().To(typeof(EcheqService)).InScope(ctx => OperationContext.Current);
 

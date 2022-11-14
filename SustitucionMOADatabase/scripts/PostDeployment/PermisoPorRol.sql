@@ -88,3 +88,5 @@ IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'CESIÓN Y RECTIFICACI
 
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'VER ECHEQ') BEGIN insert into PermisoPorRol values ('VER ECHEQ') END
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'VER ECHEQ ADMIN') BEGIN insert into PermisoPorRol values ('VER ECHEQ ADMIN') END
+IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'VER ORDENES DE CARGA FASON') BEGIN insert into PermisoPorRol values ('VER ORDENES DE CARGA FASON') END
+

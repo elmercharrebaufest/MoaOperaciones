@@ -31,7 +31,8 @@
     "src/app/compras/compras.module.ts",
     "src/app/gestionCM05/gestionCM05.module.ts",
     "src/app/ordenes-de-carga/ordenes-de-carga.module.ts",
-    "src/app/reporte-contrato/reporte-contrato.module.ts"
+    "src/app/reporte-contrato/reporte-contrato.module.ts",
+    "src/app/ordenes-de-carga-fason/ordenes-de-carga-fason.module.ts"
   ],
   "include": [
     "src/**/*.d.ts"

@@ -146,6 +146,7 @@
     <Compile Include="Interfaces\ICampoSustentableService.cs" />
     <Compile Include="Interfaces\ICrearContratoService.cs" />
     <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
+    <Compile Include="Interfaces\IOrdenesCargaApi.cs" />
     <Compile Include="Interfaces\IEcheqService.cs" />
     <Compile Include="Interfaces\IFeriadoService.cs" />
     <Compile Include="Interfaces\IAltaEmpresaService.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="Interfaces\ILiquidacionService.cs" />
     <Compile Include="Interfaces\ILocalidadService.cs" />
     <Compile Include="Interfaces\INotificacionService.cs" />
+    <Compile Include="Interfaces\IOrdenDeCargaFasonService.cs" />
     <Compile Include="Interfaces\IOrdenDeCargaService.cs" />
     <Compile Include="Interfaces\IReporteContratoService.cs" />
     <Compile Include="Interfaces\IReportesService.cs" />
@@ -200,6 +202,8 @@
     <Compile Include="Services\LocalidadService.cs" />
     <Compile Include="Services\LoginService.cs" />
     <Compile Include="Services\NotificacionService.cs" />
+    <Compile Include="Services\OrdenDeCargaFasonService - Copy.cs" />
+    <Compile Include="Services\OrdenDeCargaFasonService.cs" />
     <Compile Include="Services\OrdenDeCargaService.cs" />
     <Compile Include="Services\PagoService.cs" />
     <Compile Include="Services\PDFService.cs" />
