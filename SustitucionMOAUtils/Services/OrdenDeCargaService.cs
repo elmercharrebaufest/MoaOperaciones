@@ -295,7 +295,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                if (orden.CodigoVerificacionSap == "CC-07")
+                if (orden.CodigoVerificacionSap != "CC-07")
                     return;
 
                 var emailSenderData = new EmailSenderData();
