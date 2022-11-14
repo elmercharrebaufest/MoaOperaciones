@@ -1661,12 +1661,17 @@ namespace SustitucionMOAUtils.Services
             if (!string.IsNullOrEmpty(orden.ContratoSAP))
             {
                 var puedeCrear = VerificarOrden(orden, orden.Cliente, false, true);
-                var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, false, false, mailUsuario);
 
-                if (creadaEnSaP)
+                if (orden.CodigoVerificacionSap != "CC-07")
                 {
-                    return VerificarSituacionCrediticia(orden, true);
+                    var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, false, false, mailUsuario);
+
+                    if (creadaEnSaP)
+                    {
+                        return VerificarSituacionCrediticia(orden, true);
+                    }
                 }
+
             }
             else
             {
