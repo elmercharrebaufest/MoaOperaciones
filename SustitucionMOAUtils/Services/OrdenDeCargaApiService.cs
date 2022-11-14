@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class OrdenesCargaApi : IOrdenesCargaApi
+    public class OrdenDeCargaApiService : IOrdenDeCargaApiService
     {
         private readonly IRepositorio _repositorio;
-        public OrdenesCargaApi(IRepositorio repositorio)
+        public OrdenDeCargaApiService(IRepositorio repositorio)
         {
             _repositorio = repositorio;
         }

@@ -13,8 +13,8 @@ namespace SustitucionMOAExternalAPI.Controllers
 {
     public class ObtenerOrdenesDeCargaController : ApiController
     {
-        private readonly IOrdenesCargaApi _ordenesCargaApi;
-        public ObtenerOrdenesDeCargaController(IOrdenesCargaApi ordenesCargaApi)
+        private readonly IOrdenDeCargaApiService _ordenesCargaApi;
+        public ObtenerOrdenesDeCargaController(IOrdenDeCargaApiService ordenesCargaApi)
         {
             _ordenesCargaApi = ordenesCargaApi;
         }

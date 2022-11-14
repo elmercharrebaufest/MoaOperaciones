@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Interfaces
 {
-    public interface IOrdenesCargaApi
+    public interface IOrdenDeCargaApiService
     {
         List<OrdendesDeCargaApiDto> ObtenerOrdenes();
     }
