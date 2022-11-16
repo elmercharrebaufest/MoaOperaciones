@@ -71,30 +71,29 @@ namespace SustitucionMOAUtils.Services
                 NotificarContratoSinKm(ordenDeCarga);
                 NotificarTransporte(ordenDeCarga.Id);
 
-                if (puedeEnviarASAP)
+               
+                if (ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido)
                 {
-                    if (ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido)
+                    NotificacionContratoVencido(ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga, cliente));
+                }
+                if (crearPedido && puedeEnviarASAP)
+                {
+                    ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
+                    var creadaEnSAP = CrearPedidoEnSAP(ordenDeCarga, cliente, false, puedeEnviarASAP, mailUsuario);
+                    if (creadaEnSAP)
                     {
-                        NotificacionContratoVencido(ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga, cliente));
-                    }
-                    if (crearPedido)
-                    {
-                        ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
-                        var creadaEnSAP = CrearPedidoEnSAP(ordenDeCarga, cliente, false, puedeEnviarASAP, mailUsuario);
-                        if (creadaEnSAP)
-                        {
-                            VerificarSituacionCrediticia(ordenDeCarga, true);
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(ordenDeCarga.PedidosRespuesta))
-                    {
-                        NotificarVariosPedidos(ordenDeCarga.Id);
-                    }
-                    if (!string.IsNullOrEmpty(ordenDeCarga.ContratosRespuesta))
-                    {
-                        NotificarVariosContratos(ConstruirCuerpoMailNotificacionVariosContratos(ordenDeCarga.Id));
+                        VerificarSituacionCrediticia(ordenDeCarga, true);
                     }
                 }
+                if (!string.IsNullOrEmpty(ordenDeCarga.PedidosRespuesta))
+                {
+                    NotificarVariosPedidos(ordenDeCarga.Id);
+                }
+                if (!string.IsNullOrEmpty(ordenDeCarga.ContratosRespuesta))
+                {
+                    NotificarVariosContratos(ConstruirCuerpoMailNotificacionVariosContratos(ordenDeCarga.Id));
+                }
+                
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
                 Log.Info($"Result: { resultado.ToJson() }");
                 return resultado;
