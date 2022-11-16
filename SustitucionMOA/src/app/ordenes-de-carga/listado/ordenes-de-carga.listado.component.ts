@@ -151,7 +151,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     }
 
     getListado(resultMessage?: string) {
-        console.debug('getListado()');
         this.spinnerComponent.showIt();
         if (resultMessage != undefined) {
             this.mensajeComponent.setSuccessMsg(resultMessage);
@@ -164,7 +163,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
             this.unsubscribe();
             this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
                 result => {
-                    console.debug(' result: ', result);
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -193,7 +191,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     }
 
     seleccionarTodos = () => {
-        console.debug('call seleccionarTodos()');
         this.seleccionaTodos = !this.seleccionaTodos;
         // console.debug(' value: ', this.seleccionaTodos);
         if (this.data) {
@@ -206,7 +203,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     }
 
     seleccionarItem = (item) => {
-        console.debug('call seleccionarItem()');
         if (!item.EstaSeleccionado) {
             // console.debug(' push item: ', item);
             this.listaEnviarASAP.push(item);
@@ -216,7 +212,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     enviarASAP = async () => {
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
-        console.debug('call enviarASAP()');
         // console.debug(' corredorCodigo: ', this.corredorCodigo);
         // console.debug(' listaEnviarASAP: ', this.listaEnviarASAP);
         let resultado = false;
@@ -241,17 +236,14 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
                         if (result.Logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.Error != undefined && result.Error != "") {
-                            console.error(' enviarASAP: ', result.Error);
                         } else {
                             resultado = result.ResultCreation;
-                            console.debug(' resultado: ', resultado);
                             if (resultado) {
                                 resultMessage = resultMessage + itemEnviarASAP.Id + ' ';
                             }
                             if (itemEnviarASAP === lastSelected) {
                                 // console.debug(' resultado FINAL: ', resultado);
                                 if (resultado) {
-                                    console.debug(' resultMessage FINAL: ', resultMessage);
                                     this.mensajeComponent.setSuccessMsg(resultMessage);
                                     this.getListado(resultMessage);
                                 }
@@ -259,7 +251,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
                         }
                     },
                     error => {
-                        console.error(' crearOrdenEnSAP: ', error.message);
                         return false;
                     }
                 );

@@ -26,7 +26,7 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
   estadosSelected: string[] = [
     "Generada",
     "Pendiente",
-    "Vencida",
+    //"Vencida",
     //"Entregada"
   ];
   descripcionEstadoOrdenCarga: any[];
@@ -36,6 +36,8 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
   filtroCliente: any = null;
   filtroPatente: any = null;
   entregada: string = "Entregada";
+
+  esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
 
   //esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS');
 
@@ -48,7 +50,7 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
     this.descripcionEstadoOrdenCarga = [
       { label: "Generada", value: "Generada" },
       { label: "Pendiente", value: "Pendiente" },
-      { label: "Vencida", value: "Vencida" },
+      //{ label: "Vencida", value: "Vencida" },
       { label: "Entregada", value: "Entregada" }
     ];
 
@@ -60,7 +62,6 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
   }
 
   getListado = (resultMessage?: string) => {
-    console.debug('getListado()');
     this.spinnerComponent.showIt();
     if (resultMessage != undefined) {
         this.mensajeComponent.setSuccessMsg(resultMessage);
@@ -70,9 +71,8 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
     this.data = null;
     try {
       this.unsubscribe();
-      this.subscription = this.service.listado()
+      this.subscription = this.service.listado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin)
         .subscribe(result => {
-            console.debug(' result: ', result.Response);
             // this.spinnerComponent.hideIt();
             // if (result.logout == true) {
             //     this.sessionDataService.logout();
@@ -101,9 +101,7 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
   }
 
   filtrarListado = () => {
-      console.debug('filtrarListado()', this.estadosSelected);
     this.primerListado = this.datosAux.filter(x => x.Estado != this.entregada);
-    console.debug(' datosAux: ', this.datosAux);
     //if (!this.esTercero) {
       if (this.estadosSelected.length < 1 || this.estadosSelected == null) {
         this.data = this.datosAux;

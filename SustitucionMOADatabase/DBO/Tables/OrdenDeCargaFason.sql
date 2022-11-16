@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[OrdenDeCargaFason](
 	[Id] BIGINT PRIMARY KEY IDENTITY(1,1) NOT NULL, 
-	[Estado] SMALLINT NOT NULL, 
+	[Estado] INT NOT NULL, 
 	[FechaCreacion] DATETIME NOT NULL, 
 	[FechaRetiro] DATE NOT NULL, 
 	[Cantidad] INT DEFAULT 30000 NOT NULL, 

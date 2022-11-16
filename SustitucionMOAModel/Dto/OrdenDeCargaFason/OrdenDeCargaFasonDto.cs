@@ -41,6 +41,12 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 
 		[JsonProperty("destino")]
 		public string Destino { get; set; }
+
+		public string ColorSemaforo { get; set; }
+		public string EstadoDescripcion { get; set; }
+		public string DescripcionEstadoListado { get; set; }
+
+
 	}
 
 	public class OrdenDeCargaFasonDetalleDto

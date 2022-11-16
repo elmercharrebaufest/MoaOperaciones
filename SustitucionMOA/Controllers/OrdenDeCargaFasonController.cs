@@ -19,14 +19,16 @@ namespace SustitucionMOA.Controllers
 		}
 
 		[HttpGet]
-		public ActionResult Listar()
+		public ActionResult Listar(string fechaInicio, string fechaFin)
 		{
 			try
 			{
 				var mailUsuario = SessionPersister.getUsername();
 				var request = new ListarOrdenDeCargaFasonRequest()
 				{
-					MailUsuario = mailUsuario
+					MailUsuario = mailUsuario,
+					FechaDesde = fechaInicio,
+					FechaHasta = fechaFin
 				};
 				var result = _ordenDeCargaFasonService.Listar(request);
 				return JsonCustom(result);

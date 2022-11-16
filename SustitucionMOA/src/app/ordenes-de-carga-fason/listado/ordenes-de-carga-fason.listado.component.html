@@ -19,7 +19,7 @@
         <div class="col-xs-12 col-md-12 search-header">
           <title-caps>Refinar resultados</title-caps>
         </div>
-        <div id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
+        <div *ngIf="!esCliente" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Cliente:</p>
           <div class="styled-select">
             <input type="search" class="" placeholder="Ingrese numero de cliente" aria-controls="tableModal" [value]="" [(ngModel)]="filtroCliente">
@@ -89,6 +89,9 @@
               <td>{{ordenDeCargaFason.Producto}}</td>
               <td>{{ordenDeCargaFason.PatenteChasis}}</td>
               <td>{{ordenDeCargaFason.Destino}}</td>
+              <td>
+                <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
+                </div>
               <td>
                 <a class="cursor" style="cursor: pointer;" (click)="goToSeccionParam('/ordenes-de-carga-fason/detalle/', ordenDeCargaFason.Id)">
                   Ver

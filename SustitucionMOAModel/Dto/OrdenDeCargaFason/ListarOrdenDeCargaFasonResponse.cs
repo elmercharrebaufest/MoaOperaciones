@@ -25,5 +25,9 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 				Response.Add(dto);
 			}
 		}
-	}
+
+        public ListarOrdenDeCargaFasonResponse()
+        {
+        }
+    }
 }
