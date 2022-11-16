@@ -69,6 +69,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(ordenDeCarga);
                 repositorio.GuardarCambios();
                 NotificarContratoSinKm(ordenDeCarga);
+                NotificarTransporte(ordenDeCarga.Id);
 
                 if (puedeEnviarASAP)
                 {
@@ -85,7 +86,6 @@ namespace SustitucionMOAUtils.Services
                             VerificarSituacionCrediticia(ordenDeCarga, true);
                         }
                     }
-                    NotificarTransporte(ordenDeCarga.Id);
                     if (!string.IsNullOrEmpty(ordenDeCarga.PedidosRespuesta))
                     {
                         NotificarVariosPedidos(ordenDeCarga.Id);
