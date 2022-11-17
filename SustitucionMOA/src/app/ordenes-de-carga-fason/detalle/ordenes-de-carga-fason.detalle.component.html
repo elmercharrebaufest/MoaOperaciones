@@ -5,11 +5,10 @@
         <div class="row titleSection">
             <div class="col-xs-10 col-sm-10 ">
                 <strong>
-                    Orden de carga Fason
+                    Orden de carga Fason #{{ordenDeCargaFason.Id}} - {{ordenDeCargaFason.DescripcionEstado}}
                 </strong>
-
+                <div *ngIf="esAdmin" class="semaforo {{ordenDeCargaFason.ColorSemaforo}}"></div>
             </div>
-
 
             <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
                 <div style="float: right;">
@@ -84,11 +83,7 @@
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Fecha de retiro</strong></p>
                                         <p style="width:100%">{{ordenDeCargaFason.FechaRetiro}}</p>
-                                    </div>
-                                    <div class="col-xs-12 col-md-12">
-                                        <p class="blue"><strong>Fecha de retiro</strong></p>
-                                        <p style="width:100%">{{ordenDeCargaFason.FechaRetiro}}</p>
-                                    </div>
+                                    </div>                  
                                 </div>
                                     <!-- Chofer -->
                                     <div class="col-xs-12 col-md-6">

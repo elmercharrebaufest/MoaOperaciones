@@ -11,8 +11,12 @@ import { ListarOrdenDeCargaFasonResponse } from '../common/models/ordenes-de-car
 })
 
 export class OrdenesDeCargaFasonService extends BaseService {
-  public listado = () => {
-    return this.http.get<ListarOrdenDeCargaFasonResponse>('/api/OrdenDeCargaFason/Listar')
+
+  public listado(fechaInicio: string, fechaFin: string): Observable<any> {
+    let params: HttpParams = new HttpParams()
+        .append("fechaInicio", fechaInicio)
+        .append("fechaFin", fechaFin);
+    return this.http.get<ListarOrdenDeCargaFasonResponse>('/api/OrdenDeCargaFason/Listar', { params: params })
       .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }
 

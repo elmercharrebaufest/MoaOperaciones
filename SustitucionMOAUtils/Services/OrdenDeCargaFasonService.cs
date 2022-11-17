@@ -12,6 +12,7 @@ using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -29,28 +30,101 @@ namespace SustitucionMOAUtils.Services
 		public ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request)
 		{
 			Log.Info($"Listar(request: {request.ToJson()})");
-			try
-			{
-				var ordenDeCargaFason = _repositorio.Listar<OrdenDeCargaFason>().ToList();
-				var response = new ListarOrdenDeCargaFasonResponse(ordenDeCargaFason);
-				Log.Debug(GetType().Name, "Listar", $" response: {request.ToJson()}");
+
+            try
+            {
+				DateTime fechaIncioDateTime, fechaFinDateTime;
+				try
+				{
+					fechaIncioDateTime = DateTime.Parse(request.FechaDesde);
+				}
+				catch
+				{
+					try
+					{
+						request.FechaDesde = new string(request.FechaDesde.Where(c => c != '\u200E').ToArray());
+						fechaIncioDateTime = DateTime.Parse(request.FechaDesde);
+					}
+					catch (Exception e)
+					{
+						throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "inicio"), e);
+					}
+				}
+
+				try
+				{
+					fechaFinDateTime = DateTime.Parse(request.FechaHasta);
+				}
+				catch
+				{
+					try
+					{
+						request.FechaHasta = new string(request.FechaHasta.Where(c => c != '\u200E').ToArray());
+						fechaFinDateTime = DateTime.Parse(request.FechaHasta);
+					}
+					catch (Exception e)
+					{
+						throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "fin"), e);
+					}
+
+				}
+
+
+				var usuario = _repositorio.Obtener<Usuario>(u => u.Mail == request.MailUsuario);
+				var esInterno = usuario.TienePermiso("VER ORDENES DE CARGA FASON ADMIN");
+				fechaFinDateTime = fechaFinDateTime.AddDays(1);
+				//var descripcion = EstadoOrdenDeCargaFason.Generada;
+
+
+				var clientes = usuario.Proveedores.Select(c => c.Id);
+				var listadoDB = _repositorio.Listar<OrdenDeCargaFason>(x => (esInterno ? true : clientes.Contains(x.Cliente_Id)) && x.FechaCreacion >= fechaIncioDateTime
+				&& x.FechaCreacion <= fechaFinDateTime);
+
+				var listado = listadoDB.Select(x => new OrdenDeCargaFasonDto
+				{
+					Id = x.Id,
+					Cliente = x.Cliente.CodigoProveedor,
+					Estado = x.Estado,
+					FechaCreacion = x.FechaCreacion.ToString("dd/MM/yyyy HH:mm"),
+					FechaRetiro = x.FechaRetiro.ToString("dd/MM/yyyy HH:mm"),
+					CantidadDeViajesRealizados = x.CantidadDeViajesRealizados,
+					CantidadDeViajesEsperados = x.CantidadDeViajesEsperados,
+					Producto = x.Producto.Nombre,
+					PatenteChasis = x.PatenteChasis,
+					Destino = x.Destino,
+					ColorSemaforo = x.Estado.ObtenerSemaforo(),
+					DescripcionEstado = esInterno ? x.Estado.ToFriendlyString() : x.Estado.ToUserFriendlyString()
+				}).ToList();
+
+				var response = new ListarOrdenDeCargaFasonResponse();
+
+				response.Response = listado;
+
+                Log.Debug(GetType().Name, "Listar", $" response: {request.ToJson()}");
+
+
 				return response;
+
 			}
-			catch (Exception ex)
+			catch (Exception error)
 			{
-				Log.Error(ex);
-				throw new WSCustomException(ErrorMsg.ErrorWS, ex);
+				Log.Error(error);
+				throw new WSCustomException(ErrorMsg.ErrorWS, error);
 			}
+
 		}
 
 		public DetalleOrdenDeCargaFasonResponse ObtenerDetalle(int IdOrdenDeCargaFason, DetalleOrdenDeCargaFasonRequest mailUsuario)
         {
             try
             {
-				
+
+				var usuario = _repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario.MailUsuario);
+				var esInterno = usuario.TienePermiso("VER ORDENES DE CARGA FASON ADMIN");
+
 				var ordenDeCagarFason = _repositorio.Obtener<OrdenDeCargaFason>(IdOrdenDeCargaFason);
 				Proveedor cliente = _repositorio.Obtener<Proveedor>(ordenDeCagarFason.Cliente_Id);
-				var response = new DetalleOrdenDeCargaFasonResponse(ordenDeCagarFason);
+				var response = new DetalleOrdenDeCargaFasonResponse(ordenDeCagarFason, esInterno);
 				return response;
             }
 

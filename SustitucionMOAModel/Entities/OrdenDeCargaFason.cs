@@ -10,7 +10,7 @@ namespace SustitucionMOAModel.Entities
 	{
 		[Key]
 		public long Id { get; set; }
-		public short Estado { get; set; }
+		public EstadoOrdenDeCargaFason Estado { get; set; }
 		public DateTime FechaCreacion { get; set; }
 		public DateTime FechaRetiro { get; set; }
 		public int Cantidad { get; set; }
@@ -30,15 +30,28 @@ namespace SustitucionMOAModel.Entities
 		public int Producto_Id { get; set; }
 		[ForeignKey("Producto_Id")]
 		public virtual Material Producto { get; set; }
-
 		public bool TransporteExiste { get; set; }
+
+
+		public void ActualizarEstado()
+		{
+			if (Estado != EstadoOrdenDeCargaFason.Entregada)
+			{		
+				if (!TransporteExiste)
+				{
+					Estado = EstadoOrdenDeCargaFason.Pendiente;
+				}
+			}
+		}
+
+
 
 		public override bool Equals(object obj)
 		{
 			return obj is OrdenDeCargaFason carga && 
 				Id == carga.Id && 
 				Estado == carga.Estado &&
-				FechaCreacion == carga.FechaCreacion &&
+				FechaCreacion == carga.FechaCreacion  &&
 				FechaRetiro == carga.FechaRetiro &&
 				Cantidad == carga.Cantidad &&
 				PatenteChasis == carga.PatenteChasis &&
