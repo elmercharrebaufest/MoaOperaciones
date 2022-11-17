@@ -19,7 +19,7 @@ import { ListBaseComponent } from '../../common/base-components/list-base-compon
 @Component({
     selector: 'app-detalle',
     templateUrl: './ordenes-de-carga-fason.detalle.component.html',
-    styleUrls: ['./ordenes-de-carga-fason.detalle.component.css']
+    styleUrls: ['./ordenes-de-carga-fason.detalle.component.css', '../listado/ordenes-de-carga-fason.listado.component.css']
 })
 export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent implements OnInit {
 
@@ -30,7 +30,9 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
     IdordenDeCargaFason: number = 0;
     mostrarBotonVerificarTransporte: boolean = false;
     mensajeError: string = "";
-    esInterno: boolean = (this.isAuthorized('VER TODAS ORDENES DE CARGA') || this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS'));
+
+    esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA FASON');
+    esAdmin: boolean = this.isAuthorized('VER ORDENES DE CARGA FASON ADMIN');
 
     constructor(private route: ActivatedRoute, protected service: OrdenesDeCargaFasonService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
@@ -52,7 +54,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
 
     verificarBotones() {
 
-        if (this.esInterno) {
+        if (this.esAdmin) {
 
             if (!this.ordenDeCargaFason.TransporteExiste) {
                 console.log(this.ordenDeCargaFason.TransporteExiste);

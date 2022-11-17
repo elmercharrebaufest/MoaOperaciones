@@ -16,7 +16,6 @@ export class OrdenesDeCargaFasonService extends BaseService {
     let params: HttpParams = new HttpParams()
         .append("fechaInicio", fechaInicio)
         .append("fechaFin", fechaFin);
-        console.log({fechaFin, fechaInicio})
     return this.http.get<ListarOrdenDeCargaFasonResponse>('/api/OrdenDeCargaFason/Listar', { params: params })
       .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }

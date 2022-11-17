@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SustitucionMOAModel.Enums;
 
 namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 {
@@ -11,7 +12,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 		public string Cliente { get; set; }
 
 		[JsonProperty("estado")]
-		public string Estado { get; set; }
+		public EstadoOrdenDeCargaFason Estado { get; set; }
 
 		[JsonProperty("fechaCreacion")]
 		public string FechaCreacion { get; set; }
@@ -19,13 +20,12 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 		[JsonProperty("fechaRetiro")]
 		public string FechaRetiro { get; set; }
 
-
-		//public int Cantidad { get; set; }
-		//public string PatenteAcoplado { get; set; }
-		//public string NombreChofer { get; set; }
-		//public string CUILChofer { get; set; }
-		//public string RazonSocialTransporte { get; set; }
-		//public string CUITTransporte { get; set; }
+		public int Cantidad { get; set; }
+		public string PatenteAcoplado { get; set; }
+		public string NombreChofer { get; set; }
+		public string CUILChofer { get; set; }
+		public string RazonSocialTransporte { get; set; }
+		public string CUITTransporte { get; set; }
 
 		[JsonProperty("cantidadDeViajesRealizados")]
 		public short CantidadDeViajesRealizados { get; set; }
@@ -43,30 +43,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 		public string Destino { get; set; }
 
 		public string ColorSemaforo { get; set; }
-		public string EstadoDescripcion { get; set; }
-		public string DescripcionEstadoListado { get; set; }
-
-
-	}
-
-	public class OrdenDeCargaFasonDetalleDto
-    {
-		public long Id { get; set; }
-		public string EstadoDescripcion { get; set; }
-		public string FechaCreacion { get; set; }
-		public string FechaRetiro { get; set; }
-		public int Cantidad { get; set; }
-		public string PatenteChasis { get; set; }
-		public string PatenteAcoplado { get; set; }
-		public string NombreChofer { get; set; }
-		public string CUILChofer { get; set; }
-		public string RazonSocialTransporte { get; set; }
-		public string CUITTransporte { get; set; }
-		public string Destino { get; set; }
-		public short CantidadDeViajesRealizados { get; set; }
-		public short CantidadDeViajesEsperados { get; set; }
-		public string Observacion { get; set; }
-		public string Cliente { get; set; }
+		public string DescripcionEstado { get; set; }
 		public bool TransporteExiste { get; set; }
 	}
 }

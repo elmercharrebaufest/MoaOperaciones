@@ -73,26 +73,27 @@ namespace SustitucionMOAUtils.Services
 				var usuario = _repositorio.Obtener<Usuario>(u => u.Mail == request.MailUsuario);
 				var esInterno = usuario.TienePermiso("VER ORDENES DE CARGA FASON ADMIN");
 				fechaFinDateTime = fechaFinDateTime.AddDays(1);
-				var descripcion = EstadoOrdenDeCargaFason.SinEstado;
+				//var descripcion = EstadoOrdenDeCargaFason.Generada;
 
 
 				var clientes = usuario.Proveedores.Select(c => c.Id);
-				var listadoDB = _repositorio.Listar<OrdenDeCargaFason>(x => (esInterno ? true : clientes.Contains(x.Cliente_Id)) && x.FechaCreacion <= fechaFinDateTime
-				&& x.FechaCreacion >= fechaIncioDateTime);
+				var listadoDB = _repositorio.Listar<OrdenDeCargaFason>(x => (esInterno ? true : clientes.Contains(x.Cliente_Id)) && x.FechaCreacion >= fechaIncioDateTime
+				&& x.FechaCreacion <= fechaFinDateTime);
 
 				var listado = listadoDB.Select(x => new OrdenDeCargaFasonDto
 				{
 					Id = x.Id,
+					Cliente = x.Cliente.CodigoProveedor,
+					Estado = x.Estado,
 					FechaCreacion = x.FechaCreacion.ToString("dd/MM/yyyy HH:mm"),
 					FechaRetiro = x.FechaRetiro.ToString("dd/MM/yyyy HH:mm"),
-					Producto = x.Producto.Nombre,
-					ColorSemaforo = x.Estado.ObtenerSemaforo(),
-					EstadoDescripcion = esInterno ? descripcion.ToUserFriendlyString() : x.Estado.ToUserFriendlyString(),
-					DescripcionEstadoListado = esInterno ? x.Estado.ToUserFriendlyString() : x.Estado.ToUserFriendlyString(),
-					PatenteChasis = x.PatenteChasis,
 					CantidadDeViajesRealizados = x.CantidadDeViajesRealizados,
 					CantidadDeViajesEsperados = x.CantidadDeViajesEsperados,
-					Destino = x.Destino
+					Producto = x.Producto.Nombre,
+					PatenteChasis = x.PatenteChasis,
+					Destino = x.Destino,
+					ColorSemaforo = x.Estado.ObtenerSemaforo(),
+					DescripcionEstado = esInterno ? x.Estado.ToFriendlyString() : x.Estado.ToUserFriendlyString()
 				}).ToList();
 
 				var response = new ListarOrdenDeCargaFasonResponse();
@@ -105,22 +106,25 @@ namespace SustitucionMOAUtils.Services
 				return response;
 
 			}
-			catch (Exception)
-            {
+			catch (Exception error)
+			{
+				Log.Error(error);
+				throw new WSCustomException(ErrorMsg.ErrorWS, error);
+			}
 
-                throw;
-            }
-	
 		}
 
 		public DetalleOrdenDeCargaFasonResponse ObtenerDetalle(int IdOrdenDeCargaFason, DetalleOrdenDeCargaFasonRequest mailUsuario)
         {
             try
             {
-				
+
+				var usuario = _repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario.MailUsuario);
+				var esInterno = usuario.TienePermiso("VER ORDENES DE CARGA FASON ADMIN");
+
 				var ordenDeCagarFason = _repositorio.Obtener<OrdenDeCargaFason>(IdOrdenDeCargaFason);
 				Proveedor cliente = _repositorio.Obtener<Proveedor>(ordenDeCagarFason.Cliente_Id);
-				var response = new DetalleOrdenDeCargaFasonResponse(ordenDeCagarFason);
+				var response = new DetalleOrdenDeCargaFasonResponse(ordenDeCagarFason, esInterno);
 				return response;
             }
 

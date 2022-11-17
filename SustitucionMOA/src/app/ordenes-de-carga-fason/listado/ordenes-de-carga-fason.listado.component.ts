@@ -24,35 +24,47 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
 
   productoSelected: string = "Todos";
   estadosSelected: string[] = [
-    "Generada",
+    "Orden generada",
     "Pendiente",
-    //"Vencida",
-    //"Entregada"
+    //"Orden vencida",
+    //"Orden entregada",
+    "Sin estado"
   ];
   descripcionEstadoOrdenCarga: any[];
   listaProductos: Material[];
   datosAux: any[];
-  primerListado: any[];
+  //primerListado: any[];
   filtroCliente: any = null;
   filtroPatente: any = null;
-  entregada: string = "Entregada";
+  //entregada: string = "Orden entregada";
 
-  esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
 
-  //esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS');
+
+  esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA FASON');
+  esAdmin: boolean = this.isAuthorized('VER ORDENES DE CARGA FASON ADMIN');
 
   constructor(protected service: OrdenesDeCargaFasonService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
   }
 
   ngOnInit = () => {
-    console.debug('OrdenesDeCargaFasonListado - ngOnInit()');
     this.descripcionEstadoOrdenCarga = [
-      { label: "Generada", value: "Generada" },
+      { label: "Orden generada", value: "Orden generada" },
       { label: "Pendiente", value: "Pendiente" },
-      //{ label: "Vencida", value: "Vencida" },
-      { label: "Entregada", value: "Entregada" }
+      { label: "Orden vencida", value: "Orden vencida" },
+      { label: "Orden entregada", value: "Orden entregada" },
+      { label: "Sin estado", value: "Sin estado" }
     ];
+
+    if(!this.esAdmin){
+      this.descripcionEstadoOrdenCarga = [
+        { label: "OK", value: "OK" },
+        { label: "Orden vencida", value: "Orden vencida" },
+        { label: "Orden entregada", value: "Orden entregada" }
+      ];
+
+      this.estadosSelected = ["OK"];
+    }
 
     this.setTabs();
     this.checkPermisos();
@@ -73,19 +85,19 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
       this.unsubscribe();
       this.subscription = this.service.listado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin)
         .subscribe(result => {
-            // this.spinnerComponent.hideIt();
-            // if (result.logout == true) {
-            //     this.sessionDataService.logout();
-            // } else if (result.error != undefined && result.error != "") {
-            //     this.mensajeComponent.setErrorMsg(result.error);
-            // } else if (result.info != undefined) {
-            //     this.mensajeComponent.setInfoMsg(result.info);
-            // } else {
+            this.spinnerComponent.hideIt();
+            if (result.logout == true) {
+                this.sessionDataService.logout();
+            } else if (result.error != undefined && result.error != "") {
+                this.mensajeComponent.setErrorMsg(result.error);
+            } else if (result.info != undefined) {
+                this.mensajeComponent.setInfoMsg(result.info);
+            } else {
                 this.data = result.Response;
                 this.datosAux = result.Response;
                 this.filtrarListado();
-            // }
-            },
+            }
+          },
           error => {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(error.message);
@@ -101,15 +113,17 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
   }
 
   filtrarListado = () => {
-    this.primerListado = this.datosAux.filter(x => x.Estado != this.entregada);
+    debugger
+    //this.primerListado = this.datosAux.filter(x => x.DescripcionEstado != this.entregada);
     //if (!this.esTercero) {
+      console.log("datosAux: ", this.datosAux)
+      // x => x.Estado != this.entregada
       if (this.estadosSelected.length < 1 || this.estadosSelected == null) {
         this.data = this.datosAux;
       } else {
-        // console.debug(' estadosSelected: ', this.estadosSelected);
         if (this.estadosSelected) {
             //this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.DescripcionEstado) >= 0);
-            this.data = this.datosAux.filter(x => this.estadosSelected.some(y => y == x.Estado));
+            this.data = this.datosAux.filter(x => this.estadosSelected.some(y => y == x.DescripcionEstado));
         }
       }
     //} else {

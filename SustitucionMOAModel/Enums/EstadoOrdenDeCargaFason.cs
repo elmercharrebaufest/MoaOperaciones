@@ -52,9 +52,9 @@
 				case EstadoOrdenDeCargaFason.Pendiente:
 					return "OK";
 				case EstadoOrdenDeCargaFason.Vencida:
-					return "Vencida";
+					return "Orden vencida";
 				case EstadoOrdenDeCargaFason.Entregada:
-					return "Entregada";
+					return "Orden entregada";
 				default:
 					return "Sin estado";
 			}
