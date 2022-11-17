@@ -129,7 +129,7 @@
                 <input [(ngModel)]="contrato.Proveedorid" class="form-control" type="hidden"
                        id="proveedorinf" style="font-weight: 100 !important;">
                 <ng-autocomplete [data]="proveedores" [searchKeyword]="keyword2"
-                                 (selected)='selectEventProveedor($event)' [(ngModel)]="proveedor"
+                                 (selected)='selectEventProveedor($event)' 
                                  (inputChanged)='onChangeSearchProveedor($event)'
                                  (inputFocused)='selectEventProveedor($event)' [itemTemplate]="itemTemplate2"
                                  [notFoundText]="autocompleteNotFoundText"

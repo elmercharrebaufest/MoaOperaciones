@@ -26,6 +26,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
     cantMaxima: number;
     cantMinima: number;
     condicionFijacion: string;
+    cantMaximaNumber: number;
 
     ngOnInit() {
         registerLocaleData(localeEsAr, 'es-AR');
@@ -324,6 +325,11 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
                 return false;
             }
         }
+        console.log(this.contrato.Cantidad , this.cantMaxima);
+        if (this.contrato.Cantidad > this.cantMaximaNumber) {
+            this.mensajeComponent.setErrorMsg(`La cantidad supera la maxima de fijacion (${this.cantMaxima}).`);
+            return false;
+        }
         return true;
     }
 
@@ -418,6 +424,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             if (KilosContrato < 30000) {
                 this.cantMinima = KilosContrato;
             }
+            this.cantMaximaNumber = this.cantMaxima;
             this.cantMaxima = this.numberSeparator(this.cantMaxima, '.');
             this.cantMinima = this.numberSeparator(this.cantMinima, '.');
 
