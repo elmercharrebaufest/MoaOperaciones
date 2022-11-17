@@ -75,7 +75,7 @@
               <th>Producto</th>
               <th>Patente chasis</th>
               <th>Destino</th>
-              <th></th>
+              <th *ngIf="esAdmin"></th>
               <th>Detalle</th>
             </tr>
           </thead>
@@ -90,7 +90,7 @@
               <td>{{ordenDeCargaFason.Producto}}</td>
               <td>{{ordenDeCargaFason.PatenteChasis}}</td>
               <td>{{ordenDeCargaFason.Destino}}</td>
-              <td>
+              <td *ngIf="esAdmin">
                 <div class="semaforo {{ordenDeCargaFason.ColorSemaforo}}">
                 </div>
               </td>
