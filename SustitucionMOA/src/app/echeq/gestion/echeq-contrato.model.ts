@@ -27,6 +27,7 @@ export class EcheqContrato {
             this.kilos = entity.Kilos;
             this.kilosPagados = entity.KilosPagados;
             this.fecha = entity.Fecha;
+            this.tipoContrato = entity.TipoContrato;
             this.id = uuid.v4();
             this.clasificacion = entity.Clasificacion;
             if (entity.Documentos && entity.Documentos.length) {
