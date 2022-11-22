@@ -46,7 +46,7 @@ namespace SustitucionMOA
             {
                 // ASP.NET web host compatible cookie manager
                 CookieManager = new SystemWebChunkingCookieManager(),
-                ExpireTimeSpan = TimeSpan.FromDays(1)
+                //ExpireTimeSpan = TimeSpan.FromDays(1)
             });
 
 
@@ -85,7 +85,7 @@ namespace SustitucionMOA
 					// Specify the scope by appending all of the scopes requested into one string (separated by a blank space)
 					Scope = $"openid profile offline_access",
 
-                    UseTokenLifetime = false,
+                    //UseTokenLifetime = false,
 				}
 			);
 		}
