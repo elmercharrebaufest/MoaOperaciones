@@ -8,13 +8,15 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 export class LoginGuard implements CanActivate, CanActivateChild {
 
 
-    constructor(private router: Router, private http: HttpClient, private sessionDataService: SessionDataService) {}
+    constructor(private router: Router, private http: HttpClient, private sessionDataService: SessionDataService) { }
 
     canActivate() {
+        this.checkSession();
         return this.checkIfLoggedIn();
     }
 
     canActivateChild() {
+        this.checkSession();
         return this.checkIfNeedLogIn();
     }
 
@@ -27,8 +29,8 @@ export class LoginGuard implements CanActivate, CanActivateChild {
         headers.append('Expires', '0');
         headers.append('Pragma', 'no-cache');
 
-        await this.http.get<{tieneSesion:boolean}>('/api/Home/VerificarEstadoSesion', { headers: headers }).subscribe(
-            (result:any) => {
+        await this.http.get<{ tieneSesion: boolean }>('/api/Home/VerificarEstadoSesion', { headers: headers }).subscribe(
+            (result: any) => {
                 if (!result.tieneSesion) {
                     this.sessionDataService.logout();
                     window.location.href = window.location.origin + '/SignOut';
@@ -67,4 +69,13 @@ export class LoginGuard implements CanActivate, CanActivateChild {
 
         return true;
     }
+
+    private checkSession() {
+        setTimeout(() => {
+            this.checkIfNeedLogIn();
+            this.checkSession();
+        }, 15000);
+    }
+
+
 }
