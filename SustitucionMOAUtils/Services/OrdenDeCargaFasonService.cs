@@ -136,9 +136,8 @@ namespace SustitucionMOAUtils.Services
         }
 		private bool TransporteExiste(string CUITTransporte)
 		{
-			Log.Info("TransporteExiste OrdenCargaControlEstadoRequest " + $"orden.CUITTransporte {CUITTransporte ?? ""}");
+			Log.Info("TransporteExiste Fason");
 			var result = _consumer.OrdenCargaControlEstadoRequest("", "", CUITTransporte);
-			Log.Info("TransporteExiste OrdenCargaControlEstadoRequest Result " + result);
 
 			return result == "CE-07";
 		}
