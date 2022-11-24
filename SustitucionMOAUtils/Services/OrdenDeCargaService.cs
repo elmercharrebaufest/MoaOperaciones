@@ -1648,7 +1648,8 @@ namespace SustitucionMOAUtils.Services
             Log.Info("SeleccionarContrato ActualizarEstado Nuevo " + orden.Estado.ToString());
             if (!ValidarVencimientoContrato(contratoSAP, orden.Cliente))
             {
-                orden.ContratoSAP = "";
+                //orden.ContratoSAP = "";
+                repositorio.GuardarCambios();
                 return new Resultado { error = "El contrato seleccionado esta vencido" };
             }
             if (!string.IsNullOrEmpty(orden.ContratoSAP))

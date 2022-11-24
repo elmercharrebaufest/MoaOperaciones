@@ -782,6 +782,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     }
 
     Paste(e) {
+        console.log("paste");
         setTimeout(() => {
             let divComentario = document.getElementsByClassName(
                 "angular-editor-textarea"
