@@ -87,7 +87,7 @@ namespace SustitucionMOAUtils.Services
                 EcheqNegocioDto echeqNegocio = this.ObtieneNegocio(request);
 
 
-                //2- validar si es productor o acopiador
+                //2- validar si es productor o acopiador u otros
                 if (echeqNegocio.Clasificacion == "PRODUCTOR")
                 {
                     //contrato es fijo
@@ -121,7 +121,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
-                else if (echeqNegocio.Clasificacion == "ACOPIADOR")//3.2- Si es acopiador por cada una de las liquidaciones llamar a la rfc de marcar documento
+                else if (echeqNegocio.Clasificacion == "ACOPIADOR" || echeqNegocio.Clasificacion == "OTROS")//3.2- Si es acopiador/otros por cada una de las liquidaciones llamar a la rfc de marcar documento
                 {
                     ResultadoGenerico modificarNegocio = new ResultadoGenerico();
 
@@ -172,7 +172,7 @@ namespace SustitucionMOAUtils.Services
                 //1- Obtener contrato desde la RFC y setear echeq
                 EcheqNegocioDto echeqNegocio = this.ObtieneNegocio(request);
 
-                //2- validar si es productor o acopiador
+                //2- validar si es productor o acopiador u otros
                 if (echeqNegocio.Clasificacion == "PRODUCTOR")
                 {
                     ResultadoGenerico modificarNegocio;
@@ -195,7 +195,7 @@ namespace SustitucionMOAUtils.Services
                         this.UpdateEcheq(request, false);
                     }
                 }
-                else if (echeqNegocio.Clasificacion == "ACOPIADOR")//3.2- Si es acopiador por cada una de las liquidaciones llamar a la rfc de marcar documento
+                else if (echeqNegocio.Clasificacion == "ACOPIADOR" || echeqNegocio.Clasificacion == "OTROS")//3.2- Si es acopiador/otros por cada una de las liquidaciones llamar a la rfc de marcar documento
                 {
                     ResultadoGenerico modificarNegocio = new ResultadoGenerico();
 
