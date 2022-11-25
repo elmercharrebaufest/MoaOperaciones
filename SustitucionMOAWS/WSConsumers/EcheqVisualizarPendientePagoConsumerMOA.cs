@@ -96,6 +96,7 @@ namespace SustitucionMOAWS.WSConsumers
                         //WRBTRSpecified = x.WRBTRSpecified,
                         NumeroCOE = x.XBLNR,
                         //Clasificacion = x.CLASIFICACION
+                        MarcaCheque = string.IsNullOrWhiteSpace(x.ZLSCH) ? false : true
                     }).ToList()
                 });
             }
