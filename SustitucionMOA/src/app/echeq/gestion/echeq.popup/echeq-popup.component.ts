@@ -103,6 +103,8 @@ export class EcheqPopupComponent implements OnInit {
             total += Number(x.importeCheque)
         });
 
+        total = Number(total.toFixed(2));
+
         if (total != this.documento.importeEnPesos) {
 
             this.porcentajeRestante = 100 - total;

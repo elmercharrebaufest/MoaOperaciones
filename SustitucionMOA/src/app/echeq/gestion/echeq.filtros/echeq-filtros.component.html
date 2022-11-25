@@ -18,14 +18,14 @@
                 <select [(ngModel)]="echeqFilterModel.tipoContrato" [value]="echeqFilterModel.tipoContrato"
                     class="dropdown-granos ng-pristine ng-valid ng-touched" (select)="onChangeTipoContrato()" (change)="onChangeTipoContrato()">
                     <option value="Todos" selected="selected">Todos</option>
-                    <option value="Fijo">Fijo</option>
+                    <option value="A Precio">A Precio</option>
                     <option value="Fijación">Fijación</option>
                 </select>
             </div>
         </div>
 
         <div id="searchFecha" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
-            <p>Fecha eCheqs</p>
+            <p>Fecha de Operacion</p>
             <filtro-fecha (ClickEvent)="onChangeFecha()" ></filtro-fecha>
         </div>       
 

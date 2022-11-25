@@ -643,5 +643,56 @@
                         /endpoint[@name='SI_MMRFC_OBTENER_CONTRATO']
                         /@address" />
 	</parameter>
+
+	<parameter name="SI_MPRFC_ANULAR_APERTURA_CHEQUE Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_ANULAR_APERTURA_CHEQUE']
+                        /@address" />
+	</parameter>
+
+	<parameter name="SI_MPRFC_CARGA_APERTURA_CHEQUE Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_CARGA_APERTURA_CHEQUE']
+                        /@address" />
+	</parameter>
+
+	<parameter name="SI_MPRFC_MODI_DOC_CHEQUE Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_MODI_DOC_CHEQUE']
+                        /@address" />
+	</parameter>
+
+	<parameter name="SI_MPRFC_MOAOP_MOD_CONTRATO Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_MOAOP_MOD_CONTRATO']
+                        /@address" />
+	</parameter>
+
+	<parameter name="SI_MPRFC_MOAOP_MOD_FIJACION Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_MOAOP_MOD_FIJACION']
+                        /@address" />
+	</parameter>
+
+	<parameter name="SI_MPRFC_VISU_DISPONIBLE_CHEQUE Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_VISU_DISPONIBLE_CHEQUE']
+                        /@address" />
+	</parameter>
+
+	<parameter name="SI_MPRFC_VISU_PENDIENTE_PAGO Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_VISU_PENDIENTE_PAGO']
+                        /@address" />
+	</parameter>
+	
+	
 </parameters>
 

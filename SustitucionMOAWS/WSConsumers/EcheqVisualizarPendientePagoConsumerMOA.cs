@@ -79,7 +79,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Fecha = SAPFormatter.FormatearFecha(pagosPendientes.FECHA),
                     MarcaCheque = string.IsNullOrWhiteSpace(pagosPendientes.ZLSCH) ? false : true,
                     Clasificacion = pagosPendientes.CLASIFICACION,
-                    TipoContrato = string.IsNullOrWhiteSpace(pagosPendientes.PEDIDO) ? "Fijo" : "Fijación",
+                    TipoContrato = string.IsNullOrWhiteSpace(pagosPendientes.PEDIDO) ? "A Precio" : "Fijación",
                     Documentos = pagosPendientes.DOCUMENTOS == null ? new List<EcheqLiquidacionDto>() : pagosPendientes.DOCUMENTOS.Select(x => new EcheqLiquidacionDto
                     {
                         Contrato = x.CONTRATO,
@@ -96,9 +96,12 @@ namespace SustitucionMOAWS.WSConsumers
                         //WRBTRSpecified = x.WRBTRSpecified,
                         NumeroCOE = x.XBLNR,
                         //Clasificacion = x.CLASIFICACION
+                        MarcaCheque = string.IsNullOrWhiteSpace(x.ZLSCH) ? false : true
                     }).ToList()
                 });
             }
+
+            listaPendientesPago = listaPendientesPago.Where(a => a.Documentos != null && a.Documentos.Count > 0).ToList();
             return listaPendientesPago;
         }
     }
