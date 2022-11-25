@@ -9,6 +9,7 @@ export class LoginGuard implements CanActivate, CanActivateChild {
 
 
     constructor(private router: Router, private http: HttpClient, private sessionDataService: SessionDataService) { }
+    checkActivated: boolean = false;
 
     canActivate() {
         this.checkSession();
@@ -16,7 +17,14 @@ export class LoginGuard implements CanActivate, CanActivateChild {
     }
 
     canActivateChild() {
-        this.checkSession();
+        setTimeout(() => {
+            var url = this.router.url;
+            if ((url.indexOf("/") != -1 || url.indexOf("/home") != -1 || url.indexOf("/home-ngs") != -1) && this.checkActivated == false) {
+                this.checkActivated = true;
+                this.checkSession();
+            }
+        }, 2000);
+
         return this.checkIfNeedLogIn();
     }
 
