@@ -106,6 +106,8 @@ namespace SustitucionMOAWS.EcheqVisualizarPendientePagoWebServiceMOA {
         
         private string cLASIFICACIONField;
         
+        private string zLSCHField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
         public string CONTRATO {
@@ -271,6 +273,18 @@ namespace SustitucionMOAWS.EcheqVisualizarPendientePagoWebServiceMOA {
             set {
                 this.cLASIFICACIONField = value;
                 this.RaisePropertyChanged("CLASIFICACION");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=12)]
+        public string ZLSCH {
+            get {
+                return this.zLSCHField;
+            }
+            set {
+                this.zLSCHField = value;
+                this.RaisePropertyChanged("ZLSCH");
             }
         }
         

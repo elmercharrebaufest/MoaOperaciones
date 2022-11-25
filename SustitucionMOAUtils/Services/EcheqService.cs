@@ -53,9 +53,12 @@ namespace SustitucionMOAUtils.Services
                 List<EcheqNegocioDto> result = echeqVisualizarPendientePagoConsumerMOA.Request(proveedor, fechas, contrato);
 
                 result.Where(x => x.Clasificacion == "PRODUCTOR" && x.MarcaCheque == true).ToList().ForEach(x => x.Documentos.ForEach(k => k.MarcaCheque = true));
+                result.Where(x => x.Clasificacion != "PRODUCTOR" && x.Documentos.Any(e => e.MarcaCheque == true)).ToList().ForEach(k => k.MarcaCheque = true);
+
                 List<string> documentos = result.Where(a => a.MarcaCheque).SelectMany(a => a.Documentos.Where(b => b.MarcaCheque).Select(b => b.Documento)).ToList();
                 var aperturas = repositorio.Listar<EcheqApertura>(x => x.Estado == true &&
                    documentos.Contains(x.EcheqLiquidacion.Documento));
+
                 foreach (var apertura in aperturas)
                 {
                     EcheqLiquidacionDto liquidacion = result
@@ -87,7 +90,7 @@ namespace SustitucionMOAUtils.Services
                 EcheqNegocioDto echeqNegocio = this.ObtieneNegocio(request);
 
 
-                //2- validar si es productor o acopiador
+                //2- validar si es productor o acopiador u otros
                 if (echeqNegocio.Clasificacion == "PRODUCTOR")
                 {
                     //contrato es fijo
@@ -121,7 +124,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
-                else if (echeqNegocio.Clasificacion == "ACOPIADOR")//3.2- Si es acopiador por cada una de las liquidaciones llamar a la rfc de marcar documento
+                else if (echeqNegocio.Clasificacion == "ACOPIADOR" || echeqNegocio.Clasificacion == "OTROS")//3.2- Si es acopiador/otros por cada una de las liquidaciones llamar a la rfc de marcar documento
                 {
                     ResultadoGenerico modificarNegocio = new ResultadoGenerico();
 
@@ -172,7 +175,7 @@ namespace SustitucionMOAUtils.Services
                 //1- Obtener contrato desde la RFC y setear echeq
                 EcheqNegocioDto echeqNegocio = this.ObtieneNegocio(request);
 
-                //2- validar si es productor o acopiador
+                //2- validar si es productor o acopiador u otros
                 if (echeqNegocio.Clasificacion == "PRODUCTOR")
                 {
                     ResultadoGenerico modificarNegocio;
@@ -195,7 +198,7 @@ namespace SustitucionMOAUtils.Services
                         this.UpdateEcheq(request, false);
                     }
                 }
-                else if (echeqNegocio.Clasificacion == "ACOPIADOR")//3.2- Si es acopiador por cada una de las liquidaciones llamar a la rfc de marcar documento
+                else if (echeqNegocio.Clasificacion == "ACOPIADOR" || echeqNegocio.Clasificacion == "OTROS")//3.2- Si es acopiador/otros por cada una de las liquidaciones llamar a la rfc de marcar documento
                 {
                     ResultadoGenerico modificarNegocio = new ResultadoGenerico();
 
@@ -246,15 +249,15 @@ namespace SustitucionMOAUtils.Services
                 //1- Obtener contrato desde la RFC y setear echeq
                 EcheqNegocioDto echeqNegocioSAP = this.ObtieneNegocio(request);
 
-                EcheqNegocio echeqDB = repositorio.Obtener<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido);
+                EcheqNegocio negocioDB = repositorio.Obtener<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido);
 
-                if (echeqDB != null)
+                if (negocioDB != null)
                 {
-                    echeqDB.MarcaCheque = true;
-                    echeqDB.FechaModificacion = DateTime.Now;
-                    echeqDB.UsuarioModificacionId = request.UsuarioCreacionId;
+                    negocioDB.MarcaCheque = true;
+                    negocioDB.FechaModificacion = DateTime.Now;
+                    negocioDB.UsuarioModificacionId = request.UsuarioCreacionId;
 
-                    var docDB = echeqDB.Documentos.Where(x => x.Documento == request.Documento).SingleOrDefault();
+                    var docDB = negocioDB.Documentos.Where(x => x.Documento == request.Documento).SingleOrDefault();
 
                     if (docDB != null)
                     {
@@ -272,7 +275,7 @@ namespace SustitucionMOAUtils.Services
                         echeqLiquidacion.FechaModificacion = DateTime.Now;
                         echeqLiquidacion.UsuarioModificacionId = request.UsuarioCreacionId;
 
-                        echeqDB.Documentos.Add(echeqLiquidacion);
+                        negocioDB.Documentos.Add(echeqLiquidacion);
 
 
                     }

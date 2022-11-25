@@ -130,6 +130,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
         documento.selected = check;
 
         let contrato = this.echeqContratos.find(contrato => contrato.id == documento.parentId);
+        console.log("Check documento")
         if (contrato.clasificacion == "PRODUCTOR") {
             documento.selected = contrato.selected;
             return;
