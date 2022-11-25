@@ -336,7 +336,7 @@ namespace SustitucionMOAUtils.Services
                 var mailUsuarioSAP = puedeEnviarASAP ? request.MailUsuarioSAP : _usuarioAutomaticoSAP;
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSAP);
                 var validarKg = "X";
-                var result = consumer.CrearOrdenRequest(request.ClienteCodigo, ordenDeCarga.ContratoIngresado, request.CorredorCodigo, request.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, validarKg, out string numeroPedido);
+                var result = consumer.CrearOrdenRequest(ordenDeCarga.Cliente.CodigoProveedor, ordenDeCarga.ContratoIngresado, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, validarKg, out string numeroPedido);
                 if (!string.IsNullOrEmpty(result))
                 {
                     if (result == "OV-00" || result == "OV-03")
@@ -1530,21 +1530,28 @@ namespace SustitucionMOAUtils.Services
                 var res = ordenCargaVisualizarClienteWSMOAResponse.Resultados[0];
                 if (!request.ClienteCuit.Equals(string.Empty) && !request.Contrato.Equals(string.Empty) && !request.Corredor.Equals(string.Empty) && !request.ProductoId.Equals(string.Empty))
                 {
-                    var clienteResult = res.Cliente.ToUpper();
+                    var clienteResult = res.Cliente.ToUpper().TrimStart(new Char[] { '0' });
                     var contratoResult = res.Contrato.ToUpper().TrimStart(new Char[] { '0' });
-                    var corredorResult = res.Corredor.ToUpper();
+                    var corredorResult = res.Corredor.ToUpper().TrimStart(new Char[] { '0' });
                     var productoResult = res.Producto.ToUpper().Substring(13, 5);
-                    if (request.Corredor.ToUpper().Equals(corredorResult) && request.Contrato.ToUpper().Equals(contratoResult) && request.ClienteCodigo.ToUpper().Equals(clienteResult) && producto.CodigoSap.ToUpper().Equals(productoResult))
+                    if (request.Corredor.ToUpper().TrimStart(new Char[] { '0' }).Equals(corredorResult) 
+                        && request.Contrato.ToUpper().TrimStart(new Char[] { '0' }).Equals(contratoResult) 
+                        && request.ClienteCodigo.ToUpper().TrimStart(new Char[] { '0' }).Equals(clienteResult) 
+                        && producto.CodigoSap.ToUpper().Equals(productoResult))
                     {
                         result = true;
                     }
                 }
-                else if (!request.ClienteCodigo.Equals(string.Empty) && !request.Contrato.Equals(string.Empty) && !request.ProductoId.Equals(string.Empty))
+                else if (!request.ClienteCodigo.Equals(string.Empty) 
+                    && !request.Contrato.Equals(string.Empty) 
+                    && !request.ProductoId.Equals(string.Empty))
                 {
-                    var clienteResult = res.Cliente.ToUpper();
+                    var clienteResult = res.Cliente.ToUpper().TrimStart(new Char[] { '0' });
                     var contratoResult = res.Contrato.ToUpper().TrimStart(new Char[] { '0' });
                     var productoResult = res.Producto.ToUpper().TrimStart(new Char[] { '0' });
-                    if (request.Contrato.Trim().ToUpper().Equals(contratoResult.Trim()) && request.ClienteCodigo.Trim().ToUpper().Equals(clienteResult.Trim()) && producto.CodigoSap.Trim().ToUpper().Equals(productoResult.Trim()))
+                    if (request.Contrato.Trim().ToUpper().TrimStart(new Char[] { '0' }).Equals(contratoResult.Trim()) 
+                        && request.ClienteCodigo.Trim().ToUpper().TrimStart(new Char[] { '0' }).Equals(clienteResult.Trim()) 
+                        && producto.CodigoSap.Trim().ToUpper().TrimStart(new Char[] { '0' }).Equals(productoResult.Trim()))
                     {
                         result = true;
                     }
