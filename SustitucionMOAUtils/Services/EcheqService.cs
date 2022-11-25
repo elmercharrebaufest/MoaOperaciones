@@ -53,9 +53,12 @@ namespace SustitucionMOAUtils.Services
                 List<EcheqNegocioDto> result = echeqVisualizarPendientePagoConsumerMOA.Request(proveedor, fechas, contrato);
 
                 result.Where(x => x.Clasificacion == "PRODUCTOR" && x.MarcaCheque == true).ToList().ForEach(x => x.Documentos.ForEach(k => k.MarcaCheque = true));
+                result.Where(x => x.Clasificacion != "PRODUCTOR" && x.Documentos.Any(e => e.MarcaCheque == true)).ToList().ForEach(k => k.MarcaCheque = true);
+
                 List<string> documentos = result.Where(a => a.MarcaCheque).SelectMany(a => a.Documentos.Where(b => b.MarcaCheque).Select(b => b.Documento)).ToList();
                 var aperturas = repositorio.Listar<EcheqApertura>(x => x.Estado == true &&
                    documentos.Contains(x.EcheqLiquidacion.Documento));
+
                 foreach (var apertura in aperturas)
                 {
                     EcheqLiquidacionDto liquidacion = result
@@ -246,15 +249,15 @@ namespace SustitucionMOAUtils.Services
                 //1- Obtener contrato desde la RFC y setear echeq
                 EcheqNegocioDto echeqNegocioSAP = this.ObtieneNegocio(request);
 
-                EcheqNegocio echeqDB = repositorio.Obtener<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido);
+                EcheqNegocio negocioDB = repositorio.Obtener<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido);
 
-                if (echeqDB != null)
+                if (negocioDB != null)
                 {
-                    echeqDB.MarcaCheque = true;
-                    echeqDB.FechaModificacion = DateTime.Now;
-                    echeqDB.UsuarioModificacionId = request.UsuarioCreacionId;
+                    negocioDB.MarcaCheque = true;
+                    negocioDB.FechaModificacion = DateTime.Now;
+                    negocioDB.UsuarioModificacionId = request.UsuarioCreacionId;
 
-                    var docDB = echeqDB.Documentos.Where(x => x.Documento == request.Documento).SingleOrDefault();
+                    var docDB = negocioDB.Documentos.Where(x => x.Documento == request.Documento).SingleOrDefault();
 
                     if (docDB != null)
                     {
@@ -272,7 +275,7 @@ namespace SustitucionMOAUtils.Services
                         echeqLiquidacion.FechaModificacion = DateTime.Now;
                         echeqLiquidacion.UsuarioModificacionId = request.UsuarioCreacionId;
 
-                        echeqDB.Documentos.Add(echeqLiquidacion);
+                        negocioDB.Documentos.Add(echeqLiquidacion);
 
 
                     }
