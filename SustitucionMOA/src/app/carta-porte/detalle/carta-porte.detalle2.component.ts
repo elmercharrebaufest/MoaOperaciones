@@ -83,6 +83,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.data = result.data;
+                        console.log("Data", this.data)
                         this.condicionCamara = result.data.datosCalidad.every(x => x.resultadoCamara ==0);
                        // this.condicionCalada = result.data.datosCalidad.every(x => x.resultadoCalado == 0);
                         this.porcentajeDescuento = result.data.datosCalidad.every(x => x.porcentajeDescuento == 0);
