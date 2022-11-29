@@ -71,7 +71,7 @@ namespace SustitucionMOAUtils.Services
                 NotificarContratoSinKm(ordenDeCarga);
                 NotificarTransporte(ordenDeCarga.Id);
 
-               
+
                 if (ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido)
                 {
                     NotificacionContratoVencido(ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga, cliente));
@@ -93,7 +93,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     NotificarVariosContratos(ConstruirCuerpoMailNotificacionVariosContratos(ordenDeCarga.Id));
                 }
-                
+
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
                 Log.Info($"Result: { resultado.ToJson() }");
                 return resultado;
@@ -1351,7 +1351,7 @@ namespace SustitucionMOAUtils.Services
                     IdDataAgro = prov.IdDataAgro,
                     Mail = prov.Mail ?? "",
                     Observaciones = prov.Observaciones,
-                    RazonSocial = !String.IsNullOrEmpty(prov.RazonSocial) ? prov.RazonSocial : prov.CUIT,
+                    RazonSocial = !String.IsNullOrEmpty(prov.RazonSocial) ? prov.RazonSocial : prov.CUIT ?? "",
                     FechaSolicitud = prov.FechaSolicitud,
                     Comercial = prov.Comercial,
                     EstadoSIPER = prov.EstadoSIPER,
@@ -1378,7 +1378,7 @@ namespace SustitucionMOAUtils.Services
                 //    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateVisualizarProductoRequest));
                 //}
                 var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(string.Empty, request.Contrato, string.Empty, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, string.Empty, 2);
-                Log.Debug(this.GetType().Name, "VisualizarProducto", $" ordenCargaVisualizarClienteWSMOAResponse: { ordenCargaVisualizarClienteWSMOAResponse.ToJson() }");
+                //Log.Debug(this.GetType().Name, "VisualizarProducto", $" ordenCargaVisualizarClienteWSMOAResponse: { ordenCargaVisualizarClienteWSMOAResponse.ToJson() }");
                 response = new VisualizarProductoResponse();
                 response.Productos = GetProductosFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse);
                 //Log.Info($" response: { response.ToJson() }");
@@ -1534,23 +1534,23 @@ namespace SustitucionMOAUtils.Services
                     var contratoResult = res.Contrato.ToUpper().TrimStart(new Char[] { '0' });
                     var corredorResult = res.Corredor.ToUpper().TrimStart(new Char[] { '0' });
                     var productoResult = res.Producto.ToUpper().Substring(13, 5);
-                    if (request.Corredor.ToUpper().TrimStart(new Char[] { '0' }).Equals(corredorResult) 
-                        && request.Contrato.ToUpper().TrimStart(new Char[] { '0' }).Equals(contratoResult) 
-                        && request.ClienteCodigo.ToUpper().TrimStart(new Char[] { '0' }).Equals(clienteResult) 
+                    if (request.Corredor.ToUpper().TrimStart(new Char[] { '0' }).Equals(corredorResult)
+                        && request.Contrato.ToUpper().TrimStart(new Char[] { '0' }).Equals(contratoResult)
+                        && request.ClienteCodigo.ToUpper().TrimStart(new Char[] { '0' }).Equals(clienteResult)
                         && producto.CodigoSap.ToUpper().Equals(productoResult))
                     {
                         result = true;
                     }
                 }
-                else if (!request.ClienteCodigo.Equals(string.Empty) 
-                    && !request.Contrato.Equals(string.Empty) 
+                else if (!request.ClienteCodigo.Equals(string.Empty)
+                    && !request.Contrato.Equals(string.Empty)
                     && !request.ProductoId.Equals(string.Empty))
                 {
                     var clienteResult = res.Cliente.ToUpper().TrimStart(new Char[] { '0' });
                     var contratoResult = res.Contrato.ToUpper().TrimStart(new Char[] { '0' });
                     var productoResult = res.Producto.ToUpper().TrimStart(new Char[] { '0' });
-                    if (request.Contrato.Trim().ToUpper().TrimStart(new Char[] { '0' }).Equals(contratoResult.Trim()) 
-                        && request.ClienteCodigo.Trim().ToUpper().TrimStart(new Char[] { '0' }).Equals(clienteResult.Trim()) 
+                    if (request.Contrato.Trim().ToUpper().TrimStart(new Char[] { '0' }).Equals(contratoResult.Trim())
+                        && request.ClienteCodigo.Trim().ToUpper().TrimStart(new Char[] { '0' }).Equals(clienteResult.Trim())
                         && producto.CodigoSap.Trim().ToUpper().TrimStart(new Char[] { '0' }).Equals(productoResult.Trim()))
                     {
                         result = true;
@@ -1936,7 +1936,7 @@ namespace SustitucionMOAUtils.Services
         }
         private bool ObtenerSituacionCrediticia(OrdenDeCarga orden)
         {
-            Log.Info("ObtenerSituacionCrediticia" );
+            Log.Info("ObtenerSituacionCrediticia");
             var result = consumer.OrdenCargaControlEstadoRequest("", orden.NumeroPedido, "");
 
             return result == "CE-00";
@@ -2191,6 +2191,7 @@ namespace SustitucionMOAUtils.Services
 
         public bool ValidarVencimientoContrato(string contrato, Proveedor cliente)
         {
+
             var request = new OrdenCargaVisualizarClienteWSMOARequest()
             {
                 Cliente = cliente.CodigoProveedor,
@@ -2198,19 +2199,24 @@ namespace SustitucionMOAUtils.Services
             };
             Log.Info($"ValidarVencimientoContrato request: {request.ToJson()}");
             var result = consumer.OrdenCargaVisualizarClienteExecute(request);
-            Log.Info($"ValidarVencimientoContrato result: {result.ToJson()}");
+            Log.Info($"ValidarVencimientoContrato result count: {result.Resultados.Count}");
 
             var fechaContrato = result.Resultados.Select(d => d.FechaHasta).Distinct().FirstOrDefault();
             var fechaHoy = DateTime.Now.Date;
+            Log.Info($"ValidarVencimientoContrato : {new { fechaContrato, fechaHoy }.ToJson()}");
+
             if (result.Resultados.Count == 0)
             {
+                Log.Info($"ValidarVencimientoContrato return : true");
                 return true;
             }
             if (fechaHoy > Convert.ToDateTime(fechaContrato))
             {
+                Log.Info($"ValidarVencimientoContrato return : false");
                 return false;
             }
 
+            Log.Info($"ValidarVencimientoContrato return : true");
             return true;
         }
         public DateTime CalcularFechaVencimiento(int dias, DateTime desde)
