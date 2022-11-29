@@ -339,11 +339,18 @@
                                                         <td>{{calidad.resultadoCamara}}%</td>
                                                     </tr>
                                                     <ng-template #first>
-                                                        <tr *ngIf="data.camaraAPresent == '' || data.camaraAPresent == null" >
+                                                        <tr *ngIf="data.camaraAPresent == '' || data.camaraAPresent == null; else second" >
                                                             <!--Calado-->
                                                             <td>{{calidad.caracteristica}}</td>
                                                             <td>{{calidad.resultadoCalado}}%</td>
                                                             <td>{{calidad.kgDescuentoString}}</td>
+                                                        </tr>
+                                                    </ng-template>
+                                                    <ng-template #second>
+                                                        <tr *ngIf="data.camaraAPresent != '' && ((condicionCamara == true && porcentajeDescuento == true)) && calidad.caracteristica.toUpperCase().includes('HUMEDAD')">
+                                                            <!--Mostrar solo humedad-->
+                                                            <td>{{calidad.caracteristica}}</td>
+                                                            <td>{{calidad.resultadoCalado}}%</td>
                                                         </tr>
                                                     </ng-template>
                                                     <tr class="CalidadCCPPDataPlus" *ngIf="showDataPlus(calidad)">
