@@ -761,7 +761,7 @@
     <usuario-small id="usuarioSmall" class="clearfix">
         <div class="headerbar">
             <div class="col-md-12 col-sm-12 userData" *ngIf="isAuthorized('CONSULTAR DOCUMENTACION')">
-                <a (click)="goToSeccion('/dato-fiscal/documentacion')" href="#" class="animate">
+                <a (click)="goToSeccion('/dato-fiscal/documentacion')"  onClick="userCloseSmall()" href="#" class="animate">
                     Documentación<span class="fa fa-file-text" aria-hidden="true"></span>
                 </a>
             </div>
@@ -771,12 +771,12 @@
                 </a>
             </div> -->
             <div class="col-md-12 col-sm-12 userData" *ngIf="isAuthorized('SELECCIONAR VENDEDOR')">
-                <a (click)="goToSeccion('/usuario/cambio-vendedor')" href="#" class="animate">
+                <a (click)="goToSeccion('/usuario/cambio-vendedor')" href="#" class="animate"  onClick="userCloseSmall()">
                     Cambio de vendedor<span class="fa fa-id-card" aria-hidden="true"></span>
                 </a>
             </div>
             <div class="col-md-12 col-sm-12 userData no-border">
-                <a (click)="cerrarSesion()" href="#" class="animate">
+                <a (click)="cerrarSesion()" href="#" class="animate"  onClick="userCloseSmall()">
                     Cerrar sesión<span class="fa fa-sign-out" aria-hidden="true"></span>
                 </a>
             </div>
