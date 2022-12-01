@@ -11,7 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
     public interface IOrdenDeCargaApiService
     {
         List<OrdendesDeCargaApiDto> ObtenerOrdenes();
-        void InformarViajeOrdenesDeCargaFason(IngresosEgresosFasones ingresosEgresosFasones);
-        void InformarViajeOrdenesDeCargaFas(IngresosEgresosFas ingresosEgresosFas);
+        ResultadoGenerico InformarViajeOrdenesDeCargaFason(IngresosEgresosFasones ingresosEgresosFasones);
+        ResultadoGenerico InformarViajeOrdenesDeCargaFas(IngresosEgresosFas ingresosEgresosFas);
     }
 }

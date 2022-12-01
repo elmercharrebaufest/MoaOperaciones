@@ -25,7 +25,13 @@ namespace SustitucionMOAExternalAPI.Controllers
         {
             try
             {
-                _ordenesCargaApi.InformarViajeOrdenesDeCargaFason(ingresosEgresosFasones);
+                var result = _ordenesCargaApi.InformarViajeOrdenesDeCargaFason(ingresosEgresosFasones);
+                if (result.Errores.Count > 0)
+                {
+                    var ex = new Exception(string.Format("Se dieron los siguientes errores al procesar los elementos: {0}", string.Join(" | ", result.Errores.Select(a => a.Message).ToArray())));
+                    Log.ExternalAPIError(ex);
+                    return InternalServerError(ex);
+                }
                 return Ok();
             }
             catch (Exception ex)

@@ -179,6 +179,7 @@
     <Build Include="DBO\Tables\EcheqApertura.sql" />
     <Build Include="DBO\Tables\MaterialFason.sql" />
     <Build Include="DBO\Tables\OrdenDeCargaFason.sql" />
+    <Build Include="DBO\Tables\OrdenDeCargaFasonViajes.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

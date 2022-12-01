@@ -33,6 +33,10 @@ namespace SustitucionMOAModel.Entities
 		public bool TransporteExiste { get; set; }
 
 
+		[InverseProperty("OrdenDeCargaFason")]
+		public virtual List<OrdenDeCargaFasonViajes> Viajes { get; set; }
+
+
 		public void ActualizarEstado()
 		{
 			if (Estado != EstadoOrdenDeCargaFason.Entregada)

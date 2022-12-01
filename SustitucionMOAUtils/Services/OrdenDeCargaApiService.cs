@@ -20,14 +20,45 @@ namespace SustitucionMOAUtils.Services
             _repositorio = repositorio;
         }
 
-        public void InformarViajeOrdenesDeCargaFas(IngresosEgresosFas ingresosEgresosFas)
+        public ResultadoGenerico InformarViajeOrdenesDeCargaFas(IngresosEgresosFas ingresosEgresosFas)
         {
-            throw new NotImplementedException();
+            string entrega = "00" + ingresosEgresosFas.Entrega.TrimStart('0');
+            var orden = _repositorio.Obtener<OrdenDeCarga>(x => x.NumeroEntrega == entrega);
+            if (orden == null)
+                return new ResultadoGenerico { Errores = new List<ErrorMessage> { new ErrorMessage { Message = $"No se encontro la orden fas : {ingresosEgresosFas.Entrega}" } } };
+
+            orden.Estado = EstadoOrdenDeCarga.Entregada;
+            _repositorio.GuardarCambios();
+
+            return new ResultadoGenerico();
         }
 
-        public void InformarViajeOrdenesDeCargaFason(IngresosEgresosFasones ingresosEgresosFasones)
+        public ResultadoGenerico InformarViajeOrdenesDeCargaFason(IngresosEgresosFasones ingresosEgresosFasones)
         {
-            throw new NotImplementedException();
+            var orden = _repositorio.Obtener<OrdenDeCargaFason>(x => x.Id == ingresosEgresosFasones.FasonId);
+            if (orden == null)
+                return new ResultadoGenerico { Errores = new List<ErrorMessage> { new ErrorMessage { Message = $"No se encontro la orden fason numero: {ingresosEgresosFasones.FasonId}" } } };
+
+            orden.CantidadDeViajesRealizados += 1;
+
+            if (orden.CantidadDeViajesEsperados == orden.CantidadDeViajesRealizados)
+                orden.Estado = EstadoOrdenDeCargaFason.Entregada;
+
+            if (orden.Viajes == null) orden.Viajes = new List<OrdenDeCargaFasonViajes>();
+
+            orden.Viajes.Add(new OrdenDeCargaFasonViajes
+            {
+                Cantidad = ingresosEgresosFasones.Cantidad,
+                FechaEgreso = ingresosEgresosFasones.FechaEgreso,
+                FechaIngreso = ingresosEgresosFasones.FechaIngreso,
+                NroRemito = ingresosEgresosFasones.NroRemito,
+                UniMedCant = ingresosEgresosFasones.UniMedCant,
+            });
+            // TODO: Registrar el viaje en la tabla que todavia no existe
+
+            _repositorio.GuardarCambios();
+
+            return new ResultadoGenerico();
         }
 
         public List<OrdendesDeCargaApiDto> ObtenerOrdenes()
@@ -35,11 +66,11 @@ namespace SustitucionMOAUtils.Services
             var ordenesFas = _repositorio.Listar<OrdenDeCarga>(x =>
             x.Estado != EstadoOrdenDeCarga.SinEnviarASAP &&
             x.Estado != EstadoOrdenDeCarga.Anulada &&
-            x.Estado != EstadoOrdenDeCarga.AnuladaPorVencimiento && 
-            x.Estado != EstadoOrdenDeCarga.Entregada 
+            x.Estado != EstadoOrdenDeCarga.AnuladaPorVencimiento &&
+            x.Estado != EstadoOrdenDeCarga.Entregada
             ).ToList();
-            var ordenesFason = _repositorio.Listar<OrdenDeCargaFason>(x => 
-            x.Estado != EstadoOrdenDeCargaFason.Entregada && 
+            var ordenesFason = _repositorio.Listar<OrdenDeCargaFason>(x =>
+            x.Estado != EstadoOrdenDeCargaFason.Entregada &&
             x.Estado != EstadoOrdenDeCargaFason.SinEstado
             ).ToList();
             List<OrdendesDeCargaApiDto> listaOrdenes = new List<OrdendesDeCargaApiDto>();

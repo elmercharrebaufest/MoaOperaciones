@@ -9,7 +9,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 	public class IngresosEgresosFas
 	{
 
-		public int Entrega { get; set; }
+		public string Entrega { get; set; }
 
 		public int PesoBruto { get; set; }
 
