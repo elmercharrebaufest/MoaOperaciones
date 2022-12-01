@@ -503,3 +503,5 @@ IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on Permiso
 
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'CORREDOR' and PermisoPorRol.Permiso = 'CORREDOR') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'CORREDOR'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'CORREDOR')) END
 
+IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'CORREDOR' and PermisoPorRol.Permiso = 'VER ORDENES DE CARGA DE TERCEROS') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'CORREDOR'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'VER ORDENES DE CARGA DE TERCEROS')) END
+
