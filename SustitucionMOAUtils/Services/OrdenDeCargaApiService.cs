@@ -44,16 +44,12 @@ namespace SustitucionMOAUtils.Services
             if (orden.CantidadDeViajesEsperados == orden.CantidadDeViajesRealizados)
                 orden.Estado = EstadoOrdenDeCargaFason.Entregada;
 
-            if (orden.Viajes == null) orden.Viajes = new List<OrdenDeCargaFasonViajes>();
-
-            orden.Viajes.Add(new OrdenDeCargaFasonViajes
-            {
-                Cantidad = ingresosEgresosFasones.Cantidad,
-                FechaEgreso = ingresosEgresosFasones.FechaEgreso,
-                FechaIngreso = ingresosEgresosFasones.FechaIngreso,
-                NroRemito = ingresosEgresosFasones.NroRemito,
-                UniMedCant = ingresosEgresosFasones.UniMedCant,
-            });
+            orden.CantidadEntregada = ingresosEgresosFasones.Cantidad;
+            orden.FechaEgreso = ingresosEgresosFasones.FechaEgreso;
+            orden.FechaIngreso = ingresosEgresosFasones.FechaIngreso;
+            orden.NroRemito = ingresosEgresosFasones.NroRemito;
+            orden.UniMedCant = ingresosEgresosFasones.UniMedCant;
+            
             // TODO: Registrar el viaje en la tabla que todavia no existe
 
             _repositorio.GuardarCambios();

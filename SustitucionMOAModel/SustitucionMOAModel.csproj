@@ -130,7 +130,6 @@
     <Compile Include="Dto\TablaSapDto.cs" />
     <Compile Include="Dto\UsuarioComprasDto.cs" />
     <Compile Include="Dto\UsuarioComprasRelacionConUsuariosDto.cs" />
-    <Compile Include="Entities\OrdenDeCargaFasonViajes.cs" />
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
     <Compile Include="Enums\EstadoOrdenDeCargaFason.cs" />
     <Compile Include="Models\EcheqRequestModel.cs" />

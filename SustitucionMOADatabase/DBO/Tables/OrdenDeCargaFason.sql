@@ -17,6 +17,11 @@
 	[Cliente_Id] INT NOT NULL, 
 	[Producto_Id] INT NOT NULL,
 	[TransporteExiste] BIT NOT NULL DEFAULT 1, 
+	 [FechaIngreso] DATETIME , 
+    [FechaEgreso] DATETIME , 
+    [CantidadEntregada] INT , 
+    [UniMedCant] VARCHAR(50) , 
+    [NroRemito] VARCHAR(50) , 
     CONSTRAINT [FK_OrdenDeCargaFason_Material] FOREIGN KEY (Producto_Id) REFERENCES Material(Id),
     CONSTRAINT [FK_OrdenDeCargaFason_Corredor] FOREIGN KEY (Cliente_Id) REFERENCES Proveedor(Id), 
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]

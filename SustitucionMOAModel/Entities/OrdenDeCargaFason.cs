@@ -32,12 +32,13 @@ namespace SustitucionMOAModel.Entities
 		public virtual Material Producto { get; set; }
 		public bool TransporteExiste { get; set; }
 
+        public int? CantidadEntregada { get; set; }
+        public DateTime? FechaEgreso { get; set; }
+        public DateTime? FechaIngreso { get; set; }
+        public string NroRemito { get; set; }
+        public string UniMedCant { get; set; }
 
-		[InverseProperty("OrdenDeCargaFason")]
-		public virtual List<OrdenDeCargaFasonViajes> Viajes { get; set; }
-
-
-		public void ActualizarEstado()
+        public void ActualizarEstado()
 		{
 			if (Estado != EstadoOrdenDeCargaFason.Entregada)
 			{		
