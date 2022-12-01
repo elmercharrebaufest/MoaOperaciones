@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -11,21 +12,21 @@ using System.Web.Http;
 
 namespace SustitucionMOAExternalAPI.Controllers
 {
-    public class ObtenerOrdenesDeCargaController : ApiController
+    public class InformarViajeOrdenesDeCargaFasController : ApiController
     {
         private readonly IOrdenDeCargaApiService _ordenesCargaApi;
-        public ObtenerOrdenesDeCargaController(IOrdenDeCargaApiService ordenesCargaApi)
+        public InformarViajeOrdenesDeCargaFasController(IOrdenDeCargaApiService ordenesCargaApi)
         {
             _ordenesCargaApi = ordenesCargaApi;
         }
 
         [Authorize(Roles = "APIKEY")]
-        public IHttpActionResult Get()
+        public IHttpActionResult Post([FromBody] IngresosEgresosFas ingresosEgresosFas)
         {
             try
             {
-                var ordenes = _ordenesCargaApi.ObtenerOrdenes();
-                return Json(ordenes);
+                _ordenesCargaApi.InformarViajeOrdenesDeCargaFas(ingresosEgresosFas);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -34,6 +35,6 @@ namespace SustitucionMOAExternalAPI.Controllers
             }
         }
 
-
-    }
+       
+	}
 }

@@ -56,6 +56,8 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\IngresosEgresosFasones.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\IngresosEgresosFas.cs" />
     <Compile Include="Dto\OrdendesDeCargaApiDto.cs" />
     <Compile Include="Dto\ConfiguracionDto.cs" />
     <Compile Include="Dto\Echeq\EcheqLiquidacionDto.cs" />

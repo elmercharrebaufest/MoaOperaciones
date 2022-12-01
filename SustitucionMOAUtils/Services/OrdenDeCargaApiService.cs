@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
@@ -19,10 +20,28 @@ namespace SustitucionMOAUtils.Services
             _repositorio = repositorio;
         }
 
+        public void InformarViajeOrdenesDeCargaFas(IngresosEgresosFas ingresosEgresosFas)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void InformarViajeOrdenesDeCargaFason(IngresosEgresosFasones ingresosEgresosFasones)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<OrdendesDeCargaApiDto> ObtenerOrdenes()
         {
-            var ordenesFas = _repositorio.Listar<OrdenDeCarga>(x => x.Estado == EstadoOrdenDeCarga.Pendiente).ToList();
-            var ordenesFason = _repositorio.Listar<OrdenDeCargaFason>(x => x.Estado == 0).ToList();
+            var ordenesFas = _repositorio.Listar<OrdenDeCarga>(x =>
+            x.Estado != EstadoOrdenDeCarga.SinEnviarASAP &&
+            x.Estado != EstadoOrdenDeCarga.Anulada &&
+            x.Estado != EstadoOrdenDeCarga.AnuladaPorVencimiento && 
+            x.Estado != EstadoOrdenDeCarga.Entregada 
+            ).ToList();
+            var ordenesFason = _repositorio.Listar<OrdenDeCargaFason>(x => 
+            x.Estado != EstadoOrdenDeCargaFason.Entregada && 
+            x.Estado != EstadoOrdenDeCargaFason.SinEstado
+            ).ToList();
             List<OrdendesDeCargaApiDto> listaOrdenes = new List<OrdendesDeCargaApiDto>();
 
             foreach (var ordenFas in ordenesFas)

@@ -165,6 +165,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\InformarViajeOrdenesDeCargaFasController.cs" />
+    <Compile Include="Controllers\InformarViajeOrdenesDeCargaFasonController.cs" />
     <Compile Include="Controllers\ObtenerOrdenesDeCargaController.cs" />
     <Compile Include="Controllers\CpOtrosPuertosController.cs" />
     <Compile Include="Controllers\AccesoQrController.cs" />
