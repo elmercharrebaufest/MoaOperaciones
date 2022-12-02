@@ -11,6 +11,7 @@ using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -164,7 +165,7 @@ namespace SustitucionMOAUtils.Services
 			if (_repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaFasonJob").Habilitado == false)
 				return null;
 
-			var ordenes = _repositorio.Listar<OrdenDeCargaFason>((orden)=>orden.FechaRetiro.Date.AddDays(5) < fechaLimite && (orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente));
+			var ordenes = _repositorio.Listar<OrdenDeCargaFason>((orden) => DbFunctions.AddDays(orden.FechaRetiro, 5) < fechaLimite && (orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente));
 
             foreach (var orden in ordenes)
             {
