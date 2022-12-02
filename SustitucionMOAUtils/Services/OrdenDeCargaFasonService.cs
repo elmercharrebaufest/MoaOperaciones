@@ -156,5 +156,19 @@ namespace SustitucionMOAUtils.Services
 			}
 		}
 
-	}
+        public List<OrdenDeCargaFason> VerificarVencimientoOrdenDeCargaFason()
+        {
+            var fechaLimite = DateTime.Now.Date;
+       
+            var ordenes = _repositorio.Listar<OrdenDeCargaFason>(o => o.FechaRetiro < fechaLimite && (o.Estado == EstadoOrdenDeCargaFason.Generada || o.Estado == EstadoOrdenDeCargaFason.Pendiente));
+            foreach (var orden in ordenes)
+            {
+				orden.Estado = EstadoOrdenDeCargaFason.Vencida;
+            }
+            _repositorio.GuardarCambios();
+
+            return ordenes;
+        }
+
+    }
 }
