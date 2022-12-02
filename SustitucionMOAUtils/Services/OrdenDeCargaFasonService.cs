@@ -158,9 +158,14 @@ namespace SustitucionMOAUtils.Services
 
         public List<OrdenDeCargaFason> VerificarVencimientoOrdenDeCargaFason()
         {
+
             var fechaLimite = DateTime.Now.Date;
-       
-            var ordenes = _repositorio.Listar<OrdenDeCargaFason>(o => o.FechaRetiro.AddDays(5) < fechaLimite && (o.Estado == EstadoOrdenDeCargaFason.Generada || o.Estado == EstadoOrdenDeCargaFason.Pendiente));
+
+			if (_repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaFasonJob").Habilitado == false)
+				return null;
+
+			var ordenes = _repositorio.Listar<OrdenDeCargaFason>((orden)=>orden.FechaRetiro.Date.AddDays(5) < fechaLimite && (orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente));
+
             foreach (var orden in ordenes)
             {
 				orden.Estado = EstadoOrdenDeCargaFason.Vencida;
