@@ -39,18 +39,13 @@ namespace SustitucionMOAUtils.Services
             if (orden == null)
                 return new ResultadoGenerico { Errores = new List<ErrorMessage> { new ErrorMessage { Message = $"No se encontro la orden fason numero: {ingresosEgresosFasones.FasonId}" } } };
 
-            orden.CantidadDeViajesRealizados += 1;
-
-            if (orden.CantidadDeViajesEsperados == orden.CantidadDeViajesRealizados)
-                orden.Estado = EstadoOrdenDeCargaFason.Entregada;
+            orden.Estado = EstadoOrdenDeCargaFason.Entregada;
 
             orden.CantidadEntregada = ingresosEgresosFasones.Cantidad;
             orden.FechaEgreso = ingresosEgresosFasones.FechaEgreso;
             orden.FechaIngreso = ingresosEgresosFasones.FechaIngreso;
             orden.NroRemito = ingresosEgresosFasones.NroRemito;
             orden.UniMedCant = ingresosEgresosFasones.UniMedCant;
-            
-            // TODO: Registrar el viaje en la tabla que todavia no existe
 
             _repositorio.GuardarCambios();
 
