@@ -160,7 +160,7 @@ namespace SustitucionMOAUtils.Services
         {
             var fechaLimite = DateTime.Now.Date;
        
-            var ordenes = _repositorio.Listar<OrdenDeCargaFason>(o => o.FechaRetiro < fechaLimite && (o.Estado == EstadoOrdenDeCargaFason.Generada || o.Estado == EstadoOrdenDeCargaFason.Pendiente));
+            var ordenes = _repositorio.Listar<OrdenDeCargaFason>(o => o.FechaRetiro.AddDays(5) < fechaLimite && (o.Estado == EstadoOrdenDeCargaFason.Generada || o.Estado == EstadoOrdenDeCargaFason.Pendiente));
             foreach (var orden in ordenes)
             {
 				orden.Estado = EstadoOrdenDeCargaFason.Vencida;
