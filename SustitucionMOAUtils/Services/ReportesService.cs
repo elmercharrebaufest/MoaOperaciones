@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Data.Entity;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -172,6 +173,53 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new InfoCustomException("No se encontraron liquidaciones a reportar");
             }
+        }
+
+        public void EnviarReporteLogin()
+        {
+            if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ReporteLoginsJob").Habilitado == false)
+                return;
+            var logins = repositorio.Listar<Usuario>().Select(u=>new ReporteLogin
+                {
+                    Mail = u.Mail,
+                    CUITRegistro = u.CUITRegistro,
+                    UltimoLogin = u.UltimoLogin,
+                    Nombre = u.TipoUsuario.Nombre,
+                    CUITProveedor = u.ObtenerProveedor().CUIT,
+                    RazonSocial = u.ObtenerProveedor().RazonSocial
+                }
+            );
+
+
+            if (logins.Any())
+            {
+                var excelFile = ExcelExport.ToExcel(logins, new string[] { "Mail", "CUIT Registro", "Ultimo Login", "Nombre", "CUIT Proveedor", "Razon social" }, "Reporte mensual de logins");
+
+
+                Attachment archivoExcel;
+                MemoryStream streamExcel = new MemoryStream();
+                var sw = new StreamWriter(streamExcel);
+
+                sw.Write(excelFile);
+                sw.Flush();
+                streamExcel.Seek(0, SeekOrigin.Begin);
+
+                archivoExcel = new Attachment(streamExcel, "Usuarios MOA");
+
+                EmailSender.SendReporte(new ReporteLogin()
+                {
+                    Asunto = "Reporte de logins mensuales",
+                   // Destinatario = ConfigurationManager.AppSettings["EmailToReporteLogins"],
+                    Destinatario = "mrigol@baufest.com",
+                    Adjuntos = new List<Attachment> { archivoExcel },
+                });
+            }
+            else
+            {
+                throw new InfoCustomException("No se encontraron logins a reportar");
+            }
+
+            return;
         }
 
 
