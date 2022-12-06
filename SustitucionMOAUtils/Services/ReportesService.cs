@@ -16,6 +16,7 @@ using System.Net.Mail;
 using System.Data.Entity;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
+using System.Text;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -179,31 +180,42 @@ namespace SustitucionMOAUtils.Services
         {
             if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ReporteLoginsJob").Habilitado == false)
                 return;
-            var logins = repositorio.Listar<Usuario>().Select(u=>new ReporteLogin
-                {
-                    Mail = u.Mail,
-                    CUITRegistro = u.CUITRegistro,
-                    UltimoLogin = u.UltimoLogin,
-                    Nombre = u.TipoUsuario.Nombre,
-                    CUITProveedor = u.ObtenerProveedor().CUIT,
-                    RazonSocial = u.ObtenerProveedor().RazonSocial
-                }
-            );
 
+            var logins = repositorio.Listar<Usuario>().SelectMany(u =>
+            {
+                if (!u.Proveedores.Any())
+                {
+                    return new List<ReporteLoginData>()
+                        {
+                            new ReporteLoginData(
+                                u.Mail,
+                                u.CUITRegistro,
+                                u.UltimoLogin,
+                                u.TipoUsuario.Nombre)
+                        };
+                }
+                else
+                {
+                    return u.Proveedores.Select(p =>
+                        new ReporteLoginData(
+                            u.Mail,
+                            u.CUITRegistro,
+                            u.UltimoLogin,
+                            u.TipoUsuario.Nombre,
+                           p.CUIT,
+                            p.RazonSocial
+                        )).ToList();
+                }
+            }).ToList();
 
             if (logins.Any())
             {
-                var excelFile = ExcelExport.ToExcel(logins, new string[] { "Mail", "CUIT Registro", "Ultimo Login", "Nombre", "CUIT Proveedor", "Razon social" }, "Reporte mensual de logins");
+                var excelFile = ExcelExport.ToExcel(logins, new string[] { "Mail", "CUITRegistro", "UltimoLogin", "Nombre", "CUITProveedor", "RazonSocial" }, "Reporte mensual de logins");
 
+                byte[] buffer = Encoding.ASCII.GetBytes(excelFile);
+                MemoryStream streamExcel = new MemoryStream(buffer);
 
                 Attachment archivoExcel;
-                MemoryStream streamExcel = new MemoryStream();
-                var sw = new StreamWriter(streamExcel);
-
-                sw.Write(excelFile);
-                sw.Flush();
-                streamExcel.Seek(0, SeekOrigin.Begin);
-
                 archivoExcel = new Attachment(streamExcel, "Usuarios MOA");
 
                 EmailSender.SendReporte(new ReporteLogin()
@@ -212,14 +224,13 @@ namespace SustitucionMOAUtils.Services
                    // Destinatario = ConfigurationManager.AppSettings["EmailToReporteLogins"],
                     Destinatario = "mrigol@baufest.com",
                     Adjuntos = new List<Attachment> { archivoExcel },
+                    Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteLogin.html")
                 });
             }
             else
             {
                 throw new InfoCustomException("No se encontraron logins a reportar");
             }
-
-            return;
         }
 
 
