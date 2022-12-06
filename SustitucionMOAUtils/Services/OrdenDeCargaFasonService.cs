@@ -11,6 +11,7 @@ using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -156,5 +157,24 @@ namespace SustitucionMOAUtils.Services
 			}
 		}
 
-	}
+        public List<OrdenDeCargaFason> VerificarVencimientoOrdenDeCargaFason()
+        {
+
+            var fechaLimite = DateTime.Now.Date;
+
+			if (_repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaFasonJob").Habilitado == false)
+				return null;
+
+			var ordenes = _repositorio.Listar<OrdenDeCargaFason>((orden) => DbFunctions.AddDays(orden.FechaRetiro, 5) < fechaLimite && (orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente));
+
+            foreach (var orden in ordenes)
+            {
+				orden.Estado = EstadoOrdenDeCargaFason.Vencida;
+            }
+            _repositorio.GuardarCambios();
+
+            return ordenes;
+        }
+
+    }
 }

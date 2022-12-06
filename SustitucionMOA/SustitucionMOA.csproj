@@ -1053,6 +1053,7 @@
     <Compile Include="Jobs\ReporteCamposSustentablesTSAJob.cs" />
     <Compile Include="Jobs\ReporteConflictosCamposSustentablesJob.cs" />
     <Compile Include="Jobs\ReporteLiquidacionesInformadasJob.cs" />
+    <Compile Include="Jobs\VencimientoOrdenesDeCargaFasonJob.cs" />
     <Compile Include="Jobs\VencimientoOrdenesDeCargaSapJob.cs" />
     <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
