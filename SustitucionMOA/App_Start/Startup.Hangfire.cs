@@ -84,7 +84,7 @@ namespace SustitucionMOA
             RecurringJob.AddOrUpdate<Jobs.IReporteLoginsJob>(
               "ReporteLoginsJob",
               j => j.Execute(),
-              "0 8 31 * *", tz);
+              "0 6 1 * *", tz);
         }
     }
 }
