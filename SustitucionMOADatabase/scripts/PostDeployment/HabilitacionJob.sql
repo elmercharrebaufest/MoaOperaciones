@@ -15,3 +15,4 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ObtenerSolpsD
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ActualizarLocalidades') BEGIN    INSERT into HabilitacionJob VALUES ('ActualizarLocalidades',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ActualizarSISAJob') BEGIN    INSERT into HabilitacionJob VALUES ('ActualizarSISAJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'VencimientoOrdenesDeCargaFasonJob') BEGIN    INSERT into HabilitacionJob VALUES ('VencimientoOrdenesDeCargaFasonJob',1)END
+IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ReporteLoginsJob') BEGIN    INSERT into HabilitacionJob VALUES ('ReporteLoginsJob',1)END

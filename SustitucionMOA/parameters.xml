@@ -157,6 +157,11 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="EmailToReporteLogins Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToReporteLogins']
+                           /@value" />
+	</parameter>
 
 
 	<parameter name="PasswordSapEnc Config">

@@ -395,6 +395,7 @@
     <Compile Include="Models\WSMapMOA\Proforma\Salida.cs" />
     <Compile Include="Models\WSMapMOA\ReporteContrato\ReporteContratoWSMOARequest.cs" />
     <Compile Include="Models\WSMapMOA\ReporteContrato\ReporteContratoWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Reporte\ReporteLogin.cs" />
     <Compile Include="Models\WSMapMOA\Reporte\ClaveReporte.cs" />
     <Compile Include="Models\WSMapMOA\Reporte\ReporteBase.cs" />
     <Compile Include="Models\WSMapMOA\Reporte\ReporteCamposSustentables.cs" />
