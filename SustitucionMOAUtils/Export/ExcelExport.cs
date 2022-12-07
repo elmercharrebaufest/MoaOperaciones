@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.CuentaCorriente;
@@ -1007,6 +1010,20 @@ namespace SustitucionMOAUtils.Export
             }
 
             return sw.ToString();
+        }
+    }
+
+    public void CreateExcelDoc<T>(List<T> data, string[] headers, string fileName )
+    {
+        using(SpreadsheetDocument document = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook )) {
+            WorkbookPart workbookPart = document.AddWorkbookPart();
+            workbookPart.Workbook = new Workbook();
+
+            WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+            worksheetPart.Worksheet = new Worksheet(new SheetData());
+
+            Sheets sheets = workbookPart.Workbook.AppendChild(new Sheets());
+            Sheet sheet = new Sheet() {Id= workbookPart.GetIdOfPart(worksheetPart), SheetId=1, Name="DATOS" };
         }
     }
 }
