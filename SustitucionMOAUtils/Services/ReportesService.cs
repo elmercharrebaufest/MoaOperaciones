@@ -184,7 +184,6 @@ namespace SustitucionMOAUtils.Services
             var logins = repositorio.Listar<Usuario>().SelectMany(u =>
             {
                 if (!u.Proveedores.Any())
-                {
                     return new List<ReporteLoginData>()
                         {
                             new ReporteLoginData(
@@ -192,20 +191,17 @@ namespace SustitucionMOAUtils.Services
                                 u.CUITRegistro,
                                 u.UltimoLogin,
                                 u.TipoUsuario.Nombre)
-                        };
-                }
-                else
-                {
-                    return u.Proveedores.Select(p =>
-                        new ReporteLoginData(
-                            u.Mail,
-                            u.CUITRegistro,
-                            u.UltimoLogin,
-                            u.TipoUsuario.Nombre,
-                           p.CUIT,
-                            p.RazonSocial
-                        )).ToList();
-                }
+                     };
+
+                return u.Proveedores.Select(p =>
+                    new ReporteLoginData(
+                        u.Mail,
+                        u.CUITRegistro,
+                        u.UltimoLogin,
+                        u.TipoUsuario.Nombre,
+                        p.CUIT,
+                        p.RazonSocial
+                    )).ToList();
             }).ToList();
 
             if (logins.Any())
@@ -221,8 +217,7 @@ namespace SustitucionMOAUtils.Services
                 EmailSender.SendReporte(new ReporteLogin()
                 {
                     Asunto = "Reporte de logins mensuales",
-                   // Destinatario = ConfigurationManager.AppSettings["EmailToReporteLogins"],
-                    Destinatario = "mrigol@baufest.com",
+                    Destinatario = ConfigurationManager.AppSettings["EmailToReporteLogins"],
                     Adjuntos = new List<Attachment> { archivoExcel },
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteLogin.html")
                 });

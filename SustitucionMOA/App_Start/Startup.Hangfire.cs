@@ -57,7 +57,12 @@ namespace SustitucionMOA
                 "VencimientoOrdenesDeCargaSapJob",
                 j => j.Execute(),
                 "30 8 * * *", tz);
-         
+
+            RecurringJob.AddOrUpdate<Jobs.IVencimientoOrdenesDeCargaFasonJob>(
+               "VencimientoOrdenesDeCargaFasonJob",
+               j => j.Execute(),
+               "30 8 * * *", tz);
+
             //RecurringJob.AddOrUpdate<Jobs.IActualizarEstadoSolpSapJob>(
             //    "ActualizarEstadoSolpSapJob",
             //    j => j.Execute(),
