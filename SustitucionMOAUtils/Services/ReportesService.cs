@@ -15,7 +15,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Data.Entity;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using System.Text;
 
 namespace SustitucionMOAUtils.Services
