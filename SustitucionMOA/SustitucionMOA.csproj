@@ -951,6 +951,9 @@
     <Content Include="Template\EstadoAlta.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Template\ReporteLogin.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Template\RespuestaConsulta.html" />
     <Content Include="Template\Solp.html" />
     <Content Include="tsconfig.json" />
