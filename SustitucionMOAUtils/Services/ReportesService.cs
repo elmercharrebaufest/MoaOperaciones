@@ -205,13 +205,13 @@ namespace SustitucionMOAUtils.Services
 
             if (logins.Any())
             {
-                var excelFile = ExcelExport.ToExcel(logins, new string[] { "Mail", "CUITRegistro", "UltimoLogin", "Nombre", "CUITProveedor", "RazonSocial" }, "Reporte mensual de logins");
+                ExcelExport.CreateExcelDoc<ReporteLoginData>(logins, new string[] { "Mail", "CUITRegistro", "UltimoLogin", "Nombre", "CUITProveedor", "RazonSocial" }, "C:\\Users\\mrigol\\Documents\\MOA\\extras\\Reporte mensual de logins.xls");
 
-                byte[] buffer = Encoding.ASCII.GetBytes(excelFile);
-                MemoryStream streamExcel = new MemoryStream(buffer);
+                //byte[] buffer = Encoding.ASCII.GetBytes(excelFile);
+                //MemoryStream streamExcel = new MemoryStream(buffer);
 
-                Attachment archivoExcel;
-                archivoExcel = new Attachment(streamExcel, "Usuarios MOA");
+                //Attachment archivoExcel;
+                //archivoExcel = new Attachment(streamExcel, "Usuarios MOA");
 
                 EmailSender.SendReporte(new ReporteLogin()
                 {

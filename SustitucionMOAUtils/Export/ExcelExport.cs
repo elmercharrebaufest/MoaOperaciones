@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using DocumentFormat.OpenXml;
@@ -1011,11 +1009,11 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-    }
 
-    public void CreateExcelDoc<T>(List<T> data, string[] headers, string fileName )
-    {
-        using(SpreadsheetDocument document = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook )) {
+        public static void CreateExcelDoc<T>(List<T> data, string[] headers, string fileName)
+        {
+            SpreadsheetDocument document = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);
+
             WorkbookPart workbookPart = document.AddWorkbookPart();
             workbookPart.Workbook = new Workbook();
 
@@ -1023,7 +1021,75 @@ namespace SustitucionMOAUtils.Export
             worksheetPart.Worksheet = new Worksheet(new SheetData());
 
             Sheets sheets = workbookPart.Workbook.AppendChild(new Sheets());
-            Sheet sheet = new Sheet() {Id= workbookPart.GetIdOfPart(worksheetPart), SheetId=1, Name="DATOS" };
+
+            Sheet sheet = new Sheet() { Id = workbookPart.GetIdOfPart(worksheetPart), SheetId = 1, Name = "DATOS" };
+
+
+            Worksheet worksheet = worksheetPart.Worksheet;
+            SheetData sheetData = worksheet.GetFirstChild<SheetData>();
+
+            //Row header = new Row();
+            //header.RowIndex = (UInt32)1;
+            uint index = 0;
+            foreach (string head in headers)
+            {
+                string cellName = _cellReferences[index];
+                Cell headerCell = InsertCellInWorksheet(cellName, 1, sheetData);
+                CellValue value = new CellValue(head);
+                headerCell.CellValue = value;
+                index += 1;
+            }
+            worksheet.Save();
+            document.Save();
+            //return document.ToString();
         }
+
+        private static Cell InsertCellInWorksheet(string columnName, uint rowIndex, SheetData sheetData)
+        {
+            string cellReference = columnName + rowIndex;
+
+            // If the worksheet does not contain a row with the specified row index, insert one.
+            Row row;
+            if (sheetData.Elements<Row>().Where(r => r.RowIndex == rowIndex).Count() != 0)
+            {
+                row = sheetData.Elements<Row>().Where(r => r.RowIndex == rowIndex).First();
+            }
+            else
+            {
+                row = new Row() { RowIndex = rowIndex };
+                sheetData.Append(row);
+            }
+
+            // If there is not a cell with the specified column name, insert one.  
+            if (row.Elements<Cell>().Where(c => c.CellReference.Value == columnName + rowIndex).Count() > 0)
+            {
+                return row.Elements<Cell>().Where(c => c.CellReference.Value == cellReference).First();
+            }
+            else
+            {
+                // Cells must be in sequential order according to CellReference. Determine where to insert the new cell.
+                Cell refCell = null;
+                foreach (Cell cell in row.Elements<Cell>())
+                {
+                    if (cell.CellReference.Value.Length == cellReference.Length)
+                    {
+                        if (string.Compare(cell.CellReference.Value, cellReference, true) > 0)
+                        {
+                            refCell = cell;
+                            break;
+                        }
+                    }
+                }
+
+                Cell newCell = new Cell() { CellReference = cellReference };
+                row.InsertBefore(newCell, refCell);
+
+                return newCell;
+            }
+        }
+
+        private static string[] _cellReferences = {
+            "A","B","C","D","E","F","G","H","I","J","K"
+        };
     }
 }
