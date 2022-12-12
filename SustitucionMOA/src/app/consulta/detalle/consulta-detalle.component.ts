@@ -321,6 +321,7 @@ export class DetalleConsultaComponent extends BaseComponent {
             this.blockUI.stop();
             return;
         }
+        this.Paste(null);
         let borderAnterior = `border=${String.fromCharCode(
             34
         )}0${String.fromCharCode(34)}`;
@@ -811,7 +812,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         let divComentario = document.getElementsByClassName(
             "angular-editor-textarea"
         )[0];
-        divComentario.addEventListener("paste", this.Paste.bind(this));
+        //divComentario.addEventListener("paste", this.Paste.bind(this));
 
         let toolBars = divToolBar.childNodes;
 
