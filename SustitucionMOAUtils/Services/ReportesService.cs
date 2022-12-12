@@ -205,8 +205,9 @@ namespace SustitucionMOAUtils.Services
 
             if (logins.Any())
             {
-                ExcelExport.CreateExcelDoc<ReporteLoginData>(logins, new string[] { "Mail", "CUITRegistro", "UltimoLogin", "Nombre", "CUITProveedor", "RazonSocial" }, "C:\\Users\\mrigol\\Documents\\MOA\\extras\\Reporte mensual de logins.xls");
+                ExcelExport.CreateExcelDoc<ReporteLoginData>(logins, new string[] { "Mail", "CUITRegistro", "UltimoLogin", "Nombre", "CUITProveedor", "RazonSocial" }, "C:\\ftp\\Reporte mensual de logins.xls");
 
+                ExcelExport.CreateExcelFile(logins, new string[] { "Mail", "CUITRegistro", "UltimoLogin", "Nombre", "CUITProveedor", "RazonSocial" }, "C:\\ftp\\Reporte mensual de logins.xlsx");
                 //byte[] buffer = Encoding.ASCII.GetBytes(excelFile);
                 //MemoryStream streamExcel = new MemoryStream(buffer);
 
