@@ -1015,99 +1015,7 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-
-        public static void CreateExcelDoc<T>(List<T> data, string[] headers, string fileName)
-        {
-            //https://www.sirpenski.com/pubs/article/create-excel-file-using-openxml-and-aspnetcore
-            SpreadsheetDocument document = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);
-
-            WorkbookPart workbookPart = document.AddWorkbookPart();
-            workbookPart.Workbook = new Workbook();
-
-            WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
-            worksheetPart.Worksheet = new Worksheet(new SheetData());
-
-            Sheets sheets = workbookPart.Workbook.AppendChild(new Sheets());
-
-            Sheet sheet = new Sheet() { Id = workbookPart.GetIdOfPart(worksheetPart), SheetId = 1, Name = "DATOS" };
-
-
-            Worksheet worksheet = worksheetPart.Worksheet;
-            SheetData sheetData = worksheet.GetFirstChild<SheetData>();
-
-            //Row header = new Row();
-            //header.RowIndex = (UInt32)1;
-            uint index = 0;
-            foreach (string head in headers)
-            {
-                string cellName = _cellReferences[index];
-                Cell headerCell = InsertCellInWorksheet(cellName, 1, sheetData);
-                CellValue value = new CellValue(head);
-                headerCell.CellValue = value;
-                index += 1;
-            }
-            worksheet.Save();
-            document.Save();
-            var stream = new MemoryStream();
-
-            document.WorkbookPart.Workbook.Save(stream);
-            //stream = new MemoryStream(stream.ToArray());
-            //stream.Position = 0;
-
-            //return stream;
-            //return document.ToString();
-        }
-
-        private static Cell InsertCellInWorksheet(string columnName, uint rowIndex, SheetData sheetData)
-        {
-            string cellReference = columnName + rowIndex;
-
-            // If the worksheet does not contain a row with the specified row index, insert one.
-            Row row;
-            if (sheetData.Elements<Row>().Where(r => r.RowIndex == rowIndex).Count() != 0)
-            {
-                row = sheetData.Elements<Row>().Where(r => r.RowIndex == rowIndex).First();
-            }
-            else
-            {
-                row = new Row() { RowIndex = rowIndex };
-                sheetData.Append(row);
-            }
-
-            // If there is not a cell with the specified column name, insert one.  
-            if (row.Elements<Cell>().Where(c => c.CellReference.Value == columnName + rowIndex).Count() > 0)
-            {
-                return row.Elements<Cell>().Where(c => c.CellReference.Value == cellReference).First();
-            }
-            else
-            {
-                // Cells must be in sequential order according to CellReference. Determine where to insert the new cell.
-                Cell refCell = null;
-                foreach (Cell cell in row.Elements<Cell>())
-                {
-                    if (cell.CellReference.Value.Length == cellReference.Length)
-                    {
-                        if (string.Compare(cell.CellReference.Value, cellReference, true) > 0)
-                        {
-                            refCell = cell;
-                            break;
-                        }
-                    }
-                }
-
-                Cell newCell = new Cell() { CellReference = cellReference };
-                row.InsertBefore(newCell, refCell);
-
-                return newCell;
-            }
-        }
-
-        private static string[] _cellReferences = {
-            "A","B","C","D","E","F","G","H","I","J","K"
-        };
-
-
-
+        //https://www.sirpenski.com/pubs/article/create-excel-file-using-openxml-and-aspnetcore
 
         public static void CreateExcelFile<T>(List<T> data, string[] headers, string OutPutFileDirectory)
         {
@@ -1115,6 +1023,17 @@ namespace SustitucionMOAUtils.Export
             {
                 CreatePartsForExcel(package, data, headers);
             }
+        }
+        public static MemoryStream CreateExcelFileMs<T>(List<T> data, string[] headers)
+        {
+            MemoryStream ms = new MemoryStream();
+            using (SpreadsheetDocument package = SpreadsheetDocument.Create(ms, SpreadsheetDocumentType.Workbook))
+            {
+                CreatePartsForExcel(package, data, headers);
+            }
+            ms.Seek(0, SeekOrigin.Begin);
+
+            return ms;
         }
 
         private static void CreatePartsForExcel<T>(SpreadsheetDocument document, List<T> data, string[] headers)
