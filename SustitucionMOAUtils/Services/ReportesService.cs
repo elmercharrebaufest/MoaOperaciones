@@ -180,51 +180,55 @@ namespace SustitucionMOAUtils.Services
             if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ReporteLoginsJob").Habilitado == false)
                 return;
 
-            var logins = repositorio.Listar<Usuario>().SelectMany(u =>
-            {
-                if (!u.Proveedores.Any())
-                {
-                    return new List<ReporteLoginData>()
-                        {
-                            new ReporteLoginData(
-                                u.Mail,
-                                u.CUITRegistro,
-                                u.UltimoLogin,
-                                u.TipoUsuario.Nombre)
-                        };
-                }
-                else
-                {
-                    return u.Proveedores.Select(p =>
-                        new ReporteLoginData(
-                            u.Mail,
-                            u.CUITRegistro,
-                            u.UltimoLogin,
-                            u.TipoUsuario.Nombre,
-                           p.CUIT,
-                            p.RazonSocial
-                        )).ToList();
-                }
-            }).ToList();
+            //var logins = repositorio.Listar<Usuario>().SelectMany(u =>
+            //{
+            //    if (!u.Proveedores.Any())
+            //    {
+            //        return new List<ReporteLoginData>()
+            //            {
+            //                new ReporteLoginData(
+            //                    u.Mail,
+            //                    u.CUITRegistro,
+            //                    u.UltimoLogin,
+            //                    u.TipoUsuario.Nombre)
+            //            };
+            //    }
+            //    else
+            //    {
+            //        return u.Proveedores.Select(p =>
+            //            new ReporteLoginData(
+            //                u.Mail,
+            //                u.CUITRegistro,
+            //                u.UltimoLogin,
+            //                u.TipoUsuario.Nombre,
+            //               p.CUIT,
+            //                p.RazonSocial
+            //            )).ToList();
+            //    }
+            //}).ToList();
+            var logins = new List<ReporteLoginData>() {
+                new ReporteLoginData("", "", DateTime.Now, "test"),
+                new ReporteLoginData("", "", DateTime.Now, "test")
+            };
 
             if (logins.Any())
             {
-                var excelFile = ExcelExport.ToExcel(logins, new string[] { "Mail", "CUITRegistro", "UltimoLogin", "Nombre", "CUITProveedor", "RazonSocial" }, "Reporte mensual de logins");
+                ExcelExport.CreateExcelDoc<ReporteLoginData>(logins, new string[] { "Mail", "CUITRegistro", "UltimoLogin", "Nombre", "CUITProveedor", "RazonSocial" }, "C:\\Users\\mrigol\\Documents\\MOA\\extras\\Reporte mensual de logins.xls");
 
-                byte[] buffer = Encoding.ASCII.GetBytes(excelFile);
-                MemoryStream streamExcel = new MemoryStream(buffer);
+                //byte[] buffer = Encoding.ASCII.GetBytes(excelFile);
+                //MemoryStream streamExcel = new MemoryStream(buffer);
 
-                Attachment archivoExcel;
-                archivoExcel = new Attachment(streamExcel, "Usuarios MOA");
+                //Attachment archivoExcel;
+                //archivoExcel = new Attachment(streamExcel, "Usuarios MOA");
 
-                EmailSender.SendReporte(new ReporteLogin()
-                {
-                    Asunto = "Reporte de logins mensuales",
-                   // Destinatario = ConfigurationManager.AppSettings["EmailToReporteLogins"],
-                    Destinatario = "mrigol@baufest.com",
-                    Adjuntos = new List<Attachment> { archivoExcel },
-                    Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteLogin.html")
-                });
+                //EmailSender.SendReporte(new ReporteLogin()
+                //{
+                //    Asunto = "Reporte de logins mensuales",
+                //   // Destinatario = ConfigurationManager.AppSettings["EmailToReporteLogins"],
+                //    Destinatario = "mrigol@baufest.com",
+                //    Adjuntos = new List<Attachment> { archivoExcel },
+                //    Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteLogin.html")
+                //});
             }
             else
             {
