@@ -20,7 +20,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Reporte
         {
             this.Mail = Mail;
             this.CUITRegistro = CUITRegistro;
-            this.UltimoLogin = UltimoLogin?.ToShortDateString() ?? string.Empty;
+            this.UltimoLogin = UltimoLogin?.ToString("dd/MM/yyyy hh:mm:ss") ?? string.Empty;
             this.Nombre = Nombre;
             this.CUITProveedor = CUITProveedor ?? string.Empty;
             this.RazonSocial = RazonSocial ?? string.Empty;
