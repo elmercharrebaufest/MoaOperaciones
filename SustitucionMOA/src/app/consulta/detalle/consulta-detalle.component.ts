@@ -308,7 +308,7 @@ export class DetalleConsultaComponent extends BaseComponent {
             (this.detalle == undefined || this.detalle == "") &&
             this.file == null
         ) {
-            this.floatMsgService.setErrorMsg(
+            this.mensajeComponent.setErrorMsg(
                 "Debe adjuntar un archivo o hacer un comentario."
             );
             return true;
