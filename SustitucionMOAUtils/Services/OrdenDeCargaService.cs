@@ -1944,7 +1944,7 @@ namespace SustitucionMOAUtils.Services
 
             return result == "CE-00";
         }
-        public EmailSenderData ConstruirCuerpoEmail(List<OrdenDeCargaCambiosHistorial> ordenDeCargaHistorial, string numeroPedido)
+        public EmailSenderData ConstruirCuerpoEmail(List<OrdenDeCargaCambiosHistorial> ordenDeCargaHistorial, string numeroEntrega)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaHistorial[0].OrdenDeCarga_Id);
             var emailSenderData = new EmailSenderData();
@@ -1977,8 +1977,8 @@ namespace SustitucionMOAUtils.Services
                     cambios.AppendLine($"<tr><td>{(cambio.NombreColumnaCambio == "ChasisAcoplado" ? "PatenteChasis" : cambio.NombreColumnaCambio)}</td><td>{cambio.Antes}</td><td>{cambio.Despues}</td><td>{cambio.FechaCambio}</td></tr>");
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: {ordenDeCargaHistorial[0].OrdenDeCarga_Id}, {orden.Cliente.RazonSocial}, {contrato}";
-                emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, numeroPedido, cambios);
+                emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: { ordenDeCargaHistorial[0].OrdenDeCarga_Id }, { orden.Cliente.RazonSocial }, { contrato }";
+                emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, String.IsNullOrEmpty(numeroEntrega)? "N/G": numeroEntrega , cambios);
                 return emailSenderData;
             }
             catch (Exception ex)
