@@ -2281,12 +2281,26 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.OrdenDeCargaActualizada;
 
         }
+
+        public void VerificarSituacionCrediticiaJob()
+        {
+            if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarSituacionCrediticia").Habilitado)
+                return;
+
+            var ordenes = repositorio.Listar<OrdenDeCarga>();
+            foreach(OrdenDeCarga orden in ordenes)
+            {
+                VerificarSituacionCrediticia(orden, true);
+            }
+        }
+
         public OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(oc => oc.NumeroEntrega == nroEntrega);
             if (orden == null) throw new InfoCustomException("No se ha encontrado ningún orden de carga");
             return Obtener(mailUsuario, orden.Id);
         }
+
         public List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden)
         {
             return repositorio.Listar<OrdenDeCargaCambiosHistorial>

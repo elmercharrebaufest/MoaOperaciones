@@ -43,5 +43,6 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCarga ObtenerPorNroEntrega( string nroEntrega);
         OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega);
         List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden);
+        void VerificarSituacionCrediticiaJob();
     }
 }
