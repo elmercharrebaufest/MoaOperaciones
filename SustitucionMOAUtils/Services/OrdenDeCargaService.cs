@@ -2278,5 +2278,16 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.OrdenDeCargaActualizada;
 
         }
+        public void VerificarSituacionCrediticiaJob()
+        {
+            if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarSituacionCrediticia").Habilitado)
+                return;
+
+            var ordenes = repositorio.Listar<OrdenDeCarga>();
+            foreach(OrdenDeCarga orden in ordenes)
+            {
+                VerificarSituacionCrediticia(orden, true);
+            }
+        }
     }
 }
