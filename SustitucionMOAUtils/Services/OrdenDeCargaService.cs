@@ -2320,10 +2320,10 @@ namespace SustitucionMOAUtils.Services
             if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarSituacionCrediticiaJob").Habilitado)
                 return;
 
-            var ordenes = repositorio.Listar<OrdenDeCarga>();
+            var ordenes = repositorio.Listar<OrdenDeCarga>(oc=>oc.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito);
             foreach(OrdenDeCarga orden in ordenes)
             {
-                VerificarSituacionCrediticia(orden, true);
+                VerificarSituacionCrediticia(orden, false);
             }
         }
     }
