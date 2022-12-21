@@ -2317,7 +2317,7 @@ namespace SustitucionMOAUtils.Services
         }
         public void VerificarSituacionCrediticiaJob()
         {
-            if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarSituacionCrediticia").Habilitado)
+            if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarSituacionCrediticiaJob").Habilitado)
                 return;
 
             var ordenes = repositorio.Listar<OrdenDeCarga>();
