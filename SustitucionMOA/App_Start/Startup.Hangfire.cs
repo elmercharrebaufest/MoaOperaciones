@@ -88,7 +88,7 @@ namespace SustitucionMOA
             RecurringJob.AddOrUpdate<Jobs.IVerificarSituacionCrediticiaJob>(
                 "VerificarSituacionCrediticiaJob",
                 j => j.Execute(),
-                "0 6 1 * *", tz);
+                "0 * * * *", tz);
         }
     }
 }
