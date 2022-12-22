@@ -376,6 +376,10 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
         
         private string tIPO_CONTRATOField;
         
+        private string cUIT_CLIENTEField;
+        
+        private string cUIT_CORREDORField;
+        
         private ZMPES6760[] dETALLEField;
         
         /// <remarks/>
@@ -715,7 +719,31 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=22)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=22)]
+        public string CUIT_CLIENTE {
+            get {
+                return this.cUIT_CLIENTEField;
+            }
+            set {
+                this.cUIT_CLIENTEField = value;
+                this.RaisePropertyChanged("CUIT_CLIENTE");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=23)]
+        public string CUIT_CORREDOR {
+            get {
+                return this.cUIT_CORREDORField;
+            }
+            set {
+                this.cUIT_CORREDORField = value;
+                this.RaisePropertyChanged("CUIT_CORREDOR");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=24)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
         public ZMPES6760[] DETALLE {
             get {

@@ -300,6 +300,26 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
+          <xsd:element minOccurs="0" name="CUIT_CLIENTE">
+            <xsd:annotation>
+              <xsd:documentation>Tax Number 1</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="16" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="CUIT_CORREDOR">
+            <xsd:annotation>
+              <xsd:documentation>Tax Number 1</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="16" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
           <xsd:element minOccurs="0" name="DETALLE" type="rfc:ZMPTT9580" />
         </xsd:sequence>
       </xsd:complexType>
