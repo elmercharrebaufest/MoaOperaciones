@@ -213,6 +213,7 @@ namespace SustitucionMOAWS.WSConsumers
             }
             catch (Exception ex)
             {
+                Log.Error(ex);
                 return null;
             }
         }
