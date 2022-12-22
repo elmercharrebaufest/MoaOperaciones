@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    public  class ReporteContratoConsumerMOA : IReporteContratoConsumerMOA
-    { 
+    public class ReporteContratoConsumerMOA : IReporteContratoConsumerMOA
+    {
 
         public ReporteContratoWSMOAResponse ReporteContratoExecute(ReporteContratoWSMOARequest request)
         {
@@ -50,6 +50,7 @@ namespace SustitucionMOAWS.WSConsumers
         {
             var response = new ReporteContratoWSMOAResponse();
             var resultados = new List<Result>();
+      
             foreach (var item in result)
             {
                 var resultado = new Result()
@@ -80,37 +81,36 @@ namespace SustitucionMOAWS.WSConsumers
                     PuntoExpedicion = item.PTO_EXPEDICION,
                     TipoContrato = item.TIPO_CONTRATO,
                     ColorProducto = SetearColorProducto(item.PRODUCTO.TrimStart('0')),
-                    CodigoProducto = item.PRODUCTO.TrimStart('0')
-                    
+                    CodigoProducto = item.PRODUCTO.TrimStart('0'),
                 };
                 var detalles = new List<Detail>();
-                foreach (var detalle in item.DETALLE)
+                if (item.DETALLE != null)
                 {
-                    detalles.Add(new Detail()
+                    foreach (var detalle in item.DETALLE)
                     {
-                        Pedido = detalle.PEDIDO,
-                        Entrega = detalle.ENTREGA,
-                        FechaPedido = SAPFormatter.FormatearFecha(detalle.FECHA_PEDIDO),
-                        FechaCarga = SAPFormatter.FormatearFecha(detalle.FECHA_CARGA),
-                        CantidadEntregada = detalle.CANTIDAD_ENTREGADA,
-                        CantidadEntregadaStr = SAPFormatter.FormatearCantidad(detalle.CANTIDAD_ENTREGADA, "KG"),
-                        Remito = detalle.REMITO,
-                        Factura = detalle.FACTURA,
-                        CantidadFactura = detalle.CANTIDAD_FACTURA,
-                        FacturaLegal = detalle.FACTURA_LEGAL,
-                        Chasis = detalle.CHASIS,
-                        Acoplado = detalle.ACOPLADO,
-                        Chofer = detalle.CHOFER,
-                        Destinatario = detalle.DESTINATARIO,
-                        NombreDestinatario = detalle.NOMBRE_DESTINATARIO
-                    });
-                }
-                if (detalles != null)
-                {
-                    if (detalles.Count > 0)
-                    {
-                        resultado.Detalles = detalles;
+                        detalles.Add(new Detail()
+                        {
+                            Pedido = detalle.PEDIDO,
+                            Entrega = detalle.ENTREGA,
+                            FechaPedido = SAPFormatter.FormatearFecha(detalle.FECHA_PEDIDO),
+                            FechaCarga = SAPFormatter.FormatearFecha(detalle.FECHA_CARGA),
+                            CantidadEntregada = detalle.CANTIDAD_ENTREGADA,
+                            CantidadEntregadaStr = SAPFormatter.FormatearCantidad(detalle.CANTIDAD_ENTREGADA, "KG"),
+                            Remito = detalle.REMITO,
+                            Factura = detalle.FACTURA,
+                            CantidadFactura = detalle.CANTIDAD_FACTURA,
+                            FacturaLegal = detalle.FACTURA_LEGAL,
+                            Chasis = detalle.CHASIS,
+                            Acoplado = detalle.ACOPLADO,
+                            Chofer = detalle.CHOFER,
+                            Destinatario = detalle.DESTINATARIO,
+                            NombreDestinatario = detalle.NOMBRE_DESTINATARIO
+                        });
                     }
+                }
+                if (detalles.Count > 0)
+                {
+                    resultado.Detalles = detalles;
                 }
                 resultados.Add(resultado);
             }

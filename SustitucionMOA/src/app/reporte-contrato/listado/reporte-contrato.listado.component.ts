@@ -22,7 +22,7 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
    
 
 })
-export class ReporteContratoListado extends ListBaseComponent {
+export class ReporteContratoListado extends ListBaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
 
     constructor(protected service: ReporteContratoService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
@@ -60,7 +60,6 @@ export class ReporteContratoListado extends ListBaseComponent {
 
     ngOnInit() {
         this.navService.setSeccionList([]);
-        this.getListado();
     }
 
  
@@ -116,7 +115,7 @@ export class ReporteContratoListado extends ListBaseComponent {
     }
 
     isVisible() {
-        return this.show;
+        return this.show && this.cabecera.length;
     }
 
     cargarFiltrosContratos(result: any) {
@@ -172,7 +171,6 @@ export class ReporteContratoListado extends ListBaseComponent {
         if (this.mostrarPendientes == true) {
             this.cabecera = this.cabecera.filter(x => x.KilosPendienteEntrega > 0);
         }
-        this.ObtenerContratosFiltro();
         this.getTotalKilogramos();
     }
 
@@ -222,13 +220,13 @@ export class ReporteContratoListado extends ListBaseComponent {
     }
 
     ObtenerContratosFiltro() {
-        return;
-        if (this.filtroContrato == "") {this.blockUI.start(''); }       
+        if (this.filtroContrato == "") this.blockUI.start(''); 
         this.subscription = this.service.obtenerContratosFiltro(this.filtroFechaComponent.fecha_inicio,
             this.filtroFechaComponent.fecha_fin, this.mostrarPendientes, this.cabecera).subscribe(
                 (result: any) => {
                     this.mensajeComponent.setMsgsEmpty();
                     this.blockUI.stop();
+                    this.cargarFiltrosContratos(result);
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -239,7 +237,6 @@ export class ReporteContratoListado extends ListBaseComponent {
                         this.show = false;
                     } else {
                         this.cabecera = result.data.Resultados;
-                        this.cargarFiltrosContratos(result);
                         this.getTotalKilogramos();
                         this.show = true;
                        
