@@ -96,15 +96,15 @@
                                 Producto
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1">
-                                Totales
+                                Kilos Totales
                                 
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" >
-                                Entregados
+                                Kilos Entregados
                                 
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1"  >
-                                Pendientes
+                                Kilos Pendientes
                             </th>
                         </tr>
                     </thead>
@@ -122,9 +122,9 @@
                                     {{cabeceraContrato.DescripcionMaterial}}
                                 </div>
                             </td>
-                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosTotales | number}} KG</td>
-                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosEntregados | number}} KG</td>
-                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosPendienteEntrega | number}} KG</td>
+                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosTotales | number}}</td>
+                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosEntregados | number}}</td>
+                            <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">{{cabeceraContrato.KilosPendienteEntrega | number}}</td>
                         </tr>
                     </tbody>
 

@@ -28,6 +28,7 @@
                 <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 97%; padding:20px;">
                     <thead>
                         <tr role="row">
+                            <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Nro de Entrega</th>
                             <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Cantidad Facturada</th>
                             <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Fecha de carga</th>
                             <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Cant. Entrega</th>
@@ -41,11 +42,16 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let det of detalle">
-                            <td >{{det.FechaPedido}}</td>
+                            <td>
+                                <a [routerLink]="'testing'">
+                                    {{det.Entrega}}
+                                </a>
+                            </td>
+                            <td >{{det.CantidadFactura}}</td>
                             <td>{{det.FechaCarga}}</td>
                             <td>{{det.CantidadEntregadaStr}}</td>
                             <td>{{det.Remito}}</td>
-                            <td>{{det.Factura}}</td>
+                            <td>{{det.FacturaLegal}}</td>
                             <td>{{det.Chasis}}</td>
                             <td>{{det.Acoplado}}</td>
                             <td>{{det.Chofer}}</td>

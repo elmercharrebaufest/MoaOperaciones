@@ -60,6 +60,7 @@ namespace SustitucionMOAWS.WSConsumers
                     PosNr = item.POSNR,
                     Cliente = item.CLIENTE,
                     NombreCliente = item.NOMBRE_CLIENTE,
+                    NombreClienteCUIT = $"{item.NOMBRE_CLIENTE} {item.CUIT_CLIENTE}",
                     Corredor = item.CORREDOR,
                     DescripcionMaterial = item.DESC_MATERIAL,
                     KilosTotales = item.KILOS_TOTALES,
