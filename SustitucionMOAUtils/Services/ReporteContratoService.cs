@@ -38,9 +38,8 @@ namespace SustitucionMOAUtils.Services
         {
             List<FechaWS> fechas = new List<FechaWS>();
             var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
-            var request = new ReporteContratoWSMOARequest();
 
-            request = new ReporteContratoWSMOARequest()
+            var request = new ReporteContratoWSMOARequest()
             {
                 Cliente = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? "" : proveedor,
                 Pendiente = mostrarPendientes == true ? "X" : "",
