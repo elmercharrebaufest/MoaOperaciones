@@ -48,7 +48,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     show: boolean = false;
     disabled: boolean = false;
     mostrarPendientes: boolean = false;
-    columnaCliente: string = "NombreCliente";
+    columnaCliente: string = "NombreClienteCUIT";
     columnaProducto: string = "DescripcionMaterial";
     ColumnaTipoContrato: string = "TipoContrato";
     columnaContrato: string = "Contrato";

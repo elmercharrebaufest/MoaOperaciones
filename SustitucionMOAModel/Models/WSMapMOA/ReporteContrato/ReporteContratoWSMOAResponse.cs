@@ -85,6 +85,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.ReporteContrato
         public string CodigoProducto { get; set; }
    
         public List<Detail> Detalles { get; set; }
+        public string NombreClienteCUIT { get; set; }
 
         public Result()
         {

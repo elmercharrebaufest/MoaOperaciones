@@ -74,7 +74,7 @@ namespace SustitucionMOAUtils.Services
 
         public ReporteContratoViewModel obtenerAgrupadoProducto(ReporteContratoViewModel view)
         {
-            view.filtroCliente = new DropdownContent(view.data.Resultados.GroupBy(i => i.NombreCliente).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
+            view.filtroCliente = new DropdownContent(view.data.Resultados.GroupBy(i => i.NombreClienteCUIT).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
             view.filtroProducto = new DropdownContent(view.data.Resultados.GroupBy(i => i.DescripcionMaterial).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
             view.filtroTipoContrato = new DropdownContent(view.data.Resultados.GroupBy(i => i.TipoContrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
             view.filtroNroContrato = new DropdownContent(view.data.Resultados.GroupBy(i => i.Contrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
