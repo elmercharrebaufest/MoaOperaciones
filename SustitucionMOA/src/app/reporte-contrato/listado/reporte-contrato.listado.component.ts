@@ -56,6 +56,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
     esAdmin: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
     esInterno: boolean = (this.esComercial || this.esMesaFas || this.esAdmin);
 
     ngOnInit() {
@@ -260,4 +261,16 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
         this.tipoContratoSelected = "";
     }
   
+    get verTipoContrato(): boolean{
+        return !this.esCorredor;
+    }
+    get verNroPedidoCliente():boolean{
+        return !this.esCorredor;
+    }
+    get verCorredor():boolean{
+        return !this.esCorredor;
+    }
+    get verCliente():boolean{
+        return !this.esCliente
+    }
 }

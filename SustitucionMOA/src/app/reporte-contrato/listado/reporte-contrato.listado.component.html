@@ -74,11 +74,11 @@
                                 Nro de Contrato
        
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" >
+                            <th tabindex="0" rowspan="1" colspan="1" *ngIf="verTipoContrato">
                                 Tipo de Contrato
                                
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" >
+                            <th tabindex="0" rowspan="1" colspan="1" *ngIf="verNroPedidoCliente">
                                 Nro Pedido de Cliente
                               
                             </th>
@@ -86,10 +86,10 @@
                                 Fecha
                                
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" >
+                            <th tabindex="0" rowspan="1" colspan="1" *ngIf="verCliente">
                                 Cliente
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1">
+                            <th tabindex="0" rowspan="1" colspan="1" *ngIf="verCorredor">
                                 Corredor
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1">
@@ -111,11 +111,11 @@
                     <tbody>
                         <tr *ngFor="let cabeceraContrato of cabecera | customFilter : 'Contrato' : filtroContrato  | orderedColumn : {property: (orderedByColumn), direction: orderDirection} ; let odd = odd" role="row" [class.odd]="!odd">
                             <td><a class="animate" style="cursor:pointer;" (click)="goToSeccionParam('/reporte-contrato/detalle', cabeceraContrato.Contrato)">{{cabeceraContrato.Contrato}}</a></td>
-                            <td>{{cabeceraContrato.TipoContrato}}</td>
-                            <td>{{cabeceraContrato.PedidoCliente}}</td>
+                            <td *ngIf="verTipoContrato">{{cabeceraContrato.TipoContrato}}</td>
+                            <td *ngIf="verNroPedidoCliente">{{cabeceraContrato.PedidoCliente}}</td>
                             <td>{{cabeceraContrato.FechaDesde}}</td>
-                            <td>{{cabeceraContrato.NombreCliente}}</td>
-                            <td [ngStyle]="{'font-weight':cabeceraContrato.Corredor == 'TOTAL' ? '900': ''}">{{cabeceraContrato.Corredor}}</td>
+                            <td *ngIf="verCliente">{{cabeceraContrato.NombreCliente}}</td>
+                            <td *ngIf="verCorredor" [ngStyle]="{'font-weight':cabeceraContrato.Corredor == 'TOTAL' ? '900': ''}">{{cabeceraContrato.Corredor}}</td>
 
                             <td>
                                 <div [ngStyle]="{'color':cabeceraContrato.ColorProducto,'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">
