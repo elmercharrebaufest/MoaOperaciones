@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
@@ -7,9 +7,9 @@ import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
-import { ReporteContratoListado } from '../listado/reporte-contrato.listado.component';
 import { ReporteContratoService } from '../reporte-contrato.service';
 import * as XLSX from 'xlsx';
+import { DetalleReporteContrato } from '../ReporteContrato.model';
 
 
 @Component({
@@ -25,13 +25,12 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
     }
   
     contratoId: string = "";
-    detalle: any[] = null;
-
+    detalles: DetalleReporteContrato[] = null;
+    KilosFacturados = 0;
+    KilosEntregados = 0;
 
     ngOnInit() {
-
         this.getDetalleContrato();
-
     }
 
     getDetalleContrato() {
@@ -51,9 +50,8 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.detalle = result.data;
-                        console.log(this.detalle);
-
+                        this.detalles = result.data;
+                        this.ObtenerKilos();
                     }
                 },
                 error => {
@@ -65,12 +63,11 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
         });
     }
 
-
     exportExcelReporteContratoDetalle() {
         this.mensajeComponent.setMsgsEmpty();
         let informacionExportar: any;
 
-        informacionExportar = this.detalle.map(info => {
+        informacionExportar = this.detalles.map(info => {
             return {
                 "Fecha Pedido": info.FechaPedido || "-",
                 "Fecha Carga": info.FechaCarga || "-",
@@ -80,9 +77,6 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                 "Chasis": info.Chasis || "-",
                 "Acoplado": info.Acoplado || "-",
                 "Chofer": info.Chofer
-              
-
-
             }
         });
 
@@ -102,6 +96,11 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Reporte de contratos detalle');
         //escribe el file para ser descargado
         const excelBuffer: any = XLSX.writeFile(workbook, FileTitle + '.xlsx');
+    }
+
+    ObtenerKilos() {
+        this.KilosEntregados = this.detalles.reduce((prev,curr)=> prev + curr.CantidadEntregada,0)
+        this.KilosFacturados = this.detalles.reduce((prev,curr)=> prev + curr.CantidadFactura,0)
     }
 
 }

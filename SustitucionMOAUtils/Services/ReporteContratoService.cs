@@ -95,6 +95,7 @@ namespace SustitucionMOAUtils.Services
                 resultado.TipoContrato = "";
                 resultado.Contrato = "";
                 resultado.NombreCliente = "";
+                resultado.NombreClienteCUIT = "";
                 resultado.FechaDesde = "";
                 resultado.Corredor = "TOTAL";
                 resultado.KilosTotalesStr = "";
