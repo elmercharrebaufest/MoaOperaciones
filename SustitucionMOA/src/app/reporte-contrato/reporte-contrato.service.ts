@@ -38,7 +38,7 @@ export class ReporteContratoService extends BaseService {
 
         return this.http
             .get('/api/ReporteContrato/getTotalFormatter', { params: params })
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedi� el tiempo de espera, por favor intentelo mas tarde"))));
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
     public obtenerContratosFiltro(fechaInicio, fechaFin, mostrarPendientes, data: ReporteContrato[]) {
