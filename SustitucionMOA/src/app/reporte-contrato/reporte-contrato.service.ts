@@ -1,10 +1,10 @@
 
 import { throwError as observableThrowError, Observable } from 'rxjs';
-import { Injectable, EventEmitter, Output } from '@angular/core';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import {  HttpParams } from '@angular/common/http';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { ReporteContrato } from './ReporteContrato.model';
 
 
 
@@ -38,10 +38,10 @@ export class ReporteContratoService extends BaseService {
 
         return this.http
             .get('/api/ReporteContrato/getTotalFormatter', { params: params })
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excediï¿½ el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
-    public obtenerContratosFiltro(fechaInicio, fechaFin, mostrarPendientes, data: string[]) {
+    public obtenerContratosFiltro(fechaInicio, fechaFin, mostrarPendientes, data: ReporteContrato[]) {
             
         var payload = new FormData();
         let dataContrato = JSON.stringify({
