@@ -1,18 +1,15 @@
-import { Component, OnInit, OnDestroy, ViewChild, OnChanges, SimpleChanges, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
-import { SelectItem, ConfirmationService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { ReporteContratoService } from '../reporte-contrato.service';
-import { formatDate } from '@angular/common';
 import * as XLSX from 'xlsx';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-
-
-
+import { ReporteContrato } from '../ReporteContrato.model';
 
 
 @Component({
@@ -30,7 +27,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     }
 
     detalle: any[];
-    cabecera: any[];
+    cabecera: ReporteContrato[];
     filtroCliente: any = null;
     filtroProducto: any = null;
     filtroTipoContrato: any = null;
@@ -110,8 +107,8 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
         this.getListado();
     }
 
-    getColorProducto(contrato) {
-        var fila = this.cabecera.find(x => x.Contrato == contrato);
+    getColorProducto(contrato): string {
+        const fila = this.cabecera.find(x => x.Contrato == contrato);
         return fila.ColorProducto;
     }
 
@@ -142,7 +139,6 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     }
 
     filtroPendientes() {
-        /*this.getListado();*/
         this.ejecutarFiltro();
     }
 
@@ -176,9 +172,9 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     }
 
     getTotalKilogramos() {
-        this.KilosEntregados = this.cabecera.filter(x => x.Corredor !="TOTAL").map(t => t.KilosEntregados).reduce((acc, value) => acc + value, 0);
-        this.KilosPendienteEntrega = this.cabecera.filter(x => x.Corredor != "TOTAL").map(t => t.KilosPendienteEntrega).reduce((acc, value) => acc + value, 0);
-        this.KilosTotales = this.cabecera.filter(x => x.Corredor != "TOTAL").map(t => t.KilosTotales).reduce((acc, value) => acc + value, 0);
+        this.KilosEntregados = this.cabecera.filter(x => x.Corredor !="TOTAL").map(t => t.KilosEntregados).reduce((acc, value) => acc + value, 0).toString();
+        this.KilosPendienteEntrega = this.cabecera.filter(x => x.Corredor != "TOTAL").map(t => t.KilosPendienteEntrega).reduce((acc, value) => acc + value, 0).toString();
+        this.KilosTotales = this.cabecera.filter(x => x.Corredor != "TOTAL").map(t => t.KilosTotales).reduce((acc, value) => acc + value, 0).toString();
     }
 
     exportExcelReporteContrato() {
@@ -197,8 +193,6 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
                 "Kgs Totales": info.KilosTotalesStr,
                 "Kgs Entregados": info.KilosEntregadosStr,
                 "Kgs Pendiente de entrega": info.KilosPendienteEntregaStr
-
-
             }
         });
 
@@ -240,7 +234,6 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
                         this.cabecera = result.data.Resultados;
                         this.getTotalKilogramos();
                         this.show = true;
-                       
                     }
 
                 },

@@ -131,15 +131,15 @@
                     <tbody>
                         <tr role="row" class="totalTable">
                             <td ></td>
-                            <td></td>
+                            <td *ngIf="verTipoContrato"></td>
+                            <td *ngIf="verNroPedidoCliente"></td>
                             <td ></td>
-                            <td ></td>
-                            <td ></td>
-                            <td ></td>
+                            <td *ngIf="verCliente"></td>
+                            <td *ngIf="verCorredor"></td>
                             <td style="text-align :center" tabindex="0">TOTAL</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosTotales | number}} KG</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados | number}} KG</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosPendienteEntrega | number}} KG</td>
+                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosTotales | number}}</td>
+                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados | number}}</td>
+                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosPendienteEntrega | number}}</td>
 
                         </tr>
                     </tbody>
