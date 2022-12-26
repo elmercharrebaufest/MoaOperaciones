@@ -180,6 +180,7 @@
     <Build Include="DBO\Tables\MaterialFason.sql" />
     <Build Include="DBO\Tables\OrdenDeCargaFason.sql" />
     <None Include="scripts\PostDeployment\Material.sql" />
+    <Build Include="DBO\Tables\AplicacionCartaPorte.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
