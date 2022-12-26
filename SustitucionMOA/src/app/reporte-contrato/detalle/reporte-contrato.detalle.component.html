@@ -43,7 +43,7 @@
                     <tbody>
                         <tr *ngFor="let det of detalles">
                             <td>
-                                <a class="animate" style="cursor:pointer;" [routerLink]="['/','ordenes-de-carga','detalle', det.Entrega]">
+                                <a class="animate" style="cursor:pointer;" (click)="navegarDetalleOrdenCarga(det)">
                                     {{det.Entrega}}
                                 </a>
                             </td>

@@ -51,7 +51,7 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.detalles = result.data;
-                        this.ObtenerKilos();
+                        this.obtenerKilos();
                     }
                 },
                 error => {
@@ -98,9 +98,24 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
         const excelBuffer: any = XLSX.writeFile(workbook, FileTitle + '.xlsx');
     }
 
-    ObtenerKilos() {
+    obtenerKilos() {
         this.KilosEntregados = this.detalles.reduce((prev,curr)=> prev + curr.CantidadEntregada,0)
         this.KilosFacturados = this.detalles.reduce((prev,curr)=> prev + curr.CantidadFactura,0)
+    }
+    navegarDetalleOrdenCarga(det: DetalleReporteContrato){
+        this.service.getOrdenDeCarga(det).subscribe({
+            next:(res)=>{
+                if(res.error){
+                    this.floatMsgService.setErrorMsg(res.error)
+                }
+                else if(res.info){
+                    this.floatMsgService.setInfoMsg(res.info)
+                }else{
+                    this.goToSeccionParam('/orden-de-carga/detalle', res.data.Id.toString())
+                }
+            }
+            ,
+        })
     }
 
 }
