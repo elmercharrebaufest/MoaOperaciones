@@ -2230,11 +2230,11 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.OrdenDeCargaActualizada;
 
         }
-        public OrdenDeCarga ObtenerPorNroEntrega(string nroEntrega)
+        public OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(oc => oc.NumeroEntrega == nroEntrega);
             if (orden == null) throw new InfoCustomException("No se ha encontrado ningún orden de carga");
-            return orden;
+            return Obtener(mailUsuario, orden.Id);
         }
         public List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden)
         {
