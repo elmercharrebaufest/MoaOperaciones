@@ -4,7 +4,9 @@ import { Injectable } from '@angular/core';
 import {  HttpParams } from '@angular/common/http';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
-import { ReporteContrato } from './ReporteContrato.model';
+import { ReporteContrato, DetalleReporteContrato } from './ReporteContrato.model';
+import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
+import { ApiResponse } from '../common/models/response';
 
 
 
@@ -72,6 +74,13 @@ export class ReporteContratoService extends BaseService {
 
     }
 
-    
+    public getOrdenDeCarga(det: DetalleReporteContrato): Observable<ApiResponse<OrdenDeCarga>>{
+        let params: HttpParams = new HttpParams()
+            .append('nroEntrega', det.Entrega);
+
+
+        return this.http
+            .get<ApiResponse<OrdenDeCarga>>('/api/ReporteContrato/ObtenerOrdenDeCarga', { params: params });
+    }
   }
 

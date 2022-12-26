@@ -799,9 +799,8 @@ namespace SustitucionMOAUtils.Services
                 var clientes = usuario.Proveedores.Select(c => c.Id);
                 orden = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id) && n.Id == ordenId).FirstOrDefault();
             }
-            if (orden == null) orden = ObtenerPorNroEntrega(ordenId.ToString());
 
-            if (orden == null) throw new Exception("No se encontro ningún orden de carga");
+            if (orden == null) throw new InfoCustomException("No se encontro ningún orden de carga");
 
             Proveedor cliente = repositorio.Obtener<Proveedor>(orden.Cliente_Id);
             //  var ordenDeCargaCambiosHistorial = repositorio.Listar<OrdenDeCargaCambiosHistorial>(ordenes => ordenes.OrdenDeCarga_Id == orden.Id);
@@ -2284,8 +2283,9 @@ namespace SustitucionMOAUtils.Services
         }
         public OrdenDeCarga ObtenerPorNroEntrega(string nroEntrega)
         {
-            return repositorio.Obtener<OrdenDeCarga>(oc => oc.NumeroEntrega == nroEntrega);
-
+            var orden = repositorio.Obtener<OrdenDeCarga>(oc => oc.NumeroEntrega == nroEntrega);
+            if (orden == null) throw new InfoCustomException("No se ha encontrado ningún orden de carga");
+            return orden;
         }
         public List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden)
         {
