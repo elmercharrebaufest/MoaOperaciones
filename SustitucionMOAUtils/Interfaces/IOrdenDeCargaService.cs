@@ -41,6 +41,7 @@ namespace SustitucionMOAUtils.Interfaces
         string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario);
         string ActivarOC(int ordenId,string mailUsuario);
         OrdenDeCarga ObtenerPorNroEntrega( string nroEntrega);
+        OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega);
         List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden);
     }
 }

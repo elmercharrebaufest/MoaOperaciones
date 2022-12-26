@@ -119,7 +119,9 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = ordenDeCargaService.ObtenerPorNroEntrega(nroEntrega) });
+                var mailUsuario = SessionPersister.getUsername();
+                
+                return JsonCustom(new { data = ordenDeCargaService.ObtenerPorNroEntrega(mailUsuario,nroEntrega) });
             }
             catch (InfoCustomException e)
             {

@@ -111,7 +111,7 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                 else if(res.info){
                     this.floatMsgService.setInfoMsg(res.info)
                 }else{
-                    this.goToSeccionParam('/orden-de-carga/detalle', res.data.Id.toString())
+                    this.goToSeccionParam('/ordenes-de-carga/detalle', res.data.Id.toString())
                 }
             }
             ,
