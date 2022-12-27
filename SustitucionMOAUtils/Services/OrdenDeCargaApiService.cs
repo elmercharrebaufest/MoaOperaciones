@@ -101,9 +101,8 @@ namespace SustitucionMOAUtils.Services
                 ordenFasonDto.CUILChofer = ordenFason.CUILChofer;
                 ordenFasonDto.RazonSocialTransporte = ordenFason.RazonSocialTransporte;
                 ordenFasonDto.CUITTransporte = ordenFason.CUITTransporte;
-                ordenFasonDto.Destino = ordenFason.Destino;
-                ordenFasonDto.CantidadDeViajesEsperados = ordenFason.CantidadDeViajesEsperados;
-                ordenFasonDto.CantidadDeViajesRealizados = ordenFason.CantidadDeViajesRealizados;
+                ordenFasonDto.LocalidadId = ordenFason.LocalidadId;
+                ordenFasonDto.LocalidadDescripcion = ordenFason.LocalidadDescripcion;
                 ordenFasonDto.Observacion = ordenFason.Observacion;
                 ordenFasonDto.Cliente = ordenFason.Cliente.RazonSocial;
                 ordenFasonDto.DescripcionProducto = ordenFason.Producto.Nombre;

@@ -14,6 +14,7 @@ import { OrdenesDeCargaFasonAltaComponent } from './alta/ordenes-de-carga-fason.
 import { OrdenesDeCargaFasonListadoComponent } from './listado/ordenes-de-carga-fason.listado.component';
 import { OrdenesDeCargaFasonDetalleComponent } from './detalle/ordenes-de-carga-fason.detalle.component';
 import { OrdenesDeCargaFasonService } from './ordenes-de-carga-fason.service';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
   imports: [
@@ -28,7 +29,9 @@ import { OrdenesDeCargaFasonService } from './ordenes-de-carga-fason.service';
     NgxSpinnerModule, 
     NgxMaskModule, 
     MultiSelectModule, 
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    CalendarModule
+    
   ],
   declarations: [
     OrdenesDeCargaFasonAltaComponent, 

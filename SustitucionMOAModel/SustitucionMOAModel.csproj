@@ -59,6 +59,9 @@
     <Compile Include="Dto\Echeq\EcheqReporteDto.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\IngresosEgresosFasones.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\IngresosEgresosFas.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\CrearOrdenDeCargaFasonRequest.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\EditarOrdenDeCargaFasonRequest.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\OrdenDeCargaFasonRequest.cs" />
     <Compile Include="Dto\OrdendesDeCargaApiDto.cs" />
     <Compile Include="Dto\ConfiguracionDto.cs" />
     <Compile Include="Dto\Echeq\EcheqLiquidacionDto.cs" />

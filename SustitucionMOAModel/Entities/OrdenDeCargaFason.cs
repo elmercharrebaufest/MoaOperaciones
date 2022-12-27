@@ -20,9 +20,6 @@ namespace SustitucionMOAModel.Entities
 		public string CUILChofer { get; set; }
 		public string RazonSocialTransporte { get; set; }
 		public string CUITTransporte { get; set; }
-		public string Destino { get; set; }
-		public short CantidadDeViajesRealizados { get; set; }
-		public short CantidadDeViajesEsperados { get; set; }
 		public string Observacion { get; set; }
 		public int Cliente_Id { get; set; }
 		[ForeignKey("Cliente_Id")]
@@ -31,6 +28,16 @@ namespace SustitucionMOAModel.Entities
 		[ForeignKey("Producto_Id")]
 		public virtual Material Producto { get; set; }
 		public bool TransporteExiste { get; set; }
+
+        public int LocalidadId { get; set; }
+        
+		public string LocalidadDescripcion { get; set; }
+
+        public int? CorredorId { get; set; }
+
+        [ForeignKey("CorredorId")]
+		public virtual Proveedor Corredor { get; set; }
+
 
         public int? CantidadEntregada { get; set; }
         public DateTime? FechaEgreso { get; set; }
@@ -50,13 +57,12 @@ namespace SustitucionMOAModel.Entities
 		}
 
 
-
 		public override bool Equals(object obj)
 		{
-			return obj is OrdenDeCargaFason carga && 
-				Id == carga.Id && 
+			return obj is OrdenDeCargaFason carga &&
+				Id == carga.Id &&
 				Estado == carga.Estado &&
-				FechaCreacion == carga.FechaCreacion  &&
+				FechaCreacion == carga.FechaCreacion &&
 				FechaRetiro == carga.FechaRetiro &&
 				Cantidad == carga.Cantidad &&
 				PatenteChasis == carga.PatenteChasis &&
@@ -65,13 +71,13 @@ namespace SustitucionMOAModel.Entities
 				CUILChofer == carga.CUILChofer &&
 				RazonSocialTransporte == carga.RazonSocialTransporte &&
 				CUITTransporte == carga.CUITTransporte &&
-				Destino == carga.Destino &&
-				CantidadDeViajesRealizados == carga.CantidadDeViajesRealizados &&
-				CantidadDeViajesEsperados == carga.CantidadDeViajesEsperados &&
+				LocalidadId == carga.LocalidadId &&
+				LocalidadDescripcion == carga.LocalidadDescripcion &&
 				Observacion == carga.Observacion &&
 				Cliente_Id == carga.Cliente_Id &&
 				Producto_Id == carga.Producto_Id &&
-				TransporteExiste == carga.TransporteExiste;
+				TransporteExiste == carga.TransporteExiste &&
+				CorredorId == carga.CorredorId;
 		}
 
 		public override int GetHashCode()
@@ -88,12 +94,12 @@ namespace SustitucionMOAModel.Entities
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CUILChofer);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(RazonSocialTransporte);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CUITTransporte);
-			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Destino);
-			hashCode = hashCode * -1521134295 + CantidadDeViajesRealizados.GetHashCode();
-			hashCode = hashCode * -1521134295 + CantidadDeViajesEsperados.GetHashCode();
+			hashCode = hashCode * -1521134295 + LocalidadId.GetHashCode();
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LocalidadDescripcion);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Observacion);
 			hashCode = hashCode * -1521134295 + Cliente_Id.GetHashCode();
 			hashCode = hashCode * -1521134295 + Producto_Id.GetHashCode();
+			hashCode = hashCode * -1521134295 + CorredorId.GetHashCode();
 			return hashCode;
 		}
 	}

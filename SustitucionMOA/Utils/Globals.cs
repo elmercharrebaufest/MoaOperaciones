@@ -47,5 +47,7 @@ namespace SustitucionMOA.Utils
         public const string ClaimsEsNuevoUsuarioType = "esNuevoUsuario";
         public const string ClaimsSeccionesVisitadas = "seccionesVisitadas";
         public const string ClaimsProveedorId = "proveedorId";
+        public const string ClaimsCuit= "cuit";
+
     }
 }

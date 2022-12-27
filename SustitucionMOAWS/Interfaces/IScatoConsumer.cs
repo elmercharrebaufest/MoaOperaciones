@@ -15,7 +15,7 @@ namespace SustitucionMOAWS.Interfaces
         List<CartaPorteFoto> ObtenerFotoCartasPorte(List<string> cartaPorteIds);
         List<LocalidadDto> ObtenerLocalidades();
         List<ProvinciaDto> ObtenerProvincias();
-
+        List<KmPorProveedorDto> BuscarDestinos(string cuit);
 
 
 

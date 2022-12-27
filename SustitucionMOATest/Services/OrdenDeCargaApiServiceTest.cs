@@ -119,7 +119,7 @@ namespace SustitucionMOATest.Services
                             It.IsAny<string>(),
                             It.IsAny<DirOrden>(),
                             It.IsAny<IEnumerable<Expression<Func<OrdenDeCargaFason, object>>>>()))
-            .Returns(new List<OrdenDeCargaFason> { new OrdenDeCargaFason { Cantidad = 12312, Cliente = new Proveedor { RazonSocial = "" } ,CantidadDeViajesEsperados = 3, CantidadDeViajesRealizados = 1, Cliente_Id = 1, Producto = new Material { Nombre = "" } } });
+            .Returns(new List<OrdenDeCargaFason> { new OrdenDeCargaFason { Cantidad = 12312, Cliente = new Proveedor { RazonSocial = "" } , Cliente_Id = 1, Producto = new Material { Nombre = "" } } });
 
             repositorioMock.Setup(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
                             It.IsAny<int>(),

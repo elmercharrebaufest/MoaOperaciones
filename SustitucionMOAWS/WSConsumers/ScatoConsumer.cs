@@ -70,14 +70,29 @@ namespace SustitucionMOAWS.WSConsumers
 
         public List<LocalidadDto> ObtenerLocalidades()
         {
-          return service.ListarLocalidades().ToList();                        
+            return service.ListarLocalidades().ToList();
         }
 
         public List<ProvinciaDto> ObtenerProvincias()
-        {            
-          return service.ListarProvincias().ToList();                                     
+        {
+            return service.ListarProvincias().ToList();
         }
 
+        public List<KmPorProveedorDto> BuscarDestinos(string cuit)
+        {            
+            if (!cuit.Contains("-"))
+            {
+                cuit = cuit.Substring(0, 2) + "-" + cuit.Substring(2, 8) + "-" + cuit.Substring(10, 1);
+            }
+
+            var cliente = service.BuscarCliente(cuit);
+            if (cliente == null)
+            {
+                return new List<KmPorProveedorDto>();
+            }
+            var destinos = service.ListarKmPorProveedorYCentro(cliente.Id, 5).ToList();
+            return destinos;
+        }
     }
 
 }

@@ -27,3 +27,6 @@ Post-Deployment Script Template
 :r .\PermisoRol.sql
 :r .\Varios.sql
 :r .\SolpFixDataToNewColumnEmailLinkToken.sql
+:r .\Material.sql
+
+

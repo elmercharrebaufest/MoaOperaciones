@@ -71,7 +71,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     esPuerto: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA PUERTO');
 
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
-    esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
+    //esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
     puedeEnviarASAP: boolean = this.isAuthorized('ENVIAR A SAP');
 
     descripcionEstadoOrdenCarga: any[];

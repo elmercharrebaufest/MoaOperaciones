@@ -86,4 +86,8 @@ export class BaseComponent implements OnDestroy{
         return this.tipoUsuario.toUpperCase() == "CORR" || this.tipoUsuario.toUpperCase() == "NUECORR";
     }
 
+    esCliente() {
+        return this.tipoUsuario.toUpperCase() === "CLI";
+    }
+
 }

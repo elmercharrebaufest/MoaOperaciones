@@ -1,12 +1,42 @@
-export interface OrdenDeCargaFasonDto {
-  Id: string;
-  Cliente: string;
-  Estado: string;
-  FechaCreacion: string;
-  FechaRetiro: string;
-  CantidadDeViajesRealizados: string;
-  CantidadDeViajesEsperados: string;
-  Producto: string;
-  PatenteChasis: string;
-  Destino: string;
+import { EstadoOrdenDeCargaFason } from "./estadoOrdenDeCargaFason";
+
+export class OrdenDeCargaFasonDto {
+
+    public Id: number;
+    public CUITTercero: number;
+    public Estado: EstadoOrdenDeCargaFason;
+    public Producto_Id: number;
+    public Material: string;
+
+    public CUITCliente: number;
+    public Cliente: string;
+    public RazonSocialCliente: string;
+
+    public Corredor: string;
+    public CUITCorredor?: string;
+    public RazonSocialCorredor: string;
+    public CorredorId?: number;
+
+    public FechaCreacion: string;
+    public FechaRetiro: Date;
+    public Cantidad: number;
+    public PatenteAcoplado: string;
+    public PatenteChasis: string;
+    public NombreChofer: string;
+    public CUILChofer: string;
+    public RazonSocialTransporte: string;
+    public CUITTransporte: string;
+    public CantidadDeViajes: number;
+    public Destino: string;
+    public TransporteExiste: boolean;
+    public Observacion: string;
+    public LocalidadDescripcion: string;
+    
+    constructor() {
+        this.FechaRetiro = new Date();
+        this.Cantidad = 30000;
+    }
+
 }
+
+
