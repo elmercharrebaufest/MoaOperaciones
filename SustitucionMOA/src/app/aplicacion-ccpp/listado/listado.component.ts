@@ -10,6 +10,8 @@ import { AplicacionCCPP, EstadoAplicacionCCPP, SeccionAplicacionCCPP } from '../
 import { AplicacionCcppService } from '../aplicacion-ccpp.service';
 import { DropdownComponent } from '../../common/view-child/dropdown/dropdown.component';
 
+import * as XLSX from 'xlsx';
+
 @Component({
   selector: 'app-listado',
   templateUrl: './listado.component.html',
@@ -38,7 +40,6 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
     this.crearSecciones();
     this.getListado()
   }
-  exportExcelAplicacionesCCPP() { }
   get isVisible(): boolean {
     return this.aplicaciones && !!this.aplicaciones.length && this.show
   }
@@ -65,8 +66,8 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
         Estado: EstadoAplicacionCCPP.Pendiente,
         ColorEstado: 'orange',
         LabelEstado: 'Pendiente',
-        MailUsuario:'mail@testin.com',
-        RazonSocial:'razon sociale',
+        MailUsuario: 'mail@testin.com',
+        RazonSocial: 'razon sociale',
       },
       {
         Id: 1,
@@ -79,8 +80,8 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
         Error: "todo mal loco",
         ColorEstado: 'red',
         LabelEstado: 'Error',
-        MailUsuario:'mail@testin.com',
-        RazonSocial:'razon sociale',
+        MailUsuario: 'mail@testin.com',
+        RazonSocial: 'razon sociale',
       },
       {
         Id: 1,
@@ -92,8 +93,8 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
         Estado: EstadoAplicacionCCPP.Aplicado,
         ColorEstado: 'green',
         LabelEstado: 'Aplicado',
-        MailUsuario:'mail@testin.com',
-        RazonSocial:'razon sociale',
+        MailUsuario: 'mail@testin.com',
+        RazonSocial: 'razon sociale',
       },
       {
         Id: 1,
@@ -105,14 +106,48 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
         Estado: EstadoAplicacionCCPP.Pendiente,
         ColorEstado: 'orange',
         LabelEstado: 'Pendiente',
-        MailUsuario:'mail@testin.com',
-        RazonSocial:'razon sociale',
+        MailUsuario: 'mail@testin.com',
+        RazonSocial: 'razon sociale',
       },
     ]
     this.show = true
   }
+
   ngAfterViewInit(): void {
     this.filtroEstadoComponent.setSelectItem("");
   }
 
+  exportExcelAplicacionesCCPP() {
+    this.mensajeComponent.setMsgsEmpty();
+    let informacionExportar: any;
+
+    informacionExportar = this.aplicaciones.map(info => {
+      return {
+        "Usuario": info.MailUsuario || "-",
+        "Razon Social": info.RazonSocial || "-",
+        "Contrato": info.Contrato,
+        "Carta Porte": info.CartaPorte || "-",
+        "KGS": info.Kilogramos || "-",
+        "Estado": info.LabelEstado || "-",
+        "Observaciones": info.Error,
+      }
+    });
+
+    if (informacionExportar.length == 0) {
+      this.mensajeComponent.setInfoMsg("No existen datos para exportar.");
+      return
+    }
+
+    this.DownloadJsonData(informacionExportar, "Aplicación CCPP");
+  }
+
+  DownloadJsonData(JSONData: any, FileTitle: string) {
+
+    //crea la estructura inicial del archivo
+    let worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(JSONData);
+    let workbook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, FileTitle);
+    //escribe el file para ser descargado
+    XLSX.writeFile(workbook, FileTitle + '.xlsx');
+  }
 }
