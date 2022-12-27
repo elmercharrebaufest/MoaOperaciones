@@ -50,8 +50,9 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var mailUsuario = SessionPersister.getUsername();
-                var result = _aplicacionCCPPService.Listar(mailUsuario, fechaInicio, fechaFin);
-                return JsonCustom(result);
+                var data = _aplicacionCCPPService.Listar(mailUsuario, fechaInicio, fechaFin);
+                var filtros = _aplicacionCCPPService.ObtenerFiltros(data);
+                return JsonCustom(new { data, filtros });
             }
             catch (InfoCustomException e)
             {

@@ -6,9 +6,9 @@ import { NavService } from '../../common/services/NavService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { AplicacionCcppBaseComponent } from '../aplicacion-ccpp.base.component';
-import { AplicacionCCPP, EstadoAplicacionCCPP, SeccionAplicacionCCPP } from '../aplicacion-ccpp.model';
-import { AplicacionCcppService } from '../aplicacion-ccpp.service';
-import { DropdownComponent } from '../../common/view-child/dropdown/dropdown.component';
+import { AplicacionCCPP, SeccionAplicacionCCPP, AplicacionCCPPFiltro } from '../aplicacion-ccpp.model';
+import { AplicacionCcppService, ListadoRequest } from '../aplicacion-ccpp.service';
+import { DropdownComponent, DropdownOption } from '../../common/view-child/dropdown/dropdown.component';
 
 import * as XLSX from 'xlsx';
 
@@ -20,6 +20,10 @@ import * as XLSX from 'xlsx';
 export class ListadoComponent extends AplicacionCcppBaseComponent implements OnInit, AfterViewInit {
   @ViewChild("FiltroEstado") filtroEstadoComponent: DropdownComponent;
   aplicaciones?: AplicacionCCPP[];
+  opcionesClientes?: DropdownOption[];
+  opcionesContratos?: DropdownOption[];
+  opcionesCartasPorte?: DropdownOption[];
+
   contratoFiltro = new FormControl();
   ccppFiltro = new FormControl();
   estadoFiltro = new FormControl();
@@ -55,62 +59,18 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
     this.setMenuSeccionTab(SeccionAplicacionCCPP, "Estado de cargas");
   }
   getListado() {
-    this.aplicaciones = [
-      {
-        Id: 1,
-        FechaAlta: new Date(),
-        FechaActualizacion: new Date(),
-        Contrato: "00123024EF",
-        CartaPorte: "090009090",
-        Kilogramos: 300000,
-        Estado: EstadoAplicacionCCPP.Pendiente,
-        ColorEstado: 'orange',
-        LabelEstado: 'Pendiente',
-        MailUsuario: 'mail@testin.com',
-        RazonSocial: 'razon sociale',
-      },
-      {
-        Id: 1,
-        FechaAlta: new Date(),
-        FechaActualizacion: new Date(),
-        Contrato: "00123024EF",
-        CartaPorte: "090009090",
-        Kilogramos: 300000,
-        Estado: EstadoAplicacionCCPP.Error,
-        Error: "todo mal loco",
-        ColorEstado: 'red',
-        LabelEstado: 'Error',
-        MailUsuario: 'mail@testin.com',
-        RazonSocial: 'razon sociale',
-      },
-      {
-        Id: 1,
-        FechaAlta: new Date(),
-        FechaActualizacion: new Date(),
-        Contrato: "00123024EF",
-        CartaPorte: "090009090",
-        Kilogramos: 300000,
-        Estado: EstadoAplicacionCCPP.Aplicado,
-        ColorEstado: 'green',
-        LabelEstado: 'Aplicado',
-        MailUsuario: 'mail@testin.com',
-        RazonSocial: 'razon sociale',
-      },
-      {
-        Id: 1,
-        FechaAlta: new Date(),
-        FechaActualizacion: new Date(),
-        Contrato: "00123024EF",
-        CartaPorte: "090009090",
-        Kilogramos: 300000,
-        Estado: EstadoAplicacionCCPP.Pendiente,
-        ColorEstado: 'orange',
-        LabelEstado: 'Pendiente',
-        MailUsuario: 'mail@testin.com',
-        RazonSocial: 'razon sociale',
-      },
-    ]
-    this.show = true
+    this.service.getListado(this.getRequest()).subscribe(res => {
+      if (res.info) {
+
+      }
+      else if (res.error) {
+
+      } else {
+        this.show = true
+        this.aplicaciones = res.data
+        this.setOpciones(res.filtros)
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -142,12 +102,24 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
   }
 
   DownloadJsonData(JSONData: any, FileTitle: string) {
-
     //crea la estructura inicial del archivo
     let worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(JSONData);
     let workbook: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, FileTitle);
     //escribe el file para ser descargado
     XLSX.writeFile(workbook, FileTitle + '.xlsx');
+  }
+
+  getRequest(): ListadoRequest {
+    return {
+      fechaInicio: this.filtroFechaComponent.fecha_inicio,
+      fechaFin: this.filtroFechaComponent.fecha_fin
+    }
+  }
+  setOpciones({FiltroCartasPorte, FiltroContratos, FiltroEstados, FiltroClientes}: AplicacionCCPPFiltro){
+    this.opcionesCartasPorte = FiltroCartasPorte;
+    this.opcionesContratos = FiltroContratos;
+    this.opcionesEstadoAplicacionCCPP = FiltroEstados;
+    this.opcionesClientes = FiltroClientes;
   }
 }
