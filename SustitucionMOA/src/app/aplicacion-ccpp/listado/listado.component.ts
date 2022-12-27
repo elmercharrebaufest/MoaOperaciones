@@ -13,6 +13,8 @@ import { DropdownComponent, DropdownOption } from '../../common/view-child/dropd
 import * as XLSX from 'xlsx';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
+import * as XLSX from 'xlsx';
+
 @Component({
   selector: 'app-listado',
   templateUrl: './listado.component.html',
