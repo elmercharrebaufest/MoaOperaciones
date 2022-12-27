@@ -27,13 +27,15 @@
         <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15">
           <p class="filter-title">Contrato</p>
           <div class="styled-select">
-            <input type="search" class="" placeholder="" [formControl]="contratoFiltro" aria-controls="tableModal">
+            <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesContratos"
+              (select)="contratoFiltro.setValue($event)"></dropdown>
           </div>
         </div>
         <div id="searchCCPP" class="col-xs-12 col-sm-6 col-md-15">
           <p class="filter-title">Carta Porte</p>
           <div class="styled-select">
-            <input type="search" class="" placeholder="" [formControl]="ccppFiltro" aria-controls="tableModal">
+            <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesCartasPorte"
+              (select)="ccppFiltro.setValue($event)"></dropdown>
           </div>
         </div>
         <div id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
