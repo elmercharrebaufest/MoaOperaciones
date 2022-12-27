@@ -32,6 +32,8 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
   ];
   descripcionEstadoOrdenCarga: any[];
   listaProductos: Material[];
+  listaDestino: string[] = [];
+  listaClientes: string[] = [];
   datosAux: any[];
   //primerListado: any[];
   filtroCliente: any = null;
@@ -95,6 +97,7 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
             } else {
                 this.data = result.Response;
                 this.datosAux = result.Response;
+                // console.log("datos aux", this.datosAux);
                 this.filtrarListado();
             }
           },
@@ -113,23 +116,14 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
   }
 
   filtrarListado = () => {
-    debugger
-    //this.primerListado = this.datosAux.filter(x => x.DescripcionEstado != this.entregada);
-    //if (!this.esTercero) {
-      console.log("datosAux: ", this.datosAux)
-      // x => x.Estado != this.entregada
+      // console.log("datosAux: ", this.datosAux)
       if (this.estadosSelected.length < 1 || this.estadosSelected == null) {
         this.data = this.datosAux;
       } else {
         if (this.estadosSelected) {
-            //this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.DescripcionEstado) >= 0);
             this.data = this.datosAux.filter(x => this.estadosSelected.some(y => y == x.DescripcionEstado));
         }
       }
-    //} else {
-    //  this.data = this.datosAux;
-    //}
-
   }
 
   setFiltroProducto = (producto: string) => {
@@ -137,7 +131,6 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
   }
 
   getProductos = () => {
-    // console.debug('getMateriales()');
     this.subscription = this.service.getMateriales().subscribe(
         (result) => {
             this.listaProductos = result.data;

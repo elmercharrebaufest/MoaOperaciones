@@ -19,6 +19,10 @@ export class SessionDataService {
     public noticias = new Subject<any>();
     public seccionesVisitadas = new Subject<string>();
     public apikey = new Subject<string>();
+    public cuit = new Subject<string>();
+    public proveedorId = new Subject<string>();
+
+
 
     username$ = this.username.asObservable();
     nombre$ = this.nombre.asObservable();
@@ -30,6 +34,10 @@ export class SessionDataService {
     noticias$ = this.noticias.asObservable();
     seccionesVisitadas$ = this.seccionesVisitadas.asObservable();
     apikey$ = this.apikey.asObservable();
+    cuit$ = this.cuit.asObservable();
+    proveedorId$ = this.proveedorId.asObservable();
+
+
 
     setUsername(value: string) {
         this.username.next(value);
@@ -71,6 +79,14 @@ export class SessionDataService {
         this.apikey.next(value);
     }
 
+    setCuit(value: string) {
+        this.cuit.next(value);
+    }
+
+    setProveedorId(value: string) {
+        this.proveedorId.next(value);
+    }
+
     logout() {
         this.setUsername("");
         this.setNombre("");
@@ -82,6 +98,9 @@ export class SessionDataService {
         this.setNoticias(null);
         this.setSeccionesVisitadas("");
         this.setApikey("");
+        this.setCuit("");
+        this.setProveedorId("");
+
         sessionStorage.clear();
 
         let logoutURL = window.location.origin;
@@ -97,4 +116,6 @@ export class SessionDataService {
 
         window.location.href = logoutURL;
     }
+
+    
 }

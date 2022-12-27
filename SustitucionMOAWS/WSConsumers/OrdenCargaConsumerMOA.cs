@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.OrdenCargaControlEstadoSAP;
@@ -292,6 +293,12 @@ namespace SustitucionMOAWS.WSConsumers
                 }
             }
             return response;
+        }
+
+        public OrdenCargaControlEstado GetOrdenCargaControlEstadoTransportista(string cuitTransportista)
+        {
+            var resp = OrdenCargaControlEstadoRequest("", "", cuitTransportista);
+            return ResponseConverter.GetOrdenCargaControlEstadoResponse(resp);
         }
     }
 }

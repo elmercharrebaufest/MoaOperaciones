@@ -193,6 +193,8 @@ namespace SustitucionMOA
 				notification.AddClaim(new Claim(Globals.ClaimsProveedorType, usuario.ObtenerCodigoProveedor()));
 				notification.AddClaim(new Claim(Globals.ClaimsProveedorId, usuario.ObtenerProveedor().Id.ToString()));
 				notification.AddClaim(new Claim(Globals.ClaimsSeccionesVisitadas, usuario.SeccionesVisitadas ?? ""));
+				notification.AddClaim(new Claim(Globals.ClaimsCuit, usuario.ObtenerProveedor().CUIT.ToString()));
+
 
 				string tipoGranos = usuario.TipoUsuario.NombreCorto == "CORR" ? "G" : usuario.TipoUsuario.NombreCorto;
 

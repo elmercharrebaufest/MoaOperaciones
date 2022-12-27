@@ -11,12 +11,8 @@
             </div>
 
             <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
-                <div style="float: right;">
-                    <button type="button" pButton icon="fa fa-refresh"
-                            style="background-color: #075088; float: right; top: 5%;"></button> &nbsp;
-                </div>
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
+                <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande" (click)="editarOrden()"
                         id="modalToggleButton">
                     Editar
                 </button>
@@ -62,44 +58,61 @@
                                 <!-- cliente -->
                                 <div class="col-xs-12 col-md-6">
                                     <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Raz&oacute;n social cliente</strong></p>
+                                        <p style="width:100%">{{ordenDeCargaFason.RazonSocialCliente}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Cliente</strong></p>
                                         <p style="width:100%">{{ordenDeCargaFason.Cliente}}</p>
                                     </div>
 
+                                    <div class="col-xs-12 col-md-12" [hidden]="!esAdmin && !esCorredor">
+                                        <p class=" blue"><strong>Raz&oacute;n social corredor</strong></p>
+                                        <p style="width:100%">{{ordenDeCargaFason.RazonSocialCorredor}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" [hidden]="!esAdmin && !esCorredor">
+                                        <p class=" blue"><strong>Corredor</strong></p>
+                                        <p style="width:100%">{{ordenDeCargaFason.Corredor}}</p>
+                                    </div>
+
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Producto</strong></p>
-                                        <p style="width:100%"></p>
+                                        <p style="width:100%">{{ordenDeCargaFason.Material}}</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">
-                                        <p class=" blue"><strong>Cantidad(Kgs)</strong></p>
+                                        <p class="blue"><strong>Cantidad</strong></p>
                                         <p style="width:100%">{{ordenDeCargaFason.Cantidad}}</p>
-                                    </div>
+                                    </div>                      
 
-                                    <div class="col-xs-12 col-md-12">
-                                        <p class="blue"><strong>Fecha</strong></p>
-                                        <p style="width:100%">{{ordenDeCargaFason.FechaCreacion}}</p>
-                                    </div>
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Fecha de retiro</strong></p>
                                         <p style="width:100%">{{ordenDeCargaFason.FechaRetiro}}</p>
-                                    </div>                  
+                                    </div>
+                                    
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Destino</strong></p>
+                                        <p style="width:100%">{{ordenDeCargaFason.LocalidadDescripcion}}</p>
+                                    </div>
+                                    
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Estado</strong></p>
+                                        <p style="width:100%">{{ordenDeCargaFason.DescripcionEstado}}</p>
+                                    </div>
                                 </div>
+
                                     <!-- Chofer -->
                                     <div class="col-xs-12 col-md-6">
                                         <div class="col-xs-12 col-md-12">
                                             <p class="blue"><strong>Patente chasis</strong></p>
-                                            <p style="width:100%">{{ordenDeCargaFason.PatenteAcoplado}}</p>
-                                        </div>
-
-                                        <div class="col-xs-12 col-md-12">
-                                            <p class="blue"><strong>Patente acoplado</strong></p>
                                             <p style="width:100%">{{ordenDeCargaFason.PatenteChasis}}</p>
                                         </div>
 
                                         <div class="col-xs-12 col-md-12">
-                                            <p class="blue"><strong>Transportista</strong></p>
-                                            <p style="width:100%">{{ordenDeCargaFason.RazonSocialTransporte}}</p>
+                                            <p class="blue"><strong>Patente acoplado</strong></p>
+                                            <p style="width:100%">{{ordenDeCargaFason.PatenteAcoplado}}</p>
                                         </div>
 
                                         <div class="col-xs-12 col-md-12">
@@ -113,40 +126,57 @@
                                         </div>
 
                                         <div class="col-xs-12 col-md-12">
-                                            <p class="blue"><strong>Tipo de documento</strong></p>
-                                            <p style="width:100%">DNI</p>
+                                            <p class="blue"><strong>Raz&oacute;n social transporte</strong></p>
+                                            <p style="width:100%">{{ordenDeCargaFason.RazonSocialTransporte}}</p>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-12">
+                                            <p class="blue"><strong>Cuit transporte</strong></p>
+                                            <p style="width:100%">{{ordenDeCargaFason.CUITTransporte}}</p>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-12">
+                                            <p class="blue"><strong>Fecha</strong></p>
+                                            <p style="width:100%">{{ordenDeCargaFason.FechaCreacion}}</p>
                                         </div>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Observaci&oacute;n</strong></p>
                                         <p style="width:100%">{{ordenDeCargaFason.Observacion}}</p>
-                                    </div>
-                                    <!--<div class="col-xs-12 col-md-12">
-                                        <p class="blue"><strong>Tipo de documento</strong></p>
-                                        <p style="width:100%">DNI</p>
-                                    </div>
-                                    <div class="col-xs-12 col-md-12">
-                                        <p class="blue"><strong>N�mero de documento</strong></p>
-                                        <p style="width:100%">{{ordenDeCargaFason.CUITTransporte}}</p>
-                                    </div>-->
-
-                               
+                                    </div>                  
+                            </div>
+                        </div>
+                        <div class="myRow px-4" *ngIf="ordenDeCargaFason.Estado == estadoOrdenDeCargaFason.Entregada">
+                            <div class="clearfix myTables">
+                                <table #tabla id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0; background: white !important;">
+                                    <thead>
+                                      <tr role="row">
+                                        <th>Fecha de salida</th>
+                                        <th>Fecha de ingreso</th>
+                                        <th>Cantidad de {{ordenDeCargaFason.UniMedCant | lowercase}}</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr >
+                                        <td class="fw-normal">{{ordenDeCargaFason.FechaEgreso}}</td>
+                                        <td class="fw-normal">{{ordenDeCargaFason.FechaIngreso}}</td>
+                                        <td class="fw-normal">{{ordenDeCargaFason.CantidadEntregada | number:'2.0-0'}}</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
                             </div>
                         </div>
                     </div>
 
                     <div class="formulario">
-                        <div class="containerBotones">
+                        <div class="containerBotones">                                    
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerificarTransporte">
                                 <input type="button" (click)="verificarTransporte()" class="btn-custom btn-add btn-grande"
                                        value="Verificar Transporte">
                             </div>
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
         </div>
