@@ -4,7 +4,7 @@ export enum EstadoAplicacionCCPP {
     Aplicado,
     Error
 }
-export type ColorEstado = 'red'|'green'|'orange'
+export type ColorEstado = 'red' | 'green' | 'orange'
 
 export interface AplicacionCCPP {
     Id: number;
@@ -16,15 +16,21 @@ export interface AplicacionCCPP {
     Kilogramos: number;
     Usuario_Id?: number;
     Usuario?: any;
+    Error?: string;
+    FechaAlta: string;
+    FechaActualizacion: string;
+    //Dto info
     MailUsuario?: string;
     RazonSocial?: string;
     ColorEstado?: ColorEstado;
     LabelEstado?: string;
-    Error?: string;
-    FechaAlta: Date;
-    FechaActualizacion: Date;
 }
-
+export interface AplicacionCCPPFiltro {
+    FiltroContratos: Array<DropdownOption>;
+    FiltroCartasPorte: Array<DropdownOption>;
+    FiltroEstados: Array<DropdownOption>;
+    FiltroClientes: Array<DropdownOption>;
+}
 export const SeccionAplicacionCCPP = "aplicaciones-ccpp";
 export const estadosAplicacionCCPP: DropdownOption[] = [
     { value: "", label: "Todos" },

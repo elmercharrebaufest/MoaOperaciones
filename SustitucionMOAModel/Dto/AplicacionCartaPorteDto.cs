@@ -1,4 +1,7 @@
-﻿using System;
+﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +11,60 @@ namespace SustitucionMOAModel.Dto
 {
     public class AplicacionCartaPorteDto
     {
+        public string MailUsuario { get; set; }
+        public string RazonSocial { get; set; }
+        public string RazonSocialCuit { get; set; }
+        public string ColorEstado { get; set; }
+        public string LabelEstado { get; set; }
+        public string Contrato { get; set; }
+        public string CartaPorte { get; set; }
+        public int Kilogramos { get; set; }
+        public string Error { get; set; }
+        public EstadoAplicacionCartaPorte Estado { get; set; }
+        public string FechaAlta { get; set; }
+        public string FechaActualizacion { get; set; }
+
+
+        public AplicacionCartaPorteDto(AplicacionCartaPorte aplicacionCCPP)
+        {
+            var colorEstado = EstadoAplicacionCartaPorteExtensions.ObtenerSemaforo(aplicacionCCPP.Estado);
+            var labelEstado = EstadoAplicacionCartaPorteExtensions.ToFriendlyString(aplicacionCCPP.Estado);
+            var razonSocial = aplicacionCCPP.Proveedor?.RazonSocial ?? string.Empty;
+
+            this.MailUsuario = aplicacionCCPP.Usuario?.Mail ?? string.Empty;
+            this.RazonSocial = razonSocial;
+            this.RazonSocialCuit = $"{razonSocial} - {aplicacionCCPP.Proveedor?.CUIT}";
+            this.ColorEstado = colorEstado;
+            this.LabelEstado = labelEstado;
+            this.FechaActualizacion = aplicacionCCPP.FechaActualizacion.ToString("dd/mm/yyyy");
+            this.FechaAlta = aplicacionCCPP.FechaAlta.ToString("dd/mm/yyyy");
+            this.Contrato = aplicacionCCPP.Contrato;
+            this.CartaPorte = aplicacionCCPP.CartaPorte;
+            this.Kilogramos = aplicacionCCPP.Kilogramos;
+            this.Error = aplicacionCCPP.Error;
+            this.Estado = aplicacionCCPP.Estado;
+        }
+    }
+    public class AplicacionCartaPorteFiltrosDto
+    {
+        public List<DropdownOption> FiltroContratos;
+        public List<DropdownOption> FiltroCartasPorte;
+        public List<DropdownOption> FiltroEstados;
+        public List<DropdownOption> FiltroClientes;
+        public AplicacionCartaPorteFiltrosDto(List<AplicacionCartaPorteDto> aplicaciones)
+        {
+            this.FiltroContratos =aplicaciones.GroupBy(apl => apl.Contrato).Select(x => new DropdownOption{ value= x.Key, label=$"{x.Key} ({x.Count()})"}).ToList();
+            this.FiltroCartasPorte = aplicaciones.GroupBy(apl=>apl.CartaPorte).Select(x=>new DropdownOption {value=x.Key, label=$"{x.Key} ({x.Count()})"}).ToList();
+            this.FiltroEstados = aplicaciones.GroupBy(apl => apl.LabelEstado).Select(x => new DropdownOption { value = x.Key, label = $"{x.Key} ({x.Count()})" }).ToList();
+            this.FiltroClientes = aplicaciones.GroupBy(apl => apl.RazonSocialCuit).Select(x => new DropdownOption { value = x.Key, label = $"{x.Key} ({x.Count()})" }).ToList();
+            AgregarOpciontodos();
+        }
+        void AgregarOpciontodos()
+        {
+            this.FiltroCartasPorte.Insert(0,new DropdownOption { value = "", label = "Todos" });
+            this.FiltroContratos.Insert(0, new DropdownOption { value = "", label = "Todos" });
+            this.FiltroClientes.Insert(0, new DropdownOption { value = "", label = "Todos" });
+            this.FiltroEstados.Insert(0, new DropdownOption { value = "", label = "Todos" });
+        }
     }
 }

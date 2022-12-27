@@ -27,25 +27,27 @@
         <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15">
           <p class="filter-title">Contrato</p>
           <div class="styled-select">
-            <input type="search" class="" placeholder="" [formControl]="contratoFiltro" aria-controls="tableModal">
+            <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesContratos"
+              (select)="contratoFiltro.setValue($event)"></dropdown>
           </div>
         </div>
         <div id="searchCCPP" class="col-xs-12 col-sm-6 col-md-15">
           <p class="filter-title">Carta Porte</p>
           <div class="styled-select">
-            <input type="search" class="" placeholder="" [formControl]="ccppFiltro" aria-controls="tableModal">
+            <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesCartasPorte"
+              (select)="ccppFiltro.setValue($event)"></dropdown>
           </div>
         </div>
         <div id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
           <p class="filter-title">Estado</p>
           <div class="styled-select">
-            <dropdown #FiltroEstado [options]="opcionesEstadoAplicacionCCPP" (select)="estadoFiltro.setValue($event)">
-            </dropdown>
+            <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesEstadoAplicacionCCPP"
+              (select)="estadoFiltro.setValue($event)"></dropdown>
           </div>
         </div>
         <div id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
           <br>
-          <button class="btn search-button">
+          <button class="btn search-button" (click)="getListado()">
             BUSCAR
           </button>
         </div>
@@ -98,7 +100,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let aplicacion of aplicaciones ; let odd = odd" role="row" [class.odd]="!odd">
-                <td>{{aplicacion.FechaAlta | date:'dd/m/yyyy'}}</td>
+                <td>{{aplicacion.FechaAlta}}</td>
                 <td *ngIf="verUsuario">{{aplicacion.MailUsuario}}</td>
                 <td *ngIf="verRazonSocial">{{aplicacion.RazonSocial}}</td>
                 <td>{{aplicacion.Contrato}}</td>
