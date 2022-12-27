@@ -56,6 +56,7 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\AplicacionCartaPorteDto.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\IngresosEgresosFasones.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\IngresosEgresosFas.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\CrearOrdenDeCargaFasonRequest.cs" />
