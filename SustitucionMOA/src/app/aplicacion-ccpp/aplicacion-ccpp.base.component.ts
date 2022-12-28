@@ -8,7 +8,7 @@ import { NavService } from './../common/services/NavService';
 import { SecurityService } from './../common/services/SecurityService';
 import { SessionDataService } from './../common/services/SessionDataService';
 import { AplicacionCcppService } from './aplicacion-ccpp.service';
-import { estadosAplicacionCCPP, SeccionAplicacionCCPP, EstadoAplicacionCCPP } from './aplicacion-ccpp.model';
+import { SeccionAplicacionCCPP, EstadoAplicacionCCPP } from './aplicacion-ccpp.model';
 
 @Component({
     selector: 'app-aplicacion-ccpp-base',
@@ -29,6 +29,5 @@ export class AplicacionCcppBaseComponent extends ListBaseComponent {
             ]
         );
     }
-    opcionesEstadoAplicacionCCPP = estadosAplicacionCCPP
     estadosAplicacionCCPP = EstadoAplicacionCCPP
 }

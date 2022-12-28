@@ -51,6 +51,8 @@ namespace SustitucionMOA.Controllers
             {
                 var mailUsuario = SessionPersister.getUsername();
                 var data = _aplicacionCCPPService.Listar(mailUsuario, fechaInicio, fechaFin);
+                if (! (data.Count > 0))
+                    throw new InfoCustomException("No se han encontrado aplicaciones cargadas");
                 var filtros = _aplicacionCCPPService.ObtenerFiltros(data);
                 return JsonCustom(new { data, filtros });
             }

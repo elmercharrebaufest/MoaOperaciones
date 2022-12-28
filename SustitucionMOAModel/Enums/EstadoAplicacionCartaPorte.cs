@@ -47,6 +47,20 @@ namespace SustitucionMOAModel.Enums
                         return "Sin estado";
                 }
             }
+            public static string ToFriendlyStringFromInt(int me)
+            {
+                switch (me)
+                {
+                    case 2:
+                        return "Error";
+                    case 1:
+                        return "Aplicado";
+                    case 0:
+                        return "Pendiente";
+                    default:
+                        return "Sin estado";
+                }
+            }
 
 
 
