@@ -29,7 +29,6 @@
 
 .filter-title {
     color: #373A3C5E;
-    ;
 }
 
 .search-button {
@@ -50,8 +49,9 @@
 .fw-bold {
     font-weight: bold !important;
 }
-.fs-medium{
-    font-size:medium!important;
+
+.fs-medium {
+    font-size: medium !important;
 }
 
 .px-4 {
@@ -67,24 +67,35 @@
 .mb-0 {
     margin-bottom: 0 !important;
 }
-.radiusb-4{
-    border-radius: 0 0 2rem 2rem!important;
+
+.radiusb-4 {
+    border-radius: 0 0 2rem 2rem !important;
 }
+
 .text-white {
     color: #fff !important;
 }
-.mt-0{
-    margin-top: 0!important;
+
+.mt-0 {
+    margin-top: 0 !important;
 }
-.pt-0{
-    padding-top: 0!important;
+
+.pt-0 {
+    padding-top: 0 !important;
 }
-.p-2{
-padding: 1rem 1rem !important;
+
+.p-2 {
+    padding: 1rem 1rem !important;
 }
-.d-flex{
-    display: flex!important;
+
+.d-flex {
+    display: flex !important;
 }
-.justify-between{
-    justify-content: space-between!important;
+
+.justify-between {
+    justify-content: space-between !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }

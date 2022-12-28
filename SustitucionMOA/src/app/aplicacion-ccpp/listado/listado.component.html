@@ -27,29 +27,34 @@
         <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15">
           <p class="filter-title">Contrato</p>
           <div class="styled-select">
-            <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesContratos"
-              (select)="contratoFiltro.setValue($event)"></dropdown>
+            <input type="search" class="" placeholder="" [formControl]="contratoFiltro" aria-controls="tableModal">
           </div>
         </div>
         <div id="searchCCPP" class="col-xs-12 col-sm-6 col-md-15">
           <p class="filter-title">Carta Porte</p>
           <div class="styled-select">
-            <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesCartasPorte"
-              (select)="ccppFiltro.setValue($event)"></dropdown>
+            <input type="search" class="" placeholder="" [formControl]="ccppFiltro" aria-controls="tableModal">
           </div>
         </div>
         <div id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
           <p class="filter-title">Estado</p>
           <div class="styled-select">
-            <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesEstadoAplicacionCCPP"
+           <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesEstadoAplicacionCCPP"
               (select)="estadoFiltro.setValue($event)"></dropdown>
           </div>
         </div>
-        <div id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
-          <br>
-          <button class="btn search-button" (click)="getListado()">
-            BUSCAR
-          </button>
+        <div id="searchCliente" class="col-xs-12 col-sm-6 col-md-15" *ngIf="filtraClientes">
+          <p class="filter-title">Cliente</p>
+          <div class="styled-select">
+            <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesClientes"
+              (select)="clienteFiltro.setValue($event)"></dropdown>
+          </div>
+        </div>
+        <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
+          <p>Mostrar</p>
+          <div class="styled-select">
+            <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
+          </div>
         </div>
       </div>
     </div>
@@ -60,68 +65,79 @@
       <div class="clearfix myTables">
         <mensaje></mensaje>
         <spinner></spinner>
-        <div class="col-12 search-header mb-0 p-2 px-4 text-white fw-bold ">
-          <p class="py-0 mb-0">Mis Cargas</p>
-        </div>
-        <div class="col-12">
-          <table id="tableModal" *ngIf="isVisible"
-            class="display nowrap dataTable no-footer dtr-inline rounded shadow animate radiusb-4 mt-0 pt-0" role="grid"
-            aria-describedby="tableModal_info" style="width: 100%;padding: 1rem 0;max-width: 100%;">
-            <thead>
-              <tr role="row">
-                <th class="fw-bold fs-medium" id="fechaRow" tabindex="0" rowspan="1" colspan="1">
-                  Fecha
-                </th>
-                <th class="fw-bold fs-medium" id="usuarioRow" tabindex="0" rowspan="1" colspan="1" *ngIf="verUsuario">
-                  Usuario
-                </th>
-                <th class="fw-bold fs-medium" id="usuarioRow" tabindex="0" rowspan="1" colspan="1"
-                  *ngIf="verRazonSocial">
-                  Razon Social
-                </th>
-                <th class="fw-bold fs-medium" id="contratoRow" tabindex="0" rowspan="1" colspan="1">
-                  CTO
-                </th>
-                <th class="fw-bold fs-medium" id="ccppRow" tabindex="0" rowspan="1" colspan="1">
-                  CCPP
-                </th>
-                <th class="fw-bold fs-medium" id="kilosRow" tabindex="0" rowspan="1" colspan="1">
-                  KGS
-                </th>
-                <th class="fw-bold fs-medium" id="estadoRow" tabindex="0" rowspan="1" colspan="1">
-                  Estado
-                </th>
-                <th class="fw-bold fs-medium" id="observacionesRow" tabindex="0" rowspan="1" colspan="1">
-                  Observaciones
-                </th>
-                <th id="accionesRow" tabindex="0" rowspan="1" colspan="1">
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let aplicacion of aplicaciones ; let odd = odd" role="row" [class.odd]="!odd">
-                <td>{{aplicacion.FechaAlta}}</td>
-                <td *ngIf="verUsuario">{{aplicacion.MailUsuario}}</td>
-                <td *ngIf="verRazonSocial">{{aplicacion.RazonSocial}}</td>
-                <td>{{aplicacion.Contrato}}</td>
-                <td>{{aplicacion.CartaPorte}}</td>
-                <td>
-                  {{
-                  aplicacion.Estado !== estadosAplicacionCCPP.Error?
-                  (aplicacion.Kilogramos| number:'2.0' )
-                  : null
-                  }}
-                </td>
-                <td [ngClass]="[aplicacion.ColorEstado,'fw-bold']">{{aplicacion.LabelEstado}}</td>
-                <td>{{aplicacion.Error}}</td>
-                <td>
-                  <i *ngIf="aplicacion.Estado === estadosAplicacionCCPP.Pendiente">tachito</i>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-        </div>
+        <ng-container *ngIf="isVisible">
+          <div class="col-12 search-header mb-0 p-2 px-4 text-white fw-bold ">
+            <p class="py-0 mb-0">Mis Cargas</p>
+          </div>
+          <div class="col-12">
+            <table id="tableModal"
+              class="display nowrap dataTable no-footer dtr-inline rounded shadow animate radiusb-4 mt-0 pt-0"
+              role="grid" aria-describedby="tableModal_info" style="width: 100%;padding: 1rem 0;max-width: 100%;">
+              <thead>
+                <tr role="row">
+                  <th class="fw-bold fs-medium" id="fechaRow" tabindex="0" rowspan="1" colspan="1">
+                    Fecha
+                  </th>
+                  <th class="fw-bold fs-medium" id="usuarioRow" tabindex="0" rowspan="1" colspan="1" *ngIf="verUsuario">
+                    Usuario
+                  </th>
+                  <th class="fw-bold fs-medium" id="usuarioRow" tabindex="0" rowspan="1" colspan="1"
+                    *ngIf="verRazonSocial">
+                    Razon Social
+                  </th>
+                  <th class="fw-bold fs-medium" id="contratoRow" tabindex="0" rowspan="1" colspan="1">
+                    CTO
+                  </th>
+                  <th class="fw-bold fs-medium" id="ccppRow" tabindex="0" rowspan="1" colspan="1">
+                    CCPP
+                  </th>
+                  <th class="fw-bold fs-medium" id="kilosRow" tabindex="0" rowspan="1" colspan="1">
+                    KGS
+                  </th>
+                  <th class="fw-bold fs-medium" id="estadoRow" tabindex="0" rowspan="1" colspan="1">
+                    Estado
+                  </th>
+                  <th class="fw-bold fs-medium" id="observacionesRow" tabindex="0" rowspan="1" colspan="1">
+                    Observaciones
+                  </th>
+                  <th id="accionesRow" tabindex="0" rowspan="1" colspan="1">
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let aplicacion of aplicaciones 
+                  | customFilter:'Contrato':contratoFiltro.value
+                  | customFilter:'CartaPorte':ccppFiltro.value
+                  | customFilter:'LabelEstado':estadoFiltro.value
+                  | customFilter:'RazonSocialCuit':clienteFiltro.value
+                  | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
+                  ;let odd=odd"
+                  role="row" [class.odd]="!odd"
+                  >
+                  <td>{{aplicacion.FechaAlta}}</td>
+                  <td *ngIf="verUsuario">{{aplicacion.MailUsuario}}</td>
+                  <td *ngIf="verRazonSocial">{{aplicacion.RazonSocial}}</td>
+                  <td>{{aplicacion.Contrato}}</td>
+                  <td>{{aplicacion.CartaPorte}}</td>
+                  <td>
+                    {{
+                    aplicacion.Estado !== estadosAplicacionCCPP.Error?
+                    (aplicacion.Kilogramos| number:'2.0' )
+                    : null
+                    }}
+                  </td>
+                  <td [ngClass]="[aplicacion.ColorEstado,'fw-bold']">{{aplicacion.LabelEstado}}</td>
+                  <td>{{aplicacion.Error}}</td>
+                  <td>
+                    <i *ngIf="aplicacion.Estado === estadosAplicacionCCPP.Pendiente" (click)="eliminarAplicacion(aplicacion)">
+                      <img src="../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="cursor-pointer" style="height:25px;"/>
+                    </i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
 
         <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisible">
           <div class="dataTables_paginate paging_simple_numbers">

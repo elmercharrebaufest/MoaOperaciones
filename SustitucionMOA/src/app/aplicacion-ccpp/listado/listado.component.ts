@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -11,22 +11,25 @@ import { AplicacionCcppService, ListadoRequest } from '../aplicacion-ccpp.servic
 import { DropdownComponent, DropdownOption } from '../../common/view-child/dropdown/dropdown.component';
 
 import * as XLSX from 'xlsx';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
   selector: 'app-listado',
   templateUrl: './listado.component.html',
   styleUrls: ['./listado.component.css']
 })
-export class ListadoComponent extends AplicacionCcppBaseComponent implements OnInit, AfterViewInit {
+export class ListadoComponent extends AplicacionCcppBaseComponent implements OnInit, OnDestroy {
+  @BlockUI() blockUI: NgBlockUI;
   @ViewChild("FiltroEstado") filtroEstadoComponent: DropdownComponent;
   aplicaciones?: AplicacionCCPP[];
   opcionesClientes?: DropdownOption[];
-  opcionesContratos?: DropdownOption[];
-  opcionesCartasPorte?: DropdownOption[];
+  opcionesEstadoAplicacionCCPP?: DropdownOption[];
 
   contratoFiltro = new FormControl();
   ccppFiltro = new FormControl();
   estadoFiltro = new FormControl();
+  clienteFiltro = new FormControl();
+  esAdmin = this.isAuthorized('ADMIN APLICACIONES CCPP');
   disabled = false;
   show = false;
 
@@ -42,6 +45,7 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
 
   ngOnInit() {
     this.crearSecciones();
+    this.setMenuSeccionTab(SeccionAplicacionCCPP, 'Estado de cargas');
     this.getListado()
   }
   get isVisible(): boolean {
@@ -53,28 +57,38 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
   get verRazonSocial(): boolean {
     return true;
   }
+  get filtraClientes(): boolean {
+    return this.esAdmin;
+  }
   getListadoFechas() {
-    this.show = false;
     this.getListado();
     this.setMenuSeccionTab(SeccionAplicacionCCPP, "Estado de cargas");
   }
   getListado() {
-    this.service.getListado(this.getRequest()).subscribe(res => {
-      if (res.info) {
-
-      }
-      else if (res.error) {
-
-      } else {
-        this.show = true
-        this.aplicaciones = res.data
-        this.setOpciones(res.filtros)
-      }
-    });
+    this.mensajeComponent.setMsgsEmpty();
+    this.limpiarListado()
+    this.blockUI.start('');
+    this.disabled = true;
+    this.unsubscribe();
+    this.subscription =
+      this.service.getListado(this.getRequest()).subscribe(res => {
+        this.blockUI.stop();
+        if (res.logout)
+          this.sessionDataService.logout()
+        else if (res.info)
+          this.mensajeComponent.setInfoMsg(res.info)
+        else if (res.error)
+          this.mensajeComponent.setErrorMsg(res.error)
+        else {
+          this.show = true
+          this.aplicaciones = res.data
+          this.setOpciones(res.filtros)
+        }
+      });
   }
-
-  ngAfterViewInit(): void {
-    this.filtroEstadoComponent.setSelectItem("");
+  limpiarListado() {
+    this.show = false
+    this.aplicaciones = []
   }
 
   exportExcelAplicacionesCCPP() {
@@ -83,6 +97,7 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
 
     informacionExportar = this.aplicaciones.map(info => {
       return {
+        "Fecha": info.FechaAlta || "-",
         "Usuario": info.MailUsuario || "-",
         "Razon Social": info.RazonSocial || "-",
         "Contrato": info.Contrato,
@@ -116,10 +131,9 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
       fechaFin: this.filtroFechaComponent.fecha_fin
     }
   }
-  setOpciones({FiltroCartasPorte, FiltroContratos, FiltroEstados, FiltroClientes}: AplicacionCCPPFiltro){
-    this.opcionesCartasPorte = FiltroCartasPorte;
-    this.opcionesContratos = FiltroContratos;
+  setOpciones({ FiltroEstados, FiltroClientes }: AplicacionCCPPFiltro) {
     this.opcionesEstadoAplicacionCCPP = FiltroEstados;
     this.opcionesClientes = FiltroClientes;
   }
+  eliminarAplicacion(aplicacion: AplicacionCCPP){}
 }

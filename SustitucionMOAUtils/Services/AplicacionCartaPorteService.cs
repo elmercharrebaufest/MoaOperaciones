@@ -7,6 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
+using Org.BouncyCastle.Asn1.Ocsp;
+using SustitucionMOAAssets;
+using SustitucionMOAModel.CustomExceptions;
+using System.Data.Entity;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -28,46 +32,49 @@ namespace SustitucionMOAUtils.Services
         }
         public List<AplicacionCartaPorteDto> Listar(string mailUsuario, string fechaInicio, string fechaFin)
         {
-            var rawList = new List<AplicacionCartaPorte>()
+            DateTime fechaInicioDateTime, fechaFinDateTime;
+            try
             {
-                new AplicacionCartaPorte()
-                    {
-                        FechaAlta= DateTime.Now,
-                        FechaActualizacion = DateTime.Now,
-                        Contrato =  "00123024EF",
-                        CartaPorte= "090009090",
-                        Kilogramos= 300000,
-                        Estado= EstadoAplicacionCartaPorte.Pendiente,
-                    },
-                 new AplicacionCartaPorte()
-                    {
-                        FechaAlta= DateTime.Now,
-                        FechaActualizacion = DateTime.Now,
-                        Contrato =  "00123024EF",
-                        CartaPorte= "090009090",
-                        Kilogramos= 300000,
-                        Estado= EstadoAplicacionCartaPorte.Error,
-                        Error = "Todo mal aca locoooo"
-                    },
-                  new AplicacionCartaPorte()
-                    {
-                        FechaAlta= DateTime.Now,
-                        FechaActualizacion = DateTime.Now,
-                        Contrato =  "00123024EF",
-                        CartaPorte= "090009090",
-                        Kilogramos= 300000,
-                        Estado= EstadoAplicacionCartaPorte.Aplicado,
-                    },
-                   new AplicacionCartaPorte()
-                    {
-                        FechaAlta= DateTime.Now,
-                        FechaActualizacion = DateTime.Now,
-                        Contrato =  "00123024EF",
-                        CartaPorte= "090009090",
-                        Kilogramos= 300000,
-                        Estado= EstadoAplicacionCartaPorte.Pendiente,
-                    },
-            };
+                fechaInicioDateTime = DateTime.Parse(fechaInicio);
+            }
+            catch
+            {
+                try
+                {
+                    fechaInicio = new string(fechaInicio.Where(c => c != '\u200E').ToArray());
+                    fechaInicioDateTime = DateTime.Parse(fechaInicio);
+                }
+                catch (Exception e)
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "inicio"), e);
+                }
+            }
+
+            try
+            {
+                fechaFinDateTime = DateTime.Parse(fechaFin);
+            }
+            catch
+            {
+                try
+                {
+                    fechaFin = new string(fechaFin.Where(c => c != '\u200E').ToArray());
+                    fechaFinDateTime = DateTime.Parse(fechaFin);
+                }
+                catch (Exception e)
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "fin"), e);
+                }
+            }
+            var usuario = _repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            string cuit = usuario.CUITRegistro;
+            bool isAdmin = usuario.TienePermiso("ADMIN APLICACIONES CCPP");
+
+            var rawList = _repositorio.Listar<AplicacionCartaPorte>(apl =>
+                (isAdmin ? true : apl.Proveedor.CUIT == cuit) &&
+                fechaInicioDateTime <= apl.FechaAlta && fechaFinDateTime >= DbFunctions.TruncateTime(apl.FechaAlta)
+            ) ;
+
             var lista = rawList.Select(apl => new AplicacionCartaPorteDto(apl)).ToList();
             return lista;
         }

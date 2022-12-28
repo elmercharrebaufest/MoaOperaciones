@@ -36,8 +36,8 @@ namespace SustitucionMOAModel.Dto
             this.RazonSocialCuit = $"{razonSocial} - {aplicacionCCPP.Proveedor?.CUIT}";
             this.ColorEstado = colorEstado;
             this.LabelEstado = labelEstado;
-            this.FechaActualizacion = aplicacionCCPP.FechaActualizacion.ToString("dd/mm/yyyy");
-            this.FechaAlta = aplicacionCCPP.FechaAlta.ToString("dd/mm/yyyy");
+            this.FechaActualizacion = aplicacionCCPP.FechaActualizacion.ToString("dd/MM/yyyy");
+            this.FechaAlta = aplicacionCCPP.FechaAlta.ToString("dd/MM/yyyy");
             this.Contrato = aplicacionCCPP.Contrato;
             this.CartaPorte = aplicacionCCPP.CartaPorte;
             this.Kilogramos = aplicacionCCPP.Kilogramos;
@@ -47,22 +47,17 @@ namespace SustitucionMOAModel.Dto
     }
     public class AplicacionCartaPorteFiltrosDto
     {
-        public List<DropdownOption> FiltroContratos;
-        public List<DropdownOption> FiltroCartasPorte;
+ 
         public List<DropdownOption> FiltroEstados;
         public List<DropdownOption> FiltroClientes;
         public AplicacionCartaPorteFiltrosDto(List<AplicacionCartaPorteDto> aplicaciones)
         {
-            this.FiltroContratos =aplicaciones.GroupBy(apl => apl.Contrato).Select(x => new DropdownOption{ value= x.Key, label=$"{x.Key} ({x.Count()})"}).ToList();
-            this.FiltroCartasPorte = aplicaciones.GroupBy(apl=>apl.CartaPorte).Select(x=>new DropdownOption {value=x.Key, label=$"{x.Key} ({x.Count()})"}).ToList();
-            this.FiltroEstados = aplicaciones.GroupBy(apl => apl.LabelEstado).Select(x => new DropdownOption { value = x.Key, label = $"{x.Key} ({x.Count()})" }).ToList();
+            this.FiltroEstados = aplicaciones.GroupBy(apl => apl.Estado).Select(x => new DropdownOption { value = x.Key.ToString(), label = $"{EstadoAplicacionCartaPorteExtensions.ToFriendlyStringFromInt(((int)x.Key))} ({x.Count()})" }).ToList();
             this.FiltroClientes = aplicaciones.GroupBy(apl => apl.RazonSocialCuit).Select(x => new DropdownOption { value = x.Key, label = $"{x.Key} ({x.Count()})" }).ToList();
             AgregarOpciontodos();
         }
         void AgregarOpciontodos()
         {
-            this.FiltroCartasPorte.Insert(0,new DropdownOption { value = "", label = "Todos" });
-            this.FiltroContratos.Insert(0, new DropdownOption { value = "", label = "Todos" });
             this.FiltroClientes.Insert(0, new DropdownOption { value = "", label = "Todos" });
             this.FiltroEstados.Insert(0, new DropdownOption { value = "", label = "Todos" });
         }
