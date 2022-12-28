@@ -13,10 +13,9 @@ export interface ApiResponse <T,U>{
   info?:string;
   error?:string;
   filtros:U;
+  logout?:boolean;
 }
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class AplicacionCcppService extends BaseService{
   private baseUrl = "/api/AplicacionCartaPorte/";
   getListado({fechaInicio, fechaFin}: ListadoRequest): Observable<ApiResponse<AplicacionCCPP[],AplicacionCCPPFiltro>>{

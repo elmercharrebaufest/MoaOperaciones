@@ -22,19 +22,12 @@ export interface AplicacionCCPP {
     //Dto info
     MailUsuario?: string;
     RazonSocial?: string;
+    RazonSocialCuit?: string;
     ColorEstado?: ColorEstado;
     LabelEstado?: string;
 }
 export interface AplicacionCCPPFiltro {
-    FiltroContratos: Array<DropdownOption>;
-    FiltroCartasPorte: Array<DropdownOption>;
     FiltroEstados: Array<DropdownOption>;
     FiltroClientes: Array<DropdownOption>;
 }
 export const SeccionAplicacionCCPP = "aplicaciones-ccpp";
-export const estadosAplicacionCCPP: DropdownOption[] = [
-    { value: "", label: "Todos" },
-    { value: EstadoAplicacionCCPP.Aplicado.toString(), label: "Aplicado" },
-    { value: EstadoAplicacionCCPP.Error.toString(), label: "Error" },
-    { value: EstadoAplicacionCCPP.Pendiente.toString(), label: "Pendiente" },
-] 
