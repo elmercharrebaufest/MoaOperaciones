@@ -53,7 +53,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
     esAdmin: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
-    esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
+    esCliente: any = sessionStorage.getItem("tipoUsuario") === "CLI";
     esInterno: boolean = (this.esComercial || this.esMesaFas || this.esAdmin);
 
     ngOnInit() {
@@ -75,7 +75,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
                 (result: any) => {
                     this.mensajeComponent.setMsgsEmpty();
                     this.blockUI.stop();
-                    if (result.logout == true) {
+                    if (result.logout) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
@@ -165,7 +165,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
 
         }
         this.cabecera = this.cabecera.filter(x => x.Corredor != "TOTAL");
-        if (this.mostrarPendientes == true) {
+        if (this.mostrarPendientes) {
             this.cabecera = this.cabecera.filter(x => x.KilosPendienteEntrega > 0);
         }
         this.getTotalKilogramos();
@@ -222,7 +222,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
                     this.mensajeComponent.setMsgsEmpty();
                     this.blockUI.stop();
                     this.cargarFiltrosContratos(result);
-                    if (result.logout == true) {
+                    if (result.logout) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
