@@ -1,9 +1,12 @@
 ﻿using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
+using SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA;
+using SustitucionMOAWS.ModificarOrdenCargaFasWebServiceMOA;
 using SustitucionMOAWS.OrdenCargaControlEstadoSAP;
 using SustitucionMOAWS.OrdenCargaControlSAP;
 using SustitucionMOAWS.OrdenCargaCrearSAP;
@@ -56,7 +59,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Request: {new { cliente, contrato, corredor, cuit, material, pedido }}");
 
-            var result= service.SI_MPMF_MOAOP_CONTROL_CARGA(cliente, contrato, corredor, cuit, material, pedido).Trim();
+            var result = service.SI_MPMF_MOAOP_CONTROL_CARGA(cliente, contrato, corredor, cuit, material, pedido).Trim();
             Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {new { result }}");
             return result;
         }
@@ -92,7 +95,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {new { cliente, contrato, corredor, kilos, material, pedidoInput, usuarioSAP, forzarCreacion }}");
-            var result =  service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(cliente, contrato, corredor, kilos, material, pedidoInput, usuarioSAP, forzarCreacion, out pedidoOutput).Trim();
+            var result = service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(cliente, contrato, corredor, kilos, material, pedidoInput, usuarioSAP, forzarCreacion, out pedidoOutput).Trim();
             Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Response: {new { result, pedidoOutput }}");
 
             return result;
@@ -180,7 +183,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
             Log.Info($"SI_MPMF_MOAOP_CONTROL_ESTADO Request: {new { entrega, pedido, transportista }}");
-            var result= service.SI_MPMF_MOAOP_CONTROL_ESTADO(entrega, pedido, transportista).Trim();
+            var result = service.SI_MPMF_MOAOP_CONTROL_ESTADO(entrega, pedido, transportista).Trim();
             Log.Info($"SI_MPMF_MOAOP_CONTROL_ESTADO Result: {new { result }}");
 
             return result;
@@ -300,5 +303,65 @@ namespace SustitucionMOAWS.WSConsumers
             var resp = OrdenCargaControlEstadoRequest("", "", cuitTransportista);
             return ResponseConverter.GetOrdenCargaControlEstadoResponse(resp);
         }
+        public ResultadoGenerico AnularOrdenCarga(string ordenCarga)
+        {
+            var service = new SI_MPMF_MOAOP_MOD_ORDEN_CARGAClient();
+
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+
+            Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Request: {ordenCarga}");
+
+            var result = service.SI_MPMF_MOAOP_MOD_ORDEN_CARGA("X", ordenCarga);
+            Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Result: {new { result }}");
+
+            var resultado = new ResultadoGenerico();
+            if (result != "Se actualizaron los datos correctamente")
+                resultado.Error("error", result);
+
+            return resultado;
+        }
+
+        public ResultadoGenerico AnularEntregaOrdenCarga(string nroEntrega)
+        {
+            var service = new SI_MPMF_MOAOP_MOD_ENTREGAClient();
+
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {nroEntrega}");
+
+            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA(null, "X", null, null, null, nroEntrega, null);
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result }}");
+
+            var resultado = new ResultadoGenerico();
+            if (result != "Se actualizaron los datos correctamente")
+                resultado.Error("error", result);
+
+            return resultado;
+        };
+        public ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega)
+        {
+            var service = new SI_MPMF_MOAOP_MOD_ENTREGAClient();
+
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {datosEntrega.NumeroEntrega} {datosEntrega}");
+
+            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA(
+                            datosEntrega.Acoplado,
+                            null,
+                            datosEntrega.Chasis,
+                            datosEntrega.Chofer,
+                            datosEntrega.Documento,
+                            datosEntrega.NumeroEntrega,
+                            datosEntrega.TipoDoc);
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result }}");
+
+            var resultado = new ResultadoGenerico();
+            if (result != "Se actualizaron los datos correctamente")
+                resultado.Error("error", result);
+
+            return resultado;
+        };
     }
 }
