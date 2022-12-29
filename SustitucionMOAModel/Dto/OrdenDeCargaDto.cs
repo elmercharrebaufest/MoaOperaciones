@@ -227,4 +227,23 @@ namespace SustitucionMOAModel.Dto
         public string Antes { get; set; }
         public string Despues { get; set; }
     }
+    public class ModificarEntregaOrdenCargaSAP
+    {
+        public string Chasis { get; set; }
+        public string NumeroEntrega { get; set; }
+        public string Acoplado { get; set; }
+        public string Chofer { get; set; }
+        public string TipoDoc { get; set; }
+        public string Documento { get; set; }
+
+        public ModificarEntregaOrdenCargaSAP(Ent.OrdenDeCarga orden)
+        {
+            Chasis = orden.ChasisAcoplado;
+            Acoplado = orden.PatenteAcoplado;
+            Chofer = orden.NombreChofer;
+            NumeroEntrega = orden.NumeroEntrega;
+            TipoDoc = string.Empty;
+            Documento = string.Empty;
+        }
+    }
 }

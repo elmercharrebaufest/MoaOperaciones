@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Org.BouncyCastle.Asn1.Ocsp;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
@@ -7,12 +6,11 @@ using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 using SustitucionMOAModel.Util;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
-using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -174,8 +172,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
                 var esAdmin = usuario.TienePermiso("VER TODAS ORDENES DE CARGA");
+                var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
                 var esTercero = usuario.TienePermiso("VER ORDENES DE CARGA DE TERCEROS");
                 var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
                 var esMesaFas = usuario.TienePermiso("VER ORDENES DE CARGA PARA MESA FAS");
@@ -217,21 +215,31 @@ namespace SustitucionMOAUtils.Services
                 ordenEditar.HistorialCambios.Concat(historialCambios);
                 repositorio.GuardarCambios();
                 NotificarTransporte(ordenEditar.Id);
-                if (puedeEnviarASAP && ordenEditar.CodigoVerificacionSap != "CC-07")
+                if (puedeEnviarASAP)
                 {
-                    if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega) && ordenEditar.AprobadoCredito)
+                    if(ordenEditar.CodigoVerificacionSap != "CC-07")
                     {
-                        GenerarEntregaSAP(ordenEditar);
-                    }
-                    if (historialCambios.Count > 0)
-                    {
-                        //Aviso de Edición de Orden de Carga
-                        var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega);
-                        if (emailSenderData != null)
+                        if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega) && ordenEditar.AprobadoCredito)
                         {
-                            EmailSender.EnviarMail(emailSenderData);
+                            GenerarEntregaSAP(ordenEditar);
+                        }
+                        if (historialCambios.Count > 0)
+                        {
+                            //Aviso de Edición de Orden de Carga
+                            var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega);
+                            if (emailSenderData != null)
+                            {
+                                EmailSender.EnviarMail(emailSenderData);
+                            }
                         }
                     }
+                    if(ordenEditar.NumeroEntrega != null)
+                    {
+                        var resultadoSAP = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(ordenEditar));
+                        if (resultadoSAP.HayError)
+                            throw new InfoCustomException(resultadoSAP.Errores[0].Message);
+                    }
+                    
                 }
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
                 Log.Info($"Result: { resultado.ToJson() }");
@@ -921,6 +929,7 @@ namespace SustitucionMOAUtils.Services
         {
 
             var emailSenderData = ConstruirCuerpoOrdenesVencidas(ordenes);
+            
             if (emailSenderData != null)
             {
                 //if (!HttpContext.Current.IsDebuggingEnabled)
@@ -931,8 +940,10 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public string NotificarVencimientoOrdenCarga(int ordenId)
+        public string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario)
         {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
             var emailSenderData = new EmailSenderData();
             var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
             var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
@@ -948,6 +959,7 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Mails.AddRange(mail.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
+            
             if (emailSenderData != null)
             {
                 //if (!HttpContext.Current.IsDebuggingEnabled)
@@ -957,6 +969,13 @@ namespace SustitucionMOAUtils.Services
             }
             orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
             repositorio.GuardarCambios();
+
+            if (puedeEnviarASAP)
+            {
+                var resultado = consumer.AnularOrdenCarga(ordenId.ToString());
+                if (resultado.HayError)
+                    throw new InfoCustomException(resultado.Errores[0].Message);
+            }
 
             return SuccessMsg.OrdenDeCargaAnulada;
         }
@@ -1030,7 +1049,9 @@ namespace SustitucionMOAUtils.Services
         public string AnularOrden(int ordenId, string mailUsuario)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+            
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
             var ordenHistorial = new OrdenDeCargaCambiosHistorial()
             {
                 Id = 0,
@@ -1044,6 +1065,14 @@ namespace SustitucionMOAUtils.Services
             repositorio.Agregar(ordenHistorial);
             orden.Estado = EstadoOrdenDeCarga.Anulada;
             repositorio.GuardarCambios();
+
+            if (puedeEnviarASAP)
+            {
+                var resultado = consumer.AnularOrdenCarga(ordenId.ToString());
+                if (resultado.HayError)
+                    throw new InfoCustomException(resultado.Errores[0].Message);
+            }
+                
             return SuccessMsg.OrdenDeCargaAnulada;
         }
 
@@ -1177,10 +1206,12 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string EdicionFinalizada(int ordenId)
+        public string EdicionFinalizada(int ordenId, string mailUsuario)
         {
             try
             {
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+                var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
                 var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
                 var estadoAnterior = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == ordenId)
@@ -1190,7 +1221,15 @@ namespace SustitucionMOAUtils.Services
 
                 orden.Estado = EstadoOrdenDeCargaExtensions.ObtenerDescripcionEstado(estadoAnterior);
                 orden.EdicionRechazada = false;
+                
                 repositorio.GuardarCambios();
+
+                if (puedeEnviarASAP && orden.NumeroEntrega != null)
+                {
+                    var resultado = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(orden));
+                    if (resultado.HayError)
+                        throw new InfoCustomException(resultado.Errores[0].Message);
+                }
 
                 return SuccessMsg.OrdenDeCargaActualizada;
             }
