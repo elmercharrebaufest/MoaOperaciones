@@ -338,7 +338,7 @@ namespace SustitucionMOAWS.WSConsumers
                 resultado.Error("error", result);
 
             return resultado;
-        };
+        }
         public ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega)
         {
             var service = new SI_MPMF_MOAOP_MOD_ENTREGAClient();
@@ -362,6 +362,6 @@ namespace SustitucionMOAWS.WSConsumers
                 resultado.Error("error", result);
 
             return resultado;
-        };
+        }
     }
 }
