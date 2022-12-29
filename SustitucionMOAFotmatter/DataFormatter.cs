@@ -16,11 +16,20 @@ namespace SustitucionMOAFotmatter
             {
                 return DateTime.Parse(fecha);
             }
-            catch (Exception e)
+            catch
             {
-                throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, tipoFecha), e);
+                try
+                {
+                    var stringDate = new string(fecha.Where(c => c != '\u200E').ToArray());
+                    return DateTime.Parse(stringDate);
+                }
+                catch (Exception e)
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, tipoFecha), e);
+
+                }
             }
-            
+
         }
     }
 }
