@@ -972,9 +972,13 @@ namespace SustitucionMOAUtils.Services
 
             if (puedeEnviarASAP)
             {
-                var resultado = consumer.AnularOrdenCarga(orden);
-                if (resultado.HayError)
-                    throw new InfoCustomException(resultado.Errores[0].Message);
+                var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
+                if (resultadoAnularEntrega.HayError)
+                    throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
+
+                var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
+                if (resultadoAnularOrden.HayError)
+                    throw new InfoCustomException(resultadoAnularOrden.Errores[0].Message);
             }
 
             return SuccessMsg.OrdenDeCargaAnulada;
@@ -1068,9 +1072,14 @@ namespace SustitucionMOAUtils.Services
 
             if (puedeEnviarASAP)
             {
-                var resultado = consumer.AnularOrdenCarga(orden);
-                if (resultado.HayError)
-                    throw new InfoCustomException(resultado.Errores[0].Message);
+
+                var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
+                if (resultadoAnularEntrega.HayError)
+                    throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
+
+                var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
+                if (resultadoAnularOrden.HayError)
+                    throw new InfoCustomException(resultadoAnularOrden.Errores[0].Message);
             }
                 
             return SuccessMsg.OrdenDeCargaAnulada;
