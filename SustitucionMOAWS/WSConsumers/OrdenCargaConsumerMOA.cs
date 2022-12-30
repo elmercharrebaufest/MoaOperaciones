@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Enum.OrdenCargaConsumer;
@@ -303,16 +304,18 @@ namespace SustitucionMOAWS.WSConsumers
             var resp = OrdenCargaControlEstadoRequest("", "", cuitTransportista);
             return ResponseConverter.GetOrdenCargaControlEstadoResponse(resp);
         }
-        public ResultadoGenerico AnularOrdenCarga(string ordenCarga)
+        public ResultadoGenerico AnularOrdenCarga(OrdenDeCarga orden)
         {
             var service = new SI_MPMF_MOAOP_MOD_ORDEN_CARGAClient();
 
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            var identificador = string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedidoIngresado : orden.NumeroPedido;
 
-            Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Request: {ordenCarga}");
+            Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Request: {identificador}");
+            
 
-            var result = service.SI_MPMF_MOAOP_MOD_ORDEN_CARGA("X", ordenCarga);
+            var result = service.SI_MPMF_MOAOP_MOD_ORDEN_CARGA("X", identificador);
             Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Result: {new { result }}");
 
             var resultado = new ResultadoGenerico();

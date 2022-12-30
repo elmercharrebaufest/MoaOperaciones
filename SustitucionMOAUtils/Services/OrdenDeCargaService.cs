@@ -972,7 +972,7 @@ namespace SustitucionMOAUtils.Services
 
             if (puedeEnviarASAP)
             {
-                var resultado = consumer.AnularOrdenCarga(ordenId.ToString());
+                var resultado = consumer.AnularOrdenCarga(orden);
                 if (resultado.HayError)
                     throw new InfoCustomException(resultado.Errores[0].Message);
             }
@@ -1068,7 +1068,7 @@ namespace SustitucionMOAUtils.Services
 
             if (puedeEnviarASAP)
             {
-                var resultado = consumer.AnularOrdenCarga(ordenId.ToString());
+                var resultado = consumer.AnularOrdenCarga(orden);
                 if (resultado.HayError)
                     throw new InfoCustomException(resultado.Errores[0].Message);
             }
