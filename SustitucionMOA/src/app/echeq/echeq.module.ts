@@ -16,6 +16,8 @@ import {ConfirmationService} from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { MisEcheqComponent } from './mis-echeq/mis-echeq.component';
+import { MisEcheqFiltrosComponent } from './mis-echeq/mis-echeq.filtros/mis-echeq-filtros.component';
+import { MisEcheqGrillaComponent } from './mis-echeq/mis-echeq.grilla/mis-echeq-grilla.component';
 
 @NgModule({
     imports: [
@@ -35,7 +37,9 @@ import { MisEcheqComponent } from './mis-echeq/mis-echeq.component';
         FiltrosComponent,
         GrillaComponent,
         EcheqPopupComponent,
-        MisEcheqComponent
+        MisEcheqComponent,
+        MisEcheqFiltrosComponent,
+        MisEcheqGrillaComponent
     ],
     providers: [
         EcheqService,

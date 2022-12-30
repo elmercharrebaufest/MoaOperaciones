@@ -101,8 +101,6 @@ export class EcheqDocumento {
     }
 }
 
-
-
 export class ObtenerContrato {
     public proveedor: string;
 }
