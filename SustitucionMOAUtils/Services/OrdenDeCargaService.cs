@@ -49,7 +49,7 @@ namespace SustitucionMOAUtils.Services
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
-            Log.Info($"Agregar(ordenDeCarga: { ordenDeCarga.ToDto().ToJson() }, mailUsuario: { mailUsuario })");
+            Log.Info($"Agregar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
             Proveedor cliente = null;
             try
             {
@@ -59,11 +59,11 @@ namespace SustitucionMOAUtils.Services
                 var llenarOrdenDeCarga = LlenarOrdenDeCarga(ordenDeCarga, usuario, esComercial, cliente);
                 ordenDeCarga = llenarOrdenDeCarga.Item1;
                 cliente = llenarOrdenDeCarga.Item2;
-                Log.Debug(this.GetType().Name, "Agregar", $" esComercial: { esComercial }");
-                Log.Debug(this.GetType().Name, "Agregar", $" puedeEnviarASAP: { puedeEnviarASAP }");
+                Log.Debug(this.GetType().Name, "Agregar", $" esComercial: {esComercial}");
+                Log.Debug(this.GetType().Name, "Agregar", $" puedeEnviarASAP: {puedeEnviarASAP}");
 
                 var crearPedido = VerificarOrden(ordenDeCarga, cliente, false, puedeEnviarASAP);
-                Log.Debug(this.GetType().Name, "Agregar", $" crearPedido: { crearPedido }");
+                Log.Debug(this.GetType().Name, "Agregar", $" crearPedido: {crearPedido}");
                 repositorio.Agregar(ordenDeCarga);
                 repositorio.GuardarCambios();
                 NotificarContratoSinKm(ordenDeCarga);
@@ -93,7 +93,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
-                Log.Info($"Result: { resultado.ToJson() }");
+                Log.Info($"Result: {resultado.ToJson()}");
                 return resultado;
             }
             catch (Exception ex)
@@ -104,7 +104,7 @@ namespace SustitucionMOAUtils.Services
         }
         private (OrdenDeCarga, Proveedor) LlenarOrdenDeCarga(OrdenDeCarga ordenDeCarga, Usuario usuario, bool esComercial, Proveedor cliente)
         {
-            Log.Info($"LlenarOrdenDeCarga(ordenDeCarga: { ordenDeCarga.ToDto().ToJson() }, usuario: { usuario?.Id.ToJson() }, esComercial: { esComercial })");
+            Log.Info($"LlenarOrdenDeCarga(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, usuario: {usuario?.Id.ToJson()}, esComercial: {esComercial})");
             Proveedor corredor = null;
             //var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var producto = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
@@ -166,7 +166,7 @@ namespace SustitucionMOAUtils.Services
         }
         public Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
-            Log.Info($"Editar(ordenDeCarga: { ordenDeCarga.ToDto().ToJson() }, mailUsuario: { mailUsuario })");
+            Log.Info($"Editar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
             var valoresAEditar = new List<string> { "NombreChofer", "CUITChofer", "PatenteAcoplado", "ChasisAcoplado", "ContratoIngresado", "NumeroPedido", "Observacion", "Cantidad", "RazonSocialTransporte", "CUITTransporte", "Producto_Id", "NumeroPedidoIngresado" };
             var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
             try
@@ -180,7 +180,7 @@ namespace SustitucionMOAUtils.Services
                 var esPuerto = usuario.TienePermiso("VER ORDENES DE CARGA PARA PUERTO");
                 var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
 
-                Log.Debug(this.GetType().Name, "Editar", $" puedeEnviarASAP: { puedeEnviarASAP }");
+                Log.Debug(this.GetType().Name, "Editar", $" puedeEnviarASAP: {puedeEnviarASAP}");
                 var cargarDatosOCEditar = CargarDatosOCEditar(ordenDeCarga, usuario);
                 var ordenEditar = cargarDatosOCEditar.Item1;
                 var listaValoresDiferentes = cargarDatosOCEditar.Item2;
@@ -213,10 +213,10 @@ namespace SustitucionMOAUtils.Services
                     repositorio.Agregar(historialCambio);
                 }
                 ordenEditar.HistorialCambios.Concat(historialCambios);
-                
+
                 if (puedeEnviarASAP)
                 {
-                    if(ordenEditar.CodigoVerificacionSap != "CC-07")
+                    if (ordenEditar.CodigoVerificacionSap != "CC-07")
                     {
                         if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega) && ordenEditar.AprobadoCredito)
                         {
@@ -232,20 +232,20 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
                     }
-                    if(ordenEditar.NumeroEntrega != null)
+                    if (ordenEditar.NumeroEntrega != null)
                     {
                         var resultadoSAP = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(ordenEditar));
                         if (resultadoSAP.HayError)
                             throw new InfoCustomException(resultadoSAP.Errores[0].Message);
                     }
-                    
+
                 }
 
                 repositorio.GuardarCambios();
                 NotificarTransporte(ordenEditar.Id);
 
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
-                Log.Info($"Result: { resultado.ToJson() }");
+                Log.Info($"Result: {resultado.ToJson()}");
                 return resultado;
             }
             catch (Exception ex)
@@ -256,7 +256,7 @@ namespace SustitucionMOAUtils.Services
         }
         private (OrdenDeCarga, List<Variance>) CargarDatosOCEditar(OrdenDeCarga ordenDeCarga, Usuario usuario)
         {
-            Log.Info($"CargarDatosOCEditar(ordenDeCarga: { ordenDeCarga.ToDto().ToJson() }, usuario: { usuario?.Id.ToJson() })");
+            Log.Info($"CargarDatosOCEditar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, usuario: {usuario?.Id.ToJson()})");
             var ordenEditar = repositorio.Obtener<OrdenDeCarga>(ordenDeCarga.Id);
             var listaValoresDiferentes = ordenEditar.Compare(ordenDeCarga);
             var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
@@ -337,7 +337,7 @@ namespace SustitucionMOAUtils.Services
 
         public CrearOrdenEnSAPResponse CrearOrdenEnSAP(CrearOrdenEnSAPRequest request, bool puedeEnviarASAP = false)
         {
-            Log.Info($"CrearOrdenEnSAP(request: { request.ToJson() }, puedeEnviarASAP: { puedeEnviarASAP })");
+            Log.Info($"CrearOrdenEnSAP(request: {request.ToJson()}, puedeEnviarASAP: {puedeEnviarASAP})");
             var response = new CrearOrdenEnSAPResponse();
             response.ResultCreation = true;
             var creadaEnSAP = false;
@@ -401,7 +401,7 @@ namespace SustitucionMOAUtils.Services
             //OV-02   'Verificar cantidad pendiente de Contratada'
             //OV-03   'Pedido creado - Verificar Crédito de pedido'
             //OV-00   'OK'
-            Log.Info($"CrearPedidoEnSAP(ordenDeCarga: { ordenDeCarga.ToDto().ToJson() }, cliente: { cliente?.Id.ToJson() }, forzarCreacion: { forzarCreacion }, puedeEnviarASAP: { puedeEnviarASAP })");
+            Log.Info($"CrearPedidoEnSAP(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, cliente: {cliente?.Id.ToJson()}, forzarCreacion: {forzarCreacion}, puedeEnviarASAP: {puedeEnviarASAP})");
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var validarKg = forzarCreacion ? "" : "X";
             string contrato = null;
@@ -462,7 +462,7 @@ namespace SustitucionMOAUtils.Services
             CC-07	'Faltan cargar los Km en el contrato'
             CC-00	'OK'
             */
-            Log.Info($"VerificarOrden(ordenDeCarga: { ordenDeCarga.ToDto().ToJson() }, cliente: { cliente?.Id.ToJson() }, esJob: { esJob }, puedeEnviarASAP: { puedeEnviarASAP })");
+            Log.Info($"VerificarOrden(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, cliente: {cliente?.Id.ToJson()}, esJob: {esJob}, puedeEnviarASAP: {puedeEnviarASAP})");
             string contrato = null;
             if (ordenDeCarga.ContratoIngresado != null)
             {
@@ -579,7 +579,7 @@ namespace SustitucionMOAUtils.Services
 
         public List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin)
         {
-            Log.Info($"Listar(mailUsuario: { mailUsuario }, fechaInicio: { fechaInicio }, fechaFin: { fechaFin })");
+            Log.Info($"Listar(mailUsuario: {mailUsuario}, fechaInicio: {fechaInicio}, fechaFin: {fechaFin})");
             DateTime fechaIncioDateTime, fechaFinDateTime;
             try
             {
@@ -932,7 +932,7 @@ namespace SustitucionMOAUtils.Services
         {
 
             var emailSenderData = ConstruirCuerpoOrdenesVencidas(ordenes);
-            
+
             if (emailSenderData != null)
             {
                 //if (!HttpContext.Current.IsDebuggingEnabled)
@@ -962,7 +962,7 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Mails.AddRange(mail.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
-            
+
             if (emailSenderData != null)
             {
                 //if (!HttpContext.Current.IsDebuggingEnabled)
@@ -971,7 +971,7 @@ namespace SustitucionMOAUtils.Services
                 //}
             }
             orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
-            
+
             if (puedeEnviarASAP)
             {
                 var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
@@ -1056,7 +1056,7 @@ namespace SustitucionMOAUtils.Services
         public string AnularOrden(int ordenId, string mailUsuario)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-            
+
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
             var ordenHistorial = new OrdenDeCargaCambiosHistorial()
@@ -1232,7 +1232,7 @@ namespace SustitucionMOAUtils.Services
 
                 orden.Estado = EstadoOrdenDeCargaExtensions.ObtenerDescripcionEstado(estadoAnterior);
                 orden.EdicionRechazada = false;
-                
+
                 if (puedeEnviarASAP && orden.NumeroEntrega != null)
                 {
                     var resultado = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(orden));
@@ -1335,7 +1335,7 @@ namespace SustitucionMOAUtils.Services
 
         public VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request)
         {
-            Log.Info($"VisualizarCliente(request: { request.ToJson() })");
+            Log.Info($"VisualizarCliente(request: {request.ToJson()})");
             OrdenCargaConsumerMOA ordenCargaConsumerMOA;
             VisualizarClienteResponse response;
             List<Mod.FechaWS> fechas = null;
@@ -1414,7 +1414,7 @@ namespace SustitucionMOAUtils.Services
 
         public VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request)
         {
-            Log.Info($"VisualizarCliente(request: { request.ToJson() })");
+            Log.Info($"VisualizarCliente(request: {request.ToJson()})");
             OrdenCargaConsumerMOA ordenCargaConsumerMOA;
             VisualizarProductoResponse response;
             List<Mod.FechaWS> fechas = null;
@@ -1487,7 +1487,7 @@ namespace SustitucionMOAUtils.Services
             request.Corredor = request.Corredor?.Trim();
             request.ProductoId = request.ProductoId?.Trim();
             request.UsuarioEmail = request.UsuarioEmail?.Trim();
-            Log.Info($"ValidarCorredorClienteContratoProducto(request: { request.ToJson() })");
+            Log.Info($"ValidarCorredorClienteContratoProducto(request: {request.ToJson()})");
             ValidarCorredorClienteContratoProductoResponse response;
             try
             {
@@ -1505,7 +1505,7 @@ namespace SustitucionMOAUtils.Services
                     Log.Error(error);
                     throw error;
                 }
-                Log.Debug(this.GetType().Name, "ValidarCorredorClienteContratoProducto", $" producto: { producto?.Id.ToJson() }");
+                Log.Debug(this.GetType().Name, "ValidarCorredorClienteContratoProducto", $" producto: {producto?.Id.ToJson()}");
                 var cliente = repositorio.Obtener<Proveedor>(x => (x.CUIT == request.ClienteCuit || x.CodigoProveedor == request.ClienteCodigo) && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
                 if (cliente == null)
                 {
@@ -1513,7 +1513,7 @@ namespace SustitucionMOAUtils.Services
                     Log.Error(error);
                     throw error;
                 }
-                Log.Debug(this.GetType().Name, "ValidarCorredorClienteContratoProducto", $" cliente: { cliente?.Id.ToJson() }");
+                Log.Debug(this.GetType().Name, "ValidarCorredorClienteContratoProducto", $" cliente: {cliente?.Id.ToJson()}");
                 request.ClienteCuit = cliente.CUIT;
                 request.ClienteCodigo = cliente.CodigoProveedor;
                 request.Contrato = request.Contrato.TrimStart(new Char[] { '0' });
@@ -1539,7 +1539,7 @@ namespace SustitucionMOAUtils.Services
                         CrearRelacionCorredorCliente(corredor, cliente);
                     }
                 }
-                Log.Info($" response: { response.ToJson() }");
+                Log.Info($" response: {response.ToJson()}");
                 return response;
             }
             catch (InfoCustomException)
@@ -1611,7 +1611,7 @@ namespace SustitucionMOAUtils.Services
         }
         private void CrearRelacionCorredorCliente(Proveedor corredor, Proveedor cliente)
         {
-            Log.Info($"CrearRelacionCorredorCliente(corredor: { corredor?.Id.ToJson() }, cliente: { cliente?.Id.ToJson() })");
+            Log.Info($"CrearRelacionCorredorCliente(corredor: {corredor?.Id.ToJson()}, cliente: {cliente?.Id.ToJson()})");
             try
             {
                 //var usuarioCorredor = repositorio.Obtener<Usuario>(q => q.CUITRegistro == corredor.CUIT && q.Mail == corredor.Mail && q.TipoUsuario.Id == (int) TipoUsuarioEnum.Corredor && q.Habilitado == true);
@@ -2024,7 +2024,7 @@ namespace SustitucionMOAUtils.Services
                     cambios.AppendLine($"<tr><td>{(cambio.NombreColumnaCambio == "ChasisAcoplado" ? "PatenteChasis" : cambio.NombreColumnaCambio)}</td><td>{cambio.Antes}</td><td>{cambio.Despues}</td><td>{cambio.FechaCambio}</td></tr>");
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: { ordenDeCargaHistorial[0].OrdenDeCarga_Id }, { orden.Cliente.RazonSocial }, { contrato }";
+                emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: {ordenDeCargaHistorial[0].OrdenDeCarga_Id}, {orden.Cliente.RazonSocial}, {contrato}";
                 emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, numeroPedido, cambios);
                 return emailSenderData;
             }
