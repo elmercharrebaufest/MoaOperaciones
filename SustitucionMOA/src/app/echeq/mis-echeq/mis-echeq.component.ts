@@ -62,9 +62,7 @@ export class MisEcheqComponent extends EcheqBaseComponent implements OnInit{
               } else {
                   this.data = result.data;
                   this.datosReporte = this.data;
-                  console.log("Data", result.data)
-                  // this.floatMsgService.setSuccessMsg(result);
-                  this.spinnerComponent.hideIt();
+                  // this.spinnerComponent.hideIt();
               }
           },
           error => {

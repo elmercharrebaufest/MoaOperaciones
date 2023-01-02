@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -547,7 +548,41 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                DateTime fechaIncioDateTime, fechaFinDateTime;
+                try
+                {
+                    fechaIncioDateTime = DateTime.Parse(fechaInicio);
+                }
+                catch
+                {
+                    try
+                    {
+                        fechaInicio = new string(fechaInicio.Where(c => c != '\u200E').ToArray());
+                        fechaIncioDateTime = DateTime.Parse(fechaInicio);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "inicio"), e);
+                    }
+                }
+
+                try
+                {
+                    fechaFinDateTime = DateTime.Parse(fechaFin);
+                }
+                catch
+                {
+                    try
+                    {
+                        fechaFin = new string(fechaFin.Where(c => c != '\u200E').ToArray());
+                        fechaFinDateTime = DateTime.Parse(fechaFin);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "fin"), e);
+                    }
+                }
+
 
                 var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(u => u.Mail == mailUsuario);
                 
@@ -563,7 +598,7 @@ namespace SustitucionMOAUtils.Services
                     LiquidacionMarcada = x.MarcaCheque,
                     FechaCreacion = x.FechaCreacion,
                     Liquidacion = x.Documento,
-                }, x => x.MarcaCheque && (x.EcheqNegocio.Proveedor.CodigoProveedor == codigoProveedor || esAdmin)); // falta filtrar por fechas
+                }, x => x.MarcaCheque && (x.EcheqNegocio.Proveedor.CodigoProveedor == codigoProveedor || esAdmin) && fechaIncioDateTime <= DbFunctions.TruncateTime(x.FechaCreacion) && fechaFinDateTime >= DbFunctions.TruncateTime(x.FechaCreacion)); // falta filtrar por fechas
 
 
                 List<string> documentos = result.Select(b => b.Liquidacion).ToList();
