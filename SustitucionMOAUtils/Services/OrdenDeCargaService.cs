@@ -213,8 +213,7 @@ namespace SustitucionMOAUtils.Services
                     repositorio.Agregar(historialCambio);
                 }
                 ordenEditar.HistorialCambios.Concat(historialCambios);
-                repositorio.GuardarCambios();
-                NotificarTransporte(ordenEditar.Id);
+                
                 if (puedeEnviarASAP)
                 {
                     if(ordenEditar.CodigoVerificacionSap != "CC-07")
@@ -241,6 +240,10 @@ namespace SustitucionMOAUtils.Services
                     }
                     
                 }
+
+                repositorio.GuardarCambios();
+                NotificarTransporte(ordenEditar.Id);
+
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
                 Log.Info($"Result: { resultado.ToJson() }");
                 return resultado;
@@ -968,8 +971,7 @@ namespace SustitucionMOAUtils.Services
                 //}
             }
             orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
-            repositorio.GuardarCambios();
-
+            
             if (puedeEnviarASAP)
             {
                 var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
@@ -981,6 +983,7 @@ namespace SustitucionMOAUtils.Services
                     throw new InfoCustomException(resultadoAnularOrden.Errores[0].Message);
             }
 
+            repositorio.GuardarCambios();
             return SuccessMsg.OrdenDeCargaAnulada;
         }
         public EmailSenderData ConstruirCuerpoOrdenesVencidas(List<OrdenDeCarga> ordenes)
@@ -1068,11 +1071,9 @@ namespace SustitucionMOAUtils.Services
             };
             repositorio.Agregar(ordenHistorial);
             orden.Estado = EstadoOrdenDeCarga.Anulada;
-            repositorio.GuardarCambios();
 
             if (puedeEnviarASAP)
             {
-
                 var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
                 if (resultadoAnularEntrega.HayError)
                     throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
@@ -1081,7 +1082,8 @@ namespace SustitucionMOAUtils.Services
                 if (resultadoAnularOrden.HayError)
                     throw new InfoCustomException(resultadoAnularOrden.Errores[0].Message);
             }
-                
+
+            repositorio.GuardarCambios();
             return SuccessMsg.OrdenDeCargaAnulada;
         }
 
@@ -1231,14 +1233,14 @@ namespace SustitucionMOAUtils.Services
                 orden.Estado = EstadoOrdenDeCargaExtensions.ObtenerDescripcionEstado(estadoAnterior);
                 orden.EdicionRechazada = false;
                 
-                repositorio.GuardarCambios();
-
                 if (puedeEnviarASAP && orden.NumeroEntrega != null)
                 {
                     var resultado = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(orden));
                     if (resultado.HayError)
                         throw new InfoCustomException(resultado.Errores[0].Message);
                 }
+
+                repositorio.GuardarCambios();
 
                 return SuccessMsg.OrdenDeCargaActualizada;
             }
