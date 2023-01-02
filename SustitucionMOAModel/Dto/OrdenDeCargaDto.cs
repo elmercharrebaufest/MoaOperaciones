@@ -1,6 +1,11 @@
-﻿using SustitucionMOAModel.Enums;
+﻿using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
+using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Json;
+using System.Text;
 using Ent = SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAModel.Dto
@@ -25,7 +30,7 @@ namespace SustitucionMOAModel.Dto
         public string PatenteChasis { get; set; }
         public bool NoEstaEnSAP { get; set; }
         public bool EstaSeleccionado { get; set; }
-		public List<AutoCompleteDropdownElement> ordenes { get; set; }
+        public List<AutoCompleteDropdownElement> ordenes { get; set; }
         public bool EdicionRechazada { get; set; }
 
         public OrdenDeCargaDto()
@@ -88,7 +93,7 @@ namespace SustitucionMOAModel.Dto
     {
         public OrdenDeCargaHistorialDto(Ent.OrdenDeCargaCambiosHistorial orden)
         {
-            if(orden != null)
+            if (orden != null)
             {
                 Id = orden.Id;
                 OrdenDeCarga_Id = orden.OrdenDeCarga_Id;
@@ -97,7 +102,7 @@ namespace SustitucionMOAModel.Dto
                 FechaCambio = orden.FechaCambio;
                 Usuario_Id = orden.Usuario_Id;
                 NombreColumnaCambio = orden.NombreColumnaCambio;
-            }           
+            }
         }
         public int Id { get; set; }
         public int OrdenDeCarga_Id { get; set; }
@@ -214,7 +219,7 @@ namespace SustitucionMOAModel.Dto
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MensajeValidacionSAP);
             return hashCode;
         }
-       
+
     }
 
     public class OrdenDeCargaCambiosHistorialDto
@@ -244,6 +249,25 @@ namespace SustitucionMOAModel.Dto
             NumeroEntrega = orden.NumeroEntrega;
             TipoDoc = string.Empty;
             Documento = string.Empty;
+        }
+        public ModificarEntregaOrdenCargaSAP() { }
+        public string ToJson()
+        {
+            try
+            {
+                var serializer = new DataContractJsonSerializer(typeof(ModificarEntregaOrdenCargaSAP));
+
+                using (var ms = new MemoryStream())
+                {
+                    serializer.WriteObject(ms, this);
+                    return Encoding.UTF8.GetString(ms.ToArray());
+                }
+            }
+            catch (Exception)
+            {
+                return "error al serializar el objeto.";
+            }
+
         }
     }
 }
