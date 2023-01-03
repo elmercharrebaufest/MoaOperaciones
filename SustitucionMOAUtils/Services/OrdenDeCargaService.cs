@@ -39,6 +39,8 @@ namespace SustitucionMOAUtils.Services
         private static readonly string EMAIL_TEMPLATE_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
         private readonly string _usuarioAutomaticoSAP;
 
+        private readonly string _errorAnulacion = "Error al anular orden de carga, pero la entrega si ha sido anulada";
+
         public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer, IFeriadoService feriadoService)
         {
             this.repositorio = repositorio;
@@ -980,7 +982,7 @@ namespace SustitucionMOAUtils.Services
 
                 var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
                 if (resultadoAnularOrden.HayError)
-                    throw new InfoCustomException(resultadoAnularOrden.Errores[0].Message);
+                    throw new InfoCustomException(_errorAnulacion);
             }
 
             repositorio.GuardarCambios();
@@ -1080,7 +1082,7 @@ namespace SustitucionMOAUtils.Services
 
                 var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
                 if (resultadoAnularOrden.HayError)
-                    throw new InfoCustomException(resultadoAnularOrden.Errores[0].Message);
+                    throw new InfoCustomException(_errorAnulacion);
             }
 
             repositorio.GuardarCambios();
