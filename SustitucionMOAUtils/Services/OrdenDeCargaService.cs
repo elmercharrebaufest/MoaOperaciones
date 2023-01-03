@@ -391,15 +391,15 @@ namespace SustitucionMOAUtils.Services
             //OV-03   'Pedido creado - Verificar Crédito de pedido'
             //OV-00   'OK'
             Log.Info($"CrearPedidoEnSAP(ordenDeCarga: { ordenDeCarga.ToDto().ToJson() }, cliente: { cliente?.Id.ToJson() }, forzarCreacion: { forzarCreacion }, puedeEnviarASAP: { puedeEnviarASAP })");
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var validarKg = forzarCreacion ? "" : "X";
             string contrato = null;
             if (ordenDeCarga.ContratoSAP != null)
             {
                 contrato = ordenDeCarga.ContratoSAP.Split('|').First();
             }
-            var usuarioSAP = puedeEnviarASAP ? usuario.UsuarioSap : _usuarioAutomaticoSAP;
-            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuarioSAP, validarKg, out string numeroPedido);
+            var mailUsuarioSAP = puedeEnviarASAP ? mailUsuario : _usuarioAutomaticoSAP;
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSAP);
+            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, validarKg, out string numeroPedido);
             var resultadoCrearOrden = false;
             ordenDeCarga.ContratoSinCantidadPendiente = false;
             //var result2 = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, orden.NombreChofer, orden.PatenteAcoplado, orden.ChasisAcoplado, "", "DNI", orden.CUITTransporte, out string mensaje);
