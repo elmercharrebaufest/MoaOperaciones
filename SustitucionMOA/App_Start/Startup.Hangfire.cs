@@ -82,9 +82,13 @@ namespace SustitucionMOA
                  "0 12 * * *", tz);
 
             RecurringJob.AddOrUpdate<Jobs.IReporteLoginsJob>(
-              "ReporteLoginsJob",
-              j => j.Execute(),
-              "0 6 1 * *", tz);
+                "ReporteLoginsJob",
+                j => j.Execute(),
+                "0 6 1 * *", tz);
+            RecurringJob.AddOrUpdate<Jobs.IVerificarSituacionCrediticiaJob>(
+                "VerificarSituacionCrediticiaJob",
+                j => j.Execute(),
+                "0 * * * *", tz);
         }
     }
 }
