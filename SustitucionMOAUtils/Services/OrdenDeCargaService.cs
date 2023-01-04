@@ -219,6 +219,12 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (ordenEditar.CodigoVerificacionSap != "CC-07")
                     {
+                        if (ordenEditar.NumeroEntrega != null)
+                        {
+                            var resultadoSAP = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(ordenEditar));
+                            if (resultadoSAP.HayError)
+                                throw new InfoCustomException(resultadoSAP.Errores[0].Message);
+                        }
                         if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega) && ordenEditar.AprobadoCredito)
                         {
                             GenerarEntregaSAP(ordenEditar);
@@ -233,12 +239,7 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
                     }
-                    if (ordenEditar.NumeroEntrega != null)
-                    {
-                        var resultadoSAP = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(ordenEditar));
-                        if (resultadoSAP.HayError)
-                            throw new InfoCustomException(resultadoSAP.Errores[0].Message);
-                    }
+
 
                 }
 
@@ -1978,8 +1979,8 @@ namespace SustitucionMOAUtils.Services
                     cambios.AppendLine($"<tr><td>{(cambio.NombreColumnaCambio == "ChasisAcoplado" ? "PatenteChasis" : cambio.NombreColumnaCambio)}</td><td>{cambio.Antes}</td><td>{cambio.Despues}</td><td>{cambio.FechaCambio}</td></tr>");
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: { ordenDeCargaHistorial[0].OrdenDeCarga_Id }, { orden.Cliente.RazonSocial }, { contrato }";
-                emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, String.IsNullOrEmpty(numeroEntrega)? "N/G": numeroEntrega , String.IsNullOrEmpty(numeroPedido) ? "N/G" : numeroPedido, cambios);
+                emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: {ordenDeCargaHistorial[0].OrdenDeCarga_Id}, {orden.Cliente.RazonSocial}, {contrato}";
+                emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, String.IsNullOrEmpty(numeroEntrega) ? "N/G" : numeroEntrega, String.IsNullOrEmpty(numeroPedido) ? "N/G" : numeroPedido, cambios);
                 return emailSenderData;
             }
             catch (Exception ex)
@@ -2288,8 +2289,8 @@ namespace SustitucionMOAUtils.Services
             if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarSituacionCrediticiaJob").Habilitado)
                 return;
 
-            var ordenes = repositorio.Listar<OrdenDeCarga>(oc=>oc.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito);
-            foreach(OrdenDeCarga orden in ordenes)
+            var ordenes = repositorio.Listar<OrdenDeCarga>(oc => oc.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito);
+            foreach (OrdenDeCarga orden in ordenes)
             {
                 VerificarSituacionCrediticia(orden, false);
             }

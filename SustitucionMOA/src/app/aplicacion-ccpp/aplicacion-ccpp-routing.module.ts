@@ -4,7 +4,15 @@ import { ListadoComponent } from './listado/listado.component';
 
 const routes: Routes = [
   {
-    path:"listado",
+    path: "listado",
+    component: ListadoComponent
+  },
+  {
+    path: "masiva",
+    component: ListadoComponent
+  },
+  {
+    path: "",
     component: ListadoComponent
   }
 ];

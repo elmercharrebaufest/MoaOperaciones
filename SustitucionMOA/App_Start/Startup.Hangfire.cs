@@ -32,12 +32,12 @@ namespace SustitucionMOA
                 j => j.Execute(),
                 "0 * * * *", tz);
 
-			RecurringJob.AddOrUpdate<Jobs.IEnviarASAPOrdenDeCargaJob>(
-				"EnviarASAPOrdenDeCargaJob",
-				j => j.Execute(),
-				"15 * * * *", tz);
+            RecurringJob.AddOrUpdate<Jobs.IEnviarASAPOrdenDeCargaJob>(
+                "EnviarASAPOrdenDeCargaJob",
+                j => j.Execute(),
+                "15 * * * *", tz);
 
-			RecurringJob.AddOrUpdate<Jobs.IReporteCamposSustentablesTSAJob>(
+            RecurringJob.AddOrUpdate<Jobs.IReporteCamposSustentablesTSAJob>(
                 "ReporteCamposSustentablesTSAJob",
                 j => j.Execute(),
                 "30 6 * * *", tz);
@@ -74,7 +74,7 @@ namespace SustitucionMOA
             //    j => j.Execute(),
             //    "0 0 * 12 *", tz);
             RecurringJob.RemoveIfExists("ObtenerSolpsDesdeSAPJob");
-            
+
             RecurringJob.AddOrUpdate<Jobs.IActualizarLocalidades>("ActualizarLocalidades", j => j.Execute(),
                  "0 0 * * *", tz);
 
@@ -88,7 +88,7 @@ namespace SustitucionMOA
             RecurringJob.AddOrUpdate<Jobs.IVerificarSituacionCrediticiaJob>(
                 "VerificarSituacionCrediticiaJob",
                 j => j.Execute(),
-                "0 * * * *", tz);
+                "*/15 * * * *", tz);
         }
     }
 }
