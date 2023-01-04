@@ -168,8 +168,11 @@ const appRoutes: Routes = [
             {
                 path: "ordenes-de-carga-fason",
                 loadChildren: "./ordenes-de-carga-fason/ordenes-de-carga-fason.module#OrdenesDeCargaFasonModule",
+            },
+            {
+                path:"aplicaciones-ccpp",
+                loadChildren: "./aplicacion-ccpp/aplicacion-ccpp.module#AplicacionCcppModule"
             }
-
 
         ],
     },
