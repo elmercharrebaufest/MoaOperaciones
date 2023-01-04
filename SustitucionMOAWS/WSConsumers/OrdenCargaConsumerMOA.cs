@@ -313,7 +313,7 @@ namespace SustitucionMOAWS.WSConsumers
             var identificador = string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedidoIngresado : orden.NumeroPedido;
 
             Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Request: {identificador}");
-            
+
 
             var result = service.SI_MPMF_MOAOP_MOD_ORDEN_CARGA("X", identificador);
             Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Result: {new { result }}");
@@ -333,7 +333,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {nroEntrega}");
 
-            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA(null, "X", null, null, null, nroEntrega, null);
+            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA("", "X", "", "", "", nroEntrega, "");
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result }}");
 
             var resultado = new ResultadoGenerico();
@@ -352,7 +352,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             var result = service.SI_MPMF_MOAOP_MOD_ENTREGA(
                             datosEntrega.Acoplado,
-                            null,
+                            "",
                             datosEntrega.Chasis,
                             datosEntrega.Chofer,
                             datosEntrega.Documento,
