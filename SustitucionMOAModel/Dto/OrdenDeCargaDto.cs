@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Enums;
+﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
 using Ent = SustitucionMOAModel.Entities;
@@ -25,7 +26,7 @@ namespace SustitucionMOAModel.Dto
         public string PatenteChasis { get; set; }
         public bool NoEstaEnSAP { get; set; }
         public bool EstaSeleccionado { get; set; }
-		public List<AutoCompleteDropdownElement> ordenes { get; set; }
+        public List<AutoCompleteDropdownElement> ordenes { get; set; }
         public bool EdicionRechazada { get; set; }
 
         public OrdenDeCargaDto()
@@ -88,7 +89,7 @@ namespace SustitucionMOAModel.Dto
     {
         public OrdenDeCargaHistorialDto(Ent.OrdenDeCargaCambiosHistorial orden)
         {
-            if(orden != null)
+            if (orden != null)
             {
                 Id = orden.Id;
                 OrdenDeCarga_Id = orden.OrdenDeCarga_Id;
@@ -97,7 +98,7 @@ namespace SustitucionMOAModel.Dto
                 FechaCambio = orden.FechaCambio;
                 Usuario_Id = orden.Usuario_Id;
                 NombreColumnaCambio = orden.NombreColumnaCambio;
-            }           
+            }
         }
         public int Id { get; set; }
         public int OrdenDeCarga_Id { get; set; }
@@ -214,7 +215,51 @@ namespace SustitucionMOAModel.Dto
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MensajeValidacionSAP);
             return hashCode;
         }
-       
+        public static OrdenDeCargaDetalleDto DeOrdenDeCarga(Ent.OrdenDeCarga orden, List<OrdenDeCargaCambiosHistorialDto> ordenDeCargaCambiosHistorial, Proveedor cliente)
+        {
+            
+            return new OrdenDeCargaDetalleDto()
+            {
+                Id = orden.Id,
+                CUITCliente = orden.CUITCliente,
+                DescripcionEstado = orden.EdicionRechazada ? orden.Estado.ToFriendlyString() + "(Edición Rechazada)" : orden.Estado.ToFriendlyString(),
+                DescripcionEstadoUsuarioFinal = orden.EdicionRechazada ? orden.Estado.ToUserFriendlyString() + "(Edición Rechazada)" : orden.Estado.ToUserFriendlyString(),
+                ColorSemaforo = orden.Estado.ObtenerSemaforo(),
+                ContratoIngresado = orden.ContratoIngresado,
+                NumeroPedidoIngresado = orden.NumeroPedidoIngresado,
+                Cliente = orden.Cliente.CodigoProveedor,
+                AprobadoCredito = orden.AprobadoCredito,
+                Cantidad = orden.Cantidad,
+                ChasisAcoplado = orden.ChasisAcoplado,
+                Chofer = $"{orden.NombreChofer} ({orden.CUITChofer})",
+                ContratoSAP = string.IsNullOrEmpty(orden.ContratoSAP) ? "-" : orden.ContratoSAP,
+                PedidoSAP = string.IsNullOrEmpty(orden.PedidoSAP) ? "-" : orden.PedidoSAP,
+                Corredor = orden.CodigoCorredor,
+                RazonSocialCorredor = string.IsNullOrWhiteSpace(orden.Corredor?.RazonSocial) ? "-" : orden.Corredor?.RazonSocial,
+                CorredorSeleccionado = orden.CorredorSeleccionado,
+                Estado = (int)orden.Estado,
+                FechaCarga = orden.FechaCarga.ToString("dd/MM/yyyy hh:mm"),
+                FechaEntregaGenerada = orden.FechaEntregaGenerada?.ToString("dd/MM/yyyy hh:mm"),
+                InformadaSAP = orden.InformadaSAP,
+                Observacion = orden.Observacion,
+                PatenteAcoplado = orden.PatenteAcoplado,
+                RazonSocialCliente = cliente.RazonSocial,
+                Transporte = $"{orden.RazonSocialTransporte} ({orden.CUITTransporte})",
+                TransporteExiste = orden.TransporteExiste,
+                Producto = orden.Producto.Nombre,
+                PedidosRespuesta = string.IsNullOrEmpty(orden.PedidosRespuesta) ? "-" : orden.PedidosRespuesta,
+                ContratosRespuesta = string.IsNullOrEmpty(orden.ContratosRespuesta) ? "-" : orden.ContratosRespuesta,
+                NumeroEntrega = string.IsNullOrEmpty(orden.NumeroEntrega) ? "-" : orden.NumeroEntrega,
+                NumeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? "-" : orden.NumeroPedido,
+                MensajeValidacionSAP = string.IsNullOrEmpty(orden.DescripcionCodigoVerificacionSap) ? "" : orden.DescripcionCodigoVerificacionSap,
+                ContratoSinCantidadPendiente = orden.ContratoSinCantidadPendiente,
+                DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno,
+                OrdenDeCargaCambiosHistorial = ordenDeCargaCambiosHistorial,
+                EsOrdenVencida = orden.FechaVencimiento < DateTime.Now.Date ? true : false,
+                FechaVencimientoAmpliada = orden.FechaVencimientoAmpliada,
+                EdicionRechazada = orden.EdicionRechazada
+            };
+        }
     }
 
     public class OrdenDeCargaCambiosHistorialDto

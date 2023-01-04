@@ -1,10 +1,12 @@
 
 import { throwError as observableThrowError, Observable } from 'rxjs';
-import { Injectable, EventEmitter, Output } from '@angular/core';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import {  HttpParams } from '@angular/common/http';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { ReporteContrato, DetalleReporteContrato } from './ReporteContrato.model';
+import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
+import { ApiResponse } from '../common/models/response';
 
 
 
@@ -38,10 +40,10 @@ export class ReporteContratoService extends BaseService {
 
         return this.http
             .get('/api/ReporteContrato/getTotalFormatter', { params: params })
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excediÃ³ el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
-    public obtenerContratosFiltro(fechaInicio, fechaFin, mostrarPendientes, data: string[]) {
+    public obtenerContratosFiltro(fechaInicio, fechaFin, mostrarPendientes, data: ReporteContrato[]) {
             
         var payload = new FormData();
         let dataContrato = JSON.stringify({
@@ -72,6 +74,13 @@ export class ReporteContratoService extends BaseService {
 
     }
 
-    
+    public getOrdenDeCarga(det: DetalleReporteContrato): Observable<ApiResponse<OrdenDeCarga>>{
+        let params: HttpParams = new HttpParams()
+            .append('nroEntrega', det.Entrega);
+
+
+        return this.http
+            .get<ApiResponse<OrdenDeCarga>>('/api/ReporteContrato/ObtenerOrdenDeCarga', { params: params });
+    }
   }
 
