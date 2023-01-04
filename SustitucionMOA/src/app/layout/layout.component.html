@@ -387,12 +387,12 @@
                         <div class="panel-body">
                             <div *ngIf="isAuthorized('CONSULTAR CUENTA CORRIENTE') && isGranosSelected()">
                                 <a (click)="goToSeccion('/cuenta-corriente/simple')" href="#">
-                                    <!--data-toggle="tab">-->Cuenta Corriente
+                                    Cuenta Corriente
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR PAGOS') && isGranosSelected()">
                                 <a (click)="goToSeccion('/pago/emitido')" href="#">
-                                    <!--data-toggle="tab">-->Pagos
+                                    Pagos
                                 </a>
                             </div>
                         </div>
@@ -407,12 +407,15 @@
                     </div>
                     <div id="collapseO" class="collapse" aria-labelledby="operar" role="tabpanel">
                         <div class="panel-body">
+                            <div *ngIf="isAuthorized('ABM APLICACIONES CCPP')">
+                                <a (click)="goToSeccion('/aplicaciones-ccpp/listado')" href="#"> {{"Aplicación de CCPP"|uppercase}}</a>
+                            </div>
                             <div *ngIf="isAuthorized('ABM CAMPOS SUSTENTABLE')">
                                 <a (click)="goToSeccion('/sustentable/listado-campos')" href="#"> Campo Sustentable</a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS')">
                                 <a (click)="goToSeccion('/vendedor/status')" href="#">
-                                    <!--data-toggle="tab">-->Consulta de Vendedor
+                                    Consulta de Vendedor
                                 </a>
                             </div>
                             <div

@@ -85,6 +85,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<ILiquidacionService>().To(typeof(LiquidacionService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<INotificacionService>().To(typeof(NotificacionService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IOrdenDeCargaService>().To(typeof(OrdenDeCargaService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IAplicacionCartaPorteService>().To(typeof(AplicacionCartaPorteService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IFeriadoService>().To(typeof(FeriadoService)).InScope(ctx => OperationContext.Current);
 			kernel.Bind<IAzureService>().To(typeof(AzureService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReportesService>().To(typeof(ReportesService)).InScope(ctx => OperationContext.Current);
@@ -116,8 +117,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IOrdenDeCargaFasonService>().To(typeof(OrdenDeCargaFasonService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteLoginsJob>().To(typeof(ReporteLoginsJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEcheqService>().To(typeof(EcheqService)).InScope(ctx => OperationContext.Current);
-
-
+            kernel.Bind<IVerificarSituacionCrediticiaJob>().To(typeof(VerificarSituacionCrediticiaJob)).InScope(ctx => OperationContext.Current);
 
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);

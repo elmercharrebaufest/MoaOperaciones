@@ -1005,6 +1005,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\Startup.Hangfire.cs" />
+    <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
     <Compile Include="Controllers\EcheqController.cs" />
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
@@ -1059,6 +1060,7 @@
     <Compile Include="Jobs\ReporteLiquidacionesInformadasJob.cs" />
     <Compile Include="Jobs\VencimientoOrdenesDeCargaFasonJob.cs" />
     <Compile Include="Jobs\VencimientoOrdenesDeCargaSapJob.cs" />
+    <Compile Include="Jobs\VerificarSituacionCrediticiaJob.cs" />
     <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\CustomPermisoAuthorizeAttribute.cs" />

@@ -800,62 +800,14 @@ namespace SustitucionMOAUtils.Services
                 orden = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id) && n.Id == ordenId).FirstOrDefault();
             }
 
+            if (orden == null) throw new InfoCustomException("No se encontro ningún orden de carga");
+
             Proveedor cliente = repositorio.Obtener<Proveedor>(orden.Cliente_Id);
             //  var ordenDeCargaCambiosHistorial = repositorio.Listar<OrdenDeCargaCambiosHistorial>(ordenes => ordenes.OrdenDeCarga_Id == orden.Id);
 
-            var ordenDeCargaCambiosHistorial = repositorio.Listar<OrdenDeCargaCambiosHistorial>
-        (ordenes => ordenes.OrdenDeCarga_Id == orden.Id).Select(x => new OrdenDeCargaCambiosHistorialDto
-        {
-            Id = x.Id,
-            Antes = x.Antes,
-            Despues = x.Despues,
-            FechaCambio = Convert.ToDateTime(x.FechaCambio).ToString("dd/MM/yyyy HH:mm"),
-            NombreColumnaCambio = x.NombreColumnaCambio,
-            OrdenDeCarga_Id = x.OrdenDeCarga_Id,
-            Usuario = x.Usuario.Mail
-        }).ToList();
+            var ordenDeCargaCambiosHistorial = ObtenerCambiosHistorial(orden);
 
-            ordenDto = new OrdenDeCargaDetalleDto
-            {
-                Id = orden.Id,
-                CUITCliente = orden.CUITCliente,
-                DescripcionEstado = orden.EdicionRechazada ? orden.Estado.ToFriendlyString() + "(Edición Rechazada)" : orden.Estado.ToFriendlyString(),
-                DescripcionEstadoUsuarioFinal = orden.EdicionRechazada ? orden.Estado.ToUserFriendlyString() + "(Edición Rechazada)" : orden.Estado.ToUserFriendlyString(),
-                ColorSemaforo = orden.Estado.ObtenerSemaforo(),
-                ContratoIngresado = orden.ContratoIngresado,
-                NumeroPedidoIngresado = orden.NumeroPedidoIngresado,
-                Cliente = orden.Cliente.CodigoProveedor,
-                AprobadoCredito = orden.AprobadoCredito,
-                Cantidad = orden.Cantidad,
-                ChasisAcoplado = orden.ChasisAcoplado,
-                Chofer = $"{orden.NombreChofer} ({orden.CUITChofer})",
-                ContratoSAP = string.IsNullOrEmpty(orden.ContratoSAP) ? "-" : orden.ContratoSAP,
-                PedidoSAP = string.IsNullOrEmpty(orden.PedidoSAP) ? "-" : orden.PedidoSAP,
-                Corredor = orden.CodigoCorredor,
-                RazonSocialCorredor = string.IsNullOrWhiteSpace(orden.Corredor?.RazonSocial) ? "-" : orden.Corredor?.RazonSocial,
-                CorredorSeleccionado = orden.CorredorSeleccionado,
-                Estado = (int)orden.Estado,
-                FechaCarga = orden.FechaCarga.ToString("dd/MM/yyyy hh:mm"),
-                FechaEntregaGenerada = orden.FechaEntregaGenerada?.ToString("dd/MM/yyyy hh:mm"),
-                InformadaSAP = orden.InformadaSAP,
-                Observacion = orden.Observacion,
-                PatenteAcoplado = orden.PatenteAcoplado,
-                RazonSocialCliente = cliente.RazonSocial,
-                Transporte = $"{orden.RazonSocialTransporte} ({orden.CUITTransporte})",
-                TransporteExiste = orden.TransporteExiste,
-                Producto = orden.Producto.Nombre,
-                PedidosRespuesta = string.IsNullOrEmpty(orden.PedidosRespuesta) ? "-" : orden.PedidosRespuesta,
-                ContratosRespuesta = string.IsNullOrEmpty(orden.ContratosRespuesta) ? "-" : orden.ContratosRespuesta,
-                NumeroEntrega = string.IsNullOrEmpty(orden.NumeroEntrega) ? "-" : orden.NumeroEntrega,
-                NumeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? "-" : orden.NumeroPedido,
-                MensajeValidacionSAP = string.IsNullOrEmpty(orden.DescripcionCodigoVerificacionSap) ? "" : orden.DescripcionCodigoVerificacionSap,
-                ContratoSinCantidadPendiente = orden.ContratoSinCantidadPendiente,
-                DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno,
-                OrdenDeCargaCambiosHistorial = ordenDeCargaCambiosHistorial,
-                EsOrdenVencida = orden.FechaVencimiento < DateTime.Now.Date ? true : false,
-                FechaVencimientoAmpliada = orden.FechaVencimientoAmpliada,
-                EdicionRechazada = orden.EdicionRechazada
-            };
+            ordenDto = OrdenDeCargaDetalleDto.DeOrdenDeCarga(orden, ordenDeCargaCambiosHistorial, cliente);
 
             return ordenDto;
         }
@@ -1992,7 +1944,7 @@ namespace SustitucionMOAUtils.Services
 
             return result == "CE-00";
         }
-        public EmailSenderData ConstruirCuerpoEmail(List<OrdenDeCargaCambiosHistorial> ordenDeCargaHistorial, string numeroPedido)
+        public EmailSenderData ConstruirCuerpoEmail(List<OrdenDeCargaCambiosHistorial> ordenDeCargaHistorial, string numeroEntrega, string numeroPedido)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaHistorial[0].OrdenDeCarga_Id);
             var emailSenderData = new EmailSenderData();
@@ -2025,8 +1977,8 @@ namespace SustitucionMOAUtils.Services
                     cambios.AppendLine($"<tr><td>{(cambio.NombreColumnaCambio == "ChasisAcoplado" ? "PatenteChasis" : cambio.NombreColumnaCambio)}</td><td>{cambio.Antes}</td><td>{cambio.Despues}</td><td>{cambio.FechaCambio}</td></tr>");
                 }
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: {ordenDeCargaHistorial[0].OrdenDeCarga_Id}, {orden.Cliente.RazonSocial}, {contrato}";
-                emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, numeroPedido, cambios);
+                emailSenderData.Asunto = $"Molinos Agro - Edición en su orden de carga n°: { ordenDeCargaHistorial[0].OrdenDeCarga_Id }, { orden.Cliente.RazonSocial }, { contrato }";
+                emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCargaHistorial[0].OrdenDeCarga_Id, String.IsNullOrEmpty(numeroEntrega)? "N/G": numeroEntrega , String.IsNullOrEmpty(numeroPedido) ? "N/G" : numeroPedido, cambios);
                 return emailSenderData;
             }
             catch (Exception ex)
@@ -2328,6 +2280,37 @@ namespace SustitucionMOAUtils.Services
 
             return SuccessMsg.OrdenDeCargaActualizada;
 
+        }
+        public OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(oc => oc.NumeroEntrega == nroEntrega);
+            if (orden == null) throw new InfoCustomException("No se ha encontrado ningún orden de carga");
+            return Obtener(mailUsuario, orden.Id);
+        }
+        public List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden)
+        {
+            return repositorio.Listar<OrdenDeCargaCambiosHistorial>
+                    (ordenes => ordenes.OrdenDeCarga_Id == orden.Id).Select(x => new OrdenDeCargaCambiosHistorialDto
+                    {
+                        Id = x.Id,
+                        Antes = x.Antes,
+                        Despues = x.Despues,
+                        FechaCambio = Convert.ToDateTime(x.FechaCambio).ToString("dd/MM/yyyy HH:mm"),
+                        NombreColumnaCambio = x.NombreColumnaCambio,
+                        OrdenDeCarga_Id = x.OrdenDeCarga_Id,
+                        Usuario = x.Usuario.Mail
+                    }).ToList();
+        }
+        public void VerificarSituacionCrediticiaJob()
+        {
+            if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarSituacionCrediticiaJob").Habilitado)
+                return;
+
+            var ordenes = repositorio.Listar<OrdenDeCarga>(oc=>oc.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito);
+            foreach(OrdenDeCarga orden in ordenes)
+            {
+                VerificarSituacionCrediticia(orden, false);
+            }
         }
     }
 }
