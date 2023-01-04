@@ -85,5 +85,15 @@ export class EcheqService extends BaseService {
             .post('/api/echeq/AgregarApertura', payload)
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
+
+    public GetDatosReporte(periodo: string, fechaInicio: string, fechaFin: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.append('periodo', periodo);
+        params = params.append('fechaInicio', fechaInicio);
+        params = params.append('fechaFin', fechaFin);
+        return this.http
+            .get('/api/echeq/ObtenerDatosReporte', { params: params, headers: this.headers });
+    }
+
 }
 

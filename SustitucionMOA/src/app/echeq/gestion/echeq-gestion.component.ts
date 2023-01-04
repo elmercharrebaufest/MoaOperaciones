@@ -32,21 +32,12 @@ export class EcheqGestionComponent extends EcheqBaseComponent implements OnInit{
                     super(echeqService, navService, sessionDataService, securityService, floatMsgService, modalService);
                 }
 
-           
-
-                
-    // setTabs() {
-    //     this.navService.setMenuSeccionTab();
-    // }
-
     ngOnInit() {
         super.ngOnInit();
         this.setTabs();
         this.checkPermisos();
         this.setMenuSeccionTab("echeq", "Gestion");
     }
-
-    //buscar tema tabs
 
     //Aca se me va a llenar la lista de contratos con lo que me devuelve el servicio
     public echeqContratos : Array<EcheqContrato> = new Array<EcheqContrato>();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -541,6 +542,90 @@ namespace SustitucionMOAUtils.Services
                 }).ToList();
 
             return configuracionEcheq;
+        }
+
+        public List<EcheqReporteDto> ObtenerDatosReporte(string fechaInicio, string fechaFin, string mailUsuario, string codigoProveedor) 
+        {
+            try
+            {
+                DateTime fechaIncioDateTime, fechaFinDateTime;
+                try
+                {
+                    fechaIncioDateTime = DateTime.Parse(fechaInicio);
+                }
+                catch
+                {
+                    try
+                    {
+                        fechaInicio = new string(fechaInicio.Where(c => c != '\u200E').ToArray());
+                        fechaIncioDateTime = DateTime.Parse(fechaInicio);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "inicio"), e);
+                    }
+                }
+
+                try
+                {
+                    fechaFinDateTime = DateTime.Parse(fechaFin);
+                }
+                catch
+                {
+                    try
+                    {
+                        fechaFin = new string(fechaFin.Where(c => c != '\u200E').ToArray());
+                        fechaFinDateTime = DateTime.Parse(fechaFin);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "fin"), e);
+                    }
+                }
+
+
+                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(u => u.Mail == mailUsuario);
+                
+                var esAdmin = usuario.TienePermiso("VER ECHEQ ADMIN");
+
+
+                List<EcheqReporteDto> result = repositorio.Listar<EcheqLiquidacion, EcheqReporteDto>(x => new EcheqReporteDto
+                { 
+                    RazonSocial = x.EcheqNegocio.Proveedor.RazonSocial,         
+                    Mail = x.EcheqNegocio.Proveedor.Mail,
+                    CodigoProveedor = x.EcheqNegocio.Proveedor.CodigoProveedor,
+                    Contrato = x.EcheqNegocio.Contrato,
+                    LiquidacionMarcada = x.MarcaCheque,
+                    FechaCreacion = x.FechaCreacion,
+                    Liquidacion = x.Documento,
+                }, x => x.MarcaCheque && (x.EcheqNegocio.Proveedor.CodigoProveedor == codigoProveedor || esAdmin) && fechaIncioDateTime <= DbFunctions.TruncateTime(x.FechaCreacion) && fechaFinDateTime >= DbFunctions.TruncateTime(x.FechaCreacion)); // falta filtrar por fechas
+
+
+                List<string> documentos = result.Select(b => b.Liquidacion).ToList();
+                var aperturas = repositorio.Listar<EcheqApertura>(x => x.Estado && documentos.Contains(x.EcheqLiquidacion.Documento));
+
+                foreach (var apertura in aperturas)
+                {
+                    EcheqReporteDto liquidacion = result
+                        .Where(a => a.Liquidacion == apertura.EcheqLiquidacion.Documento)
+                        .SingleOrDefault();
+                    liquidacion.MontosEcheqs.Add(apertura.ImporteCheque);
+                }
+                return result;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+
         }
     }
 

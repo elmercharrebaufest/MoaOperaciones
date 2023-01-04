@@ -226,7 +226,7 @@ namespace SustitucionMOAUtils.Services
                         if (historialCambios.Count > 0)
                         {
                             //Aviso de Edición de Orden de Carga
-                            var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega);
+                            var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega, ordenDeCarga.NumeroPedido);
                             if (emailSenderData != null)
                             {
                                 EmailSender.EnviarMail(emailSenderData);
@@ -2281,12 +2281,26 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.OrdenDeCargaActualizada;
 
         }
+
+        public void VerificarSituacionCrediticiaJob()
+        {
+            if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarSituacionCrediticiaJob").Habilitado)
+                return;
+
+            var ordenes = repositorio.Listar<OrdenDeCarga>(oc=>oc.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito);
+            foreach(OrdenDeCarga orden in ordenes)
+            {
+                VerificarSituacionCrediticia(orden, false);
+            }
+        }
+
         public OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(oc => oc.NumeroEntrega == nroEntrega);
             if (orden == null) throw new InfoCustomException("No se ha encontrado ningún orden de carga");
             return Obtener(mailUsuario, orden.Id);
         }
+
         public List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden)
         {
             return repositorio.Listar<OrdenDeCargaCambiosHistorial>
@@ -2300,17 +2314,6 @@ namespace SustitucionMOAUtils.Services
                         OrdenDeCarga_Id = x.OrdenDeCarga_Id,
                         Usuario = x.Usuario.Mail
                     }).ToList();
-        }
-        public void VerificarSituacionCrediticiaJob()
-        {
-            if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarSituacionCrediticiaJob").Habilitado)
-                return;
-
-            var ordenes = repositorio.Listar<OrdenDeCarga>(oc=>oc.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito);
-            foreach(OrdenDeCarga orden in ordenes)
-            {
-                VerificarSituacionCrediticia(orden, false);
-            }
         }
     }
 }

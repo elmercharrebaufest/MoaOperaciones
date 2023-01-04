@@ -7,7 +7,7 @@ import { ConfirmationService } from 'primeng/api';
 import { EcheqGestionComponent } from '../echeq-gestion.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EcheqApertura } from '../echeq.popup/echeqApertura-model';
-import { Resultado } from '../../../common/shared-components/buscador/Buscador';
+
 
 
 
@@ -130,7 +130,6 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
         documento.selected = check;
 
         let contrato = this.echeqContratos.find(contrato => contrato.id == documento.parentId);
-        console.log("Check documento")
         if (contrato.clasificacion == "PRODUCTOR") {
             documento.selected = contrato.selected;
             return;
@@ -321,10 +320,8 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
-                        //this.documentoSelect.listaChequesApertura = this.listaChequesAux.map(f => f);
                         this.floatMsgService.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
-                        //this.documentoSelect.listaChequesApertura = this.listaChequesAux.map(f => f);
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.floatMsgService.setSuccessMsg(result);
@@ -332,12 +329,10 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                     }
                 },
                 error => {
-                    //this.documentoSelect.listaChequesApertura = this.listaChequesAux.map(f => f);
                     this.floatMsgService.setErrorMsg(error.message);
                 }
             );
         } catch (e) {
-            //this.documentoSelect.listaChequesApertura = this.listaChequesAux.map(f => f);
             this.floatMsgService.setErrorMsg(e);
         }
     }

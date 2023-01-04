@@ -1,6 +1,6 @@
+﻿using SustitucionMOAModel.Entities;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;

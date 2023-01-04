@@ -1,0 +1,69 @@
+<!--Search-->
+<div class="row myRow firstSection mySearch">
+  <div class="col-xs-12 col-md-12 rounded shadow animate">
+      <div class="col-xs-12 col-md-12 search-header">
+          <title-caps>Refinar resultados</title-caps>
+      </div>
+
+      <div id="searchCodigoProveedor" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;" *ngIf="esAdmin">
+        <p>Codigo Proveedor</p>
+        <div class="styled-select">
+            <input type="search" [(ngModel)]="echeqFilterModel.CodigoProveedor" [value]="echeqFilterModel.CodigoProveedor"  aria-controls="tableModal" (keyup)="onChangeFilter()">
+        </div>
+      </div>
+
+      <div id="searchUsuario" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;" *ngIf="esAdmin">
+        <p>Usuario</p>
+        <div class="styled-select">
+            <input type="search" [(ngModel)]="echeqFilterModel.Mail" [value]="echeqFilterModel.Mail" aria-controls="tableModal" (keyup)="onChangeFilter()">
+        </div>
+      </div>
+
+
+      <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+          <p>N° Contrato</p>
+          <div class="styled-select">
+              <input type="search" [(ngModel)]="echeqFilterModel.Contrato" [value]="echeqFilterModel.Contrato"  aria-controls="tableModal" (keyup)="onChangeFilter()">
+          </div>
+      </div>
+
+      <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+        <p>N° Liquidacion</p>
+        <div class="styled-select">
+            <input type="search" [(ngModel)]="echeqFilterModel.Liquidacion" [value]="echeqFilterModel.Liquidacion"  aria-controls="tableModal" (keyup)="onChangeFilter()">
+        </div>
+      </div>
+
+      <div id="searchFecha" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+        <p>Fecha de Operacion</p>
+        <filtro-fecha (ClickEvent)="onChangeFecha()" ></filtro-fecha>
+      </div>       
+
+      <div id="searchLiqMarcadas" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+          <p>Liquidaciones Marcadas</p>
+          <div class="styled-select">   
+              <select [(ngModel)]="echeqFilterModel.LiquidacionMarcada"
+                  class="form-control dropdown-granos ng-pristine ng-valid" (change)="onChangeFilter()">
+                  <option value="null">Todos</option>
+                  <option value="true">Sí</option>
+                  <option value="false">No</option>
+              </select>
+          </div>
+      </div>
+
+      <div id="searchEcheqGenerados" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+        <p>Echeqs Generados</p>
+        <div class="styled-select">   
+            <select [(ngModel)]="echeqFilterModel.EcheqGenerados"
+                class="form-control dropdown-granos ng-pristine ng-valid" (change)="onChangeFilter()">
+                <option value="null">Todos</option>
+                <option value="true">Sí</option>
+                <option value="false">No</option>
+            </select>
+        </div>
+      </div>
+
+      
+  </div>
+</div>
+<!-- End Search-->

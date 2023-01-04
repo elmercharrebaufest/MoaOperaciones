@@ -24,7 +24,7 @@ namespace SustitucionMOA.Controllers
     {
         private readonly IEcheqService service;
         private readonly IUsuarioService usuarioService;
-             
+
         public EcheqController(IEcheqService echeqService, IUsuarioService usuarioService)
         {
             this.service = echeqService;
@@ -52,7 +52,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-      
+
         [HttpPost]
         public ActionResult MarcarContrato(string contrato, string pedido)
         {
@@ -217,12 +217,12 @@ namespace SustitucionMOA.Controllers
             return usuarioService.GetUsuario(userMail);
         }
 
-        public ActionResult ObtenerConfiguracion() 
+        public ActionResult ObtenerConfiguracion()
         {
-            try 
-            { 
+            try
+            {
                 return JsonCustom(service.ObtenerConfiguracion());
-            
+
             }
             catch (InfoCustomException e)
             {
@@ -237,7 +237,32 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-            
+
         }
+
+        public ActionResult ObtenerDatosReporte(string fechaInicio, string fechaFin)
+        {
+            try
+            {
+                string mailUsuario = ObtenerUsuarioActual().Mail;
+                string codigoProveedor = SessionPersister.Proveedor; 
+
+                return JsonCustom(new { data = service.ObtenerDatosReporte(fechaInicio, fechaFin, mailUsuario, codigoProveedor) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }

@@ -5,7 +5,7 @@
         <mensaje></mensaje>
         <spinner></spinner>
 
-        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-vigente-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-vigente-table" role="grid" aria-describedby="tableModal_info">
             <thead>
                 <tr role="row">
                     <th tabindex="0" rowspan="1" colspan="1">
@@ -57,7 +57,7 @@
                     <ng-container *ngIf="pagoPendiente.expanded && pagoPendiente.documentos.length">
                         <tr>
                             <td colspan="9" style="padding-left: 120px !important; border: 0">
-                                <table style="width: 100%;">
+                                <table style="width: 100%;" aria-describedby="mydesc">
                                     <thead>
                                         <tr>
                                             <th>Echeq</th>
@@ -82,7 +82,6 @@
                                             </td>
 
                                         </tr>
-                                        <!-- <tr>Las liquidaciones marcadas con Echeq requieren apertura, si desea cobrar alguna liquidación por transferencia debe desmarcarla</tr>                                    -->
                                     </tbody>
                                 </table>
                             </td>

@@ -20,9 +20,7 @@
                         class="styled-echeq" 
                         [disabled]="cheque.ordenCheque == 1" 
                         (keyup)="calcularPorcentaje(cheque);" 
-                        numeric decimals="2"
-                        >
-                        <!-- onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false; " -->
+                        numeric decimals="2">
                     <span *ngIf="cheque.ordenCheque != 1" (click)="eliminarEcheq(cheque.ordenCheque)">
                         <img src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="pointer" style="height:25px;"/>
                     </span>

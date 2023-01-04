@@ -19,5 +19,6 @@ namespace SustitucionMOAUtils.Interfaces
         string DesmarcarDocumento(EcheqRequestModel request);
         string AgregarApertura(EcheqRequestModel request);
         List<ConfiguracionDto> ObtenerConfiguracion();
+        List<EcheqReporteDto> ObtenerDatosReporte(string fechaInicio, string fechaFin, string mailUsuario, string codigoProveedor);
     }
 }
