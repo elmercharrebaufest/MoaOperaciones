@@ -1,4 +1,6 @@
-﻿using SustitucionMOAModel.Models;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using System;
@@ -17,5 +19,8 @@ namespace SustitucionMOAWS.Interfaces
         string OrdenCargaEntregadaRequest(string documento, decimal kilos, string nombreConductor, string patenteAcoplado, string patenteChasis, string pedido, string tipoDocumento, string transportista, out string mensaje);
         OrdenCargaVisualizarClienteWSMOAResponse OrdenCargaVisualizarClienteExecute(OrdenCargaVisualizarClienteWSMOARequest request);
         OrdenCargaControlEstado GetOrdenCargaControlEstadoTransportista(string cuitTransportista);
+        ResultadoGenerico AnularOrdenCarga(OrdenDeCarga orden);
+        ResultadoGenerico AnularEntregaOrdenCarga(string nroEntrega);
+        ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega);
     }
 }

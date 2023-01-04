@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Org.BouncyCastle.Asn1.Ocsp;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
@@ -8,11 +7,9 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 using SustitucionMOAModel.Util;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
-using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -40,6 +37,8 @@ namespace SustitucionMOAUtils.Services
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
         private static readonly string EMAIL_TEMPLATE_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
         private readonly string _usuarioAutomaticoSAP;
+
+        private readonly string _errorAnulacion = "Error al anular orden de carga, pero la entrega si ha sido anulada";
 
         public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer, IFeriadoService feriadoService)
         {
@@ -174,8 +173,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
                 var esAdmin = usuario.TienePermiso("VER TODAS ORDENES DE CARGA");
+                var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
                 var esTercero = usuario.TienePermiso("VER ORDENES DE CARGA DE TERCEROS");
                 var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
                 var esMesaFas = usuario.TienePermiso("VER ORDENES DE CARGA PARA MESA FAS");
@@ -215,24 +214,37 @@ namespace SustitucionMOAUtils.Services
                     repositorio.Agregar(historialCambio);
                 }
                 ordenEditar.HistorialCambios.Concat(historialCambios);
-                repositorio.GuardarCambios();
-                NotificarTransporte(ordenEditar.Id);
-                if (puedeEnviarASAP && ordenEditar.CodigoVerificacionSap != "CC-07")
+
+                if (puedeEnviarASAP)
                 {
-                    if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega) && ordenEditar.AprobadoCredito)
+                    if (ordenEditar.CodigoVerificacionSap != "CC-07")
                     {
-                        GenerarEntregaSAP(ordenEditar);
-                    }
-                    if (historialCambios.Count > 0)
-                    {
-                        //Aviso de Edición de Orden de Carga
-                        var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega, ordenDeCarga.NumeroPedido);
-                        if (emailSenderData != null)
+                        if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega) && ordenEditar.AprobadoCredito)
                         {
-                            EmailSender.EnviarMail(emailSenderData);
+                            GenerarEntregaSAP(ordenEditar);
+                        }
+                        if (historialCambios.Count > 0)
+                        {
+                            //Aviso de Edición de Orden de Carga
+                            var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega);
+                            if (emailSenderData != null)
+                            {
+                                EmailSender.EnviarMail(emailSenderData);
+                            }
                         }
                     }
+                    if (ordenEditar.NumeroEntrega != null)
+                    {
+                        var resultadoSAP = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(ordenEditar));
+                        if (resultadoSAP.HayError)
+                            throw new InfoCustomException(resultadoSAP.Errores[0].Message);
+                    }
+
                 }
+
+                repositorio.GuardarCambios();
+                NotificarTransporte(ordenEditar.Id);
+
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
                 Log.Info($"Result: {resultado.ToJson()}");
                 return resultado;
@@ -873,6 +885,7 @@ namespace SustitucionMOAUtils.Services
         {
 
             var emailSenderData = ConstruirCuerpoOrdenesVencidas(ordenes);
+
             if (emailSenderData != null)
             {
                 //if (!HttpContext.Current.IsDebuggingEnabled)
@@ -883,8 +896,10 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public string NotificarVencimientoOrdenCarga(int ordenId)
+        public string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario)
         {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
             var emailSenderData = new EmailSenderData();
             var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
             var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
@@ -900,6 +915,7 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Mails.AddRange(mail.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
             emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
+
             if (emailSenderData != null)
             {
                 //if (!HttpContext.Current.IsDebuggingEnabled)
@@ -908,8 +924,19 @@ namespace SustitucionMOAUtils.Services
                 //}
             }
             orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
-            repositorio.GuardarCambios();
 
+            if (puedeEnviarASAP)
+            {
+                var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
+                if (resultadoAnularEntrega.HayError)
+                    throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
+
+                var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
+                if (resultadoAnularOrden.HayError)
+                    throw new InfoCustomException(_errorAnulacion);
+            }
+
+            repositorio.GuardarCambios();
             return SuccessMsg.OrdenDeCargaAnulada;
         }
         public EmailSenderData ConstruirCuerpoOrdenesVencidas(List<OrdenDeCarga> ordenes)
@@ -982,7 +1009,9 @@ namespace SustitucionMOAUtils.Services
         public string AnularOrden(int ordenId, string mailUsuario)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
             var ordenHistorial = new OrdenDeCargaCambiosHistorial()
             {
                 Id = 0,
@@ -995,6 +1024,18 @@ namespace SustitucionMOAUtils.Services
             };
             repositorio.Agregar(ordenHistorial);
             orden.Estado = EstadoOrdenDeCarga.Anulada;
+
+            if (puedeEnviarASAP)
+            {
+                var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
+                if (resultadoAnularEntrega.HayError)
+                    throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
+
+                var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
+                if (resultadoAnularOrden.HayError)
+                    throw new InfoCustomException(_errorAnulacion);
+            }
+
             repositorio.GuardarCambios();
             return SuccessMsg.OrdenDeCargaAnulada;
         }
@@ -1129,10 +1170,12 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string EdicionFinalizada(int ordenId)
+        public string EdicionFinalizada(int ordenId, string mailUsuario)
         {
             try
             {
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+                var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
                 var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
                 var estadoAnterior = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == ordenId)
@@ -1142,6 +1185,14 @@ namespace SustitucionMOAUtils.Services
 
                 orden.Estado = EstadoOrdenDeCargaExtensions.ObtenerDescripcionEstado(estadoAnterior);
                 orden.EdicionRechazada = false;
+
+                if (puedeEnviarASAP && orden.NumeroEntrega != null)
+                {
+                    var resultado = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(orden));
+                    if (resultado.HayError)
+                        throw new InfoCustomException(resultado.Errores[0].Message);
+                }
+
                 repositorio.GuardarCambios();
 
                 return SuccessMsg.OrdenDeCargaActualizada;

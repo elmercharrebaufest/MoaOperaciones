@@ -18,7 +18,7 @@ namespace SustitucionMOAUtils.Interfaces
         string AnularOrden(int ordenId, string mailUsuario);
         string SolicitarAnulacionOrden(int ordenId, string mailUsuario);
         string RechazarSolicitudAnulacion(int ordenId, string mailUsuario);
-        string EdicionFinalizada(int ordenId);
+        string EdicionFinalizada(int ordenId, string mailUsuario);
         string SolicitarEdicionOrden(int ordenId, string mailUsuario);
         string RechazarSolicitudEdicion(int ordenId, string mailUsuario);
         string NotificarTransporte(int ordenId);
@@ -38,7 +38,7 @@ namespace SustitucionMOAUtils.Interfaces
         ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request);
         string NotificarVariosPedidos(int ordenDeCargaId);
         string NotificarVariosContratos(EmailSenderData emailSenderData);
-        string NotificarVencimientoOrdenCarga(int ordenId);
+        string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario);
         string ActivarOC(int ordenId, string mailUsuario);
         OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega);
         List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden);
