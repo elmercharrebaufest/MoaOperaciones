@@ -36,7 +36,7 @@ namespace SustitucionMOAModel.Dto
             this.RazonSocialCuit = $"{razonSocial} - {aplicacionCCPP.Proveedor?.CUIT}";
             this.ColorEstado = colorEstado;
             this.LabelEstado = labelEstado;
-            this.FechaActualizacion = aplicacionCCPP.FechaActualizacion.ToString("dd/MM/yyyy");
+            this.FechaActualizacion = aplicacionCCPP.FechaAlta != null ? aplicacionCCPP.FechaActualizacion?.ToString("dd/MM/yyyy") : string.Empty;
             this.FechaAlta = aplicacionCCPP.FechaAlta.ToString("dd/MM/yyyy");
             this.Contrato = aplicacionCCPP.Contrato;
             this.CartaPorte = aplicacionCCPP.CartaPorte;
@@ -47,7 +47,7 @@ namespace SustitucionMOAModel.Dto
     }
     public class AplicacionCartaPorteFiltrosDto
     {
- 
+
         public List<DropdownOption> FiltroEstados;
         public List<DropdownOption> FiltroClientes;
         public AplicacionCartaPorteFiltrosDto(List<AplicacionCartaPorteDto> aplicaciones)
