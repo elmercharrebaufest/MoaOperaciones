@@ -21,6 +21,6 @@ namespace SustitucionMOAModel.Entities
         public virtual Usuario Usuario { get; set; }
         public string Error { get; set; }
         public DateTime FechaAlta { get; set; }
-        public DateTime FechaActualizacion { get; set; }
+        public DateTime? FechaActualizacion { get; set; }
     }
 }
