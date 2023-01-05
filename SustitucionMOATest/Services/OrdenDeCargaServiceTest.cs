@@ -65,10 +65,11 @@ namespace SustitucionMOATest.Services
                     CodigoSap = ""
                 },
                 NumeroPedido = "",
-                Cliente = new Proveedor 
+                Cliente = new Proveedor
                 {
-                    RazonSocial ="ClientePrueba"                
-                }
+                    RazonSocial = "ClientePrueba"
+                },
+                NumeroEntrega = ""
 
             };
         }
@@ -964,10 +965,11 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.PedidoSAP = "25250000";
             ordenDeCarga.NumeroPedido = string.Empty;
             ordenDeCarga.NumeroPedidoIngresado = string.Empty;
+            ordenDeCarga.NumeroEntrega = string.Empty;
             var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             var result = new EmailSenderData()
             {
-                Asunto = "Orden de carga #1",
+                Asunto = "Orden de carga #1  Pedido Bloqueado ClientePrueba",
                 Cuerpo = "Orden de carga 1 de cliente RS no pasó validaciones crediticias. <br> Número de Contrato: 10000000 <br> Número de Pedido: 25250000"
             };
             Assert.AreEqual(result.Asunto, response.Asunto);
@@ -987,6 +989,7 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.PedidoSAP = "25250000";
             ordenDeCarga.NumeroPedido = string.Empty;
             ordenDeCarga.NumeroPedidoIngresado = string.Empty;
+            ordenDeCarga.NumeroEntrega = string.Empty;
             var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             var result = new EmailSenderData()
             {
@@ -1010,6 +1013,7 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.PedidoSAP = string.Empty;
             ordenDeCarga.NumeroPedido = "25250000";
             ordenDeCarga.NumeroPedidoIngresado = string.Empty;
+            ordenDeCarga.NumeroEntrega = string.Empty;
             var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             var result = new EmailSenderData()
             {
@@ -1033,6 +1037,7 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.PedidoSAP = string.Empty;
             ordenDeCarga.NumeroPedido = "25250000";
             ordenDeCarga.NumeroPedidoIngresado = string.Empty;
+            ordenDeCarga.NumeroEntrega = string.Empty;
             var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             var result = new EmailSenderData()
             {
@@ -1056,6 +1061,7 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.PedidoSAP = string.Empty;
             ordenDeCarga.NumeroPedido = string.Empty;
             ordenDeCarga.NumeroPedidoIngresado = "25250000";
+            ordenDeCarga.NumeroEntrega = string.Empty;
             var response = target.ConstruirCuerpoEmail(ordenDeCarga);
             var result = new EmailSenderData()
             {
@@ -1091,6 +1097,7 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void ConstruirCuerpoMailSolicitudAnulacionTest()
         {
+            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
             ordenDeCarga.Cliente_Id = 301301301;
             ordenDeCarga.ContratoSAP = string.Empty;
@@ -1316,7 +1323,8 @@ namespace SustitucionMOATest.Services
                 }
             };
             var numeroEntrega = "E1020";
-            var response = target.ConstruirCuerpoEmail(ordenDeCargaCambiosHistorial, numeroEntrega);
+            var numeroPedido = "25250000";
+            var response = target.ConstruirCuerpoEmail(ordenDeCargaCambiosHistorial, numeroEntrega, numeroPedido);
             var result = new EmailSenderData()
             {
                 Asunto = "Molinos Agro - Edición en su orden de carga n°: 636",
@@ -1332,7 +1340,7 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void ConstruirCuerpoEmailOrdenDeCargaHistorialCrediticiaTestAppSettingsNull()
         {
-            var response = target.ConstruirCuerpoEmail(new List<OrdenDeCargaCambiosHistorial>(), "E1020");
+            var response = target.ConstruirCuerpoEmail(new List<OrdenDeCargaCambiosHistorial>(), "E1020", "25250000");
             Assert.IsNull(response);
         }
 
@@ -1342,7 +1350,7 @@ namespace SustitucionMOATest.Services
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
-            var response = target.ConstruirCuerpoEmail(new List<OrdenDeCargaCambiosHistorial>(), "E1020");
+            var response = target.ConstruirCuerpoEmail(new List<OrdenDeCargaCambiosHistorial>(), "E1020", "25250000");
             Assert.IsNull(response);
         }
 
@@ -1462,7 +1470,7 @@ namespace SustitucionMOATest.Services
 
         private string CrearAsuntoNotificacionSolicitudAnulacion()
         {
-            var fecha = DateTime.Now.Date;
+            var fecha = DateTime.Now;
             string asunto = string.Empty;
             asunto += $"<!DOCTYPE html>\r\n";
             asunto += $"<html>\r\n";
@@ -1483,8 +1491,8 @@ namespace SustitucionMOATest.Services
             asunto += $"<td scope=\"col\">Cliente</td>\r\n                ";
             asunto += $"<td scope=\"col\">Corredor</td>\r\n                ";
             asunto += $"<td scope=\"col\">Chofer</td>\r\n                ";
-            asunto += $"<td scope=\"col\">Patente acoplado</td>\r\n                ";
             asunto += $"<td scope=\"col\">Patente Chasis</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Patente acoplado</td>\r\n                ";
             asunto += $"<td scope=\"col\">Numero de pedido</td>\r\n                ";
             asunto += $"<td scope=\"col\">Numero de entrega</td>\r\n                ";
             asunto += $"<td scope=\"col\">Fecha carga</td>\r\n                ";
@@ -1498,8 +1506,8 @@ namespace SustitucionMOATest.Services
             asunto += $"<td>ClientePrueba</td>";
             asunto += $"<td></td>";
             asunto += $"<td>Martin</td>";
-            asunto += $"<td>ABC123</td>";
             asunto += $"<td>ABBSM1231412</td>";
+            asunto += $"<td>ABC123</td>";
             asunto += $"<td></td>";
             asunto += $"<td></td>";
             asunto += $"<td>1/1/0001 00:00:00</td>";
