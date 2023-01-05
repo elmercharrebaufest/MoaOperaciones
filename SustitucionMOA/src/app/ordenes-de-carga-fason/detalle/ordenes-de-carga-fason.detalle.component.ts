@@ -107,7 +107,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
         this.unsubscribe();
         this.blockUI.start('Procesando...');
         try {
-            this.subscriptionDropDowns = this.service.verificarTransporte(this.IdordenDeCargaFason).subscribe(
+            this.subscriptionDropDowns = this.service.verificarTransporte(this.ordenDeCargaFason.Id).subscribe(
                 result => {
                     this.blockUI.stop();
                     this.spinnerComponent.hideIt();
