@@ -32,7 +32,7 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
   esAdmin = this.isAuthorized('ADMIN APLICACIONES CCPP');
   disabled = false;
   show = false;
-
+  develop = true;
   constructor(
     protected service: AplicacionCcppService,
     protected navService: NavService,
@@ -135,5 +135,5 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
     this.opcionesEstadoAplicacionCCPP = FiltroEstados;
     this.opcionesClientes = FiltroClientes;
   }
-  eliminarAplicacion(aplicacion: AplicacionCCPP){}
+  eliminarAplicacion(aplicacion: AplicacionCCPP) { }
 }
