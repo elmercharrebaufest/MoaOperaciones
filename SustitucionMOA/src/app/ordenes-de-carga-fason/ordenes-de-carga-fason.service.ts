@@ -78,42 +78,13 @@ export class OrdenesDeCargaFasonService extends BaseService {
         .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }
 
-  // public getEditarOrdenDeCarga(ordenDeCargaFasonId: Number): Observable<any> {
-  //   let params: HttpParams = new HttpParams()
-  //       .append('ordenDeCargaFasonId', ordenDeCargaFasonId.toString());
+  public verificarTransporte(IdOrdenCargaFason: Number): Observable<any> {
+    let params: HttpParams = new HttpParams()
+      .append('IdOrdenCargaFason', IdOrdenCargaFason.toString());
 
-  //   return this.http
-  //       .get<OrdenDeCargaFason>('/api/OrdenDeCargaFason/GetEditar', { params: params, headers: this.headers })
-  //       .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
-  // }
-
-  // public verificarTransporte(IdOrdenCargaFason: Number): Observable<any> {
-  //   let params: HttpParams = new HttpParams()
-  //     .append('IdOrdenCargaFason', IdOrdenCargaFason.toString());
-
-  //   return this.http.get('/api/OrdenDeCargaFason/VerificarTransporte', { params: params, headers: this.headers })
-  //     .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
-  // }
-
-
-  // public visualizarCliente(codigoCorredor: string): Observable<any> {
-  //   let params: HttpParams = new HttpParams();
-  //   params = params.append("corredor", codigoCorredor);
-
-  //   return this.http
-  //       .get('/api/OrdenDeCargaFason/VisualizarCliente', { params: params, headers: this.headers })
-  //       .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
-  // }
-
-  // public seleccionarCorredor(ordenId: Number, corredor: string): Observable<any> {
-  //   let params: HttpParams = new HttpParams()
-  //       .append('ordenId', ordenId.toString())
-  //       .append('corredor', corredor);
-
-  //   return this.http
-  //       .get('/api/OrdenDeCargaFason/SeleccionarCorredor', { params: params, headers: this.headers })
-  //       .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
-  // }
+    return this.http.get('/api/OrdenDeCargaFason/VerificarTransporte', { params: params, headers: this.headers })
+      .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+  }
 
   public obtenerCorredores(): Observable<any> {
     return this.http

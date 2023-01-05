@@ -101,6 +101,43 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
         this.goToSeccion('/ordenes-de-carga-fason/alta/' + this.ordenDeCargaFason.Id);
     }
 
-    
+    verificarTransporte() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        this.blockUI.start('Procesando...');
+        try {
+            this.subscriptionDropDowns = this.service.verificarTransporte(this.IdordenDeCargaFason).subscribe(
+                result => {
+                    this.blockUI.stop();
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        if (result.data != "Orden de carga actualizada correctamente") {
+                            this.mensajeComponent.setInfoMsg(result.data);
+                        } else {
+                            this.mensajeComponent.setSuccessMsg(result.data);
+                        }
+                        this.mostrarBotonVerificarTransporte = false;
+                        this.obtenerOrdenDeCargaFason();
+
+ 
+
+                    }
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
 
 }
