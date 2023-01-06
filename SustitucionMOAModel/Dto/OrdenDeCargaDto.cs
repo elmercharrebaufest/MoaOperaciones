@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -55,6 +56,11 @@ namespace SustitucionMOAModel.Dto
             Producto_Id = orden.Producto_Id;
             Observacion = orden.Observacion;
             ContratoIngresado = orden.ContratoIngresado;
+            ContratoSeleccionado = new ContratoOrdenFas
+            {
+                NumeroContrato = orden.ContratoIngresado,
+                Producto = new Models.DataAgro.MaterialDto { MaterialId = orden.Producto_Id }
+            };
             Cantidad = orden.Cantidad;
             NumeroEntrega = orden.NumeroEntrega;
             NumeroPedidoIngresado = string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedido : orden.NumeroPedidoIngresado;
@@ -78,6 +84,7 @@ namespace SustitucionMOAModel.Dto
         public int Producto_Id { get; set; }
         public string Observacion { get; set; }
         public string ContratoIngresado { get; set; }
+        public ContratoOrdenFas ContratoSeleccionado { get; set; }
         public int Cantidad { get; set; }
         public string NumeroEntrega { get; set; }
         public string NumeroPedidoIngresado { get; set; }

@@ -2317,5 +2317,69 @@ namespace SustitucionMOAUtils.Services
                         Usuario = x.Usuario.Mail
                     }).ToList();
         }
+
+        public ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req)
+        {
+            try
+            {
+                var rangoFechas = string.IsNullOrEmpty(req.FechaDesde) || string.IsNullOrEmpty(req.FechaHasta) ? null :
+                    CommonService.toDateList(req.FechaDesde, req.FechaHasta);
+
+                var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
+                {
+                    Cliente = req.ClienteCodigo,
+                    Contrato = string.Empty,
+                    //Corredor = req.CorredorCodigo,
+                    Fechas = rangoFechas,
+                    Material = string.Empty,
+                    Pendiente = "X", // "X" es para Contratos ABIERTOS
+                    TipoContrato = string.Empty
+                };
+
+                var ordenCargaConsumer = new OrdenCargaConsumerMOA();
+                var consumerRes = ordenCargaConsumer.OrdenCargaVisualizarClienteExecute(consumerReq);
+
+                if (consumerRes == null)
+                {
+                    throw new ValidationCustomException(ErrorMsg.Error);
+                }
+                if (consumerRes.Resultados == null || consumerRes.Resultados.Count == 0)
+                {
+                    throw new ValidationCustomException("No se encontraron contratos abiertos para los datos ingresados");
+                }
+
+                var productosCodigosSap = consumerRes.Resultados.Select(p => p.Producto.Trim().TrimStart('0')).Distinct().ToList();
+
+                var productosBD = repositorio
+                    .Listar<Material>(m =>
+                        m.TablaSeccionMaterial == TablaSeccionMaterial.OrdenDeCarga &&
+                        productosCodigosSap.Contains(m.CodigoSap));
+
+                var contratosDisponiblesResp = new ObtenerContratosDisponiblesResponse
+                {
+                    Contratos = consumerRes.Resultados.Select(x => new ContratoOrdenFas
+                    {
+                        NumeroContrato = x.Contrato,
+                        Producto = productosBD
+                            .Where(p => p.CodigoSap == x.Producto.Trim().TrimStart('0'))
+                            .Select(p => new MaterialDto
+                            {
+                                MaterialId = p.Id,
+                                Descripcion = p.Nombre,
+                                CodigoSap = p.CodigoSap
+                            })
+                            .Single()
+                    }).ToList()
+                };
+
+                return contratosDisponiblesResp;
+            }
+            catch (InfoCustomException) { throw; }
+            catch (ValidationCustomException) { throw; }
+            catch (Exception ex)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, ex);
+            }
+        }
     }
 }

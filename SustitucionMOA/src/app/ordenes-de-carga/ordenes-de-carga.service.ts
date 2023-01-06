@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
 import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
 import { CrearOrdenEnSAPRequest } from '../common/models/ordenes-de-carga/crearOrdenEnSAPRequest';
 import { CrearOrdenEnSAPResponse } from '../common/models/ordenes-de-carga/crearOrdenEnSAPResponse';
+import { ObtenerContratosDisponiblesResponse } from '../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -177,19 +178,6 @@ export class OrdenesDeCargaService extends BaseService {
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
-
-
-    // public obtenerContratosYCorredores(ordenId: Number): Observable<any> {
-    //     let params: HttpParams = new HttpParams()
-    //.append('ordenId', ordenId.toString());
-
-    //     return this.http
-    //         .get('/api/OrdenDeCarga/ObtenerContratosYCorredores', { params: params, headers: this.headers })
-    //         .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
-    //         ;
-    // }
-
-
     public obtenerCorredores(ordenId: Number): Observable<any> {
         let params: HttpParams = new HttpParams()
             .append('ordenId', ordenId.toString());
@@ -331,5 +319,19 @@ export class OrdenesDeCargaService extends BaseService {
         return this.http
             .get('/api/OrdenDeCarga/validarCorredorClienteContratoProducto', { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
+
+    public obtenerContratosDisponibles(clienteCodigo: string, /*corredorCodigo: string,*/ fechaDesde: string,
+    fechaHasta: string): Observable<ObtenerContratosDisponiblesResponse> {
+
+    let params: HttpParams = new HttpParams();
+    params = params.append("clienteCodigo", clienteCodigo);
+    // params = params.append("corredorCodigo", corredorCodigo);
+    params = params.append("fechaDesde", fechaDesde);
+    params = params.append("fechaHasta", fechaHasta);
+
+    return this.http
+        .get<ObtenerContratosDisponiblesResponse>('/api/OrdenDeCarga/ObtenerContratosDisponibles', { params: params, headers: this.headers })
+        .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 }

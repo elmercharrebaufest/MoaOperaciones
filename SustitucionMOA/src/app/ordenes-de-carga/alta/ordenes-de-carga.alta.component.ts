@@ -16,6 +16,7 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
+import { ContratoOrdenFas } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 
 declare var $: any;
 
@@ -53,6 +54,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     patentesAcoplados: any;
     private selectUndefinedOptionValue: any;
 
+    contratosDisponibles: ContratoOrdenFas[] = [];
+    contratoSeleccionado: ContratoOrdenFas;
     listaMateriales: Material[];
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
@@ -74,9 +77,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     ngOnInit() {
         console.debug('OrdenesDeCargaAlta ngOnInit()');
-        // console.debug(' username: ', sessionStorage.getItem("username"));
-        // console.debug(' tipoUsuario: ', sessionStorage.getItem("tipoUsuario"));
-        // console.debug(' proveedor: ', sessionStorage.getItem("proveedor"));
         this.userEmail = sessionStorage.getItem("username");
         this.desde = this.getFecha(8);
         this.hasta = this.getFecha(0);
@@ -167,12 +167,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
             return false;
         }
-        if (this.ordenDeCargaId == 0) {
-            if (this.resultadoValidacionCorCliConPro == false) {
-                this.mensajeComponent.setErrorMsg(this.mensajeValidacionCorCliConPro);
-                return false;
-            }
-        }
+        // if (this.ordenDeCargaId == 0) {
+        //     if (this.resultadoValidacionCorCliConPro == false) {
+        //         this.mensajeComponent.setErrorMsg(this.mensajeValidacionCorCliConPro);
+        //         return false;
+        //     }
+        // }
         return true;
     }
 
@@ -213,6 +213,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                             this.onCorredorFocusOut('', true);
                         }
                         this.getPatentes();
+                        this.cargarContratosDisponibles(result.data.CodigoCliente);
                     }
                 },
                 error => {
@@ -227,6 +228,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     submit() {
+        if (!this.Contrato) {
+            this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
+        }
+
         if (!this.validar()) {
             this.spinnerComponent.hideIt();
             return;
@@ -509,93 +514,40 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     onClienteSeleccionado = () => {
+        let pClienteCodigo: string = "";
         if (this.clienteSeleccionado) {
             this.clienteCUIT = this.clienteSeleccionado.CUIT;
+            pClienteCodigo = this.clienteSeleccionado.CodigoProveedor;
         }
         this.ordenDeCarga.CUITCliente = Number(this.clienteCUIT);
         this.getPatentes();
-        if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
-            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
-        } else if (this.clienteCUIT && this.Contrato && this.Producto) {
-            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
-        } else if (this.clienteCodigo && this.Contrato && this.Producto) {
-            this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
-        }
+        this.cargarContratosDisponibles(pClienteCodigo);
     }
 
-    onContratoChange = (contrato: any) => {
-        this.Contrato = contrato;
-        if (this.Contrato) {
-            this.cargarProducto();
+    onContratoSeleccionadoChanged = () => {
+        if (this.ordenDeCarga.ContratoSeleccionado) { //this.contratoSeleccionado) {
+            this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato; //this.contratoSeleccionado.NumeroContrato;
+            this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato; //this.contratoSeleccionado.NumeroContrato;
+            this.ordenDeCarga.Producto_Id = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId; //this.contratoSeleccionado.Producto.MaterialId;
+            this.Producto = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId.toString(); //this.contratoSeleccionado.Producto.MaterialId.toString();
         }
-        console.log("onContratoChange",this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
-        if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
-            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
-        } else if (this.clienteCUIT && this.Contrato && this.Producto) {
-            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
-        } else if (this.clienteCodigo && this.Contrato && this.Producto) {
-            this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
-        } else if (!this.Contrato) {
+        else {
+            this.Contrato = "";
+            this.ordenDeCarga.ContratoIngresado = "";
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
         }
     }
 
-    cargarProducto = () => {
-        this.blockUI.start('');
-        this.mensajeComponent.setMsgsEmpty();
-        try {
-            this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
-            this.service.visualizarProducto(this.Contrato, this.desde, this.hasta).subscribe(
-                result => {
-                    if (result.logout == true) {
-                        this.blockUI.stop();
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        console.error(' cargarProducto: ', result.error);
-                        this.mensajeComponent.setErrorMsg(result.error);
-                        this.blockUI.stop();
-                    } else if (result.info != undefined) {
-                        console.info(' cargarProducto: ', result.info);
-                        this.mensajeComponent.setInfoMsg(result.info);
-                        this.blockUI.stop();
-                    } else {
-                        this.Producto = result.Productos[0].MaterialId;
-                        this.ordenDeCarga.Producto_Id = result.Productos[0].MaterialId;
-                        if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
-                            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
-                        } else if (this.clienteCUIT && this.Contrato && this.Producto) {
-                            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
-                        } else if (this.clienteCodigo && this.Contrato && this.Producto) {
-                            this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
-                        }
-                        this.blockUI.stop();
-                    }
-                },
-                error => {
-                    console.error(' cargarClientes: ', error.message);
-                    this.mensajeComponent.setErrorMsg(error.message);
-                    this.blockUI.stop();
-                }
-            );
-        } catch (err) {
-            console.error(' cargarClientes: ', err);
-            this.mensajeComponent.setErrorMsg(err);
-            this.blockUI.stop();
-        }
-    }
+    
 
-    onProductoChange = (producto: any) => {
-        this.Producto = producto;
-        if (this.clienteCUIT && this.Contrato && this.CodigoCorredor && this.Producto) {
-            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, this.CodigoCorredor, this.Producto);
-        } else if (this.clienteCUIT && this.Contrato && this.Producto) {
-            this.validarCorredorClienteContratoProducto(this.clienteCUIT, '', this.Contrato, '', this.Producto);
-        } else if (this.clienteCodigo && this.Contrato && this.Producto) {
-            this.validarCorredorClienteContratoProducto(this.clienteCUIT, this.clienteCodigo, this.Contrato, '', this.Producto);
-        }
-    }
+   
 
-    validarCorredorClienteContratoProducto = (clienteCuit: string, clienteCodigo: string, contrato: string, codigoCorredor: string, productoId: string) => {
+    validarCorredorClienteContratoProducto = (
+            clienteCuit: string, 
+            clienteCodigo: string, 
+            contrato: string, 
+            codigoCorredor: string, 
+            productoId: string) => {
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
         try {
@@ -753,6 +705,44 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             );
         } catch (err) {
             console.error(' cargarClientes: ', err);
+            this.mensajeComponent.setErrorMsg(err);
+            this.blockUI.stop();
+        }
+        
+    }
+
+    cargarContratosDisponibles(pClienteCodigo: string) {
+        this.mensajeComponent.setMsgsEmpty();
+        this.contratosDisponibles = [];
+        this.contratoSeleccionado = null as any;
+        try {
+            if (pClienteCodigo) { //this.clienteSeleccionado) { //|| this.corredorSeleccionado) {
+                //let pClienteCodigo = this.clienteSeleccionado.CodigoProveedor;
+                // let pCorredorCodigo = this.corredorSeleccionado.idVendedor;
+                this.blockUI.start('');
+                this.service
+                    .obtenerContratosDisponibles(pClienteCodigo, /*pCorredorCodigo,*/ this.desde, this.hasta)
+                    .subscribe(resp => {
+                        if (resp.Logout) {
+                            this.sessionDataService.logout();
+                        } else
+                        if (resp.Error) {
+                            this.mensajeComponent.setErrorMsg(resp.Error);
+                        } else
+                        if (resp.Info) {
+                            this.mensajeComponent.setInfoMsg(resp.Info);
+                        } else {
+                            this.contratosDisponibles = resp.Contratos;
+                            this.ordenDeCarga.ContratoSeleccionado =
+                                this.ordenDeCarga.ContratoIngresado ?
+                                    this.contratosDisponibles.find(c => c.NumeroContrato == this.ordenDeCarga.ContratoIngresado)
+                                    : undefined;
+                        }
+                        this.blockUI.stop();
+                    })
+            }
+        } catch (err) {
+            console.error('cargarContratosDisponibles: ', err);
             this.mensajeComponent.setErrorMsg(err);
             this.blockUI.stop();
         }

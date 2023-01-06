@@ -691,5 +691,36 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpGet]
+        public ActionResult ObtenerContratosDisponibles(string clienteCodigo, string fechaDesde, string fechaHasta)
+        {
+            var response = new ObtenerContratosDisponiblesResponse();
+            try
+            {
+                var req = new ObtenerContratosDisponiblesRequest
+                {
+                    ClienteCodigo = clienteCodigo,
+                    //CorredorCodigo = corredorCodigo,
+                    FechaDesde = fechaDesde,
+                    FechaHasta = fechaHasta
+                };
+                response = ordenDeCargaService.ObtenerContratosDisponibles(req);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return JsonCustom(response);
+        }
     }
 }
