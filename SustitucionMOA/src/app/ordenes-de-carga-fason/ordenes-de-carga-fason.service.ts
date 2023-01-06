@@ -44,7 +44,7 @@ export class OrdenesDeCargaFasonService extends BaseService {
     console.log("payload:", payload)
 
     return this.http
-        .put('/api/OrdenDeCargaFason/Editar', payload)
+        .post('/api/OrdenDeCargaFason/Editar', payload)
         //.post('/api/OrdenDeCargaFason/Editar', payload)
         .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }

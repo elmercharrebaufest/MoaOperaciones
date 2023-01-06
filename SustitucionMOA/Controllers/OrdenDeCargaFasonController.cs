@@ -138,7 +138,7 @@ namespace SustitucionMOA.Controllers
 			}
 		}
 
-		[HttpPut]
+		[HttpPost]
 		public ActionResult Editar(string ordenDeCargaJson)
         {
             try
