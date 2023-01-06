@@ -1,4 +1,5 @@
 import { EstadoOrdenDeCarga } from "./estadoOrdenDeCarga";
+import { ContratoOrdenFas } from "./obtenerContratosDisponiblesResponse";
 import { OrdenDeCargaCambiosHistorial } from "./ordenDeCargaCambiosHistorial";
 
 export class OrdenDeCarga {
@@ -23,6 +24,7 @@ export class OrdenDeCarga {
     RazonSocialCorredor: string;
     TransporteExiste: boolean;
     ContratoIngresado: string;
+    ContratoSeleccionado: ContratoOrdenFas | undefined;
     NumeroEntrega: string;
     NumeroPedidoIngresado: string;
     NumeroPedido: string;

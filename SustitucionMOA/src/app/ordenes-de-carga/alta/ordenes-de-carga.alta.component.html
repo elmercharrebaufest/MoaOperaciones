@@ -27,19 +27,7 @@
                                     Corredor:
                                 </div>
 
-                                <div class="styled-select" style="overflow: initial;">
-                                    <!--<app-seleccionar-proveedor
-                                    [tipoProveedorId]="4"
-                                    [(valorInicial)]="CodigoCorredor"
-                                    [noEditarCliente]="noEditarCliente"
-                                    (onProveedorSeleccionado)="onCorredorSeleccionado($event)"
-                                    (focusout)="onCorredorFocusOut($event.target.value,false)">
-                                    </app-seleccionar-proveedor>-->
-                                    <!--(onProveedorSeleccionado)="onCorredorSeleccionado($event)"
-                                                (focusout)="onCorredorFocusOut($event.target.value,false)"
-                                                (ngModelChange)="onCorredorSeleccionado($event)"
-                                        
-                                        -->
+                                <div class="styled-select" style="overflow: initial;">                 
                                     <p-dropdown name="cmbCorredores"
                                                 [(ngModel)]="corredorSeleccionado"
                                                 [options]="listaCorredores"
@@ -57,14 +45,6 @@
                                     Cliente:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <!--<select name="cmbCliente" [(ngModel)]="clienteCUIT" (ngModelChange)="onClienteSeleccionado()" [disabled]="noEditarCliente">
-                                        <option [value]="selectUndefinedOptionValue">
-                                            Elegir cliente
-                                        </option>
-                                        <option *ngFor="let itemCliente of listaClientes" value="{{itemCliente.CUIT}}">
-                                            {{itemCliente.RazonSocial}}
-                                        </option>
-                                    </select>-->
                                     <p-dropdown name="cmbCliente2"
                                                 [(ngModel)]="clienteSeleccionado"
                                                 (ngModelChange)="onClienteSeleccionado()"
@@ -83,8 +63,16 @@
                                 <div class="formulario-label">
                                     Contrato:
                                 </div>
-                                <div class="styled-select">
-                                    <input type="text" [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente" [(ngModel)]="ordenDeCarga.ContratoIngresado" maxlength="25" (change)="onContratoChange($event.target.value)">
+                                <div class="styled-select" style="overflow: initial;">
+                                    <p-dropdown name="cmbContratos"
+                                                [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente"
+                                                [(ngModel)]="ordenDeCarga.ContratoSeleccionado"
+                                                [options]="contratosDisponibles"
+                                                optionLabel="NumeroContrato"
+                                                placeholder="Seleccione un Contrato"
+                                                (ngModelChange)="onContratoSeleccionadoChanged()"
+                                                [filter]="true" filterBy="value.NumeroContrato">
+                                    </p-dropdown>
                                 </div>
                             </div>
 
@@ -102,7 +90,7 @@
                                     Producto:
                                 </div>
                                 <div class="styled-select">
-                                    <select name="product" [(ngModel)]="ordenDeCarga.Producto_Id" [disabled]="true" (change)="onProductoChange($event.target.value)">
+                                    <select name="product" [(ngModel)]="ordenDeCarga.Producto_Id" [disabled]="true">
                                         <option [value]="selectUndefinedOptionValue">
                                             Elegir Grano
                                         </option>
@@ -164,7 +152,7 @@
 
                             <div class="col-xs-12 col-md-12">
                                 <div class="formulario-label">
-                                    Razon social transporte:
+                                    Raz&oacute;n social transporte:
                                 </div>
                                 <div class="styled-select">
                                     <input type="text" [(ngModel)]="ordenDeCarga.RazonSocialTransporte"
