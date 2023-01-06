@@ -66,72 +66,74 @@
         <mensaje></mensaje>
         <spinner></spinner>
         <ng-container *ngIf="isVisible">
-            <table id="tableModal"
-              class="display nowrap dataTable no-footer dtr-inline rounded shadow animate "
-              role="grid" aria-describedby="tableModal_info" style="width: 100%;padding: 30px 0">
-              <thead>
-                <tr role="row">
-                  <th class="fw-bold fs-medium" id="fechaRow" tabindex="0" rowspan="1" colspan="1">
-                    Fecha
-                  </th>
-                  <th class="fw-bold fs-medium" id="usuarioRow" tabindex="0" rowspan="1" colspan="1" *ngIf="verUsuario">
-                    Usuario
-                  </th>
-                  <th class="fw-bold fs-medium" id="usuarioRow" tabindex="0" rowspan="1" colspan="1"
-                    *ngIf="verRazonSocial">
-                    Razon Social
-                  </th>
-                  <th class="fw-bold fs-medium" id="contratoRow" tabindex="0" rowspan="1" colspan="1">
-                    CTO
-                  </th>
-                  <th class="fw-bold fs-medium" id="ccppRow" tabindex="0" rowspan="1" colspan="1">
-                    CCPP
-                  </th>
-                  <th class="fw-bold fs-medium" id="kilosRow" tabindex="0" rowspan="1" colspan="1">
-                    KGS
-                  </th>
-                  <th class="fw-bold fs-medium" id="estadoRow" tabindex="0" rowspan="1" colspan="1">
-                    Estado
-                  </th>
-                  <th class="fw-bold fs-medium" id="observacionesRow" tabindex="0" rowspan="1" colspan="1">
-                    Observaciones
-                  </th>
-                  <th id="accionesRow" tabindex="0" rowspan="1" colspan="1">
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let aplicacion of aplicaciones 
+          <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate "
+            role="grid" aria-describedby="tableModal_info" style="width: 100%;padding: 30px 0">
+            <thead>
+              <tr role="row">
+                <th class="fw-bold fs-medium" id="fechaRow" tabindex="0" rowspan="1" colspan="1">
+                  Fecha
+                </th>
+                <th class="fw-bold fs-medium" id="usuarioRow" tabindex="0" rowspan="1" colspan="1" *ngIf="verUsuario">
+                  Usuario
+                </th>
+                <th class="fw-bold fs-medium" id="usuarioRow" tabindex="0" rowspan="1" colspan="1"
+                  *ngIf="verRazonSocial">
+                  Razon Social
+                </th>
+                <th class="fw-bold fs-medium" id="contratoRow" tabindex="0" rowspan="1" colspan="1">
+                  CTO
+                </th>
+                <th class="fw-bold fs-medium" id="ccppRow" tabindex="0" rowspan="1" colspan="1">
+                  CCPP
+                </th>
+                <th class="fw-bold fs-medium" id="kilosRow" tabindex="0" rowspan="1" colspan="1">
+                  KGS
+                </th>
+                <th class="fw-bold fs-medium" id="estadoRow" tabindex="0" rowspan="1" colspan="1">
+                  Estado
+                </th>
+                <th class="fw-bold fs-medium" id="observacionesRow" tabindex="0" rowspan="1" colspan="1">
+                  Observaciones
+                </th>
+                <th id="accionesRow" tabindex="0" rowspan="1" colspan="1">
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let aplicacion of aplicaciones 
                   | customFilter:'Contrato':contratoFiltro.value
                   | customFilter:'CartaPorte':ccppFiltro.value
                   | customFilter:'LabelEstado':estadoFiltro.value
                   | customFilter:'RazonSocialCuit':clienteFiltro.value
                   | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
                   ;let odd=odd" role="row" [class.odd]="!odd">
-                  <td>{{aplicacion.FechaAlta}}</td>
-                  <td *ngIf="verUsuario">{{aplicacion.MailUsuario}}</td>
-                  <td *ngIf="verRazonSocial">{{aplicacion.RazonSocial}}</td>
-                  <td>{{aplicacion.Contrato}}</td>
-                  <td>{{aplicacion.CartaPorte}}</td>
-                  <td>
-                    {{
-                    aplicacion.Estado !== estadosAplicacionCCPP.Error?
-                    (aplicacion.Kilogramos| number:'2.0' )
-                    : null
-                    }}
-                  </td>
-                  <td [ngClass]="[aplicacion.ColorEstado,'fw-bold']">{{aplicacion.LabelEstado}}</td>
-                  <td>{{aplicacion.Error}}</td>
-                  <td>
+                <td>{{aplicacion.FechaAlta}}</td>
+                <td *ngIf="verUsuario">{{aplicacion.MailUsuario}}</td>
+                <td *ngIf="verRazonSocial">{{aplicacion.RazonSocial}}</td>
+                <td>{{aplicacion.Contrato}}</td>
+                <td>{{aplicacion.CartaPorte}}</td>
+                <td>
+                  {{
+                  aplicacion.Estado !== estadosAplicacionCCPP.Error?
+                  (aplicacion.Kilogramos| number:'2.0' )
+                  : null
+                  }}
+                </td>
+                <td [ngClass]="[aplicacion.ColorEstado,'fw-bold']">{{aplicacion.LabelEstado}}</td>
+                <td>{{aplicacion.Error}}</td>
+                <td>
+                  <ng-container *ngIf="!develop">
                     <i *ngIf="aplicacion.Estado === estadosAplicacionCCPP.Pendiente"
                       (click)="eliminarAplicacion(aplicacion)">
                       <img src="../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="cursor-pointer"
                         style="height:25px;" />
                     </i>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  </ng-container>
+
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </ng-container>
 
         <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisible">
