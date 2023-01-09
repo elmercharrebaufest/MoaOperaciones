@@ -927,7 +927,7 @@ namespace SustitucionMOAUtils.Services
 
             if (puedeEnviarASAP)
             {
-                var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
+                var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden);
                 if (resultadoAnularEntrega.HayError)
                     throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
 
@@ -1027,7 +1027,7 @@ namespace SustitucionMOAUtils.Services
 
             if (puedeEnviarASAP)
             {
-                var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
+                var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden);
                 if (resultadoAnularEntrega.HayError)
                     throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
 

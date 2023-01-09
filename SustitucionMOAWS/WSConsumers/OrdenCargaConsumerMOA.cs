@@ -325,15 +325,16 @@ namespace SustitucionMOAWS.WSConsumers
             return resultado;
         }
 
-        public ResultadoGenerico AnularEntregaOrdenCarga(string nroEntrega)
+        public ResultadoGenerico AnularEntregaOrdenCarga(OrdenDeCarga orden)
         {
             var service = new SI_MPMF_MOAOP_MOD_ENTREGAClient();
 
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {nroEntrega}");
+            var identificador = string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedidoIngresado : orden.NumeroPedido;
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {identificador}");
 
-            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA("", "X", "", "", "", nroEntrega, "");
+            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA("", "X", "", "", "", identificador, "");
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result }}");
 
             var resultado = new ResultadoGenerico();
