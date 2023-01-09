@@ -18,7 +18,7 @@ using Models = SustitucionMOAModel.Models;
 namespace SustitucionMOAUtils.Services
 {
 
-	public class VendedorService : IVendedorService
+    public class VendedorService : IVendedorService
     {
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
@@ -110,24 +110,24 @@ namespace SustitucionMOAUtils.Services
                 });
             response.vendedores.AddRange(vendedoresAprobados);
 
-            response.vendedores = response.vendedores.GroupBy(i => new 
-                {
-                    i.idVendedor,
-                    i.descVendedor
-                })
+            response.vendedores = response.vendedores.GroupBy(i => new
+            {
+                i.idVendedor,
+                i.descVendedor
+            })
                 .Select(vendedor => vendedor.Skip(1)
                 .Aggregate(
-                    vendedor.First(), (a, o) => 
+                    vendedor.First(), (a, o) =>
                     {
-                        if(!a.estado.Contains("Pendiente de envío documentación original") 
+                        if (!a.estado.Contains("Pendiente de envío documentación original")
                         && (a.estadoMoa.Contains("Pendiente de envío documentación original") || o.estadoMoa.Contains("Pendiente de envío documentación original"))
                         && a.estado != ""
                         && !a.estado.Contains("Habilitado"))
                         {
                             a.estado = a.estado + " - Pendiente de envío documentación original";
                         }
-                        
-                        return a; 
+
+                        return a;
                     }))
                 .ToList();
             return response;
@@ -216,7 +216,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     descVendedor = v.RazonSocial,
                     estado = "",
-                    idVendedor = v.CodigoProveedor
+                    idVendedor = v.CodigoProveedor,
+                    cuit = v.CUIT
                 });
             response.vendedores.AddRange(vendedoresAprobados);
 
