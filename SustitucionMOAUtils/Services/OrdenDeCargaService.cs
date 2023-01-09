@@ -927,7 +927,7 @@ namespace SustitucionMOAUtils.Services
 
             if (puedeEnviarASAP)
             {
-                if (orden.NumeroEntrega != null)
+                if (!string.IsNullOrEmpty(orden.NumeroEntrega))
                 {
                     var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
                     if (resultadoAnularEntrega.HayError)
@@ -1030,7 +1030,7 @@ namespace SustitucionMOAUtils.Services
 
             if (puedeEnviarASAP)
             {
-                if (orden.NumeroEntrega != null)
+                if (!string.IsNullOrEmpty(orden.NumeroEntrega))
                 {
                     var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
                     if (resultadoAnularEntrega.HayError)
