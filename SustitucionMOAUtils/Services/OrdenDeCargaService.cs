@@ -267,7 +267,9 @@ namespace SustitucionMOAUtils.Services
             ordenEditar.CUITTransporte = ordenDeCarga.CUITTransporte;
             ordenEditar.ContratoIngresado = ordenDeCarga.ContratoIngresado;
             ordenEditar.Cantidad = ordenDeCarga.Cantidad;
-            ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
+            //ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
+            var product = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
+            ordenEditar.Producto = product;
             ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
             ordenEditar.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
             if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
