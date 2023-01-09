@@ -697,7 +697,20 @@
                         /endpoint[@name='SI_MPRFC_VISU_PENDIENTE_PAGO']
                         /@address" />
 	</parameter>
-	
+
+	<parameter name="SI_MPMF_MOAOP_MOD_ENTREGA Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPMF_MOAOP_MOD_ENTREGA']
+                        /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_MOD_ORDEN_CARGA Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPMF_MOAOP_MOD_ORDEN_CARGA']
+                        /@address" />
+	</parameter>
 	
 </parameters>
 
