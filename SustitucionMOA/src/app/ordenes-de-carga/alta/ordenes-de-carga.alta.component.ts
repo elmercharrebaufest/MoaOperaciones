@@ -76,7 +76,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.debug('OrdenesDeCargaAlta ngOnInit()');
         this.userEmail = sessionStorage.getItem("username");
         this.desde = this.getFecha(8);
         this.hasta = this.getFecha(0);
@@ -214,6 +213,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         }
                         this.getPatentes();
                         this.cargarContratosDisponibles(result.data.CodigoCliente);
+                        
                     }
                 },
                 error => {
@@ -737,6 +737,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                 this.ordenDeCarga.ContratoIngresado ?
                                     this.contratosDisponibles.find(c => c.NumeroContrato == this.ordenDeCarga.ContratoIngresado)
                                     : undefined;
+                                    this.onContratoSeleccionadoChanged();
                         }
                         this.blockUI.stop();
                     })

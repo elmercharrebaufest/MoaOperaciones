@@ -215,37 +215,33 @@ namespace SustitucionMOAUtils.Services
                 }
                 ordenEditar.HistorialCambios.Concat(historialCambios);
 
-                if (puedeEnviarASAP)
+                if (puedeEnviarASAP && ordenEditar.NumeroEntrega != null)
                 {
-                    if (ordenEditar.CodigoVerificacionSap != "CC-07")
-                    {
-                        if (ordenEditar.NumeroEntrega != null)
-                        {
-                            var resultadoSAP = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(ordenEditar));
-                            if (resultadoSAP.HayError)
-                                throw new InfoCustomException(resultadoSAP.Errores[0].Message);
-                        }
-                        if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega) && ordenEditar.AprobadoCredito)
-                        {
-                            GenerarEntregaSAP(ordenEditar);
-                        }
-                        if (historialCambios.Count > 0)
-                        {
-                            //Aviso de Edición de Orden de Carga
-                            var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega, ordenDeCarga.NumeroPedido);
-                            if (emailSenderData != null)
-                            {
-                                EmailSender.EnviarMail(emailSenderData);
-                            }
-                        }
-                    }
 
-
+                    var resultadoSAP = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(ordenEditar));
+                    if (resultadoSAP.HayError)
+                        throw new InfoCustomException(resultadoSAP.Errores[0].Message);
                 }
 
                 repositorio.GuardarCambios();
                 NotificarTransporte(ordenEditar.Id);
 
+                if (puedeEnviarASAP && ordenEditar.CodigoVerificacionSap != "CC-07")
+                {
+                    if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega) && ordenEditar.AprobadoCredito)
+                    {
+                        GenerarEntregaSAP(ordenEditar);
+                    }
+                    if (historialCambios.Count > 0)
+                    {
+                        //Aviso de Edición de Orden de Carga
+                        var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega, ordenDeCarga.NumeroPedido);
+                        if (emailSenderData != null)
+                        {
+                            EmailSender.EnviarMail(emailSenderData);
+                        }
+                    }
+                }
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
                 Log.Info($"Result: {resultado.ToJson()}");
                 return resultado;
@@ -271,7 +267,9 @@ namespace SustitucionMOAUtils.Services
             ordenEditar.CUITTransporte = ordenDeCarga.CUITTransporte;
             ordenEditar.ContratoIngresado = ordenDeCarga.ContratoIngresado;
             ordenEditar.Cantidad = ordenDeCarga.Cantidad;
-            ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
+            //ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
+            var product = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
+            ordenEditar.Producto = product;
             ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
             ordenEditar.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
             if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
