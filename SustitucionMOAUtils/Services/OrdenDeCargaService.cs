@@ -313,8 +313,7 @@ namespace SustitucionMOAUtils.Services
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
                 var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
                 var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
-                emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
-                emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
+                emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mailsComerciales, mailsMesaVentaFas });
                 string titulo = $"Se informa que el día {DateTime.Now.ToString()} el contrato de la siguiente orden no tiene los Km cargados:";
                 var cabecera = "Orden :";
                 var contrato = !string.IsNullOrEmpty(orden.ContratoSAP?.Trim()) ? orden.ContratoSAP?.Trim() : orden.ContratoIngresado?.Trim();
@@ -912,9 +911,8 @@ namespace SustitucionMOAUtils.Services
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
             emailSenderData.Asunto = $"Molinos Agro - Notificación de orden vencida- {orden.Cliente.RazonSocial}";
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
-            emailSenderData.Mails.AddRange(mail.Split(';').ToList());
-            emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
-            emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
+
+            emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mail, mailsComerciales, mailsMesaVentaFas });
 
             if (emailSenderData != null)
             {
@@ -955,8 +953,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     return null;
                 }
-                emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
-                emailSenderData.Mails.AddRange(mailsAuditoriaOrdenesVencidas.Split(';').ToList());
+                emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mailsComerciales, mailsAuditoriaOrdenesVencidas });
                 if (emailSenderData.Mails.Count == 0)
                 {
                     return null;
@@ -1035,7 +1032,8 @@ namespace SustitucionMOAUtils.Services
                     var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
                     if (resultadoAnularEntrega.HayError)
                         throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
-                }                var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
+                }
+                var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
                 if (resultadoAnularOrden.HayError)
                     throw new InfoCustomException(_errorAnulacion);
             }
@@ -1098,8 +1096,7 @@ namespace SustitucionMOAUtils.Services
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
             var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
             var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
-            emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
-            emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
+            emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mailsComerciales, mailsMesaVentaFas });
             string asunto = $"Solicitud de anulación, Orden de carga N° {ordenDeCargaId}";
             string titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha solicitado la anulación de la siguiente orden de carga:";
             var cabecera = "Orden :";
@@ -1954,6 +1951,7 @@ namespace SustitucionMOAUtils.Services
             var emailSenderData = new EmailSenderData();
             var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
             var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+
             try
             {
                 if (string.IsNullOrEmpty(mailsMesaVentaFas) &&
@@ -1966,9 +1964,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     return null;
                 }
+                emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mailsComerciales, mailsMesaVentaFas });
 
-                emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
-                emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
                 if (emailSenderData.Mails.Count == 0)
                 {
                     return null;
@@ -2010,9 +2007,8 @@ namespace SustitucionMOAUtils.Services
                     return null;
                 }
 
-                emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
-                emailSenderData.Mails.AddRange(mailsCobranzas.Split(';').ToList());
-                emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
+                emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mailsComerciales, mailsMesaVentaFas, mailsCobranzas });
+
                 if (emailSenderData.Mails.Count == 0)
                 {
                     return null;
@@ -2122,8 +2118,7 @@ namespace SustitucionMOAUtils.Services
             string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
-            emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
-            emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
+            emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mailsComerciales, mailsMesaVentaFas });
             string titulo = "Se encontraron varios pedidos pendientes para el mismo cliente";
             var cabecera = "Orden :";
             ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
@@ -2158,8 +2153,7 @@ namespace SustitucionMOAUtils.Services
             string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
-            emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
-            emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
+            emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mailsComerciales, mailsMesaVentaFas });
             string titulo = "Se encontraron varios contratos para el mismo cliente";
             var cabecera = "Orden :";
             ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
@@ -2186,8 +2180,7 @@ namespace SustitucionMOAUtils.Services
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
             string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
             string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
-            emailSenderData.Mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
-            emailSenderData.Mails.AddRange(mailsComerciales.Split(';').ToList());
+            emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mailsComerciales, mailsMesaVentaFas });
             string titulo = "Contrato vencido Nro :" + ordenDeCarga.ContratoIngresado;
             var cabecera = "Orden :";
             ordenVencidas.Append($"<tr><td>{ordenDeCarga.Id}</td><td>{ordenDeCarga.ContratoIngresado}</td><td>{cliente.RazonSocial}</td><td>{ordenDeCarga.CodigoCorredor}</td><td>{ordenDeCarga.NombreChofer}</td><td>{ordenDeCarga.ChasisAcoplado}</td><td>{ordenDeCarga.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(ordenDeCarga.PedidoSAP) ? ordenDeCarga.NumeroPedido : ordenDeCarga.PedidoSAP)}</td><td>{ordenDeCarga.NumeroEntrega}</td><td>{ordenDeCarga.FechaCarga}</td><td>{ordenDeCarga.FechaVencimiento}</td></tr>");
@@ -2382,6 +2375,15 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, ex);
             }
+        }
+        private List<string> CargarYObtenerMailsDestino(List<string> lista, List<string> mails)
+        {
+            foreach (string mail in mails)
+            {
+                if (!string.IsNullOrEmpty(mail))
+                    lista.AddRange(mail.Split(';').ToList());
+            }
+            return lista.Distinct().ToList();
         }
     }
 }
