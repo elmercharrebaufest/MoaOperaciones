@@ -634,7 +634,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             return 0;
         });
         result.forEach((cliente: any) => {
-            cliente.descVendedor = cliente.descVendedor + " (" + cliente.idVendedor + ")";
+            cliente.descVendedor = cliente.descVendedor + " (" + cliente.cuit || '' + ")";
         });
 
         return result;

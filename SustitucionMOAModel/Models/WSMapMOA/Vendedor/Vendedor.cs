@@ -18,6 +18,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Vendedor
 
         public string estadoMoa { get; set; }
 
+        public string cuit { get; set; }
+
         public override bool Equals(object obj)
         {
             return obj is Vendedor dto &&
