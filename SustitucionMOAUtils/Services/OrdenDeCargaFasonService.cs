@@ -94,7 +94,7 @@ namespace SustitucionMOAUtils.Services
                     throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "órdenes de carga fason"));
                 }
 
-                var listado = listadoDB.Select(x => new OrdenDeCargaFasonDto
+                var listado = listadoDB.OrderByDescending(x=>x.FechaCreacion).Select(x => new OrdenDeCargaFasonDto
                 {
                     Id = x.Id,
                     Cliente = x.Cliente.CodigoProveedor,
@@ -212,6 +212,8 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
+                orden.Estado = EstadoOrdenDeCargaFason.Pendiente;
+                _repositorio.GuardarCambios();
                 return "El transporte no existe";
             }
         }
@@ -361,6 +363,7 @@ namespace SustitucionMOAUtils.Services
                 orden.Producto_Id = request.Producto_Id.MaterialId;
                 orden.RazonSocialTransporte = request.RazonSocialTransporte;
                 orden.TransporteExiste = existeTransporte;
+                orden.Estado = existeTransporte ? EstadoOrdenDeCargaFason.Generada : EstadoOrdenDeCargaFason.Pendiente;
 
                 _repositorio.GuardarCambios();
 

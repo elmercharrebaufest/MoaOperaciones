@@ -115,7 +115,7 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
     return false; //<-- Prevent Refresh
   }
 
-  filtrarListado = () => {
+  filtrarListado () {
       // console.log("datosAux: ", this.datosAux)
       if (this.estadosSelected.length < 1 || this.estadosSelected == null) {
         this.data = this.datosAux;
