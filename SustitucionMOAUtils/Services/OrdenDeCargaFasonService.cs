@@ -212,6 +212,8 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
+                orden.Estado = EstadoOrdenDeCargaFason.Pendiente;
+                _repositorio.GuardarCambios();
                 return "El transporte no existe";
             }
         }
@@ -361,6 +363,7 @@ namespace SustitucionMOAUtils.Services
                 orden.Producto_Id = request.Producto_Id.MaterialId;
                 orden.RazonSocialTransporte = request.RazonSocialTransporte;
                 orden.TransporteExiste = existeTransporte;
+                orden.Estado = existeTransporte ? EstadoOrdenDeCargaFason.Generada : EstadoOrdenDeCargaFason.Pendiente;
 
                 _repositorio.GuardarCambios();
 
