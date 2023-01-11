@@ -311,4 +311,8 @@ export class ContratoDetalleComponent extends BaseComponent implements OnInit, A
     isData() {
         return this.data != null;
     }
+    tieneCamara(calidad: any): boolean{
+        return calidad.certificado != '';
+    }
+
 }
