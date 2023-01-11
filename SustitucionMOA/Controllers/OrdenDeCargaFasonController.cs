@@ -7,15 +7,18 @@ using System.Web.Mvc;
 using SustitucionMOAAssets;
 using SustitucionMOAUtils.Logger;
 using Newtonsoft.Json;
+using SustitucionMOAModel.Enums;
 
 namespace SustitucionMOA.Controllers
 {
 	public class OrdenDeCargaFasonController : BaseController
 	{
 		private readonly IOrdenDeCargaFasonService _ordenDeCargaFasonService;
+		private readonly IConsultaService consultaService;
 
-		public OrdenDeCargaFasonController(IOrdenDeCargaFasonService ordenDeCargaFasonService)
+		public OrdenDeCargaFasonController(IConsultaService consultaService, IOrdenDeCargaFasonService ordenDeCargaFasonService)
 		{
+			this.consultaService = consultaService;
 			_ordenDeCargaFasonService = ordenDeCargaFasonService;
 		}
 
@@ -183,5 +186,27 @@ namespace SustitucionMOA.Controllers
 				return JsonCustom(new { error = ErrorMsg.Error });
 			}
         }
+
+		[HttpGet]
+		public ActionResult Materiales()
+		{
+			try
+			{
+				return JsonCustom(new { data = consultaService.ObtenerMaterial(TablaSeccionMaterial.OrdenDeCargaFason) });
+			}
+			catch (InfoCustomException e)
+			{
+				return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+			}
+			catch (ValidationCustomException e)
+			{
+				return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+			}
+			catch (Exception e)
+			{
+				Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+				return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+			}
+		}
 	}
 }

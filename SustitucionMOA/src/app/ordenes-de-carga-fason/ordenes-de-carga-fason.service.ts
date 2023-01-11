@@ -50,7 +50,7 @@ export class OrdenesDeCargaFasonService extends BaseService {
   }
 
   public getMateriales(): Observable<any> {
-    return this.http.get('/api/OrdenDeCarga/Materiales')
+    return this.http.get('/api/OrdenDeCargaFason/Materiales')
       .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }
 
