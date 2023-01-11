@@ -79,7 +79,7 @@ namespace SustitucionMOAWS.WSConsumers
                     kgNetos = calidad.KG_NETOS, 
                     porcentajeDescuento = calidad.PORC_DESC,
                     resultadoCalado = calidad.RESULTADO_CAL,
-                    resultadoCamara = calidad.RESULTADO_CAM,
+                    resultadoCamara = calidad.CARACT.ToUpper().Contains("HUMEDAD") ? calidad.RESULTADO_CAL : calidad.RESULTADO_CAM,
                     resultadoReconsideracion = calidad.RESULTADO_REC
                 });
 
