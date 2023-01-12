@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.util.collections;
 using Mod = SustitucionMOAModel.Models;
 
 namespace SustitucionMOAUtils.Services
@@ -2374,6 +2375,9 @@ namespace SustitucionMOAUtils.Services
                     throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
             }
 
+            var tieneNumeroPedido = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) || !string.IsNullOrEmpty(orden.NumeroPedido);
+            if (!tieneNumeroPedido)
+                return;
             var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
             if (resultadoAnularOrden.HayError)
                 throw new InfoCustomException(tieneNumeroEntrega ? _errorAnulacion : resultadoAnularOrden.Errores[0].Message);
