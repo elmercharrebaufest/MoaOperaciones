@@ -39,6 +39,7 @@ namespace SustitucionMOAUtils.Services
         private readonly string _usuarioAutomaticoSAP;
 
         private readonly string _errorAnulacion = "Error al anular orden de carga, pero la entrega si ha sido anulada";
+        private readonly string _entregaEstadoPendiente = "La entrega sigue pendiente.";
 
         public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer, IFeriadoService feriadoService)
         {
@@ -907,6 +908,10 @@ namespace SustitucionMOAUtils.Services
             var titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha vencido la siguiente orden de carga:";
             var cabecera = "Orden :";
             var ordenVencidas = new StringBuilder();
+
+            if (puedeEnviarASAP)
+                AnularOrdenSap(orden);
+
             ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
             emailSenderData.Asunto = $"Molinos Agro - Notificación de orden vencida- {orden.Cliente.RazonSocial}";
@@ -922,11 +927,8 @@ namespace SustitucionMOAUtils.Services
                 //}
             }
             orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
-
-            if (puedeEnviarASAP)
-                AnularOrdenSap(orden);
-
             repositorio.GuardarCambios();
+
             return SuccessMsg.OrdenDeCargaAnulada;
         }
         public EmailSenderData ConstruirCuerpoOrdenesVencidas(List<OrdenDeCarga> ordenes)
@@ -1001,6 +1003,10 @@ namespace SustitucionMOAUtils.Services
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
+
+            if (puedeEnviarASAP)
+                AnularOrdenSap(orden);
+
             var ordenHistorial = new OrdenDeCargaCambiosHistorial()
             {
                 Id = 0,
@@ -1013,11 +1019,8 @@ namespace SustitucionMOAUtils.Services
             };
             repositorio.Agregar(ordenHistorial);
             orden.Estado = EstadoOrdenDeCarga.Anulada;
-
-            if (puedeEnviarASAP)
-                AnularOrdenSap(orden);
-
             repositorio.GuardarCambios();
+
             return SuccessMsg.OrdenDeCargaAnulada;
         }
 
@@ -1774,7 +1777,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                return "La entrega sigue pendiente.";
+                return _entregaEstadoPendiente;
             }
         }
         private bool TransporteExiste(OrdenDeCarga orden)
@@ -2372,6 +2375,11 @@ namespace SustitucionMOAUtils.Services
                 var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
                 if (resultadoAnularEntrega.HayError)
                     throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
+                else
+                {
+                    orden.Estado = EstadoOrdenDeCarga.Pendiente;
+                    repositorio.GuardarCambios();
+                }
             }
 
             var tieneNumeroPedido = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) || !string.IsNullOrEmpty(orden.NumeroPedido);
