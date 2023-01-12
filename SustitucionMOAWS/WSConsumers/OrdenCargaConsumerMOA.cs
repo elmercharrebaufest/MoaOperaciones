@@ -330,6 +330,7 @@ namespace SustitucionMOAWS.WSConsumers
             var service = new SI_MPMF_MOAOP_MOD_ENTREGAClient();
 
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {nroEntrega}");
 
             var result = service.SI_MPMF_MOAOP_MOD_ENTREGA("", "X", "", "", "", nroEntrega, "");

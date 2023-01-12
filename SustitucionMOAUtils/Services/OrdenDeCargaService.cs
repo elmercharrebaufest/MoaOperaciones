@@ -924,18 +924,7 @@ namespace SustitucionMOAUtils.Services
             orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
 
             if (puedeEnviarASAP)
-            {
-                if (!string.IsNullOrEmpty(orden.NumeroEntrega))
-                {
-                    var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
-                    if (resultadoAnularEntrega.HayError)
-                        throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
-                }
-
-                var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
-                if (resultadoAnularOrden.HayError)
-                    throw new InfoCustomException(_errorAnulacion);
-            }
+                AnularOrdenSap(orden);
 
             repositorio.GuardarCambios();
             return SuccessMsg.OrdenDeCargaAnulada;
@@ -1026,17 +1015,7 @@ namespace SustitucionMOAUtils.Services
             orden.Estado = EstadoOrdenDeCarga.Anulada;
 
             if (puedeEnviarASAP)
-            {
-                if (!string.IsNullOrEmpty(orden.NumeroEntrega))
-                {
-                    var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
-                    if (resultadoAnularEntrega.HayError)
-                        throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
-                }
-                var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
-                if (resultadoAnularOrden.HayError)
-                    throw new InfoCustomException(_errorAnulacion);
-            }
+                AnularOrdenSap(orden);
 
             repositorio.GuardarCambios();
             return SuccessMsg.OrdenDeCargaAnulada;
@@ -2384,6 +2363,20 @@ namespace SustitucionMOAUtils.Services
                     lista.AddRange(mail.Split(';').ToList());
             }
             return lista.Distinct().ToList();
+        }
+        private void AnularOrdenSap(OrdenDeCarga orden)
+        {
+            var tieneNumeroEntrega = !string.IsNullOrEmpty(orden.NumeroEntrega);
+            if (tieneNumeroEntrega)
+            {
+                var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
+                if (resultadoAnularEntrega.HayError)
+                    throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
+            }
+
+            var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
+            if (resultadoAnularOrden.HayError)
+                throw new InfoCustomException(tieneNumeroEntrega ? _errorAnulacion : resultadoAnularOrden.Errores[0].Message);
         }
     }
 }
