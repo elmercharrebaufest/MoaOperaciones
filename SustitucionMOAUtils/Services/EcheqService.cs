@@ -153,7 +153,7 @@ namespace SustitucionMOAUtils.Services
                     throw new ValidationCustomException("Clasificacion de contrato no valida");
                 }
 
-                return "El contrato se marco correctamente";
+                return "El contrato se marcó correctamente";
             }
             catch (ValidationCustomException e)
             {
@@ -220,7 +220,7 @@ namespace SustitucionMOAUtils.Services
                     throw new ValidationCustomException("Clasificacion de contrato no valida");
                 }
 
-                return "El contrato se desmarco correctamente";
+                return "El contrato se desmarcó correctamente";
             }
             catch (ValidationCustomException e)
             {
@@ -528,7 +528,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             repositorio.GuardarCambios();
-            return "La apertura se grabo correctamente.";
+            return "La apertura se grabó correctamente.";
         }
 
         public List<ConfiguracionDto> ObtenerConfiguracion()
