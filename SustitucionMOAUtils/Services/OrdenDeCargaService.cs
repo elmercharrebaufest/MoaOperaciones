@@ -909,8 +909,8 @@ namespace SustitucionMOAUtils.Services
             var cabecera = "Orden :";
             var ordenVencidas = new StringBuilder();
 
-            if (puedeEnviarASAP)
-                AnularOrdenSap(orden);
+            //if (puedeEnviarASAP)
+            //    AnularOrdenSap(orden);
 
             ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
@@ -1004,8 +1004,8 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
 
-            if (puedeEnviarASAP)
-                AnularOrdenSap(orden);
+            //if (puedeEnviarASAP)
+            //    AnularOrdenSap(orden);
 
             var ordenHistorial = new OrdenDeCargaCambiosHistorial()
             {
