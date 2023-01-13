@@ -213,7 +213,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         }
                         this.getPatentes();
                         this.cargarContratosDisponibles(result.data.CodigoCliente);
-                        
+
                     }
                 },
                 error => {
@@ -538,16 +538,16 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
 
-    
 
-   
+
+
 
     validarCorredorClienteContratoProducto = (
-            clienteCuit: string, 
-            clienteCodigo: string, 
-            contrato: string, 
-            codigoCorredor: string, 
-            productoId: string) => {
+        clienteCuit: string,
+        clienteCodigo: string,
+        contrato: string,
+        codigoCorredor: string,
+        productoId: string) => {
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
         try {
@@ -642,7 +642,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
 
     obtenerCorredor(CodigoCorredor: string) {
-        
         try {
             this.seleccionarProveedorService.obtenerProveedorPorCodigo(CodigoCorredor).subscribe(
                 (result) => {
@@ -652,7 +651,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.floatMsgService.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
-                    } else {  
+                    } else {
                         this.ordenDeCarga.CUITCorredor = result.CUIT;
                         this.cargarClientes(this.corredorSeleccionado.idVendedor);
                     }
@@ -660,7 +659,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
-            );     
+            );
         } catch (err) {
             this.mensajeComponent.setErrorMsg(err);
         }
@@ -708,10 +707,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(err);
             this.blockUI.stop();
         }
-        
+
     }
 
     cargarContratosDisponibles(pClienteCodigo: string) {
+        if (this.ordenDeCarga && this.ordenDeCarga.Id) {
+            this.contratosDisponibles = [this.ordenDeCarga.ContratoSeleccionado];
+            this.onContratoSeleccionadoChanged();
+            return;
+        }
         this.mensajeComponent.setMsgsEmpty();
         this.contratosDisponibles = [];
         this.contratoSeleccionado = null as any;
@@ -726,19 +730,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         if (resp.Logout) {
                             this.sessionDataService.logout();
                         } else
-                        if (resp.Error) {
-                            this.mensajeComponent.setErrorMsg(resp.Error);
-                        } else
-                        if (resp.Info) {
-                            this.mensajeComponent.setInfoMsg(resp.Info);
-                        } else {
-                            this.contratosDisponibles = resp.Contratos;
-                            this.ordenDeCarga.ContratoSeleccionado =
-                                this.ordenDeCarga.ContratoIngresado ?
-                                    this.contratosDisponibles.find(c => c.NumeroContrato == this.ordenDeCarga.ContratoIngresado)
-                                    : undefined;
+                            if (resp.Error) {
+                                this.mensajeComponent.setErrorMsg(resp.Error);
+                            } else
+                                if (resp.Info) {
+                                    this.mensajeComponent.setInfoMsg(resp.Info);
+                                } else {
+                                    this.contratosDisponibles = resp.Contratos;
+                                    this.ordenDeCarga.ContratoSeleccionado =
+                                        this.ordenDeCarga.ContratoIngresado ?
+                                            this.contratosDisponibles.find(c => c.NumeroContrato == this.ordenDeCarga.ContratoIngresado)
+                                            : undefined;
                                     this.onContratoSeleccionadoChanged();
-                        }
+                                }
                         this.blockUI.stop();
                     })
             }
