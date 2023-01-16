@@ -755,7 +755,7 @@
                         <tbody>
                             <tr *ngFor="let registro of calidad.registros" role="row" class="odd">
                                 <td >{{registro.caract}}</td>
-                                <td></td>
+                                <td ></td>
                                 <td *ngIf="!tieneCamara(calidad); else resultadoCamara">{{registro.calaResul}}%</td>
                                 <ng-template #resultadoCamara>
                                     <td>{{registro.camaResul}}%</td>
@@ -767,12 +767,9 @@
                         <tfoot>
                             <tr role="row">
                                 <td>Resultado Final</td>
-                                <td *ngIf="!tieneCamara(calidad)"></td>
-                                <td>
+                                <td ></td>
+                                <td  >
                                     <p><strong>Kg Dto.</strong> {{calidad.kgDtoTotal}}</p>
-                                </td>
-                                <td  *ngIf="tieneCamara(calidad)">
-                                    <p ><strong>Total Dto (%)</strong> {{calidad.dtoPorcTotal}}</p>
                                 </td>
                                 <td>
                                     <p><strong>Kg netos</strong> {{calidad.kgNetosTotal}}</p>
