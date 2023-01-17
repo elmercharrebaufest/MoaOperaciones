@@ -63,6 +63,11 @@
                     <p-checkbox [ngModelOptions]="{standalone:true}" label="Mostrar solo contrato con entrega pendiente"
                         [(ngModel)]="mostrarPendientes" (onChange)="filtroPendientes()" binary="false">
                     </p-checkbox>
+                    <div style="float: right">
+                        <button type="button" pButton icon="fa fa-refresh" (click)="getListado()"
+                            style="background-color: #075088; float: right; left: -10px; top: 50%;"></button> &nbsp;
+                    </div>
+
                 </div>
             </div>
         </div>
