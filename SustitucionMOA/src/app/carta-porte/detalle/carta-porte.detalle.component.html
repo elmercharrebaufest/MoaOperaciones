@@ -288,8 +288,8 @@
                                                     <th width="40%" colspan="2" class=" CalidadCCPPDataSub">
                                                         <div class="black">
                                                             <p align="center">
-                                                                C&aacute;mara <span
-                                                                    style="color: red;">(Pendiente de Resultado)</span>
+                                                                C&aacute;mara <span style="color: red;">(Pendiente de
+                                                                    Resultado)</span>
                                                             </p>
                                                         </div>
                                                     </th>
@@ -319,7 +319,9 @@
                                                 <tr *ngIf="data.camaraAPresent != '';else first"
                                                     class="CalidadCCPPDataCategoria">
                                                     <!--Camara-->
-                                                    <th class="black" width="20%" style="text-align:right">Resultado</th>
+                                                    <th class="black" width="20%" style="text-align:right">Resultado
+                                                    </th>
+                                                    <th class="black" width="26%">DTO (%)</th>
                                                 </tr>
                                                 <ng-template #first>
                                                     <tr>
@@ -337,9 +339,13 @@
                                                         <!--Camara-->
                                                         <td>{{calidad.caracteristica}}</td>
                                                         <td>{{calidad.resultadoCamara}}%</td>
+                                                        <td>
+                                                            {{calidad.porcentajeDescuento}}%
+                                                        </td>
                                                     </tr>
                                                     <ng-template #first>
-                                                        <tr *ngIf="data.camaraAPresent == '' || data.camaraAPresent == null; else second" >
+                                                        <tr
+                                                            *ngIf="data.camaraAPresent == '' || data.camaraAPresent == null; else second">
                                                             <!--Calado-->
                                                             <td>{{calidad.caracteristica}}</td>
                                                             <td>{{calidad.resultadoCalado}}%</td>
@@ -347,53 +353,16 @@
                                                         </tr>
                                                     </ng-template>
                                                     <ng-template #second>
-                                                        <tr *ngIf="data.camaraAPresent != '' && ((condicionCamara == true && porcentajeDescuento == true)) && calidad.caracteristica.toUpperCase().includes('HUMEDAD')">
+                                                        <tr
+                                                            *ngIf="data.camaraAPresent != '' && ((condicionCamara == true && porcentajeDescuento == true)) && calidad.caracteristica.toUpperCase().includes('HUMEDAD')">
                                                             <!--Mostrar solo humedad-->
                                                             <td>{{calidad.caracteristica}}</td>
                                                             <td>{{calidad.resultadoCalado}}%</td>
+                                                            <td>
+                                                                {{calidad.porcentajeDescuento}}%
+                                                            </td>
                                                         </tr>
                                                     </ng-template>
-                                                    <tr class="CalidadCCPPDataPlus" *ngIf="showDataPlus(calidad)">
-                                                        <td colspan="6" style="border:none">
-                                                            <table width="100%" border="0" cellspacing="0"
-                                                                cellpadding="0">
-                                                                <tr>
-                                                                    <td width="4%" align="center" valign="top"
-                                                                        style="padding-right:0px!important">
-                                                                        <span class="fa fa-caret-down"
-                                                                            aria-hidden="true"
-                                                                            style="font-size:25px; line-height:0;"></span>
-                                                                    </td>
-                                                                    <td width="96%">
-                                                                        <table width="100%" border="0" cellspacing="0"
-                                                                            cellpadding="0"
-                                                                            class="totalTable CalidadDataExtra"
-                                                                           >
-                                                                            <tr
-                                                                                *ngIf="data.camaraAPresent != '';else first">
-                                                                                <!--camara-->
-                                                                                <td>resultado final </td>
-                                                                                <td width="19.5%">
-                                                                                    <p>Dto. (%)</p>
-                                                                                    {{calidad.porcentajeDescuento}}%
-                                                                                </td>
-                                                                            </tr>
-                                                                            <ng-template #first>
-                                                                                <!--Resultado calado netos-->
-                                                                                <tr>
-                                                                                    <td>resultado final </td>
-                                                                                    <td width="19.5%">
-                                                                                        <p>Kg Dto.</p>
-                                                                                        {{calidad.kgDescuentoString}}
-                                                                                    </td>
-                                                                                </tr>
-                                                                            </ng-template>
-                                                                        </table>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
                                                 </ng-container>
                                             </table>
                                         </td>
