@@ -95,7 +95,7 @@ namespace SustitucionMOAWS.WSConsumers
                     mermas = recepcionInfo.MERMAS,
                 });
             }
-            
+
             return result;
         }
     }
@@ -122,6 +122,12 @@ namespace SustitucionMOAWS.WSConsumers
                     producto = aplicacionInfo.PRODUCTO,
                     unidadNetoDescontado = aplicacionInfo.UNIME_NETO,
                     netoDescontado = aplicacionInfo.NETO_DESCONTADO,
+                    netoDestino = aplicacionInfo.NETO,
+                    taraDestino = aplicacionInfo.TARA,
+                    brutoDestino = aplicacionInfo.BRUTO,
+                    netoOrigen = aplicacionInfo.NETO_ORIGEN,
+                    taraOrigen = aplicacionInfo.TARA_ORIGEN,
+                    pesoBrutoOrigen = aplicacionInfo.BRUTO_ORIGEN,
                     sust = aplicacionInfo.SUST,
                     titular = aplicacionInfo.TITULAR,
                     descripcionTitular = aplicacionInfo.DESC_TITULAR,
@@ -129,6 +135,7 @@ namespace SustitucionMOAWS.WSConsumers
                     vendedorId = aplicacionInfo.ID_VENDEDOR,
                     contrnum = aplicacionInfo.CONTRNUM,
                     cg = aplicacionInfo.CG,
+                    mermas = aplicacionInfo.MERMAS,
                 });
             }
             return result;
