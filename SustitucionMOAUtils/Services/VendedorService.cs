@@ -175,7 +175,7 @@ namespace SustitucionMOAUtils.Services
         {
             VendedoresWSMOAResponse response = new VendedoresWSMOAResponse();
 
-            if (tipoProveedorId != 5)
+            if (tipoProveedorId != 4 && tipoProveedorId != 5 )
             {
                 if (fechaInicio == "")
                 {
