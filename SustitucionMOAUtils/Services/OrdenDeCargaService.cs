@@ -233,7 +233,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         GenerarEntregaSAP(ordenEditar);
                     }
-                    if (historialCambios.Count > 0)
+                    if (historialCambios.Count > 0 && !esAdmin)
                     {
                         //Aviso de Edición de Orden de Carga
                         var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega, ordenDeCarga.NumeroPedido);
