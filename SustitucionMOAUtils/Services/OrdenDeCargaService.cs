@@ -1131,7 +1131,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                var ordenHistorial = new OrdenDeCargaCambiosHistorial()
+                var cambioEstado = new OrdenDeCargaCambiosHistorial()
                 {
                     Id = 0,
                     Antes = EstadoOrdenDeCargaExtensions.ToFriendlyString(orden.Estado),
@@ -1140,11 +1140,19 @@ namespace SustitucionMOAUtils.Services
                     FechaCambio = DateTime.Now,
                     Usuario_Id = usuario.Id,
                     OrdenDeCarga_Id = orden.Id
-
                 };
-                repositorio.Agregar(ordenHistorial);
+
+                repositorio.Agregar(cambioEstado);
                 orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
                 repositorio.GuardarCambios();
+                var emailSenderData = ConstruirCuerpoEmail(
+                        new List<OrdenDeCargaCambiosHistorial> { cambioEstado },
+                        orden.NumeroEntrega, orden.NumeroPedido
+                  );
+                if (emailSenderData != null)
+                {
+                    EmailSender.EnviarMail(emailSenderData);
+                }
                 return SuccessMsg.OrdenDeCargaActualizada;
             }
             catch (Exception ex)
