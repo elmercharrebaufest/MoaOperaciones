@@ -30,9 +30,9 @@
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Nro de Entrega</th>
                             <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Fecha de carga</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Cant. Facturada</th>
                             <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Cant. Entrega</th>
                             <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Remito</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Cant. Facturada</th>
                             <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Factura</th>
                             <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Chasis</th>
                             <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Acoplado</th>
@@ -43,14 +43,14 @@
                     <tbody>
                         <tr *ngFor="let det of detalles">
                             <td>
-                                <a class="animate" style="cursor:pointer;" (click)="navegarDetalleOrdenCarga(det)">
+                                <a *ngIf="det.Entrega" class="animate" style="cursor:pointer;" (click)="navegarDetalleOrdenCarga(det)">
                                     {{det.Entrega}}
                                 </a>
                             </td>
                             <td>{{det.FechaCarga}}</td>
-                            <td >{{det.CantidadFactura}} KG</td>
                             <td>{{det.CantidadEntregadaStr}}</td>
                             <td>{{det.Remito}}</td>
+                            <td >{{det.CantidadFactura}} KG</td>
                             <td>{{det.FacturaLegal}}</td>
                             <td>{{det.Chasis}}</td>
                             <td>{{det.Acoplado}}</td>
@@ -62,9 +62,9 @@
                         <tr role="row" class="totalTable">
                             <td ></td>
                             <td style="text-align :center" tabindex="0">TOTAL</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosFacturados | number}}</td>
                             <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados | number}}</td>
                             <td ></td>
+                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosFacturados | number}}</td>
                             <td ></td>
                             <td ></td>
                             <td ></td>
