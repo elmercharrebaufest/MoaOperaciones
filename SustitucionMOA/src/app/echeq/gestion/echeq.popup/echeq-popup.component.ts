@@ -12,6 +12,7 @@ import { forEach } from '@angular/router/src/utils/collection';
 })
 export class EcheqPopupComponent implements OnInit {
 
+    
     @Input() displayAperturarEcheq: boolean;
     @Input() set echeqDocumento(value: EcheqDocumento) {
         if(value != undefined && value != null ){
@@ -26,6 +27,8 @@ export class EcheqPopupComponent implements OnInit {
                     porcentaje: item.porcentaje
                 });
             }
+            let formatNumber = Intl.NumberFormat('es-AR');
+
             if (this.listaChequesAux.length == 0) {
                 let aforo = {
                     ordenCheque: 1,
@@ -42,10 +45,14 @@ export class EcheqPopupComponent implements OnInit {
     @Input() cantidadEcheq: number;
     @Output() cancelarAperturarEcheqEmitter = new EventEmitter();
     @Output() AperturarEcheqEmitter = new EventEmitter();
-    listaChequesAux: EcheqApertura[];
+    listaChequesAux: EcheqApertura[] = new Array<EcheqApertura>();
     documento: EcheqDocumento;
     porcentajeRestante = 0;
     pesosPendientes = 0;
+
+    condicionBoton: boolean = true;
+    mensajeMontosValidacion: string = "";
+    mensajeRecordatorio: string = "";
 
     ngOnInit() {
         registerLocaleData(es);
@@ -57,10 +64,17 @@ export class EcheqPopupComponent implements OnInit {
 
     onAperturar() {
         //validar cuando guarde que sea el 100%
-        if (this.mostrarMensaje() == "") {
+        if(!this.validarEcheqVacio()){
+            this.mensajeRecordatorio = "Tiene campos obligatorios sin completar"
+
+        } else if (this.mensajeMontosValidacion == "") {
             this.documento.listaChequesApertura = this.listaChequesAux;
             this.AperturarEcheqEmitter.emit({
             });
+            this.mensajeRecordatorio = "";
+        } else {
+            this.mensajeRecordatorio = "Recuerde que aún tiene saldo pendiente de aperturar"
+
         }
     }
 
@@ -76,6 +90,7 @@ export class EcheqPopupComponent implements OnInit {
     eliminarEcheq(ordenCheque) {
         this.listaChequesAux.splice(ordenCheque - 1, 1);
         this.reEnumerarEcheq(this.listaChequesAux);
+        this.mostrarMensaje();
     }
 
     reEnumerarEcheq(listaChequesApertura: Array<EcheqApertura>) {
@@ -91,13 +106,14 @@ export class EcheqPopupComponent implements OnInit {
     }
 
     calcularPorcentaje(echeqApertura: EcheqApertura) {
-        echeqApertura.porcentaje = (echeqApertura.importeCheque * 100) / this.documento.importeEnPesos
+        echeqApertura.porcentaje = (echeqApertura.importeCheque * 100) / this.documento.importeEnPesos;
+        this.mostrarMensaje();
     }
 
     //Calcular 100% ni de mas ni de menos (mensaje de aviso)
     mostrarMensaje() {
         let total = 0;
-        let mensaje = "";
+        this.mensajeMontosValidacion = "";
 
         this.listaChequesAux.forEach(x => {
             total += Number(x.importeCheque)
@@ -106,6 +122,7 @@ export class EcheqPopupComponent implements OnInit {
         total = Number(total.toFixed(2));
 
         if (total != this.documento.importeEnPesos) {
+            this.condicionBoton = true;
 
             this.porcentajeRestante = 100 - total;
             this.pesosPendientes = total - this.documento.importeEnPesos;
@@ -118,16 +135,20 @@ export class EcheqPopupComponent implements OnInit {
 
             if (this.pesosPendientes != 0) {
                 if (total < this.documento.importeEnPesos) {
-                    mensaje = `Tiene pendiente $${formatNumber.format(this.pesosPendientes)} por aperturar`
+                    this.mensajeMontosValidacion = `Tiene pendiente $${formatNumber.format(this.pesosPendientes)} por aperturar`
                 } else {
-                    mensaje = `Tiene exceso de $${formatNumber.format(this.pesosPendientes)} en sus Echeq`
+                    this.mensajeMontosValidacion = `Tiene exceso de $${formatNumber.format(this.pesosPendientes)} en sus Echeq`
                 }
             }
         } else {
-        } return mensaje;
+            this.condicionBoton = false;
+            this.mensajeRecordatorio = "";
+        } 
     }
 
-    //hacer todos los flujos
-    //cuando se desmarca el cheque no se borran los echeq
+    validarEcheqVacio(){
+        debugger
+        return this.listaChequesAux.every(x => x.importeCheque > 1 );
+    }
 
 }

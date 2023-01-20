@@ -90,7 +90,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
         this.confirmationService.confirm({
             key: "confimationContrato",
             message: 'El contrato posee liquidaciones con pagos por Echeq, ¿Desea anular todos sus pagos por ECheq?',
-            header: 'ConfirmationContrato',
+            header: 'Deshacer e-cheq',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 //toDo falta back, db y RFC 
@@ -104,7 +104,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
         this.confirmationService.confirm({
             key: "confimationDocumento",
             message: 'Esta anulando un pago por Echeq, ¿Desea continuar?',
-            header: 'ConfirmationContrato',
+            header: 'Deshacer e-cheq',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.checkDocumento(documento, false);

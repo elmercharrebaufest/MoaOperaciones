@@ -27,10 +27,10 @@
                         Material
                     </th>
                     <th tabindex="0" rowspan="1" colspan="1">
-                        Kg. Totales
+                        Kgs Totales
                     </th>
                     <th tabindex="0" rowspan="1" colspan="1">
-                        Kg. Pagados
+                        Kgs Liquidados
                     </th>
                     <th tabindex="0" rowspan="1" colspan="1">
                         Fecha Operacion
@@ -70,7 +70,7 @@
                                     <tbody>
                                         <tr *ngFor="let documento of pagoPendiente.documentos">
                                             <td><p-checkbox name="selectedDocumento" binary="false" [(ngModel)]="documento.selected" (click)="onClickSelectDocumento(documento)" [disabled]="isProductor(pagoPendiente)"></p-checkbox></td>
-                                            <td>{{documento.documento}}</td>
+                                            <td>{{documento.numeroCOE}}</td>
                                             <td>{{documento.fecha}}</td>
                                             <td>{{documento.importeEnPesos | number:'1.2-2':'es'}}</td>
                                             <td>
@@ -92,8 +92,19 @@
             </tbody>
         </table>
 
-        <p-confirmDialog header="ConfirmationContrato" key="confimationContrato" appendTo="body"></p-confirmDialog>
-        <p-confirmDialog header="ConfirmationDocumento" key="confimationDocumento" appendTo="body"></p-confirmDialog>
+        <p-confirmDialog #confimationContrato header="confimationContrato" icon="pi pi-exclamation-triangle" key="confimationContrato" appendTo="body">
+            <p-footer>
+                <button type="button" pButton icon="pi pi-times" label="No" (click)="confimationContrato.reject()"></button>
+                <button type="button" pButton icon="pi pi-check" label="Si" (click)="confimationContrato.accept()"></button>
+            </p-footer>
+        </p-confirmDialog>
+
+        <p-confirmDialog #ConfirmationDocumento header="ConfirmationDocumento" icon="pi pi-exclamation-triangle" key="confimationDocumento" appendTo="body">
+            <p-footer>
+                <button type="button" pButton icon="pi pi-times" label="No" (click)="ConfirmationDocumento.reject()"></button>
+                <button type="button" pButton icon="pi pi-check" label="Si" (click)="ConfirmationDocumento.accept()"></button>
+            </p-footer>
+        </p-confirmDialog>
 
         <app-echeq-popup [(displayAperturarEcheq)]="displayAperturarEcheq"
                             (cancelarAperturarEcheqEmitter)="cancelarEcheqApertura()"

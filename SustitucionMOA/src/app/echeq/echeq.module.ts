@@ -18,6 +18,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { MisEcheqComponent } from './mis-echeq/mis-echeq.component';
 import { MisEcheqFiltrosComponent } from './mis-echeq/mis-echeq.filtros/mis-echeq-filtros.component';
 import { MisEcheqGrillaComponent } from './mis-echeq/mis-echeq.grilla/mis-echeq-grilla.component';
+import { NgxCurrencyModule } from "ngx-currency";
 
 @NgModule({
     imports: [
@@ -30,7 +31,8 @@ import { MisEcheqGrillaComponent } from './mis-echeq/mis-echeq.grilla/mis-echeq-
         CheckboxModule,
         ConfirmDialogModule,
         DialogModule,
-        TooltipModule
+        TooltipModule,
+        NgxCurrencyModule
     ],
     declarations: [
         EcheqGestionComponent,
