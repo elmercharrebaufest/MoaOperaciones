@@ -70,7 +70,7 @@
                                     <tbody>
                                         <tr *ngFor="let documento of pagoPendiente.documentos">
                                             <td><p-checkbox name="selectedDocumento" binary="false" [(ngModel)]="documento.selected" (click)="onClickSelectDocumento(documento)" [disabled]="isProductor(pagoPendiente)"></p-checkbox></td>
-                                            <td>{{documento.documento}}</td>
+                                            <td>{{documento.numeroCOE}}</td>
                                             <td>{{documento.fecha}}</td>
                                             <td>{{documento.importeEnPesos | number:'1.2-2':'es'}}</td>
                                             <td>

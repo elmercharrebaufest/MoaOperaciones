@@ -150,7 +150,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
-                    throw new ValidationCustomException("Clasificacion de contrato no valida");
+                    throw new ValidationCustomException("Clasificacíon de contrato no valida");
                 }
 
                 return "El contrato se marcó correctamente";
@@ -217,7 +217,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
-                    throw new ValidationCustomException("Clasificacion de contrato no valida");
+                    throw new ValidationCustomException("Clasificacíon de contrato no valida");
                 }
 
                 return "El contrato se desmarcó correctamente";
@@ -313,7 +313,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 repositorio.GuardarCambios();
 
-                return "El documento se marco correctamente";
+                return "El documento se marcó correctamente";
             }
             catch (ValidationCustomException e)
             {
@@ -334,7 +334,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
 
-                EcheqLiquidacion liquidacionExistente = ObtenerLiquidacionPorDocumento(request.Documento);
+                EcheqLiquidacion liquidacionExistente = ObtenerLiquidacionPorDocumento(request);
 
                 ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, "", "MOA", "", "");
 
@@ -359,7 +359,7 @@ namespace SustitucionMOAUtils.Services
                     DesmarcarContrato(request);
                 }
 
-                return "El documento se desmarco correctamente";
+                return "El documento se desmarcó correctamente";
             }
             catch (ValidationCustomException e)
             {
@@ -391,7 +391,7 @@ namespace SustitucionMOAUtils.Services
 
             if (echeqNegocio == null)
             {
-                throw new ValidationCustomException("El contrato ya no esta disponible para Echeq");
+                throw new ValidationCustomException("El contrato ya no está disponible para Echeq");
             }
 
             return echeqNegocio;
@@ -438,7 +438,7 @@ namespace SustitucionMOAUtils.Services
 
             if (echeqExistente == null)
             {
-                throw new ValidationCustomException("No se encontro el Echeq");
+                throw new ValidationCustomException("No se encontró el Echeq");
             }
 
             echeqExistente.FechaModificacion = DateTime.Now;
@@ -476,9 +476,9 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        private EcheqLiquidacion ObtenerLiquidacionPorDocumento(string documento)
+        private EcheqLiquidacion ObtenerLiquidacionPorDocumento(EcheqRequestModel request)
         {
-            EcheqLiquidacion liquidacionExistente = repositorio.Obtener<EcheqLiquidacion>(x => x.Documento == documento);
+            EcheqLiquidacion liquidacionExistente = repositorio.Obtener<EcheqLiquidacion>(x => x.Documento == request.Documento);
 
             if (liquidacionExistente == null)
             {
