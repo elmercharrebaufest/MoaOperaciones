@@ -740,9 +740,20 @@
                         role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                         <thead>
                             <tr role="row">
-                                <th [id]="'calidadesHeader_'+i" tabindex="0" rowspan="1"
-                                    colspan="5" style="text-align: center;">
-                                    {{tieneCamara(calidad)?'Cámara (Cert: '+calidad.certificado+')':'Calado'}}</th>
+                                <th [id]="'calidadesHeader_'+i" tabindex="0" rowspan="1" colspan="5"
+                                    style="text-align: center;">
+                                    <p *ngIf="calidad.camaraPendiente; else headerNormal">
+                                        C&aacute;mara <span class="text-danger">
+                                            (pendiente de resultado)
+                                        </span>
+                                    </p>
+                                    <ng-template #headerNormal>
+                                        {{
+                                        tieneCamara(calidad)?'Cámara (Cert: '+calidad.certificado+')'
+                                        :'Calado'
+                                        }}
+                                    </ng-template>
+                                </th>
                             </tr>
                             <tr role="row">
                                 <th [id]="'caracteristicaCalidadCol_'+i">Características</th>
@@ -753,22 +764,27 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let registro of calidad.registros" role="row" class="odd">
-                                <td >{{registro.caract}}</td>
-                                <td ></td>
-                                <td *ngIf="!tieneCamara(calidad); else resultadoCamara">{{registro.calaResul}}%</td>
-                                <ng-template #resultadoCamara>
-                                    <td>{{registro.camaResul}}%</td>
-                                </ng-template>
-                                <td>{{registro.kgDto}}</td>
-                                <td>{{registro.dto}}%</td>
-                            </tr>
+                            <ng-container *ngFor="let registro of calidad.registros">
+                                <tr *ngIf="
+                                        (calidad.camaraPendiente && (registro.caract.toUpperCase().includes('HUMEDAD') || registro.kgDtoValor >0) )
+                                        || !calidad.camaraPendiente" role="row" class="odd">
+                                    <td>{{registro.caract}}</td>
+                                    <td></td>
+                                    <td *ngIf="!tieneCamara(calidad); else resultadoCamara">{{registro.calaResul}}%</td>
+                                    <ng-template #resultadoCamara>
+                                        <td>{{registro.camaResul}}%</td>
+                                    </ng-template>
+                                    <td>{{registro.kgDto}}</td>
+                                    <td>{{registro.dto}}%</td>
+                                </tr>
+
+                            </ng-container>
                         </tbody>
                         <tfoot>
                             <tr role="row">
                                 <td>Resultado Final</td>
-                                <td ></td>
-                                <td  >
+                                <td></td>
+                                <td>
                                     <p><strong>Kg Dto.</strong> {{calidad.kgDtoTotal}}</p>
                                 </td>
                                 <td>
