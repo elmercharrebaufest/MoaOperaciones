@@ -85,11 +85,11 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
                         this.data = result.data;
                         console.log("Data", this.data)
                         this.condicionCamara = result.data.datosCalidad
-                                .filter(x => !(x.caracteristica.toUppercase().indexOf("HUMEDAD") != 1))
+                                .filter(x => !(x.caracteristica.toUpperCase().indexOf("HUMEDAD") != 1))
                                 .every(x => x.resultadoCamara == 0);
                         // this.condicionCalada = result.data.datosCalidad.every(x => x.resultadoCalado == 0);
                         this.porcentajeDescuento = result.data.datosCalidad
-                                .filter(x => !(x.caracteristica.toUppercase().indexOf("HUMEDAD") != 1))
+                                .filter(x => !(x.caracteristica.toUpperCase().indexOf("HUMEDAD") != 1))
                                 .every(x => x.porcentajeDescuento == 0);
                     }
                 },
