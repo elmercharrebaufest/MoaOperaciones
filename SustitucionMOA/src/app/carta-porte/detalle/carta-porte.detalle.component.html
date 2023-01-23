@@ -319,17 +319,18 @@
                                                 <tr *ngIf="data.camaraAPresent != '';else first"
                                                     class="CalidadCCPPDataCategoria">
                                                     <!--Camara-->
-                                                    <th class="black" width="20%" style="text-align:right">Resultado
+                                                    <th id="" class="black" style="text-align:right">Resultado
                                                     </th>
-                                                    <th class="black" width="26%">DTO (%)</th>
+                                                    <th id="" class="black">Kg DTO.</th>
+                                                    <th id="" class="black">DTO (%)</th>
                                                 </tr>
                                                 <ng-template #first>
                                                     <tr>
                                                         <!--Calado-->
-                                                        <th class="black" width="1%">
-                                                            <p style="margin-right: -16px;" align="center">Resultado</p>
+                                                        <th id="" class="black">
+                                                            <p style="margin-right: -16px;">Resultado</p>
                                                         </th>
-                                                        <th class="black" width="26%">Kg DTO.</th>
+                                                        <th id="" class="black">Kg DTO.</th>
                                                     </tr>
                                                 </ng-template>
 
@@ -339,6 +340,7 @@
                                                         <!--Camara-->
                                                         <td>{{calidad.caracteristica}}</td>
                                                         <td>{{calidad.resultadoCamara}}%</td>
+                                                        <td>{{calidad.kgDescuentoString}}</td>
                                                         <td>
                                                             {{calidad.porcentajeDescuento}}%
                                                         </td>
