@@ -281,11 +281,11 @@
                                         <td>
                                             <table class="CalidadCCPPDataPaddingBottom" width="100%" border="0"
                                                 cellspacing="0" cellpadding="0">
-                                                <tr *ngIf="data.camaraAPresent != ''  && ((condicionCamara == true && porcentajeDescuento == true));else second"
+                                                <tr *ngIf="data.camaraAPresent != ''  && (condicionCamara && porcentajeDescuento );else second"
                                                     class="CalidadCCPPDataCategoria">
 
                                                     <th class="black" width="20%" rowspan="2">Características</th>
-                                                    <th width="40%" colspan="2" class=" CalidadCCPPDataSub">
+                                                    <th width="40%" colspan="3" class=" CalidadCCPPDataSub">
                                                         <div class="black">
                                                             <p align="center">
                                                                 C&aacute;mara <span style="color: red;">(Pendiente de
@@ -296,9 +296,9 @@
                                                 </tr>
                                                 <ng-template #second>
                                                     <tr
-                                                        *ngIf="data.camaraAPresent != '' && ((condicionCamara == false || porcentajeDescuento == false));else third">
+                                                        *ngIf="data.camaraAPresent != '' && (!condicionCamara || !porcentajeDescuento);else third">
                                                         <th class="black" width="20%" rowspan="2">Características</th>
-                                                        <th width="40%" colspan="2" class="CalidadCCPPDataSub">
+                                                        <th width="40%" colspan="3" class="CalidadCCPPDataSub">
                                                             <div class="black">
                                                                 <p align="center">C&aacute;mara</p>
                                                             </div>
@@ -336,7 +336,7 @@
 
                                                 <ng-container *ngFor="let calidad of data.datosCalidad">
                                                     <tr
-                                                        *ngIf="data.camaraAPresent != '' && (condicionCamara==false || porcentajeDescuento==false);else first">
+                                                        *ngIf="data.camaraAPresent != '' && (!condicionCamara || !porcentajeDescuento);else first">
                                                         <!--Camara-->
                                                         <td>{{calidad.caracteristica}}</td>
                                                         <td>{{calidad.resultadoCamara}}%</td>
@@ -356,10 +356,14 @@
                                                     </ng-template>
                                                     <ng-template #second>
                                                         <tr
-                                                            *ngIf="data.camaraAPresent != '' && ((condicionCamara == true && porcentajeDescuento == true)) && calidad.caracteristica.toUpperCase().includes('HUMEDAD')">
+                                                            *ngIf="
+                                                                data.camaraAPresent != '' &&
+                                                                ((condicionCamara  && porcentajeDescuento ))
+                                                                && (calidad.caracteristica.toUpperCase().includes('HUMEDAD') || calidad.kgDescuento > 0)">
                                                             <!--Mostrar solo humedad-->
                                                             <td>{{calidad.caracteristica}}</td>
                                                             <td>{{calidad.resultadoCalado}}%</td>
+                                                            <td>{{calidad.kgDescuentoString}}</td>
                                                             <td>
                                                                 {{calidad.porcentajeDescuento}}%
                                                             </td>
