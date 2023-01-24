@@ -223,16 +223,18 @@ namespace SustitucionMOAUtils.Services
                     {
                         GenerarEntregaSAP(ordenEditar);
                     }
-                    if (historialCambios.Count > 0)
+                }
+
+                if (historialCambios.Count > 0 && !esAdmin)
+                {
+                    //Aviso de Edición de Orden de Carga
+                    var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega);
+                    if (emailSenderData != null)
                     {
-                        //Aviso de Edición de Orden de Carga
-                        var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega);
-                        if (emailSenderData != null)
-                        {
-                            EmailSender.EnviarMail(emailSenderData);
-                        }
+                        EmailSender.EnviarMail(emailSenderData);
                     }
                 }
+
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
                 Log.Info($"Result: { resultado.ToJson() }");
                 return resultado;
