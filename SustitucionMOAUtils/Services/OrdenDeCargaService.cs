@@ -238,16 +238,19 @@ namespace SustitucionMOAUtils.Services
                     {
                         GenerarEntregaSAP(ordenEditar);
                     }
-                    if (historialCambios.Count > 0 && !esAdmin)
+                    
+                }
+
+                if (historialCambios.Count > 0 && !esAdmin)
+                {
+                    //Aviso de Edición de Orden de Carga
+                    var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega, ordenDeCarga.NumeroPedido);
+                    if (emailSenderData != null)
                     {
-                        //Aviso de Edición de Orden de Carga
-                        var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega, ordenDeCarga.NumeroPedido);
-                        if (emailSenderData != null)
-                        {
-                            EmailSender.EnviarMail(emailSenderData);
-                        }
+                        EmailSender.EnviarMail(emailSenderData);
                     }
                 }
+
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
                 Log.Info($"Result: {resultado.ToJson()}");
                 return resultado;
@@ -1136,7 +1139,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                var cambioEstado = new OrdenDeCargaCambiosHistorial()
+                var ordenHistorial = new OrdenDeCargaCambiosHistorial()
                 {
                     Id = 0,
                     Antes = EstadoOrdenDeCargaExtensions.ToFriendlyString(orden.Estado),
@@ -1147,17 +1150,10 @@ namespace SustitucionMOAUtils.Services
                     OrdenDeCarga_Id = orden.Id
                 };
 
-                repositorio.Agregar(cambioEstado);
+                repositorio.Agregar(ordenHistorial);
                 orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
                 repositorio.GuardarCambios();
-                var emailSenderData = ConstruirCuerpoEmail(
-                        new List<OrdenDeCargaCambiosHistorial> { cambioEstado },
-                        orden.NumeroEntrega, orden.NumeroPedido
-                  );
-                if (emailSenderData != null)
-                {
-                    EmailSender.EnviarMail(emailSenderData);
-                }
+               
                 return SuccessMsg.OrdenDeCargaActualizada;
             }
             catch (Exception ex)
