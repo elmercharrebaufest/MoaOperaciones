@@ -1,4 +1,4 @@
-﻿using System;
+﻿using SustitucionMOAFotmatter;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +14,13 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle
         public string kgDtoTotal { get; set; }
         public string dtoPorcTotal { get; set; }
         public string certificado { get; set; }
+        public string camaraAPresent { get; set; }
         public List<CalidadElement> registros { get; set; }
+        private bool _camaraPendiente { get; set; }
+        public bool camaraPendiente { get { return _camaraPendiente; } }
+        public void SetearEstadoCamara()
+        {
+            _camaraPendiente = !string.IsNullOrEmpty(camaraAPresent) && string.IsNullOrEmpty(certificado);
+        }
     }
 }

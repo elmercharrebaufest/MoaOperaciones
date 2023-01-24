@@ -43,10 +43,10 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     tituloArchivo = "ReporteCartaPorteDetalle.xls";
     fotoSrc = "";
     showModalBox = false;
-    condicionCamara:any;
-    condicionCalada:any;
+    condicionCamara: any;
+    condicionCalada: any;
     kgDescuentoString: any;
-    porcentajeDescuento:any;
+    porcentajeDescuento: any;
 
     setTabs() {
         this.setMenuSeccionTab("carta-porte", "Detalle");
@@ -73,7 +73,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
             this.cartaPorteId = params['id'];
             this.unsubscribe();
             this.subscription = this.service.getDetalle(this.cartaPorteId).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -84,9 +84,13 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
                     } else {
                         this.data = result.data;
                         console.log("Data", this.data)
-                        this.condicionCamara = result.data.datosCalidad.every(x => x.resultadoCamara ==0);
-                       // this.condicionCalada = result.data.datosCalidad.every(x => x.resultadoCalado == 0);
-                        this.porcentajeDescuento = result.data.datosCalidad.every(x => x.porcentajeDescuento == 0);
+                        this.condicionCamara = result.data.datosCalidad
+                                .filter(x => !(x.caracteristica.toUpperCase().indexOf("HUMEDAD") != 1))
+                                .every(x => x.resultadoCamara == 0);
+                        // this.condicionCalada = result.data.datosCalidad.every(x => x.resultadoCalado == 0);
+                        this.porcentajeDescuento = result.data.datosCalidad
+                                .filter(x => !(x.caracteristica.toUpperCase().indexOf("HUMEDAD") != 1))
+                                .every(x => x.porcentajeDescuento == 0);
                     }
                 },
                 error => {
@@ -103,7 +107,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.exportExcelDetalle(this.cartaPorteId).subscribe(
-            (result:any) => {
+            (result: any) => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -140,7 +144,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.exportPDFCalidad(this.cartaPorteId).subscribe(
-            (result:any) => {
+            (result: any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -190,7 +194,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.getFotos(this.cartaPorteId).subscribe(
-            (result:any) => {
+            (result: any) => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
