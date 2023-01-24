@@ -194,12 +194,17 @@ namespace SustitucionMOAUtils.Services
                 }
                 foreach (var prop in listaValoresDiferentes)
                 {
-                    if (valoresAEditar.Contains(prop.PropertyName))
+                    if (!valoresAEditar.Contains(prop.PropertyName))
+                        continue;
+
+                    var anterior = !string.IsNullOrEmpty(prop.valA?.ToString()) ? prop.valA?.ToString() : "-";
+                    var nuevo = !string.IsNullOrEmpty(prop.valA?.ToString()) ? prop.valB?.ToString() : "-";
+                    if (anterior != "-" && nuevo != "-")
                     {
                         var registroHistorial = new OrdenDeCargaCambiosHistorial();
                         registroHistorial.Id = 0;
-                        registroHistorial.Antes = prop.valA != null ? prop.valA?.ToString() : "-";
-                        registroHistorial.Despues = prop.valB != null ? prop.valB?.ToString() : "-";
+                        registroHistorial.Antes = anterior;
+                        registroHistorial.Despues = nuevo;
                         registroHistorial.NombreColumnaCambio = prop.PropertyName;
                         registroHistorial.FechaCambio = DateTime.Now;
                         registroHistorial.Usuario_Id = usuario.Id;
