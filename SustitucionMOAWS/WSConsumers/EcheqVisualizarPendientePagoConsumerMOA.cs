@@ -27,6 +27,11 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
+                if (!string.IsNullOrEmpty(contrato))
+                {
+                    listaFechas.FirstOrDefault().fechaInicio = DateTime.Now.Date.AddYears(-10);
+                }
+
                 ZMPES4100[] fechas = new ZMPES4100[] { };            
 
                 if (listaFechas.FirstOrDefault() != null)
@@ -101,7 +106,7 @@ namespace SustitucionMOAWS.WSConsumers
                 });
             }
 
-            listaPendientesPago = listaPendientesPago.Where(a => a.Documentos != null && a.Documentos.Count > 0).ToList();
+            //listaPendientesPago = listaPendientesPago.Where(a => a.Documentos != null && a.Documentos.Count > 0).ToList();
             return listaPendientesPago;
         }
     }
