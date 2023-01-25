@@ -32,7 +32,7 @@
 
 	<setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,glenda.lien@molinosagro.com.ar,david.erbojo@molinosagro.com.ar,juan.carlos.cappello@molinosagro.com.ar,contact@tsagroupinternational.com" />
 	<setParameter name="EmailToAuditoria Config" value="alejandra.duarte@molinosagro.com.ar,santiago.barbarotta@molinosagro.com.ar,auditoria.interna@molinosagro.com.ar" />
-	<setParameter name="EmailToReporteLogins Config" value="Santiago.Barbarotta@molinosagro.com.ar" />
+	<setParameter name="EmailToReporteLogins Config" value="Santiago.Barbarotta@molinosagro.com.ar, mariasoledad.romero@molinosagro.com.ar" />
 
 
 	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
