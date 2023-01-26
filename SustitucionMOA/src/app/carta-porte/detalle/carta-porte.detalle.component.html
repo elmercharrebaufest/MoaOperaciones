@@ -130,7 +130,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-2">
                             <p class="black" style="text-align: center;">Total descargado</p>
-                            <p style="text-align: center;">{{data.entregasDescargas[0].netoDescontadoString}}</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].netoString}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
                             <p class="black" style="text-align: center;">Total Aplicados</p>
@@ -262,7 +262,7 @@
                                 </td>
                                 <td width="20%">
                                     <p>Kgs Netos Descontados</p>
-                                    {{data.calidadTotalNetos - data.calidadTotalAplicados}} KG
+                                    {{data.calidadTotalNetosDescontadosString}}
                                 </td>
                                 <td width="20%">
                                     <p>Kg Aplicados</p>
@@ -308,7 +308,7 @@
                                                 <ng-template #third>
                                                     <tr>
                                                         <th class="black" width="20%" rowspan="2">Características</th>
-                                                        <th width="40%" colspan="2" class="CalidadCCPPDataSub">
+                                                        <th width="40%" colspan="3" class="CalidadCCPPDataSub">
                                                             <div class="black">
                                                                 <p align="center">Calado</p>
                                                             </div>
@@ -327,10 +327,11 @@
                                                 <ng-template #first>
                                                     <tr>
                                                         <!--Calado-->
-                                                        <th id="" class="black">
-                                                            <p style="margin-right: -16px;">Resultado</p>
+                                                        <th id="" class="black" style="text-align: right;">
+                                                            Resultado
                                                         </th>
                                                         <th id="" class="black">Kg DTO.</th>
+                                                        <th id="" class="black">DTO (%)</th>
                                                     </tr>
                                                 </ng-template>
 
@@ -352,6 +353,10 @@
                                                             <td>{{calidad.caracteristica}}</td>
                                                             <td>{{calidad.resultadoCalado}}%</td>
                                                             <td>{{calidad.kgDescuentoString}}</td>
+                                                            <td>
+                                                                {{calidad.porcentajeDescuento}}%
+                                                            </td>
+
                                                         </tr>
                                                     </ng-template>
                                                     <ng-template #second>

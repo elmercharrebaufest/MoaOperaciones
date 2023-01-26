@@ -84,12 +84,10 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
                     } else {
                         this.data = result.data;
                         console.log("Data", this.data)
-                        this.condicionCamara = result.data.datosCalidad
-                                .filter(x => !(x.caracteristica.toUpperCase().indexOf("HUMEDAD") != 1))
+                        const calidadesACamara = result.data.datosCalidad.filter(cal=>!cal.caracteristica.toUpperCase().includes("HUMEDAD"))
+                        this.condicionCamara = calidadesACamara
                                 .every(x => x.resultadoCamara == 0);
-                        // this.condicionCalada = result.data.datosCalidad.every(x => x.resultadoCalado == 0);
-                        this.porcentajeDescuento = result.data.datosCalidad
-                                .filter(x => !(x.caracteristica.toUpperCase().indexOf("HUMEDAD") != 1))
+                        this.porcentajeDescuento = calidadesACamara
                                 .every(x => x.porcentajeDescuento == 0);
                     }
                 },

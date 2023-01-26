@@ -14,6 +14,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle
         public string kgDto { get; set; }
         public decimal kgDtoValor { get; set; }
         public decimal dto { get; set; }
+        public string certificado { get; set; }
     }
 
 }
