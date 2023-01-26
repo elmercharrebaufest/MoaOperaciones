@@ -33,6 +33,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle
         public string aplicacionesTotalExcedentesString { get; set; }
 
         public decimal calidadTotalNetos { get; set; }
+        public decimal calidadTotalNetosDescontados { get; set; }
+        public string calidadTotalNetosDescontadosString { get; set; }
 
         public string calidadTotalNetosUnidad { get; set; }
 
