@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAModel.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -52,7 +53,7 @@ namespace SustitucionMOAModel.Entities
 
         public Proveedor ObtenerCorredor()
         {
-            return Proveedores.Where(p => p.CUIT == this.CUITRegistro).FirstOrDefault();
+            return Proveedores.Where(p => p.CUIT == this.CUITRegistro && p.TipoProveedor.Id == (int)TipoUsuarioEnum.Corredor).FirstOrDefault();
         }
 
         public Proveedor ObtenerProveedorPorId(int proveedorId)
