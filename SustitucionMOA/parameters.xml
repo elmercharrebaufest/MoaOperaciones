@@ -656,8 +656,6 @@
                         /@address" />
 	</parameter>
   
-	</parameter>
-
 	<parameter name="SI_MPRFC_ANULAR_APERTURA_CHEQUE Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 								match="/configuration/system.serviceModel/client
