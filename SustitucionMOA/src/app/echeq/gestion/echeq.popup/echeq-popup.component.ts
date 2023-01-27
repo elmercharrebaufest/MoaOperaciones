@@ -73,8 +73,7 @@ export class EcheqPopupComponent implements OnInit {
             });
             this.mensajeRecordatorio = "";
         } else {
-            this.mensajeRecordatorio = "Recuerde que aún tiene saldo pendiente de aperturar"
-
+            this.mensajeRecordatorio = "Recuerde que la cantidad a aperturar debe ser igual al importe de la liquidación"
         }
     }
 

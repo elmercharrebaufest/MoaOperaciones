@@ -117,7 +117,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         if (repositorio.Existe<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido))
                         {
-                            this.UpdateEcheq(request, true);
+                            this.UpdateEcheq(request, true, echeqNegocio);
                         }
                         else
                         {
@@ -131,7 +131,7 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (var liquidacion in echeqNegocio.Documentos)
                     {
-                        modificarNegocio = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, "", "MOA", "", "=");
+                        modificarNegocio = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, liquidacion.NumeroCOE, "MOA", "", "=");
 
                         if (modificarNegocio.HayError)
                         {
@@ -141,7 +141,7 @@ namespace SustitucionMOAUtils.Services
 
                     if (repositorio.Existe<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido))
                     {
-                        this.UpdateEcheq(request, true);
+                        this.UpdateEcheq(request, true, echeqNegocio);
                     }
                     else
                     {
@@ -196,7 +196,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        this.UpdateEcheq(request, false);
+                        this.UpdateEcheq(request, false, echeqNegocio);
                     }
                 }
                 else if (echeqNegocio.Clasificacion == "ACOPIADOR" || echeqNegocio.Clasificacion == "OTROS")//3.2- Si es acopiador/otros por cada una de las liquidaciones llamar a la rfc de marcar documento
@@ -205,7 +205,7 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (var liquidacion in echeqNegocio.Documentos)
                     {
-                        modificarNegocio = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, "", "MOA", "", "");
+                        modificarNegocio = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, liquidacion.NumeroCOE, "MOA", "", "");
 
                         if (modificarNegocio.HayError)
                         {
@@ -213,7 +213,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
 
-                    this.UpdateEcheq(request, false);
+                    this.UpdateEcheq(request, false, echeqNegocio);
                 }
                 else
                 {
@@ -240,7 +240,11 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, "2022", DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, "", "MOA", "", "=");
+                EcheqNegocioDto echeqNegocioSAP = this.ObtieneNegocio(request);
+
+                var numeroCOE = echeqNegocioSAP.Documentos.Where(x => x.Documento == request.Documento).FirstOrDefault().NumeroCOE;
+
+                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, "2022", DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, numeroCOE, "MOA", "", "=");
 
                 if (result.HayError)
                 {
@@ -248,7 +252,6 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 //1- Obtener contrato desde la RFC y setear echeq
-                EcheqNegocioDto echeqNegocioSAP = this.ObtieneNegocio(request);
 
                 EcheqNegocio negocioDB = repositorio.Obtener<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido);
 
@@ -333,10 +336,13 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                
 
                 EcheqLiquidacion liquidacionExistente = ObtenerLiquidacionPorDocumento(request);
 
-                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, "", "MOA", "", "");
+                
+
+                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, liquidacionExistente.NumeroCOE, "MOA", "", "");
 
                 if (result.HayError)
                 {
@@ -377,7 +383,7 @@ namespace SustitucionMOAUtils.Services
 
         private EcheqNegocioDto ObtieneNegocio(EcheqRequestModel request)
         {
-            List<EcheqNegocioDto> contratosEcheq = ObtenerPendientePago(request.CodigoProveedor, DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"), DateTime.Now.ToString("yyyy-MM-dd"), request.Contrato);
+            List<EcheqNegocioDto> contratosEcheq = ObtenerPendientePago(request.CodigoProveedor, DateTime.Now.AddYears(-10).ToString("yyyy-MM-dd"), DateTime.Now.ToString("yyyy-MM-dd"), request.Contrato);
             EcheqNegocioDto echeqNegocio = null;
 
             if (string.IsNullOrEmpty(request.Pedido))
@@ -397,7 +403,7 @@ namespace SustitucionMOAUtils.Services
             return echeqNegocio;
         }
 
-        private int AgregarEcheq(EcheqRequestModel request, EcheqNegocioDto echeqNegocio)
+        private EcheqNegocio AgregarEcheq(EcheqRequestModel request, EcheqNegocioDto echeqNegocio)
         {
             EcheqNegocio negocio = new EcheqNegocio(echeqNegocio);
 
@@ -429,16 +435,17 @@ namespace SustitucionMOAUtils.Services
 
             //4- Grabar en la base de datos
             repositorio.Agregar(negocio);
-            return repositorio.GuardarCambios();
+            repositorio.GuardarCambios();
+            return negocio;
         }
 
-        private int UpdateEcheq(EcheqRequestModel request, bool marcaCheck)
+        private int UpdateEcheq(EcheqRequestModel request, bool marcaCheck, EcheqNegocioDto echeqNegocio)
         {
             EcheqNegocio echeqExistente = repositorio.Obtener<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido);
 
             if (echeqExistente == null)
             {
-                throw new ValidationCustomException("No se encontró el Echeq");
+                echeqExistente = AgregarEcheq(request, echeqNegocio);
             }
 
             echeqExistente.FechaModificacion = DateTime.Now;
@@ -482,11 +489,7 @@ namespace SustitucionMOAUtils.Services
 
             if (liquidacionExistente == null)
             {
-                throw new ValidationCustomException("No se encontro la liquidación");
-            }
-            else
-            {
-
+                liquidacionExistente = CrearLiquidacion(request);
             }
 
             return liquidacionExistente;
@@ -500,10 +503,12 @@ namespace SustitucionMOAUtils.Services
             x.EcheqNegocio.Pedido == request.Pedido &&
             x.MarcaCheque);
 
-            if (liquidacion == null)
-                throw new ValidationCustomException("No se encontro la liquidacion");
-
-            //ANULAR APETURAS ANTERIORES
+            if (liquidacion == null) 
+            {
+                liquidacion = CrearLiquidacion(request);
+            }
+            
+            //ANULAR APERTURAS ANTERIORES
             foreach (var apertura in liquidacion.Aperturas)
             {
                 apertura.Estado = false;
@@ -512,11 +517,17 @@ namespace SustitucionMOAUtils.Services
                 apertura.FechaModificacion = DateTime.Now;
                 var result = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
             }
-
+            
             //Agregar Aperturas Nuevas
             foreach (var apertura in request.Apertura)
             {
-                var result = echeqCargaAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(),liquidacion.EcheqNegocio.Contrato, liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"),apertura.ImporteCheque,"ARP  ",liquidacion.EcheqNegocio.Pedido,liquidacion.EcheqNegocio.Proveedor.CUIT,"", "MOA", "");
+                string cuit = liquidacion.EcheqNegocio.Proveedor != null ? liquidacion.EcheqNegocio.Proveedor.CUIT : 
+                    repositorio.Obtener<Proveedor>(x => x.Id == liquidacion.EcheqNegocio.ProveedorId).CUIT;
+
+                var result = echeqCargaAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(),liquidacion.EcheqNegocio.Contrato, 
+                    liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"),
+                    apertura.ImporteCheque,"ARP  ",liquidacion.EcheqNegocio.Pedido, cuit, liquidacion.NumeroCOE, "MOA", "");
+
                 liquidacion.Aperturas.Add(new EcheqApertura
                 {
                     Estado = true,
@@ -529,6 +540,35 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
             return "La apertura se grabó correctamente.";
+        }
+
+        private EcheqLiquidacion CrearLiquidacion(EcheqRequestModel request)
+        {
+
+            EcheqNegocio echeqNegocioDB = repositorio.Obtener<EcheqNegocio>(x => x.Contrato == request.Contrato);
+            EcheqNegocioDto echeqNegocio = ObtieneNegocio(request);
+
+            if (echeqNegocioDB == null)
+            {
+                echeqNegocioDB = AgregarEcheq(request, echeqNegocio);
+
+                var liquidacion = echeqNegocioDB.Documentos.Where(x => x.Documento == request.Documento).FirstOrDefault();
+                return liquidacion;
+            }
+            else {
+                //generar nuevo documento y agregar nuevo documento
+
+                var documentoDto = echeqNegocio.Documentos.Where(x => x.Documento == request.Documento).SingleOrDefault();
+                var liquidacion = new EcheqLiquidacion(documentoDto);
+
+                liquidacion.MarcaCheque = true;
+                liquidacion.FechaCreacion = DateTime.Now;
+                liquidacion.UsuarioCreacionId = request.UsuarioCreacionId;
+                echeqNegocioDB.Documentos.Add(liquidacion);
+
+                repositorio.GuardarCambios();
+                return liquidacion;
+            } 
         }
 
         public List<ConfiguracionDto> ObtenerConfiguracion()

@@ -19,6 +19,9 @@ import { MisEcheqComponent } from './mis-echeq/mis-echeq.component';
 import { MisEcheqFiltrosComponent } from './mis-echeq/mis-echeq.filtros/mis-echeq-filtros.component';
 import { MisEcheqGrillaComponent } from './mis-echeq/mis-echeq.grilla/mis-echeq-grilla.component';
 import { NgxCurrencyModule } from "ngx-currency";
+import { NgxMaskModule } from "ngx-mask";
+import { CustomPipeEcheq } from '../common/pipes/customPipeEcheq';
+
 
 @NgModule({
     imports: [
@@ -32,7 +35,8 @@ import { NgxCurrencyModule } from "ngx-currency";
         ConfirmDialogModule,
         DialogModule,
         TooltipModule,
-        NgxCurrencyModule
+        NgxCurrencyModule,
+        NgxMaskModule
     ],
     declarations: [
         EcheqGestionComponent,
@@ -41,7 +45,8 @@ import { NgxCurrencyModule } from "ngx-currency";
         EcheqPopupComponent,
         MisEcheqComponent,
         MisEcheqFiltrosComponent,
-        MisEcheqGrillaComponent
+        MisEcheqGrillaComponent,
+        CustomPipeEcheq
     ],
     providers: [
         EcheqService,

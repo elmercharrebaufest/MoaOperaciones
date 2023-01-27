@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAModel.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -37,10 +38,19 @@ namespace SustitucionMOAModel.Entities
         public Proveedor ObtenerProveedor()
         {
             //Por ahora los usuarios van a tener solo un proveedor. Devolvemos ese
+            // ya no son mas uno solo. :(
             if (Proveedores == null)
                 return null;
 
-            var proveedor = Proveedores.Where(p => p.CUIT == this.CUITRegistro).FirstOrDefault();
+            Proveedor proveedor = null;
+            try
+            {
+                proveedor = Proveedores.Where(p => p.CUIT == this.CUITRegistro && this.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                proveedor = Proveedores.Where(p => p.CUIT == this.CUITRegistro).FirstOrDefault();
+            }
 
             if (proveedor == null)
             {
@@ -52,7 +62,7 @@ namespace SustitucionMOAModel.Entities
 
         public Proveedor ObtenerCorredor()
         {
-            return Proveedores.Where(p => p.CUIT == this.CUITRegistro).FirstOrDefault();
+            return Proveedores.Where(p => p.CUIT == this.CUITRegistro && p.TipoProveedor.Id == (int)TipoUsuarioEnum.Corredor).FirstOrDefault();
         }
 
         public Proveedor ObtenerProveedorPorId(int proveedorId)
