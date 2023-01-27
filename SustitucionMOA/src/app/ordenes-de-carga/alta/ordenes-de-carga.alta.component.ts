@@ -104,10 +104,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         if (this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS')) {
             this.ordenDeCarga.CUITCliente = 0;
         }
-        if (sessionStorage.getItem("tipoUsuario") == "CLI") {
+		if (this.esCliente()) {
             this.clienteCodigo = sessionStorage.getItem("proveedor");
-            if (this.ordenDeCargaId > 0) {
-                this.noEditarCliente = true;
+            if (this.ordenDeCargaId == 0) {
+				this.cargarContratosDisponibles(this.clienteCodigo);
             }
         }
     }
