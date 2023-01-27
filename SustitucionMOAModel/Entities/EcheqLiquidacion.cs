@@ -38,7 +38,7 @@ namespace SustitucionMOAModel.Entities
         public virtual EcheqNegocio EcheqNegocio { get; set; }
 
         [InverseProperty("EcheqLiquidacion")]
-        public virtual List<EcheqApertura> Aperturas { get; set; }
+        public virtual List<EcheqApertura> Aperturas { get; set; } = new List<EcheqApertura>();
 
         public EcheqLiquidacion() { }
 

@@ -41,18 +41,18 @@
                 <ng-container *ngFor="let pagoPendiente of echeqContratos | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
                     <tr>
                         <td style="width: 30px;">
-                            <i style="color: #1C7CD5;" [ngClass]="pagoPendiente.expanded ? 'fa fa-chevron-up' : 'fa fa-chevron-right'" (click)="pagoPendiente.expanded = !pagoPendiente.expanded" *ngIf="pagoPendiente.documentos.length"></i>
+                            <i style="color: #1C7CD5;" [ngClass]="pagoPendiente.expanded ? 'fa fa-chevron-up' : 'fa fa-chevron-right'" (click)="expandirRow(pagoPendiente)" *ngIf="pagoPendiente.documentos.length"></i>
                         </td>
                         <td style="width: 30px;">
                             <p-checkbox name="selectedContrato" binary="false" [(ngModel)]="pagoPendiente.selected" (click)="onClickSelectContrato(pagoPendiente)"></p-checkbox>
                         </td>
-                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.pedido == "" ? pagoPendiente.contrato : pagoPendiente.pedido}}</td>
-                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.tipoContrato}}</td>
-                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.clasificacion}}</td>
-                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.descripcionMaterial}}</td>
-                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.kilos | number:'1.0':'es'}}</td>
-                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.kilosPagados | number:'1.0':'es'}}</td>
-                        <td (click)="pagoPendiente.expanded = !pagoPendiente.expanded">{{pagoPendiente.fecha}}</td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.pedido == "" ? mask(pagoPendiente.contrato) : mask(pagoPendiente.pedido | customPipeEcheq)}}</td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.tipoContrato}}</td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.clasificacion}}</td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.descripcionMaterial}}</td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.kilos | number:'1.0':'es'}}</td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.kilosPagados | number:'1.0':'es'}}</td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.fecha}}</td>
                     </tr>
                     <ng-container *ngIf="pagoPendiente.expanded && pagoPendiente.documentos.length">
                         <tr>
