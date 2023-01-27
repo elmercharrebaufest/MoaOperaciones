@@ -10,6 +10,7 @@ using SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Echeq;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAWS.Logger;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -51,7 +52,10 @@ namespace SustitucionMOAWS.WSConsumers
                 string IM_DOCUMENTO = "";
 
 
+                Log.Info($"SI_MPRFC_VISU_DISPONIBLE_CHEQUE Request: {new { IM_CONTRATO, IM_DOCUMENTO, fechas, proveedor }}");
                 var response = service.SI_MPRFC_VISU_DISPONIBLE_CHEQUE(IM_CONTRATO, IM_DOCUMENTO, fechas, proveedor);
+                Log.Info($"SI_MPRFC_VISU_DISPONIBLE_CHEQUE Response: {response}");
+
                 return Map(response);
 
             }

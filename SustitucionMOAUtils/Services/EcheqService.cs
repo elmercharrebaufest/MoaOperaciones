@@ -521,12 +521,12 @@ namespace SustitucionMOAUtils.Services
             //Agregar Aperturas Nuevas
             foreach (var apertura in request.Apertura)
             {
-                string cuit = liquidacion.EcheqNegocio.Proveedor != null ? liquidacion.EcheqNegocio.Proveedor.CUIT : 
-                    repositorio.Obtener<Proveedor>(x => x.Id == liquidacion.EcheqNegocio.ProveedorId).CUIT;
+                //string cuit = liquidacion.EcheqNegocio.Proveedor != null ? liquidacion.EcheqNegocio.Proveedor.CUIT : 
+                //    repositorio.Obtener<Proveedor>(x => x.Id == liquidacion.EcheqNegocio.ProveedorId).CUIT;
 
                 var result = echeqCargaAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(),liquidacion.EcheqNegocio.Contrato, 
                     liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"),
-                    apertura.ImporteCheque,"ARP  ",liquidacion.EcheqNegocio.Pedido, cuit, liquidacion.NumeroCOE, "MOA", "");
+                    apertura.ImporteCheque,"ARP  ",liquidacion.EcheqNegocio.Pedido, request.CodigoProveedor, liquidacion.NumeroCOE, "MOA", "");
 
                 liquidacion.Aperturas.Add(new EcheqApertura
                 {

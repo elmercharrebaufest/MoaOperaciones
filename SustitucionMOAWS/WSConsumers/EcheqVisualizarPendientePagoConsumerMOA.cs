@@ -9,6 +9,7 @@ using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.Echeq;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.EcheqVisualizarPendientePagoWebServiceMOA;
+using SustitucionMOAWS.Logger;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -49,9 +50,12 @@ namespace SustitucionMOAWS.WSConsumers
                 if (listaFechas.FirstOrDefault() != null)
                 {
                     fechahasta = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaFin);
-                }                    
+                }
 
+                Log.Info($"SI_MPRFC_MODI_DOC_CHEQUE Request: {new { contrato, fechas, proveedor }}");
                 var response = service.SI_MPRFC_VISU_PENDIENTE_PAGO(contrato??"", fechas, proveedor);
+                Log.Info($"SI_MPRFC_MODI_DOC_CHEQUE Response: {response}");
+
                 return Map(response);
 
             }

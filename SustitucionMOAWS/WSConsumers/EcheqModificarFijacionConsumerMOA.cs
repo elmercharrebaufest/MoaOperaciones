@@ -2,6 +2,7 @@
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.EcheqModificarFijacionWebServiceMOA;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAWS.Logger;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -20,7 +21,9 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
+                Log.Info($"SI_MPRFC_MOAOP_MOD_FIJACION Request: {new { IM_CONTRATO, IM_CUENTA_MRP, IM_FIJACION, IM_ZLSCH }}");
                 string response = service.SI_MPRFC_MOAOP_MOD_FIJACION(IM_CONTRATO, IM_CUENTA_MRP, IM_FIJACION, IM_ZLSCH);
+                Log.Info($"SI_MPRFC_MOAOP_MOD_FIJACION Response: {response}");
 
                 ResultadoGenerico resultado = new ResultadoGenerico();
 
