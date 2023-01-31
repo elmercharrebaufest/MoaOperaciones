@@ -158,7 +158,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
             this.mensajeComponent.setMsgsEmpty();
         }
         this.data = null;
-        //this.puedeEnviarASAP = false;
         try {
             this.unsubscribe();
             this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
@@ -204,61 +203,29 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
 
     seleccionarItem = (item) => {
         if (!item.EstaSeleccionado) {
-            // console.debug(' push item: ', item);
             this.listaEnviarASAP.push(item);
         }
     }
 
-    enviarASAP = async () => {
+    enviarASAP() {
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
-        // console.debug(' corredorCodigo: ', this.corredorCodigo);
-        // console.debug(' listaEnviarASAP: ', this.listaEnviarASAP);
-        let resultado = false;
-        try {
-            let resultMessage = 'Se han enviado correctamente las siguientes ordenes de carga: ';
-            let lastSelected = this.listaEnviarASAP[this.listaEnviarASAP.length - 1];
-            console.debug(' lastSelected: ', lastSelected);
-            for (let itemEnviarASAP of this.listaEnviarASAP) {
-                let crearOrdenEnSAPRequest: CrearOrdenEnSAPRequest;
-                crearOrdenEnSAPRequest = {
-                    IdOrdenDeCarga: itemEnviarASAP.Id,
-                    ClienteCodigo: itemEnviarASAP.Cliente,
-                    ContratoSAP: itemEnviarASAP.Contrato,
-                    CorredorCodigo: this.corredorCodigo,
-                    Cantidad: itemEnviarASAP.Cantidad,
-                    MaterialCodigoSAP: itemEnviarASAP.Material,
-                    NumeroPedidoIngresado: itemEnviarASAP.NumeroPedidoIngresado,
-                    MailUsuarioSAP: this.mailUsuarioSAP
+        const idsEnviados = this.listaEnviarASAP.map(orden => orden.Id) as Array<number>;
+        this.service.enviarOrdenesASAP(idsEnviados).subscribe(
+            result => {
+                this.blockUI.stop();
+                this.listaEnviarASAP = []
+                if (result.logout) {
+                    this.sessionDataService.logout();
+                } else if (result.error ) {
+                    this.mensajeComponent.setErrorMsg(result.error)
+                } else if(result.info){
+                    this.mensajeComponent.setInfoMsg(result.info)
                 }
-                await this.service.crearOrdenEnSAP(crearOrdenEnSAPRequest).subscribe(
-                    result => {
-                        if (result.Logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.Error != undefined && result.Error != "") {
-                        } else {
-                            resultado = result.ResultCreation;
-                            if (resultado) {
-                                resultMessage = resultMessage + itemEnviarASAP.Id + ' ';
-                            }
-                            if (itemEnviarASAP === lastSelected) {
-                                // console.debug(' resultado FINAL: ', resultado);
-                                if (resultado) {
-                                    this.mensajeComponent.setSuccessMsg(resultMessage);
-                                    this.getListado(resultMessage);
-                                }
-                            }
-                        }
-                    },
-                    error => {
-                        return false;
-                    }
-                );
-            }
-            this.blockUI.stop();
-        } catch {
-            this.mensajeComponent.setErrorMsg('Ocurrio un error al Enviar a SAP');
-            this.blockUI.stop();
-        }
+                else{
+                    this.getListado(result.data);
+                }
+            },
+        );
     }
 }

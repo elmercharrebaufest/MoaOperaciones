@@ -238,7 +238,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         GenerarEntregaSAP(ordenEditar);
                     }
-                    
+
                 }
 
                 if (historialCambios.Count > 0 && !esAdmin)
@@ -1153,7 +1153,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(ordenHistorial);
                 orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
                 repositorio.GuardarCambios();
-               
+
                 return SuccessMsg.OrdenDeCargaActualizada;
             }
             catch (Exception ex)
@@ -2397,6 +2397,40 @@ namespace SustitucionMOAUtils.Services
             var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
             if (resultadoAnularOrden.HayError)
                 throw new InfoCustomException(tieneNumeroEntrega ? _errorAnulacion : resultadoAnularOrden.Errores[0].Message);
+        }
+        public string EnviarOrdenesASAP(List<int> ordenesId)
+        {
+            var ordenes = repositorio.Listar<OrdenDeCarga>(a => ordenesId.Contains(a.Id) && a.Estado == EstadoOrdenDeCarga.SinEnviarASAP);
+            var correctas = new List<int>();
+            var incorrectas = new List<int>();
+            foreach (var ordenDeCarga in ordenes)
+            {
+                var crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest()
+                {
+                    IdOrdenDeCarga = ordenDeCarga.Id,
+                    ClienteCodigo = ordenDeCarga.Cliente?.CodigoProveedor,
+                    ContratoSAP = ordenDeCarga.ContratoSAP,
+                    CorredorCodigo = ordenDeCarga.Corredor?.CodigoProveedor,
+                    Cantidad = ordenDeCarga.Cantidad,
+                    MaterialCodigoSAP = ordenDeCarga.Producto?.CodigoSap,
+                    NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado,
+                    MailUsuarioSAP = String.Empty
+                };
+                try
+                {
+                    CrearOrdenEnSAP(crearOrdenEnSAPRequest, true);
+                    correctas.Add(ordenDeCarga.Id);
+                }
+                catch
+                {
+                    incorrectas.Add(ordenDeCarga.Id);
+                }
+            }
+            if (correctas.Count() == 0 && incorrectas.Count() > 0)
+                throw new Exception($"Error al intentar enviar las ordenes solicitadas");
+            if (correctas.Count() < incorrectas.Count())
+                throw new InfoCustomException($"Resultado al enviar, incorrectas {string.Join(",", incorrectas)} , correctas {string.Join(",", correctas)}");
+            return $"Resultado al enviar, correctas {string.Join(",", correctas)} , incorrectas {string.Join(",", incorrectas)}";
         }
     }
 }

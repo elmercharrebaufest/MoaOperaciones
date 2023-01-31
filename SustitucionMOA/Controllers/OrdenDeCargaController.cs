@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -105,6 +104,28 @@ namespace SustitucionMOA.Controllers
             {
                 var response = ordenDeCargaService.CrearOrdenEnSAP(request, true);
                 return JsonCustom(response);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpPost]
+        public ActionResult EnviarOrdenesASAP(System.Collections.Generic.List<int> ordenesIds)
+        {
+            try
+            {
+                var data = ordenDeCargaService.EnviarOrdenesASAP(ordenesIds);
+                return JsonCustom(new { data });
             }
             catch (InfoCustomException e)
             {
