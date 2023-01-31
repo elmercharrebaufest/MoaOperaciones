@@ -33,6 +33,21 @@ BEGIN
 	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('99056 - LECITINA DE SOJA','99056','1')
 END
 
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.Material WHERE CodigoSap = '98855' and Nombre = '98855 - ACEITE DE SOJA NEUTRALIZADO' ) 
+BEGIN 
+	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('98855 - ACEITE DE SOJA NEUTRALIZADO','98855','1')
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.Material WHERE CodigoSap = '99098' and Nombre = '99098 - ACEITE METILADO DE SOJA' ) 
+BEGIN 
+	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('99098 - ACEITE METILADO DE SOJA','99098','1')
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.Material WHERE CodigoSap = '99710' and Nombre = '99710 - PELLET DE GIRASOL' ) 
+BEGIN 
+	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('99710 - PELLET DE GIRASOL','99710','1')
+END
+
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.Material WHERE CodigoSap = '99704' and Nombre = '99704 - PELLET DE CASCARA DE SOJA A GRANEL' and TablaSeccionMaterial = '2') 
 BEGIN 
 	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('99704 - PELLET DE CASCARA DE SOJA A GRANEL','99704','2') 
