@@ -26,7 +26,7 @@
     [ContratosRespuesta] NVARCHAR(MAX) NULL, 
     [NumeroEntrega] NVARCHAR(MAX) NULL, 
     [NumeroPedidoIngresado] NVARCHAR(MAX) NULL, 
-    [CodigoVerificacionSap] NVARCHAR(50) NULL, 
+    [CodigoVerificacionSap] VARCHAR(200) NULL, 
     [DescripcionCodigoVerificacionSap] NVARCHAR(MAX) NULL, 
     [PedidosRespuesta] NVARCHAR(MAX) NULL, 
     [ContratoSinCantidadPendiente] BIT NULL , 
