@@ -56,7 +56,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
 
     datosAux: any[];
     primerListado: any[];
-    listaEnviarASAP: any[] = [];
+    listaEnviarASAP: number[] = [];
 
     productoSelected: string = "Todos";
     listaProductos: any = null;
@@ -189,40 +189,44 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    seleccionarTodos = () => {
+    seleccionarTodos (){
         this.seleccionaTodos = !this.seleccionaTodos;
-        // console.debug(' value: ', this.seleccionaTodos);
-        if (this.data) {
-            this.data.forEach((value, index) => {
-                if (value.NoEstaEnSAP) {
-                    value.EstaSeleccionado = this.seleccionaTodos;
-                }
+        if (this.data && this.seleccionaTodos) {
+            this.data.forEach((item) => {
+                if (item.NoEstaEnSAP && !this.estaListadoParaSAP(item))
+                    this.seleccionarItem(item)
             });
-        }
+        } else if (!this.seleccionaTodos)
+            this.listaEnviarASAP = []
     }
 
-    seleccionarItem = (item) => {
-        if (!item.EstaSeleccionado) {
-            this.listaEnviarASAP.push(item);
-        }
+    seleccionarItem(item) {
+        if (!this.estaListadoParaSAP(item)) {
+            this.listaEnviarASAP.push(item.Id);
+        } else
+            this.listaEnviarASAP = this.listaEnviarASAP.filter(ordenId => ordenId != item.Id)
+    }
+
+
+    estaListadoParaSAP(item): boolean {
+        return this.listaEnviarASAP.indexOf(item.Id) !== -1
     }
 
     enviarASAP() {
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
-        const idsEnviados = this.listaEnviarASAP.map(orden => orden.Id) as Array<number>;
-        this.service.enviarOrdenesASAP(idsEnviados).subscribe(
+        this.service.enviarOrdenesASAP(this.listaEnviarASAP).subscribe(
             result => {
                 this.blockUI.stop();
                 this.listaEnviarASAP = []
                 if (result.logout) {
                     this.sessionDataService.logout();
-                } else if (result.error ) {
+                } else if (result.error) {
                     this.mensajeComponent.setErrorMsg(result.error)
-                } else if(result.info){
+                } else if (result.info) {
                     this.mensajeComponent.setInfoMsg(result.info)
                 }
-                else{
+                else {
                     this.getListado(result.data);
                 }
             },
