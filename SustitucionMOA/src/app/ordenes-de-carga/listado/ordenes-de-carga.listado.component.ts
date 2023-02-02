@@ -222,8 +222,10 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
                 if (result.logout) {
                     this.sessionDataService.logout();
                 } else if (result.error) {
+                    this.getListado();
                     this.mensajeComponent.setErrorMsg(result.error)
                 } else if (result.info) {
+                    this.getListado();
                     this.mensajeComponent.setInfoMsg(result.info)
                 }
                 else {

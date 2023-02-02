@@ -124,7 +124,10 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var data = ordenDeCargaService.EnviarOrdenesASAP(ordenesIds);
+
+                var mailUsuario = SessionPersister.getUsername();
+
+                var data = ordenDeCargaService.EnviarOrdenesASAP(ordenesIds, mailUsuario);
                 return JsonCustom(new { data });
             }
             catch (InfoCustomException e)
@@ -242,7 +245,6 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var mailUsuario = SessionPersister.getUsername();
 
                 return JsonCustom(new { data = ordenDeCargaService.NotificarTransporte(ordenId) });
             }
