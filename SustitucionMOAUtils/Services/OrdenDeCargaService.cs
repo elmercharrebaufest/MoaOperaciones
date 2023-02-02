@@ -2416,7 +2416,7 @@ namespace SustitucionMOAUtils.Services
                     NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado,
                     MailUsuarioSAP = String.Empty
                 };
-                CrearOrdenEnSAP(crearOrdenEnSAPRequest);
+                CrearOrdenEnSAP(crearOrdenEnSAPRequest, true);
             }
             return $"Se han enviado las ordenes";
         }
