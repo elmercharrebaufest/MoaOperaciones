@@ -56,7 +56,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
 
     datosAux: any[];
     primerListado: any[];
-    listaEnviarASAP: any[] = [];
+    listaEnviarASAP: number[] = [];
 
     productoSelected: string = "Todos";
     listaProductos: any = null;
@@ -158,7 +158,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
             this.mensajeComponent.setMsgsEmpty();
         }
         this.data = null;
-        //this.puedeEnviarASAP = false;
         try {
             this.unsubscribe();
             this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
@@ -190,75 +189,49 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    seleccionarTodos = () => {
+    seleccionarTodos (){
         this.seleccionaTodos = !this.seleccionaTodos;
-        // console.debug(' value: ', this.seleccionaTodos);
-        if (this.data) {
-            this.data.forEach((value, index) => {
-                if (value.NoEstaEnSAP) {
-                    value.EstaSeleccionado = this.seleccionaTodos;
-                }
+        if (this.data && this.seleccionaTodos) {
+            this.data.forEach((item) => {
+                if (item.NoEstaEnSAP && !this.estaListadoParaSAP(item))
+                    this.seleccionarItem(item)
             });
-        }
+        } else if (!this.seleccionaTodos)
+            this.listaEnviarASAP = []
     }
 
-    seleccionarItem = (item) => {
-        if (!item.EstaSeleccionado) {
-            // console.debug(' push item: ', item);
-            this.listaEnviarASAP.push(item);
-        }
+    seleccionarItem(item) {
+        if (!this.estaListadoParaSAP(item)) {
+            this.listaEnviarASAP.push(item.Id);
+        } else
+            this.listaEnviarASAP = this.listaEnviarASAP.filter(ordenId => ordenId != item.Id)
     }
 
-    enviarASAP = async () => {
+
+    estaListadoParaSAP(item): boolean {
+        return this.listaEnviarASAP.indexOf(item.Id) !== -1
+    }
+
+    enviarASAP() {
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
-        // console.debug(' corredorCodigo: ', this.corredorCodigo);
-        // console.debug(' listaEnviarASAP: ', this.listaEnviarASAP);
-        let resultado = false;
-        try {
-            let resultMessage = 'Se han enviado correctamente las siguientes ordenes de carga: ';
-            let lastSelected = this.listaEnviarASAP[this.listaEnviarASAP.length - 1];
-            console.debug(' lastSelected: ', lastSelected);
-            for (let itemEnviarASAP of this.listaEnviarASAP) {
-                let crearOrdenEnSAPRequest: CrearOrdenEnSAPRequest;
-                crearOrdenEnSAPRequest = {
-                    IdOrdenDeCarga: itemEnviarASAP.Id,
-                    ClienteCodigo: itemEnviarASAP.Cliente,
-                    ContratoSAP: itemEnviarASAP.Contrato,
-                    CorredorCodigo: this.corredorCodigo,
-                    Cantidad: itemEnviarASAP.Cantidad,
-                    MaterialCodigoSAP: itemEnviarASAP.Material,
-                    NumeroPedidoIngresado: itemEnviarASAP.NumeroPedidoIngresado,
-                    MailUsuarioSAP: this.mailUsuarioSAP
+        this.service.enviarOrdenesASAP(this.listaEnviarASAP).subscribe(
+            result => {
+                this.blockUI.stop();
+                this.listaEnviarASAP = []
+                if (result.logout) {
+                    this.sessionDataService.logout();
+                } else if (result.error) {
+                    this.getListado();
+                    this.mensajeComponent.setErrorMsg(result.error)
+                } else if (result.info) {
+                    this.getListado();
+                    this.mensajeComponent.setInfoMsg(result.info)
                 }
-                await this.service.crearOrdenEnSAP(crearOrdenEnSAPRequest).subscribe(
-                    result => {
-                        if (result.Logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.Error != undefined && result.Error != "") {
-                        } else {
-                            resultado = result.ResultCreation;
-                            if (resultado) {
-                                resultMessage = resultMessage + itemEnviarASAP.Id + ' ';
-                            }
-                            if (itemEnviarASAP === lastSelected) {
-                                // console.debug(' resultado FINAL: ', resultado);
-                                if (resultado) {
-                                    this.mensajeComponent.setSuccessMsg(resultMessage);
-                                    this.getListado(resultMessage);
-                                }
-                            }
-                        }
-                    },
-                    error => {
-                        return false;
-                    }
-                );
-            }
-            this.blockUI.stop();
-        } catch {
-            this.mensajeComponent.setErrorMsg('Ocurrio un error al Enviar a SAP');
-            this.blockUI.stop();
-        }
+                else {
+                    this.getListado(result.data);
+                }
+            },
+        );
     }
 }

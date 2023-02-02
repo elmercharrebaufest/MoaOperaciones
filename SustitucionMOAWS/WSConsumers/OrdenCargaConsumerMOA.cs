@@ -61,7 +61,7 @@ namespace SustitucionMOAWS.WSConsumers
             Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Request: {new { cliente, contrato, corredor, cuit, material, pedido }}");
 
             var result = service.SI_MPMF_MOAOP_CONTROL_CARGA(cliente, contrato, corredor, cuit, material, pedido).Trim();
-            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {new { result }}");
+            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {new { result, cliente, contrato, cuit }}");
             return result;
         }
         /*
@@ -97,7 +97,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {new { cliente, contrato, corredor, kilos, material, pedidoInput, usuarioSAP, forzarCreacion }}");
             var result = service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(cliente, contrato, corredor, kilos, material, pedidoInput, usuarioSAP, forzarCreacion, out pedidoOutput).Trim();
-            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Response: {new { result, pedidoOutput }}");
+            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Response: {new { result, pedidoOutput, cliente, contrato, pedidoInput }}");
 
             return result;
         }
@@ -140,7 +140,7 @@ namespace SustitucionMOAWS.WSConsumers
             Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {new { documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista }}");
 
             var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista, "CACERESN", out mensaje).Trim();
-            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Response: {new { entrega, mensaje }}");
+            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Response: {new { entrega, mensaje, documento }}");
 
             return entrega;
         }
@@ -185,7 +185,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             Log.Info($"SI_MPMF_MOAOP_CONTROL_ESTADO Request: {new { entrega, pedido, transportista }}");
             var result = service.SI_MPMF_MOAOP_CONTROL_ESTADO(entrega, pedido, transportista).Trim();
-            Log.Info($"SI_MPMF_MOAOP_CONTROL_ESTADO Result: {new { result }}");
+            Log.Info($"SI_MPMF_MOAOP_CONTROL_ESTADO Result: {new { result, entrega, pedido, }}");
 
             return result;
         }
@@ -312,11 +312,11 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             var identificador = string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedidoIngresado : orden.NumeroPedido;
 
-            Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Request: {identificador}");
+            Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Request: {new { identificador }}");
 
 
             var result = service.SI_MPMF_MOAOP_MOD_ORDEN_CARGA("X", identificador);
-            Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Result: {new { result }}");
+            Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Result: {new { result, identificador }}");
 
             var resultado = new ResultadoGenerico();
             if (result != "Se actualizaron los datos correctamente")
@@ -334,7 +334,7 @@ namespace SustitucionMOAWS.WSConsumers
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {nroEntrega}");
 
             var result = service.SI_MPMF_MOAOP_MOD_ENTREGA("", "X", "", "", "", nroEntrega, "");
-            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result }}");
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result, nroEntrega }}");
 
             var resultado = new ResultadoGenerico();
             if (result != "Se actualizaron los datos correctamente")
@@ -358,7 +358,7 @@ namespace SustitucionMOAWS.WSConsumers
                             datosEntrega.Documento,
                             datosEntrega.NumeroEntrega,
                             datosEntrega.TipoDoc);
-            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result }}");
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result, nroEntrega = datosEntrega.NumeroEntrega }}");
 
             var resultado = new ResultadoGenerico();
             if (result != "Se actualizaron los datos correctamente")
