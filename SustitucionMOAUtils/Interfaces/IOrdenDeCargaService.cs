@@ -44,6 +44,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden);
         void VerificarSituacionCrediticiaJob();
         ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req);
-        string EnviarOrdenesASAP(List<int> ordenesIds);
+        string EnviarOrdenesASAP(List<int> ordenesIds, string mailUsuario);
     }
 }

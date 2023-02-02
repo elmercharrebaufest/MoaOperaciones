@@ -2398,10 +2398,10 @@ namespace SustitucionMOAUtils.Services
             if (resultadoAnularOrden.HayError)
                 throw new InfoCustomException(tieneNumeroEntrega ? _errorAnulacion : resultadoAnularOrden.Errores[0].Message);
         }
-        public string EnviarOrdenesASAP(List<int> ordenesId)
+        public string EnviarOrdenesASAP(List<int> ordenesId, string mailUsuario)
         {
             var ordenes = repositorio.Listar<OrdenDeCarga>(a => ordenesId.Contains(a.Id) && a.Estado == EstadoOrdenDeCarga.SinEnviarASAP);
-
+            var errores = new List<int>();
             foreach (var ordenDeCarga in ordenes)
             {
                 var crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest()
@@ -2413,10 +2413,14 @@ namespace SustitucionMOAUtils.Services
                     Cantidad = ordenDeCarga.Cantidad,
                     MaterialCodigoSAP = ordenDeCarga.Producto?.CodigoSap,
                     NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado,
-                    MailUsuarioSAP = String.Empty
+                    MailUsuarioSAP = mailUsuario
                 };
-                CrearOrdenEnSAP(crearOrdenEnSAPRequest, true);
+                var response = CrearOrdenEnSAP(crearOrdenEnSAPRequest, true);
+                if (response.Error != null)
+                    errores.Add(ordenDeCarga.Id);
             }
+            if (errores.Count() > 0)
+                throw new InfoCustomException($"Las siguientes ordenes no pudieron enviarse correctamente: {string.Join(", ", errores)}");
             return $"Se han enviado las ordenes";
         }
     }
