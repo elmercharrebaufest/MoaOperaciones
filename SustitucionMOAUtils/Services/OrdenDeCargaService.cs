@@ -2402,10 +2402,7 @@ namespace SustitucionMOAUtils.Services
         public string EnviarOrdenesASAP(List<int> ordenesId)
         {
             var ordenes = repositorio.Listar<OrdenDeCarga>(a => ordenesId.Contains(a.Id) && a.Estado == EstadoOrdenDeCarga.SinEnviarASAP);
-            if (ordenes.Count() == 0)
-                throw new InfoCustomException("No se han hecho modificaciones");
-            var correctas = new List<int>();
-            var incorrectas = new List<int>();
+
             foreach (var ordenDeCarga in ordenes)
             {
                 var crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest()
@@ -2419,22 +2416,9 @@ namespace SustitucionMOAUtils.Services
                     NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado,
                     MailUsuarioSAP = String.Empty
                 };
-                try
-                {
-                    CrearOrdenEnSAP(crearOrdenEnSAPRequest, true);
-                    correctas.Add(ordenDeCarga.Id);
-                }
-                catch
-                {
-                    incorrectas.Add(ordenDeCarga.Id);
-                }
+                CrearOrdenEnSAP(crearOrdenEnSAPRequest);
             }
-            
-            if (correctas.Count() == 0 && incorrectas.Count() > 0)
-                throw new Exception($"Error al intentar enviar las ordenes solicitadas");
-            if (correctas.Count() < incorrectas.Count())
-                throw new InfoCustomException($"Resultado al enviar, incorrectas {string.Join(",", incorrectas)} , correctas {string.Join(",", correctas)}");
-            return $"Resultado al enviar, correctas {string.Join(",", correctas)} , incorrectas {string.Join(",", incorrectas)}";
+            return $"Se han enviado las ordenes";
         }
     }
 }
