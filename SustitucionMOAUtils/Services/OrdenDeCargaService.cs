@@ -2149,7 +2149,7 @@ namespace SustitucionMOAUtils.Services
             var cabecera = "Orden :";
             ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
-            emailSenderData.Asunto = "Varios ctto pendientes";
+            emailSenderData.Asunto = $"Varios ctto pendientes - {orden.Cliente.RazonSocial}";
             return emailSenderData;
         }
 
@@ -2176,7 +2176,7 @@ namespace SustitucionMOAUtils.Services
             var cabecera = "Orden :";
             ordenVencidas.Append($"<tr><td>{ordenDeCarga.Id}</td><td>{ordenDeCarga.ContratoIngresado}</td><td>{cliente.RazonSocial}</td><td>{ordenDeCarga.CodigoCorredor}</td><td>{ordenDeCarga.NombreChofer}</td><td>{ordenDeCarga.ChasisAcoplado}</td><td>{ordenDeCarga.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(ordenDeCarga.PedidoSAP) ? ordenDeCarga.NumeroPedido : ordenDeCarga.PedidoSAP)}</td><td>{ordenDeCarga.NumeroEntrega}</td><td>{ordenDeCarga.FechaCarga}</td><td>{ordenDeCarga.FechaVencimiento}</td></tr>");
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCarga.Id, ordenVencidas, titulo, cabecera);
-            emailSenderData.Asunto = "Contrato Vencido";
+            emailSenderData.Asunto = $"Contrato Vencido - {cliente.RazonSocial}";
             return emailSenderData;
         }
 
