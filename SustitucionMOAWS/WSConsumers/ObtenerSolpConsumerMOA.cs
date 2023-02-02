@@ -178,7 +178,7 @@ namespace SustitucionMOAWS.WSConsumers
             */
 
             return Map(EX_PRACCOUNT, EX_PRADDRDELIVERY, EX_PRCOMPONENTS, EX_PRITEM, EX_RETURN, EX_SERVICEACCOUNT, EX_SERVICELINES);
-           
+
         }
 
         private ObtenerSolpSAPResponse Map(ZMPES5740[] tipoImputaciones, //EX_PRACCOUNT
@@ -224,7 +224,7 @@ namespace SustitucionMOAWS.WSConsumers
                 Todos estos objetos van a venir completos segun el tipo de imputación. Por ejemplo, si la imputación es del tipo (EX_PREITEM-ACCTASSCAT) = "K", la tabla va a pasar como parámetro el campo COSTCENTER. 
                 Resto de campos solo a nivel informativo.
              */
-            if(result.TipoImputaciones == null)
+            if (result.TipoImputaciones == null)
             {
                 result.TipoImputaciones = new List<TipoImputacionSAP>();
             }
@@ -279,7 +279,7 @@ namespace SustitucionMOAWS.WSConsumers
                     CodigoPostal = direccionPosicion.POSTL_COD1,
                     Ciudad = direccionPosicion.CITY,
                     Calle = direccionPosicion.STREET,
-                    Numero = direccionPosicion.TEL1_NUMBR,
+                    Numero = direccionPosicion.HOUSE_NO,
                     Telefono = direccionPosicion.TEL1_NUMBR,
                 });
             }
@@ -344,7 +344,7 @@ namespace SustitucionMOAWS.WSConsumers
                     UsuarioCreado = posicion.CREATED_BY,
                     NombreSolicitante = posicion.PREQ_NAME,
                     TextoPosicion = posicion.SHORT_TEXT,
-                    Material = posicion.SHORT_TEXT,
+                    Material = posicion.MATERIAL,
                     CentroLogistico = posicion.PLANT,
                     Almacen = posicion.STORE_LOC,
                     NumeroRequerimientoInterno = posicion.TRACKINGNO,
@@ -377,7 +377,8 @@ namespace SustitucionMOAWS.WSConsumers
                     CantidadDiasEntrega = posicion.PLND_DELRY,
                     EstaBloqueada = posicion.REQ_BLOCKED,
                     EstadoSolpSap = posicion.PROCSTAT,
-                    EstadoPosicion = posicion.DELETE_IND
+                    EstadoPosicion = posicion.DELETE_IND,
+                    FechaEstimadaLiberacionDate = SAPFormatter.GetDateTime(posicion.REL_DATE),
                 });
             }
 
@@ -444,7 +445,7 @@ namespace SustitucionMOAWS.WSConsumers
              
              */
 
-            if(result.ServiciosSuposiciones == null)
+            if (result.ServiciosSuposiciones == null)
             {
                 result.ServiciosSuposiciones = new List<SuposicionServicioSAP>();
             }
@@ -559,6 +560,7 @@ namespace SustitucionMOAWS.WSConsumers
         public string MonedaPrecioString { get; internal set; }
         public string EstadoSolpSap { get; set; }
         public string EstadoPosicion { get; set; }
+        public DateTime FechaEstimadaLiberacionDate { get; set; }
     }
 
     public class DireccionSolpSAP
@@ -620,7 +622,7 @@ namespace SustitucionMOAWS.WSConsumers
         public string IndicadorDeLiberacion { get; set; }
         public bool ObtenerServicios { get; set; }
         public List<string> CreadoPorUsuarios { get; set; }
-      
+
     }
 
     public class ErrorObtenerSOLP
