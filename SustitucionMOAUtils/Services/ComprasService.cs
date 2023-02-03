@@ -1832,7 +1832,7 @@ namespace SustitucionMOAUtils.Services
                         posicionEntity.Moneda_Id = moneda?.Id;
                         posicionEntity.Estado = posicion.EstadoPosicion != "X";
                         posicionEntity.Cantidad = posicion.Cantidad;
-                        if (posicionEntity.TipoPosicion_Id == 2)
+                        if (posicionEntity.TipoPosicion_Id == 10)
                         {
                             posicionEntity.Tarea = posicion.TextoPosicion;
                             TablaSap unidadMedidapos = unidadesDeMedida.SingleOrDefault(um => um.Codigo == posicion.UnidadMedida);
