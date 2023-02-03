@@ -1823,7 +1823,7 @@ namespace SustitucionMOAUtils.Services
                         posicionEntity.Centro_Id = centro?.Id;
                         posicionEntity.Almacen_Id = almacen?.Id;
                         posicionEntity.NombreEntrega = direccion?.NombreUbicacion ?? string.Empty;
-                        posicionEntity.CalleEntrega = (direccion?.Calle ?? string.Empty) + (direccion?.Numero ?? string.Empty);
+                        posicionEntity.CalleEntrega = (direccion?.Calle ?? string.Empty) + " " + (direccion?.Numero ?? string.Empty);
                         posicionEntity.NumeroEntrega = direccion?.Telefono ?? string.Empty;
                         posicionEntity.CpEntrega = direccion?.CodigoPostal ?? string.Empty;
                         posicionEntity.GrupoCompras_Id = grupoCompras?.Id;
