@@ -716,7 +716,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ObtenerContratosDisponibles(string clienteCodigo, string fechaDesde, string fechaHasta)
+        public ActionResult ObtenerContratosDisponibles(string clienteCodigo, string fechaDesde, string fechaHasta, string codigoCorredor)
         {
             var response = new ObtenerContratosDisponiblesResponse();
             try
@@ -724,7 +724,7 @@ namespace SustitucionMOA.Controllers
                 var req = new ObtenerContratosDisponiblesRequest
                 {
                     ClienteCodigo = clienteCodigo,
-                    //CorredorCodigo = corredorCodigo,
+                    CorredorCodigo = codigoCorredor ?? "",
                     FechaDesde = fechaDesde,
                     FechaHasta = fechaHasta
                 };
