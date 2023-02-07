@@ -2039,8 +2039,8 @@ namespace SustitucionMOAUtils.Services
 
         public List<MaterialSolpDto> AutocompleteMaterialSolp(string valor, int centroId)
         {
-            List<MaterialSolpDto> lista = repositorio.Listar<MaterialSolp>(e => (e.Descripcion.ToLower().Contains(valor.ToLower()) && e.Centro_Id == centroId)
-                 || (e.CodigoSap.ToString().ToLower().Contains(valor.ToLower()) && e.Centro_Id == centroId), 0, null, SustitucionMOAModel.Consultas.DirOrden.Asc).Select(s=>new MaterialSolpDto(s)).ToList();
+            List<MaterialSolpDto> lista = repositorio.Listar<MaterialSolp>(e => 
+            (e.Descripcion.Contains(valor) || e.CodigoSap.ToString().Contains(valor)) && e.Centro_Id == centroId, 0, null, SustitucionMOAModel.Consultas.DirOrden.Asc).Select(s=>new MaterialSolpDto(s)).ToList();
 
             return lista;
         }
