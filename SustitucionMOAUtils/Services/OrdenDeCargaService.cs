@@ -410,7 +410,7 @@ namespace SustitucionMOAUtils.Services
             }
             var mailUsuarioSAP = puedeEnviarASAP ? mailUsuario : _usuarioAutomaticoSAP;
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSAP);
-            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, noValidarKg, out string numeroPedido);
+            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, ValidarKg, out string numeroPedido);
 
             var resultadoCrearOrden = false;
             ordenDeCarga.ContratoSinCantidadPendiente = false;
