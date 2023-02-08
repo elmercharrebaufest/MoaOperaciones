@@ -10,7 +10,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
     {
         public string ClienteCodigo { get; set; }
 
-        //public string CorredorCodigo { get; set; }
+        public string CorredorCodigo { get; set; }
 
         public string FechaDesde { get; set; }
 

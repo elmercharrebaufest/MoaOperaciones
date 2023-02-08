@@ -212,7 +212,7 @@ namespace SustitucionMOAWS.WSConsumers
                     }
                 }
                 ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
-                var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(request.Cliente, request.Contrato, request.Corredor, fechasSAPArray, request.Material, request.Pendiente, request.TipoContrato);
+                var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(request.Cliente, request.Contrato, request.Corredor, fechasSAPArray, request.Material, request.Pendiente?.ToUpper(), request.TipoContrato);
                 var response = MapOrdenCargaVisualizarCliente(result);
                 return response;
             }
