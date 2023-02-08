@@ -49,7 +49,8 @@ import { StepperActionsComponent } from './solp/stepper-actions/stepper-actions.
 import { FinalizarSolpComponent } from './solp/finalizar/finalizar-solp.component';
 import { ContratoMarcoComponent } from './solp/steps/posicion/contrato-marco/contrato-marco.component';
 import { ObtenerContratoMarcoComponent } from './solp/steps/posicion/obtener-contrato-marco/obtener-contrato-marco.component';
-
+import {PaginatorModule} from 'primeng/paginator';
+import {TooltipModule} from 'primeng/tooltip';
 @NgModule({
     imports: [
         CommonModule,
@@ -79,7 +80,9 @@ import { ObtenerContratoMarcoComponent } from './solp/steps/posicion/obtener-con
         ConfirmDialogModule,
         PanelModule,
         InputSwitchModule,
-        TabMenuModule
+        TabMenuModule,
+        PaginatorModule,
+        TooltipModule
     ],
     declarations: [
         SolpComponent,

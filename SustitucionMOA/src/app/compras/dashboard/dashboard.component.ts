@@ -13,14 +13,16 @@ import { Table } from 'primeng/table';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
+import { Paginator } from 'primeng/paginator';
 
 declare var $: any;
+
 
 @Component({
     selector: 'dashboard',
     templateUrl: `dashboard.component.html`,
     styleUrls: ['../compras.component.css',
-     './dashboard.component.css'],
+        './dashboard.component.css'],
     providers: [ComprasService]
 
 })
@@ -39,9 +41,18 @@ export class DashboardComponent extends ListBaseComponent {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    @ViewChild('myCalendar', undefined) 
+    @ViewChild('myCalendar', undefined)
     private calendar: any;
-   
+    nroSolp: string = "";
+    sap: boolean = false;
+    mantenimiento: boolean = false;
+    web: boolean = false;
+    orden: string;
+    columnaOrden: string;    
+    length = 0;
+    pageSize: number = 10;
+    pageIndex: number = 1;
+    @ViewChild('paginator') paginator: Paginator
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -62,8 +73,8 @@ export class DashboardComponent extends ListBaseComponent {
 
     filteredfechas: any;
     solpFecha: any = new Array();
-    fechaInicio: any;
-    fechaFin: any;
+    fechaInicio: any = null;
+    fechaFin: any = null;
     rangeDates: Date[];
     tipoFiltroFecha = 1;
 
@@ -132,7 +143,7 @@ export class DashboardComponent extends ListBaseComponent {
         $("#myMenuOpen").css({ 'display': 'block' });
         $("#coverAll").fadeOut();
         let nrosol = ""
-        if(NroSolp != null) nrosol = NroSolp.toString();
+        if (NroSolp != null) nrosol = NroSolp.toString();
         let obj = Id.toString() + "," + nrosol;
 
         this.navService.navegarSeccionParam(path, obj);
@@ -142,21 +153,22 @@ export class DashboardComponent extends ListBaseComponent {
     ngOnInit() {
         this.navService.setSeccionList([]);
         this.getListarSolp();
+
         this.desdeDashboard = new Date();
-        this.hastaDashboard = new Date();        
+        this.hastaDashboard = new Date();
     }
 
 
     returnToTodaysDate() {
-        this.tablaSolp = this.tablaSolpCopy;
-        this.tabla.first = 0;
+        this.fechaInicio = "";
+        this.fechaFin = "";
         if (this.tablaSolp.length > 0) {
             this.mensajeComponent.setMsgsEmpty();
         }
     }
 
 
-    onSelect(event: any) {     
+    onSelect(event: any) {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
             let d = new Date(Date.parse(event));
             this.fechaInicio = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
@@ -166,7 +178,6 @@ export class DashboardComponent extends ListBaseComponent {
             if (this.rangeDates[1]) { // If second date is selected
                 this.calendar.overlayVisible = false;
             }
-            this.filtrarTablaPorTipoSolp();
         }
     }
 
@@ -186,7 +197,7 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     filtrarTablaPorTipoSolp() {
-      
+
         var fechaDesde = this.fechaInicio;
         var fechaHasta = this.fechaFin + " 23:59:59";
 
@@ -212,17 +223,17 @@ export class DashboardComponent extends ListBaseComponent {
         } else if (this.checkedFilterWeb) {
             tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Web);
             this.tabla.first = 0;
-        }  this.tabla.first = 0;
+        } this.tabla.first = 0;
 
-        
-        if(fechaDesde != null && fechaHasta != null) {
+
+        if (fechaDesde != null && fechaHasta != null) {
             tablaPrincipal = tablaPrincipal.filter(x =>
                 new Date(Date.parse(x.FechaCreacion)) >= new Date(fechaDesde) &&
                 new Date(Date.parse(x.FechaCreacion)) <= new Date(fechaHasta)
             )
             this.tabla.first = 0;
-        }       
-        this.tablaSolp = tablaPrincipal;  
+        }
+        this.tablaSolp = tablaPrincipal;
 
         if (this.tablaSolp.length == 0) {
             this.mensajeComponent.setInfoMsg("No se encontraron Solps")
@@ -260,12 +271,15 @@ export class DashboardComponent extends ListBaseComponent {
         return data.PosicionesEstado && data.NroSolp != null ? '#DD441E' : '#333333';
     }
 
-    getListarSolp(){
+    getListarSolp() {
         try {
             this.spinnerComponent.showIt();
-
-            this.subscription = this.service.getListarSolp().subscribe(
+            let multiSelectValues = this.selectEstadoSolp.join(",")
+            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp,
+                this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, multiSelectValues
+            ).subscribe(
                 (result: any) => {
+
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -284,6 +298,9 @@ export class DashboardComponent extends ListBaseComponent {
                         this.tablaSolpCopy = this.tablaSolp;
                         this.tabla.first = 0;
                         this.spinnerComponent.hideIt();
+                        this.length = result.data.length > 0 ? result.data[0].ItemsTotales : 0;
+                        this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
+                        this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
                     }
                 },
                 error => {
@@ -464,4 +481,28 @@ export class DashboardComponent extends ListBaseComponent {
         }
     }
 
+    onOrder(columna: string) {
+        if (this.columnaOrden != columna) {
+            this.orden = "DESC"
+        } else {
+            this.orden = this.orden == "DESC" ? "ASC" : "DESC";
+        }
+        this.columnaOrden = columna;
+        this.getListarSolp();
+    }
+
+    handlePageEvent(e: any) {
+        this.pageSize = e.rows ;
+        this.pageIndex = e.page+1 ;        
+        this.getListarSolp()
+
+    }
+
+
+    onBuscar() {
+        this.paginator.changePage(0);
+        this.pageIndex = 1;
+        this.getListarSolp();
+    }
 }
+

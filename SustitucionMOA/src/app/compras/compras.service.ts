@@ -8,16 +8,54 @@ import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 @Injectable()
 export class ComprasService extends BaseService {
 
-    Date: Date
+    Date: Date;
+    filtros = {
+        pagina: 1,
+        itemsPorPagina: 10,
+        orden: "",
+        columna: "Id",
+        nroSolp: "",
+        fechaDesde: null,
+        fechaHasta: null,
+        estados: "",
+        sap: true,
+        mantenimiento: true,
+        web: true
+      }
 
     public getCombos(): Observable<any> {
         return this.http
             .get('/api/compras/Combos', { headers: this.headers });
     }
 
-    public getListarSolp(): Observable<any> {
+    public getListarSolp(pagina: number,
+        itemsPorPagina: number,
+        orden: string = this.filtros.orden,
+        columna: string = this.filtros.columna,
+        nroSolp: string = this.filtros.nroSolp,
+        fechaDesde: any = this.filtros.fechaDesde,
+        fechaHasta: any | null = this.filtros.fechaHasta,
+        sap: boolean = this.filtros.sap,
+        mantenimiento: boolean = this.filtros.mantenimiento,
+        web: boolean = this.filtros.web,
+        estados: any = this.filtros.estados): Observable<any> {       
+        let params: HttpParams = new HttpParams();
+        pagina = pagina != null ? pagina : this.filtros.pagina;
+        itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
+        columna = columna != "" ? columna : this.filtros.columna;
+        params = params.set('pagina', pagina.toString());
+        params = params.set('itemsPorPagina', itemsPorPagina.toString());
+        params = params.set('orden', orden);
+        params = params.set('columna', columna);
+        params = params.set('nroSolp', nroSolp);
+        params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
+        params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
+        params = params.set('sap', sap.toString());
+        params = params.set('mantenimiento', mantenimiento.toString());
+        params = params.set('web', web.toString());
+        params = params.set('estados', estados);
         return this.http
-            .get('/api/compras/ListarSolp', { headers: this.headers });
+            .get('/api/compras/ListarSolp', { params: params, headers: this.headers });
     }
 
     public borrarSolp(idSolp: number): Observable<any> {
@@ -332,4 +370,5 @@ export class ComprasService extends BaseService {
         return this.http
             .get("/api/compras/ObtenerContratoMarco", { params: params })
     }
+
 }

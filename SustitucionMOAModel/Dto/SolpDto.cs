@@ -61,6 +61,9 @@ namespace SustitucionMOAModel.Dto
         public bool PosicionesEstado { get; set; }
 
         public Guid? EmailLinkToken { get; set; }
+        public int ItemPorPagina { get; set; }
+        public int Pagina { get; set; }
+        public int ItemsTotales { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
