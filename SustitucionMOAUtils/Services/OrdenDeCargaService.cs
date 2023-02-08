@@ -77,7 +77,7 @@ namespace SustitucionMOAUtils.Services
                 if (crearPedido && puedeEnviarASAP)
                 {
                     ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
-                    var creadaEnSAP = CrearPedidoEnSAP(ordenDeCarga, ordenDeCarga.Cliente, false, puedeEnviarASAP, mailUsuario);
+                    var creadaEnSAP = CrearPedidoEnSAP(ordenDeCarga, ordenDeCarga.Cliente, true, puedeEnviarASAP, mailUsuario);
                     if (creadaEnSAP)
                     {
                         VerificarSituacionCrediticia(ordenDeCarga, true);
@@ -289,7 +289,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             ordenEditar.ContratoSAP = ordenEditar.ContratoIngresado;
                         }
-                        var creadaEnSaP = CrearPedidoEnSAP(ordenEditar, ordenEditar.Cliente, false, puedeEnviarASAP, usuario.Mail);
+                        var creadaEnSaP = CrearPedidoEnSAP(ordenEditar, ordenEditar.Cliente, true, puedeEnviarASAP, usuario.Mail);
                         if (creadaEnSaP)
                         {
                             VerificarSituacionCrediticia(ordenEditar, true);
@@ -395,14 +395,14 @@ namespace SustitucionMOAUtils.Services
             }
             return response;
         }
-        private bool CrearPedidoEnSAP(OrdenDeCarga ordenDeCarga, Proveedor cliente, bool forzarCreacion, bool puedeEnviarASAP, string mailUsuario)
+        private bool CrearPedidoEnSAP(OrdenDeCarga ordenDeCarga, Proveedor cliente, bool validaKg, bool puedeEnviarASAP, string mailUsuario)
         {
             //OV-01   'Verificar Contrato, Material, Cliente'
             //OV-02   'Verificar cantidad pendiente de Contratada'
             //OV-03   'Pedido creado - Verificar Crédito de pedido'
             //OV-00   'OK'
-            Log.Info($"CrearPedidoEnSAP(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, cliente: {cliente?.Id.ToJson()}, forzarCreacion: {forzarCreacion}, puedeEnviarASAP: {puedeEnviarASAP})");
-            var noValidarKg = forzarCreacion ? "X" : "";
+            Log.Info($"CrearPedidoEnSAP(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, cliente: {cliente?.Id.ToJson()}, validaKg: {validaKg}, puedeEnviarASAP: {puedeEnviarASAP})");
+            var ValidarKg = validaKg ? "X" : "";
             string contrato = null;
             if (ordenDeCarga.ContratoSAP != null)
             {
@@ -1654,7 +1654,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (orden.CodigoVerificacionSap != "CC-07")
                 {
-                    var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, false, false, mailUsuario);
+                    var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
 
                     if (creadaEnSaP)
                     {
@@ -1677,7 +1677,7 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"ForzarCreacionOrden " + ordenId.ToJson());
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
-            var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
+            var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, false, false, mailUsuario);
 
             if (creadaEnSaP)
             {
@@ -1713,7 +1713,7 @@ namespace SustitucionMOAUtils.Services
 
             if (!string.IsNullOrEmpty(orden.NumeroPedido) && orden.TransporteExiste)
             {
-                var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, false, false, mailUsuario);
+                var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
 
                 if (creadaEnSaP)
                 {
