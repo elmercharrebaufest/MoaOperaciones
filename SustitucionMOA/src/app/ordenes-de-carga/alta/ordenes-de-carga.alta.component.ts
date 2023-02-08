@@ -722,10 +722,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         try {
             if (pClienteCodigo) { //this.clienteSeleccionado) { //|| this.corredorSeleccionado) {
                 //let pClienteCodigo = this.clienteSeleccionado.CodigoProveedor;
-                // let pCorredorCodigo = this.corredorSeleccionado.idVendedor;
+                let pCorredorCodigo =  this.corredorSeleccionado ?
+                    this.corredorSeleccionado.idVendedor : "";
+                
                 this.blockUI.start('');
                 this.service
-                    .obtenerContratosDisponibles(pClienteCodigo, /*pCorredorCodigo,*/ this.desde, this.hasta)
+                    .obtenerContratosDisponibles(pClienteCodigo, pCorredorCodigo, this.desde, this.hasta)
                     .subscribe(resp => {
                         if (resp.Logout) {
                             this.sessionDataService.logout();

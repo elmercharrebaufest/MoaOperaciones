@@ -315,12 +315,12 @@ export class OrdenesDeCargaService extends BaseService {
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
-    public obtenerContratosDisponibles(clienteCodigo: string, /*corredorCodigo: string,*/ fechaDesde: string,
+    public obtenerContratosDisponibles(clienteCodigo: string, corredorCodigo: string, fechaDesde: string,
         fechaHasta: string): Observable<ObtenerContratosDisponiblesResponse> {
 
         let params: HttpParams = new HttpParams();
         params = params.append("clienteCodigo", clienteCodigo);
-        // params = params.append("corredorCodigo", corredorCodigo);
+        params = params.append("corredorCodigo", corredorCodigo);
         params = params.append("fechaDesde", fechaDesde);
         params = params.append("fechaHasta", fechaHasta);
 

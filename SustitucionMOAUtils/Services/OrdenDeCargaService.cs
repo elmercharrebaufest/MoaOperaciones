@@ -133,17 +133,9 @@ namespace SustitucionMOAUtils.Services
             {
                 if (usuario.EsCorredor())
                 {
-                    corredor = usuario.ObtenerCorredor();
-                    ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
-                    ordenDeCarga.Corredor_Id = corredor.Id;
-                    ordenDeCarga.CUITCorredor = corredor.CUIT;
-                    cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
-
+                    cliente = GetClienteParaCorredor(usuario, corredor, ordenDeCarga);
                     if (cliente == null)
-                    {
                         throw new Exception("Su usuario no está habilitado para operar con ese CUIT");
-                        //return new Resultado { error = "Su usuario no está habilitado para operar con ese CUIT" };
-                    }
                 }
                 else
                 {
@@ -1298,6 +1290,8 @@ namespace SustitucionMOAUtils.Services
                 //Log.Debug(this.GetType().Name, "VisualizarCliente", $" ordenCargaVisualizarClienteWSMOAResponse: { ordenCargaVisualizarClienteWSMOAResponse.ToJson() }");
                 response = new VisualizarClienteResponse();
                 response.Clientes = GetClientesFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse, request);
+                if (!string.IsNullOrEmpty(request.Corredor))
+                    SincronizarRelacionesCorredorCliente(request.Corredor, response);
                 //Log.Info($" response: { response.ToJson() }");
                 return response;
             }
@@ -2316,7 +2310,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     Cliente = req.ClienteCodigo,
                     Contrato = string.Empty,
-                    //Corredor = req.CorredorCodigo,
+                    Corredor = req.CorredorCodigo,
                     Fechas = rangoFechas,
                     Material = string.Empty,
                     Pendiente = "X", // "X" es para Contratos ABIERTOS
@@ -2423,6 +2417,26 @@ namespace SustitucionMOAUtils.Services
             if (errores.Count() > 0)
                 throw new InfoCustomException($"Las siguientes ordenes no pudieron enviarse correctamente: {string.Join(", ", errores)}");
             return $"Se han enviado las ordenes";
+        }
+        private Proveedor GetClienteParaCorredor(Usuario usuario, Proveedor corredor, OrdenDeCarga ordenDeCarga)
+        {
+            corredor = usuario.ObtenerCorredor();
+            ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
+            ordenDeCarga.Corredor_Id = corredor.Id;
+            ordenDeCarga.CUITCorredor = corredor.CUIT;
+            var cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
+
+            return cliente;
+        }
+        private void SincronizarRelacionesCorredorCliente(string codigoCorredor, VisualizarClienteResponse responseSap)
+        {
+            var corredor = repositorio.Obtener<Proveedor>(
+                            cor => cor.CodigoProveedor == codigoCorredor && cor.EstadoAprobacion == EstadoAprobacion.Aprobado);
+            foreach (var clienteDto in responseSap.Clientes)
+            {
+                var cliente = repositorio.Obtener<Proveedor>(clienteDto.Id);
+                CrearRelacionCorredorCliente(corredor, cliente);
+            }
         }
     }
 }
