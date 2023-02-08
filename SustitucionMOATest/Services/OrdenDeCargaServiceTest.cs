@@ -1218,7 +1218,7 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.NumeroPedido = string.Empty;
             ordenDeCarga.NumeroPedidoIngresado = "25250000";
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            var response = target.ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga, ordenDeCarga.Cliente);
+            var response = target.ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga);
             var result = new EmailSenderData()
             {
                 Asunto = "Contrato Vencido",
@@ -1244,7 +1244,7 @@ namespace SustitucionMOATest.Services
             ordenDeCarga.NumeroPedido = string.Empty;
             ordenDeCarga.NumeroPedidoIngresado = "25250000";
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            var emailSenderData = target.ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga,ordenDeCarga.Cliente);
+            var emailSenderData = target.ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga);
             var response = target.NotificacionContratoVencido(emailSenderData);
             Assert.AreEqual(expected, response);
         }
