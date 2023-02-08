@@ -114,7 +114,7 @@ namespace SustitucionMOAUtils.Services
             {
                 cliente = repositorio.Obtener<Proveedor>(x => x.CUIT == ordenDeCarga.CUITCliente && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
                 corredor = repositorio.Obtener<Proveedor>(x => x.CUIT == ordenDeCarga.CUITCorredor && x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Corredor);
-                if (corredor != null && string.IsNullOrEmpty(ordenDeCarga.CUITCorredor))
+                if (corredor != null && !string.IsNullOrEmpty(ordenDeCarga.CUITCorredor))
                 {
                     ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
                     ordenDeCarga.Corredor_Id = corredor.Id;
