@@ -69,7 +69,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     formularioActual: FormGroup;
     validFormEliminarPosicion = true;
     arraryErrores: any = new Array<{ id: number, text: string }>();
-
+    posicionSeleccionada: any;
     //Fuera de la tabla
     claseDocumento: SelectItem[];
     editarDocumento: boolean = false;
@@ -881,11 +881,12 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     cambiarTipoSolp() {
         if (this.model.selectTipoPosicion) {
             this.model.posiciones.forEach(posicion => {
-                posicion.tipoPosicion = this.model.selectTipoPosicion;
-                this.model.posicionActual = posicion;
-                this.model.posicionActual.setTabPosicion();
-                posicion.calcularValorTotal();
-                posicion.doValidatePosicion(this.model.tipoSolpSap);
+                this.model.eliminarPosicion(posicion as SolpPosicion)
+                // posicion.tipoPosicion = this.model.selectTipoPosicion;
+                // this.model.posicionActual = posicion;
+                // this.model.posicionActual.setTabPosicion();
+                // posicion.calcularValorTotal();
+                // posicion.doValidatePosicion(this.model.tipoSolpSap);
             });
             this.model.calcularValorTotalPorMoneda();
         }
