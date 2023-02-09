@@ -30,6 +30,7 @@ using System.Data;
 using HandlebarsDotNet;
 
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAModel.Consultas;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -775,11 +776,11 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<CentroDireccion>().Select(x => new CentroDireccionDto(x)).ToList();
         }
 
-        public List<SolpDto> ListarSolp(UsuarioDto usuarioActual)
+        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, List<int> estados = null)
         {
             try
             {
-
+                var fechaHasta = hasta != null ? hasta.Value.AddDays(1) : (DateTime?)null;
                 var usuariosCompras = repositorio.Listar<UsuarioCompras>();
                 var usuariosComprasRelacion = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id);
                 UsuarioComprasRelacionConUsuarios usuarioComprasRelacionEntity = null;
@@ -820,29 +821,23 @@ namespace SustitucionMOAUtils.Services
                     RevisadoPor = x.Pliego == null ? "" : x.Pliego.RevisadoPor,
                     TipoSolpSap = x.TipoSolpSap,
                     EstadoPasos = x.EstadoPasos,
-                    PosicionesEstado = x.Posiciones.All(p => p.Estado == false)
-                }, x => x.FechaBorrado == null, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc);
+                    PosicionesEstado = x.Posiciones.All(p => p.Estado == false),
+                    ItemPorPagina = paginacion.ItemsPorPagina,
+                    Pagina = paginacion.Pagina
+                },
+                paginacion,
+                x => x.FechaBorrado == null && (string.IsNullOrEmpty(nroSolp) || x.NroSolp.ToUpper().StartsWith(nroSolp.ToUpper())) &&
+                (!estados.Any() || (x.EstadoSolpSap_Id != null && estados.Contains((int)x.EstadoSolpSap_Id))) &&
+                (sap == true && x.TipoSolpSap == 3 ||
+                mantenimiento == true && x.TipoSolpSap == 2 || 
+                web == true && x.TipoSolpSap == null
+                || (sap == false && mantenimiento == false && web == false)) &&
+                (desde == null || x.FechaCreacion >= desde.Value) && (fechaHasta == null || x.FechaCreacion <= fechaHasta.Value));
+                if (todasLasSolp.Items != null && todasLasSolp.Items.Count() > 0)
+                {
+                    todasLasSolp.Items.FirstOrDefault().ItemsTotales = todasLasSolp.ItemsTotales;
 
-                //var todasLasSolp = repositorio.Listar(filtro)
-                //                .Select(x => new SolpDto
-                //                {
-                //                    UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
-                //                    Id = x.Id,
-                //                    NroSolp = x.NroSolp,
-                //                    NombreDeObra = x.Pliego?.NombreObra,
-                //                    FechaCreacion = x.FechaCreacion,
-                //                    EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento?.Descripcion, Color = x.EstadoDocumento?.Color, Codigo = x.EstadoDocumento?.Codigo },
-                //                    EstadoSolpSapId = x.EstadoSolpSap_Id,
-                //                    EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "" },
-                //                    TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
-                //                    VincularPliego = !x.Pliego_Id.HasValue,
-                //                    TieneCondicionesGenerales = x.Pliego?.TieneCondicionesGenerales,
-                //                    RevisadoPor = x.Pliego?.RevisadoPor,
-                //                    TipoSolpSap = x.TipoSolpSap,
-                //                    EstadoPasos = x.EstadoPasos,
-                //                    Posiciones = x.Posiciones.Select(p => new SolpPosicionDto { Estado = p.Estado }).ToList()
-                //                }).OrderByDescending(i => i.FechaCreacion).ToList();
-
+                }
                 return todasLasSolp;
             }
             catch (Exception e)
@@ -1838,11 +1833,13 @@ namespace SustitucionMOAUtils.Services
                             TablaSap unidadMedidapos = unidadesDeMedida.SingleOrDefault(um => um.Codigo == posicion.UnidadMedida);
                             posicionEntity.Unidad_Id = unidadMedidapos?.Id;
                             posicionEntity.PrecioBruto = posicion.PrecioSolp;
+                            if(tipoImputacion != null) { 
                             var cuentamayor = cuentasSolpesSap.Where(a => a.CodigoSap == tipoImputacion.CuentaContableImputada).SingleOrDefault();
                             posicionEntity.CuentaMayor_Id = cuentamayor?.Id;
+                           
                             var centrodecosto = cuentasSolpesSap.Where(a => a.CodigoSap == tipoImputacion.CentroDeCosto).SingleOrDefault();
                             posicionEntity.ValorTipoImputacion_Id = centrodecosto?.Id;
-
+                            }
                             var material = materialesSap.Where(a => a.CodigoSap == posicion.Material).SingleOrDefault();
                             posicionEntity.MaterialSolp_Id = material?.Id;
                             posicionEntity.NroNecesidad = posicion.NumeroRequerimientoInterno;

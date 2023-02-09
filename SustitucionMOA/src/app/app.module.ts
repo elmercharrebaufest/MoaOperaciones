@@ -70,6 +70,7 @@ import { ConfirmationService } from 'primeng/api';
 import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
 import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
 
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -87,7 +88,7 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     BlockUIModule.forRoot(),
     ComprasModule,
     ConfirmDialogModule,
-    MultiSelectModule
+    MultiSelectModule,
   ],
   declarations: [
     AppComponent,

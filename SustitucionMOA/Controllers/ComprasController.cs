@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SustitucionMOAAssets;
+using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Enums;
@@ -146,11 +147,14 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarSolp()
+        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime ? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, string estados = null)
         {   
             try
-            {               
-                return JsonCustom(new { data = service.ListarSolp(ObtenerUsuarioActual())});
+            {
+                var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
+                var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : null), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
+                return JsonCustom(new { data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, fechaDesde, 
+                    fechaHasta, sap, mantenimiento, web, (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x=> int.Parse(x)).ToList() : new List<int>())) });
             }
             catch (InfoCustomException e)
             {
