@@ -1826,10 +1826,14 @@ namespace SustitucionMOAUtils.Services
                         posicionEntity.GrupoArticulo_Id = grupoArticulo?.Id;
                         posicionEntity.Moneda_Id = moneda?.Id;
                         posicionEntity.Estado = posicion.EstadoPosicion != "X";
-                        posicionEntity.Cantidad = posicion.Cantidad;
+                      
+                        posicionEntity.Tarea = posicion.TextoPosicion;
+                        posicionEntity.NroNecesidad = posicion.NumeroRequerimientoInterno;
+                        posicionEntity.EsConcluido = true;
+
                         if (posicionEntity.TipoPosicion_Id == 10)
                         {
-                            posicionEntity.Tarea = posicion.TextoPosicion;
+                            posicionEntity.Cantidad = posicion.Cantidad;
                             TablaSap unidadMedidapos = unidadesDeMedida.SingleOrDefault(um => um.Codigo == posicion.UnidadMedida);
                             posicionEntity.Unidad_Id = unidadMedidapos?.Id;
                             posicionEntity.PrecioBruto = posicion.PrecioSolp;
@@ -1842,8 +1846,7 @@ namespace SustitucionMOAUtils.Services
                             }
                             var material = materialesSap.Where(a => a.CodigoSap == posicion.Material).SingleOrDefault();
                             posicionEntity.MaterialSolp_Id = material?.Id;
-                            posicionEntity.NroNecesidad = posicion.NumeroRequerimientoInterno;
-                            posicionEntity.EsConcluido = true;
+                           
                             //posicionEntity.FechaLiberacion = posicion.FechaEstimadaLiberacionDate; es lo mismo estimada que no estimada??
 
                         }
@@ -1901,7 +1904,7 @@ namespace SustitucionMOAUtils.Services
                             SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacionSAP = result.TipoImputaciones
                                 .FirstOrDefault(ti => ti.NumeroSolicitud == subPosicion.NumeroSolicitud &&
                                                       ti.NumeroPosicion == subPosicion.NumeroPosicion &&
-                                                      ti.NumeroDeSerie == imputacionSubposicion.ImputacionLineaServicio);
+                                                      ti.NumeroDeSerie == imputacionSubposicion.NumeroActualImputacion);
 
                             TablaSap unidadMedida = unidadesDeMedida.SingleOrDefault(um => um.Codigo == subPosicion.UnidadDeMedida);
 
@@ -1929,6 +1932,21 @@ namespace SustitucionMOAUtils.Services
                             subPosicionEntity.Unidad_Id = unidadMedida?.Id;
                             subPosicionEntity.PrecioBruto = subPosicion.PrecioUnitario;
                             subPosicionEntity.Estado = true;
+
+                            if (string.IsNullOrEmpty(subPosicionEntity.Codigo)) 
+                            {
+                                subPosicionEntity.Codigo = Guid.NewGuid().ToString();
+                            }
+
+                            //TablaSap unidadMedidapos = unidadesDeMedida.SingleOrDefault(um => um.Codigo == subPosicion.UnidadDeMedida);
+                            //subPosicionEntity.Unidad_Id = unidadMedidapos?.Id;
+                            //subPosicionEntity.PrecioBruto = subPosicion.PrecioUnitario;
+                            //var cuentamayor = cuentasSolpesSap.Where(a => a.Codigo == tipoImputacionSubposicion.Codigo).SingleOrDefault();
+                            //subPosicionEntity.CuentaMayor_Id = cuentamayor?.Id;
+                            //var centrodecosto = centrosDeCosto.Where(a => a.Codigo == tipoImputacionSubposicion.Codigo).SingleOrDefault();
+                            //subPosicionEntity.TipoImputacion_Id = centrodecosto?.Id;
+                            //var centroDeBeneficio = centrosDeBeneficio.Where(a => a.Codigo == tipoImputacionSubposicion.Codigo).SingleOrDefault();
+                            //subPosicionEntity.TipoImputacion_Id = centroDeBeneficio?.Id;
                         }
 
                         solp.Posiciones.Add(posicionEntity);
