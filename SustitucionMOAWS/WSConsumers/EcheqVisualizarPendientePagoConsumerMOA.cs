@@ -67,12 +67,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         public List<EcheqNegocioDto> Map(ZMPES6900[] EX_SALIDA)
         {
-            List<EcheqNegocioDto> listaPendientesPago = new List<EcheqNegocioDto>() { };
-
-
-            foreach (ZMPES6900 pagosPendientes in EX_SALIDA)
-            {
-                listaPendientesPago.Add(new EcheqNegocioDto()
+            return EX_SALIDA.Select(pagosPendientes=>
+                new EcheqNegocioDto()
                 {
                     Contrato = pagosPendientes.CONTRATO,
                     Pedido = pagosPendientes.PEDIDO,
@@ -82,7 +78,7 @@ namespace SustitucionMOAWS.WSConsumers
                     //kILOS_PAGADOSFieldSpecified = pagosPendientes.KILOS_PAGADOSSpecified,
                     Precio = pagosPendientes.PRECIO,
                     //pRECIOFieldSpecified = pagosPendientes.PRECIOSpecified,
-                    Moneda = pagosPendientes.MONEDA,                  
+                    Moneda = pagosPendientes.MONEDA,
                     MaterialCodigo = Int32.Parse(pagosPendientes.MATERIAL).ToString(),
                     DescripcionMaterial = pagosPendientes.DESC_MATERIAL,
                     Fecha = SAPFormatter.FormatearFecha(pagosPendientes.FECHA),
@@ -107,11 +103,7 @@ namespace SustitucionMOAWS.WSConsumers
                         //Clasificacion = x.CLASIFICACION
                         MarcaCheque = string.IsNullOrWhiteSpace(x.ZLSCH) ? false : true
                     }).ToList()
-                });
-            }
-
-            //listaPendientesPago = listaPendientesPago.Where(a => a.Documentos != null && a.Documentos.Count > 0).ToList();
-            return listaPendientesPago;
+                }).ToList();
         }
     }
 
