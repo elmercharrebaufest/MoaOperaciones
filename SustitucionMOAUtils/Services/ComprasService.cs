@@ -261,7 +261,7 @@ namespace SustitucionMOAUtils.Services
             return respuestaGuardarSOLP;
         }
 
-        public Solp PosicionesEliminar(Solp solpEntity, SolpDto solp)
+        private Solp PosicionesEliminar(Solp solpEntity, SolpDto solp)
         {
             if (solpEntity.Posiciones == null)
             {
@@ -271,11 +271,12 @@ namespace SustitucionMOAUtils.Services
             //posiciones eliminadas, elimina posiciones que no llegan desde el front al back y no tienen fecha de baja
             if (solpEntity.Posiciones.Count > 0)
             {
-                // trae todas las que no tienen fecha baja (osea que son null) y despues que no esten en la web (las que vienen del front)
-                var posEliminadas = solpEntity.Posiciones.Where(x => !x.FechaBaja.HasValue).Where(x => solp.Posiciones == null || !solp.Posiciones.Any(y => y.Codigo == x.Codigo));
-                foreach (var pos in posEliminadas)
+                // trae todas que no esten en la web (las que vienen del front)
+                var posEliminadas = solpEntity.Posiciones.Where(x => solp.Posiciones == null || !solp.Posiciones.Any(y => y.Codigo == x.Codigo));
+                foreach (var pos in posEliminadas.ToList())
                 {
                     pos.FechaBaja = DateTime.Now;
+                    repositorio.Remover(pos);
                 }
             }
             return solpEntity;
@@ -942,7 +943,11 @@ namespace SustitucionMOAUtils.Services
 
                 EstadoSolpSapId = x.EstadoSolpSap_Id,
                 EstadoDocumentoId = x.EstadoDocumento_Id,
-                //Posiciones = x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList(),
+
+                //Posiciones = (x.TipoSolpSap == (int)TipoSolpSap.Sap || x.TipoSolpSap == (int)TipoSolpSap.Mantenimiento) ? 
+                //                x.Posiciones.Select(p => new SolpPosicionDto(p)).ToList() : 
+                //                x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList(),
+
                 Posiciones = x.Posiciones.Select(p => new SolpPosicionDto(p)).ToList(),
                 PasoCompletado = x.PasoCompletado,
                 EstadoPasos = x.EstadoPasos,
