@@ -764,7 +764,9 @@ namespace SustitucionMOAUtils.Services
 
         public List<TablaSapDto> ObtenerTablaSap(string tabla)
         {
-            return repositorio.Listar<TablaSap>(x => x.Tabla == tabla).Select(x => new TablaSapDto(x)).ToList();
+            var tablaSolp = repositorio.Listar<TablaSap>(x => x.Tabla == tabla).Select(x => new TablaSapDto(x)).ToList();
+            tablaSolp.Add(new TablaSapDto { Id = -1, Descripcion = "Borrado en sap" });
+            return tablaSolp;
         }
 
         public List<TablaGeneralDto> ObtenerTablaGeneral(string tabla)
@@ -814,9 +816,9 @@ namespace SustitucionMOAUtils.Services
                     NombreDeObra = x.Pliego == null ? "" : x.Pliego.NombreObra,
                     FechaCreacion = x.FechaCreacion,
                     EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Descripcion, Color = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Color, Codigo = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Codigo },
-                    EstadoSolpSapId = x.EstadoSolpSap_Id,
+                    EstadoSolpSapId = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? -1 : (x.EstadoSolpSap != null ? x.EstadoSolpSap_Id : 0),
                     EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "", Id = x.EstadoSolpSap != null ? x.EstadoSolpSap.Id : 0 },
-                    EstadoSolpDescripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "",
+                    EstadoSolpDescripcion = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? "Borrado en sap" : (x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : ""),
                     TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
                     VincularPliego = !x.Pliego_Id.HasValue,
                     TieneCondicionesGenerales = x.Pliego == null ? (bool?)null : x.Pliego.TieneCondicionesGenerales,
@@ -829,9 +831,9 @@ namespace SustitucionMOAUtils.Services
                 },
                 paginacion,
                 x => x.FechaBorrado == null && (string.IsNullOrEmpty(nroSolp) || x.NroSolp.ToUpper().StartsWith(nroSolp.ToUpper())) &&
-                (!estados.Any() || (x.EstadoSolpSap_Id != null && estados.Contains((int)x.EstadoSolpSap_Id))) &&
+                (!estados.Any() || (x.EstadoSolpSap_Id != null && estados.Contains((int)x.EstadoSolpSap_Id)) || (estados.Any(y => y == -1) && x.NroSolp != null && x.Posiciones.All(p => p.Estado == false))) &&
                 (sap == true && x.TipoSolpSap == 3 ||
-                mantenimiento == true && x.TipoSolpSap == 2 || 
+                mantenimiento == true && x.TipoSolpSap == 2 ||
                 web == true && x.TipoSolpSap == null
                 || (sap == false && mantenimiento == false && web == false)) &&
                 (desde == null || x.FechaCreacion >= desde.Value) && (fechaHasta == null || x.FechaCreacion <= fechaHasta.Value));
