@@ -64,6 +64,7 @@ namespace SustitucionMOAModel.Dto
         public int ItemPorPagina { get; set; }
         public int Pagina { get; set; }
         public int ItemsTotales { get; set; }
+        public string EstadoSolpDescripcion { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
