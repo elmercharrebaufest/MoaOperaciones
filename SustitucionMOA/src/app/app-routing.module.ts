@@ -140,10 +140,10 @@ const appRoutes: Routes = [
                 path: "ordenes-de-carga",
                 loadChildren: "./ordenes-de-carga/ordenes-de-carga.module#OrdenesDeCargaModule",
             },
-            {
-                path: "reporte-contrato",
-                loadChildren: "./reporte-contrato/reporte-contrato.module#ReporteContratoModule",
-            },
+           // {
+           //     path: "reporte-contrato",
+           //     loadChildren: "./reporte-contrato/reporte-contrato.module#ReporteContratoModule",
+           // },
 
             { path: "notificaciones", component: ListadoNotificacionesComponent },
             { path: "notificaciones/alta", component: AltaNotificacionesComponent },
