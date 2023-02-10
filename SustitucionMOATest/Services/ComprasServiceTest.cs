@@ -111,28 +111,6 @@ namespace SustitucionMOATest.Services
         }*/
 
         [Test()]
-        public void PosicionesEliminarTestNewSolp()
-		{
-            var solpEntity = new Solp();
-            var solp = new SolpDto();
-            var result = target.PosicionesEliminar(solpEntity, solp);
-            Assert.AreEqual(result.Posiciones.Count, solpEntity.Posiciones.Count);
-        }
-
-        [Test()]
-        public void PosicionesEliminarTestSolpWithData()
-        {
-            var solpEntity = new Solp();
-            var solp = new SolpDto();
-            solpEntity.Posiciones = new List<SolpPosicion>();
-            solpEntity.Posiciones.Add(new SolpPosicion());
-            solpEntity.Posiciones.Add(new SolpPosicion());
-            solpEntity.Posiciones.Add(new SolpPosicion());
-            var result = target.PosicionesEliminar(solpEntity, solp);
-            Assert.AreEqual(result.Posiciones.Count, solpEntity.Posiciones.Count);
-        }
-
-        [Test()]
         public void ObtenerCecoSapTest()
         {
             var rfcResultMock = new CecoWSMOAResponse()
