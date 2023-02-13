@@ -1051,4 +1051,23 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         return this.model.selectTipoPosicion.Codigo == "MATERIALES" && this.model.posicionActual.codigoServicio != null;
     }
 
+    clearCode() {
+        if (this.model.posicionActual.tareaSubcontratar != null ) {
+          this.model.posicionActual.codigoServicio = null;
+        }    
+    }    
+
+    clearCode2() {
+        if (this.model.posicionActual.codigoServicio != null ) {
+          this.model.posicionActual.tareaSubcontratarObj = null;
+        }    
+    }    
+
+    checkCode() {
+        if (this.model.posicionActual.codigoServicio == '' || this.model.posicionActual.codigoServicio == null) {
+          this.model.posicionActual.tareaSubcontratarObj = null;
+
+        }
+    }
+
 }

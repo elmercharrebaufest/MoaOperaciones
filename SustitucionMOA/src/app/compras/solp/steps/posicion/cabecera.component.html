@@ -237,6 +237,8 @@
                                                 (onFocus)="$event.target.select(); posicion.setTabPosicion();"
                                                 (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio, rowIndex, dt)"
                                                 (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion();validarFuenteAprovisionamiento(posicion);"
+                                                (onBlur)="checkCode()"
+                                                (ngModelChange)="clearCode2()"
                                                 >
                                             </p-autoComplete>
                                         </ng-template>
@@ -261,7 +263,9 @@
                                                 (completeMethod)="autocompleteMaterialSolp($event)"
                                                 (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)" 
                                                 (onSelect)="onSelectTarea(posicion)" 
-                                                (onBlur)="onBlurTarea($event, posicion)">
+                                                (onBlur)="onBlurTarea($event, posicion)"
+                                                (ngModelChange)="clearCode()"
+                                                >
                                             </p-autoComplete>
                                         </ng-template>
 

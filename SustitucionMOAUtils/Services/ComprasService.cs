@@ -357,11 +357,21 @@ namespace SustitucionMOAUtils.Services
 
                 if (pos.Moneda != null)
                     posEntity.Moneda = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Moneda && x.Codigo == pos.Moneda.Codigo);
+
                 if (pos.CodigoMaterialSap != null)
+                {
                     posEntity.MaterialSolp = repositorio.Obtener<MaterialSolp>(x => x.CodigoSap == pos.CodigoMaterialSap.Codigo);
+                }
+                else
+                {
+                    posEntity.MaterialSolp = null;
+                    posEntity.MaterialSolp_Id = null;
+
+                }
 
                 if (pos.CodigoServicioSap != null)
                     posEntity.ServicioSolp = repositorio.Obtener<ServicioSolp>(x => x.CodigoSap == pos.CodigoServicioSap.Codigo);
+
 
                 if (pos.Provincia != null)
                 {
@@ -1834,7 +1844,7 @@ namespace SustitucionMOAUtils.Services
                         posicionEntity.GrupoArticulo_Id = grupoArticulo?.Id;
                         posicionEntity.Moneda_Id = moneda?.Id;
                         posicionEntity.Estado = posicion.EstadoPosicion != "X";
-                      
+
                         posicionEntity.Tarea = posicion.TextoPosicion;
                         posicionEntity.NroNecesidad = posicion.NumeroRequerimientoInterno;
                         posicionEntity.EsConcluido = true;
@@ -1845,16 +1855,17 @@ namespace SustitucionMOAUtils.Services
                             TablaSap unidadMedidapos = unidadesDeMedida.SingleOrDefault(um => um.Codigo == posicion.UnidadMedida);
                             posicionEntity.Unidad_Id = unidadMedidapos?.Id;
                             posicionEntity.PrecioBruto = posicion.PrecioSolp;
-                            if(tipoImputacion != null) { 
-                            var cuentamayor = cuentasSolpesSap.Where(a => a.CodigoSap == tipoImputacion.CuentaContableImputada).SingleOrDefault();
-                            posicionEntity.CuentaMayor_Id = cuentamayor?.Id;
-                           
-                            var centrodecosto = cuentasSolpesSap.Where(a => a.CodigoSap == tipoImputacion.CentroDeCosto).SingleOrDefault();
-                            posicionEntity.ValorTipoImputacion_Id = centrodecosto?.Id;
+                            if (tipoImputacion != null)
+                            {
+                                var cuentamayor = cuentasSolpesSap.Where(a => a.CodigoSap == tipoImputacion.CuentaContableImputada).SingleOrDefault();
+                                posicionEntity.CuentaMayor_Id = cuentamayor?.Id;
+
+                                var centrodecosto = cuentasSolpesSap.Where(a => a.CodigoSap == tipoImputacion.CentroDeCosto).SingleOrDefault();
+                                posicionEntity.ValorTipoImputacion_Id = centrodecosto?.Id;
                             }
                             var material = materialesSap.Where(a => a.CodigoSap == posicion.Material).SingleOrDefault();
                             posicionEntity.MaterialSolp_Id = material?.Id;
-                           
+
                             //posicionEntity.FechaLiberacion = posicion.FechaEstimadaLiberacionDate; es lo mismo estimada que no estimada??
 
                         }
@@ -1941,7 +1952,7 @@ namespace SustitucionMOAUtils.Services
                             subPosicionEntity.PrecioBruto = subPosicion.PrecioUnitario;
                             subPosicionEntity.Estado = true;
 
-                            if (string.IsNullOrEmpty(subPosicionEntity.Codigo)) 
+                            if (string.IsNullOrEmpty(subPosicionEntity.Codigo))
                             {
                                 subPosicionEntity.Codigo = Guid.NewGuid().ToString();
                             }
@@ -2062,8 +2073,8 @@ namespace SustitucionMOAUtils.Services
 
         public List<MaterialSolpDto> AutocompleteMaterialSolp(string valor, int centroId)
         {
-            List<MaterialSolpDto> lista = repositorio.Listar<MaterialSolp>(e => 
-            (e.Descripcion.Contains(valor) || e.CodigoSap.ToString().Contains(valor)) && e.Centro_Id == centroId, 0, null, SustitucionMOAModel.Consultas.DirOrden.Asc).Select(s=>new MaterialSolpDto(s)).ToList();
+            List<MaterialSolpDto> lista = repositorio.Listar<MaterialSolp>(e =>
+            (e.Descripcion.Contains(valor) || e.CodigoSap.ToString().Contains(valor)) && e.Centro_Id == centroId, 0, null, SustitucionMOAModel.Consultas.DirOrden.Asc).Select(s => new MaterialSolpDto(s)).ToList();
 
             return lista;
         }
