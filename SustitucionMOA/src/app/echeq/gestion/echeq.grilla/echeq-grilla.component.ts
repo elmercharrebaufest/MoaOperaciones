@@ -26,7 +26,7 @@ import { BehaviorSubject } from 'rxjs';
     providers: [ConfirmationService]
 })
 export class GrillaComponent extends EcheqGestionComponent implements OnInit {
-    popupVisible = new BehaviorSubject<boolean>(true);
+    popupVisible = new BehaviorSubject<boolean>(false);
     @Input() echeqContratos: Array<EcheqContrato>;
     @BlockUI() blockUI: NgBlockUI;
 
