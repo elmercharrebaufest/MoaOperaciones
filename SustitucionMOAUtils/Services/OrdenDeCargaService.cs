@@ -909,8 +909,8 @@ namespace SustitucionMOAUtils.Services
             var cabecera = "Orden :";
             var ordenVencidas = new StringBuilder();
 
-            //if (puedeEnviarASAP)
-            //    AnularOrdenSap(orden);
+            if (puedeEnviarASAP)
+                AnularOrdenSap(orden);
 
             ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
@@ -1004,8 +1004,8 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
 
-            //if (puedeEnviarASAP)
-            //    AnularOrdenSap(orden);
+            if (puedeEnviarASAP)
+                AnularOrdenSap(orden);
 
             var ordenHistorial = new OrdenDeCargaCambiosHistorial()
             {
@@ -2374,23 +2374,9 @@ namespace SustitucionMOAUtils.Services
         {
             var tieneNumeroEntrega = !string.IsNullOrEmpty(orden.NumeroEntrega);
             if (tieneNumeroEntrega)
-            {
-                var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
-                if (resultadoAnularEntrega.HayError)
-                    throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
-                else
-                {
-                    orden.Estado = EstadoOrdenDeCarga.Pendiente;
-                    repositorio.GuardarCambios();
-                }
-            }
+                AnularEntregaEnSap(orden);
 
-            var tieneNumeroPedido = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) || !string.IsNullOrEmpty(orden.NumeroPedido);
-            if (!tieneNumeroPedido)
-                return;
-            var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
-            if (resultadoAnularOrden.HayError)
-                throw new InfoCustomException(tieneNumeroEntrega ? _errorAnulacion : resultadoAnularOrden.Errores[0].Message);
+            AnularPedidoEnSap(orden);
         }
         public string EnviarOrdenesASAP(List<int> ordenesId, string mailUsuario)
         {
@@ -2436,6 +2422,27 @@ namespace SustitucionMOAUtils.Services
                 var cliente = repositorio.Obtener<Proveedor>(clienteDto.Id);
                 CrearRelacionCorredorCliente(corredor, cliente);
             }
+        }
+        private void AnularEntregaEnSap(OrdenDeCarga orden)
+        {
+            var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
+            if (resultadoAnularEntrega.HayError)
+                throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
+            else
+            {
+                orden.Estado = EstadoOrdenDeCarga.Pendiente;
+                repositorio.GuardarCambios();
+            }
+        }
+        private void AnularPedidoEnSap(OrdenDeCarga orden)
+        {
+            var tieneNumeroEntrega = !string.IsNullOrEmpty(orden.NumeroEntrega);
+            var tieneNumeroPedido = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) || !string.IsNullOrEmpty(orden.NumeroPedido);
+            if (!tieneNumeroPedido)
+                return;
+            var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
+            if (resultadoAnularOrden.HayError)
+                throw new InfoCustomException(tieneNumeroEntrega ? _errorAnulacion : resultadoAnularOrden.Errores[0].Message);
         }
     }
 }
