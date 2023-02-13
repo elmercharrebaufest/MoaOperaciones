@@ -155,7 +155,7 @@ namespace SustitucionMOAUtils.Services
             List<string> interno = new List<string>
             {
                 "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP",
-                "APIKEY", "AIGRAN","AINOGRAN", "ADMINPLATCOMPRAS","ANUL", "ECHEQ ADMIN", "FASON ADMIN","APLCCPP ADMIN"
+                "APIKEY", "AIGRAN","AINOGRAN", "ADMINPLATCOMPRAS","ANUL", "ECHEQ ADMIN", "FASON ADMIN","APLCCPP ADMIN", "COMPRADOR"
             };
 
             List<string> contacto = new List<string>
