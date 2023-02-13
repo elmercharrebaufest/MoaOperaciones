@@ -49,23 +49,9 @@ namespace SustitucionMOAWS.WSConsumers
                 if (listaFechas.FirstOrDefault() != null)
                 {
                     fechahasta = SAPFormatter.PrepararFecha(listaFechas.FirstOrDefault().fechaFin);
-                }                    
+                }
 
-                ZMPES6900[] response =
-                {
-                    new ZMPES6900
-                    {
-                        CONTRATO="0036273589",
-                        PEDIDO="00362735891",
-                        KILOS=429,
-                        KILOS_PAGADOS=200,
-                        PRECIO= 140,
-                        MATERIAL="123312",
-                        FECHA="2023-02-10",
-                        CLASIFICACION="ACOPIADOR"
-                       
-                    }
-                };
+                var response = service.SI_MPRFC_VISU_PENDIENTE_PAGO(contrato ?? "", fechas, proveedor);
                 return Map(response);
 
             }
