@@ -361,6 +361,12 @@ export class SolpPosicion {
           this.tabsPosicionValidos.tabDatosPosicion = false;
           return;
         }
+
+        if (!this.textoSuministro || this.textoSuministro == "" || typeof this.textoSuministro === "undefined")
+        {
+          this.tabsPosicionValidos.tabDatosPosicion = false;
+          return;
+        }
     }
 
     public validateFechas() {
