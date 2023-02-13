@@ -53,7 +53,7 @@ namespace SustitucionMOAWS.WSConsumers
                 }
 
                 Log.Info($"SI_MPRFC_MODI_DOC_CHEQUE Request: {new { contrato, fechas, proveedor }}");
-                var response = service.SI_MPRFC_VISU_PENDIENTE_PAGO(contrato??"", fechas, proveedor);
+                var response = service.SI_MPRFC_VISU_PENDIENTE_PAGO(contrato ?? "", fechas, proveedor);
                 Log.Info($"SI_MPRFC_MODI_DOC_CHEQUE Response: {response}");
 
                 return Map(response);
