@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAModel.Consultas;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,34 @@ namespace SustitucionMOARepositorio.Extensiones
                 return 0;
 
             return d;
+        }
+        public static ListaPaginada<TEntidad> OrdenarPaginarLista<TEntidad>(this IQueryable<TEntidad> resultado, Paginacion paginacion) 
+        {
+            int itemsTotales = resultado.Count();
+
+            resultado = ListarProyeccionQueryable(resultado, paginacion.OrdenarPor, paginacion.DireccionOrden, 0);
+
+            resultado = resultado.Skip((paginacion.Pagina - 1) * paginacion.ItemsPorPagina).Take(paginacion.ItemsPorPagina);
+
+            return new ListaPaginada<TEntidad>(resultado.ToList(), paginacion.Pagina, paginacion.ItemsPorPagina, itemsTotales);
+        }
+        private static IQueryable<TProyeccion> ListarProyeccionQueryable<TProyeccion>(IQueryable<TProyeccion> resultadoFinal, string orden, DirOrden direccionOrden, int maxResultados)
+        {
+
+            if (orden != null)
+            {
+                var selectorOrden = Expresiones.Propiedad<TProyeccion>(orden);
+                resultadoFinal = direccionOrden == DirOrden.Asc
+                                 ? resultadoFinal.OrderBy(selectorOrden)
+                                 : resultadoFinal.OrderByDescending(selectorOrden);
+            }
+            //CAMBIE ESTO ARA ACA ABAJO
+            if (maxResultados != 0)
+            {
+                resultadoFinal = resultadoFinal.Take(maxResultados);
+            }
+
+            return resultadoFinal;
         }
     }
 }

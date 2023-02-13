@@ -44,7 +44,7 @@ namespace SustitucionMOA.Controllers
                 {
                     result.Solp.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Solp.Id.Value));
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     result.Solp.Pdf = string.Empty;
                 }
@@ -147,14 +147,17 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime ? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, string estados = null)
-        {   
+        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, string estados = null)
+        {
             try
             {
                 var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
                 var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : null), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
-                return JsonCustom(new { data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, fechaDesde, 
-                    fechaHasta, sap, mantenimiento, web, (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x=> int.Parse(x)).ToList() : new List<int>())) });
+                return JsonCustom(new
+                {
+                    data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, fechaDesde,
+                    fechaHasta, sap, mantenimiento, web, (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>()))
+                });
             }
             catch (InfoCustomException e)
             {
@@ -390,7 +393,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom( service.AutocompleteTablaSap(tabla, valor) );
+                return JsonCustom(service.AutocompleteTablaSap(tabla, valor));
             }
             catch (InfoCustomException e)
             {
@@ -437,8 +440,8 @@ namespace SustitucionMOA.Controllers
             SolpDescargaZipPorLink puedeDescargar = service.PuedeDescargarPliegoDesdeLink(solpId, token);
             if (puedeDescargar != SolpDescargaZipPorLink.PuedeDescargar)
             {
-                string errorMsg = puedeDescargar == SolpDescargaZipPorLink.SolpIdNoExiste 
-                                                        ? "Solp no disponible para descarga." 
+                string errorMsg = puedeDescargar == SolpDescargaZipPorLink.SolpIdNoExiste
+                                                        ? "Solp no disponible para descarga."
                                                         : "Token no coincide, no tiene permiso para realizar la descarga";
                 return Json(new { error = errorMsg }, JsonRequestBehavior.AllowGet);
             }
@@ -561,10 +564,10 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, 
-                    SessionPersister.getUsername(), 
-                    this.GetType().Name, 
-                    System.Reflection.MethodBase.GetCurrentMethod().Name, 
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress,
+                    SessionPersister.getUsername(),
+                    this.GetType().Name,
+                    System.Reflection.MethodBase.GetCurrentMethod().Name,
                     e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
@@ -598,9 +601,43 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                if (string.IsNullOrEmpty(numeroContrato)) return Json(new { info = "Numero Contrato inválido" }, JsonRequestBehavior.AllowGet);             
+                if (string.IsNullOrEmpty(numeroContrato)) return Json(new { info = "Numero Contrato inválido" }, JsonRequestBehavior.AllowGet);
 
                 return JsonCustom(new { data = service.ObtenerContratoMarco(numeroContrato, centro) });
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [HttpGet]
+        public ActionResult ListarSolpCompra(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null)
+        {
+            try
+            {
+                var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
+                var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
+
+                return JsonCustom(new
+                {
+                    data = service.ListarSolpComprador(paginacion, nroSolp)
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {

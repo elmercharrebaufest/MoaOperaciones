@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './solp/solp';
 import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+  })
 export class ComprasService extends BaseService {
 
     Date: Date;
@@ -22,6 +24,8 @@ export class ComprasService extends BaseService {
         mantenimiento: true,
         web: true
       }
+      listaSolp: any;
+      observableListaSolp = new Subject<any[]>();
 
     public getCombos(): Observable<any> {
         return this.http
@@ -369,6 +373,28 @@ export class ComprasService extends BaseService {
 
         return this.http
             .get("/api/compras/ObtenerContratoMarco", { params: params })
+    }
+
+    public getListarSolpCompras(pagina: number,
+        itemsPorPagina: number,
+        orden: string = this.filtros.orden,
+        columna: string = this.filtros.columna,
+        nroSolp: string = this.filtros.nroSolp) {    
+        let params: HttpParams = new HttpParams()  
+        pagina = pagina != null ? pagina : this.filtros.pagina;
+        itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
+        columna = columna != "" ? columna : this.filtros.columna;
+        params = params.set('pagina', pagina.toString());
+        params = params.set('itemsPorPagina', itemsPorPagina.toString());
+        params = params.set('orden', orden);
+        params = params.set('columna', columna);
+        params = params.set('nroSolp', nroSolp);
+        return this.http
+            .get<any[]>('/api/compras/ListarSolpCompra', { params: params, headers: this.headers }).subscribe(
+                (data: any[]) => {
+                    this.observableListaSolp.next(data)
+                }
+              );
     }
 
 }

@@ -51,6 +51,8 @@ import { ContratoMarcoComponent } from './solp/steps/posicion/contrato-marco/con
 import { ObtenerContratoMarcoComponent } from './solp/steps/posicion/obtener-contrato-marco/obtener-contrato-marco.component';
 import {PaginatorModule} from 'primeng/paginator';
 import {TooltipModule} from 'primeng/tooltip';
+import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
+import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
 @NgModule({
     imports: [
         CommonModule,
@@ -103,7 +105,9 @@ import {TooltipModule} from 'primeng/tooltip';
         StepperActionsComponent,
         FinalizarSolpComponent,
         ContratoMarcoComponent,
-        ObtenerContratoMarcoComponent
+        ObtenerContratoMarcoComponent,
+        ListadoDashboardCompradorComponent,
+        FiltroDashboardCompradorComponent
     ],
     providers: [
         ComprasService,

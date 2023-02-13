@@ -31,6 +31,7 @@ using HandlebarsDotNet;
 
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAModel.Consultas;
+using SustitucionMOARepositorio.ConsultasEF;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -775,7 +776,10 @@ namespace SustitucionMOAUtils.Services
         public List<TablaSapDto> ObtenerTablaSap(string tabla)
         {
             var tablaSolp = repositorio.Listar<TablaSap>(x => x.Tabla == tabla).Select(x => new TablaSapDto(x)).ToList();
-            tablaSolp.Add(new TablaSapDto { Id = -1, Descripcion = "Borrado en sap" });
+            if (tabla == TablasSap.EstadoSolpSap)
+            {
+                tablaSolp.Add(new TablaSapDto { Id = -1, Descripcion = "Borrado en sap" });
+            }
             return tablaSolp;
         }
 
@@ -2161,6 +2165,23 @@ namespace SustitucionMOAUtils.Services
             var result = obtenerContratoSolpConsumerMOA.Request(numeroContrato, centro);
             return result.ContratosSolp;
         }
+
+
+        public ListaPaginada<SolpDto> ListarSolpComprador(Paginacion paginacion, string nroSolp)
+        {
+            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, nroSolp));
+            if (todasLasSolp != null && todasLasSolp.Count() > 0)
+            {
+                todasLasSolp.FirstOrDefault().ItemsTotales = todasLasSolp.ItemsTotales;
+            }
+            foreach (var item in todasLasSolp.Items)
+            {
+                item.CentroFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.CentroId).GroupBy(x => x.CentroId).Select(x => x.Key)) : "";
+                item.GrupoCompraFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.GrupoComprasId).GroupBy(x => x.GrupoComprasId).Select(x => x.Key)) : "";
+            }
+            return todasLasSolp;
+        }
+
     }
 
     public static class SolpTemplateKeys
