@@ -91,20 +91,19 @@
                             <th class="textCenter">
                                 <p-checkbox name="posiciones" [binary]="true" [(ngModel)]="todasPosicionesSeleccionadas" (click)="seleccionarTodo()"></p-checkbox>
                             </th>
-                            <th class="textCenter" data-toggle="tooltip" title="Posición SOLP">Pos. SOLP</th>
-                            <th class="textCenter" data-toggle="tooltip" title="Tipo" hidden >Tipo</th>
-                            <th class="textCenter" data-toggle="tooltip" title="Tipo de imputacion">Tipo imp.</th>
-                            <th class="textCenter" data-toggle="tooltip" title="Centro">Centro</th>
-                            <th class="textCenter" data-toggle="tooltip" title="Almacén">Almacén</th>
+                            <th class="textCenter" data-toggle="tooltip" title="Posición SOLP">Pos. SOLP<span *ngIf="" style="display: inline-block;">*</span></th>
+                            <th class="textCenter" data-toggle="tooltip" title="Tipo" hidden >Tipo <span *ngIf="" style="display: inline-block;">*</span></th>
+                            <th class="textCenter" data-toggle="tooltip" title="Tipo de imputacion">Tipo imp. <span *ngIf="esTipoServicio" style="display: inline-block;"> *</span></th>
+                            <th class="textCenter" data-toggle="tooltip" title="Centro">Centro *</th>
+                            <th class="textCenter" data-toggle="tooltip" title="Almacén">Almacén *</th>
                             <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Código">Código</th>               
-                            <th class="textCenter" data-toggle="tooltip" title="Descripción">Descripción</th>
-                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Cantidad">Ctd.</th>
-                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Unidad de medida">UM</th>
-                            <th class="textCenter" data-toggle="tooltip" title="Moneda">Moneda</th>
-                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Precio bruto">Precio bruto</th>
+                            <th class="textCenter" data-toggle="tooltip" title="Descripción">Descripción *</th>
+                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Cantidad">Ctd. <span *ngIf="esTipoMaterial" style="display: inline-block;">*</span></th>
+                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Unidad de medida">UM <span *ngIf="esTipoMaterial" style="display: inline-block;">*</span></th>
+                            <th class="textCenter" data-toggle="tooltip" title="Moneda">Moneda *</th>
+                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Precio bruto">Precio bruto <span *ngIf="esTipoMaterial" style="display: inline-block;">*</span></th>
                             <th class="textCenter" data-toggle="tooltip" title="Valor total">Valor Total</th>
                             <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Contrato" style="padding: 0;">Contrato marco</th>
-                            <!-- <th class="textCenter" *ngIf="esTipoContratoMarco" data-toggle="tooltip" title="Posición contrato">Posición contrato</th> -->
                             <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Nombre prov." style="padding: 0;">Provedoor</th>
                             <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Org. compra" style="padding: 0;">Org. compra</th>
                         </tr>
