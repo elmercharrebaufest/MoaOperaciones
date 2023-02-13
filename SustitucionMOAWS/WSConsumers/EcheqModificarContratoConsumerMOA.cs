@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Dto;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.EcheqModificarContratoWebServiceMOA;
+using SustitucionMOAWS.Logger;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -23,7 +24,10 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
+                Log.Info($"SI_MPRFC_MOAOP_MOD_CONTRATO Request: {new { IM_CONTRATO, IM_CUENTA_MRP, IM_ZLSCH }}");
                 string response = service.SI_MPRFC_MOAOP_MOD_CONTRATO(IM_CONTRATO, IM_CUENTA_MRP, IM_ZLSCH, out string EX_MENSAJE);
+                Log.Info($"SI_MPRFC_MOAOP_MOD_CONTRATO Response: {response}");
+
 
                 ResultadoGenerico resultado = new ResultadoGenerico();
 
