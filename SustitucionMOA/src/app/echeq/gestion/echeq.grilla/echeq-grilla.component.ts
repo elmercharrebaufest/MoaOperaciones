@@ -272,7 +272,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
 
         //this.listaChequesAux = echeqDocumento.listaChequesApertura.map(f => f);
 
-        
+
     }
 
     cancelarEcheqApertura() {
@@ -337,13 +337,15 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
         }
     }
 
-    mask(valor){
-      return valor.replace(/(0)*/,'')
+    mask(valor) {
+        return valor.replace(/(0)*/, '')
     }
 
-    expandirRow(pagoPendiente){
-        this.echeqContratos.forEach(x => x.expanded = false);
-        pagoPendiente.expanded = !pagoPendiente.expanded;
-
+    expandirRow(pagoPendiente) {
+        if (pagoPendiente.expanded) pagoPendiente.expanded = false;
+        else {
+            this.echeqContratos.forEach(x => x.expanded = false);
+            pagoPendiente.expanded = !pagoPendiente.expanded;
+        }
     }
 }
