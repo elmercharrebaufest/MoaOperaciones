@@ -341,8 +341,10 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
     }
 
     expandirRow(pagoPendiente) {
-        this.echeqContratos.forEach(x => x.expanded = false);
-        pagoPendiente.expanded = !pagoPendiente.expanded;
-
+        if (pagoPendiente.expanded) pagoPendiente.expanded = false;
+        else {
+            this.echeqContratos.forEach(x => x.expanded = false);
+            pagoPendiente.expanded = !pagoPendiente.expanded;
+        }
     }
 }
