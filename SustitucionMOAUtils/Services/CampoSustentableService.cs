@@ -62,6 +62,8 @@ namespace SustitucionMOAUtils.Services
             }
             campoProveedor.CampoCosecha.ToneladasAprobadas = -1;
 
+            campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
+
             repositorio.Agregar(campoProveedor);
 
             repositorio.GuardarCambios();
@@ -489,9 +491,9 @@ namespace SustitucionMOAUtils.Services
             return archivoResult;
         }
 
-        public List<Cosecha> ObtenerCosechas()
+        public List<Cosecha> ObtenerCosechas(bool incluirInactivas)
         {
-            return repositorio.Listar<Cosecha>();
+            return repositorio.Listar<Cosecha>(c => incluirInactivas || c.PermitirAltas);
         }
 
         public List<CampoProveedorListadoDto> Listar(string mailUsuario)
@@ -624,6 +626,24 @@ namespace SustitucionMOAUtils.Services
         internal void InformarCampoSustentable(CampoProveedor campoProveedor, string archivoKmz)
         {
             dataAgroService.AltaCampoSustentable(campoProveedor, archivoKmz);
+        }
+
+        private int ObtenerIdScato(CampoProveedor campoProveedor)
+        {
+            var campoNombre = campoProveedor.CampoCosecha.Campo.Nombre;
+            var localidadId = campoProveedor.CampoCosecha.Campo.Localidad_Id;
+            var cuitProveedor = campoProveedor.CUIT;
+
+            var idsScato = repositorio.Listar<CampoProveedor, int>(
+                cp => cp.CampoCosecha.Campo.IdScato,
+                cp =>
+                    cp.CUIT == cuitProveedor &&
+                    cp.CampoCosecha.Campo.Localidad_Id == localidadId &&
+                    cp.CampoCosecha.Campo.Nombre == campoNombre &&
+                    cp.CampoCosecha.Campo.IdScato > 0
+                );
+
+            return idsScato != null && idsScato.Count > 0 ? idsScato.Max() : 0;
         }
 
         /// <summary>

@@ -263,7 +263,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         try {
-            this.subscription = this.service.getCosechas().subscribe(
+            this.subscription = this.service.getCosechasFiltro().subscribe(
                 (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {

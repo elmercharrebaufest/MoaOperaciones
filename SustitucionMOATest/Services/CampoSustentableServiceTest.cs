@@ -697,7 +697,7 @@ namespace SustitucionMOATest.Services
                  .Returns(cosechas);
 
 
-            var result = target.ObtenerCosechas();
+            var result = target.ObtenerCosechas(true);
 
 
             repositorioMock.Verify(x => x.Listar(

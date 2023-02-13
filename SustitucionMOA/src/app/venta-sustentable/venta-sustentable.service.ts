@@ -13,10 +13,12 @@ export class VentaSustentableService extends BaseService {
             .get('/api/CampoSustentable/CamposProveedores', { params: params, headers: this.headers });
     }
 
-    getCosechas() {
-        let params: HttpParams = new HttpParams();
-        return this.http
-            .get('/api/CampoSustentable/Cosechas', { params: params, headers: this.headers });
+    getCosechasFiltro() {
+        return this.getCosechas(true);
+    }
+
+    getCosechasCampo() {
+        return this.getCosechas(false);
     }
 
     campoProveedorAgregar(campoProveedor: CampoProveedor, archivoKmz: File, UsarArchivo_Id: boolean) {
@@ -150,5 +152,12 @@ export class VentaSustentableService extends BaseService {
         return this.http
             .get('/api/CampoSustentable/DescargarArchivoKMZ', { params: params, headers: this.headers })
         // .pipe(map(this.extractData));
+    }
+
+    private getCosechas(incluirInactivas: boolean) {
+        let params: HttpParams = new HttpParams();
+        params = params.append("incluirInactivas", incluirInactivas.toString());
+        return this.http
+            .get('/api/CampoSustentable/Cosechas', { params: params, headers: this.headers });
     }
 }
