@@ -105,8 +105,7 @@
                 <button type="button" pButton icon="pi pi-check" label="Si" (click)="ConfirmationDocumento.accept()"></button>
             </p-footer>
         </p-confirmDialog>
-
-        <app-echeq-popup [(displayAperturarEcheq)]="displayAperturarEcheq"
+        <app-echeq-popup [visible]="popupVisible"
                             (cancelarAperturarEcheqEmitter)="cancelarEcheqApertura()"
                             (AperturarEcheqEmitter)="aperturarEcheq($event)"
                             [(echeqDocumento)]="documentoSelect"
