@@ -1,0 +1,72 @@
+﻿using Molinos.Scato.Repositorio;
+using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOARepositorio.Extensiones;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.SqlServer;
+using System.Linq;
+
+namespace SustitucionMOARepositorio.ConsultasEF
+{
+    public class ListarSolpConsulta : IConsultaPaginada<SolpDto>
+    {
+        private readonly Paginacion paginacion;
+        private readonly string NroSolp;
+        public ListarSolpConsulta(Paginacion paginacion, string nroSolp)
+        {
+            this.paginacion = paginacion;
+            this.NroSolp = nroSolp;
+
+
+        }
+        public ListaPaginada<SolpDto> Ejecutar(DbContext contexto)
+        {
+            var hoy = DateTime.Now;
+            var ayer = hoy.AddDays(-1);
+            try
+            {
+                ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
+                var resultado = from x in contexto.Set<Solp>()
+                                where (string.IsNullOrEmpty(NroSolp) || x.NroSolp.ToUpper().StartsWith(NroSolp.ToUpper())) &&
+                                x.FechaBorrado == null && x.FechaLiberacionSap != null
+                                select new SolpDto
+                                {
+                                    UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
+                                    Id = x.Id,
+                                    NroSolp = x.NroSolp,
+                                    NombreDeObra = x.Pliego == null ? "" : x.Pliego.NombreObra,
+                                    FechaCreacionFormateada = SqlFunctions.DateName("day", x.FechaCreacion) + "/" + SqlFunctions.DatePart("month", x.FechaCreacion) + "/" + SqlFunctions.DateName("year", x.FechaCreacion),
+                                    FechaCreacion = x.FechaCreacion,
+                                    TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
+                                    TipoSolpSap = x.TipoSolpSap,
+                                    PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
+                                                     where posicion.Solp_Id == x.Id
+                                                     select new SolpPosicionDto()
+                                                     {
+                                                         GrupoComprasDescripcion = posicion.GrupoCompras != null ? posicion.GrupoCompras.Descripcion : "",
+                                                         CentroComprasDescripcion = posicion.Centro != null ? posicion.Centro.Descripcion : "",
+                                                         GrupoComprasId = posicion.GrupoCompras != null ? posicion.GrupoCompras.Id : (int?)null,
+                                                         CentroId = posicion.Centro != null ? posicion.Centro.Id : (int?)null
+                                                     }),
+                                    ItemPorPagina = paginacion.ItemsPorPagina,
+                                    Pagina = paginacion.Pagina,
+                                };
+
+                var itemsTotales = resultado.Count();
+                
+                return resultado.OrdenarPaginarLista(paginacion);
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+
+    }
+}

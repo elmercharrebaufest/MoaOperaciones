@@ -22,8 +22,7 @@ declare var $: any;
     selector: 'dashboard',
     templateUrl: `dashboard.component.html`,
     styleUrls: ['../compras.component.css',
-        './dashboard.component.css'],
-    providers: [ComprasService]
+        './dashboard.component.css']
 
 })
 export class DashboardComponent extends ListBaseComponent {

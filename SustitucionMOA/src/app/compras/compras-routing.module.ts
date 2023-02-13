@@ -2,13 +2,15 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SolpComponent } from './solp/solp.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
 
 const routes: Routes = [
     { path: '', component: DashboardComponent },
     { path: "solp", component: SolpComponent },
     { path: "solp/:id", component: SolpComponent },
     { path: "solp/:id/:tipoSolp", component: SolpComponent },
-    { path: "dashboard", component: DashboardComponent }
+    { path: "dashboard", component: DashboardComponent },
+    { path: "dashboardComprador", component: ListadoDashboardCompradorComponent }
 
 ];
 

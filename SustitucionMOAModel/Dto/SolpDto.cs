@@ -65,6 +65,13 @@ namespace SustitucionMOAModel.Dto
         public int Pagina { get; set; }
         public int ItemsTotales { get; set; }
         public string EstadoSolpDescripcion { get; set; }
+        public string SolicitanteMail { get; set; }
+        public IEnumerable<SolpPosicionDto> PosicionCompras { get; set; }
+        public IEnumerable<SolpPosicionDto> GrupoCompras { get; set; }
+        public IEnumerable<SolpPosicionDto> CentroCompras { get; set; }
+        public string GrupoCompraFormateado { get; set; }
+        public string FechaCreacionFormateada { get; set; }
+        public string CentroFormateado { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -203,6 +210,8 @@ namespace SustitucionMOAModel.Dto
         public List<SolpSubposicionDto> Subposiciones { get; set; }
         public List<SolpProveedorDto> Proveedores { get; set; }
         public ProvinciaDTO Provincia { get; set; }
+        public string GrupoComprasDescripcion { get; set; }
+        public string CentroComprasDescripcion { get; set; }
 
         public SolpPosicionDto() { }
 
