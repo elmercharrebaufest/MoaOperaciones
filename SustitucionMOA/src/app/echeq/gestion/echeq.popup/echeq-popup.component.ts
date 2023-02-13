@@ -3,7 +3,7 @@ import { EcheqDocumento } from '../echeq-contrato.model';
 import { EcheqApertura } from './echeqApertura-model';
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
-import { forEach } from '@angular/router/src/utils/collection';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-echeq-popup',
@@ -11,23 +11,20 @@ import { forEach } from '@angular/router/src/utils/collection';
     styleUrls: ['./echeq-popup.component.css']
 })
 export class EcheqPopupComponent implements OnInit {
+    @Input() visible?: BehaviorSubject<boolean>
 
-    
-    @Input() displayAperturarEcheq: boolean;
     @Input() set echeqDocumento(value: EcheqDocumento) {
-        if(value != undefined && value != null ){
+        if (value != undefined && value != null) {
             this.documento = value;
-            // this.documento.listaChequesApertura;
-            this.listaChequesAux = new Array<EcheqApertura>();        
-            for (var i in this.documento.listaChequesApertura) {
-                var item = this.documento.listaChequesApertura[i];
+            this.listaChequesAux = new Array<EcheqApertura>();
+            for (let i in this.documento.listaChequesApertura) {
+                const item = this.documento.listaChequesApertura[i];
                 this.listaChequesAux.push({
                     importeCheque: item.importeCheque,
                     ordenCheque: item.ordenCheque,
                     porcentaje: item.porcentaje
                 });
             }
-            let formatNumber = Intl.NumberFormat('es-AR');
 
             if (this.listaChequesAux.length == 0) {
                 let aforo = {
@@ -35,7 +32,7 @@ export class EcheqPopupComponent implements OnInit {
                     importeCheque: Number((this.documento.importeEnPesos * this.aforoConf / 100).toFixed(2)),
                     porcentaje: this.aforoConf
                 };
-    
+
                 this.listaChequesAux.push(aforo);
             }
             this.calcularPorcentajes();
@@ -56,15 +53,15 @@ export class EcheqPopupComponent implements OnInit {
 
     ngOnInit() {
         registerLocaleData(es);
-    }
 
+    }
     onCancelarAperturarEcheq() {
         this.cancelarAperturarEcheqEmitter.next();
     }
 
     onAperturar() {
         //validar cuando guarde que sea el 100%
-        if(!this.validarEcheqVacio()){
+        if (!this.validarEcheqVacio()) {
             this.mensajeRecordatorio = "Tiene campos obligatorios sin completar"
 
         } else if (this.mensajeMontosValidacion == "") {
@@ -126,7 +123,7 @@ export class EcheqPopupComponent implements OnInit {
             this.porcentajeRestante = 100 - total;
             this.pesosPendientes = total - this.documento.importeEnPesos;
 
-            let formatNumber = Intl.NumberFormat('es-AR');
+            let formatNumber = Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 });
 
             if (this.pesosPendientes < 0) {
                 this.pesosPendientes = this.pesosPendientes * -1;
@@ -142,12 +139,10 @@ export class EcheqPopupComponent implements OnInit {
         } else {
             this.condicionBoton = false;
             this.mensajeRecordatorio = "";
-        } 
+        }
     }
 
-    validarEcheqVacio(){
-        debugger
-        return this.listaChequesAux.every(x => x.importeCheque > 1 );
+    validarEcheqVacio() {
+        return this.listaChequesAux.every(x => x.importeCheque > 1);
     }
-
 }
