@@ -306,14 +306,13 @@ namespace SustitucionMOAUtils.Services
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
             var cosecha = repositorio.Obtener<Cosecha>(cosechaId);
 
-            string razonSocial = "";
 
             if (string.IsNullOrEmpty(CUITDeclaracion))
             {
                 CUITDeclaracion = proveedor.CUIT;
-                razonSocial = proveedor.RazonSocial;
             }
 
+            var razonSocial = proveedor.RazonSocial;
             var estado = new EstadoDeclaracionSustentableDto
             {
                 DeclaracionFirmada = false,
@@ -427,6 +426,9 @@ namespace SustitucionMOAUtils.Services
             if (string.IsNullOrEmpty(CUITDeclaracion))
             {
                 CUITDeclaracion = proveedor.CUIT;
+            }
+            if (string.IsNullOrEmpty(razonSocialDeclaracion))
+            {
                 razonSocialDeclaracion = proveedor.RazonSocial;
             }
 

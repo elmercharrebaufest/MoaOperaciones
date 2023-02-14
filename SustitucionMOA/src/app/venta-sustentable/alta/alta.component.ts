@@ -11,10 +11,18 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { CampoProveedor, CampoSustentable, CampoCosecha } from './../sustentable'
 import { DeclaracionConformidadComponent } from '../declaracion-conformidad/declaracion-conformidad.component';
-import { CommonResponse } from '../../common/models/common-response';
-import { AutocompleteLocalidadComponent } from "./../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
 import { isUndefined } from 'util';
 
+export interface OpcionProveedor {
+    fecha: string,
+    idVendedor: string,
+    descVendedor: string,
+    estado: string, //Mejor un enum 
+    estadoMoa: string,//mejor un enum 
+    cuit: string,
+    proveedorId: number,
+    CUIT: string
+}
 @Component({
     selector: 'app-alta',
     templateUrl: './alta.component.html',
@@ -69,7 +77,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     operarComo: number = 1;
 
     ingresarProveedorPorCUIT: boolean;
-    proveedorSelected: any;
+    proveedorSelected: OpcionProveedor;
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     codigoProveedor: string = sessionStorage.getItem("proveedor");
     campoCosechaId: any;
@@ -134,7 +142,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
                         this.Archivo_Id = result.Archivo_Id;
                         this.UsarArchivo_Id = true;
                         this.Proveedor_Id = result.Proveedor_Id;
-                        
+
 
                         if (this.esCorredor) {
                             if (this.Proveedor_Id != this.proveedorId) {
@@ -245,7 +253,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
                 if (this.operarComo == 2) {
                     this.declaracionComformidad.CUIT = this.CUIT;
-                    this.declaracionComformidad.razonSocialDeclaracion = "";
                 }
 
                 this.declaracionComformidad.proveedorId = this.proveedorId;
@@ -296,9 +303,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
         campoProveedor = {
             HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja,
             CUIT: this.CUIT,
-            Latitud: this.latitud, 
-            Longitud: this.longitud, 
-            Proveedor_Id: this.proveedorId, 
+            Latitud: this.latitud,
+            Longitud: this.longitud,
+            Proveedor_Id: this.proveedorId,
             CampoCosecha: campoCosecha,
             Archivo_Id: this.UsarArchivo_Id ? this.Archivo_Id : 0
         }
@@ -320,7 +327,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-
                         this.mensajeComponent.setSuccessMsg(result.Mensaje);
                         setTimeout(() => {
                             this.redirigirAListado();
