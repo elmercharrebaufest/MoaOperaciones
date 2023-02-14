@@ -15,6 +15,10 @@ END
 IF NOT EXISTS(SELECT TOP (1) 1
               FROM dbo.PermisoPorRol
               WHERE Permiso = 'ENVIAR A SAP')
+
+IF NOT EXISTS(SELECT TOP (1) 1
+              FROM dbo.PermisoPorRol
+              WHERE Permiso = 'VER SOLPS COMPRADOR')
 BEGIN
     INSERT INTO	dbo.PermisoPorRol(Permiso) VALUES(N'ENVIAR A SAP')
 	SET @PermisoId = SCOPE_IDENTITY();
@@ -34,6 +38,21 @@ BEGIN
     BEGIN 
         INSERT INTO dbo.RolPermisoPorRol Values ((SELECT Id FROM dbo.Rol WHERE Codigo = 'ANUL'), @PermisoId)
     END
+
+    INSERT INTO dbo.PermisoPorRol(Permiso)
+	VALUES (N'VER SOLPS COMPRADOR') 
+
+	SET @PermisoId = SCOPE_IDENTITY();
+
+	  IF NOT EXISTS(SELECT TOP (1) 1 
+                  FROM dbo.RolPermisoPorRol
+                  WHERE Rol_Id IN (SELECT Id FROM dbo.Rol WHERE Codigo = 'COMPRADOR') 
+                  AND PermisoPorRol_Id = @PermisoId)
+    BEGIN 
+        INSERT INTO dbo.RolPermisoPorRol Values ((SELECT Id FROM dbo.Rol WHERE Codigo = 'COMPRADOR'), @PermisoId)
+    END
+
 END;
+
 
 COMMIT TRAN
