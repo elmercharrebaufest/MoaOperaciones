@@ -172,11 +172,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public JsonResult Cosechas()
+        public JsonResult Cosechas(bool incluirInactivas)
         {
             try
             {
-                return JsonCustom(campoSustentableService.ObtenerCosechas());
+                return JsonCustom(campoSustentableService.ObtenerCosechas(incluirInactivas));
             }
             catch (InfoCustomException e)
             {

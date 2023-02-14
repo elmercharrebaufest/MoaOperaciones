@@ -334,9 +334,9 @@ namespace SustitucionMOATest.Controllers
                 new Cosecha { Id = 2, Nombre="20-21", Inicio = DateTime.Now, Fin = DateTime.Now.AddDays(1)}
             };
 
-            campoSustentableServiceMock.Setup(s => s.ObtenerCosechas()).Returns(cosechas);
+            campoSustentableServiceMock.Setup(s => s.ObtenerCosechas(true)).Returns(cosechas);
 
-            var result = target.Cosechas();
+            var result = target.Cosechas(true);
 
             expectedJson = JsonConvert.SerializeObject(cosechas);
             resultJson = JsonConvert.SerializeObject(result.Data);
@@ -351,9 +351,9 @@ namespace SustitucionMOATest.Controllers
         {
             var expected = @"{ error = Mensaje de error }";
 
-            campoSustentableServiceMock.Setup(s => s.ObtenerCosechas()).Throws(new ValidationCustomException("Mensaje de error"));
+            campoSustentableServiceMock.Setup(s => s.ObtenerCosechas(true)).Throws(new ValidationCustomException("Mensaje de error"));
 
-            var result = target.Cosechas();
+            var result = target.Cosechas(true);
 
             expectedJson = JsonConvert.SerializeObject(expected);
             resultJson = JsonConvert.SerializeObject(result.Data.ToString());
@@ -368,9 +368,9 @@ namespace SustitucionMOATest.Controllers
         {
             var expected = @"{ info = Mensaje de info }";
 
-            campoSustentableServiceMock.Setup(s => s.ObtenerCosechas()).Throws(new InfoCustomException("Mensaje de info"));
+            campoSustentableServiceMock.Setup(s => s.ObtenerCosechas(true)).Throws(new InfoCustomException("Mensaje de info"));
 
-            var result = target.Cosechas();
+            var result = target.Cosechas(true);
 
             expectedJson = JsonConvert.SerializeObject(expected);
             resultJson = JsonConvert.SerializeObject(result.Data.ToString());

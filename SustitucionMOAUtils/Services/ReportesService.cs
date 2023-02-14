@@ -62,10 +62,12 @@ namespace SustitucionMOAUtils.Services
                     HectareasSoja = cp.HectareasSoja,
                     NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
                     RutaKmz = cp.Archivo.Ruta
-                }
-                , cp => cp.FechaCreacion.HasValue
-                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) >= DbFunctions.TruncateTime(dateToCompare)
-                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) < DbFunctions.TruncateTime(DateTime.Today)
+                },
+                cp =>
+                    cp.FechaCreacion.HasValue &&
+                    DbFunctions.TruncateTime(cp.FechaCreacion.Value) >= DbFunctions.TruncateTime(dateToCompare) &&
+                    DbFunctions.TruncateTime(cp.FechaCreacion.Value) < DbFunctions.TruncateTime(DateTime.Today) &&
+                    cp.CampoCosecha.Cosecha.EnviarATSA
             );
 
             if (!camposAReportarPorCosecha.Any() || camposAReportarPorCosecha.All(list => !list.Any()))
