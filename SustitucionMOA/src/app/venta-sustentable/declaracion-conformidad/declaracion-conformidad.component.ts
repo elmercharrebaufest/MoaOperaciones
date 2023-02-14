@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, ViewChild, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, ViewChild, EventEmitter, Input, AfterViewInit } from '@angular/core';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -10,13 +10,14 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { VentaSustentableService } from '../venta-sustentable.service';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { CommonResponse } from '../../common/models/common-response';
+import { OpcionProveedor } from '../alta/alta.component';
 
 @Component({
   selector: 'app-declaracion-conformidad',
   templateUrl: './declaracion-conformidad.component.html',
   styleUrls: ['./declaracion-conformidad.component.css']
 })
-export class DeclaracionConformidadComponent extends BaseComponent implements OnInit {
+export class DeclaracionConformidadComponent extends BaseComponent {
 
   @ViewChild(MensajeComponent)
   protected mensajeComponent: MensajeComponent;
@@ -39,14 +40,15 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   razonSocial: string = ""
   CUIT: string = "";
   fechaActual: string = ""
-  razonSocialDeclaracion: string = ""
+  
   hectareasTotales: number = 0;
   totalidadCosecha: number = 1;
   file: File
   esCorredor: boolean = false;
   operarComo: number = 1;
-
+  @Input() razonSocialDeclaracion: string = ""
   @Input() proveedorId: number = 0;
+  
   @Input() nombreCosecha: string = "";
   @Input() cosechaId: number = 0;
 
@@ -54,13 +56,10 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
   @Output() resultadoDeclaracion = new EventEmitter<boolean>();
 
-  ngOnInit() {
-  }
-
   verificarDeclaracion() {
     this.mensajeComponent.setMsgsEmpty();
     this.subscription = this.service.verificarDeclaracion(this.proveedorId, this.cosechaId, this.CUITDeclaracion).subscribe(
-      (result:any) => {
+      (result: any) => {
         if (result.logout == true) {
           this.sessionDataService.logout();
         } else if (result.error != undefined && result.error != "") {
@@ -72,6 +71,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
           if (!result.DeclaracionFirmada) {
             this.CUIT = result.CUIT;
             this.razonSocial = result.RazonSocial;
+            this.razonSocialDeclaracion = result.RazonSocial;
             this.hectareasTotales = result.HectareasDeclaracionCampoSustentable;
             this.totalidadCosecha = result.OpcionDeclaracionCampoSustentable == 0 ? 1 : 2;
             this.abrirModalFirmaDeclaracion()
@@ -109,7 +109,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
       this.subscription = this.service
         .generarDeclaracionProveedor(this.proveedorId, this.cosechaId, this.hectareasTotales, this.CUITDeclaracion, this.razonSocialDeclaracion)
         .subscribe(
-          (result:CommonResponse) => {
+          (result: CommonResponse) => {
             if (result.error) {
               this.floatMessage.setErrorMsg(result.error)
             } else {
@@ -175,7 +175,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
     this.mensajeComponent.setMsgsEmpty();
     this.subscription = this.service.adjuntarDeclaracionFirmada(this.proveedorId, this.cosechaId, this.CUITDeclaracion, this.file).subscribe(
-      (result:any) => {
+      (result: any) => {
         if (result.logout == true) {
           this.sessionDataService.logout();
         } else if (result.error != undefined && result.error != "") {
