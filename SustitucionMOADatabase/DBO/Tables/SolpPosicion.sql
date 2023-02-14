@@ -9,7 +9,7 @@
 	[FechaEntregaServicio] [datetime] NULL,
 	[FechaLiberacion] [datetime] NULL,
 	[PlazoEntrega] [int] NULL,
-	[Centro_Id] [int] NULL,
+	[Centro_Id] [int] NOT NULL,
 	[Almacen_Id] [int] NULL,
 	[NombreEntrega] [nvarchar](max) NULL,
 	[CalleEntrega] [nvarchar](max) NULL,

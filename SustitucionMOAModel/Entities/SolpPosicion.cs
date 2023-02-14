@@ -20,7 +20,7 @@ namespace SustitucionMOAModel.Entities
         public DateTime? FechaEntregaServicio { get; set; }
         public DateTime? FechaLiberacion { get; set; }
         public int? PlazoEntrega { get; set; }
-        public int? Centro_Id { get; set; }
+        public int Centro_Id { get; set; }
         public int? Almacen_Id { get; set; }
         public string NombreEntrega { get; set; }
         public string CalleEntrega { get; set; }
