@@ -362,11 +362,14 @@ export class SolpPosicion {
           return;
         }
 
-        if (!this.textoSuministro || this.textoSuministro == "" || typeof this.textoSuministro === "undefined")
-        {
-          this.tabsPosicionValidos.tabDatosPosicion = false;
-          return;
+        if (this.esTipoPosicionMaterial) {
+            if (!this.textoSuministro || this.textoSuministro == "" || typeof this.textoSuministro === "undefined")
+            {
+              this.tabsPosicionValidos.tabDatosPosicion = false;
+              return;
+            }
         }
+       
     }
 
     public validateFechas() {
