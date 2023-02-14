@@ -5,6 +5,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Echeq;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.EcheqModificacionDocumentoChequeWebServiceMOA;
 using SustitucionMOAWS.EcheqModificarContratoWebServiceMOA;
+using SustitucionMOAWS.Logger;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -22,8 +23,11 @@ namespace SustitucionMOAWS.WSConsumers
         public ResultadoGenerico Request(string IM_CONTRATO, string IM_DOCUMENTO, string IM_EJERCICIO, string IM_FECHA, string IM_HORA, string IM_PEDIDO, string IM_PROVEEDOR, string IM_REFERENCIA, string IM_SOCIEDAD, string IM_USUARIO, string IM_ZLSCH)
         {
             try
-            { 
+            {
+                Log.Info($"SI_MPRFC_MODI_DOC_CHEQUE Request: {new { IM_CONTRATO, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA, IM_HORA, IM_PEDIDO, IM_PROVEEDOR, IM_REFERENCIA, IM_SOCIEDAD, IM_USUARIO, IM_ZLSCH }}");
                 string response = service.SI_MPRFC_MODI_DOC_CHEQUE(IM_CONTRATO, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA, IM_HORA, IM_PEDIDO, IM_PROVEEDOR, IM_REFERENCIA, IM_SOCIEDAD, IM_USUARIO, IM_ZLSCH);
+                Log.Info($"SI_MPRFC_MODI_DOC_CHEQUE Response: {response}");
+
 
                 ResultadoGenerico resultado = new ResultadoGenerico();
 

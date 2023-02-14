@@ -7,6 +7,7 @@ import { ConfirmationService } from 'primeng/api';
 import { EcheqGestionComponent } from '../echeq-gestion.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EcheqApertura } from '../echeq.popup/echeqApertura-model';
+import { BehaviorSubject } from 'rxjs';
 
 
 
@@ -25,7 +26,7 @@ import { EcheqApertura } from '../echeq.popup/echeqApertura-model';
     providers: [ConfirmationService]
 })
 export class GrillaComponent extends EcheqGestionComponent implements OnInit {
-
+    popupVisible = new BehaviorSubject<boolean>(false);
     @Input() echeqContratos: Array<EcheqContrato>;
     @BlockUI() blockUI: NgBlockUI;
 
@@ -34,7 +35,6 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
     public itemsPerPage: string;
     msgs: { severity: string; summary: string; detail: string; }[];
 
-    displayAperturarEcheq: boolean = false;
     echeqApertura: EcheqApertura;
     //listaChequesAux: EcheqApertura[];
 
@@ -48,7 +48,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
     }
 
     onClickSelectContrato(contrato: EcheqContrato) {
-        if (contrato.selected == true) {
+        if (contrato.selected) {
             contrato.expanded = true;
             this.marcarContrato(contrato);
         } else {
@@ -119,7 +119,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
     }
 
     public checkContrato(contrato, check) {
-        if (check == true) {
+        if (check) {
             this.marcarContrato(contrato);
         } else {
             this.desmarcarContrato(contrato);
@@ -138,7 +138,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
         let documentosSelected = contrato.documentos.filter(documento => documento.parentId == contrato.id && documento.selected);
         contrato.selected = documentosSelected.length > 0;
 
-        if (check == false) {
+        if (!check) {
             this.desmarcarDocumento(documento);
         }
     }
@@ -147,6 +147,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
         try {
             this.blockUI.start('Grabando...');
             this.echeqService.MarcarContrato(echeqContrato.contrato, echeqContrato.pedido).subscribe(response => {
+                this.blockUI.stop();
 
                 if (response.logout == true) {
                     this.sessionDataService.logout();
@@ -163,9 +164,9 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                 }
             },
                 error => {
+                    this.blockUI.stop();
                     this.floatMsgService.setErrorMsg(error.message);
                 });
-            this.blockUI.stop();
 
         }
         catch (e) {
@@ -177,6 +178,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
         try {
             this.blockUI.start('Grabando...');
             this.echeqService.DesmarcarContrato(echeqContrato.contrato, echeqContrato.pedido).subscribe(response => {
+                this.blockUI.stop();
                 if (response.logout == true) {
                     this.sessionDataService.logout();
                 } else if (response.error != undefined && response.error != "") {
@@ -195,8 +197,8 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
             },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
                 });
-            this.blockUI.stop();
 
         }
         catch (e) {
@@ -208,7 +210,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
         try {
             this.blockUI.start('Grabando...');
             this.echeqService.MarcarDocumento(echeqDocumento.documento, echeqDocumento.pedido, echeqDocumento.contrato).subscribe(response => {
-
+                this.blockUI.stop();
                 if (response.logout == true) {
                     this.sessionDataService.logout();
                 } else if (response.error != undefined && response.error != "") {
@@ -223,9 +225,9 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                 }
             },
                 error => {
+                    this.blockUI.stop();
                     this.floatMsgService.setErrorMsg(error.message);
                 });
-            this.blockUI.stop();
         }
         catch (e) {
             this.blockUI.stop();
@@ -264,28 +266,22 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
 
     showAperturarEcheqDialog(echeqDocumento: EcheqDocumento) {
         this.documentoSelect = echeqDocumento;
-        this.displayAperturarEcheq = true;
-
         if (echeqDocumento.listaChequesApertura == null) {
             echeqDocumento.listaChequesApertura = new Array<EcheqApertura>();
         }
-
-        //this.listaChequesAux = echeqDocumento.listaChequesApertura.map(f => f);
-
-        
+        this.popupVisible.next(true)
     }
 
     cancelarEcheqApertura() {
-        //this.documentoSelect.listaChequesApertura = this.listaChequesAux.map(f => f);
         this.documentoSelect = new EcheqDocumento(null, null);
-        this.displayAperturarEcheq = false;
+        this.popupVisible.next(false)
     }
 
     // Se asocian los datos del echeq
     aperturarEcheq($event) {
         this.agregarApertura();
-        this.displayAperturarEcheq = false;
         this.documentoSelect = new EcheqDocumento(null, null);
+        this.popupVisible.next(false)
     }
 
     configuracionEcheq() {
@@ -314,9 +310,11 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
     }
 
     agregarApertura() {
+        this.blockUI.start('Grabando...')
         try {
             this.subscription = this.service.AgregarApertura(this.documentoSelect.documento, this.documentoSelect.pedido, this.documentoSelect.contrato, this.documentoSelect.listaChequesApertura).subscribe(
                 (result: any) => {
+                    this.blockUI.stop();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -329,6 +327,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                     }
                 },
                 error => {
+                    this.blockUI.stop();
                     this.floatMsgService.setErrorMsg(error.message);
                 }
             );
@@ -337,11 +336,11 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
         }
     }
 
-    mask(valor){
-      return valor.replace(/(0)*/,'')
+    mask(valor) {
+        return valor.replace(/(0)*/, '')
     }
 
-    expandirRow(pagoPendiente){
+    expandirRow(pagoPendiente) {
         this.echeqContratos.forEach(x => x.expanded = false);
         pagoPendiente.expanded = !pagoPendiente.expanded;
 
