@@ -740,6 +740,8 @@ namespace SustitucionMOAUtils.Services
                         CUITCliente = x.CUITCliente,
                         Fecha = x.FechaCarga.ToString("dd/MM/yyyy HH:mm"),
                         Contrato = !string.IsNullOrEmpty(x.ContratoSAP?.Trim()) ? x.ContratoSAP?.Trim() : x.ContratoIngresado?.Trim(),
+                        Cliente = x.Cliente.CodigoProveedor,
+                        RazonSocialCliente = x.Cliente.RazonSocial,
                         Pedido = x.NumeroPedido ?? "-",
                         Entrega = x.NumeroEntrega ?? "-",
                         Material = x.Producto.Nombre,
