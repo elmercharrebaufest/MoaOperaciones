@@ -113,17 +113,15 @@ export class ObtenerContratoMarcoComponent implements OnInit {
 
   onSearchContrato(){
     try {
+      if (this.centroEntregaValue && this.numeroContratoValue) {
       this.muestroSpinner = true;
-    if (this.centroEntregaValue && this.numeroContratoValue) {
       const payload = {
         centro: this.centroEntregaValue, 
         numeroContrato: this.numeroContratoValue
       } as ObtenerContratoMarco;
 
-      setTimeout(() => {
         this.obtenerContratoMarcoEmitter.next(payload);
         this.muestroSpinner = false;
-      }, 2000);
       
     }
     } catch (error) {
