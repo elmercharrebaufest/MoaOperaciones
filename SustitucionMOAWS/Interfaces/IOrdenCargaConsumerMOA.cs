@@ -22,5 +22,6 @@ namespace SustitucionMOAWS.Interfaces
         ResultadoGenerico AnularOrdenCarga(OrdenDeCarga orden);
         ResultadoGenerico AnularEntregaOrdenCarga(string nroEntrega);
         ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega);
+        bool VerificarContratoAbierto(string contrato);
     }
 }
