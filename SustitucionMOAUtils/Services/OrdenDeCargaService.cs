@@ -2368,7 +2368,7 @@ namespace SustitucionMOAUtils.Services
             if (tieneNumeroEntrega)
                 AnularEntregaEnSap(orden);
 
-            AnularPedidoEnSap(orden);
+            AnularPedidoEnSap(orden, tieneNumeroEntrega);
         }
         public string EnviarOrdenesASAP(List<int> ordenesId, string mailUsuario)
         {
@@ -2423,18 +2423,21 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 orden.Estado = EstadoOrdenDeCarga.Pendiente;
+                orden.NumeroEntrega = null;
+                orden.NumeroPedidoIngresado = null;
                 repositorio.GuardarCambios();
             }
         }
-        private void AnularPedidoEnSap(OrdenDeCarga orden)
+        private void AnularPedidoEnSap(OrdenDeCarga orden, bool tieneNumeroEntrega)
         {
-            var tieneNumeroEntrega = !string.IsNullOrEmpty(orden.NumeroEntrega);
             var tieneNumeroPedido = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) || !string.IsNullOrEmpty(orden.NumeroPedido);
             if (!tieneNumeroPedido)
                 return;
             var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
             if (resultadoAnularOrden.HayError)
-                throw new InfoCustomException(tieneNumeroEntrega ? _errorAnulacion : resultadoAnularOrden.Errores[0].Message);
+                throw new InfoCustomException(
+                        tieneNumeroEntrega ? $"{_errorAnulacion} \n{resultadoAnularOrden.Errores[0].Message}"
+                        : resultadoAnularOrden.Errores[0].Message);
         }
         private List<string> ObtenerContratosAbiertos(List<string> contratos)
         {
