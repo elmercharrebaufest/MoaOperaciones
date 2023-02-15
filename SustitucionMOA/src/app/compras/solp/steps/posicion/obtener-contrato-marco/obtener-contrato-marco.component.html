@@ -62,6 +62,9 @@
                 <button class="btn btn-primary btn-custom-primary" (click)="onSearchContrato()">BUSCAR</button>
               </div>
             </div>
+            <div *ngIf="!primerBusqueda && contratoMarcoModel == null">
+              <b>No se encontraron resultados</b>
+            </div>
             <div *ngIf="contratoMarcoModel">
               Fin periodo de validez: {{contratoMarcoModel?.finPeriodoValidez}}
             </div>
@@ -97,6 +100,7 @@
           </div>
         </div>
       </section>
+
       <section class="container-fluid">
         <p-table [value]="contratoMarcoModel?.posiciones" [rows]="20"
           dataKey="numeroPosicionDocumentoCompras" 
