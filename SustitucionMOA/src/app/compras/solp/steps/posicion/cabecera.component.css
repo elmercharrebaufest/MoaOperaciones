@@ -164,6 +164,18 @@
     width: 45px;
 }
 
+.tabla-servicio th:nth-of-type(11), .tabla-grid-servicio td:nth-of-type(11) {
+    width: 60px;
+}
+
+.tabla-servicio th:nth-of-type(12), .tabla-grid-servicio td:nth-of-type(12) {
+    width: 70px;
+}
+
+.tabla-servicio th:nth-of-type(13), .tabla-grid-servicio td:nth-of-type(13) {
+    width: 55px;
+}
+
 .sub-tabla {
     width: 880px;
 }
