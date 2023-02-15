@@ -310,12 +310,12 @@ namespace SustitucionMOAWS.WSConsumers
 
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            var identificador = string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedidoIngresado : orden.NumeroPedido;
+            var identificador = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedidoIngresado : orden.NumeroPedido;
 
             Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Request: {new { identificador }}");
 
-
             var result = service.SI_MPMF_MOAOP_MOD_ORDEN_CARGA("X", identificador);
+
             Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Result: {new { result, identificador }}");
 
             var resultado = new ResultadoGenerico();
