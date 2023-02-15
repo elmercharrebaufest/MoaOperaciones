@@ -28,7 +28,7 @@
           </div>
         </div>
 
-        <div *ngIf="esInterno || esComercial || esPuerto || esMesaFas || !esCliente()" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
+        <div *ngIf=" !esCliente()" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Cliente:</p>
           <div class="styled-select">
             <input type="search" class="" placeholder="Ingrese razon social de cliente" [value]=""
@@ -99,7 +99,7 @@
                   (click)="seleccionarTodos()" /></th>
               <th>Id</th>
               <th *ngIf="esMesaFas || esInterno">Entrega</th>
-              <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas || !esCliente()">Cliente</th>
+              <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas ">Cliente</th>
               <th *ngIf="esMesaFas">Cuit cliente</th>
               <th *ngIf="esInterno">Corredor</th>
               <th>Estado</th>
