@@ -120,9 +120,9 @@ export class ObtenerContratoMarcoComponent implements OnInit {
         numeroContrato: this.numeroContratoValue
       } as ObtenerContratoMarco;
 
+        this.contratoMarcoModel = null;
         this.obtenerContratoMarcoEmitter.next(payload);
         this.muestroSpinner = false;
-        this.contratoMarcoModel = null;
     }
     } catch (error) {
       this.muestroSpinner = false;
