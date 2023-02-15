@@ -122,7 +122,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
 
         this.obtenerContratoMarcoEmitter.next(payload);
         this.muestroSpinner = false;
-      
+        this.contratoMarcoModel = null;
     }
     } catch (error) {
       this.muestroSpinner = false;
