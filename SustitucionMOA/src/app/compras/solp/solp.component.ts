@@ -872,11 +872,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
         
         if (esPrimeraFinalizacion) {
             //SOLP N°” + *nnnnn* + “PLIEGO:” + *detalle del pliego*
-            subject = `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;
+            // subject = `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;
+            subject = `SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+
         }
         if (esPosteriorFinalizacion) {
             //ACTUALIZACIÓN SOLP N°” + *nnnnn* + “PLIEGO:” + *detalle del pliego*
-            subject = `ACTUALIZACIÓN SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;
+            subject = `ACTUALIZACIÓN SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
         }
         return subject;
     }
@@ -893,7 +895,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     private get emailBody(): string {
-        return `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;
+        return `SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
     }
 
     private get downloadLinkUrl(): string {
