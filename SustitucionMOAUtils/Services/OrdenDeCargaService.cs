@@ -2425,7 +2425,8 @@ namespace SustitucionMOAUtils.Services
         {
             var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
             if (resultadoAnularEntrega.HayError)
-                throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
+                //Pendiente revisión de los mensajes acorde a las verdaderas razones de error
+                throw new InfoCustomException("La entrega está tomada en SAP");
             else
             {
                 orden.Estado = EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion;
@@ -2442,13 +2443,8 @@ namespace SustitucionMOAUtils.Services
             var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
             if (resultadoAnularOrden.HayError)
             {
-
-                orden.DescripcionErrorInterno = tieneNumeroEntrega ?
-                    $"{_errorAnulacion} \n{resultadoAnularOrden.Errores[0].Message}" :
-                    resultadoAnularOrden.Errores[0].Message=="Error al actualizar"?"Error al intentar anular el pedido":
-                    resultadoAnularOrden.Errores[0].Message;
-                repositorio.GuardarCambios();
-                throw new InfoCustomException(orden.DescripcionErrorInterno);
+                //Pendiente revisión de los mensajes acorde a las verdaderas razones de error
+                throw new InfoCustomException("El pedido está tomado en SAP");
             }
 
         }
@@ -2456,7 +2452,8 @@ namespace SustitucionMOAUtils.Services
         {
             return contratos.Where(contrato => consumer.VerificarContratoAbierto(contrato)).ToList();
         }
-        private void TieneVariosContratosAbiertos(OrdenDeCarga ordenDeCarga, List<string> contratosAbiertos) {
+        private void TieneVariosContratosAbiertos(OrdenDeCarga ordenDeCarga, List<string> contratosAbiertos)
+        {
             var result = string.Join(",", contratosAbiertos);
             if (string.IsNullOrEmpty(ordenDeCarga.NumeroPedido))
             {
