@@ -68,7 +68,9 @@
           </div>
         </form>
       </section>
-
+      <div *ngIf="muestroSpinner" style="text-align: center; margin-top: 4em;">
+        <i class="pi pi-spin pi-spinner" style="font-size: 3em;"></i>
+      </div>
       <section class="container-fluid" *ngIf="contratoMarcoModel">
         <div class="row">
           <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12 margenInput">

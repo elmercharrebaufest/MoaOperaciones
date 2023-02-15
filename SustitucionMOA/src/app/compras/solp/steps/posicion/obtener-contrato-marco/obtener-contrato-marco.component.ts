@@ -32,6 +32,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
   public contratoMarcoModel: ContratoMarco  = null;
   public posicionesAsOptions: Array<any> = [];
   public formGroup: FormGroup
+  muestroSpinner: boolean = false;
 
   constructor(private obtenerContratoMarcoService: ObtenerContratoMarcoService,
     private formBuilder: FormBuilder) {
@@ -111,14 +112,23 @@ export class ObtenerContratoMarcoComponent implements OnInit {
   }  
 
   onSearchContrato(){
-    if (this.centroEntregaValue && this.numeroContratoValue) {
+    try {
+      if (this.centroEntregaValue && this.numeroContratoValue) {
+      this.muestroSpinner = true;
       const payload = {
         centro: this.centroEntregaValue, 
         numeroContrato: this.numeroContratoValue
       } as ObtenerContratoMarco;
 
-      this.obtenerContratoMarcoEmitter.next(payload);
+        this.obtenerContratoMarcoEmitter.next(payload);
+        this.muestroSpinner = false;
+      
     }
+    } catch (error) {
+      this.muestroSpinner = false;
+    }
+  
+    
   }
 
   onClear() {
