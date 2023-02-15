@@ -479,29 +479,19 @@ namespace SustitucionMOAUtils.Services
             {
                 ordenDeCarga.CodigoVerificacionSap = "";
                 ordenDeCarga.DescripcionCodigoVerificacionSap = "";
-                result = string.Join(",", result.Split(',').Select(a => a.Split('|')[0]).ToList());
-                if (string.IsNullOrEmpty(ordenDeCarga.NumeroPedido))
+                var contratosAbiertos = ObtenerContratosAbiertos(result.Split(',').Select(a => a.Split('|')[0]).ToList());
+                var verificado = true;
+                if (contratosAbiertos.Count() > 1)
                 {
-                    if (string.IsNullOrEmpty(ordenDeCarga.ContratoSAP))
-                    {
-                        ordenDeCarga.ContratosRespuesta = result;
-                        ordenDeCarga.ContratoSAP = "";
-                        ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
-                    }
-                }
-                else
-                {
-                    ordenDeCarga.PedidosRespuesta = result;
-                    ordenDeCarga.NumeroPedido = "";
-                    ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
-
+                    verificado = false;
+                    TieneVariosContratosAbiertos(ordenDeCarga, contratosAbiertos);
                 }
 
                 Log.Debug(this.GetType().Name, "VerificarOrden", $" actualizarEstado, inicial: " + EstadoOrdenDeCargaExtensions.ToFriendlyString(ordenDeCarga.Estado));
                 ordenDeCarga.ActualizarEstado();
                 Log.Debug(this.GetType().Name, "VerificarOrden", $" actualizarEstado, final: " + EstadoOrdenDeCargaExtensions.ToFriendlyString(ordenDeCarga.Estado));
 
-                return false;
+                return verificado;
 
             }
             else
@@ -2443,6 +2433,29 @@ namespace SustitucionMOAUtils.Services
             var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
             if (resultadoAnularOrden.HayError)
                 throw new InfoCustomException(tieneNumeroEntrega ? _errorAnulacion : resultadoAnularOrden.Errores[0].Message);
+        }
+        private List<string> ObtenerContratosAbiertos(List<string> contratos)
+        {
+            return contratos.Where(contrato => consumer.VerificarContratoAbierto(contrato)).ToList();
+        }
+        private void TieneVariosContratosAbiertos(OrdenDeCarga ordenDeCarga, List<string> contratosAbiertos) {
+            var result = string.Join(",", contratosAbiertos);
+            if (string.IsNullOrEmpty(ordenDeCarga.NumeroPedido))
+            {
+                if (string.IsNullOrEmpty(ordenDeCarga.ContratoSAP))
+                {
+                    ordenDeCarga.ContratosRespuesta = result;
+                    ordenDeCarga.ContratoSAP = "";
+                    ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
+                }
+            }
+            else
+            {
+                ordenDeCarga.PedidosRespuesta = result;
+                ordenDeCarga.NumeroPedido = "";
+                ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
+
+            }
         }
     }
 }
