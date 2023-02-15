@@ -190,7 +190,7 @@ namespace SustitucionMOAUtils.Services
                         continue;
 
                     var anterior = !string.IsNullOrEmpty(prop.valA?.ToString()) ? prop.valA?.ToString() : "-";
-                    var nuevo = !string.IsNullOrEmpty(prop.valA?.ToString()) ? prop.valB?.ToString() : "-";
+                    var nuevo = !string.IsNullOrEmpty(prop.valB?.ToString()) ? prop.valB?.ToString() : "-";
                     if (anterior != "-" && nuevo != "-")
                     {
                         var registroHistorial = new OrdenDeCargaCambiosHistorial();
