@@ -40,7 +40,7 @@
           <p>Por Estado:</p>
           <div>
             <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected"
-              selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListado()" appendTo="body">
+              selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListado();setEstadosFiltroFAS()" appendTo="body">
             </p-multiSelect>
           </div>
         </div>

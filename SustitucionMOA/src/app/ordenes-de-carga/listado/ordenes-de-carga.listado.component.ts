@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CartaPorteService } from '../../carta-porte/carta-porte2.service';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -9,9 +8,7 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { Material } from '../../common/models/material';
 import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
-import { CrearOrdenEnSAPRequest } from '../../common/models/ordenes-de-carga/crearOrdenEnSAPRequest';
-import { Formatter } from '../../common/formatter/Formatter';
-import { SelectItem, ConfirmationService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 
@@ -37,22 +34,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     filtroCliente: any = null;
 
     estadoSelected: string = "Todos";
-    estadosSelected: string[] = [
-        "Pendiente",
-        "Confirmado",
-        "Pendiente aprobación crédito",
-        "Entrega generada",
-        "Anulada",
-        "Vencida",
-        "Entrega pendiente",
-        "Anulada por vencimiento",
-        "Anulación solicitada",
-        "Edición solicitada",
-        "Error de datos",
-        "Contrato vencido",
-        "Edición rechazada",
-        "Sin Enviar a SAP"
-    ];
+    estadosSelected: string[] = [];
 
     datosAux: any[];
     primerListado: any[];
@@ -114,17 +96,18 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         this.navService.setSeccionList([]);
         this.getListado();
         this.obtenerMateriales();
+        this.estadosSelected = this.service.estadosFiltrosSeleccionados;
     }
-
+    setEstadosFiltroFAS(){
+        this.service.setEstadosFiltro(this.estadosSelected)
+    }
     filtrarListado() {
         console.debug('filtrarListado()');
         this.primerListado = this.datosAux.filter(x => x.DescripcionEstado != this.entregada);
-        // console.debug(' datosAux: ', this.datosAux);
         if (!this.esTercero) {
             if (this.estadosSelected.length < 1 || this.estadosSelected == null) {
                 this.data = this.datosAux;
             } else {
-                // console.debug(' estadosSelected: ', this.estadosSelected);
                 if (this.estadosSelected) {
                     this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.DescripcionEstado) >= 0);
                 }
