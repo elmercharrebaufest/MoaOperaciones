@@ -148,7 +148,7 @@ export class Solp extends CommonResponse {
             this.nombreDePedido = solp.NombreDeObra || '';
             this.fiscalContrato = solp.FiscalContrato || '';
             this.telefono = solp.Telefono || '';
-            this.mail = solp.Email || ''; //sessionStorage.getItem("username");
+            this.mail = solp.Email || sessionStorage.getItem("username");
             this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
             this.emailLinkToken = solp.EmailLinkToken;
             this.selectTipoPosicion = this.getSelectedTipoPosicion(solp.Posiciones);
