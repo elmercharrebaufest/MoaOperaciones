@@ -642,6 +642,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     filtrosEstados.Add(EstadoOrdenDeCarga.Confirmado);
                     filtrosEstados.Add(EstadoOrdenDeCarga.PendienteAprobacionCredito);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaPendiente);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
@@ -665,11 +666,13 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.SinEnviarASAP);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion);
                 }
                 if (esPuerto)
                 {
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion);
                 }
                 if (esAdmin)
                 {
@@ -688,6 +691,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.SinEnviarASAP);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion);
                 }
                 Expression<Func<OrdenDeCarga, bool>> filtro = o => o.FechaCarga <= fechaFinDateTime
                     && o.FechaCarga >= fechaIncioDateTime
@@ -740,7 +744,9 @@ namespace SustitucionMOAUtils.Services
                         || n.Estado == EstadoOrdenDeCarga.AnulacionSolicitada
                         || n.Estado == EstadoOrdenDeCarga.ContratoVencido
                         || n.Estado == EstadoOrdenDeCarga.EdicionRechazada
-                        || n.Estado == EstadoOrdenDeCarga.SinEnviarASAP)
+                        || n.Estado == EstadoOrdenDeCarga.SinEnviarASAP
+                        || n.Estado == EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion
+                        )
                     );
                 //Log.Debug(this.GetType().Name, "Listar", $" listadoSinFiltro: {listadoSinFiltro.ToJson()}");
                 listado = listadoSinFiltro
@@ -2443,9 +2449,17 @@ namespace SustitucionMOAUtils.Services
                 return;
             var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
             if (resultadoAnularOrden.HayError)
+            {
+                if (tieneNumeroEntrega)
+                {
+                    orden.DescripcionErrorInterno = $"{_errorAnulacion} \n{resultadoAnularOrden.Errores[0].Message}";
+                    repositorio.GuardarCambios();
+                }
                 throw new InfoCustomException(
-                        tieneNumeroEntrega ? $"{_errorAnulacion} \n{resultadoAnularOrden.Errores[0].Message}"
+                        tieneNumeroEntrega ? orden.DescripcionErrorInterno
                         : resultadoAnularOrden.Errores[0].Message);
+            }
+
         }
     }
 }
