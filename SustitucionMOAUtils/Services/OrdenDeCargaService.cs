@@ -2442,11 +2442,8 @@ namespace SustitucionMOAUtils.Services
                 return;
             var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
             if (resultadoAnularOrden.HayError)
-            {
                 //Pendiente revisión de los mensajes acorde a las verdaderas razones de error
                 throw new InfoCustomException("El pedido está tomado en SAP");
-            }
-
         }
         private List<string> ObtenerContratosAbiertos(List<string> contratos)
         {
