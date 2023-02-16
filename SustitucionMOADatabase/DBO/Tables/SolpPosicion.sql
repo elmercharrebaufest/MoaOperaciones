@@ -55,5 +55,6 @@
 	CONSTRAINT [FK_SolpPosicion_TablaSap_GrupoCompras] FOREIGN KEY (GrupoCompras_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_SolpPosicion_TablaSap_GrupoArticulo] FOREIGN KEY (GrupoArticulo_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_SolpPosicion_TablaSap_Moneda] FOREIGN KEY (Moneda_Id) REFERENCES [TablaSap]([Id]),
-	CONSTRAINT [FK_SolpPosicion_ServicioSolp] FOREIGN KEY (ServicioSolp_Id) REFERENCES [ServicioSolp]([Id])
+	CONSTRAINT [FK_SolpPosicion_ServicioSolp] FOREIGN KEY (ServicioSolp_Id) REFERENCES [ServicioSolp]([Id]),
+	CONSTRAINT [FK_SolpPosicion_MaterialSolp] FOREIGN KEY (MaterialSolp_Id) REFERENCES [MaterialSolp]([Id])
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
