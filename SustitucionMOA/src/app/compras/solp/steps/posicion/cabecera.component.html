@@ -69,13 +69,15 @@
                                         </button>
                                     </div>
                                     <div class="col-xs-5" style="margin-bottom: 2px;" *ngIf="displayBotonAsociar">
-                                        <div style="margin-top: 5px; margin-right: 8px; display: flex;">
+                                        <div style="margin-top: 5px; margin-right: 8px; display: flex;" *ngIf="alertaParaAsociar">
                                             <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: #c9302c;font-size: x-large; display: flex; align-items: center; margin-right: 10px;"></i>
                                             Tiene un contrato marco para asociar
                                         </div>
-                                        <button class="btn btn-secondary botonesComprasColor align-right" style="width:100%; text-align:center;" (click)="showAsociarDialog()">
+                                        <div *ngIf="displayBotonAsociar">
+                                        <button  class="btn btn-secondary botonesComprasColor align-right" style="width:100%; text-align:center;" (click)="showAsociarDialog()">
                                             {{textoAsociarBtn}}
                                         </button>
+                                    </div>
                                     </div>
                                 </div>
                            </div>                       
@@ -235,7 +237,8 @@
                                                 (completeMethod)="autocompleteMaterialSolp($event)"
                                                 (onFocus)="$event.target.select(); posicion.setTabPosicion();"
                                                 (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio, rowIndex, dt)"
-                                                (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion();validarFuenteAprovisionamiento(posicion);"
+                                                (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion(); eliminarContratoAsociar(posicion);
+                                                listarContratosAsociados(posicion); "
                                                 (onBlur)="checkCode()"
                                                 (ngModelChange)="clearCode2()"
                                                 >
@@ -433,6 +436,7 @@
     (asociarEmitter)="asociarCM($event)"
     [(nroSolp)]="model.nroSolp"
     [(listaContratos)]="listaContratos"
+    [(listaDePosicionesAsociar)]="listaDePosicionesAsociar"    
     [(posiciones)]="model.posiciones">
 </asociar-contrato-marco>
 <!-- Fin modal asociar contrato marco -->
