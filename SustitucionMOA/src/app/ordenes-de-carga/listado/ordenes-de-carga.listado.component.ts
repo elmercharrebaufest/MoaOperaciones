@@ -51,7 +51,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         "Error de datos",
         "Contrato vencido",
         "Edición rechazada",
-        "Sin Enviar a SAP"
+        "Sin Enviar a SAP",
+        "Entrega anulada, pedido pendiente de anulación"
     ];
 
     datosAux: any[];
@@ -102,6 +103,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
                 { label: "Contrato vencido", value: "Contrato vencido" },
                 { label: "Edición rechazada", value: "Edición rechazada" },
                 { label: "Sin Enviar a SAP", value: "Sin Enviar a SAP" },
+                { label: "Entrega anulada, pedido pendiente de anulación", value: "Entrega anulada, pedido pendiente de anulación" },
             ]
         } else {
             this.descripcionEstadoOrdenCarga = [];
@@ -189,7 +191,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    seleccionarTodos (){
+    seleccionarTodos() {
         this.seleccionaTodos = !this.seleccionaTodos;
         if (this.data && this.seleccionaTodos) {
             this.data.forEach((item) => {
