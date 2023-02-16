@@ -28,7 +28,7 @@
           </div>
         </div>
 
-        <div *ngIf=" !esCliente()" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
+        <div *ngIf=" esInterno || esComercial || esMesaFas || !esCliente()" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Cliente:</p>
           <div class="styled-select">
             <input type="search" class="" placeholder="Ingrese razon social de cliente" [value]=""
