@@ -2422,9 +2422,9 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
             else
             {
-                orden.Estado = EstadoOrdenDeCarga.Pendiente;
+                orden.Estado = EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion;
                 orden.NumeroEntrega = null;
-                orden.NumeroPedidoIngresado = null;
+                orden.FechaEntregaGenerada = null;
                 repositorio.GuardarCambios();
             }
         }

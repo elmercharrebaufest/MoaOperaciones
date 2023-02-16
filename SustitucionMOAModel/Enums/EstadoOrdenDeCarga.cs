@@ -14,10 +14,11 @@
         ErrorDeCarga,
         EdicionSolicitada,
         AnulacionSolicitada,
-        ContratoVencido, 
+        ContratoVencido,
         EdicionRechazada,
         SinEnviarASAP,
-        SinEstado
+        SinEstado,
+        EntregaAnuladaPedidoPendienteAnulacion
     }
 
     public static class EstadoOrdenDeCargaExtensions
@@ -37,13 +38,14 @@
                     return "orange";
                 case EstadoOrdenDeCarga.Confirmado:
                 case EstadoOrdenDeCarga.Vencida:
-                case EstadoOrdenDeCarga.EntregaPendiente:               
+                case EstadoOrdenDeCarga.EntregaPendiente:
                 case EstadoOrdenDeCarga.EdicionSolicitada:
                 case EstadoOrdenDeCarga.AnulacionSolicitada:
+                case EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion:
                     return "yellow";
                 case EstadoOrdenDeCarga.EntregaGenerada:
                 case EstadoOrdenDeCarga.Entregada:
-               
+
                     return "green";
                 case EstadoOrdenDeCarga.SinEnviarASAP:
                     return "bluesap";
@@ -67,7 +69,7 @@
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                     return "Pendiente aprobación crédito";
                 case EstadoOrdenDeCarga.EntregaPendiente:
-                    return "Entrega pendiente"; 
+                    return "Entrega pendiente";
                 case EstadoOrdenDeCarga.EntregaGenerada:
                     return "Entrega generada";
                 case EstadoOrdenDeCarga.Entregada:
@@ -78,20 +80,22 @@
                     return "Anulada por vencimiento";
                 case EstadoOrdenDeCarga.AnulacionSolicitada:
                     return "Anulación solicitada";
-				case EstadoOrdenDeCarga.EdicionSolicitada:
+                case EstadoOrdenDeCarga.EdicionSolicitada:
                     return "Edición solicitada";
                 case EstadoOrdenDeCarga.ContratoVencido:
                     return "Contrato vencido";
                 case EstadoOrdenDeCarga.EdicionRechazada:
                     return "Edición rechazada";
-				case EstadoOrdenDeCarga.SinEnviarASAP:
-					return "Sin Enviar a SAP";
-				default:
+                case EstadoOrdenDeCarga.SinEnviarASAP:
+                    return "Sin Enviar a SAP";
+                case EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion:
+                    return "Entrega anulada, pedido pendiente de anulación";
+                default:
                     return "Sin estado";
             }
         }
 
-   
+
 
         public static string ToUserFriendlyString(this EstadoOrdenDeCarga me)
         {
@@ -103,7 +107,7 @@
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                 case EstadoOrdenDeCarga.EntregaPendiente:
                 case EstadoOrdenDeCarga.ContratoVencido:
-				case EstadoOrdenDeCarga.SinEnviarASAP:
+                case EstadoOrdenDeCarga.SinEnviarASAP:
                     return "En proceso";
                 case EstadoOrdenDeCarga.Vencida:
                 case EstadoOrdenDeCarga.EntregaGenerada:
@@ -115,10 +119,12 @@
                 case EstadoOrdenDeCarga.Anulada:
                     return "Anulada";
                 case EstadoOrdenDeCarga.AnuladaPorVencimiento:
-                    return  "Anulada por vencimiento";
+                    return "Anulada por vencimiento";
                 case EstadoOrdenDeCarga.EdicionRechazada:
                     return "Edición rechazada";
-				default:
+                case EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion:
+                    return "Anulación en proceso";
+                default:
                     return "Sin estado";
             }
         }
@@ -158,10 +164,13 @@
                     return EstadoOrdenDeCarga.EdicionRechazada;
                 case "Sin Enviar a SAP":
                     return EstadoOrdenDeCarga.SinEnviarASAP;
+                case "Anulación en proceso":
+                case "Entrega anulada, pedido pendiente de anulación":
+                    return EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion;
                 default:
                     return EstadoOrdenDeCarga.SinEstado;
             }
         }
-        
+
     }
 }
