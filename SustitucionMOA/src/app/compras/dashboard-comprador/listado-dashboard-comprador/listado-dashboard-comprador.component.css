@@ -3,7 +3,7 @@
 }
 
 .fa{
-    margin-right: -9px;
+    margin-right: -11px;
 }
 .buscar {
     background-color: #1C7CD5;
@@ -27,26 +27,3 @@ body.ui-paginator.ui-dropdown{
     word-break: break-all; word-wrap:break-word
 }
 
-thead {
-    background-color: #717171 !important;
-    color:white !important;
-    font-size: 11.5px !important;
-    text-align: center !important;
-    border: 0;
-}
-
-.tableFixHead          { overflow: auto; height: 500px; }
-.tableFixHead, thead, th { position: sticky; top: 0; z-index: 1; overflow-wrap: normal; }
-
-table  { border-collapse: collapse; width: 100%; }
-th, td { padding: 8px 13px;  }
-th     { background:#717171; font-size: 11.5px !important; 
-    color:white !important; text-transform: inherit; text-align: center;}
-
-table, th, td {
-    border: 1px solid;
-  }
-
-.tbody{
-    background: white;
-  }

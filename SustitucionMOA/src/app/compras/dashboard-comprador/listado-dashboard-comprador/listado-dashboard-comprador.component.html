@@ -8,7 +8,7 @@
     <spinner></spinner>
     <app-filtro-dashboard-comprador></app-filtro-dashboard-comprador>
     <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">  
-        <div style="overflow-x:auto; " class="table-responsive tableFixHead">  
+      
         <p-table #tabla [value]="tablaSolp" responsiveLayout="scroll | stack">
             <ng-template pTemplate="header" let-columns class="lista-header">
                 <tr>
@@ -123,7 +123,7 @@
                 </tr>
             </ng-template> 
         </p-table>  
-    </div>    
+     
         <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
    
 </div>
