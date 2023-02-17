@@ -2442,14 +2442,13 @@ namespace SustitucionMOAUtils.Services
             var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
             if (resultadoAnularOrden.HayError)
             {
-                if (tieneNumeroEntrega)
-                {
-                    orden.DescripcionErrorInterno = $"{_errorAnulacion} \n{resultadoAnularOrden.Errores[0].Message}";
-                    repositorio.GuardarCambios();
-                }
-                throw new InfoCustomException(
-                        tieneNumeroEntrega ? orden.DescripcionErrorInterno
-                        : resultadoAnularOrden.Errores[0].Message);
+
+                orden.DescripcionErrorInterno = tieneNumeroEntrega ?
+                    $"{_errorAnulacion} \n{resultadoAnularOrden.Errores[0].Message}" :
+                    resultadoAnularOrden.Errores[0].Message=="Error al actualizar"?"Error al intentar anular el pedido":
+                    resultadoAnularOrden.Errores[0].Message;
+                repositorio.GuardarCambios();
+                throw new InfoCustomException(orden.DescripcionErrorInterno);
             }
 
         }
