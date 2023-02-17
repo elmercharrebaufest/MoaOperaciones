@@ -366,5 +366,27 @@ namespace SustitucionMOAWS.WSConsumers
 
             return resultado;
         }
+        public bool VerificarContratoAbierto(string contrato)
+        {
+            var service = new SI_MPMF_MOAOP_VISUALIZAR_ZFASClient();
+
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+
+            var fechas = ObtenerRangoFechas();
+
+            var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS("", contrato, "", fechas, "", "X", "");
+            return result.Length > 0;
+        }
+        private ZMPES4100[] ObtenerRangoFechas()
+        {
+            var hasta = DateTime.Now;
+            var desde = hasta.AddMonths(-12);
+            return new List<ZMPES4100>{ new ZMPES4100()
+            {
+                FECHA_OP = SAPFormatter.PrepararFecha(desde),
+                FECHA_OP_HASTA = SAPFormatter.PrepararFecha(hasta)
+            }}.ToArray();
+        }
     }
 }
