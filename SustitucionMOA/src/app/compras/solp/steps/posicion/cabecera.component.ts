@@ -22,6 +22,7 @@ import { mergeMap, map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ObtenerContratoMarcoService } from './obtener-contrato-marco/obtener-contrato-marco.service';
 import { ContratoMarco, ContratoMarcoSubposicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
+import { element } from '@angular/core/src/render3';
 
 declare var $: any;
 
@@ -29,7 +30,7 @@ declare var $: any;
     selector: 'cabecera',
     templateUrl: `cabecera.component.html`,
     styleUrls: [
-        '../../../compras.component.css', 
+        '../../../compras.component.css',
         './cabecera.component.css'
     ]
 })
@@ -96,7 +97,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     fechaDeLiberacion: any;
     listadoPosicionActual = Array<SubPosicionViewModel>();
     hoy: Date = new Date();
-    todasPosicionesSeleccionadas:boolean = false;
+    todasPosicionesSeleccionadas: boolean = false;
 
     // tituloColumnaTipoDeImputacion: string;
     // enumTipoImputacion: typeof EnumTipoImputacion = EnumTipoImputacion;
@@ -141,7 +142,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     ];
 
-     // array de columnas en la grilla
+    // array de columnas en la grilla
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
     columnasGrilla: any = [
         { nombre: "codigoServicio", tipo: "codigoServicioSolp" },
@@ -160,7 +161,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     contratoMarco: ContratoMarco = null;
 
-    @ViewChild('menuItems') menu: MenuItem[];    
+    @ViewChild('menuItems') menu: MenuItem[];
+    contratosAsociar: any;
+    listaDePosicionesAsociar: any;
+    alertaParaAsociar: boolean;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -168,12 +172,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService,
         private obtenerContratoMarcoService: ObtenerContratoMarcoService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-    }    
+    }
 
     ngOnInit(): void {
         if (this.model.posiciones.length == 0) {
             this.model.agregarNuevaPosicion(null as SolpPosicion);
         }
+        this.listarContratosAsociados();
+
     }
 
     public setCombos(): void {
@@ -193,8 +199,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.setCombos();
 
         //Hace que clase documento no use la primer opcion como predeterminada
-        let claseDocumento = this.model.selectClaseDocumento!== undefined && this.model.selectClaseDocumento.Id>0 ? this.model.selectClaseDocumento : this.claseDocumento[0];
-        this.model.selectClaseDocumento = this.model.selectClaseDocumento!== undefined && this.model.selectClaseDocumento.Id>0 ? this.model.selectClaseDocumento : 0;
+        let claseDocumento = this.model.selectClaseDocumento !== undefined && this.model.selectClaseDocumento.Id > 0 ? this.model.selectClaseDocumento : this.claseDocumento[0];
+        this.model.selectClaseDocumento = this.model.selectClaseDocumento !== undefined && this.model.selectClaseDocumento.Id > 0 ? this.model.selectClaseDocumento : 0;
         this.actualizarCamposObligatorios(this.model.selectClaseDocumento);
         this.setControlesObligatorios(claseDocumento);
         this.validadorPasoSolpService.formulario = this.formularioActual;
@@ -202,19 +208,19 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         if (this.model.cargoPasoCinco) {
             this.validadorPasoSolpService.aplicarValidaciones();
         }
-        
+
         if (this.model.centroPorDefecto && this.model.posicionActual && !this.model.posicionActual.selectCentroEntrega)
-            this.model.posicionActual.selectCentroEntrega = this.combos.Centro.find(x => x.Codigo == this.model.centroPorDefecto)       
+            this.model.posicionActual.selectCentroEntrega = this.combos.Centro.find(x => x.Codigo == this.model.centroPorDefecto)
 
         if (this.model.monedaPorDefecto && this.model.posicionActual && !this.model.posicionActual.monedaSeleccionada)
-            this.model.posicionActual.monedaSeleccionada = this.combos.Moneda.find(x => x.Codigo == this.model.monedaPorDefecto)        
+            this.model.posicionActual.monedaSeleccionada = this.combos.Moneda.find(x => x.Codigo == this.model.monedaPorDefecto)
 
         if (this.model.posicionActual && !this.model.posicionActual.selectSolicitanteCompras)
             this.model.posicionActual.selectSolicitanteCompras = this.model.fiscalContrato;
 
-        this.model.cargoPasoCinco = true;  
+        this.model.cargoPasoCinco = true;
         this.editarDocumento = this.disableDocumento();
-        this.listadoPosicionActual = this.model.posicionActual ? this.model.posicionActual.listadoSubPosiciones : [];    
+        this.listadoPosicionActual = this.model.posicionActual ? this.model.posicionActual.listadoSubPosiciones : [];
 
         if (this.model.vincularAPliego) {
             this.mensajesEncabezado.push({ severity: 'warn', summary: '', detail: 'No es posible editar esta pantalla desde la plataforma. Para editar dirijase a SAP' });
@@ -239,7 +245,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.model.tableHide = true;
     }
 
-    activateMenu(activeItem, posicion){
+    activateMenu(activeItem, posicion) {
         posicion.activeMenuTab = activeItem.activeItem.label;
     }
 
@@ -277,36 +283,36 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.model.posiciones.forEach(posicion => {
             posicion.doValidatePosicion(this.model.tipoSolpSap);
         });
-    }    
+    }
 
-    validarFinal(){
+    validarFinal() {
         this.model.posiciones.forEach(posicion => {
-            if(!posicion.tabsPosicionValidos.tabImputacion){
+            if (!posicion.tabsPosicionValidos.tabImputacion) {
                 console.log("posicion N° " + posicion.numeroPosicion + " tiene el tab Imputaciones sin completar")
                 //return false
             }
 
-            if(!posicion.tabsPosicionValidos.tabProveedor){
+            if (!posicion.tabsPosicionValidos.tabProveedor) {
                 console.log("posicion N° " + posicion.numeroPosicion + " tiene el tab proveedor sin completar")
                 //return false
             }
 
-            if(!posicion.tabsPosicionValidos.tabDireccionEntrega){
+            if (!posicion.tabsPosicionValidos.tabDireccionEntrega) {
                 console.log("posicion N° " + posicion.numeroPosicion + " tiene el tab direccion de entrega sin completar")
                 //return false
             }
 
-            if(!posicion.tabsPosicionValidos.tabDatosPosicion){
+            if (!posicion.tabsPosicionValidos.tabDatosPosicion) {
                 console.log("posicion N° " + posicion.numeroPosicion + " tiene el tab datos de posicion sin completar")
                 //return false
             }
 
-            if(!posicion.tabsPosicionValidos.tabFechas){
+            if (!posicion.tabsPosicionValidos.tabFechas) {
                 console.log("posicion N° " + posicion.numeroPosicion + " tiene el tab fechas sin completar")
                 //return false
             }
 
-            if(!posicion.tabsPosicionValidos.tabSubposiciones){
+            if (!posicion.tabsPosicionValidos.tabSubposiciones) {
                 console.log("posicion N° " + posicion.numeroPosicion + " tiene el tab fechas sin completar")
                 //return false
             }
@@ -321,13 +327,15 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.confirmationService.confirm({
                 message: '¿Está seguro que desea eliminar la posición?',
                 accept: () => {
-                    posicionChequeadas.forEach(pos => 
+                    posicionChequeadas.forEach(pos =>
                         this.model.eliminarPosicion(pos as SolpPosicion)
                     );
+                    this.listarContratosAsociados();
                 },
                 reject: () => {
                 }
             });
+           
         }
     }
 
@@ -349,7 +357,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     //Validaciones de campos
-    mostrarValidacion(campoAValidar, vacio){
+    mostrarValidacion(campoAValidar, vacio) {
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
         return (camposVacios != null && vacio == 0);
     }
@@ -373,7 +381,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     //Seteo de campos obligatorios
     setControlesObligatorios(claseDocumento) {
-        if(!claseDocumento || claseDocumento > 0){
+        if (!claseDocumento || claseDocumento > 0) {
             return
         }
         this.actualizarCamposObligatorios(claseDocumento);
@@ -416,8 +424,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     //Funcion que no permite cambiar la clase de documento una vez que se guardo en SAP
-    disableDocumento(){
-        if(this.model.nroSolp){
+    disableDocumento() {
+        if (this.model.nroSolp) {
             return true;
         } else {
             return false;
@@ -443,7 +451,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         var arrayContratos = [];
         this.listaContratos = [];
 
-        var obj = JSON.stringify(contratos, function(key, value) {
+        var obj = JSON.stringify(contratos, function (key, value) {
             const contrato = {
                 ProveedorFijo: value[0].ProveedorFijo,
                 NombreProveedor: value[0].NombreProveedor,
@@ -461,26 +469,20 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             arrayContratos.push(contrato);
         })
 
-        this.asociarContrato.onChangeContrato(posicion);
+        this.asociarContrato.onChangeContrato();
         this.listaContratos = arrayContratos;
-
-        if(this.listaContratos.length > 0) {
-            this.textoAsociarBtn = 'ASOCIAR CONTRATO'
-            this.displayBotonAsociar = true;
-        } else {
-            this.displayBotonAsociar = false;
-        }
+        this.validarBotonAsociarEditarContrato();
     }
 
     // Se consumen los endpoints de contrato marco y fuente de aprovisionamiento
     validarFuenteAprovisionamiento(posicion: SolpPosicion) {
         try {
-            this.subscription = this.service.ListarFuenteAprovisionamiento(posicion.fechaEntregaServicio.toISOString().substring(0, 10), posicion.codigoServicio.CodigoSap.substr(-8) , posicion.selectCentroEntrega.CodigoSap).pipe(
+            this.subscription = this.service.ListarFuenteAprovisionamiento(posicion.fechaEntregaServicio.toISOString().substring(0, 10), posicion.codigoServicio.CodigoSap.substr(-8), posicion.selectCentroEntrega.CodigoSap).pipe(
                 mergeMap((result: any) =>
                     from(result.data.filter(contrato => contrato.NumeroContratoSuperior)).pipe(
                         mergeMap(
-                            (data:any) => this.service.ObtenerContratoMarco(data.NumeroContratoSuperior,posicion.selectCentroEntrega.CodigoSap).pipe(
-                                map((contrato:any) => ({
+                            (data: any) => this.service.ObtenerContratoMarco(data.NumeroContratoSuperior, posicion.selectCentroEntrega.CodigoSap).pipe(
+                                map((contrato: any) => ({
                                     ...result.data.filter(contrato => contrato.NumeroContratoSuperior),
                                     ...contrato.data[0],
                                     ...contrato.data[0].Posiciones.find(material => material.NumeroMaterial == posicion.codigoServicio.CodigoSap)
@@ -490,21 +492,21 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     )
                 )
             ).subscribe((result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        if (result) {
-                            this.cargarContratosAsociados(result, posicion);
-                        }
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {
+                    if (result) {
+                        this.cargarContratosAsociados(result, posicion);
                     }
-                }, error => {
-                    this.displayBotonAsociar = false;
-                    this.floatMsgService.setErrorMsg(error.message);
                 }
+            }, error => {
+                this.displayBotonAsociar = false;
+                this.floatMsgService.setErrorMsg(error.message);
+            }
             )
         } catch (e) {
             this.displayBotonAsociar = false;
@@ -531,7 +533,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 break;
             case 'UNIDAD MEDIDA':
                 this.unidades = this.combos.Unidades.filter(x => x.Descripcion.toLowerCase().includes(event.query.toLowerCase()));
-                break;    
+                break;
             default:
                 break;
         }
@@ -551,10 +553,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
         this.model.posicionActual.nombreEntrega = this.model.posicionActual.nombreEntrega
             || (this.model.posicionActual.selectCentroEntrega == undefined ? "" : this.model.posicionActual.selectCentroEntrega.Descripcion);
-  
+
         this.almacenEntrega = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
 
-       this.fillValoresDireccion(direccionCentro);
+        this.fillValoresDireccion(direccionCentro);
     }
 
     fillValoresDireccion(direccionCentro) {
@@ -713,20 +715,20 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     } else {
                         if (result && result.length > 0) {
                             this.listadoPosicionActual.forEach(c => {
-                            if (c.codigoServicio && c.codigoServicio.CodigoSap) {
-                                var datos = result.find(x => x.Codigo == c.codigoServicio.CodigoSap);
-                                if (datos) {
-                                    c.codigoServicio = datos;
-                                    c.tareaSubcontratar = c.codigoServicio.Descripcion;
+                                if (c.codigoServicio && c.codigoServicio.CodigoSap) {
+                                    var datos = result.find(x => x.Codigo == c.codigoServicio.CodigoSap);
+                                    if (datos) {
+                                        c.codigoServicio = datos;
+                                        c.tareaSubcontratar = c.codigoServicio.Descripcion;
 
-                                    var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == c.codigoServicio.UnidadMedidaBase);
-                                    if (unidadSeleccionadaAux) {
-                                        c.unidadSeleccionada = unidadSeleccionadaAux;
-                                        c.unidadMedida = unidadSeleccionadaAux.Descripcion;
+                                        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == c.codigoServicio.UnidadMedidaBase);
+                                        if (unidadSeleccionadaAux) {
+                                            c.unidadSeleccionada = unidadSeleccionadaAux;
+                                            c.unidadMedida = unidadSeleccionadaAux.Descripcion;
+                                        }
                                     }
                                 }
-                            }
-                           });
+                            });
                         }
                     }
 
@@ -801,8 +803,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     autocompleteMaterialSolp(event) {
         const idCentro = this.model.posicionActual.selectCentroEntrega.Id;
-        if (idCentro == null){
-            return; 
+        if (idCentro == null) {
+            return;
         }
         try {
             this.subscription = this.service.autocompleteMaterialSolp(event.query.toLowerCase(), idCentro).subscribe(
@@ -842,6 +844,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
 
         this.endEditCell(dt);
+
+
+
     }
 
     onSelectTarea(posicion: SubPosicionViewModel, dt) {
@@ -852,6 +857,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         posicion.unidadSeleccionada = unidadSeleccionadaAux;
         posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
         this.endEditCell(dt);
+
+
     }
 
     onBlurTarea(event, posicion: SubPosicionViewModel) {
@@ -904,23 +911,23 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     // Se asocian los datos de la grilla a su respectiva posicion
     asociarCM($event) {
         let posicionIndex = this.model.posiciones.findIndex(posicion => posicion.id == $event.posicionSeleccionada.id);
-        
-        this.model.posiciones[posicionIndex].numeroContratoSuperior         = $event.contrato.NumeroContratoSuperior;
+
+        this.model.posiciones[posicionIndex].numeroContratoSuperior = $event.contrato.NumeroContratoSuperior;
         this.model.posiciones[posicionIndex].numeroPosicionContratoSuperior = $event.contrato.NumeroPosicionContratoSuperior;
-        this.model.posiciones[posicionIndex].provedorFijo                   = $event.contrato.ProveedorFijo;
-        this.model.posiciones[posicionIndex].nombreProveedor                = $event.contrato.NombreProveedor;
-        this.model.posiciones[posicionIndex].orgCompras                     = $event.contrato.OrganizacionCompras;
-        this.model.posiciones[posicionIndex].precioBruto                    = $event.contrato.PrecioBruto;
+        this.model.posiciones[posicionIndex].provedorFijo = $event.contrato.ProveedorFijo;
+        this.model.posiciones[posicionIndex].nombreProveedor = $event.contrato.NombreProveedor;
+        this.model.posiciones[posicionIndex].orgCompras = $event.contrato.OrganizacionCompras;
+        this.model.posiciones[posicionIndex].precioBruto = $event.contrato.PrecioBruto;
 
         // Set Combos
         let unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == $event.contrato.UnidadMedida);
-        this.model.posiciones[posicionIndex].unidadSeleccionada    = unidadSeleccionadaAux;
+        this.model.posiciones[posicionIndex].unidadSeleccionada = unidadSeleccionadaAux;
 
         let monedaSeleccionadaAux = this.combos.Moneda.find(x => x.Codigo == $event.contrato.ClaveMoneda);
-        this.model.posiciones[posicionIndex].monedaSeleccionada    = monedaSeleccionadaAux;
+        this.model.posiciones[posicionIndex].monedaSeleccionada = monedaSeleccionadaAux;
 
         let almacenSeleccionadoAux = this.combos.Almacen.find(x => x.Codigo == $event.contrato.Almacen);
-        this.model.posiciones[posicionIndex].selectAlmacenEntrega  = almacenSeleccionadoAux;
+        this.model.posiciones[posicionIndex].selectAlmacenEntrega = almacenSeleccionadoAux;
 
         let grupoArticuloSeleccionadoAux = this.combos.GrupoArticulo.find(x => x.Codigo == $event.contrato.GrupoArticulo);
         this.model.posiciones[posicionIndex].selectArticuloCompras = grupoArticuloSeleccionadoAux;
@@ -928,8 +935,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         let grupoComprasSeleccionadoAux = this.combos.GrupoCompras.find(x => x.Codigo == $event.contrato.GrupoCompras);
         this.model.posiciones[posicionIndex].selectGrupoCompras = grupoComprasSeleccionadoAux;
 
-        this.displayAsociar = false;
-        this.textoAsociarBtn = 'EDITAR CONTRATO'
+        this.listarContratosAsociados();
+
+
     }
 
     public showObtenerContratoMarcoDialog() {
@@ -952,7 +960,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 let moneda = this.combos.Moneda.find(x => x.Codigo == contratoMarco.claveMoneda);
 
                 let servicioMaterialObj = {
-                    Codigo: pos.numeroMaterial, 
+                    Codigo: pos.numeroMaterial,
                     Descripcion: pos.textoMaterialOServicio,
                     UnidadMedidaBase: pos.unidadMedida
                 };
@@ -979,17 +987,17 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 if (tipoImputacionObj) {
                     newPos.tipoImputacion = tipoImputacionObj;
                 }
-        
+
                 let almacenSeleccionadoObj = this.combos.Almacen.find(x => x.Codigo == pos.almacen);
                 if (almacenSeleccionadoObj) {
-                    newPos.selectAlmacenEntrega  = almacenSeleccionadoObj;
+                    newPos.selectAlmacenEntrega = almacenSeleccionadoObj;
                 }
-        
+
                 let grupoArticuloSeleccionadoObj = this.combos.GrupoArticulo.find(x => x.Codigo == pos.grupoArticuloMateriales);
                 if (grupoArticuloSeleccionadoObj) {
                     newPos.selectArticuloCompras = grupoArticuloSeleccionadoObj;
                 }
-        
+
                 let grupoComprasSeleccionadoObj = this.combos.GrupoCompras.find(x => x.Codigo == contratoMarco.grupoCompras);
                 if (grupoComprasSeleccionadoObj) {
                     newPos.selectGrupoCompras = grupoComprasSeleccionadoObj;
@@ -1006,10 +1014,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                             Descripcion: subPos.textoBreve,
                             UnidadMedidaBase: subPos.unidadMedidaBase
                         };
-                        newSubPos.codigoServicio =  { ...codigoServicioObj }
+                        newSubPos.codigoServicio = { ...codigoServicioObj }
                         newSubPos.tareaSubcontratar = subPos.textoBreve;
                         newSubPos.tareaSubcontratarObj = { ...codigoServicioObj };
-                
+
                         var unidadSeleccionadaObj = this.combos.Unidades.find(x => x.Descripcion == subPos.unidadMedidaBase);
                         if (unidadSeleccionadaObj) {
                             newSubPos.unidadSeleccionada = unidadSeleccionadaObj;
@@ -1031,15 +1039,15 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.obtenerContratoMarcoService.close();
     }
 
-    public get esTipoMaterial(): boolean  {
+    public get esTipoMaterial(): boolean {
         return this.tienePosicionSeleccionada && this.model.selectTipoPosicion.Codigo == "MATERIALES";
     }
 
-    public get esTipoServicio(): boolean  {
-        return  this.tienePosicionSeleccionada && this.model.selectTipoPosicion.Codigo == "SERVICIO";
+    public get esTipoServicio(): boolean {
+        return this.tienePosicionSeleccionada && this.model.selectTipoPosicion.Codigo == "SERVICIO";
     }
 
-    public get esTipoContratoMarco(){
+    public get esTipoContratoMarco() {
         return this.model.posicionActual.tipoPosicion == "CONTRATO MARCO";
     }
 
@@ -1047,26 +1055,92 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         return (this.model.selectTipoPosicion != undefined && this.model.selectTipoPosicion != null && this.model.selectTipoPosicion.Id != "");
     }
 
-    public get tieneCodigoServicio(): boolean  {
+    public get tieneCodigoServicio(): boolean {
         return this.model.selectTipoPosicion.Codigo == "MATERIALES" && this.model.posicionActual.codigoServicio != null;
     }
 
     clearCode() {
-        if (this.model.posicionActual.tareaSubcontratar != null ) {
-          this.model.posicionActual.codigoServicio = null;
-        }    
-    }    
+        if (this.model.posicionActual.tareaSubcontratar != null) {
+            this.model.posicionActual.codigoServicio = null;
+        }
+    }
 
     clearCode2() {
-        if (this.model.posicionActual.codigoServicio != null ) {
-          this.model.posicionActual.tareaSubcontratarObj = null;
-        }    
-    }    
+        if (this.model.posicionActual.codigoServicio != null) {
+            this.model.posicionActual.tareaSubcontratarObj = null;
+        }
+    }
 
     checkCode() {
         if (this.model.posicionActual.codigoServicio == '' || this.model.posicionActual.codigoServicio == null) {
-          this.model.posicionActual.tareaSubcontratarObj = null;
+            this.model.posicionActual.tareaSubcontratarObj = null;
 
+        }
+    }
+
+    buscarContratosAsociados() {
+        // var posiciones = this.model.posiciones.filter(x => x.Centro === true);
+    }
+
+    eliminarContratoAsociar(posicion) {
+
+        posicion.numeroContratoSuperior = "";
+        posicion.provedorFijo = "";
+        posicion.nombreProveedor = "";
+        posicion.orgCompras = "";
+        posicion.numeroPosicionContratoSuperior = "";
+    }
+
+    listarContratosAsociados() {
+        try {
+
+            this.subscription = this.service.listarContratosAsociar(this.model.posiciones
+            ).subscribe(
+                (result: any) => {
+
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.listaDePosicionesAsociar = result.data;
+                        this.validarBotonAsociarEditarContrato();
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false;
+        }
+
+        return false;
+    }
+
+    validarBotonAsociarEditarContrato() {
+
+        //eliminar contrato marco     
+
+        if (this.listaDePosicionesAsociar == null || this.listaDePosicionesAsociar.length == 0) {
+            this.alertaParaAsociar = false;
+            this.displayBotonAsociar = false;
+        } else {
+            var puedoAsociarContrato = this.listaDePosicionesAsociar.
+                some(x => x.Proveedor == null || x.Proveedor == "")
+            if (puedoAsociarContrato) {
+                this.alertaParaAsociar = true;
+                this.displayBotonAsociar = true;
+                this.textoAsociarBtn = 'ASOCIAR CONTRATO'
+            } else {
+                this.alertaParaAsociar = false;
+                this.displayBotonAsociar = true;
+                this.textoAsociarBtn = 'EDITAR CONTRATO'
+            }
         }
     }
 

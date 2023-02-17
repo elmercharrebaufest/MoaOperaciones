@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './solp/solp';
 import { EmailComposeModel } from '../common/email-compose/email-compose.model';
+import { SolpPosicion } from './solp/solp-posicion';
 
 @Injectable({
     providedIn: 'root'
@@ -395,6 +396,29 @@ export class ComprasService extends BaseService {
                     this.observableListaSolp.next(data)
                 }
               );
+    }
+
+    listarContratosAsociar(posiciones: SolpPosicion[]): Observable<any> {
+     var json =  posiciones.filter(x => x.codigoServicio != null).map(x => {                
+                return {                  
+                    FechaEntregaServicio: x.fechaEntregaServicio,
+                    Centro: this.getObjetoCodigo(x.selectCentroEntrega && x.selectCentroEntrega.Codigo),
+                    Indice: x.numeroPosicion,
+                    ProveedorFijo: x.provedorFijo,
+                    NumeroContratoSuperior: x.numeroContratoSuperior,  
+                    CodigoMaterialSap: this.getObjetoCodigo(x.codigoServicio && x.codigoServicio.Codigo), 
+                    Tarea: x.tareaSubcontratar,
+                    
+                }
+            });
+
+        var solpJson = JSON.stringify(json);
+
+        let params: HttpParams = new HttpParams()
+            .append('solpJson',  solpJson)   
+
+        return this.http
+            .get("/api/compras/ListarAsociarContrato", { params: params })
     }
 
 }

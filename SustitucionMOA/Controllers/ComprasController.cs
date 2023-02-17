@@ -651,5 +651,25 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult ListarAsociarContrato(string solpJson)
+        {
+            try
+            {
+                var posiciones = JsonConvert.DeserializeObject<List<SolpPosicionDto>>(solpJson);
+                return JsonCustom(new { data = service.DevolverContratosAsociados(posiciones) });
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }

@@ -2649,6 +2649,21 @@ namespace SustitucionMOAUtils.Services
             }
             return result;
         }
+        public List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones)
+        {
+            var contratosParaAsociar = new List<AsociarContratoDto>();
+            foreach (var p in posiciones)
+            {
+                if (p.FechaEntregaServicio.HasValue && p.CodigoMaterialSap != null && !string.IsNullOrEmpty(p.CodigoMaterialSap.Codigo))
+                {
+                  var contratos = ListarFuenteAprovisionamiento(p.FechaEntregaServicio.Value.ToString("yyyy-MM-dd"), p.CodigoMaterialSap.Codigo.Remove(0, 10), p.Centro.Codigo);
+                    var asociado = new AsociarContratoDto { Indice = p.Indice, Tarea = p.Tarea, Codigo = p.CodigoMaterialSap.Codigo, Centro = p.Centro.Codigo, ContratoMarco = p.NumeroContratoSuperior, Proveedor = p.ProveedorFijo, ContratosAsociados = contratos };
+                    contratosParaAsociar.Add(asociado);
+                }
+            }
+            return contratosParaAsociar;
+        }
+
     }
 
     public static class SolpTemplateKeys

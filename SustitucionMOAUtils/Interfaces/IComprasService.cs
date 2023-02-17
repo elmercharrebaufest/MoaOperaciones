@@ -49,5 +49,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro);
         List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro);
         ListaPaginada<SolpDto> ListarSolpComprador(Paginacion paginacion, string nroSolp = null);
+
+        List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones);
     }
 }
