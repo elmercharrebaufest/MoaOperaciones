@@ -142,11 +142,13 @@ export class ObtenerContratoMarcoComponent implements OnInit {
     this.setNumeroContrato('');
     this.contratoMarcoModel = null;
     this.posicionesAsOptions = [];
+    this.primerBusqueda = true;
   }
 
   onClose() {
     this.onClear();
     this.obtenerContratoMarcoService.close();
+    this.primerBusqueda = true;
   }
   
   onAgregarPosiciones() {

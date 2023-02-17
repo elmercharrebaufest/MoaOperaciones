@@ -948,7 +948,15 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.service.obtenerContratoMarco(args.centro, args.numeroContrato).subscribe((response: any) => {
             if (response.data && response.data.length) {
                 this.contratoMarco = new ContratoMarco(response.data[0]);
+
+                if((this.esTipoMaterial && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length == 0 || pos.subPosiciones == null))
+                 || (this.esTipoServicio && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length > 0))){               
+                    //this.contratoMarco = null;
+                } else {
+                    this.contratoMarco = null;
+                }
             }
+           
         });
     }
 
