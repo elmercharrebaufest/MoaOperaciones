@@ -41,6 +41,8 @@ export class ObtenerContratoMarcoComponent implements OnInit {
       this.visible = value;
       if (!value) {
         this.onClear();
+      } else {
+        this.onClear();
       }
     });
   }
