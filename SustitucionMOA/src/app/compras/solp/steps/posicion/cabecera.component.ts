@@ -335,7 +335,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 reject: () => {
                 }
             });
-           
+
         }
     }
 
@@ -950,14 +950,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             if (response.data && response.data.length) {
                 this.contratoMarco = new ContratoMarco(response.data[0]);
 
-                if((this.esTipoMaterial && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length == 0 || pos.subPosiciones == null))
-                 || (this.esTipoServicio && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length > 0))){               
+                if ((this.esTipoMaterial && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length == 0 || pos.subPosiciones == null))
+                    || (this.esTipoServicio && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length > 0))) {
                     //this.contratoMarco = null;
                 } else {
                     this.contratoMarco = null;
                 }
             }
-           
+
         });
     }
 
@@ -1135,7 +1135,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
         //eliminar contrato marco     
 
-        if (this.listaDePosicionesAsociar == null || this.listaDePosicionesAsociar.length == 0) {
+        if ((this.listaDePosicionesAsociar == null || this.listaDePosicionesAsociar.length == 0) || this.listaDePosicionesAsociar.some(x => x.ContratosAsociados != null && x.ContratosAsociados.length == 0)) {
             this.alertaParaAsociar = false;
             this.displayBotonAsociar = false;
         } else {
@@ -1151,6 +1151,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 this.textoAsociarBtn = 'EDITAR CONTRATO'
             }
         }
+
     }
 
 }

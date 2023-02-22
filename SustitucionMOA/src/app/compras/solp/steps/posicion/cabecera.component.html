@@ -180,7 +180,7 @@
                                         (onFocus)=" $event.target.select();" 
                                         (onClear)="posicion.selectAlmacenEntrega = undefined"
                                         (completeMethod)="buscarCombo($event, 'CENTRO')"
-                                        (onChange)="centroSeleccionado()" 
+                                        (onChange)="centroSeleccionado(); listarContratosAsociados(); eliminarContratoAsociar(posicion)"    
                                         [disabled] = "posicion.concluido"
                                         emptyMessage="Ningún centro encontrado" 
                                         [minLength]="1" 
@@ -204,7 +204,7 @@
                                         optionLabel="CodigoDescripcion" 
                                         dataKey="Id"
                                         appendTo="body"                                     
-                                        (completeMethod)="buscarCombo($event, 'ALMACEN')"
+                                        (completeMethod)="buscarCombo($event, 'ALMACEN')"                                     
                                         (onFocus)=" $event.target.select()" 
                                         [disabled] = "posicion.concluido"
                                         placeholder="Almacen"
@@ -237,10 +237,9 @@
                                                 (completeMethod)="autocompleteMaterialSolp($event)"
                                                 (onFocus)="$event.target.select(); posicion.setTabPosicion();"
                                                 (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio, rowIndex, dt)"
-                                                (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion(); eliminarContratoAsociar(posicion);
-                                                listarContratosAsociados(posicion); "
+                                                (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion(); eliminarContratoAsociar(posicion);"
                                                 (onBlur)="checkCode()"
-                                                (ngModelChange)="clearCode2()"
+                                                (ngModelChange)="clearCode2(); listarContratosAsociados()"
                                                 >
                                             </p-autoComplete>
                                         </ng-template>
