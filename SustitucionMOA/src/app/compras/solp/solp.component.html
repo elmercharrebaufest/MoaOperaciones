@@ -94,7 +94,7 @@
     (finalizarEmitter)="finalizar($event)">
 </finalizar-solp>
 
-<p-dialog [(visible)]="displaySAP" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}">
+<p-dialog [(visible)]="displaySAP" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" (onHide)="solpFinalizadaVolverHome()">
     <p-header class="headerModal">
         ¡Felicitaciones!
     </p-header>
@@ -108,7 +108,7 @@
     </p-footer>
 </p-dialog>
 
-<p-dialog [(visible)]="displaySAPEditar" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}">
+<p-dialog [(visible)]="displaySAPEditar" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" (onHide)="salir()">
     <p-header class="headerModal">
         ¡Felicitaciones!
     </p-header>
@@ -122,7 +122,7 @@
     </p-footer>
 </p-dialog>
 
-<p-dialog [(visible)]="displaySAPVincularPliego" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}">
+<p-dialog [(visible)]="displaySAPVincularPliego" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" (onHide)="salir()">
     <p-header class="headerModal">
         ¡Felicitaciones!
     </p-header>
