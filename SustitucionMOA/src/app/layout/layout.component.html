@@ -622,27 +622,25 @@
                 </div>
 
                 <div class="panel panel-default" *ngIf="!isAmbos() || isNoGranosSelected()">
-                    <div class="panel-heading seccion" role="tab" id="compras" *ngIf="isAuthorized('ABM SOLP')">
+                    <div class="panel-heading seccion" role="tab" id="compras" *ngIf="isAuthorized('VER SOLAPA COMPRA')">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                             href="#collapseCompras" aria-expanded="false" aria-controls="collapseCompras">
                             Compras <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
-                    <div id="collapseCompras" class="collapse" aria-labelledby="compras" role="tabpanel"
-                        >
-                        <div class="panel-body" *ngIf="isAuthorized('ABM SOLP')">
-                            <div>
+                    <div id="collapseCompras" class="collapse" aria-labelledby="compras" role="tabpanel">                        
+                        <div class="panel-body" >
+                            <div *ngIf="isAuthorized('ABM SOLP')">
                                 <a (click)="goToSeccion('/compras/dashboard')" href="#">
                                     DASHBOARD SOLICITANTE
                                 </a>
                             </div>
-                        </div>
-                        <div class="panel-body" *ngIf="isAuthorized('VER SOLPS COMPRADOR')">
-                            <div>
+                       
+                             <div *ngIf="isAuthorized('VER SOLPS COMPRADOR')">                          
                                 <a (click)="goToSeccion('/compras/dashboardComprador')" href="#">
                                     DASHBOARD COMPRADOR
-                                </a>
-                            </div>
+                                </a>                           
+                             </div>
                         </div>
                     </div>
                                    
