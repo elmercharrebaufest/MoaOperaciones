@@ -1,7 +1,8 @@
 <div *ngIf="documento != null">
     <p-dialog [visible]="visible|async" modal="modal" [width]="550" [draggable]="false" [closable]="true"
-        appendTo="body" positionTop="30"
-        [contentStyle]="{ 'max-height':'1500px', 'min-height':'500px','height':'90vh','display':'flex','flex-direction':'column','gap':'1rem','justify-content':'space-between'}"
+        appendTo="body" 
+        [style]="{'overflow-y':'auto','max-height':'100vh'}"
+        [contentStyle]="{ 'max-height':'1500px', 'height':'50vh','display':'flex','flex-direction':'column','gap':'1rem','justify-content':'space-between'}"
         (visibleChange)="!$event? onCancelarAperturarEcheq():null">
         <p-header>
             Apertura Liquidación #{{documento.numeroCOE}}
