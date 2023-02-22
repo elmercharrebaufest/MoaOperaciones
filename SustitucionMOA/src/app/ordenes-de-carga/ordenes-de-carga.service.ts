@@ -1,9 +1,9 @@
 
-import { throwError as observableThrowError, Observable } from 'rxjs';
+import { throwError as observableThrowError, Observable, BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { BaseService } from './../common/services/BaseService';
-import { timeoutWith, map } from 'rxjs/operators';
+import { timeoutWith } from 'rxjs/operators';
 import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
 import { ObtenerContratosDisponiblesResponse } from '../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { ApiResponse } from '../common/models/response';
@@ -12,7 +12,29 @@ import { ApiResponse } from '../common/models/response';
     providedIn: 'root'
 })
 export class OrdenesDeCargaService extends BaseService {
-
+    private estadosFiltro = new BehaviorSubject<Array<string>>([
+        "Pendiente",
+        "Confirmado",
+        "Pendiente aprobación crédito",
+        "Entrega generada",
+        "Anulada",
+        "Vencida",
+        "Entrega pendiente",
+        "Anulada por vencimiento",
+        "Anulación solicitada",
+        "Edición solicitada",
+        "Error de datos",
+        "Contrato vencido",
+        "Edición rechazada",
+        "Sin Enviar a SAP",
+        "Entrega anulada, pedido pendiente de anulación"
+    ]);
+    get estadosFiltrosSeleccionados(): Array<string> {
+        return this.estadosFiltro.value;
+    }
+    setEstadosFiltro(value: Array<string>) {
+        this.estadosFiltro.next(value)
+    }
     public getOrdenDeCarga(ordenDeCargaId: Number): Observable<any> {
         let params: HttpParams = new HttpParams()
             .append('ordenDeCargaId', ordenDeCargaId.toString());
