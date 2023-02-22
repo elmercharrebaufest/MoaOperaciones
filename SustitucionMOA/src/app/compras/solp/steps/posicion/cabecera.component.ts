@@ -896,6 +896,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 // posicion.doValidatePosicion(this.model.tipoSolpSap);
             });
             this.model.calcularValorTotalPorMoneda();
+            this.listarContratosAsociados();
         }
     }
 
