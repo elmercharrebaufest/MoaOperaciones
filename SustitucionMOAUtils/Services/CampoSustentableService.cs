@@ -71,9 +71,9 @@ namespace SustitucionMOAUtils.Services
             if (UsarArchivoId == false)
             {
                 GuardarArchivoKMZ(campoProveedor, archivoKmz);
-                repositorio.GuardarCambios();                
+                repositorio.GuardarCambios();
 
-            }     
+            }
             var archivo = archivoKmz == null ? Convert.ToBase64String(System.IO.File.ReadAllBytes(ruta)) : ConvertirArchivo64(archivoKmz);
             InformarCampoSustentable(campoProveedor, archivo);
             return new Resultado { IdEntidad = campoProveedor.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
@@ -122,7 +122,7 @@ namespace SustitucionMOAUtils.Services
             //GuardarArchivoKMZ(campoProveedor, archivoKmz);
 
             //repositorio.GuardarCambios();
-           
+
             InformarCampoSustentable(campoProveedor, "");
 
             return new Resultado { IdEntidad = campoProveedorObj.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableActualizado };
@@ -306,14 +306,13 @@ namespace SustitucionMOAUtils.Services
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
             var cosecha = repositorio.Obtener<Cosecha>(cosechaId);
 
-            string razonSocial = "";
 
             if (string.IsNullOrEmpty(CUITDeclaracion))
             {
                 CUITDeclaracion = proveedor.CUIT;
-                razonSocial = proveedor.RazonSocial;
             }
 
+            var razonSocial = proveedor.RazonSocial;
             var estado = new EstadoDeclaracionSustentableDto
             {
                 DeclaracionFirmada = false,
@@ -424,9 +423,12 @@ namespace SustitucionMOAUtils.Services
 
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
-            if (string.IsNullOrEmpty(CUITDeclaracion))
+            if (string.IsNullOrEmpty(CUITDeclaracion) || usuario.EsCorredor())
             {
                 CUITDeclaracion = proveedor.CUIT;
+            }
+            if (string.IsNullOrEmpty(razonSocialDeclaracion) || usuario.EsCorredor())
+            {
                 razonSocialDeclaracion = proveedor.RazonSocial;
             }
 
