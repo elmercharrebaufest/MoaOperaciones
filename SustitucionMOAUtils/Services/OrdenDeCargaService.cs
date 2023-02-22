@@ -632,6 +632,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     filtrosEstados.Add(EstadoOrdenDeCarga.Confirmado);
                     filtrosEstados.Add(EstadoOrdenDeCarga.PendienteAprobacionCredito);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaPendiente);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
@@ -655,11 +656,13 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.SinEnviarASAP);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion);
                 }
                 if (esPuerto)
                 {
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion);
                 }
                 if (esAdmin)
                 {
@@ -678,6 +681,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.SinEnviarASAP);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion);
                 }
                 Expression<Func<OrdenDeCarga, bool>> filtro = o => o.FechaCarga <= fechaFinDateTime
                     && o.FechaCarga >= fechaIncioDateTime
@@ -730,7 +734,9 @@ namespace SustitucionMOAUtils.Services
                         || n.Estado == EstadoOrdenDeCarga.AnulacionSolicitada
                         || n.Estado == EstadoOrdenDeCarga.ContratoVencido
                         || n.Estado == EstadoOrdenDeCarga.EdicionRechazada
-                        || n.Estado == EstadoOrdenDeCarga.SinEnviarASAP)
+                        || n.Estado == EstadoOrdenDeCarga.SinEnviarASAP
+                        || n.Estado == EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion
+                        )
                     );
                 //Log.Debug(this.GetType().Name, "Listar", $" listadoSinFiltro: {listadoSinFiltro.ToJson()}");
                 listado = listadoSinFiltro
@@ -2368,7 +2374,7 @@ namespace SustitucionMOAUtils.Services
             if (tieneNumeroEntrega)
                 AnularEntregaEnSap(orden);
 
-            AnularPedidoEnSap(orden);
+            AnularPedidoEnSap(orden, tieneNumeroEntrega);
         }
         public string EnviarOrdenesASAP(List<int> ordenesId, string mailUsuario)
         {
@@ -2419,28 +2425,32 @@ namespace SustitucionMOAUtils.Services
         {
             var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
             if (resultadoAnularEntrega.HayError)
-                throw new InfoCustomException(resultadoAnularEntrega.Errores[0].Message);
+                //Pendiente revisión de los mensajes acorde a las verdaderas razones de error
+                throw new InfoCustomException("La entrega está tomada en SAP");
             else
             {
-                orden.Estado = EstadoOrdenDeCarga.Pendiente;
+                orden.Estado = EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion;
+                orden.NumeroEntrega = null;
+                orden.FechaEntregaGenerada = null;
                 repositorio.GuardarCambios();
             }
         }
-        private void AnularPedidoEnSap(OrdenDeCarga orden)
+        private void AnularPedidoEnSap(OrdenDeCarga orden, bool tieneNumeroEntrega)
         {
-            var tieneNumeroEntrega = !string.IsNullOrEmpty(orden.NumeroEntrega);
             var tieneNumeroPedido = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) || !string.IsNullOrEmpty(orden.NumeroPedido);
             if (!tieneNumeroPedido)
                 return;
             var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
             if (resultadoAnularOrden.HayError)
-                throw new InfoCustomException(tieneNumeroEntrega ? _errorAnulacion : resultadoAnularOrden.Errores[0].Message);
+                //Pendiente revisión de los mensajes acorde a las verdaderas razones de error
+                throw new InfoCustomException("El pedido está tomado en SAP");
         }
         private List<string> ObtenerContratosAbiertos(List<string> contratos)
         {
             return contratos.Where(contrato => consumer.VerificarContratoAbierto(contrato)).ToList();
         }
-        private void TieneVariosContratosAbiertos(OrdenDeCarga ordenDeCarga, List<string> contratosAbiertos) {
+        private void TieneVariosContratosAbiertos(OrdenDeCarga ordenDeCarga, List<string> contratosAbiertos)
+        {
             var result = string.Join(",", contratosAbiertos);
             if (string.IsNullOrEmpty(ordenDeCarga.NumeroPedido))
             {

@@ -277,7 +277,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mostrarBotonVerHistorial = true;
 
             if (this.esAnulador) {
-                if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Confirmado || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ErrorDeCarga || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada) {
+                if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Confirmado || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ErrorDeCarga || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion) {
                     this.mostrarBotonAnular = true;
                 } 
             }
@@ -647,6 +647,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.subscriptionDropDowns = this.service.anular(this.ordenDeCargaId).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
+                    document.getElementById("closemodalAnularOrden").click();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -654,7 +655,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        document.getElementById("closemodalAnularOrden").click();
                         this.mensajeComponent.setSuccessMsg(result.data);
 
                         this.navService.navegarSeccion(
@@ -663,6 +663,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     }
                 },
                 error => {
+                    document.getElementById("closemodalAnularOrden").click();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
