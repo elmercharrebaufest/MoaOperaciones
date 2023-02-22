@@ -39,9 +39,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
     private formBuilder: FormBuilder) {
     this.obtenerContratoMarcoService.toogleOn.subscribe(value => {
       this.visible = value;
-      if (!value) {
         this.onClear();
-      }
     });
   }
 
