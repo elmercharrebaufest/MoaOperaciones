@@ -27,8 +27,13 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var mailUsuario = SessionPersister.getUsername();
-                var contratos = reporteContratoService.GetContratosReporte(SessionPersister.Proveedor, fechaInicio, fechaFin, mostrarPendientes, mailUsuario, null);
+                var proveedor = SessionPersister.Proveedor;
+                if (string.IsNullOrEmpty(proveedor))
+                {
+                    return JsonCustom(new { logout = true });
+                }
+                
+                var contratos = reporteContratoService.GetContratosReporte(proveedor, fechaInicio, fechaFin, mostrarPendientes, null);
                 return JsonCustom(contratos);
             }
             catch (InfoCustomException e)
@@ -55,9 +60,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var mailUsuario = SessionPersister.getUsername();
                 var dataFiltro = JsonConvert.DeserializeObject<ReporteContratoWSMOAResponse>(dataContrato);
-                var contratos = reporteContratoService.GetContratosReporte(SessionPersister.Proveedor, fechaInicio, fechaFin, mostrarPendientes, mailUsuario, dataFiltro);
+                var contratos = reporteContratoService.GetContratosReporte(SessionPersister.Proveedor, fechaInicio, fechaFin, mostrarPendientes, dataFiltro);
                 return JsonCustom(contratos);
             }
             catch (InfoCustomException e)
