@@ -207,9 +207,7 @@
                                         (completeMethod)="buscarCombo($event, 'ALMACEN')"                                     
                                         (onFocus)=" $event.target.select()" 
                                         [disabled] = "posicion.concluido"
-                                        placeholder="Almacen"
-                                        >
-
+                                        placeholder="Almacen">
                                         <ng-template let-item pTemplate="selectedItem">
                                             <span>{{item.value.Codigo}}</span>
                                         </ng-template>
@@ -237,9 +235,9 @@
                                                 (completeMethod)="autocompleteMaterialSolp($event)"
                                                 (onFocus)="$event.target.select(); posicion.setTabPosicion();"
                                                 (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio, rowIndex, dt)"
-                                                (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion(); eliminarContratoAsociar(posicion);"
+                                                (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion();"
                                                 (onBlur)="checkCode()"
-                                                (ngModelChange)="clearCode2(); listarContratosAsociados()"
+                                                (ngModelChange)="clearCode2(); eliminarContratoAsociar(posicion); listarContratosAsociados(); "
                                                 >
                                             </p-autoComplete>
                                         </ng-template>
@@ -263,9 +261,9 @@
                                                 [forceSelection]="false" 
                                                 (completeMethod)="autocompleteMaterialSolp($event)"
                                                 (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)" 
-                                                (onSelect)="onSelectTarea(posicion)" 
+                                                (onSelect)="onSelectTarea(posicion,dt)" 
                                                 (onBlur)="onBlurTarea($event, posicion)"
-                                                (ngModelChange)="clearCode()"
+                                                (ngModelChange)="clearCode(); eliminarContratoAsociar(posicion); listarContratosAsociados();"
                                                 >
                                             </p-autoComplete>
                                         </ng-template>

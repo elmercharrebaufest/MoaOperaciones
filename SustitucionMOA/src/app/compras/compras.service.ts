@@ -280,7 +280,7 @@ export class ComprasService extends BaseService {
         return [];
     }
 
-    getObjetoCodigo(codigo, tabla = null) {
+    getObjetoCodigo(codigo, tabla = null, Id = null) {
         if (codigo) {
             if (tabla) {
                 return { Codigo: codigo, Tabla: tabla }
@@ -402,7 +402,7 @@ export class ComprasService extends BaseService {
      var json =  posiciones.filter(x => x.codigoServicio != null).map(x => {                
                 return {                  
                     FechaEntregaServicio: x.fechaEntregaServicio,
-                    Centro: this.getObjetoCodigo(x.selectCentroEntrega && x.selectCentroEntrega.Codigo),
+                    Centro: {Id: x.selectCentroEntrega.Id, Codigo: x.selectCentroEntrega.Codigo},
                     Indice: x.numeroPosicion,
                     ProveedorFijo: x.provedorFijo,
                     NumeroContratoSuperior: x.numeroContratoSuperior,  

@@ -2651,14 +2651,23 @@ namespace SustitucionMOAUtils.Services
         }
         public List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones)
         {
-            var contratosParaAsociar = new List<AsociarContratoDto>();
+           var contratosParaAsociar = new List<AsociarContratoDto>();
             foreach (var p in posiciones)
             {
                 if (p.FechaEntregaServicio.HasValue && p.CodigoMaterialSap != null && !string.IsNullOrEmpty(p.CodigoMaterialSap.Codigo))
                 {
+                  var datosPosicion =  AutocompleteMaterialSolp(p.CodigoMaterialSap.Codigo, p.Centro.Id);
                   var contratos = ListarFuenteAprovisionamiento(p.FechaEntregaServicio.Value.ToString("yyyy-MM-dd"), p.CodigoMaterialSap.Codigo.Remove(0, 10), p.Centro.Codigo);
-                    var asociado = new AsociarContratoDto { Indice = p.Indice, Tarea = p.Tarea, Codigo = p.CodigoMaterialSap.Codigo, Centro = p.Centro.Codigo, ContratoMarco = p.NumeroContratoSuperior, Proveedor = p.ProveedorFijo, ContratosAsociados = contratos };
-                    contratosParaAsociar.Add(asociado);
+                  var asociado = new AsociarContratoDto { 
+                      Indice = p.Indice, 
+                      Tarea = datosPosicion != null && datosPosicion.Count > 0 ? 
+                      datosPosicion[0].Descripcion : p.Tarea, 
+                      Codigo = p.CodigoMaterialSap.Codigo, 
+                      Centro = p.Centro.Codigo, 
+                      ContratoMarco = p.NumeroContratoSuperior, 
+                      Proveedor = p.ProveedorFijo, 
+                      ContratosAsociados = contratos  };                  
+                  contratosParaAsociar.Add(asociado);
                 }
             }
             return contratosParaAsociar;

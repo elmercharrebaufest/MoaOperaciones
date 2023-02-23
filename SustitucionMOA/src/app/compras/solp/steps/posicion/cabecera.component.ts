@@ -846,7 +846,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.endEditCell(dt);
 
 
-
     }
 
     onSelectTarea(posicion: SubPosicionViewModel, dt) {
@@ -854,10 +853,15 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         posicion.codigoServicio = { ...posicion.tareaSubcontratarObj };
 
         var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == posicion.codigoServicio.UnidadMedidaBase);
+        
+        if (unidadSeleccionadaAux) {
         posicion.unidadSeleccionada = unidadSeleccionadaAux;
         posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
+        }
+        
         this.endEditCell(dt);
 
+        this.listarContratosAsociados()
 
     }
 
@@ -924,14 +928,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         let unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == $event.contrato.UnidadMedida);
         this.model.posiciones[posicionIndex].unidadSeleccionada = unidadSeleccionadaAux;
 
-        let monedaSeleccionadaAux = this.combos.Moneda.find(x => x.Codigo == $event.contrato.ClaveMoneda);
-        this.model.posiciones[posicionIndex].monedaSeleccionada = monedaSeleccionadaAux;
+       // let monedaSeleccionadaAux = this.combos.Moneda.find(x => x.Codigo == $event.contrato.ClaveMoneda);
+        //this.model.posiciones[posicionIndex].monedaSeleccionada = monedaSeleccionadaAux;
 
-        let almacenSeleccionadoAux = this.combos.Almacen.find(x => x.Codigo == $event.contrato.Almacen);
-        this.model.posiciones[posicionIndex].selectAlmacenEntrega = almacenSeleccionadoAux;
+      //  let almacenSeleccionadoAux = this.combos.Almacen.find(x => x.Codigo == $event.contrato.Almacen);
+       // this.model.posiciones[posicionIndex].selectAlmacenEntrega = almacenSeleccionadoAux;
 
-        let grupoArticuloSeleccionadoAux = this.combos.GrupoArticulo.find(x => x.Codigo == $event.contrato.GrupoArticulo);
-        this.model.posiciones[posicionIndex].selectArticuloCompras = grupoArticuloSeleccionadoAux;
+      //  let grupoArticuloSeleccionadoAux = this.combos.GrupoArticulo.find(x => x.Codigo == $event.contrato.GrupoArticulo);
+      //  this.model.posiciones[posicionIndex].selectArticuloCompras = grupoArticuloSeleccionadoAux;
 
         let grupoComprasSeleccionadoAux = this.combos.GrupoCompras.find(x => x.Codigo == $event.contrato.GrupoCompras);
         this.model.posiciones[posicionIndex].selectGrupoCompras = grupoComprasSeleccionadoAux;
@@ -957,7 +961,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     this.contratoMarco = null;
                 }
             }
-
+            this.listarContratosAsociados()
         });
     }
 
@@ -1042,10 +1046,12 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
 
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
+              
             });
-            this.model.calcularValorTotalPorMoneda();
+            this.model.calcularValorTotalPorMoneda();           
         }
         this.obtenerContratoMarcoService.close();
+        this.listarContratosAsociados();
     }
 
     public get esTipoMaterial(): boolean {
