@@ -60,8 +60,14 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                var proveedor = SessionPersister.Proveedor;
+                if (string.IsNullOrEmpty(proveedor))
+                {
+                    return JsonCustom(new { logout = true });
+                }
+
                 var dataFiltro = JsonConvert.DeserializeObject<ReporteContratoWSMOAResponse>(dataContrato);
-                var contratos = reporteContratoService.GetContratosReporte(SessionPersister.Proveedor, fechaInicio, fechaFin, mostrarPendientes, dataFiltro);
+                var contratos = reporteContratoService.GetContratosReporte(proveedor, fechaInicio, fechaFin, mostrarPendientes, dataFiltro);
                 return JsonCustom(contratos);
             }
             catch (InfoCustomException e)
