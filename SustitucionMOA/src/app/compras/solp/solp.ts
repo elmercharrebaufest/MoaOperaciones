@@ -354,7 +354,7 @@ export class Solp extends CommonResponse {
 
     eliminarPosicion(posicionBorrar: any) {
         if (this.nroSolp > 0) {
-            if (posicionBorrar.isNewRow) {
+            if (posicionBorrar.concluido != true) {
                 this.posiciones = this.posiciones.filter(x => x.id != posicionBorrar.id);
             }
             else {
