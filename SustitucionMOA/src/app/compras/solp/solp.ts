@@ -307,10 +307,7 @@ export class Solp extends CommonResponse {
                         this.agregarNuevaPosicion(null as SolpPosicion);
                         posActual = this.posicionActual;
                     }
-                    console.log(solp.Posiciones)
                 });
-                    console.log(solp.Posiciones)
-
                 this.calcularValorTotalPorMoneda();
                 this.setearPosicionPorDefecto();
                 this.tituloSolp();
@@ -357,7 +354,7 @@ export class Solp extends CommonResponse {
 
     eliminarPosicion(posicionBorrar: any) {
         if (this.nroSolp > 0) {
-            if (posicionBorrar.concluido == null) {
+            if (posicionBorrar.concluido != true) {
                 this.posiciones = this.posiciones.filter(x => x.id != posicionBorrar.id);
             }
             else {
