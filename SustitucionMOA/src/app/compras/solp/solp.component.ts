@@ -860,7 +860,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     private get fromEmail(): string {
-        return this.solpActual.mail != undefined && this.solpActual.mail != null ? this.solpActual.mail : "";
+        return this.solpActual.mail != undefined && this.solpActual.mail != null ? this.solpActual.mail : sessionStorage.getItem("username");
     }
 
     private get nombreDePedido(): string {
