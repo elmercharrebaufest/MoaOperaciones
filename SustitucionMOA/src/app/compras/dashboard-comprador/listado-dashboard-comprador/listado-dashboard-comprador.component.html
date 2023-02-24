@@ -12,11 +12,7 @@
         <p-table #tabla [value]="tablaSolp" responsiveLayout="scroll | stack">
             <ng-template pTemplate="header" let-columns class="lista-header">
                 <tr>
-                    <th [pSortableColumn]="'TipoSolpSap'" data-toggle="tooltip" title="Numero SOLP"
-                        style="display: none; width: 50px !important;">
-                        Tipo Solp
-                    </th>
-                    <th data-toggle="tooltip" title="Acciones SOLP"   style="width: 50px !important;"></th>
+                    <th data-toggle="tooltip" title="Acciones SOLP"></th>
                     <th style="cursor:pointer" title="Numero SOLP" (click)="onOrder('NroSolp')">
                         Numero SOLP
                         <span><i
@@ -81,7 +77,7 @@
                     <td style="display:none;">
                         {{rowData.TipoSolpSap}}
                     </td>
-                    <td class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
+                    <td style="padding-left: 0px; padding-right: 0px;">
                         <div *ngIf="rowData.TipoSolpSap == 2" class="col-md-2">
                             <span><img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento"
                                     style="height:25px; cursor:default" /></span>
