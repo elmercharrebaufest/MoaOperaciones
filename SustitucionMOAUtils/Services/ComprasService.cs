@@ -2666,11 +2666,12 @@ namespace SustitucionMOAUtils.Services
                       Centro = p.Centro.Codigo, 
                       ContratoMarco = p.NumeroContratoSuperior, 
                       Proveedor = p.ProveedorFijo, 
-                      ContratosAsociados = contratos  };                  
+                      ContratosAsociados = contratos,
+                  };                  
                   contratosParaAsociar.Add(asociado);
                 }
             }
-            return contratosParaAsociar;
+            return contratosParaAsociar.Where(x => x.ContratosAsociados != null && x.ContratosAsociados.Count > 0).ToList();
         }
 
     }

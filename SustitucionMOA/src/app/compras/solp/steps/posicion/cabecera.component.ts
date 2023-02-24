@@ -1141,7 +1141,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
         //eliminar contrato marco     
 
-        if ((this.listaDePosicionesAsociar == null || this.listaDePosicionesAsociar.length == 0) || this.listaDePosicionesAsociar.some(x => x.ContratosAsociados != null && x.ContratosAsociados.length == 0)) {
+        if ((this.listaDePosicionesAsociar == null || this.listaDePosicionesAsociar.length == 0)) {
             this.alertaParaAsociar = false;
             this.displayBotonAsociar = false;
         } else {
