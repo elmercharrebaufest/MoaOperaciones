@@ -369,7 +369,7 @@ namespace SustitucionMOAUtils.Services
             //var fileKey = FileKeys.DeclaracionCampoSustentable;
             var fileKey = string.Concat(FileKeys.DeclaracionCampoSustentable, "-", cosechaId);
 
-            if (string.IsNullOrEmpty(CUITDeclaracion))
+            if (string.IsNullOrEmpty(CUITDeclaracion) || usuario.EsCorredor())
             {
                 CUITDeclaracion = proveedor.CUIT;
             }
