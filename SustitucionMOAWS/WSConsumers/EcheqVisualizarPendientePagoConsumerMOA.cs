@@ -33,7 +33,7 @@ namespace SustitucionMOAWS.WSConsumers
                     listaFechas.FirstOrDefault().fechaInicio = DateTime.Now.Date.AddYears(-10);
                 }
 
-                ZMPES4100[] fechas = new ZMPES4100[] { };            
+                ZMPES4100[] fechas = new ZMPES4100[] { };
 
                 if (listaFechas.FirstOrDefault() != null)
                 {
@@ -67,7 +67,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public List<EcheqNegocioDto> Map(ZMPES6900[] EX_SALIDA)
         {
-            return EX_SALIDA.Select(pagosPendientes=>
+            return EX_SALIDA.Select(pagosPendientes =>
                 new EcheqNegocioDto()
                 {
                     Contrato = pagosPendientes.CONTRATO,
