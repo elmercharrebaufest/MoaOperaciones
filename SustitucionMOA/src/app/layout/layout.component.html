@@ -429,9 +429,9 @@
                             <div *ngIf="isAuthorized('CREAR CONTRATOS') && isGranosSelected()">
                                 <a (click)="goToSeccion('/reporte/contrato')" href="#">Reporte de mis cargas</a>
                             </div>
-                            <div *ngIf="isAuthorized('VER ECHEQ') && isGranosSelected() && (!isAuthorized('CORREDOR') || isAuthorized('VER ECHEQ ADMIN'))">
+                            <!--<div *ngIf="isAuthorized('VER ECHEQ') && isGranosSelected()">
                                 <a (click)="goToSeccion('/echeq/gestion')" href="#">Gestión Echeq</a>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -450,9 +450,6 @@
                             </div>
                             <div>
                                 <a (click)="goToSeccion('/reporte-contrato/')" href="#">Reporte de contratos</a>
-                            </div>
-                            <div *ngIf="isAuthorized('VER ORDENES DE CARGA FASON')">
-                                <a (click)="goToSeccion('/ordenes-de-carga-fason/')" href="#">Ordenes de carga fason</a>
                             </div>
                         </div>
                     </div>

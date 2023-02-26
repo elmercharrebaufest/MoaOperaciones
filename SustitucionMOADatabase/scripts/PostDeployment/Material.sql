@@ -23,11 +23,6 @@ BEGIN
 	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('99059 - LECITINA DE GIRASOL','99059','1')
 END
 
-IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.Material WHERE CodigoSap = '99709' and Nombre = '99709 - PELLET DE GIRASOL INTEGRAL' ) 
-BEGIN 
-	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('99709 - PELLET DE GIRASOL INTEGRAL','99709','1')
-END
-
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.Material WHERE CodigoSap = '99056' and Nombre = '99056 - LECITINA DE SOJA' ) 
 BEGIN 
 	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('99056 - LECITINA DE SOJA','99056','1')
@@ -68,7 +63,5 @@ BEGIN
 	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('94687 - ACEITE GIRASOL CRUDO','94687','2')
 END
 
-IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.Material WHERE CodigoSap = '99709' and Nombre = '99709 - PELLET DE GIRASOL INTEGRAL' and TablaSeccionMaterial = '2') 
-BEGIN 
-	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('99709 - PELLET DE GIRASOL INTEGRAL','99709','2')
-END
+UPDATE Material SET Nombre = '99709 - PELLET DE GIRASOL INTEGRAL' WHERE CodigoSap = '99709'
+

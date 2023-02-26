@@ -33,9 +33,17 @@ namespace SustitucionMOAUtils.Services
             string fechaInicio,
             string fechaFin,
             bool mostrarPendientes,
-            string mailUsuario,
             ReporteContratoWSMOAResponse dataFiltro)
         {
+            if (string.IsNullOrEmpty(proveedor))
+            {
+                throw new ValidationCustomException("El Cliente/Corredor no puede estar vacío");
+            }
+            if ((Convert.ToDateTime(fechaInicio) - Convert.ToDateTime(fechaFin)).TotalDays > 180)
+            {
+                throw new ValidationCustomException("El rango de fecha no puede ser mayor a 180 días.");
+            }
+
             List<FechaWS> fechas = new List<FechaWS>();
             var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
 
@@ -51,10 +59,7 @@ namespace SustitucionMOAUtils.Services
                                                                fechaFin = Convert.ToDateTime(fechaFin)}
                     }
             };
-            if ((Convert.ToDateTime(fechaInicio) - Convert.ToDateTime(fechaFin)).TotalDays > 180)
-            {
-                throw new ValidationCustomException("El rango de fecha no puede ser mayor a 180 dias.");
-            }
+            
             ReporteContratoViewModel view = new ReporteContratoViewModel();
             if (dataFiltro == null)
             {

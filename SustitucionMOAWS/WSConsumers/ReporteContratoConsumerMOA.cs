@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.OrdenCargaVisualizarCliente;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,10 @@ namespace SustitucionMOAWS.WSConsumers
                     }
                 }
                 ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
+
+                Log.Info($"SI_MPMF_MOAOP_VISUALIZAR_ZFAS Reporte contrato Request: {new { request.Cliente, request.Contrato, request.Corredor, Fechas = string.Concat(request.Fechas.Select(x => x.fechaInicio.ToShortDateString() + x.fechaFin.ToShortDateString())), request.Material, request.Pendiente, request.TipoContrato }}");
                 var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(request.Cliente, request.Contrato, request.Corredor, fechasSAPArray, request.Material, request.Pendiente, request.TipoContrato);
+                
                 var response = MapReporteContrato(result);
                 return response;
             }
