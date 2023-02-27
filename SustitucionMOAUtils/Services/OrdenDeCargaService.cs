@@ -1797,8 +1797,7 @@ namespace SustitucionMOAUtils.Services
                     string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
                     string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
 
-                    var mails = mailsMesaVentaFas.Split(';').ToList();
-                    mails.AddRange(mailsMesaENTSL.Split(';').ToList());
+                    var mails = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsMesaVentaFas, mailsMesaENTSL });
 
                     string asunto = "ALTA TTE";
 
