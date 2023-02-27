@@ -480,19 +480,15 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.CodigoVerificacionSap = "";
                 ordenDeCarga.DescripcionCodigoVerificacionSap = "";
                 var contratosAbiertos = ObtenerContratosAbiertos(result.Split(',').Select(a => a.Split('|')[0]).ToList());
-                var verificado = true;
-                if (contratosAbiertos.Count() > 1)
-                {
-                    verificado = false;
-                    TieneVariosContratosAbiertos(ordenDeCarga, contratosAbiertos);
-                }
+                //Pendiente deficinición queda como si siempre tuviera muchos contratos abiertos
+
+                TieneVariosContratosAbiertos(ordenDeCarga, contratosAbiertos);
 
                 Log.Debug(this.GetType().Name, "VerificarOrden", $" actualizarEstado, inicial: " + EstadoOrdenDeCargaExtensions.ToFriendlyString(ordenDeCarga.Estado));
                 ordenDeCarga.ActualizarEstado();
                 Log.Debug(this.GetType().Name, "VerificarOrden", $" actualizarEstado, final: " + EstadoOrdenDeCargaExtensions.ToFriendlyString(ordenDeCarga.Estado));
 
-                return verificado;
-
+                return false
             }
             else
             {
@@ -1802,8 +1798,7 @@ namespace SustitucionMOAUtils.Services
                     string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
                     string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
 
-                    var mails = mailsMesaVentaFas.Split(';').ToList();
-                    mails.AddRange(mailsMesaENTSL.Split(';').ToList());
+                    var mails = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsMesaVentaFas, mailsMesaENTSL });
 
                     string asunto = "ALTA TTE";
 
@@ -2408,7 +2403,7 @@ namespace SustitucionMOAUtils.Services
             ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
             ordenDeCarga.Corredor_Id = corredor.Id;
             ordenDeCarga.CUITCorredor = corredor.CUIT;
-            var cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
+            var cliente = usuario.Proveedores.Where(prov => prov.CUIT == ordenDeCarga.CUITCliente && prov.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente).First();
 
             return cliente;
         }
