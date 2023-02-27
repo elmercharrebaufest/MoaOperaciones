@@ -2470,50 +2470,5 @@ namespace SustitucionMOAUtils.Services
 
             }
         }
-        public string EnviarOrdenesASAP(List<int> ordenesId, string mailUsuario)
-        {
-            var ordenes = repositorio.Listar<OrdenDeCarga>(a => ordenesId.Contains(a.Id) && a.Estado == EstadoOrdenDeCarga.SinEnviarASAP);
-            var errores = new List<int>();
-            foreach (var ordenDeCarga in ordenes)
-            {
-                var crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest()
-                {
-                    IdOrdenDeCarga = ordenDeCarga.Id,
-                    ClienteCodigo = ordenDeCarga.Cliente?.CodigoProveedor,
-                    ContratoSAP = ordenDeCarga.ContratoSAP,
-                    CorredorCodigo = ordenDeCarga.Corredor?.CodigoProveedor,
-                    Cantidad = ordenDeCarga.Cantidad,
-                    MaterialCodigoSAP = ordenDeCarga.Producto?.CodigoSap,
-                    NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado,
-                    MailUsuarioSAP = mailUsuario
-                };
-                var response = CrearOrdenEnSAP(crearOrdenEnSAPRequest, true);
-                if (response.Error != null)
-                    errores.Add(ordenDeCarga.Id);
-            }
-            if (errores.Count() > 0)
-                throw new InfoCustomException($"Las siguientes ordenes no pudieron enviarse correctamente: {string.Join(", ", errores)}");
-            return $"Se han enviado las ordenes";
-        }
-        private Proveedor GetClienteParaCorredor(Usuario usuario, Proveedor corredor, OrdenDeCarga ordenDeCarga)
-        {
-            corredor = usuario.ObtenerCorredor();
-            ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
-            ordenDeCarga.Corredor_Id = corredor.Id;
-            ordenDeCarga.CUITCorredor = corredor.CUIT;
-            var cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
-
-            return cliente;
-        }
-        private void SincronizarRelacionesCorredorCliente(string codigoCorredor, VisualizarClienteResponse responseSap)
-        {
-            var corredor = repositorio.Obtener<Proveedor>(
-                            cor => cor.CodigoProveedor == codigoCorredor && cor.EstadoAprobacion == EstadoAprobacion.Aprobado);
-            foreach (var clienteDto in responseSap.Clientes)
-            {
-                var cliente = repositorio.Obtener<Proveedor>(clienteDto.Id);
-                CrearRelacionCorredorCliente(corredor, cliente);
-            }
-        }
     }
 }
