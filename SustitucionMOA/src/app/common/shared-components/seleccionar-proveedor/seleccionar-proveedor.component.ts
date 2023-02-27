@@ -23,7 +23,7 @@ import { SpinnerComponent } from '../../view-child/spinner/spinner.component';
 })
 
 export class SeleccionarProveedorComponent extends BaseComponent {
-
+@Output()dataListed = new EventEmitter<Array<any>>();
     @ViewChild("mensajeModal")
     protected mensajeModalComponent: MensajeComponent;
 
@@ -139,6 +139,7 @@ export class SeleccionarProveedorComponent extends BaseComponent {
                     } else {
                         // console.debug(' vendedores: ', result.data.vendedores);
                         this.data = result.data.vendedores;
+                        this.dataListed.emit(this.data)
                         if (this.valorInicial != "") {
                             let seleccionado = result.data.vendedores.filter(a => a.idVendedor == this.valorInicial);
                             if (seleccionado != null && seleccionado.length > 0) {

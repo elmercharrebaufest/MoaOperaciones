@@ -26,10 +26,10 @@ export interface OpcionProveedor {
 @Component({
     selector: 'app-alta',
     templateUrl: './alta.component.html',
-    providers: [VentaSustentableService]
+    providers: [VentaSustentableService],
 })
 export class AltaComponent extends BaseComponent implements OnInit {
-
+    proveedores: Array<any> = [];
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
