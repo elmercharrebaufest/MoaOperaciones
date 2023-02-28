@@ -39,14 +39,14 @@
                         <div class="col-xs-12 col-sm-12 col-md-3">
                             <p class="crearConsultaTitulos">Modo de ingreso</p>
                             <input type="radio" id="operarComoCorredor" [(ngModel)]="operarComo" name="operarComo"
-                                [value]="1" (change)="cambiarModoOperacion()" checked="checked">
+                                [value]="1" (change)="cambiarModoOperacion(true)" checked="checked">
                             <label for="operarComoCorredor">Corredor</label>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-3">
                             <p class="crearConsultaTitulos"></p>
                             <input type="radio" id="operarComoAcopiador" [(ngModel)]="operarComo" name="operarComo"
-                                [value]="2" (change)="cambiarModoOperacion()">
+                                [value]="2" (change)="cambiarModoOperacion(true)">
                             <label for="operarComoAcopiador">Acopiador</label>
                         </div>
 
