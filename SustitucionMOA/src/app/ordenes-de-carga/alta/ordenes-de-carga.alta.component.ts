@@ -77,7 +77,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     ngOnInit() {
         this.userEmail = sessionStorage.getItem("username");
-        this.desde = this.getFecha(8);
+        this.desde = this.getFecha(12);
         this.hasta = this.getFecha(0);
         this.ordenDeCarga.Cantidad = 30000;
         this.route.params.forEach((params: Params) => {
