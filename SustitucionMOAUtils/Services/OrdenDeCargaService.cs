@@ -2305,7 +2305,7 @@ namespace SustitucionMOAUtils.Services
                     Contrato = string.Empty,
                     Corredor = req.CorredorCodigo,
                     Fechas = rangoFechas,
-                    Material = string.Empty,
+                    Material = "50866",
                     Pendiente = "X", // "X" es para Contratos ABIERTOS
                     TipoContrato = string.Empty
                 };
