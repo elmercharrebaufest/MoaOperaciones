@@ -4,128 +4,146 @@
     </div>
     <br>
 </section>
-<div class="content-wraper" style="padding-top: 0px !important;">    
+<div class="content-wraper" style="padding-top: 0px !important;">
     <spinner></spinner>
     <app-filtro-dashboard-comprador></app-filtro-dashboard-comprador>
-    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">  
-      
+    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
+
         <p-table #tabla [value]="tablaSolp" responsiveLayout="scroll | stack">
             <ng-template pTemplate="header" let-columns class="lista-header">
                 <tr>
                     <th data-toggle="tooltip" title="Acciones SOLP"></th>
-                    <th style="cursor:pointer" title="Numero SOLP" (click)="onOrder('NroSolp')">
+                    <th class="headerth" title="Numero SOLP" (click)="onOrder('NroSolp')">
                         Numero SOLP
-                        <span><i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'DESC'  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'ASC' }"></i>
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'ASC' }"></i>
                         </span>
                     </th>
 
-                    <th title="Nombre de pedido" style="cursor:pointer" (click)="onOrder('NombreDeObra')">
+                    <th title="Nombre de pedido" class="headerth" (click)="onOrder('NombreDeObra')">
                         Nombre Solp
-                        <span><i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'DESC'  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'ASC' }"></i>
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'ASC' }"></i>
                         </span>
                     </th>
 
-                    <th title="Fecha de creacion de SOLP" style="cursor:pointer" (click)="onOrder('FechaCreacion')">
+                    <th title="Fecha de creacion de SOLP" class="headerth" (click)="onOrder('FechaCreacion')">
                         Fecha creación
-                        <span><i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'FechaCreacion' && orden == 'DESC'  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'FechaCreacion' && orden == 'ASC' }"></i>
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'FechaCreacion' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'FechaCreacion' && orden == 'ASC' }"></i>
+                        </span>
+                    </th>
+                    <th title="Fecha de creacion de SOLP" class="headerth" (click)="onOrder('FechaLiberacionSap')">
+                        Fecha Liberacion
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'FechaLiberacionSap' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'FechaLiberacionSap' && orden == 'ASC' }"></i>
                         </span>
                     </th>
 
-                    <th title="Fecha de creacion de SOLP" style="cursor:pointer" (click)="onOrder('UsuarioActual.Mail')">
+                    <th title="Fecha de creacion de SOLP" class="headerth" (click)="onOrder('UsuarioActual.Mail')">
                         Solicitante
-                        <span><i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'UsuarioActual.Mail' && orden == 'DESC'  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'UsuarioActual.Mail' && orden == 'ASC' }"></i>
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'UsuarioActual.Mail' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'UsuarioActual.Mail' && orden == 'ASC' }"></i>
                         </span>
                     </th>
 
-                    <th title="Nombre de pedido" style="cursor:pointer">
+                    <th title="Nombre de pedido" class="headerth">
                         Grupo de compras
-                      
-                    </th>
-                    <th title="Nombre de pedido" style="cursor:pointer">
-                        Centro                    
-                    </th>
-                   
 
-                    <th title="Tipo de  SOLP" style="cursor:pointer" (click)="onOrder('TipoSolp.Descripcion')">
+                    </th>
+                    <th title="Nombre de pedido" class="headerth">
+                        Centro
+                    </th>
+
+
+                    <th title="Tipo de  SOLP" class="headerth" (click)="onOrder('TipoSolp.Descripcion')">
                         Tipo
-                        <span><i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'TipoSolp.Descripcion' && orden == 'DESC'  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'TipoSolp.Descripcion' && orden == 'ASC' }"></i>
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'TipoSolp.Descripcion' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'TipoSolp.Descripcion' && orden == 'ASC' }"></i>
                         </span>
                     </th>
-                    <th data-toggle="tooltip" >
-                       
+                    <th title="Tipo de  SOLP" class="headerth" (click)="onOrder('EstadoSolpSap.Descripcion')">
+                        Estado
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoSolpSap.Descripcion' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoSolpSap.Descripcion' && orden == 'ASC' }"></i>
+                        </span>
+                    </th>
+                    <th data-toggle="tooltip">
+
                     </th>
                 </tr>
             </ng-template>
-          
-           <ng-template pTemplate="body" let-rowData let-columns="columns">        
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr>
                     <td style="display:none;">
                         {{rowData.TipoSolpSap}}
                     </td>
                     <td style="padding-left: 0px; padding-right: 0px;">
                         <div *ngIf="rowData.TipoSolpSap == 2" class="col-md-2">
-                            <span><img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento"
-                                    style="height:25px; cursor:default" /></span>
+                            <span>
+                                <img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento"
+                                     style="height:25px; cursor:default" />
+                            </span>
                         </div>
                         <div *ngIf="rowData.TipoSolpSap == 3" class="col-md-2">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/SAP.svg" alt="SAP"
-                                    style="width: 30px; height: 30px; cursor:default" />
+                                     style="width: 30px; height: 30px; cursor:default" />
                             </span>
-                        </div>   
+                        </div>
                         <div class="col-md-2">
-                            <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
-                                    (click)="generarZipPliego(rowData.Id)" /></span>
-                        </div>                    
+                            <span>
+                                <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
+                                     (click)="generarZipPliego(rowData.Id)" />
+                            </span>
+                        </div>
                     </td>
                     <td class="columna">
                         {{rowData.NroSolp}}
                     </td>
-                    <td  class="columna">
+                    <td class="columna">
                         {{rowData.NombreDeObra || "" }}
                     </td>
                     <td class="columna">
                         {{rowData.FechaCreacionFormateada}}
-                    </td>      
+                    </td>
+                    <td class="columna">
+                        {{rowData.FechaLiberacionSapFormateada}}
+                    </td>
                     <td class="columna">
                         {{rowData.UsuarioActual.Mail || ""}}
-                    </td>              
+                    </td>
                     <td class="columna">
                         {{ rowData.GrupoCompraFormateado || "" }}
                     </td>
                     <td class="columna">
                         {{ rowData.CentroFormateado || "" }}
                     </td>
-                   
                     <td class="columna">
                         {{ rowData.TipoSolp.Descripcion || "" }}
                     </td>
+                    <td class="columna">
+                        {{ rowData.EstadoSolpSap.Descripcion || "" }}
+                    </td>
                     <td class="col-sm-12 col-md-12 col-lg-12">
-                        <button class="publicar btn btn-success">
-                              Publicar  
+                        <button class="publicar btn btn-success" *ngIf="rowData.EstadoSolpSap.CodigoSap == '02'">
+                            Publicar
                         </button>
                     </td>
                 </tr>
-            </ng-template> 
-        </p-table>  
-     
+            </ng-template>
+        </p-table>
+
         <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
-   
-</div>
+
+    </div>
 
 </div>

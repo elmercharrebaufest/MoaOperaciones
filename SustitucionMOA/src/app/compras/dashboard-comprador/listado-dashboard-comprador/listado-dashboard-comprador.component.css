@@ -24,6 +24,10 @@ body.ui-paginator.ui-dropdown{
 }
 
 .columna{
-    word-break: break-all; word-wrap:break-word
+    word-break: break-all; word-wrap:break-word; font-size:smaller;
+}
+
+.headerth {
+    font-size: smaller; cursor:pointer;
 }
 

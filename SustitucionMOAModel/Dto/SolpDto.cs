@@ -72,6 +72,8 @@ namespace SustitucionMOAModel.Dto
         public string GrupoCompraFormateado { get; set; }
         public string FechaCreacionFormateada { get; set; }
         public string CentroFormateado { get; set; }
+        public DateTime? FechaLiberacionSap { get; set; }
+        public string FechaLiberacionSapFormateada { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
