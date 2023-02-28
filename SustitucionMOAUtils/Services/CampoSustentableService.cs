@@ -306,13 +306,14 @@ namespace SustitucionMOAUtils.Services
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
             var cosecha = repositorio.Obtener<Cosecha>(cosechaId);
 
+            string razonSocial = "";
 
             if (string.IsNullOrEmpty(CUITDeclaracion))
             {
                 CUITDeclaracion = proveedor.CUIT;
+                razonSocial = proveedor.RazonSocial;
             }
 
-            var razonSocial = proveedor.RazonSocial;
             var estado = new EstadoDeclaracionSustentableDto
             {
                 DeclaracionFirmada = false,
@@ -369,7 +370,7 @@ namespace SustitucionMOAUtils.Services
             //var fileKey = FileKeys.DeclaracionCampoSustentable;
             var fileKey = string.Concat(FileKeys.DeclaracionCampoSustentable, "-", cosechaId);
 
-            if (string.IsNullOrEmpty(CUITDeclaracion) || usuario.EsCorredor())
+            if (string.IsNullOrEmpty(CUITDeclaracion))
             {
                 CUITDeclaracion = proveedor.CUIT;
             }
@@ -423,12 +424,9 @@ namespace SustitucionMOAUtils.Services
 
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
-            if (string.IsNullOrEmpty(CUITDeclaracion) || usuario.EsCorredor())
+            if (string.IsNullOrEmpty(CUITDeclaracion))
             {
                 CUITDeclaracion = proveedor.CUIT;
-            }
-            if (string.IsNullOrEmpty(razonSocialDeclaracion) || usuario.EsCorredor())
-            {
                 razonSocialDeclaracion = proveedor.RazonSocial;
             }
 
