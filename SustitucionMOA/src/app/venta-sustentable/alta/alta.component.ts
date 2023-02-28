@@ -29,7 +29,7 @@ export interface OpcionProveedor {
     providers: [VentaSustentableService],
 })
 export class AltaComponent extends BaseComponent implements OnInit {
-    proveedores: Array<any> = [];
+    proveedores: Array<OpcionProveedor> = [];
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -352,11 +352,19 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     verificarCUITIngresado() {
         this.declaracionComformidad.CUITDeclaracion = this.CUIT;
+        if (this.CUIT.length == 11) {
+            this.proveedorSelected = this.proveedores.find(prov => prov.cuit == this.CUIT)
+            if (this.proveedorSelected){
+                this.getProveedorId(this.proveedorSelected.idVendedor);
+            }else{
+                this.floatMsgService.setInfoMsg("No se encontro proveedor con este cuit");
+            }
 
-        if (this.CUIT == "" || this.CUIT.length == 11 && this.cosechaId > 0) {
+        if (this.CUIT == "" && this.cosechaId > 0) {
             this.declaracionComformidad.verificarDeclaracion();
         }
     }
+}
 
     getCosechas() {
         this.mensajeComponent.setMsgsEmpty();
@@ -480,6 +488,5 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.CUIT = "";
         this.ingresarProveedorPorCUIT = this.operarComo == 2;
         this.declaracionComformidad.operarComo = this.operarComo;
-
     }
 }
