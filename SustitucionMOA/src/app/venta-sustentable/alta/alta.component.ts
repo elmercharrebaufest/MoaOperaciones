@@ -11,26 +11,17 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { CampoProveedor, CampoSustentable, CampoCosecha } from './../sustentable'
 import { DeclaracionConformidadComponent } from '../declaracion-conformidad/declaracion-conformidad.component';
+import { CommonResponse } from '../../common/models/common-response';
+import { AutocompleteLocalidadComponent } from "./../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
 import { isUndefined } from 'util';
-import { SeleccionarProveedorComponent } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.component';
 
-export interface OpcionProveedor {
-    fecha: string,
-    idVendedor: string,
-    descVendedor: string,
-    estado: string, //Mejor un enum 
-    estadoMoa: string,//mejor un enum 
-    cuit: string,
-    proveedorId: number,
-    CUIT: string
-}
 @Component({
     selector: 'app-alta',
     templateUrl: './alta.component.html',
-    providers: [VentaSustentableService],
+    providers: [VentaSustentableService]
 })
 export class AltaComponent extends BaseComponent implements OnInit {
-    proveedores: Array<OpcionProveedor> = [];
+
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -39,10 +30,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     @ViewChild(DeclaracionConformidadComponent)
     protected declaracionComformidad: DeclaracionConformidadComponent;
-
-    @ViewChild(SeleccionarProveedorComponent)
-    protected seleccionarProveedor: SeleccionarProveedorComponent;
-
 
     @BlockUI() blockUI: NgBlockUI;
 
@@ -82,7 +69,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     operarComo: number = 1;
 
     ingresarProveedorPorCUIT: boolean;
-    proveedorSelected: OpcionProveedor;
+    proveedorSelected: any;
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     codigoProveedor: string = sessionStorage.getItem("proveedor");
     campoCosechaId: any;
@@ -147,7 +134,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
                         this.Archivo_Id = result.Archivo_Id;
                         this.UsarArchivo_Id = true;
                         this.Proveedor_Id = result.Proveedor_Id;
-
+                        
 
                         if (this.esCorredor) {
                             if (this.Proveedor_Id != this.proveedorId) {
@@ -240,7 +227,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
         if (this.cosechaId > 0) {
             if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
                 if (this.CUIT == "" || this.CUIT.length != 11) {
-                    this.floatMsgService.setErrorMsg("El CUIT ingresado no es válido");
+                    this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
                     setTimeout(() => {
                         this.cosechaId = 0;
                     }, 100);
@@ -258,6 +245,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
                 if (this.operarComo == 2) {
                     this.declaracionComformidad.CUIT = this.CUIT;
+                    this.declaracionComformidad.razonSocialDeclaracion = "";
                 }
 
                 this.declaracionComformidad.proveedorId = this.proveedorId;
@@ -308,9 +296,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
         campoProveedor = {
             HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja,
             CUIT: this.CUIT,
-            Latitud: this.latitud,
-            Longitud: this.longitud,
-            Proveedor_Id: this.proveedorId,
+            Latitud: this.latitud, 
+            Longitud: this.longitud, 
+            Proveedor_Id: this.proveedorId, 
             CampoCosecha: campoCosecha,
             Archivo_Id: this.UsarArchivo_Id ? this.Archivo_Id : 0
         }
@@ -332,6 +320,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
+
                         this.mensajeComponent.setSuccessMsg(result.Mensaje);
                         setTimeout(() => {
                             this.redirigirAListado();
@@ -357,17 +346,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     verificarCUITIngresado() {
         this.declaracionComformidad.CUITDeclaracion = this.CUIT;
-        if (this.CUIT.length == 11) {
-            this.proveedorSelected = this.proveedores.find(prov => prov.cuit == this.CUIT)
-            if (this.proveedorSelected) {
-                this.getProveedorId(this.proveedorSelected.idVendedor);
-            } else {
-                this.floatMsgService.setInfoMsg("No se encontro proveedor con este cuit");
-            }
 
-
-        }
-        if (this.CUIT == "" && this.cosechaId > 0) {
+        if (this.CUIT == "" || this.CUIT.length == 11 && this.cosechaId > 0) {
             this.declaracionComformidad.verificarDeclaracion();
         }
     }
@@ -490,14 +470,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.cosechaId = 0;
     }
 
-    cambiarModoOperacion(resetProveedor = false) {
+    cambiarModoOperacion() {
         this.CUIT = "";
-        if (resetProveedor) {
-            this.proveedorSelected = undefined;
-            this.proveedorId = undefined;
-            this.seleccionarProveedor.reset();
-        }
         this.ingresarProveedorPorCUIT = this.operarComo == 2;
         this.declaracionComformidad.operarComo = this.operarComo;
+
     }
 }
