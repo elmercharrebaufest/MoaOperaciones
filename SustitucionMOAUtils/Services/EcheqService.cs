@@ -336,11 +336,11 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                
+
 
                 EcheqLiquidacion liquidacionExistente = ObtenerLiquidacionPorDocumento(request);
 
-                
+
 
                 ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, liquidacionExistente.NumeroCOE, "MOA", "", "");
 
@@ -503,30 +503,30 @@ namespace SustitucionMOAUtils.Services
             x.EcheqNegocio.Pedido == request.Pedido &&
             x.MarcaCheque);
 
-            if (liquidacion == null) 
+            if (liquidacion == null)
             {
                 liquidacion = CrearLiquidacion(request);
             }
-            
+
             //ANULAR APERTURAS ANTERIORES
             foreach (var apertura in liquidacion.Aperturas)
             {
                 apertura.Estado = false;
                 apertura.UsuarioModificacionId = request.UsuarioCreacionId;
                 apertura.FechaModificacion = DateTime.Now;
-                
-                if(apertura.OrdenCheque > 1) echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
+
+                if (apertura.OrdenCheque > 1) echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
             }
-            
+
             //Agregar Aperturas Nuevas
             foreach (var apertura in request.Apertura)
             {
                 //string cuit = liquidacion.EcheqNegocio.Proveedor != null ? liquidacion.EcheqNegocio.Proveedor.CUIT : 
                 //    repositorio.Obtener<Proveedor>(x => x.Id == liquidacion.EcheqNegocio.ProveedorId).CUIT;
 
-                if(apertura.OrdenCheque > 1) echeqCargaAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(),liquidacion.EcheqNegocio.Contrato, 
+                if (apertura.OrdenCheque > 1) echeqCargaAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.EcheqNegocio.Contrato,
                     liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"),
-                    apertura.ImporteCheque,"ARP  ",liquidacion.EcheqNegocio.Pedido, request.CodigoProveedor, liquidacion.NumeroCOE, "MOA", "");
+                    apertura.ImporteCheque, "ARP  ", liquidacion.EcheqNegocio.Pedido, request.CodigoProveedor, liquidacion.NumeroCOE, "MOA", "");
 
                 liquidacion.Aperturas.Add(new EcheqApertura
                 {
@@ -555,7 +555,8 @@ namespace SustitucionMOAUtils.Services
                 var liquidacion = echeqNegocioDB.Documentos.Where(x => x.Documento == request.Documento).FirstOrDefault();
                 return liquidacion;
             }
-            else {
+            else
+            {
                 //generar nuevo documento y agregar nuevo documento
 
                 var documentoDto = echeqNegocio.Documentos.Where(x => x.Documento == request.Documento).SingleOrDefault();
@@ -568,7 +569,7 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.GuardarCambios();
                 return liquidacion;
-            } 
+            }
         }
 
         public List<ConfiguracionDto> ObtenerConfiguracion()
@@ -584,7 +585,7 @@ namespace SustitucionMOAUtils.Services
             return configuracionEcheq;
         }
 
-        public List<EcheqReporteDto> ObtenerDatosReporte(string fechaInicio, string fechaFin, string mailUsuario, string codigoProveedor) 
+        public List<EcheqReporteDto> ObtenerDatosReporte(string fechaInicio, string fechaFin, string mailUsuario, string codigoProveedor)
         {
             try
             {
@@ -625,13 +626,13 @@ namespace SustitucionMOAUtils.Services
 
 
                 var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(u => u.Mail == mailUsuario);
-                
+
                 var esAdmin = usuario.TienePermiso("VER ECHEQ ADMIN");
 
 
                 List<EcheqReporteDto> result = repositorio.Listar<EcheqLiquidacion, EcheqReporteDto>(x => new EcheqReporteDto
-                { 
-                    RazonSocial = x.EcheqNegocio.Proveedor.RazonSocial,         
+                {
+                    RazonSocial = x.EcheqNegocio.Proveedor.RazonSocial,
                     Mail = x.EcheqNegocio.Proveedor.Mail,
                     CodigoProveedor = x.EcheqNegocio.Proveedor.CodigoProveedor,
                     Contrato = x.EcheqNegocio.Contrato,
