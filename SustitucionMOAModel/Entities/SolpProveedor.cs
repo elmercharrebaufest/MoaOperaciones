@@ -23,5 +23,6 @@ namespace SustitucionMOAModel.Entities
         public virtual Proveedor Proveedor { get; set; }
         [ForeignKey("TipoFiltroProveedorSolp_Id")]
         public virtual TablaGeneral TipoFiltroProveedorSolp { get; set; }
+       
     }
 }

@@ -16,7 +16,7 @@ namespace SustitucionMOAModel.Entities
 
         public string FileKey { get; set; }
 
-        public string Ruta { get; set; }
+        public string Ruta { get; set; }   
 
         public override bool Equals(object obj)
         {
@@ -31,6 +31,9 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("Archivos")]
         public virtual ICollection<Pliego> Pliegos { get; set; }
+
+        [InverseProperty("Archivos")]
+        public virtual ICollection<PeticionDeOferta> Peticiones { get; set; }
 
         public string ObtenerNombre(string ruta)
         {

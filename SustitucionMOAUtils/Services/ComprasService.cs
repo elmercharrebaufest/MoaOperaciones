@@ -2674,6 +2674,13 @@ namespace SustitucionMOAUtils.Services
             return contratosParaAsociar.Where(x => x.ContratosAsociados != null && x.ContratosAsociados.Count > 0).ToList();
         }
 
+        public SolpCompraDto ObtenerSolpCompras(int id)
+        {            
+            var solp = repositorio.ObtenerConsultaEscalar(new ObtenerSolpCompras(id));
+            return solp;
+        }       
+     
+
     }
 
     public static class SolpTemplateKeys

@@ -120,6 +120,7 @@
     <Compile Include="Dto\PesificacionSapDto.cs" />
     <Compile Include="Dto\SecuenciaIngresosBrutosCoeficienteUnificadoDto.cs" />
     <Compile Include="Dto\ServicioSolpDto.cs" />
+    <Compile Include="Dto\SolpCompraDto.cs" />
     <Compile Include="Dto\SolpDto.cs" />
     <Compile Include="Dto\SubCategoriaDto.cs" />
     <Compile Include="Dto\CategoriaDto.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Dto\UsuarioComprasDto.cs" />
     <Compile Include="Dto\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Entities\AplicacionCartaPorte.cs" />
+    <Compile Include="Entities\PeticionDeOferta.cs" />
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
     <Compile Include="Enums\EstadoAplicacionCartaPorte.cs" />
     <Compile Include="Enums\EstadoOrdenDeCargaFason.cs" />
