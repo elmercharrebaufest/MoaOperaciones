@@ -354,6 +354,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         ordenDeCarga.InformadaSAP = true;
                         ordenDeCarga.NumeroPedido = numeroPedido;
+                        ordenDeCarga.ContratoSAP = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP) ? ordenDeCarga.ContratoIngresado : ordenDeCarga.ContratoSAP;
                         ordenDeCarga.DescripcionErrorInterno = "";
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "";
                         ordenDeCarga.CodigoVerificacionSap = "";
@@ -419,6 +420,7 @@ namespace SustitucionMOAUtils.Services
             {
                 ordenDeCarga.InformadaSAP = true;
                 ordenDeCarga.NumeroPedido = numeroPedido;
+                ordenDeCarga.ContratoSAP = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP) ? ordenDeCarga.ContratoIngresado : ordenDeCarga.ContratoSAP;
                 ordenDeCarga.DescripcionErrorInterno = "";
                 ordenDeCarga.DescripcionCodigoVerificacionSap = "";
                 ordenDeCarga.CodigoVerificacionSap = "";
