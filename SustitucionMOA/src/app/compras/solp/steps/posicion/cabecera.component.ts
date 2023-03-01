@@ -1067,7 +1067,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     public get tienePosicionSeleccionada(): boolean {
-        return (this.model.selectTipoPosicion != undefined && this.model.selectTipoPosicion != null && this.model.selectTipoPosicion.Id != "");
+        console.log(this.model.selectClaseDocumento);
+        return (this.model.selectTipoPosicion != undefined
+            && this.model.selectTipoPosicion != null
+            && this.model.selectTipoPosicion.Id != ""
+            && this.model.selectClaseDocumento != undefined
+            && this.model.selectClaseDocumento != null
+            && this.model.selectClaseDocumento.Id > 0
+        );
     }
 
     public get tieneCodigoServicio(): boolean {
