@@ -5,10 +5,11 @@ import { BaseService } from '../common/services/BaseService';
 import { Solp } from './solp/solp';
 import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 import { SolpPosicion } from './solp/solp-posicion';
+import {  SolpCompraDto } from './solp-compra';
 
 @Injectable({
     providedIn: 'root'
-  })
+})
 export class ComprasService extends BaseService {
 
     Date: Date;
@@ -24,9 +25,9 @@ export class ComprasService extends BaseService {
         sap: true,
         mantenimiento: true,
         web: true
-      }
-      listaSolp: any;
-      observableListaSolp = new Subject<any[]>();
+    }
+    listaSolp: any;
+    observableListaSolp = new Subject<any[]>();
 
     public getCombos(): Observable<any> {
         return this.http
@@ -43,7 +44,7 @@ export class ComprasService extends BaseService {
         sap: boolean = this.filtros.sap,
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
-        estados: any = this.filtros.estados): Observable<any> {       
+        estados: any = this.filtros.estados): Observable<any> {
         let params: HttpParams = new HttpParams();
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -123,7 +124,7 @@ export class ComprasService extends BaseService {
             UsuarioCompras: {
                 Id: solp.usuarioComprasId
             },
-            Adjuntos:   solp.especificacionesViewModel.archivosEspecificaciones.map(x => { return { Id: x.id } })
+            Adjuntos: solp.especificacionesViewModel.archivosEspecificaciones.map(x => { return { Id: x.id } })
                 .concat(solp.archivosCotizaciones.map(x => { return { Id: x.id } })),
 
             DiasEjecucion: solp.ejecucion,
@@ -135,7 +136,7 @@ export class ComprasService extends BaseService {
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
             Finalizar: solp.Finalizar,
             Posiciones: solp.posiciones.map(x => {
-                
+
                 return {
                     Codigo: x.id,
                     PlazoEntrega: x.plazoDeEntrega,
@@ -216,7 +217,7 @@ export class ComprasService extends BaseService {
             for (let i = 0; i < archivos.length; i++) {
                 let fileToUpload = archivos[i];
                 payload.append("fileEspecificaciones", fileToUpload, fileToUpload.name);
-              
+
             }
         }
 
@@ -233,7 +234,7 @@ export class ComprasService extends BaseService {
             .post<Solp>('/api/compras/GuardarSolp', payload, { headers: this.headers });
     }
 
-    public ListarFuenteAprovisionamiento(fecha: string, noMaterial: string, centro: string) : Observable<any> {
+    public ListarFuenteAprovisionamiento(fecha: string, noMaterial: string, centro: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaEntregaPosicion', fecha);
         params = params.set('numeroMaterial', noMaterial);
@@ -242,7 +243,7 @@ export class ComprasService extends BaseService {
             .get('/api/compras/ListarFuenteAprovisionamiento', { params: params, headers: this.headers });
     }
 
-    public ObtenerContratoMarco(noContrato: string, centro: string) : Observable<any> {
+    public ObtenerContratoMarco(noContrato: string, centro: string): Observable<any> {
 
         let params: HttpParams = new HttpParams();
         params = params.set('numeroContrato', noContrato)
@@ -369,7 +370,7 @@ export class ComprasService extends BaseService {
 
     obtenerContratoMarco(centro: string, numeroContrato: string): Observable<any> {
         let params: HttpParams = new HttpParams()
-            .append('numeroContrato', numeroContrato)        
+            .append('numeroContrato', numeroContrato)
             .append('centro', centro);
 
         return this.http
@@ -380,8 +381,8 @@ export class ComprasService extends BaseService {
         itemsPorPagina: number,
         orden: string = this.filtros.orden,
         columna: string = this.filtros.columna,
-        nroSolp: string = this.filtros.nroSolp) {    
-        let params: HttpParams = new HttpParams()  
+        nroSolp: string = this.filtros.nroSolp) {
+        let params: HttpParams = new HttpParams()
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
         columna = columna != "" ? columna : this.filtros.columna;
@@ -395,30 +396,37 @@ export class ComprasService extends BaseService {
                 (data: any[]) => {
                     this.observableListaSolp.next(data)
                 }
-              );
+            );
     }
 
     listarContratosAsociar(posiciones: SolpPosicion[]): Observable<any> {
-     var json =  posiciones.filter(x => x.codigoServicio != null).map(x => {                
-                return {                  
-                    FechaEntregaServicio: x.fechaEntregaServicio,
-                    Centro: {Id: x.selectCentroEntrega.Id, Codigo: x.selectCentroEntrega.Codigo},
-                    Indice: x.numeroPosicion,
-                    ProveedorFijo: x.provedorFijo,
-                    NumeroContratoSuperior: x.numeroContratoSuperior,  
-                    CodigoMaterialSap: this.getObjetoCodigo(x.codigoServicio && x.codigoServicio.Codigo), 
-                    Tarea: x.tareaSubcontratar,
-                    
-                }
-            });
+        var json = posiciones.filter(x => x.codigoServicio != null).map(x => {
+            return {
+                FechaEntregaServicio: x.fechaEntregaServicio,
+                Centro: { Id: x.selectCentroEntrega.Id, Codigo: x.selectCentroEntrega.Codigo },
+                Indice: x.numeroPosicion,
+                ProveedorFijo: x.provedorFijo,
+                NumeroContratoSuperior: x.numeroContratoSuperior,
+                CodigoMaterialSap: this.getObjetoCodigo(x.codigoServicio && x.codigoServicio.Codigo),
+                Tarea: x.tareaSubcontratar,
+
+            }
+        });
 
         var solpJson = JSON.stringify(json);
 
         let params: HttpParams = new HttpParams()
-            .append('solpJson',  solpJson)   
+            .append('solpJson', solpJson)
 
         return this.http
             .get("/api/compras/ListarAsociarContrato", { params: params })
     }
 
+    public obtenerSolpCompras(id: number) {
+        let params: HttpParams = new HttpParams()
+        params = params.set('id', id.toString());
+        return this.http
+            .get<SolpCompraDto>('/api/compras/ObtenerSolpCompras', { params: params, headers: this.headers })
+
+    }
 }

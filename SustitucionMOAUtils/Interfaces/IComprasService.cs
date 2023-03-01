@@ -51,5 +51,6 @@ namespace SustitucionMOAUtils.Interfaces
         ListaPaginada<SolpDto> ListarSolpComprador(Paginacion paginacion, string nroSolp = null);
 
         List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones);
+        SolpCompraDto ObtenerSolpCompras(int id);
     }
 }

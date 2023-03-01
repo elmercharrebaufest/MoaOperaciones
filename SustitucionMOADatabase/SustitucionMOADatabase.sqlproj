@@ -181,6 +181,10 @@
     <Build Include="DBO\Tables\OrdenDeCargaFason.sql" />
     <None Include="scripts\PostDeployment\Material.sql" />
     <Build Include="DBO\Tables\AplicacionCartaPorte.sql" />
+    <Build Include="DBO\Tables\PeticionDeOferta.sql" />
+    <Build Include="DBO\Tables\PeticionDeOfertaArchivo.sql" />
+    <Build Include="DBO\Tables\PeticionDeOfertaUsuario.sql" />
+    <Build Include="DBO\Tables\PeticionDeOfertaSolpPosicion.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
