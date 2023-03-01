@@ -214,6 +214,12 @@ namespace SustitucionMOAModel.Dto
         public ProvinciaDTO Provincia { get; set; }
         public string GrupoComprasDescripcion { get; set; }
         public string CentroComprasDescripcion { get; set; }
+        public bool TieneCotizacion { get; set; }
+        public string AlmacenComprasDescripcion { get; set; }
+        public string UnidadComprasDescripcion { get; set; }
+        public string MonedaComprasDescripcion { get; set; }
+        public IEnumerable<SolpProveedorDto> ProveedoresCompras { get; set; }
+        public IEnumerable<SolpSubposicionDto> SubposicionesCompras { get; set; }
 
         public SolpPosicionDto() { }
 
@@ -315,6 +321,7 @@ namespace SustitucionMOAModel.Dto
         public ServicioSolpDto CodigoServicioSap { get; set; }
 
         public TablaSapDto Unidad { get; set; }
+        public string UnidadComprasDescripcion { get; set; }
 
         public SolpSubposicionDto() { }
 
@@ -345,6 +352,8 @@ namespace SustitucionMOAModel.Dto
 
         public virtual ProveedorDto Proveedor { get; set; }
         public virtual TablaGeneralDto TipoFiltroProveedorSolp { get; set; }
+        public int SolpPosicionId { get; set; }
+        public string TipoFiltroProveedorSolpCodigo { get; set; }
 
         public SolpProveedorDto() { }
 
