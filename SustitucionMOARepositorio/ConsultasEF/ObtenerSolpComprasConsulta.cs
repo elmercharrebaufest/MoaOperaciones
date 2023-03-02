@@ -25,10 +25,12 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 {
                                     Id = solp.Id,
                                     NroSolp = solp.NroSolp,
+                                    TipoSolpSap = solp.TipoSolpSap,
                                     PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                       where posicion.Solp_Id == solp.Id
                                                       select new SolpPosicionDto()
                                                       {
+                                                          MaterialComprasCodigo = posicion.MaterialSolp.Codigo,
                                                           TieneCotizacion = posicion.Peticiones.Any(),
                                                           Indice = posicion.Indice,
                                                           Tarea = posicion.Tarea,
