@@ -74,6 +74,7 @@ namespace SustitucionMOAModel.Dto
         public string CentroFormateado { get; set; }
         public DateTime? FechaLiberacionSap { get; set; }
         public string FechaLiberacionSapFormateada { get; set; }
+        public IEnumerable<PeticionDeOfertaDto> PeticionesDeOferta { get; set; } = new List<PeticionDeOfertaDto>();
 
         public SolpDto() { }
         public SolpDto(Solp entity)

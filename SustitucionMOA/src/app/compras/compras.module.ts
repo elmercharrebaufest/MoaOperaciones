@@ -49,7 +49,8 @@ import { StepperActionsComponent } from './solp/stepper-actions/stepper-actions.
 import { FinalizarSolpComponent } from './solp/finalizar/finalizar-solp.component';
 import { ContratoMarcoComponent } from './solp/steps/posicion/contrato-marco/contrato-marco.component';
 import { ObtenerContratoMarcoComponent } from './solp/steps/posicion/obtener-contrato-marco/obtener-contrato-marco.component';
-import {PaginatorModule} from 'primeng/paginator';
+import { PaginatorModule } from 'primeng/paginator';
+import { TabViewModule } from 'primeng/tabview';
 import {TooltipModule} from 'primeng/tooltip';
 import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
 import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
@@ -84,7 +85,8 @@ import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-
         InputSwitchModule,
         TabMenuModule,
         PaginatorModule,
-        TooltipModule
+        TooltipModule,
+        TabViewModule,
     ],
     declarations: [
         SolpComponent,

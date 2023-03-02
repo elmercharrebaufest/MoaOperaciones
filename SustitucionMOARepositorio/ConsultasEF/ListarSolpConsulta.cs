@@ -9,6 +9,7 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.SqlServer;
 using System.Linq;
+using SustitucionMOAModel.Dto;
 
 namespace SustitucionMOARepositorio.ConsultasEF
 {
@@ -32,7 +33,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
                 var resultado = from x in contexto.Set<Solp>()
                                 where (string.IsNullOrEmpty(NroSolp) || x.NroSolp.ToUpper().StartsWith(NroSolp.ToUpper())) &&
-                                x.Posiciones.All(p=>p.NumeroContratoSuperior == "" || p.NumeroContratoSuperior == null)
+                                x.Posiciones.All(p => p.NumeroContratoSuperior == "" || p.NumeroContratoSuperior == null)
                                 select new SolpDto
                                 {
                                     UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
@@ -54,9 +55,20 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                        }),
                                     ItemPorPagina = paginacion.ItemsPorPagina,
                                     Pagina = paginacion.Pagina,
-                                    EstadoSolpSap = x.EstadoSolpSap_Id != null ? new TablaSapDto { Id = x.EstadoSolpSap_Id ?? 0, CodigoSap = x.EstadoSolpSap.CodigoSap, Descripcion = x.EstadoSolpSap.Descripcion } : new TablaSapDto { Id =  0, CodigoSap = "", Descripcion = "" },
+                                    EstadoSolpSap = x.EstadoSolpSap_Id != null ? new TablaSapDto { Id = x.EstadoSolpSap_Id ?? 0, CodigoSap = x.EstadoSolpSap.CodigoSap, Descripcion = x.EstadoSolpSap.Descripcion } : new TablaSapDto { Id = 0, CodigoSap = "", Descripcion = "" },
                                     FechaLiberacionSapFormateada = x.FechaLiberacionSap == null ? "" : SqlFunctions.DateName("day", x.FechaLiberacionSap) + "/" + SqlFunctions.DatePart("month", x.FechaLiberacionSap) + "/" + SqlFunctions.DateName("year", x.FechaLiberacionSap),
                                     FechaLiberacionSap = x.FechaLiberacionSap,
+                                    PeticionesDeOferta = (from po in contexto.Set<PeticionDeOferta>()
+                                                           where po.Solp_Id == x.Id
+                                                           select new PeticionDeOfertaDto()
+                                                           {
+                                                               Id = po.Id,
+                                                               Solp_Id = po.Solp_Id,
+                                                               FechaCreacion = po.FechaCreacion,
+                                                               UsuarioCreador_Id = po.UsuarioCreador_Id,
+                                                               PlazoDeOferta = po.PlazoDeOferta,
+                                                               Observaciones = po.Observaciones,
+                                                           }),
                                 };
 
                 var itemsTotales = resultado.Count();

@@ -79,6 +79,7 @@
     <Compile Include="Dto\OrdenDeCargaFason\OrdenDeCargaFasonDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\CrearOrdenEnSAPRequest.cs" />
     <Compile Include="Dto\OrdenDeCarga\CrearOrdenEnSAPResponse.cs" />
+    <Compile Include="Dto\PeticionDeOfertaDto.cs" />
     <Compile Include="Dto\ProvinciaDTO.cs" />
     <Compile Include="Dto\AutoCompleteDropdownElement.cs" />
     <Compile Include="Dto\EmailComposeDto.cs" />
