@@ -391,5 +391,23 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
             return apikey;
         }
+
+        public List<ProveedorDto> ListarProveedores(string filtro)
+        {
+            var proveedores = repositorio.Listar<Entidades.Usuario, ProveedorDto>(x => new ProveedorDto()
+            {
+                Id = x.Id,
+                Mail = x.Mail,
+                RazonSocial = x.Proveedores.Where(y => x.TipoUsuario.Id == y.TipoProveedor.Id &&
+                              x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.EstadoAprobacion == 0).FirstOrDefault().RazonSocial,
+                CUIT = x.Proveedores.Where(y => x.TipoUsuario.Id == y.TipoProveedor.Id &&
+                              x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.EstadoAprobacion == 0).FirstOrDefault().CUIT,
+            }, x => x.Proveedores.Any(y => x.TipoUsuario.Id == y.TipoProveedor.Id && 
+            x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.EstadoAprobacion == 0) && x.Habilitado &&
+            (x.Proveedores.Where(y => x.TipoUsuario.Id == y.TipoProveedor.Id && x.CUITRegistro == y.CUIT && x.Mail == y.Mail
+            && y.EstadoAprobacion == 0).FirstOrDefault().RazonSocial.Contains(filtro) || x.Mail.Contains(filtro)
+            || x.CUITRegistro.Contains(filtro))).Take(10);
+            return proveedores.ToList(); 
+        }
     }
 }

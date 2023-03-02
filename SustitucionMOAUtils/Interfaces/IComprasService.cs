@@ -52,5 +52,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones);
         SolpCompraDto ObtenerSolpCompras(int id);
+
+        RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos);
     }
 }

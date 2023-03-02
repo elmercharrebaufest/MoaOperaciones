@@ -221,6 +221,7 @@ namespace SustitucionMOAModel.Dto
         public string MonedaComprasDescripcion { get; set; }
         public IEnumerable<SolpProveedorDto> ProveedoresCompras { get; set; }
         public IEnumerable<SolpSubposicionDto> SubposicionesCompras { get; set; }
+        public string MaterialComprasCodigo { get; set; }
 
         public SolpPosicionDto() { }
 

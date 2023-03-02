@@ -1,3 +1,6 @@
+import { ArchivoModel } from "./solp/steps/archivo.model"
+import { EspecificacionesViewModel } from "./solp/steps/especificaciones/especificacionesViewModel"
+
 export interface SolpCompraDto{
     id: number,
     nroSolp: string,   
@@ -36,4 +39,13 @@ export interface SolpProveedorDto{
     tipoFiltroProveedorSolpCodigo?: string
     razonSocial?: string
 
+}
+
+export interface EnvioSolpCompra{
+    solpId: number,
+    posIds: number[],
+    observacion: string,
+    usuarioIds: number[],
+    adjuntos: Array<File>
+    
 }

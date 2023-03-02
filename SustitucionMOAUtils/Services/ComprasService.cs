@@ -2651,35 +2651,114 @@ namespace SustitucionMOAUtils.Services
         }
         public List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones)
         {
-           var contratosParaAsociar = new List<AsociarContratoDto>();
+            var contratosParaAsociar = new List<AsociarContratoDto>();
             foreach (var p in posiciones)
             {
                 if (p.FechaEntregaServicio.HasValue && p.CodigoMaterialSap != null && !string.IsNullOrEmpty(p.CodigoMaterialSap.Codigo))
                 {
-                  var datosPosicion =  AutocompleteMaterialSolp(p.CodigoMaterialSap.Codigo, p.Centro.Id);
-                  var contratos = ListarFuenteAprovisionamiento(p.FechaEntregaServicio.Value.ToString("yyyy-MM-dd"), p.CodigoMaterialSap.Codigo.Remove(0, 10), p.Centro.Codigo);
-                  var asociado = new AsociarContratoDto { 
-                      Indice = p.Indice, 
-                      Tarea = datosPosicion != null && datosPosicion.Count > 0 ? 
-                      datosPosicion[0].Descripcion : p.Tarea, 
-                      Codigo = p.CodigoMaterialSap.Codigo, 
-                      Centro = p.Centro.Codigo, 
-                      ContratoMarco = p.NumeroContratoSuperior, 
-                      Proveedor = p.ProveedorFijo, 
-                      ContratosAsociados = contratos,
-                  };                  
-                  contratosParaAsociar.Add(asociado);
+                    var datosPosicion = AutocompleteMaterialSolp(p.CodigoMaterialSap.Codigo, p.Centro.Id);
+                    var contratos = ListarFuenteAprovisionamiento(p.FechaEntregaServicio.Value.ToString("yyyy-MM-dd"), p.CodigoMaterialSap.Codigo.Remove(0, 10), p.Centro.Codigo);
+                    var asociado = new AsociarContratoDto
+                    {
+                        Indice = p.Indice,
+                        Tarea = datosPosicion != null && datosPosicion.Count > 0 ?
+                        datosPosicion[0].Descripcion : p.Tarea,
+                        Codigo = p.CodigoMaterialSap.Codigo,
+                        Centro = p.Centro.Codigo,
+                        ContratoMarco = p.NumeroContratoSuperior,
+                        Proveedor = p.ProveedorFijo,
+                        ContratosAsociados = contratos,
+                    };
+                    contratosParaAsociar.Add(asociado);
                 }
             }
             return contratosParaAsociar.Where(x => x.ContratosAsociados != null && x.ContratosAsociados.Count > 0).ToList();
         }
 
         public SolpCompraDto ObtenerSolpCompras(int id)
-        {            
+        {
             var solp = repositorio.ObtenerConsultaEscalar(new ObtenerSolpCompras(id));
             return solp;
-        }       
-     
+        }
+
+        public RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos)
+        {
+            try
+            {
+
+                var solp = new SolpDto
+                {
+                    Id = peticionDeOferta.SolpId
+                };
+
+                var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
+                var usuarios = repositorio.Listar<Usuario>(x => peticionDeOferta.UsuarioIds.Contains(x.Id));
+                var peticion = new PeticionDeOferta()
+                {
+                    UsuarioCreador_Id = peticionDeOferta.UsuarioActual.Id,
+                    FechaCreacion = DateTime.Now,
+                    Solp_Id = peticionDeOferta.SolpId,
+                    Observaciones = peticionDeOferta.Observacion,
+                    Posiciones = posiciones,                 
+                    PlazoDeOferta = posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
+                    Usuarios = usuarios
+                };
+
+                peticion = repositorio.Agregar(peticion);
+                
+                peticion.Archivos = GuardarArchivosCompras(peticion, adjuntos);
+                repositorio.GuardarCambios();
+
+                var respuestaGuardarSOLP = new RespuestaGuardarSOLP
+                {
+                    Solp = solp
+                };
+
+                return respuestaGuardarSOLP;
+
+            }
+            catch (Exception e)
+            {
+
+                return new RespuestaGuardarSOLP { Errores = new List<string> { e.Message }, Mensaje = e.Message };
+            }
+
+        }
+
+        private List<Archivo> GuardarArchivosCompras(PeticionDeOferta peticion, HttpFileCollectionBase files)
+        {
+            var ruta = ObtenerRutaArchivos(peticion.Id);
+            var archivos = new List<Archivo>();
+            var peticiones = new List<PeticionDeOferta>();
+            peticiones.Add(peticion);
+            var filesEspecificaciones = files.GetMultiple("filePeticionDeOferta");
+            for (int i = 0; i < filesEspecificaciones.Count; i++)
+            {
+                var file = filesEspecificaciones[i];
+                var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+
+                //if (File.Exists(rutaArchivo))
+                //{
+                //    file.SaveAs(rutaArchivo);
+                //    continue;
+                //}
+
+                Directory.CreateDirectory(ruta);
+                file.SaveAs(rutaArchivo);
+                var archivo = new Archivo()
+                {
+                    FileKey = "PeticionDeOferta",
+                    Ruta = rutaArchivo,
+                    Peticiones = peticiones
+                };
+                archivos.Add(archivo);
+            }
+
+            repositorio.AgregarTodos(archivos);
+            repositorio.GuardarCambios();
+            return archivos;
+        }
+
 
     }
 
