@@ -2697,13 +2697,11 @@ namespace SustitucionMOAUtils.Services
 
                 if (peticionDeOferta.UsuarioIds != null || peticionDeOferta.UsuarioIds.Count > 0)
                 {
-                    respuestaGuardarSOLP.Errores.Add("El campo Proveedor es obligatorio");
-                    return respuestaGuardarSOLP;
+                    throw new ValidationCustomException("El campo Proveedor es obligatorio");
                 }
                 if (peticionDeOferta.PosIds != null || peticionDeOferta.PosIds.Count > 0)
                 {
-                    respuestaGuardarSOLP.Errores.Add("Debe seleccionar al menos una posición");
-                    return respuestaGuardarSOLP;
+                    throw new ValidationCustomException("Debe seleccionar al menos una posición");
                 }
 
                 var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
