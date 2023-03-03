@@ -122,6 +122,7 @@
     <Compile Include="Dto\SecuenciaIngresosBrutosCoeficienteUnificadoDto.cs" />
     <Compile Include="Dto\ServicioSolpDto.cs" />
     <Compile Include="Dto\SolpCompraDto.cs" />
+    <Compile Include="Dto\GuardarPeticionDeOfertaDto.cs" />
     <Compile Include="Dto\SolpDto.cs" />
     <Compile Include="Dto\SubCategoriaDto.cs" />
     <Compile Include="Dto\CategoriaDto.cs" />

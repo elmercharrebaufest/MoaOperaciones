@@ -5,7 +5,7 @@ import { BaseService } from '../common/services/BaseService';
 import { Solp } from './solp/solp';
 import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 import { SolpPosicion } from './solp/solp-posicion';
-import {  SolpCompraDto } from './solp-compra';
+import {  EnvioSolpCompra, SolpCompraDto } from './solp-compra';
 
 @Injectable({
     providedIn: 'root'
@@ -429,4 +429,44 @@ export class ComprasService extends BaseService {
             .get<SolpCompraDto>('/api/compras/ObtenerSolpCompras', { params: params, headers: this.headers })
 
     }
+
+    public GrabarPeticion(solp: EnvioSolpCompra) {
+        let json = JSON.stringify({
+            SolpId: solp.solpId,
+            PosIds: solp.posIds,
+            UsuarioIds: solp.usuarioIds,
+            Observacion: solp.observacion,          
+            Adjuntos: solp.adjuntos           
+            
+        });
+
+        var payload = new FormData();
+        var archivos = solp.adjuntos;
+        if (archivos != null) {
+            for (let i = 0; i < archivos.length; i++) {
+                let fileToUpload = archivos[i];
+                try{
+                    payload.append("filePeticionDeOferta", fileToUpload as File, fileToUpload.name);
+                }catch(e){
+
+                    console.log(e);
+                }
+            }
+        }    
+
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/GrabarPeticionDeOferta', payload, { headers: this.headers });
+    }
+
+    public listarProveedores(filtro: string) {
+        let params: HttpParams = new HttpParams()
+        params = params.set('filtro', filtro);
+        return this.http
+            .get<SolpCompraDto>('/api/compras/ListarProveedores', { params: params, headers: this.headers })
+    }
+
+
+
 }

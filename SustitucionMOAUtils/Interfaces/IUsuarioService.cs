@@ -32,5 +32,7 @@ namespace SustitucionMOAUtils.Interfaces
         ProveedorDto GetProveedorPorCodigo(string codigo, string mailUsuario);
         ProveedorDto VerificarYObtenerProveedor(string mailUsuario, string codigoCorredor, string codigoProveedor);
         string ObtenerNuevoApiKey(string usuario);
+
+        List<ProveedorDto> ListarProveedores(string filtro);
     }
 }
