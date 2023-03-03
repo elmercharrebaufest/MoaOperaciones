@@ -2685,11 +2685,26 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-
                 var solp = new SolpDto
                 {
                     Id = peticionDeOferta.SolpId
                 };
+
+                var respuestaGuardarSOLP = new RespuestaGuardarSOLP
+                {
+                    Solp = solp
+                };
+
+                if (peticionDeOferta.UsuarioIds != null || peticionDeOferta.UsuarioIds.Count > 0)
+                {
+                    respuestaGuardarSOLP.Errores.Add("El campo Proveedor es obligatorio");
+                    return respuestaGuardarSOLP;
+                }
+                if (peticionDeOferta.PosIds != null || peticionDeOferta.PosIds.Count > 0)
+                {
+                    respuestaGuardarSOLP.Errores.Add("Debe seleccionar al menos una posición");
+                    return respuestaGuardarSOLP;
+                }
 
                 var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
                 var usuarios = repositorio.Listar<Usuario>(x => peticionDeOferta.UsuarioIds.Contains(x.Id));
@@ -2699,27 +2714,22 @@ namespace SustitucionMOAUtils.Services
                     FechaCreacion = DateTime.Now,
                     Solp_Id = peticionDeOferta.SolpId,
                     Observaciones = peticionDeOferta.Observacion,
-                    Posiciones = posiciones,                 
+                    Posiciones = posiciones,
                     PlazoDeOferta = posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
                     Usuarios = usuarios
                 };
 
                 peticion = repositorio.Agregar(peticion);
-                
-                peticion.Archivos = GuardarArchivosCompras(peticion, adjuntos);
-                repositorio.GuardarCambios();
 
-                var respuestaGuardarSOLP = new RespuestaGuardarSOLP
+                if (adjuntos != null && adjuntos.Count > 0)
                 {
-                    Solp = solp
-                };
-
+                    peticion.Archivos = GuardarArchivosCompras(peticion, adjuntos);
+                }
+                repositorio.GuardarCambios();
                 return respuestaGuardarSOLP;
-
             }
             catch (Exception e)
             {
-
                 return new RespuestaGuardarSOLP { Errores = new List<string> { e.Message }, Mensaje = e.Message };
             }
 
