@@ -30,6 +30,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                       where posicion.Solp_Id == solp.Id
                                                       select new SolpPosicionDto()
                                                       {
+                                                          Id = posicion.Id,
                                                           MaterialComprasCodigo = posicion.MaterialSolp.Codigo,
                                                           TieneCotizacion = posicion.Peticiones.Any(),
                                                           Indice = posicion.Indice,
