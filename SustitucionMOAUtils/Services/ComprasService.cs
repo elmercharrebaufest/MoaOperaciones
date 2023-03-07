@@ -34,6 +34,7 @@ using SustitucionMOAModel.Consultas;
 using SustitucionMOAFotmatter;
 using SustitucionMOAWS.CrearSolpWebServiceMOA;
 using SustitucionMOARepositorio.ConsultasEF;
+using iTextSharp.tool.xml.css;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -2908,6 +2909,178 @@ namespace SustitucionMOAUtils.Services
             }
 
             return pdfFilePath;
+        }
+
+        public byte[] GenerarPDF(PeticionDeOferta peticion)
+        {
+
+            try
+            {
+
+                using (var stream = new MemoryStream())
+                {
+                    using (var document = new Document(PageSize.A4, 10f, 10f, 10f, 100f))
+                    {
+                        string templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PeticionDeOfertaTemplate.html");
+
+                        var templateString = System.IO.File.ReadAllText(templateFilePath);
+
+                        var xHtml = templateString;
+                        xHtml = CompletarHtml(xHtml, null);
+
+                        var PdfWriter = iTextSharp.text.pdf.PdfWriter.GetInstance(document, stream);
+                        document.Open();
+                        
+                        PdfFooter PageEventHandler = new PdfFooter();
+                        PdfWriter.PageEvent = PageEventHandler;
+
+                        var tagProcessors = (DefaultTagProcessorFactory)Tags.GetHtmlTagProcessorFactory();
+                        tagProcessors.RemoveProcessor(HTML.Tag.IMG); // remove the default processor
+                        tagProcessors.AddProcessor(HTML.Tag.IMG, new CustomImageTagProcessor()); // use our new processor
+
+                        var tagProcessorFactory = Tags.GetHtmlTagProcessorFactory();
+
+                        var htmlPipelineContext = new HtmlPipelineContext(null);
+                        htmlPipelineContext.SetTagFactory(tagProcessorFactory);
+
+                        var pdfWriterPipeline = new PdfWriterPipeline(document, PdfWriter);
+
+                        // get an ICssResolver and add the custom CSS
+                        var cssResolver = XMLWorkerHelper.GetInstance().GetDefaultCssResolver(true);
+                        var hpc = new HtmlPipelineContext(new CssAppliersImpl(new XMLWorkerFontProvider()));
+                        hpc.SetAcceptUnknown(true).AutoBookmark(true).SetTagFactory(tagProcessors); // inject the tagProcessors
+
+                        var htmlPipeline = new HtmlPipeline(hpc, new PdfWriterPipeline(document, PdfWriter));
+                        var pipeline = new CssResolverPipeline(cssResolver, htmlPipeline);
+
+                        var worker = new XMLWorker(pipeline, true);
+
+                        var charset = Encoding.UTF8;
+
+                        var xmlParser = new XMLParser(true, worker, charset);
+                        xmlParser.Parse(new StringReader(xHtml));
+                        document.Close();
+                        byte[] bytes = stream.ToArray();
+                        stream.Close();
+                        return bytes;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        private static string CompletarHtml(string xHtml, PeticionDeOferta peticion)
+        {
+
+            var stylesHtml = @"<style type='text/css'>
+        .cls_003 {
+            font-family: Arial,serif;
+            font-size: 12.1px;
+            color: rgb(255,255,255);
+            font-weight: bold;
+            font-style: normal;
+            text-decoration: none;
+            background-color: black;
+            text-align: center;
+            top: -59px;
+            position: relative;
+            left: -1px;
+            width: 102%;
+        }
+
+        .cls_002 {
+            font-family: Arial,serif;
+            font-size: 14.1px;
+            color: rgb(0,0,0);
+            font-weight: bold;
+            font-style: italic;
+            text-decoration: none
+        }
+
+        .border, td {
+            border-collapse: collapse;
+            border: 1px solid black;
+        }
+
+        .noborder {
+            border-collapse: collapse;
+            border: 1px solid white;
+        }
+
+        .cls_005 {
+            font-family: Arial,serif;
+            font-size: 8.1px;
+            color: rgb(0,0,0);
+            font-weight: bold;
+            font-style: normal;
+            text-decoration: none;
+        }
+
+        .cls_006 {
+            font-family: Arial,serif;
+            font-size: 8px;
+            color: rgb(0,0,0);
+            font-weight: normal;
+            font-style: normal;
+            text-decoration: none;
+        }
+
+        .cls_008 {
+            font-family: Arial,serif;
+            font-size: 10.0px;
+            color: rgb(0,0,0);
+            font-weight: normal;
+            font-style: normal;
+            text-decoration: none;
+        }
+
+        .cls_009 {
+            font-family: Arial,serif;
+            font-size: 11.1px;
+            color: rgb(0,0,0);
+            font-weight: bold;
+            font-style: normal;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .cls_011 {
+            font-family: Courier New,serif;
+            font-size: 10.1px;
+            color: rgb(0,0,0);
+            font-weight: normal;
+            font-style: normal;
+            text-decoration: none
+        }
+
+        .espacio {
+            height: 10px;
+            display: block;
+        }
+
+        .w33 {
+            width: 30%;
+            display: inline-block;
+        }
+        .cls_012 {
+            font-family: Arial,serif;
+            font-size: 6px;
+            text-align: justify;
+        }
+        
+    </style>";
+
+
+
+
+            xHtml = string.Format(xHtml);
+
+            return xHtml;
         }
 
     }
