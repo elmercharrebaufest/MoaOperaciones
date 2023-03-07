@@ -10,6 +10,7 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { VentaSustentableService } from '../venta-sustentable.service';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { CommonResponse } from '../../common/models/common-response';
+import { DatosCopiar } from '../alta/alta.component';
 
 @Component({
   selector: 'app-declaracion-conformidad',
@@ -196,5 +197,12 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
       }
     );
     return false;
+  }
+
+  public cargarDatosCopiar(datos: DatosCopiar){
+    this.CUITDeclaracion = datos.CUIT;
+    this.razonSocialDeclaracion = datos.ProveedorNombre
+    this.proveedorId = datos.Proveedor_Id
+    this.razonSocial = datos.ProveedorNombre
   }
 }
