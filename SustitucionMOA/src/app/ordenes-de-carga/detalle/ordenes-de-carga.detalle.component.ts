@@ -648,10 +648,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
+            document.getElementById("closemodalAnularOrden").click();
             this.subscriptionDropDowns = this.service.anular(this.ordenDeCargaId).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
-                    document.getElementById("closemodalAnularOrden").click();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -667,7 +667,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     }
                 },
                 error => {
-                    document.getElementById("closemodalAnularOrden").click();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
