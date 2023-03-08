@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using Mod = SustitucionMOAModel.Models;
 
 namespace SustitucionMOAUtils.Services
@@ -2431,6 +2432,7 @@ namespace SustitucionMOAUtils.Services
                 orden.NumeroEntrega = null;
                 orden.FechaEntregaGenerada = null;
                 repositorio.GuardarCambios();
+                Thread.Sleep(10000);
             }
         }
         private void AnularPedidoEnSap(OrdenDeCarga orden, bool tieneNumeroEntrega)
