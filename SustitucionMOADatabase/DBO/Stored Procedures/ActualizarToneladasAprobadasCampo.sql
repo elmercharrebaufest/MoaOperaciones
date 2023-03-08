@@ -3,7 +3,7 @@ AS
 BEGIN  
  DECLARE @LogId BIGINT  
  DECLARE @Log varchar(MAX)=''  
- INSERT INTO LogActualizarToneladasAprobadasCampo values (GETDATE(),@IdCampo,@IdTSA,@Cuit,@ToneladasAprobadas,@MotivoRechazo,'')  
+ INSERT INTO LogActualizarToneladasAprobadasCampo values (GETDATE(),@IdCampo,@IdTSA,@Cuit,@ToneladasAprobadas,@MotivoRechazo,'',@CosechaNombre)  
  set @LogId = @@IDENTITY  
   
 SET NOCOUNT ON  
