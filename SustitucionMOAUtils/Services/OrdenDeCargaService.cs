@@ -2432,7 +2432,7 @@ namespace SustitucionMOAUtils.Services
                 orden.NumeroEntrega = null;
                 orden.FechaEntregaGenerada = null;
                 repositorio.GuardarCambios();
-                Thread.Sleep(10000);
+                Thread.Sleep(5000);
             }
         }
         private void AnularPedidoEnSap(OrdenDeCarga orden, bool tieneNumeroEntrega)
