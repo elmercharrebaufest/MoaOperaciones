@@ -509,13 +509,14 @@ namespace SustitucionMOAUtils.Services
             }
 
             //ANULAR APERTURAS ANTERIORES
-            foreach (var apertura in liquidacion.Aperturas)
+            foreach (var apertura in liquidacion.Aperturas.Where(ap=>ap.Estado))
             {
                 apertura.Estado = false;
                 apertura.UsuarioModificacionId = request.UsuarioCreacionId;
                 apertura.FechaModificacion = DateTime.Now;
 
-                if (apertura.OrdenCheque > 1) echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
+                if (apertura.OrdenCheque > 0) echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
+                
             }
 
             //Agregar Aperturas Nuevas
@@ -524,7 +525,7 @@ namespace SustitucionMOAUtils.Services
                 //string cuit = liquidacion.EcheqNegocio.Proveedor != null ? liquidacion.EcheqNegocio.Proveedor.CUIT : 
                 //    repositorio.Obtener<Proveedor>(x => x.Id == liquidacion.EcheqNegocio.ProveedorId).CUIT;
 
-                if (apertura.OrdenCheque > 1) echeqCargaAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.EcheqNegocio.Contrato,
+                if (apertura.OrdenCheque > 0) echeqCargaAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.EcheqNegocio.Contrato,
                     liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"),
                     apertura.ImporteCheque, "ARP  ", liquidacion.EcheqNegocio.Pedido, request.CodigoProveedor, liquidacion.NumeroCOE, "MOA", "");
 
