@@ -59,6 +59,7 @@
     <Compile Include="Dto\AsociarContratoDto.cs" />
     <Compile Include="Dto\Echeq\EcheqReporteDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorteDto.cs" />
+    <Compile Include="Dto\LegajoDto.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\IngresosEgresosFasones.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\IngresosEgresosFas.cs" />
     <Compile Include="Dto\OrdenDeCarga\ObtenerContratosDisponiblesRequest.cs" />
@@ -142,6 +143,8 @@
     <Compile Include="Dto\UsuarioComprasDto.cs" />
     <Compile Include="Dto\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Entities\AplicacionCartaPorte.cs" />
+    <Compile Include="Entities\PeticionDeOfertaUsuario.cs" />
+    <Compile Include="Entities\PeticionDeOfertaArchivo.cs" />
     <Compile Include="Entities\PeticionDeOferta.cs" />
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
     <Compile Include="Enums\EstadoAplicacionCartaPorte.cs" />

@@ -55,6 +55,7 @@ import {TooltipModule} from 'primeng/tooltip';
 import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
 import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
 import { CotizacionFormularioComponent } from './cotizacion/cotizacion-formulario/cotizacion-formulario.component';
+import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
 @NgModule({
     imports: [
         CommonModule,
@@ -111,7 +112,8 @@ import { CotizacionFormularioComponent } from './cotizacion/cotizacion-formulari
         ObtenerContratoMarcoComponent,
         ListadoDashboardCompradorComponent,
         FiltroDashboardCompradorComponent,
-        CotizacionFormularioComponent
+        CotizacionFormularioComponent,
+        LegajoComponent,
     ],
     providers: [
         ComprasService,

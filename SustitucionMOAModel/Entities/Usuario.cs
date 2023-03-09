@@ -30,7 +30,7 @@ namespace SustitucionMOAModel.Entities
         //public virtual ICollection<Archivo> Archivos { get; set; }
         public string UsuarioSap { get; set; }
 
-        [InverseProperty("Usuarios")]
+        [InverseProperty("Usuario")]
         public virtual ICollection<PeticionDeOferta> Peticiones { get; set; }
 
         public Rol ObtenerRolPrincipal()

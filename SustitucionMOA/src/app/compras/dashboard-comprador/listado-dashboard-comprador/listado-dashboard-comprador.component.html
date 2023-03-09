@@ -174,7 +174,7 @@
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn " style="margin-right: 10px;">
+                                                    <button class="publicar btn " style="margin-right: 10px;" (click)="verLegajo(licitacion.Id)">
                                                         Legajo
                                                     </button>
                                                     <button class="publicar btn btn-success">
@@ -198,5 +198,15 @@
         <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
 
     </div>
+
+
+
+    <app-legajo [(displayLegajo)]="displayLegajo"
+                (cerrarLegajoEmitter)="cerrarLegajo()"
+                (descargarArchivoEmitter)="descargarArchivo($event)"
+                (descargarLegajoEmitter)="descargarLegajo()"
+                (adjuntarArchivoLegajoEmitter)="adjuntarArchivoLegajo($event)"
+                [(legajo)]="legajo">
+    </app-legajo>
 
 </div>

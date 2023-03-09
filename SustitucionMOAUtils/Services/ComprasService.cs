@@ -489,16 +489,16 @@ namespace SustitucionMOAUtils.Services
             return solpEntity;
         }
 
-        private string ObtenerRutaArchivos(int solpId)
+        private string ObtenerRutaArchivos(int id, string path)
         {
-            return string.Format("{0}/Solp_{1}", rutaArchivosCompras, solpId);
+            return $"{rutaArchivosCompras}/{path}_{id}";
         }
 
         private Pliego GuardarEspecificacionesTecnicasPliego(SolpDto solp, Solp solpEntity, Pliego pliegoEntity)
         {
-            var rutaArchivo = string.Concat(ObtenerRutaArchivos(solpEntity.Id), "/", FileKeys.EspecificacionesTecnicasPliego, ".txt");
+            var rutaArchivo = string.Concat(ObtenerRutaArchivos(solpEntity.Id, "Solp"), "/", FileKeys.EspecificacionesTecnicasPliego, ".txt");
 
-            Directory.CreateDirectory(ObtenerRutaArchivos(solpEntity.Id));
+            Directory.CreateDirectory(ObtenerRutaArchivos(solpEntity.Id, "Solp"));
             File.WriteAllText(rutaArchivo, solp.EspecificacionesTecnicas);
 
             var archivosEspecificacionesTecnicasPliego = pliegoEntity.Archivos.FirstOrDefault(x => x.FileKey == FileKeys.EspecificacionesTecnicasPliego);
@@ -518,7 +518,7 @@ namespace SustitucionMOAUtils.Services
 
         private SolpDto GuardarAdjuntosSolp(SolpDto solp, HttpFileCollectionBase files, Pliego pliego)
         {
-            var ruta = ObtenerRutaArchivos(solp.Id.Value);
+            var ruta = ObtenerRutaArchivos(solp.Id.Value, "Solp");
 
             var filesEspecificaciones = files.GetMultiple("fileEspecificaciones");
             for (int i = 0; i < filesEspecificaciones.Count; i++)
@@ -2683,8 +2683,7 @@ namespace SustitucionMOAUtils.Services
 
         public RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos)
         {
-            try
-            {
+            
                 var solp = new SolpDto
                 {
                     Id = peticionDeOferta.SolpId
@@ -2695,11 +2694,11 @@ namespace SustitucionMOAUtils.Services
                     Solp = solp
                 };
 
-                if (peticionDeOferta.UsuarioIds != null || peticionDeOferta.UsuarioIds.Count > 0)
+                if (peticionDeOferta.UsuarioIds == null || peticionDeOferta.UsuarioIds.Count == 0)
                 {
                     throw new ValidationCustomException("El campo Proveedor es obligatorio");
                 }
-                if (peticionDeOferta.PosIds != null || peticionDeOferta.PosIds.Count > 0)
+                if (peticionDeOferta.PosIds == null || peticionDeOferta.PosIds.Count == 0)
                 {
                     throw new ValidationCustomException("Debe seleccionar al menos una posición");
                 }
@@ -2714,59 +2713,202 @@ namespace SustitucionMOAUtils.Services
                     Observaciones = peticionDeOferta.Observacion,
                     Posiciones = posiciones,
                     PlazoDeOferta = posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
-                    Usuarios = usuarios
+                    Usuarios = usuarios.Select(a => new PeticionDeOfertaUsuario {Usuario_Id=a.Id }).ToList()
                 };
 
                 peticion = repositorio.Agregar(peticion);
 
                 if (adjuntos != null && adjuntos.Count > 0)
                 {
-                    peticion.Archivos = GuardarArchivosCompras(peticion, adjuntos);
+                    GuardarArchivosPeticionDeOferta(peticion, adjuntos);
                 }
                 repositorio.GuardarCambios();
                 return respuestaGuardarSOLP;
-            }
-            catch (Exception e)
-            {
-                return new RespuestaGuardarSOLP { Errores = new List<string> { e.Message }, Mensaje = e.Message };
-            }
+            
+           
 
         }
 
-        private List<Archivo> GuardarArchivosCompras(PeticionDeOferta peticion, HttpFileCollectionBase files)
+        private void GuardarArchivosPeticionDeOferta(PeticionDeOferta peticion, HttpFileCollectionBase files)
         {
-            var ruta = ObtenerRutaArchivos(peticion.Id);
-            var archivos = new List<Archivo>();
-            var peticiones = new List<PeticionDeOferta>();
-            peticiones.Add(peticion);
+            var ruta = ObtenerRutaArchivos(peticion.Id, FileKeys.PeticionDeOferta);
+
+
             var filesEspecificaciones = files.GetMultiple("filePeticionDeOferta");
             for (int i = 0; i < filesEspecificaciones.Count; i++)
             {
                 var file = filesEspecificaciones[i];
                 var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
-
-                //if (File.Exists(rutaArchivo))
-                //{
-                //    file.SaveAs(rutaArchivo);
-                //    continue;
-                //}
+                var rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
 
                 Directory.CreateDirectory(ruta);
-                file.SaveAs(rutaArchivo);
-                var archivo = new Archivo()
+
+                int copyNro = 1;
+                while (File.Exists(rutaArchivoRename))
                 {
-                    FileKey = "PeticionDeOferta",
-                    Ruta = rutaArchivo,
-                    Peticiones = peticiones
-                };
-                archivos.Add(archivo);
+                    rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName($"({copyNro}) " + file.FileName));
+                    copyNro += 1;
+                }
+
+                peticion.Archivos.Add(new PeticionDeOfertaArchivo
+                {
+                    Archivo = new Archivo
+                    {
+                        FileKey = FileKeys.PeticionDeOferta,
+                        Ruta = rutaArchivoRename
+                    },
+                    Fecha= DateTime.Now,                    
+                });
+
+                file.SaveAs(rutaArchivoRename);
             }
 
-            repositorio.AgregarTodos(archivos);
-            repositorio.GuardarCambios();
-            return archivos;
         }
 
+        public List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? usuarioId)
+        {
+            List<LegajoDto> legajo = new List<LegajoDto>();
+            var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
+            var middleFileName = peticion.Solp.NroSolp == null ? (peticion.Solp.Pliego.NombreObra == null ? "xxxx" : peticion.Solp.Pliego.NombreObra) : peticion.Solp.NroSolp;
+            var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
+
+            //invento registro con id de archivo 0 para bajar el pliego
+            legajo.Add(new LegajoDto
+            {
+                ArchivoId = 0,
+                Observacion = pdfFilename,
+                PeticionDeOfertaId = peticionDeOfertaId,
+                SolpId = peticion.Solp_Id,
+                Fecha = peticion.Solp.FechaCreacion,
+                FechaFormateado = peticion.Solp.FechaCreacion.ToString("dd/MM/yyyy")
+            });
+            // buscar archivos de la solp
+            if (peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+            {
+
+                foreach (var archivoSubido in peticion.Solp.Pliego.Archivos)
+                {
+                    if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                    {
+                        string fileName = Path.GetFileName(archivoSubido.Ruta);
+                        legajo.Add(new LegajoDto
+                        {
+                            ArchivoId = archivoSubido.Id,
+                            Observacion = fileName,
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = peticion.Solp_Id,
+                            Fecha = peticion.Solp.FechaCreacion,
+                            FechaFormateado = peticion.Solp.FechaCreacion.ToString("dd/MM/yyyy")
+                        });
+                    }
+                }
+            }
+
+
+            //buscar archivos de la peticion
+            foreach (var item in peticion.Archivos)
+            {
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = item.Archivo.Id,
+                    Observacion = item.Archivo.ObtenerNombre(item.Archivo.Ruta),
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = peticion.Solp_Id,
+                    Fecha = item.Fecha,
+                    FechaFormateado = item.Fecha.ToString("dd/MM/yyyy")
+                });
+            }
+
+            //buscar archivos de la circular
+
+            //buscar comentarios de la circular
+
+            //buscar cambios de fechas de la circular
+
+
+
+
+            return legajo.OrderByDescending(x => x.Fecha).ToList();
+        }
+
+        public Resultado GuardarAdjuntosPeticionDeOferta(int idPeticion, HttpFileCollectionBase files, UsuarioDto usuarioDto)
+        {
+            var ruta = "C:\\adjuntospliego";//ObtenerRutaArchivosPeticionDeOferta(idPeticion);
+            var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                var file = files[i];
+                var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+                var rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+
+
+                Directory.CreateDirectory(ruta);
+
+                int copyNro = 1;
+                while (File.Exists(rutaArchivoRename))
+                {
+                    rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName($"({copyNro}) " + file.FileName));
+                    copyNro += 1;
+                }
+
+
+                peticion.Archivos.Add(new PeticionDeOfertaArchivo
+                {
+                    Archivo = new Archivo
+                    {
+                        FileKey = FileKeys.PeticionDeOferta,
+                        Ruta = rutaArchivoRename
+                    },
+                    Fecha = DateTime.Now,
+                });
+
+                file.SaveAs(rutaArchivoRename);
+            }
+
+
+            repositorio.GuardarCambios();
+
+            return new Resultado();
+        }
+
+        public string DescargarLegajo(int idPeticion, string pathBase)
+        {
+            var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
+
+            var middleFileName = peticion.Solp.NroSolp == null ? (peticion.Solp.Pliego.NombreObra == null ? "xxxx" : peticion.Solp.Pliego.NombreObra) : peticion.Solp.NroSolp;
+            var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
+            var pdfFilePath = $"{pathBase}/{pdfFilename}";
+            File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(peticion.Solp_Id));
+
+            if (peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+            {
+                var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.zip";
+                var filePath = $"{pathBase}/{zipFilename}";
+
+                using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
+                {
+                    using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                    {
+                        foreach (var archivoSubido in peticion.Solp.Pliego.Archivos)
+                        {
+                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                            {
+                                string fileName = Path.GetFileName(archivoSubido.Ruta);
+                                archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
+                            }
+                        }
+
+                        archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
+
+                    }
+                }
+
+                return filePath;
+            }
+
+            return pdfFilePath;
+        }
 
     }
 

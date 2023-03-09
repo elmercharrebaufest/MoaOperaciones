@@ -54,5 +54,8 @@ namespace SustitucionMOAUtils.Interfaces
         SolpCompraDto ObtenerSolpCompras(int id);
 
         RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos);
+        List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? usuarioId);
+        Resultado GuardarAdjuntosPeticionDeOferta(int idPeticion, HttpFileCollectionBase files, UsuarioDto usuarioDto);
+        string DescargarLegajo(int idPeticion, string path);
     }
 }

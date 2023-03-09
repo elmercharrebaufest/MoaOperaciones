@@ -5,7 +5,7 @@ import { BaseService } from '../common/services/BaseService';
 import { Solp } from './solp/solp';
 import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 import { SolpPosicion } from './solp/solp-posicion';
-import {  EnvioSolpCompra, SolpCompraDto } from './solp-compra';
+import { EnvioSolpCompra, SolpCompraDto } from './solp-compra';
 
 @Injectable({
     providedIn: 'root'
@@ -445,14 +445,14 @@ export class ComprasService extends BaseService {
         if (archivos != null) {
             for (let i = 0; i < archivos.length; i++) {
                 let fileToUpload = archivos[i];
-                try{
+                try {
                     payload.append("filePeticionDeOferta", fileToUpload as File, fileToUpload.name);
-                }catch(e){
+                } catch (e) {
 
                     console.log(e);
                 }
             }
-        }    
+        }
 
         payload.append('json', json);
 
@@ -466,4 +466,57 @@ export class ComprasService extends BaseService {
         return this.http
             .get<SolpCompraDto>('/api/compras/ListarProveedores', { params: params, headers: this.headers })
     }
+
+    verLegajo(idPeticionDeOferta: number, idUsuario: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("peticionDeOfertaId", idPeticionDeOferta.toString());
+        if (idUsuario != null) {
+            params = params.set("usuarioId", idUsuario.toString());
+        }
+        return this.http
+            .get("/api/compras/Legajo", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    descargarArchivo(idArchivo: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("idArchivo", idArchivo.toString());
+
+        return this.http
+            .get("/api/compras/DescargarArchivo", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    adjuntarArchivoLegajo(idPeticion: number, files: any): Observable<any> {
+        var payload = new FormData();
+
+        for (let i = 0; i < files.length; i++) {
+            let fileToUpload = files[i];
+            payload.append("files", fileToUpload, fileToUpload.name);
+        }
+
+
+        payload.append('idPeticion', idPeticion.toString());
+
+        return this.http
+            .post<Solp>('/api/compras/GuardarAdjuntosPeticionDeOferta', payload, { headers: this.headers });
+
+    }
+
+    descargarLegajo(idPeticion: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("idPeticion", idPeticion.toString());
+
+        return this.http
+            .get("/api/compras/DescargarLegajo", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+
 }

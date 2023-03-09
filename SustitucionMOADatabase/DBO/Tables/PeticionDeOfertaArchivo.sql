@@ -1,11 +1,9 @@
 ﻿CREATE TABLE [dbo].[PeticionDeOfertaArchivo](
+    [Id] INT NOT NULL IDENTITY, 
 	[PeticionDeOferta_Id] [int] NOT NULL,
-	[Archivo_Id] [int] NOT NULL,
- CONSTRAINT [PK_dbo.PeticionDeOfertaArchivo] PRIMARY KEY CLUSTERED 
-(
-	[PeticionDeOferta_Id] ASC,
-	[Archivo_Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+	[Archivo_Id] [int] NOT NULL, 
+    [Fecha] DATETIME2 NOT NULL, 
+    CONSTRAINT [PK_PeticionDeOfertaArchivo] PRIMARY KEY ([Id]),
 ) ON [PRIMARY]
 GO
 

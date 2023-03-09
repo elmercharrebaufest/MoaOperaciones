@@ -24,13 +24,13 @@ namespace SustitucionMOAModel.Entities
         public virtual Solp Solp { get; set; }
 
         [InverseProperty("Peticiones")]
-        public virtual ICollection<SolpPosicion> Posiciones { get; set; }
+        public virtual ICollection<SolpPosicion> Posiciones { get; set; } = new List<SolpPosicion>();
 
-        [InverseProperty("Peticiones")]
-        public virtual ICollection<Usuario> Usuarios { get; set; }
+        [InverseProperty("PeticionDeOferta")]
+        public virtual ICollection<PeticionDeOfertaUsuario> Usuarios { get; set; } = new List<PeticionDeOfertaUsuario>();
 
-        [InverseProperty("Peticiones")]
-        public virtual ICollection<Archivo> Archivos { get; set; }
+        [InverseProperty("PeticionDeOferta")]
+        public virtual ICollection<PeticionDeOfertaArchivo> Archivos { get; set; } = new List<PeticionDeOfertaArchivo>();
 
     }
 }
