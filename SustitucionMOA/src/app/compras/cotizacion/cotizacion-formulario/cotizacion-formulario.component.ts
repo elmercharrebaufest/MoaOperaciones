@@ -15,76 +15,84 @@ import { Table } from 'primeng/table';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
-    selector: 'app-cotizacion-formulario',
-    templateUrl: './cotizacion-formulario.component.html',
-    styleUrls: ['./cotizacion-formulario.component.css', '../../compras.component.css'],
-    providers: [ComprasService]
+  selector: 'app-cotizacion-formulario',
+  templateUrl: './cotizacion-formulario.component.html',
+  styleUrls: ['./cotizacion-formulario.component.css', '../../compras.component.css'],
+  providers: [ComprasService]
 })
 export class CotizacionFormularioComponent extends ListBaseComponent implements OnInit {
 
     @BlockUI() blockUI: NgBlockUI;
 
-    @ViewChild("tabla")
-    protected tabla: Table;
+  @ViewChild("tabla")
+  protected tabla: Table;
 
 
-    solpCompraDto: SolpCompraDto;
-    posicionCompra: PosicionCompra[];
-    solpSubposicionDto: SolpSubposicionDto[];
-    solpProveedorDto: SolpProveedorDto[];
-    envioSolpCompra: EnvioSolpCompra[]
+  solpCompraDto: SolpCompraDto;
+  posicionCompra: PosicionCompra[];
+  solpSubposicionDto: SolpSubposicionDto[];
+  solpProveedorDto: SolpProveedorDto[];
+  envioSolpCompra: EnvioSolpCompra[]
 
-    proveedoresValidos: string;
-    proveedoresInvalidos: string;
-    proveedoresNoSugeridos: string;
+  proveedoresValidos: string;
+  proveedoresInvalidos: string;
+  proveedoresNoSugeridos: string;
 
-    archivos = new Array<File>()
-    posicionDeInicioInsert: number = 0;
+  archivos = new Array<File>()
+  posicionDeInicioInsert: number = 0;
 
-    formularioPeticionDeOferta: FormGroup;
+  formularioPeticionDeOferta: FormGroup;
 
-    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
-        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+  constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
+    protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-    }
+    super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+}
 
-    display: boolean = false;
+  display: boolean = false;
 
     proveedores: any[] = new Array();
     proveedoresSeleccionados: any[] = new Array();
     proveedorSeleccionado: any;
+  
 
-    ngOnInit() {
-        if (this.route.params) {
-            this.route.params.forEach((params: Params) => {
-                let id = parseInt(params["id"]);
-                this.obtenerSolpCompras(id);
-            })
-        };
+  ngOnInit() {
 
+    if (this.route.params) {
+      this.route.params.forEach((params: Params) => {
+          let id = parseInt(params["id"]);
+          this.obtenerSolpCompras(id);
+      })
+    };
 
+    const validos = this.filtrarProveedores(this.proveedores, 'validos');
+    const invalidos = this.filtrarProveedores(this.proveedores, 'invalidos');
+    const noSugeridos = this.filtrarProveedores(this.proveedores, 'no sugeridos');
 
-    }
+    this.proveedoresValidos = this.mostrarProveedores(validos);
+    this.proveedoresInvalidos = this.mostrarProveedores(invalidos);
+    this.proveedoresNoSugeridos = this.mostrarProveedores(noSugeridos);
+ 
+  }
 
-    obtenerSolpCompras(id) {
-        try {
+  obtenerSolpCompras(id) {
+    try {
             this.blockUI.start('Cargando...');
-            this.subscription = this.service.obtenerSolpCompras(id).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        this.solpCompraDto = result.data;
-
-                        //verificar tipo de pos y si es serv setear selected en true
+        this.subscription = this.service.obtenerSolpCompras(id).subscribe(
+            (result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {
+                    this.solpCompraDto = result.data;
+                    
+                    //verificar tipo de pos y si es serv setear selected en true
                         if (this.esTipoServicio) {
                             this.solpCompraDto.PosicionCompras.forEach(x => x.Selected = true);
-                        }
+                    }
                         for (var i = 0; i < this.solpCompraDto.PosicionCompras.length; i++) {
                             for (var j = 0; j < this.solpCompraDto.PosicionCompras[i].ProveedoresCompras.length; j++) {
                                 this.proveedores.push(this.solpCompraDto.PosicionCompras[i].ProveedoresCompras[j])
@@ -98,61 +106,61 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         this.proveedoresInvalidos = this.mostrarProveedores(invalidos);
                         this.proveedoresNoSugeridos = this.mostrarProveedores(noSugeridos);
 
-                        console.log(result.data);
-                    }
+                    console.log(result.data);
+                }
                     this.blockUI.stop();
-                },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
+            },
+            error => {
+                this.floatMsgService.setErrorMsg(error.message);
                     this.blockUI.stop();
-                });
-        } catch (e) {
+            });
+    } catch (e) {
             this.blockUI.stop();
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
+        this.floatMsgService.setErrorMsg(e);
         return false; //<-- Prevent Refresh
     }
+    return false; //<-- Prevent Refresh
+  }
 
-    public get esTipoMaterial(): boolean {
-        return this.solpCompraDto.TipoPosicionCodigo == "MATERIALES";
-    }
+  public get esTipoMaterial(): boolean {
+    return this.solpCompraDto.TipoPosicionCodigo == "MATERIALES";
+  }
 
-    public get esTipoServicio(): boolean {
-        return this.solpCompraDto.TipoPosicionCodigo == "SERVICIO";
-    }
+  public get esTipoServicio(): boolean {
+    return this.solpCompraDto.TipoPosicionCodigo == "SERVICIO";
+  }
 
-    //elimno el archivo, llamar al servicio de eliminacion
-    eliminarAdjuntoNuevo(archivo): void {
-        var indice = this.archivos.indexOf(archivo)
-        this.archivos.splice(indice, 1)
-    }
+  //elimno el archivo, llamar al servicio de eliminacion
+  eliminarAdjuntoNuevo(archivo): void {
+    var indice = this.archivos.indexOf(archivo)
+    this.archivos.splice(indice, 1)
+  }
 
 
-    uploadHandler(filesUpload: any): void {
-        this.archivos = filesUpload["files"];
-    }
+  uploadHandler(filesUpload: any): void {
+      this.archivos = filesUpload["files"];
+  }
 
     eliminarArchivo(esAdjuntoNuevo: boolean, archivo: any) {
-        this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar el archivo?',
-            accept: () => {
-                this.eliminarAdjuntoNuevo(archivo)
-            },
-            reject: () => {
+      this.confirmationService.confirm({
+          message: '¿Está seguro que desea eliminar el archivo?',
+          accept: () => {
+              this.eliminarAdjuntoNuevo(archivo)
+          },
+          reject: () => {
+              
+          }
+      });
+  }
 
-            }
-        });
-    }
-
-    filtrarProveedores(proveedores: SolpProveedorDto[], tipoFiltro: string): SolpProveedorDto[] {
-        return proveedores.filter((proveedor) => proveedor.TipoFiltroProveedorSolpCodigo === tipoFiltro);
-    }
-
-    mostrarProveedores(proveedores: SolpProveedorDto[]): string {
-        return proveedores.map((proveedor) => proveedor.RazonSocial).join(', ');
-    }
-
+  filtrarProveedores(proveedores: SolpProveedorDto[], tipoFiltro: string): SolpProveedorDto[] {
+    return proveedores.filter((proveedor) => proveedor.TipoFiltroProveedorSolpCodigo === tipoFiltro);
+  }
+  
+  mostrarProveedores(proveedores: SolpProveedorDto[]): string {
+    return proveedores.map((proveedor) => proveedor.RazonSocial).join(', ');
+  }
+  
 
     searchProveedor(event) {
         try {
