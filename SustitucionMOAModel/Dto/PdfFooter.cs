@@ -39,6 +39,7 @@ namespace SustitucionMOAModel.Dto
             cb.ShowText(pageText);
             cb.EndText();
             cb.AddTemplate(templateM, 10, 10);//posicion dond ese agrega el template
+
         }
 
         public override void OnCloseDocument(PdfWriter writer, Document document)
@@ -48,11 +49,17 @@ namespace SustitucionMOAModel.Dto
             foreach (PdfTemplate item in templates)
             {
                 item.BeginText();
-                item.SetFontAndSize(bf, 10);
-                item.SetTextMatrix(document.PageSize.Width - document.RightMargin - 30, 0);
-                item.ShowText(pagenumber++ + " / " + (writer.PageNumber));
+                item.SetFontAndSize(bf, 8);
+                item.SetTextMatrix(document.PageSize.Width - document.RightMargin - 370, 10);
+                item.ShowText("Página " + pagenumber++ + " / " + (writer.PageNumber) + "        "+ DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"));
                 item.EndText();
-             
+                var text = "Impuestos internos: Responsable - Ing. Brutos Convenio Multilateral: 999-999999-9 - C.U.I.T. 30-71511877-3 -Jubilac: Ex-Comercio: 39661 - Ex-Industria: 8883 Ex-Navegación: 2823 - Ex-Ferroviaria:13 - Ex-Trabajadores Rurales 72869 - RACM: 5274800-1";
+                item.BeginText();
+                item.SetFontAndSize(bf, 5);
+                item.SetTextMatrix(0, 30);
+                item.ShowText(text);
+                item.EndText();
+                
             }
 
         }
