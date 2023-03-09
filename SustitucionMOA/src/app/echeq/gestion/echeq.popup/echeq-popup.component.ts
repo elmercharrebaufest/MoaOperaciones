@@ -28,7 +28,7 @@ export class EcheqPopupComponent implements OnInit {
 
             if (this.listaChequesAux.length == 0) {
                 let aforo = {
-                    ordenCheque: 1,
+                    ordenCheque: 0,
                     importeCheque: Number((this.documento.importeEnPesos * this.aforoConf / 100).toFixed(2)),
                     porcentaje: this.aforoConf
                 };
@@ -77,21 +77,21 @@ export class EcheqPopupComponent implements OnInit {
     agregarInputEcheq() {
         this.listaChequesAux.push(
             {
-                ordenCheque: this.listaChequesAux.length + 1,
+                ordenCheque: this.listaChequesAux.length ,
                 importeCheque: 0,
                 porcentaje: 0
             })
     }
 
     eliminarEcheq(ordenCheque) {
-        this.listaChequesAux.splice(ordenCheque - 1, 1);
+        this.listaChequesAux.splice(ordenCheque , 1);
         this.reEnumerarEcheq(this.listaChequesAux);
         this.mostrarMensaje();
     }
 
     reEnumerarEcheq(listaChequesApertura: Array<EcheqApertura>) {
-        for (let i = 1; i < listaChequesApertura.length; i++) {
-            listaChequesApertura[i].ordenCheque = i + 1;
+        for (let i = 0; i < listaChequesApertura.length; i++) {
+            listaChequesApertura[i].ordenCheque = i;
         }
     }
 
