@@ -1591,7 +1591,7 @@ namespace SustitucionMOAUtils.Services
                     Fechas = fechas,
                     Material = material,
                     Pendiente = pendiente,
-                    TipoContrato = tipoContrato
+                    TipoContrato = tipoContrato,
                 };
                 Log.Info("OrdenCargaVisualizarCliente request " + request.ToJson());
                 var ordenCargaVisualizarClienteWSMOAResponse = ordenCargaConsumerMOA.OrdenCargaVisualizarClienteExecute(request);
@@ -2310,7 +2310,7 @@ namespace SustitucionMOAUtils.Services
                     Fechas = rangoFechas,
                     Material = "50866",
                     Pendiente = "X", // "X" es para Contratos ABIERTOS
-                    TipoContrato = string.Empty
+                    TipoContrato = "N"
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();

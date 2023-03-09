@@ -375,7 +375,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             var fechas = ObtenerRangoFechas();
 
-            var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS("", contrato, "", fechas, "", "X", "");
+            var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS("", contrato, "", fechas, "", "X", "N");
             return result.Length > 0;
         }
         private ZMPES4100[] ObtenerRangoFechas()
