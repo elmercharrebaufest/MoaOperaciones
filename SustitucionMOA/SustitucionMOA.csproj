@@ -319,6 +319,8 @@
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
+    <Content Include="src\app\compras\cotizacion\cotizacion-formulario\cotizacion-formulario.component.css" />
+    <Content Include="src\app\compras\cotizacion\cotizacion-formulario\cotizacion-formulario.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.css" />
@@ -1110,6 +1112,8 @@
     <TypeScriptCompile Include="src\app\compras\compras-routing.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.service.ts" />
+    <TypeScriptCompile Include="src\app\compras\cotizacion\cotizacion-formulario\cotizacion-formulario.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\cotizacion\cotizacion-formulario\cotizacion-formulario.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard\dashboard.component.ts" />

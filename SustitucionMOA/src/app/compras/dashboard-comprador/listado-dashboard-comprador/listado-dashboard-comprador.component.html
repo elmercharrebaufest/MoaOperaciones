@@ -140,7 +140,9 @@
                         {{ rowData.EstadoSolpSap.Descripcion || "" }}
                     </td>
                     <td class="col-sm-12 col-md-12 col-lg-12">
-                        <button class="publicar btn btn-success" *ngIf="rowData.EstadoSolpSap.CodigoSap == '02'">
+                        <button class="publicar btn btn-success"
+                        (click)="publicarCotizacion(rowData.Id)">
+                            <!-- *ngIf="rowData.EstadoSolpSap.CodigoSap == '02'" -->
                             Publicar
                         </button>
                     </td>

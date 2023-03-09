@@ -432,16 +432,16 @@ export class ComprasService extends BaseService {
 
     public GrabarPeticion(solp: EnvioSolpCompra) {
         let json = JSON.stringify({
-            SolpId: solp.solpId,
-            PosIds: solp.posIds,
-            UsuarioIds: solp.usuarioIds,
-            Observacion: solp.observacion,          
-            Adjuntos: solp.adjuntos           
+            SolpId: solp.SolpId,
+            PosIds: solp.PosIds,
+            UsuarioIds: solp.UsuarioIds,
+            Observacion: solp.Observacion,          
+            Adjuntos: solp.Adjuntos           
             
         });
 
         var payload = new FormData();
-        var archivos = solp.adjuntos;
+        var archivos = solp.Adjuntos;
         if (archivos != null) {
             for (let i = 0; i < archivos.length; i++) {
                 let fileToUpload = archivos[i];
@@ -466,7 +466,4 @@ export class ComprasService extends BaseService {
         return this.http
             .get<SolpCompraDto>('/api/compras/ListarProveedores', { params: params, headers: this.headers })
     }
-
-
-
 }

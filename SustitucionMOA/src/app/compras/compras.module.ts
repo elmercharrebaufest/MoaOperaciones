@@ -54,6 +54,7 @@ import { TabViewModule } from 'primeng/tabview';
 import {TooltipModule} from 'primeng/tooltip';
 import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
 import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
+import { CotizacionFormularioComponent } from './cotizacion/cotizacion-formulario/cotizacion-formulario.component';
 @NgModule({
     imports: [
         CommonModule,
@@ -109,7 +110,8 @@ import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-
         ContratoMarcoComponent,
         ObtenerContratoMarcoComponent,
         ListadoDashboardCompradorComponent,
-        FiltroDashboardCompradorComponent
+        FiltroDashboardCompradorComponent,
+        CotizacionFormularioComponent
     ],
     providers: [
         ComprasService,

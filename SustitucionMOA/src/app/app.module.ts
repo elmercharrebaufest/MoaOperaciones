@@ -71,6 +71,7 @@ import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-
 import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
 
 
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -116,7 +117,7 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     VentaSustentableBaseComponent,
     ApikeyComponent,
     PesificacionesGuardadasComponent,
-    PesificacionBaseComponent
+    PesificacionBaseComponent,
     ],
   providers: [
     DatePipe,

@@ -187,6 +187,14 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
+    // publicarCotizacion(path, Id) {
+    //     debugger
+    //     this.navService.navegarSeccionParam(path, Id);  
+    //     return false;
+    // }
 
+    publicarCotizacion(Id: string) {
+        this.goToSeccionParam('/compras/cotizacion-formulario', Id);
+    }
 }
 
