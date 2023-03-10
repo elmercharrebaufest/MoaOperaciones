@@ -213,26 +213,56 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     descargarArchivo({ archivoId }) {
-        this.service.DescargarArchivo(archivoId)
-            .subscribe(
-                (result) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    }
-                    else {
-                        var byteArray = new Uint8Array(result.FileContents);
-                        var blob = new Blob([byteArray], {
-                            type: "application/octet-stream",
-                        });
+        if (archivoId == 0) {
+            console.log(this.legajo);
+            let SolpId = this.legajo[0].SolpId;
+            this.blockUI.start("Generando...");
+            this.service.getPdf(SolpId)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        }
+                        else {
+                            var byteArray = new Uint8Array(result.FileContents);
+                            var blob = new Blob([byteArray], {
+                                type: "application/octet-stream",
+                            });
 
-                        this.downloadArchivoLocal(blob, result.FileDownloadName);
+                            this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        }
+                        this.blockUI.stop();
+                    },
+                    (error) => {
+                        this.spinnerSmallComponent.hideIt();
+                        this.blockUI.stop();
+                        this.mensajeComponent.setErrorMsg(error.message);
                     }
-                },
-                (error) => {
-                    this.spinnerSmallComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            )
+                )
+        } else {
+            this.blockUI.start("Descargando...");
+            this.service.DescargarArchivo(archivoId)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        }
+                        else {
+                            var byteArray = new Uint8Array(result.FileContents);
+                            var blob = new Blob([byteArray], {
+                                type: "application/octet-stream",
+                            });
+                            this.downloadArchivoLocal(blob, result.FileDownloadName);
+                            this.blockUI.stop();
+                        }
+                    },
+                    (error) => {
+                        this.spinnerSmallComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                        this.blockUI.stop();
+                    }
+                )
+        }
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
@@ -258,7 +288,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     descargarLegajo() {
         let idPeticion = this.legajo[0].PeticionDeOfertaId;
-        this.blockUI.start('Generando ')
+        this.blockUI.start('Generando...')
         this.service.descargarLegajo(idPeticion)
             .subscribe(
                 (result) => {
@@ -325,8 +355,13 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                 }
             )
     }
+
     publicarCotizacion(Id: string) {
         this.goToSeccionParam('/compras/cotizacion-formulario', Id);
+    }
+
+    onRowDblClick(a, b) {
+
     }
 }
 

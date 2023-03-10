@@ -140,7 +140,7 @@
                                                     *ngFor="let archivo of this.archivos">
                                                     <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
                                                         (click)="eliminarArchivo(true,archivo)" style="width: 26px;" />
-                                                    <a class="link-archivo pointer" (click)="descargarArchivo(archivo)" style="font-weight: lighter;"></a>
+                                                    <a class="link-archivo pointer" (click)="descargarArchivo(archivo)" style="font-weight: lighter;">{{archivo.name}}</a>
                                                 </div>
                                             
                                             </div>

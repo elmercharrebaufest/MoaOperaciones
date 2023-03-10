@@ -2887,7 +2887,9 @@ namespace SustitucionMOAUtils.Services
             var pdfFilePath = $"{pathBase}/{pdfFilename}";
             File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(peticion.Solp_Id));
 
-            if (peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+            if (peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp)
+                || (peticion.Archivos != null && peticion.Archivos.Count > 0)
+                )
             {
                 var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.zip";
                 var filePath = $"{pathBase}/{zipFilename}";
@@ -2896,14 +2898,33 @@ namespace SustitucionMOAUtils.Services
                 {
                     using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
                     {
-                        foreach (var archivoSubido in peticion.Solp.Pliego.Archivos)
+                        //solp
+                        if (peticion.Solp.Pliego.Archivos != null)
                         {
-                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                            foreach (var archivoSubido in peticion.Solp.Pliego.Archivos)
                             {
-                                string fileName = Path.GetFileName(archivoSubido.Ruta);
-                                archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
+                                if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                                {
+                                    string fileName = Path.GetFileName(archivoSubido.Ruta);
+                                    archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
+                                }
                             }
                         }
+                        //peticion de oferta
+                        if (peticion.Archivos != null)
+                        {
+                            foreach (var archivoSubido in peticion.Archivos)
+                            {
+                                if (File.Exists(archivoSubido.Archivo.Ruta))
+                                {
+                                    string fileName = Path.GetFileName(archivoSubido.Archivo.Ruta);
+                                    archivo.CreateEntryFromFile(archivoSubido.Archivo.Ruta, fileName);
+                                }
+                            }
+                        }
+                        //circular (cuando este el modulo)
+
+                        //adjuntos del proveedor (preguntar?)
 
                         archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
 
