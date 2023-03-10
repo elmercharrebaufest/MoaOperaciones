@@ -85,6 +85,12 @@ export class ComprasService extends BaseService {
                 headers: this.headers,
             });
     }
+    getPdfPeticionDeOfertaUsuario(idPeticionDeOfertaUsuario): Observable<any> {
+        return this.http
+            .get("/api/compras/GenerarPeticionDeOfertaUsuarioPdf?idPeticionDeOfertaUsuario=" + idPeticionDeOfertaUsuario.toString(), {
+                headers: this.headers,
+            });
+    }
 
     getEncodedPdf(idSolp): Observable<any> {
 

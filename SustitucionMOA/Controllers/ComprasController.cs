@@ -724,7 +724,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult ListarProveedores(string filtro)
         {
             try
-            {               
+            {
                 var result = usuarioService.ListarProveedores(filtro);
                 return JsonCustom(new { data = result });
             }
@@ -765,7 +765,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                Resultado result = service.GuardarAdjuntosPeticionDeOferta(int.Parse(idPeticion), Request.Files,ObtenerUsuarioActual());
+                Resultado result = service.GuardarAdjuntosPeticionDeOferta(int.Parse(idPeticion), Request.Files, ObtenerUsuarioActual());
 
                 return JsonCustom(result);
             }
@@ -811,7 +811,28 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-        
 
+        [HttpGet]
+        public JsonResult GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario)
+        {
+            try
+            {
+                var pdf = service.GenerarPeticionDeOfertaUsuarioPdf(Math.Abs(idPeticionDeOfertaUsuario));
+                return JsonCustom(File(pdf.data, System.Net.Mime.MediaTypeNames.Application.Octet, pdf.name));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

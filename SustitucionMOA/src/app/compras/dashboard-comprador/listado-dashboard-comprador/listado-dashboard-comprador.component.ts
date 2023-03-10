@@ -179,7 +179,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     }
                 },
                 (error) => {
-                    this.spinnerSmallComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                     this.blockUI.stop();
                 }
@@ -202,7 +201,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                 },
                 (error) => {
                     this.blockUI.stop();
-                    this.spinnerSmallComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             )
@@ -214,7 +212,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     descargarArchivo({ archivoId }) {
         if (archivoId == 0) {
-            console.log(this.legajo);
             let SolpId = this.legajo[0].SolpId;
             this.blockUI.start("Generando...");
             this.service.getPdf(SolpId)
@@ -234,12 +231,35 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         this.blockUI.stop();
                     },
                     (error) => {
-                        this.spinnerSmallComponent.hideIt();
                         this.blockUI.stop();
                         this.mensajeComponent.setErrorMsg(error.message);
                     }
                 )
-        } else {
+        } else if (archivoId < 0) {
+            this.blockUI.start("Generando...");
+            this.service.getPdfPeticionDeOfertaUsuario(archivoId)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        }
+                        else {
+                            var byteArray = new Uint8Array(result.FileContents);
+                            var blob = new Blob([byteArray], {
+                                type: "application/octet-stream",
+                            });
+
+                            this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        }
+                        this.blockUI.stop();
+                    },
+                    (error) => {
+                        this.blockUI.stop();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                )
+        }
+        else {
             this.blockUI.start("Descargando...");
             this.service.DescargarArchivo(archivoId)
                 .subscribe(
@@ -257,7 +277,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         }
                     },
                     (error) => {
-                        this.spinnerSmallComponent.hideIt();
                         this.mensajeComponent.setErrorMsg(error.message);
                         this.blockUI.stop();
                     }
@@ -324,7 +343,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     }
                 },
                 (error) => {
-                    this.spinnerSmallComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                     this.blockUI.stop();
                 }
@@ -350,7 +368,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                 },
                 (error) => {
                     this.blockUI.stop();
-                    this.spinnerSmallComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             )

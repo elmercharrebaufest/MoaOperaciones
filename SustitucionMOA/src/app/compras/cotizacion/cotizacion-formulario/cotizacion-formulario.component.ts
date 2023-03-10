@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
+
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../../common/services/FloatMsgService';
 import { ModalService } from '../../../common/services/ModalService';
@@ -40,13 +42,8 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
 
     archivos = new Array<File>()
     posicionDeInicioInsert: number = 0;
-
-
-    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
-        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-    }
+    nroPeticion: any;
+    displayPeticionCreada: boolean = false;
 
     display: boolean = false;
     displayFinalizar: boolean = false;
@@ -54,6 +51,12 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
     proveedoresSeleccionados: any[] = new Array();
     proveedorSeleccionado: any;
     observaciones: string;
+
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+    }
 
     ngOnInit() {
 
@@ -214,7 +217,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             header: "¡Ultimo Paso!",
             acceptLabel: "SI, CONFIRMAR",
             rejectLabel: "VOLVER",
-            message: 'Esta a punto d eenviar la peticion de oferta. <b>¿Desea confirmar?</b>',
+            message: 'Esta a punto de enviar la peticion de oferta. <b>¿Desea confirmar?</b>',
             accept: () => {
                 this.guardarPeticion();
             },
@@ -222,6 +225,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             }
         });
     }
+
     guardarPeticion() {
         this.blockUI.start("Grabando...");
         try {
@@ -241,7 +245,9 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-
+                        console.log(result);
+                        this.nroPeticion = result.data.IdEntidad;
+                        this.displayPeticionCreada = true;
                     }
                     this.blockUI.stop();
                 },
@@ -264,4 +270,8 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         this.observaciones = value;
     }
 
+    salir() {
+        this.navService.navegarSeccion("/compras/dashboardComprador");
+
+    }
 }

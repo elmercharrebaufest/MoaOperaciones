@@ -35,6 +35,7 @@ using SustitucionMOAFotmatter;
 using SustitucionMOAWS.CrearSolpWebServiceMOA;
 using SustitucionMOARepositorio.ConsultasEF;
 using iTextSharp.tool.xml.css;
+using SustitucionMOAModel.Models.WSMapMOA;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -2729,6 +2730,8 @@ namespace SustitucionMOAUtils.Services
                 GuardarArchivosPeticionDeOferta(peticion, adjuntos);
             }
             repositorio.GuardarCambios();
+
+            respuestaGuardarSOLP.IdEntidad = peticion.Id;
             return respuestaGuardarSOLP;
 
 
@@ -2825,6 +2828,23 @@ namespace SustitucionMOAUtils.Services
                 });
             }
 
+            // pdf peticion de oferta materiales
+            if (peticion.Solp.Posiciones.Where(a => a.TipoPosicion_Id != null).FirstOrDefault()?.TipoPosicion.Codigo == "MATERIALES")
+            {
+                foreach (var peticionUsuario in peticion.Usuarios)
+                {
+                    var pdfPOUsuario = $"PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
+                    legajo.Add(new LegajoDto
+                    {
+                        ArchivoId = peticionUsuario.Id * -1,//lo ponemos en negtivo para difernciarlo de los ids de archivos
+                        Observacion = pdfPOUsuario,
+                        PeticionDeOfertaId = peticionDeOfertaId,
+                        SolpId = peticion.Solp_Id,
+                        Fecha = peticion.FechaCreacion,
+                        FechaFormateado = peticion.FechaCreacion.ToString("dd/MM/yyyy")
+                    });
+                }
+            }
             //buscar archivos de la circular
 
             //buscar comentarios de la circular
@@ -2922,6 +2942,18 @@ namespace SustitucionMOAUtils.Services
                                 }
                             }
                         }
+
+                        // pdf peticion de oferta materiales
+                        if (peticion.Solp.Posiciones.Where(a => a.TipoPosicion_Id != null).FirstOrDefault()?.TipoPosicion.Codigo == "MATERIALES")
+                        {
+                            foreach (var peticionUsuario in peticion.Usuarios)
+                            {
+                                var pdf = GenerarPDF(peticion, peticionUsuario.Usuario.ObtenerProveedor().CodigoProveedor);
+
+                                var pdfFilePathUsuario = $"{pathBase}/PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
+                                File.WriteAllBytes(pdfFilePathUsuario, pdf);
+                            }
+                        }
                         //circular (cuando este el modulo)
 
                         //adjuntos del proveedor (preguntar?)
@@ -3003,180 +3035,7 @@ namespace SustitucionMOAUtils.Services
         private string CompletarHtml(string xHtml, PeticionDeOferta peticion, string codigoProveedor)
         {
 
-            var stylesHtml = @"<style type='text/css'>
-         h1 {
-         color: black;
-         font-family: 'Times New Roman', serif;
-         font-style: italic;
-         font-weight: bold;
-         text-decoration: none;
-         font-size: 12px;
-         }
-         .s1 {
-         color: black;
-         font-family: 'Times New Roman', serif;
-         font-style: italic;
-         font-weight: normal;
-         text-decoration: none;
-         font-size: 10px;
-         }
-         .s2{
-         color: black;
-         font-family: Arial, sans-serif;
-         font-style: italic;
-         font-weight: bold;
-         text-decoration: none;
-         font-size: 8px;
-         }
-         .s3{
-         color: black;
-         font-family: Arial, sans-serif;
-         font-style: italic;
-         font-weight: normal;
-         text-decoration: none;
-         font-size: 9px;
-}
-         h2 {
-         color: black;
-         font-family: Arial, sans-serif;
-         font-style: normal;
-         font-weight: bold;
-         text-decoration: none;
-         font-size: 8px;
-         }
-         p {
-         color: black;
-         font-family: Arial, sans-serif;
-         font-style: normal;
-         font-weight: normal;
-         text-decoration: none;
-         font-size: 7px;
-         margin: 0pt;
-         }
-         table, tbody {
-         vertical-align: top;
-         overflow: visible;
-         }
-         .tablaPeticion.table, tablaPeticion.th, tablaPeticion.td {
-         }
-         .peticion {
-         font-family: 'Times New Roman', serif;
-         font-style: italic;
-         font-weight: bold;
-         text-decoration: none;
-         font-size: 10px;
-         border: 0.1px solid black;
-         border-collapse: collapse;
-         }
-         .s4 { color: black; font-family:Arial, sans-serif; font-style: italic; font-weight: bold; text-decoration: none; font-size:9px; }
-         .s5 { color: black; font-family:Arial, sans-serif; font-style: italic; font-weight: normal; text-decoration: none; font-size: 8px; }
-         .s6 { color: black; font-family:Arial, sans-serif; font-style: normal; font-weight: bold; text-decoration: none; font-size: 18px; }
-         .s7 { color: black; font-family:Arial, sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 9px; }
-         .s8 { color: black; font-family:Arial, sans-serif; font-style: italic; font-weight: normal; text-decoration: none; font-size: 9px; }
-         .s9 { color: black; font-family:Arial, sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 9px; }
-         table, tbody {vertical-align: top; overflow: visible; }
-         .border{
-         border: 0.1px solid black;
-         border-collapse: collapse;
-         }
-         .s6{
-         color: black;
-         font-family: Arial, sans-serif;
-         font-style: italic;
-         text-decoration: none;
-         font-size: 7px;
-         }
-        .cls_003 {
-            font-family: Arial,serif;
-            font-size: 12.1px;
-            color: rgb(255,255,255);
-            font-weight: bold;
-            font-style: normal;
-            text-decoration: none;
-            background-color: black;
-            text-align: center;
-            top: -59px;
-            position: relative;
-            left: -1px;
-            width: 102%;
-        }
-
-        .cls_002 {
-            font-family: Arial,serif;
-            font-size: 14.1px;
-            color: rgb(0,0,0);
-            font-weight: bold;
-            font-style: italic;
-            text-decoration: none
-        }
-       
-        .noborder {
-            border-collapse: collapse;
-            border: 1px solid white;
-        }
-
-        .cls_005 {
-            font-family: Arial,serif;
-            font-size: 8.1px;
-            color: rgb(0,0,0);
-            font-weight: bold;
-            font-style: normal;
-            text-decoration: none;
-        }
-
-        .cls_006 {
-            font-family: Arial,serif;
-            font-size: 8px;
-            color: rgb(0,0,0);
-            font-weight: normal;
-            font-style: normal;
-            text-decoration: none;
-        }
-
-        .cls_008 {
-            font-family: Arial,serif;
-            font-size: 10.0px;
-            color: rgb(0,0,0);
-            font-weight: normal;
-            font-style: normal;
-            text-decoration: none;
-        }
-
-        .cls_009 {
-            font-family: Arial,serif;
-            font-size: 11.1px;
-            color: rgb(0,0,0);
-            font-weight: bold;
-            font-style: normal;
-            text-decoration: none;
-            text-align: center;
-        }
-
-        .cls_011 {
-            font-family: Courier New,serif;
-            font-size: 10.1px;
-            color: rgb(0,0,0);
-            font-weight: normal;
-            font-style: normal;
-            text-decoration: none
-        }
-
-        .espacio {
-            height: 10px;
-            display: block;
-        }
-
-        .w33 {
-            width: 30%;
-            display: inline-block;
-        }
-        .cls_012 {
-            font-family: Arial,serif;
-            font-size: 6px;
-            text-align: justify;
-        }
-        
-    </style>";
+            var stylesHtml = @"<style>h1{color:#000;font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-decoration:none;font-size:12px}.s1{color:#000;font-family:'Times New Roman',serif;font-style:italic;font-weight:400;text-decoration:none;font-size:10px}.s2{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:700;text-decoration:none;font-size:8px}.s3{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:9px}h2{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:700;text-decoration:none;font-size:8px}p{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:7px;margin:0}table,tbody{vertical-align:top;overflow:visible}.peticion{font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-decoration:none;font-size:10px;border:.1px solid #000;border-collapse:collapse}.s4{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:700;text-decoration:none;font-size:9px}.s5{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:8px}.s6{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:700;text-decoration:none;font-size:18px}.s7{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:9px}.s8{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:9px}.s9{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:9px}table,tbody{vertical-align:top;overflow:visible}.border{border:.1px solid #000;border-collapse:collapse}.s6{color:#000;font-family:Arial,sans-serif;font-style:italic;text-decoration:none;font-size:7px}.cls_003{font-family:Arial,serif;font-size:12.1px;color:#fff;font-weight:700;font-style:normal;text-decoration:none;background-color:#000;text-align:center;top:-59px;position:relative;left:-1px;width:102%}.cls_002{font-family:Arial,serif;font-size:14.1px;color:#000;font-weight:700;font-style:italic;text-decoration:none}.noborder{border-collapse:collapse;border:1px solid #fff}.cls_005{font-family:Arial,serif;font-size:8.1px;color:#000;font-weight:700;font-style:normal;text-decoration:none}.cls_006{font-family:Arial,serif;font-size:8px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.cls_008{font-family:Arial,serif;font-size:10px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.cls_009{font-family:Arial,serif;font-size:11.1px;color:#000;font-weight:700;font-style:normal;text-decoration:none;text-align:center}.cls_011{font-family:Courier New,serif;font-size:10.1px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.espacio{height:10px;display:block}.w33{width:30%;display:inline-block}.cls_012{font-family:Arial,serif;font-size:6px;text-align:justify}</style>";
             var datosProveedor = vendedorService.GetDatosFiscales(codigoProveedor, codigoProveedor);
             var posiciones = "";
             try
@@ -3200,7 +3059,7 @@ namespace SustitucionMOAUtils.Services
                 var centro = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
                 var centroPlanta = repositorio.Obtener<TablaSap>(x => x.CodigoSap == posicion.Centro.CodigoSap);
 
-                var lugarEntrega = $"{posicion.NombreEntrega}, {posicion.CalleEntrega} - ({posicion.CpEntrega}) {localidad.Nombre} - {posicion.Provincia.Nombre}";
+                var lugarEntrega = $"{posicion.NombreEntrega}, {posicion.CalleEntrega} - ({posicion.CpEntrega}) {localidad?.Nombre ?? ""} - {posicion.Provincia?.Nombre ?? ""}";
 
                 xHtml = string.Format(xHtml, stylesHtml,
                     peticion.Id,
@@ -3231,6 +3090,13 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public Pdf GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario)
+        {
+            var po = repositorio.Obtener<PeticionDeOfertaUsuario>(idPeticionDeOfertaUsuario);
+
+            var pdf = GenerarPDF(po.PeticionDeOferta, po.Usuario.ObtenerProveedor().CodigoProveedor);
+            return new Pdf { data = pdf, name = "PO" + po.Usuario.ObtenerProveedor().CUIT + ".pdf" };
+        }
     }
 
     public static class SolpTemplateKeys

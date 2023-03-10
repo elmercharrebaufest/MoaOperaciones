@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.WSConsumers;
 using System;
@@ -26,6 +27,7 @@ namespace SustitucionMOAUtils.Interfaces
         SolpDto TraerSolpId(int idSolp);
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
         byte[] GenerarSolpPdf(int idSolp);
+        Pdf GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario);
         string GenerarZipPliego(int idSolp, string pathBase);
         List<TablaSapDto> ObtenerServiciosSap();
         List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor);
