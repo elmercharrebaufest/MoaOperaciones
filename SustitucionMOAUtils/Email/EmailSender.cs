@@ -220,12 +220,17 @@ namespace SustitucionMOAUtils.Email
                 oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
                 if (archivo != null)
                 {
-                    using (var stream = new MemoryStream(archivo))
-                    {
-                        Attachment data = new Attachment(stream, nombreArchivo);
-                        oMensaje.Attachments.Add(data);
-                    }
+                    Attachment data = new Attachment(new MemoryStream(archivo), nombreArchivo);
+                    oMensaje.Attachments.Add(data);
                 }
+                //if (archivo != null)
+                //{
+                //    using (var stream = new MemoryStream(archivo))
+                //    {
+                //        Attachment data = new Attachment(stream, nombreArchivo);
+                //        oMensaje.Attachments.Add(data);
+                //    }
+                //}
                 SmtpClient oCliente = GetSmtpClient();
                 oCliente.Send(oMensaje);
             }

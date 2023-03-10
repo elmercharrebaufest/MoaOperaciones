@@ -34,6 +34,7 @@ using SustitucionMOAModel.Consultas;
 using SustitucionMOAFotmatter;
 using SustitucionMOAWS.CrearSolpWebServiceMOA;
 using SustitucionMOARepositorio.ConsultasEF;
+using iTextSharp.tool.xml.css;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -51,6 +52,7 @@ namespace SustitucionMOAUtils.Services
         private readonly ICrearPedidoConsumerMOA crearPedidoConsumerMOA;
         private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
         private readonly IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA;
+        private readonly IVendedorService vendedorService;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
@@ -66,7 +68,7 @@ namespace SustitucionMOAUtils.Services
             IObtenerMaterialesSolpConsumerMOA obtenerMaterialesSolpConsumerMOA,
             ICrearPedidoConsumerMOA crearPedidoConsumerMOA,
             IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
-            IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA)
+            IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA, IVendedorService vendedorService)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -80,6 +82,10 @@ namespace SustitucionMOAUtils.Services
             this.crearPedidoConsumerMOA = crearPedidoConsumerMOA;
             this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
             this.obtenerContratoSolpConsumerMOA = obtenerContratoSolpConsumerMOA;
+            this.vendedorService = vendedorService;
+
+
+
         }
 
 
@@ -2929,6 +2935,300 @@ namespace SustitucionMOAUtils.Services
             }
 
             return pdfFilePath;
+        }
+
+        public byte[] GenerarPDF(PeticionDeOferta peticion, string codigoProveedor)
+        {
+
+            try
+            {
+
+                using (var stream = new MemoryStream())
+                {
+                    using (var document = new Document(PageSize.A4, 10f, 10f, 10f, 100f))
+                    {
+                        string templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PeticionDeOfertaTemplate.html");
+
+                        var templateString = System.IO.File.ReadAllText(templateFilePath);
+
+                        var xHtml = templateString;
+                        xHtml = CompletarHtml(xHtml, peticion, codigoProveedor);
+
+                        var PdfWriter = iTextSharp.text.pdf.PdfWriter.GetInstance(document, stream);
+                        document.Open();
+
+                        PdfFooter PageEventHandler = new PdfFooter();
+                        PdfWriter.PageEvent = PageEventHandler;
+
+                        var tagProcessors = (DefaultTagProcessorFactory)Tags.GetHtmlTagProcessorFactory();
+                        tagProcessors.RemoveProcessor(HTML.Tag.IMG); // remove the default processor
+                        tagProcessors.AddProcessor(HTML.Tag.IMG, new CustomImageTagProcessor()); // use our new processor
+
+                        var tagProcessorFactory = Tags.GetHtmlTagProcessorFactory();
+
+                        var htmlPipelineContext = new HtmlPipelineContext(null);
+                        htmlPipelineContext.SetTagFactory(tagProcessorFactory);
+
+                        var pdfWriterPipeline = new PdfWriterPipeline(document, PdfWriter);
+
+                        // get an ICssResolver and add the custom CSS
+                        var cssResolver = XMLWorkerHelper.GetInstance().GetDefaultCssResolver(true);
+                        var hpc = new HtmlPipelineContext(new CssAppliersImpl(new XMLWorkerFontProvider()));
+                        hpc.SetAcceptUnknown(true).AutoBookmark(true).SetTagFactory(tagProcessors); // inject the tagProcessors
+
+                        var htmlPipeline = new HtmlPipeline(hpc, new PdfWriterPipeline(document, PdfWriter));
+                        var pipeline = new CssResolverPipeline(cssResolver, htmlPipeline);
+
+                        var worker = new XMLWorker(pipeline, true);
+
+                        var charset = Encoding.UTF8;
+
+                        var xmlParser = new XMLParser(true, worker, charset);
+                        xmlParser.Parse(new StringReader(xHtml));
+                        document.Close();
+                        byte[] bytes = stream.ToArray();
+                        stream.Close();
+                        return bytes;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        private string CompletarHtml(string xHtml, PeticionDeOferta peticion, string codigoProveedor)
+        {
+
+            var stylesHtml = @"<style type='text/css'>
+         h1 {
+         color: black;
+         font-family: 'Times New Roman', serif;
+         font-style: italic;
+         font-weight: bold;
+         text-decoration: none;
+         font-size: 12px;
+         }
+         .s1 {
+         color: black;
+         font-family: 'Times New Roman', serif;
+         font-style: italic;
+         font-weight: normal;
+         text-decoration: none;
+         font-size: 10px;
+         }
+         .s2{
+         color: black;
+         font-family: Arial, sans-serif;
+         font-style: italic;
+         font-weight: bold;
+         text-decoration: none;
+         font-size: 8px;
+         }
+         .s3{
+         color: black;
+         font-family: Arial, sans-serif;
+         font-style: italic;
+         font-weight: normal;
+         text-decoration: none;
+         font-size: 9px;
+}
+         h2 {
+         color: black;
+         font-family: Arial, sans-serif;
+         font-style: normal;
+         font-weight: bold;
+         text-decoration: none;
+         font-size: 8px;
+         }
+         p {
+         color: black;
+         font-family: Arial, sans-serif;
+         font-style: normal;
+         font-weight: normal;
+         text-decoration: none;
+         font-size: 7px;
+         margin: 0pt;
+         }
+         table, tbody {
+         vertical-align: top;
+         overflow: visible;
+         }
+         .tablaPeticion.table, tablaPeticion.th, tablaPeticion.td {
+         }
+         .peticion {
+         font-family: 'Times New Roman', serif;
+         font-style: italic;
+         font-weight: bold;
+         text-decoration: none;
+         font-size: 10px;
+         border: 0.1px solid black;
+         border-collapse: collapse;
+         }
+         .s4 { color: black; font-family:Arial, sans-serif; font-style: italic; font-weight: bold; text-decoration: none; font-size:9px; }
+         .s5 { color: black; font-family:Arial, sans-serif; font-style: italic; font-weight: normal; text-decoration: none; font-size: 8px; }
+         .s6 { color: black; font-family:Arial, sans-serif; font-style: normal; font-weight: bold; text-decoration: none; font-size: 18px; }
+         .s7 { color: black; font-family:Arial, sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 9px; }
+         .s8 { color: black; font-family:Arial, sans-serif; font-style: italic; font-weight: normal; text-decoration: none; font-size: 9px; }
+         .s9 { color: black; font-family:Arial, sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 9px; }
+         table, tbody {vertical-align: top; overflow: visible; }
+         .border{
+         border: 0.1px solid black;
+         border-collapse: collapse;
+         }
+         .s6{
+         color: black;
+         font-family: Arial, sans-serif;
+         font-style: italic;
+         text-decoration: none;
+         font-size: 7px;
+         }
+        .cls_003 {
+            font-family: Arial,serif;
+            font-size: 12.1px;
+            color: rgb(255,255,255);
+            font-weight: bold;
+            font-style: normal;
+            text-decoration: none;
+            background-color: black;
+            text-align: center;
+            top: -59px;
+            position: relative;
+            left: -1px;
+            width: 102%;
+        }
+
+        .cls_002 {
+            font-family: Arial,serif;
+            font-size: 14.1px;
+            color: rgb(0,0,0);
+            font-weight: bold;
+            font-style: italic;
+            text-decoration: none
+        }
+       
+        .noborder {
+            border-collapse: collapse;
+            border: 1px solid white;
+        }
+
+        .cls_005 {
+            font-family: Arial,serif;
+            font-size: 8.1px;
+            color: rgb(0,0,0);
+            font-weight: bold;
+            font-style: normal;
+            text-decoration: none;
+        }
+
+        .cls_006 {
+            font-family: Arial,serif;
+            font-size: 8px;
+            color: rgb(0,0,0);
+            font-weight: normal;
+            font-style: normal;
+            text-decoration: none;
+        }
+
+        .cls_008 {
+            font-family: Arial,serif;
+            font-size: 10.0px;
+            color: rgb(0,0,0);
+            font-weight: normal;
+            font-style: normal;
+            text-decoration: none;
+        }
+
+        .cls_009 {
+            font-family: Arial,serif;
+            font-size: 11.1px;
+            color: rgb(0,0,0);
+            font-weight: bold;
+            font-style: normal;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .cls_011 {
+            font-family: Courier New,serif;
+            font-size: 10.1px;
+            color: rgb(0,0,0);
+            font-weight: normal;
+            font-style: normal;
+            text-decoration: none
+        }
+
+        .espacio {
+            height: 10px;
+            display: block;
+        }
+
+        .w33 {
+            width: 30%;
+            display: inline-block;
+        }
+        .cls_012 {
+            font-family: Arial,serif;
+            font-size: 6px;
+            text-align: justify;
+        }
+        
+    </style>";
+            var datosProveedor = vendedorService.GetDatosFiscales(codigoProveedor, codigoProveedor);
+            var posiciones = "";
+            try
+            {
+
+                foreach (var item in peticion.Posiciones)
+                {
+                    posiciones =
+                    $" <td style='font-size: 8px;'>{ item.Indice } </td> " +
+                    $"<td style='font-size: 8px;'> {item.MaterialSolp.Codigo } </td>" +
+                    $"<td style='font-size: 8px;'> {item.Tarea } </td>" +
+                    $"<td style='font-size: 8px;'>{item.Cantidad}</td>" +
+                    $"<td style='font-size: 8px;'>{item.Unidad.Descripcion}</td>" +
+                    $"<td style='font-size: 8px;'>{peticion.PlazoDeOferta.ToString("dd.MM.yyyy")}</td>" +
+                    $"<td style='font-size: 8px;'>{ peticion.Posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</ td > ";
+                }
+
+                var posicion = peticion.Posiciones.OrderByDescending(x => x.Id).FirstOrDefault();
+                posicion.Tarea = "tarea";
+                var localidad = repositorio.Obtener<Localidad>(x => x.ProvinciaId == posicion.ProvinciaId);
+                var centro = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
+                var centroPlanta = repositorio.Obtener<TablaSap>(x => x.CodigoSap == posicion.Centro.CodigoSap);
+
+                var lugarEntrega = $"{posicion.NombreEntrega}, {posicion.CalleEntrega} - ({posicion.CpEntrega}) {localidad.Nombre} - {posicion.Provincia.Nombre}";
+
+                xHtml = string.Format(xHtml, stylesHtml,
+                    peticion.Id,
+                    datosProveedor.cabeceras.FirstOrDefault().cuit.Substring(2, 8),
+                    datosProveedor.cabeceras.FirstOrDefault().descripcion,
+                    datosProveedor.cabeceras.FirstOrDefault().calleFiscal,
+                    $"({datosProveedor.cabeceras.FirstOrDefault().cpFiscal}) {datosProveedor.cabeceras.FirstOrDefault().locaFiscal}",
+                    datosProveedor.cabeceras.FirstOrDefault().provFiscal,
+                    "Argentina",
+                    peticion.PlazoDeOferta.ToString("dd.MM.yyyy"),
+                    peticion.Posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy"),
+                    lugarEntrega,
+                    peticion.FechaCreacion.ToString("dd.MM.yyyy"),
+                    "San Lorenzo",
+                    centro.CodigoSap,
+                    peticion.Usuario.UsuarioSap,
+                    posiciones,
+                    posicion.Tarea
+                    );
+
+                return xHtml;
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
 
     }
