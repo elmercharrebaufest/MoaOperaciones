@@ -174,7 +174,8 @@ namespace SustitucionMOAUtils.Email
             byte[] archivo = null, 
             string nombreArchivo = null,
             string enviarDesde = null,
-            List<string> copiaOculta = null)
+            List<string> copiaOculta = null,
+            Dictionary<string, byte[]> archivos = null)
         {
             try
             {
@@ -223,6 +224,17 @@ namespace SustitucionMOAUtils.Email
                     Attachment data = new Attachment(new MemoryStream(archivo), nombreArchivo);
                     oMensaje.Attachments.Add(data);
                 }
+
+                if (archivos != null)
+                {
+                    foreach (var archi in archivos)
+                    {
+                        Attachment data = new Attachment(new MemoryStream(archi.Value), archi.Key);
+                        oMensaje.Attachments.Add(data);
+                    }
+                   
+                }
+
                 //if (archivo != null)
                 //{
                 //    using (var stream = new MemoryStream(archivo))

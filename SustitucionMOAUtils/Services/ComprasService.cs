@@ -36,6 +36,8 @@ using SustitucionMOAWS.CrearSolpWebServiceMOA;
 using SustitucionMOARepositorio.ConsultasEF;
 using iTextSharp.tool.xml.css;
 using SustitucionMOAModel.Models.WSMapMOA;
+using System.Net.Mail;
+using System.Net;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -2690,6 +2692,8 @@ namespace SustitucionMOAUtils.Services
 
         public RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos)
         {
+            try
+            {
 
             var solp = new SolpDto
             {
@@ -2732,10 +2736,17 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             respuestaGuardarSOLP.IdEntidad = peticion.Id;
+            if (peticion.Posiciones.Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES"){
+                EnviarMailPeticionDeOferta(peticion);
+            }
             return respuestaGuardarSOLP;
 
+            }
+            catch (Exception e)
+            {
 
-
+                throw;
+            }
         }
 
         private void GuardarArchivosPeticionDeOferta(PeticionDeOferta peticion, HttpFileCollectionBase files)
@@ -2969,7 +2980,7 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public byte[] GenerarPDF(PeticionDeOferta peticion, string codigoProveedor)
+        public byte[] GenerarPDFPeticionDeOferta(PeticionDeOferta peticion, string codigoProveedor)
         {
 
             try
@@ -3089,12 +3100,64 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
+        public void EnviarMailPeticionDeOferta(PeticionDeOferta peticion)
+        {
+            var archs = ObtenerArchivosPeticionDeOferta(peticion);
+            var copia = new List<string> { peticion.Usuario.Mail };
+            foreach (var prov in peticion.Usuarios)
+            {
+                var enviarA = new List<string> { prov.Usuario.Mail };
+                var asunto = $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial() }";
+                var pdf = GenerarPDFPeticionDeOferta(peticion, prov.Usuario.ObtenerCodigoProveedor());              
+                archs.Add("Peticion de Oferta.pdf", pdf);
+                EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailPeticionDeOferta(peticion), null, null, null, null, archs);
+            }
+        }
+
+        private Dictionary<string, byte[]> ObtenerArchivosPeticionDeOferta(PeticionDeOferta peticion)
+        {
+            var archs = new Dictionary<string, byte[]>();
+            foreach (var p in peticion.Archivos)
+            {
+                WebClient wc = new WebClient();
+                byte[] b = wc.DownloadData(p.Archivo.Ruta);
+                archs.Add(p.Archivo.ObtenerNombre(), b);
+            }
+            return archs;
+        }
+
+        private AlternateView CuerpoMailPeticionDeOferta(PeticionDeOferta peticion)
+        {
+            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+            string htmlBody = "";
+            if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
+            {
+                htmlBody = "Prueba <br />";
+            }          
+
+            htmlBody += $"En el presente mail, se informa la nueva PO {peticion.Id} generada con Molinos Agro S.A <br />";
+            if (string.IsNullOrEmpty(peticion.Observaciones))
+            {
+                htmlBody += $"Observaciones: {peticion.Observaciones} <br />";
+            }
+
+            htmlBody += "En caso de tener alguna consulta ingresar www.moaoperaciones.com.ar " +
+                "<br/><br/>Saludos Cordiales<br/>" +
+                "Molinos Agro S.A. <br/><br/> " +
+                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
+        }
 
         public Pdf GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario)
         {
             var po = repositorio.Obtener<PeticionDeOfertaUsuario>(idPeticionDeOfertaUsuario);
 
-            var pdf = GenerarPDF(po.PeticionDeOferta, po.Usuario.ObtenerProveedor().CodigoProveedor);
+            var pdf = GenerarPDFPeticionDeOferta(po.PeticionDeOferta, po.Usuario.ObtenerProveedor().CodigoProveedor);
             return new Pdf { data = pdf, name = "PO" + po.Usuario.ObtenerProveedor().CUIT + ".pdf" };
         }
     }
