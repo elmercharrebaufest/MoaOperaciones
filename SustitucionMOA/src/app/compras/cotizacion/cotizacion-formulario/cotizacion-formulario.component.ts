@@ -13,7 +13,6 @@ import { EnvioSolpCompra, PosicionCompra, SolpCompraDto, SolpProveedorDto, SolpS
 import { Table } from 'primeng/table';
 
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { release } from 'os';
 
 @Component({
     selector: 'app-cotizacion-formulario',
