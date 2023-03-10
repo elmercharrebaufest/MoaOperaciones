@@ -24,16 +24,16 @@
             <p-table [value]="legajo" responsiveLayout="scroll | stack" [scrollable]="true" scrollHeight="300px" >
                 <ng-template pTemplate="header">
                     <tr>
-                        <th class="columna col-md-2" style="border: none !important;">Fecha</th>
+                        <th class="columna" style="border: none !important;width:115px;">Fecha</th>
                         <th class="columna" style="border: none !important;">Observaciones</th>
-                        <th class="columna col-md-1" style="border: none !important;"></th>
+                        <th class="columna" style="border: none !important;width:50px;" ></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData>
                     <tr>
-                        <td class="columna" style="border: none !important;">{{rowData.FechaFormateado }}</td>
+                        <td class="columna" style="border: none !important; width: 115px;">{{rowData.FechaFormateado }}</td>
                         <td class="columna" style="border: none !important;">{{rowData.Observacion}}</td>
-                        <td class="columna" style="border: none !important;">
+                        <td class="columna" style="border: none !important; width: 50px;">
                             <span *ngIf="rowData.ArchivoId != null">
                                 <img style="cursor:pointer;" src="./Content/images/icons/descargar.svg" alt="descargar"
                                      (click)="descargarArchivo(rowData.ArchivoId)" />

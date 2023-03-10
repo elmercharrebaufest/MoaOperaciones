@@ -2683,49 +2683,49 @@ namespace SustitucionMOAUtils.Services
 
         public RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos)
         {
-            
-                var solp = new SolpDto
-                {
-                    Id = peticionDeOferta.SolpId
-                };
 
-                var respuestaGuardarSOLP = new RespuestaGuardarSOLP
-                {
-                    Solp = solp
-                };
+            var solp = new SolpDto
+            {
+                Id = peticionDeOferta.SolpId
+            };
 
-                if (peticionDeOferta.UsuarioIds == null || peticionDeOferta.UsuarioIds.Count == 0)
-                {
-                    throw new ValidationCustomException("El campo Proveedor es obligatorio");
-                }
-                if (peticionDeOferta.PosIds == null || peticionDeOferta.PosIds.Count == 0)
-                {
-                    throw new ValidationCustomException("Debe seleccionar al menos una posición");
-                }
+            var respuestaGuardarSOLP = new RespuestaGuardarSOLP
+            {
+                Solp = solp
+            };
 
-                var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
-                var usuarios = repositorio.Listar<Usuario>(x => peticionDeOferta.UsuarioIds.Contains(x.Id));
-                var peticion = new PeticionDeOferta()
-                {
-                    UsuarioCreador_Id = peticionDeOferta.UsuarioActual.Id,
-                    FechaCreacion = DateTime.Now,
-                    Solp_Id = peticionDeOferta.SolpId,
-                    Observaciones = peticionDeOferta.Observacion,
-                    Posiciones = posiciones,
-                    PlazoDeOferta = posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
-                    Usuarios = usuarios.Select(a => new PeticionDeOfertaUsuario {Usuario_Id=a.Id }).ToList()
-                };
+            if (peticionDeOferta.UsuarioIds == null || peticionDeOferta.UsuarioIds.Count == 0)
+            {
+                throw new ValidationCustomException("El campo Proveedor es obligatorio");
+            }
+            if (peticionDeOferta.PosIds == null || peticionDeOferta.PosIds.Count == 0)
+            {
+                throw new ValidationCustomException("Debe seleccionar al menos una posición");
+            }
 
-                peticion = repositorio.Agregar(peticion);
+            var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
+            var usuarios = repositorio.Listar<Usuario>(x => peticionDeOferta.UsuarioIds.Contains(x.Id));
+            var peticion = new PeticionDeOferta()
+            {
+                UsuarioCreador_Id = peticionDeOferta.UsuarioActual.Id,
+                FechaCreacion = DateTime.Now,
+                Solp_Id = peticionDeOferta.SolpId,
+                Observaciones = peticionDeOferta.Observacion ?? "",
+                Posiciones = posiciones,
+                PlazoDeOferta = posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
+                Usuarios = usuarios.Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList()
+            };
 
-                if (adjuntos != null && adjuntos.Count > 0)
-                {
-                    GuardarArchivosPeticionDeOferta(peticion, adjuntos);
-                }
-                repositorio.GuardarCambios();
-                return respuestaGuardarSOLP;
-            
-           
+            peticion = repositorio.Agregar(peticion);
+
+            if (adjuntos != null && adjuntos.Count > 0)
+            {
+                GuardarArchivosPeticionDeOferta(peticion, adjuntos);
+            }
+            repositorio.GuardarCambios();
+            return respuestaGuardarSOLP;
+
+
 
         }
 
@@ -2757,7 +2757,7 @@ namespace SustitucionMOAUtils.Services
                         FileKey = FileKeys.PeticionDeOferta,
                         Ruta = rutaArchivoRename
                     },
-                    Fecha= DateTime.Now,                    
+                    Fecha = DateTime.Now,
                 });
 
                 file.SaveAs(rutaArchivoRename);
@@ -2881,7 +2881,9 @@ namespace SustitucionMOAUtils.Services
             var pdfFilePath = $"{pathBase}/{pdfFilename}";
             File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(peticion.Solp_Id));
 
-            if (peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+            if (peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp)
+                || (peticion.Archivos != null && peticion.Archivos.Count > 0)
+                )
             {
                 var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.zip";
                 var filePath = $"{pathBase}/{zipFilename}";
@@ -2890,14 +2892,33 @@ namespace SustitucionMOAUtils.Services
                 {
                     using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
                     {
-                        foreach (var archivoSubido in peticion.Solp.Pliego.Archivos)
+                        //solp
+                        if (peticion.Solp.Pliego.Archivos != null)
                         {
-                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                            foreach (var archivoSubido in peticion.Solp.Pliego.Archivos)
                             {
-                                string fileName = Path.GetFileName(archivoSubido.Ruta);
-                                archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
+                                if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                                {
+                                    string fileName = Path.GetFileName(archivoSubido.Ruta);
+                                    archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
+                                }
                             }
                         }
+                        //peticion de oferta
+                        if (peticion.Archivos != null)
+                        {
+                            foreach (var archivoSubido in peticion.Archivos)
+                            {
+                                if (File.Exists(archivoSubido.Archivo.Ruta))
+                                {
+                                    string fileName = Path.GetFileName(archivoSubido.Archivo.Ruta);
+                                    archivo.CreateEntryFromFile(archivoSubido.Archivo.Ruta, fileName);
+                                }
+                            }
+                        }
+                        //circular (cuando este el modulo)
+
+                        //adjuntos del proveedor (preguntar?)
 
                         archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
 

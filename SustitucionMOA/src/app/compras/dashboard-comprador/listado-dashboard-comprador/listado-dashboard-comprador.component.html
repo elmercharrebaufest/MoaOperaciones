@@ -83,7 +83,7 @@
             </ng-template>
 
             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
-                <tr>
+                <tr (dblclick)="onRowDblClick($event, rowData)">
                     <td>
                         <a href="#" [pRowToggler]="rowData">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
