@@ -2716,7 +2716,7 @@ namespace SustitucionMOAUtils.Services
                 UsuarioCreador_Id = peticionDeOferta.UsuarioActual.Id,
                 FechaCreacion = DateTime.Now,
                 Solp_Id = peticionDeOferta.SolpId,
-                Observaciones = peticionDeOferta.Observacion,
+                Observaciones = peticionDeOferta.Observacion ?? "",
                 Posiciones = posiciones,
                 PlazoDeOferta = posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
                 Usuarios = usuarios.Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList()
