@@ -2903,70 +2903,70 @@ namespace SustitucionMOAUtils.Services
             var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
 
             var middleFileName = peticion.Solp.NroSolp == null ? (peticion.Solp.Pliego.NombreObra == null ? "xxxx" : peticion.Solp.Pliego.NombreObra) : peticion.Solp.NroSolp;
-            var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
-            var pdfFilePath = $"{pathBase}/{pdfFilename}";
+            var pliegoFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
+            var pdfFilePath = $"{pathBase}/{pliegoFilename}";
             File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(peticion.Solp_Id));
 
-            if (peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp)
-                || (peticion.Archivos != null && peticion.Archivos.Count > 0)
-                )
+
+            var zipFilename = $"PO-{peticion.Id}-{peticion.FechaCreacion.ToString("yyyyMMdd")}.zip";
+            var filePath = $"{pathBase}/{zipFilename}";
+
+            using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
             {
-                var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.zip";
-                var filePath = $"{pathBase}/{zipFilename}";
-
-                using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
+                using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
                 {
-                    using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                    //solp
+                    if (peticion.Solp.Pliego.Archivos != null)
                     {
-                        //solp
-                        if (peticion.Solp.Pliego.Archivos != null)
+                        foreach (var archivoSubido in peticion.Solp.Pliego.Archivos)
                         {
-                            foreach (var archivoSubido in peticion.Solp.Pliego.Archivos)
+                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
                             {
-                                if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
-                                {
-                                    string fileName = Path.GetFileName(archivoSubido.Ruta);
-                                    archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
-                                }
+                                string fileName = Path.GetFileName(archivoSubido.Ruta);
+                                archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
                             }
                         }
-                        //peticion de oferta
-                        if (peticion.Archivos != null)
-                        {
-                            foreach (var archivoSubido in peticion.Archivos)
-                            {
-                                if (File.Exists(archivoSubido.Archivo.Ruta))
-                                {
-                                    string fileName = Path.GetFileName(archivoSubido.Archivo.Ruta);
-                                    archivo.CreateEntryFromFile(archivoSubido.Archivo.Ruta, fileName);
-                                }
-                            }
-                        }
-
-                        // pdf peticion de oferta materiales
-                        if (peticion.Solp.Posiciones.Where(a => a.TipoPosicion_Id != null).FirstOrDefault()?.TipoPosicion.Codigo == "MATERIALES")
-                        {
-                            foreach (var peticionUsuario in peticion.Usuarios)
-                            {
-                                var pdf = GenerarPDF(peticion, peticionUsuario.Usuario.ObtenerProveedor().CodigoProveedor);
-
-                                var pdfFilePathUsuario = $"{pathBase}/PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
-                                File.WriteAllBytes(pdfFilePathUsuario, pdf);
-                            }
-                        }
-                        //circular (cuando este el modulo)
-
-                        //adjuntos del proveedor (preguntar?)
-
-                        archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
-
                     }
-                }
+                    //peticion de oferta
+                    if (peticion.Archivos != null)
+                    {
+                        foreach (var archivoSubido in peticion.Archivos)
+                        {
+                            if (File.Exists(archivoSubido.Archivo.Ruta))
+                            {
+                                string fileName = Path.GetFileName(archivoSubido.Archivo.Ruta);
+                                archivo.CreateEntryFromFile(archivoSubido.Archivo.Ruta, fileName);
+                            }
+                        }
+                    }
 
-                return filePath;
+                    // pdf peticion de oferta materiales
+                    if (peticion.Solp.Posiciones.Where(a => a.TipoPosicion_Id != null).FirstOrDefault()?.TipoPosicion.Codigo == "MATERIALES")
+                    {
+                        foreach (var peticionUsuario in peticion.Usuarios)
+                        {
+                            string codigoProveedor = peticionUsuario.Usuario.ObtenerProveedor().CodigoProveedor;
+                            var pdf = GenerarPDF(peticion, codigoProveedor);
+
+                            var pdfFilePathUsuario = $"{pathBase}/PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
+                            File.WriteAllBytes(pdfFilePathUsuario, pdf);
+                            archivo.CreateEntryFromFile(pdfFilePathUsuario, $"PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf");
+
+                        }
+                    }
+                    //circular (cuando este el modulo)
+
+                    //adjuntos del proveedor (preguntar?)
+
+
+                    //agrega pliego
+                    archivo.CreateEntryFromFile(pdfFilePath, pliegoFilename);
+
+                }
             }
 
-            return pdfFilePath;
+            return filePath;
+
         }
 
         public byte[] GenerarPDF(PeticionDeOferta peticion, string codigoProveedor)
