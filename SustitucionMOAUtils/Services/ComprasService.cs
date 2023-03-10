@@ -2957,7 +2957,7 @@ namespace SustitucionMOAUtils.Services
                         foreach (var peticionUsuario in peticion.Usuarios)
                         {
                             string codigoProveedor = peticionUsuario.Usuario.ObtenerProveedor().CodigoProveedor;
-                            var pdf = GenerarPDF(peticion, codigoProveedor);
+                            var pdf = GenerarPDFPeticionDeOferta(peticion, codigoProveedor);
 
                             var pdfFilePathUsuario = $"{pathBase}/PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
                             File.WriteAllBytes(pdfFilePathUsuario, pdf);
