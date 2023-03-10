@@ -14,7 +14,7 @@
                 <div *ngIf="documento != null" class="row myRow">
                     <div *ngFor="let cheque of listaChequesAux" class="col-md-12 row myRow alinearTitulo margenInput">
                         <div class="col-md-12 titulosModal" style="margin-right: 1em;">
-                            Echeq {{cheque.ordenCheque}}
+                            Echeq {{cheque.ordenCheque +1 }}
                             <input type="text" currencyMask [options]="{ prefix: '$ ', thousands: '.', decimal: ','}"
                                 [(ngModel)]="cheque.importeCheque" class="styled-echeq"
                                 [ngStyle]="{ 'background-color' : (cheque.ordenCheque == 0) ? '#808080' : '#0' }"
