@@ -38,6 +38,7 @@ using iTextSharp.tool.xml.css;
 using SustitucionMOAModel.Models.WSMapMOA;
 using System.Net.Mail;
 using System.Net;
+using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -2715,16 +2716,17 @@ namespace SustitucionMOAUtils.Services
             }
 
             var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
-            var usuarios = repositorio.Listar<Usuario>(x => peticionDeOferta.UsuarioIds.Contains(x.Id));
+            var usuarios = repositorio.Listar<Usuario>();
             var peticion = new PeticionDeOferta()
             {
                 UsuarioCreador_Id = peticionDeOferta.UsuarioActual.Id,
+                Usuario = usuarios.Where(x => x.Id == peticionDeOferta.UsuarioActual.Id).FirstOrDefault(),
                 FechaCreacion = DateTime.Now,
                 Solp_Id = peticionDeOferta.SolpId,
                 Observaciones = peticionDeOferta.Observacion ?? "",
                 Posiciones = posiciones,
                 PlazoDeOferta = posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
-                Usuarios = usuarios.Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList()
+                Usuarios = usuarios.Where(x => peticionDeOferta.UsuarioIds.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList()
             };
 
             peticion = repositorio.Agregar(peticion);
@@ -2876,10 +2878,7 @@ namespace SustitucionMOAUtils.Services
             for (int i = 0; i < files.Count; i++)
             {
                 var file = files[i];
-                var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
                 var rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
-
-
                 Directory.CreateDirectory(ruta);
 
                 int copyNro = 1;
@@ -3047,7 +3046,17 @@ namespace SustitucionMOAUtils.Services
         {
 
             var stylesHtml = @"<style>h1{color:#000;font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-decoration:none;font-size:12px}.s1{color:#000;font-family:'Times New Roman',serif;font-style:italic;font-weight:400;text-decoration:none;font-size:10px}.s2{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:700;text-decoration:none;font-size:8px}.s3{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:9px}h2{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:700;text-decoration:none;font-size:8px}p{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:7px;margin:0}table,tbody{vertical-align:top;overflow:visible}.peticion{font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-decoration:none;font-size:10px;border:.1px solid #000;border-collapse:collapse}.s4{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:700;text-decoration:none;font-size:9px}.s5{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:8px}.s6{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:700;text-decoration:none;font-size:18px}.s7{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:9px}.s8{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:9px}.s9{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:9px}table,tbody{vertical-align:top;overflow:visible}.border{border:.1px solid #000;border-collapse:collapse}.s6{color:#000;font-family:Arial,sans-serif;font-style:italic;text-decoration:none;font-size:7px}.cls_003{font-family:Arial,serif;font-size:12.1px;color:#fff;font-weight:700;font-style:normal;text-decoration:none;background-color:#000;text-align:center;top:-59px;position:relative;left:-1px;width:102%}.cls_002{font-family:Arial,serif;font-size:14.1px;color:#000;font-weight:700;font-style:italic;text-decoration:none}.noborder{border-collapse:collapse;border:1px solid #fff}.cls_005{font-family:Arial,serif;font-size:8.1px;color:#000;font-weight:700;font-style:normal;text-decoration:none}.cls_006{font-family:Arial,serif;font-size:8px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.cls_008{font-family:Arial,serif;font-size:10px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.cls_009{font-family:Arial,serif;font-size:11.1px;color:#000;font-weight:700;font-style:normal;text-decoration:none;text-align:center}.cls_011{font-family:Courier New,serif;font-size:10.1px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.espacio{height:10px;display:block}.w33{width:30%;display:inline-block}.cls_012{font-family:Arial,serif;font-size:6px;text-align:justify}</style>";
-            var datosProveedor = vendedorService.GetDatosFiscales(codigoProveedor, codigoProveedor);
+            var datosProveedor = new VendedorDetalleWSMOAResponse() { cabeceras = null};
+            try
+            {
+              datosProveedor = vendedorService.GetDatosFiscales(codigoProveedor, codigoProveedor);
+            }
+            catch (Exception e)
+            {
+
+                Logger.Log.Error(e);
+            }
+
             var posiciones = "";
             try
             {
@@ -3074,11 +3083,11 @@ namespace SustitucionMOAUtils.Services
 
                 xHtml = string.Format(xHtml, stylesHtml,
                     peticion.Id,
-                    datosProveedor.cabeceras.FirstOrDefault().cuit.Substring(2, 8),
-                    datosProveedor.cabeceras.FirstOrDefault().descripcion,
-                    datosProveedor.cabeceras.FirstOrDefault().calleFiscal,
-                    $"({datosProveedor.cabeceras.FirstOrDefault().cpFiscal}) {datosProveedor.cabeceras.FirstOrDefault().locaFiscal}",
-                    datosProveedor.cabeceras.FirstOrDefault().provFiscal,
+                    datosProveedor.cabeceras?.FirstOrDefault().cuit.Substring(2, 8),
+                    datosProveedor.cabeceras?.FirstOrDefault().descripcion,
+                    datosProveedor.cabeceras?.FirstOrDefault().calleFiscal,
+                    $"({datosProveedor.cabeceras?.FirstOrDefault().cpFiscal}) {datosProveedor.cabeceras?.FirstOrDefault().locaFiscal}",
+                    datosProveedor.cabeceras?.FirstOrDefault().provFiscal,
                     "Argentina",
                     peticion.PlazoDeOferta.ToString("dd.MM.yyyy"),
                     peticion.Posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy"),

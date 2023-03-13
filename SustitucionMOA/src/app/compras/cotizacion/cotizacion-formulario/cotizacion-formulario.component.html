@@ -1,19 +1,17 @@
 
 <div class="row titleSection">
-    <div class="col-xs-12 col-sm-10 "> <strong>Cotizacion {{solpCompraDto.TipoPosicionCodigo}} | SOLP #{{solpCompraDto.NroSolp}}</strong></div>
+    <div class="col-xs-12 col-sm-10 "> <strong>Cotización {{solpCompraDto.TipoPosicionCodigo}} | SOLP #{{solpCompraDto.NroSolp}}</strong></div>
 </div>
 
 <div class="content-wraper alinearAlturaMenuDashboard row1 myRow firstSection">
     <div class="rounded shadow">
         <section class="container-fluid clearfix">
-
-
             <div>
                 <div>
-                    <div class="col-xs-12 col-md-12 headerCompras" #headerCompras>
+                    <div class="col-xs-12 col-md-12 headerCompras" style="margin-left: 8px;" #headerCompras>
                         <strong>Posiciones</strong>
                     </div>
-
+                   
                     <div class="row1">
                         <p-table styleClass="font-size: 10px" #tabla [value]="solpCompraDto.PosicionCompras" dataKey="Id">
                             <ng-template pTemplate="header" let-columns>
@@ -21,11 +19,11 @@
                                     <th *ngIf="esTipoMaterial" class="columna"></th>
                                     <th *ngIf="esTipoServicio" style="width: 3em"></th>
                                     <th class="columna">Pos.</th>
-                                    <th *ngIf="esTipoMaterial" class="columna">Codigo</th>
-                                    <th class="columna">Descripcion</th>
+                                    <th *ngIf="esTipoMaterial" class="columna">Código</th>
+                                    <th class="columna">Descripción</th>
                                     <th class="columna">Centro</th>
-                                    <th class="columna">Almacen</th>
-                                    <th *ngIf="esTipoMaterial" class="columna">Texto de suministro</th>
+                                    <th style="font-size: 10px;">Almacén</th>
+                                    <th *ngIf="esTipoMaterial" style="font-size: 10px;">Texto de <br /> suministro</th>
                                     <th *ngIf="esTipoMaterial" class="columna">Modelo</th>
                                     <th class="columna">Grupo de compras</th>
                                     <th *ngIf="esTipoMaterial" class="columna">Ctd.</th>
@@ -69,8 +67,8 @@
                                             <p-table [value]="posicionCompra.SubposicionesCompras">
                                                 <ng-template pTemplate="header">
                                                     <tr>
-                                                        <th class="columna">Subposicion</th>
-                                                        <th class="columna">Codigo</th>
+                                                        <th class="columna">Subposición</th>
+                                                        <th class="columna">Código</th>
                                                         <th class="columna">Tarea a subcontratar</th>
                                                         <th class="columna">Ctd.</th>
                                                         <th class="columna">UM</th>
@@ -112,10 +110,11 @@
                     <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="inputCompras">
                             <div class="row myRow" style="padding-top: 2px;">
+                                <hr style="border-top: 1px solid #d7d7d7 !important"/>
                                 <div class="row myRow">
                                     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <label class="labelCompras" for="editorTexto"> Adjuntar documentacion </label>
-                                        <p-fileUpload [styles]="{'margin-left':'-13px'}" name="fileUploadPeticionDeOferta" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
+                                        <label class="labelCompras" for="editorTexto"> Adjuntar documentación </label>
+                                        <p-fileUpload [styles]="{'margin-left':'-13px; cursor: pointer;'}" name="fileUploadPeticionDeOferta" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
                                                       [showUploadButton]=false [showCancelButton]=false [customUpload]="true"
                                                       (uploadHandler)="uploadHandler($event)">
                                             <ng-template *ngIf="archivos.length == 0" pTemplate="toolbar">
@@ -176,28 +175,29 @@
                 <div class="col-xs-12 col-md-12 headerCompras" #headerCompras>
                     <strong>Proveedores</strong>
                 </div>
-
+               
                 <div class="inputCompras">
                     <div class="row myRow" style="padding-top: 2px;">
+                        <hr style="border-top: 1px solid #d7d7d7 !important"/>
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-left: 15px;">
-                                <div class="col-xs-12 col-sm-10" style="font-size: 24px; margin-bottom: 20px;">
-                                    <strong>Informacion sugerida de SOLP</strong>
+                                <div class="col-xs-12 col-sm-10" style="font-size: 20px; margin-bottom: 20px;">
+                                    <strong>Información sugerida de SOLP</strong>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                    <strong>Validos</strong>
+                                    <strong>Válidos: </strong>
                                     <div>
                                         {{proveedoresValidos}}
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
-                                    <strong>Invalidos</strong>
+                                    <strong>Inválidos: </strong>
                                     <div>
                                         {{proveedoresInvalidos}}
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
-                                    <strong>No sugeridos</strong>
+                                    <strong>No sugeridos: </strong>
                                     <div>
                                         {{proveedoresNoSugeridos}}
                                     </div>
@@ -209,11 +209,14 @@
 
                 <div class="inputCompras">
                     <div class="row myRow" style="padding-top: 2px;">
+                     
                         <div class="row">
+                            <hr style="border-top: 1px solid #d7d7d7 !important"/>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-left: 15px;">
-                                <div class="col-xs-12 col-sm-10" style="font-size: 24px; margin-bottom: 20px;">
-                                    <strong>Seleccionar proveedores</strong>
+                                <div class="col-xs-12 col-sm-10" style="font-size: 20px;">
+                                    <strong>Selección de proveedores</strong>
                                 </div>
+                               
                                 <div class="col-xs-12 col-sm-10 col-md-4" style="font-size: 24px; margin-bottom: 20px;">
                                     <p-autoComplete [(ngModel)]="proveedorSeleccionado"
                                                     [suggestions]="proveedores"
@@ -230,8 +233,7 @@
                                         </ng-template>
                                     </p-autoComplete>
                                 </div>
-                                <div class="col-xs-11" style="font-size: 20px; margin-bottom: 20px;">
-                                    <h3 class="first">Seleccionados</h3>
+                                <div class="col-xs-11" style="font-size: 20px; margin-bottom: 20px;" >                                   
                                     <p-table [value]="proveedoresSeleccionados">
                                         <ng-template pTemplate="header">
                                             <tr>
