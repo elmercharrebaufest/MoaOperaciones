@@ -438,8 +438,7 @@
                                 </div>
 
                             </ng-container>
-                            <ng-container *ngIf="isNoGranosSelected()"> 
-                                <!-- !isAmbos() || -->
+                            <ng-container *ngIf="!isAmbos() || isNoGranosSelected()"> 
                                 <div>
                                     <a (click)="goToSeccion('/ordenes-de-carga/')" href="#">Ordenes de carga</a>
                                 </div>
