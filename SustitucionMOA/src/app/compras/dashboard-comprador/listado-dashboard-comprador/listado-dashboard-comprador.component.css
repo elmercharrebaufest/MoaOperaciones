@@ -3,7 +3,7 @@
 }
 
 .fa{
-    margin-right: -11px;
+    margin-right:-8.7px;
 }
 .buscar {
     background-color: #1C7CD5;
@@ -24,10 +24,11 @@ body.ui-paginator.ui-dropdown{
 }
 
 .columna{
-    word-break: break-all; word-wrap:break-word; font-size:smaller;
+    word-break: break-all; word-wrap:break-word; font-size: 12px;;
 }
 
 .headerth {
-    font-size: smaller; cursor:pointer;
+    font-size: 11px !important; 
+    cursor:pointer;
 }
 

@@ -38,14 +38,14 @@
                         </span>
                     </th>
                     <th title="Fecha de creacion de SOLP" class="headerth" (click)="onOrder('FechaLiberacionSap')">
-                        Fecha Liberacion
+                        Fecha <br /> Liberacion
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'FechaLiberacionSap' && orden == 'DESC'  }"></i>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'FechaLiberacionSap' && orden == 'ASC' }"></i>
                         </span>
                     </th>
 
-                    <th title="Fecha de creacion de SOLP" class="headerth" (click)="onOrder('UsuarioActual.Mail')">
+                    <th title="Fecha de creacion de SOLP" class="headerth columna" (click)="onOrder('UsuarioActual.Mail')">
                         Solicitante
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'UsuarioActual.Mail' && orden == 'DESC'  }"></i>
@@ -76,7 +76,7 @@
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoSolpSap.Descripcion' && orden == 'ASC' }"></i>
                         </span>
                     </th>
-                    <th data-toggle="tooltip">
+                    <th data-toggle="tooltip" colspan="2">
 
                     </th>
                 </tr>
@@ -139,10 +139,10 @@
                     <td class="columna">
                         {{ rowData.EstadoSolpSap.Descripcion || "" }}
                     </td>
-                    <td class="col-sm-12 col-md-12 col-lg-12">
+                    <td colspan="2" class="columna" style="text-align: center;">
                         <button class="publicar btn btn-success"
-                        (click)="publicarCotizacion(rowData.Id)">
-                            <!-- *ngIf="rowData.EstadoSolpSap.CodigoSap == '02'" -->
+                        (click)="publicarCotizacion(rowData.Id)"
+                        *ngIf="rowData.EstadoSolpSap.CodigoSap == '02'" >                          
                             Publicar
                         </button>
                     </td>
