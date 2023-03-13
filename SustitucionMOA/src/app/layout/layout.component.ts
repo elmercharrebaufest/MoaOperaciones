@@ -422,6 +422,10 @@ export class LayoutComponent implements OnDestroy {
         return this.granosFlag == "A" && this.isAuthorized('CONSULTAR HOME') && this.isAuthorized('CONSULTAR HOME NG');
     }
 
+    isCliente(){
+        return sessionStorage.getItem('tipoUsuario') == 'CLI'
+    }
+
     setGranos() {
         this.granosSelected = "G";
         this.sessionDataService.setGranosSelected("G");
