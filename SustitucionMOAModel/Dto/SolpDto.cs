@@ -223,6 +223,7 @@ namespace SustitucionMOAModel.Dto
         public IEnumerable<SolpSubposicionDto> SubposicionesCompras { get; set; }
         public string MaterialComprasCodigo { get; set; }
         public int Id { get; set; }
+        public DateTime? FechaOferta { get; set; }
 
         public SolpPosicionDto() { }
 

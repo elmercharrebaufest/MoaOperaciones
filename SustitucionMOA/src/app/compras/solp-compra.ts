@@ -19,6 +19,7 @@ export interface PosicionCompra{
     UnidadComprasDescripcion: string,
     MonedaComprasDescripcion: string,
     FechaEntregaServicio: Date,
+    FechaOferta: Date,
     PlazoEntrega: Date,
     ProveedoresCompras?: SolpProveedorDto[]
     SubposicionesCompras?: SolpSubposicionDto[]
