@@ -82,7 +82,9 @@ namespace SustitucionMOAUtils.Services
         private void ValidarUsuario(Usuario usuario, int proveedorId)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-            if (!usuario.ObtenerPermisos().Contains("VER TODOS CAMPOS SUSTENTABLE"))
+            var esComercial = usuario.ObtenerPermisos().Contains("COMERCIAL CAMPOS SUSTENTABLES");
+            var esAdmin = usuario.ObtenerPermisos().Contains("VER TODOS CAMPOS SUSTENTABLE");
+            if (!(esAdmin || esComercial))
             {
                 if (!usuario.Proveedores.Any(p => p.CUIT == proveedor.CUIT))
                 {
@@ -94,6 +96,10 @@ namespace SustitucionMOAUtils.Services
         public Resultado Editar(string mailUsuario, CampoProveedor campoProveedorObj, HttpPostedFileBase archivoKmz)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var editarAdmin = usuario.TienePermiso("EDICION CAMPOS CREADOS");
+            var editarComercial = usuario.TienePermiso("COMERCIAL CAMPOS SUSTENTABLES");
+            if (!(editarAdmin || editarComercial))
+                throw new ValidationCustomException(ErrorMsg.ErrorSinPermiso);
 
             ValidarUsuario(usuario, campoProveedorObj.Proveedor_Id);
 
@@ -604,7 +610,9 @@ namespace SustitucionMOAUtils.Services
 
         private List<TProyeccion> ListarCampos<TProyeccion>(Usuario usuario, Expression<Func<CampoProveedor, TProyeccion>> proyeccion) where TProyeccion : class
         {
-            if (usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE"))
+            var esAdmin = usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE");
+            var esComercial = usuario.TienePermiso("COMERCIAL CAMPOS SUSTENTABLES");
+            if (esAdmin || esComercial)
             {
                 return repositorio.Listar(proyeccion, p => !p.Borrado, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc);
             }
