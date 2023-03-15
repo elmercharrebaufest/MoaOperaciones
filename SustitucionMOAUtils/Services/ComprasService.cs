@@ -3118,6 +3118,7 @@ namespace SustitucionMOAUtils.Services
                 var enviarA = new List<string> { prov.Usuario.Mail };
                 var asunto = $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial() }";
                 var pdf = GenerarPDFPeticionDeOferta(peticion, prov.Usuario.ObtenerCodigoProveedor());              
+                archs.Remove("Peticion de Oferta.pdf");
                 archs.Add("Peticion de Oferta.pdf", pdf);
                 EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailPeticionDeOferta(peticion), null, null, null, null, archs);
             }
