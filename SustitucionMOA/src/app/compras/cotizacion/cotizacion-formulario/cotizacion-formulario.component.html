@@ -13,7 +13,7 @@
                     </div>
                    
                     <div class="row1">
-                        <p-table styleClass="font-size: 10px" #tabla [value]="solpCompraDto.PosicionCompras" dataKey="Id">
+                        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="solpCompraDto.PosicionCompras" dataKey="Id">
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
                                     <th *ngIf="esTipoMaterial" class="columna"></th>
@@ -30,8 +30,8 @@
                                     <th *ngIf="esTipoMaterial" class="columna">Um</th>
                                     <th class="columna">Mon.</th>
                                     <th class="columna">Fecha de entrega</th>
-                                    <th class="columna">Plazo de entrega</th>
-                                    <th class="columna">Fecha de oferta</th>
+                                    <th class="columna">Plazo de entrega (días)</th>
+                                    <th class="columna">Plazo de oferta</th>
                                     <th class="columna">Tratada</th>
                                 </tr>
                             </ng-template>
@@ -64,7 +64,7 @@
                             </ng-template>
                             <ng-template pTemplate="rowexpansion" let-posicionCompra let-columns="columns">
                                 <tr>
-                                    <td [attr.colspan]="10">
+                                    <td [attr.colspan]="11">
                                         <div class="col-sm-12 col-md-12 col-lg-12" style="font-size:16px;padding:20px">
                                             <p-table [value]="posicionCompra.SubposicionesCompras">
                                                 <ng-template pTemplate="header">
@@ -242,12 +242,12 @@
                                                 <th>Mail</th>
                                                 <th>CUIT</th>
                                                 <th>Razon Social</th>
-                                                <th></th>
+                                                <th style="width: 60px !important"></th>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-proveedor>
                                             <tr>
-                                                <td>{{proveedor.Mail}}</td>
+                                                <td class="columna" style="font-size: 15px !important;" >{{proveedor.Mail}}</td>
                                                 <td>{{proveedor.CUIT}}</td>
                                                 <td>{{proveedor.RazonSocial}}</td>
                                                 <td>
