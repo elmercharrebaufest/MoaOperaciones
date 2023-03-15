@@ -2696,52 +2696,52 @@ namespace SustitucionMOAUtils.Services
             try
             {
 
-            var solp = new SolpDto
-            {
-                Id = peticionDeOferta.SolpId
-            };
+                var solp = new SolpDto
+                {
+                    Id = peticionDeOferta.SolpId
+                };
 
-            var respuestaGuardarSOLP = new RespuestaGuardarSOLP
-            {
-                Solp = solp
-            };
+                var respuestaGuardarSOLP = new RespuestaGuardarSOLP
+                {
+                    Solp = solp
+                };
 
-            if (peticionDeOferta.UsuarioIds == null || peticionDeOferta.UsuarioIds.Count == 0)
-            {
-                throw new ValidationCustomException("El campo Proveedor es obligatorio");
-            }
-            if (peticionDeOferta.PosIds == null || peticionDeOferta.PosIds.Count == 0)
-            {
-                throw new ValidationCustomException("Debe seleccionar al menos una posición");
-            }
+                if (peticionDeOferta.UsuarioIds == null || peticionDeOferta.UsuarioIds.Count == 0)
+                {
+                    throw new ValidationCustomException("El campo Proveedor es obligatorio");
+                }
+                if (peticionDeOferta.PosIds == null || peticionDeOferta.PosIds.Count == 0)
+                {
+                    throw new ValidationCustomException("Debe seleccionar al menos una posición");
+                }
 
-            var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
-            var usuarios = repositorio.Listar<Usuario>();
-            var peticion = new PeticionDeOferta()
-            {
-                UsuarioCreador_Id = peticionDeOferta.UsuarioActual.Id,
-                Usuario = usuarios.Where(x => x.Id == peticionDeOferta.UsuarioActual.Id).FirstOrDefault(),
-                FechaCreacion = DateTime.Now,
-                Solp_Id = peticionDeOferta.SolpId,
-                Observaciones = peticionDeOferta.Observacion ?? "",
-                Posiciones = posiciones,
-                PlazoDeOferta = posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
-                Usuarios = usuarios.Where(x => peticionDeOferta.UsuarioIds.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList()
-            };
+                var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
+                var usuarios = repositorio.Listar<Usuario>();
+                var peticion = new PeticionDeOferta()
+                {
+                    UsuarioCreador_Id = peticionDeOferta.UsuarioActual.Id,
+                    Usuario = usuarios.Where(x => x.Id == peticionDeOferta.UsuarioActual.Id).FirstOrDefault(),
+                    FechaCreacion = DateTime.Now,
+                    Solp_Id = peticionDeOferta.SolpId,
+                    Observaciones = peticionDeOferta.Observacion ?? "",
+                    Posiciones = posiciones,
+                    PlazoDeOferta = posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
+                    Usuarios = usuarios.Where(x => peticionDeOferta.UsuarioIds.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList()
+                };
 
-            peticion = repositorio.Agregar(peticion);
+                peticion = repositorio.Agregar(peticion);
 
-            if (adjuntos != null && adjuntos.Count > 0)
-            {
-                GuardarArchivosPeticionDeOferta(peticion, adjuntos);
-            }
-            repositorio.GuardarCambios();
+                if (adjuntos != null && adjuntos.Count > 0)
+                {
+                    GuardarArchivosPeticionDeOferta(peticion, adjuntos);
+                }
+                repositorio.GuardarCambios();
 
-            respuestaGuardarSOLP.IdEntidad = peticion.Id;
-            if (peticion.Posiciones.Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES"){
+                respuestaGuardarSOLP.IdEntidad = peticion.Id;
+
                 EnviarMailPeticionDeOferta(peticion);
-            }
-            return respuestaGuardarSOLP;
+
+                return respuestaGuardarSOLP;
 
             }
             catch (Exception e)
@@ -3046,10 +3046,10 @@ namespace SustitucionMOAUtils.Services
         {
 
             var stylesHtml = @"<style>h1{color:#000;font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-decoration:none;font-size:12px}.s1{color:#000;font-family:'Times New Roman',serif;font-style:italic;font-weight:400;text-decoration:none;font-size:10px}.s2{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:700;text-decoration:none;font-size:8px}.s3{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:9px}h2{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:700;text-decoration:none;font-size:8px}p{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:7px;margin:0}table,tbody{vertical-align:top;overflow:visible}.peticion{font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-decoration:none;font-size:10px;border:.1px solid #000;border-collapse:collapse}.s4{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:700;text-decoration:none;font-size:9px}.s5{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:8px}.s6{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:700;text-decoration:none;font-size:18px}.s7{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:9px}.s8{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:9px}.s9{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:9px}table,tbody{vertical-align:top;overflow:visible}.border{border:.1px solid #000;border-collapse:collapse}.s6{color:#000;font-family:Arial,sans-serif;font-style:italic;text-decoration:none;font-size:7px}.cls_003{font-family:Arial,serif;font-size:12.1px;color:#fff;font-weight:700;font-style:normal;text-decoration:none;background-color:#000;text-align:center;top:-59px;position:relative;left:-1px;width:102%}.cls_002{font-family:Arial,serif;font-size:14.1px;color:#000;font-weight:700;font-style:italic;text-decoration:none}.noborder{border-collapse:collapse;border:1px solid #fff}.cls_005{font-family:Arial,serif;font-size:8.1px;color:#000;font-weight:700;font-style:normal;text-decoration:none}.cls_006{font-family:Arial,serif;font-size:8px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.cls_008{font-family:Arial,serif;font-size:10px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.cls_009{font-family:Arial,serif;font-size:11.1px;color:#000;font-weight:700;font-style:normal;text-decoration:none;text-align:center}.cls_011{font-family:Courier New,serif;font-size:10.1px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.espacio{height:10px;display:block}.w33{width:30%;display:inline-block}.cls_012{font-family:Arial,serif;font-size:6px;text-align:justify}</style>";
-            var datosProveedor = new VendedorDetalleWSMOAResponse() { cabeceras = null};
+            var datosProveedor = new VendedorDetalleWSMOAResponse() { cabeceras = null };
             try
             {
-              datosProveedor = vendedorService.GetDatosFiscales(codigoProveedor, codigoProveedor);
+                datosProveedor = vendedorService.GetDatosFiscales(codigoProveedor, codigoProveedor);
             }
             catch (Exception e)
             {
@@ -3117,9 +3117,13 @@ namespace SustitucionMOAUtils.Services
             {
                 var enviarA = new List<string> { prov.Usuario.Mail };
                 var asunto = $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial() }";
-                var pdf = GenerarPDFPeticionDeOferta(peticion, prov.Usuario.ObtenerCodigoProveedor());              
-                archs.Remove("Peticion de Oferta.pdf");
-                archs.Add("Peticion de Oferta.pdf", pdf);
+                if (peticion.Posiciones.Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
+                {
+                    var pdf = GenerarPDFPeticionDeOferta(peticion, prov.Usuario.ObtenerCodigoProveedor());
+                    if (archs.ContainsKey("Peticion de Oferta.pdf"))
+                        archs.Remove("Peticion de Oferta.pdf");
+                    archs.Add("Peticion de Oferta.pdf", pdf);
+                }
                 EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailPeticionDeOferta(peticion), null, null, null, null, archs);
             }
         }
@@ -3145,7 +3149,7 @@ namespace SustitucionMOAUtils.Services
             if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
             {
                 htmlBody = "Prueba <br />";
-            }          
+            }
 
             htmlBody += $"En el presente mail, se informa la nueva PO {peticion.Id} generada con Molinos Agro S.A <br />";
             if (string.IsNullOrEmpty(peticion.Observaciones))
