@@ -3063,18 +3063,19 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var item in peticion.Posiciones)
                 {
-                    posiciones =
-                    $" <td style='font-size: 8px;'>{ item.Indice } </td> " +
+                    posiciones +=
+                    $"<tr class='border'> <td style='font-size: 8px;'>{ item.Indice } </td> " +
                     $"<td style='font-size: 8px;'> {item.MaterialSolp.Codigo } </td>" +
-                    $"<td style='font-size: 8px;'> {item.Tarea } </td>" +
+                    $"<td style='font-size: 8px;'> {item.MaterialSolp.Descripcion } </td>" +
                     $"<td style='font-size: 8px;'>{item.Cantidad}</td>" +
                     $"<td style='font-size: 8px;'>{item.Unidad.Descripcion}</td>" +
                     $"<td style='font-size: 8px;'>{peticion.PlazoDeOferta.ToString("dd.MM.yyyy")}</td>" +
-                    $"<td style='font-size: 8px;'>{ peticion.Posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</ td > ";
+                    $"<td style='font-size: 8px;'>{ peticion.Posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td> </tr>";
+                    posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{item.MaterialSolp.Descripcion}</td></tr>";
+
                 }
 
                 var posicion = peticion.Posiciones.OrderByDescending(x => x.Id).FirstOrDefault();
-                posicion.Tarea = "tarea";
                 var localidad = repositorio.Obtener<Localidad>(x => x.ProvinciaId == posicion.ProvinciaId);
                 var centro = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
                 var centroPlanta = repositorio.Obtener<TablaSap>(x => x.CodigoSap == posicion.Centro.CodigoSap);
@@ -3096,8 +3097,7 @@ namespace SustitucionMOAUtils.Services
                     "San Lorenzo",
                     centro.CodigoSap,
                     peticion.Usuario.UsuarioSap,
-                    posiciones,
-                    posicion.Tarea
+                    posiciones
                     );
 
                 return xHtml;
@@ -3113,10 +3113,15 @@ namespace SustitucionMOAUtils.Services
         {
             var archs = ObtenerArchivosPeticionDeOferta(peticion);
             var copia = new List<string> { peticion.Usuario.Mail };
+            var asunto = "";
+            if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
+            {
+                asunto = "Prueba: ";
+            }
             foreach (var prov in peticion.Usuarios)
             {
                 var enviarA = new List<string> { prov.Usuario.Mail };
-                var asunto = $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial() }";
+                asunto += $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial() }";
                 if (peticion.Posiciones.Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
                 {
                     var pdf = GenerarPDFPeticionDeOferta(peticion, prov.Usuario.ObtenerCodigoProveedor());
@@ -3146,13 +3151,8 @@ namespace SustitucionMOAUtils.Services
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
-            if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
-            {
-                htmlBody = "Prueba <br />";
-            }
-
             htmlBody += $"En el presente mail, se informa la nueva PO {peticion.Id} generada con Molinos Agro S.A <br />";
-            if (string.IsNullOrEmpty(peticion.Observaciones))
+            if (!string.IsNullOrEmpty(peticion.Observaciones))
             {
                 htmlBody += $"Observaciones: {peticion.Observaciones} <br />";
             }
