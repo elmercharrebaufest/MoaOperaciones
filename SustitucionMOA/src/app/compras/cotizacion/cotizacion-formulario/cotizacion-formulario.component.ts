@@ -59,7 +59,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
     }
 
     ngOnInit() {
-        this.solpCompraDto = {Id:null,NroSolp:null,PosicionCompras:null,TipoPosicionCodigo:""};
+        this.solpCompraDto = { Id: null, NroSolp: null, PosicionCompras: null, TipoPosicionCodigo: "" };
         if (this.route.params) {
             this.route.params.forEach((params: Params) => {
                 let id = parseInt(params["id"]);
@@ -271,5 +271,22 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
     salir() {
         this.navService.navegarSeccion("/compras/dashboardComprador");
 
+    }
+
+    descargarArchivo(archivo) {
+        this.downloadArchivoLocal(archivo, archivo.name);
+    }
+
+    private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
+        if (window.navigator.msSaveOrOpenBlob) {            // IE11            
+            window.navigator.msSaveOrOpenBlob(blob, nombreArchivo);
+        } else {
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            document.body.appendChild(link); link.href = url;
+            link.download = nombreArchivo; link.click();
+            setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+            return;
+        }
     }
 }
