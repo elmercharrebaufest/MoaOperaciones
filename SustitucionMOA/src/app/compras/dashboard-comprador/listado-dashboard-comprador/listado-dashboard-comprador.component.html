@@ -157,7 +157,7 @@
                                     <p-table [value]="rowData.PeticionesDeOferta">
                                         <ng-template pTemplate="header">
                                             <tr>
-                                                <th class="columna">Cotizacion</th>
+                                                <th class="columna">Pedido de Cotización</th>
                                                 <th class="columna">Plazo de Oferta</th>
                                                 <th class="columna">Estado Lic.</th>
                                                 <th class="columna"></th>
@@ -167,14 +167,14 @@
                                             <tr>
                                                 <td class="columna">{{licitacion.Id}}</td>
                                                 <td class="columna">
-                                                    <span>
+                                                    <!-- <span>
                                                         <img class="pointer" src="./Content/images/icons/editar.svg" alt="Editar" />
-                                                    </span>
+                                                    </span> -->
                                                     {{licitacion.PlazoDeOfertaFormateado}}
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn " style="margin-right: 10px;" (click)="verLegajo(licitacion.Id)">
+                                                    <button class="publicar btn " style="margin-right: 10px;"> <!--  (click)="verLegajo(licitacion.Id)" -->
                                                         Legajo
                                                     </button>
                                                     <button class="publicar btn btn-success">
