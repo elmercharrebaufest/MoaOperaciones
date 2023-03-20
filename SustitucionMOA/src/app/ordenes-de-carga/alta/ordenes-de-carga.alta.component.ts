@@ -514,10 +514,21 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     onClienteSeleccionado = () => {
+        this.mensajeComponent.setMsgsEmpty();
         let pClienteCodigo: string = "";
         if (this.clienteSeleccionado) {
-            this.clienteCUIT = this.clienteSeleccionado.CUIT;
-            pClienteCodigo = this.clienteSeleccionado.CodigoProveedor;
+            if (this.clienteSeleccionado.Id <= 0)
+            {
+                // El cliente está relacionado al corredor en SAP, pero no existe en la BD
+                this.mensajeComponent.setErrorMsg("El cliente seleccionado no existe en la web, por favor gestionar su alta");
+                this.clienteCUIT = "";
+                pClienteCodigo = "";
+            }
+            else
+            {
+                this.clienteCUIT = this.clienteSeleccionado.CUIT;
+                pClienteCodigo = this.clienteSeleccionado.CodigoProveedor;
+            }
         }
         this.ordenDeCarga.CUITCliente = Number(this.clienteCUIT);
         this.getPatentes();
@@ -597,7 +608,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     ordenarYFiltrarClientes(result: any): any[] {
         result = result.filter((thing, i, arr) => {
-            return arr.indexOf(arr.find(t => t.CUIT === thing.CUIT)) === i;
+            return arr.indexOf(arr.find(t => t.CodigoProveedor === thing.CodigoProveedor)) === i;
         });
         result.sort((a, b) => {
             const nameA = a.RazonSocial.toUpperCase(); // ignore upper and lowercase
@@ -611,7 +622,14 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             return 0;
         });
         result.forEach((cliente: any) => {
-            cliente.RazonSocial = cliente.RazonSocial + " (" + cliente.CUIT + ")";
+            if (cliente.CUIT) {
+                // Clientes que existen en BD
+                cliente.RazonSocial = cliente.RazonSocial + " (" + cliente.CUIT + ")";
+            }
+            else {
+                // Clientes que existen en SAP pero no en BD
+                cliente.RazonSocial = cliente.RazonSocial + " (" + cliente.CodigoProveedor + ")";
+            }
         });
         return result;
     }
@@ -716,12 +734,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.onContratoSeleccionadoChanged();
             return;
         }
-        this.mensajeComponent.setMsgsEmpty();
+        // this.mensajeComponent.setMsgsEmpty();
         this.contratosDisponibles = [];
         this.contratoSeleccionado = null as any;
         try {
             if (pClienteCodigo) { //this.clienteSeleccionado) { //|| this.corredorSeleccionado) {
                 //let pClienteCodigo = this.clienteSeleccionado.CodigoProveedor;
+                this.mensajeComponent.setMsgsEmpty();
                 let pCorredorCodigo =  this.corredorSeleccionado ?
                     this.corredorSeleccionado.idVendedor : "";
                 
