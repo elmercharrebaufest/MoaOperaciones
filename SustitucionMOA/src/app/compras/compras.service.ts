@@ -6,6 +6,7 @@ import { Solp } from './solp/solp';
 import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 import { SolpPosicion } from './solp/solp-posicion';
 import { EnvioSolpCompra, SolpCompraDto } from './solp-compra';
+import { CircularDto } from '../modelos/circular-model';
 
 @Injectable({
     providedIn: 'root'
@@ -480,7 +481,7 @@ export class ComprasService extends BaseService {
             params = params.set("usuarioId", idUsuario.toString());
         }
         return this.http
-            .get("/api/compras/Legajo", {
+            .get("/api/compras/ObtenerLegajo", {
                 params: params,
                 headers: this.headers,
             });
@@ -519,6 +520,47 @@ export class ComprasService extends BaseService {
 
         return this.http
             .get("/api/compras/DescargarLegajo", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    public GrabarCircular(circular: CircularDto) {
+        let json = JSON.stringify({
+            UsuarioIds: circular.UsuarioIds,
+            Observacion: circular.Observacion,          
+            Adjuntos: circular.Adjuntos,
+            PlazoDeOferta: circular.PlazoDeOferta,
+            FechaEntrega: circular.FechaEntrega,
+            RequiereCambioDeFecha: circular.RequiereCambioDeFecha     
+            
+        });
+
+        var payload = new FormData();
+        var archivos = circular.Adjuntos;
+        if (archivos != null) {
+            for (let i = 0; i < archivos.length; i++) {
+                let fileToUpload = archivos[i];
+                try {
+                    payload.append("fileCircular", fileToUpload as File, fileToUpload.name);
+                } catch (e) {
+
+                    console.log(e);
+                }
+            }
+        }
+
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/GrabarCircular', payload, { headers: this.headers });
+    }
+
+    obtenerPeticionDeOferta(idPeticionDeOferta: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("peticionDeOfertaId", idPeticionDeOferta.toString());       
+        return this.http
+            .get("/api/compras/ObtenerPeticionDeOferta", {
                 params: params,
                 headers: this.headers,
             });

@@ -37,7 +37,7 @@
                             </ng-template>
                             <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded" let-columns="columns">
                                 <tr>
-                                    <td *ngIf="esTipoMaterial">
+                                    <td >
                                         <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="posicionCompra.Selected"></p-checkbox>
                                     </td>
                                     <td *ngIf="esTipoServicio">
@@ -139,7 +139,7 @@
                                             <div class="col-xs-12 col-md-9"
                                                  *ngFor="let archivo of this.archivos">
                                                 <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
-                                                     (click)="eliminarArchivo(true,archivo)" style="width: 26px;" />
+                                                     (click)="eliminarArchivo(archivo)" style="width: 26px;" />
                                                 <a class="link-archivo pointer" (click)="descargarArchivo(archivo)" style="font-weight: lighter;">{{archivo.name}}</a>
                                             </div>
 

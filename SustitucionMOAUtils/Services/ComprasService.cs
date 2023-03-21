@@ -2760,7 +2760,6 @@ namespace SustitucionMOAUtils.Services
             for (int i = 0; i < filesEspecificaciones.Count; i++)
             {
                 var file = filesEspecificaciones[i];
-                var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
                 var rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
 
                 Directory.CreateDirectory(ruta);
@@ -3170,9 +3169,192 @@ namespace SustitucionMOAUtils.Services
         public Pdf GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario)
         {
             var po = repositorio.Obtener<PeticionDeOfertaUsuario>(idPeticionDeOfertaUsuario);
-
             var pdf = GenerarPDFPeticionDeOferta(po.PeticionDeOferta, po.Usuario.ObtenerProveedor().CodigoProveedor);
             return new Pdf { data = pdf, name = "PO" + po.Usuario.ObtenerProveedor().CUIT + ".pdf" };
+        }
+
+        public PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId)
+        {
+
+            var usuarios = new List<PeticionDeOfertaUsarioDto>();
+            var peticion = new PeticionDeOfertaDto();
+            var peticionEntidad = repositorio.Obtener<PeticionDeOferta>(x => x.Id == peticionId);          
+           
+            foreach (var u in peticionEntidad.Usuarios)
+            {
+                var usuario = new PeticionDeOfertaUsarioDto()
+                {
+                    RazonSocial = u.Usuario.ObtenerRazonSocial(),
+                    UsuarioId = u.Id,                    
+                };
+                usuarios.Add(usuario);
+            }
+            peticion.Usuarios = usuarios;
+            peticion.Id = peticionEntidad.Id;
+            var fechaEntrega = peticionEntidad.Posiciones.OrderByDescending(x => x.FechaEntregaServicio).FirstOrDefault().FechaEntregaServicio;
+            peticion.FechaEntregaFormateado = fechaEntrega != null ?
+                fechaEntrega.Value.ToString("yyyy-MM-dd") : "";
+            return peticion;
+        }
+
+        public RespuestaGuardarSOLP GrabarCircular(CircularDto circularDto, HttpFileCollectionBase adjuntos)
+        {
+            try
+            {
+
+                ValidarCircular(circularDto);
+
+                var peticion = repositorio.Listar<PeticionDeOfertaUsuario>();
+                var usuarios = repositorio.Listar<Usuario>();
+                var circular = new Circular()
+                {
+                    UsuarioCreador_Id = circularDto.UsuarioId,
+                    Usuario = usuarios.Where(x => x.Id == circularDto.UsuarioId).FirstOrDefault(),
+                    FechaCreacion = DateTime.Now,
+                    Observaciones = circularDto.Observacion,
+                    PlazoDeOferta = circularDto.PlazoDeOferta,
+                    FechaDeEntrega = circularDto.FechaEntrega,
+                    RequiereCambioDeFechas = circularDto.RequiereCambioDeFecha,
+                    PeticionDeOfertaUsuarios = peticion.Where(x => circularDto.UsuarioIds.Contains(x.Id)).Select(a => new CircularPeticionDeOfertaUsuario { PeticionDeOfertaUsuario_Id = a.Id }).ToList()
+                };
+
+                circular = repositorio.Agregar(circular);
+
+                if (adjuntos != null && adjuntos.Count > 0)
+                {
+                    GuardarArchivosCircular(circular, adjuntos);
+                }
+                repositorio.GuardarCambios();
+
+                var solp = new SolpDto
+                {
+                    Id = circular.Id
+                };
+
+                var respuestaGuardarSOLP = new RespuestaGuardarSOLP
+                {
+                    Solp = solp
+                };
+                respuestaGuardarSOLP.IdEntidad = circular.PeticionDeOfertaUsuarios.FirstOrDefault().PeticionDeOfertaUsuario.PeticionDeOferta_Id;
+                EnviarMailCircular(circular);
+                return respuestaGuardarSOLP;
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+
+        private void ValidarCircular(CircularDto circularDto)
+        {
+            if (string.IsNullOrEmpty(circularDto.Observacion))
+            {
+                throw new ValidationCustomException("El campo Observacion es obligatorio");
+            }
+            if (circularDto.RequiereCambioDeFecha == true && circularDto.FechaEntrega == null)
+            {
+                throw new ValidationCustomException("Debe completar la Fecha de entrega");
+            }
+            if (circularDto.RequiereCambioDeFecha == true && circularDto.PlazoDeOferta == null)
+            {
+                throw new ValidationCustomException("Debe completar el Plazo de oferta");
+            }
+            if (circularDto.UsuarioIds == null || circularDto.UsuarioIds.Count == 0)
+            {
+                throw new ValidationCustomException("Debe seleccionar al menos un proveedor");
+            }
+        }
+
+
+        private void GuardarArchivosCircular(Circular circular, HttpFileCollectionBase files)
+        {
+            var ruta = ObtenerRutaArchivos(circular.Id, FileKeys.Circular);
+
+
+            var filesEspecificaciones = files.GetMultiple("fileCircular");
+            for (int i = 0; i < filesEspecificaciones.Count; i++)
+            {
+                var file = filesEspecificaciones[i];
+                var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+                var rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+
+                Directory.CreateDirectory(ruta);
+
+                int copyNro = 1;
+                while (File.Exists(rutaArchivoRename))
+                {
+                    rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName($"({copyNro}) " + file.FileName));
+                    copyNro += 1;
+                }
+
+                circular.Archivos.Add(new Archivo
+                {
+                    FileKey = FileKeys.PeticionDeOferta,
+                    Ruta = rutaArchivoRename
+
+                });
+
+                file.SaveAs(rutaArchivoRename);
+            }
+
+        }
+
+        public void EnviarMailCircular(Circular circular)
+        {
+            var archs = ObtenerArchivosCircular(circular);
+            var asunto = "";
+            if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
+            {
+                asunto = "Prueba - ";
+            }
+            var copia = new List<string> { circular.Usuario.Mail };
+            foreach (var prov in circular.PeticionDeOfertaUsuarios)
+            {
+                var enviarA = new List<string> { prov.PeticionDeOfertaUsuario.Usuario.Mail };
+                asunto += $"Nueva circular con PO {prov.PeticionDeOfertaUsuario.PeticionDeOferta_Id} - {prov.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial() }";
+
+                EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailCircular(prov), null, null, null, null, archs);
+            }
+        }
+
+
+        private Dictionary<string, byte[]> ObtenerArchivosCircular(Circular circular)
+        {
+            var archs = new Dictionary<string, byte[]>();
+            foreach (var p in circular.Archivos)
+            {
+                WebClient wc = new WebClient();
+                byte[] b = wc.DownloadData(p.Ruta);
+                archs.Add(p.ObtenerNombre(), b);
+            }
+            return archs;
+        }
+
+        private AlternateView CuerpoMailCircular(CircularPeticionDeOfertaUsuario circular)
+        {
+            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+            string htmlBody = "";          
+
+            htmlBody += $"En el presente mail, se informa la nueva circular con PO {circular.PeticionDeOfertaUsuario.PeticionDeOferta_Id}" +
+                $" para el proveedor {circular.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial()}" +
+                $" ({circular.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}) generada con Molinos Agro S.A <br />";
+            if (!string.IsNullOrEmpty(circular.Circular.Observaciones))
+            {
+                htmlBody += $"Observaciones: {circular.Circular.Observaciones} <br />";
+            }
+
+            htmlBody += "En caso de tener alguna consulta ingresar www.moaoperaciones.com.ar " +
+                "<br/><br/>Saludos Cordiales<br/>" +
+                "Molinos Agro S.A. <br/><br/> " +
+                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
         }
     }
 

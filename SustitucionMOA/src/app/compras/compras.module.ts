@@ -53,9 +53,12 @@ import { PaginatorModule } from 'primeng/paginator';
 import { TabViewModule } from 'primeng/tabview';
 import {TooltipModule} from 'primeng/tooltip';
 import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
-import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
 import { CotizacionFormularioComponent } from './cotizacion/cotizacion-formulario/cotizacion-formulario.component';
+import { CircularComponent } from './dashboard-comprador/circular/circular.component';
 import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
+import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
+
+import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
     imports: [
         CommonModule,
@@ -89,6 +92,7 @@ import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
         PaginatorModule,
         TooltipModule,
         TabViewModule,
+        NgbAlertModule
     ],
     declarations: [
         SolpComponent,
@@ -114,6 +118,7 @@ import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
         FiltroDashboardCompradorComponent,
         CotizacionFormularioComponent,
         LegajoComponent,
+        CircularComponent
     ],
     providers: [
         ComprasService,

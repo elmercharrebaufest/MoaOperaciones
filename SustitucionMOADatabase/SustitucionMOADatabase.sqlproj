@@ -185,6 +185,9 @@
     <Build Include="DBO\Tables\PeticionDeOfertaArchivo.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaUsuario.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaSolpPosicion.sql" />
+    <Build Include="DBO\Tables\Circular.sql" />
+    <Build Include="DBO\Tables\CircularPeticionDeOfertaUsuario.sql" />
+    <Build Include="DBO\Tables\CircularArchivo.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

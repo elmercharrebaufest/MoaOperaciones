@@ -14,6 +14,8 @@ import { SecurityService } from '../../../common/services/SecurityService';
 import { FloatMsgService } from '../../../common/services/FloatMsgService';
 import { ModalService } from '../../../common/services/ModalService';
 import { Subscription } from 'rxjs';
+import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
+import { CircularDto } from '../../../modelos/circular-model';
 
 declare var $: any;
 
@@ -53,6 +55,11 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     subscripcionSolp: Subscription
     displayLegajo: boolean = false;
     legajo: any;
+    peticion: PeticionDeOfertaDto;
+    displayCircular: boolean = false;
+    circular: CircularDto
+    nroCotizacion: any;
+    displayOkCircular: boolean;
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -380,5 +387,31 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     onRowDblClick(a, b) {
 
     }
+    
+    obtenerPeticionDeOferta(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerPeticionDeOferta(Id)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.peticion = result.data;
+                        this.displayCircular = true;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+    
+    cerrarCircular() {
+        this.displayCircular = false;
+    }
+
 }
 
