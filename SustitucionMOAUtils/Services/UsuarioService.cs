@@ -399,13 +399,13 @@ namespace SustitucionMOAUtils.Services
                 Id = x.Id,
                 Mail = x.Mail,
                 RazonSocial = x.Proveedores.Where(y => x.TipoUsuario.Id == y.TipoProveedor.Id &&
-                              x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.EstadoAprobacion == 0).FirstOrDefault().RazonSocial,
+                              x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.TipoProveedor.NombreCorto == "NG").FirstOrDefault().RazonSocial,
                 CUIT = x.Proveedores.Where(y => x.TipoUsuario.Id == y.TipoProveedor.Id &&
-                              x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.EstadoAprobacion == 0).FirstOrDefault().CUIT,
+                              x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.TipoProveedor.NombreCorto == "NG").FirstOrDefault().CUIT,
             }, x => x.Proveedores.Any(y => x.TipoUsuario.Id == y.TipoProveedor.Id && y.CodigoProveedor != null && y.CodigoProveedor != "" &&
-            x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.EstadoAprobacion == 0) && x.Habilitado &&
+            x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.TipoProveedor.NombreCorto == "NG") && x.Habilitado &&
             (x.Proveedores.Where(y => x.TipoUsuario.Id == y.TipoProveedor.Id && x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.CodigoProveedor != null && y.CodigoProveedor != ""
-            && y.EstadoAprobacion == 0).FirstOrDefault().RazonSocial.Contains(filtro) || x.Mail.Contains(filtro)
+            && y.TipoProveedor.NombreCorto == "NG").FirstOrDefault().RazonSocial.Contains(filtro) || x.Mail.Contains(filtro)
             || x.CUITRegistro.Contains(filtro))).Take(10);
             return proveedores.ToList(); 
         }
