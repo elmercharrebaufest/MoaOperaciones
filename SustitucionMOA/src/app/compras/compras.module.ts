@@ -59,6 +59,7 @@ import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
 import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
 
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
+import { ProveedorPeticionComponent } from './dashboard-comprador/proveedor-peticion/proveedor-peticion.component';
 @NgModule({
     imports: [
         CommonModule,
@@ -92,7 +93,7 @@ import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
         PaginatorModule,
         TooltipModule,
         TabViewModule,
-        NgbAlertModule
+        NgbAlertModule       
     ],
     declarations: [
         SolpComponent,
@@ -118,7 +119,8 @@ import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
         FiltroDashboardCompradorComponent,
         CotizacionFormularioComponent,
         LegajoComponent,
-        CircularComponent
+        CircularComponent,
+        ProveedorPeticionComponent
     ],
     providers: [
         ComprasService,

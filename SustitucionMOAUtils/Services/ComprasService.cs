@@ -2740,7 +2740,7 @@ namespace SustitucionMOAUtils.Services
 
                 respuestaGuardarSOLP.IdEntidad = peticion.Id;
 
-                EnviarMailPeticionDeOferta(peticion);
+                EnviarMailPeticionDeOferta(peticion, peticion.Usuarios.ToList());
 
                 return respuestaGuardarSOLP;
 
@@ -3109,7 +3109,7 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
-        public void EnviarMailPeticionDeOferta(PeticionDeOferta peticion)
+        public void EnviarMailPeticionDeOferta(PeticionDeOferta peticion,List<PeticionDeOfertaUsuario> usuarios)
         {
             var archs = ObtenerArchivosPeticionDeOferta(peticion);
             var copia = new List<string> { peticion.Usuario.Mail };
@@ -3118,7 +3118,7 @@ namespace SustitucionMOAUtils.Services
             {
                 asunto = "Prueba: ";
             }
-            foreach (var prov in peticion.Usuarios)
+            foreach (var prov in usuarios)
             {
                 var enviarA = new List<string> { prov.Usuario.Mail };
                 asunto += $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial() }";
@@ -3186,7 +3186,10 @@ namespace SustitucionMOAUtils.Services
                 var usuario = new PeticionDeOfertaUsarioDto()
                 {
                     RazonSocial = u.Usuario.ObtenerRazonSocial(),
-                    UsuarioId = u.Id,                    
+                    UsuarioId = u.Id,       
+                    Id = u.Usuario_Id,
+                    CUIT = u.Usuario.ObtenerProveedor().CUIT,
+                    Mail = u.Usuario.Mail
                 };
                 usuarios.Add(usuario);
             }
@@ -3356,6 +3359,35 @@ namespace SustitucionMOAUtils.Services
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             alternateView.LinkedResources.Add(res);
             return alternateView;
+        }
+
+        public RespuestaGuardarSOLP GrabarProveedoresEnPeticionDeOferta(List<int> usuariosId, int peticionId)
+        {
+            try
+            {
+                var solp = new SolpDto
+                {
+                    Id = peticionId
+                };
+                var respuestaGuardarSOLP = new RespuestaGuardarSOLP
+                {
+                    Solp = solp
+                };
+                var usuarios = repositorio.Listar<Usuario>();
+             
+                var peticion = repositorio.Obtener<PeticionDeOferta>(x => x.Id == peticionId);
+                var nuevosUsuarios = usuarios.Where(x => usuariosId.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id, PeticionDeOferta_Id = peticion.Id, Usuario = usuarios.Where(y => y.Id == a.Id).FirstOrDefault(), PeticionDeOferta = peticion }).ToList();
+                peticion.Usuarios = nuevosUsuarios;
+                repositorio.GuardarCambios();
+                respuestaGuardarSOLP.IdEntidad = peticion.Id;
+                EnviarMailPeticionDeOferta(peticion, nuevosUsuarios);
+                return respuestaGuardarSOLP;
+
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
     }
 

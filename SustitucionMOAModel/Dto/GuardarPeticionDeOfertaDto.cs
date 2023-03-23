@@ -15,5 +15,7 @@ namespace SustitucionMOAModel.Dto
         public string Observacion { get; set; }
         public List<int> UsuarioIds { get; set; }
         public UsuarioDto UsuarioActual { get; set; }
+
+        public int Id { get; set; }
     }
 }

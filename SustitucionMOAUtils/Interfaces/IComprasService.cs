@@ -61,5 +61,6 @@ namespace SustitucionMOAUtils.Interfaces
         string DescargarLegajo(int idPeticion, string path);
         RespuestaGuardarSOLP GrabarCircular(CircularDto circularDto, HttpFileCollectionBase adjuntos);
         PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId);
+        RespuestaGuardarSOLP GrabarProveedoresEnPeticionDeOferta(List<int> usuariosId, int peticionId);
     }
 }

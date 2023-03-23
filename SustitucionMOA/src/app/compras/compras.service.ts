@@ -566,5 +566,18 @@ export class ComprasService extends BaseService {
             });
     }
 
+    public GrabarProveedorEnPeticion(usuariosId, peticion) {
+        let json = JSON.stringify({           
+            UsuarioIds: usuariosId,
+            Id: peticion        
+            
+        });
+        var payload = new FormData();
+        payload.append('json', json);
+      
+        return this.http
+            .post<any>('/api/compras/GrabarProveedorEnPeticion', payload,{   headers: this.headers });
+    }
+
 
 }

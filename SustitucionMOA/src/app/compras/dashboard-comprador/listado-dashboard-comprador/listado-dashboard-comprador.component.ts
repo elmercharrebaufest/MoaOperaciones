@@ -60,6 +60,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     circular: CircularDto
     nroCotizacion: any;
     displayOkCircular: boolean;
+    displayProveedor: boolean;
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -408,9 +409,34 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                 }
             )
     }
+
+    obtenerPeticionDeOfertaParaProveedor(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerPeticionDeOferta(Id)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.peticion = result.data;
+                        this.displayProveedor = true;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
     
     cerrarCircular() {
         this.displayCircular = false;
+    }
+
+    cerrarModalProveedor() {
+        this.displayProveedor = false;
     }
 
 }
