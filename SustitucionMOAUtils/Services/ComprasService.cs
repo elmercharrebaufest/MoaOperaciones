@@ -2716,6 +2716,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
+                var fechaOferta = posiciones.First().Solp.Pliego?.FechaHoraEntrega;
                 var usuarios = repositorio.Listar<Usuario>();
                 var peticion = new PeticionDeOferta()
                 {
@@ -2725,7 +2726,7 @@ namespace SustitucionMOAUtils.Services
                     Solp_Id = peticionDeOferta.SolpId,
                     Observaciones = peticionDeOferta.Observacion ?? "",
                     Posiciones = posiciones,
-                    PlazoDeOferta = posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
+                    PlazoDeOferta = fechaOferta ?? posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
                     Usuarios = usuarios.Where(x => peticionDeOferta.UsuarioIds.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList()
                 };
 
