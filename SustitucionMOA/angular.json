@@ -65,7 +65,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "10mb",
-                  "maximumError": "5mb"
+                  "maximumError": "10mb"
                 }
               ]
             }
