@@ -37,7 +37,7 @@
                             </ng-template>
                             <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded" let-columns="columns">
                                 <tr>
-                                    <td >
+                                    <td *ngIf="esTipoMaterial">
                                         <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="posicionCompra.Selected"></p-checkbox>
                                     </td>
                                     <td *ngIf="esTipoServicio">
