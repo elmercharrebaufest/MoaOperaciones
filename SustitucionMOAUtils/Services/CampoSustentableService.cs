@@ -619,8 +619,12 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 var proveedoresIds = usuario.Proveedores.Select(pr => pr.Id);
+                var proveedoresCuits = usuario.Proveedores.Select(pr => pr.CUIT);
 
-                return repositorio.Listar(proyeccion, p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc);
+                return repositorio.Listar(proyeccion, p =>
+                    (proveedoresIds.Contains(p.Proveedor_Id) || proveedoresCuits.Contains(p.CUIT)) &&
+                    !p.Borrado, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc
+                );
             }
         }
 
