@@ -51,3 +51,10 @@ export interface EnvioSolpCompra{
     Adjuntos: Array<File>,
     Id?: number
 }
+
+export interface AltaNuevoProveedor{
+    Id?: number,
+    CUIT?: number,
+    Mail?: string,
+    RazonSocial?: string
+}
