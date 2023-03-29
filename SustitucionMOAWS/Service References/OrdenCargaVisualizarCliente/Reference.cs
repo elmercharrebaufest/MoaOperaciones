@@ -110,6 +110,8 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
         
         private string nOMBRE_DESTINATARIOField;
         
+        private string cPEField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
         public string PEDIDO {
@@ -299,6 +301,18 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
             set {
                 this.nOMBRE_DESTINATARIOField = value;
                 this.RaisePropertyChanged("NOMBRE_DESTINATARIO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=14)]
+        public string CPE {
+            get {
+                return this.cPEField;
+            }
+            set {
+                this.cPEField = value;
+                this.RaisePropertyChanged("CPE");
             }
         }
         
