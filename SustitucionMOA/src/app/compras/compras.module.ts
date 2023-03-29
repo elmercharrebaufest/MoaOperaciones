@@ -57,9 +57,11 @@ import { CotizacionFormularioComponent } from './cotizacion/cotizacion-formulari
 import { CircularComponent } from './dashboard-comprador/circular/circular.component';
 import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
 import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
-
+import { NgxMaskModule } from "ngx-mask";
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { ProveedorPeticionComponent } from './dashboard-comprador/proveedor-peticion/proveedor-peticion.component';
+import { AltaProveedorComponent } from './dashboard-comprador/alta-proveedor/alta-proveedor.component';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -93,7 +95,8 @@ import { ProveedorPeticionComponent } from './dashboard-comprador/proveedor-peti
         PaginatorModule,
         TooltipModule,
         TabViewModule,
-        NgbAlertModule       
+        NgbAlertModule,
+        NgxMaskModule
     ],
     declarations: [
         SolpComponent,
@@ -120,6 +123,7 @@ import { ProveedorPeticionComponent } from './dashboard-comprador/proveedor-peti
         CotizacionFormularioComponent,
         LegajoComponent,
         CircularComponent,
+        AltaProveedorComponent,
         ProveedorPeticionComponent
     ],
     providers: [
