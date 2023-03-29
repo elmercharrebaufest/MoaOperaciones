@@ -175,7 +175,7 @@
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn " style="margin-right: 10px;"> <!--  (click)="verLegajo(licitacion.Id)" -->
+                                                    <button class="publicar btn " style="margin-right: 10px;"   (click)="verLegajo(licitacion.Id)">
                                                         Legajo
                                                     </button>
                                                     <button class="publicar btn " style="margin-right: 10px;"  (click)="obtenerPeticionDeOferta(licitacion.Id)">

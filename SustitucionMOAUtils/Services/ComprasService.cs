@@ -2805,7 +2805,7 @@ namespace SustitucionMOAUtils.Services
                 FechaFormateado = peticion.Solp.FechaCreacion.ToString("dd/MM/yyyy")
             });
             // buscar archivos de la solp
-            if (peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+            if (peticion.Solp.Pliego != null && peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
             {
 
                 foreach (var archivoSubido in peticion.Solp.Pliego.Archivos)
@@ -2858,13 +2858,64 @@ namespace SustitucionMOAUtils.Services
                     });
                 }
             }
-            //buscar archivos de la circular
 
-            //buscar comentarios de la circular
+            var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Select(u => u.Id).ToList();
+            var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
 
-            //buscar cambios de fechas de la circular
-
-
+            foreach (var circular in circulares)
+            {
+                //buscar archivos de la circular
+                foreach (var item in circular.Archivos)
+                {
+                    legajo.Add(new LegajoDto
+                    {
+                        ArchivoId = item.Id,
+                        Observacion = item.ObtenerNombre(item.Ruta),
+                        PeticionDeOfertaId = peticionDeOfertaId,
+                        SolpId = peticion.Solp_Id,
+                        Fecha = circular.FechaCreacion,
+                        FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy")
+                    });
+                }
+                //buscar comentarios de la circular
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = null,
+                    Observacion = circular.Observaciones,
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = peticion.Solp_Id,
+                    Fecha = circular.FechaCreacion,
+                    FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy")
+                });
+                //buscar cambios de fechas de la circular
+                if (circular.RequiereCambioDeFechas == true)
+                {
+                    if (circular.PlazoDeOferta.HasValue)
+                    {
+                        legajo.Add(new LegajoDto
+                        {
+                            ArchivoId = null,
+                            Observacion = $"Nuevo plazo de oferta: {circular.PlazoDeOferta.Value.ToString("dd/MM/yyyy")}",
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = peticion.Solp_Id,
+                            Fecha = circular.FechaCreacion,
+                            FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy")
+                        });
+                    }
+                    if (circular.FechaDeEntrega.HasValue)
+                    {
+                        legajo.Add(new LegajoDto
+                        {
+                            ArchivoId = null,
+                            Observacion = $"Nueva fecha de entrega: {circular.FechaDeEntrega.Value.ToString("dd/MM/yyyy")}",
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = peticion.Solp_Id,
+                            Fecha = circular.FechaCreacion,
+                            FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy")
+                        });
+                    }
+                }
+            }
 
 
             return legajo.OrderByDescending(x => x.Fecha).ToList();
@@ -3064,13 +3115,13 @@ namespace SustitucionMOAUtils.Services
                 foreach (var item in peticion.Posiciones)
                 {
                     posiciones +=
-                    $"<tr class='border'> <td style='font-size: 8px;'>{ item.Indice } </td> " +
-                    $"<td style='font-size: 8px;'> {item.MaterialSolp.Codigo } </td>" +
-                    $"<td style='font-size: 8px;'> {item.MaterialSolp.Descripcion } </td>" +
+                    $"<tr class='border'> <td style='font-size: 8px;'>{item.Indice} </td> " +
+                    $"<td style='font-size: 8px;'> {item.MaterialSolp.Codigo} </td>" +
+                    $"<td style='font-size: 8px;'> {item.MaterialSolp.Descripcion} </td>" +
                     $"<td style='font-size: 8px;'>{item.Cantidad}</td>" +
                     $"<td style='font-size: 8px;'>{item.Unidad.Descripcion}</td>" +
                     $"<td style='font-size: 8px;'>{peticion.PlazoDeOferta.ToString("dd.MM.yyyy")}</td>" +
-                    $"<td style='font-size: 8px;'>{ peticion.Posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td> </tr>";
+                    $"<td style='font-size: 8px;'>{peticion.Posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td> </tr>";
                     posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{item.MaterialSolp.Descripcion}</td></tr>";
 
                 }
@@ -3109,7 +3160,7 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
-        public void EnviarMailPeticionDeOferta(PeticionDeOferta peticion,List<PeticionDeOfertaUsuario> usuarios)
+        public void EnviarMailPeticionDeOferta(PeticionDeOferta peticion, List<PeticionDeOfertaUsuario> usuarios)
         {
             var archs = ObtenerArchivosPeticionDeOferta(peticion);
             var copia = new List<string> { peticion.Usuario.Mail };
@@ -3121,7 +3172,7 @@ namespace SustitucionMOAUtils.Services
             foreach (var prov in usuarios)
             {
                 var enviarA = new List<string> { prov.Usuario.Mail };
-                asunto += $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial() }";
+                asunto += $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial()}";
                 if (peticion.Posiciones.Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
                 {
                     var pdf = GenerarPDFPeticionDeOferta(peticion, prov.Usuario.ObtenerCodigoProveedor());
@@ -3179,14 +3230,14 @@ namespace SustitucionMOAUtils.Services
 
             var usuarios = new List<PeticionDeOfertaUsarioDto>();
             var peticion = new PeticionDeOfertaDto();
-            var peticionEntidad = repositorio.Obtener<PeticionDeOferta>(x => x.Id == peticionId);          
-           
+            var peticionEntidad = repositorio.Obtener<PeticionDeOferta>(x => x.Id == peticionId);
+
             foreach (var u in peticionEntidad.Usuarios)
             {
                 var usuario = new PeticionDeOfertaUsarioDto()
                 {
                     RazonSocial = u.Usuario.ObtenerRazonSocial(),
-                    UsuarioId = u.Id,       
+                    UsuarioId = u.Id,
                     Id = u.Usuario_Id,
                     CUIT = u.Usuario.ObtenerProveedor().CUIT,
                     Mail = u.Usuario.Mail
@@ -3317,7 +3368,7 @@ namespace SustitucionMOAUtils.Services
             foreach (var prov in circular.PeticionDeOfertaUsuarios)
             {
                 var enviarA = new List<string> { prov.PeticionDeOfertaUsuario.Usuario.Mail };
-                asunto += $"Nueva circular con PO {prov.PeticionDeOfertaUsuario.PeticionDeOferta_Id} - {prov.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial() }";
+                asunto += $"Nueva circular con PO {prov.PeticionDeOfertaUsuario.PeticionDeOferta_Id} - {prov.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial()}";
 
                 EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailCircular(prov), null, null, null, null, archs);
             }
@@ -3341,7 +3392,7 @@ namespace SustitucionMOAUtils.Services
             var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
-            string htmlBody = "";          
+            string htmlBody = "";
 
             htmlBody += $"En el presente mail, se informa la nueva circular con PO {circular.PeticionDeOfertaUsuario.PeticionDeOferta_Id}" +
                 $" para el proveedor {circular.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial()}" +
@@ -3374,7 +3425,7 @@ namespace SustitucionMOAUtils.Services
                     Solp = solp
                 };
                 var usuarios = repositorio.Listar<Usuario>();
-             
+
                 var peticion = repositorio.Obtener<PeticionDeOferta>(x => x.Id == peticionId);
                 var nuevosUsuarios = usuarios.Where(x => usuariosId.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id, PeticionDeOferta_Id = peticion.Id, Usuario = usuarios.Where(y => y.Id == a.Id).FirstOrDefault(), PeticionDeOferta = peticion }).ToList();
                 peticion.Usuarios = nuevosUsuarios;
