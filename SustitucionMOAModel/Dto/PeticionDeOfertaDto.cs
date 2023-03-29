@@ -28,5 +28,8 @@ namespace SustitucionMOAModel.Dto
     {
         public int UsuarioId { get; set; }
         public string RazonSocial { get; set; }
+        public int Id { get; set; }
+        public string CUIT { get; set; }
+        public string Mail { get; set; }
     }
 }

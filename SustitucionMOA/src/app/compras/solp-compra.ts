@@ -48,5 +48,6 @@ export interface EnvioSolpCompra{
     PosIds: number[],
     Observacion: string,
     UsuarioIds: number[],
-    Adjuntos: Array<File>
+    Adjuntos: Array<File>,
+    Id?: number
 }

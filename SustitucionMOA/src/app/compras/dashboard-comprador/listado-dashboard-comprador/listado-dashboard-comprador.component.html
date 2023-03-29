@@ -157,6 +157,7 @@
                                     <p-table [value]="rowData.PeticionesDeOferta">
                                         <ng-template pTemplate="header">
                                             <tr>
+                                                <th class="columna" style="width: 100px !important"></th>
                                                 <th class="columna">Pedido de Cotización</th>
                                                 <th class="columna">Plazo de Oferta</th>
                                                 <th class="columna">Estado Lic.</th>
@@ -165,11 +166,11 @@
                                         </ng-template>
                                         <ng-template pTemplate="body" let-licitacion>
                                             <tr>
+                                               <td id="agregarProveedor">
+                                                <img class="pointer" src="./Content/images/icons/editar.svg" alt="Editar" (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
+                                               </td>                                     
                                                 <td class="columna">{{licitacion.Id}}</td>
-                                                <td class="columna">
-                                                    <!-- <span>
-                                                        <img class="pointer" src="./Content/images/icons/editar.svg" alt="Editar" />
-                                                    </span> -->
+                                                <td class="columna">                                                    
                                                     {{licitacion.PlazoDeOfertaFormateado}}
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
@@ -218,4 +219,10 @@
                 (cerrarCircularEmitter)="cerrarCircular()"
                 [(peticion)]="peticion">
     </app-circular>   
+
+     <app-proveedor-peticion
+         [(displayProveedor)]="displayProveedor"
+         (cerrarModalProveedorEmitter)="cerrarModalProveedor()"
+        [(peticion)]="peticion">
+        </app-proveedor-peticion>   
 </div>
