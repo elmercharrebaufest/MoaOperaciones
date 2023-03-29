@@ -209,7 +209,7 @@
                     </div>
                 </div>
 
-                <div class="inputCompras">
+                <div class="inputCompras" style="margin-bottom: 40px;">
                     <div class="row myRow" style="padding-top: 2px;">
                      
                         <div class="row">
@@ -235,6 +235,11 @@
                                         </ng-template>
                                     </p-autoComplete>
                                 </div>
+                                <div>
+                                    <button class="btn btn-success botonesComprasColor" (click)="abrirPopupProveedor()">
+                                        + Alta nuevo usuario
+                                    </button>
+                                </div>
                                 <div class="col-xs-11" style="font-size: 20px; margin-bottom: 20px;" >                                   
                                     <p-table [value]="proveedoresSeleccionados">
                                         <ng-template pTemplate="header">
@@ -243,6 +248,11 @@
                                                 <th style="width: 140px !important">CUIT</th>
                                                 <th>Razon Social</th>
                                                 <th style="width: 60px !important"></th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="emptymessage">
+                                            <tr>
+                                                <td class="sinDatos" style="text-align: center;" colspan="4">Sin datos</td>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-proveedor>
@@ -298,6 +308,12 @@
     </div>
 </p-sidebar>
 
+<app-alta-proveedor
+    [(displayAltaProveedor)]="displayAltaProveedor"
+    (cerrarPopupProveedorEmitter)="salirPopupProveedor()"
+    (proveedorDtoEmitter)="agregarProveedor($event)">
+</app-alta-proveedor>
+
 
 <p-dialog [(visible)]="displayPeticionCreada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
@@ -306,6 +322,6 @@
     <br> La peticion #{{nroPeticion}} se creo correctamente.
     <br>
     <p-footer>
-        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Volver a la home</button>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>
     </p-footer>
 </p-dialog>

@@ -59,8 +59,10 @@ import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
 import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
 import { NgxMaskModule } from "ngx-mask";
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { ProveedorPeticionComponent } from './dashboard-comprador/proveedor-peticion/proveedor-peticion.component';
 import { AltaProveedorComponent } from './dashboard-comprador/alta-proveedor/alta-proveedor.component';
+
 
 @NgModule({
     imports: [

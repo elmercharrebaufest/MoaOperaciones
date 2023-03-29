@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Usuario } from './usuario'
 import { BaseService } from './../common/services/BaseService';
 import { HttpParams } from '@angular/common/http';
+import { AltaNuevoProveedor } from '../compras/solp-compra';
 
 @Injectable()
 export class UsuarioService extends BaseService {
@@ -150,5 +151,19 @@ export class UsuarioService extends BaseService {
 
         return this.http
              .get('/api/AltaEmpresaNoGranos/GetRazonSocial', { params: params, headers: this.headers });
+    }
+
+    public altaNuevoProveedorCompras(altaNuevoProveedor: AltaNuevoProveedor) {
+        let json = JSON.stringify({
+            CUIT: altaNuevoProveedor.CUIT,
+            Mail: altaNuevoProveedor.Mail,          
+            RazonSocial: altaNuevoProveedor.RazonSocial
+        });
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/usuario/GrabarProveedor', payload, { headers: this.headers });
     }
 }

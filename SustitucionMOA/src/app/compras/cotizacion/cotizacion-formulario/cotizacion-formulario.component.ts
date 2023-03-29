@@ -11,16 +11,19 @@ import { NavService } from '../../../common/services/NavService';
 import { SecurityService } from '../../../common/services/SecurityService';
 import { SessionDataService } from '../../../common/services/SessionDataService';
 import { ComprasService } from '../../compras.service';
-import { EnvioSolpCompra, PosicionCompra, SolpCompraDto, SolpProveedorDto, SolpSubposicionDto } from '../../solp-compra';
+import { AltaNuevoProveedor, EnvioSolpCompra, PosicionCompra, SolpCompraDto, SolpProveedorDto, SolpSubposicionDto } from '../../solp-compra';
 import { Table } from 'primeng/table';
 
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { AltaComponent } from '../../../venta-sustentable/alta/alta.component';
+import { AltaProveedorComponent } from '../../dashboard-comprador/alta-proveedor/alta-proveedor.component';
+import { UsuarioService } from '../../../usuario/usuario.service';
 
 @Component({
     selector: 'app-cotizacion-formulario',
     templateUrl: './cotizacion-formulario.component.html',
     styleUrls: ['./cotizacion-formulario.component.css', '../../compras.component.css'],
-    providers: [ComprasService]
+    providers: [ComprasService, UsuarioService]
 })
 export class CotizacionFormularioComponent extends ListBaseComponent implements OnInit {
 
@@ -34,7 +37,13 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
     posicionCompra: PosicionCompra[];
     solpSubposicionDto: SolpSubposicionDto[];
     solpProveedorDto: SolpProveedorDto[];
-    envioSolpCompra: EnvioSolpCompra[]
+    envioSolpCompra: EnvioSolpCompra[];
+    altaNuevoProveedor: AltaNuevoProveedor;
+
+    cuitProveedor: string = "";
+    mailProveedor: string;
+    razonSocialProveedor: string;
+
 
     proveedoresValidos: string;
     proveedoresInvalidos: string;
@@ -48,18 +57,28 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
     display: boolean = false;
     displayFinalizar: boolean = false;
     proveedores: any[] = new Array();
-    proveedoresSeleccionados: any[] = new Array();
+    proveedoresSeleccionados: AltaNuevoProveedor[] = new Array();
     proveedorSeleccionado: any;
     observaciones: string;
+    displayAltaProveedor: boolean = false;
+    displayProvCreado: boolean = false;
+    datoProveedor: string;
+    
 
-    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
+
+    constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+
+        
+
     }
 
     ngOnInit() {
         this.solpCompraDto = { Id: null, NroSolp: null, PosicionCompras: null, TipoPosicionCodigo: "" };
+        this.altaNuevoProveedor = { CUIT: null, Mail: null, RazonSocial: null };
+
         if (this.route.params) {
             this.route.params.forEach((params: Params) => {
                 let id = parseInt(params["id"]);
@@ -289,4 +308,17 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             return;
         }
     }
+
+    abrirPopupProveedor(){
+        this.displayAltaProveedor = true;
+    }
+
+    salirPopupProveedor(){
+        this.displayAltaProveedor = false;
+    }
+
+    agregarProveedor(event){
+        this.selectProveedor(event.proveedorDto);
+    }
+
 }

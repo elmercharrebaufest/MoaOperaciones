@@ -34,5 +34,6 @@ namespace SustitucionMOAUtils.Interfaces
         string ObtenerNuevoApiKey(string usuario);
 
         List<ProveedorDto> ListarProveedores(string filtro);
+        ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto);
     }
 }

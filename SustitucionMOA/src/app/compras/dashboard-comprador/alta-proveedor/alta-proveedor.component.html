@@ -1,0 +1,63 @@
+<p-dialog [(visible)]="displayAltaProveedor" modal="modal" 
+  [width]="650" [draggable]="false" [closable]="true"
+  (onHide)="salirPopupProveedor()" appendTo="body" positionTop="30"
+  [height]="550"
+  [max] [contentStyle]="{ 
+      'max-height':'550px', 
+      'min-height':'400px'}">
+  <p-header class="headerModal" style="color: #067935;">
+      <strong>Datos de proveedor</strong>
+  </p-header>
+  <div class="container-fluid" style="height: 273.75px;">
+      <p>
+        <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert" >
+          <strong>Error! </strong>{{ mensajeError }}</ngb-alert>
+      </p>
+      <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="col-md-12 row myRow alinearTitulo margenInput">
+              <div class="col-md-12 titulosModal" style="margin-right: 1em;">
+                  CUIT: *
+              </div>
+              <div class="col-md-7" style="margin-right: 1em; width: 50%;">
+                  <input id="cuitComprasProveedor" type="text" pInputText appOnlyNumbers [(ngModel)]="altaNuevoProveedor.CUIT" class="styled-select inputComprasFinalizar" maxlength="13" mask="00-00000000-0">
+              </div>
+          </div>
+
+          <div class="col-md-12 row myRow alinearTitulo margenInput">
+              <div class="col-md-12 titulosModal" style="margin-right: 1em;">
+                  Email: *
+              </div>
+              <div class="col-md-7" style="margin-right: 1em; width: 50%;">
+                  <input id="mailComprasProveedor" type="text" pInputText [(ngModel)]="altaNuevoProveedor.Mail" class="styled-select inputComprasFinalizar" placeholder="">
+              </div>
+          </div>
+
+          <div class="col-md-12 row myRow alinearTitulo margenInput">
+              <div class="col-md-12 titulosModal" style="margin-right: 1em;">
+                  Razón Social: *
+              </div>
+              <div class="col-md-7" style="margin-right: 1em; width: 50%;">
+                  <input id="razonsocialComprasProveedor" type="text" pInputText [(ngModel)]="altaNuevoProveedor.RazonSocial" class="styled-select inputComprasFinalizar" placeholder="" >
+              </div>
+          </div>
+
+      </section>
+  </div>
+  <p-footer>
+      <button type="button" class="btn btn-danger botonesComprasColor" (click)="salirPopupProveedor()">CANCELAR</button>
+      <button type="button" class="btn btn-primary botonesComprasColor" (click)="altaNuevoProveedorCompras()">AGREGAR</button>
+
+  </p-footer>
+</p-dialog>
+
+
+<p-dialog [(visible)]="displayProvCreado" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+  <p-header class="headerModal">
+      ¡Proveedor creado!
+  </p-header>
+  <br> El proveedor {{datoProveedor}} se creo correctamente.
+  <br>
+  <p-footer>
+      <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salirPopupProveedor(); enviarProveedorDto()">Aceptar</button>
+  </p-footer>
+</p-dialog>
