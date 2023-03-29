@@ -2731,6 +2731,7 @@ namespace SustitucionMOAUtils.Services
                 };
 
                 peticion = repositorio.Agregar(peticion);
+                repositorio.GuardarCambios();
 
                 if (adjuntos != null && adjuntos.Count > 0)
                 {
@@ -3274,6 +3275,7 @@ namespace SustitucionMOAUtils.Services
                 };
 
                 circular = repositorio.Agregar(circular);
+                repositorio.GuardarCambios();
 
                 if (adjuntos != null && adjuntos.Count > 0)
                 {

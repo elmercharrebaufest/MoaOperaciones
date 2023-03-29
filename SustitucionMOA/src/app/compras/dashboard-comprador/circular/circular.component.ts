@@ -71,6 +71,7 @@ export class CircularComponent implements OnInit {
     }
 
     onCerrarCircular() {
+        this.visualizarAlert = false;
         this.iniciarModalCircular();
         this.cerrarCircularEmitter.next();
     }
@@ -86,9 +87,13 @@ export class CircularComponent implements OnInit {
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
-                            this.floatMsgService.setErrorMsg(result.error);
+                            this.error = result.error;
+                            this.visualizarAlert = true;
+                           // this.floatMsgService.setErrorMsg(result.error);
                         } else if (result.info != undefined) {
-                            this.floatMsgService.setInfoMsg(result.info);
+                            this.error = result.info;
+                           this.visualizarAlert = true;
+                          //  this.floatMsgService.setInfoMsg(result.info);
                         } else {
                             this.nroCircular = result.data.IdEntidad;
                             this.displayOkCircular = true;
