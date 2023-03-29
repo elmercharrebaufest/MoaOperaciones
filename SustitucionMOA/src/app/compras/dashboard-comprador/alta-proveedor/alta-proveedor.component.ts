@@ -57,11 +57,15 @@ export class AltaProveedorComponent extends ListBaseComponent implements OnInit 
         this.usuarioService.altaNuevoProveedorCompras(this.altaNuevoProveedor).subscribe(
           (result: any) => {
             if (result.logout == true) {
-              this.sessionDataService.logout();
-            } else if (result.error != undefined && result.error != "") {
-              this.floatMsgService.setErrorMsg(result.error);
-            } else if (result.info != undefined) {
-              this.floatMsgService.setInfoMsg(result.info);
+              this.sessionDataService.logout();         
+            } else if (result.error != undefined && result.error != "") {           
+               this.mensajeError = result.error;             
+               this.visualizarAlert = true;             
+              // this.floatMsgService.setErrorMsg(result.error);            
+            } else if (result.info != undefined) {              
+               this.mensajeError = result.info;              
+              this.visualizarAlert = true;            
+               //  this.floatMsgService.setInfoMsg(result.info);
             } else {
               this.resultado = result.data;
               this.validarResultado(this.resultado);
@@ -90,6 +94,7 @@ export class AltaProveedorComponent extends ListBaseComponent implements OnInit 
   salirPopupProveedor() {
     this.displayAltaProveedor = false;
     this.displayProvCreado = false;
+    this.visualizarAlert = false;
     this.cerrarPopupProveedorEmitter.next();
     this.limpiarCampos();
   }
