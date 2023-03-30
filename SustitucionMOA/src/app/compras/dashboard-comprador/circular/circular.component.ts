@@ -18,7 +18,7 @@ import { ComprasService } from '../../compras.service';
     templateUrl: './circular.component.html',
     styleUrls: ['./circular.component.css']
 })
-export class CircularComponent implements OnInit {
+export class CircularComponent implements OnInit, OnChanges {
 
 
     @Input()
@@ -48,6 +48,9 @@ export class CircularComponent implements OnInit {
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
+    }
+    ngOnChanges(changes: SimpleChanges): void {
+        this.selectedProv = this.peticion.Usuarios.map(x => x.UsuarioId);
     }
     
     ngOnInit() {
