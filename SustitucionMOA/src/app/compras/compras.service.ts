@@ -421,12 +421,10 @@ export class ComprasService extends BaseService {
         });
 
         var solpJson = JSON.stringify(json);
-
-        let params: HttpParams = new HttpParams()
-            .append('solpJson', solpJson)
-
+        var payload = new FormData();
+        payload.append('solpJson', solpJson);
         return this.http
-            .get("/api/compras/ListarAsociarContrato", { params: params })
+            .post("/api/compras/ListarAsociarContrato", payload, { headers: this.headers });
     }
 
     public obtenerSolpCompras(id: number) {

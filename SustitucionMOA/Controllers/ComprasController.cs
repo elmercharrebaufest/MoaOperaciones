@@ -651,7 +651,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         public ActionResult ListarAsociarContrato(string solpJson)
         {
             try

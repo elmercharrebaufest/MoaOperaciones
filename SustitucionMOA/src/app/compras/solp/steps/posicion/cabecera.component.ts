@@ -1066,8 +1066,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         return this.model.posicionActual.tipoPosicion == "CONTRATO MARCO";
     }
 
-    public get tienePosicionSeleccionada(): boolean {
-        console.log(this.model.selectClaseDocumento);
+    public get tienePosicionSeleccionada(): boolean {      
         return (this.model.selectTipoPosicion != undefined
             && this.model.selectTipoPosicion != null
             && this.model.selectTipoPosicion.Id != ""
