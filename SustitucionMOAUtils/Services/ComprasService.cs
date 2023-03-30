@@ -2716,6 +2716,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
+                var posicionesPeticion = posiciones.Select(x => new PeticionDeOfertaSolpPosicion { SolpPosicion_Id = x.Id }).ToList();
                 var fechaOferta = posiciones.First().Solp.Pliego?.FechaHoraEntrega;
                 var usuarios = repositorio.Listar<Usuario>();
                 var peticion = new PeticionDeOferta()
@@ -2725,7 +2726,7 @@ namespace SustitucionMOAUtils.Services
                     FechaCreacion = DateTime.Now,
                     Solp_Id = peticionDeOferta.SolpId,
                     Observaciones = peticionDeOferta.Observacion ?? "",
-                    Posiciones = posiciones,
+                    Posiciones = posicionesPeticion,
                     PlazoDeOferta = fechaOferta ?? posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
                     Usuarios = usuarios.Where(x => peticionDeOferta.UsuarioIds.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList()
                 };
@@ -3113,8 +3114,9 @@ namespace SustitucionMOAUtils.Services
             try
             {
 
-                foreach (var item in peticion.Posiciones)
+                foreach (var peti in peticion.Posiciones)
                 {
+                    var item = peti.SolpPosicion;
                     posiciones +=
                     $"<tr class='border'> <td style='font-size: 8px;'>{item.Indice} </td> " +
                     $"<td style='font-size: 8px;'> {item.MaterialSolp.Codigo} </td>" +
@@ -3122,12 +3124,12 @@ namespace SustitucionMOAUtils.Services
                     $"<td style='font-size: 8px;'>{item.Cantidad}</td>" +
                     $"<td style='font-size: 8px;'>{item.Unidad.Descripcion}</td>" +
                     $"<td style='font-size: 8px;'>{peticion.PlazoDeOferta.ToString("dd.MM.yyyy")}</td>" +
-                    $"<td style='font-size: 8px;'>{peticion.Posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td> </tr>";
+                    $"<td style='font-size: 8px;'>{peticion.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td> </tr>";
                     posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{item.MaterialSolp.Descripcion}</td></tr>";
 
                 }
 
-                var posicion = peticion.Posiciones.OrderByDescending(x => x.Id).FirstOrDefault();
+                var posicion = peticion.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.Id).FirstOrDefault();
                 var localidad = repositorio.Obtener<Localidad>(x => x.ProvinciaId == posicion.ProvinciaId);
                 var centro = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
                 var centroPlanta = repositorio.Obtener<TablaSap>(x => x.CodigoSap == posicion.Centro.CodigoSap);
@@ -3143,7 +3145,7 @@ namespace SustitucionMOAUtils.Services
                     datosProveedor.cabeceras?.FirstOrDefault().provFiscal,
                     "Argentina",
                     peticion.PlazoDeOferta.ToString("dd.MM.yyyy"),
-                    peticion.Posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy"),
+                    peticion.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy"),
                     lugarEntrega,
                     peticion.FechaCreacion.ToString("dd.MM.yyyy"),
                     "San Lorenzo",
@@ -3174,7 +3176,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var enviarA = new List<string> { prov.Usuario.Mail };
                 asunto += $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial()}";
-                if (peticion.Posiciones.Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
+                if (peticion.Posiciones.Select(x => x.SolpPosicion).Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
                 {
                     var pdf = GenerarPDFPeticionDeOferta(peticion, prov.Usuario.ObtenerCodigoProveedor());
                     if (archs.ContainsKey("Peticion de Oferta.pdf"))
@@ -3247,7 +3249,7 @@ namespace SustitucionMOAUtils.Services
             }
             peticion.Usuarios = usuarios;
             peticion.Id = peticionEntidad.Id;
-            var fechaEntrega = peticionEntidad.Posiciones.OrderByDescending(x => x.FechaEntregaServicio).FirstOrDefault().FechaEntregaServicio;
+            var fechaEntrega = peticionEntidad.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).FirstOrDefault().FechaEntregaServicio;
             peticion.FechaEntregaFormateado = fechaEntrega != null ?
                 fechaEntrega.Value.ToString("yyyy-MM-dd") : "";
             return peticion;

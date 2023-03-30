@@ -23,8 +23,8 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("Solp_Id")]
         public virtual Solp Solp { get; set; }
 
-        [InverseProperty("Peticiones")]
-        public virtual ICollection<SolpPosicion> Posiciones { get; set; } = new List<SolpPosicion>();
+        [InverseProperty("PeticionDeOferta")]
+        public virtual ICollection<PeticionDeOfertaSolpPosicion> Posiciones { get; set; } = new List<PeticionDeOfertaSolpPosicion>();
 
         [InverseProperty("PeticionDeOferta")]
         public virtual ICollection<PeticionDeOfertaUsuario> Usuarios { get; set; } = new List<PeticionDeOfertaUsuario>();
