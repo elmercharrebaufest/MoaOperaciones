@@ -33,6 +33,8 @@ namespace SustitucionMOAModel.Entities
         public virtual ICollection<Pliego> Pliegos { get; set; }
         [InverseProperty("Archivos")]
         public virtual ICollection<Circular> Circular { get; set; }
+        [InverseProperty("Archivos")]
+        public virtual ICollection<Cotizacion> Cotizaciones { get; set; }
         public string ObtenerNombre(string ruta)
         {
             if (Path.GetFileName(ruta) != null)

@@ -28,5 +28,6 @@ Post-Deployment Script Template
 :r .\Varios.sql
 :r .\SolpFixDataToNewColumnEmailLinkToken.sql
 :r .\Material.sql
+:r .\Estados.sql
 
 

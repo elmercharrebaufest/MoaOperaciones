@@ -188,6 +188,13 @@
     <Build Include="DBO\Tables\Circular.sql" />
     <Build Include="DBO\Tables\CircularPeticionDeOfertaUsuario.sql" />
     <Build Include="DBO\Tables\CircularArchivo.sql" />
+    <Build Include="DBO\Tables\CotizacionEstado.sql" />
+    <Build Include="DBO\Tables\Cotizacion.sql" />
+    <Build Include="DBO\Tables\CotizacionArchivo.sql" />
+    <Build Include="DBO\Tables\CotizacionHora.sql" />
+    <Build Include="DBO\Tables\CotizacionPosicion.sql" />
+    <Build Include="DBO\Tables\CotizacionSubPosicion.sql" />
+    <None Include="scripts\PostDeployment\Estados.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
