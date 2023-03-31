@@ -373,4 +373,15 @@ namespace SustitucionMOAModel.Dto
             }
         }
     }
+
+    public class RespuestaCrearOrdenDeCompra
+    {
+        public List<string> Errores { get; set; }
+
+        public string Mensaje { get; set; }
+
+        public int IdEntidad { get; set; }
+        public string NumeroPedido { get; set; }
+        public string NumeroSolp { get; set; }
+    }
 }

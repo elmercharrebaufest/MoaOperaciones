@@ -1989,7 +1989,7 @@ namespace SustitucionMOAUtils.Services
 
                         solp.Posiciones.Add(posicionEntity);
 
-                        if (solp.Id == 0 && nuevaSolp)
+                        if (solp.Id == 0 || nuevaSolp)
                             repositorio.Agregar(solp);
                     }
                     catch (Exception e)
@@ -3443,6 +3443,42 @@ namespace SustitucionMOAUtils.Services
             {
                 throw;
             }
+        }
+
+        public RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(int AdjudicacionId  )
+        {
+            //variables para ver a que request accedemos
+            //var crearPedidoConsumer = crearPedido(solpEntity);
+            //var crearSolpComsumer = crearSolp(solpEntity);
+            //var modificarSolpConsumer = modificarSolp(solpEntity);
+            var AdjudicacionEntity = repositorio.Obtener<Adjudicacion>(AdjudicacionId);
+            var respuesta = new RespuestaCrearOrdenDeCompra();
+
+
+
+            var resultadoCrearPedido = crearPedidoConsumerMOA.Request(AdjudicacionEntity);
+
+            respuesta.Errores = new List<string>();
+            respuesta.NumeroPedido = resultadoCrearPedido.NumeroPedido;
+            respuesta.NumeroSolp = AdjudicacionEntity.Solp.NroSolp;
+            foreach (var error in resultadoCrearPedido.Errores.Where(x => x.Tipo == "E"))
+            {
+                var mensaje = error.Mensaje.Trim();
+                respuesta.Errores.Add(mensaje);
+            }
+
+            if (respuesta.Errores.Count == 0)
+            {
+                //proveedorConPosiciones.Value.ForEach(posicion => posicion.NumeroPedido = resultadoCrearPedido.NumeroPedido);
+                //repositorio.GuardarCambios();
+
+                respuesta.Mensaje = "OK";
+            }
+
+
+
+
+            return respuesta;
         }
     }
 
