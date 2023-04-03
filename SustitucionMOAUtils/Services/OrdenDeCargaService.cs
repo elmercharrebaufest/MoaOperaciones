@@ -464,8 +464,11 @@ namespace SustitucionMOAUtils.Services
             CC-05	'Pedido entregado completamente'
             CC-06	'Considerar como error CC-01'
             CC-07	'Faltan cargar los Km en el contrato'
+            CC-08	'Cliente inhabilitado en SISA'
+            CC-09	'Corredor inhabilitado en SISA'
             CC-00	'OK'
             */
+
             Log.Info($"VerificarOrden(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, cliente: {cliente?.Id.ToJson()}, esJob: {esJob}, puedeEnviarASAP: {puedeEnviarASAP})");
             string contrato = null;
             if (ordenDeCarga.ContratoIngresado != null)
@@ -474,7 +477,7 @@ namespace SustitucionMOAUtils.Services
                 contrato = contrato.Split('|').First();
             }
 
-            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
+            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido, "");
 
             //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
             //cual es el contrato correcto que le quiere entregar.
