@@ -29,6 +29,8 @@ export class ComprasService extends BaseService {
     }
     listaSolp: any;
     observableListaSolp = new Subject<any[]>();
+    observableListaPO = new Subject<any[]>();
+
 
     public getCombos(): Observable<any> {
         return this.http
@@ -402,6 +404,28 @@ export class ComprasService extends BaseService {
             .get<any[]>('/api/compras/ListarSolpCompra', { params: params, headers: this.headers }).subscribe(
                 (data: any[]) => {
                     this.observableListaSolp.next(data)
+                }
+            );
+    }
+
+    public getListarPOProveedor(pagina: number,
+        itemsPorPagina: number,
+        orden: string = this.filtros.orden,
+        columna: string = this.filtros.columna,
+        nroSolp: string = this.filtros.nroSolp) {
+        let params: HttpParams = new HttpParams()
+        pagina = pagina != null ? pagina : this.filtros.pagina;
+        itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
+        columna = columna != "" ? columna : this.filtros.columna;
+        params = params.set('pagina', pagina.toString());
+        params = params.set('itemsPorPagina', itemsPorPagina.toString());
+        params = params.set('orden', orden);
+        params = params.set('columna', columna);
+        params = params.set('nroSolp', nroSolp);
+        return this.http
+            .get<any[]>('/api/compras/ListarPOProveedor', { params: params, headers: this.headers }).subscribe(
+                (data: any[]) => {
+                    this.observableListaPO.next(data)
                 }
             );
     }

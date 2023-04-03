@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cache.cs" />
+    <Compile Include="ConsultasEF\ListarSolpPOConsulta.cs" />
     <Compile Include="ConsultasEF\ObtenerSolpComprasConsulta.cs" />
     <Compile Include="ConsultasEF\ListarSolpConsulta.cs" />
     <Compile Include="EntidadReferenciadaException.cs" />

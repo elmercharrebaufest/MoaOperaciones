@@ -2197,6 +2197,15 @@ namespace SustitucionMOAUtils.Services
             return todasLasSolp;
         }
 
+        public ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp)
+        {
+            var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp));
+            if (todasLasPO != null && todasLasPO.Count() > 0)
+            {
+                todasLasPO.FirstOrDefault().ItemsTotales = todasLasPO.ItemsTotales;
+            }
+            return todasLasPO;
+        }
 
 
         private SolpSAPDto ConvertirSOLPSAP(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas)

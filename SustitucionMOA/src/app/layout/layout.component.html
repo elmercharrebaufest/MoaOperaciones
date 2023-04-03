@@ -628,6 +628,12 @@
                                     DASHBOARD COMPRADOR
                                 </a>
                             </div>
+
+                            <div *ngIf="isAuthorized('VER SOLPS PROVEEDOR')">
+                                <a (click)="goToSeccion('/compras/dashboardProveedor')" href="#">
+                                    DASHBOARD PROVEEDOR
+                                </a>
+                            </div>
                         </div>
                     </div>
 

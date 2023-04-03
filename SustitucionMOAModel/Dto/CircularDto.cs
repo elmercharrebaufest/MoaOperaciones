@@ -17,5 +17,8 @@ namespace SustitucionMOAModel.Dto
         public bool? RequiereCambioDeFecha { get; set; }
         public DateTime? PlazoDeOferta { get; set; }
         public DateTime? FechaEntrega { get; set; }
+        public string Estado { get; set; }
+        public string EstadoColor { get; set; }
+        public int Estado_Id { get; set; }
     }
 }
