@@ -19,6 +19,9 @@ namespace SustitucionMOAModel.Dto
             get { return Errores.Count != 0; }
         }
 
+        public string Descripcion { get; set; }
+        public ProveedorDto ProveedorDto { get; set; }
+
         public void Error(string clave, string descripcion)
         {
             Errores.Add(new ErrorMessage(descripcion, clave));

@@ -35,7 +35,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);               
+                var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);
                 return JsonCustom(campoSustentableService.Agregar(SessionPersister.User.username, campoProveedor, archivoKmz, UsarArchivoId));
             }
             catch (InfoCustomException e)
@@ -53,13 +53,12 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.EDICION_CAMPOS_CREADOS)]
         [HttpPost]
         public JsonResult CampoProveedorEditar(string campoProveedorJson, HttpPostedFileBase archivoKmz)
         {
             try
             {
-                var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);                
+                var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);
                 return JsonCustom(campoSustentableService.Editar(SessionPersister.User.username, campoProveedor, archivoKmz));
             }
             catch (InfoCustomException e)

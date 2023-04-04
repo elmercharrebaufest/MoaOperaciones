@@ -27,6 +27,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class GrillaComponent extends EcheqGestionComponent implements OnInit {
     popupVisible = new BehaviorSubject<boolean>(false);
+    clasificacionesDeshabilitadas = [""];
     @Input() echeqContratos: Array<EcheqContrato>;
     @BlockUI() blockUI: NgBlockUI;
 

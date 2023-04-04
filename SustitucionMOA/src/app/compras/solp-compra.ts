@@ -1,39 +1,60 @@
 export interface SolpCompraDto{
-    id: number,
-    nroSolp: string,   
-    posicionCompra: PosicionCompra[],
+    Id: number,
+    NroSolp: string,   
+    PosicionCompras: PosicionCompra[],
+    TipoPosicionCodigo: string,
 }
 
 export interface PosicionCompra{
-    indice: string,
-    tarea: string,
-    centroComprasDescripcion: string,
-    almacenComprasDescripcion: string,
-    textoSuministro: string,
-    modelo: string,
-    grupoComprasDescripcion: string,
-    cantidad: number,
-    unidadComprasDescripcion: string,
-    monedaComprasDescripcion: string,
-    fechaEntregaServicio: Date,
-    plazoEntrega: Date,
-    proveedoresCompras?: SolpProveedorDto[]
-    subposicionesCompras?: SolpSubposicionDto[]
-    tieneCotizacion: boolean,
+    Id: number,
+    Indice: string,
+    Tarea: string,
+    MaterialComprasCodigo: number,
+    CentroComprasDescripcion: string,
+    AlmacenComprasDescripcion: string,
+    TextoSuministro: string,
+    Modelo: string,
+    GrupoComprasDescripcion: string,
+    Cantidad: number,
+    UnidadComprasDescripcion: string,
+    MonedaComprasDescripcion: string,
+    FechaEntregaServicio: Date,
+    FechaOferta: Date,
+    PlazoEntrega: Date,
+    ProveedoresCompras?: SolpProveedorDto[]
+    SubposicionesCompras?: SolpSubposicionDto[]
+    TieneCotizacion: boolean,
+    Selected: boolean,
 }
 
 export interface SolpSubposicionDto{
-    numero: number,
-    tarea: string,
-    codigo: string,
-    cantidad: number,
-    unidadComprasDescripcion: string
+    Numero: number,
+    Tarea: string,
+    Codigo: string,
+    Cantidad: number,
+    UnidadComprasDescripcion: string
 
 }
 
 export interface SolpProveedorDto{
-    solpPosicionId?: number,
-    tipoFiltroProveedorSolpCodigo?: string
-    razonSocial?: string
+    SolpPosicionId?: number,
+    TipoFiltroProveedorSolpCodigo?: string
+    RazonSocial?: string
 
+}
+
+export interface EnvioSolpCompra{
+    SolpId: number,
+    PosIds: number[],
+    Observacion: string,
+    UsuarioIds: number[],
+    Adjuntos: Array<File>,
+    Id?: number
+}
+
+export interface AltaNuevoProveedor{
+    Id?: number,
+    CUIT?: number,
+    Mail?: string,
+    RazonSocial?: string
 }

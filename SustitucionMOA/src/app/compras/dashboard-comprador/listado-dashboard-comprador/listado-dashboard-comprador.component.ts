@@ -14,6 +14,8 @@ import { SecurityService } from '../../../common/services/SecurityService';
 import { FloatMsgService } from '../../../common/services/FloatMsgService';
 import { ModalService } from '../../../common/services/ModalService';
 import { Subscription } from 'rxjs';
+import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
+import { CircularDto } from '../../../modelos/circular-model';
 
 declare var $: any;
 
@@ -51,7 +53,14 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     pageIndex: number = 1;
     @ViewChild('paginator') paginator: Paginator
     subscripcionSolp: Subscription
-
+    displayLegajo: boolean = false;
+    legajo: any;
+    peticion: PeticionDeOfertaDto;
+    displayCircular: boolean = false;
+    circular: CircularDto
+    nroCotizacion: any;
+    displayOkCircular: boolean;
+    displayProveedor: boolean;
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -61,7 +70,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     }
     //#region Variables 
-    display: boolean = false;
     tablaSolp: any[];
     tablaSolpCopy: any[];
     cols: any[];
@@ -74,9 +82,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
     //#endregion
 
-    showDialog() {
-        this.display = true;
-    }
+
     ngOnInit() {
         this.getListarSolp();
     }
@@ -90,7 +96,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             this.spinnerComponent.showIt();
             this.subscripcionSolp = this.service.observableListaSolp.subscribe(
                 (result: any) => {
-                    
+
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -102,7 +108,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-                      
+
                     }
                     this.spinnerComponent.hideIt()
                 },
@@ -116,7 +122,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             this.spinnerComponent.hideIt()
             return false; //<-- Prevent Refresh
         }
-   
+
         return false; //<-- Prevent Refresh
     }
 
@@ -124,7 +130,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     listarSolp() {
         this.spinnerComponent.showIt();
         this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp);
-  
+
     }
 
     onOrder(columna: string) {
@@ -139,8 +145,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     handlePageEvent(e: any) {
         this.pageSize = e.rows;
-        this.pageIndex = e.page + 1;       
-        this.listarSolp();      
+        this.pageIndex = e.page + 1;
+        this.listarSolp();
 
     }
 
@@ -181,12 +187,257 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     }
                 },
                 (error) => {
-                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
+    }
+
+    verLegajo(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.verLegajo(Id, null)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.legajo = result.data;
+                        this.displayLegajo = true;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             )
     }
 
+    cerrarLegajo() {
+        this.displayLegajo = false;
+    }
+
+    descargarArchivo({ archivoId }) {
+        if (archivoId == 0) {
+            let SolpId = this.legajo[0].SolpId;
+            this.blockUI.start("Generando...");
+            this.service.getPdf(SolpId)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        }
+                        else {
+                            var byteArray = new Uint8Array(result.FileContents);
+                            var blob = new Blob([byteArray], {
+                                type: "application/octet-stream",
+                            });
+
+                            this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        }
+                        this.blockUI.stop();
+                    },
+                    (error) => {
+                        this.blockUI.stop();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                )
+        } else if (archivoId < 0) {
+            this.blockUI.start("Generando...");
+            this.service.getPdfPeticionDeOfertaUsuario(archivoId)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        }
+                        else {
+                            var byteArray = new Uint8Array(result.FileContents);
+                            var blob = new Blob([byteArray], {
+                                type: "application/octet-stream",
+                            });
+
+                            this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        }
+                        this.blockUI.stop();
+                    },
+                    (error) => {
+                        this.blockUI.stop();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                )
+        }
+        else {
+            this.blockUI.start("Descargando...");
+            this.service.DescargarArchivo(archivoId)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        }
+                        else {
+                            var byteArray = new Uint8Array(result.FileContents);
+                            var blob = new Blob([byteArray], {
+                                type: "application/octet-stream",
+                            });
+                            this.downloadArchivoLocal(blob, result.FileDownloadName);
+                            this.blockUI.stop();
+                        }
+                    },
+                    (error) => {
+                        this.mensajeComponent.setErrorMsg(error.message);
+                        this.blockUI.stop();
+                    }
+                )
+        }
+    }
+
+    private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
+        if (window.navigator.msSaveOrOpenBlob) {
+            // IE11
+            window.navigator.msSaveOrOpenBlob(
+                blob,
+                nombreArchivo
+            );
+        } else {
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            document.body.appendChild(link);
+            link.href = url;
+            link.download = nombreArchivo;
+            link.click();
+            setTimeout(function () {
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            return;
+        }
+    }
+
+    descargarLegajo() {
+        let idPeticion = this.legajo[0].PeticionDeOfertaId;
+        this.blockUI.start('Generando...')
+        this.service.descargarLegajo(idPeticion)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            this.blockUI.stop();
+                            return false;
+                        }
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
+    }
+
+    adjuntarArchivoLegajo(files) {
+        console.log("adjuntar", files);
+        let peticionId = this.legajo[0].PeticionDeOfertaId;
+        //todo adjuntar los archivos
+
+        this.blockUI.start('Subiendo archivos...')
+        this.service.adjuntarArchivoLegajo(peticionId, files)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.verLegajo(peticionId);
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    publicarCotizacion(Id: string) {
+        this.goToSeccionParam('/compras/cotizacion-formulario', Id);
+    }
+
+    onRowDblClick(a, b) {
+
+    }
+    
+    obtenerPeticionDeOferta(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerPeticionDeOferta(Id)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.peticion = result.data;
+                        this.displayCircular = true;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    obtenerPeticionDeOfertaParaProveedor(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerPeticionDeOferta(Id)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.peticion = result.data;
+                        this.displayProveedor = true;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+    
+    cerrarCircular() {
+        this.displayCircular = false;
+    }
+
+    cerrarModalProveedor() {
+        this.displayProveedor = false;
+    }
 
 }
 

@@ -219,7 +219,7 @@ namespace SustitucionMOAUtils.Services
                 //Hacemos el cambio para que no le vuele el historial a todos los proveedores
                 var prov = usuario.Proveedores.FirstOrDefault(p => p.CUIT == usuario.CUITRegistro && p.Mail == usuario.Mail);
 
-                if(prov != null)
+                if (prov != null)
                 {
                     prov.EstadoAprobacion = EstadoAprobacion.Aprobado;
 
@@ -390,6 +390,139 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
             return apikey;
+        }
+
+        public List<ProveedorDto> ListarProveedores(string filtro)
+        {
+            var proveedores = repositorio.Listar<Entidades.Usuario, ProveedorDto>(x => new ProveedorDto()
+            {
+                Id = x.Id,
+                Mail = x.Mail,
+                RazonSocial = x.Proveedores.Where(y => x.TipoUsuario.Id == y.TipoProveedor.Id &&
+                              x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.TipoProveedor.NombreCorto == "NG").FirstOrDefault().RazonSocial,
+                CUIT = x.Proveedores.Where(y => x.TipoUsuario.Id == y.TipoProveedor.Id &&
+                              x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.TipoProveedor.NombreCorto == "NG").FirstOrDefault().CUIT,
+            }, x => x.Proveedores.Any(y => x.TipoUsuario.Id == y.TipoProveedor.Id && y.CodigoProveedor != null && y.CodigoProveedor != "" &&
+            x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.TipoProveedor.NombreCorto == "NG") && x.Habilitado &&
+            (x.Proveedores.Where(y => x.TipoUsuario.Id == y.TipoProveedor.Id && x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.CodigoProveedor != null && y.CodigoProveedor != ""
+            && y.TipoProveedor.NombreCorto == "NG").FirstOrDefault().RazonSocial.Contains(filtro) || x.Mail.Contains(filtro)
+            || x.CUITRegistro.Contains(filtro))).Take(10);
+            return proveedores.ToList();
+        }
+
+        public ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto)
+        {
+            UsuarioNoGranos usuarioNoGranos = new UsuarioNoGranos { Mail = proveedorDto.Mail, CUITRegistro = proveedorDto.CUIT, SeccionesVisitadas = "" };
+
+            TipoUsuario tipoUsuario =  repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "NG");
+
+            Entidades.Usuario usuario = new Entidades.Usuario { Mail = proveedorDto.Mail, CUITRegistro = proveedorDto.CUIT, SeccionesVisitadas = "", TipoUsuario = tipoUsuario};
+
+            usuarioNoGranos.TipoUsuario = tipoUsuario;
+
+            var resultado = new ResultadoGenerico();
+
+            ValidarDatosProveedor(proveedorDto, resultado);
+
+            var setCodigoProveedor = "00" + proveedorDto.CUIT.Remove(proveedorDto.CUIT.Length - 1).Remove(0, 2);
+
+            Rol nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
+
+            usuario.Roles = new List<Rol>
+            {
+                nuevoNoGranos
+            };
+
+            usuario.Proveedores = new List<Proveedor>();
+
+            string cuit = usuario.CUITRegistro;
+            string mailUsuario = usuario.Mail;
+
+            Proveedor proveedor = new Proveedor
+            {
+                CUIT = usuario.CUITRegistro,
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                Observaciones = "Proveedor agregado por compras",
+                Mail = usuario.Mail,
+                TipoProveedor = tipoUsuario,
+                FechaSolicitud = DateTime.Now,
+                RazonSocial = proveedorDto.RazonSocial,
+                CodigoProveedor = setCodigoProveedor
+            };
+
+            proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>
+            {
+                new ProveedorHistorialAprobacion()
+                {
+                    Fecha = DateTime.Now,
+                    EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                    Observacion = "Registro de usuario",
+                    Usuario_Id = usuario.Id
+                }
+            };
+
+            if (repositorio.Existe<Proveedor>(x => x.CUIT == cuit && x.Mail == mailUsuario))
+            {
+                proveedor = repositorio.Obtener<Proveedor>(x => x.CUIT == cuit && x.Mail == mailUsuario);
+            }
+
+            if (proveedor.EstadoAprobacion == EstadoAprobacion.Aprobado)
+            {
+                var rolUsuarioNoGranos = ObtenerRolPorCodigo("NOGRAN");
+
+                usuario.RemoverRoles();
+                usuario.AgregarRol(rolUsuarioNoGranos);
+            }
+
+            usuario.Proveedores.Add(proveedor);
+
+            usuario.Habilitado = true;
+
+            repositorio.Agregar(usuario);
+            //return repositorio.GuardarCambios() == 1;
+
+            proveedor = repositorio.Agregar(proveedor);
+
+            repositorio.GuardarCambios();
+
+            resultado.Descripcion = $"{proveedor.RazonSocial} ({proveedor.CUIT}) - {proveedor.Mail}";
+
+            var proveedorResultado = new ProveedorDto() { Mail = proveedorDto.Mail, CUIT = proveedorDto.CUIT, Id = usuario.Id, RazonSocial = proveedorDto.RazonSocial};
+
+            resultado.ProveedorDto = proveedorResultado;
+
+            return resultado;
+        }
+
+        public ResultadoGenerico ValidarDatosProveedor(ProveedorDto proveedorDto, ResultadoGenerico resultado)
+        {
+            if (String.IsNullOrEmpty(proveedorDto.Mail))
+            {
+                resultado.Errores.Add(new ErrorMessage(1, "El mail es obligatorio"));
+                return resultado;
+            }
+
+            if (String.IsNullOrEmpty(proveedorDto.CUIT))
+            {
+                resultado.Errores.Add(new ErrorMessage(1, "El CUIT es obligatorio"));
+                return resultado;
+            }
+
+            if (String.IsNullOrEmpty(proveedorDto.RazonSocial))
+            {
+                resultado.Errores.Add(new ErrorMessage(1, "La razon social es obligatoria"));
+                return resultado;
+            }
+
+            var existeMail = repositorio.Listar<Proveedor, string>(x => x.Mail).Any(x => x == proveedorDto.Mail);
+
+            if (existeMail)
+            {
+                resultado.Errores.Add(new ErrorMessage(1, "El mail ya se encuentra registrado"));
+                return resultado;
+            }
+
+            return resultado;
         }
     }
 }

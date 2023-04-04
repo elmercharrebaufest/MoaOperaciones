@@ -34,6 +34,11 @@ using SustitucionMOAModel.Consultas;
 using SustitucionMOAFotmatter;
 using SustitucionMOAWS.CrearSolpWebServiceMOA;
 using SustitucionMOARepositorio.ConsultasEF;
+using iTextSharp.tool.xml.css;
+using SustitucionMOAModel.Models.WSMapMOA;
+using System.Net.Mail;
+using System.Net;
+using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -51,6 +56,7 @@ namespace SustitucionMOAUtils.Services
         private readonly ICrearPedidoConsumerMOA crearPedidoConsumerMOA;
         private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
         private readonly IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA;
+        private readonly IVendedorService vendedorService;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
@@ -66,7 +72,7 @@ namespace SustitucionMOAUtils.Services
             IObtenerMaterialesSolpConsumerMOA obtenerMaterialesSolpConsumerMOA,
             ICrearPedidoConsumerMOA crearPedidoConsumerMOA,
             IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
-            IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA)
+            IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA, IVendedorService vendedorService)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -80,6 +86,10 @@ namespace SustitucionMOAUtils.Services
             this.crearPedidoConsumerMOA = crearPedidoConsumerMOA;
             this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
             this.obtenerContratoSolpConsumerMOA = obtenerContratoSolpConsumerMOA;
+            this.vendedorService = vendedorService;
+
+
+
         }
 
 
@@ -489,16 +499,16 @@ namespace SustitucionMOAUtils.Services
             return solpEntity;
         }
 
-        private string ObtenerRutaArchivos(int solpId)
+        private string ObtenerRutaArchivos(int id, string path)
         {
-            return string.Format("{0}/Solp_{1}", rutaArchivosCompras, solpId);
+            return $"{rutaArchivosCompras}/{path}_{id}";
         }
 
         private Pliego GuardarEspecificacionesTecnicasPliego(SolpDto solp, Solp solpEntity, Pliego pliegoEntity)
         {
-            var rutaArchivo = string.Concat(ObtenerRutaArchivos(solpEntity.Id), "/", FileKeys.EspecificacionesTecnicasPliego, ".txt");
+            var rutaArchivo = string.Concat(ObtenerRutaArchivos(solpEntity.Id, "Solp"), "/", FileKeys.EspecificacionesTecnicasPliego, ".txt");
 
-            Directory.CreateDirectory(ObtenerRutaArchivos(solpEntity.Id));
+            Directory.CreateDirectory(ObtenerRutaArchivos(solpEntity.Id, "Solp"));
             File.WriteAllText(rutaArchivo, solp.EspecificacionesTecnicas);
 
             var archivosEspecificacionesTecnicasPliego = pliegoEntity.Archivos.FirstOrDefault(x => x.FileKey == FileKeys.EspecificacionesTecnicasPliego);
@@ -518,7 +528,7 @@ namespace SustitucionMOAUtils.Services
 
         private SolpDto GuardarAdjuntosSolp(SolpDto solp, HttpFileCollectionBase files, Pliego pliego)
         {
-            var ruta = ObtenerRutaArchivos(solp.Id.Value);
+            var ruta = ObtenerRutaArchivos(solp.Id.Value, "Solp");
 
             var filesEspecificaciones = files.GetMultiple("fileEspecificaciones");
             for (int i = 0; i < filesEspecificaciones.Count; i++)
@@ -1979,7 +1989,7 @@ namespace SustitucionMOAUtils.Services
 
                         solp.Posiciones.Add(posicionEntity);
 
-                        if (solp.Id == 0 && nuevaSolp)
+                        if (solp.Id == 0 || nuevaSolp)
                             repositorio.Agregar(solp);
                     }
                     catch (Exception e)
@@ -2187,6 +2197,15 @@ namespace SustitucionMOAUtils.Services
             return todasLasSolp;
         }
 
+        public ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp)
+        {
+            var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp));
+            if (todasLasPO != null && todasLasPO.Count() > 0)
+            {
+                todasLasPO.FirstOrDefault().ItemsTotales = todasLasPO.ItemsTotales;
+            }
+            return todasLasPO;
+        }
 
 
         private SolpSAPDto ConvertirSOLPSAP(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas)
@@ -2651,36 +2670,825 @@ namespace SustitucionMOAUtils.Services
         }
         public List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones)
         {
-           var contratosParaAsociar = new List<AsociarContratoDto>();
+            var contratosParaAsociar = new List<AsociarContratoDto>();
             foreach (var p in posiciones)
             {
                 if (p.FechaEntregaServicio.HasValue && p.CodigoMaterialSap != null && !string.IsNullOrEmpty(p.CodigoMaterialSap.Codigo))
                 {
-                  var datosPosicion =  AutocompleteMaterialSolp(p.CodigoMaterialSap.Codigo, p.Centro.Id);
-                  var contratos = ListarFuenteAprovisionamiento(p.FechaEntregaServicio.Value.ToString("yyyy-MM-dd"), p.CodigoMaterialSap.Codigo.Remove(0, 10), p.Centro.Codigo);
-                  var asociado = new AsociarContratoDto { 
-                      Indice = p.Indice, 
-                      Tarea = datosPosicion != null && datosPosicion.Count > 0 ? 
-                      datosPosicion[0].Descripcion : p.Tarea, 
-                      Codigo = p.CodigoMaterialSap.Codigo, 
-                      Centro = p.Centro.Codigo, 
-                      ContratoMarco = p.NumeroContratoSuperior, 
-                      Proveedor = p.ProveedorFijo, 
-                      ContratosAsociados = contratos,
-                  };                  
-                  contratosParaAsociar.Add(asociado);
+                    var datosPosicion = AutocompleteMaterialSolp(p.CodigoMaterialSap.Codigo, p.Centro.Id);
+                    var contratos = ListarFuenteAprovisionamiento(p.FechaEntregaServicio.Value.ToString("yyyy-MM-dd"), p.CodigoMaterialSap.Codigo.Remove(0, 10), p.Centro.Codigo);
+                    var asociado = new AsociarContratoDto
+                    {
+                        Indice = p.Indice,
+                        Tarea = datosPosicion != null && datosPosicion.Count > 0 ?
+                        datosPosicion[0].Descripcion : p.Tarea,
+                        Codigo = p.CodigoMaterialSap.Codigo,
+                        Centro = p.Centro.Codigo,
+                        ContratoMarco = p.NumeroContratoSuperior,
+                        Proveedor = p.ProveedorFijo,
+                        ContratosAsociados = contratos,
+                    };
+                    contratosParaAsociar.Add(asociado);
                 }
             }
             return contratosParaAsociar.Where(x => x.ContratosAsociados != null && x.ContratosAsociados.Count > 0).ToList();
         }
 
         public SolpCompraDto ObtenerSolpCompras(int id)
-        {            
+        {
             var solp = repositorio.ObtenerConsultaEscalar(new ObtenerSolpCompras(id));
             return solp;
-        }       
-     
+        }
 
+        public RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos)
+        {
+            try
+            {
+
+                var solp = new SolpDto
+                {
+                    Id = peticionDeOferta.SolpId
+                };
+
+                var respuestaGuardarSOLP = new RespuestaGuardarSOLP
+                {
+                    Solp = solp
+                };
+
+                if (peticionDeOferta.UsuarioIds == null || peticionDeOferta.UsuarioIds.Count == 0)
+                {
+                    throw new ValidationCustomException("El campo Proveedor es obligatorio");
+                }
+                if (peticionDeOferta.PosIds == null || peticionDeOferta.PosIds.Count == 0)
+                {
+                    throw new ValidationCustomException("Debe seleccionar al menos una posición");
+                }
+
+                var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
+                var posicionesPeticion = posiciones.Select(x => new PeticionDeOfertaSolpPosicion { SolpPosicion_Id = x.Id }).ToList();
+                var fechaOferta = posiciones.First().Solp.Pliego?.FechaHoraEntrega;
+                var usuarios = repositorio.Listar<Usuario>();
+                var peticion = new PeticionDeOferta()
+                {
+                    UsuarioCreador_Id = peticionDeOferta.UsuarioActual.Id,
+                    Usuario = usuarios.Where(x => x.Id == peticionDeOferta.UsuarioActual.Id).FirstOrDefault(),
+                    FechaCreacion = DateTime.Now,
+                    Solp_Id = peticionDeOferta.SolpId,
+                    Observaciones = peticionDeOferta.Observacion ?? "",
+                    Posiciones = posicionesPeticion,
+                    PlazoDeOferta = fechaOferta ?? posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
+                    Usuarios = usuarios.Where(x => peticionDeOferta.UsuarioIds.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList()
+                };
+
+                peticion = repositorio.Agregar(peticion);
+                repositorio.GuardarCambios();
+
+                if (adjuntos != null && adjuntos.Count > 0)
+                {
+                    GuardarArchivosPeticionDeOferta(peticion, adjuntos);
+                }
+                repositorio.GuardarCambios();
+
+                respuestaGuardarSOLP.IdEntidad = peticion.Id;
+
+                EnviarMailPeticionDeOferta(peticion, peticion.Usuarios.ToList());
+
+                return respuestaGuardarSOLP;
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+
+        private void GuardarArchivosPeticionDeOferta(PeticionDeOferta peticion, HttpFileCollectionBase files)
+        {
+            var ruta = ObtenerRutaArchivos(peticion.Id, FileKeys.PeticionDeOferta);
+
+
+            var filesEspecificaciones = files.GetMultiple("filePeticionDeOferta");
+            for (int i = 0; i < filesEspecificaciones.Count; i++)
+            {
+                var file = filesEspecificaciones[i];
+                var rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+
+                Directory.CreateDirectory(ruta);
+
+                int copyNro = 1;
+                while (File.Exists(rutaArchivoRename))
+                {
+                    rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName($"({copyNro}) " + file.FileName));
+                    copyNro += 1;
+                }
+
+                peticion.Archivos.Add(new PeticionDeOfertaArchivo
+                {
+                    Archivo = new Archivo
+                    {
+                        FileKey = FileKeys.PeticionDeOferta,
+                        Ruta = rutaArchivoRename
+                    },
+                    Fecha = DateTime.Now,
+                });
+
+                file.SaveAs(rutaArchivoRename);
+            }
+
+        }
+
+        public List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? usuarioId)
+        {
+            List<LegajoDto> legajo = new List<LegajoDto>();
+            var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
+            var middleFileName = peticion.Solp.NroSolp == null ? (peticion.Solp.Pliego.NombreObra == null ? "xxxx" : peticion.Solp.Pliego.NombreObra) : peticion.Solp.NroSolp;
+            var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
+
+            //invento registro con id de archivo 0 para bajar el pliego
+            legajo.Add(new LegajoDto
+            {
+                ArchivoId = 0,
+                Observacion = pdfFilename,
+                PeticionDeOfertaId = peticionDeOfertaId,
+                SolpId = peticion.Solp_Id,
+                Fecha = peticion.Solp.FechaCreacion,
+                FechaFormateado = peticion.Solp.FechaCreacion.ToString("dd/MM/yyyy")
+            });
+            // buscar archivos de la solp
+            if (peticion.Solp.Pliego != null && peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+            {
+
+                foreach (var archivoSubido in peticion.Solp.Pliego.Archivos)
+                {
+                    if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                    {
+                        string fileName = Path.GetFileName(archivoSubido.Ruta);
+                        legajo.Add(new LegajoDto
+                        {
+                            ArchivoId = archivoSubido.Id,
+                            Observacion = fileName,
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = peticion.Solp_Id,
+                            Fecha = peticion.Solp.FechaCreacion,
+                            FechaFormateado = peticion.Solp.FechaCreacion.ToString("dd/MM/yyyy")
+                        });
+                    }
+                }
+            }
+
+
+            //buscar archivos de la peticion
+            foreach (var item in peticion.Archivos)
+            {
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = item.Archivo.Id,
+                    Observacion = item.Archivo.ObtenerNombre(item.Archivo.Ruta),
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = peticion.Solp_Id,
+                    Fecha = item.Fecha,
+                    FechaFormateado = item.Fecha.ToString("dd/MM/yyyy")
+                });
+            }
+
+            // pdf peticion de oferta materiales
+            if (peticion.Solp.Posiciones.Where(a => a.TipoPosicion_Id != null).FirstOrDefault()?.TipoPosicion.Codigo == "MATERIALES")
+            {
+                foreach (var peticionUsuario in peticion.Usuarios)
+                {
+                    var pdfPOUsuario = $"PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
+                    legajo.Add(new LegajoDto
+                    {
+                        ArchivoId = peticionUsuario.Id * -1,//lo ponemos en negtivo para difernciarlo de los ids de archivos
+                        Observacion = pdfPOUsuario,
+                        PeticionDeOfertaId = peticionDeOfertaId,
+                        SolpId = peticion.Solp_Id,
+                        Fecha = peticion.FechaCreacion,
+                        FechaFormateado = peticion.FechaCreacion.ToString("dd/MM/yyyy")
+                    });
+                }
+            }
+
+            var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Select(u => u.Id).ToList();
+            var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
+
+            foreach (var circular in circulares)
+            {
+                //buscar archivos de la circular
+                foreach (var item in circular.Archivos)
+                {
+                    legajo.Add(new LegajoDto
+                    {
+                        ArchivoId = item.Id,
+                        Observacion = item.ObtenerNombre(item.Ruta),
+                        PeticionDeOfertaId = peticionDeOfertaId,
+                        SolpId = peticion.Solp_Id,
+                        Fecha = circular.FechaCreacion,
+                        FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy")
+                    });
+                }
+                //buscar comentarios de la circular
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = null,
+                    Observacion = circular.Observaciones,
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = peticion.Solp_Id,
+                    Fecha = circular.FechaCreacion,
+                    FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy")
+                });
+                //buscar cambios de fechas de la circular
+                if (circular.RequiereCambioDeFechas == true)
+                {
+                    if (circular.PlazoDeOferta.HasValue)
+                    {
+                        legajo.Add(new LegajoDto
+                        {
+                            ArchivoId = null,
+                            Observacion = $"Nuevo plazo de oferta: {circular.PlazoDeOferta.Value.ToString("dd/MM/yyyy")}",
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = peticion.Solp_Id,
+                            Fecha = circular.FechaCreacion,
+                            FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy")
+                        });
+                    }
+                    if (circular.FechaDeEntrega.HasValue)
+                    {
+                        legajo.Add(new LegajoDto
+                        {
+                            ArchivoId = null,
+                            Observacion = $"Nueva fecha de entrega: {circular.FechaDeEntrega.Value.ToString("dd/MM/yyyy")}",
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = peticion.Solp_Id,
+                            Fecha = circular.FechaCreacion,
+                            FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy")
+                        });
+                    }
+                }
+            }
+
+
+            return legajo.OrderByDescending(x => x.Fecha).ToList();
+        }
+
+        public Resultado GuardarAdjuntosPeticionDeOferta(int idPeticion, HttpFileCollectionBase files, UsuarioDto usuarioDto)
+        {
+            var ruta = "C:\\adjuntospliego";//ObtenerRutaArchivosPeticionDeOferta(idPeticion);
+            var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                var file = files[i];
+                var rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+                Directory.CreateDirectory(ruta);
+
+                int copyNro = 1;
+                while (File.Exists(rutaArchivoRename))
+                {
+                    rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName($"({copyNro}) " + file.FileName));
+                    copyNro += 1;
+                }
+
+
+                peticion.Archivos.Add(new PeticionDeOfertaArchivo
+                {
+                    Archivo = new Archivo
+                    {
+                        FileKey = FileKeys.PeticionDeOferta,
+                        Ruta = rutaArchivoRename
+                    },
+                    Fecha = DateTime.Now,
+                });
+
+                file.SaveAs(rutaArchivoRename);
+            }
+
+
+            repositorio.GuardarCambios();
+
+            return new Resultado();
+        }
+
+        public string DescargarLegajo(int idPeticion, string pathBase)
+        {
+            var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
+
+            var middleFileName = peticion.Solp.NroSolp == null ? (peticion.Solp.Pliego.NombreObra == null ? "xxxx" : peticion.Solp.Pliego.NombreObra) : peticion.Solp.NroSolp;
+            var pliegoFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
+            var pdfFilePath = $"{pathBase}/{pliegoFilename}";
+            File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(peticion.Solp_Id));
+
+
+            var zipFilename = $"PO-{peticion.Id}-{peticion.FechaCreacion.ToString("yyyyMMdd")}.zip";
+            var filePath = $"{pathBase}/{zipFilename}";
+
+            using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
+            {
+                using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                {
+                    //solp
+                    if (peticion.Solp.Pliego.Archivos != null)
+                    {
+                        foreach (var archivoSubido in peticion.Solp.Pliego.Archivos)
+                        {
+                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                            {
+                                string fileName = Path.GetFileName(archivoSubido.Ruta);
+                                archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
+                            }
+                        }
+                    }
+                    //peticion de oferta
+                    if (peticion.Archivos != null)
+                    {
+                        foreach (var archivoSubido in peticion.Archivos)
+                        {
+                            if (File.Exists(archivoSubido.Archivo.Ruta))
+                            {
+                                string fileName = Path.GetFileName(archivoSubido.Archivo.Ruta);
+                                archivo.CreateEntryFromFile(archivoSubido.Archivo.Ruta, fileName);
+                            }
+                        }
+                    }
+
+                    // pdf peticion de oferta materiales
+                    if (peticion.Solp.Posiciones.Where(a => a.TipoPosicion_Id != null).FirstOrDefault()?.TipoPosicion.Codigo == "MATERIALES")
+                    {
+                        foreach (var peticionUsuario in peticion.Usuarios)
+                        {
+                            string codigoProveedor = peticionUsuario.Usuario.ObtenerProveedor().CodigoProveedor;
+                            var pdf = GenerarPDFPeticionDeOferta(peticion, codigoProveedor);
+
+                            var pdfFilePathUsuario = $"{pathBase}/PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
+                            File.WriteAllBytes(pdfFilePathUsuario, pdf);
+                            archivo.CreateEntryFromFile(pdfFilePathUsuario, $"PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf");
+
+                        }
+                    }
+                    //circular (cuando este el modulo)
+
+                    //adjuntos del proveedor (preguntar?)
+
+
+                    //agrega pliego
+                    archivo.CreateEntryFromFile(pdfFilePath, pliegoFilename);
+
+                }
+            }
+
+            return filePath;
+
+        }
+
+        public byte[] GenerarPDFPeticionDeOferta(PeticionDeOferta peticion, string codigoProveedor)
+        {
+
+            try
+            {
+
+                using (var stream = new MemoryStream())
+                {
+                    using (var document = new Document(PageSize.A4, 10f, 10f, 10f, 100f))
+                    {
+                        string templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PeticionDeOfertaTemplate.html");
+
+                        var templateString = System.IO.File.ReadAllText(templateFilePath);
+
+                        var xHtml = templateString;
+                        xHtml = CompletarHtml(xHtml, peticion, codigoProveedor);
+
+                        var PdfWriter = iTextSharp.text.pdf.PdfWriter.GetInstance(document, stream);
+                        document.Open();
+
+                        PdfFooter PageEventHandler = new PdfFooter();
+                        PdfWriter.PageEvent = PageEventHandler;
+
+                        var tagProcessors = (DefaultTagProcessorFactory)Tags.GetHtmlTagProcessorFactory();
+                        tagProcessors.RemoveProcessor(HTML.Tag.IMG); // remove the default processor
+                        tagProcessors.AddProcessor(HTML.Tag.IMG, new CustomImageTagProcessor()); // use our new processor
+
+                        var tagProcessorFactory = Tags.GetHtmlTagProcessorFactory();
+
+                        var htmlPipelineContext = new HtmlPipelineContext(null);
+                        htmlPipelineContext.SetTagFactory(tagProcessorFactory);
+
+                        var pdfWriterPipeline = new PdfWriterPipeline(document, PdfWriter);
+
+                        // get an ICssResolver and add the custom CSS
+                        var cssResolver = XMLWorkerHelper.GetInstance().GetDefaultCssResolver(true);
+                        var hpc = new HtmlPipelineContext(new CssAppliersImpl(new XMLWorkerFontProvider()));
+                        hpc.SetAcceptUnknown(true).AutoBookmark(true).SetTagFactory(tagProcessors); // inject the tagProcessors
+
+                        var htmlPipeline = new HtmlPipeline(hpc, new PdfWriterPipeline(document, PdfWriter));
+                        var pipeline = new CssResolverPipeline(cssResolver, htmlPipeline);
+
+                        var worker = new XMLWorker(pipeline, true);
+
+                        var charset = Encoding.UTF8;
+
+                        var xmlParser = new XMLParser(true, worker, charset);
+                        xmlParser.Parse(new StringReader(xHtml));
+                        document.Close();
+                        byte[] bytes = stream.ToArray();
+                        stream.Close();
+                        return bytes;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        private string CompletarHtml(string xHtml, PeticionDeOferta peticion, string codigoProveedor)
+        {
+
+            var stylesHtml = @"<style>h1{color:#000;font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-decoration:none;font-size:12px}.s1{color:#000;font-family:'Times New Roman',serif;font-style:italic;font-weight:400;text-decoration:none;font-size:10px}.s2{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:700;text-decoration:none;font-size:8px}.s3{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:9px}h2{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:700;text-decoration:none;font-size:8px}p{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:7px;margin:0}table,tbody{vertical-align:top;overflow:visible}.peticion{font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-decoration:none;font-size:10px;border:.1px solid #000;border-collapse:collapse}.s4{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:700;text-decoration:none;font-size:9px}.s5{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:8px}.s6{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:700;text-decoration:none;font-size:18px}.s7{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:9px}.s8{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:9px}.s9{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:9px}table,tbody{vertical-align:top;overflow:visible}.border{border:.1px solid #000;border-collapse:collapse}.s6{color:#000;font-family:Arial,sans-serif;font-style:italic;text-decoration:none;font-size:7px}.cls_003{font-family:Arial,serif;font-size:12.1px;color:#fff;font-weight:700;font-style:normal;text-decoration:none;background-color:#000;text-align:center;top:-59px;position:relative;left:-1px;width:102%}.cls_002{font-family:Arial,serif;font-size:14.1px;color:#000;font-weight:700;font-style:italic;text-decoration:none}.noborder{border-collapse:collapse;border:1px solid #fff}.cls_005{font-family:Arial,serif;font-size:8.1px;color:#000;font-weight:700;font-style:normal;text-decoration:none}.cls_006{font-family:Arial,serif;font-size:8px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.cls_008{font-family:Arial,serif;font-size:10px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.cls_009{font-family:Arial,serif;font-size:11.1px;color:#000;font-weight:700;font-style:normal;text-decoration:none;text-align:center}.cls_011{font-family:Courier New,serif;font-size:10.1px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.espacio{height:10px;display:block}.w33{width:30%;display:inline-block}.cls_012{font-family:Arial,serif;font-size:6px;text-align:justify}</style>";
+            var datosProveedor = new VendedorDetalleWSMOAResponse() { cabeceras = null };
+            try
+            {
+                datosProveedor = vendedorService.GetDatosFiscales(codigoProveedor, codigoProveedor);
+            }
+            catch (Exception e)
+            {
+
+                Logger.Log.Error(e);
+            }
+
+            var posiciones = "";
+            try
+            {
+
+                foreach (var peti in peticion.Posiciones)
+                {
+                    var item = peti.SolpPosicion;
+                    posiciones +=
+                    $"<tr class='border'> <td style='font-size: 8px;'>{item.Indice} </td> " +
+                    $"<td style='font-size: 8px;'> {item.MaterialSolp.Codigo} </td>" +
+                    $"<td style='font-size: 8px;'> {item.MaterialSolp.Descripcion} </td>" +
+                    $"<td style='font-size: 8px;'>{item.Cantidad}</td>" +
+                    $"<td style='font-size: 8px;'>{item.Unidad.Descripcion}</td>" +
+                    $"<td style='font-size: 8px;'>{peticion.PlazoDeOferta.ToString("dd.MM.yyyy")}</td>" +
+                    $"<td style='font-size: 8px;'>{peticion.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td> </tr>";
+                    posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{item.MaterialSolp.Descripcion}</td></tr>";
+
+                }
+
+                var posicion = peticion.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.Id).FirstOrDefault();
+                var localidad = repositorio.Obtener<Localidad>(x => x.ProvinciaId == posicion.ProvinciaId);
+                var centro = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
+                var centroPlanta = repositorio.Obtener<TablaSap>(x => x.CodigoSap == posicion.Centro.CodigoSap);
+
+                var lugarEntrega = $"{posicion.NombreEntrega}, {posicion.CalleEntrega} - ({posicion.CpEntrega}) {localidad?.Nombre ?? ""} - {posicion.Provincia?.Nombre ?? ""}";
+
+                xHtml = string.Format(xHtml, stylesHtml,
+                    peticion.Id,
+                    datosProveedor.cabeceras?.FirstOrDefault().cuit.Substring(2, 8),
+                    datosProveedor.cabeceras?.FirstOrDefault().descripcion,
+                    datosProveedor.cabeceras?.FirstOrDefault().calleFiscal,
+                    $"({datosProveedor.cabeceras?.FirstOrDefault().cpFiscal}) {datosProveedor.cabeceras?.FirstOrDefault().locaFiscal}",
+                    datosProveedor.cabeceras?.FirstOrDefault().provFiscal,
+                    "Argentina",
+                    peticion.PlazoDeOferta.ToString("dd.MM.yyyy"),
+                    peticion.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy"),
+                    lugarEntrega,
+                    peticion.FechaCreacion.ToString("dd.MM.yyyy"),
+                    "San Lorenzo",
+                    centro.CodigoSap,
+                    peticion.Usuario.UsuarioSap,
+                    posiciones
+                    );
+
+                return xHtml;
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+        public void EnviarMailPeticionDeOferta(PeticionDeOferta peticion, List<PeticionDeOfertaUsuario> usuarios)
+        {
+            var archs = ObtenerArchivosPeticionDeOferta(peticion);
+            var copia = new List<string> { peticion.Usuario.Mail };
+            var asunto = "";
+            if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
+            {
+                asunto = "Prueba: ";
+            }
+            foreach (var prov in usuarios)
+            {
+                var enviarA = new List<string> { prov.Usuario.Mail };
+                asunto += $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial()}";
+                if (peticion.Posiciones.Select(x => x.SolpPosicion).Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
+                {
+                    var pdf = GenerarPDFPeticionDeOferta(peticion, prov.Usuario.ObtenerCodigoProveedor());
+                    if (archs.ContainsKey("Peticion de Oferta.pdf"))
+                        archs.Remove("Peticion de Oferta.pdf");
+                    archs.Add("Peticion de Oferta.pdf", pdf);
+                }
+                EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailPeticionDeOferta(peticion), null, null, null, null, archs);
+            }
+        }
+
+        private Dictionary<string, byte[]> ObtenerArchivosPeticionDeOferta(PeticionDeOferta peticion)
+        {
+            var archs = new Dictionary<string, byte[]>();
+            foreach (var p in peticion.Archivos)
+            {
+                WebClient wc = new WebClient();
+                byte[] b = wc.DownloadData(p.Archivo.Ruta);
+                archs.Add(p.Archivo.ObtenerNombre(), b);
+            }
+            return archs;
+        }
+
+        private AlternateView CuerpoMailPeticionDeOferta(PeticionDeOferta peticion)
+        {
+            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+            string htmlBody = "";
+            htmlBody += $"En el presente mail, se informa la nueva PO {peticion.Id} generada con Molinos Agro S.A <br />";
+            if (!string.IsNullOrEmpty(peticion.Observaciones))
+            {
+                htmlBody += $"Observaciones: {peticion.Observaciones} <br />";
+            }
+
+            htmlBody += "En caso de tener alguna consulta ingresar www.moaoperaciones.com.ar " +
+                "<br/><br/>Saludos Cordiales<br/>" +
+                "Molinos Agro S.A. <br/><br/> " +
+                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
+        }
+
+        public Pdf GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario)
+        {
+            var po = repositorio.Obtener<PeticionDeOfertaUsuario>(idPeticionDeOfertaUsuario);
+            var pdf = GenerarPDFPeticionDeOferta(po.PeticionDeOferta, po.Usuario.ObtenerProveedor().CodigoProveedor);
+            return new Pdf { data = pdf, name = "PO" + po.Usuario.ObtenerProveedor().CUIT + ".pdf" };
+        }
+
+        public PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId)
+        {
+
+            var usuarios = new List<PeticionDeOfertaUsarioDto>();
+            var peticion = new PeticionDeOfertaDto();
+            var peticionEntidad = repositorio.Obtener<PeticionDeOferta>(x => x.Id == peticionId);
+
+            foreach (var u in peticionEntidad.Usuarios)
+            {
+                var usuario = new PeticionDeOfertaUsarioDto()
+                {
+                    RazonSocial = u.Usuario.ObtenerRazonSocial(),
+                    UsuarioId = u.Id,
+                    Id = u.Usuario_Id,
+                    CUIT = u.Usuario.ObtenerProveedor().CUIT,
+                    Mail = u.Usuario.Mail
+                };
+                usuarios.Add(usuario);
+            }
+            peticion.Usuarios = usuarios;
+            peticion.Id = peticionEntidad.Id;
+            var fechaEntrega = peticionEntidad.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).FirstOrDefault().FechaEntregaServicio;
+            peticion.FechaEntregaFormateado = fechaEntrega != null ?
+                fechaEntrega.Value.ToString("yyyy-MM-dd") : "";
+            return peticion;
+        }
+
+        public RespuestaGuardarSOLP GrabarCircular(CircularDto circularDto, HttpFileCollectionBase adjuntos)
+        {
+            try
+            {
+
+                ValidarCircular(circularDto);
+
+                var peticion = repositorio.Listar<PeticionDeOfertaUsuario>();
+                var usuarios = repositorio.Listar<Usuario>();
+                var circular = new Circular()
+                {
+                    UsuarioCreador_Id = circularDto.UsuarioId,
+                    Usuario = usuarios.Where(x => x.Id == circularDto.UsuarioId).FirstOrDefault(),
+                    FechaCreacion = DateTime.Now,
+                    Observaciones = circularDto.Observacion,
+                    PlazoDeOferta = circularDto.PlazoDeOferta,
+                    FechaDeEntrega = circularDto.FechaEntrega,
+                    RequiereCambioDeFechas = circularDto.RequiereCambioDeFecha,
+                    PeticionDeOfertaUsuarios = peticion.Where(x => circularDto.UsuarioIds.Contains(x.Id)).Select(a => new CircularPeticionDeOfertaUsuario { PeticionDeOfertaUsuario_Id = a.Id }).ToList()
+                };
+
+                circular = repositorio.Agregar(circular);
+                repositorio.GuardarCambios();
+
+                if (adjuntos != null && adjuntos.Count > 0)
+                {
+                    GuardarArchivosCircular(circular, adjuntos);
+                }
+                repositorio.GuardarCambios();
+
+                var solp = new SolpDto
+                {
+                    Id = circular.Id
+                };
+
+                var respuestaGuardarSOLP = new RespuestaGuardarSOLP
+                {
+                    Solp = solp
+                };
+                respuestaGuardarSOLP.IdEntidad = circular.PeticionDeOfertaUsuarios.FirstOrDefault().PeticionDeOfertaUsuario.PeticionDeOferta_Id;
+                EnviarMailCircular(circular);
+                return respuestaGuardarSOLP;
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+
+        private void ValidarCircular(CircularDto circularDto)
+        {
+            if (string.IsNullOrEmpty(circularDto.Observacion))
+            {
+                throw new ValidationCustomException("El campo Observacion es obligatorio");
+            }
+            if (circularDto.RequiereCambioDeFecha == true && circularDto.FechaEntrega == null)
+            {
+                throw new ValidationCustomException("Debe completar la Fecha de entrega");
+            }
+            if (circularDto.RequiereCambioDeFecha == true && circularDto.PlazoDeOferta == null)
+            {
+                throw new ValidationCustomException("Debe completar el Plazo de oferta");
+            }
+            if (circularDto.UsuarioIds == null || circularDto.UsuarioIds.Count == 0)
+            {
+                throw new ValidationCustomException("Debe seleccionar al menos un proveedor");
+            }
+        }
+
+
+        private void GuardarArchivosCircular(Circular circular, HttpFileCollectionBase files)
+        {
+            var ruta = ObtenerRutaArchivos(circular.Id, FileKeys.Circular);
+
+
+            var filesEspecificaciones = files.GetMultiple("fileCircular");
+            for (int i = 0; i < filesEspecificaciones.Count; i++)
+            {
+                var file = filesEspecificaciones[i];
+                var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+                var rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+
+                Directory.CreateDirectory(ruta);
+
+                int copyNro = 1;
+                while (File.Exists(rutaArchivoRename))
+                {
+                    rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName($"({copyNro}) " + file.FileName));
+                    copyNro += 1;
+                }
+
+                circular.Archivos.Add(new Archivo
+                {
+                    FileKey = FileKeys.PeticionDeOferta,
+                    Ruta = rutaArchivoRename
+
+                });
+
+                file.SaveAs(rutaArchivoRename);
+            }
+
+        }
+
+        public void EnviarMailCircular(Circular circular)
+        {
+            var archs = ObtenerArchivosCircular(circular);
+            var asunto = "";
+            if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
+            {
+                asunto = "Prueba - ";
+            }
+            var copia = new List<string> { circular.Usuario.Mail };
+            foreach (var prov in circular.PeticionDeOfertaUsuarios)
+            {
+                var enviarA = new List<string> { prov.PeticionDeOfertaUsuario.Usuario.Mail };
+                asunto += $"Nueva circular con PO {prov.PeticionDeOfertaUsuario.PeticionDeOferta_Id} - {prov.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial()}";
+
+                EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailCircular(prov), null, null, null, null, archs);
+            }
+        }
+
+
+        private Dictionary<string, byte[]> ObtenerArchivosCircular(Circular circular)
+        {
+            var archs = new Dictionary<string, byte[]>();
+            foreach (var p in circular.Archivos)
+            {
+                WebClient wc = new WebClient();
+                byte[] b = wc.DownloadData(p.Ruta);
+                archs.Add(p.ObtenerNombre(), b);
+            }
+            return archs;
+        }
+
+        private AlternateView CuerpoMailCircular(CircularPeticionDeOfertaUsuario circular)
+        {
+            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+            string htmlBody = "";
+
+            htmlBody += $"En el presente mail, se informa la nueva circular con PO {circular.PeticionDeOfertaUsuario.PeticionDeOferta_Id}" +
+                $" para el proveedor {circular.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial()}" +
+                $" ({circular.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}) generada con Molinos Agro S.A <br />";
+            if (!string.IsNullOrEmpty(circular.Circular.Observaciones))
+            {
+                htmlBody += $"Observaciones: {circular.Circular.Observaciones} <br />";
+            }
+
+            htmlBody += "En caso de tener alguna consulta ingresar www.moaoperaciones.com.ar " +
+                "<br/><br/>Saludos Cordiales<br/>" +
+                "Molinos Agro S.A. <br/><br/> " +
+                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
+        }
+
+        public RespuestaGuardarSOLP GrabarProveedoresEnPeticionDeOferta(List<int> usuariosId, int peticionId)
+        {
+            try
+            {
+                var solp = new SolpDto
+                {
+                    Id = peticionId
+                };
+                var respuestaGuardarSOLP = new RespuestaGuardarSOLP
+                {
+                    Solp = solp
+                };
+                var usuarios = repositorio.Listar<Usuario>();
+
+                var peticion = repositorio.Obtener<PeticionDeOferta>(x => x.Id == peticionId);
+                var nuevosUsuarios = usuarios.Where(x => usuariosId.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id, PeticionDeOferta_Id = peticion.Id, Usuario = usuarios.Where(y => y.Id == a.Id).FirstOrDefault(), PeticionDeOferta = peticion }).ToList();
+                peticion.Usuarios = nuevosUsuarios;
+                repositorio.GuardarCambios();
+                respuestaGuardarSOLP.IdEntidad = peticion.Id;
+                EnviarMailPeticionDeOferta(peticion, nuevosUsuarios);
+                return respuestaGuardarSOLP;
+
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        public RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(int AdjudicacionId  )
+        {
+            //variables para ver a que request accedemos
+            //var crearPedidoConsumer = crearPedido(solpEntity);
+            //var crearSolpComsumer = crearSolp(solpEntity);
+            //var modificarSolpConsumer = modificarSolp(solpEntity);
+            var AdjudicacionEntity = repositorio.Obtener<Adjudicacion>(AdjudicacionId);
+            var respuesta = new RespuestaCrearOrdenDeCompra();
+
+
+
+            var resultadoCrearPedido = crearPedidoConsumerMOA.Request(AdjudicacionEntity);
+
+            respuesta.Errores = new List<string>();
+            respuesta.NumeroPedido = resultadoCrearPedido.NumeroPedido;
+            respuesta.NumeroSolp = AdjudicacionEntity.Solp.NroSolp;
+            foreach (var error in resultadoCrearPedido.Errores.Where(x => x.Tipo == "E"))
+            {
+                var mensaje = error.Mensaje.Trim();
+                respuesta.Errores.Add(mensaje);
+            }
+
+            if (respuesta.Errores.Count == 0)
+            {
+                //proveedorConPosiciones.Value.ForEach(posicion => posicion.NumeroPedido = resultadoCrearPedido.NumeroPedido);
+                //repositorio.GuardarCambios();
+
+                respuesta.Mensaje = "OK";
+            }
+
+
+
+
+            return respuesta;
+        }
     }
 
     public static class SolpTemplateKeys

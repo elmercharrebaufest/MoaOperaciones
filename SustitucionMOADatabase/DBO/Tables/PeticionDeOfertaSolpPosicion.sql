@@ -1,11 +1,8 @@
 ﻿CREATE TABLE [dbo].[PeticionDeOfertaSolpPosicion](
+	[Id] INT NOT NULL IDENTITY, 
 	[PeticionDeOferta_Id] [int] NOT NULL,
 	[SolpPosicion_Id] [int] NOT NULL,
- CONSTRAINT [PK_dbo.PeticionDeOfertaSolpPosicion] PRIMARY KEY CLUSTERED 
-(
-	[PeticionDeOferta_Id] ASC,
-	[SolpPosicion_Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+ CONSTRAINT [PK_PeticionDeOfertaSolpPosicion] PRIMARY KEY ([Id]),
 ) ON [PRIMARY]
 GO
 

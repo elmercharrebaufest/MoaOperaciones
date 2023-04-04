@@ -1,0 +1,327 @@
+
+<div class="row titleSection">
+    <div class="col-xs-12 col-sm-10 "> <strong>Cotización {{solpCompraDto.TipoPosicionCodigo}} | SOLP #{{solpCompraDto.NroSolp}}</strong></div>
+</div>
+
+<div class="content-wraper alinearAlturaMenuDashboard row1 myRow firstSection">
+    <div class="rounded shadow">
+        <section class="container-fluid clearfix">
+            <div>
+                <div>
+                    <div class="col-xs-12 col-md-12 headerCompras" style="margin-left: 8px;" #headerCompras>
+                        <strong>Posiciones</strong>
+                    </div>
+                   
+                    <div class="row1">
+                        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="solpCompraDto.PosicionCompras" dataKey="Id">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th *ngIf="esTipoMaterial" class="columna"></th>
+                                    <th *ngIf="esTipoServicio" style="width: 3em"></th>
+                                    <th class="columna">Pos.</th>
+                                    <th *ngIf="esTipoMaterial" class="columna">Código</th>
+                                    <th class="columna">Descripción</th>
+                                    <th class="columna">Centro</th>
+                                    <th style="font-size: 10px;">Almacén</th>
+                                    <th *ngIf="esTipoMaterial" style="font-size: 10px;">Texto de <br /> suministro</th>
+                                    <th *ngIf="esTipoMaterial" class="columna">Modelo</th>
+                                    <th class="columna">Grupo de compras</th>
+                                    <th *ngIf="esTipoMaterial" class="columna">Ctd.</th>
+                                    <th *ngIf="esTipoMaterial" class="columna">Um</th>
+                                    <th class="columna">Mon.</th>
+                                    <th class="columna">Fecha de entrega</th>
+                                    <th class="columna">Plazo de entrega (días)</th>
+                                    <th class="columna">Plazo de oferta</th>
+                                    <th class="columna">Tratada</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded" let-columns="columns">
+                                <tr>
+                                    <td *ngIf="esTipoMaterial">
+                                        <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="posicionCompra.Selected"></p-checkbox>
+                                    </td>
+                                    <td *ngIf="esTipoServicio">
+                                        <a href="#" [pRowToggler]="posicionCompra">
+                                            <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                        </a>
+                                    </td>
+                                    <td class="columna">{{posicionCompra.Indice}}</td>
+                                    <td *ngIf="esTipoMaterial" class="columna">{{posicionCompra.Codigo}}</td>
+                                    <td class="columna">{{posicionCompra.Tarea}}</td>
+                                    <td class="columna">{{posicionCompra.CentroComprasDescripcion}}</td>
+                                    <td class="columna">{{posicionCompra.AlmacenComprasDescripcion}}</td>
+                                    <td *ngIf="esTipoMaterial" class="columna">{{posicionCompra.TextoSuministro}}</td>
+                                    <td *ngIf="esTipoMaterial" class="columna">{{posicionCompra.Modelo}}</td>
+                                    <td class="columna">{{posicionCompra.GrupoComprasDescripcion}}</td>
+                                    <td *ngIf="esTipoMaterial" class="columna">{{posicionCompra.Cantidad}}</td>
+                                    <td *ngIf="esTipoMaterial" class="columna">{{posicionCompra.UnidadComprasDescripcion}}</td>
+                                    <td class="columna">{{posicionCompra.MonedaComprasDescripcion}}</td>
+                                    <td class="columna">{{posicionCompra.FechaEntregaServicio | customDateFormat | date :'d/M/yyyy' }}</td>
+                                    <td class="columna">{{posicionCompra.PlazoEntrega}}</td>
+                                    <td class="columna">{{posicionCompra.FechaOferta | customDateFormat | date :'d/M/yyyy'}}</td>
+                                    <td class="columna">{{posicionCompra.TieneCotizacion ? "Si":"No"}}</td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="rowexpansion" let-posicionCompra let-columns="columns">
+                                <tr>
+                                    <td [attr.colspan]="11">
+                                        <div class="col-sm-12 col-md-12 col-lg-12" style="font-size:16px;padding:20px">
+                                            <p-table [value]="posicionCompra.SubposicionesCompras">
+                                                <ng-template pTemplate="header">
+                                                    <tr>
+                                                        <th class="columna">Subposición</th>
+                                                        <th class="columna">Código</th>
+                                                        <th class="columna">Tarea a subcontratar</th>
+                                                        <th class="columna">Ctd.</th>
+                                                        <th class="columna">UM</th>
+                                                    </tr>
+                                                </ng-template>
+                                                <ng-template pTemplate="body" let-subposicionesCompras>
+                                                    <tr>
+                                                        <td class="columna">{{subposicionesCompras.Numero}}</td>
+                                                        <td class="columna">{{subposicionesCompras.Codigo}}</td>
+                                                        <td class="columna">{{subposicionesCompras.Tarea}}</td>
+                                                        <td class="columna">{{subposicionesCompras.Cantidad}}</td>
+                                                        <td class="columna">{{subposicionesCompras.UnidadComprasDescripcion}}</td>
+                                                    </tr>
+                                                </ng-template>
+                                            </p-table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+<div class="content-wraper alinearAlturaMenuDashboard row1 myRow firstSection">
+    <div class="rounded shadow">
+        <section class="container-fluid clearfix">
+            <div class="row">
+                <div class="col-xs-12 col-md-12 headerCompras" #headerCompras>
+                    <strong>Documentación</strong>
+                </div>
+
+                <div class="container-fluid">
+
+                    <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="inputCompras">
+                            <div class="row myRow" style="padding-top: 2px;">
+                                <hr style="border-top: 1px solid #d7d7d7 !important"/>
+                                <div class="row myRow">
+                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <label class="labelCompras" for="editorTexto"> Adjuntar documentación </label>
+                                        <p-fileUpload [styles]="{'margin-left':'-13px; cursor: pointer;'}" name="fileUploadPeticionDeOferta" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
+                                                      [showUploadButton]=false [showCancelButton]=false [customUpload]="true"
+                                                      (uploadHandler)="uploadHandler($event)">
+                                            <ng-template *ngIf="archivos.length == 0" pTemplate="toolbar">
+                                                <div *ngIf="archivos.length == 0"
+                                                     style="display: inline !important; font-family: Roboto Regular !important; color: #666666;">
+                                                    Ningún archivo elegido
+                                                </div>
+                                            </ng-template>
+                                            <ng-template let-file pTemplate="file">
+
+                                            </ng-template>
+                                        </p-fileUpload>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
+                                    <p-panel *ngIf="archivos.length > 0" header="Adjuntos agregados" [toggleable]="true" [collapsed]="false">
+                                        <div class="row myRow">
+                                            <div class="col-xs-12 col-md-9"
+                                                 *ngFor="let archivo of this.archivos">
+                                                <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                                     (click)="eliminarArchivo(archivo)" style="width: 26px;" />
+                                                <a class="link-archivo pointer" (click)="descargarArchivo(archivo)" style="font-weight: lighter;">{{archivo.name}}</a>
+                                            </div>
+
+                                        </div>
+                                    </p-panel>
+                                </div>
+
+                                <div class="row myRow">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <label class="labelCompras">Observaciones</label>
+                                        <textarea (input)="onValueChangeObservaciones($event)" cols="30" rows="10"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+                    <p-footer>
+                        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+                        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+                    </p-footer>
+                </p-confirmDialog>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+<div class="content-wraper alinearAlturaMenuDashboard row1 myRow firstSection">
+    <div class="rounded shadow">
+        <section class="container-fluid clearfix">
+            <div class="row">
+                <div class="col-xs-12 col-md-12 headerCompras" #headerCompras>
+                    <strong>Proveedores</strong>
+                </div>
+               
+                <div class="inputCompras">
+                    <div class="row myRow" style="padding-top: 2px;">
+                        <hr style="border-top: 1px solid #d7d7d7 !important"/>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-left: 15px;">
+                                <div class="col-xs-12 col-sm-10" style="font-size: 20px; margin-bottom: 20px;">
+                                    <strong>Información sugerida de SOLP</strong>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                    <strong>Válidos: </strong>
+                                    <div>
+                                        {{proveedoresValidos}}
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
+                                    <strong>Inválidos: </strong>
+                                    <div>
+                                        {{proveedoresInvalidos}}
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
+                                    <strong>No sugeridos: </strong>
+                                    <div>
+                                        {{proveedoresNoSugeridos}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inputCompras" style="margin-bottom: 40px;">
+                    <div class="row myRow" style="padding-top: 2px;">
+                     
+                        <div class="row">
+                            <hr style="border-top: 1px solid #d7d7d7 !important"/>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-left: 15px;">
+                                <div class="col-xs-12 col-sm-10" style="font-size: 20px;">
+                                    <strong>Selección de proveedores</strong>
+                                </div>
+                               
+                                <div class="col-xs-12 col-sm-10 col-md-4" style="font-size: 24px; margin-bottom: 20px;">
+                                    <p-autoComplete [(ngModel)]="proveedorSeleccionado"
+                                                    [suggestions]="proveedores"
+                                                    (completeMethod)="searchProveedor($event)"
+                                                    (onSelect)="selectProveedor($event)"
+                                                    placeholder="Seleccione un proveedor"
+                                                    field="Mail"
+                                                    [minLength]="3">
+                                        <ng-template let-proveedor pTemplate="item">
+                                            <div class="ui-helper-clearfix">
+                                                <div style="font-size:12px;margin:10px 10px 0 0">{{proveedor.Mail}}</div>
+                                                <div style="font-size:10px;color:darkgrey;margin:10px 10px 0 0">{{proveedor.CUIT}} - {{proveedor.RazonSocial}}</div>
+                                            </div>
+                                        </ng-template>
+                                    </p-autoComplete>
+                                </div>
+                                <div>
+                                    <button class="btn btn-success botonesComprasColor" (click)="abrirPopupProveedor()">
+                                        + Alta nuevo usuario
+                                    </button>
+                                </div>
+                                <div class="col-xs-11" style="font-size: 20px; margin-bottom: 20px;" >                                   
+                                    <p-table [value]="proveedoresSeleccionados">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th>Mail</th>
+                                                <th style="width: 140px !important">CUIT</th>
+                                                <th>Razon Social</th>
+                                                <th style="width: 60px !important"></th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="emptymessage">
+                                            <tr>
+                                                <td class="sinDatos" style="text-align: center;" colspan="4">Sin datos</td>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-proveedor>
+                                            <tr>
+                                                <td class="columna" style="font-size: 15px !important;" >{{proveedor.Mail}}</td>
+                                                <td>{{proveedor.CUIT}}</td>
+                                                <td>{{proveedor.RazonSocial}}</td>
+                                                <td>
+                                                    <a style="cursor:pointer;" (click)="eliminarProveedor($event,proveedor)">
+                                                        <img src="../../../../../Content/images/icons/trashRed.svg" />
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<p-sidebar visible="true" position="bottom" [modal]="false" [showCloseIcon]="false" dismissible="false" appendTo="body">
+    <div class="row">
+        <div class="col-xs-1 col-md-1">
+        </div>
+        <div class="col-xs-3 col-md-3" style="text-align: center;">
+            <!-- <button class="btn btn-danger" (click)="cancelarSolp()"><i class="fa fa-reply"></i>&nbsp; CANCELAR</button> -->
+            <button class="btn btn-secondary botonesCompras" (click)="goToSeccion('/compras/dashboardComprador');">
+                <i class="fa fa-arrow-left"></i>&nbsp; VOLVER
+            </button>&nbsp;
+        </div>
+        <div class="col-xs-8 col-md-8">
+
+            <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0;">
+
+                <button class="btn btn-success botonesComprasColor" (click)="onShowFinalizarDialog()">
+                    Finalizar y Enviar
+                </button>
+            </div>
+            <div class="col-xs-1 col-md-1">
+            </div>
+            <!--<div class="col-xs-4 col-md-4">
+                <div class="col-xs-6 col-md-6" style="text-align: left;">
+                    <button class="btn btn-primary botonesComprasColor" *ngIf="pasoActual.Preview" (click)="onPreview()">PREVIEW</button>&nbsp;
+                </div>
+                <div class="col-xs-6 col-md-6" style="text-align: right;">
+                </div>
+            </div>-->
+        </div>
+    </div>
+</p-sidebar>
+
+<app-alta-proveedor
+    [(displayAltaProveedor)]="displayAltaProveedor"
+    (cerrarPopupProveedorEmitter)="salirPopupProveedor()"
+    (proveedorDtoEmitter)="agregarProveedor($event)">
+</app-alta-proveedor>
+
+
+<p-dialog [(visible)]="displayPeticionCreada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Peticion de oferta creada!
+    </p-header>
+    <br> La peticion #{{nroPeticion}} se creo correctamente.
+    <br>
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>
+    </p-footer>
+</p-dialog>

@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.WSConsumers;
 using System;
@@ -26,6 +27,7 @@ namespace SustitucionMOAUtils.Interfaces
         SolpDto TraerSolpId(int idSolp);
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
         byte[] GenerarSolpPdf(int idSolp);
+        Pdf GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario);
         string GenerarZipPliego(int idSolp, string pathBase);
         List<TablaSapDto> ObtenerServiciosSap();
         List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor);
@@ -52,5 +54,15 @@ namespace SustitucionMOAUtils.Interfaces
 
         List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones);
         SolpCompraDto ObtenerSolpCompras(int id);
+
+        RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos);
+        List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? usuarioId);
+        Resultado GuardarAdjuntosPeticionDeOferta(int idPeticion, HttpFileCollectionBase files, UsuarioDto usuarioDto);
+        string DescargarLegajo(int idPeticion, string path);
+        RespuestaGuardarSOLP GrabarCircular(CircularDto circularDto, HttpFileCollectionBase adjuntos);
+        PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId);
+        RespuestaGuardarSOLP GrabarProveedoresEnPeticionDeOferta(List<int> usuariosId, int peticionId);
+        RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(int AdjudicacionId);
+        ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp);
     }
 }

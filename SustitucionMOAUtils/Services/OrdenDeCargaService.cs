@@ -1327,24 +1327,41 @@ namespace SustitucionMOAUtils.Services
                 var clientesBD = repositorio.Listar<Proveedor>()
                                             .Where(w => clientesWS.Contains(w.CodigoProveedor))
                                             .ToList();
-                clientesDto = clientesBD.Select(prov => new ProveedorDto
+
+                foreach (var clienteEnSap in ordenCargaVisualizarClienteWSMOAResponse.Resultados.GroupBy(x => x.Cliente).Select(g => g.First()))
                 {
-                    CodigoProveedor = prov.CodigoProveedor ?? "",
-                    CUIT = prov.CUIT,
-                    EstadoAprobacion = prov.EstadoAprobacion,
-                    EstadoAprobacionDescripcion = prov.EstadoAprobacion.ToFriendlyString(),
-                    Id = prov.Id,
-                    IdComercialDataAgro = prov.IdComercialDataAgro,
-                    IdDataAgro = prov.IdDataAgro,
-                    Mail = prov.Mail ?? "",
-                    Observaciones = prov.Observaciones,
-                    RazonSocial = !String.IsNullOrEmpty(prov.RazonSocial) ? prov.RazonSocial : prov.CUIT ?? "",
-                    FechaSolicitud = prov.FechaSolicitud,
-                    Comercial = prov.Comercial,
-                    EstadoSIPER = prov.EstadoSIPER,
-                    ContieneDocumentacionFisica = prov.ContieneDocumentacionFisica,
-                    IdTipoProveedor = prov.TipoProveedor.Id
-                }).ToList();
+                    var proveedor = clientesBD.FirstOrDefault(x => x.CodigoProveedor == clienteEnSap.Cliente);
+                    if (proveedor != null)
+                    {
+                        clientesDto.Add(new ProveedorDto
+                        {
+                            CodigoProveedor = proveedor.CodigoProveedor ?? "",
+                            CUIT = proveedor.CUIT,
+                            EstadoAprobacion = proveedor.EstadoAprobacion,
+                            EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
+                            Id = proveedor.Id,
+                            IdComercialDataAgro = proveedor.IdComercialDataAgro,
+                            IdDataAgro = proveedor.IdDataAgro,
+                            Mail = proveedor.Mail ?? "",
+                            Observaciones = proveedor.Observaciones,
+                            RazonSocial = !String.IsNullOrEmpty(proveedor.RazonSocial) ? proveedor.RazonSocial : proveedor.CUIT ?? "",
+                            FechaSolicitud = proveedor.FechaSolicitud,
+                            Comercial = proveedor.Comercial,
+                            EstadoSIPER = proveedor.EstadoSIPER,
+                            ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
+                            IdTipoProveedor = proveedor.TipoProveedor.Id
+                        });
+                    }
+                    else
+                    {
+                        clientesDto.Add(new ProveedorDto
+                        {
+                            CodigoProveedor = clienteEnSap.Cliente,
+                            CUIT = "",
+                            RazonSocial = clienteEnSap.NombreCliente
+                        });
+                    }
+                }
             }
             return clientesDto;
         }
@@ -2414,7 +2431,7 @@ namespace SustitucionMOAUtils.Services
         {
             var corredor = repositorio.Obtener<Proveedor>(
                             cor => cor.CodigoProveedor == codigoCorredor && cor.EstadoAprobacion == EstadoAprobacion.Aprobado);
-            foreach (var clienteDto in responseSap.Clientes)
+            foreach (var clienteDto in responseSap.Clientes.Where(c => c.Id > 0))
             {
                 var cliente = repositorio.Obtener<Proveedor>(clienteDto.Id);
                 CrearRelacionCorredorCliente(corredor, cliente);

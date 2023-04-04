@@ -49,10 +49,23 @@ import { StepperActionsComponent } from './solp/stepper-actions/stepper-actions.
 import { FinalizarSolpComponent } from './solp/finalizar/finalizar-solp.component';
 import { ContratoMarcoComponent } from './solp/steps/posicion/contrato-marco/contrato-marco.component';
 import { ObtenerContratoMarcoComponent } from './solp/steps/posicion/obtener-contrato-marco/obtener-contrato-marco.component';
-import {PaginatorModule} from 'primeng/paginator';
+import { PaginatorModule } from 'primeng/paginator';
+import { TabViewModule } from 'primeng/tabview';
 import {TooltipModule} from 'primeng/tooltip';
 import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
+import { CotizacionFormularioComponent } from './cotizacion/cotizacion-formulario/cotizacion-formulario.component';
+import { CircularComponent } from './dashboard-comprador/circular/circular.component';
+import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
 import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
+import { NgxMaskModule } from "ngx-mask";
+import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
+
+import { ProveedorPeticionComponent } from './dashboard-comprador/proveedor-peticion/proveedor-peticion.component';
+import { AltaProveedorComponent } from './dashboard-comprador/alta-proveedor/alta-proveedor.component';
+import { ListadoDashboardProveedorComponent } from './dashboard-proveedor/listado-dashboard-proveedor/listado-dashboard-proveedor.component';
+import { FiltroDashboardProveedorComponent } from './dashboard-proveedor/filtro-dashboard-proveedor/filtro-dashboard-proveedor.component';
+
+
 @NgModule({
     imports: [
         CommonModule,
@@ -84,7 +97,10 @@ import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-
         InputSwitchModule,
         TabMenuModule,
         PaginatorModule,
-        TooltipModule
+        TooltipModule,
+        TabViewModule,
+        NgbAlertModule,
+        NgxMaskModule
     ],
     declarations: [
         SolpComponent,
@@ -107,7 +123,14 @@ import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-
         ContratoMarcoComponent,
         ObtenerContratoMarcoComponent,
         ListadoDashboardCompradorComponent,
-        FiltroDashboardCompradorComponent
+        FiltroDashboardCompradorComponent,
+        CotizacionFormularioComponent,
+        LegajoComponent,
+        CircularComponent,
+        AltaProveedorComponent,
+        ProveedorPeticionComponent,
+        ListadoDashboardProveedorComponent,
+        FiltroDashboardProveedorComponent
     ],
     providers: [
         ComprasService,

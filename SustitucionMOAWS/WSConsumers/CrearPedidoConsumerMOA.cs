@@ -1,8 +1,11 @@
-﻿using System;
+﻿
+using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -25,9 +28,9 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public CrearPedidoConsumerMOAResponse Request(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas, List<SolpPosicion> proveedorConPosiciones)
+        public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion)
         {
-            var solpPedidoSAP = ConvertirSOLP(solpActual, postEntitySubPosicionesEliminadas, proveedorConPosiciones);
+            var solpPedidoSAP = ConvertirSOLP(adjudicacion);
 
             var serxml = new System.Xml.Serialization.XmlSerializer(solpPedidoSAP.GetType());
             var ms = new MemoryStream();
@@ -36,17 +39,15 @@ namespace SustitucionMOAWS.WSConsumers
 
             var fecha = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
 
-            var nombreArchivoLlamada = string.Concat(solpActual.Id, " - ", fecha, " - llamada crear.xml");
-            var nombreArchivoRespuesta = string.Concat(solpActual.Id, " - ", fecha, " - respuesta crear.xml");
+            var nombreArchivoLlamada = string.Concat(adjudicacion.Solp_Id, " - ", fecha, " - crear pedido.xml");
 
             var rutaArchivoLlamada = Path.Combine(rutaArchivosXmls, "XMLS", nombreArchivoLlamada);
-            var rutaArchivoRespuesta = Path.Combine(rutaArchivosXmls, "XMLS", nombreArchivoRespuesta);
 
             FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
             fileCrear.Directory.Create();
             File.WriteAllText(fileCrear.FullName, xml);
 
-            var result = service.SI_MMRFC_CREAR_PEDIDO( solpPedidoSAP.IM_POACCOUNTList.ToArray(),
+            var result = service.SI_MMRFC_CREAR_PEDIDO(solpPedidoSAP.IM_POACCOUNTList.ToArray(),
                                                         solpPedidoSAP.IM_POACCOUNTXList.ToArray(),
                                                         solpPedidoSAP.IM_POADDREDELIVERYList.ToArray(),
                                                         solpPedidoSAP.IM_POCONDList.ToArray(),
@@ -87,11 +88,16 @@ namespace SustitucionMOAWS.WSConsumers
                 respuesta.Errores.Add(error);
             }
 
-            var jsonRespuesta = JsonConvert.SerializeObject(respuesta);
 
-            //FileInfo fileRespuesta = new FileInfo(rutaArchivoRespuesta);
-            //fileRespuesta.Directory.Create();
-            //File.WriteAllText(fileRespuesta.FullName, jsonRespuesta);
+            serxml = new System.Xml.Serialization.XmlSerializer(respuesta.GetType());
+            ms = new MemoryStream();
+            serxml.Serialize(ms, respuesta);
+            xml = Encoding.UTF8.GetString(ms.ToArray());
+            using (StreamWriter writer = File.AppendText(rutaArchivoLlamada))
+            {
+                writer.WriteLine(xml);
+            }
+
 
             return respuesta;
         }
@@ -118,56 +124,64 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
-        public SolpPedidoSAPDto ConvertirSOLP(Solp solp, SolpPosicion postEntitySubPosicionesEliminadas, List<SolpPosicion> proveedorConPosiciones)
+        public SolpPedidoSAPDto ConvertirSOLP(Adjudicacion adjudicacion)
         {
+            var proveedorCodigoDeLaAdjudicacion = "0057984261";
+            var usuarioCreadorAdjudicacion = "RABELLATM";
+            var solp = adjudicacion.Solp;
+
             SolpPedidoSAPDto solpPedidoSAP = new SolpPedidoSAPDto();
-            int numeroPosicion = 0;   
+            int numeroPosicion = 0;
             string numeroPaquete = "";
             string preqItem = "";
             string serialNumber = "";
-           
-            string docItem = "";
-        
 
-            //aca el metodo agruparia las posiciones por el numero del proveedor que tengo cada posicion
-            foreach (var posicion in proveedorConPosiciones.OrderBy(x => x.Id))
+            //string docItem = "";
+
+
+            //aca el metodo solo usa las posiciones seleccionadas por el comprador
+            var posIds = adjudicacion.Posiciones.Select(x => x.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id).ToList();
+            foreach (var posicion in solp.Posiciones.Where(a => posIds.Contains(a.Id)).OrderBy(x => x.Id))
             {
-            
+                bool esPosicionDeMateriales = posicion.TipoPosicion.Codigo == "MATERIALES";
+
                 bool eliminarPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
                 bool eliminarSubPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
-                eliminarPosicion = eliminarPosicion ? true : !posicion.Estado;            
-                numeroPosicion++;
+                eliminarPosicion = eliminarPosicion ? true : !posicion.Estado;
+                numeroPosicion = posicion.Indice ?? 0;
                 preqItem = $"{numeroPosicion:00000}";
-                docItem = preqItem;
+                //docItem = preqItem;
                 numeroPaquete = $"{numeroPosicion:0000000000}";
-                serialNumber = $"{numeroPosicion:00}";
-                
-                //Nombre: ZBAPIMEPOHEADER Denominación:	Cabecera del Pedido de Compras
-                solpPedidoSAP.IM_POHEADERList = new ZMPES6780
-                {
-                    PO_NUMBER = "", //PO_NUMBER   EBELN Número del documento de compras
-                    COMP_CODE = "MOA", //COMP_CODE BUKRS   Sociedad
-                    DOC_TYPE = solp.ClaseDocumento.CodigoSap, //DOC_TYPE    ESART Clase de documento de compras
-                    DELETE_IND = posicion.TipoPosicion.Codigo != "MATERIALES" ? SAPFormatter.FormatearBooleano(eliminarPosicion) : "", //DELETE_IND ELOEK   Indicador de borrado en el documento de compras
-                    STATUS = "", //STATUS ESTAK   Status del documento de compras
-                    CREAT_DATE = "", //SAPFormatter.PrepararFecha(solp.FechaCreacion), //CREAT_DATE  ERDAT Fecha de creación del registro
-                    CREATED_BY = solp.UsuarioCreacion.UsuarioSap, //CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto
-                    VENDOR = posicion.ProveedorFijo, //VENDOR ELIFN   Número de cuenta del proveedor
-                    PMNTTRMS = "", //"BASE", //PMNTTRMS    DZTERM Clave de condiciones de pago
-                    PURCH_ORG = posicion.OrganizacionCompras, //PURCH_ORG EKORG   Organización de compras
-                    PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(), //PUR_GROUP   BKGRP Grupo de compras
-                    CURRENCY = posicion.Moneda.Codigo, //CURRENCY WAERS   Clave de moneda
-                    EXCH_RATE = 0, //EXCH_RATE   WKURS Tipo de cambio de moneda
-                    EX_RATE_FX = "", //EX_RATE_FX KUFIX   Indicador tipo de cambio fijo
-                    DOC_DATE = SAPFormatter.PrepararFecha(DateTime.Now) //DOC_DATE    EBDAT Fecha del documento de compras
-                };
+                serialNumber = "01";//$"{numeroPosicion:00}";
 
+
+                //Nombre: ZBAPIMEPOHEADER Denominación:	Cabecera del Pedido de Compras
+                var cabeceraDelPedido = new ZMPES6780();
+
+                cabeceraDelPedido.PO_NUMBER = ""; //PO_NUMBER   EBELN Número del documento de compras
+                cabeceraDelPedido.COMP_CODE = "MOA"; //COMP_CODE BUKRS   Sociedad
+                cabeceraDelPedido.DOC_TYPE = "ZPE1";//solp.ClaseDocumento.CodigoSap; //DOC_TYPE    ESART Clase de documento de compras
+                cabeceraDelPedido.DELETE_IND = "";// posicion.TipoPosicion.Codigo != "MATERIALES" ? SAPFormatter.FormatearBooleano(eliminarPosicion) : ""; //DELETE_IND ELOEK   Indicador de borrado en el documento de compras
+                cabeceraDelPedido.STATUS = ""; //STATUS ESTAK   Status del documento de compras
+                cabeceraDelPedido.CREAT_DATE = ""; //SAPFormatter.PrepararFecha(solp.FechaCreacion); //CREAT_DATE  ERDAT Fecha de creación del registro
+                cabeceraDelPedido.CREATED_BY = usuarioCreadorAdjudicacion;// solp.UsuarioCreacion.UsuarioSap; //CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto
+                cabeceraDelPedido.VENDOR = proveedorCodigoDeLaAdjudicacion;//posicion.ProveedorFijo; //VENDOR ELIFN   Número de cuenta del proveedor
+                cabeceraDelPedido.PMNTTRMS = ""; //"BASE"; //PMNTTRMS    DZTERM Clave de condiciones de pago
+                cabeceraDelPedido.PURCH_ORG = "2029";// posicion.OrganizacionCompras; //PURCH_ORG EKORG   Organización de compras
+                cabeceraDelPedido.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP   BKGRP Grupo de compras
+                cabeceraDelPedido.CURRENCY = posicion.Moneda.Codigo; //CURRENCY WAERS   Clave de moneda
+                //cabeceraDelPedido.EXCH_RATE = 0; //EXCH_RATE   WKURS Tipo de cambio de moneda
+                cabeceraDelPedido.EX_RATE_FX = ""; //EX_RATE_FX KUFIX   Indicador tipo de cambio fijo
+                cabeceraDelPedido.DOC_DATE = SAPFormatter.PrepararFecha(DateTime.Now); //DOC_DATE    EBDAT Fecha del documento de compras
+
+
+                solpPedidoSAP.IM_POHEADERList = cabeceraDelPedido;
                 solpPedidoSAP.IM_POHEADERXList = new ZMPES6790
                 {
                     PO_NUMBER = "",
                     COMP_CODE = "X",
                     DOC_TYPE = "X",
-                    DELETE_IND = (eliminarPosicion == true) ? "X" : "",
+                    DELETE_IND = "",
                     STATUS = "",
                     CREAT_DATE = "",
                     CREATED_BY = "X",
@@ -176,34 +190,35 @@ namespace SustitucionMOAWS.WSConsumers
                     PURCH_ORG = "X",
                     PUR_GROUP = "X",
                     CURRENCY = "X",
-                    EXCH_RATE = "X",
+                    EXCH_RATE = "",
                     EX_RATE_FX = "",
                     DOC_DATE = "X"
                 };
 
                 //Nombre: ZBAPIMEPOITEM Denominación:	Posición de PEDIDOS
                 var IM_POITEM = new ZMPES6800();
-        
+
                 IM_POITEM.PO_ITEM = preqItem;
-                IM_POITEM.DELETE_IND = posicion.TipoPosicion.Codigo != "MATERIALES" ? SAPFormatter.FormatearBooleano(eliminarPosicion) : ""; //Indica si la posicion esta borrada;
+                IM_POITEM.DELETE_IND = "";
                 IM_POITEM.SHORT_TEXT = posicion.Tarea;
-                IM_POITEM.MATERIAL = posicion.MaterialSolp != null && posicion.TipoPosicion.Codigo == "MATERIALES" ? posicion.MaterialSolp.CodigoSap.ToString() : "";
+                IM_POITEM.MATERIAL = esPosicionDeMateriales ? posicion.MaterialSolp.CodigoSap.ToString() : "";
                 IM_POITEM.PLANT = posicion.Centro.CodigoSap.ToString();
                 IM_POITEM.STGE_LOC = posicion.Almacen.CodigoSap.ToString();
-                IM_POITEM.TRACKINGNO = posicion.NroNecesidad; ;
-                IM_POITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString();
+                IM_POITEM.TRACKINGNO = posicion.NroNecesidad;
+                //IM_POITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString();
+                IM_POITEM.MATL_GROUP = esPosicionDeMateriales && string.IsNullOrEmpty(posicion.MaterialSolp.CodigoSap) ? posicion.GrupoArticulo.CodigoSap.ToString() : "";
                 IM_POITEM.INFO_REC = "";
-                IM_POITEM.QUANTITY = (decimal)posicion.Cantidad;
+                IM_POITEM.QUANTITY = 1;// (decimal)posicion.Cantidad;
                 IM_POITEM.QUANTITYSpecified = true;
-                IM_POITEM.PO_UNIT = posicion.Unidad.Descripcion;
-                IM_POITEM.NET_PRICE = (decimal)posicion.PrecioBruto;
+                IM_POITEM.PO_UNIT = esPosicionDeMateriales ? posicion.Unidad.Descripcion : "001";
+                IM_POITEM.NET_PRICE = esPosicionDeMateriales ? (decimal)posicion.PrecioBruto : CalcularPrecioBrutoServicio(posicion);
                 IM_POITEM.NET_PRICESpecified = true;
                 IM_POITEM.PRICE_UNIT = 1;
                 //IM_POITEM.PRICE_UNITSpecified = true;
                 IM_POITEM.GR_PR_TIME = 0;
                 //IM_POITEM.GR_PR_TIMESpecified = true; 
                 IM_POITEM.TAX_CODE = "";
-                IM_POITEM.VAL_TYPE = SAPFormatter.FormatearBooleano(eliminarPosicion);
+                IM_POITEM.VAL_TYPE = "";
                 IM_POITEM.NO_MORE_GR = "";
                 IM_POITEM.FINAL_INV = "";
 
@@ -245,25 +260,25 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.GR_BASEDIV = "";
                 IM_POITEM.ACKN_REQD = "";
                 IM_POITEM.ACKNOWL_NO = "";
-                IM_POITEM.AGREEMENT = posicion.NumeroContratoSuperior; ;
-                IM_POITEM.AGMT_ITEM = posicion.NumeroPosicionContratoSuperior; ;
+                IM_POITEM.AGREEMENT = "";
+                IM_POITEM.AGMT_ITEM = "";
                 IM_POITEM.RFQ_NO = "";
                 IM_POITEM.RFQ_ITEM = "";
-                IM_POITEM.PREQ_NO = "";
+                IM_POITEM.PREQ_NO = solp.NroSolp;
                 IM_POITEM.PREQ_ITEM = preqItem;
-                IM_POITEM.PCKG_NO = numeroPaquete;
-                
+                IM_POITEM.PCKG_NO = esPosicionDeMateriales ? "" : numeroPaquete;
+
                 solpPedidoSAP.IM_POITEMList.Add(IM_POITEM);
-                                    
+
                 solpPedidoSAP.IM_POITEMXList.Add(new ZMPES6810
                 {
                     PO_ITEM = preqItem,
-                    DELETE_IND = (IM_POITEM.DELETE_IND != null) ? "X" : "",
+                    DELETE_IND = "",//(IM_POITEM.DELETE_IND != null) ? "X" : "",
                     SHORT_TEXT = "X",
                     MATERIAL = "X",
                     PLANT = "X",
                     STGE_LOC = "X",
-                    TRACKINGNO = "X",
+                    TRACKINGNO = string.IsNullOrEmpty(posicion.NroNecesidad) ? "" : "X",
                     MATL_GROUP = "X",
                     INFO_REC = "",
                     QUANTITY = ((decimal)IM_POITEM.QUANTITY == 0) ? "" : "X",
@@ -272,7 +287,7 @@ namespace SustitucionMOAWS.WSConsumers
                     PRICE_UNIT = "X",
                     GR_PR_TIME = "",
                     TAX_CODE = "",
-                    VAL_TYPE = (IM_POITEM.VAL_TYPE != null) ? "X" : "",
+                    VAL_TYPE = "",//(IM_POITEM.VAL_TYPE != null) ? "X" : "",
                     NO_MORE_GR = "",
                     FINAL_INV = "",
                     ITEM_CAT = "X",
@@ -286,47 +301,47 @@ namespace SustitucionMOAWS.WSConsumers
                     GR_BASEDIV = "",
                     ACKN_REQD = "",
                     ACKNOWL_NO = "",
-                    AGREEMENT = "X",
-                    AGMT_ITEM = "X",
+                    AGREEMENT = "",//"X",
+                    AGMT_ITEM = "",//"X",
                     RFQ_NO = "",
                     RFQ_ITEM = "",
-                    PREQ_NO = "",
+                    PREQ_NO = "X",
                     PREQ_ITEM = "X",
                     PCKG_NO = "X"
                 });
 
                 //Nombre: ZBAPIMEPOACCOUNT Denominación:	Imputación
-                solpPedidoSAP.IM_POACCOUNTList.Add(new ZMPES6830
-                {
-                    PO_ITEM = preqItem,
-                    SERIAL_NO = serialNumber,
-                    DELETE_IND = SAPFormatter.FormatearBooleano(eliminarPosicion),
-                    QUANTITY = 0,
-                    GL_ACCOUNT = posicion.CuentaMayorSap.Codigo, //"0000607034",
-                    BUS_AREA = "GENE",
-                    COSTCENTER = getCodigoTablaSap(posicion.TipoImputacionSap),
-                    ASSET_NO = "",
-                    SUB_NUMBER = "",
-                    ORDERID = getCodigoTablaSap(posicion.TipoImputacionSap),
-                    CO_AREA = "MOA",
-                    COSTOBJECT = "",
-                    PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap)
-                });
+                var imputacion = new ZMPES6830();
+                imputacion.PO_ITEM = preqItem;
+                imputacion.SERIAL_NO = serialNumber;
+                imputacion.DELETE_IND = "";
+                imputacion.QUANTITY = 1;//posicion.Cantidad ?? 1;
+                imputacion.QUANTITYSpecified = (posicion.Cantidad ?? 0) > 0;
+                imputacion.GL_ACCOUNT = posicion.CuentaMayorSap.Codigo; //"0000607034";
+                imputacion.BUS_AREA = "GENE";
+                imputacion.ASSET_NO = "";
+                imputacion.SUB_NUMBER = "";
+                imputacion.CO_AREA = "MOA";
+                imputacion.COSTOBJECT = "";
+                imputacion.COSTCENTER = (posicion.TipoImputacion.Codigo.ToLower() == "centrodecosto") ? posicion.TipoImputacionSap?.Codigo : "";
+                imputacion.ORDERID = (posicion.TipoImputacion.Codigo.ToLower() == "ordendeot") ? posicion.TipoImputacionSap?.Codigo : "";
+                imputacion.PROFIT_CTR = (posicion.TipoImputacion.Codigo.ToLower() == "siniestrobeneficio") ? posicion.TipoImputacionSap?.Codigo : "";
+                solpPedidoSAP.IM_POACCOUNTList.Add(imputacion);
 
                 solpPedidoSAP.IM_POACCOUNTXList.Add(new ZMPES6840
                 {
                     PO_ITEM = preqItem,
                     SERIAL_NO = serialNumber,
-                    DELETE_IND = (IM_POITEM.DELETE_IND != null) ? "X" : "",
+                    DELETE_IND = "",
                     QUANTITY = "X",
                     GL_ACCOUNT = "X",
                     BUS_AREA = "X",
-                    COSTCENTER = (posicion.TipoImputacion.Codigo.ToLower() == "centrodecosto") ? "X" : "",
                     ASSET_NO = "",
                     SUB_NUMBER = "",
-                    ORDERID = (posicion.TipoImputacion.Codigo.ToLower() == "ordendeot") ? "X" : "",
                     CO_AREA = "X",
                     COSTOBJECT = "",
+                    COSTCENTER = (posicion.TipoImputacion.Codigo.ToLower() == "centrodecosto") ? "X" : "",
+                    ORDERID = (posicion.TipoImputacion.Codigo.ToLower() == "ordendeot") ? "X" : "",
                     PROFIT_CTR = (posicion.TipoImputacion.Codigo.ToLower() == "siniestrobeneficio") ? "X" : ""
                 });
 
@@ -336,12 +351,125 @@ namespace SustitucionMOAWS.WSConsumers
                     PO_ITEM = preqItem,
                     POSTL_COD1 = posicion.CpEntrega,
                     CITY = posicion.Centro.Descripcion,
-                    ADDR_NO = posicion.CalleEntrega,
+                    ADDR_NO = "",
                     NAME = posicion.NombreEntrega,
                     TEL1_NUMBR = "",
-                    STREET = posicion.CalleEntrega,
-                    STREET_NO = posicion.NumeroEntrega
+                    STREET = "Benielli",//posicion.CalleEntrega,
+                    STREET_NO = "398",//posicion.NumeroEntrega
                 });
+
+                if (!esPosicionDeMateriales)
+                {
+                    foreach (var subposicion in posicion.Subposiciones)
+                    {
+                        var subposicionSap = new BAPIESLLC
+                        {
+                            SERVICE = subposicion.ServicioSolp.Codigo,
+                            SHORT_TEXT = subposicion.Tarea,
+                            QUANTITY = subposicion.Cantidad ?? 0,
+                            QUANTITYSpecified = true,
+                            BASE_UOM = subposicion.Unidad.Codigo,
+                            UOM_ISO = subposicion.Unidad.Codigo,
+                            PRICE_UNIT = subposicion.PrecioBruto ?? 0,
+                            PRICE_UNITSpecified = true,
+                            GR_PRICE = subposicion.PrecioBruto ?? 0 * subposicion.Cantidad ?? 0,
+                            GR_PRICESpecified = true,
+
+                            PCKG_NO = esPosicionDeMateriales ? "" : numeroPaquete,
+                            LINE_NO = subposicion.Numero.ToString(),
+                            EXT_LINE = "",
+                            OUTL_LEVEL = 1,
+                            OUTL_LEVELSpecified = true,
+                            OUTL_NO = "",
+                            OUTL_IND = "",
+                            SUBPCKG_NO = "",
+                            SERV_TYPE = "",
+                            EDITION = "",
+                            SSC_ITEM = "",
+                            EXT_SERV = "",
+                            OVF_TOL = 1,
+                            OVF_TOLSpecified = true,
+                            OVF_UNLIM = "",
+                            FROM_LINE = "",
+                            TO_LINE = "",
+                            DISTRIB = "",
+                            PERS_NO = "",
+                            WAGETYPE = "",
+                            PLN_PCKG = "",
+                            PLN_LINE = "",
+                            CON_PCKG = "",
+                            CON_LINE = "",
+                            TMP_PCKG = "",
+                            TMP_LINE = "",
+                            SSC_LIM = "",
+                            LIMIT_LINE = "",
+                            TARGET_VAL = 1,
+                            TARGET_VALSpecified = true,
+                            BASLINE_NO = "",
+                            BASIC_LINE = "",
+                            ALTERNAT = "",
+                            BIDDER = "",
+                            SUPP_LINE = "",
+                            OPEN_QTY = "",
+                            INFORM = "",
+                            BLANKET = "",
+                            EVENTUAL = "",
+                            TAX_CODE = "",
+                            TAXJURCODE = "",
+                            PRICE_CHG = "",
+                            MATL_GROUP = "",
+                            DATE = "",
+                            BEGINTIME = "",
+                            ENDTIME = "",
+                            EXTPERS_NO = "",
+                            FORMULA = "",
+                            FORM_VAL1 = 1,
+                            FORM_VAL1Specified = true,
+                            FORM_VAL2 = 1,
+                            FORM_VAL2Specified = true,
+                            FORM_VAL3 = 1,
+                            FORM_VAL3Specified = true,
+                            FORM_VAL4 = 1,
+                            FORM_VAL4Specified = true,
+                            FORM_VAL5 = 1,
+                            FORM_VAL5Specified = true,
+                            USERF1_NUM = "",
+                            USERF2_NUM = 1,
+                            USERF2_NUMSpecified = true,
+                            USERF1_TXT = "",
+                            USERF2_TXT = "",
+                            HI_LINE_NO = "",
+                            EXTREFKEY = "",
+                            DELETE_IND = "",
+                            PER_SDATE = "",
+                            PER_EDATE = "",
+                            EXTERNAL_ITEM_ID = "",
+                            SERVICE_ITEM_KEY = "",
+                            NET_VALUE = 1,
+                            NET_VALUESpecified = true,
+                        };
+                        solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
+
+                        var imputacionSubPos = new BAPIESKLC()
+                        {
+                            PCKG_NO = esPosicionDeMateriales ? "" : numeroPaquete,
+                            LINE_NO = subposicion.Numero.ToString(),
+                            SERNO_LINE = "",
+                            PERCENTAGE = 1,
+                            PERCENTAGESpecified = true,
+                            SERIAL_NO = "",
+                            QUANTITY = 1,
+                            QUANTITYSpecified = true,
+                            NET_VALUE = 1,
+                            NET_VALUESpecified = true,
+                        };
+
+                        solpPedidoSAP.IM_POSRVACCESSVALUESList.Add(imputacionSubPos);
+
+                    }
+
+                }
+
 
                 //Nombre: ZBAPIMEPOCONDHEADER Denominación:	Posición de Servicio
                 //solpPedidoSAP.IM_POCONDHEADERList.Add(new ZMPES6850
@@ -405,13 +533,25 @@ namespace SustitucionMOAWS.WSConsumers
 
             return solpPedidoSAP;
         }
+
+        private decimal CalcularPrecioBrutoServicio(SolpPosicion posicion)
+        {
+            decimal total = 0;
+            foreach (var item in posicion.Subposiciones)
+            {
+                //TODO: calcular importe en pesos si es que hay que hacer OC en pesos, falta definicion sino se compra en lo que esta la posicion.
+                total += (item.Cantidad ?? 0) * (item.PrecioBruto ?? 0);
+            }
+
+            return total;
+        }
     }
 
     public class CrearPedidoConsumerMOAResponse
     {
         public string NumeroPedido { get; set; }
         public List<CrearPedidoConsumerMOAError> Errores { get; set; }
-        public string Resultado { get; internal set; }
+        public string Resultado { get; set; }
     }
 
     public class CrearPedidoConsumerMOAError
@@ -471,7 +611,7 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface ICrearPedidoConsumerMOA
     {
-        CrearPedidoConsumerMOAResponse Request(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas, List<SolpPosicion> proveedorConPosiciones);
+        CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion);
 
     }
 }

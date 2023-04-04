@@ -74,6 +74,7 @@ namespace SustitucionMOAModel.Dto
         public string CentroFormateado { get; set; }
         public DateTime? FechaLiberacionSap { get; set; }
         public string FechaLiberacionSapFormateada { get; set; }
+        public IEnumerable<PeticionDeOfertaDto> PeticionesDeOferta { get; set; } = new List<PeticionDeOfertaDto>();
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -220,6 +221,9 @@ namespace SustitucionMOAModel.Dto
         public string MonedaComprasDescripcion { get; set; }
         public IEnumerable<SolpProveedorDto> ProveedoresCompras { get; set; }
         public IEnumerable<SolpSubposicionDto> SubposicionesCompras { get; set; }
+        public string MaterialComprasCodigo { get; set; }
+        public int Id { get; set; }
+        public DateTime? FechaOferta { get; set; }
 
         public SolpPosicionDto() { }
 
@@ -368,5 +372,16 @@ namespace SustitucionMOAModel.Dto
                 this.TipoFiltroProveedorSolp = new TablaGeneralDto(entity.TipoFiltroProveedorSolp);
             }
         }
+    }
+
+    public class RespuestaCrearOrdenDeCompra
+    {
+        public List<string> Errores { get; set; }
+
+        public string Mensaje { get; set; }
+
+        public int IdEntidad { get; set; }
+        public string NumeroPedido { get; set; }
+        public string NumeroSolp { get; set; }
     }
 }
