@@ -13,7 +13,7 @@ namespace SustitucionMOAWS.Interfaces
 {
     public interface IOrdenCargaConsumerMOA
     {
-        string ControlCargaRequest(string cliente, string contrato, string corredor, string cuit, string material, string pedido, string soloSisa);
+        string ControlCargaRequest(string cliente, string contrato, string corredor, string cuit, string material, string pedido);
         string CrearOrdenRequest(string cliente, string contrato, string corredor, decimal kilos, string material, string pedidoInput, string usuarioSAP, string forzarCreacion, out string pedidoOutput);
         string OrdenCargaControlEstadoRequest(string entrega, string pedido, string transportista);
         string OrdenCargaEntregadaRequest(string documento, decimal kilos, string nombreConductor, string patenteAcoplado, string patenteChasis, string pedido, string tipoDocumento, string transportista, out string mensaje);

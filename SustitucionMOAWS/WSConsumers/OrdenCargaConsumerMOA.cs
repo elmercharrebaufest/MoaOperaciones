@@ -52,7 +52,7 @@ namespace SustitucionMOAWS.WSConsumers
         */
 
 
-        public string ControlCargaRequest(string cliente, string contrato, string corredor, string cuit, string material, string pedido, string soloSisa)
+        public string ControlCargaRequest(string cliente, string contrato, string corredor, string cuit, string material, string pedido)
         {
             var service = new SI_MPMF_MOAOP_CONTROL_CARGAClient();
 
@@ -60,7 +60,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Request: {new { cliente, contrato, corredor, cuit, material, pedido }}");
 
-            var result = service.SI_MPMF_MOAOP_CONTROL_CARGA(cliente, contrato, corredor, cuit, material, pedido, soloSisa).Trim();
+            var result = service.SI_MPMF_MOAOP_CONTROL_CARGA(cliente, contrato, corredor, cuit, material, pedido).Trim();
             Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {new { result, cliente, contrato, cuit }}");
             return result;
         }
@@ -128,6 +128,7 @@ namespace SustitucionMOAWS.WSConsumers
         Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE 	OE-02	'Entrega Creada - Error al insertar'
 
         */
+
         public string OrdenCargaEntregadaRequest(string documento, decimal kilos, string nombreConductor,
                                                  string patenteAcoplado, string patenteChasis, string pedido,
                                                  string tipoDocumento, string transportista, out string mensaje)
@@ -138,24 +139,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {new { documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista }}");
 
-            var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(
-                "", //IM_CUITDESTF
-                documento,
-                "", //IM_DOMORDEN
-                "",//IM_INDRVTA
-                kilos,
-                "",//IM_NAMEDESTF
-                nombreConductor,
-                "",//IM_ORDENDOM
-                patenteAcoplado,
-                patenteChasis,
-                pedido,
-                tipoDocumento,
-                "",//IM_TIPODOM 
-                transportista,
-                "CACERESN",
-                "", //IM_ZZCODPLANTA
-                out mensaje).Trim();
+            var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista, "CACERESN", out mensaje).Trim();
             Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Response: {new { entrega, mensaje, documento }}");
 
             return entrega;
