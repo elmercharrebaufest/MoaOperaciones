@@ -156,9 +156,7 @@ namespace SustitucionMOATest.Services
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>())
-                )
+                It.IsAny<string>()))
                 .Returns("CC-00");
 
             repositorioMock
@@ -307,9 +305,9 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void AnularOrdenTest()
         {
-            int orderId = 1;
-            var mailUsuario = "usuario@test.com";
-            var orden = new OrdenDeCarga
+			int orderId = 1;
+			var mailUsuario = "usuario@test.com";
+			var orden = new OrdenDeCarga
             {
                 Id = orderId,
                 Estado = EstadoOrdenDeCarga.Pendiente,
@@ -332,8 +330,8 @@ namespace SustitucionMOATest.Services
         public void AnularOrdenInformadaTest()
         {
             int orderId = 1;
-            var mailUsuario = "usuario@test.com";
-            var orden = new OrdenDeCarga
+			var mailUsuario = "usuario@test.com";
+			var orden = new OrdenDeCarga
             {
                 Id = orderId,
                 Estado = EstadoOrdenDeCarga.Confirmado,
@@ -659,7 +657,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
                 .Returns(ordenDeCarga);
 
-            var result = target.SeleccionarPedido(ordenId, pedido, "");
+            var result = target.SeleccionarPedido(ordenId, pedido,"");
 
             Assert.AreEqual(result, expected);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
@@ -1123,7 +1121,7 @@ namespace SustitucionMOATest.Services
         {
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
             ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
+            ConfigurationManager.AppSettings["EmailToComerciales"]= "ariera@baufest.com";
             ordenDeCarga.Cliente_Id = 301301301;
             ordenDeCarga.ContratoSAP = string.Empty;
             ordenDeCarga.ContratoIngresado = "10000000";
@@ -1149,7 +1147,7 @@ namespace SustitucionMOATest.Services
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
             ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "ariera@baufest.com";
             ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["HostEmail"] = "127.0.0.1";
+            ConfigurationManager.AppSettings["HostEmail"] = "127.0.0.1"; 
             ConfigurationManager.AppSettings["PortEmail"] = "1025";
             ConfigurationManager.AppSettings["EmailFrom"] = "moaoperaciones@molinosagro.com.ar";
             ordenDeCarga.Cliente_Id = 301301301;
@@ -1161,7 +1159,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
             var emailSender = target.ConstruirCuerpoMailNotificacionVariosContratos(ordenDeCarga.Id);
             var response = target.NotificarVariosContratos(emailSender);
-            Assert.AreEqual(expected, response);
+            Assert.AreEqual(expected,response);
         }
 
         [Test()]
@@ -1311,8 +1309,8 @@ namespace SustitucionMOATest.Services
             ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
             ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-
-
+            
+            
             ordenDeCargaCambiosHistorial = new List<OrdenDeCargaCambiosHistorial>
             {
                 new OrdenDeCargaCambiosHistorial
@@ -1335,9 +1333,9 @@ namespace SustitucionMOATest.Services
             result.Cuerpo = result.Cuerpo + "";
             Assert.AreEqual(result.Asunto, response.Asunto);
             Assert.AreEqual(result.Cuerpo.Trim(), response.Cuerpo.Trim());
+        
 
-
-        }
+    }
 
         [Test()]
         public void ConstruirCuerpoEmailOrdenDeCargaHistorialCrediticiaTestAppSettingsNull()
@@ -1374,7 +1372,7 @@ namespace SustitucionMOATest.Services
         }
 
         private string CrearAsuntoEdicionOrdenDeCarga()
-        {
+		{
             var fecha = DateTime.Now.Date;
             string asunto = string.Empty;
             asunto += $"<!DOCTYPE html>\r\n";
@@ -1412,7 +1410,7 @@ namespace SustitucionMOATest.Services
             asunto += $"</body>\r\n";
             asunto += $"</html>";
             return asunto;
-        }
+		}
 
         private string CrearAsuntoNotificacionValidacionCrediticia()
         {
@@ -1725,16 +1723,16 @@ namespace SustitucionMOATest.Services
               It.IsAny<string>(),
               It.IsAny<string>())).Returns("CE-00");
 
-
+            
             var response = target.VerificarSituacionCrediticia(ordenDeCarga.Id);
-
+            
             var result = new Resultado()
             {
                 Mensaje = string.Concat("Se ha generado la entrega ", respuesta, ".")
             };
-
+           
             Assert.AreEqual(result.Mensaje, response.Mensaje);
-
+           
 
         }
 
