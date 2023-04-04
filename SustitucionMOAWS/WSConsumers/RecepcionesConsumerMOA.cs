@@ -28,7 +28,6 @@ namespace SustitucionMOAWS.WSConsumers
                 ZMPES4090[] materiales_in = new ZMPES4090[] { };
                 ZMPES4990[] recepciones_out = new ZMPES4990[] { };
                 ZMPES4080[] vendedores_in = new ZMPES4080[] { };
-                ZMPES7000[] calidades_out = new ZMPES7000[] { };
                 List<ZMPES4100> fechasSAP = new List<ZMPES4100>() { };
                 foreach (FechaWS fecha in fechas)
                 {
@@ -45,15 +44,7 @@ namespace SustitucionMOAWS.WSConsumers
                 //ZmprfcGolRecepciones requestInfo = new ZmprfcGolRecepciones { PeProveedor = proveedor, TFechaDescargaIn = fechasSAP.ToArray() };
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                ZMPES4910 error = service.SI_MPMF_MOAOP_RECEPCIONES(
-                   proveedor,
-                   ref carta_porte_in,
-                   ref centros_in,
-                   ref fechasSAPArray,
-                   ref materiales_in,
-                   ref recepciones_out,
-                   ref vendedores_in,
-                   out calidades_out); 
+                ZMPES4910 error = service.SI_MPMF_MOAOP_RECEPCIONES(proveedor, ref carta_porte_in, ref centros_in, ref fechasSAPArray, ref materiales_in, ref recepciones_out, ref vendedores_in);
                 return map(error, recepciones_out);
             }
             catch (InfoCustomException e)

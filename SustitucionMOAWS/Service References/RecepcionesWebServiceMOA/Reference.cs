@@ -62,323 +62,6 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:sap-com:document:sap:rfc:functions")]
-    public partial class ZMPES6990 : object, System.ComponentModel.INotifyPropertyChanged {
-        
-        private string cARACTField;
-        
-        private decimal rESULTADO_CALField;
-        
-        private bool rESULTADO_CALFieldSpecified;
-        
-        private decimal rESULTADO_CAMField;
-        
-        private bool rESULTADO_CAMFieldSpecified;
-        
-        private string cERTIFICADOField;
-        
-        private decimal rESULTADO_RECField;
-        
-        private bool rESULTADO_RECFieldSpecified;
-        
-        private string cERTIFICADO_RECField;
-        
-        private decimal kG_NETOSField;
-        
-        private bool kG_NETOSFieldSpecified;
-        
-        private decimal kG_DESCField;
-        
-        private bool kG_DESCFieldSpecified;
-        
-        private decimal kG_APLICField;
-        
-        private bool kG_APLICFieldSpecified;
-        
-        private decimal pORC_DESCField;
-        
-        private bool pORC_DESCFieldSpecified;
-        
-        private string cAMARA_A_PRESENTField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
-        public string CARACT {
-            get {
-                return this.cARACTField;
-            }
-            set {
-                this.cARACTField = value;
-                this.RaisePropertyChanged("CARACT");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
-        public decimal RESULTADO_CAL {
-            get {
-                return this.rESULTADO_CALField;
-            }
-            set {
-                this.rESULTADO_CALField = value;
-                this.RaisePropertyChanged("RESULTADO_CAL");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool RESULTADO_CALSpecified {
-            get {
-                return this.rESULTADO_CALFieldSpecified;
-            }
-            set {
-                this.rESULTADO_CALFieldSpecified = value;
-                this.RaisePropertyChanged("RESULTADO_CALSpecified");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
-        public decimal RESULTADO_CAM {
-            get {
-                return this.rESULTADO_CAMField;
-            }
-            set {
-                this.rESULTADO_CAMField = value;
-                this.RaisePropertyChanged("RESULTADO_CAM");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool RESULTADO_CAMSpecified {
-            get {
-                return this.rESULTADO_CAMFieldSpecified;
-            }
-            set {
-                this.rESULTADO_CAMFieldSpecified = value;
-                this.RaisePropertyChanged("RESULTADO_CAMSpecified");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
-        public string CERTIFICADO {
-            get {
-                return this.cERTIFICADOField;
-            }
-            set {
-                this.cERTIFICADOField = value;
-                this.RaisePropertyChanged("CERTIFICADO");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=4)]
-        public decimal RESULTADO_REC {
-            get {
-                return this.rESULTADO_RECField;
-            }
-            set {
-                this.rESULTADO_RECField = value;
-                this.RaisePropertyChanged("RESULTADO_REC");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool RESULTADO_RECSpecified {
-            get {
-                return this.rESULTADO_RECFieldSpecified;
-            }
-            set {
-                this.rESULTADO_RECFieldSpecified = value;
-                this.RaisePropertyChanged("RESULTADO_RECSpecified");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=5)]
-        public string CERTIFICADO_REC {
-            get {
-                return this.cERTIFICADO_RECField;
-            }
-            set {
-                this.cERTIFICADO_RECField = value;
-                this.RaisePropertyChanged("CERTIFICADO_REC");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=6)]
-        public decimal KG_NETOS {
-            get {
-                return this.kG_NETOSField;
-            }
-            set {
-                this.kG_NETOSField = value;
-                this.RaisePropertyChanged("KG_NETOS");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool KG_NETOSSpecified {
-            get {
-                return this.kG_NETOSFieldSpecified;
-            }
-            set {
-                this.kG_NETOSFieldSpecified = value;
-                this.RaisePropertyChanged("KG_NETOSSpecified");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=7)]
-        public decimal KG_DESC {
-            get {
-                return this.kG_DESCField;
-            }
-            set {
-                this.kG_DESCField = value;
-                this.RaisePropertyChanged("KG_DESC");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool KG_DESCSpecified {
-            get {
-                return this.kG_DESCFieldSpecified;
-            }
-            set {
-                this.kG_DESCFieldSpecified = value;
-                this.RaisePropertyChanged("KG_DESCSpecified");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=8)]
-        public decimal KG_APLIC {
-            get {
-                return this.kG_APLICField;
-            }
-            set {
-                this.kG_APLICField = value;
-                this.RaisePropertyChanged("KG_APLIC");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool KG_APLICSpecified {
-            get {
-                return this.kG_APLICFieldSpecified;
-            }
-            set {
-                this.kG_APLICFieldSpecified = value;
-                this.RaisePropertyChanged("KG_APLICSpecified");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=9)]
-        public decimal PORC_DESC {
-            get {
-                return this.pORC_DESCField;
-            }
-            set {
-                this.pORC_DESCField = value;
-                this.RaisePropertyChanged("PORC_DESC");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool PORC_DESCSpecified {
-            get {
-                return this.pORC_DESCFieldSpecified;
-            }
-            set {
-                this.pORC_DESCFieldSpecified = value;
-                this.RaisePropertyChanged("PORC_DESCSpecified");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=10)]
-        public string CAMARA_A_PRESENT {
-            get {
-                return this.cAMARA_A_PRESENTField;
-            }
-            set {
-                this.cAMARA_A_PRESENTField = value;
-                this.RaisePropertyChanged("CAMARA_A_PRESENT");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:sap-com:document:sap:rfc:functions")]
-    public partial class ZMPES7000 : object, System.ComponentModel.INotifyPropertyChanged {
-        
-        private string cARTA_PORTEField;
-        
-        private ZMPES6990[] cALIDADESField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
-        public string CARTA_PORTE {
-            get {
-                return this.cARTA_PORTEField;
-            }
-            set {
-                this.cARTA_PORTEField = value;
-                this.RaisePropertyChanged("CARTA_PORTE");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public ZMPES6990[] CALIDADES {
-            get {
-                return this.cALIDADESField;
-            }
-            set {
-                this.cALIDADESField = value;
-                this.RaisePropertyChanged("CALIDADES");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:sap-com:document:sap:rfc:functions")]
     public partial class ZMPES4910 : object, System.ComponentModel.INotifyPropertyChanged {
         
         private string cODIGOField;
@@ -1162,34 +845,29 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=1)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES7000[] T_CALIDADES;
+        public SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4110[] T_CARTA_PORTE_IN;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=2)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4110[] T_CARTA_PORTE_IN;
+        public SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4130[] T_CENTRO_IN;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=3)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4130[] T_CENTRO_IN;
+        public SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4100[] T_FECHA_DESCARGA_IN;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=4)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4100[] T_FECHA_DESCARGA_IN;
+        public SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4090[] T_MATERIAL_IN;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=5)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4090[] T_MATERIAL_IN;
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=6)]
-        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
         public SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4990[] T_RECEPCIONES_OUT;
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=7)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=6)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
         public SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4080[] T_VENDEDOR_IN;
@@ -1197,9 +875,8 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
         public SI_MPMF_MOAOP_RECEPCIONESResponse() {
         }
         
-        public SI_MPMF_MOAOP_RECEPCIONESResponse(SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4910 MENSAJE_ERROR, SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES7000[] T_CALIDADES, SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4110[] T_CARTA_PORTE_IN, SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4130[] T_CENTRO_IN, SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4100[] T_FECHA_DESCARGA_IN, SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4090[] T_MATERIAL_IN, SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4990[] T_RECEPCIONES_OUT, SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4080[] T_VENDEDOR_IN) {
+        public SI_MPMF_MOAOP_RECEPCIONESResponse(SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4910 MENSAJE_ERROR, SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4110[] T_CARTA_PORTE_IN, SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4130[] T_CENTRO_IN, SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4100[] T_FECHA_DESCARGA_IN, SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4090[] T_MATERIAL_IN, SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4990[] T_RECEPCIONES_OUT, SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4080[] T_VENDEDOR_IN) {
             this.MENSAJE_ERROR = MENSAJE_ERROR;
-            this.T_CALIDADES = T_CALIDADES;
             this.T_CARTA_PORTE_IN = T_CARTA_PORTE_IN;
             this.T_CENTRO_IN = T_CENTRO_IN;
             this.T_FECHA_DESCARGA_IN = T_FECHA_DESCARGA_IN;
@@ -1241,7 +918,7 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
             return base.Channel.SI_MPMF_MOAOP_RECEPCIONES(request);
         }
         
-        public SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4910 SI_MPMF_MOAOP_RECEPCIONES(string PE_PROVEEDOR, ref SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4110[] T_CARTA_PORTE_IN, ref SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4130[] T_CENTRO_IN, ref SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4100[] T_FECHA_DESCARGA_IN, ref SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4090[] T_MATERIAL_IN, ref SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4990[] T_RECEPCIONES_OUT, ref SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4080[] T_VENDEDOR_IN, out SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES7000[] T_CALIDADES) {
+        public SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4910 SI_MPMF_MOAOP_RECEPCIONES(string PE_PROVEEDOR, ref SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4110[] T_CARTA_PORTE_IN, ref SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4130[] T_CENTRO_IN, ref SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4100[] T_FECHA_DESCARGA_IN, ref SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4090[] T_MATERIAL_IN, ref SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4990[] T_RECEPCIONES_OUT, ref SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4080[] T_VENDEDOR_IN) {
             SustitucionMOAWS.RecepcionesWebServiceMOA.SI_MPMF_MOAOP_RECEPCIONESRequest inValue = new SustitucionMOAWS.RecepcionesWebServiceMOA.SI_MPMF_MOAOP_RECEPCIONESRequest();
             inValue.PE_PROVEEDOR = PE_PROVEEDOR;
             inValue.T_CARTA_PORTE_IN = T_CARTA_PORTE_IN;
@@ -1251,7 +928,6 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
             inValue.T_RECEPCIONES_OUT = T_RECEPCIONES_OUT;
             inValue.T_VENDEDOR_IN = T_VENDEDOR_IN;
             SustitucionMOAWS.RecepcionesWebServiceMOA.SI_MPMF_MOAOP_RECEPCIONESResponse retVal = ((SustitucionMOAWS.RecepcionesWebServiceMOA.SI_MPMF_MOAOP_RECEPCIONES)(this)).SI_MPMF_MOAOP_RECEPCIONES(inValue);
-            T_CALIDADES = retVal.T_CALIDADES;
             T_CARTA_PORTE_IN = retVal.T_CARTA_PORTE_IN;
             T_CENTRO_IN = retVal.T_CENTRO_IN;
             T_FECHA_DESCARGA_IN = retVal.T_FECHA_DESCARGA_IN;
