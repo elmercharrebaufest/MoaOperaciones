@@ -14,6 +14,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {DialogModule} from 'primeng/dialog';
 
 @NgModule({
     imports: [
@@ -27,7 +29,9 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
         NgxMaskModule,
         OrdenesDeCargaRoutingModule,
         MultiSelectModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        ProgressSpinnerModule,
+        DialogModule,
     ],
     declarations: [
         OrdenesDeCargaAlta,
