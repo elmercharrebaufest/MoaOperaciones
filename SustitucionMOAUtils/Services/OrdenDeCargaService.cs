@@ -2497,5 +2497,23 @@ namespace SustitucionMOAUtils.Services
 
             }
         }
+        public string ValidarCUIT(string cuit)
+        {
+            var razonSocial = ObtenerRazonSocialDeCuit(cuit);
+            if (razonSocial is null)
+                throw new InfoCustomException($"La cuit {cuit} no se encuentra registrada");
+            if (!HabilitadoEnSISA(cuit))
+                throw new InfoCustomException($"La cuit {cuit} no se encuentra habilitada en SISA");
+            return razonSocial;
+        }
+        private string ObtenerRazonSocialDeCuit(string cuit)
+        {
+            return "test";
+        }
+        private bool HabilitadoEnSISA(string cuit)
+        {
+            var result = consumer.VericarEstadoSISA(cuit);
+            return !_SISAInvalidos.Contains(result);
+        }
     }
 }
