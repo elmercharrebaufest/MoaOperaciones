@@ -40,6 +40,8 @@ namespace SustitucionMOAUtils.Services
         private static readonly string EMAIL_TEMPLATE_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
         private readonly string _usuarioAutomaticoSAP;
 
+        private readonly List<string> _SISAInvalidos = new List<string> { "CC-08", "CC-09" };
+
         private readonly string _errorAnulacion = "Error al anular orden de carga, pero la entrega si ha sido anulada";
         private readonly string _entregaEstadoPendiente = "La entrega sigue pendiente.";
 
@@ -2494,6 +2496,24 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
 
             }
+        }
+        public string ValidarCUIT(string cuit)
+        {
+            var razonSocial = ObtenerRazonSocialDeCuit(cuit);
+            if (razonSocial is null)
+                throw new InfoCustomException($"La cuit {cuit} no se encuentra registrada");
+            if (!HabilitadoEnSISA(cuit))
+                throw new InfoCustomException($"La cuit {cuit} no se encuentra habilitada en SISA");
+            return razonSocial;
+        }
+        private string ObtenerRazonSocialDeCuit(string cuit)
+        {
+            return "test";
+        }
+        private bool HabilitadoEnSISA(string cuit)
+        {
+            var result = consumer.VericarEstadoSISA(cuit);
+            return !_SISAInvalidos.Contains(result);
         }
     }
 }
