@@ -14,6 +14,8 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { Paginator } from 'primeng/paginator';
+import { PeticionDeOfertaDto, CotizacionDto } from '../../modelos/peticion-de-oferta-model';
+import { forEach } from '@angular/router/src/utils/collection';
 
 declare var $: any;
 
@@ -47,11 +49,13 @@ export class DashboardComponent extends ListBaseComponent {
     mantenimiento: boolean = false;
     web: boolean = false;
     orden: string;
-    columnaOrden: string;    
+    columnaOrden: string;
     length = 0;
     pageSize: number = 10;
     pageIndex: number = 1;
     @ViewChild('paginator') paginator: Paginator
+    public peticion: PeticionDeOfertaDto;
+    displayRevisionTecnica: boolean;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -491,8 +495,8 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     handlePageEvent(e: any) {
-        this.pageSize = e.rows ;
-        this.pageIndex = e.page+1 ;        
+        this.pageSize = e.rows;
+        this.pageIndex = e.page + 1;
         this.getListarSolp()
 
     }
@@ -502,6 +506,140 @@ export class DashboardComponent extends ListBaseComponent {
         this.paginator.changePage(0);
         this.pageIndex = 1;
         this.getListarSolp();
+    }
+
+    onRowDblClick(a, b) {
+
+    }
+
+    obtenerPeticionDeOferta(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerPeticionDeOferta(Id)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.peticion = result.data;
+                        console.log(this.peticion);
+                        //for (var i = 0; i < this.peticion.Usuarios.length; i++) {
+                        //    //if (this.peticion.Usuarios[i].Cotizacion == null) {
+                        //    //    this.peticion.Usuarios[i].Cotizacion =  null
+                        //    //}
+                        //}
+                        this.displayRevisionTecnica = true;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    cerrarModalRevisionTecnica() {
+        this.displayRevisionTecnica = false;
+    }
+
+    descargarArchivo({ archivoId }) {
+        this.blockUI.start("Descargando...");
+        this.service.DescargarArchivo(archivoId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+                        this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
+
+    }
+
+    descargarAdjuntosCotizacion({ cotizacionId }) {
+        this.blockUI.start("Descargando...");
+        this.service.DescargarAdjuntosCotizacion(cotizacionId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            this.blockUI.stop();
+                            return false;
+                        }
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
+
+    }
+
+    grabarRevisionTecnica() {
+        this.blockUI.start('Grabando...');
+        //this.peticion;
+        //let peticionDeOfertaUsuario = [];
+        //for (var i = 0; i < length; i++) {
+        //    peticionDeOfertaUsuario.push({
+
+        //    });
+        //}
+        this.service.grabarRevisionTecnica(this.peticion.Usuarios)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        if (result) {
+
+                        }
+                        this.displayRevisionTecnica = false;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
     }
 }
 

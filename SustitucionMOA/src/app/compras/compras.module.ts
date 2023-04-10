@@ -64,6 +64,7 @@ import { ProveedorPeticionComponent } from './dashboard-comprador/proveedor-peti
 import { AltaProveedorComponent } from './dashboard-comprador/alta-proveedor/alta-proveedor.component';
 import { ListadoDashboardProveedorComponent } from './dashboard-proveedor/listado-dashboard-proveedor/listado-dashboard-proveedor.component';
 import { FiltroDashboardProveedorComponent } from './dashboard-proveedor/filtro-dashboard-proveedor/filtro-dashboard-proveedor.component';
+import { RevisionTecnicaComponent } from './dashboard/revision-tecnica/revision-tecnica.component';
 
 
 @NgModule({
@@ -130,7 +131,8 @@ import { FiltroDashboardProveedorComponent } from './dashboard-proveedor/filtro-
         AltaProveedorComponent,
         ProveedorPeticionComponent,
         ListadoDashboardProveedorComponent,
-        FiltroDashboardProveedorComponent
+        FiltroDashboardProveedorComponent,
+        RevisionTecnicaComponent,
     ],
     providers: [
         ComprasService,

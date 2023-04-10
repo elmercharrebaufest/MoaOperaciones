@@ -64,5 +64,9 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaGuardarSOLP GrabarProveedoresEnPeticionDeOferta(List<int> usuariosId, int peticionId);
         RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(int AdjudicacionId);
         ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp);
+
+        string DescargarAdjuntosCotizacion(int idCotizacion, string pathBase);
+        RespuestaGuardarSOLP GrabarRevisionTecnica(List<PeticionDeOfertaUsarioDto> revision, int usuarioId);
+
     }
 }

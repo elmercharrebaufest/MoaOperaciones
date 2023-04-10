@@ -75,6 +75,9 @@ namespace SustitucionMOAModel.Dto
         public DateTime? FechaLiberacionSap { get; set; }
         public string FechaLiberacionSapFormateada { get; set; }
         public IEnumerable<PeticionDeOfertaDto> PeticionesDeOferta { get; set; } = new List<PeticionDeOfertaDto>();
+        public List<PeticionDeOfertaDto> Peticiones { get; set; } = new List<PeticionDeOfertaDto>();
+        public string TipoPosicionCodigo { get; set; }
+        public bool TienePeticionDeOferta { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -312,6 +315,7 @@ namespace SustitucionMOAModel.Dto
 
     public class SolpSubposicionDto
     {
+        public int Id { get; set; }
         public string Codigo { get; set; }
         public int Numero { get; set; }
         public int? CodigoServicioSapId { get; set; }
