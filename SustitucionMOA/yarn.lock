@@ -1879,9 +1879,9 @@
     "delayed-stream" "~1.0.0"
 
 "commander@":
-  "integrity" "sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw=="
-  "resolved" "https://registry.npmjs.org/commander/-/commander-9.4.1.tgz"
-  "version" "9.4.1"
+  "integrity" "sha512-zS5PnTI22FIRM6ylNW8G4Ap0IEOyk62fhLSD0+uHRT9McRCLGpkVNvao4bjimpK/GShynyQkFFxHhwMcETmduA=="
+  "resolved" "https://registry.npmjs.org/commander/-/commander-10.0.0.tgz"
+  "version" "10.0.0"
 
 "commander@^2.14.1", "commander@^2.2.0", "commander@^2.8.1", "commander@2.17.x":
   "integrity" "sha512-wPMUt6FnH2yzG95SA6mzjQOEKUU3aLaDEmzs1ti+1E9h+CsrZghRlqEM/EJ4KscsQVG8uNN4uVreUeT8+drlgg=="
@@ -6740,9 +6740,9 @@
     "util-deprecate" "~1.0.1"
 
 "readable-stream@^3.0.2":
-  "integrity" "sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA=="
-  "resolved" "https://registry.npmjs.org/readable-stream/-/readable-stream-3.6.0.tgz"
-  "version" "3.6.0"
+  "integrity" "sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA=="
+  "resolved" "https://registry.npmjs.org/readable-stream/-/readable-stream-3.6.2.tgz"
+  "version" "3.6.2"
   dependencies:
     "inherits" "^2.0.3"
     "string_decoder" "^1.1.1"
