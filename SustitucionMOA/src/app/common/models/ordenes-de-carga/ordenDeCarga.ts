@@ -37,9 +37,10 @@ export class OrdenDeCarga {
     OrdenDeCargaCambiosHistorial: OrdenDeCargaCambiosHistorial[];
     FechaVencimientoAmpliada: boolean;
     EdicionRechazada: boolean;
+    CUITDestinatario?:string;
+    CUITDestino?:string;
+    RazonSocialDestinatario?: string;
+    RazonSocialDestino?: string;
     constructor() {
     }
-
-
 }
-
