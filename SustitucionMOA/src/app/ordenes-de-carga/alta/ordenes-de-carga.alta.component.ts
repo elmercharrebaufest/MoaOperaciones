@@ -768,11 +768,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
     validarExisteCUIT(campo: CuitValidaExistencia) {
-        if (!this.revisarCUITFormatoValido(campo)) return
+        const cuit = this.ordenDeCarga[campo]
+        if (!this.revisarCUITFormatoValido(cuit)) return
         this.validando[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
-        const cuit = this.ordenDeCarga[campo];
         this.service.validarCUITExiste(cuit).pipe(finalize(() => {
             this.validando[campo] = false;
         })).subscribe(
@@ -790,8 +790,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 }
             })
     }
-    revisarCUITFormatoValido(campo: CuitValidaExistencia): boolean {
-        return this.ordenDeCarga[campo] && this.ordenDeCarga[campo].length == 11
+    revisarCUITFormatoValido(cuit: string): boolean {
+        return cuit && cuit.length == 11 && !Number.isNaN(cuit)
     }
     gestionarAltaCUIT(campo: CuitValidaExistencia) {
         const cuit = this.ordenDeCarga[campo];
