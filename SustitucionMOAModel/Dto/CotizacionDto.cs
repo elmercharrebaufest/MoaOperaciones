@@ -20,13 +20,13 @@ namespace SustitucionMOAModel.Dto
         public string ObservacionEconomica { get; set; }
         public int Revision { get; set; }
         public string CotizacionEstadoDescripcion { get; set; }
-        public List<LegajoDto> Archivos { get; set; } = new List<LegajoDto>();        
+        public List<LegajoDto> Archivos { get; set; } = new List<LegajoDto>();
         public bool TieneObservacionTecnica { get; set; }
         public List<CotizacionPosicionDto> CotizacionPosiciones { get; set; } = new List<CotizacionPosicionDto>();
         public bool TieneAdjuntos { get; set; }
     }
 
-    public  class CotizacionPosicionDto
+    public class CotizacionPosicionDto
     {
         public int Id { get; set; }
         public List<CotizacionSubposicionDto> CotizacionSubPosiciones { get; set; } = new List<CotizacionSubposicionDto>();
