@@ -1,0 +1,75 @@
+<section class="container-fluid clearfix">
+  <div class="row titleSection">
+      <div class="col-xs-12 col-sm-10 "> <strong></strong></div>
+  </div>
+  <br>
+</section>
+
+<div class="content-wraper" style="padding-top: 0px !important;">
+  <spinner></spinner>
+
+  <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
+
+
+<p-table [value]="ofertasProveedor">
+  <ng-template pTemplate="header">
+      <tr>
+          <th rowspan="3">Pos.</th>
+          <th rowspan="3">Codigo</th>
+          <th rowspan="3">Descripcion</th>
+          <th rowspan="3">Texto de suministro</th>
+          <th rowspan="3">Ctd.</th>
+          <th rowspan="3">Um</th>
+      </tr>
+      <tr> <!-- for por cada proveedor -->
+          <!-- <th colspan="6">Proveedor #</th> -->
+          <ng-container>
+            <th colspan="6">Proveedor {{posicion.RazonSocial}}</th>
+          </ng-container>
+      </tr>
+      
+      <tr> <!-- for por cada proveedor -->
+        <ng-container>
+          <th>Ctd. Cotizada</th>
+          <th>Um. Cotizada</th>
+          <th>Precio unidad</th>
+          <th>Precio total</th>
+          <th>Total ARP</th>
+          <th>Fecha de entrega</th>
+        </ng-container>
+      </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-posicion>
+    <ng-container>
+        <tr>
+            <!-- columnas fijas -->
+            <td>{{posicion.Pos}}</td>
+            <td>{{posicion.Codigo}}</td>
+            <td>{{posicion.Tarea}}</td>
+            <td>{{posicion.TextoSuministro}}</td>
+            <td>{{posicion.Cantidad}}</td>
+            <td>{{posicion.UnidadComprasDescripcion}}</td>
+            <!-- datos por proveedor -->
+            <!-- <td>{{sale.Cotizaciones[i].Cantidad}}</td>
+            <td>{{sale.Cotizaciones[i].UnidadDeMedida_Id}}</td>
+            <td>{{sale.Cotizaciones[i].Moneda_Id}} {{sale.Cotizaciones[i].Precio}}</td>
+            <td>{{sale.Cotizaciones[i].Moneda_Id}} {{sale.Cotizaciones[i].PrecioTotal}}</td>
+            <td>ARP {{sale.Cotizaciones[i].TotalARP}}</td>
+            <td>{{sale.Cotizaciones[i].FechaDeEntrega}}</td> -->
+        </tr>
+    </ng-container>
+</ng-template>
+
+
+  <ng-template pTemplate="footer">
+      <tr>
+          <td colspan="6">Total global</td>
+          <td colspan="6">ARP $506,202</td>
+      </tr>
+      <tr>
+        <td colspan="6">Adjuntos y observaciones</td>
+        <td colspan="6">Adjuntos</td>
+      </tr>
+  </ng-template>
+</p-table>

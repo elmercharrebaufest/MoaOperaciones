@@ -29,14 +29,32 @@ namespace SustitucionMOAModel.Dto
     public class CotizacionPosicionDto
     {
         public int Id { get; set; }
-        public List<CotizacionSubposicionDto> CotizacionSubPosiciones { get; set; } = new List<CotizacionSubposicionDto>();
-        public decimal Precio { get; set; }
+        public int Cotizacion_Id { get; set; }
         public int PeticionDeOfertaSolpPosicion_Id { get; set; }
+        public int Cantidad { get; set; }
+        public int UnidadDeMedida_Id { get; set; }
+        public int Moneda_Id { get; set; }
+        public decimal Precio { get; set; }
+        public DateTime FechaDeEntrega { get; set; }
+        public int ItemPorPagina { get; set; }
+        public int Pagina { get; set; }
+        public int ItemsTotales { get; set; }
+        public string Codigo { get; set; }
+        public string Descripcion { get; set; }
+        public string TextoSuministro { get; set; }
+        public decimal? CantidadSolp { get; set; }
+        public TablaSapDto UnidadMedida { get; set; }
+        public List<CotizacionSubPosicionDto> CotizacionSubPosiciones { get; set; } = new List<CotizacionSubPosicionDto>();
     }
 
-    public class CotizacionSubposicionDto
+    public class CotizacionSubPosicionDto
     {
         public int Id { get; set; }
+        public int CotizacionPosicion_Id { get; set; }
+        public int SolpSubPosicion_Id { get; set; }
+        public int Cantidad { get; set; }
+        public int UnidadDeMedida_Id { get; set; }
+        public int Moneda_Id { get; set; }
         public decimal Precio { get; set; }
     }
 }
