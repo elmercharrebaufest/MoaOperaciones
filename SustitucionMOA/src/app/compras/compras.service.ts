@@ -431,6 +431,14 @@ export class ComprasService extends BaseService {
             );
     }
 
+    public getListarOfertasComprador(peticionOferta_Id): Observable<any> {
+        debugger
+        let params: HttpParams = new HttpParams()
+        params = params.set('peticionOferta_Id', peticionOferta_Id);
+        return this.http
+            .get<any[]>('/api/compras/ListarOfertasComprador', { params: params, headers: this.headers });
+    }
+
     listarContratosAsociar(posiciones: SolpPosicion[]): Observable<any> {
         var json = posiciones.filter(x => x.codigoServicio != null).map(x => {
             return {

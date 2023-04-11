@@ -2224,6 +2224,12 @@ namespace SustitucionMOAUtils.Services
             return todasLasPO;
         }
 
+        public PeticionDeOfertaDto ListarOfertasComprador(int PeticionOferta_Id)
+        {
+            var todasLasOfertas = repositorio.ObtenerConsultaEscalar(new ComparadorOfertasConsulta(PeticionOferta_Id));
+
+            return todasLasOfertas;
+        }
 
         private SolpSAPDto ConvertirSOLPSAP(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas)
         {

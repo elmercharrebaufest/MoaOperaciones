@@ -1,4 +1,7 @@
 export interface PeticionDeOfertaDto {
+import { SolpPosicion } from "../compras/solp/solp-posicion"
+
+export interface PeticionDeOfertaDto{
     Id: number
     FechaEntregaFormateado: string
     PlazoDeOferta: Date,
@@ -34,4 +37,11 @@ export interface CotizacionDto {
 export interface LegajoDto {
     Id: number
     Observacion: string
+}
+    
+export interface PeticionDeOfertaSolpPosicionDto{
+    Id: number
+    PeticionDeOferta_Id: number
+    SolpPosicion_Id: number
+    Posicion: SolpPosicion
 }

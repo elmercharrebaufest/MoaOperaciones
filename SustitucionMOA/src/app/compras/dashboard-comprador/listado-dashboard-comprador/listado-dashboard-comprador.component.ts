@@ -388,6 +388,10 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     onRowDblClick(a, b) {
 
     }
+
+    verOfertas(Id : string) {
+        this.goToSeccionParam('/compras/ver-ofertas', Id);
+    }
     
     obtenerPeticionDeOferta(Id) {
         this.blockUI.start('Cargando...')
