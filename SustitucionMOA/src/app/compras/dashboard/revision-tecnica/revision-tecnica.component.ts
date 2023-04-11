@@ -81,45 +81,6 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
         this.cerrardisplayRevisionTecnicaEmitter.next();
     }
 
-    grabarCircular() {
-        this.armarPeticion;
-        this.validarPeticion();
-        if (!this.visualizarAlert) {
-            this.blockUI.start("Grabando...");
-            try {
-                this.subscription = this.service.GrabarCircular(this.circular).subscribe(
-                    (result: any) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.error = result.error;
-                            this.visualizarAlert = true;
-                            // this.floatMsgService.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.error = result.info;
-                            this.visualizarAlert = true;
-                            //  this.floatMsgService.setInfoMsg(result.info);
-                        } else {
-                            this.nroPeticion = result.data.IdEntidad;
-                            this.displayOkPeticion = true;
-                        }
-                        this.blockUI.stop();
-                    },
-                    error => {
-                        this.floatMsgService.setErrorMsg(error.message);
-                        this.blockUI.stop();
-
-                    });
-            } catch (e) {
-                this.floatMsgService.setErrorMsg(e);
-                this.blockUI.stop();
-                return false; //<-- Prevent Refresh
-            }
-            return false; //<-- Prevent Refresh
-        }
-    }
-
-
     estaSeleccionado(seleccion) {
 
     }

@@ -198,7 +198,8 @@ export class CircularComponent implements OnInit, OnChanges {
             PlazoDeOferta: this.plazoDeOferta,
             Observacion: this.Observacion,
             RequiereCambioDeFecha: this.visualizarFechas,
-            UsuarioIds: this.selectedProv
+            UsuarioIds: this.selectedProv,
+            PeticionDeOferta_Id: this.peticion.Id
         };
         this.circular = c;
     }

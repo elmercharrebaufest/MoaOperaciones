@@ -9,7 +9,7 @@ namespace SustitucionMOAModel.Dto
 {
     public class CircularDto
     {      
-        public int PeticionDeOferta { get; set; }
+        public int PeticionDeOferta_Id { get; set; }
         public List<ArchivoDto> Adjuntos { get; set; }
         public int UsuarioId { get; set; }
         public string Observacion { get; set; }

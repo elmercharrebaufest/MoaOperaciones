@@ -40,6 +40,7 @@ using System.Net.Mail;
 using System.Net;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using SustitucionMOAUtils.Logger;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -3314,18 +3315,22 @@ namespace SustitucionMOAUtils.Services
 
                 ValidarCircular(circularDto);
 
-                var peticion = repositorio.Listar<PeticionDeOfertaUsuario>();
-                var usuarios = repositorio.Listar<Usuario>();
+                var peticion = repositorio.Obtener<PeticionDeOferta>(circularDto.PeticionDeOferta_Id);
+                var usuario = repositorio.Obtener<Usuario>(circularDto.UsuarioId);
                 var circular = new Circular()
                 {
                     UsuarioCreador_Id = circularDto.UsuarioId,
-                    Usuario = usuarios.Where(x => x.Id == circularDto.UsuarioId).FirstOrDefault(),
+                    Usuario = usuario,
                     FechaCreacion = DateTime.Now,
                     Observaciones = circularDto.Observacion,
                     PlazoDeOferta = circularDto.PlazoDeOferta,
                     FechaDeEntrega = circularDto.FechaEntrega,
                     RequiereCambioDeFechas = circularDto.RequiereCambioDeFecha,
-                    PeticionDeOfertaUsuarios = peticion.Where(x => circularDto.UsuarioIds.Contains(x.Id)).Select(a => new CircularPeticionDeOfertaUsuario { PeticionDeOfertaUsuario_Id = a.Id }).ToList()
+                    PeticionDeOfertaUsuarios = peticion.Usuarios.Where(x => circularDto.UsuarioIds.Contains(x.Usuario_Id))
+                    .Select(a => new CircularPeticionDeOfertaUsuario
+                    {
+                        PeticionDeOfertaUsuario_Id = a.Id
+                    }).ToList()
                 };
 
                 circular = repositorio.Agregar(circular);
@@ -3353,7 +3358,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
-
+                Log.Error(e);
                 throw;
             }
         }

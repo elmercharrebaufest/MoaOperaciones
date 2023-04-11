@@ -563,8 +563,8 @@ export class ComprasService extends BaseService {
             Adjuntos: circular.Adjuntos,
             PlazoDeOferta: circular.PlazoDeOferta,
             FechaEntrega: circular.FechaEntrega,
-            RequiereCambioDeFecha: circular.RequiereCambioDeFecha     
-            
+            RequiereCambioDeFecha: circular.RequiereCambioDeFecha,
+            PeticionDeOferta_Id: circular.PeticionDeOferta_Id,            
         });
 
         var payload = new FormData();
