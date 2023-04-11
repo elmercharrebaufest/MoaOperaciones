@@ -91,10 +91,14 @@ namespace SustitucionMOAModel.Entities
         public bool FechaVencimientoAmpliada { get; set; }
 
         public bool EdicionRechazada { get; set; }
+        public string CUITDestino { get; set; }
+        public string CUITDestinatario { get; set; }
+        public string RazonSocialDestino { get; set; }
+        public string RazonSocialDestinatario { get; set; }
 
         public void ActualizarEstado()
         {
-			if (Estado != EstadoOrdenDeCarga.Entregada)
+            if (Estado != EstadoOrdenDeCarga.Entregada)
             {
                 if (CodigoVerificacionSap == "CC-01" || CodigoVerificacionSap == "CC-06")
                 {

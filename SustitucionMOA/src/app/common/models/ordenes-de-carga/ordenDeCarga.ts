@@ -44,3 +44,5 @@ export class OrdenDeCarga {
     constructor() {
     }
 }
+export type CuitValidaExistencia =keyof Pick<OrdenDeCarga,"CUITDestinatario"|"CUITDestino">;
+
