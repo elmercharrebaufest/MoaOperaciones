@@ -4,7 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { EmpresaGranosService } from '../../alta-proveedores/empresa-granos/empresa-granos.service';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { Material } from '../../common/models/material';
-import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { CuitValidaExistencia, OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { SeleccionarProveedorService } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
@@ -767,7 +767,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.blockUI.stop();
         }
     }
-    validarCUIT(campo: keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino">) {
+    validarExisteCUIT(campo: CuitValidaExistencia) {
         if (!this.revisarCUITFormatoValido(campo)) return
         this.validando[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
@@ -790,10 +790,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 }
             })
     }
-    revisarCUITFormatoValido(campo: keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino">): boolean {
+    revisarCUITFormatoValido(campo: CuitValidaExistencia): boolean {
         return this.ordenDeCarga[campo] && this.ordenDeCarga[campo].length == 11
     }
-    gestionarAltaCUIT(campo: keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino">) {
+    gestionarAltaCUIT(campo: CuitValidaExistencia) {
         const cuit = this.ordenDeCarga[campo];
         this.mensajesOrdenDeCarga[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
     }
