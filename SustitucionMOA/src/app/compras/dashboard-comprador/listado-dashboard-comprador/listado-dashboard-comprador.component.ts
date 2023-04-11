@@ -383,7 +383,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     publicarCotizacion(Id: string) {
-        this.goToSeccionParam('/compras/cotizacion-formulario', Id);
+        this.goToSeccionParam('/compras/peticion-de-oferta-formulario', Id);
     }
 
     onRowDblClick(a, b) {
