@@ -34,8 +34,5 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Cotizacion")]
         public virtual ICollection<CotizacionPosicion> CotizacionPosiciones { get; set; } = new List<CotizacionPosicion>();
 
-        [InverseProperty("Cotizacion")]
-        public virtual ICollection<CotizacionPosicion> CotizacionPosiciones { get; set; } = new List<CotizacionPosicion>();
-
     }
 }
