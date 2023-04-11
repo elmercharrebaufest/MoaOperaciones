@@ -2,7 +2,6 @@
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using SustitucionMOAWS.Interfaces;
@@ -65,18 +64,6 @@ namespace SustitucionMOAWS.WSConsumers
             var result = service.SI_MPMF_MOAOP_CONTROL_CARGA(cliente, contrato, corredor, cuit, material, pedido, soloSisa).Trim();
             Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {new { result, cliente, contrato, cuit }}");
             return new ControlCargaResponseHandler(result);
-        }
-        public string VericarEstadoSISA(string cuit)
-        {
-            var service = new SI_MPMF_MOAOP_CONTROL_CARGAClient();
-
-            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Request SOLO SISA: {new { cuit}}");
-
-            var result = service.SI_MPMF_MOAOP_CONTROL_CARGA("", "", "", cuit, "", "", "X").Trim();
-            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result SOLO SISA: {new { result, cuit }}");
-            return result;
         }
         /*
         * RFC Z_MPMF_MOAOP_CREAR_ORDEN_CARGA con:
