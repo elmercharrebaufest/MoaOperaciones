@@ -111,7 +111,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
         if (this.esCliente()) {
             this.clienteCodigo = sessionStorage.getItem("proveedor");
-            if (this.ordenDeCargaId == 0) {
+            if (this.ordenDeCargaId == 0 && !(this.esComercial || this.esCorredor)) {
                 this.cargarContratosDisponibles(this.clienteCodigo);
             }
         }
@@ -768,12 +768,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
     validarCUIT(campo: keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino">) {
-        if (!this.revisarValidezCUIT(campo)) return
+        if (!this.revisarCUITFormatoValido(campo)) return
         this.validando[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
         const cuit = this.ordenDeCarga[campo];
-        this.service.validarCUIT(cuit).pipe(finalize(() => {
+        this.service.validarCUITExiste(cuit).pipe(finalize(() => {
             this.validando[campo] = false;
         })).subscribe(
             result => {
@@ -790,13 +790,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 }
             })
     }
-    revisarValidezCUIT(campo: keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino">): boolean {
+    revisarCUITFormatoValido(campo: keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino">): boolean {
         return this.ordenDeCarga[campo] && this.ordenDeCarga[campo].length == 11
     }
     gestionarAltaCUIT(campo: keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino">) {
         const cuit = this.ordenDeCarga[campo];
         this.mensajesOrdenDeCarga[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
-        console.info('Gestionar alta: ', cuit)
     }
 }
 
