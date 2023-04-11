@@ -53,7 +53,6 @@ import { PaginatorModule } from 'primeng/paginator';
 import { TabViewModule } from 'primeng/tabview';
 import {TooltipModule} from 'primeng/tooltip';
 import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
-import { CotizacionFormularioComponent } from './cotizacion/cotizacion-formulario/cotizacion-formulario.component';
 import { CircularComponent } from './dashboard-comprador/circular/circular.component';
 import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
 import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
@@ -67,6 +66,7 @@ import { FiltroDashboardProveedorComponent } from './dashboard-proveedor/filtro-
 import { VerOfertasComponent } from './dashboard-comprador/ver-ofertas/ver-ofertas.component';
 import { RevisionTecnicaComponent } from './dashboard/revision-tecnica/revision-tecnica.component';
 
+import { PeticionDeOfertaFormularioComponent } from './peticion-de-oferta-formulario/peticion-de-oferta-formulario.component';
 
 @NgModule({
     imports: [
@@ -126,7 +126,7 @@ import { RevisionTecnicaComponent } from './dashboard/revision-tecnica/revision-
         ObtenerContratoMarcoComponent,
         ListadoDashboardCompradorComponent,
         FiltroDashboardCompradorComponent,
-        CotizacionFormularioComponent,
+        PeticionDeOfertaFormularioComponent,
         LegajoComponent,
         CircularComponent,
         AltaProveedorComponent,
