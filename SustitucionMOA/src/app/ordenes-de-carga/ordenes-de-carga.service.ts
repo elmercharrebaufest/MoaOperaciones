@@ -350,4 +350,14 @@ export class OrdenesDeCargaService extends BaseService {
             .get<ObtenerContratosDisponiblesResponse>('/api/OrdenDeCarga/ObtenerContratosDisponibles', { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
+    public validarCUITExiste(cuit: string): Observable<ApiResponse<string>> {
+        let params: HttpParams = new HttpParams();
+        params = params.append("cuit", cuit);
+
+        return this.http
+            .get
+            <ApiResponse<string>>
+            ('/api/OrdenDeCarga/TBD', { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
 }

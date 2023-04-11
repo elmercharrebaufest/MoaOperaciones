@@ -4,7 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { EmpresaGranosService } from '../../alta-proveedores/empresa-granos/empresa-granos.service';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { Material } from '../../common/models/material';
-import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { CuitValidaExistencia, OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { SeleccionarProveedorService } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
@@ -17,6 +17,7 @@ import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { ContratoOrdenFas } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
+import { finalize } from 'rxjs/operators';
 
 declare var $: any;
 
@@ -39,6 +40,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     ordenDeCargaId: number = 0;
 
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
+    mensajesOrdenDeCarga: Partial<Record<keyof OrdenDeCarga, string>> = {};
+    validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
+    displayModal: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
+    validaCPEDG = false;
     mensajeError: string = "";
     mensajeSuccess: string = "";
     clienteCUIT: string = "";
@@ -104,10 +109,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         if (this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS')) {
             this.ordenDeCarga.CUITCliente = 0;
         }
-		if (this.esCliente()) {
+        if (this.esCliente()) {
             this.clienteCodigo = sessionStorage.getItem("proveedor");
-            if (this.ordenDeCargaId == 0) {
-				this.cargarContratosDisponibles(this.clienteCodigo);
+            if (this.ordenDeCargaId == 0 && !(this.esComercial || this.esCorredor)) {
+                this.cargarContratosDisponibles(this.clienteCodigo);
             }
         }
     }
@@ -200,15 +205,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         }
                         this.clienteCUIT = result.data.CUITCliente;
                         this.clienteCodigo = result.data.CodigoCliente;
-                        console.log("obtener orden");
-                        console.log("this.clienteCUIT", this.clienteCUIT);
-                        console.log("this.clienteCodigo", this.clienteCodigo);
-                        console.log("this.CodigoCorredor", this.CodigoCorredor);
                         if (this.CodigoCorredor) {
-                            console.log("obtener orden cargarClientes");
                             this.cargarClientes(this.CodigoCorredor);
                         } else {
-                            console.log("this.onCorredorFocusOut");
                             this.onCorredorFocusOut('', true);
                         }
                         this.getPatentes();
@@ -441,8 +440,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                             this.floatMsgService.setInfoMsg(result.info);
                         } else {
                             this.listaClientes = this.ordenarYFiltrarClientes(result);
-                            console.log("this.listaClientes", this.listaClientes);
-                            console.log("this.clienteCUIT", this.clienteCUIT);
                             if (this.clienteCUIT != null && this.clienteCUIT.length > 0) {
                                 this.clienteSeleccionado = this.listaClientes.find(x => x.CUIT == this.clienteCUIT);
                             }
@@ -491,8 +488,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                         this.blockUI.stop();
                     } else {
-                        console.log("cargar clientes");
-                        console.log("this.clienteCUIT", this.clienteCUIT);
                         this.listaClientes = this.ordenarYFiltrarClientes(result.Clientes);
                         if (this.clienteCUIT != null && this.clienteCUIT.length > 0) {
                             this.clienteSeleccionado = this.listaClientes.find(x => x.CUIT == this.clienteCUIT);
@@ -517,15 +512,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         let pClienteCodigo: string = "";
         if (this.clienteSeleccionado) {
-            if (this.clienteSeleccionado.Id <= 0)
-            {
+            if (this.clienteSeleccionado.Id <= 0) {
                 // El cliente está relacionado al corredor en SAP, pero no existe en la BD
                 this.mensajeComponent.setErrorMsg("El cliente seleccionado no existe en la web, por favor gestionar su alta");
                 this.clienteCUIT = "";
                 pClienteCodigo = "";
             }
-            else
-            {
+            else {
                 this.clienteCUIT = this.clienteSeleccionado.CUIT;
                 pClienteCodigo = this.clienteSeleccionado.CodigoProveedor;
             }
@@ -541,6 +534,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato; //this.contratoSeleccionado.NumeroContrato;
             this.ordenDeCarga.Producto_Id = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId; //this.contratoSeleccionado.Producto.MaterialId;
             this.Producto = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId.toString(); //this.contratoSeleccionado.Producto.MaterialId.toString();
+            this.validaCPEDG = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId > 6;
         }
         else {
             this.Contrato = "";
@@ -741,9 +735,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             if (pClienteCodigo) { //this.clienteSeleccionado) { //|| this.corredorSeleccionado) {
                 //let pClienteCodigo = this.clienteSeleccionado.CodigoProveedor;
                 this.mensajeComponent.setMsgsEmpty();
-                let pCorredorCodigo =  this.corredorSeleccionado ?
+                let pCorredorCodigo = this.corredorSeleccionado ?
                     this.corredorSeleccionado.idVendedor : "";
-                
+
                 this.blockUI.start('');
                 this.service
                     .obtenerContratosDisponibles(pClienteCodigo, pCorredorCodigo, this.desde, this.hasta)
@@ -773,5 +767,36 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.blockUI.stop();
         }
     }
+    validarExisteCUIT(campo: CuitValidaExistencia) {
+        const cuit = this.ordenDeCarga[campo]
+        if (!this.revisarCUITFormatoValido(cuit)) return
+        this.validando[campo] = true;
+        this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
+        this.mensajesOrdenDeCarga[campo] = null;
+        this.service.validarCUITExiste(cuit).pipe(finalize(() => {
+            this.validando[campo] = false;
+        })).subscribe(
+            result => {
+                if (result.logout) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajesOrdenDeCarga[campo] = result.info;
+                    if (result.info == `La cuit ${cuit} no se encuentra registrada`)
+                        this.displayModal[campo] = true;
+                } else {
+                    this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = result.data;
+                }
+            })
+    }
+    revisarCUITFormatoValido(cuit: string): boolean {
+        return cuit && cuit.length == 11 && !Number.isNaN(cuit)
+    }
+    gestionarAltaCUIT(campo: CuitValidaExistencia) {
+        const cuit = this.ordenDeCarga[campo];
+        this.mensajesOrdenDeCarga[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
+    }
 }
+
 
