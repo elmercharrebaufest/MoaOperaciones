@@ -40,8 +40,6 @@ namespace SustitucionMOAUtils.Services
         private static readonly string EMAIL_TEMPLATE_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
         private readonly string _usuarioAutomaticoSAP;
 
-        private readonly List<string> _SISAInvalidos = new List<string> { "CC-08", "CC-09" };
-
         private readonly string _errorAnulacion = "Error al anular orden de carga, pero la entrega si ha sido anulada";
         private readonly string _entregaEstadoPendiente = "La entrega sigue pendiente.";
 
