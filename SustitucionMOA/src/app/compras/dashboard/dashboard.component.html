@@ -291,7 +291,7 @@
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna" style="text-align: center;">                                                   
-                                                    <button class="publicar btn" (click)="obtenerPeticionDeOferta(licitacion.Id)">
+                                                    <button *ngIf="licitacion.Estado == 'Abierto'" class="publicar btn" (click)="obtenerPeticionDeOferta(licitacion.Id)">
                                                         Revisión Técnica
                                                     </button>
                                                 </td>
