@@ -323,11 +323,8 @@
     <Content Include="src\app\compras\cotizacion\cotizacion-formulario\cotizacion-formulario.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.html" />
-    <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.js" />
-    <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.spec.js" />
     <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.html" />
-    <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.js" />
     <Content Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\legajo\legajo.component.css" />
@@ -1001,9 +998,6 @@
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
     <Content Include="Template\solp-email\solp-email.hbs" />
-    <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.js.map" />
-    <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.js.map" />
-    <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.spec.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
