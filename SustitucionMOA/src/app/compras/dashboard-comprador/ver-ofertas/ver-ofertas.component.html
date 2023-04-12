@@ -11,7 +11,7 @@
   <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
 
 
-<p-table [value]="ofertasProveedor">
+<p-table [value]="tablaOfertas">
   <ng-template pTemplate="header">
       <tr>
           <th rowspan="3">Pos.</th>
@@ -24,7 +24,7 @@
       <tr> <!-- for por cada proveedor -->
           <!-- <th colspan="6">Proveedor #</th> -->
           <ng-container>
-            <th colspan="6">Proveedor {{posicion.RazonSocial}}</th>
+            <th colspan="6">Proveedor {{tablaOfertas.Usuarios.RazonSocial}}</th>
           </ng-container>
       </tr>
       
@@ -51,12 +51,12 @@
             <td>{{posicion.Cantidad}}</td>
             <td>{{posicion.UnidadComprasDescripcion}}</td>
             <!-- datos por proveedor -->
-            <!-- <td>{{sale.Cotizaciones[i].Cantidad}}</td>
+            <td>{{sale.Cotizaciones[i].Cantidad}}</td>
             <td>{{sale.Cotizaciones[i].UnidadDeMedida_Id}}</td>
             <td>{{sale.Cotizaciones[i].Moneda_Id}} {{sale.Cotizaciones[i].Precio}}</td>
             <td>{{sale.Cotizaciones[i].Moneda_Id}} {{sale.Cotizaciones[i].PrecioTotal}}</td>
             <td>ARP {{sale.Cotizaciones[i].TotalARP}}</td>
-            <td>{{sale.Cotizaciones[i].FechaDeEntrega}}</td> -->
+            <td>{{sale.Cotizaciones[i].FechaDeEntrega}}</td>
         </tr>
     </ng-container>
 </ng-template>
