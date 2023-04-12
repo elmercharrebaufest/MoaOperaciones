@@ -14,7 +14,7 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { Paginator } from 'primeng/paginator';
-import { PeticionDeOfertaDto, CotizacionDto } from '../../modelos/peticion-de-oferta-model';
+import { PeticionDeOfertaDto } from '../../modelos/peticion-de-oferta-model';
 import { forEach } from '@angular/router/src/utils/collection';
 
 declare var $: any;

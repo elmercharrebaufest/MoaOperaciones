@@ -1,5 +1,7 @@
 import { SolpPosicion } from "../compras/solp/solp-posicion"
-export interface PeticionDeOfertaDto {
+import { CotizacionDto } from "./cotizacionDto"
+
+export interface PeticionDeOfertaDto{
     Id: number
     FechaEntregaFormateado: string
     PlazoDeOferta: Date,
@@ -18,24 +20,6 @@ export interface PeticionDeOfertaUsarioDto {
     PropuestaTecnicaAprobada?: boolean
     RealizoVisita?: boolean
 }
-
-export interface CotizacionDto {
-    Id: number
-    TieneObservacionTecnica: boolean
-    ObservacionTecnica: string
-    ObservacionEconomica: string
-    FechaCreacion: Date
-    RespetaMateriales?: boolean
-    RespetaServicios?: boolean
-    Revision: number
-    CotizacionEstadoDescripcion: string
-    Archivos: LegajoDto[]
-}
-
-export interface LegajoDto {
-    Id: number
-    Observacion: string
-}
     
 export interface PeticionDeOfertaSolpPosicionDto{
     Id: number
@@ -43,3 +27,5 @@ export interface PeticionDeOfertaSolpPosicionDto{
     SolpPosicion_Id: number
     Posicion: SolpPosicion
 }
+
+

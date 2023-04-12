@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { OfertasProveedor } from '../../../modelos/ofertas-proveedor';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
@@ -13,6 +12,7 @@ import { ComprasService } from '../../compras.service';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
 import { Table } from 'primeng/table';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
 
 @Component({
   selector: 'app-ver-ofertas',
@@ -25,14 +25,19 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
   @ViewChild("tabla")
   protected tabla: Table;
 
+  @Input()
+  public peticion: PeticionDeOfertaDto;
+
+  peticionOferta: PeticionDeOfertaDto;
+
+  tablaOfertas: any[];
+
   constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
     protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
     protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 }
 
-
-  ofertasProveedor: OfertasProveedor[];
 
   ngOnInit() {
     if (this.route.params) {
@@ -45,7 +50,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
   verOfertas(peticionOferta_Id) {
     try {
-      debugger
         this.blockUI.start('Cargando...');
         this.subscription = this.service.getListarOfertasComprador(peticionOferta_Id).subscribe(
             (result: any) => {
@@ -56,8 +60,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 } else if (result.info != undefined) {
                     this.floatMsgService.setInfoMsg(result.info);
                 } else {
-                    this.ofertasProveedor = result.data;
-                    console.log("ofertas", this.ofertasProveedor)
+                    this.tablaOfertas = result.data;
+                    console.log("ofertas", this.tablaOfertas)
 
                 }
                 this.blockUI.stop();

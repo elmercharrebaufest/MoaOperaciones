@@ -432,7 +432,6 @@ export class ComprasService extends BaseService {
     }
 
     public getListarOfertasComprador(peticionOferta_Id): Observable<any> {
-        debugger
         let params: HttpParams = new HttpParams()
         params = params.set('peticionOferta_Id', peticionOferta_Id);
         return this.http
