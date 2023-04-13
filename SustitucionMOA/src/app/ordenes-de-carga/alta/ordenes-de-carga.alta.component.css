@@ -1,0 +1,9 @@
+.pointer{
+    cursor:  pointer!important;
+}
+.ml-2{
+    margin-left: 0.5rem;
+}
+.bold{
+    font-weight: bold !important;
+}
