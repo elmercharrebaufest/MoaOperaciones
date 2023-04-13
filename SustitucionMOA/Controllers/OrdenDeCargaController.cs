@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -729,6 +730,30 @@ namespace SustitucionMOA.Controllers
                     FechaHasta = fechaHasta
                 };
                 response = ordenDeCargaService.ObtenerContratosDisponibles(req);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return JsonCustom(response);
+        }
+
+        [HttpGet]
+        public ActionResult ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo)
+        {
+            var response = new SustitucionMOAApiResponse<ValidarSisaCorredorClienteResponse>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarSisaCorredorCliente(corredorCodigo, clienteCodigo);
             }
             catch (InfoCustomException ice)
             {

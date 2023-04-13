@@ -534,7 +534,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato; //this.contratoSeleccionado.NumeroContrato;
             this.ordenDeCarga.Producto_Id = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId; //this.contratoSeleccionado.Producto.MaterialId;
             this.Producto = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId.toString(); //this.contratoSeleccionado.Producto.MaterialId.toString();
-            this.validaCPEDG = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId > 6;
+            // this.validaCPEDG = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId > 6;
+            let materialSeleccionado = this.listaMateriales.find(mat => mat.MaterialId === this.ordenDeCarga.Producto_Id);
+            this.validaCPEDG = materialSeleccionado?.ValidaSisaRuca ?? false;
         }
         else {
             this.Contrato = "";
@@ -796,6 +798,39 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     gestionarAltaCUIT(campo: CuitValidaExistencia) {
         const cuit = this.ordenDeCarga[campo];
         this.mensajesOrdenDeCarga[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
+    }
+
+    validarSisaCorredorCliente() {
+        let corredorCodigo = this.corredorSeleccionado ? this.corredorSeleccionado.idVendedor : "";
+        let clienteCodigo = "";
+        try {
+            this.blockUI.start('');
+            this.service
+                .validarSisaCorredorCliente(corredorCodigo, clienteCodigo)
+                .subscribe(resp => {
+                    if (resp.logout) {
+                        this.sessionDataService.logout();
+                    } else {
+                        if (resp.error) {
+                            this.mensajeComponent.setErrorMsg(resp.error);
+                        } else {
+                            if (resp.info) {
+                                this.mensajeComponent.setInfoMsg(resp.info)
+                            } else {
+                                let data = resp.data;
+                                if (!data.CorredorHabilitadoEnSisa || !data.ClienteHabilitadoEnSisa) {
+                                    this.mensajeComponent.setErrorMsg("Inhabilitación SISA");
+                                }
+                            }
+                        }
+                    }
+                    this.blockUI.stop();
+                })
+        } catch (err) {
+            console.error('validarSisaCorredorCliente: ', err);
+            this.mensajeComponent.setErrorMsg(err);
+            this.blockUI.stop();
+        }
     }
 }
 
