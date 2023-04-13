@@ -16,6 +16,7 @@ import {MultiSelectModule} from 'primeng/multiselect';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {DialogModule} from 'primeng/dialog';
+import {CheckboxModule} from 'primeng/checkbox';
 
 @NgModule({
     imports: [
@@ -32,6 +33,7 @@ import {DialogModule} from 'primeng/dialog';
         ConfirmDialogModule,
         ProgressSpinnerModule,
         DialogModule,
+        CheckboxModule
     ],
     declarations: [
         OrdenesDeCargaAlta,
