@@ -7,6 +7,7 @@ import { timeoutWith } from 'rxjs/operators';
 import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
 import { ObtenerContratosDisponiblesResponse } from '../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { ApiResponse } from '../common/models/response';
+import { ValidarSisaCorredorClienteResponse } from '../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -358,6 +359,18 @@ export class OrdenesDeCargaService extends BaseService {
             .get
             <ApiResponse<string>>
             ('/api/OrdenDeCarga/TBD', { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
+
+    public validarSisaCorredorCliente(corredorCodigo: string, clienteCodigo: string): Observable<ApiResponse<ValidarSisaCorredorClienteResponse>> {
+        let params: HttpParams = new HttpParams()
+            .append("corredorCodigo", corredorCodigo)
+            .append("clienteCodigo", clienteCodigo);
+
+        return this.http
+            .get<ApiResponse<ValidarSisaCorredorClienteResponse>>(
+                '/api/OrdenDeCarga/ValidarSisaCorredorCliente',
+                { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 }

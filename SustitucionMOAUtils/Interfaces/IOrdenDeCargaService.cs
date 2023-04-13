@@ -45,5 +45,6 @@ namespace SustitucionMOAUtils.Interfaces
         void VerificarSituacionCrediticiaJob();
         ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req);
         string EnviarOrdenesASAP(List<int> ordenesIds, string mailUsuario);
+        ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
     }
 }

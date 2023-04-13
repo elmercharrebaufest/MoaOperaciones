@@ -60,8 +60,9 @@
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\AsociarContratoDto.cs" />
-    <Compile Include="Dto\CircularDto.cs" />
     <Compile Include="Dto\CotizacionDto.cs" />
+    <Compile Include="Dto\CircularDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ValidarSisaCorredorClienteResponse.cs" />
     <Compile Include="Dto\PdfFooter.cs" />
     <Compile Include="Dto\Echeq\EcheqReporteDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorteDto.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="Dto\OrdenDeCargaDto.cs" />
     <Compile Include="Dto\DeclaracionCampoSustentableDto.cs" />
     <Compile Include="Dto\Resultado.cs" />
+    <Compile Include="Dto\SustitucionMOAApiResponse.cs" />
     <Compile Include="Dto\TablaEstadoDto.cs" />
     <Compile Include="Dto\TablaGeneralDto.cs" />
     <Compile Include="Dto\TablaSapDto.cs" />
