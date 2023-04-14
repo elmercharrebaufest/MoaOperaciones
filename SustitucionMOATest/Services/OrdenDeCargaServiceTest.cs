@@ -159,7 +159,7 @@ namespace SustitucionMOATest.Services
                 It.IsAny<string>(),
                 It.IsAny<string>())
                 )
-                .Returns("CC-00");
+                .Returns(new SustitucionMOAWS.ResponseHandler.OrdenCarga.ControlCargaResponseHandler("CC-00"));
 
             repositorioMock
                 .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
