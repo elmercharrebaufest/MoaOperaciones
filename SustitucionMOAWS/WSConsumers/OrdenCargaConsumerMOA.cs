@@ -13,6 +13,7 @@ using SustitucionMOAWS.OrdenCargaControlSAP;
 using SustitucionMOAWS.OrdenCargaCrearSAP;
 using SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP;
 using SustitucionMOAWS.OrdenCargaVisualizarCliente;
+using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using System;
 using System.Collections.Generic;
 
@@ -52,7 +53,7 @@ namespace SustitucionMOAWS.WSConsumers
         */
 
 
-        public string ControlCargaRequest(string cliente, string contrato, string corredor, string cuit, string material, string pedido, string soloSisa)
+        public ControlCargaResponseHandler ControlCargaRequest(string cliente, string contrato, string corredor, string cuit, string material, string pedido, string soloSisa)
         {
             var service = new SI_MPMF_MOAOP_CONTROL_CARGAClient();
 
@@ -62,7 +63,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             var result = service.SI_MPMF_MOAOP_CONTROL_CARGA(cliente, contrato, corredor, cuit, material, pedido, soloSisa).Trim();
             Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {new { result, cliente, contrato, cuit }}");
-            return result;
+            return new ControlCargaResponseHandler(result);
         }
         /*
         * RFC Z_MPMF_MOAOP_CREAR_ORDEN_CARGA con:

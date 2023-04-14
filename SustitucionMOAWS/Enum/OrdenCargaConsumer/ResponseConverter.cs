@@ -1,9 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOAWS.Enum.OrdenCargaConsumer
 {
     internal class ResponseConverter
     {
+        private static readonly Dictionary<string, OrdenCargaControlCarga> RespuestasControlCargaDict = new Dictionary<string, OrdenCargaControlCarga>
+        {
+            { "CC-00", OrdenCargaControlCarga.OK },
+            { "CC-01", OrdenCargaControlCarga.MasDeUnContratoVigente },
+            { "CC-02", OrdenCargaControlCarga.TransportistaNoDadoDeAlta },
+            { "CC-03", OrdenCargaControlCarga.VerificarPedido },
+            { "CC-04", OrdenCargaControlCarga.VerificarCreditoDePedido },
+            { "CC-05", OrdenCargaControlCarga.PedidoEntregadoCompletamente },
+            { "CC-06", OrdenCargaControlCarga.CC06IdemCC01 }, // CC-06: 'Considerar como error CC-01'
+            { "CC-07", OrdenCargaControlCarga.FaltaCargarKmsEnContrato },
+            { "CC-08", OrdenCargaControlCarga.ClienteInhabilitadoEnSisa },
+            { "CC-09", OrdenCargaControlCarga.CorredorInhabilitadoEnSisa }
+        };
+
         internal static OrdenCargaControlEstado GetOrdenCargaControlEstadoResponse(string response)
         {
             switch (response)
@@ -16,7 +32,46 @@ namespace SustitucionMOAWS.Enum.OrdenCargaConsumer
                 case "CE-06": return OrdenCargaControlEstado.EntregaCompletada;
                 case "CE-07": return OrdenCargaControlEstado.TransportistaOK;
                 case "CE-08": return OrdenCargaControlEstado.TransportistaNoDadoDeAlta;
-                default: throw new Exception("Respuesta no esperada en OrdenCargaConsumer: " + response);
+                default: throw new Exception("Respuesta no esperada en OrdenCargaConsumer.ControlEstado: " + response);
+            }
+        }
+
+        internal static OrdenCargaControlCarga GetOrdenCargaControlCargaResponse(string response)
+        {
+            //switch (response)
+            //{
+            //    case "CC-00": return OrdenCargaControlCarga.OK;
+            //    case "CC-01": return OrdenCargaControlCarga.MasDeUnContratoVigente;
+            //    case "CC-02": return OrdenCargaControlCarga.TransportistaNoDadoDeAlta;
+            //    case "CC-03": return OrdenCargaControlCarga.VerificarPedido;
+            //    case "CC-04": return OrdenCargaControlCarga.VerificarCreditoDePedido;
+            //    case "CC-05": return OrdenCargaControlCarga.PedidoEntregadoCompletamente;
+            //    case "CC-06": return OrdenCargaControlCarga.CC06IdemCC01; // CC-06: 'Considerar como error CC-01'
+            //    case "CC-07": return OrdenCargaControlCarga.FaltaCargarKmsEnContrato;
+            //    case "CC-08": return OrdenCargaControlCarga.ClienteInhabilitadoEnSisa;
+            //    case "CC-09": return OrdenCargaControlCarga.CorredorInhabilitadoEnSisa;
+            //    default: throw new Exception("Respuesta no esperada en OrdenCargaConsumer.ControlCarga: " + response);
+            //}
+            if (RespuestasControlCargaDict.TryGetValue(response, out OrdenCargaControlCarga valor))
+            {
+                return valor;
+            }
+            else
+            {
+                throw new Exception("Respuesta no esperada en OrdenCargaConsumer.ControlCarga: " + response);
+            }
+        }
+
+        internal static string GetCodigoControlCarga(OrdenCargaControlCarga valor)
+        {
+            var codigo = RespuestasControlCargaDict.FirstOrDefault(x => x.Value == valor).Key;
+            if (codigo != null)
+            {
+                return codigo;
+            }
+            else
+            {
+                throw new Exception("Código no encontrado para respuesta ControlCarga " + valor.ToString());
             }
         }
     }
