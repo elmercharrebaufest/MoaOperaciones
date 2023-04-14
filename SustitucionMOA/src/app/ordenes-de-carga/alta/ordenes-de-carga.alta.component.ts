@@ -176,7 +176,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             return false;
         }
 
-       return true;
+        return true;
     }
 
 
@@ -843,6 +843,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.blockUI.stop();
         }
     }
+    descripcionIntermediarioFlete = "Texto descriptivo de lo que representa el campo CUIT Intermediario Flete"
+    descripcionTransporte = "Texto descriptivo de lo que representa el campo CUIT Transporte"
 }
 
 

@@ -12,11 +12,12 @@ import { OrdenesDeCargaDetalleComponent } from './detalle/ordenes-de-carga.detal
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import {MultiSelectModule} from 'primeng/multiselect';
-import {ConfirmDialogModule} from 'primeng/confirmdialog';
-import {ProgressSpinnerModule} from 'primeng/progressspinner';
-import {DialogModule} from 'primeng/dialog';
-import {CheckboxModule} from 'primeng/checkbox';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { DialogModule } from 'primeng/dialog';
+import { CheckboxModule } from 'primeng/checkbox';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
     imports: [
@@ -33,7 +34,8 @@ import {CheckboxModule} from 'primeng/checkbox';
         ConfirmDialogModule,
         ProgressSpinnerModule,
         DialogModule,
-        CheckboxModule
+        CheckboxModule,
+        TooltipModule,
     ],
     declarations: [
         OrdenesDeCargaAlta,
