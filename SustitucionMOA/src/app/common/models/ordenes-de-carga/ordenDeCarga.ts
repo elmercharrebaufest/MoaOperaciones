@@ -42,6 +42,7 @@ export class OrdenDeCarga {
     RazonSocialDestinatario?: string;
     RazonSocialDestino?: string;
     Reventa:boolean;
+    CUITIntermediarioFlete?: string;
     constructor() {
     }
 }

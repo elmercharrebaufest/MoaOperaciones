@@ -171,13 +171,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
             return false;
         }
-        // if (this.ordenDeCargaId == 0) {
-        //     if (this.resultadoValidacionCorCliConPro == false) {
-        //         this.mensajeComponent.setErrorMsg(this.mensajeValidacionCorCliConPro);
-        //         return false;
-        //     }
-        // }
-        return true;
+        if (this.ordenDeCarga.CUITIntermediarioFlete && this.ordenDeCarga.CUITIntermediarioFlete.toString().trim().length != 11) {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de intermediario flete válido.");
+            return false;
+        }
+
+       return true;
     }
 
 
