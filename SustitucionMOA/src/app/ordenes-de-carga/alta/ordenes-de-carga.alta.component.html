@@ -19,9 +19,19 @@
                     <div class="col-xs-12 col-md-12 search-header">
                         <title-caps>Información de la orden de carga</title-caps>
                     </div>
-
                     <div class="formulario">
                         <div class="col-xs-12 col-md-5 no-padding-left-right" style="margin-left: 3em;">
+
+                            <div class=" col-xs-12 col-md-12" *ngIf="esComercial">
+                                <div class="formulario-label" style="margin-bottom: 8px;">
+                                    <p-checkbox name="reventa" [binary]="true"
+                                        [(ngModel)]="ordenDeCarga.Reventa"></p-checkbox>
+                                    <label class="ml-2 pointer mySearch bold"
+                                        (click)="ordenDeCarga.Reventa = !ordenDeCarga.Reventa">
+                                        Reventa
+                                    </label>
+                                </div>
+                            </div>
                             <div class=" col-xs-12 col-md-12" *ngIf="esComercial">
                                 <div class="formulario-label" style="margin-bottom: 8px;">
                                     Corredor:
@@ -254,8 +264,8 @@
                             </div>
                         </div>
 
-                        <div class="containerBotones">
-                            <div class="col-xs-12 col-md-12">
+                        <div class="containerBotones" style="padding: 3rem;">
+                            <div class="col-xs-12 col-md-12" style="padding-right:0px!important">
                                 <mensaje></mensaje>
                                 <spinner></spinner>
                             </div>

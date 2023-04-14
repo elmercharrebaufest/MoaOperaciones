@@ -7,6 +7,7 @@ import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 import { SolpPosicion } from './solp/solp-posicion';
 import { AltaNuevoProveedor, EnvioSolpCompra, SolpCompraDto } from './solp-compra';
 import { CircularDto } from '../modelos/circular-model';
+import { PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
 
 @Injectable({
     providedIn: 'root'
@@ -430,6 +431,13 @@ export class ComprasService extends BaseService {
             );
     }
 
+    public getListarOfertasComprador(peticionOferta_Id): Observable<any> {
+        let params: HttpParams = new HttpParams()
+        params = params.set('peticionOferta_Id', peticionOferta_Id);
+        return this.http
+            .get<any[]>('/api/compras/ListarOfertasComprador', { params: params, headers: this.headers });
+    }
+
     listarContratosAsociar(posiciones: SolpPosicion[]): Observable<any> {
         var json = posiciones.filter(x => x.codigoServicio != null).map(x => {
             return {
@@ -554,8 +562,8 @@ export class ComprasService extends BaseService {
             Adjuntos: circular.Adjuntos,
             PlazoDeOferta: circular.PlazoDeOferta,
             FechaEntrega: circular.FechaEntrega,
-            RequiereCambioDeFecha: circular.RequiereCambioDeFecha     
-            
+            RequiereCambioDeFecha: circular.RequiereCambioDeFecha,
+            PeticionDeOferta_Id: circular.PeticionDeOferta_Id,            
         });
 
         var payload = new FormData();
@@ -601,5 +609,24 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/GrabarProveedorEnPeticion', payload,{   headers: this.headers });
     }
 
+    DescargarAdjuntosCotizacion(cotizacionId: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("cotizacionId", cotizacionId.toString());
+
+        return this.http
+            .get("/api/compras/DescargarAdjuntosCotizacion", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    public grabarRevisionTecnica(petisiones: PeticionDeOfertaUsarioDto[]) {
+        let json = JSON.stringify(petisiones);
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/GrabarRevisionTecnica', payload, { headers: this.headers });
+    } 
 
 }

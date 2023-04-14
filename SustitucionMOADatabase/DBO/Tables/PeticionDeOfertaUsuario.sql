@@ -2,6 +2,15 @@
     [Id] INT NOT NULL IDENTITY, 
 	[PeticionDeOferta_Id] [int] NOT NULL,
 	[Usuario_Id] [int] NOT NULL, 
+	[RealizoVisita] bit  NULL, 
+	[RealizoVisitaFecha]          DATETIME2 (7)  NULL,
+	[RealizoVisitaUsuario_Id] [int]  NULL, 
+	[PropuestaTecnicaAprobada] bit  NULL, 
+	[PropuestaTecnicaFecha]  DATETIME2 (7)  NULL,
+	[PropuestaTecnicaUsuario_Id] [int] NULL,   
+    CONSTRAINT [FK.PeticionDeOfertaUsuario_Usuario_UsuarioCreadorId] FOREIGN KEY ([Usuario_Id]) REFERENCES [Usuario]([Id]),
+	CONSTRAINT [FK.PeticionDeOfertaUsuario_Usuario_RealizoVisitaUsuario_Id] FOREIGN KEY ([RealizoVisitaUsuario_Id]) REFERENCES [Usuario]([Id]),
+    CONSTRAINT [FK.PeticionDeOfertaUsuario_Usuario_PropuestaTecnicaUsuario_Id] FOREIGN KEY ([PropuestaTecnicaUsuario_Id]) REFERENCES [Usuario]([Id]),
     CONSTRAINT [PK_PeticionDeOfertaUsuario] PRIMARY KEY ([Id]),
 ) ON [PRIMARY]
 GO

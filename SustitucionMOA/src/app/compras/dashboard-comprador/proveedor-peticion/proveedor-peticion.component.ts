@@ -71,9 +71,14 @@ export class ProveedorPeticionComponent implements OnInit {
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
-                            this.floatMsgService.setErrorMsg(result.error);
+                         //   this.floatMsgService.setErrorMsg(result.error);
+                         this.error = result.error;
+                         this.visualizarAlert = true;
+                         
                         } else if (result.info != undefined) {
-                            this.floatMsgService.setInfoMsg(result.info);
+                           // this.floatMsgService.setInfoMsg(result.info);
+                            this.error = result.error;
+                            this.visualizarAlert = true;
                         } else {
                             this.nroPeticion = result.data.IdEntidad;
                             this.displayOkProveedor = true;
@@ -81,12 +86,16 @@ export class ProveedorPeticionComponent implements OnInit {
                         this.blockUI.stop();
                     },
                     error => {
-                        this.floatMsgService.setErrorMsg(error.message);
+                       // this.floatMsgService.setErrorMsg(error.message);
+                       this.error = error.message;
+                       this.visualizarAlert = true;
                         this.blockUI.stop();
 
                     });
             } catch (e) {
-                this.floatMsgService.setErrorMsg(e);
+              //  this.floatMsgService.setErrorMsg(e);
+                this.error = e;
+                this.visualizarAlert = true;
                 this.blockUI.stop();
                 return false; //<-- Prevent Refresh
             }
