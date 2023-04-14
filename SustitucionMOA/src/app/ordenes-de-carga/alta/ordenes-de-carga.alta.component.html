@@ -249,7 +249,8 @@
                                     CUIT transporte:
                                 </div>
                                 <div class="styled-select">
-                                    <input type="text" [(ngModel)]="ordenDeCarga.CUITTransporte" mask="00-00000000-0">
+                                    <input type="text" [(ngModel)]="ordenDeCarga.CUITTransporte" mask="00-00000000-0"
+                                        [pTooltip]="descripcionTransporte" [tooltipPosition]="'bottom'">
                                 </div>
                             </div>
                             <div class="col-xs-12 col-md-12">
@@ -257,7 +258,9 @@
                                     CUIT Intermediario Flete:
                                 </div>
                                 <div class="styled-select">
-                                    <input type="text" [(ngModel)]="ordenDeCarga.CUITIntermediarioFlete" mask="00-00000000-0">
+                                    <input type="text" [(ngModel)]="ordenDeCarga.CUITIntermediarioFlete"
+                                        mask="00-00000000-0" [pTooltip]="descripcionIntermediarioFlete"
+                                        [tooltipPosition]="'bottom'">
                                 </div>
                             </div>
 
