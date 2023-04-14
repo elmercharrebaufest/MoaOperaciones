@@ -14,6 +14,7 @@ using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Validadores.OrdenDeCarga;
+using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 using System;
@@ -477,15 +478,16 @@ namespace SustitucionMOAUtils.Services
                 contrato = contrato.Split('|').First();
             }
 
-            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido, "");
+            var responseHandler = consumer.ControlCargaRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido, "");
 
             //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
             //cual es el contrato correcto que le quiere entregar.
-            if (result.Contains(','))
+            if (responseHandler.TieneMultiplesContratos)
             {
                 ordenDeCarga.CodigoVerificacionSap = "";
                 ordenDeCarga.DescripcionCodigoVerificacionSap = "";
-                var contratosAbiertos = ObtenerContratosAbiertos(result.Split(',').Select(a => a.Split('|')[0]).ToList());
+                var numerosContratos = responseHandler.ObtenerNumerosContratos();
+                var contratosAbiertos = ObtenerContratosAbiertos(numerosContratos);
                 //Pendiente deficinición queda como si siempre tuviera muchos contratos abiertos
 
                 TieneVariosContratosAbiertos(ordenDeCarga, contratosAbiertos);
@@ -498,8 +500,10 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                //solo en el caso que el result de ok para crear la orden tiene que verificar el vencimiento
-                if (!esJob && (result == "CC-00" || result == "CC-02"))
+                var respuestaCC = responseHandler.ObtenerRespuestaUnica();
+                //solo en el caso que el response de ok para crear la orden tiene que verificar el vencimiento
+                if (!esJob &&
+                    (respuestaCC == OrdenCargaControlCarga.OK || respuestaCC == OrdenCargaControlCarga.TransportistaNoDadoDeAlta))
                 {
                     if (!ValidarVencimientoContrato(ordenDeCarga.ContratoIngresado, cliente))
                     {
@@ -512,54 +516,48 @@ namespace SustitucionMOAUtils.Services
                         ordenDeCarga.Estado = EstadoOrdenDeCarga.SinEnviarASAP;
                     }
                 }
-                switch (result)
+                ordenDeCarga.CodigoVerificacionSap = responseHandler.GetCodigoDeRespuesta(respuestaCC);
+                switch (respuestaCC)
                 {
-                    case "CC-00":
+                    case OrdenCargaControlCarga.OK:
                         ordenDeCarga.TransporteExiste = true;
                         ordenDeCarga.CorredorSeleccionado = true;
                         ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
-                        ordenDeCarga.CodigoVerificacionSap = "CC-00";
+                        
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "OK";
                         return true;
 
-                    case "CC-01":
+                    case OrdenCargaControlCarga.MasDeUnContratoVigente:
                         //ordenDeCarga.CorredorSeleccionado = false;
                         //break;
-                        ordenDeCarga.CodigoVerificacionSap = "CC-01";
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
                         break;
 
 
-                    case "CC-02":
+                    case OrdenCargaControlCarga.TransportistaNoDadoDeAlta:
                         ordenDeCarga.TransporteExiste = false;
-                        ordenDeCarga.CodigoVerificacionSap = "CC-02";
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "Transportista no dado de alta";
                         return true;
 
-                    case "CC-03":
-                        ordenDeCarga.CodigoVerificacionSap = "CC-03";
+                    case OrdenCargaControlCarga.VerificarPedido:
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "El pedido informado no existe.";
                         break;
 
-                    case "CC-04":
+                    case OrdenCargaControlCarga.VerificarCreditoDePedido:
                         ordenDeCarga.TransporteExiste = true;
                         ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
-                        ordenDeCarga.CodigoVerificacionSap = "CC-04";
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "Verificar Crédito de pedido";
                         break;
 
-                    case "CC-05":
-                        ordenDeCarga.CodigoVerificacionSap = "CC-05";
+                    case OrdenCargaControlCarga.PedidoEntregadoCompletamente:
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "El pedido ingresado ya fue entregado completamente.";
                         break;
 
-                    case "CC-06":
-                        ordenDeCarga.CodigoVerificacionSap = "CC-06";
+                    case OrdenCargaControlCarga.CC06IdemCC01:
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "Error de carga.";
                         break;
 
-                    case "CC-07":
-                        ordenDeCarga.CodigoVerificacionSap = "CC-07";
+                    case OrdenCargaControlCarga.FaltaCargarKmsEnContrato:
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "Faltan cargar los Km en el contrato.";
                         break;
                 }
