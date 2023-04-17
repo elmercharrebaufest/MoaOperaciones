@@ -2429,11 +2429,12 @@ namespace SustitucionMOAUtils.Services
 
         public ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo)
         {
-            return new ValidarSisaCorredorClienteResponse
+            var res = new ValidarSisaCorredorClienteResponse
             {
                 ClienteHabilitadoEnSisa = false,
                 CorredorHabilitadoEnSisa = true
             };
+            return res;
         }
 
         private Proveedor GetClienteParaCorredor(Usuario usuario, Proveedor corredor, OrdenDeCarga ordenDeCarga)
