@@ -96,6 +96,7 @@ namespace SustitucionMOAModel.Dto
         public bool? PropuestaTecnicaAprobada { get; set; }
         public bool? RealizoVisita { get; set; }
         public CotizacionDto Cotizacion { get; set; }
+        public bool CircularSinLeer { get; set; }
         public string EstadoVisita { get; set; }
         public string EstadoVisitaColor { get; set; }
         public string EstadoPropuestaTecnica { get; set; }
