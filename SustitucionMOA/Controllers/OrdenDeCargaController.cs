@@ -768,7 +768,9 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
-            return JsonCustom(response);
+            // Se serializa así para que tome bien los atributos JsonProperty en SustitucionMOAApiResponse
+            return Content(JsonConvert.SerializeObject(response), "application/json");
+            //return JsonCustom(response);
         }
     }
 }
