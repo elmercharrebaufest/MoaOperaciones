@@ -171,12 +171,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
             return false;
         }
-        // if (this.ordenDeCargaId == 0) {
-        //     if (this.resultadoValidacionCorCliConPro == false) {
-        //         this.mensajeComponent.setErrorMsg(this.mensajeValidacionCorCliConPro);
-        //         return false;
-        //     }
-        // }
+        if (this.ordenDeCarga.CUITIntermediarioFlete && this.ordenDeCarga.CUITIntermediarioFlete.toString().trim().length != 11) {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de intermediario flete válido.");
+            return false;
+        }
+
         return true;
     }
 
@@ -798,7 +797,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     validarSisaCorredorCliente() {
-        if (!this.ordenDeCarga.ContratoSeleccionado) {
+        if (!this.ordenDeCarga.ContratoSeleccionado || this.validaCPEDG) {
             this.mensajeComponent.setMsgsEmpty();
             return;
         }
@@ -844,6 +843,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.blockUI.stop();
         }
     }
+    descripcionIntermediarioFlete = "Texto descriptivo de lo que representa el campo CUIT Intermediario Flete"
+    descripcionTransporte = "Texto descriptivo de lo que representa el campo CUIT Transporte"
 }
 
 
