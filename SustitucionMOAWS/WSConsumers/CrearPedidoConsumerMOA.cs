@@ -124,7 +124,7 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
-        public SolpPedidoSAPDto ConvertirSOLP(Adjudicacion adjudicacion)
+        private SolpPedidoSAPDto ConvertirSOLP(Adjudicacion adjudicacion)
         {
             var proveedorCodigoDeLaAdjudicacion = "0057984261";
             var usuarioCreadorAdjudicacion = "RABELLATM";
@@ -138,12 +138,13 @@ namespace SustitucionMOAWS.WSConsumers
 
             //string docItem = "";
 
+            bool esPosicionDeMateriales = solp.Posiciones.First().TipoPosicion.Codigo == "MATERIALES";
 
             //aca el metodo solo usa las posiciones seleccionadas por el comprador
             var posIds = adjudicacion.Posiciones.Select(x => x.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id).ToList();
             foreach (var posicion in solp.Posiciones.Where(a => posIds.Contains(a.Id)).OrderBy(x => x.Id))
             {
-                bool esPosicionDeMateriales = posicion.TipoPosicion.Codigo == "MATERIALES";
+
 
                 bool eliminarPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
                 bool eliminarSubPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
@@ -158,21 +159,385 @@ namespace SustitucionMOAWS.WSConsumers
                 //Nombre: ZBAPIMEPOHEADER Denominación:	Cabecera del Pedido de Compras
                 var cabeceraDelPedido = new ZMPES6780();
 
-                cabeceraDelPedido.PO_NUMBER = ""; //PO_NUMBER   EBELN Número del documento de compras
                 cabeceraDelPedido.COMP_CODE = "MOA"; //COMP_CODE BUKRS   Sociedad
                 cabeceraDelPedido.DOC_TYPE = "ZPE1";//solp.ClaseDocumento.CodigoSap; //DOC_TYPE    ESART Clase de documento de compras
-                cabeceraDelPedido.DELETE_IND = "";// posicion.TipoPosicion.Codigo != "MATERIALES" ? SAPFormatter.FormatearBooleano(eliminarPosicion) : ""; //DELETE_IND ELOEK   Indicador de borrado en el documento de compras
-                cabeceraDelPedido.STATUS = ""; //STATUS ESTAK   Status del documento de compras
-                cabeceraDelPedido.CREAT_DATE = ""; //SAPFormatter.PrepararFecha(solp.FechaCreacion); //CREAT_DATE  ERDAT Fecha de creación del registro
-                cabeceraDelPedido.CREATED_BY = usuarioCreadorAdjudicacion;// solp.UsuarioCreacion.UsuarioSap; //CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto
                 cabeceraDelPedido.VENDOR = proveedorCodigoDeLaAdjudicacion;//posicion.ProveedorFijo; //VENDOR ELIFN   Número de cuenta del proveedor
-                cabeceraDelPedido.PMNTTRMS = ""; //"BASE"; //PMNTTRMS    DZTERM Clave de condiciones de pago
                 cabeceraDelPedido.PURCH_ORG = "2029";// posicion.OrganizacionCompras; //PURCH_ORG EKORG   Organización de compras
                 cabeceraDelPedido.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP   BKGRP Grupo de compras
                 cabeceraDelPedido.CURRENCY = posicion.Moneda.Codigo; //CURRENCY WAERS   Clave de moneda
+                cabeceraDelPedido.CREATED_BY = usuarioCreadorAdjudicacion;// solp.UsuarioCreacion.UsuarioSap; //CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto
+                cabeceraDelPedido.DOC_DATE = SAPFormatter.PrepararFecha(DateTime.Now); //DOC_DATE    EBDAT Fecha del documento de compras
+
+                cabeceraDelPedido.PO_NUMBER = ""; //PO_NUMBER   EBELN Número del documento de compras
+                cabeceraDelPedido.DELETE_IND = "";// posicion.TipoPosicion.Codigo != "MATERIALES" ? SAPFormatter.FormatearBooleano(eliminarPosicion) : ""; //DELETE_IND ELOEK   Indicador de borrado en el documento de compras
+                cabeceraDelPedido.STATUS = ""; //STATUS ESTAK   Status del documento de compras
+                cabeceraDelPedido.CREAT_DATE = ""; //SAPFormatter.PrepararFecha(solp.FechaCreacion); //CREAT_DATE  ERDAT Fecha de creación del registro
+                cabeceraDelPedido.PMNTTRMS = ""; //"BASE"; //PMNTTRMS    DZTERM Clave de condiciones de pago
                 //cabeceraDelPedido.EXCH_RATE = 0; //EXCH_RATE   WKURS Tipo de cambio de moneda
                 cabeceraDelPedido.EX_RATE_FX = ""; //EX_RATE_FX KUFIX   Indicador tipo de cambio fijo
+
+
+                solpPedidoSAP.IM_POHEADERList = cabeceraDelPedido;
+                solpPedidoSAP.IM_POHEADERXList = new ZMPES6790
+                {
+                    PO_NUMBER = "",
+                    COMP_CODE = "X",
+                    DOC_TYPE = "X",
+                    DELETE_IND = "",
+                    STATUS = "",
+                    CREAT_DATE = "",
+                    CREATED_BY = "X",
+                    VENDOR = "X",
+                    PMNTTRMS = "",
+                    PURCH_ORG = "X",
+                    PUR_GROUP = "X",
+                    CURRENCY = "X",
+                    EXCH_RATE = "",
+                    EX_RATE_FX = "",
+                    DOC_DATE = "X"
+                };
+
+                //Nombre: ZBAPIMEPOITEM Denominación:	Posición de PEDIDOS
+                var IM_POITEM = new ZMPES6800();
+
+                IM_POITEM.PO_ITEM = preqItem;
+                IM_POITEM.SHORT_TEXT = posicion.Tarea;
+                IM_POITEM.PLANT = posicion.Centro.CodigoSap.ToString();
+                IM_POITEM.MATL_GROUP = posicion.GrupoArticulo?.CodigoSap?.ToString() ?? "";
+                //IM_POITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString();
+                IM_POITEM.MATERIAL = esPosicionDeMateriales ? posicion.MaterialSolp.CodigoSap.ToString() : "";
+                IM_POITEM.STGE_LOC = posicion.Almacen.CodigoSap.ToString();
+                IM_POITEM.ITEM_CAT = posicion.TipoPosicion.Codigo.ToLower() == "servicio" ? "9" : "0";//ITEM_CAT PSTYP   Tipo de posición del documento de compras
+                IM_POITEM.TRACKINGNO = posicion.NroNecesidad;
+                IM_POITEM.INFO_REC = "";
+                IM_POITEM.QUANTITY = esPosicionDeMateriales ? 1 : 0;// para mat el de la adjudicaicon.posicion.Cantidad;
+                IM_POITEM.QUANTITYSpecified = esPosicionDeMateriales ? true : false;
+                IM_POITEM.PO_UNIT = esPosicionDeMateriales ? posicion.Unidad.Descripcion : "001";
+                IM_POITEM.NET_PRICE = esPosicionDeMateriales ? (decimal)posicion.PrecioBruto : CalcularPrecioBrutoServicio(posicion);
+                IM_POITEM.NET_PRICESpecified = true;
+                IM_POITEM.PRICE_UNIT = 1;
+                //IM_POITEM.PRICE_UNITSpecified = true;
+                IM_POITEM.GR_PR_TIME = 0;
+                //IM_POITEM.GR_PR_TIMESpecified = true; 
+                IM_POITEM.DELETE_IND = "";
+                IM_POITEM.TAX_CODE = "";
+                IM_POITEM.VAL_TYPE = "";
+                IM_POITEM.NO_MORE_GR = "";
+                IM_POITEM.FINAL_INV = "";
+
+
+
+                switch (posicion.TipoImputacion.Codigo.ToLower())
+                {
+                    case "centrodecosto":
+                        IM_POITEM.ACCTASSCAT = "K";
+                        break;
+                    case "ordendeot":
+                        IM_POITEM.ACCTASSCAT = "F";
+                        break;
+                    case "ordendeinversion":
+                        IM_POITEM.ACCTASSCAT = "F";
+                        break;
+                    case "siniestrobeneficio":
+                        IM_POITEM.ACCTASSCAT = "Y";
+                        break;
+                }
+
+                IM_POITEM.DISTRIB = "";
+                IM_POITEM.PART_INV = "";
+                IM_POITEM.GR_IND = "";
+                IM_POITEM.GR_NON_VAL = "";
+                IM_POITEM.IR_IND = "";
+                IM_POITEM.FREE_ITEM = "";
+                IM_POITEM.GR_BASEDIV = "";
+                IM_POITEM.ACKN_REQD = "";
+                IM_POITEM.ACKNOWL_NO = "";
+                IM_POITEM.AGREEMENT = "";
+                IM_POITEM.AGMT_ITEM = "";
+                IM_POITEM.RFQ_NO = "";
+                IM_POITEM.RFQ_ITEM = "";
+                IM_POITEM.PREQ_NO = solp.NroSolp;
+                IM_POITEM.PREQ_ITEM = preqItem;
+                IM_POITEM.PCKG_NO = esPosicionDeMateriales ? "" : numeroPaquete;
+
+                solpPedidoSAP.IM_POITEMList.Add(IM_POITEM);
+
+                solpPedidoSAP.IM_POITEMXList.Add(new ZMPES6810
+                {
+                    PO_ITEM = preqItem,
+                    DELETE_IND = "",//(IM_POITEM.DELETE_IND != null) ? "X" : "",
+                    SHORT_TEXT = "X",
+                    MATERIAL = "X",
+                    PLANT = "X",
+                    STGE_LOC = "X",
+                    TRACKINGNO = string.IsNullOrEmpty(posicion.NroNecesidad) ? "" : "X",
+                    MATL_GROUP = "X",
+                    INFO_REC = "",
+                    QUANTITY = ((decimal)IM_POITEM.QUANTITY == 0) ? "" : "X",
+                    PO_UNIT = "X",
+                    NET_PRICE = "X",
+                    PRICE_UNIT = "X",
+                    GR_PR_TIME = "",
+                    TAX_CODE = "",
+                    VAL_TYPE = "",//(IM_POITEM.VAL_TYPE != null) ? "X" : "",
+                    NO_MORE_GR = "",
+                    FINAL_INV = "",
+                    ITEM_CAT = "X",
+                    ACCTASSCAT = (IM_POITEM.ACCTASSCAT != null) ? "X" : "",
+                    DISTRIB = "",
+                    PART_INV = "",
+                    GR_IND = "",
+                    GR_NON_VAL = "",
+                    IR_IND = "",
+                    FREE_ITEM = "",
+                    GR_BASEDIV = "",
+                    ACKN_REQD = "",
+                    ACKNOWL_NO = "",
+                    AGREEMENT = "",//"X",
+                    AGMT_ITEM = "",//"X",
+                    RFQ_NO = "",
+                    RFQ_ITEM = "",
+                    PREQ_NO = "X",
+                    PREQ_ITEM = "X",
+                    PCKG_NO = "X"
+                });
+
+                //Nombre: ZBAPIMEPOACCOUNT IM_POACCOUNT Denominación:	Imputación
+                var imputacion = new ZMPES6830();
+                imputacion.PO_ITEM = preqItem;
+                imputacion.SERIAL_NO = serialNumber;
+                imputacion.GL_ACCOUNT = ObtenerCuentaMayor(esPosicionDeMateriales, posicion);
+                imputacion.QUANTITY = esPosicionDeMateriales ? 1 : 0;//para mat adjuducacion.posicion.Cantidad;
+                imputacion.QUANTITYSpecified = imputacion.QUANTITY > 0;
+                imputacion.BUS_AREA = "GENE";
+                imputacion.CO_AREA = "MOA";
+                imputacion.COSTCENTER = ObtenerImputacion(esPosicionDeMateriales, posicion, "centrodecosto");
+                imputacion.ORDERID = ObtenerImputacion(esPosicionDeMateriales, posicion, "ordendeot");
+                imputacion.PROFIT_CTR = ObtenerImputacion(esPosicionDeMateriales, posicion, "siniestrobeneficio");
+                imputacion.SUB_NUMBER = "";
+                imputacion.ASSET_NO = "";
+                imputacion.COSTOBJECT = "";
+                imputacion.DELETE_IND = "";
+                solpPedidoSAP.IM_POACCOUNTList.Add(imputacion);
+
+                solpPedidoSAP.IM_POACCOUNTXList.Add(new ZMPES6840
+                {
+                    PO_ITEM = preqItem,
+                    SERIAL_NO = serialNumber,
+                    DELETE_IND = "",
+                    QUANTITY = "X",
+                    GL_ACCOUNT = "X",
+                    BUS_AREA = "X",
+                    ASSET_NO = "",
+                    SUB_NUMBER = "",
+                    CO_AREA = "X",
+                    COSTOBJECT = "",
+                    COSTCENTER = (posicion.TipoImputacion.Codigo.ToLower() == "centrodecosto") ? "X" : "",
+                    ORDERID = (posicion.TipoImputacion.Codigo.ToLower() == "ordendeot") ? "X" : "",
+                    PROFIT_CTR = (posicion.TipoImputacion.Codigo.ToLower() == "siniestrobeneficio") ? "X" : ""
+                });
+
+                //Nombre: ZBAPIMEPOADDREDELIVERY Denominación:	Direcciones de entrega
+                solpPedidoSAP.IM_POADDREDELIVERYList.Add(new ZMPES6820
+                {
+                    PO_ITEM = preqItem,
+                    POSTL_COD1 = posicion.CpEntrega,
+                    CITY = posicion.Centro.Descripcion,
+                    ADDR_NO = "",
+                    NAME = posicion.NombreEntrega,
+                    TEL1_NUMBR = "",
+                    STREET = "Benielli",//posicion.CalleEntrega,
+                    STREET_NO = "398",//posicion.NumeroEntrega
+                });
+
+                var PCKG_NO = 1;
+                if (!esPosicionDeMateriales)
+                {
+                    var LINE_NO = 1;
+                    //cabecera de subposiciones 
+                    var cabeceraSubPos = new BAPIESLLC
+                    {
+                        PCKG_NO = $"{PCKG_NO++:0000000000}",
+                        LINE_NO = $"{LINE_NO++:0000000000}",
+                        OUTL_IND = "X",
+                        OUTL_LEVEL = 0,
+                        SUBPCKG_NO = $"{PCKG_NO:0000000000}",
+                    };
+                    solpPedidoSAP.IM_SERVICESList.Add(cabeceraSubPos);
+
+                    foreach (var subposicion in posicion.Subposiciones)
+                    {
+                        var subposicionSap = new BAPIESLLC
+                        {
+                            PCKG_NO = $"{PCKG_NO:0000000000}",
+                            LINE_NO = $"{LINE_NO:0000000000}",
+                            EXT_LINE = $"{LINE_NO * 10:0000000000}",
+                            SERVICE = subposicion.ServicioSolp.Codigo,
+                            SHORT_TEXT = subposicion.Tarea,
+                            QUANTITY = subposicion.Cantidad ?? 0,
+                            QUANTITYSpecified = true,
+                            BASE_UOM = subposicion.Unidad.Codigo,
+                            UOM_ISO = subposicion.Unidad.Codigo,
+                            PRICE_UNIT = subposicion.PrecioBruto ?? 0,
+                            PRICE_UNITSpecified = true,
+                            GR_PRICE = (subposicion.PrecioBruto ?? 0) * (subposicion.Cantidad ?? 0),
+                            GR_PRICESpecified = true,
+                        };
+                        solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
+
+                        var imputacionSubPos = new BAPIESKLC()
+                        {
+                            PCKG_NO = $"{PCKG_NO:0000000000}",
+                            LINE_NO = $"{LINE_NO++:0000000000}",
+                            PERCENTAGE = 100,
+                            SERNO_LINE = "01",
+                            SERIAL_NO = "01",
+                        };
+
+                        solpPedidoSAP.IM_POSRVACCESSVALUESList.Add(imputacionSubPos);
+                    }
+
+                }
+
+
+                //Nombre: ZBAPIMEPOCONDHEADER Denominación:	Posición de Servicio
+                //solpPedidoSAP.IM_POCONDHEADERList.Add(new ZMPES6850
+                //{
+                //    CONDITION_NO = "", //CONDITION_NO    KNUMV Número de la condición de documento
+                //    ITM_NUMBER = "", //ITM_NUMBER  KPOSN Número de posición de la condición
+                //    COND_ST_NO = null, //COND_ST_NO  STUNR Número de paso
+                //    COND_COUNT = null, //COND_COUNT DZAEHK_SHORT    Contador de condiciones(longitud corta)
+                //    COND_TYPE = null, //COND_TYPE KSCHA   Clase de condición
+                //    COND_VALUE = 0, //COND_VALUE  BAPIKBETR1 Importe de condición
+                //    CURRENCY = null, //CURRENCY WAERS   Clase de Moneda
+                //    CHANGE_ID = null, //CHANGE_ID   MEINS Unidad de medida base
+                //    CALCTYPCON = null, //CALCTYPCON KRECH   Regla de cálculo para la condición
+                //    CONDCLASS = null, //CONDCLASS KOAID   Categoría de condición
+                //});
+
+                //solpPedidoSAP.IM_POCONDHEADERXList.Add(new ZMPES6860
+                //{
+                //    CONDITION_NO = "X",
+                //    ITM_NUMBER = "X",
+                //    COND_ST_NO = "X",
+                //    COND_COUNT = "X",
+                //    COND_TYPE = "X",
+                //    COND_VALUE = "X",
+                //    CURRENCY = "X",
+                //    CHANGE_ID = "X",
+                //    CALCTYPCON = "X",
+                //    CONDCLASS = "X"
+                //});
+
+                //Nombre: ZBAPIMEPOCOND Denominación:	Posición de Servicio          
+                //solpPedidoSAP.IM_POCONDList.Add( new ZMPES6870
+                //{
+                //    CONDITION_NO = null,  //CONDITION_NO    KNUMV Número de la condición de documento
+                //    ITM_NUMBER = null, //ITM_NUMBER  KPOSN Número de posición de la condición
+                //    COND_ST_NO = null, //COND_ST_NO  STUNR Número de paso
+                //    COND_COUNT = null, //COND_COUNT DZAEHK_SHORT    Contador de condiciones(longitud corta)
+                //    COND_TYPE = null, //COND_TYPE KSCHA   Clase de condición
+                //    COND_VALUE = 0, //COND_VALUE  BAPIKBETR1 Importe de condición
+                //    CURRENCY = null, //CURRENCY WAERS   Clase de Moneda
+                //    CHANGE_ID = null, //CHANGE_ID   MEINS Unidad de medida base
+                //    CALCTYPCON = null, //CALCTYPCON KRECH   Regla de cálculo para la condición
+                //    CONDCLASS = null //CONDCLASS KOAID   Categoría de condición
+                //});
+
+                //solpPedidoSAP.IM_POCONDXList.Add(new ZMPES6880
+                //{
+                //    CONDITION_NO = "X",
+                //    ITM_NUMBER = "X",
+                //    COND_ST_NO = "X",
+                //    COND_COUNT = "X",
+                //    COND_TYPE = "X",
+                //    COND_VALUE = "X",
+                //    CURRENCY = "X",
+                //    CHANGE_ID = "X",
+                //    CALCTYPCON = "X",
+                //    CONDCLASS = "X"
+                //});
+
+            }
+
+            return solpPedidoSAP;
+        }
+
+        private static string ObtenerImputacion(bool esPosicionDeMateriales, SolpPosicion posicion, string tipo)
+        {
+            if (posicion.TipoImputacion.Codigo.ToLower() == tipo)
+            {
+                if (esPosicionDeMateriales)
+                {
+                    return posicion.TipoImputacionSap?.Codigo ?? "";
+                }
+                else
+                {
+                    return posicion.Subposiciones.FirstOrDefault()?.TipoImputacionSap?.Codigo ?? "";
+                }
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private static string ObtenerCuentaMayor(bool esPosicionDeMateriales, SolpPosicion posicion)
+        {
+            return esPosicionDeMateriales ? (posicion.CuentaMayorSap?.Codigo ?? "") : posicion.Subposiciones.FirstOrDefault()?.CuentaMayorSap?.Codigo ?? "";
+        }
+
+        private SolpPedidoSAPDto ConvertirSOLPMateriales(Adjudicacion adjudicacion)
+        {
+            var proveedorCodigoDeLaAdjudicacion = "0057984261";
+            var usuarioCreadorAdjudicacion = "RABELLATM";
+            var solp = adjudicacion.Solp;
+
+            SolpPedidoSAPDto solpPedidoSAP = new SolpPedidoSAPDto();
+            int numeroPosicion = 0;
+            string numeroPaquete = "";
+            string preqItem = "";
+            string serialNumber = "";
+
+            //string docItem = "";
+
+            bool esPosicionDeMateriales = solp.Posiciones.First().TipoPosicion.Codigo == "MATERIALES";
+
+            //aca el metodo solo usa las posiciones seleccionadas por el comprador
+            var posIds = adjudicacion.Posiciones.Select(x => x.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id).ToList();
+            foreach (var posicion in solp.Posiciones.Where(a => posIds.Contains(a.Id)).OrderBy(x => x.Id))
+            {
+
+
+                bool eliminarPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
+                bool eliminarSubPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
+                eliminarPosicion = eliminarPosicion ? true : !posicion.Estado;
+                numeroPosicion = posicion.Indice ?? 0;
+                preqItem = $"{numeroPosicion:00000}";
+                //docItem = preqItem;
+                numeroPaquete = $"{numeroPosicion:0000000000}";
+                serialNumber = "01";//$"{numeroPosicion:00}";
+
+
+                //Nombre: ZBAPIMEPOHEADER Denominación:	Cabecera del Pedido de Compras
+                var cabeceraDelPedido = new ZMPES6780();
+
+                cabeceraDelPedido.COMP_CODE = "MOA"; //COMP_CODE BUKRS   Sociedad
+                cabeceraDelPedido.DOC_TYPE = "ZPE1";//solp.ClaseDocumento.CodigoSap; //DOC_TYPE    ESART Clase de documento de compras
+                cabeceraDelPedido.VENDOR = proveedorCodigoDeLaAdjudicacion;//posicion.ProveedorFijo; //VENDOR ELIFN   Número de cuenta del proveedor
+                cabeceraDelPedido.PURCH_ORG = "2029";// posicion.OrganizacionCompras; //PURCH_ORG EKORG   Organización de compras
+                cabeceraDelPedido.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP   BKGRP Grupo de compras
+                cabeceraDelPedido.CURRENCY = posicion.Moneda.Codigo; //CURRENCY WAERS   Clave de moneda
+                cabeceraDelPedido.CREATED_BY = usuarioCreadorAdjudicacion;// solp.UsuarioCreacion.UsuarioSap; //CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto
                 cabeceraDelPedido.DOC_DATE = SAPFormatter.PrepararFecha(DateTime.Now); //DOC_DATE    EBDAT Fecha del documento de compras
+
+                cabeceraDelPedido.PO_NUMBER = ""; //PO_NUMBER   EBELN Número del documento de compras
+                cabeceraDelPedido.DELETE_IND = "";// posicion.TipoPosicion.Codigo != "MATERIALES" ? SAPFormatter.FormatearBooleano(eliminarPosicion) : ""; //DELETE_IND ELOEK   Indicador de borrado en el documento de compras
+                cabeceraDelPedido.STATUS = ""; //STATUS ESTAK   Status del documento de compras
+                cabeceraDelPedido.CREAT_DATE = ""; //SAPFormatter.PrepararFecha(solp.FechaCreacion); //CREAT_DATE  ERDAT Fecha de creación del registro
+                cabeceraDelPedido.PMNTTRMS = ""; //"BASE"; //PMNTTRMS    DZTERM Clave de condiciones de pago
+                //cabeceraDelPedido.EXCH_RATE = 0; //EXCH_RATE   WKURS Tipo de cambio de moneda
+                cabeceraDelPedido.EX_RATE_FX = ""; //EX_RATE_FX KUFIX   Indicador tipo de cambio fijo
 
 
                 solpPedidoSAP.IM_POHEADERList = cabeceraDelPedido;
@@ -533,7 +898,6 @@ namespace SustitucionMOAWS.WSConsumers
 
             return solpPedidoSAP;
         }
-
         private decimal CalcularPrecioBrutoServicio(SolpPosicion posicion)
         {
             decimal total = 0;
