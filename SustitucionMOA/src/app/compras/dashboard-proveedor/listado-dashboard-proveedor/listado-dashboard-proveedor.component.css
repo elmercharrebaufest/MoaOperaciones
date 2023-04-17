@@ -31,4 +31,16 @@ body.ui-paginator.ui-dropdown{
     font-size: 11px !important; 
     cursor:pointer;
 }
+.contenedor-imagen {
+    position: relative;
+}
 
+.punto-rojo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+}

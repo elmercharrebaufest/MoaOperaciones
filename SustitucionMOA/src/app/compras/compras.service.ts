@@ -504,11 +504,11 @@ export class ComprasService extends BaseService {
             .get<SolpCompraDto>('/api/compras/ListarProveedores', { params: params, headers: this.headers })
     }
 
-    verLegajo(idPeticionDeOferta: number, idUsuario: number): Observable<any> {
+    verLegajo(idPeticionDeOferta: number, idPeticionDeOfertaUsuario: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("peticionDeOfertaId", idPeticionDeOferta.toString());
-        if (idUsuario != null) {
-            params = params.set("usuarioId", idUsuario.toString());
+        if (idPeticionDeOfertaUsuario != null) {
+            params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
         return this.http
             .get("/api/compras/ObtenerLegajo", {
@@ -544,10 +544,12 @@ export class ComprasService extends BaseService {
 
     }
 
-    descargarLegajo(idPeticion: number): Observable<any> {
+    descargarLegajo(idPeticion: number, idPeticionDeOfertaUsuario: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("idPeticion", idPeticion.toString());
-
+        if (idPeticionDeOfertaUsuario != null) {
+            params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
+        }
         return this.http
             .get("/api/compras/DescargarLegajo", {
                 params: params,
