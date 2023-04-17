@@ -759,7 +759,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     MaterialId = x.Id,
                     Descripcion = x.Nombre,
-                    CodigoSap = x.CodigoSap
+                    CodigoSap = x.CodigoSap,
+                    ValidaSisaRuca = x.ValidaSisaRuca
 
                 }).ToList();
             }

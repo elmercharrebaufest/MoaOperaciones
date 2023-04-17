@@ -529,24 +529,23 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     onContratoSeleccionadoChanged = () => {
-        if (this.ordenDeCarga.ContratoSeleccionado) { //this.contratoSeleccionado) {
-            this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato; //this.contratoSeleccionado.NumeroContrato;
-            this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato; //this.contratoSeleccionado.NumeroContrato;
-            this.ordenDeCarga.Producto_Id = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId; //this.contratoSeleccionado.Producto.MaterialId;
-            this.Producto = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId.toString(); //this.contratoSeleccionado.Producto.MaterialId.toString();
-            this.validaCPEDG = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId > 6;
+        if (this.ordenDeCarga.ContratoSeleccionado) {
+            this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
+            this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
+            this.ordenDeCarga.Producto_Id = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId;
+            this.Producto = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId.toString();
+            // this.validaCPEDG = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId > 6;
+            let materialSeleccionado = this.listaMateriales.find(mat => mat.MaterialId === this.ordenDeCarga.Producto_Id);
+            this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
         }
         else {
             this.Contrato = "";
             this.ordenDeCarga.ContratoIngresado = "";
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
+            this.validaCPEDG = false;
         }
+        this.validarSisaCorredorCliente()
     }
-
-
-
-
-
     validarCorredorClienteContratoProducto = (
         clienteCuit: string,
         clienteCodigo: string,
@@ -796,6 +795,54 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     gestionarAltaCUIT(campo: CuitValidaExistencia) {
         const cuit = this.ordenDeCarga[campo];
         this.mensajesOrdenDeCarga[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
+    }
+
+    validarSisaCorredorCliente() {
+        if (!this.ordenDeCarga.ContratoSeleccionado) {
+            this.mensajeComponent.setMsgsEmpty();
+            return;
+        }
+        let corredorCodigo = this.corredorSeleccionado ? this.corredorSeleccionado.idVendedor : "";
+        let clienteCodigo = this.clienteSeleccionado ? this.clienteSeleccionado.CodigoProveedor : "";
+        try {
+            this.blockUI.start('');
+            this.service
+                .validarSisaCorredorCliente(corredorCodigo, clienteCodigo)
+                .subscribe(resp => {
+                    if (resp.logout) {
+                        this.sessionDataService.logout();
+                    } else {
+                        if (resp.error) {
+                            this.mensajeComponent.setErrorMsg(resp.error);
+                        } else {
+                            if (resp.info) {
+                                this.mensajeComponent.setInfoMsg(resp.info)
+                            }
+                            let data = resp.data;
+                            if (!data.CorredorHabilitadoEnSisa || !data.ClienteHabilitadoEnSisa) {
+                                if (!data.CorredorHabilitadoEnSisa && !data.ClienteHabilitadoEnSisa) {
+                                    this.mensajeComponent.setErrorMsg("Corredor y Cliente no están habilitados en SISA, no podrá cargar la orden hasta regularizar la situación");
+                                }
+                                else {
+                                    if (!data.CorredorHabilitadoEnSisa) {
+                                        this.mensajeComponent.setErrorMsg("Corredor no habilitado en SISA, no podrá cargar la orden hasta regularizar la situación");
+                                    } else {
+                                        this.mensajeComponent.setErrorMsg("Cliente no habilitado en SISA, no podrá cargar la orden hasta regularizar la situación");
+                                    }
+                                }
+                                this.ordenDeCarga.ContratoSeleccionado = undefined;
+                                this.ordenDeCarga.Producto_Id = 0;
+                                this.Producto = "";
+                            }
+                        }
+                    }
+                    this.blockUI.stop();
+                })
+        } catch (err) {
+            console.error('validarSisaCorredorCliente: ', err);
+            this.mensajeComponent.setErrorMsg(err);
+            this.blockUI.stop();
+        }
     }
 }
 

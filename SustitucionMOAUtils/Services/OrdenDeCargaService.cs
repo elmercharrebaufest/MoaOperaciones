@@ -2334,7 +2334,7 @@ namespace SustitucionMOAUtils.Services
                     Contrato = string.Empty,
                     Corredor = req.CorredorCodigo,
                     Fechas = rangoFechas,
-                    Material = "50866",
+                    Material = "",
                     Pendiente = "X", // "X" es para Contratos ABIERTOS
                     TipoContrato = "N"
                 };
@@ -2426,6 +2426,17 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException($"Las siguientes ordenes no pudieron enviarse correctamente: {string.Join(", ", errores)}");
             return $"Se han enviado las ordenes";
         }
+
+        public ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo)
+        {
+            var res = new ValidarSisaCorredorClienteResponse
+            {
+                ClienteHabilitadoEnSisa = false,
+                CorredorHabilitadoEnSisa = true
+            };
+            return res;
+        }
+
         private Proveedor GetClienteParaCorredor(Usuario usuario, Proveedor corredor, OrdenDeCarga ordenDeCarga)
         {
             corredor = usuario.ObtenerCorredor();
