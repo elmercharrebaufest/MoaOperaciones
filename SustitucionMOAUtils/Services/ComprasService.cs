@@ -3332,7 +3332,13 @@ namespace SustitucionMOAUtils.Services
                         PeticionDeOfertaUsuario_Id = a.Id
                     }).ToList()
                 };
-
+                foreach (var proveedor in peticion.Usuarios.Where(x => circularDto.UsuarioIds.Contains(x.Usuario_Id)))
+                {
+                    if (proveedor.Cotizaciones != null && proveedor.Cotizaciones.Count > 0 && proveedor.Cotizaciones.First().CotizacionEstado_Id == 1)
+                    {
+                        proveedor.Cotizaciones.First().CotizacionEstado_Id = 2;
+                    }
+                }
                 circular = repositorio.Agregar(circular);
                 repositorio.GuardarCambios();
 
