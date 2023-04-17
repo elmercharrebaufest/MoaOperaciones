@@ -61,6 +61,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     nroCotizacion: any;
     displayOkCircular: boolean;
     displayProveedor: boolean;
+    usuarioProveedor: boolean = false;
+
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -358,7 +360,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     adjuntarArchivoLegajo(files) {
-        console.log("adjuntar", files);
         let peticionId = this.legajo[0].PeticionDeOfertaId;
         //todo adjuntar los archivos
 

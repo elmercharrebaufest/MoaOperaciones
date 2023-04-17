@@ -2215,9 +2215,10 @@ namespace SustitucionMOAUtils.Services
             return todasLasSolp;
         }
 
-        public ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp)
+        public ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp, string username)
         {
-            var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp));
+            var userId = repositorio.Obtener<Usuario>(a => a.Mail == username).Id;
+            var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, userId));
             if (todasLasPO != null && todasLasPO.Count() > 0)
             {
                 todasLasPO.FirstOrDefault().ItemsTotales = todasLasPO.ItemsTotales;
@@ -2822,7 +2823,7 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? usuarioId)
+        public List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? peticiondeOfertaUsuarioId)
         {
             List<LegajoDto> legajo = new List<LegajoDto>();
             var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
@@ -2839,6 +2840,7 @@ namespace SustitucionMOAUtils.Services
                 Fecha = peticion.Solp.FechaCreacion,
                 FechaFormateado = peticion.Solp.FechaCreacion.ToString("dd/MM/yyyy")
             });
+
             // buscar archivos de la solp
             if (peticion.Solp.Pliego != null && peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
             {
@@ -2861,9 +2863,8 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-
-            //buscar archivos de la peticion
-            foreach (var item in peticion.Archivos)
+            //buscar archivos de la peticion ( menos lo de legajo cuando es un usuario proveedor)
+            foreach (var item in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
             {
                 legajo.Add(new LegajoDto
                 {
@@ -2894,11 +2895,18 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Select(u => u.Id).ToList();
+            //circular
+            var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => peticiondeOfertaUsuarioId == null || u.Id == peticiondeOfertaUsuarioId).Select(u => u.Id).ToList();
             var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
 
             foreach (var circular in circulares)
             {
+                bool leido = true;
+                if (peticiondeOfertaUsuarioId.HasValue)
+                {
+                    leido = circular.PeticionDeOfertaUsuarios.FirstOrDefault().Leida == true;
+                }
+
                 //buscar archivos de la circular
                 foreach (var item in circular.Archivos)
                 {
@@ -2909,7 +2917,8 @@ namespace SustitucionMOAUtils.Services
                         PeticionDeOfertaId = peticionDeOfertaId,
                         SolpId = peticion.Solp_Id,
                         Fecha = circular.FechaCreacion,
-                        FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy")
+                        FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy"),
+                        Leido = leido
                     });
                 }
                 //buscar comentarios de la circular
@@ -2920,7 +2929,8 @@ namespace SustitucionMOAUtils.Services
                     PeticionDeOfertaId = peticionDeOfertaId,
                     SolpId = peticion.Solp_Id,
                     Fecha = circular.FechaCreacion,
-                    FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy")
+                    FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy"),
+                    Leido = leido
                 });
                 //buscar cambios de fechas de la circular
                 if (circular.RequiereCambioDeFechas == true)
@@ -2934,7 +2944,8 @@ namespace SustitucionMOAUtils.Services
                             PeticionDeOfertaId = peticionDeOfertaId,
                             SolpId = peticion.Solp_Id,
                             Fecha = circular.FechaCreacion,
-                            FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy")
+                            FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy"),
+                            Leido = leido
                         });
                     }
                     if (circular.FechaDeEntrega.HasValue)
@@ -2946,9 +2957,17 @@ namespace SustitucionMOAUtils.Services
                             PeticionDeOfertaId = peticionDeOfertaId,
                             SolpId = peticion.Solp_Id,
                             Fecha = circular.FechaCreacion,
-                            FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy")
+                            FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy"),
+                            Leido = leido
                         });
                     }
+                }
+
+                if (leido == false)
+                {
+                    circular.PeticionDeOfertaUsuarios.FirstOrDefault().Leida = true;
+                    circular.PeticionDeOfertaUsuarios.FirstOrDefault().FechaLeida = DateTime.Now;
+                    repositorio.GuardarCambios();
                 }
             }
 
@@ -2979,7 +2998,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     Archivo = new Archivo
                     {
-                        FileKey = FileKeys.PeticionDeOferta,
+                        FileKey = FileKeys.PeticionDeOfertaLegajo,
                         Ruta = rutaArchivoRename
                     },
                     Fecha = DateTime.Now,
@@ -2994,7 +3013,7 @@ namespace SustitucionMOAUtils.Services
             return new Resultado();
         }
 
-        public string DescargarLegajo(int idPeticion, string pathBase)
+        public string DescargarLegajo(int idPeticion, string pathBase, int? peticiondeOfertaUsuarioId)
         {
             var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
 
@@ -3026,7 +3045,8 @@ namespace SustitucionMOAUtils.Services
                     //peticion de oferta
                     if (peticion.Archivos != null)
                     {
-                        foreach (var archivoSubido in peticion.Archivos)
+
+                        foreach (var archivoSubido in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
                         {
                             if (File.Exists(archivoSubido.Archivo.Ruta))
                             {
@@ -3050,8 +3070,23 @@ namespace SustitucionMOAUtils.Services
 
                         }
                     }
-                    //circular (cuando este el modulo)
 
+                    //circular
+                    var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => peticiondeOfertaUsuarioId == null || u.Id == peticiondeOfertaUsuarioId).Select(u => u.Id).ToList();
+                    var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
+
+                    foreach (var circular in circulares)
+                    {
+                        //buscar archivos de la circular
+                        foreach (var item in circular.Archivos)
+                        {
+                            if ((peticionDeOfertaUsuarios_Id != null && item.FileKey != FileKeys.PeticionDeOfertaLegajo) || peticionDeOfertaUsuarios_Id == null)
+                            {
+                                string fileName = Path.GetFileName(item.Ruta);
+                                archivo.CreateEntryFromFile(item.Ruta, fileName);
+                            }
+                        }
+                    }
                     //adjuntos del proveedor (preguntar?)
 
 
