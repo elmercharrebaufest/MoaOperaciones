@@ -54,14 +54,14 @@ namespace SustitucionMOAModel.Dto
         public TablaSapDto Moneda { get; set; }
         public string MonedaDescripcion { get; set; }
         public List<CotizacionSubPosicionDto> CotizacionSubPosiciones { get; set; } = new List<CotizacionSubPosicionDto>();
+        public string UnidadMedidaDescripcion { get; set; }
+        public int PlazoDeEntrega { get; set; }
         public decimal PrecioTotal { get; set; }
+        public string MonedaCodigo { get; set; }
+        public string FechaDeEntregaFormateado { get; set; }
         public decimal TotalARPCotizacionPosicion { get; set; }
         public decimal TotalGlobalSubPos { get; set; }
         public decimal TotalPosicionCotizacion { get; set; }
-        public string UnidadMedidaDescripcion { get; set; }
-        public int PlazoDeEntrega { get; set; }
-        public string MonedaCodigo { get; set; }
-        public string FechaDeEntregaFormateado { get; set; }
         public DateTime? FechaOriginal { get; set; }
         public int CantidadPendiente { get; set; }
         public decimal TotalPesos { get; set; }
@@ -83,6 +83,28 @@ namespace SustitucionMOAModel.Dto
         public decimal Precio { get; set; }
         public decimal PrecioTotalSubPos { get; set; }
         public int TotalPesos { get; set; }
+    }
+
+    public class GuardarCotizacionPosicionDto
+    {
+        public int PeticionDeOfertaSolpPosicionId { get; set; }
+        public decimal Precio { get; set; }
+        public int MonedaId { get; set; }
+        public int UnidadDeMedidaId { get; set; }
+        public int Cantidad { get; set; }
+        public DateTime? FechaDeEntrega { get; set; }
+    }
+
+    public class GuardarCotizacion
+    {
+        public int PeticionOfertaUsuarioId { get; set; }
+        public List<GuardarCotizacionPosicionDto> CotizacionPosiciones { get; set; } = new List<GuardarCotizacionPosicionDto>();
+        public string ObservacionTecnica { get; set; }
+        public string ObservacionEconomica { get; set; }
+        public List<ArchivoDto> ArchivosNuevos { get; set; } = new List<ArchivoDto>();
+        public List<ArchivoDto> ArchivosGuardados { get; set; } = new List<ArchivoDto>();
+        public int CotizacionId { get; set; }
+        public bool EsFinalizado { get; set; }
     }
 
     public class GuardarCotizacionPosicionDto
