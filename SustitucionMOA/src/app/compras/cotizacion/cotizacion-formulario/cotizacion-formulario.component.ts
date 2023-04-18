@@ -152,6 +152,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
 
     //elimno el archivo, llamar al servicio de eliminacion
     eliminarAdjuntoNuevo(archivo): void {
+        console.log(archivo);
         var indice = this.archivos.indexOf(archivo)
         this.archivos.splice(indice, 1)
     }
@@ -161,7 +162,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         this.archivos = filesUpload["files"];
     }
 
-    eliminarArchivo(esAdjuntoNuevo: boolean, archivo: any) {
+    eliminarArchivo(archivo: any) {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar el archivo?',
             accept: () => {
