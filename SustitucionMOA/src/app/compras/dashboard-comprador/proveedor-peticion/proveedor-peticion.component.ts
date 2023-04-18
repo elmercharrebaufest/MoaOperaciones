@@ -71,12 +71,12 @@ export class ProveedorPeticionComponent implements OnInit {
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
-                         //   this.floatMsgService.setErrorMsg(result.error);
-                         this.error = result.error;
-                         this.visualizarAlert = true;
-                         
+                            //   this.floatMsgService.setErrorMsg(result.error);
+                            this.error = result.error;
+                            this.visualizarAlert = true;
+
                         } else if (result.info != undefined) {
-                           // this.floatMsgService.setInfoMsg(result.info);
+                            // this.floatMsgService.setInfoMsg(result.info);
                             this.error = result.error;
                             this.visualizarAlert = true;
                         } else {
@@ -86,14 +86,14 @@ export class ProveedorPeticionComponent implements OnInit {
                         this.blockUI.stop();
                     },
                     error => {
-                       // this.floatMsgService.setErrorMsg(error.message);
-                       this.error = error.message;
-                       this.visualizarAlert = true;
+                        // this.floatMsgService.setErrorMsg(error.message);
+                        this.error = error.message;
+                        this.visualizarAlert = true;
                         this.blockUI.stop();
 
                     });
             } catch (e) {
-              //  this.floatMsgService.setErrorMsg(e);
+                //  this.floatMsgService.setErrorMsg(e);
                 this.error = e;
                 this.visualizarAlert = true;
                 this.blockUI.stop();
@@ -111,7 +111,7 @@ export class ProveedorPeticionComponent implements OnInit {
 
     validarProveedor() {
         if (this.proveedoresSeleccionados == null || this.proveedoresSeleccionados.length == 0) {
-            this.error = "Debe seleccionar un proveedor";
+            this.error = "Debe seleccionar un proveedor que no este asociado.";
             return this.visualizarAlert = true;
         }
         if (this.proveedoresSeleccionados != null || this.proveedoresSeleccionados.length > 0 && this.peticion != null) {
@@ -137,7 +137,7 @@ export class ProveedorPeticionComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.proveedores = result.data;                       
+                        this.proveedores = result.data;
                     }
                 },
                 error => {
@@ -153,7 +153,10 @@ export class ProveedorPeticionComponent implements OnInit {
     selectProveedor(event) {
         try {
             if (!this.proveedoresSeleccionados.some(e => e.Id === event.Id)) {
-                this.proveedoresSeleccionados.push(event);
+                this.validarProveedor();
+                if (!this.visualizarAlert) {
+                    this.proveedoresSeleccionados.push(event);
+                }
             }
             this.proveedorSeleccionado = null;
         } catch (e) {
