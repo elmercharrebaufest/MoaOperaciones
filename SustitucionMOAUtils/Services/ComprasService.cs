@@ -52,7 +52,22 @@ using System.Net;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using SustitucionMOAUtils.Logger;
-using static SustitucionMOAWS.WSConsumers.ObtenerTipoCambioConsumerMOA;
+using SustitucionMOAWS.CrearSolpWebServiceMOA;
+using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.WSConsumers;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Net;
+using System.Net.Mail;
+using System.Text;
+using System.Web;
+using Image = iTextSharp.text.Image;
 
 namespace SustitucionMOAUtils.Services
 {

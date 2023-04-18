@@ -62,7 +62,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         Id = pop.Id, //Pos
                                                                         Codigo = pop.SolpPosicion.MaterialSolp.CodigoSap, //Codigo
                                                                         Tarea = pop.SolpPosicion.Tarea,
-                                                                        //TextoSuministro = pop.SolpPosicion.TextoSuministro,
+                                                                        TextoSuministro = pop.SolpPosicion.TextoSuministro,
                                                                         Cantidad = pop.SolpPosicion.Cantidad,
                                                                         UnidadComprasDescripcion = pop.SolpPosicion.Unidad.Descripcion,
                                                                         UnidadId = pop.SolpPosicion.Unidad_Id,

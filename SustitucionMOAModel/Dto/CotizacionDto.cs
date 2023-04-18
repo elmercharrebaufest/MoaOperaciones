@@ -25,6 +25,7 @@ namespace SustitucionMOAModel.Dto
         public bool TieneObservacionTecnica { get; set; }
         public List<CotizacionPosicionDto> CotizacionPosiciones { get; set; } = new List<CotizacionPosicionDto>();
         public bool TieneAdjuntos { get; set; }
+        public IList<ArchivoDto> ArchivosCotizacion { get; set; }
         public string FechaCreacionFormateada { get; set; }
         public decimal TotalGlobal { get; set; }
         public decimal TotalGlobalSubPos { get; set; }
