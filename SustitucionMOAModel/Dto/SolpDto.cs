@@ -227,6 +227,7 @@ namespace SustitucionMOAModel.Dto
         public string MaterialComprasCodigo { get; set; }
         public int Id { get; set; }
         public DateTime? FechaOferta { get; set; }
+        public CotizacionPosicionDto CotizacionPosicion { get; set; }
 
         public SolpPosicionDto() { }
 
@@ -330,6 +331,7 @@ namespace SustitucionMOAModel.Dto
 
         public TablaSapDto Unidad { get; set; }
         public string UnidadComprasDescripcion { get; set; }
+        public string UnidadDescripcion { get; set; }
 
         public SolpSubposicionDto() { }
 

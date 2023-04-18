@@ -45,6 +45,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     NombreDeObra = x.PeticionDeOferta.Solp.Pliego == null ? "" : x.PeticionDeOferta.Solp.Pliego.NombreObra,
                                     UsuarioCreador_Id = x.PeticionDeOferta.UsuarioCreador_Id,
                                     UsuarioCreador = x.PeticionDeOferta.Usuario.Mail,
+                                    CotizacionId = cotizacion != null ? cotizacion.Id : 0,
                                     PlazoDeOferta = x.Circulares.Any(c => c.Circular.RequiereCambioDeFechas == true) ?
                                     x.Circulares.Where(c => c.Circular.RequiereCambioDeFechas == true).OrderByDescending(c => c.Circular.Id).FirstOrDefault().Circular.PlazoDeOferta.Value :
                                     x.PeticionDeOferta.PlazoDeOferta,

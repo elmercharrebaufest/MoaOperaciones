@@ -1,4 +1,6 @@
+import { Archivo } from "../common/models/archivo"
 import { LegajoDto } from "./legajoDto"
+import { PeticionDeOfertaDto } from "./peticion-de-oferta-model"
 
 export interface CotizacionDto {
     Id: number,
@@ -13,25 +15,30 @@ export interface CotizacionDto {
     Revision: number,
     CotizacionEstadoDescripcion: string, 
     Archivos: LegajoDto[],
+    ArchivosCotizacion: Archivo[]
     TieneObservacionTecnica: boolean, 
     CotizacionPosiciones: CotizacionPosicionDto[],
-    TieneAdjuntos: boolean
+    TieneAdjuntos: boolean    
 }
 
 export interface CotizacionPosicionDto {
+    PlazoDeEntrega: number
     Id: number,
     Cotizacion_Id: number,
     PeticionDeOfertaSolpPosicion_Id: number, 
     Cantidad: number,
-    UnidadDeMedida_Id: number, 
-    Moneda_Id: number,
+    UnidadDeMedida_Id: any, 
+    Moneda_Id: any,
     Precio: number,
-    FechaDeEntrega: string,
+    PrecioTotal: number,
+    FechaDeEntrega: any,
     Codigo: string,
     Descripcion: string,
     TextoSuministro: string,
     CantidadSolp: number,
     UnidadMedida: number,
+    MonedaCodigo: string,
+    UnidadComprasDescripcion: string,
     CotizacionSubPosiciones: CotizacionSubPosicionDto[]
 }
 
@@ -44,3 +51,14 @@ export interface CotizacionSubPosicionDto {
     Moneda_Id: number,
     Precio: number
 }
+
+export interface GuardarCotizacion{
+    Posicion: string,
+    PeticionDeOfertaSolpPosicionId: number
+    Precio: number
+    MonedaId: number
+    UnidadDeMedidaId: number
+    Cantidad: number
+    FechaDeEntrega: Date    
+}
+

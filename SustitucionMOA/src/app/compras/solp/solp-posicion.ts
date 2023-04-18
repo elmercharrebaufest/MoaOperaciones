@@ -3,6 +3,7 @@ import { MenuItem } from 'primeng/api';
 import * as uuid from 'uuid';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { SubPosicionViewModel } from "./steps/posicion/tab-subposicion/sub-posicion-view-model";
+import { CotizacionPosicionDto } from '../../modelos/cotizacionDto';
 
 export class SolpPosicion {
     public id: any;
@@ -104,6 +105,7 @@ export class SolpPosicion {
 
     //validacion
     public tabsPosicionValidos: TabsImputacionValidas = new TabsImputacionValidas();
+
 
     public isNewRow: boolean
 

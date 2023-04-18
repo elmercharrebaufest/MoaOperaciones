@@ -6,7 +6,6 @@ import { SpinnerComponent } from '../../../common/view-child/spinner/spinner.com
 import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
 import { Paginator } from 'primeng/paginator';
 import { Subscription } from 'rxjs';
-import { CircularDto } from '../../../modelos/circular-model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FloatMsgService } from '../../../common/services/FloatMsgService';
 import { ModalService } from '../../../common/services/ModalService';
@@ -200,5 +199,52 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
                 }
             )
     }
+
+  publicarCotizacion(Id: string) {
+    this.goToSeccionParam('/compras/dashboard-proveedor/cotizacion', Id);
+}
+
+generarZipPliego(idSolp) {
+  this.blockUI.start('Generando ')
+  this.service.descargarZipPliego(idSolp)
+      .subscribe(
+          (result) => {
+              if (result.logout == true) {
+                  this.sessionDataService.logout();
+              }
+              else {
+                  var byteArray = new Uint8Array(result.FileContents);
+                  var blob = new Blob([byteArray], {
+                      type: "application/octet-stream",
+                  });
+
+                  if (window.navigator.msSaveOrOpenBlob) {
+                      // IE11
+                      window.navigator.msSaveOrOpenBlob(
+                          blob,
+                          result.FileDownloadName
+                      );
+                  } else {
+                      var url = window.URL.createObjectURL(blob);
+                      var link = document.createElement("a");
+                      document.body.appendChild(link);
+                      link.href = url;
+                      link.download = result.FileDownloadName;
+                      link.click();
+                      setTimeout(function () {
+                          window.URL.revokeObjectURL(url);
+                      }, 0);
+                      this.blockUI.stop();
+                      return false;
+                  }
+                  this.blockUI.stop();
+              }
+          },
+          (error) => {
+              this.mensajeComponent.setErrorMsg(error.message);
+              this.blockUI.stop();
+          }
+      )
+}
 
 }

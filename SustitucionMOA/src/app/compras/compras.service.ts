@@ -7,7 +7,7 @@ import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 import { SolpPosicion } from './solp/solp-posicion';
 import { AltaNuevoProveedor, EnvioSolpCompra, SolpCompraDto } from './solp-compra';
 import { CircularDto } from '../modelos/circular-model';
-import { PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
+import { PeticionDeOfertaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
 
 @Injectable({
     providedIn: 'root'
@@ -630,5 +630,45 @@ export class ComprasService extends BaseService {
         return this.http
             .post<any>('/api/compras/GrabarRevisionTecnica', payload, { headers: this.headers });
     } 
+
+    public obtenerCotizacion(id: number) {
+        let params: HttpParams = new HttpParams()
+        params = params.set('peticionDeOfertaId', id.toString());
+        return this.http
+            .get<PeticionDeOfertaDto>('/api/compras/ObtenerCotizacion', { params: params, headers: this.headers })
+
+    }
+
+    public GrabarCotizacion(cotizacion: any, esFinalizado: boolean) {
+        let json = JSON.stringify({
+            CotizacionId: cotizacion.CotizacionId,
+            PeticionOfertaUsuarioId: cotizacion.PeticionOfertaUsuarioId,
+            CotizacionPosiciones: cotizacion.CotizacionPosiciones,
+            ObservacionEconomica: cotizacion.ObservacionEconomica,
+            ObservacionTecnica: cotizacion.ObservacionTecnica,
+            ArchivosNuevos: cotizacion.ArchivosNuevos,
+            ArchivosGuardados: cotizacion.ArchivosGuardados,
+            EsFinalizado: esFinalizado
+        });
+
+        var payload = new FormData();
+        var archivos = cotizacion.ArchivosNuevos;
+        if (archivos != null) {
+            for (let i = 0; i < archivos.length; i++) {
+                let fileToUpload = archivos[i];
+                try {
+                    payload.append("fileCotizacionRevisionEconomica", fileToUpload as File, fileToUpload.name);
+                } catch (e) {
+
+                    console.log(e);
+                }
+            }
+        }
+
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/GrabarCotizacion', payload, { headers: this.headers });
+    }
 
 }
