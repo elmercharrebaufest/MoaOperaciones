@@ -789,7 +789,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             })
     }
     revisarCUITFormatoValido(cuit: string): boolean {
-        return cuit && cuit.length == 11 && !Number.isNaN(cuit)
+        return cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
     }
     gestionarAltaCUIT(campo: CuitValidaExistencia) {
         const cuit = this.ordenDeCarga[campo];
