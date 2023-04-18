@@ -106,4 +106,26 @@ namespace SustitucionMOAModel.Dto
         public int CotizacionId { get; set; }
         public bool EsFinalizado { get; set; }
     }
+
+    public class GuardarCotizacionPosicionDto
+    {
+        public int PeticionDeOfertaSolpPosicionId { get; set; }
+        public decimal Precio { get; set; }
+        public int MonedaId { get; set; }
+        public int UnidadDeMedidaId { get; set; }
+        public int Cantidad { get; set; }
+        public DateTime? FechaDeEntrega { get; set; }
+    }
+
+    public class GuardarCotizacion
+    {
+        public int PeticionOfertaUsuarioId { get; set; }
+        public List<GuardarCotizacionPosicionDto> CotizacionPosiciones { get; set; } = new List<GuardarCotizacionPosicionDto>();
+        public string ObservacionTecnica { get; set; }
+        public string ObservacionEconomica { get; set; }
+        public List<ArchivoDto> ArchivosNuevos { get; set; } = new List<ArchivoDto>();
+        public List<ArchivoDto> ArchivosGuardados { get; set; } = new List<ArchivoDto>();
+        public int CotizacionId { get; set; }
+        public bool EsFinalizado { get; set; }
+    }
 }
