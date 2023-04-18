@@ -49,7 +49,6 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     NroSolp = po.Solp.NroSolp,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
                                                                 where po.Id == pop.PeticionDeOferta_Id
-                                                                
                                                                 select new PeticionDeOfertaSolpPosicionDto()
                                                                 {
                                                                     Id = pop.Id,
@@ -70,6 +69,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         TextoSuministro = pop.SolpPosicion.TextoSuministro,
                                                                         Cantidad = pop.SolpPosicion.Cantidad,
                                                                         CantidadPendiente = pop.SolpPosicion.Cantidad - (adjudicacionPosicion != null ? adjudicacionPosicion.Cantidad : 0),
+                                                                        CantidadAdjudicacion = adjudicacionPosicion != null ? adjudicacionPosicion.Cantidad : 0,
 
                                                                         Unidad = new TablaSapDto {
                                                                             Descripcion = pop.SolpPosicion.Unidad.Descripcion

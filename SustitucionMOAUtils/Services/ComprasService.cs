@@ -40,6 +40,20 @@ using System.Text;
 using System.Web;
 using Image = iTextSharp.text.Image;
 
+using SustitucionMOAWS.Interfaces;
+using SustitucionMOAModel.Consultas;
+using SustitucionMOAFotmatter;
+using SustitucionMOAWS.CrearSolpWebServiceMOA;
+using SustitucionMOARepositorio.ConsultasEF;
+using iTextSharp.tool.xml.css;
+using SustitucionMOAModel.Models.WSMapMOA;
+using System.Net.Mail;
+using System.Net;
+using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using SustitucionMOAUtils.Logger;
+using static SustitucionMOAWS.WSConsumers.ObtenerTipoCambioConsumerMOA;
+
 namespace SustitucionMOAUtils.Services
 {
     public class ComprasService : IComprasService
