@@ -34,7 +34,6 @@ import { Generacion1Component } from './solp/steps/generacion1/generacion1.compo
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SolpComponent } from './solp/solp.component';
 import { PliegoPreviewComponent } from './preview/pliego.preview.component';
-import { CotizacionComponent } from './solp/steps/cotizacion/cotizacion.component';
 import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
 import { EspecificacionesComponent } from './solp/steps/especificaciones/especificaciones.component'
 import { CabeceraComponent } from './solp/steps/posicion/cabecera.component';
@@ -67,6 +66,10 @@ import { VerOfertasComponent } from './dashboard-comprador/ver-ofertas/ver-ofert
 import { RevisionTecnicaComponent } from './dashboard/revision-tecnica/revision-tecnica.component';
 
 import { PeticionDeOfertaFormularioComponent } from './peticion-de-oferta-formulario/peticion-de-oferta-formulario.component';
+import { CotizacionFormularioComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-formulario.component';
+import { CotizacionComponent } from './solp/steps/cotizacion/cotizacion.component';
+import { CotizacionMaterialComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-material/cotizacion-material.component';
+
 
 @NgModule({
     imports: [
@@ -106,12 +109,12 @@ import { PeticionDeOfertaFormularioComponent } from './peticion-de-oferta-formul
     ],
     declarations: [
         SolpComponent,
+        CotizacionComponent,
         DashboardComponent,
         Generacion1Component,
         Generacion2Component,
         PliegoPreviewComponent,
         EspecificacionesComponent,
-        CotizacionComponent,
         DragAndDropDirective,
         CabeceraComponent,
         TabFechasComponent,
@@ -134,7 +137,10 @@ import { PeticionDeOfertaFormularioComponent } from './peticion-de-oferta-formul
         ListadoDashboardProveedorComponent,
         FiltroDashboardProveedorComponent,
         VerOfertasComponent,
-        RevisionTecnicaComponent
+        RevisionTecnicaComponent,
+        PeticionDeOfertaFormularioComponent,
+        CotizacionFormularioComponent,
+        CotizacionMaterialComponent
     ],
     providers: [
         ComprasService,

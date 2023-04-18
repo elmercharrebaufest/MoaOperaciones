@@ -52,6 +52,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                }),
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
                                                                 where po.Id == pop.PeticionDeOferta_Id
+                                                                
                                                                 select new PeticionDeOfertaSolpPosicionDto()
                                                                 {
                                                                     Id = pop.Id,
@@ -130,17 +131,17 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         Id = p.Id,
                                                                         Cotizacion_Id = p.Cotizacion_Id,
                                                                         PeticionDeOfertaSolpPosicion_Id = p.PeticionDeOfertaSolpPosicion_Id,
-                                                                        Cantidad = p.Cantidad,                                                                      
+                                                                        Cantidad = p.Cantidad.Value,                                                                      
                                                                         UnidadMedida = new TablaSapDto
                                                                         {
                                                                             Descripcion = p.UnidadDeMedida.Descripcion
                                                                         },
-                                                                        Moneda_Id = p.Moneda_Id,
+                                                                        Moneda_Id = p.Moneda_Id.Value,
                                                                         MonedaDescripcion = cotizacion != null && p.Moneda != null ? p.Moneda.Codigo : "",
                                                                         FechaDeEntrega = p.FechaDeEntrega,
                                                                         FechaDeEntregaFormateada = SqlFunctions.DateName("day", p.FechaDeEntrega) + "/" + SqlFunctions.DatePart("month", p.FechaDeEntrega) + "/" + SqlFunctions.DateName("year", p.FechaDeEntrega),
-                                                                        Precio = p.Precio,
-                                                                        PrecioTotal = p.Cantidad * p.Precio,
+                                                                        Precio = p.Precio.Value,
+                                                                        PrecioTotal = p.Cantidad.Value * p.Precio.Value,
                                                                         TotalPesos = 0,
                                                                         TotalPosicionCotizacion = 0,
                                                                         CotizacionSubPosiciones = (from subpos in contexto.Set<CotizacionSubPosicion>()
@@ -151,16 +152,16 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                                         Id = subpos.Id,
                                                                                                         CotizacionPosicion_Id = subpos.CotizacionPosicion_Id,
                                                                                                         SolpSubPosicion_Id = subpos.SolpSubPosicion_Id,
-                                                                                                        Cantidad = subpos.Cantidad,
-                                                                                                        UnidadDeMedida_Id = subpos.UnidadDeMedida_Id,
+                                                                                                        Cantidad = subpos.Cantidad.Value,
+                                                                                                        UnidadDeMedida_Id = subpos.UnidadDeMedida_Id.Value,
                                                                                                         UnidadMedida = new TablaSapDto
                                                                                                         {
                                                                                                             Descripcion = subpos.UnidadDeMedida.Descripcion
                                                                                                         },
-                                                                                                        Moneda_Id = subpos.Moneda_Id,
+                                                                                                        Moneda_Id = subpos.Moneda_Id.Value,
                                                                                                         MonedaDescripcion = cotizacion != null && subpos.Moneda != null ? subpos.Moneda.Codigo : "",
-                                                                                                        PrecioUnidad = subpos.Precio,
-                                                                                                        PrecioTotalSubPosCotizacion = subpos.Cantidad * subpos.Precio,
+                                                                                                        PrecioUnidad = subpos.Precio.Value,
+                                                                                                        PrecioTotalSubPosCotizacion = subpos.Cantidad.Value * subpos.Precio.Value,
                                                                                                         TotalARPSubPosCotizacion = 0,
                                                                                                     }).ToList()
                                                                     }).ToList(),

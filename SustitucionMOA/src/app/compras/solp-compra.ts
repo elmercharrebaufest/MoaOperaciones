@@ -1,3 +1,5 @@
+import { CotizacionPosicionDto } from "../modelos/cotizacionDto"
+
 export interface SolpCompraDto{
     Id: number,
     NroSolp: string,   
@@ -6,6 +8,7 @@ export interface SolpCompraDto{
 }
 
 export interface PosicionCompra{
+    UnidadId: string
     Id: number,
     Indice: string,
     Tarea: string,
@@ -25,6 +28,8 @@ export interface PosicionCompra{
     SubposicionesCompras?: SolpSubposicionDto[]
     TieneCotizacion: boolean,
     Selected: boolean,
+     //Cotizacion
+     CotizacionPosicion?: CotizacionPosicionDto
 }
 
 export interface SolpSubposicionDto{
