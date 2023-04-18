@@ -6,6 +6,106 @@
 </section>
 <div class="content-wraper" style="padding-top: 0px !important;">
   <spinner></spinner>
+  <!-- <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
+    <!-- <p-table class="tabla-material" #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" responsiveLayout="scroll | stack" dataKey="Id">
+      <ng-template pTemplate="header" class="lista-header">
+        <tr>
+          <th class="headerth" colspan="7" style="background-color: white;"></th>
+          <th class="headerth" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="6">Proveedor {{proveedor.RazonSocial}}</th>
+        </tr>
+        <tr>
+          <th class="headerth" rowspan="3">
+            <p-checkbox name="posiciones" [binary]="true"></p-checkbox>
+            Pos.
+          </th>
+          <th class="headerth" rowspan="3">Codigo</th>
+          <th class="headerth" rowspan="3">Descripcion </th>
+          <th class="headerth" rowspan="3">Texto de suministro</th>
+          <th class="headerth" rowspan="3">Ctd. Pendiente</th>
+          <th class="headerth" rowspan="3">Ctd.</th>
+          <th class="headerth" rowspan="3">Um</th>
+          <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios"> 
+            <th class="headerth">Ctd. Cotizada</th>
+            <th class="headerth">Um. Cotizada</th>
+            <th class="headerth">Precio unidad</th>
+            <th class="headerth">Precio total</th>
+            <th class="headerth">Total ARP</th>
+            <th class="headerth">Fecha de entrega</th>
+          </ng-container>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-peticionPosicion>
+          <tr>
+            <td  class="columna">
+              <p-checkbox name="posiciones" binary="false"></p-checkbox>
+                {{peticionPosicion.Posicion.Indice}}</td>
+            <td  class="columna">{{peticionPosicion.Posicion.CodigoMaterialSap.Codigo}}</td>
+            <td  class="columna">{{peticionPosicion.Posicion.CodigoMaterialSap.Descripcion == null ? peticionPosicion.Posicion.Tarea : peticionPosicion.Posicion.CodigoMaterialSap.Descripcion}}</td>
+            <td  class="columna">{{peticionPosicion.Posicion.TextoSuministro}}</td>
+            <td  class="columna">{{peticionPosicion.Posicion.CantidadPendiente}}</td>
+            <td  class="columna">{{peticionPosicion.Posicion.Cantidad}}</td>
+            <td  class="columna">{{peticionPosicion.Posicion.Unidad.Descripcion}}</td>
+            <ng-container *ngFor="let usuario of tablaOfertas.Usuarios"> 
+              <ng-container *ngIf="usuario.Cotizacion != null">
+                <ng-container *ngFor="let cotizacionPosicion of usuario.Cotizacion.CotizacionPosiciones">
+                  <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
+                    <td  class="columna">{{cotizacionPosicion.Cantidad}}</td>
+                    <td  class="columna">{{cotizacionPosicion.UnidadMedida.Descripcion}}</td>
+                    <td  class="columna">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.Precio}}</td>
+                    <td  class="columna">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.PrecioTotal}}</td>
+                    <td  class="columna">ARP {{cotizacionPosicion.TotalPesos}}</td>
+                    <td  class="columna">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="usuario.Cotizacion == null">
+                <td  class="columna" colspan="6">Sin cotizar</td>
+              </ng-container>
+            </ng-container>
+          </tr>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+          <tr>
+            <td colspan="7" style="text-align: end;"  class="columna">Total global</td>
+            <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios"> 
+              <ng-container *ngIf="proveedor.Cotizacion != null">  
+              <td colspan="6"  class="columna">ARP {{proveedor.Cotizacion.TotalGlobal}}</td>
+            </ng-container> 
+            <ng-container *ngIf="proveedor.Cotizacion == null">
+              <td  class="columna" colspan="6">Sin Total</td>
+            </ng-container>
+          </ng-container> 
+          </tr>
+          <tr>
+            <td colspan="7" style="text-align: end;"  class="columna">Adjuntos y observaciones</td>
+              <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                  <ng-container *ngIf="proveedor.Cotizacion != null">           
+                      <td colspan="6"  class="columna">
+                        <div class="col-md-2" *ngIf="proveedor.Cotizacion.TieneAdjuntos">
+                          <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"/></span>
+                        </div>           
+                        {{proveedor.Cotizacion.ObservacionEconomica == null ? '' : proveedor.Cotizacion.ObservacionEconomica}}
+                      </td>
+                  </ng-container>
+                  <ng-container *ngIf="proveedor.Cotizacion == null">
+                    <td  class="columna" colspan="6">Sin observaciones</td>
+                  </ng-container>
+              </ng-container>
+          </tr>
+          <tr>
+            <td colspan="7" class="columna"></td>
+            <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios"> 
+              <td colspan="6"  class="columna" style="text-align: center;">
+                <button class="publicar btn btn-success" style="font-size: 12px;">                          
+                  Adjudicar
+                </button>
+              </td>
+            </ng-container> 
+          </tr>
+      </ng-template>
+    </p-table> -->
+  <!-- </div>  --> -->
 
   <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;" *ngIf="tablaOfertas.TipoPosicionCodigo == 'MATERIALES'">
     <p-table #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" dataKey="Id" [columns]="cols" scrollHeight="150px" frozenWidth="200px">

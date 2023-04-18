@@ -42,6 +42,11 @@ using Image = iTextSharp.text.Image;
 using static SustitucionMOAWS.WSConsumers.ObtenerTipoCambioConsumerMOA;
 
 
+using SustitucionMOAFotmatter;
+using iTextSharp.tool.xml.css;
+using DocumentFormat.OpenXml.Office2010.Excel;
+
+
 namespace SustitucionMOAUtils.Services
 {
     public class ComprasService : IComprasService
