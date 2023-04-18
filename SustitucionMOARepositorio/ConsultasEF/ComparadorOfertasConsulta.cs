@@ -166,6 +166,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                                         Moneda_Id = subpos.Moneda_Id.Value,                                                                                                      
                                                                                                         TotalPesos = 0,
                                                                                                         PrecioTotalSubPos = subpos.Cantidad.Value * subpos.Precio.Value,
+                                                                                                        MonedaDescripcion = cotizacion != null && subpos.Moneda != null ? subpos.Moneda.Codigo : "",
+                                                                                                        PrecioUnidad = subpos.Precio.Value,
+                                                                                                        PrecioTotalSubPosCotizacion = subpos.Cantidad.Value * subpos.Precio.Value,
                                                                                                         TotalARPSubPosCotizacion = 0,
 
                                                                                                     }).ToList()

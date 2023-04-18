@@ -3761,6 +3761,172 @@ namespace SustitucionMOAUtils.Services
                     //Datos del material
                     cotizacion.ObservacionEconomica = cotizacionDto.ObservacionEconomica;
                     cotizacion.CotizacionEstado_Id = (int)(esFinalizado ? CotizacionEstadoEnum.Cotizado : CotizacionEstadoEnum.Incompleta);
+                    GuardarCotizacionPosicion(cotizacionDto, cotizacion, info);                   
+
+                    //Datos del servicio
+                    cotizacion.ObservacionTecnica = cotizacionDto.ObservacionTecnica;
+                    var archivos = cotizacion.Archivos;
+                    if (archivos != null && archivos.Count > 0 &&  cotizacionDto.ArchivosGuardados.Count != archivos.Count)
+                    {
+                        var archivosParaBorrar = cotizacion.Archivos
+                            .Where(x => !cotizacionDto.ArchivosGuardados.Select(y => y.Id).Contains(x.Id))
+                            .ToList();
+
+                        foreach (var archivo in archivosParaBorrar)
+                        {
+                            repositorio.Remover<Archivo>(archivo);
+                        }
+                    }
+
+                    if (cotizacion.Archivos == null)
+                    {
+                        cotizacion.Archivos = new List<Archivo>();
+                    }
+
+                }
+
+                repositorio.GuardarCambios();
+
+                if (adjuntos != null && adjuntos.Count > 0)
+                {
+                    GuardarArchivosCotizacion(cotizacion, adjuntos);
+                }
+
+                repositorio.GuardarCambios();
+                return respuestaGuardarSOLP;
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+
+        private void GuardarCotizacionPosicion(GuardarCotizacion cotizacionDto, Cotizacion cotizacion, List<TablaSap> info)
+        {
+            if (cotizacion.CotizacionPosiciones != null && cotizacion.CotizacionPosiciones.Count > 0)
+            {
+                foreach (var cotizacionPosicion in cotizacion.CotizacionPosiciones.ToList())
+                {
+                    var cotizacionPos = cotizacionDto.CotizacionPosiciones.Where(x => x.PeticionDeOfertaSolpPosicionId == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id).FirstOrDefault();
+                    cotizacionPosicion.Cantidad = cotizacionPos.Cantidad;
+                    cotizacionPosicion.Precio = cotizacionPos.Precio;
+                    cotizacionPosicion.FechaDeEntrega = (DateTime?)cotizacionPos.FechaDeEntrega;
+                    cotizacionPosicion.Moneda_Id = cotizacionPos.MonedaId > 0  ? cotizacionPos.MonedaId : (int?)null;
+                    cotizacionPosicion.UnidadDeMedida_Id = cotizacionPos.UnidadDeMedidaId > 0 ? cotizacionPos.UnidadDeMedidaId : (int?)null;
+                    cotizacionPosicion.Moneda = cotizacionPos.MonedaId != null && cotizacionPos.MonedaId > 0 && cotizacionPos.MonedaId != null ? info.Where(moneda => moneda.Id == cotizacionPos.MonedaId).FirstOrDefault() : null;
+                    cotizacionPosicion.UnidadDeMedida = cotizacionPos.UnidadDeMedidaId != null && cotizacionPos.UnidadDeMedidaId > 0 && cotizacionPos.UnidadDeMedidaId != null ? info.Where(unidad => unidad.Id == cotizacionPos.UnidadDeMedidaId).FirstOrDefault() : null ;
+                   
+                }
+            }
+            else
+            {
+                cotizacion.CotizacionPosiciones = cotizacionDto.CotizacionPosiciones.Select(x => new CotizacionPosicion
+                {
+                    Cantidad = x.Cantidad,
+                    FechaDeEntrega = x.FechaDeEntrega != null ? x.FechaDeEntrega.Value : (DateTime?)null,
+                    Moneda_Id = x.MonedaId > 0 ? x.MonedaId : (int?)null,
+                    Precio = x.Precio,
+                    UnidadDeMedida_Id = x.UnidadDeMedidaId > 0 ? x.UnidadDeMedidaId : (int?)null,
+                    PeticionDeOfertaSolpPosicion_Id = x.PeticionDeOfertaSolpPosicionId,
+                    Moneda = x.MonedaId > 0 ? info.Where(moneda => moneda.Id == x.MonedaId).FirstOrDefault() : null,                   
+                    UnidadDeMedida = x.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == x.UnidadDeMedidaId).FirstOrDefault() : null,
+                }).ToList();
+            }
+
+        }
+        private void GuardarArchivosCotizacion(Cotizacion cotizacion, HttpFileCollectionBase files)
+        {
+            var ruta = ObtenerRutaArchivos(cotizacion.Id, FileKeys.AdjuntoCotizacionRevisionEconomica);
+
+
+            var filesEspecificaciones = files.GetMultiple("fileCotizacionRevisionEconomica");
+            for (int i = 0; i < filesEspecificaciones.Count; i++)
+            {
+                var file = filesEspecificaciones[i];
+                var rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+
+                Directory.CreateDirectory(ruta);
+
+                int copyNro = 1;
+                while (File.Exists(rutaArchivoRename))
+                {
+                    rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName($"({copyNro}) " + file.FileName));
+                    copyNro += 1;
+                }
+
+                cotizacion.Archivos.Add(new Archivo
+                {
+                    FileKey = FileKeys.AdjuntoCotizacionRevisionEconomica,
+                    Ruta = rutaArchivoRename,
+                });
+
+                file.SaveAs(rutaArchivoRename);
+            }
+        private ObtenerTipoCambioConsumerMOAResponse ObtenerTipoCambio(int MonedaOrigen_Id, int MonedaDestino_Id, DateTime Fecha)
+        {
+
+            var peticionCotizacion = repositorio.ObtenerConsultaEscalar(new TraerCotizacionConsulta(peticionId));
+            if (peticionCotizacion.CotizacionId != 0)
+            {
+                var cotizacion = repositorio.Obtener<Cotizacion>(x => x.Id == peticionCotizacion.CotizacionId);
+                peticionCotizacion.Cotizacion.ArchivosCotizacion = cotizacion.Archivos != null ? cotizacion.Archivos.Select(archivo => new ArchivoDto
+                {
+                    Id = archivo.Id,
+                    Nombre = Path.GetFileName(archivo.Ruta),
+                    FileKey = archivo.FileKey,
+                    Ruta = archivo.Ruta
+                }).ToList() : new List<ArchivoDto>();
+            }
+
+            return peticionCotizacion;
+
+        }
+
+        public RespuestaGuardarSOLP GrabarCotizacion(GuardarCotizacion cotizacionDto, HttpFileCollectionBase adjuntos, bool esFinalizado, int usuarioActualId)
+        {
+            try
+            {
+                var respuestaGuardarSOLP = new RespuestaGuardarSOLP();
+                var usuario = repositorio.Obtener<Usuario>(usuarioActualId);
+                var peticionUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(x => x.Id == cotizacionDto.PeticionOfertaUsuarioId);
+                var cotizacion = cotizacionDto.CotizacionId == 0 ? null : repositorio.Obtener<Cotizacion>(cotizacionDto.CotizacionId);
+                var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
+
+                if (cotizacion == null)
+                {
+                    if (peticionUsuario != null)
+                    {
+                        cotizacion = new Cotizacion()
+                        {
+                            PeticionDeOfertaUsuario_Id = peticionUsuario.Id,
+                            ObservacionEconomica = cotizacionDto.ObservacionEconomica,
+                            CotizacionEstado_Id = (int)(esFinalizado ? CotizacionEstadoEnum.Cotizado : CotizacionEstadoEnum.Incompleta),
+                            PeticionDeOfertaUsuario = peticionUsuario,
+                            CotizacionPosiciones = cotizacionDto.CotizacionPosiciones.Count > 0 ? cotizacionDto.CotizacionPosiciones.Select(x => new CotizacionPosicion
+                            {
+                                Cantidad = x.Cantidad,
+                                FechaDeEntrega = x.FechaDeEntrega != null ? x.FechaDeEntrega.Value : (DateTime?)null,
+                                Moneda_Id = x.MonedaId > 0 ? x.MonedaId : (int?)null,
+                                Moneda = x.MonedaId > 0 ? info.Where(moneda => moneda.Id == x.MonedaId).FirstOrDefault() : null, 
+                                Precio = x.Precio,
+                                UnidadDeMedida_Id = x.UnidadDeMedidaId > 0 ? x.UnidadDeMedidaId : (int?)null,
+                                UnidadDeMedida = x.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == x.UnidadDeMedidaId).FirstOrDefault() : null,
+                                PeticionDeOfertaSolpPosicion_Id = x.PeticionDeOfertaSolpPosicionId
+                            }).ToList() : null,
+                            UsuarioCreador = usuario,
+                            FechaCreacion = DateTime.Now
+                        };
+                    }
+
+                    repositorio.Agregar(cotizacion);
+                }
+                else
+                {
+                    //Datos del material
+                    cotizacion.ObservacionEconomica = cotizacionDto.ObservacionEconomica;
+                    cotizacion.CotizacionEstado_Id = (int)(esFinalizado ? CotizacionEstadoEnum.Cotizado : CotizacionEstadoEnum.Incompleta);
                     cotizacion.Revision = cotizacion.Revision + 1;
                     GuardarCotizacionPosicion(cotizacionDto, cotizacion, info);
 
