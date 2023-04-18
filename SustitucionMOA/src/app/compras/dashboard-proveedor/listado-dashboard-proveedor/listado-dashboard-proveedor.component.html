@@ -36,19 +36,19 @@
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'UsuarioCreador' && orden == 'ASC' }"></i>
                         </span>
                     </th>
-                    <th title="Fecha de creacion de SOLP" class="headerth" (click)="onOrder('PlazoDeOfertaCircular')" style="width: 90px;">
+                    <th title="Fecha de creacion de SOLP" class="headerth" (click)="onOrder('PlazoDeOferta')" style="width: 90px;">
                         Fecha <br /> Cierre
                         <span>
-                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'PlazoDeOfertaCircular' && orden == 'DESC'  }"></i>
-                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'PlazoDeOfertaCircular' && orden == 'ASC' }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'PlazoDeOferta' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'PlazoDeOferta' && orden == 'ASC' }"></i>
                         </span>
                     </th>
 
-                    <th title="Estado de licitacíon" class="headerth columna" (click)="onOrder('Circular.Estado_Id')" style="width:80px ;">
+                    <th title="Estado de licitacíon" class="headerth columna" (click)="onOrder('Estado_Id')" style="width:80px ;">
                         Estado <br /> Lic.
                         <span>
-                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'Circular.Estado_Id' && orden == 'DESC'  }"></i>
-                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'Circular.Estado_Id' && orden == 'ASC' }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'Estado_Id' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'Estado_Id' && orden == 'ASC' }"></i>
                         </span>
                     </th>
 
@@ -93,10 +93,10 @@
                         {{rowData.UsuarioCreador}}
                     </td>
                     <td class="columna">
-                        {{rowData.Circular.PlazoDeOferta | customDateFormat | date :'d/M/yyyy' }}
+                        {{rowData.PlazoDeOferta | customDateFormat | date :'d/M/yyyy' }}
                     </td>
-                    <td class="columna" [style.color]="rowData.Circular.EstadoColor">
-                        {{rowData.Circular.Estado}}
+                    <td class="columna" [style.color]="rowData.EstadoColor">
+                        {{rowData.Estado}}
                     </td>
                     <td class="columna">
                         {{ rowData.TieneVisitaObra}}

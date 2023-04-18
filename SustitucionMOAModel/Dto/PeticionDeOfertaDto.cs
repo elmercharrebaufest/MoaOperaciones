@@ -16,9 +16,34 @@ namespace SustitucionMOAModel.Dto
         public DateTime PlazoDeOferta { get; set; }
         public string Observaciones { get; set; }
         public string PlazoDeOfertaFormateado { get { return PlazoDeOferta.ToString("dd/MM/yyyy"); } }
-        public string Estado { get { return PlazoDeOferta >= DateTime.Now.Date ? "Abierto" : "Cerrado"; } }
-        public int Estado_Id { get { return PlazoDeOferta >= DateTime.Now.Date ? 1 : 2; } }
-        public string EstadoColor { get { return PlazoDeOferta >= DateTime.Now.Date ? "Green" : "Red"; } }
+        
+        //public string Estado { get { return PlazoDeOferta >= DateTime.Now.Date ? "Abierto" : "Cerrado"; } }
+        private string pEstado;
+
+        public string Estado
+        {
+            get { return PlazoDeOferta >= DateTime.Now.Date ? "Abierto" : "Cerrado"; }
+            set { pEstado = value; }
+        }
+
+        //public int Estado_Id { get { return PlazoDeOferta >= DateTime.Now.Date ? 1 : 2; } }
+        private int pEstado_Id;
+
+        public int Estado_Id
+        {
+            get { return PlazoDeOferta >= DateTime.Now.Date ? 1 : 2; }
+            set { pEstado_Id = value; }
+        }
+
+        //public string EstadoColor { get { return PlazoDeOferta >= DateTime.Now.Date ? "Green" : "Red"; } }
+        private string pEstadoColor;
+
+        public string EstadoColor
+        {
+            get { return PlazoDeOferta >= DateTime.Now.Date ? "Green" : "Red"; }
+            set { pEstadoColor = value; }
+        }
+
         public List<PeticionDeOfertaUsarioDto> Usuarios {get; set;}
         public DateTime? FechaEntrega { get; set; }
         public string FechaEntregaFormateado { get; set; }
