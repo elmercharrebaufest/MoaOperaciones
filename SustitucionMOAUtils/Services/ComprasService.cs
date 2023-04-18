@@ -39,6 +39,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Web;
 using Image = iTextSharp.text.Image;
+using static SustitucionMOAWS.WSConsumers.ObtenerTipoCambioConsumerMOA;
 
 
 namespace SustitucionMOAUtils.Services
