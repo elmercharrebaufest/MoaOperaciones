@@ -17,7 +17,8 @@ import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
 @Component({
   selector: 'app-ver-ofertas',
   templateUrl: './ver-ofertas.component.html',
-  styleUrls: ['./ver-ofertas.component.css']
+  styleUrls: ['../../compras.component.css',
+    './ver-ofertas.component.css']
 })
 export class VerOfertasComponent extends ListBaseComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
@@ -30,13 +31,16 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
   peticionOferta: PeticionDeOfertaDto;
 
-  tablaOfertas: any[];
+  tablaOfertas: PeticionDeOfertaDto;
+  mostrarMaterial: boolean;
+  mostralServicio: boolean;
 
   constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
     protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
     protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-}
+  }
+
 
 
   ngOnInit() {
@@ -46,6 +50,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
           this.verOfertas(peticionOferta_Id);
       })
     };
+
   }
 
   verOfertas(peticionOferta_Id) {
@@ -76,5 +81,21 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
     return false; //<-- Prevent Refresh
-}
+  }
+
+  public get esTipoMaterial(): boolean {
+    return this.tablaOfertas.SolpDto.TipoPosicionCodigo == "MATERIALES";
+  }
+
+  public get esTipoServicio(): boolean {
+    return this.tablaOfertas.SolpDto.TipoPosicionCodigo == "SERVICIO";
+  }
+
+  mostrarTabla(){
+    if(this.esTipoMaterial){
+      this.mostrarMaterial = true;
+    } else {
+      this.mostralServicio = true;
+    }
+  }
 }

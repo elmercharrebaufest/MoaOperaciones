@@ -24,6 +24,8 @@ namespace SustitucionMOAModel.Dto
         public bool TieneObservacionTecnica { get; set; }
         public List<CotizacionPosicionDto> CotizacionPosiciones { get; set; } = new List<CotizacionPosicionDto>();
         public bool TieneAdjuntos { get; set; }
+        public string FechaCreacionFormateada { get; set; }
+        public decimal TotalGlobal { get; set; }
     }
 
     public class CotizacionPosicionDto
@@ -36,6 +38,7 @@ namespace SustitucionMOAModel.Dto
         public int Moneda_Id { get; set; }
         public decimal Precio { get; set; }
         public DateTime FechaDeEntrega { get; set; }
+        public string FechaDeEntregaFormateada { get; set; }
         public int ItemPorPagina { get; set; }
         public int Pagina { get; set; }
         public int ItemsTotales { get; set; }
@@ -44,7 +47,11 @@ namespace SustitucionMOAModel.Dto
         public string TextoSuministro { get; set; }
         public decimal? CantidadSolp { get; set; }
         public TablaSapDto UnidadMedida { get; set; }
+        public TablaSapDto Moneda { get; set; }
+        public string MonedaDescripcion { get; set; }
         public List<CotizacionSubPosicionDto> CotizacionSubPosiciones { get; set; } = new List<CotizacionSubPosicionDto>();
+        public decimal PrecioTotal { get; set; }
+        public decimal TotalPesos { get; set; }
     }
 
     public class CotizacionSubPosicionDto
@@ -56,5 +63,8 @@ namespace SustitucionMOAModel.Dto
         public int UnidadDeMedida_Id { get; set; }
         public int Moneda_Id { get; set; }
         public decimal Precio { get; set; }
+        public decimal PrecioTotalSubPos { get; set; }
+        public TablaSapDto UnidadMedida { get; set; }
+        public int TotalPesos { get; set; }
     }
 }

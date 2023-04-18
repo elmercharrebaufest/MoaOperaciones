@@ -41,6 +41,7 @@ using System.Net;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using SustitucionMOAUtils.Logger;
+using static SustitucionMOAWS.WSConsumers.ObtenerTipoCambioConsumerMOA;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -59,7 +60,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
         private readonly IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA;
         private readonly IVendedorService vendedorService;
-
+        private readonly IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA;
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
@@ -74,7 +75,8 @@ namespace SustitucionMOAUtils.Services
             IObtenerMaterialesSolpConsumerMOA obtenerMaterialesSolpConsumerMOA,
             ICrearPedidoConsumerMOA crearPedidoConsumerMOA,
             IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
-            IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA, IVendedorService vendedorService)
+            IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA, IVendedorService vendedorService,
+            IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -89,6 +91,7 @@ namespace SustitucionMOAUtils.Services
             this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
             this.obtenerContratoSolpConsumerMOA = obtenerContratoSolpConsumerMOA;
             this.vendedorService = vendedorService;
+            this.obtenerTipoCambioConsumerMOA = obtenerTipoCambioConsumerMOA;
 
 
 
@@ -2229,6 +2232,33 @@ namespace SustitucionMOAUtils.Services
         {
             var todasLasOfertas = repositorio.ObtenerConsultaEscalar(new ComparadorOfertasConsulta(PeticionOferta_Id));
 
+            Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
+
+            var destino = repositorio.Obtener<TablaSap>(x => x.Codigo == "ARP" && x.Tabla == TablasSap.Moneda);
+
+            foreach (var item in todasLasOfertas.Usuarios)
+            {
+                if (item.Cotizacion != null && item.Cotizacion.CotizacionPosiciones != null) 
+                {
+                    foreach (var item2 in item.Cotizacion.CotizacionPosiciones)
+                    {
+                        decimal cambio = 0;
+                        if (!tipodecambio.TryGetValue(item2.Moneda_Id, out cambio))
+                        {
+                            var tipoCambio = ObtenerTipoCambio(item2.Moneda_Id, destino.Id, DateTime.Now);
+                            tipodecambio.Add(item2.Moneda_Id, tipoCambio.TipoCambio);
+                            cambio = tipoCambio.TipoCambio;
+                        }
+                        item2.TotalPesos = cambio * item2.PrecioTotal;
+                    }
+                    item.Cotizacion.TotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalPesos);
+                }
+                    
+            }
+
+
+
+
             return todasLasOfertas;
         }
 
@@ -3593,6 +3623,16 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return respuesta;
+        }
+
+        private ObtenerTipoCambioConsumerMOAResponse ObtenerTipoCambio(int MonedaOrigen_Id, int MonedaDestino_Id, DateTime Fecha)
+        {
+            var origen = repositorio.Obtener<TablaSap>(x => x.Id == MonedaOrigen_Id);
+            var destino = repositorio.Obtener<TablaSap>(x => x.Id == MonedaDestino_Id);
+            ObtenerTipoCambioConsumerMOAResponse result = obtenerTipoCambioConsumerMOA.Request(Fecha.ToString("yyyy-MM-dd"), destino.Codigo, origen.Codigo);
+
+            return result;
+
         }
     }
 

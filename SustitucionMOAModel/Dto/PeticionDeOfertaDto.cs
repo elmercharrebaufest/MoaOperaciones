@@ -38,6 +38,7 @@ namespace SustitucionMOAModel.Dto
         public int CotizacionEstado_Id { get; set; }
         public CircularDto Circular { get; set; }
         public IQueryable<PeticionDeOfertaSolpPosicionDto> PeticionDeOfertaPosicion { get; set; }
+        public string FechaCreacionFormateada { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
@@ -58,6 +59,10 @@ namespace SustitucionMOAModel.Dto
         public bool? PropuestaTecnicaAprobada { get; set; }
         public bool? RealizoVisita { get; set; }
         public CotizacionDto Cotizacion { get; set; }
+        public string EstadoVisita { get; set; }
+        public string EstadoVisitaColor { get; set; }
+        public string EstadoPropuestaTecnica { get; set; }
+        public string EstadoPropuestaTecnicaColor { get; set; }
     }
 
 }

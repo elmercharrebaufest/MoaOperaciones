@@ -260,6 +260,7 @@
     <Compile Include="Models\WSMapMOA\Compras\Servicio.cs" />
     <Compile Include="Models\WSMapMOA\Compras\MaterialWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\ServicioWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\TipoDeCambio.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\ConsultaVM.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\EstadoConsultaVM.cs" />
     <Compile Include="Models\ConsultaTicketPesada.cs" />

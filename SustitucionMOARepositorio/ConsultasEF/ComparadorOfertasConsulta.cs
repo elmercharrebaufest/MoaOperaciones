@@ -35,6 +35,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Id = po.Id,
                                     Solp_Id = po.Solp_Id,
                                     FechaCreacion = po.FechaCreacion,
+                                    FechaCreacionFormateada = SqlFunctions.DateName("day", po.FechaCreacion) + "/" + SqlFunctions.DatePart("month", po.FechaCreacion) + "/" + SqlFunctions.DateName("year", po.FechaCreacion),
                                     UsuarioCreador_Id = po.UsuarioCreador_Id,
                                     PlazoDeOferta = po.PlazoDeOferta,
                                     Observaciones = po.Observaciones,
@@ -44,7 +45,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                {
                                                    Id = s.Id,
                                                    FechaCreacion = s.FechaCreacion,
+                                                   FechaCreacionFormateada = SqlFunctions.DateName("day", s.FechaCreacion) + "/" + SqlFunctions.DatePart("month", s.FechaCreacion) + "/" + SqlFunctions.DateName("year", s.FechaCreacion),
                                                    NroSolp = s.NroSolp,
+                                                   TipoPosicionCodigo = s.Posiciones.Select(posiciones => posiciones.TipoPosicion.Codigo).FirstOrDefault(),
+
                                                }),
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
                                                                 where po.Id == pop.PeticionDeOferta_Id
@@ -56,11 +60,22 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                     Posicion = new SolpPosicionDto
                                                                     {
                                                                         Id = pop.SolpPosicion.Id,
+                                                                        Indice = pop.SolpPosicion.Indice,
+                                                                        CodigoMaterialSap = new MaterialSolpDto
+                                                                        {
+                                                                            Descripcion = pop.SolpPosicion.MaterialSolp.Descripcion,
+                                                                            Codigo = pop.SolpPosicion.MaterialSolp.Codigo,
+
+                                                                        },
                                                                         Codigo = pop.SolpPosicion.Codigo,
                                                                         Tarea = pop.SolpPosicion.Tarea,
                                                                         TextoSuministro = pop.SolpPosicion.TextoSuministro,
                                                                         Cantidad = pop.SolpPosicion.Cantidad,
-                                                                        //Unidad = pop.SolpPosicion.Unidad.Descripcion,
+                                                                        CantidadPendiente = pop.SolpPosicion.Cantidad,
+
+                                                                        Unidad = new TablaSapDto {
+                                                                            Descripcion = pop.SolpPosicion.Unidad.Descripcion
+                                                                        },
 
                                                                         Subposiciones = pop.SolpPosicion.Subposiciones.Select(s => new SolpSubposicionDto
                                                                         {
@@ -68,7 +83,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                             Codigo = s.Codigo,
                                                                             Tarea = s.Tarea,
                                                                             Cantidad = s.Cantidad,
-                                                                            //Unidad = s.Unidad.Descripcion
+                                                                            Unidad = new TablaSapDto
+                                                                            {
+                                                                                Descripcion = s.Unidad.Descripcion
+                                                                            },
 
                                                                         }).ToList()
                                                                     },
@@ -83,31 +101,44 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     UsuarioId = u.Usuario_Id,
                                                     RazonSocial = u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault() != null ?
                                                         u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().RazonSocial : u.Usuario.CUITRegistro,
-                                                    //PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
-                                                    //RealizoVisita = u.RealizoVisita,
+                                                    PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
+                                                    RealizoVisita = u.RealizoVisita,
+                                                    EstadoVisita = u.RealizoVisita == true ? "Realizada" : "Sin realizar",
+                                                    EstadoVisitaColor = u.RealizoVisita == true ? "Green" : "Red",
+                                                    EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null ? "Sin analizar" : (u.PropuestaTecnicaAprobada == true ? "Realizada" : "Rechazada"),
+                                                    EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null ? "Orange" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),
 
                                                     Cotizacion = cotizacion != null ? new CotizacionDto()
                                                                  {
                                                                     Id = cotizacion.Id,
                                                                     PeticionDeOfertaUsuario_Id = cotizacion.PeticionDeOfertaUsuario_Id,
                                                                     FechaCreacion = u.Cotizaciones.FirstOrDefault().FechaCreacion,
+                                                                    FechaCreacionFormateada = SqlFunctions.DateName("day", u.Cotizaciones.FirstOrDefault().FechaCreacion) + "/" + SqlFunctions.DatePart("month", u.Cotizaciones.FirstOrDefault().FechaCreacion) + "/" + SqlFunctions.DateName("year", u.Cotizaciones.FirstOrDefault().FechaCreacion),
                                                                     UsuarioCreador_Id = u.Cotizaciones.FirstOrDefault().UsuarioCreador_Id,
                                                                     CotizacionEstadoDescripcion = u.Cotizaciones.FirstOrDefault().CotizacionEstado.Descripcion,
                                                                     RespetaMateriales = u.Cotizaciones.FirstOrDefault().RespetaMateriales,
                                                                     RespetaServicios = u.Cotizaciones.FirstOrDefault().RespetaServicios,
                                                                     ObservacionEconomica = u.Cotizaciones.FirstOrDefault().ObservacionEconomica,
                                                                     ObservacionTecnica = u.Cotizaciones.FirstOrDefault().ObservacionTecnica,
+                                                                    TotalGlobal = 0,
 
                                                                     CotizacionPosiciones = cotizacion.CotizacionPosiciones.Select(p => new CotizacionPosicionDto
                                                                     {
                                                                         Id = p.Id,
                                                                         Cotizacion_Id = p.Cotizacion_Id,
                                                                         PeticionDeOfertaSolpPosicion_Id = p.PeticionDeOfertaSolpPosicion_Id,
-                                                                        Cantidad = p.Cantidad,
-                                                                        //UnidadMedida = p.UnidadDeMedida,
+                                                                        Cantidad = p.Cantidad,                                                                      
+                                                                        UnidadMedida = new TablaSapDto
+                                                                        {
+                                                                            Descripcion = p.UnidadDeMedida.Descripcion
+                                                                        },
                                                                         Moneda_Id = p.Moneda_Id,
+                                                                        MonedaDescripcion = cotizacion != null && p.Moneda != null ? p.Moneda.Codigo : "",
                                                                         FechaDeEntrega = p.FechaDeEntrega,
+                                                                        FechaDeEntregaFormateada = SqlFunctions.DateName("day", p.FechaDeEntrega) + "/" + SqlFunctions.DatePart("month", p.FechaDeEntrega) + "/" + SqlFunctions.DateName("year", p.FechaDeEntrega),
                                                                         Precio = p.Precio,
+                                                                        PrecioTotal = p.Cantidad * p.Precio,
+                                                                        TotalPesos = 0,
                                                                         CotizacionSubPosiciones = (from subpos in contexto.Set<CotizacionSubPosicion>()
                                                                                                    where p.Id == subpos.CotizacionPosicion_Id
                                                                                                    select new CotizacionSubPosicionDto()
@@ -118,8 +149,14 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                                         SolpSubPosicion_Id = subpos.SolpSubPosicion_Id,
                                                                                                         Cantidad = subpos.Cantidad,
                                                                                                         UnidadDeMedida_Id = subpos.UnidadDeMedida_Id,
+                                                                                                        UnidadMedida = new TablaSapDto
+                                                                                                        {
+                                                                                                            Descripcion = subpos.UnidadDeMedida.Descripcion
+                                                                                                        },
                                                                                                         Moneda_Id = subpos.Moneda_Id,
-                                                                                                        Precio = subpos.Precio
+                                                                                                        Precio = subpos.Precio,
+                                                                                                        TotalPesos = 0,
+                                                                                                        PrecioTotalSubPos = subpos.Cantidad * subpos.Precio,
                                                                                                     }).ToList()
                                                                     }).ToList(),
                                                                     TieneAdjuntos = cotizacion.Archivos.Any()

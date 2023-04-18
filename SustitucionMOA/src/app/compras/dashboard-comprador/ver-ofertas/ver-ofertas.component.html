@@ -1,75 +1,281 @@
 <section class="container-fluid clearfix">
   <div class="row titleSection">
-      <div class="col-xs-12 col-sm-10 "> <strong></strong></div>
+      <div class="col-xs-12 col-sm-10 "> <strong>Ver Ofertas</strong></div>
   </div>
   <br>
 </section>
-
 <div class="content-wraper" style="padding-top: 0px !important;">
   <spinner></spinner>
+  <!-- <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
+    <!-- <p-table class="tabla-material" #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" responsiveLayout="scroll | stack" dataKey="Id">
+      <ng-template pTemplate="header" class="lista-header">
+        <tr>
+          <th class="headerth" colspan="7" style="background-color: white;"></th>
+          <th class="headerth" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="6">Proveedor {{proveedor.RazonSocial}}</th>
+        </tr>
+        <tr>
+          <th class="headerth" rowspan="3">
+            <p-checkbox name="posiciones" [binary]="true"></p-checkbox>
+            Pos.
+          </th>
+          <th class="headerth" rowspan="3">Codigo</th>
+          <th class="headerth" rowspan="3">Descripcion </th>
+          <th class="headerth" rowspan="3">Texto de suministro</th>
+          <th class="headerth" rowspan="3">Ctd. Pendiente</th>
+          <th class="headerth" rowspan="3">Ctd.</th>
+          <th class="headerth" rowspan="3">Um</th>
+          <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios"> 
+            <th class="headerth">Ctd. Cotizada</th>
+            <th class="headerth">Um. Cotizada</th>
+            <th class="headerth">Precio unidad</th>
+            <th class="headerth">Precio total</th>
+            <th class="headerth">Total ARP</th>
+            <th class="headerth">Fecha de entrega</th>
+          </ng-container>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-peticionPosicion>
+          <tr>
+            <td  class="columna">
+              <p-checkbox name="posiciones" binary="false"></p-checkbox>
+                {{peticionPosicion.Posicion.Indice}}</td>
+            <td  class="columna">{{peticionPosicion.Posicion.CodigoMaterialSap.Codigo}}</td>
+            <td  class="columna">{{peticionPosicion.Posicion.CodigoMaterialSap.Descripcion == null ? peticionPosicion.Posicion.Tarea : peticionPosicion.Posicion.CodigoMaterialSap.Descripcion}}</td>
+            <td  class="columna">{{peticionPosicion.Posicion.TextoSuministro}}</td>
+            <td  class="columna">{{peticionPosicion.Posicion.CantidadPendiente}}</td>
+            <td  class="columna">{{peticionPosicion.Posicion.Cantidad}}</td>
+            <td  class="columna">{{peticionPosicion.Posicion.Unidad.Descripcion}}</td>
+            <ng-container *ngFor="let usuario of tablaOfertas.Usuarios"> 
+              <ng-container *ngIf="usuario.Cotizacion != null">
+                <ng-container *ngFor="let cotizacionPosicion of usuario.Cotizacion.CotizacionPosiciones">
+                  <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
+                    <td  class="columna">{{cotizacionPosicion.Cantidad}}</td>
+                    <td  class="columna">{{cotizacionPosicion.UnidadMedida.Descripcion}}</td>
+                    <td  class="columna">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.Precio}}</td>
+                    <td  class="columna">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.PrecioTotal}}</td>
+                    <td  class="columna">ARP {{cotizacionPosicion.TotalPesos}}</td>
+                    <td  class="columna">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="usuario.Cotizacion == null">
+                <td  class="columna" colspan="6">Sin cotizar</td>
+              </ng-container>
+            </ng-container>
+          </tr>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+          <tr>
+            <td colspan="7" style="text-align: end;"  class="columna">Total global</td>
+            <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios"> 
+              <ng-container *ngIf="proveedor.Cotizacion != null">  
+              <td colspan="6"  class="columna">ARP {{proveedor.Cotizacion.TotalGlobal}}</td>
+            </ng-container> 
+            <ng-container *ngIf="proveedor.Cotizacion == null">
+              <td  class="columna" colspan="6">Sin Total</td>
+            </ng-container>
+          </ng-container> 
+          </tr>
+          <tr>
+            <td colspan="7" style="text-align: end;"  class="columna">Adjuntos y observaciones</td>
+              <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                  <ng-container *ngIf="proveedor.Cotizacion != null">           
+                      <td colspan="6"  class="columna">
+                        <div class="col-md-2" *ngIf="proveedor.Cotizacion.TieneAdjuntos">
+                          <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"/></span>
+                        </div>           
+                        {{proveedor.Cotizacion.ObservacionEconomica == null ? '' : proveedor.Cotizacion.ObservacionEconomica}}
+                      </td>
+                  </ng-container>
+                  <ng-container *ngIf="proveedor.Cotizacion == null">
+                    <td  class="columna" colspan="6">Sin observaciones</td>
+                  </ng-container>
+              </ng-container>
+          </tr>
+          <tr>
+            <td colspan="7" class="columna"></td>
+            <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios"> 
+              <td colspan="6"  class="columna" style="text-align: center;">
+                <button class="publicar btn btn-success" style="font-size: 12px;">                          
+                  Adjudicar
+                </button>
+              </td>
+            </ng-container> 
+          </tr>
+      </ng-template>
+    </p-table> -->
+  <!-- </div>  --> -->
 
   <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
 
-
-<p-table [value]="tablaOfertas">
-  <ng-template pTemplate="header">
-      <tr>
-          <th rowspan="3">Pos.</th>
-          <th rowspan="3">Codigo</th>
-          <th rowspan="3">Descripcion</th>
-          <th rowspan="3">Texto de suministro</th>
-          <th rowspan="3">Ctd.</th>
-          <th rowspan="3">Um</th>
-      </tr>
-      <tr> <!-- for por cada proveedor -->
-          <!-- <th colspan="6">Proveedor #</th> -->
-          <ng-container>
-            <th colspan="6">Proveedor {{tablaOfertas.Usuarios.RazonSocial}}</th>
-          </ng-container>
-      </tr>
-      
-      <tr> <!-- for por cada proveedor -->
-        <ng-container>
-          <th>Ctd. Cotizada</th>
-          <th>Um. Cotizada</th>
-          <th>Precio unidad</th>
-          <th>Precio total</th>
-          <th>Total ARP</th>
-          <th>Fecha de entrega</th>
-        </ng-container>
-      </tr>
-  </ng-template>
-
-  <ng-template pTemplate="body" let-posicion>
-    <ng-container>
+    <p-table #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" responsiveLayout="scroll | stack" dataKey="Id">
+      <ng-template pTemplate="header" let-columns class="lista-header">
         <tr>
-            <!-- columnas fijas -->
-            <td>{{posicion.Pos}}</td>
-            <td>{{posicion.Codigo}}</td>
-            <td>{{posicion.Tarea}}</td>
-            <td>{{posicion.TextoSuministro}}</td>
-            <td>{{posicion.Cantidad}}</td>
-            <td>{{posicion.UnidadComprasDescripcion}}</td>
-            <!-- datos por proveedor -->
-            <td>{{sale.Cotizaciones[i].Cantidad}}</td>
-            <td>{{sale.Cotizaciones[i].UnidadDeMedida_Id}}</td>
-            <td>{{sale.Cotizaciones[i].Moneda_Id}} {{sale.Cotizaciones[i].Precio}}</td>
-            <td>{{sale.Cotizaciones[i].Moneda_Id}} {{sale.Cotizaciones[i].PrecioTotal}}</td>
-            <td>ARP {{sale.Cotizaciones[i].TotalARP}}</td>
-            <td>{{sale.Cotizaciones[i].FechaDeEntrega}}</td>
+          <th class="headerth" colspan="4"></th>
+          <th class="headerth" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="3">Proveedor {{proveedor.RazonSocial}}</th>
         </tr>
-    </ng-container>
-</ng-template>
+        <tr>
+          <th class="headerth" rowspan="3" style="width: 15px !important">
+            <p-checkbox name="posiciones" [binary]="true"></p-checkbox>
+          </th>
+          <th class="headerth" rowspan="3" style="width: 15px !important"></th>
+          <th class="headerth" rowspan="3" style="width: 15px !important">Pos.</th>
+          <th class="headerth" rowspan="3" style="width: 100px !important">Descripcion </th>
+          <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">     
+            <th class="headerth">Precio total</th>
+            <th class="headerth">Total ARP</th>
+            <th class="headerth">Fecha de entrega</th>
+          </ng-container>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-peticionPosicion let-expanded="expanded" let-columns="columns">
+          <tr>
+            <td  class="columna">
+              <p-checkbox name="posiciones" binary="false"></p-checkbox>
+            </td>
+            <td class="columna">
+              <a href="#" [pRowToggler]="peticionPosicion">
+                  <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+              </a>
+          </td>
+            <td>{{peticionPosicion.Posicion.Indice}}</td>
+            <td  class="columna">{{peticionPosicion.Posicion.CodigoMaterialSap.Descripcion == null ? peticionPosicion.Posicion.Tarea : peticionPosicion.Posicion.CodigoMaterialSap.Descripcion}}</td>
+            <ng-container *ngFor="let usuario of tablaOfertas.Usuarios"> 
+              <ng-container *ngIf="usuario.Cotizacion != null">
+                <ng-container *ngFor="let cotizacionPosicion of usuario.Cotizacion.CotizacionPosiciones">
+                  <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
+                    <td  class="columna">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.PrecioTotal}}</td>
+                    <td  class="columna">ARP {{cotizacionPosicion.TotalPesos}}</td>
+                    <td  class="columna">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="usuario.Cotizacion == null">
+                <td  class="columna" colspan="3">Sin cotizar</td>
+              </ng-container>
+            </ng-container>
+          </tr>
+      </ng-template>
 
-
-  <ng-template pTemplate="footer">
-      <tr>
-          <td colspan="6">Total global</td>
-          <td colspan="6">ARP $506,202</td>
-      </tr>
-      <tr>
-        <td colspan="6">Adjuntos y observaciones</td>
-        <td colspan="6">Adjuntos</td>
-      </tr>
-  </ng-template>
-</p-table>
+      <ng-template pTemplate="rowexpansion" let-peticionPosicion let-columns="columns">
+        <tr>
+          <td [attr.colspan]="11">
+            <div class="col-sm-12 col-md-12 col-lg-12" style="font-size:16px;padding:20px">                 
+              <p-table [value]="tablaOfertas.PeticionDeOfertaPosicion">
+                  <ng-template pTemplate="header">
+                      <tr>
+                        <th class="headerth" rowspan="3">SubPos.</th>
+                        <th class="headerth" rowspan="3">Codigo</th>
+                        <th class="headerth" rowspan="3">Tarea a subcontratar</th>
+                        <th class="headerth" rowspan="3">Ctd pendiente</th>
+                        <th class="headerth" rowspan="3">Ctd.</th>
+                        <th class="headerth" rowspan="3">UM</th>
+                        <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">     
+                          <th class="headerth">Ctd cotizada</th>
+                          <th class="headerth">UM cotizada</th>
+                          <th class="headerth">Precio unidad</th>
+                          <th class="headerth">Precio total</th>
+                          <th class="headerth">Total ARP</th>
+                        </ng-container>
+                      </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-peticionPosicion>
+                      <tr>                                         
+                          <td class="columna">{{peticionPosicion.Posicion.CotizacionPosiciones.Numero}}</td>
+                          <td class="columna">Codigo</td>
+                          <td class="columna" >tarea</td>
+                          <td class="columna">pendiente</td>
+                          <td class="columna">cantidad</td>
+                          <td class="columna">um</td>
+                          <ng-container *ngFor="let usuario of tablaOfertas.Usuarios"> 
+                            <ng-container *ngIf="usuario.Cotizacion != null">
+                              <ng-container *ngFor="let cotizacionPosicion of usuario.Cotizacion.CotizacionPosiciones">
+                                <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
+                                  <td  class="columna">cotizacionPosicion.CotizacionSubPosiciones.Indice</td>
+                                  <td  class="columna">cotizacionPosicion.CotizacionSubPosiciones.</td>
+                                  <td  class="columna">cotizacionPosicion.CotizacionSubPosiciones.</td>
+                                  <td  class="columna">cotizacionPosicion.CotizacionSubPosiciones.</td>
+                                  <td  class="columna">cotizacionPosicion.CotizacionSubPosiciones.</td>
+                                </ng-container>
+                              </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="usuario.Cotizacion == null">
+                              <td  class="columna" colspan="5">Sin cotizar</td>
+                            </ng-container>
+                          </ng-container>
+                      </tr>
+                  </ng-template>
+                </p-table>
+            </div>
+           </td>
+        </tr>
+    </ng-template>
+      <ng-template pTemplate="footer">
+          <tr>
+            <td colspan="5" style="text-align: end;"  class="columna">Total global</td>
+            <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios"> 
+              <ng-container *ngIf="proveedor.Cotizacion != null">  
+              <td colspan="3"  class="columna">ARP {{proveedor.Cotizacion.TotalGlobal}}</td>
+            </ng-container> 
+            <ng-container *ngIf="proveedor.Cotizacion == null">
+              <td  class="columna" colspan="3">Sin Total</td>
+            </ng-container>
+          </ng-container> 
+          </tr>
+          <tr>
+            <td colspan="5" style="text-align: end;"  class="columna">Adjuntos y observaciones</td>
+              <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                  <ng-container *ngIf="proveedor.Cotizacion != null">           
+                      <td colspan="3"  class="columna">
+                        <div class="col-md-2" *ngIf="proveedor.Cotizacion.TieneAdjuntos">
+                          <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"/></span>
+                        </div>           
+                        {{proveedor.Cotizacion.ObservacionEconomica == null ? '' : proveedor.Cotizacion.ObservacionEconomica}}
+                      </td>
+                  </ng-container>
+                  <ng-container *ngIf="proveedor.Cotizacion == null">
+                    <td  class="columna" colspan="3">Sin observaciones</td>
+                  </ng-container>
+              </ng-container>
+          </tr>
+          <tr>
+            <td colspan="5" style="text-align: end;"  class="columna">Visita técnica obligatoria</td>
+              <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                  <ng-container *ngIf="proveedor.Cotizacion != null">           
+                      <td colspan="3"  class="columna" [style.color]="proveedor.EstadoVisitaColor">               
+                        {{proveedor.EstadoVisita}}
+                      </td>
+                  </ng-container>
+                  <ng-container *ngIf="proveedor.Cotizacion == null">
+                    <td  class="columna" colspan="3">Sin observaciones</td>
+                  </ng-container>
+              </ng-container>
+          </tr>
+          <tr>
+            <td colspan="5" style="text-align: end;"  class="columna">Propuesta técnica</td>
+              <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                  <ng-container *ngIf="proveedor.Cotizacion != null">           
+                      <td colspan="3"  class="columna" [style.color]="proveedor.EstadoPropuestaTecnicaColor">               
+                        {{proveedor.EstadoPropuestaTecnica}}
+                      </td>
+                  </ng-container>
+                  <ng-container *ngIf="proveedor.Cotizacion == null">
+                    <td  class="columna" colspan="3">Sin observaciones</td>
+                  </ng-container>
+              </ng-container>
+          </tr>
+          <tr>
+            <td colspan="5" class="columna"></td>
+            <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios"> 
+              <td colspan="3"  class="columna" style="text-align: center;">
+                <button class="publicar btn btn-success" style="font-size: 12px;">                          
+                  Adjudicar
+                </button>
+              </td>
+            </ng-container> 
+          </tr>
+      </ng-template>
+    </p-table>
+  </div> 
+</div>

@@ -227,6 +227,7 @@ namespace SustitucionMOAModel.Dto
         public string MaterialComprasCodigo { get; set; }
         public int Id { get; set; }
         public DateTime? FechaOferta { get; set; }
+        public decimal? CantidadPendiente { get; set; }
 
         public SolpPosicionDto() { }
 
@@ -315,6 +316,7 @@ namespace SustitucionMOAModel.Dto
 
     public class SolpSubposicionDto
     {
+        public int Indice { get; set; }
         public int Id { get; set; }
         public string Codigo { get; set; }
         public int Numero { get; set; }

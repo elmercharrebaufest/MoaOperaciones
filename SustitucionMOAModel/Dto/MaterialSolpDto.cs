@@ -46,5 +46,7 @@ namespace SustitucionMOAModel.Dto
                 this.CuentaMayor = new TablaSapDto(materialSolp.CuentaMayor);
             }
         }
+
+        public MaterialSolpDto() { }
     }
 }
