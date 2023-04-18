@@ -1,3 +1,5 @@
+import { SolpCompraDto } from "../compras/solp-compra"
+import { Solp } from "../compras/solp/solp"
 import { PosicionCompra } from "../compras/solp-compra"
 import { SolpCompraDto } from "../compras/solp-compra"
 import { Solp } from "../compras/solp/solp"

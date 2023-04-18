@@ -63,6 +63,7 @@ namespace SustitucionMOAModel.Dto
         public int CotizacionEstado_Id { get; set; }
         public CircularDto Circular { get; set; }
         public IQueryable<PeticionDeOfertaSolpPosicionDto> PeticionDeOfertaPosicion { get; set; }
+        public string FechaCreacionFormateada { get; set; }
         public int CotizacionId { get; set; }
         public string TipoPosicionCodigo { get; set; }
         public CotizacionDto Cotizacion { get; set; }
@@ -112,6 +113,10 @@ namespace SustitucionMOAModel.Dto
         public string EstadoPropuestaTecnica { get; set; }
         public string EstadoPropuestaTecnicaColor { get; set; }
         public IEnumerable<int> CircularesSinLeer { get; set; }
+        public string EstadoVisita { get; set; }
+        public string EstadoVisitaColor { get; set; }
+        public string EstadoPropuestaTecnica { get; set; }
+        public string EstadoPropuestaTecnicaColor { get; set; }
     }
 
 }

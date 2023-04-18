@@ -25,6 +25,8 @@ namespace SustitucionMOAModel.Dto
         public bool TieneObservacionTecnica { get; set; }
         public List<CotizacionPosicionDto> CotizacionPosiciones { get; set; } = new List<CotizacionPosicionDto>();
         public bool TieneAdjuntos { get; set; }
+        public string FechaCreacionFormateada { get; set; }
+        public decimal TotalGlobal { get; set; }
         public IList<ArchivoDto> ArchivosCotizacion { get; set; }
         public string FechaCreacionFormateada { get; set; }
         public decimal TotalGlobal { get; set; }
@@ -55,6 +57,8 @@ namespace SustitucionMOAModel.Dto
         public TablaSapDto Moneda { get; set; }
         public string MonedaDescripcion { get; set; }
         public List<CotizacionSubPosicionDto> CotizacionSubPosiciones { get; set; } = new List<CotizacionSubPosicionDto>();
+        public decimal PrecioTotal { get; set; }
+        public decimal TotalPesos { get; set; }
         public string UnidadMedidaDescripcion { get; set; }
         public int PlazoDeEntrega { get; set; }
         public decimal PrecioTotal { get; set; }
