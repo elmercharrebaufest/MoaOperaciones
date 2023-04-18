@@ -62,6 +62,7 @@
     <Compile Include="Dto\AsociarContratoDto.cs" />
     <Compile Include="Dto\CotizacionDto.cs" />
     <Compile Include="Dto\CircularDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ValidarCuitExisteScatoResponse.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarSisaCorredorClienteResponse.cs" />
     <Compile Include="Dto\PdfFooter.cs" />
     <Compile Include="Dto\Echeq\EcheqReporteDto.cs" />

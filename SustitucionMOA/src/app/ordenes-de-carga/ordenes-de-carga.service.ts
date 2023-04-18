@@ -8,6 +8,7 @@ import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
 import { ObtenerContratosDisponiblesResponse } from '../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { ApiResponse } from '../common/models/response';
 import { ValidarSisaCorredorClienteResponse } from '../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse';
+import { ValidarCuitExisteScatoResponse } from '../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse copy';
 
 @Injectable({
     providedIn: 'root'
@@ -351,17 +352,26 @@ export class OrdenesDeCargaService extends BaseService {
             .get<ObtenerContratosDisponiblesResponse>('/api/OrdenDeCarga/ObtenerContratosDisponibles', { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
-    public validarCUITExiste(cuit: string): Observable<ApiResponse<string>> {
+    public validarExisteCuitScato(cuit: string): Observable<ApiResponse<ValidarCuitExisteScatoResponse>> {
         let params: HttpParams = new HttpParams();
         params = params.append("cuit", cuit);
 
         return this.http
             .get
-            <ApiResponse<string>>
-            ('/api/OrdenDeCarga/TBD', { params: params, headers: this.headers })
+            <ApiResponse<ValidarCuitExisteScatoResponse>>
+            ('/api/OrdenDeCarga/ValidarExisteCuitScato', { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
+public validarSisaCuit(cuit: string): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append("cuit", cuit)
 
+        return this.http
+            .get<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/ValidarSisaCuit',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
     public validarSisaCorredorCliente(corredorCodigo: string, clienteCodigo: string): Observable<ApiResponse<ValidarSisaCorredorClienteResponse>> {
         let params: HttpParams = new HttpParams()
             .append("corredorCodigo", corredorCodigo)
