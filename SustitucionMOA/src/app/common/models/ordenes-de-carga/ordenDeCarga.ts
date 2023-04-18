@@ -37,14 +37,16 @@ export class OrdenDeCarga {
     OrdenDeCargaCambiosHistorial: OrdenDeCargaCambiosHistorial[];
     FechaVencimientoAmpliada: boolean;
     EdicionRechazada: boolean;
-    CUITDestinatario?:string;
-    CUITDestino?:string;
+    CUITDestinatario?: string;
+    CUITDestino?: string;
     RazonSocialDestinatario?: string;
     RazonSocialDestino?: string;
-    Reventa:boolean;
+    Reventa: boolean;
     CUITIntermediarioFlete?: string;
     constructor() {
     }
 }
-export type CuitValidaExistencia =keyof Pick<OrdenDeCarga,"CUITDestinatario"|"CUITDestino">;
+export type CuitValidaExistencia = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino">;
+export type CuitValidaSISA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" | "CUITCorredor" | "CUITCliente">;
+export type CuitValidaRUCA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" |  "CUITCliente">;
 

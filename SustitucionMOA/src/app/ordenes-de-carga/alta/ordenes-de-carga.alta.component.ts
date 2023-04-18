@@ -4,7 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { EmpresaGranosService } from '../../alta-proveedores/empresa-granos/empresa-granos.service';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { Material } from '../../common/models/material';
-import { CuitValidaExistencia, OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { CuitValidaExistencia, CuitValidaRUCA, CuitValidaSISA, OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { SeleccionarProveedorService } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
@@ -771,7 +771,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.validando[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
-        this.service.validarCUITExiste(cuit).pipe(finalize(() => {
+        this.service.validarExisteCuitScato(cuit).pipe(finalize(() => {
             this.validando[campo] = false;
         })).subscribe(
             result => {
@@ -780,13 +780,42 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 } else if (result.error != undefined && result.error != "") {
                     this.mensajeComponent.setErrorMsg(result.error);
                 } else if (result.info != undefined) {
-                    this.mensajesOrdenDeCarga[campo] = result.info;
-                    if (result.info == `La cuit ${cuit} no se encuentra registrada`)
-                        this.displayModal[campo] = true;
+                    this.mensajeComponent.setInfoMsg(result.info);
+
                 } else {
-                    this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = result.data;
+                    if (!result.data.Existe) {
+                        this.mensajesOrdenDeCarga[campo] = `La cuit ${cuit} no se encuentra registrada`;
+                        this.displayModal[campo] = true;
+                    } else {
+
+                        this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = result.data.RazonSocial;
+                        this.validarSisaCuit(cuit, campo)
+                    }
                 }
             })
+    }
+    validarSisaCuit(cuit: string, campo: CuitValidaSISA) {
+        this.service.validarSisaCuit(cuit).subscribe(result => {
+            if (result.logout) {
+                this.sessionDataService.logout();
+            } else if (result.error != undefined && result.error != "") {
+                this.mensajeComponent.setErrorMsg(result.error);
+            } else if (result.info != undefined) {
+                this.mensajeComponent.setInfoMsg(result.info);
+
+            } else {
+                if (!result.data) {
+                    this.mensajesOrdenDeCarga[campo] = `El ${campo.replace("CUIT", "")} no se encuentra habilitado en SISA`;
+                } else {
+                    if (campo == "CUITDestino") {
+                        this.obtenerPlantasYDomicilios();
+                    }
+                    else if (campo !== "CUITCorredor") {
+                        this.validarRuca(cuit, campo)
+                    }
+                }
+            }
+        })
     }
     revisarCUITFormatoValido(cuit: string): boolean {
         return cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
@@ -843,6 +872,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.blockUI.stop();
         }
     }
+    validarRuca(cuit: string, campo: CuitValidaRUCA) { }
+    obtenerPlantasYDomicilios() { }
     descripcionIntermediarioFlete = "Texto descriptivo de lo que representa el campo CUIT Intermediario Flete"
     descripcionTransporte = "Texto descriptivo de lo que representa el campo CUIT Transporte"
 }
