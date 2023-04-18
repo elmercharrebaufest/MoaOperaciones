@@ -22,6 +22,7 @@ using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using static SustitucionMOAWS.WSConsumers.ObtenerTipoCambioConsumerMOA;
 using SustitucionMOAWS.CrearSolpWebServiceMOA;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
@@ -3686,6 +3687,14 @@ namespace SustitucionMOAUtils.Services
             return respuesta;
         }
 
+        private ObtenerTipoCambioConsumerMOAResponse ObtenerTipoCambio(int MonedaOrigen_Id, int MonedaDestino_Id, DateTime Fecha)
+        {
+            var origen = repositorio.Obtener<TablaSap>(x => x.Id == MonedaOrigen_Id);
+            var destino = repositorio.Obtener<TablaSap>(x => x.Id == MonedaDestino_Id);
+            ObtenerTipoCambioConsumerMOAResponse result = obtenerTipoCambioConsumerMOA.Request(Fecha.ToString("yyyy-MM-dd"), destino.Codigo, origen.Codigo);
+
+            return result;
+            
         public PeticionDeOfertaDto TraerCotizacion(int peticionId)
         {
 

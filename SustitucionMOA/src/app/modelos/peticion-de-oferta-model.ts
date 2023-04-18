@@ -1,3 +1,5 @@
+import { SolpCompraDto } from "../compras/solp-compra"
+import { Solp } from "../compras/solp/solp"
 import { PosicionCompra } from "../compras/solp-compra"
 import { SolpCompraDto } from "../compras/solp-compra"
 import { Solp } from "../compras/solp/solp"
@@ -5,12 +7,15 @@ import { SolpPosicion } from "../compras/solp/solp-posicion"
 import { CotizacionDto } from "./cotizacionDto"
 
 export interface PeticionDeOfertaDto{
+  
     Id?: number
     FechaEntregaFormateado?: string
     PlazoDeOferta?: Date,
     CUIT?: string
     Mail?: string
     Usuarios?: PeticionDeOfertaUsarioDto[],
+    SolpDto: any,
+    Selected: boolean
     Solp_Id?: number,
     NroSolp?: string,
     FechaCreacion?: Date,
