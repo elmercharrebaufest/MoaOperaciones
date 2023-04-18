@@ -7,11 +7,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class LegajoComponent implements OnInit {
 
-    @Input()
-    displayLegajo: boolean;
-
-    @Input()
-    legajo: any;
+    @Input() displayLegajo: boolean;
+    @Input() usuarioProveedor: boolean;
+    @Input() legajo: any;
 
     @Output() cerrarLegajoEmitter = new EventEmitter();
     @Output() descargarLegajoEmitter = new EventEmitter();

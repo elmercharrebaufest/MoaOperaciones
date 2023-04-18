@@ -3,6 +3,7 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
@@ -661,7 +662,7 @@ namespace SustitucionMOA.Controllers
 
                 return JsonCustom(new
                 {
-                    data = service.ListarPOProveedor(paginacion, nroSolp)
+                    data = service.ListarPOProveedor(paginacion, nroSolp, SessionPersister.getUsername())
                 });
             }
             catch (InfoCustomException e)
@@ -805,11 +806,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? usuarioId)
+        public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario)
         {
             try
             {
-                var result = service.ObtenerLegajo(peticionDeOfertaId, usuarioId);
+                var result = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario);
                 return JsonCustom(new { data = result });
             }
             catch (WSCustomException e)
@@ -853,14 +854,14 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult DescargarLegajo(int idPeticion)
+        public ActionResult DescargarLegajo(int idPeticion,int? idPeticionDeOfertaUsuario)
         {
             try
             {
                 var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
                 Directory.CreateDirectory(path);
 
-                string rutaZip = service.DescargarLegajo(idPeticion, path);
+                string rutaZip = service.DescargarLegajo(idPeticion, path, idPeticionDeOfertaUsuario);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
                 string fileName = Path.GetFileName(rutaZip);
 

@@ -40,5 +40,8 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("PeticionDeOfertaUsuario")]
         public virtual ICollection<Cotizacion> Cotizaciones { get; set; } = new List<Cotizacion>();
+
+        [InverseProperty("PeticionDeOfertaUsuario")]
+        public virtual ICollection<CircularPeticionDeOfertaUsuario> Circulares { get; set; } = new List<CircularPeticionDeOfertaUsuario>();
     }
 }
