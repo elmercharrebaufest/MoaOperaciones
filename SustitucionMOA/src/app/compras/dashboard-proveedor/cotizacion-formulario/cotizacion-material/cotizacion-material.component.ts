@@ -16,15 +16,16 @@ import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto } from '../../../.
 import { SelectItem } from 'ng2-select';
 import { ValorTotalPorMoneda } from '../../../solp/solp';
 import { CotizacionPosicionDto, GuardarCotizacion } from '../../../../modelos/cotizacionDto';
+import { Dropdown } from 'primeng/dropdown';
 
 
 @Component({
     selector: 'app-cotizacion-material',
-    templateUrl: 'cotizacion-material.component.html', 
+    templateUrl: 'cotizacion-material.component.html',
     styleUrls: ['./cotizacion-material.component.css'],
     providers: [ComprasService, UsuarioService]
 })
-export class CotizacionMaterialComponent extends ListBaseComponent implements OnInit, OnChanges{
+export class CotizacionMaterialComponent extends ListBaseComponent implements OnInit, OnChanges {
 
     @BlockUI() blockUI: NgBlockUI;
 
@@ -33,22 +34,17 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     archivos = new Array<File>()
 
     @Input() peticion: PeticionDeOfertaDto;
-    @Input() posicionesCompra: PeticionDeOfertaSolpPosicionDto[]; 
+    @Input() posicionesCompra: PeticionDeOfertaSolpPosicionDto[];
     observaciones: string;
     combos: any;
     monedaCompras: SelectItem[];
     unidades: any[];
     @Input() esFinalizado: boolean;
-
     @Input('locale') es: any;
     cotizaciones: GuardarCotizacion[];
     valorTotalPorMoneda: ValorTotalPorMoneda[];
     displayCotizacionCreada: boolean;
     visualizarMensajeDeModificacion: boolean;
-    MonedaCodigo: 224;
-    cars: any[];
-    @Output() enviarCotizacion = new EventEmitter<any>()
-    selectedCar1: string = "EUR";
     hoy: Date = new Date();
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -56,15 +52,15 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
-    ngOnChanges(changes: SimpleChanges): void {     
-         this.getCombos();
-         console.log(this.peticion, "cotizacion.")
+    ngOnChanges(changes: SimpleChanges): void {
+        this.getCombos();
+        console.log(this.peticion, "cotizacion.")
     }
 
     ngOnInit() {
-        this.getCombos();         
-         this.setCombos();
-         this.es = {
+        this.getCombos();
+        this.setCombos();
+        this.es = {
             firstDayOfWeek: 1,
             dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
             dayNamesShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
@@ -74,7 +70,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             today: 'Hoy',
             clear: 'Borrar'
         }
-        
+
     }
 
     public get esTipoMaterial(): boolean {
@@ -85,15 +81,14 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         return this.peticion.TipoPosicionCodigo == "SERVICIO";
     }
 
-    eliminarArchivo(esAdjuntoNuevo : boolean, archivo : any)
-    {
+    eliminarArchivo(esAdjuntoNuevo: boolean, archivo: any) {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar el archivo?',
             accept: () => {
                 esAdjuntoNuevo ? this.eliminarAdjuntoNuevo(archivo) : this.eliminarAdjuntoGuardado(archivo)
             },
             reject: () => {
-                
+
             }
         });
 
@@ -140,15 +135,22 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         }
     }
 
-    public onSelectMoneda(cotizacion: any, peticionId){
-       var moneda = this.combos.Moneda.filter(x => x.CodigoDescripcion.includes(cotizacion.MonedaCodigo.Codigo))[0];
-       this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.Moneda_Id = moneda.Id;    
+    public onSelectMoneda(cotizacion: any, peticionId) {
+        var moneda = this.combos.Moneda.filter(x => x.CodigoDescripcion.includes(cotizacion.MonedaCodigo.Codigo))[0];
+        if (moneda == undefined) {
+            return this.floatMsgService.setErrorMsg("Debe seleccionar una moneda válida");
+        }
+        this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.Moneda_Id = moneda.Id;
     }
 
-    public onSelectUnidad(cotizacion: any, peticionId){
+    public onSelectUnidad(cotizacion: any, peticionId) {
         var unidad = this.combos.Unidades.filter(x => x.Descripcion.includes(cotizacion.UnidadMedidaDescripcion.Descripcion))[0];
-        this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.UnidadDeMedida_Id =  unidad.Id;    
-     }
+        if (unidad == undefined) {
+            return this.floatMsgService.setErrorMsg("Debe seleccionar una unidad de medida válida");
+        }
+        this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.UnidadDeMedida_Id = unidad.Id;
+
+    }
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {
             // IE11
@@ -181,15 +183,15 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     }
 
     uploadHandler(filesUpload: any) {
-        var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);      
+        var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);
         this.archivos = filesUpload["files"];
-        if(archivoWeb > 10000000){
-            this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb")          
+        if (archivoWeb > 10000000) {
+            this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb")
         }
     }
 
     buscarCombo(event, type) {
-        switch (type) {           
+        switch (type) {
             case 'MONEDA COMPRAS':
                 this.monedaCompras = this.combos.Moneda.filter(x => x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
                 break;
@@ -233,78 +235,105 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
 
     public setCombos(): void {
         //Obtengo todas las opciones de los autocomplete
-        if(this.combos != undefined){
-        this.monedaCompras = this.combos.Moneda;
-        this.unidades = this.combos.Unidades;
+        if (this.combos != undefined) {
+            this.monedaCompras = this.combos.Moneda;
+            this.unidades = this.combos.Unidades;
         }
     }
 
-    public calcularValorNeto(cotizacion: CotizacionPosicionDto, peticionId: number){
-        if(cotizacion.Precio != 0 && cotizacion.Cantidad != 0){
-       cotizacion.PrecioTotal = cotizacion.Precio * cotizacion.Cantidad;
-       this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.PrecioTotal = cotizacion.PrecioTotal;
-   
-             }
-     }
+    public calcularValorNeto(cotizacion: CotizacionPosicionDto, peticionId: number) {
+        if (cotizacion.Precio != 0 && cotizacion.Cantidad != 0) {
+            cotizacion.PrecioTotal = cotizacion.Precio * cotizacion.Cantidad;
+            this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.PrecioTotal = cotizacion.PrecioTotal;
+
+        }
+    }
 
 
-     public validarCambios(cotizacion: any, peticionId: number){     
+    public validarCambios(cotizacion: any, peticionId: number) {
         this.visualizarMensajeDeModificacion = false;
-      if(cotizacion.Cantidad != 0){
-        this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.Cantidad != cotizacion.Cantidad;
-       return this.visualizarMensajeDeModificacion;
-            }
-      if(cotizacion.UnidadMedidaDescripcion != undefined){
-        this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.UnidadId != cotizacion.UnidadMedidaDescripcion.Id 
-       return this.visualizarMensajeDeModificacion;
-         }   
-     }
+        if (cotizacion.Cantidad != 0) {
+            this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.Cantidad != cotizacion.Cantidad;
+            return this.visualizarMensajeDeModificacion;
+        }
+        if (cotizacion.UnidadMedidaDescripcion != undefined) {
+            this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.UnidadId != cotizacion.UnidadMedidaDescripcion.Id
+            return this.visualizarMensajeDeModificacion;
+        }
+    }
 
-     calcularFechaEntrega(cotizacion: CotizacionPosicionDto, peticionId: number) {
+    calcularFechaEntrega(cotizacion: CotizacionPosicionDto, peticionId: number) {
         let fechaNueva = new Date();
-        if(cotizacion.FechaDeEntrega != null)  fechaNueva = new Date(cotizacion.FechaDeEntrega);      
+        if (cotizacion.FechaDeEntrega != null) fechaNueva = new Date(cotizacion.FechaDeEntrega); ;
 
-        if(cotizacion.PlazoDeEntrega > 0){
+        if (cotizacion.PlazoDeEntrega > 0) {
             fechaNueva.setDate(fechaNueva.getDate() + cotizacion.PlazoDeEntrega);
             this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.FechaDeEntrega = fechaNueva;
         }
-    } 
+    }
 
-     public getCotizacion(){
-        this.crearCotizacionPosicion();
-           var coti = {
-                CotizacionId: this.peticion.CotizacionId,
-                PeticionOfertaUsuarioId: this.peticion.Id,
-                CotizacionPosiciones: this.cotizaciones,
-                ObservacionEconomica: this.peticion.ObservacionEconomica,
-                ObservacionTecnica: "",
-                ArchivosNuevos: this.archivos,
-                ArchivosGuardados: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { Id: x.Id } }) : null
+
+
+    calcularPlazo(cotizacion: CotizacionPosicionDto, peticionId: number) {
+        let fechaNueva = new Date();
+        let fechaOriginal = new Date();
+        if (cotizacion.FechaDeEntrega != null) 
+         { 
+            fechaNueva = cotizacion.FechaDeEntrega;
+         }else{
+            cotizacion.FechaDeEntrega = fechaOriginal;
+         }
+        if (cotizacion.FechaOriginal != null) {
+            var milliseconds = parseInt(cotizacion.FechaOriginal.substring(6));
+            var date = new Date(milliseconds);
+            fechaOriginal = date
+        }else{
+            cotizacion.FechaOriginal = fechaOriginal;
+         }
+        // if (cotizacion.PlazoDeEntrega) {
+            var dias = fechaNueva > fechaOriginal ? fechaNueva.getDay() - fechaOriginal.getDay() : fechaOriginal.getDay() - fechaNueva.getDay();
+            if(dias < 0){
+                dias = 0;
             }
-            return coti;
-     }
+            this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.PlazoDeEntrega = dias;
+        // }
+    }
 
-     public crearCotizacionPosicion(){     
+    public getCotizacion() {
+        this.crearCotizacionPosicion();
+        var coti = {
+            CotizacionId: this.peticion.CotizacionId,
+            PeticionOfertaUsuarioId: this.peticion.Id,
+            CotizacionPosiciones: this.cotizaciones,
+            ObservacionEconomica: this.peticion.ObservacionEconomica,
+            ObservacionTecnica: "",
+            ArchivosNuevos: this.archivos,
+            ArchivosGuardados: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { Id: x.Id } }) : null
+        }
+        return coti;
+    }
 
-        return this.cotizaciones = this.posicionesCompra.map(cotizacion => { 
+    public crearCotizacionPosicion() {
+
+        return this.cotizaciones = this.posicionesCompra.map(cotizacion => {
             return {
-            PeticionDeOfertaSolpPosicionId: cotizacion.Posiciones.Id,
-            Posicion: cotizacion.Posiciones.Indice,      
-            Cantidad: cotizacion.Posiciones.CotizacionPosicion.Cantidad,
-            Precio: cotizacion.Posiciones.CotizacionPosicion.Precio,
-            MonedaId: cotizacion.Posiciones.CotizacionPosicion.Moneda_Id != 0 ?
-            cotizacion.Posiciones.CotizacionPosicion.Moneda_Id: 0,
-            UnidadDeMedidaId: cotizacion.Posiciones.CotizacionPosicion.UnidadDeMedida_Id != 0 ?
-            cotizacion.Posiciones.CotizacionPosicion.UnidadDeMedida_Id : 0,
-            FechaDeEntrega: cotizacion.Posiciones.CotizacionPosicion.FechaDeEntrega != undefined ? 
-            cotizacion.Posiciones.CotizacionPosicion.FechaDeEntrega : null,
-            UnidadMedida: cotizacion.Posiciones.CotizacionPosicion.UnidadComprasDescripcion,
-            monedaCompras: cotizacion.Posiciones.CotizacionPosicion.MonedaCodigo,
-            };         
+                PeticionDeOfertaSolpPosicionId: cotizacion.Posiciones.Id,
+                Posicion: cotizacion.Posiciones.Indice,
+                Cantidad: cotizacion.Posiciones.CotizacionPosicion.Cantidad,
+                Precio: cotizacion.Posiciones.CotizacionPosicion.Precio,
+                MonedaId: cotizacion.Posiciones.CotizacionPosicion.Moneda_Id != 0 ?
+                    cotizacion.Posiciones.CotizacionPosicion.Moneda_Id : 0,
+                UnidadDeMedidaId: cotizacion.Posiciones.CotizacionPosicion.UnidadDeMedida_Id != 0 ?
+                    cotizacion.Posiciones.CotizacionPosicion.UnidadDeMedida_Id : 0,
+                FechaDeEntrega: cotizacion.Posiciones.CotizacionPosicion.FechaDeEntrega != undefined ?
+                    cotizacion.Posiciones.CotizacionPosicion.FechaDeEntrega : null,
+                UnidadMedida: cotizacion.Posiciones.CotizacionPosicion.UnidadComprasDescripcion,
+                monedaCompras: cotizacion.Posiciones.CotizacionPosicion.MonedaCodigo,
+            };
         });
-     }
+    }
 
-     calcularValorTotalPorMoneda() {
+    calcularValorTotalPorMoneda() {
         this.valorTotalPorMoneda = new Array<ValorTotalPorMoneda>();
         const monedas = this.posicionesCompra.map(item => item.Posiciones.CotizacionPosicion.MonedaCodigo).filter((value, index, self) => self.indexOf(value) === index);
         monedas.forEach(moneda => {
@@ -312,11 +341,11 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             if (isNaN(valorTotal)) {
                 valorTotal = 0;
             }
-            this.valorTotalPorMoneda.push({moneda, valorTotal} as ValorTotalPorMoneda);
+            this.valorTotalPorMoneda.push({ moneda, valorTotal } as ValorTotalPorMoneda);
         });
     }
 
-    public ObtenerArchivos(){
+    public ObtenerArchivos() {
         return this.archivos;
     }
 
@@ -363,6 +392,6 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             )
     }
 
-     
+
 
 }

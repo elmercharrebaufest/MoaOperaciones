@@ -32,6 +32,7 @@ export interface CotizacionPosicionDto {
     Precio: number,
     PrecioTotal: number,
     FechaDeEntrega: any,
+    FechaOriginal: any,
     Codigo: string,
     Descripcion: string,
     TextoSuministro: string,

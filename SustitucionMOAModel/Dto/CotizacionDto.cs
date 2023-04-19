@@ -57,6 +57,8 @@ namespace SustitucionMOAModel.Dto
         public decimal PrecioTotal { get; set; }
         public string MonedaCodigo { get; set; }
         public string FechaDeEntregaFormateado { get; set; }
+        public TablaSapDto Moneda { get; set; }
+        public DateTime? FechaOriginal { get; set; }
         public decimal TotalGlobalSubPos { get; set; }
         public decimal TotalPosicionCotizacion { get; set; }
     }

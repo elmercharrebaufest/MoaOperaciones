@@ -74,8 +74,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {                        
                         this.peticion = result.data;
-                        this.posicionesCompra = this.peticion.PeticionDeOfertaPosicion;
-                        console.log(this.peticion, "cotizacion.")
+                        this.posicionesCompra = this.peticion.PeticionDeOfertaPosicion;                    
                         this.parsearFecha();
                     }
                     this.blockUI.stop();
