@@ -64,7 +64,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                         RealizoVisita = x.RealizoVisita,
                                         UsuarioId = x.Usuario_Id,
                                         CUIT = x.Usuario.CUITRegistro,
-                                        CircularSinLeer = x.Circulares.Any(a=>a.Leida != true)
+                                        CircularSinLeer = x.Circulares.Any(a=>a.Leida != true),
+                                        CircularesSinLeer = x.Circulares.Where(a=>a.Leida != true).Select(a=>a.Id),
                                     } },
                                     TieneVisitaObra = x.PeticionDeOferta.Solp.Pliego.TieneVisitaObra == null ? "No requiere visita" : "Requiere visita a coordinar",
                                     CotizacionEstadoDescripcion = cotizacion == null ? "Sin Cotizar" : cotizacion.CotizacionEstado.Descripcion,
