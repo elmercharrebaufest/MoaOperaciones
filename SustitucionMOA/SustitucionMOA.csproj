@@ -249,6 +249,7 @@
     <Content Include="Content\images\header\key-solid.svg" />
     <Content Include="Content\images\header\logo.png" />
     <Content Include="Content\images\header\logo_.png" />
+    <Content Include="Content\images\icons\carpeta.svg" />
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\descargar.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
@@ -261,6 +262,7 @@
     <Content Include="Content\images\icons\trashRed.svg" />
     <Content Include="Content\images\icons\trashWhite.svg" />
     <Content Include="Content\images\icons\worker.svg" />
+    <Content Include="Content\images\LogoBaufest.png" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />

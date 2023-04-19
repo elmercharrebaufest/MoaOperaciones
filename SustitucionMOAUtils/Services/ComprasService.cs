@@ -2952,10 +2952,10 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var circular in circulares)
             {
-                bool leido = true;
+                bool noLeido = false;
                 if (peticiondeOfertaUsuarioId.HasValue)
                 {
-                    leido = circular.PeticionDeOfertaUsuarios.FirstOrDefault().Leida == true;
+                    noLeido = circular.PeticionDeOfertaUsuarios.Any(a => a.PeticionDeOfertaUsuario_Id == peticiondeOfertaUsuarioId && a.Leida != true);
                 }
 
                 //buscar archivos de la circular
@@ -2969,7 +2969,7 @@ namespace SustitucionMOAUtils.Services
                         SolpId = peticion.Solp_Id,
                         Fecha = circular.FechaCreacion,
                         FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy"),
-                        Leido = leido
+                        Leido = !noLeido
                     });
                 }
                 //buscar comentarios de la circular
@@ -2981,7 +2981,7 @@ namespace SustitucionMOAUtils.Services
                     SolpId = peticion.Solp_Id,
                     Fecha = circular.FechaCreacion,
                     FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy"),
-                    Leido = leido
+                    Leido = !noLeido
                 });
                 //buscar cambios de fechas de la circular
                 if (circular.RequiereCambioDeFechas == true)
@@ -2996,7 +2996,7 @@ namespace SustitucionMOAUtils.Services
                             SolpId = peticion.Solp_Id,
                             Fecha = circular.FechaCreacion,
                             FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy"),
-                            Leido = leido
+                            Leido = !noLeido
                         });
                     }
                     if (circular.FechaDeEntrega.HasValue)
@@ -3009,15 +3009,18 @@ namespace SustitucionMOAUtils.Services
                             SolpId = peticion.Solp_Id,
                             Fecha = circular.FechaCreacion,
                             FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy"),
-                            Leido = leido
+                            Leido = !noLeido
                         });
                     }
                 }
 
-                if (leido == false)
+                if (noLeido)
                 {
-                    circular.PeticionDeOfertaUsuarios.FirstOrDefault().Leida = true;
-                    circular.PeticionDeOfertaUsuarios.FirstOrDefault().FechaLeida = DateTime.Now;
+                    foreach (var circularNoLeida in circular.PeticionDeOfertaUsuarios.Where(a => a.PeticionDeOfertaUsuario_Id == peticiondeOfertaUsuarioId && a.Leida != true ))
+                    {
+                        circularNoLeida.Leida = true;
+                        circularNoLeida.FechaLeida = DateTime.Now;
+                    }
                     repositorio.GuardarCambios();
                 }
             }
