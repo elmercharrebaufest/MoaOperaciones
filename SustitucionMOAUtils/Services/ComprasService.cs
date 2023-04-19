@@ -3761,6 +3761,7 @@ namespace SustitucionMOAUtils.Services
                     //Datos del material
                     cotizacion.ObservacionEconomica = cotizacionDto.ObservacionEconomica;
                     cotizacion.CotizacionEstado_Id = (int)(esFinalizado ? CotizacionEstadoEnum.Cotizado : CotizacionEstadoEnum.Incompleta);
+                    cotizacion.Revision = cotizacion.Revision + 1;
                     GuardarCotizacionPosicion(cotizacionDto, cotizacion, info);                   
 
                     //Datos del servicio
