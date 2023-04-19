@@ -84,6 +84,7 @@ namespace SustitucionMOAModel.Dto
         public bool? RealizoVisita { get; set; }
         public CotizacionDto Cotizacion { get; set; }
         public bool CircularSinLeer { get; set; }
+        public IEnumerable<int> CircularesSinLeer { get; set; }
     }
 
 }
