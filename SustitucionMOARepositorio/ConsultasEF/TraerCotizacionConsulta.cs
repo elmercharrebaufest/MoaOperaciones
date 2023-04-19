@@ -40,9 +40,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     UsuarioCreador_Id = po.PeticionDeOferta.UsuarioCreador_Id,
                                     PlazoDeOferta = po.PeticionDeOferta.PlazoDeOferta,
                                     Cotizacion = new CotizacionDto(),
-                                    Pagina = 224,
                                     ObservacionTecnica = cotizacion != null ? cotizacion.ObservacionTecnica : "",
                                     ObservacionEconomica = cotizacion != null ? cotizacion.ObservacionEconomica : "",
+                                    RespetaMateriales = cotizacion != null ? cotizacion.RespetaMateriales : false,
+                                    RespetaServicios = cotizacion != null ? cotizacion.RespetaMateriales : false,
                                     TipoPosicionCodigo = po.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     CotizacionId = cotizacion != null ? cotizacion.Id : 0,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
@@ -59,9 +60,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                     {
                                                                         Indice = pop.SolpPosicion.Indice,
                                                                         Id = pop.Id, //Pos
-                                                                        Codigo = pop.SolpPosicion.Codigo, //Codigo
+                                                                        Codigo = pop.SolpPosicion.MaterialSolp.CodigoSap, //Codigo
                                                                         Tarea = pop.SolpPosicion.Tarea,
-                                                                        TextoSuministro = pop.SolpPosicion.TextoSuministro,
+                                                                        //TextoSuministro = pop.SolpPosicion.TextoSuministro,
                                                                         Cantidad = pop.SolpPosicion.Cantidad,
                                                                         UnidadComprasDescripcion = pop.SolpPosicion.Unidad.Descripcion,
                                                                         UnidadId = pop.SolpPosicion.Unidad_Id,
@@ -74,6 +75,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                             MonedaCodigo = cotizacion != null && cotizacionPosicion.Moneda != null ? cotizacionPosicion.Moneda.Codigo : "",
                                                                             Moneda_Id = cotizacion != null && cotizacionPosicion.Moneda_Id != null ? cotizacionPosicion.Moneda_Id.Value : 0,
                                                                             Precio = cotizacion != null && cotizacionPosicion.Precio != null ? cotizacionPosicion.Precio.Value : 0,
+                                                                            FechaOriginal = cotizacion != null && cotizacionPosicion.FechaDeEntrega != null ? cotizacionPosicion.FechaDeEntrega : (DateTime?)null,
                                                                             FechaDeEntrega = cotizacion != null && cotizacionPosicion.FechaDeEntrega != null ? cotizacionPosicion.FechaDeEntrega : (DateTime?)null,
                                                                             FechaDeEntregaFormateado = cotizacion != null && cotizacionPosicion.FechaDeEntrega != null ? SqlFunctions.DateName("day", cotizacionPosicion.FechaDeEntrega) + "/" + SqlFunctions.DatePart("month", cotizacionPosicion.FechaDeEntrega) + "/" + SqlFunctions.DateName("year", cotizacionPosicion.FechaDeEntrega) : "",
                                                                             PlazoDeEntrega = 0,
@@ -81,24 +83,29 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                             Moneda = new TablaSapDto
                                                                             {
                                                                                 Codigo = cotizacion != null && cotizacionPosicion.Moneda != null ? cotizacionPosicion.Moneda.Codigo : "",
-                                                                                Id = cotizacion != null && cotizacionPosicion.Moneda_Id != null ? cotizacionPosicion.Moneda_Id.Value : 0                                                                                
+                                                                                Id = cotizacion != null && cotizacionPosicion.Moneda_Id != null ? cotizacionPosicion.Moneda_Id.Value : 0
                                                                             }
                                                                         },
 
-                                                                        Subposiciones = pop.SolpPosicion.Subposiciones.Select(s => new SolpSubposicionDto
-                                                                        {
-                                                                            Id = s.Id,
-                                                                            Codigo = s.Codigo,
-                                                                            Tarea = s.Tarea,
-                                                                            Cantidad = s.Cantidad,
-                                                                            UnidadDescripcion = s.Unidad.Descripcion,
-                                                                            Numero = s.Numero,
+                                                                        Subposiciones = (from subposicion in contexto.Set<SolpSubposicion>()
+                                                                                          join cotizacionSubposicion in contexto.Set<CotizacionSubPosicion>() on subposicion.Id equals cotizacionSubposicion.SolpSubPosicion_Id into subposicionCotizacionSubposicion
+                                                                                          from cotizacionSubposicion in subposicionCotizacionSubposicion.DefaultIfEmpty()
+                                                                                          where subposicion.Id == cotizacionSubposicion.SolpSubPosicion_Id
+                                                                                          select new SolpSubposicionDto
+                                                                                          {
+                                                                                              Id = subposicion.Id,
+                                                                                              Codigo = subposicion.ServicioSolp.CodigoSap + "",
+                                                                                              Tarea = subposicion.Tarea,
+                                                                                              Cantidad = subposicion.Cantidad,
+                                                                                              UnidadDescripcion = subposicion.Unidad.Descripcion,
+                                                                                              Numero = subposicion.Numero,
+                                                                                              CantidadCotizacion = cotizacionSubposicion != null ? cotizacionSubposicion.Cantidad : 0
 
-                                                                        }).ToList()
+                                                                                          }).ToList()
                                                                     },
                                                                 }),
-                                   
-                                          
+
+
                                 };
 
                 return resultado.First();

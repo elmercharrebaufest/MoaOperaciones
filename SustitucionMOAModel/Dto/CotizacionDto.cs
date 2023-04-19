@@ -53,6 +53,7 @@ namespace SustitucionMOAModel.Dto
         public string MonedaCodigo { get; set; }
         public string FechaDeEntregaFormateado { get; set; }
         public TablaSapDto Moneda { get; set; }
+        public DateTime? FechaOriginal { get; set; }
     }
 
     public class CotizacionSubPosicionDto

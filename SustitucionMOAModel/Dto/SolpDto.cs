@@ -332,6 +332,7 @@ namespace SustitucionMOAModel.Dto
         public TablaSapDto Unidad { get; set; }
         public string UnidadComprasDescripcion { get; set; }
         public string UnidadDescripcion { get; set; }
+        public int? CantidadCotizacion { get; set; }
 
         public SolpSubposicionDto() { }
 
