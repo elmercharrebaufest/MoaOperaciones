@@ -80,13 +80,14 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         Subposiciones = pop.SolpPosicion.Subposiciones.Select(s => new SolpSubposicionDto
                                                                         {
                                                                             Id = s.Id,
-                                                                            Codigo = s.Codigo,
+                                                                            CodigoServicioSapId = s.ServicioSolp_Id,
                                                                             Tarea = s.Tarea,
                                                                             Cantidad = s.Cantidad,
                                                                             Unidad = new TablaSapDto
                                                                             {
                                                                                 Descripcion = s.Unidad.Descripcion
                                                                             },
+                                                                            Numero = s.Numero
 
                                                                         }).ToList()
                                                                     },

@@ -105,7 +105,7 @@
           </tr>
       </ng-template>
     </p-table> -->
-  <!-- </div>  --> -->
+  <!-- </div>  -->
 
   <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
 
@@ -182,12 +182,12 @@
                   </ng-template>
                   <ng-template pTemplate="body" let-peticionPosicion>
                       <tr>                                         
-                          <td class="columna">{{peticionPosicion.Posicion.CotizacionPosiciones.Numero}}</td>
-                          <td class="columna">Codigo</td>
-                          <td class="columna" >tarea</td>
-                          <td class="columna">pendiente</td>
-                          <td class="columna">cantidad</td>
-                          <td class="columna">um</td>
+                          <td class="columna">{{peticionPosicion.Subposiciones.Numero}}</td>
+                          <td class="columna">{{peticionPosicion.Subposiciones.CodigoServicioSapId}}</td>
+                          <td class="columna" >{{peticionPosicion.Subposiciones.Tarea}}</td>
+                          <td class="columna">{{peticionPosicion.Subposiciones.CantidadPendiente}}</td>
+                          <td class="columna">{{peticionPosicion.Subposiciones.Cantidad}}</td>
+                          <td class="columna">{{peticionPosicion.Subposiciones.UnidadMedida.Descripcion}}</td>
                           <ng-container *ngFor="let usuario of tablaOfertas.Usuarios"> 
                             <ng-container *ngIf="usuario.Cotizacion != null">
                               <ng-container *ngFor="let cotizacionPosicion of usuario.Cotizacion.CotizacionPosiciones">

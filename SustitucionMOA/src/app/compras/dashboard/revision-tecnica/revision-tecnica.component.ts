@@ -63,7 +63,8 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
                 CUIT: null,
                 Mail: null,
                 Usuarios: new Array(),
-                SolpDto: null
+                SolpDto: null,
+                Selected: null
             };
         }
         console.log("peticion", this.peticion);
