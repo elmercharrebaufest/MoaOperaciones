@@ -71,6 +71,8 @@ namespace SustitucionMOAModel.Dto
         public string ObservacionTecnica { get; set; }
         public bool? RespetaMateriales { get; set; }
         public bool? RespetaServicios { get; set; }
+        public DateTime FechaCreacionSolp { get; set; }
+        public string FechaCreacionFormateadaSolp { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto

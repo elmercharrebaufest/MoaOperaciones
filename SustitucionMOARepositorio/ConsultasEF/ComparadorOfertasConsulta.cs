@@ -38,18 +38,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     FechaCreacionFormateada = SqlFunctions.DateName("day", po.FechaCreacion) + "/" + SqlFunctions.DatePart("month", po.FechaCreacion) + "/" + SqlFunctions.DateName("year", po.FechaCreacion),
                                     UsuarioCreador_Id = po.UsuarioCreador_Id,
                                     PlazoDeOferta = po.PlazoDeOferta,
-                                    Observaciones = po.Observaciones,
-                                    SolpDto = (from s in contexto.Set<Solp>()
-                                               where po.Solp_Id == s.Id
-                                               select new SolpDto()
-                                               {
-                                                   Id = s.Id,
-                                                   FechaCreacion = s.FechaCreacion,
-                                                   FechaCreacionFormateada = SqlFunctions.DateName("day", s.FechaCreacion) + "/" + SqlFunctions.DatePart("month", s.FechaCreacion) + "/" + SqlFunctions.DateName("year", s.FechaCreacion),
-                                                   NroSolp = s.NroSolp,
-                                                   TipoPosicionCodigo = s.Posiciones.Select(posiciones => posiciones.TipoPosicion.Codigo).FirstOrDefault(),
-
-                                               }),
+                                    Observaciones = po.Observaciones,                              
+                                    FechaCreacionSolp = po.Solp.FechaCreacion,
+                                    FechaCreacionFormateadaSolp = SqlFunctions.DateName("day", po.Solp.FechaCreacion) + "/" + SqlFunctions.DatePart("month", po.Solp.FechaCreacion) + "/" + SqlFunctions.DateName("year", po.Solp.FechaCreacion),
+                                    TipoPosicionCodigo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
+                                    NroSolp = po.Solp.NroSolp,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
                                                                 where po.Id == pop.PeticionDeOferta_Id
                                                                 

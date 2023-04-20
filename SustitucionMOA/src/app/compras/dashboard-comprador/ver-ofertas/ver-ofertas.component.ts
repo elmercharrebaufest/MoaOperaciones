@@ -100,13 +100,13 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
   }
 
  esTipoMaterial(): boolean {
-    if(this.tablaOfertas.SolpDto.tipoPosicion == "MATERIALES"){
+    if(this.tablaOfertas.TipoPosicionCodigo == "MATERIALES"){
       return this.mostrarMaterial = true;
     }
   }
 
   esTipoServicio(): boolean {
-    if(this.tablaOfertas.SolpDto.TipoPosicion == "SERVICIO"){
+    if(this.tablaOfertas.TipoPosicionCodigo == "SERVICIO"){
       return this.mostralServicio = true;
     }
   }
