@@ -270,54 +270,39 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
                         this.blockUI.stop();
                         this.mensajeComponent.setErrorMsg(error.message);
                     }
-                )
-        } else if (archivoId < 0) {
-            this.blockUI.start("Generando...");
-            this.service.getPdfPeticionDeOfertaUsuario(archivoId)
-                .subscribe(
-                    (result) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        }
-                        else {
-                            var byteArray = new Uint8Array(result.FileContents);
-                            var blob = new Blob([byteArray], {
-                                type: "application/octet-stream",
-                            });
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
 
-                            this.downloadArchivoLocal(blob, result.FileDownloadName);
-                        }
-                        this.blockUI.stop();
-                    },
-                    (error) => {
-                        this.blockUI.stop();
-                        this.mensajeComponent.setErrorMsg(error.message);
-                    }
-                )
-        }
-        else {
-            this.blockUI.start("Descargando...");
-            this.service.DescargarArchivo(archivoId)
-                .subscribe(
-                    (result) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        }
-                        else {
-                            var byteArray = new Uint8Array(result.FileContents);
-                            var blob = new Blob([byteArray], {
-                                type: "application/octet-stream",
-                            });
-                            this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
                             this.blockUI.stop();
+                            return false;
                         }
-                    },
-                    (error) => {
-                        this.mensajeComponent.setErrorMsg(error.message);
                         this.blockUI.stop();
                     }
-                )
-        }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
@@ -340,5 +325,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
             return;
         }
     }
+
+
 
 }
