@@ -162,46 +162,49 @@
         <tr>
           <td [attr.colspan]="11">
             <div class="col-sm-12 col-md-12 col-lg-12" style="font-size:16px;padding:20px">                 
-              <p-table [value]="tablaOfertas.PeticionDeOfertaPosicion">
+              <p-table [value]="peticionPosicion.Posicion.Subposiciones">
                   <ng-template pTemplate="header">
                       <tr>
-                        <th class="headerth" rowspan="3">SubPos.</th>
-                        <th class="headerth" rowspan="3">Codigo</th>
-                        <th class="headerth" rowspan="3">Tarea a subcontratar</th>
-                        <th class="headerth" rowspan="3">Ctd pendiente</th>
-                        <th class="headerth" rowspan="3">Ctd.</th>
-                        <th class="headerth" rowspan="3">UM</th>
-                        <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">     
-                          <th class="headerth">Ctd cotizada</th>
-                          <th class="headerth">UM cotizada</th>
-                          <th class="headerth">Precio unidad</th>
-                          <th class="headerth">Precio total</th>
-                          <th class="headerth">Total ARP</th>
-                        </ng-container>
+                          <th class="headerth" rowspan="3">SubPos.</th>
+                          <th class="headerth" rowspan="3">Codigo</th>
+                          <th class="headerth" rowspan="3">Tarea a subcontratar</th>
+                          <th class="headerth" rowspan="3">Ctd pendiente</th>
+                          <th class="headerth" rowspan="3">Ctd.</th>
+                          <th class="headerth" rowspan="3">UM</th>
+                          <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">     
+                            <th class="headerth">Ctd cotizada</th>
+                            <th class="headerth">UM cotizada</th>
+                            <th class="headerth">Precio unidad</th>
+                            <th class="headerth">Precio total</th>
+                            <th class="headerth">Total ARP</th>
+                          </ng-container>
                       </tr>
                   </ng-template>
-                  <ng-template pTemplate="body" let-peticionPosicion>
-                      <tr>                                         
-                          <td class="columna">{{peticionPosicion.Subposiciones.Numero}}</td>
-                          <td class="columna">{{peticionPosicion.Subposiciones.CodigoServicioSapId}}</td>
-                          <td class="columna" >{{peticionPosicion.Subposiciones.Tarea}}</td>
-                          <td class="columna">{{peticionPosicion.Subposiciones.CantidadPendiente}}</td>
-                          <td class="columna">{{peticionPosicion.Subposiciones.Cantidad}}</td>
-                          <td class="columna">{{peticionPosicion.Subposiciones.UnidadMedida.Descripcion}}</td>
+                  <ng-template pTemplate="body" let-pos>
+                      <tr>  
+                          <td class="columna">{{pos.Numero}}</td>
+                          <td class="columna">{{pos.ServicioSolpCodigo}}</td>
+                          <td class="columna" >{{pos.Tarea}}</td>
+                          <td class="columna">{{pos.CantidadPendiente}}</td>
+                          <td class="columna">{{pos.Cantidad}}</td>
+                          <td class="columna">{{pos.Unidad.Descripcion}}</td>
+                      
                           <ng-container *ngFor="let usuario of tablaOfertas.Usuarios"> 
-                            <ng-container *ngIf="usuario.Cotizacion != null">
-                              <ng-container *ngFor="let cotizacionPosicion of usuario.Cotizacion.CotizacionPosiciones">
-                                <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
-                                  <td  class="columna">cotizacionPosicion.CotizacionSubPosiciones.Indice</td>
-                                  <td  class="columna">cotizacionPosicion.CotizacionSubPosiciones.</td>
-                                  <td  class="columna">cotizacionPosicion.CotizacionSubPosiciones.</td>
-                                  <td  class="columna">cotizacionPosicion.CotizacionSubPosiciones.</td>
-                                  <td  class="columna">cotizacionPosicion.CotizacionSubPosiciones.</td>
+                            <ng-container *ngFor="let cotizacionPosicion of usuario.Cotizacion.CotizacionPosiciones">
+                              <ng-container *ngIf="cotizacionPosicion.CotizacionSubPosiciones != null">
+                              <ng-container *ngFor="let cotizacionSubpo of cotizacionPosicion.CotizacionSubPosiciones">
+                                    <ng-container *ngIf="pos.Id == cotizacionSubpo.SolpSubPosicion_Id">
+                                      <td  class="columna">{{cotizacionSubpo.Cantidad}}</td>
+                                      <td  class="columna">{{cotizacionSubpo.UnidadMedida.Descripcion}}</td>
+                                      <td  class="columna">{{cotizacionSubpo.MonedaDescripcion}} {{cotizacionSubpo.PrecioUnidad}}</td>
+                                      <td  class="columna">{{cotizacionSubpo.MonedaDescripcion}} {{cotizacionSubpo.PrecioTotalSubPosCotizacion}}</td>
+                                      <td  class="columna">ARP {{cotizacionSubpo.TotalARPSubPosCotizacion}}</td>
+                                    </ng-container>
+                                  </ng-container>       
                                 </ng-container>
-                              </ng-container>
-                            </ng-container>
-                            <ng-container *ngIf="usuario.Cotizacion == null">
-                              <td  class="columna" colspan="5">Sin cotizar</td>
+                              <ng-container *ngIf="cotizacionPosicion.CotizacionSubPosiciones == null">
+                                <td  class="columna" colspan="5">Sin cotizar</td>
+                              </ng-container>                       
                             </ng-container>
                           </ng-container>
                       </tr>
@@ -216,7 +219,7 @@
             <td colspan="5" style="text-align: end;"  class="columna">Total global</td>
             <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios"> 
               <ng-container *ngIf="proveedor.Cotizacion != null">  
-              <td colspan="3"  class="columna">ARP {{proveedor.Cotizacion.TotalGlobal}}</td>
+              <td colspan="3"  class="columna">ARP {{proveedor.Cotizacion.TotalGlobalSubPos}}</td>
             </ng-container> 
             <ng-container *ngIf="proveedor.Cotizacion == null">
               <td  class="columna" colspan="3">Sin Total</td>

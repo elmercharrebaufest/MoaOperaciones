@@ -2235,6 +2235,7 @@ namespace SustitucionMOAUtils.Services
 
             Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
 
+
             var destino = repositorio.Obtener<TablaSap>(x => x.Codigo == "ARP" && x.Tabla == TablasSap.Moneda);
 
             foreach (var item in todasLasOfertas.Usuarios)
@@ -2250,11 +2251,31 @@ namespace SustitucionMOAUtils.Services
                             tipodecambio.Add(item2.Moneda_Id, tipoCambio.TipoCambio);
                             cambio = tipoCambio.TipoCambio;
                         }
+
+                        if (item2.CotizacionSubPosiciones != null)
+                        {
+                            foreach (var subpos in item2.CotizacionSubPosiciones)
+                            {
+
+                                if (!tipodecambio.TryGetValue(item2.Moneda_Id, out cambio)) 
+                                {
+                                    var tipoCambio = ObtenerTipoCambio(subpos.Moneda_Id, destino.Id, DateTime.Now);
+                                    tipodecambio.Add(subpos.Moneda_Id, tipoCambio.TipoCambio);
+                                    cambio = tipoCambio.TipoCambio;
+
+                                }
+                                
+                                subpos.TotalARPSubPosCotizacion = cambio * subpos.PrecioTotalSubPosCotizacion;
+
+                            }
+                                item2.TotalPosicionCotizacion = item2.CotizacionSubPosiciones.Sum(x => x.TotalARPSubPosCotizacion);
+                               
+                        }
                         item2.TotalPesos = cambio * item2.PrecioTotal;
                     }
-                    item.Cotizacion.TotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalPesos);
+                    item.Cotizacion.TotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalPesos);             
                 }
-                    
+
             }
 
 

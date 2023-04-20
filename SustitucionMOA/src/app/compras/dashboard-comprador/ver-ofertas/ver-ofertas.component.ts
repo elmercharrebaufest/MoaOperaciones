@@ -51,6 +51,20 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
       })
     };
 
+    if (this.tablaOfertas == null) {
+      this.tablaOfertas = {
+          Id: null,
+          FechaEntregaFormateado: null,
+          PlazoDeOferta: null,
+          CUIT: null,
+          Mail: null,
+          Usuarios: new Array(),
+          SolpDto: null,
+          Selected: null
+      };
+    }
+   
+
   }
 
   verOfertas(peticionOferta_Id) {

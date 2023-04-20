@@ -81,6 +81,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         {
                                                                             Id = s.Id,
                                                                             CodigoServicioSapId = s.ServicioSolp_Id,
+                                                                            ServicioSolpCodigo = s.ServicioSolp.CodigoSap,
                                                                             Tarea = s.Tarea,
                                                                             Cantidad = s.Cantidad,
                                                                             Unidad = new TablaSapDto
@@ -122,6 +123,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                     ObservacionEconomica = u.Cotizaciones.FirstOrDefault().ObservacionEconomica,
                                                                     ObservacionTecnica = u.Cotizaciones.FirstOrDefault().ObservacionTecnica,
                                                                     TotalGlobal = 0,
+                                                                    TotalGlobalSubPos = 0,
 
                                                                     CotizacionPosiciones = cotizacion.CotizacionPosiciones.Select(p => new CotizacionPosicionDto
                                                                     {
@@ -140,6 +142,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         Precio = p.Precio,
                                                                         PrecioTotal = p.Cantidad * p.Precio,
                                                                         TotalPesos = 0,
+                                                                        TotalPosicionCotizacion = 0,
                                                                         CotizacionSubPosiciones = (from subpos in contexto.Set<CotizacionSubPosicion>()
                                                                                                    where p.Id == subpos.CotizacionPosicion_Id
                                                                                                    select new CotizacionSubPosicionDto()
@@ -155,9 +158,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                                             Descripcion = subpos.UnidadDeMedida.Descripcion
                                                                                                         },
                                                                                                         Moneda_Id = subpos.Moneda_Id,
-                                                                                                        Precio = subpos.Precio,
-                                                                                                        TotalPesos = 0,
-                                                                                                        PrecioTotalSubPos = subpos.Cantidad * subpos.Precio,
+                                                                                                        MonedaDescripcion = cotizacion != null && subpos.Moneda != null ? subpos.Moneda.Codigo : "",
+                                                                                                        PrecioUnidad = subpos.Precio,
+                                                                                                        PrecioTotalSubPosCotizacion = subpos.Cantidad * subpos.Precio,
+                                                                                                        TotalARPSubPosCotizacion = 0,
                                                                                                     }).ToList()
                                                                     }).ToList(),
                                                                     TieneAdjuntos = cotizacion.Archivos.Any()
