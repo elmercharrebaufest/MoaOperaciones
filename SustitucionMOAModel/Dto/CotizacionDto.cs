@@ -26,6 +26,7 @@ namespace SustitucionMOAModel.Dto
         public bool TieneAdjuntos { get; set; }
         public string FechaCreacionFormateada { get; set; }
         public decimal TotalGlobal { get; set; }
+        public decimal TotalGlobalSubPos { get; set; }
         public IList<ArchivoDto> ArchivosCotizacion { get; set; }
         public string FechaCreacionFormateada { get; set; }
         public decimal TotalGlobal { get; set; }
@@ -56,11 +57,12 @@ namespace SustitucionMOAModel.Dto
         public List<CotizacionSubPosicionDto> CotizacionSubPosiciones { get; set; } = new List<CotizacionSubPosicionDto>();
         public decimal PrecioTotal { get; set; }
         public decimal TotalPesos { get; set; }
+        public decimal TotalGlobalSubPos { get; set; }
+        public decimal TotalPosicionCotizacion { get; set; }
         public string UnidadMedidaDescripcion { get; set; }
         public int PlazoDeEntrega { get; set; }
         public string MonedaCodigo { get; set; }
         public string FechaDeEntregaFormateado { get; set; }
-        public TablaSapDto Moneda { get; set; }
         public DateTime? FechaOriginal { get; set; }
         public decimal TotalGlobalSubPos { get; set; }
         public decimal TotalPosicionCotizacion { get; set; }
@@ -82,7 +84,8 @@ namespace SustitucionMOAModel.Dto
         public decimal Precio { get; set; }
         public decimal PrecioTotalSubPos { get; set; }
         public TablaSapDto UnidadMedida { get; set; }
-        public int TotalPesos { get; set; }
+        public decimal TotalARPSubPosCotizacion { get; set; }
+        public string MonedaDescripcion { get; set; }
     }
 
     public class GuardarCotizacionPosicionDto

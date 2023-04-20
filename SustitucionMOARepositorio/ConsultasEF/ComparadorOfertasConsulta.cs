@@ -158,11 +158,13 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                                         {
                                                                                                             Descripcion = subpos.UnidadDeMedida.Descripcion
                                                                                                         },
-                                                                                                        Moneda_Id = subpos.Moneda_Id.Value,
                                                                                                         MonedaDescripcion = cotizacion != null && subpos.Moneda != null ? subpos.Moneda.Codigo : "",
                                                                                                         PrecioUnidad = subpos.Precio.Value,
-                                                                                                        PrecioTotalSubPosCotizacion = subpos.Cantidad.Value * subpos.Precio.Value,
+                                                                                                        PrecioTotalSubPosCotizacion = subpos.Cantidad * subpos.Precio,
                                                                                                         TotalARPSubPosCotizacion = 0,
+                                                                                                        Moneda_Id = subpos.Moneda_Id.Value,                                                                                                      
+                                                                                                        TotalPesos = 0,
+                                                                                                        PrecioTotalSubPos = subpos.Cantidad.Value * subpos.Precio.Value,
                                                                                                     }).ToList()
                                                                     }).ToList(),
                                                                     TieneAdjuntos = cotizacion.Archivos.Any()
