@@ -343,6 +343,8 @@
     <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.css" />
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.html" />
+    <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.css" />
+    <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.html" />
     <Content Include="src\app\compras\solp\finalizar\finalizar-solp.component.html" />
     <Content Include="src\app\compras\solp\solp.component.html" />
     <Content Include="src\app\compras\solp\stepper-actions\stepper-actions.component.html" />
@@ -1154,6 +1156,8 @@
     <TypeScriptCompile Include="src\app\compras\enum-paso-solp.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-imputacion.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-solp-sap.ts" />
+    <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.ts" />
     <TypeScriptCompile Include="src\app\compras\preview\pliego.preview.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.ts" />
