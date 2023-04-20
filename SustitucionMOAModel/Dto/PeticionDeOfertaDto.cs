@@ -113,10 +113,6 @@ namespace SustitucionMOAModel.Dto
         public string EstadoPropuestaTecnica { get; set; }
         public string EstadoPropuestaTecnicaColor { get; set; }
         public IEnumerable<int> CircularesSinLeer { get; set; }
-        public string EstadoVisita { get; set; }
-        public string EstadoVisitaColor { get; set; }
-        public string EstadoPropuestaTecnica { get; set; }
-        public string EstadoPropuestaTecnicaColor { get; set; }
     }
 
 }

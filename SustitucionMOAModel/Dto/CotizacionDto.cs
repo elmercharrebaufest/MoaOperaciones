@@ -59,7 +59,7 @@ namespace SustitucionMOAModel.Dto
         public string MonedaDescripcion { get; set; }
         public List<CotizacionSubPosicionDto> CotizacionSubPosiciones { get; set; } = new List<CotizacionSubPosicionDto>();
         public decimal PrecioTotal { get; set; }
-        public decimal TotalPesos { get; set; }
+        public decimal TotalARPCotizacionPosicion { get; set; }
         public decimal TotalGlobalSubPos { get; set; }
         public decimal TotalPosicionCotizacion { get; set; }
         public string UnidadMedidaDescripcion { get; set; }
