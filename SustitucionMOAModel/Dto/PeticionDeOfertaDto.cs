@@ -68,6 +68,9 @@ namespace SustitucionMOAModel.Dto
         public CotizacionDto Cotizacion { get; set; }
         public string ObservacionEconomica { get; set; }
         public string ObservacionTecnica { get; set; }
+        public bool? RespetaMateriales { get; set; }
+        public bool? RespetaServicios { get; set; }
+
     }
 
     public class PeticionDeOfertaSolpPosicionDto
