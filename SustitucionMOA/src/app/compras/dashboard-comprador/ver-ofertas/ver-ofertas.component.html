@@ -7,7 +7,7 @@
 <div class="content-wraper" style="padding-top: 0px !important;">
   <spinner></spinner>
 
-  <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
+  <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;" *ngIf="tablaOfertas.TipoPosicionCodigo == 'MATERIALES'">
     <p-table #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" responsiveLayout="scroll | stack" dataKey="Id">
       <ng-template pTemplate="header" let-columns class="lista-header">
         <tr style="visibility: collapse !important;">
