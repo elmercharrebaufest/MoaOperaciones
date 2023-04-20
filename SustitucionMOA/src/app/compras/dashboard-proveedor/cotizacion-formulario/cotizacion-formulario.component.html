@@ -5,7 +5,7 @@
 
 </div>
 
-<div class="content-wraper alinearAlturaMenuDashboard row1 myRow firstSection material">
+<div class="content-wraper alinearAlturaMenuDashboard row1 myRow firstSection material" *ngIf="peticion.TipoPosicionCodigo == 'MATERIALES'">
     <div class="rounded shadow">
        <app-cotizacion-material #cotizacionMaterial [esFinalizado]="esFinalizado" [peticion]="peticion" [posicionesCompra]="posicionesCompra" ></app-cotizacion-material>
     </div>
