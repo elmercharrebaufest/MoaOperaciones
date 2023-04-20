@@ -1,0 +1,214 @@
+<section class="container-fluid clearfix">
+    <div class="col-xs-12 col-md-12 title" #headerCompras>
+        <strong>Propuesta Económica</strong>
+    </div>
+    <div class="linea"></div>
+    <br>
+    <div class="row myRow" style="padding-top: 2px;">
+        <div class="col-md-12">
+            <strong>Por favor, revise los archivos adjuntos antes de cotizar, puede decargarlos <span
+                    style="text-decoration: underline; cursor:pointer"
+                    (click)="generarZipPliego(peticion.Solp_Id)">aquí</span></strong>
+        </div>
+    </div>
+    <div class="row myRow" style="padding-top: 2px;">
+        <div *ngIf="posicionesCompra != undefined">
+        </div>
+        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla
+            [value]="peticion.PeticionDeOfertaPosicion" dataKey="Id">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th class="columna" style="width: 43px;">Pos.</th>
+                    <th class="columna" style="width: 57px;">Código</th>
+                    <th class="columna" style="width: 82px;">Descripción</th>
+                    <th class="columna" style="width: 76px;">Texto de <br /> suministro</th>
+                    <th class="columna" style="width: 62px;">Modelo</th>
+                    <th class="columna" style="width: 72px;">Ctd.<br /> solicitada</th>
+                    <th class="columna" style="width: 72px;">Um.<br /> solicitada</th>
+                    <th class="columna" style="width: 72px;">Ctd.<br /> cotizada</th>
+                    <th class="columna" style="width: 96px;">Um.<br /> cotizada</th>
+                    <th class="columna" style="width: 104px;">Moneda</th>
+                    <th class="columna" style="width: 70px;">Precio<br /> Unidad</th>
+                    <th class="columna" style="width: 80px;">Precio<br /> Total</th>
+                    <th class="columna">Fecha de <br />entrega</th>
+                    <th class="columna" style="width: 66px;">Plazo de <br /> entrega</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-posicionesCompra let-expanded="expanded" let-columns="columns"
+                let-editing="editing">
+                <tr>
+                    <td class="columna">{{posicionesCompra?.Posiciones?.Indice}}</td>
+                    <td class="columna">{{posicionesCompra?.Posiciones?.Codigo}}</td>
+                    <td class="columna">{{posicionesCompra?.Posiciones?.Tarea}}</td>
+                    <td class="columna">{{posicionesCompra?.Posiciones?.TextoSuministro}}</td>
+                    <td class="columna">{{posicionesCompra?.Posiciones?.Modelo}}</td>
+                    <td class="columna">{{posicionesCompra?.Posiciones?.Cantidad | number: '1.0-0'}}</td>
+                    <td class="columna">{{posicionesCompra?.Posiciones?.UnidadComprasDescripcion}}</td>
+
+                    <td pEditableColumn class="columna">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="number"
+                                    [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Cantidad"
+                                    pattern="[0-9]+"
+                                    (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <div [ngClass]="{'invalido': (esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.Cantidad != undefined) && 
+                              (posicionesCompra.Posiciones.CotizacionPosicion.Cantidad <= 0)} ">
+                                    {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.Cantidad | number }} </div>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn class="columna">
+                        <div [ngClass]="{'invalido': esFinalizado && 
+                        (posicionesCompra.Posiciones.CotizacionPosicion.UnidadDeMedida_Id <= 0)} ">
+                            <p-dropdown [options]="unidades" dataKey="Id" optionLabel="Descripcion"
+                                [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.UnidadMedidaDescripcion"
+                                placeholder="Unidad" [style]="{'width':'170px'}" [dropdown]="true"
+                                (onFocus)=" $event.target.select();" editable="true" filter="true"  appendTo="body"
+                                resetFilterOnHide="true"
+                                (onChange)="onSelectUnidad(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id);validarCambios(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id) ">
+                            </p-dropdown>
+                        </div>
+                    </td>
+                    <td class="columna">
+                        <div [ngClass]="{'invalido': esFinalizado && 
+                        (posicionesCompra.Posiciones.CotizacionPosicion.Moneda_Id <= 0)}">
+                            <p-dropdown #dd [options]="monedaCompras" dataKey="Id" optionLabel="Codigo"
+                                [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.MonedaCodigo"
+                                placeholder="Moneda" editable="true" [dropdown]="true" appendTo="body"
+                                [style]="{'width':'200px'}"
+                                (onChange)="onSelectMoneda(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id)">
+                                <ng-template let-item pTemplate="selectedItem">
+                                    <span>{{item.value.Codigo}}</span>
+                                </ng-template>
+                                <ng-template let-item pTemplate="item">
+                                    <div>
+                                        <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
+                                    </div>
+                                </ng-template>
+                            </p-dropdown>
+
+                        </div>
+                    </td>
+                    <td pEditableColumn class="columna">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="number"
+                                    [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Precio" pattern="[0-9]+"
+                                    
+                                    (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id);validarCambios(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)" />
+                            </ng-template>
+
+                            <ng-template pTemplate="output">
+                                <div [ngClass]="{'invalido': (esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.Precio != undefined) && 
+                            (posicionesCompra.Posiciones.CotizacionPosicion.Precio <= 0)}">
+                                    {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.Precio | number: '1.1-1'}}
+                                </div>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td class="columna">{{posicionesCompra?.Posiciones?.CotizacionPosicion?.PrecioTotal |
+                        number:'1.1-1'}}</td>
+                    <td pEditableColumn class="columna" style="cursor:pointer">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input" style="width: 100% !important">
+                                <p-calendar [minDate]="hoy" class="calendar" [touchUI]="true" [locale]="es"
+                                    dateFormat="dd-M-yy"
+                                    [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.FechaDeEntrega"                                    
+                                    (ngModelChange)="calcularPlazo(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)"
+                                    >
+                                </p-calendar>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <div style="height: 20px;" [ngClass]="{'invalido': esFinalizado && 
+                                     (posicionesCompra.Posiciones.CotizacionPosicion.FechaDeEntrega == null)}">
+                                    {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.FechaDeEntrega |
+                                    date:'dd/MM/yy' }}
+                                </div>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn class="columna">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="number"
+                                    [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.PlazoDeEntrega"
+                                    pattern="[0-9]+" 
+                                    (ngModelChange)="calcularFechaEntrega(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)"
+                                    (onFocus)=" $event.target.select();" />
+                                  
+                                </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.PlazoDeEntrega | number: '1.0-0' }}
+                                días
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    <div *ngIf="visualizarMensajeDeModificacion" class="col-md-12">
+        <strong>Por favor explique en las observaciones por qué modifico la cantidad y/o unidad de medida</strong>
+    </div>
+    <br>
+    <div class="inputCompras">
+        <p>
+            <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert">
+                <strong>Error! </strong>{{ error }}</ngb-alert>
+        </p>
+        <div class="row myRow" style="padding-top: 2px;">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <label class="labelCompras" for="editorTexto"> <strong style="font-size: 14px;">Adjuntar documentación
+                        (opcional)
+                    </strong> </label>
+                <p-fileUpload [styles]="{'margin-left':'-13px; cursor: pointer;'}" name="fileUploadPeticionDeOferta"
+                    auto="true" multiple="multiple" chooseLabel="Elegir archivo" [showUploadButton]=false
+                    [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandler($event)">
+                    <ng-template let-file pTemplate="file">
+                    </ng-template>
+                </p-fileUpload>
+            </div>
+
+            <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
+                <p-panel *ngIf="peticion?.Cotizacion?.ArchivosCotizacion?.length > 0 || archivos?.length > 0"
+                    header="Anexos agregados" [toggleable]="true" [collapsed]="false">
+                    <div class="row myRow">
+                        <!-- <div>
+                            <label class="labelCompras" for="editorTexto"> Anexos agregados</label>
+                        </div>  -->
+                        <!-- Archivos que ya fueron guardados-->
+                        <div class="col-xs-12 col-md-9" *ngFor="let archivo of archivos">
+                            <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                (click)="eliminarArchivo(true, archivo)" style="width: 26px;" />
+                            <a class="link-archivo pointer" (click)="descargarArchivo(archivo)">
+                                {{archivo.name}}</a>
+                        </div>
+                        <!--Fin Archivos que ya fueron guardados-->
+                        <!--Archivos nuevos-->
+                        <div class="col-xs-12 col-md-9" *ngFor="let archivo of peticion.Cotizacion.ArchivosCotizacion">
+                            <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                (click)="eliminarArchivo(false, archivo)" style="width: 26px;" />
+                            <a class="link-archivo pointer" (click)="descargarArchivo(archivo)"
+                                style="font-weight: lighter;">
+                                {{archivo.Nombre}}</a>
+                        </div>
+                        <!--Fin Archivos nuevos -->
+                    </div>
+                </p-panel>
+            </div>
+            <div class="row myRow">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <label class="labelCompras"><strong style="font-size: 14px;">Observaciones
+                            (opcional)</strong></label>
+                    <textarea name="Observacion" ngDefaultControl [(ngModel)]="this.peticion.ObservacionEconomica"
+                        placeholder="Agregue los comentarios que crea necesario para los proveedores..." cols="30"
+                        rows="1"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>

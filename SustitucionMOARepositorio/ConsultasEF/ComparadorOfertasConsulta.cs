@@ -48,6 +48,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                }),
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
                                                                 where po.Id == pop.PeticionDeOferta_Id
+                                                                
                                                                 select new PeticionDeOfertaSolpPosicionDto()
                                                                 {
                                                                     Id = pop.Id,
@@ -103,11 +104,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         Id = p.Id,
                                                                         Cotizacion_Id = p.Cotizacion_Id,
                                                                         PeticionDeOfertaSolpPosicion_Id = p.PeticionDeOfertaSolpPosicion_Id,
-                                                                        Cantidad = p.Cantidad,
+                                                                        Cantidad = p.Cantidad.Value,
                                                                         //UnidadMedida = p.UnidadDeMedida,
-                                                                        Moneda_Id = p.Moneda_Id,
+                                                                        Moneda_Id = p.Moneda_Id.Value,
                                                                         FechaDeEntrega = p.FechaDeEntrega,
-                                                                        Precio = p.Precio,
+                                                                        Precio = p.Precio.Value,
                                                                         CotizacionSubPosiciones = (from subpos in contexto.Set<CotizacionSubPosicion>()
                                                                                                    where p.Id == subpos.CotizacionPosicion_Id
                                                                                                    select new CotizacionSubPosicionDto()
@@ -116,10 +117,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                                         Id = subpos.Id,
                                                                                                         CotizacionPosicion_Id = subpos.CotizacionPosicion_Id,
                                                                                                         SolpSubPosicion_Id = subpos.SolpSubPosicion_Id,
-                                                                                                        Cantidad = subpos.Cantidad,
-                                                                                                        UnidadDeMedida_Id = subpos.UnidadDeMedida_Id,
-                                                                                                        Moneda_Id = subpos.Moneda_Id,
-                                                                                                        Precio = subpos.Precio
+                                                                                                        Cantidad = subpos.Cantidad.Value,
+                                                                                                        UnidadDeMedida_Id = subpos.UnidadDeMedida_Id.Value,
+                                                                                                        Moneda_Id = subpos.Moneda_Id.Value,
+                                                                                                        Precio = subpos.Precio.Value
                                                                                                     }).ToList()
                                                                     }).ToList(),
                                                                     TieneAdjuntos = cotizacion.Archivos.Any()

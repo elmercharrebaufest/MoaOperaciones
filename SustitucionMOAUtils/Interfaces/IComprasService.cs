@@ -68,6 +68,9 @@ namespace SustitucionMOAUtils.Interfaces
 
         string DescargarAdjuntosCotizacion(int idCotizacion, string pathBase);
         RespuestaGuardarSOLP GrabarRevisionTecnica(List<PeticionDeOfertaUsarioDto> revision, int usuarioId);
+        PeticionDeOfertaDto TraerCotizacion(int peticionId);
+
+        RespuestaGuardarSOLP GrabarCotizacion(GuardarCotizacion cotizacionDto, HttpFileCollectionBase adjuntos, bool esFinalizado, int usuarioActualId);
 
     }
 }

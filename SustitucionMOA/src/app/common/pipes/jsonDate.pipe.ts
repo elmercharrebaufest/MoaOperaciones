@@ -9,7 +9,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 */
 @Pipe({name: 'customDateFormat'}  )
 export class CustomDateFormat implements PipeTransform {
-  transform(value: any): Date {
+  transform(value: any) {
+      if(!value) return "";
        var customDate = new Date(value.match(/\d+/)[0] * 1);  
        return  customDate;
   }

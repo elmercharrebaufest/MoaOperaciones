@@ -3,29 +3,25 @@ import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
-
-import { ListBaseComponent } from '../../../common/base-components/list-base-component';
-import { FloatMsgService } from '../../../common/services/FloatMsgService';
-import { ModalService } from '../../../common/services/ModalService';
-import { NavService } from '../../../common/services/NavService';
-import { SecurityService } from '../../../common/services/SecurityService';
-import { SessionDataService } from '../../../common/services/SessionDataService';
-import { ComprasService } from '../../compras.service';
-import { AltaNuevoProveedor, EnvioSolpCompra, PosicionCompra, SolpCompraDto, SolpProveedorDto, SolpSubposicionDto } from '../../solp-compra';
 import { Table } from 'primeng/table';
-
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { AltaComponent } from '../../../venta-sustentable/alta/alta.component';
-import { AltaProveedorComponent } from '../../dashboard-comprador/alta-proveedor/alta-proveedor.component';
-import { UsuarioService } from '../../../usuario/usuario.service';
+import { ComprasService } from '../compras.service';
+import { UsuarioService } from '../../usuario/usuario.service';
+import { ListBaseComponent } from '../../common/base-components/list-base-component';
+import { SecurityService } from '../../common/services/SecurityService';
+import { FloatMsgService } from '../../common/services/FloatMsgService';
+import { NavService } from '../../common/services/NavService';
+import { ModalService } from '../../common/services/ModalService';
+import { SessionDataService } from '../../common/services/SessionDataService';
+import { AltaNuevoProveedor, EnvioSolpCompra, PosicionCompra, SolpCompraDto, SolpProveedorDto, SolpSubposicionDto } from '../solp-compra';
 
 @Component({
-    selector: 'app-cotizacion-formulario',
-    templateUrl: './cotizacion-formulario.component.html',
-    styleUrls: ['./cotizacion-formulario.component.css', '../../compras.component.css'],
+    selector: 'app-peticion-de-oferta-formulario',
+    templateUrl: './peticion-de-oferta-formulario.component.html',
+    styleUrls: ['./peticion-de-oferta-formulario.component.css', '../compras.component.css'],
     providers: [ComprasService, UsuarioService]
 })
-export class CotizacionFormularioComponent extends ListBaseComponent implements OnInit {
+export class PeticionDeOfertaFormularioComponent extends ListBaseComponent implements OnInit {
 
     @BlockUI() blockUI: NgBlockUI;
 
