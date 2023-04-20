@@ -83,7 +83,8 @@ namespace SustitucionMOAModel.Dto
         public decimal Precio { get; set; }
         public decimal PrecioTotalSubPos { get; set; }
         public TablaSapDto UnidadMedida { get; set; }
-        public int TotalPesos { get; set; }
+        public decimal TotalARPSubPosCotizacion { get; set; }
+        public string MonedaDescripcion { get; set; }
     }
 
     public class GuardarCotizacionPosicionDto
