@@ -13,6 +13,7 @@ import { ListBaseComponent } from '../../../common/base-components/list-base-com
 import { Table } from 'primeng/table';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
+import { Solp } from '../../solp/solp';
 
 @Component({
   selector: 'app-ver-ofertas',
@@ -30,7 +31,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
   public peticion: PeticionDeOfertaDto;
 
   peticionOferta: PeticionDeOfertaDto;
-
+  SolpDto: Solp;
   tablaOfertas: PeticionDeOfertaDto;
   mostrarMaterial: boolean;
   mostralServicio: boolean;
@@ -64,7 +65,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
       };
     }
    
-
+    this.esTipoMaterial();
+    this.esTipoServicio();
   }
 
   verOfertas(peticionOferta_Id) {
@@ -97,19 +99,15 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     return false; //<-- Prevent Refresh
   }
 
-  public get esTipoMaterial(): boolean {
-    return this.tablaOfertas.SolpDto.TipoPosicionCodigo == "MATERIALES";
+ esTipoMaterial(): boolean {
+    if(this.tablaOfertas.SolpDto.tipoPosicion == "MATERIALES"){
+      return this.mostrarMaterial = true;
+    }
   }
 
-  public get esTipoServicio(): boolean {
-    return this.tablaOfertas.SolpDto.TipoPosicionCodigo == "SERVICIO";
-  }
-
-  mostrarTabla(){
-    if(this.esTipoMaterial){
-      this.mostrarMaterial = true;
-    } else {
-      this.mostralServicio = true;
+  esTipoServicio(): boolean {
+    if(this.tablaOfertas.SolpDto.TipoPosicion == "SERVICIO"){
+      return this.mostralServicio = true;
     }
   }
 }

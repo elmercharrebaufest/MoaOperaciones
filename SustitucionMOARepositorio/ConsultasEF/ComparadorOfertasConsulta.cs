@@ -142,7 +142,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         FechaDeEntregaFormateada = SqlFunctions.DateName("day", p.FechaDeEntrega) + "/" + SqlFunctions.DatePart("month", p.FechaDeEntrega) + "/" + SqlFunctions.DateName("year", p.FechaDeEntrega),
                                                                         Precio = p.Precio.Value,
                                                                         PrecioTotal = p.Cantidad.Value * p.Precio.Value,
-                                                                        TotalPesos = 0,
+                                                                        TotalARPCotizacionPosicion = 0,
                                                                         TotalPosicionCotizacion = 0,
                                                                         CotizacionSubPosiciones = (from subpos in contexto.Set<CotizacionSubPosicion>()
                                                                                                    where p.Id == subpos.CotizacionPosicion_Id
@@ -160,7 +160,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                                         },
                                                                                                         MonedaDescripcion = cotizacion != null && subpos.Moneda != null ? subpos.Moneda.Codigo : "",
                                                                                                         PrecioUnidad = subpos.Precio.Value,
-                                                                                                        PrecioTotalSubPosCotizacion = subpos.Cantidad * subpos.Precio,
+                                                                                                        PrecioTotalSubPosCotizacion = subpos.Cantidad.Value * subpos.Precio.Value,
                                                                                                         TotalARPSubPosCotizacion = 0,
                                                                                                         Moneda_Id = subpos.Moneda_Id.Value,                                                                                                      
                                                                                                         TotalPesos = 0,

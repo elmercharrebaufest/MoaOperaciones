@@ -229,7 +229,6 @@ namespace SustitucionMOAModel.Dto
         public DateTime? FechaOferta { get; set; }
         public decimal? CantidadPendiente { get; set; }
         public CotizacionPosicionDto CotizacionPosicion { get; set; }
-        public decimal? CantidadPendiente { get; set; }
 
         public SolpPosicionDto() { }
 
@@ -338,8 +337,6 @@ namespace SustitucionMOAModel.Dto
         public int ServicioSolpCodigo { get; set; }
         public string UnidadDescripcion { get; set; }
         public int? CantidadCotizacion { get; set; }
-        public int CodigoSolpServicioSap { get; set; }
-        public int ServicioSolpCodigo { get; set; }
 
         public SolpSubposicionDto() { }
 

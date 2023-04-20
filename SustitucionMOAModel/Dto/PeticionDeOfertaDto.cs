@@ -69,7 +69,8 @@ namespace SustitucionMOAModel.Dto
         public CotizacionDto Cotizacion { get; set; }
         public string ObservacionEconomica { get; set; }
         public string ObservacionTecnica { get; set; }
-        public string FechaCreacionFormateada { get; set; }
+        public bool? RespetaMateriales { get; set; }
+        public bool? RespetaServicios { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
@@ -99,10 +100,6 @@ namespace SustitucionMOAModel.Dto
         public string EstadoPropuestaTecnica { get; set; }
         public string EstadoPropuestaTecnicaColor { get; set; }
         public IEnumerable<int> CircularesSinLeer { get; set; }
-        public string EstadoVisita { get; set; }
-        public string EstadoVisitaColor { get; set; }
-        public string EstadoPropuestaTecnica { get; set; }
-        public string EstadoPropuestaTecnicaColor { get; set; }
     }
 
 }
