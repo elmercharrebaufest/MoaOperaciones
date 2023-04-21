@@ -2449,6 +2449,11 @@ namespace SustitucionMOAUtils.Services
             };
             return res;
         }
+        public bool EmailGestionarAlta(string cuit)
+        {
+            //to do
+            return true;
+        }
 
         private Proveedor GetClienteParaCorredor(Usuario usuario, Proveedor corredor, OrdenDeCarga ordenDeCarga)
         {

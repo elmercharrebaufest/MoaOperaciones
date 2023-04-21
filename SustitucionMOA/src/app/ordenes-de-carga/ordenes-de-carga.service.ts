@@ -362,7 +362,7 @@ export class OrdenesDeCargaService extends BaseService {
             ('/api/OrdenDeCarga/ValidarExisteCuitScato', { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
-public validarSisaCuit(cuit: string): Observable<ApiResponse<boolean>> {
+    public validarSisaCuit(cuit: string): Observable<ApiResponse<boolean>> {
         let params: HttpParams = new HttpParams()
             .append("cuit", cuit)
 
@@ -380,6 +380,16 @@ public validarSisaCuit(cuit: string): Observable<ApiResponse<boolean>> {
         return this.http
             .get<ApiResponse<ValidarSisaCorredorClienteResponse>>(
                 '/api/OrdenDeCarga/ValidarSisaCorredorCliente',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
+    public enviarMailGestionarAltaCuit(cuit: string): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append("cuit", cuit)
+
+        return this.http
+            .get<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/GestionarAltaCuit',
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
