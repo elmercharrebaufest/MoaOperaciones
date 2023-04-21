@@ -531,7 +531,7 @@ namespace SustitucionMOAUtils.Services
                         ordenDeCarga.TransporteExiste = true;
                         ordenDeCarga.CorredorSeleccionado = true;
                         ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
-                        
+
                         ordenDeCarga.DescripcionCodigoVerificacionSap = "OK";
                         return true;
 
@@ -2433,6 +2433,19 @@ namespace SustitucionMOAUtils.Services
             {
                 ClienteHabilitadoEnSisa = false,
                 CorredorHabilitadoEnSisa = true
+            };
+            return res;
+        }
+        public bool ValidarSisaCuit(string cuit)
+        {
+            return cuit != "11223344551";
+        }
+        public ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit)
+        {
+            var res = new ValidarCuitExisteScatoResponse
+            {
+                Existe = true,
+                RazonSocial = ""
             };
             return res;
         }
