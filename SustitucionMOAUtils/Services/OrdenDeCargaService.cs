@@ -2445,7 +2445,7 @@ namespace SustitucionMOAUtils.Services
             var res = new ValidarCuitExisteScatoResponse
             {
                 Existe = true,
-                RazonSocial = ""
+                RazonSocial = "Test"
             };
             return res;
         }
