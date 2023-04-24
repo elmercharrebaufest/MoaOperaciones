@@ -7,6 +7,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
+using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 using SustitucionMOAModel.Util;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
@@ -33,6 +34,7 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IOrdenCargaConsumerMOA consumer;
+        protected readonly IScatoConsumer scatoConsumer;
         readonly FeriadoService _feriadoService = new FeriadoService();
         protected readonly IFeriadoService feriadoService;
 
@@ -43,11 +45,12 @@ namespace SustitucionMOAUtils.Services
         private readonly string _errorAnulacion = "Error al anular orden de carga, pero la entrega si ha sido anulada";
         private readonly string _entregaEstadoPendiente = "La entrega sigue pendiente.";
 
-        public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer, IFeriadoService feriadoService)
+        public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer, IFeriadoService feriadoService, IScatoConsumer scatoConsumer)
         {
             this.repositorio = repositorio;
             this.consumer = consumer;
             this.feriadoService = feriadoService;
+            this.scatoConsumer = scatoConsumer;
             _usuarioAutomaticoSAP = ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"];
         }
 
@@ -68,6 +71,7 @@ namespace SustitucionMOAUtils.Services
                 Log.Debug(this.GetType().Name, "Agregar", $" crearPedido: {crearPedido}");
                 repositorio.Agregar(ordenDeCarga);
                 repositorio.GuardarCambios();
+                ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
                 NotificarContratoSinKm(ordenDeCarga);
                 NotificarTransporte(ordenDeCarga.Id);
 
@@ -181,6 +185,7 @@ namespace SustitucionMOAUtils.Services
                 var ordenEditar = cargarDatosOCEditar.Item1;
                 var listaValoresDiferentes = cargarDatosOCEditar.Item2;
 
+                ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
                 //Solicitud de edición
                 if (!esInterno)
                 {
@@ -2518,6 +2523,21 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
 
             }
+        }
+        private void ValidarCuilChoferEnScato(string cuil)
+        {
+            try
+            {
+                Log.Debug("OrdenDeCarga Controller", "Validar CUIL Choer", cuil);
+                var result = scatoConsumer.CuilChoferExiste(cuil);
+                Log.Debug("OrdenDeCarga Controller", string.Format("Result Validar CUIL: {0}", cuil), result ? "Existe" : "No existe");
+            }
+            catch (Exception err)
+            {
+                Log.Debug("OrdenDeCarga Controller", string.Format("Error al Validar CUIL: {0}", cuil), err.Message);
+            }
+
+
         }
     }
 }
