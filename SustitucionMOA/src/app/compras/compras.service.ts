@@ -648,7 +648,10 @@ export class ComprasService extends BaseService {
             ObservacionTecnica: cotizacion.ObservacionTecnica,
             ArchivosNuevos: cotizacion.ArchivosNuevos,
             ArchivosGuardados: cotizacion.ArchivosGuardados,
-            EsFinalizado: esFinalizado
+            EsFinalizado: esFinalizado,
+            RespetaServicios: cotizacion.RespetaServicios,
+            RespetaMateriales: cotizacion.RespetaMateriales,
+            CotizacionesHoras: cotizacion.CotizacionesHoras
         });
 
         var payload = new FormData();
@@ -664,6 +667,21 @@ export class ComprasService extends BaseService {
                 }
             }
         }
+
+        var archiTecnico = cotizacion.ArchivosTecnico;
+
+        if (archiTecnico != null) {
+            for (let i = 0; i < archiTecnico.length; i++) {
+                let fileToUpload = archiTecnico[i];
+                try {
+                    payload.append("fileCotizacionRevisionTecnica", fileToUpload as File, fileToUpload.name);
+                } catch (e) {
+
+                    console.log(e);
+                }
+            }
+        }
+
 
         payload.append('json', json);
 

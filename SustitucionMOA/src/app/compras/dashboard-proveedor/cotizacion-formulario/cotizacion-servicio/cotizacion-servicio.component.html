@@ -1,0 +1,300 @@
+<section class="container-fluid clearfix" style="background-color: #f7f7f7;">
+    <div class="col-xs-12 col-md-12 title" #headerCompras>
+        <strong>Propuesta Técnica</strong>
+    </div>
+    <div class="linea"></div>
+    <br>
+    <div class="col-md-12 row myRow alinearTitulo margenInput">
+        <div class="col-md-12 titulosModal">
+            <label>La propuesta técnica de <strong>materiales</strong> respeta las condiciones de pago*</label>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-2" style="width: 10px;">
+            <label>Si</label>
+        </div>
+        <div class="col-md-2">
+            <input type="radio" id="RespetaMateriales1" name="respetaMateriales"
+                [(ngModel)]="peticion.RespetaMateriales" [value]="true" />
+        </div>
+        <div class="col-md-2" style="width: 10px;">
+            <label>No</label>
+        </div>
+        <div class="col-md-2">
+            <input type="radio" id="RespetaMateriales2" name="respetaMateriales"
+                [(ngModel)]="peticion.RespetaMateriales" [value]="false" />
+        </div>
+    </div>
+    <div class="col-md-12 row myRow alinearTitulo margenInput">
+        <div class="col-md-12 titulosModal">
+            <label>La propuesta técnica de <strong>servicios</strong> respeta las condiciones de pago*</label>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-2" style="width: 10px;">
+            <label>Si</label>
+        </div>
+        <div class="col-md-2">
+            <input type="radio" id="RespetaServicios1" name="respetaServicios" [(ngModel)]="peticion.RespetaServicios"
+                [value]="true" />
+        </div>
+        <div class="col-md-2" style="width: 10px;">
+            <label>No</label>
+        </div>
+        <div class="col-md-2">
+            <input type="radio" id="RespetaServicios2" name="respetaServicios" [(ngModel)]="peticion.RespetaServicios"
+                [value]="false" />
+        </div>
+    </div>
+    <br>
+
+    <div class="inputCompras">
+        <div class="row myRow" style="padding-top: 2px;">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <label class="labelCompras" for="editorTexto"> <strong style="font-size: 14px;">Adjuntar documentación
+                        (opcional)
+                    </strong> </label>
+                <p-fileUpload [styles]="{'margin-left':'-13px; cursor: pointer;'}" name="fileUploadPeticionDeOferta"
+                    auto="true" multiple="multiple" chooseLabel="Elegir archivo" [showUploadButton]=false
+                    [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandler($event, true)">
+                    <ng-template let-file pTemplate="file">
+                    </ng-template>
+                </p-fileUpload>
+            </div>
+
+            <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
+                <p-panel *ngIf="peticion?.Cotizacion?.ArchivosCotizacion?.length > 0 || archivosTecnico?.length > 0"
+                    header="Anexos agregados" [toggleable]="true" [collapsed]="false">
+                    <div class="row myRow">
+
+                        <!-- Archivos que ya fueron guardados-->
+                        <div class="col-xs-12 col-md-9" *ngFor="let archivoTecnico of archivosTecnico">
+                            <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                (click)="eliminarArchivo(true, archivoTecnico, true)" style="width: 26px;" />
+                            <a class="link-archivo pointer" (click)="descargarArchivo(archivoTecnico)">
+                                {{archivoTecnico.name}}</a>
+                        </div>
+                        <!--Fin Archivos que ya fueron guardados-->
+                        <!--Archivos nuevos-->
+                        <div class="col-xs-12 col-md-9" *ngFor="let archivo of peticion.Cotizacion.ArchivosCotizacion">
+                            <div *ngIf="archivo?.FileKey == 'CotizacionRevisionTecnica'">
+                                <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                    (click)="eliminarArchivo(false, archivo, false)" style="width: 26px;" />
+                                <a class="link-archivo pointer" (click)="descargarArchivo(archivo)"
+                                    style="font-weight: lighter;">
+                                    {{archivo.Nombre}}</a>
+                            </div>
+                        </div>
+                        <!--Fin Archivos nuevos -->
+                    </div>
+                </p-panel>
+            </div>
+            <div class="row myRow">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <label class="labelCompras"><strong style="font-size: 14px;">Observaciones
+                            (opcional)</strong></label>
+                    <textarea name="Observacion" ngDefaultControl [(ngModel)]="this.peticion.ObservacionTecnica"
+                        placeholder="Agregue los comentarios que crea necesario para los proveedores..." cols="30"
+                        rows="1"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<div class="rounded shadow">
+    <section class="container-fluid clearfix">
+        <div class="col-xs-12 col-md-12 title" #headerCompras>
+            <strong>Horas</strong>
+        </div>
+        <div class="linea"></div>
+        <br>
+        <div class="col-md-12 row myRow alinearTitulo margenInput">
+            <div class="col-md-12">
+                <strong>Estimación de horas</strong>
+            </div>
+        </div>
+        <div class="col-md-12 row myRow alinearTitulo margenInput">
+            <div class="col-md-12">
+                <strong>Indicar hs según agremiación de sus colaboradores</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p-tabView [(activeIndex)]="index">
+                    <p-tabPanel>
+                        <ng-template pTemplate="header">
+                            <div (click)="validarDatosCotizacionHoras($event, 0)">
+                                UOCRA </div>
+                        </ng-template>
+                        <p>
+                            <p-table #dt [columns]="cols" [value]="peticion.Cotizacion?.CotizacionesHoras">
+                                <ng-template pTemplate="header" let-columns>
+                                    <tr>
+                                        <th style="background-color: #4760ac !important;
+                                    text-transform: none !important;">Categoria</th>
+                                        <th style="background-color: #4760ac !important;
+                                    text-transform: none !important;">Cantidad de personas</th>
+                                        <th style="background-color: #4760ac !important;
+                                    text-transform: none !important;">Hs Normales</th>
+                                        <th style="background-color: #4760ac !important;
+                                    text-transform: none !important;">Hs Nocturnos</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                    <ng-container *ngIf="rowData.Gremio == 'UOCRA'">
+                                        <tr>
+                                            <td>
+                                                {{rowData.Categoria}}
+                                            </td>
+                                            <td pEditableColumn>
+                                                <p-cellEditor>
+                                                    <ng-template pTemplate="input">
+                                                        <input type="text" pKeyFilter="int" step="1" pattern="[0-9]+"
+                                                            [(ngModel)]="rowData.CantidadPersonas">
+                                                    </ng-template>
+                                                    <ng-template pTemplate="output">
+                                                        {{rowData.CantidadPersonas}}
+                                                    </ng-template>
+                                                </p-cellEditor>
+                                            </td>
+                                            <td pEditableColumn>
+                                                <p-cellEditor>
+                                                    <ng-template pTemplate="input">
+                                                        <input type="text" pKeyFilter="int"
+                                                            [(ngModel)]="rowData.HorasNormales">
+                                                    </ng-template>
+                                                    <ng-template pTemplate="output">
+                                                        {{rowData.HorasNormales}}
+                                                    </ng-template>
+                                                </p-cellEditor>
+                                            </td>
+                                            <td pEditableColumn>
+                                                <p-cellEditor>
+                                                    <ng-template pTemplate="input">
+                                                        <input type="text" pKeyFilter="int"
+                                                            [(ngModel)]="rowData.HorasNocturnas">
+                                                    </ng-template>
+                                                    <ng-template pTemplate="output">
+                                                        {{rowData.HorasNocturnas}}
+                                                    </ng-template>
+                                                </p-cellEditor>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                </ng-template>
+                            </p-table>
+                        </p>
+                    </p-tabPanel>
+                    <p-tabPanel>
+                        <ng-template pTemplate="header">
+                            <div (click)="validarDatosCotizacionHoras($event, 1)">
+                                Otros </div>
+                        </ng-template>
+                        <div class="row">
+                            <div class="col-md-11"></div>
+                            <div class="col-md-1" style="margin-left: -20px;">
+                                <button type="button" class="btn btn-success botonesComprasColor botonModal"
+                                    (click)="agregarRow(index)">Agregar</button>
+                            </div>
+                        </div>
+                        <p>
+                        <br>
+                        <p-table [columns]="cols" [value]="peticion.Cotizacion?.CotizacionesHoras">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th style="background-color: #4760ac !important;
+                                    text-transform: none !important;">Gremio</th>
+                                    <th style="background-color: #4760ac !important;
+                                    text-transform: none !important;">Categoria</th>
+                                    <th style="background-color: #4760ac !important;
+                                    text-transform: none !important;">Cantidad de personas</th>
+                                    <th style="background-color: #4760ac !important;
+                                    text-transform: none !important;">Hs Normales</th>
+                                    <th style="background-color: #4760ac !important;
+                                    text-transform: none !important;">Hs Nocturnos</th>
+                                    <th style="background-color: #4760ac !important;
+                                    text-transform: none !important; width: 60px;"></th>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
+                                <ng-container *ngIf="rowData.Gremio != 'UOCRA'">
+                                    <tr>
+                                        <td pEditableColumn>
+                                            <p-cellEditor>
+                                                <ng-template pTemplate="input">
+                                                    <input type="text" [(ngModel)]="rowData.Gremio">
+                                                </ng-template>
+                                                <ng-template pTemplate="output">
+                                                    {{rowData.Gremio}}
+                                                </ng-template>
+                                            </p-cellEditor>
+
+                                        </td>
+                                        <td pEditableColumn>
+                                            <p-cellEditor>
+                                                <ng-template pTemplate="input">
+                                                    <input type="text" [(ngModel)]="rowData.Categoria">
+                                                </ng-template>
+                                                <ng-template pTemplate="output">
+                                                    {{rowData.Categoria}}
+                                                </ng-template>
+                                            </p-cellEditor>
+                                        </td>                                     
+                                        <td pEditableColumn>
+                                            <p-cellEditor>
+                                                <ng-template pTemplate="input">
+                                                    <input type="text" pKeyFilter="int"
+                                                        [(ngModel)]="rowData.CantidadPersonas">
+                                                </ng-template>
+                                                <ng-template pTemplate="output">
+                                                    {{rowData.CantidadPersonas}}
+                                                </ng-template>
+                                            </p-cellEditor>
+                                        </td>
+                                        <td pEditableColumn>
+                                            <p-cellEditor>
+                                                <ng-template pTemplate="input">
+                                                    <input type="text" pKeyFilter="int"
+                                                        [(ngModel)]="rowData.HorasNormales">
+                                                </ng-template>
+                                                <ng-template pTemplate="output">
+                                                    {{rowData.HorasNormales}}
+                                                </ng-template>
+                                            </p-cellEditor>
+                                        </td>
+                                        <td pEditableColumn>
+                                            <p-cellEditor>
+                                                <ng-template pTemplate="input">
+                                                    <input type="text" pKeyFilter="int"
+                                                        [(ngModel)]="rowData.HorasNocturnas">
+                                                </ng-template>
+                                                <ng-template pTemplate="output">
+                                                    {{rowData.HorasNocturnas}}
+                                                </ng-template>
+                                            </p-cellEditor>
+                                        </td>
+                                        <td style="text-align:center">
+                                            <img style="cursor:pointer" src="./Content/images/icons/trashRed.svg"
+                                                alt="imageAlt" (click)="eliminarRow(index)" style="width: 26px;" />
+
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </ng-template>
+                        </p-table>
+                        </p>
+                    </p-tabPanel>
+                </p-tabView>
+            </div>
+        </div>
+    </section>
+    <p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+        <p-footer>
+            <button type="button" pButton  label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+            <button type="button" pButton  label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>

@@ -1,3 +1,8 @@
+::ng-deep .ui-table .ui-table-thead > .tr > .th {
+  background-color: #4760ac !important;
+  text-transform: none !important;
+}
+
 .columna {
     word-break: break-all; 
     word-wrap:break-word; 
@@ -49,9 +54,7 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-::ng-deep .ui-table .ui-table-thead > .tr > .th {
-    background-color: #4760ac !important;
-  }
+
   
 ::ng-deep .ui-table .ui-table-thead > .tr > .th {
     /* border: none !important; */
@@ -80,6 +83,3 @@ input[type=number] {
 ::ng-deep .ui-dropdown-label{
   font-size: 13px !important;
 }
-
-
-

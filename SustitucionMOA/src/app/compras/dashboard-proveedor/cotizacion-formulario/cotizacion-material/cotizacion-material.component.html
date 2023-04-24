@@ -18,20 +18,34 @@
             [value]="peticion.PeticionDeOfertaPosicion" dataKey="Id">
             <ng-template pTemplate="header" let-columns>
                 <tr>
-                    <th class="columna" style="width: 43px;">Pos.</th>
-                    <th class="columna" style="width: 57px;">Código</th>
-                    <th class="columna" style="width: 82px;">Descripción</th>
-                    <th class="columna" style="width: 76px;">Texto de <br /> suministro</th>
-                    <th class="columna" style="width: 62px;">Modelo</th>
-                    <th class="columna" style="width: 72px;">Ctd.<br /> solicitada</th>
-                    <th class="columna" style="width: 72px;">Um.<br /> solicitada</th>
-                    <th class="columna" style="width: 72px;">Ctd.<br /> cotizada</th>
-                    <th class="columna" style="width: 96px;">Um.<br /> cotizada</th>
-                    <th class="columna" style="width: 104px;">Moneda</th>
-                    <th class="columna" style="width: 70px;">Precio<br /> Unidad</th>
-                    <th class="columna" style="width: 80px;">Precio<br /> Total</th>
-                    <th class="columna" style="width: 80px;">Fecha de <br />entrega</th>
-                    <th class="columna" style="width: 66px;">Plazo de <br /> entrega</th>
+                    <th class="columna" style="width: 43px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Pos.</th>
+                    <th class="columna" style="width: 57px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Código</th>
+                    <th class="columna" style="width: 82px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Descripción</th>
+                    <th class="columna" style="width: 76px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Texto de <br /> suministro</th>
+                    <th class="columna" style="width: 62px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Modelo</th>
+                    <th class="columna" style="width: 72px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Ctd.<br /> solicitada</th>
+                    <th class="columna" style="width: 72px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Um.<br /> solicitada</th>
+                    <th class="columna" style="width: 72px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Ctd.<br /> cotizada</th>
+                    <th class="columna" style="width: 96px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Um.<br /> cotizada</th>
+                    <th class="columna" style="width: 104px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Moneda</th>
+                    <th class="columna" style="width: 70px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Precio<br /> Unidad</th>
+                    <th class="columna" style="width: 80px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Precio<br /> Total</th>
+                    <th class="columna" style="width: 80px; background-color: #4760ac !important;
+                    text-transform: none !important;">Fecha de <br />entrega</th>
+                    <th class="columna" style="width: 66px; background-color: #4760ac !important;
+                    text-transform: none !important;">Plazo de <br /> entrega</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-posicionesCompra let-expanded="expanded" let-columns="columns"
@@ -50,7 +64,7 @@
                             <ng-template pTemplate="input">
                                 <input pInputText type="number"
                                     [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Cantidad"
-                                    pattern="[0-9]+"
+                                    pKeyFilter="int"
                                     (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)" />
                             </ng-template>
                             <ng-template pTemplate="output">
@@ -97,7 +111,7 @@
                             <ng-template pTemplate="input">
                                 <input pInputText type="number"
                                     [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Precio" pattern="[0-9]+"
-                                    
+                                    pKeyFilter="num"
                                     (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id);validarCambios(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)" />
                             </ng-template>
 
@@ -135,7 +149,7 @@
                             <ng-template pTemplate="input">
                                 <input pInputText type="number"
                                     [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.PlazoDeEntrega"
-                                    pattern="[0-9]+" 
+                                    pKeyFilter="int"
                                     (ngModelChange)="calcularFechaEntrega(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)"
                                     (onFocus)=" $event.target.select();" />
                                   

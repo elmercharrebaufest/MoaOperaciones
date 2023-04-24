@@ -12,12 +12,10 @@
 </div>
 
 
-<div class="content-wraper alinearAlturaMenuDashboard row1 myRow firstSection servicio">
-    <div class="rounded shadow">
-        <section class="container-fluid clearfix">
+<div class="content-wraper alinearAlturaMenuDashboard row1 myRow firstSection servicio" *ngIf="peticion.TipoPosicionCodigo == 'SERVICIO'">
+    <div class="rounded shadow"  >
+       <app-cotizacion-servicio #cotizacionServicio [esFinalizado]="esFinalizado" [peticion]="peticion" [posicionesCompra]="posicionesCompra" ></app-cotizacion-servicio>
        
-    
-        </section>
     </div>
 </div>
 

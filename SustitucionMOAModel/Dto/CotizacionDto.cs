@@ -104,10 +104,26 @@ namespace SustitucionMOAModel.Dto
         public List<ArchivoDto> ArchivosGuardados { get; set; } = new List<ArchivoDto>();
         public int CotizacionId { get; set; }
         public bool EsFinalizado { get; set; }
-        public int MonedaId { get; set; }
+
+        public bool? RespetaMateriales { get; set; }
+        public bool? RespetaServicios { get; set; }
+        public List<CotizacionHorasDto> CotizacionesHoras { get; set; } = new List<CotizacionHorasDto>();
+         public int MonedaId { get; set; }
         public int UnidadDeMedidaId { get; set; }
         public int Cantidad { get; set; }
         public DateTime? FechaDeEntrega { get; set; }
+    }
+
+    public class CotizacionHorasDto
+    {
+        public int Id { get; set; }
+        public int Cotizacion_Id { get; set; }
+        public string Categoria { get; set; }
+        public int CantidadPersonas { get; set; }
+        public int HorasNormales { get; set; }
+        public int HorasNocturnas { get; set; }
+        public int HorasExtras { get; set; }
+        public string Gremio { get; set; }
     }
 
 }

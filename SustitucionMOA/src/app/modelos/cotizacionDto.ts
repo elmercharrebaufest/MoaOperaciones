@@ -19,6 +19,7 @@ export interface CotizacionDto {
     TieneObservacionTecnica: boolean, 
     CotizacionPosiciones: CotizacionPosicionDto[],
     TieneAdjuntos: boolean    
+    CotizacionesHoras: CotizacionHoraDto[]
 }
 
 export interface CotizacionPosicionDto {
@@ -40,7 +41,7 @@ export interface CotizacionPosicionDto {
     UnidadMedida: number,
     MonedaCodigo: string,
     UnidadComprasDescripcion: string,
-    CotizacionSubPosiciones: CotizacionSubPosicionDto[]
+    CotizacionSubPosiciones?: CotizacionSubPosicionDto[]
 }
 
 export interface CotizacionSubPosicionDto {
@@ -61,5 +62,15 @@ export interface GuardarCotizacion{
     UnidadDeMedidaId: number
     Cantidad: number
     FechaDeEntrega: Date    
+}
+
+export interface CotizacionHoraDto{
+    Cotizacion_Id? : number
+    Categoria?: string
+    CantidadPersonas?: number
+    HorasNormales?: number
+    HorasNocturnas?: number
+    HorasExtras?: number
+    Gremio?:string
 }
 

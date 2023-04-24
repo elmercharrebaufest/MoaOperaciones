@@ -3692,6 +3692,43 @@ namespace SustitucionMOAUtils.Services
         {
 
             var peticionCotizacion = repositorio.ObtenerConsultaEscalar(new TraerCotizacionConsulta(peticionId));
+            var listaHoras = new List<CotizacionHorasDto> {
+                    new CotizacionHorasDto
+                     {
+                       Gremio = "UOCRA",
+                       Categoria = "Oficial especializado"
+                    },
+                    new CotizacionHorasDto
+                     {
+                       Gremio = "UOCRA",
+                       Categoria = "Oficial"
+
+                    },
+                     new CotizacionHorasDto
+                     {
+                       Gremio = "UOCRA",
+                       Categoria = "Medio oficial"
+
+                    },
+                      new CotizacionHorasDto
+                     {
+                       Gremio = "UOCRA",
+                       Categoria = "Ayudante"
+
+                    },
+                       new CotizacionHorasDto
+                     {
+                       Gremio = "UOCRA",
+                       Categoria = "Horas taller (referenciales)"
+
+                    },
+                          new CotizacionHorasDto
+                     {
+                       Gremio = "UOCRA",
+                       Categoria = "SHyMA"
+
+                    },
+                };
             if (peticionCotizacion.CotizacionId != 0)
             {
                 var cotizacion = repositorio.Obtener<Cotizacion>(x => x.Id == peticionCotizacion.CotizacionId);
@@ -3702,8 +3739,33 @@ namespace SustitucionMOAUtils.Services
                     FileKey = archivo.FileKey,
                     Ruta = archivo.Ruta
                 }).ToList() : new List<ArchivoDto>();
-            }
 
+
+                foreach (var cot in listaHoras)
+                {
+                    var hora = cotizacion.CotizacionesHoras.FirstOrDefault(x => x.Gremio == cot.Gremio && x.Categoria == cot.Categoria);
+                    if (hora != null)
+                    {
+                        cot.HorasExtras = hora.HorasExtras;
+                        cot.HorasNocturnas = hora.HorasNocturnas;
+                        cot.HorasNormales = hora.HorasNormales;
+                        cot.CantidadPersonas = hora.CantidadPersonas;
+                    }
+                }
+                listaHoras.AddRange(cotizacion.CotizacionesHoras.Where(x => x.Gremio != "UOCRA").Select(x => new CotizacionHorasDto
+                {
+
+                    CantidadPersonas = x.CantidadPersonas,
+                    Categoria = x.Categoria,
+                    Cotizacion_Id = x.Cotizacion_Id,
+                    Gremio = x.Gremio,
+                    HorasExtras = x.HorasExtras,
+                    HorasNocturnas = x.HorasNocturnas,
+                    HorasNormales = x.HorasNormales,
+                }));
+
+            }
+            peticionCotizacion.Cotizacion.CotizacionesHoras = listaHoras;
             return peticionCotizacion;
 
         }
@@ -3726,6 +3788,9 @@ namespace SustitucionMOAUtils.Services
                         {
                             PeticionDeOfertaUsuario_Id = peticionUsuario.Id,
                             ObservacionEconomica = cotizacionDto.ObservacionEconomica,
+                            ObservacionTecnica = cotizacionDto.ObservacionTecnica,
+                            RespetaMateriales = cotizacionDto.RespetaMateriales,
+                            RespetaServicios = cotizacionDto.RespetaServicios,
                             CotizacionEstado_Id = (int)(esFinalizado ? CotizacionEstadoEnum.Cotizado : CotizacionEstadoEnum.Incompleta),
                             PeticionDeOfertaUsuario = peticionUsuario,
                             CotizacionPosiciones = cotizacionDto.CotizacionPosiciones.Count > 0 ? cotizacionDto.CotizacionPosiciones.Select(x => new CotizacionPosicion
@@ -3756,6 +3821,10 @@ namespace SustitucionMOAUtils.Services
 
                     //Datos del servicio
                     cotizacion.ObservacionTecnica = cotizacionDto.ObservacionTecnica;
+                    cotizacion.RespetaMateriales = cotizacionDto.RespetaMateriales;
+                    cotizacion.RespetaServicios = cotizacionDto.RespetaServicios;
+
+
                     var archivos = cotizacion.Archivos;
                     if (archivos != null && archivos.Count > 0 && cotizacionDto.ArchivosGuardados.Count != archivos.Count)
                     {
@@ -3775,9 +3844,9 @@ namespace SustitucionMOAUtils.Services
                     }
 
                 }
-
+               
                 repositorio.GuardarCambios();
-
+                GuardarCotizacionHora(cotizacionDto, cotizacion);
                 if (adjuntos != null && adjuntos.Count > 0)
                 {
                     GuardarArchivosCotizacion(cotizacion, adjuntos);
@@ -3856,6 +3925,81 @@ namespace SustitucionMOAUtils.Services
                 file.SaveAs(rutaArchivoRename);
             }
 
+            var filesEspecificacionesTecnico = files.GetMultiple("fileCotizacionRevisionTecnica");
+            for (int i = 0; i < filesEspecificacionesTecnico.Count; i++)
+            {
+                var file = filesEspecificacionesTecnico[i];
+                var rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+
+                Directory.CreateDirectory(ruta);
+
+                int copyNro = 1;
+                while (File.Exists(rutaArchivoRename))
+                {
+                    rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName($"({copyNro}) " + file.FileName));
+                    copyNro += 1;
+                }
+
+                cotizacion.Archivos.Add(new Archivo
+                {
+                    FileKey = FileKeys.AdjuntoCotizacionRevisionTecnica,
+                    Ruta = rutaArchivoRename,
+                });
+
+                file.SaveAs(rutaArchivoRename);
+            }
+
+
+
+        }
+
+        private void GuardarCotizacionHora(GuardarCotizacion cotizacionDto, Cotizacion cotizacion)
+        {
+            var cotizacionesHorasEntidad = repositorio.Listar<CotizacionHora>(x => x.Cotizacion_Id == cotizacion.Id);
+            var cotizacionesHoraNuevo = new List<CotizacionHora>();
+
+            if (cotizacionesHorasEntidad != null && cotizacionesHorasEntidad.Count > 0)
+            {
+                var listaCotizacionBorrar = cotizacionesHorasEntidad.Where(coti => !cotizacionDto.CotizacionesHoras.Any(x => x.Id == coti.Id)).ToList();
+
+                if (listaCotizacionBorrar != null && listaCotizacionBorrar.Count > 0)
+                {
+                    repositorio.RemoverTodos(listaCotizacionBorrar);
+                }
+
+            }
+            if (cotizacionDto.CotizacionesHoras != null && cotizacionDto.CotizacionesHoras.Count > 0)
+            {
+                foreach (var cotiHora in cotizacionDto.CotizacionesHoras)
+                {
+                    if (cotiHora.Id != 0)
+                    {
+                       var cot = cotizacionesHorasEntidad.FirstOrDefault(x => x.Id == cotiHora.Id);           
+                        cot.Gremio = cotiHora.Gremio;
+                        cot.Categoria = cotiHora.Categoria;
+                        cot.HorasExtras = cotiHora.HorasExtras;
+                        cot.HorasNormales = cotiHora.HorasNormales;
+                        cot.HorasNocturnas = cotiHora.HorasNocturnas;
+                        cot.CantidadPersonas = cotiHora.CantidadPersonas;  
+                    }
+                    else
+                    {
+                        var cotiH = new CotizacionHora()
+                        {    
+                            Cotizacion_Id = cotizacion.Id,
+                            Gremio = cotiHora.Gremio,
+                            Categoria = cotiHora.Categoria,
+                            HorasExtras = cotiHora.HorasExtras,
+                            HorasNocturnas = cotiHora.HorasNocturnas,
+                            HorasNormales = cotiHora.HorasNormales,
+                            CantidadPersonas = cotiHora.CantidadPersonas
+                        };
+                        cotizacionesHoraNuevo.Add(cotiH);
+                    }
+                }               
+                repositorio.AgregarTodos(cotizacionesHoraNuevo);
+                
+            }
         }
 
         private ObtenerTipoCambioConsumerMOAResponse ObtenerTipoCambio(int MonedaOrigen_Id, int MonedaDestino_Id, DateTime Fecha)
