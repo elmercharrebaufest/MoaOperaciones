@@ -2451,7 +2451,18 @@ namespace SustitucionMOAUtils.Services
         }
         public bool EmailGestionarAlta(string cuit)
         {
-            //to do
+            string mailsGestion = ConfigurationManager.AppSettings["EmailToGestionAltaCuit"];
+
+            string mailsCopiaGestion = ConfigurationManager.AppSettings["CopiaEmailToGestionAltaCuit"];
+            var mails = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsGestion });
+            var copias = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsCopiaGestion });
+
+            string asunto = "ALTA TEMPRANA CUIT";
+
+            string cuerpo = string.Format("Se solicita el alta temprana del CUIT: {0} , Razón Social: NNNN", cuit);
+
+            EmailSender.EnviarMail(mails, asunto, cuerpo, copias, null, null, null);
+
             return true;
         }
 
