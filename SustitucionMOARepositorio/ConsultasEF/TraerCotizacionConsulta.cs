@@ -22,8 +22,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
         }
         public PeticionDeOfertaDto Ejecutar(DbContext contexto)
         {
-            var hoy = DateTime.Now;
-            var ayer = hoy.AddDays(-1);
+            var cotizacionesHoras = new List<CotizacionHorasDto>();
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
@@ -43,7 +42,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     ObservacionTecnica = cotizacion != null ? cotizacion.ObservacionTecnica : "",
                                     ObservacionEconomica = cotizacion != null ? cotizacion.ObservacionEconomica : "",
                                     RespetaMateriales = cotizacion != null ? cotizacion.RespetaMateriales : false,
-                                    RespetaServicios = cotizacion != null ? cotizacion.RespetaMateriales : false,
+                                    RespetaServicios = cotizacion != null ? cotizacion.RespetaServicios : false,
                                     TipoPosicionCodigo = po.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     CotizacionId = cotizacion != null ? cotizacion.Id : 0,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
