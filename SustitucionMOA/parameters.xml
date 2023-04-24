@@ -126,7 +126,19 @@
 							match="/configuration/appSettings/add[@key='EmailToMesaENTSL']
                            /@value" />
 	</parameter>
+	
+	<parameter name="EmailToGestionAltaCuit Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToGestionAltaCuit']
+                           /@value" />
+	</parameter>
 
+	<parameter name="CopiaEmailToGestionAltaCuit Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='CopiaEmailToGestionAltaCuit']
+                           /@value" />
+	</parameter>
+	
 	<parameter name="EmailToMesaVentaFas Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailToMesaVentaFas']
