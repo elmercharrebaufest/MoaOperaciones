@@ -48,10 +48,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     TipoPosicionCodigo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     NroSolp = po.Solp.NroSolp,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
-                                                                where po.Id == pop.PeticionDeOferta_Id
-                                                                
+                                                                join adjudicacion in contexto.Set<AdjudicacionPosicion>() on pop.SolpPosicion_Id equals adjudicacion.SolpPosicion_Id into adjudicacionPosicion
+                                                                from adjudicacion in adjudicacionPosicion.DefaultIfEmpty()
+                                                                where pop.Id == pop.PeticionDeOferta_Id
                                                                 select new PeticionDeOfertaSolpPosicionDto()
-                                                                {
+                                                                   {
                                                                     Id = pop.Id,
                                                                     PeticionDeOferta_Id = pop.PeticionDeOferta_Id,
                                                                     SolpPosicion_Id = pop.SolpPosicion_Id,
