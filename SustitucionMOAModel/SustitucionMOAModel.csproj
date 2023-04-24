@@ -63,6 +63,8 @@
     <Compile Include="Dto\CotizacionDto.cs" />
     <Compile Include="Dto\CircularDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarCuitExisteScatoResponse.cs" />
+    <Compile Include="Dto\OrdenDeCarga\DomicilioDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\PlantaDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarSisaCorredorClienteResponse.cs" />
     <Compile Include="Dto\PdfFooter.cs" />
     <Compile Include="Dto\Echeq\EcheqReporteDto.cs" />
@@ -248,6 +250,9 @@
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\ConsultaListado.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\Domicilio.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\Planta.cs" />
     <Compile Include="Models\WSMapMOA\Compras\ContratoSolp.cs" />
     <Compile Include="Models\ViewModel\ReporteContrato\ReporteContratoViewModel.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Ceco.cs" />

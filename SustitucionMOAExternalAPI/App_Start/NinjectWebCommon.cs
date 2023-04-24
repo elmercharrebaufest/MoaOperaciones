@@ -26,6 +26,7 @@ namespace SustitucionMOAExternalAPI.App_Start
     using SustitucionMOAUtils.Validadores;
     using SustitucionMOAUtils.Wrappers;
     using SustitucionMOAWS.Interfaces;
+    using SustitucionMOAWS.WebApi;
     using SustitucionMOAWS.WSConsumers;
 
     public static class NinjectWebCommon
@@ -140,8 +141,10 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IEcheqAnularAperturaChequeConsumerMOA>().To(typeof(EcheqAnularAperturaChequeConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEcheqCargaAperturaChequeConsumerMOA>().To(typeof(EcheqCargaAperturaChequeConsumerMOA)).InScope(ctx => OperationContext.Current);
 
-
             #endregion
+
+            // Scato WebApi
+            kernel.Bind<IScatoRepositorioClient>().To(typeof(ScatoRepositorioClient)).InScope(ctx => OperationContext.Current);
 
             kernel.Bind<IExternalApiService>().To(typeof(ExternalApiService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();

@@ -17,6 +17,8 @@ import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { ContratoOrdenFas } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
+import { Planta } from '../../common/models/ordenes-de-carga/planta';
+import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { finalize } from 'rxjs/operators';
 
 declare var $: any;
@@ -75,6 +77,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     listaCorredores: any[];
     corredorSeleccionado: any;
     public patternPatente = { '0': { pattern: new RegExp('\[a-zA-Z0-9\]') } };
+
+    listaPlantas: Planta[];
+    plantaSeleccionada?: Planta;
+    listaDomicilios: Domicilio[];
+    domicilioSeleccionado?: Domicilio;
 
     constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
         super(navService, securytiService, floatMsgService, modalService);
@@ -771,6 +778,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.validando[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
+        this.onDestinoIngresado(cuit);
         this.service.validarExisteCuitScato(cuit).pipe(finalize(() => {
             this.validando[campo] = false;
         })).subscribe(
@@ -816,6 +824,58 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 }
             }
         })
+    }
+    onDestinoIngresado(cuitDestino: string) {
+        if (cuitDestino) {
+            this.service
+                .obtenerPlantasDestino(cuitDestino)
+                .subscribe(resp => {
+                    if (resp.logout) {
+                        this.sessionDataService.logout();
+                    } else {
+                        if (resp.error) {
+                            this.mensajeComponent.setErrorMsg(resp.error);
+                        } else {
+                            if (resp.info) {
+                                this.mensajeComponent.setInfoMsg(resp.info)
+                            }
+                            let plantas = resp.data;
+                            if (plantas.length > 0) {
+                                this.listaPlantas = plantas;
+                            } else {
+                                this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
+                            }
+                        }
+                    }
+                })
+            this.service
+                .obtenerDomiciliosDestino(cuitDestino)
+                .subscribe(resp => {
+                    if (resp.logout) {
+                        this.sessionDataService.logout();
+                    } else {
+                        if (resp.error) {
+                            this.mensajeComponent.setErrorMsg(resp.error);
+                        } else {
+                            if (resp.info) {
+                                this.mensajeComponent.setInfoMsg(resp.info)
+                            }
+                            let domicilios = resp.data;
+                            if (domicilios.length > 0) {
+                                this.listaDomicilios = domicilios;
+                            } else {
+                                this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
+                            }
+                        }
+                    }
+                })
+        }
+        else {
+            this.listaPlantas = [];
+            this.listaDomicilios = [];
+            this.plantaSeleccionada = undefined;
+            this.domicilioSeleccionado = undefined;
+        }
     }
     revisarCUITFormatoValido(cuit: string): boolean {
         return cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
@@ -870,6 +930,28 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             console.error('validarSisaCorredorCliente: ', err);
             this.mensajeComponent.setErrorMsg(err);
             this.blockUI.stop();
+        }
+    }
+
+    onPlantaSeleccionadaChanged() {
+        if (this.plantaSeleccionada) {
+            this.ordenDeCarga.PlantaCodigo = this.plantaSeleccionada.Codigo.toString();
+        }
+        else {
+            this.ordenDeCarga.PlantaCodigo = "";
+        }
+    }
+
+    onDomicilioSeleccionadoChanged() {
+        if (this.domicilioSeleccionado) {
+            this.ordenDeCarga.DomicilioTipo = this.domicilioSeleccionado.Tipo.toString();
+            this.ordenDeCarga.DomicilioOrden = this.domicilioSeleccionado.Orden
+            this.ordenDeCarga.DomicilioDescr = this.domicilioSeleccionado.Descripcion;
+        }
+        else {
+            this.ordenDeCarga.DomicilioTipo = "";
+            this.ordenDeCarga.DomicilioOrden = 0;
+            this.ordenDeCarga.DomicilioDescr = "";
         }
     }
     validarRuca(cuit: string, campo: CuitValidaRUCA) { }
