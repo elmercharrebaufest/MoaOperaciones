@@ -33,8 +33,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
   peticionOferta: PeticionDeOfertaDto;
   SolpDto: Solp;
   tablaOfertas: PeticionDeOfertaDto;
-  mostrarMaterial: boolean;
-  mostralServicio: boolean;
+  frozenCols: any[];
+  scrollableCols: any[];
+  cols: any[];
 
   constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
     protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -42,6 +43,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
   }
 
+ 
 
 
   ngOnInit() {
@@ -64,9 +66,44 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
           Selected: null
       };
     }
-   
-    this.esTipoMaterial();
-    this.esTipoServicio();
+
+    this.frozenCols  = [
+        { field: 'checkbox', header: '' },
+        { field: 'posicion', header: 'POS.' },
+        { field: 'codigo', header: 'CODIGO' },
+        { field: 'descripcion', header: 'DESCRIPCION' },
+        { field: 'textoDeSuministro', header: 'TEXTO DE SUMINISTRO' },
+        { field: 'cantidadPendiente', header: 'CTD PENDIENTE' },
+        { field: 'cantidad', header: 'CTD.' },
+        { field: 'unidadMedida', header: 'UM' }
+    ];
+
+    this.scrollableCols = [
+        { field: 'cantidadCotizada', header: 'Ctd. Cotizada' },
+        { field: 'unidadCotizada', header: 'Um. Cotizada' },
+        { field: 'precioUnidad', header: 'Precio unidad' },
+        { field: 'precioTotal', header: 'Precio total' },
+        { field: 'totalARP', header: 'Total ARP' },
+        { field: 'fechaDeEntrega', header: 'Fecha de entrega' },
+    ];
+
+    this.cols = [
+        { field: 'checkbox', header: '' },
+        { field: 'posicion', header: 'POS.' },
+        { field: 'codigo', header: 'CODIGO' },
+        { field: 'descripcion', header: 'DESCRIPCION' },
+        { field: 'textoDeSuministro', header: 'TEXTO DE SUMINISTRO' },
+        { field: 'cantidadPendiente', header: 'CTD PENDIENTE' },
+        { field: 'cantidad', header: 'CTD.' },
+        { field: 'unidadMedida', header: 'UM' },
+        { field: 'cantidadCotizada', header: 'Ctd. Cotizada' },
+        { field: 'unidadCotizada', header: 'Um. Cotizada' },
+        { field: 'precioUnidad', header: 'Precio unidad' },
+        { field: 'precioTotal', header: 'Precio total' },
+        { field: 'totalARP', header: 'Total ARP' },
+        { field: 'fechaDeEntrega', header: 'Fecha de entrega' }
+    ];
+
   }
 
   verOfertas(peticionOferta_Id) {
@@ -99,15 +136,47 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     return false; //<-- Prevent Refresh
   }
 
- esTipoMaterial(): boolean {
-    if(this.tablaOfertas.TipoPosicionCodigo == "MATERIALES"){
-      return this.mostrarMaterial = true;
-    }
-  }
+  descargarAdjuntosCotizacion(cotizacionId) {
+    this.blockUI.start("Descargando...");
+    this.service.DescargarAdjuntosCotizacion(cotizacionId)
+        .subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: "application/octet-stream",
+                    });
 
-  esTipoServicio(): boolean {
-    if(this.tablaOfertas.TipoPosicionCodigo == "SERVICIO"){
-      return this.mostralServicio = true;
-    }
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(
+                            blob,
+                            result.FileDownloadName
+                        );
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
+                        this.blockUI.stop();
+                        return false;
+                    }
+                    this.blockUI.stop();
+                }
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+                this.blockUI.stop();
+            }
+        )
   }
+  
 }

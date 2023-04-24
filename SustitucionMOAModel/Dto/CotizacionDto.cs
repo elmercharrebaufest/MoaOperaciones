@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -61,6 +62,7 @@ namespace SustitucionMOAModel.Dto
         public string MonedaCodigo { get; set; }
         public string FechaDeEntregaFormateado { get; set; }
         public DateTime? FechaOriginal { get; set; }
+        public int CantidadPendiente { get; set; }
     }
 
     public class CotizacionSubPosicionDto

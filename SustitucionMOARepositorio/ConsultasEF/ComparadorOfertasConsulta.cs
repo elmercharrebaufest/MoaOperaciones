@@ -44,10 +44,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     TipoPosicionCodigo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     NroSolp = po.Solp.NroSolp,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
-                                                                where po.Id == pop.PeticionDeOferta_Id
-                                                                
+                                                                join adjudicacion in contexto.Set<AdjudicacionPosicion>() on pop.SolpPosicion_Id equals adjudicacion.SolpPosicion_Id into adjudicacionPosicion
+                                                                from adjudicacion in adjudicacionPosicion.DefaultIfEmpty()
+                                                                where pop.Id == pop.PeticionDeOferta_Id
                                                                 select new PeticionDeOfertaSolpPosicionDto()
-                                                                {
+                                                                   {
                                                                     Id = pop.Id,
                                                                     PeticionDeOferta_Id = pop.PeticionDeOferta_Id,
                                                                     SolpPosicion_Id = pop.SolpPosicion_Id,
@@ -65,8 +66,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         Tarea = pop.SolpPosicion.Tarea,
                                                                         TextoSuministro = pop.SolpPosicion.TextoSuministro,
                                                                         Cantidad = pop.SolpPosicion.Cantidad,
-                                                                        CantidadPendiente = pop.SolpPosicion.Cantidad,
-
+                                                                        CantidadPendiente = pop.SolpPosicion.Cantidad - (adjudicacion != null ? adjudicacion.Cantidad : 0),
                                                                         Unidad = new TablaSapDto {
                                                                             Descripcion = pop.SolpPosicion.Unidad.Descripcion
                                                                         },
@@ -102,8 +102,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     EstadoVisita = u.RealizoVisita == true ? "Realizada" : "Sin realizar",
                                                     EstadoVisitaColor = u.RealizoVisita == true ? "Green" : "Red",
                                                     EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null ? "Sin analizar" : (u.PropuestaTecnicaAprobada == true ? "Realizada" : "Rechazada"),
-                                                    EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null ? "Orange" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),
-
+                                                    EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null ? "Orange" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),                                               
                                                     Cotizacion = cotizacion != null ? new CotizacionDto()
                                                                  {
                                                                     Id = cotizacion.Id,
@@ -124,7 +123,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         Id = p.Id,
                                                                         Cotizacion_Id = p.Cotizacion_Id,
                                                                         PeticionDeOfertaSolpPosicion_Id = p.PeticionDeOfertaSolpPosicion_Id,
-                                                                        Cantidad = p.Cantidad.Value,                                                                      
+                                                                        Cantidad = p.Cantidad.Value,    
                                                                         UnidadMedida = new TablaSapDto
                                                                         {
                                                                             Descripcion = p.UnidadDeMedida.Descripcion
@@ -159,6 +158,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                                         TotalPesos = 0,
                                                                                                         PrecioTotalSubPos = subpos.Cantidad.Value * subpos.Precio.Value,
                                                                                                     }).ToList()
+
                                                                     }).ToList(),
                                                                     TieneAdjuntos = cotizacion.Archivos.Any()
                                                     } : null,

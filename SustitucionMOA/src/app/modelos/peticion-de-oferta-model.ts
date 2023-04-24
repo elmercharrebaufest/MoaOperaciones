@@ -23,7 +23,8 @@ export interface PeticionDeOfertaDto{
     PeticionDeOfertaPosicion?: PeticionDeOfertaSolpPosicionDto[],
     Cotizacion?: CotizacionDto,
     ObservacionTecnica?: string,
-    ObservacionEconomica?: string
+    ObservacionEconomica?: string,
+    Cantidad?: number
 }
 
 export interface PeticionDeOfertaUsarioDto {
