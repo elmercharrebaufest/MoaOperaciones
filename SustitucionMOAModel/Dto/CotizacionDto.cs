@@ -29,6 +29,7 @@ namespace SustitucionMOAModel.Dto
         public decimal TotalGlobal { get; set; }
         public decimal TotalGlobalSubPos { get; set; }
         public IList<ArchivoDto> ArchivosCotizacion { get; set; }
+        public int TotalPesos { get; set; }
     }
 
     public class CotizacionPosicionDto
@@ -63,6 +64,7 @@ namespace SustitucionMOAModel.Dto
         public string FechaDeEntregaFormateado { get; set; }
         public DateTime? FechaOriginal { get; set; }
         public int CantidadPendiente { get; set; }
+        public decimal TotalPesos { get; set; }
     }
 
     public class CotizacionSubPosicionDto

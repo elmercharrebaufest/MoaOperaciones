@@ -29,6 +29,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
                 var resultado = from po in contexto.Set<PeticionDeOferta>()
+                                join adjudicacion in contexto.Set<Adjudicacion>() on po.Id equals adjudicacion.Solp_Id into adjudicacionCotizacion
+                                from adjudicacion in adjudicacionCotizacion.DefaultIfEmpty()
+                                join adjudicacionPosicion in contexto.Set<AdjudicacionPosicion>() on adjudicacion.Id equals adjudicacionPosicion.Adjudicacion_Id into adjudicacionCotizacionPosicion
+                                from adjudicacionPosicion in adjudicacionCotizacionPosicion.DefaultIfEmpty()
                                 where po.Id == PeticionOferta_Id
                                 select new PeticionDeOfertaDto
                                 {
@@ -44,11 +48,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     TipoPosicionCodigo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     NroSolp = po.Solp.NroSolp,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
-                                                                join adjudicacion in contexto.Set<AdjudicacionPosicion>() on pop.SolpPosicion_Id equals adjudicacion.SolpPosicion_Id into adjudicacionPosicion
-                                                                from adjudicacion in adjudicacionPosicion.DefaultIfEmpty()
-                                                                where pop.Id == pop.PeticionDeOferta_Id
+                                                                where po.Id == pop.PeticionDeOferta_Id
                                                                 select new PeticionDeOfertaSolpPosicionDto()
-                                                                   {
+                                                                {
                                                                     Id = pop.Id,
                                                                     PeticionDeOferta_Id = pop.PeticionDeOferta_Id,
                                                                     SolpPosicion_Id = pop.SolpPosicion_Id,
@@ -66,10 +68,12 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         Tarea = pop.SolpPosicion.Tarea,
                                                                         TextoSuministro = pop.SolpPosicion.TextoSuministro,
                                                                         Cantidad = pop.SolpPosicion.Cantidad,
-                                                                        CantidadPendiente = pop.SolpPosicion.Cantidad - (adjudicacion != null ? adjudicacion.Cantidad : 0),
+                                                                        CantidadPendiente = pop.SolpPosicion.Cantidad - (adjudicacionPosicion != null ? adjudicacionPosicion.Cantidad : 0),
+
                                                                         Unidad = new TablaSapDto {
                                                                             Descripcion = pop.SolpPosicion.Unidad.Descripcion
                                                                         },
+
 
                                                                         Subposiciones = pop.SolpPosicion.Subposiciones.Select(s => new SolpSubposicionDto
                                                                         {
@@ -116,6 +120,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                     ObservacionEconomica = u.Cotizaciones.FirstOrDefault().ObservacionEconomica,
                                                                     ObservacionTecnica = u.Cotizaciones.FirstOrDefault().ObservacionTecnica,
                                                                     TotalGlobal = 0,
+                                                                    TotalPesos = 0,
                                                                     TotalGlobalSubPos = 0,
 
                                                                     CotizacionPosiciones = cotizacion.CotizacionPosiciones.Select(p => new CotizacionPosicionDto
@@ -136,6 +141,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         PrecioTotal = p.Cantidad.Value * p.Precio.Value,
                                                                         TotalARPCotizacionPosicion = 0,
                                                                         TotalPosicionCotizacion = 0,
+                                                                        TotalPesos = 0,
                                                                         CotizacionSubPosiciones = (from subpos in contexto.Set<CotizacionSubPosicion>()
                                                                                                    where p.Id == subpos.CotizacionPosicion_Id
                                                                                                    select new CotizacionSubPosicionDto()

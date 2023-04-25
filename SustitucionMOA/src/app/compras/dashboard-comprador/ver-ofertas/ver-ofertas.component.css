@@ -7,70 +7,11 @@
     word-break: break-all; word-wrap:break-word; font-size: 12px;;
 }
 
-/* .view {
-    margin: auto;
-    width: 600px;
-  } */
   
-  /* .wrapper {
-    min-height: auto !important;
+  .wrapper {
+    min-height: 265px !important;
     position: relative;
-    overflow: auto;
-    white-space: nowrap;
-  }
-  
-  .sticky-col {
-    position: -webkit-sticky;
-    position: sticky;
-  }
-  
-  .col-1 {
-    width: 100px;
-    left: 0px;
-  }
-  
-  .col-2 {
-    width: 150px;
-    left: 100px;
+    overflow-x: auto;
   }
 
-  .col-3 {
-    width: 150px;
-    left: 250px;
-  }
-
-  .col-4 {
-    width: 150px;
-    left: 400px;
-  }
-
-  .col-5 {
-    width: 150px;
-    left: 550px;
-  }
-
-  .col-6 {
-    width: 150px;
-    left: 700px;
-  }
-
-  .col-7 {
-    width: 150px;
-    left: 850px;
-  }
-
-  .col-8 {
-    width: 150px;
-    left: 1000px;
-  }
-
-  .col-footer1 {
-    width: 150px;
-    left: 1000px;
-  }
-
-  .col-footer2 {
-    width: 150px;
-    left: 1000px;
-  } */
-
+ 

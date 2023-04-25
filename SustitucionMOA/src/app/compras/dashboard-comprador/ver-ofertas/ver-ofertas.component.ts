@@ -33,9 +33,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
   peticionOferta: PeticionDeOfertaDto;
   SolpDto: Solp;
   tablaOfertas: PeticionDeOfertaDto;
-  frozenCols: any[];
-  scrollableCols: any[];
-  cols: any[];
 
   constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
     protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -66,44 +63,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
           Selected: null
       };
     }
-
-    this.frozenCols  = [
-        { field: 'checkbox', header: '' },
-        { field: 'posicion', header: 'POS.' },
-        { field: 'codigo', header: 'CODIGO' },
-        { field: 'descripcion', header: 'DESCRIPCION' },
-        { field: 'textoDeSuministro', header: 'TEXTO DE SUMINISTRO' },
-        { field: 'cantidadPendiente', header: 'CTD PENDIENTE' },
-        { field: 'cantidad', header: 'CTD.' },
-        { field: 'unidadMedida', header: 'UM' }
-    ];
-
-    this.scrollableCols = [
-        { field: 'cantidadCotizada', header: 'Ctd. Cotizada' },
-        { field: 'unidadCotizada', header: 'Um. Cotizada' },
-        { field: 'precioUnidad', header: 'Precio unidad' },
-        { field: 'precioTotal', header: 'Precio total' },
-        { field: 'totalARP', header: 'Total ARP' },
-        { field: 'fechaDeEntrega', header: 'Fecha de entrega' },
-    ];
-
-    this.cols = [
-        { field: 'checkbox', header: '' },
-        { field: 'posicion', header: 'POS.' },
-        { field: 'codigo', header: 'CODIGO' },
-        { field: 'descripcion', header: 'DESCRIPCION' },
-        { field: 'textoDeSuministro', header: 'TEXTO DE SUMINISTRO' },
-        { field: 'cantidadPendiente', header: 'CTD PENDIENTE' },
-        { field: 'cantidad', header: 'CTD.' },
-        { field: 'unidadMedida', header: 'UM' },
-        { field: 'cantidadCotizada', header: 'Ctd. Cotizada' },
-        { field: 'unidadCotizada', header: 'Um. Cotizada' },
-        { field: 'precioUnidad', header: 'Precio unidad' },
-        { field: 'precioTotal', header: 'Precio total' },
-        { field: 'totalARP', header: 'Total ARP' },
-        { field: 'fechaDeEntrega', header: 'Fecha de entrega' }
-    ];
-
   }
 
   verOfertas(peticionOferta_Id) {
@@ -177,6 +136,12 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 this.blockUI.stop();
             }
         )
-  }
+    }
+
+    validacionCantidad(cantidad: number, cantidadPendiente: number){
+        if(cantidad > cantidadPendiente){
+            this.floatMsgService.setErrorMsg("La cantidad ingresada debe ser menor a " + cantidadPendiente);
+        }
+    }
   
 }

@@ -2269,10 +2269,10 @@ namespace SustitucionMOAUtils.Services
 
 
                         }
-                        item2.TotalARPCotizacionPosicion = cambio * item2.PrecioTotal;
+                        item2.TotalPesos = cambio * item2.PrecioTotal;
                         item2.TotalARPCotizacionPosicion = item2.CotizacionSubPosiciones.Sum(x => x.TotalARPSubPosCotizacion);
                     }
-                    item.Cotizacion.TotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalARPCotizacionPosicion);
+                    item.Cotizacion.TotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalPesos);
                     item.Cotizacion.TotalGlobalSubPos = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalARPCotizacionPosicion);
 
                 }
