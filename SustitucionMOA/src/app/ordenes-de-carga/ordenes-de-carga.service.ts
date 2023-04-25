@@ -9,6 +9,8 @@ import { ObtenerContratosDisponiblesResponse } from '../common/models/ordenes-de
 import { ApiResponse } from '../common/models/response';
 import { ValidarSisaCorredorClienteResponse } from '../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse';
 import { ValidarCuitExisteScatoResponse } from '../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse copy';
+import { Planta } from '../common/models/ordenes-de-carga/planta';
+import { Domicilio } from '../common/models/ordenes-de-carga/domicilio';
 
 @Injectable({
     providedIn: 'root'
@@ -392,5 +394,26 @@ export class OrdenesDeCargaService extends BaseService {
                 '/api/OrdenDeCarga/GestionarAltaCuit',
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
+    public obtenerPlantasDestino(destinoCuit: string): Observable<ApiResponse<Planta[]>> {
+        let params: HttpParams = new HttpParams()
+            .append("destinoCuit", destinoCuit);
+
+        return this.http
+            .get<ApiResponse<Planta[]>>(
+                '/api/OrdenDeCarga/ObtenerPlantasDestino',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    public obtenerDomiciliosDestino(destinoCuit: string): Observable<ApiResponse<Domicilio[]>> {
+        let params: HttpParams = new HttpParams()
+            .append("destinoCuit", destinoCuit);
+
+        return this.http
+            .get<ApiResponse<Domicilio[]>>(
+                '/api/OrdenDeCarga/ObtenerDomiciliosDestino',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 }

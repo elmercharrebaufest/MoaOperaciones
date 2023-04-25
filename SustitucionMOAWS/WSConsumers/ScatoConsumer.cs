@@ -79,7 +79,7 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
         public List<KmPorProveedorDto> BuscarDestinos(string cuit)
-        {            
+        {
             if (!cuit.Contains("-"))
             {
                 cuit = cuit.Substring(0, 2) + "-" + cuit.Substring(2, 8) + "-" + cuit.Substring(10, 1);
@@ -92,6 +92,13 @@ namespace SustitucionMOAWS.WSConsumers
             }
             var destinos = service.ListarKmPorProveedorYCentro(cliente.Id, 5).ToList();
             return destinos;
+        }
+
+        public bool CuilChoferExiste(string cuil)
+        {
+            var result = service.ObtenerChoferPorCuit(cuil);
+
+            return !(result is null);
         }
     }
 

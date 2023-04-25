@@ -35,6 +35,8 @@ namespace SustitucionMOATest.Services
         private OrdenDeCarga ordenDeCarga;
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
         private Mock<IFeriadoService> feriadoService;
+        private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
+        private Mock<IScatoConsumer> mIScatoConsumer;
 
         [SetUp]
         public void SetUp()
@@ -43,7 +45,8 @@ namespace SustitucionMOATest.Services
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
             feriadoService = new Mock<IFeriadoService>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object);
+            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
+                mIScatoRepositorioClient.Object, mIScatoConsumer.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,
@@ -1718,6 +1721,12 @@ namespace SustitucionMOATest.Services
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                true,
+                It.IsAny<string>(),
                 out value)).Returns("OE-00");
 
             consumerOrdenCargaMOA.Setup(x => x.OrdenCargaControlEstadoRequest(
@@ -1751,6 +1760,12 @@ namespace SustitucionMOATest.Services
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                true,
                 It.IsAny<string>(),
                 out value)).Returns("OE-01");
 

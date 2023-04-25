@@ -7,6 +7,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
+using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 using SustitucionMOAModel.Util;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
@@ -33,8 +34,10 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IOrdenCargaConsumerMOA consumer;
+        protected readonly IScatoConsumer scatoConsumer;
         readonly FeriadoService _feriadoService = new FeriadoService();
         protected readonly IFeriadoService feriadoService;
+        protected readonly IScatoRepositorioClient scatoRepositorioClient;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
         private static readonly string EMAIL_TEMPLATE_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
@@ -43,12 +46,19 @@ namespace SustitucionMOAUtils.Services
         private readonly string _errorAnulacion = "Error al anular orden de carga, pero la entrega si ha sido anulada";
         private readonly string _entregaEstadoPendiente = "La entrega sigue pendiente.";
 
-        public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer, IFeriadoService feriadoService)
+        public OrdenDeCargaService(
+            IRepositorio repositorio,
+            IOrdenCargaConsumerMOA consumer,
+            IFeriadoService feriadoService,
+            IScatoRepositorioClient scatoRepositorioClient,
+            IScatoConsumer scatoConsumer)
         {
             this.repositorio = repositorio;
             this.consumer = consumer;
             this.feriadoService = feriadoService;
+            this.scatoConsumer = scatoConsumer;
             _usuarioAutomaticoSAP = ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"];
+            this.scatoRepositorioClient = scatoRepositorioClient;
         }
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
@@ -68,6 +78,7 @@ namespace SustitucionMOAUtils.Services
                 Log.Debug(this.GetType().Name, "Agregar", $" crearPedido: {crearPedido}");
                 repositorio.Agregar(ordenDeCarga);
                 repositorio.GuardarCambios();
+                ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
                 NotificarContratoSinKm(ordenDeCarga);
                 NotificarTransporte(ordenDeCarga.Id);
 
@@ -181,6 +192,7 @@ namespace SustitucionMOAUtils.Services
                 var ordenEditar = cargarDatosOCEditar.Item1;
                 var listaValoresDiferentes = cargarDatosOCEditar.Item2;
 
+                ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
                 //Solicitud de edición
                 if (!esInterno)
                 {
@@ -349,7 +361,12 @@ namespace SustitucionMOAUtils.Services
                 var mailUsuarioSAP = puedeEnviarASAP ? request.MailUsuarioSAP : _usuarioAutomaticoSAP;
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSAP);
                 var validarKg = "X";
-                var result = consumer.CrearOrdenRequest(ordenDeCarga.Cliente.CodigoProveedor, ordenDeCarga.ContratoIngresado, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, validarKg, out string numeroPedido);
+                var result = consumer.CrearOrdenRequest(
+                    ordenDeCarga.Cliente.CodigoProveedor, ordenDeCarga.ContratoIngresado, ordenDeCarga.CodigoCorredor,
+                    ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, validarKg,
+                    ordenDeCarga.CUITDestino, ordenDeCarga.CUITDestinatario, ordenDeCarga.RazonSocialDestino, ordenDeCarga.RazonSocialDestinatario,
+                    ordenDeCarga.Reventa,
+                    out string numeroPedido);
                 if (!string.IsNullOrEmpty(result))
                 {
                     if (result == "OV-00" || result == "OV-03")
@@ -417,7 +434,12 @@ namespace SustitucionMOAUtils.Services
             }
             var mailUsuarioSAP = puedeEnviarASAP ? mailUsuario : _usuarioAutomaticoSAP;
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSAP);
-            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, ValidarKg, out string numeroPedido);
+            var result = consumer.CrearOrdenRequest(
+                cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad,
+                ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, ValidarKg,
+                ordenDeCarga.CUITDestino, ordenDeCarga.CUITDestinatario, ordenDeCarga.RazonSocialDestino, ordenDeCarga.RazonSocialDestinatario,
+                ordenDeCarga.Reventa,
+                out string numeroPedido);
 
             var resultadoCrearOrden = false;
             ordenDeCarga.ContratoSinCantidadPendiente = false;
@@ -2056,7 +2078,12 @@ namespace SustitucionMOAUtils.Services
             Log.Info("GenerarEntregaSAP");
             var conductor = orden.NombreChofer;
             var tipoDocumento = "CUIL";
-            var result = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, conductor, orden.PatenteAcoplado, orden.ChasisAcoplado, orden.NumeroPedido, tipoDocumento, orden.CUITTransporte, out string respuesta);
+            var result = consumer.OrdenCargaEntregadaRequest(
+                orden.CUITChofer, orden.Cantidad, conductor, orden.PatenteAcoplado,
+                orden.ChasisAcoplado, orden.NumeroPedido, tipoDocumento, orden.CUITTransporte,
+                orden.CUITDestinatario, orden.RazonSocialDestinatario, orden.CUITDestino, orden.CUITDestinatario,
+                orden.Reventa, orden.CUITIntermediarioFlete,
+                out string respuesta);
             Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Result " + result);
             Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Respuesta " + respuesta);
 
@@ -2431,7 +2458,7 @@ namespace SustitucionMOAUtils.Services
         {
             var res = new ValidarSisaCorredorClienteResponse
             {
-                ClienteHabilitadoEnSisa = false,
+                ClienteHabilitadoEnSisa = true,
                 CorredorHabilitadoEnSisa = true
             };
             return res;
@@ -2464,6 +2491,57 @@ namespace SustitucionMOAUtils.Services
             EmailSender.EnviarMail(mails, asunto, cuerpo, copias, null, null, null);
 
             return true;
+        }
+
+        public List<PlantaDto> ObtenerPlantasDestino(string destinoCuit)
+        {
+            var plantasRes = scatoRepositorioClient.ObtenerPlantas(destinoCuit);
+            if (!plantasRes.IsValid)
+            {
+                Log.Info("Error al obtener Plantas Scato con CUIT " + destinoCuit);
+                foreach (var err in plantasRes.Messages)
+                {
+                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
+                }
+                throw new ValidationCustomException("Error al obtener Plantas");
+            }
+            else
+            {
+                return plantasRes.Data
+                    .Select(x =>
+                        new PlantaDto
+                        {
+                            Actividad = x.Actividad,
+                            Codigo = x.NroPlanta
+                        })
+                    .ToList();
+            }
+        }
+
+        public List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit)
+        {
+            var domiciliosRes = scatoRepositorioClient.ObtenerDomicilios(destinoCuit);
+            if (!domiciliosRes.IsValid)
+            {
+                Log.Info("Error al obtener Plantas Domicilios con CUIT " + destinoCuit);
+                foreach (var err in domiciliosRes.Messages)
+                {
+                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
+                }
+                throw new ValidationCustomException("Error al obtener Domicilios");
+            }
+            else
+            {
+                return domiciliosRes.Data
+                    .Select(x =>
+                        new DomicilioDto
+                        {
+                            Descripcion = x.Descripcion,
+                            Orden = x.Orden,
+                            Tipo = x.Tipo
+                        })
+                    .ToList();
+            }
         }
 
         private Proveedor GetClienteParaCorredor(Usuario usuario, Proveedor corredor, OrdenDeCarga ordenDeCarga)
@@ -2534,6 +2612,21 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
 
             }
+        }
+        private void ValidarCuilChoferEnScato(string cuil)
+        {
+            try
+            {
+                Log.Debug("OrdenDeCarga Controller", "Validar CUIL Choer", cuil);
+                var result = scatoConsumer.CuilChoferExiste(cuil);
+                Log.Debug("OrdenDeCarga Controller", string.Format("Result Validar CUIL: {0}", cuil), result ? "Existe" : "No existe");
+            }
+            catch (Exception err)
+            {
+                Log.Debug("OrdenDeCarga Controller", string.Format("Error al Validar CUIL: {0}", cuil), err.Message);
+            }
+
+
         }
     }
 }

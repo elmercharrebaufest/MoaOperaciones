@@ -16,7 +16,7 @@ namespace SustitucionMOAWS.Interfaces
         List<LocalidadDto> ObtenerLocalidades();
         List<ProvinciaDto> ObtenerProvincias();
         List<KmPorProveedorDto> BuscarDestinos(string cuit);
-
+        bool CuilChoferExiste(string cuil);
 
 
     }

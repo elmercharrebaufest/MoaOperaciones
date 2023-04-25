@@ -49,5 +49,7 @@ namespace SustitucionMOAUtils.Interfaces
         bool ValidarSisaCuit(string cuit);
         bool EmailGestionarAlta(string cuit);
         ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit);
+        List<PlantaDto> ObtenerPlantasDestino(string destinoCuit);
+        List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
     }
 }

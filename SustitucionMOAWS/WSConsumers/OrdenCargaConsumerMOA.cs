@@ -91,13 +91,32 @@ namespace SustitucionMOAWS.WSConsumers
 
         */
 
-        public string CrearOrdenRequest(string cliente, string contrato, string corredor, decimal kilos, string material, string pedidoInput, string usuarioSAP, string forzarCreacion, out string pedidoOutput)
+        public string CrearOrdenRequest(string cliente, string contrato, string corredor, decimal kilos, string material, string pedidoInput, string usuarioSAP, string validaKg, string cuitDestino, string cuitDestinatario, string razonSocialDestino, string razonSocialDestinatario, bool reventa, out string pedidoOutput)
         {
             var service = new SI_MPMF_MOAOP_CREAR_ORDEN_CARGAClient();
+            var indrvta = reventa ? "X" : "";
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {new { cliente, contrato, corredor, kilos, material, pedidoInput, usuarioSAP, forzarCreacion }}");
-            var result = service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(cliente, contrato, corredor, kilos, material, pedidoInput, usuarioSAP, forzarCreacion, out pedidoOutput).Trim();
+            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {new { cliente, contrato, corredor, kilos, material, pedidoInput, usuarioSAP, validaKg, cuitDestino, razonSocialDestino, cuitDestinatario, razonSocialDestinatario, indrvta }}");
+            var result = service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(
+                cliente,
+                "",//IM_CODPLANTA
+                contrato,
+                corredor,
+                cuitDestino,
+                cuitDestinatario,
+                "",//IM_DOMORDEN
+                indrvta,//IM_INDRVTA
+                kilos,
+                material,
+                razonSocialDestino,
+                razonSocialDestinatario,
+                "",//IM_ORDENDOM
+                pedidoInput,
+                "",//IM_TIPODOM
+                usuarioSAP,
+                validaKg,
+                out pedidoOutput).Trim();
             Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Response: {new { result, pedidoOutput, cliente, contrato, pedidoInput }}");
 
             return result;
@@ -131,21 +150,28 @@ namespace SustitucionMOAWS.WSConsumers
         */
         public string OrdenCargaEntregadaRequest(string documento, decimal kilos, string nombreConductor,
                                                  string patenteAcoplado, string patenteChasis, string pedido,
-                                                 string tipoDocumento, string transportista, out string mensaje)
+                                                 string tipoDocumento, string transportista,
+                                                 string cuitDestinatario, string razonSocialDestinatario,
+                                                 string cuitDestino, string razonSocialDestino, bool reventa, string transportistaReal
+                                                , out string mensaje)
         {
             var service = new SI_MPMF_MOAOP_ORDEN_CARGA_ENTREClient();
-
+            var indrvta = reventa ? "X" : "";
+            var cuit_tr = transportistaReal ?? transportista;
+            var cuit_int_flete = !string.IsNullOrEmpty(transportistaReal) ? transportista : transportistaReal;
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {new { documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista }}");
+            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {new { documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista, cuitDestino, razonSocialDestino, cuitDestinatario, razonSocialDestinatario, indrvta, transportistaReal }}");
 
             var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(
-                "", //IM_CUITDESTF
+                cuitDestino, //IM_CUITDESTF
+                cuitDestinatario, //IM_CUITDESTINAT
                 documento,
                 "", //IM_DOMORDEN
-                "",//IM_INDRVTA
+                indrvta,//IM_INDRVTA
                 kilos,
-                "",//IM_NAMEDESTF
+                razonSocialDestino,//IM_NAMEDESTF
+                razonSocialDestinatario,//IM_NAMEDESTINAT
                 nombreConductor,
                 "",//IM_ORDENDOM
                 patenteAcoplado,
@@ -153,7 +179,8 @@ namespace SustitucionMOAWS.WSConsumers
                 pedido,
                 tipoDocumento,
                 "",//IM_TIPODOM 
-                transportista,
+                cuit_tr,
+                cuit_int_flete, //IM_TRANSPORTISTA_REAL
                 "CACERESN",
                 "", //IM_ZZCODPLANTA
                 out mensaje).Trim();

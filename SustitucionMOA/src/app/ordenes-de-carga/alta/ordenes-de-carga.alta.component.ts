@@ -17,7 +17,11 @@ import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { ContratoOrdenFas } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
+import { Planta } from '../../common/models/ordenes-de-carga/planta';
+import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { finalize } from 'rxjs/operators';
+import { ApiResponse } from '../../common/models/response';
+import { ValidarSisaCorredorClienteResponse } from '../../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse';
 
 declare var $: any;
 
@@ -75,6 +79,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     listaCorredores: any[];
     corredorSeleccionado: any;
     public patternPatente = { '0': { pattern: new RegExp('\[a-zA-Z0-9\]') } };
+
+    listaPlantas: Planta[];
+    plantaSeleccionada?: Planta;
+    listaDomicilios: Domicilio[];
+    domicilioSeleccionado?: Domicilio;
 
     constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
         super(navService, securytiService, floatMsgService, modalService);
@@ -767,7 +776,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
     validarExisteCUIT(campo: CuitValidaExistencia) {
         const cuit = this.ordenDeCarga[campo]
-        if (!this.revisarCUITFormatoValido(cuit)) return
+        if (!cuit || !this.revisarCUITFormatoValido(cuit)) return;
         this.validando[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
@@ -807,7 +816,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     this.mensajesOrdenDeCarga[campo] = `El ${campo.replace("CUIT", "")} no se encuentra habilitado en SISA`;
                 } else {
                     if (campo == "CUITDestino") {
-                        this.obtenerPlantasYDomicilios();
+                        this.onDestinoIngresado(cuit);
                     }
                     else if (campo !== "CUITCorredor") {
                         this.validarRuca(cuit, campo)
@@ -815,6 +824,41 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 }
             }
         })
+    }
+
+    onDestinoIngresado(cuitDestino: string) {
+        if (cuitDestino) {
+            this.service
+                .obtenerPlantasDestino(cuitDestino)
+                .subscribe(resp => {
+                    let plantas: Planta[] | null;
+                    if (plantas = this.manejarErroresApiResponse(resp)) {
+                        if (plantas.length > 0) {
+                            this.listaPlantas = plantas;
+                        } else {
+                            this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
+                        }
+                    }
+                })
+            this.service
+                .obtenerDomiciliosDestino(cuitDestino)
+                .subscribe(resp => {
+                    let domicilios: Domicilio[] | null;
+                    if (domicilios = this.manejarErroresApiResponse(resp)) {
+                        if (domicilios.length > 0) {
+                            this.listaDomicilios = domicilios;
+                        } else {
+                            this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
+                        }
+                    }
+                })
+        }
+        else {
+            this.listaPlantas = [];
+            this.listaDomicilios = [];
+            this.plantaSeleccionada = undefined;
+            this.domicilioSeleccionado = undefined;
+        }
     }
     revisarCUITFormatoValido(cuit: string): boolean {
         return cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
@@ -848,33 +892,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.blockUI.start('');
             this.service
                 .validarSisaCorredorCliente(corredorCodigo, clienteCodigo)
-                .subscribe(resp => {
-                    if (resp.logout) {
-                        this.sessionDataService.logout();
-                    } else {
-                        if (resp.error) {
-                            this.mensajeComponent.setErrorMsg(resp.error);
-                        } else {
-                            if (resp.info) {
-                                this.mensajeComponent.setInfoMsg(resp.info)
-                            }
-                            let data = resp.data;
-                            if (!data.CorredorHabilitadoEnSisa || !data.ClienteHabilitadoEnSisa) {
-                                if (!data.CorredorHabilitadoEnSisa && !data.ClienteHabilitadoEnSisa) {
-                                    this.mensajeComponent.setErrorMsg("Corredor y Cliente no están habilitados en SISA, no podrá cargar la orden hasta regularizar la situación");
-                                }
-                                else {
-                                    if (!data.CorredorHabilitadoEnSisa) {
-                                        this.mensajeComponent.setErrorMsg("Corredor no habilitado en SISA, no podrá cargar la orden hasta regularizar la situación");
-                                    } else {
-                                        this.mensajeComponent.setErrorMsg("Cliente no habilitado en SISA, no podrá cargar la orden hasta regularizar la situación");
-                                    }
-                                }
-                                this.ordenDeCarga.ContratoSeleccionado = undefined;
-                                this.ordenDeCarga.Producto_Id = 0;
-                                this.Producto = "";
-                            }
-                        }
+                .subscribe(svcRes => {
+                    let resp = this.manejarErroresApiResponse(svcRes);
+                    if (resp && (!resp.CorredorHabilitadoEnSisa || !resp.ClienteHabilitadoEnSisa)) {
+                        let msj = 
+                            (!resp.CorredorHabilitadoEnSisa && !resp.ClienteHabilitadoEnSisa) ?
+                                "Corredor y Cliente no están habilitados en SISA, no podrá cargar la orden hasta regularizar la situación" :
+                                (!resp.CorredorHabilitadoEnSisa ?
+                                    "Corredor no habilitado en SISA, no podrá cargar la orden hasta regularizar la situación" :
+                                    "Cliente no habilitado en SISA, no podrá cargar la orden hasta regularizar la situación");
+                        this.mensajeComponent.setErrorMsg(msj);
+                        this.ordenDeCarga.ContratoSeleccionado = undefined;
+                        this.ordenDeCarga.Producto_Id = 0;
+                        this.Producto = "";
                     }
                     this.blockUI.stop();
                 })
@@ -884,8 +914,45 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.blockUI.stop();
         }
     }
+
+    onPlantaSeleccionadaChanged() {
+        if (this.plantaSeleccionada) {
+            this.ordenDeCarga.PlantaCodigo = this.plantaSeleccionada.Codigo.toString();
+        }
+        else {
+            this.ordenDeCarga.PlantaCodigo = "";
+        }
+    }
+
+    onDomicilioSeleccionadoChanged() {
+        if (this.domicilioSeleccionado) {
+            this.ordenDeCarga.DomicilioTipo = this.domicilioSeleccionado.Tipo.toString();
+            this.ordenDeCarga.DomicilioOrden = this.domicilioSeleccionado.Orden
+            this.ordenDeCarga.DomicilioDescr = this.domicilioSeleccionado.Descripcion;
+        }
+        else {
+            this.ordenDeCarga.DomicilioTipo = "";
+            this.ordenDeCarga.DomicilioOrden = 0;
+            this.ordenDeCarga.DomicilioDescr = "";
+        }
+    }
+
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
+        if (response.logout) {
+            this.sessionDataService.logout();
+            return null;
+        }
+        if (response.error) {
+            this.mensajeComponent.setErrorMsg(response.error);
+            return null;
+        }
+        if (response.info) {
+            this.mensajeComponent.setInfoMsg(response.info)
+        }
+        return response.data;
+    }
+
     validarRuca(cuit: string, campo: CuitValidaRUCA) { }
-    obtenerPlantasYDomicilios() { }
     descripcionIntermediarioFlete = "Texto descriptivo de lo que representa el campo CUIT Intermediario Flete"
     descripcionTransporte = "Texto descriptivo de lo que representa el campo CUIT Transporte"
 }

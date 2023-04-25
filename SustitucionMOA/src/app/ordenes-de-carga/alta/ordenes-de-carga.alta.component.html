@@ -141,6 +141,28 @@
                                         </p>
                                     </ng-template>
                                 </div>
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        Planta:
+                                    </div>
+                                    <div class="styled-select" style="overflow: initial;">
+                                        <p-dropdown name="cmbPlantas" [(ngModel)]="plantaSeleccionada"
+                                            [options]="listaPlantas" placeholder="Seleccione una planta"
+                                            (ngModelChange)="onPlantaSeleccionadaChanged()" optionLabel="Codigo">
+                                        </p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        Domicilio:
+                                    </div>
+                                    <div class="styled-select" style="overflow: initial;">
+                                        <p-dropdown name="cmbDomicilios" [(ngModel)]="domicilioSeleccionado"
+                                            [options]="listaDomicilios" placeholder="Seleccione un domicilio"
+                                            (ngModelChange)="onDomicilioSeleccionadoChanged()" optionLabel="Descripcion">
+                                        </p-dropdown>
+                                    </div>
+                                </div>
 
                             </ng-container>
                             <div class="col-xs-12 col-md-12">
