@@ -364,7 +364,7 @@ export class OrdenesDeCargaService extends BaseService {
             ('/api/OrdenDeCarga/ValidarCuitExisteScato', { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
-public validarSisaCuit(cuit: string): Observable<ApiResponse<boolean>> {
+    public validarSisaCuit(cuit: string): Observable<ApiResponse<boolean>> {
         let params: HttpParams = new HttpParams()
             .append("cuit", cuit)
 
@@ -385,11 +385,21 @@ public validarSisaCuit(cuit: string): Observable<ApiResponse<boolean>> {
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
+    public enviarMailGestionarAltaCuit(cuit: string, razonSocial: string): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append("cuit", cuit)
+            .append("razonSocial", razonSocial)
 
+        return this.http
+            .get<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/GestionarAltaCuit',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
     public obtenerPlantasDestino(destinoCuit: string): Observable<ApiResponse<Planta[]>> {
         let params: HttpParams = new HttpParams()
             .append("destinoCuit", destinoCuit);
-        
+
         return this.http
             .get<ApiResponse<Planta[]>>(
                 '/api/OrdenDeCarga/ObtenerPlantasDestino',
@@ -400,7 +410,7 @@ public validarSisaCuit(cuit: string): Observable<ApiResponse<boolean>> {
     public obtenerDomiciliosDestino(destinoCuit: string): Observable<ApiResponse<Domicilio[]>> {
         let params: HttpParams = new HttpParams()
             .append("destinoCuit", destinoCuit);
-        
+
         return this.http
             .get<ApiResponse<Domicilio[]>>(
                 '/api/OrdenDeCarga/ObtenerDomiciliosDestino',

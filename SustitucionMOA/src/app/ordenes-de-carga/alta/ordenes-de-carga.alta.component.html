@@ -159,7 +159,8 @@
                                     <div class="styled-select" style="overflow: initial;">
                                         <p-dropdown name="cmbDomicilios" [(ngModel)]="domicilioSeleccionado"
                                             [options]="listaDomicilios" placeholder="Seleccione un domicilio"
-                                            (ngModelChange)="onDomicilioSeleccionadoChanged()" optionLabel="Descripcion">
+                                            (ngModelChange)="onDomicilioSeleccionadoChanged()"
+                                            optionLabel="Descripcion">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -356,28 +357,23 @@
         </div>
     </div>
 </div>
-<p-dialog header="CUIT Destinatario" [(visible)]="displayModal.CUITDestinatario" [modal]="true" [responsive]="true"
+<p-dialog [header]="displayModal?.replace('CUIT','')" [(visible)]="displayModal" [modal]="true" [responsive]="true"
     [style]="{width: '350px', minWidth: '200px'}" [minY]="70" [draggable]="false" [closable]="true" appendTo="body">
-    <p>No se encontró la CUIT {{ordenDeCarga.CUITDestinatario}}</p><br>
+    <p>No se encontró la CUIT {{ordenDeCarga[displayModal]}}</p><br>
     <p>¿Desea que se notifique ?</p>
+    <div class="col-xs-12 col-md-12">
+        <div class="formulario-label">
+            Razon social con la que gestionar el alta:
+        </div>
+        <div class="styled-select">
+            <input [(ngModel)]="razonSocialParaGestion" type="text">
+        </div>
+    </div>
     <p-footer>
-        <button type="button" pButton icon="pi pi-check"
-            (click)="displayModal.CUITDestinatario=false;gestionarAltaCUIT('CUITDestinatario')"
-            label="Aceptar"></button>
-        <button type="button" pButton icon="pi pi-close" (click)="displayModal.CUITDestinatario=false" label="Cancelar"
+        <button [disabled]="razonSocialParaGestion.length < 3" type="button" pButton icon="pi pi-check"
+            (click)="gestionarAltaCUIT()" label="Gestionar"></button>
+        <button type="button" pButton icon="pi pi-close" (click)="displayModal = null" label="Cancelar"
             class="ui-button-secondary"></button>
     </p-footer>
 </p-dialog>
-<p-dialog header="CUIT Destino" [(visible)]="displayModal.CUITDestino" [modal]="true" [responsive]="true"
-    [style]="{width: '350px', minWidth: '200px'}" [minY]="70" [draggable]="false" [closable]="true" appendTo="body">
-    <p>No se encontró la CUIT {{ordenDeCarga.CUITDestino}}</p><br>
-    <p>¿Desea que se notifique ?</p>
-    <p-footer>
-        <button type="button" pButton icon="pi pi-check"
-            (click)="displayModal.CUITDestino=false;gestionarAltaCUIT('CUITDestino')" label="Aceptar"></button>
-        <button type="button" pButton icon="pi pi-close" (click)="displayModal.CUITDestino=false" label="Cancelar"
-            class="ui-button-secondary"></button>
-    </p-footer>
-</p-dialog>
-
 <!-- end modal notificacion -->

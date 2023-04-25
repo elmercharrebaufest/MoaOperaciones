@@ -2472,9 +2472,25 @@ namespace SustitucionMOAUtils.Services
             var res = new ValidarCuitExisteScatoResponse
             {
                 Existe = true,
-                RazonSocial = ""
+                RazonSocial = "Test"
             };
             return res;
+        }
+        public bool EmailGestionarAlta(string cuit, string razonSocial)
+        {
+            string mailsGestion = ConfigurationManager.AppSettings["EmailToGestionAltaCuit"];
+
+            string mailsCopiaGestion = ConfigurationManager.AppSettings["CopiaEmailToGestionAltaCuit"];
+            var mails = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsGestion });
+            var copias = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsCopiaGestion });
+
+            string asunto = "ALTA TEMPRANA CUIT";
+
+            string cuerpo = string.Format("Se solicita el alta temprana del CUIT: {0} , Razón Social: {1}", cuit, razonSocial);
+
+            EmailSender.EnviarMail(mails, asunto, cuerpo, copias, null, null, null);
+
+            return true;
         }
 
         public List<PlantaDto> ObtenerPlantasDestino(string destinoCuit)
