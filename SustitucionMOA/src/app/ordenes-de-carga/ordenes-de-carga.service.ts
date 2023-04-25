@@ -417,4 +417,15 @@ export class OrdenesDeCargaService extends BaseService {
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
+    public validarCuitRuca(cuit: string): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append("cuit", cuit);
+
+        return this.http
+            .get<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/ValidarCuitRuca',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+
+    }
 }

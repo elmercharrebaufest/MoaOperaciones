@@ -895,5 +895,28 @@ namespace SustitucionMOA.Controllers
             }
             return Content(JsonConvert.SerializeObject(response), "application/json");
         }
+        [HttpGet]
+        public ActionResult ValidarCuitRuca(string cuit)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarCuitRuca(cuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return Content(JsonConvert.SerializeObject(response), "application/json");
+        }
     }
 }
