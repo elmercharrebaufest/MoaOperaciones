@@ -91,12 +91,13 @@ namespace SustitucionMOAWS.WSConsumers
 
         */
 
-        public string CrearOrdenRequest(string cliente, string contrato, string corredor, decimal kilos, string material, string pedidoInput, string usuarioSAP, string validaKg, string cuitDestino, string cuitDestinatario, string razonSocialDestino, string razonSocialDestinatario, out string pedidoOutput)
+        public string CrearOrdenRequest(string cliente, string contrato, string corredor, decimal kilos, string material, string pedidoInput, string usuarioSAP, string validaKg, string cuitDestino, string cuitDestinatario, string razonSocialDestino, string razonSocialDestinatario, bool reventa, out string pedidoOutput)
         {
             var service = new SI_MPMF_MOAOP_CREAR_ORDEN_CARGAClient();
+            var indrvta = reventa ? "X" : "";
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {new { cliente, contrato, corredor, kilos, material, pedidoInput, usuarioSAP, validaKg, cuitDestino, razonSocialDestino, cuitDestinatario, razonSocialDestinatario }}");
+            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {new { cliente, contrato, corredor, kilos, material, pedidoInput, usuarioSAP, validaKg, cuitDestino, razonSocialDestino, cuitDestinatario, razonSocialDestinatario, indrvta }}");
             var result = service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(
                 cliente,
                 "",//IM_CODPLANTA
@@ -105,7 +106,7 @@ namespace SustitucionMOAWS.WSConsumers
                 cuitDestino,
                 cuitDestinatario,
                 "",//IM_DOMORDEN
-                "",//IM_INDRVTA
+                indrvta,//IM_INDRVTA
                 kilos,
                 material,
                 razonSocialDestino,
@@ -151,21 +152,21 @@ namespace SustitucionMOAWS.WSConsumers
                                                  string patenteAcoplado, string patenteChasis, string pedido,
                                                  string tipoDocumento, string transportista,
                                                  string cuitDestinatario, string razonSocialDestinatario,
-                                                 string cuitDestino, string razonSocialDestino
+                                                 string cuitDestino, string razonSocialDestino, bool reventa
                                                 , out string mensaje)
         {
             var service = new SI_MPMF_MOAOP_ORDEN_CARGA_ENTREClient();
-
+            var indrvta = reventa ? "X" : "";
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {new { documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista, cuitDestino, razonSocialDestino, cuitDestinatario, razonSocialDestinatario }}");
+            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {new { documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista, cuitDestino, razonSocialDestino, cuitDestinatario, razonSocialDestinatario, indrvta }}");
 
             var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(
                 cuitDestino, //IM_CUITDESTF
                 cuitDestinatario, //IM_CUITDESTINAT
                 documento,
                 "", //IM_DOMORDEN
-                "",//IM_INDRVTA
+                indrvta,//IM_INDRVTA
                 kilos,
                 razonSocialDestino,//IM_NAMEDESTF
                 razonSocialDestinatario,//IM_NAMEDESTINAT
