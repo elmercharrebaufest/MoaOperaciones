@@ -361,7 +361,11 @@ namespace SustitucionMOAUtils.Services
                 var mailUsuarioSAP = puedeEnviarASAP ? request.MailUsuarioSAP : _usuarioAutomaticoSAP;
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSAP);
                 var validarKg = "X";
-                var result = consumer.CrearOrdenRequest(ordenDeCarga.Cliente.CodigoProveedor, ordenDeCarga.ContratoIngresado, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, validarKg, out string numeroPedido);
+                var result = consumer.CrearOrdenRequest(
+                    ordenDeCarga.Cliente.CodigoProveedor, ordenDeCarga.ContratoIngresado, ordenDeCarga.CodigoCorredor,
+                    ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, validarKg,
+                    ordenDeCarga.CUITDestino, ordenDeCarga.CUITDestinatario, ordenDeCarga.RazonSocialDestino, ordenDeCarga.RazonSocialDestinatario,
+                    out string numeroPedido);
                 if (!string.IsNullOrEmpty(result))
                 {
                     if (result == "OV-00" || result == "OV-03")
@@ -429,7 +433,11 @@ namespace SustitucionMOAUtils.Services
             }
             var mailUsuarioSAP = puedeEnviarASAP ? mailUsuario : _usuarioAutomaticoSAP;
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSAP);
-            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, ValidarKg, out string numeroPedido);
+            var result = consumer.CrearOrdenRequest(
+                cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad,
+                ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, ValidarKg,
+                ordenDeCarga.CUITDestino, ordenDeCarga.CUITDestinatario, ordenDeCarga.RazonSocialDestino, ordenDeCarga.RazonSocialDestinatario,
+                out string numeroPedido);
 
             var resultadoCrearOrden = false;
             ordenDeCarga.ContratoSinCantidadPendiente = false;
@@ -2068,7 +2076,11 @@ namespace SustitucionMOAUtils.Services
             Log.Info("GenerarEntregaSAP");
             var conductor = orden.NombreChofer;
             var tipoDocumento = "CUIL";
-            var result = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, conductor, orden.PatenteAcoplado, orden.ChasisAcoplado, orden.NumeroPedido, tipoDocumento, orden.CUITTransporte, out string respuesta);
+            var result = consumer.OrdenCargaEntregadaRequest(
+                orden.CUITChofer, orden.Cantidad, conductor, orden.PatenteAcoplado,
+                orden.ChasisAcoplado, orden.NumeroPedido, tipoDocumento, orden.CUITTransporte,
+                orden.CUITDestinatario, orden.RazonSocialDestinatario, orden.CUITDestino, orden.CUITDestinatario,
+                out string respuesta);
             Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Result " + result);
             Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Respuesta " + respuesta);
 

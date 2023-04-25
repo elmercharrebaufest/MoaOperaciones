@@ -36,6 +36,7 @@ namespace SustitucionMOATest.Services
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
         private Mock<IFeriadoService> feriadoService;
         private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
+        private Mock<IScatoConsumer> mIScatoConsumer;
 
         [SetUp]
         public void SetUp()
@@ -45,7 +46,7 @@ namespace SustitucionMOATest.Services
             feriadoService = new Mock<IFeriadoService>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
-                mIScatoRepositorioClient.Object);
+                mIScatoRepositorioClient.Object, mIScatoConsumer.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,
@@ -1720,6 +1721,10 @@ namespace SustitucionMOATest.Services
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
                 out value)).Returns("OE-00");
 
             consumerOrdenCargaMOA.Setup(x => x.OrdenCargaControlEstadoRequest(
@@ -1748,6 +1753,10 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
             consumerOrdenCargaMOA.Setup(x => x.OrdenCargaEntregadaRequest(It.IsAny<string>(),
                 It.IsAny<decimal>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
