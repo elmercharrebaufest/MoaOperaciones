@@ -152,14 +152,16 @@ namespace SustitucionMOAWS.WSConsumers
                                                  string patenteAcoplado, string patenteChasis, string pedido,
                                                  string tipoDocumento, string transportista,
                                                  string cuitDestinatario, string razonSocialDestinatario,
-                                                 string cuitDestino, string razonSocialDestino, bool reventa
+                                                 string cuitDestino, string razonSocialDestino, bool reventa, string transportistaReal
                                                 , out string mensaje)
         {
             var service = new SI_MPMF_MOAOP_ORDEN_CARGA_ENTREClient();
             var indrvta = reventa ? "X" : "";
+            var cuit_tr = transportistaReal ?? transportista;
+            var cuit_int_flete = !string.IsNullOrEmpty(transportistaReal) ? transportista : transportistaReal;
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {new { documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista, cuitDestino, razonSocialDestino, cuitDestinatario, razonSocialDestinatario, indrvta }}");
+            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {new { documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista, cuitDestino, razonSocialDestino, cuitDestinatario, razonSocialDestinatario, indrvta, transportistaReal }}");
 
             var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(
                 cuitDestino, //IM_CUITDESTF
@@ -177,8 +179,8 @@ namespace SustitucionMOAWS.WSConsumers
                 pedido,
                 tipoDocumento,
                 "",//IM_TIPODOM 
-                transportista,
-                "", //IM_TRANSPORTISTA_REAL
+                cuit_tr,
+                cuit_int_flete, //IM_TRANSPORTISTA_REAL
                 "CACERESN",
                 "", //IM_ZZCODPLANTA
                 out mensaje).Trim();

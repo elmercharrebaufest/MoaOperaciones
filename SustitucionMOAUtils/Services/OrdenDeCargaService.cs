@@ -2082,7 +2082,7 @@ namespace SustitucionMOAUtils.Services
                 orden.CUITChofer, orden.Cantidad, conductor, orden.PatenteAcoplado,
                 orden.ChasisAcoplado, orden.NumeroPedido, tipoDocumento, orden.CUITTransporte,
                 orden.CUITDestinatario, orden.RazonSocialDestinatario, orden.CUITDestino, orden.CUITDestinatario,
-                orden.Reventa,
+                orden.Reventa, orden.CUITIntermediarioFlete,
                 out string respuesta);
             Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Result " + result);
             Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Respuesta " + respuesta);
