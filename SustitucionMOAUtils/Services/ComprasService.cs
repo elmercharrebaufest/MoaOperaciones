@@ -3544,11 +3544,7 @@ namespace SustitucionMOAUtils.Services
         }
 
         public RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(int AdjudicacionId)
-        {
-            //variables para ver a que request accedemos
-            //var crearPedidoConsumer = crearPedido(solpEntity);
-            //var crearSolpComsumer = crearSolp(solpEntity);
-            //var modificarSolpConsumer = modificarSolp(solpEntity);
+        {           
             var AdjudicacionEntity = repositorio.Obtener<Adjudicacion>(AdjudicacionId);
             var respuesta = new RespuestaCrearOrdenDeCompra();
 
