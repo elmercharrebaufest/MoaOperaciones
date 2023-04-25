@@ -1726,6 +1726,7 @@ namespace SustitucionMOATest.Services
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 true,
+                It.IsAny<string>(),
                 out value)).Returns("OE-00");
 
             consumerOrdenCargaMOA.Setup(x => x.OrdenCargaControlEstadoRequest(
@@ -1765,6 +1766,7 @@ namespace SustitucionMOATest.Services
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 true,
+                It.IsAny<string>(),
                 out value)).Returns("OE-01");
 
             consumerOrdenCargaMOA.Setup(x => x.OrdenCargaControlEstadoRequest(
