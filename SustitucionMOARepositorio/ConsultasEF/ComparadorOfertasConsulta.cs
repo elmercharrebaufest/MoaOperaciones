@@ -145,7 +145,6 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         TotalARPCotizacionPosicion = 0,
                                                                         TotalPosicionCotizacion = 0,
                                                                         TotalPesos = 0,
-                                                                        TotalPosicionCotizacion = 0,
                                                                         CotizacionSubPosiciones = (from subpos in contexto.Set<CotizacionSubPosicion>()
                                                                                                    where p.Id == subpos.CotizacionPosicion_Id
                                                                                                    select new CotizacionSubPosicionDto()

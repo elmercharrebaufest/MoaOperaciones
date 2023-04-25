@@ -63,8 +63,6 @@ namespace SustitucionMOAModel.Dto
         public DateTime? FechaOriginal { get; set; }
         public int CantidadPendiente { get; set; }
         public decimal TotalPesos { get; set; }
-        public decimal TotalGlobalSubPos { get; set; }
-        public decimal TotalPosicionCotizacion { get; set; }
     }
 
     public class CotizacionSubPosicionDto
