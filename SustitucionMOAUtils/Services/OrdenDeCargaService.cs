@@ -2541,7 +2541,12 @@ namespace SustitucionMOAUtils.Services
                     .ToList();
             }
         }
-
+        public bool ValidarCuitRuca(string cuit)
+        {
+            var tienePlantas = ObtenerPlantasDestino(cuit).Count() > 0;
+            var tieneDomicilios = ObtenerDomiciliosDestino(cuit).Count() > 0;
+            return tienePlantas && tieneDomicilios;
+        }
         private Proveedor GetClienteParaCorredor(Usuario usuario, Proveedor corredor, OrdenDeCarga ordenDeCarga)
         {
             corredor = usuario.ObtenerCorredor();
