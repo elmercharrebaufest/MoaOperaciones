@@ -826,7 +826,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     validarSisaCorredorCliente() {
-        if (!this.ordenDeCarga.ContratoSeleccionado || this.validaCPEDG) {
+        if (!this.ordenDeCarga.ContratoSeleccionado || !this.validaCPEDG) {
             this.mensajeComponent.setMsgsEmpty();
             return;
         }
