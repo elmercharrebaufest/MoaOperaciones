@@ -159,7 +159,8 @@
                                     <div class="styled-select" style="overflow: initial;">
                                         <p-dropdown name="cmbDomicilios" [(ngModel)]="domicilioSeleccionado"
                                             [options]="listaDomicilios" placeholder="Seleccione un domicilio"
-                                            (ngModelChange)="onDomicilioSeleccionadoChanged()" optionLabel="Descripcion">
+                                            (ngModelChange)="onDomicilioSeleccionadoChanged()"
+                                            optionLabel="Descripcion">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -360,10 +361,17 @@
     [style]="{width: '350px', minWidth: '200px'}" [minY]="70" [draggable]="false" [closable]="true" appendTo="body">
     <p>No se encontró la CUIT {{ordenDeCarga[displayModal]}}</p><br>
     <p>¿Desea que se notifique ?</p>
+    <div class="col-xs-12 col-md-12">
+        <div class="formulario-label">
+            Razon social con la que gestionar el alta:
+        </div>
+        <div class="styled-select">
+            <input [(ngModel)]="razonSocialParaGestion" type="text">
+        </div>
+    </div>
     <p-footer>
-        <button type="button" pButton icon="pi pi-check"
-            (click)="gestionarAltaCUIT()"
-            label="Aceptar"></button>
+        <button [disabled]="razonSocialParaGestion.length < 3" type="button" pButton icon="pi pi-check"
+            (click)="gestionarAltaCUIT()" label="Gestionar"></button>
         <button type="button" pButton icon="pi pi-close" (click)="displayModal = null" label="Cancelar"
             class="ui-button-secondary"></button>
     </p-footer>

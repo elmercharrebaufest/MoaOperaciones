@@ -385,9 +385,10 @@ export class OrdenesDeCargaService extends BaseService {
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
-    public enviarMailGestionarAltaCuit(cuit: string): Observable<ApiResponse<boolean>> {
+    public enviarMailGestionarAltaCuit(cuit: string, razonSocial: string): Observable<ApiResponse<boolean>> {
         let params: HttpParams = new HttpParams()
             .append("cuit", cuit)
+            .append("razonSocial", razonSocial)
 
         return this.http
             .get<ApiResponse<boolean>>(

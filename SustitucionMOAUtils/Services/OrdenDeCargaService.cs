@@ -2476,7 +2476,7 @@ namespace SustitucionMOAUtils.Services
             };
             return res;
         }
-        public bool EmailGestionarAlta(string cuit)
+        public bool EmailGestionarAlta(string cuit, string razonSocial)
         {
             string mailsGestion = ConfigurationManager.AppSettings["EmailToGestionAltaCuit"];
 
@@ -2486,7 +2486,7 @@ namespace SustitucionMOAUtils.Services
 
             string asunto = "ALTA TEMPRANA CUIT";
 
-            string cuerpo = string.Format("Se solicita el alta temprana del CUIT: {0} , Razón Social: NNNN", cuit);
+            string cuerpo = string.Format("Se solicita el alta temprana del CUIT: {0} , Razón Social: {1}", cuit, razonSocial);
 
             EmailSender.EnviarMail(mails, asunto, cuerpo, copias, null, null, null);
 

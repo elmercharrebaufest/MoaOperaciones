@@ -61,6 +61,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     userEmail: string = "";
     patentesChasis: any;
     patentesAcoplados: any;
+    razonSocialParaGestion = "";
     private selectUndefinedOptionValue: any;
 
     contratosDisponibles: ContratoOrdenFas[] = [];
@@ -866,14 +867,16 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     gestionarAltaCUIT() {
         const campo = this.displayModal;
         const cuit = this.ordenDeCarga[campo];
+        const razonSocial = this.razonSocialParaGestion;
         this.displayModal = null;
-        this.service.enviarMailGestionarAltaCuit(cuit).subscribe(result => {
+        this.razonSocialParaGestion = "";
+        this.service.enviarMailGestionarAltaCuit(cuit,razonSocial).subscribe(result => {
             if (result.logout) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
-                this.mensajeComponent.setErrorMsg(result.error);
+                this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar alta CUIT ${campo.replace("CUIT","")}`);
             } else if (result.info != undefined) {
-                this.mensajeComponent.setInfoMsg(result.info);
+                this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta CUIT ${campo.replace("CUIT","")}`);
 
             } else {
                 this.mensajesOrdenDeCarga[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;

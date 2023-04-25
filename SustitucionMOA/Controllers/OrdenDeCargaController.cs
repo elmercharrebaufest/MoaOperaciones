@@ -824,12 +824,12 @@ namespace SustitucionMOA.Controllers
             //return JsonCustom(response);
         }
         [HttpGet]
-        public ActionResult GestionarAltaCuit(string cuit)
+        public ActionResult GestionarAltaCuit(string cuit, string razonSocial)
         {
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                response.Data = ordenDeCargaService.EmailGestionarAlta(cuit);
+                response.Data = ordenDeCargaService.EmailGestionarAlta(cuit, razonSocial);
             }
             catch (InfoCustomException ice)
             {
