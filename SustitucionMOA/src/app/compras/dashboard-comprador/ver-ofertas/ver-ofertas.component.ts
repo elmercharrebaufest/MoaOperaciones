@@ -13,11 +13,13 @@ import { ListBaseComponent } from '../../../common/base-components/list-base-com
 import { Table } from 'primeng/table';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
+import { Solp } from '../../solp/solp';
 
 @Component({
   selector: 'app-ver-ofertas',
   templateUrl: './ver-ofertas.component.html',
-  styleUrls: ['./ver-ofertas.component.css']
+  styleUrls: ['../../compras.component.css',
+    './ver-ofertas.component.css']
 })
 export class VerOfertasComponent extends ListBaseComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
@@ -29,14 +31,16 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
   public peticion: PeticionDeOfertaDto;
 
   peticionOferta: PeticionDeOfertaDto;
-
-  tablaOfertas: any[];
+  SolpDto: Solp;
+  tablaOfertas: PeticionDeOfertaDto;
 
   constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
     protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
     protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-}
+  }
+
+ 
 
 
   ngOnInit() {
@@ -46,6 +50,19 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
           this.verOfertas(peticionOferta_Id);
       })
     };
+
+    if (this.tablaOfertas == null) {
+      this.tablaOfertas = {
+          Id: null,
+          FechaEntregaFormateado: null,
+          PlazoDeOferta: null,
+          CUIT: null,
+          Mail: null,
+          Usuarios: new Array(),
+          SolpDto: null,
+          Selected: null
+      };
+    }
   }
 
   verOfertas(peticionOferta_Id) {
@@ -76,5 +93,55 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
     return false; //<-- Prevent Refresh
-}
+  }
+
+  descargarAdjuntosCotizacion(cotizacionId) {
+    this.blockUI.start("Descargando...");
+    this.service.DescargarAdjuntosCotizacion(cotizacionId)
+        .subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: "application/octet-stream",
+                    });
+
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(
+                            blob,
+                            result.FileDownloadName
+                        );
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
+                        this.blockUI.stop();
+                        return false;
+                    }
+                    this.blockUI.stop();
+                }
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+                this.blockUI.stop();
+            }
+        )
+    }
+
+    validacionCantidad(cantidad: number, cantidadPendiente: number){
+        if(cantidad > cantidadPendiente){
+            this.floatMsgService.setErrorMsg("La cantidad ingresada debe ser menor a " + cantidadPendiente);
+        }
+    }
+  
 }

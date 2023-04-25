@@ -1,0 +1,17 @@
+.headerth {
+    font-size: 11px !important; 
+    cursor:pointer;
+}
+
+.columna{
+    word-break: break-all; word-wrap:break-word; font-size: 12px;;
+}
+
+  
+  .wrapper {
+    min-height: 265px !important;
+    position: relative;
+    overflow-x: auto;
+  }
+
+ 

@@ -718,6 +718,13 @@
                         /endpoint[@name='SI_MPMF_MOAOP_MOD_ORDEN_CARGA']
                         /@address" />
 	</parameter>
+
+	<parameter name="SI_MMRFC_OBTENER_TIPO_CAMBIO Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                    /endpoint[@name='SI_MMRFC_OBTENER_TIPO_CAMBIO']
+                    /@address" />
+	</parameter>
 	
 </parameters>
 
