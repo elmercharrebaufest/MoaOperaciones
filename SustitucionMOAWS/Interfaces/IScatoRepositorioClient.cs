@@ -9,7 +9,6 @@ namespace SustitucionMOAWS.Interfaces
 {
     public interface IScatoRepositorioClient
     {
-        //Task<ConsultaListado<Planta>> ObtenerPlantasAsync(string cuitDestino);
         ConsultaListado<Planta> ObtenerPlantas(string cuitDestino);
         ConsultaListado<Domicilio> ObtenerDomicilios(string cuitDestino);
     }

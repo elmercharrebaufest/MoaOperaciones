@@ -263,7 +263,7 @@
       <Name>SustitucionMOAValidator</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAWS\SustitucionMOAWS.csproj">
-      <Project>{CB32F9E6-ED7B-4623-B624-0EA3717D06C2}</Project>
+      <Project>{cb32f9e6-ed7b-4623-b624-0ea3717d06c2}</Project>
       <Name>SustitucionMOAWS</Name>
     </ProjectReference>
   </ItemGroup>
