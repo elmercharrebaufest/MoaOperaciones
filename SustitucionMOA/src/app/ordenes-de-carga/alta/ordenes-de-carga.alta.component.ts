@@ -46,7 +46,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajesOrdenDeCarga: Partial<Record<keyof OrdenDeCarga, string>> = {};
     validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
-    displayModal: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
+    displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino'>|null;
     validaCPEDG = false;
     mensajeError: string = "";
     mensajeSuccess: string = "";
@@ -61,6 +61,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     userEmail: string = "";
     patentesChasis: any;
     patentesAcoplados: any;
+    razonSocialParaGestion = "";
     private selectUndefinedOptionValue: any;
 
     contratosDisponibles: ContratoOrdenFas[] = [];
@@ -794,9 +795,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 } else {
                     if (!result.data.Existe) {
                         this.mensajesOrdenDeCarga[campo] = `La cuit ${cuit} no se encuentra registrada`;
-                        this.displayModal[campo] = true;
+                        this.displayModal = campo;
                     } else {
-
                         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = result.data.RazonSocial;
                         this.validarSisaCuit(cuit, campo)
                     }
@@ -864,9 +864,24 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     revisarCUITFormatoValido(cuit: string): boolean {
         return cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
     }
-    gestionarAltaCUIT(campo: CuitValidaExistencia) {
+    gestionarAltaCUIT() {
+        const campo = this.displayModal;
         const cuit = this.ordenDeCarga[campo];
-        this.mensajesOrdenDeCarga[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
+        const razonSocial = this.razonSocialParaGestion;
+        this.displayModal = null;
+        this.razonSocialParaGestion = "";
+        this.service.enviarMailGestionarAltaCuit(cuit,razonSocial).subscribe(result => {
+            if (result.logout) {
+                this.sessionDataService.logout();
+            } else if (result.error != undefined && result.error != "") {
+                this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar alta CUIT ${campo.replace("CUIT","")}`);
+            } else if (result.info != undefined) {
+                this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta CUIT ${campo.replace("CUIT","")}`);
+
+            } else {
+                this.mensajesOrdenDeCarga[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
+            }
+        })
     }
 
     validarSisaCorredorCliente() {
