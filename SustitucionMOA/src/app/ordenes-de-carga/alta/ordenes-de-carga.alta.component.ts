@@ -46,7 +46,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajesOrdenDeCarga: Partial<Record<keyof OrdenDeCarga, string>> = {};
     validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
-    displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino'>|null;
+    displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino'> | null;
     validaCPEDG = false;
     mensajeError: string = "";
     mensajeSuccess: string = "";
@@ -870,13 +870,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         const razonSocial = this.razonSocialParaGestion;
         this.displayModal = null;
         this.razonSocialParaGestion = "";
-        this.service.enviarMailGestionarAltaCuit(cuit,razonSocial).subscribe(result => {
+        this.service.enviarMailGestionarAltaCuit(cuit, razonSocial).subscribe(result => {
             if (result.logout) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
-                this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar alta CUIT ${campo.replace("CUIT","")}`);
+                this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar alta CUIT ${campo.replace("CUIT", "")}`);
             } else if (result.info != undefined) {
-                this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta CUIT ${campo.replace("CUIT","")}`);
+                this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta CUIT ${campo.replace("CUIT", "")}`);
 
             } else {
                 this.mensajesOrdenDeCarga[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
@@ -898,16 +898,16 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 .subscribe(svcRes => {
                     let resp = this.manejarErroresApiResponse(svcRes);
                     if (resp && (!resp.CorredorHabilitadoEnSisa || !resp.ClienteHabilitadoEnSisa)) {
-                        let msj = 
+                        let msj =
                             (!resp.CorredorHabilitadoEnSisa && !resp.ClienteHabilitadoEnSisa) ?
                                 "Corredor y Cliente no están habilitados en SISA, no podrá cargar la orden hasta regularizar la situación" :
                                 (!resp.CorredorHabilitadoEnSisa ?
                                     "Corredor no habilitado en SISA, no podrá cargar la orden hasta regularizar la situación" :
                                     "Cliente no habilitado en SISA, no podrá cargar la orden hasta regularizar la situación");
                         this.mensajeComponent.setErrorMsg(msj);
-                        this.ordenDeCarga.ContratoSeleccionado = undefined;
-                        this.ordenDeCarga.Producto_Id = 0;
-                        this.Producto = "";
+                        this.reiniciarProducto();
+                    } else if (resp) {
+                        this.validarRuca(this.ordenDeCarga.CUITCliente.toString(), "CUITCliente");
                     }
                     this.blockUI.stop();
                 })
@@ -940,6 +940,23 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
 
+    validarRuca(cuit: string, campo: CuitValidaRUCA) {
+        this.service.validarCuitRuca(cuit).subscribe(result => {
+            let data = this.manejarErroresApiResponse(result);
+            if (!data) {
+                this.mensajesOrdenDeCarga[campo] = `${campo.replace("CUIT", "")}  no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación`;
+                if (campo === "CUITCliente")
+                    this.reiniciarProducto();
+            }
+        });
+    }
+
+    reiniciarProducto() {
+        this.ordenDeCarga.ContratoSeleccionado = undefined;
+        this.ordenDeCarga.Producto_Id = 0;
+        this.Producto = "";
+    }
+
     manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
         if (response.logout) {
             this.sessionDataService.logout();
@@ -955,7 +972,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         return response.data;
     }
 
-    validarRuca(cuit: string, campo: CuitValidaRUCA) { }
     descripcionIntermediarioFlete = "Texto descriptivo de lo que representa el campo CUIT Intermediario Flete"
     descripcionTransporte = "Texto descriptivo de lo que representa el campo CUIT Transporte"
 }
