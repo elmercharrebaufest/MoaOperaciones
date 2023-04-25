@@ -5,6 +5,7 @@ using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAWS.Logger;
+using SustitucionMOAFotmatter;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -106,13 +107,13 @@ namespace SustitucionMOAWS.WSConsumers
         public ValidarCuitExisteScatoResponse ExisteCuitDestinoDestinatario(string cuit, bool logger = true)
         {
             if (logger)
-                Log.Info(string.Format("Validar CUIL Chofer: {0}", cuit));
+                Log.Info(string.Format("Validar Existe CUIT en SCATO: {0}", cuit));
 
-            var listaClientes = service.ListarClientesPorCuit(cuit);
+            var listaClientes = service.ListarClientesPorCuit(DataFormatter.CuitConGuion(cuit));
             var result = ValidarCuitExisteScatoResponse.Nuevo(listaClientes.Length > 0, listaClientes.FirstOrDefault()?.Descripcion);
 
             if (logger)
-                Log.Info(string.Format("Result Validar CUIL: {0}; Result: {1}", cuit, result.Existe ? "Existe" : "No existe"));
+                Log.Info(string.Format("Result Existe CUIT en SCATO: {0}; Result: {1}", cuit, result.Existe ? "Existe" : "No existe"));
 
             return result;
         }
