@@ -48,9 +48,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     TipoPosicionCodigo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     NroSolp = po.Solp.NroSolp,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
-                                                                join adjudicacion in contexto.Set<AdjudicacionPosicion>() on pop.SolpPosicion_Id equals adjudicacion.SolpPosicion_Id into adjudicacionPosicion
-                                                                from adjudicacion in adjudicacionPosicion.DefaultIfEmpty()
-                                                                where pop.Id == pop.PeticionDeOferta_Id
+                                                                where po.Id == pop.PeticionDeOferta_Id
                                                                 select new PeticionDeOfertaSolpPosicionDto()
                                                                    {
                                                                     Id = pop.Id,
@@ -165,12 +163,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                                         TotalARPSubPosCotizacion = 0,
                                                                                                         Moneda_Id = subpos.Moneda_Id.Value,                                                                                                      
                                                                                                         TotalPesos = 0,
-                                                                                                        PrecioTotalSubPos = subpos.Cantidad.Value * subpos.Precio.Value,
-                                                                                                        MonedaDescripcion = cotizacion != null && subpos.Moneda != null ? subpos.Moneda.Codigo : "",
-                                                                                                        PrecioUnidad = subpos.Precio.Value,
-                                                                                                        PrecioTotalSubPosCotizacion = subpos.Cantidad.Value * subpos.Precio.Value,
-                                                                                                        TotalARPSubPosCotizacion = 0,
-
+                                                                                                        PrecioTotalSubPos = subpos.Cantidad.Value * subpos.Precio.Value
                                                                                                     }).ToList()
 
                                                                     }).ToList(),
