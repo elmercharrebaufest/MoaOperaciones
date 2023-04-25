@@ -7,36 +7,25 @@
 <div class="content-wraper" style="padding-top: 0px !important;">
   <spinner></spinner>
 
-  <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;" *ngIf="tablaOfertas.TipoPosicionCodigo == 'MATERIALES'">
-    <p-table #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" dataKey="Id" [columns]="cols" scrollHeight="150px" frozenWidth="200px">
-      <ng-template pTemplate="frozenheader"> 
-        <tr> 
-          <th class="headerth" style="width:200px;height:84px" rowspan="3"><p-checkbox name="posiciones" [binary]="true"></p-checkbox></th> 
-        </tr> 
-      </ng-template> 
-        <ng-template pTemplate="frozenbody" let-sale> 
-          <tr> 
-            <td class="columna"><p-checkbox name="posiciones" [(ngModel)]="peticionPosicion.Selected" binary="false"></p-checkbox></td>
- 
-          </tr> 
-        </ng-template> 
-      <ng-template pTemplate="header" let-columns="columns" class="lista-header">
+  <div class="col-sm-12 col-md-12 col-lg-12 wrapper" style="margin-left: -15px;" *ngIf="tablaOfertas.TipoPosicionCodigo == 'MATERIALES'">
+    <p-table #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" dataKey="Id"> 
+      <ng-template pTemplate="header" let-columns class="lista-header">
         <tr style="visibility: collapse !important;">
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 40px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 40px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 100px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 150px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 90px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 80px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 60px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 60px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
           <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
-          <th class="headerth2" style="height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 80px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 100px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 100px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 100px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 100px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+          <th class="headerth2" style="width: 90px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
           </ng-container>
         </tr>
         <tr>
@@ -75,7 +64,7 @@
             <td pEditableColumn class="columna">
               <p-cellEditor>
                 <ng-template pTemplate="input">
-                  <input type="text" pKeyFilter="int" [(ngModel)]="peticionPosicion.Posicion.Cantidad">
+                  <input type="text" pKeyFilter="int" [(ngModel)]="peticionPosicion.Posicion.Cantidad" (keyup)="validacionCantidad(peticionPosicion.Posicion.Cantidad, peticionPosicion.Posicion.CantidadPendiente)">
                 </ng-template>
                 <ng-template pTemplate="output">
                   {{peticionPosicion.Posicion.Cantidad | number: '1.0-0'}}
