@@ -988,19 +988,6 @@ namespace SustitucionMOA.Controllers
             {
                 var result = service.CrearOrdenDeCompra(AdjudicacionId);
 
-                //TODO: hardcodeados o para revisar
-                ///VENDOR Proveedor adjudicado
-                ///PURCH_ORG OrganizacionCompras hardcode 2029
-                ///Usuario que envia la OC es el de la solp tiene que ser el usuari acutal
-                ///posiciones esta enviando todoas tiene que ser otra la logica
-                ///STREET y STREET_NO esta hardcodeado benelli 398 por que no tenemos el campo separado
-                ///DOC_TYPE hardcode
-                ///IM_POITEMList.IM_POITEM.QUANTITY 1 hardcode
-                ///IM_POACCOUNTList.IM_POACCOUNT.QUANTITY 1 hardcode
-                ///SERIAL_NO/serialNumber siempre 1 por que se imputa todo a lo mismo sino son imputaciones multiples
-                ///QUANTITY para materiales es la cantidad que adjudico el comprador para servicios siempre tiene que ser 1
-                ///
-
                 return JsonCustom(result);
             }
             catch (Exception e)
