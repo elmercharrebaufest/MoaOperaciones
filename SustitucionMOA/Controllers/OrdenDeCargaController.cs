@@ -9,6 +9,7 @@ using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
@@ -821,6 +822,54 @@ namespace SustitucionMOA.Controllers
             // Se serializa así para que tome bien los atributos JsonProperty en SustitucionMOAApiResponse
             return Content(JsonConvert.SerializeObject(response), "application/json");
             //return JsonCustom(response);
+        }
+
+        [HttpGet]
+        public ActionResult ObtenerPlantasDestino(string destinoCuit)
+        {
+            var response = new SustitucionMOAApiResponse<List<PlantaDto>>();
+            try
+            {
+                response.Data = ordenDeCargaService.ObtenerPlantasDestino(destinoCuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return Content(JsonConvert.SerializeObject(response), "application/json");
+        }
+
+        [HttpGet]
+        public ActionResult ObtenerDomiciliosDestino(string destinoCuit)
+        {
+            var response = new SustitucionMOAApiResponse<List<DomicilioDto>>();
+            try
+            {
+                response.Data = ordenDeCargaService.ObtenerDomiciliosDestino(destinoCuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return Content(JsonConvert.SerializeObject(response), "application/json");
         }
     }
 }
