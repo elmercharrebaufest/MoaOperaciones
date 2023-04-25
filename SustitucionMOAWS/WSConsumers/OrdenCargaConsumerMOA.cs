@@ -14,6 +14,7 @@ using SustitucionMOAWS.OrdenCargaCrearSAP;
 using SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP;
 using SustitucionMOAWS.OrdenCargaVisualizarCliente;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
+using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
 
@@ -53,16 +54,24 @@ namespace SustitucionMOAWS.WSConsumers
         */
 
 
-        public ControlCargaResponseHandler ControlCargaRequest(string cliente, string contrato, string corredor, string cuit, string material, string pedido, string soloSisa)
+        public ControlCargaResponseHandler ControlarCarga(ControlCargaRequest datosCarga)
         {
             var service = new SI_MPMF_MOAOP_CONTROL_CARGAClient();
 
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Request: {new { cliente, contrato, corredor, cuit, material, pedido }}");
+            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Request: {datosCarga}");
 
-            var result = service.SI_MPMF_MOAOP_CONTROL_CARGA(cliente, contrato, corredor, cuit, material, pedido, soloSisa).Trim();
-            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {new { result, cliente, contrato, cuit }}");
+            var result = service.SI_MPMF_MOAOP_CONTROL_CARGA(
+                IM_CLIENTE: datosCarga.Cliente,
+                IM_CONTRATO: datosCarga.Contrato,
+                IM_CORREDOR: datosCarga.Corredor,
+                IM_CUIT: datosCarga.Cuit,
+                IM_MATERIAL: datosCarga.Material,
+                IM_PEDIDO: datosCarga.Pedido,
+                IM_SOLO_SISA: datosCarga.SoloSisa ? "X" : "").Trim();
+
+            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {result}");
             return new ControlCargaResponseHandler(result);
         }
         /*
