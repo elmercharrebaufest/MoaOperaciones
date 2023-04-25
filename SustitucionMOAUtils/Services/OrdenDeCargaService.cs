@@ -37,6 +37,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IScatoConsumer scatoConsumer;
         readonly FeriadoService _feriadoService = new FeriadoService();
         protected readonly IFeriadoService feriadoService;
+        protected readonly IScatoRepositorioClient scatoRepositorioClient;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
         private static readonly string EMAIL_TEMPLATE_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
@@ -45,13 +46,19 @@ namespace SustitucionMOAUtils.Services
         private readonly string _errorAnulacion = "Error al anular orden de carga, pero la entrega si ha sido anulada";
         private readonly string _entregaEstadoPendiente = "La entrega sigue pendiente.";
 
-        public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer, IFeriadoService feriadoService, IScatoConsumer scatoConsumer)
+        public OrdenDeCargaService(
+            IRepositorio repositorio,
+            IOrdenCargaConsumerMOA consumer,
+            IFeriadoService feriadoService,
+            IScatoRepositorioClient scatoRepositorioClient,
+            IScatoConsumer scatoConsumer)
         {
             this.repositorio = repositorio;
             this.consumer = consumer;
             this.feriadoService = feriadoService;
             this.scatoConsumer = scatoConsumer;
             _usuarioAutomaticoSAP = ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"];
+            this.scatoRepositorioClient = scatoRepositorioClient;
         }
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
@@ -2436,7 +2443,7 @@ namespace SustitucionMOAUtils.Services
         {
             var res = new ValidarSisaCorredorClienteResponse
             {
-                ClienteHabilitadoEnSisa = false,
+                ClienteHabilitadoEnSisa = true,
                 CorredorHabilitadoEnSisa = true
             };
             return res;
@@ -2453,6 +2460,57 @@ namespace SustitucionMOAUtils.Services
                 RazonSocial = ""
             };
             return res;
+        }
+
+        public List<PlantaDto> ObtenerPlantasDestino(string destinoCuit)
+        {
+            var plantasRes = scatoRepositorioClient.ObtenerPlantas(destinoCuit);
+            if (!plantasRes.IsValid)
+            {
+                Log.Info("Error al obtener Plantas Scato con CUIT " + destinoCuit);
+                foreach (var err in plantasRes.Messages)
+                {
+                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
+                }
+                throw new ValidationCustomException("Error al obtener Plantas");
+            }
+            else
+            {
+                return plantasRes.Data
+                    .Select(x =>
+                        new PlantaDto
+                        {
+                            Actividad = x.Actividad,
+                            Codigo = x.NroPlanta
+                        })
+                    .ToList();
+            }
+        }
+
+        public List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit)
+        {
+            var domiciliosRes = scatoRepositorioClient.ObtenerDomicilios(destinoCuit);
+            if (!domiciliosRes.IsValid)
+            {
+                Log.Info("Error al obtener Plantas Domicilios con CUIT " + destinoCuit);
+                foreach (var err in domiciliosRes.Messages)
+                {
+                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
+                }
+                throw new ValidationCustomException("Error al obtener Domicilios");
+            }
+            else
+            {
+                return domiciliosRes.Data
+                    .Select(x =>
+                        new DomicilioDto
+                        {
+                            Descripcion = x.Descripcion,
+                            Orden = x.Orden,
+                            Tipo = x.Tipo
+                        })
+                    .ToList();
+            }
         }
 
         private Proveedor GetClienteParaCorredor(Usuario usuario, Proveedor corredor, OrdenDeCarga ordenDeCarga)

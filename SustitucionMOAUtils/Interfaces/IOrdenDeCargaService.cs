@@ -48,5 +48,7 @@ namespace SustitucionMOAUtils.Interfaces
         ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
         bool ValidarSisaCuit(string cuit);
         ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit);
+        List<PlantaDto> ObtenerPlantasDestino(string destinoCuit);
+        List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
     }
 }
