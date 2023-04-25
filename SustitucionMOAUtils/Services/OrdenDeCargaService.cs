@@ -365,6 +365,7 @@ namespace SustitucionMOAUtils.Services
                     ordenDeCarga.Cliente.CodigoProveedor, ordenDeCarga.ContratoIngresado, ordenDeCarga.CodigoCorredor,
                     ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, validarKg,
                     ordenDeCarga.CUITDestino, ordenDeCarga.CUITDestinatario, ordenDeCarga.RazonSocialDestino, ordenDeCarga.RazonSocialDestinatario,
+                    ordenDeCarga.Reventa,
                     out string numeroPedido);
                 if (!string.IsNullOrEmpty(result))
                 {
@@ -437,6 +438,7 @@ namespace SustitucionMOAUtils.Services
                 cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad,
                 ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, ValidarKg,
                 ordenDeCarga.CUITDestino, ordenDeCarga.CUITDestinatario, ordenDeCarga.RazonSocialDestino, ordenDeCarga.RazonSocialDestinatario,
+                ordenDeCarga.Reventa,
                 out string numeroPedido);
 
             var resultadoCrearOrden = false;
@@ -2080,6 +2082,7 @@ namespace SustitucionMOAUtils.Services
                 orden.CUITChofer, orden.Cantidad, conductor, orden.PatenteAcoplado,
                 orden.ChasisAcoplado, orden.NumeroPedido, tipoDocumento, orden.CUITTransporte,
                 orden.CUITDestinatario, orden.RazonSocialDestinatario, orden.CUITDestino, orden.CUITDestinatario,
+                orden.Reventa,
                 out string respuesta);
             Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Result " + result);
             Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Respuesta " + respuesta);
