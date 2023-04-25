@@ -67,9 +67,11 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_CONTRATO: datosCarga.Contrato,
                 IM_CORREDOR: datosCarga.Corredor,
                 IM_CUIT: datosCarga.Cuit,
+                IM_CUITDESTF: datosCarga.CuitDestino,
+                IM_CUITDESTINAT: datosCarga.CuitDestinatario,
                 IM_MATERIAL: datosCarga.Material,
                 IM_PEDIDO: datosCarga.Pedido,
-                IM_SOLO_SISA: datosCarga.SoloSisa ? "X" : "").Trim();
+                IM_SOLO_SISA: datosCarga.SoloSisa ? "X" : "");
 
             Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {result}");
             return new ControlCargaResponseHandler(result);

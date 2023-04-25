@@ -14,6 +14,8 @@ namespace SustitucionMOAWS.WSRequests.OrdenCarga
         public string Cuit { get; set; }
         public string Material { get; set; }
         public string Pedido { get; set; }
+        public string CuitDestino { get; set; }
+        public string CuitDestinatario { get; set; }
         public bool SoloSisa { get; set; }
     }
 }

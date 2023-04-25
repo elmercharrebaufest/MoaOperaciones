@@ -24,6 +24,38 @@ namespace SustitucionMOAWS.OrdenCargaControlSAP {
         System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGAResponse> SI_MPMF_MOAOP_CONTROL_CARGAAsync(SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGARequest request);
     }
     
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:sap-com:document:sap:rfc:functions")]
+    public partial class ZMPES7060 : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string mENSAJEField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
+        public string MENSAJE {
+            get {
+                return this.mENSAJEField;
+            }
+            set {
+                this.mENSAJEField = value;
+                this.RaisePropertyChanged("MENSAJE");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -48,24 +80,34 @@ namespace SustitucionMOAWS.OrdenCargaControlSAP {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=4)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_MATERIAL;
+        public string IM_CUITDESTF;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=5)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_PEDIDO;
+        public string IM_CUITDESTINAT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=6)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_MATERIAL;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=7)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_PEDIDO;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=8)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string IM_SOLO_SISA;
         
         public SI_MPMF_MOAOP_CONTROL_CARGARequest() {
         }
         
-        public SI_MPMF_MOAOP_CONTROL_CARGARequest(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, string IM_CUIT, string IM_MATERIAL, string IM_PEDIDO, string IM_SOLO_SISA) {
+        public SI_MPMF_MOAOP_CONTROL_CARGARequest(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, string IM_CUIT, string IM_CUITDESTF, string IM_CUITDESTINAT, string IM_MATERIAL, string IM_PEDIDO, string IM_SOLO_SISA) {
             this.IM_CLIENTE = IM_CLIENTE;
             this.IM_CONTRATO = IM_CONTRATO;
             this.IM_CORREDOR = IM_CORREDOR;
             this.IM_CUIT = IM_CUIT;
+            this.IM_CUITDESTF = IM_CUITDESTF;
+            this.IM_CUITDESTINAT = IM_CUITDESTINAT;
             this.IM_MATERIAL = IM_MATERIAL;
             this.IM_PEDIDO = IM_PEDIDO;
             this.IM_SOLO_SISA = IM_SOLO_SISA;
@@ -79,13 +121,14 @@ namespace SustitucionMOAWS.OrdenCargaControlSAP {
     public partial class SI_MPMF_MOAOP_CONTROL_CARGAResponse {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=0)]
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string EX_MENSAJE;
+        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
+        public SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060[] EX_MENSAJE;
         
         public SI_MPMF_MOAOP_CONTROL_CARGAResponse() {
         }
         
-        public SI_MPMF_MOAOP_CONTROL_CARGAResponse(string EX_MENSAJE) {
+        public SI_MPMF_MOAOP_CONTROL_CARGAResponse(SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060[] EX_MENSAJE) {
             this.EX_MENSAJE = EX_MENSAJE;
         }
     }
@@ -122,12 +165,14 @@ namespace SustitucionMOAWS.OrdenCargaControlSAP {
             return base.Channel.SI_MPMF_MOAOP_CONTROL_CARGA(request);
         }
         
-        public string SI_MPMF_MOAOP_CONTROL_CARGA(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, string IM_CUIT, string IM_MATERIAL, string IM_PEDIDO, string IM_SOLO_SISA) {
+        public SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060[] SI_MPMF_MOAOP_CONTROL_CARGA(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, string IM_CUIT, string IM_CUITDESTF, string IM_CUITDESTINAT, string IM_MATERIAL, string IM_PEDIDO, string IM_SOLO_SISA) {
             SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGARequest inValue = new SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGARequest();
             inValue.IM_CLIENTE = IM_CLIENTE;
             inValue.IM_CONTRATO = IM_CONTRATO;
             inValue.IM_CORREDOR = IM_CORREDOR;
             inValue.IM_CUIT = IM_CUIT;
+            inValue.IM_CUITDESTF = IM_CUITDESTF;
+            inValue.IM_CUITDESTINAT = IM_CUITDESTINAT;
             inValue.IM_MATERIAL = IM_MATERIAL;
             inValue.IM_PEDIDO = IM_PEDIDO;
             inValue.IM_SOLO_SISA = IM_SOLO_SISA;
@@ -140,12 +185,14 @@ namespace SustitucionMOAWS.OrdenCargaControlSAP {
             return base.Channel.SI_MPMF_MOAOP_CONTROL_CARGAAsync(request);
         }
         
-        public System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGAResponse> SI_MPMF_MOAOP_CONTROL_CARGAAsync(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, string IM_CUIT, string IM_MATERIAL, string IM_PEDIDO, string IM_SOLO_SISA) {
+        public System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGAResponse> SI_MPMF_MOAOP_CONTROL_CARGAAsync(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, string IM_CUIT, string IM_CUITDESTF, string IM_CUITDESTINAT, string IM_MATERIAL, string IM_PEDIDO, string IM_SOLO_SISA) {
             SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGARequest inValue = new SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGARequest();
             inValue.IM_CLIENTE = IM_CLIENTE;
             inValue.IM_CONTRATO = IM_CONTRATO;
             inValue.IM_CORREDOR = IM_CORREDOR;
             inValue.IM_CUIT = IM_CUIT;
+            inValue.IM_CUITDESTF = IM_CUITDESTF;
+            inValue.IM_CUITDESTINAT = IM_CUITDESTINAT;
             inValue.IM_MATERIAL = IM_MATERIAL;
             inValue.IM_PEDIDO = IM_PEDIDO;
             inValue.IM_SOLO_SISA = IM_SOLO_SISA;

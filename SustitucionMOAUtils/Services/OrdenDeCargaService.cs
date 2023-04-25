@@ -515,6 +515,8 @@ namespace SustitucionMOAUtils.Services
                 Contrato = contrato,
                 Corredor = ordenDeCarga.CodigoCorredor,
                 Cuit = ordenDeCarga.CUITTransporte,
+                CuitDestino = ordenDeCarga.CUITDestino,
+                CuitDestinatario = ordenDeCarga.CUITDestinatario,
                 Material = ordenDeCarga.Producto.CodigoSap,
                 Pedido = ordenDeCarga.NumeroPedido,
                 SoloSisa = false
