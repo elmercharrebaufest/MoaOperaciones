@@ -2469,12 +2469,10 @@ namespace SustitucionMOAUtils.Services
         }
         public ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit)
         {
-            var res = new ValidarCuitExisteScatoResponse
-            {
-                Existe = true,
-                RazonSocial = ""
-            };
-            return res;
+
+            var result = scatoConsumer.ExisteCuitDestinoDestinatario(cuit);
+
+            return result;
         }
 
         public List<PlantaDto> ObtenerPlantasDestino(string destinoCuit)
@@ -2601,9 +2599,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                Log.Debug("OrdenDeCarga Controller", "Validar CUIL Choer", cuil);
                 var result = scatoConsumer.CuilChoferExiste(cuil);
-                Log.Debug("OrdenDeCarga Controller", string.Format("Result Validar CUIL: {0}", cuil), result ? "Existe" : "No existe");
             }
             catch (Exception err)
             {

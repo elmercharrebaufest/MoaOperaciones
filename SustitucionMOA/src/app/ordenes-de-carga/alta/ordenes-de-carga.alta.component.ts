@@ -883,7 +883,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 .subscribe(svcRes => {
                     let resp = this.manejarErroresApiResponse(svcRes);
                     if (resp && (!resp.CorredorHabilitadoEnSisa || !resp.ClienteHabilitadoEnSisa)) {
-                        let msj = 
+                        let msj =
                             (!resp.CorredorHabilitadoEnSisa && !resp.ClienteHabilitadoEnSisa) ?
                                 "Corredor y Cliente no están habilitados en SISA, no podrá cargar la orden hasta regularizar la situación" :
                                 (!resp.CorredorHabilitadoEnSisa ?

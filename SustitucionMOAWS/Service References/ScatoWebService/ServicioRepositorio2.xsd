@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="ArrayOfint">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="int" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfint" nillable="true" type="tns:ArrayOfint" />
+  <xs:complexType name="ArrayOfguid">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="guid" type="ser:guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfguid" nillable="true" type="tns:ArrayOfguid" />
   <xs:complexType name="ArrayOfstring">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xs:string" />
@@ -25,24 +37,18 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfKeyValueOfstringstring" nillable="true" type="tns:ArrayOfKeyValueOfstringstring" />
-  <xs:complexType name="ArrayOfint">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="int" type="xs:int" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ArrayOfint" nillable="true" type="tns:ArrayOfint" />
-  <xs:complexType name="ArrayOfguid">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="guid" type="ser:guid" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ArrayOfguid" nillable="true" type="tns:ArrayOfguid" />
   <xs:complexType name="ArrayOfbase64Binary">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="base64Binary" nillable="true" type="xs:base64Binary" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfbase64Binary" nillable="true" type="tns:ArrayOfbase64Binary" />
+  <xs:complexType name="ArrayOflong">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="long" type="xs:long" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOflong" nillable="true" type="tns:ArrayOflong" />
   <xs:complexType name="ArrayOfKeyValueOfstringNullableOfdecimalU6ho3Bhd">
     <xs:annotation>
       <xs:appinfo>
