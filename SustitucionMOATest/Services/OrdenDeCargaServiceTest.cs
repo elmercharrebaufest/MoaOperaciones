@@ -23,6 +23,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using SustitucionMOAWS.WSRequests.OrdenCarga;
 
 namespace SustitucionMOATest.Services
 {
@@ -154,14 +155,7 @@ namespace SustitucionMOATest.Services
                .Returns(proveedor);
 
             consumerOrdenCargaMOA
-                .Setup(x => x.ControlCargaRequest(It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>())
-                )
+                .Setup(x => x.ControlarCarga(It.IsAny<ControlCargaRequest>()))
                 .Returns(new SustitucionMOAWS.ResponseHandler.OrdenCarga.ControlCargaResponseHandler("CC-00"));
 
             repositorioMock

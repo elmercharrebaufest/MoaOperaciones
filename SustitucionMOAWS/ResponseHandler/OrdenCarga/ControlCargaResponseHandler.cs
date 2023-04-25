@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAWS.Enum.OrdenCargaConsumer;
+using SustitucionMOAWS.OrdenCargaControlSAP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,24 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
         {
             foreach (var resp in sapResponses)
             {
+                logResponse += resp + ". ";
+                if (resp.Contains(","))
+                {
+                    TieneMultiplesContratos = true;
+                    contratosSap.AddRange(resp.Split(','));
+                }
+                else
+                {
+                    respuestasSap.Add(ResponseConverter.GetOrdenCargaControlCargaResponse(resp));
+                }
+            }
+        }
+
+        public ControlCargaResponseHandler(ZMPES7060[] mensajesSap)
+        {
+            foreach (var item in mensajesSap)
+            {
+                var resp = item.MENSAJE;
                 logResponse += resp + ". ";
                 if (resp.Contains(","))
                 {

@@ -556,6 +556,7 @@
     <Compile Include="WSConsumers\VendedoresConsumerMOA.cs" />
     <Compile Include="WSConsumers\VendedorHabilitadoConsumerMOA.cs" />
     <Compile Include="WSConsumers\VinculaDetalleConsumerMOA.cs" />
+    <Compile Include="WSRequests\OrdenCarga\ControlCargaRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
