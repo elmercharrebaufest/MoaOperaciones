@@ -156,7 +156,11 @@ namespace SustitucionMOATest.Services
 
             consumerOrdenCargaMOA
                 .Setup(x => x.ControlarCarga(It.IsAny<ControlCargaRequest>()))
-                .Returns(new SustitucionMOAWS.ResponseHandler.OrdenCarga.ControlCargaResponseHandler("CC-00"));
+                .Returns(new SustitucionMOAWS.ResponseHandler.OrdenCarga.ControlCargaResponseHandler(
+                    new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060[]
+                    {
+                        new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060 { MENSAJE = "CC-00" }
+                    }));
 
             repositorioMock
                 .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))

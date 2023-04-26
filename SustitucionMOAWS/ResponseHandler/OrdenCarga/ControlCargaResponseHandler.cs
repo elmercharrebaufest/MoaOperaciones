@@ -16,25 +16,6 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
 
         public bool TieneMultiplesContratos { get; private set; } = false;
 
-        public ControlCargaResponseHandler(string sapResponse) : this(new string[] { sapResponse }) { }
-
-        public ControlCargaResponseHandler(string[] sapResponses)
-        {
-            foreach (var resp in sapResponses)
-            {
-                logResponse += resp + ". ";
-                if (resp.Contains(","))
-                {
-                    TieneMultiplesContratos = true;
-                    contratosSap.AddRange(resp.Split(','));
-                }
-                else
-                {
-                    respuestasSap.Add(ResponseConverter.GetOrdenCargaControlCargaResponse(resp));
-                }
-            }
-        }
-
         public ControlCargaResponseHandler(ZMPES7060[] mensajesSap)
         {
             foreach (var item in mensajesSap)
