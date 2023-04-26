@@ -2469,13 +2469,23 @@ namespace SustitucionMOAUtils.Services
 
         public ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo)
         {
+            var controlarCargaReq = new ControlCargaRequest
+            {
+                Cliente = clienteCodigo,
+                Corredor = corredorCodigo.StartsWith("C") ? corredorCodigo : "",
+                SoloSisa = true
+            };
+
+            var responseHandler = consumer.ControlarCarga(controlarCargaReq);
+
             var res = new ValidarSisaCorredorClienteResponse
             {
-                ClienteHabilitadoEnSisa = true,
-                CorredorHabilitadoEnSisa = true
+                ClienteHabilitadoEnSisa = !responseHandler.TieneRespuesta(OrdenCargaControlCarga.ClienteInhabilitadoEnSisa),
+                CorredorHabilitadoEnSisa = !responseHandler.TieneRespuesta(OrdenCargaControlCarga.CorredorInhabilitadoEnSisa)
             };
             return res;
         }
+
         public bool ValidarSisaCuit(string cuit)
         {
             return cuit != "11223344551";

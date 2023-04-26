@@ -773,6 +773,7 @@ namespace SustitucionMOA.Controllers
             return Content(JsonConvert.SerializeObject(response), "application/json");
             //return JsonCustom(response);
         }
+
         [HttpGet]
         public ActionResult ValidarCuitExisteScato(string cuit)
         {
@@ -895,6 +896,7 @@ namespace SustitucionMOA.Controllers
             }
             return Content(JsonConvert.SerializeObject(response), "application/json");
         }
+
         [HttpGet]
         public ActionResult ValidarCuitRuca(string cuit)
         {
