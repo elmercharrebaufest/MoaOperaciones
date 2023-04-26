@@ -18,6 +18,7 @@ using SustitucionMOAUtils.Validadores.OrdenDeCarga;
 using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
+using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -508,7 +509,19 @@ namespace SustitucionMOAUtils.Services
                 contrato = contrato.Split('|').First();
             }
 
-            var responseHandler = consumer.ControlCargaRequest(cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido, "");
+            var controlarCargaReq = new ControlCargaRequest
+            {
+                Cliente = cliente.CodigoProveedor,
+                Contrato = contrato,
+                Corredor = ordenDeCarga.CodigoCorredor,
+                Cuit = ordenDeCarga.CUITTransporte,
+                CuitDestino = ordenDeCarga.CUITDestino,
+                CuitDestinatario = ordenDeCarga.CUITDestinatario,
+                Material = ordenDeCarga.Producto.CodigoSap,
+                Pedido = ordenDeCarga.NumeroPedido,
+                SoloSisa = false
+            };
+            var responseHandler = consumer.ControlarCarga(controlarCargaReq);
 
             //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
             //cual es el contrato correcto que le quiere entregar.
@@ -2456,13 +2469,23 @@ namespace SustitucionMOAUtils.Services
 
         public ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo)
         {
+            var controlarCargaReq = new ControlCargaRequest
+            {
+                Cliente = clienteCodigo,
+                Corredor = corredorCodigo.StartsWith("C") ? corredorCodigo : "",
+                SoloSisa = true
+            };
+
+            var responseHandler = consumer.ControlarCarga(controlarCargaReq);
+
             var res = new ValidarSisaCorredorClienteResponse
             {
-                ClienteHabilitadoEnSisa = true,
-                CorredorHabilitadoEnSisa = true
+                ClienteHabilitadoEnSisa = !responseHandler.TieneRespuesta(OrdenCargaControlCarga.ClienteInhabilitadoEnSisa),
+                CorredorHabilitadoEnSisa = !responseHandler.TieneRespuesta(OrdenCargaControlCarga.CorredorInhabilitadoEnSisa)
             };
             return res;
         }
+
         public bool ValidarSisaCuit(string cuit)
         {
             return cuit != "11223344551";

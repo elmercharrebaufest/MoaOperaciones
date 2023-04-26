@@ -38,20 +38,6 @@ namespace SustitucionMOAWS.Enum.OrdenCargaConsumer
 
         internal static OrdenCargaControlCarga GetOrdenCargaControlCargaResponse(string response)
         {
-            //switch (response)
-            //{
-            //    case "CC-00": return OrdenCargaControlCarga.OK;
-            //    case "CC-01": return OrdenCargaControlCarga.MasDeUnContratoVigente;
-            //    case "CC-02": return OrdenCargaControlCarga.TransportistaNoDadoDeAlta;
-            //    case "CC-03": return OrdenCargaControlCarga.VerificarPedido;
-            //    case "CC-04": return OrdenCargaControlCarga.VerificarCreditoDePedido;
-            //    case "CC-05": return OrdenCargaControlCarga.PedidoEntregadoCompletamente;
-            //    case "CC-06": return OrdenCargaControlCarga.CC06IdemCC01; // CC-06: 'Considerar como error CC-01'
-            //    case "CC-07": return OrdenCargaControlCarga.FaltaCargarKmsEnContrato;
-            //    case "CC-08": return OrdenCargaControlCarga.ClienteInhabilitadoEnSisa;
-            //    case "CC-09": return OrdenCargaControlCarga.CorredorInhabilitadoEnSisa;
-            //    default: throw new Exception("Respuesta no esperada en OrdenCargaConsumer.ControlCarga: " + response);
-            //}
             if (RespuestasControlCargaDict.TryGetValue(response, out OrdenCargaControlCarga valor))
             {
                 return valor;
