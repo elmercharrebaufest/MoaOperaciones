@@ -143,6 +143,11 @@ export class EspecificacionesComponent extends ListBaseComponent {
 
     uploadHandler(filesUpload: any): void {
         this.viewModel.archivosEspecificacionesNuevos = filesUpload["files"];
+        var archivoWeb = this.viewModel.archivosEspecificacionesNuevos.reduce((sum, file) => sum + file.size, 0);      
+        if(archivoWeb > 10000000){            
+            this.eliminarAdjuntoNuevo(this.viewModel.archivosEspecificaciones[this.viewModel.archivosEspecificaciones.length - 1])
+            this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb");          
+        }
     }
 
     selectionChange(event): void {

@@ -15,6 +15,8 @@ export class LegajoComponent implements OnInit {
     @Output() descargarLegajoEmitter = new EventEmitter();
     @Output() descargarArchivoEmitter = new EventEmitter<{ archivoId: number }>();
     @Output() adjuntarArchivoLegajoEmitter = new EventEmitter<{ files: any }>();
+    error: string;
+    visualizarAlert = false;
 
 
     constructor() { }
@@ -36,8 +38,16 @@ export class LegajoComponent implements OnInit {
     descargarLegajo() {
         this.descargarLegajoEmitter.next();
     }
-    onBasicUploadAuto(event, fileUpload) {
+    onBasicUploadAuto(event, fileUpload) {     
+        var archivoWeb = event.files.reduce((sum, file) => sum + file.size, 0);      
+        if(archivoWeb > 10000000){ 
+            this.error = "El archivo adjuntado no debe superar los 10Mb";   
+            fileUpload.clear();
+            return  this.visualizarAlert = true;               
+        }else{   
         this.adjuntarArchivoLegajoEmitter.next(event.files);
         fileUpload.clear();
+        this.visualizarAlert = false;
+        }
     }
 }
