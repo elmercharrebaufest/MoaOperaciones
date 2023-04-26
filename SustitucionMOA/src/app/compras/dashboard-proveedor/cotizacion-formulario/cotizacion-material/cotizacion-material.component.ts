@@ -54,7 +54,6 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     }
     ngOnChanges(changes: SimpleChanges): void {
         this.getCombos();
-        console.log(this.peticion, "cotizacion.")
     }
 
     ngOnInit() {
@@ -215,9 +214,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.combos = result;
-                        this.setCombos();
-                        console.log(this.combos, "combos")
-                        //this.combos.flagSolpFinalizada = this.flagSolpFinalizada;                       
+                        this.setCombos();                      
                     }
                 },
                 error => {
@@ -308,7 +305,8 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             ObservacionEconomica: this.peticion.ObservacionEconomica,
             ObservacionTecnica: "",
             ArchivosNuevos: this.archivos,
-            ArchivosGuardados: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { Id: x.Id } }) : null
+            ArchivosGuardados: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { Id: x.Id } }) : null,
+            ArchivosTipo: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { FileKey: x.FileKey } }) : null,
         }
         return coti;
     }
@@ -319,8 +317,8 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             return {
                 PeticionDeOfertaSolpPosicionId: cotizacion.Posiciones.Id,
                 Posicion: cotizacion.Posiciones.Indice,
-                Cantidad: cotizacion.Posiciones.CotizacionPosicion.Cantidad,
-                Precio: cotizacion.Posiciones.CotizacionPosicion.Precio,
+                Cantidad: cotizacion.Posiciones.CotizacionPosicion.Cantidad != null ? cotizacion.Posiciones.CotizacionPosicion.Cantidad : 0,
+                Precio: cotizacion.Posiciones.CotizacionPosicion.Precio != null ? cotizacion.Posiciones.CotizacionPosicion.Precio : 0,
                 MonedaId: cotizacion.Posiciones.CotizacionPosicion.Moneda_Id != 0 ?
                     cotizacion.Posiciones.CotizacionPosicion.Moneda_Id : 0,
                 UnidadDeMedidaId: cotizacion.Posiciones.CotizacionPosicion.UnidadDeMedida_Id != 0 ?
@@ -329,6 +327,8 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
                     cotizacion.Posiciones.CotizacionPosicion.FechaDeEntrega : null,
                 UnidadMedida: cotizacion.Posiciones.CotizacionPosicion.UnidadComprasDescripcion,
                 monedaCompras: cotizacion.Posiciones.CotizacionPosicion.MonedaCodigo,
+                CantidadSubpos: cotizacion.Posiciones.Cantidad,
+                UnidadDeMedidaSubpos: cotizacion.Posiciones.UnidadId
             };
         });
     }

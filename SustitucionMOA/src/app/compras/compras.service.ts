@@ -651,7 +651,8 @@ export class ComprasService extends BaseService {
             EsFinalizado: esFinalizado,
             RespetaServicios: cotizacion.RespetaServicios,
             RespetaMateriales: cotizacion.RespetaMateriales,
-            CotizacionesHoras: cotizacion.CotizacionesHoras
+            CotizacionesHoras: cotizacion.CotizacionesHoras,
+            CotizacionSubposiciones: cotizacion.CotizacionSubposiciones
         });
 
         var payload = new FormData();
@@ -688,5 +689,23 @@ export class ComprasService extends BaseService {
         return this.http
             .post<any>('/api/compras/GrabarCotizacion', payload, { headers: this.headers });
     }
+
+    public obtenerPrecioTotalPosicionProveedor(cotizacion: any) {
+        let json = JSON.stringify({
+            CotizacionId: cotizacion.CotizacionId,
+            PeticionOfertaUsuarioId: cotizacion.PeticionOfertaUsuarioId,
+            CotizacionPosiciones: cotizacion.CotizacionPosiciones,
+            CotizacionesHoras: cotizacion.CotizacionesHoras,
+            CotizacionSubposiciones: cotizacion.CotizacionSubposiciones
+        });
+
+        var payload = new FormData();       
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/ObtenerPrecioTotalPosicionProveedor', payload, { headers: this.headers });
+    }
+
+
 
 }

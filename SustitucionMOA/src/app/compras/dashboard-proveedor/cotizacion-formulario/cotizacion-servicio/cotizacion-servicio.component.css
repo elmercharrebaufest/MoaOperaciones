@@ -83,3 +83,11 @@ input[type=number] {
 ::ng-deep .ui-dropdown-label{
   font-size: 13px !important;
 }
+
+::ng-deep #ui-tabpanel-0-label, ::ng-deep #ui-tabpanel-1-label{
+padding: 0px !important;
+}
+
+.padding{
+  padding: 8px;
+}

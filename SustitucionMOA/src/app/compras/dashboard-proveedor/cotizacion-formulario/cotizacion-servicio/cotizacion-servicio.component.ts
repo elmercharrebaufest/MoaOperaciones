@@ -16,6 +16,7 @@ import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto } from '../../../.
 import { SelectItem } from 'ng2-select';
 import { ValorTotalPorMoneda } from '../../../solp/solp';
 import { CotizacionHoraDto, CotizacionPosicionDto, GuardarCotizacion } from '../../../../modelos/cotizacionDto';
+import { SolpSubposicionDto } from '../../../solp-compra';
 
 
 @Component({
@@ -49,6 +50,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     hoy: Date = new Date();
     cotizacionHora: CotizacionHoraDto
     index: number = 0;
+    subposiciones: { CotizacionPosicionId: number; SolpSubPosicionId: number; Cantidad: number; Precio: number; MonedaId: number; UnidadDeMedidaId: number; UnidadMedida: string; monedaCompras: string; }[][];
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -61,6 +63,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     }
 
     ngOnInit() {
+       
         this.getCombos();
         this.setCombos();
         this.es = {
@@ -73,12 +76,12 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             today: 'Hoy',
             clear: 'Borrar'
         }
-        console.log(this.peticion, "peticion")
         var tieneDatos = this.peticion.Cotizacion.CotizacionesHoras.some(x => x.Gremio != 'UOCRA');
         this.index = tieneDatos ? 1 : 0;
         if (!tieneDatos) {
             this.agregarRow();
         }
+        this.obtenerPrecioTotalPosicionProveedor();
     }
 
     agregarFilaDefault() {
@@ -146,14 +149,22 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         }
     }
 
-    public onSelectMoneda(cotizacion: any, peticionId) {
-        var moneda = this.combos.Moneda.filter(x => x.CodigoDescripcion.includes(cotizacion.MonedaCodigo.Codigo))[0];
-        this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.Moneda_Id = moneda.Id;
+    public onSelectMoneda(subposicion: any, peticionId) {
+        var moneda = this.combos.Moneda.filter(x => x.CodigoDescripcion.includes(subposicion.MonedaCotizacionCodigo.Codigo))[0];
+        if (moneda == undefined) {
+            return this.floatMsgService.setErrorMsg("Debe seleccionar una moneda válida");
+        }
+        this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicion.Id)[0].MonedaCotizacionId = moneda.Id;
+        
     }
 
-    public onSelectUnidad(cotizacion: any, peticionId) {
-        var unidad = this.combos.Unidades.filter(x => x.Descripcion.includes(cotizacion.UnidadMedidaDescripcion.Descripcion))[0];
-        this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.UnidadDeMedida_Id = unidad.Id;
+    public onSelectUnidad(subposicion: any, peticionId) {
+        var unidad = this.combos.Unidades.filter(x => x.Descripcion.includes(subposicion.UnidadCotizacionDescripcion.Descripcion))[0];
+        if (unidad == undefined) {
+            return this.floatMsgService.setErrorMsg("Debe seleccionar una unidad de medida válida");
+        }
+        this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicion.Id)[0].UnidadCotizacionId = unidad.Id;
+       
     }
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {
@@ -193,7 +204,6 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             if (archivoWeb > 10000000) {
                 this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb")
             }
-            console.log(this.archivosTecnico, "archivosT")
         } else {
             var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);
             this.archivosEconomico = filesUpload["files"];
@@ -229,9 +239,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.combos = result;
-                        this.setCombos();
-                        console.log(this.combos, "combos")
-                        //this.combos.flagSolpFinalizada = this.flagSolpFinalizada;                       
+                        this.setCombos();                  
                     }
                 },
                 error => {
@@ -255,30 +263,33 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         }
     }
 
-    public calcularValorNeto(cotizacion: CotizacionPosicionDto, peticionId: number) {
-        if (cotizacion.Precio != 0 && cotizacion.Cantidad != 0) {
-            cotizacion.PrecioTotal = cotizacion.Precio * cotizacion.Cantidad;
-            this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.PrecioTotal = cotizacion.PrecioTotal;
+    public calcularValorNeto(subposicionCompra: SolpSubposicionDto, peticionId: number) {
+        if (subposicionCompra.PrecioSubPosicion != 0 && subposicionCompra.CantidadCotizacion != 0) {
+            subposicionCompra.PrecioTotalSubPosicion = subposicionCompra.PrecioSubPosicion * subposicionCompra.CantidadCotizacion;
+        this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].PrecioTotalSubPosicion == subposicionCompra.PrecioTotalSubPosicion;
 
         }
     }
 
 
-    public validarCambios(cotizacion: any, peticionId: number) {
+    public validarCambios(subposicionCompra: any, peticionId: number) {
         this.visualizarMensajeDeModificacion = false;
-        if (cotizacion.Cantidad != 0) {
-            this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.Cantidad != cotizacion.Cantidad;
-            return this.visualizarMensajeDeModificacion;
+        if (subposicionCompra.CantidadCotizacion != 0) {
+            this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].Cantidad != subposicionCompra.CantidadCotizacion;
+           
         }
-        if (cotizacion.UnidadMedidaDescripcion != undefined) {
-            this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.UnidadId != cotizacion.UnidadMedidaDescripcion.Id
-            return this.visualizarMensajeDeModificacion;
+        if (subposicionCompra.UnidadCotizacionDescripcion != undefined) {
+            this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].UnidadId != subposicionCompra.UnidadCotizacionDescripcion.Id
+            
         }
+
+        return this.visualizarMensajeDeModificacion;
     }
 
 
     public getCotizacion() {
         this.crearCotizacionPosicion();
+        this.crearCotizacionSubPosicion();
         var coti = {
             CotizacionId: this.peticion.CotizacionId,
             PeticionOfertaUsuarioId: this.peticion.Id,
@@ -290,9 +301,12 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             RespetaServicios: this.peticion.RespetaServicios,
             RespetaMateriales: this.peticion.RespetaMateriales,
             ArchivosGuardados: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { Id: x.Id } }) : null,
-            CotizacionesHoras: this.index == 0 ? this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == 'UOCRA') : this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio != 'UOCRA')
+            ArchivosTipo: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { FileKey: x.FileKey } }) : null,
+            CotizacionesHoras: this.index == 0 ? this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == 'UOCRA') : this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio != 'UOCRA'),
+            CotizacionSubposiciones: this.subposiciones
         }
         return coti;
+        
     }
 
     public crearCotizacionPosicion() {
@@ -301,8 +315,8 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             return {
                 PeticionDeOfertaSolpPosicionId: cotizacion.Posiciones.Id,
                 Posicion: cotizacion.Posiciones.Indice,
-                Cantidad: cotizacion.Posiciones.CotizacionPosicion.Cantidad,
-                Precio: cotizacion.Posiciones.CotizacionPosicion.Precio,
+                Cantidad: cotizacion.Posiciones.CotizacionPosicion.Cantidad != null && cotizacion.Posiciones.CotizacionPosicion.Cantidad != "" ? cotizacion.Posiciones.CotizacionPosicion.Cantidad : 0,
+                Precio: cotizacion.Posiciones.CotizacionPosicion.Precio != null && cotizacion.Posiciones.CotizacionPosicion.Precio != "" ? cotizacion.Posiciones.CotizacionPosicion.Precio : 0,
                 MonedaId: cotizacion.Posiciones.CotizacionPosicion.Moneda_Id != 0 ?
                     cotizacion.Posiciones.CotizacionPosicion.Moneda_Id : 0,
                 UnidadDeMedidaId: cotizacion.Posiciones.CotizacionPosicion.UnidadDeMedida_Id != 0 ?
@@ -314,6 +328,34 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             };
         });
     }
+
+
+    public crearCotizacionSubPosicion() {
+        var lista =[];
+       this.posicionesCompra.forEach((posiciones) => {
+            posiciones.Posiciones.SubposicionesCompras.forEach((subposiciones) => {
+            lista.push( { 
+                CotizacionSubPosicionId: subposiciones.CotizacionSubPosicionId,           
+                Posicion: posiciones.Posiciones.Indice,
+                CotizacionPosicionId: posiciones.Id,
+                SolpSubPosicionId: subposiciones.Id,
+                Cantidad: subposiciones.CantidadCotizacion != null && subposiciones.CantidadCotizacion != ""  ? subposiciones.CantidadCotizacion : 0,
+                Precio: subposiciones.PrecioSubPosicion != null && subposiciones.PrecioSubPosicion != "" ? subposiciones.PrecioSubPosicion : 0,
+                MonedaId: subposiciones.MonedaCotizacionId != 0 ?
+                    subposiciones.MonedaCotizacionId : 0,
+                UnidadDeMedidaId: subposiciones.UnidadCotizacionId != 0 ?
+                subposiciones.UnidadCotizacionId : 0,              
+                UnidadMedida: subposiciones.UnidadComprasDescripcion,
+                monedaCompras: subposiciones.MonedaCotizacionCodigo,
+                CantidadSubpos: subposiciones.Cantidad,
+                UnidadDeMedidaSubpos: subposiciones.UnidadId
+              })
+            })
+        });
+        this.subposiciones = lista;
+        return this.subposiciones;
+    }
+
 
     calcularValorTotalPorMoneda() {
         this.valorTotalPorMoneda = new Array<ValorTotalPorMoneda>();
@@ -336,6 +378,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     }
 
     agregarRow() {
+
         if (this.peticion.Cotizacion.CotizacionesHoras
             .find(x => x.CantidadPersonas == 0 && x.HorasNocturnas == 0 && x.Gremio == ""
                 && x.HorasExtras == 0 && x.Categoria == "" && x.HorasNormales == 0) == null) {
@@ -360,7 +403,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         if (this.index == index) {
             return;
         }
-        e.preventDefault();
+       
         var mensaje = index == 0 ? 'Otros' : 'UOCRA ' + '¿Quiere continuar?';
         this.confirmationService.confirm({
             message: 'Esta acción eliminará los datos cargados en la solapa ' + mensaje,
@@ -380,14 +423,13 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         this.peticion.Cotizacion.CotizacionesHoras.forEach(element => {
             element.CantidadPersonas = 0,
                 element.HorasNocturnas = 0,
-                element.Categoria = index == 1 ? element.Categoria : "",
                 element.HorasNormales = 0
-            element.Gremio = index == 1 ? element.Gremio : ""
         });
+        this.peticion.Cotizacion.CotizacionesHoras = this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == "UOCRA");
+        this.agregarRow();
     }
 
-    validarDatosCotizacionHoras(e: MouseEvent, index) {
-        e.preventDefault();
+    validarDatosCotizacionHoras(e: MouseEvent, index) {      
         var mostrarMensaje = this.peticion.Cotizacion.CotizacionesHoras
             .some(x => (
                 x.Gremio == "UOCRA" && (x.CantidadPersonas > 0 ||
@@ -397,8 +439,46 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
 
         if (mostrarMensaje) {
             this.cambiarTab(e, index)
-        }
+         }
     }
+
+    public obtenerPrecioTotalPosicionProveedor() {        
+     
+        var cotizacion =  this.getCotizacion();
+        try {
+
+            this.subscription = this.service.obtenerPrecioTotalPosicionProveedor(cotizacion).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        console.log(result, "resultado");
+                        console.log(this.posicionesCompra, "compras")
+                        result.data.CotizacionPosiciones.forEach(element => {
+                            this.posicionesCompra.filter(x => x.Id == element.PeticionDeOfertaSolpPosicionId)[0].Posiciones.PrecioTotal = element.PrecioTotal;      
+                        });
+                                      
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+  
+    }
+
 
 
 }

@@ -47,7 +47,7 @@
         </div>
     </div>
     <br>
-
+    <br> 
     <div class="inputCompras">
         <div class="row myRow" style="padding-top: 2px;">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -94,7 +94,7 @@
                     <label class="labelCompras"><strong style="font-size: 14px;">Observaciones
                             (opcional)</strong></label>
                     <textarea name="Observacion" ngDefaultControl [(ngModel)]="this.peticion.ObservacionTecnica"
-                        placeholder="Agregue los comentarios que crea necesario para los proveedores..." cols="30"
+                        placeholder="Agregue los comentarios que crea necesarios..." cols="30"
                         rows="1"></textarea>
                 </div>
             </div>
@@ -102,7 +102,7 @@
     </div>
 
 </section>
-
+<br>
 <div class="rounded shadow">
     <section class="container-fluid clearfix">
         <div class="col-xs-12 col-md-12 title" #headerCompras>
@@ -122,10 +122,10 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <p-tabView [(activeIndex)]="index">
-                    <p-tabPanel>
-                        <ng-template pTemplate="header">
-                            <div (click)="validarDatosCotizacionHoras($event, 0)">
+                <p-tabView [(activeIndex)]="index" >
+                    <p-tabPanel >
+                        <ng-template pTemplate="header" >
+                            <div class="padding" (click)="validarDatosCotizacionHoras($event, 0)">
                                 UOCRA </div>
                         </ng-template>
                         <p>
@@ -137,9 +137,9 @@
                                         <th style="background-color: #4760ac !important;
                                     text-transform: none !important;">Cantidad de personas</th>
                                         <th style="background-color: #4760ac !important;
-                                    text-transform: none !important;">Hs Normales</th>
+                                    text-transform: none !important;" pTooltip="Hs en planta" tooltipPosition="top">Hs Normales</th>
                                         <th style="background-color: #4760ac !important;
-                                    text-transform: none !important;">Hs Nocturnos</th>
+                                    text-transform: none !important;" pTooltip="Hs en planta" tooltipPosition="top">Hs Nocturnos</th>
                                     </tr>
                                 </ng-template>
                                 <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -162,7 +162,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int"
+                                                        <input type="text" pKeyFilter="int" pattern="[0-9]+"
                                                             [(ngModel)]="rowData.HorasNormales">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
@@ -173,7 +173,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int"
+                                                        <input type="text" pKeyFilter="int" pattern="[0-9]+"
                                                             [(ngModel)]="rowData.HorasNocturnas">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
@@ -187,9 +187,9 @@
                             </p-table>
                         </p>
                     </p-tabPanel>
-                    <p-tabPanel>
-                        <ng-template pTemplate="header">
-                            <div (click)="validarDatosCotizacionHoras($event, 1)">
+                    <p-tabPanel >
+                        <ng-template pTemplate="header" >
+                            <div class="padding" (click)="validarDatosCotizacionHoras($event, 1)">
                                 Otros </div>
                         </ng-template>
                         <div class="row">
@@ -211,9 +211,9 @@
                                     <th style="background-color: #4760ac !important;
                                     text-transform: none !important;">Cantidad de personas</th>
                                     <th style="background-color: #4760ac !important;
-                                    text-transform: none !important;">Hs Normales</th>
+                                    text-transform: none !important;" pTooltip="Hs en planta" tooltipPosition="top">Hs Normales</th>
                                     <th style="background-color: #4760ac !important;
-                                    text-transform: none !important;">Hs Nocturnos</th>
+                                    text-transform: none !important;" pTooltip="Hs en planta" tooltipPosition="top">Hs Nocturnos</th>
                                     <th style="background-color: #4760ac !important;
                                     text-transform: none !important; width: 60px;"></th>
                                 </tr>
@@ -246,7 +246,7 @@
                                         <td pEditableColumn>
                                             <p-cellEditor>
                                                 <ng-template pTemplate="input">
-                                                    <input type="text" pKeyFilter="int"
+                                                    <input type="text" pKeyFilter="int" pattern="[0-9]+"
                                                         [(ngModel)]="rowData.CantidadPersonas">
                                                 </ng-template>
                                                 <ng-template pTemplate="output">
@@ -257,7 +257,7 @@
                                         <td pEditableColumn>
                                             <p-cellEditor>
                                                 <ng-template pTemplate="input">
-                                                    <input type="text" pKeyFilter="int"
+                                                    <input type="text" pKeyFilter="int" pattern="[0-9]+"
                                                         [(ngModel)]="rowData.HorasNormales">
                                                 </ng-template>
                                                 <ng-template pTemplate="output">
@@ -268,7 +268,7 @@
                                         <td pEditableColumn>
                                             <p-cellEditor>
                                                 <ng-template pTemplate="input">
-                                                    <input type="text" pKeyFilter="int"
+                                                    <input type="text" pKeyFilter="int" pattern="[0-9]+"
                                                         [(ngModel)]="rowData.HorasNocturnas">
                                                 </ng-template>
                                                 <ng-template pTemplate="output">
@@ -290,11 +290,216 @@
                 </p-tabView>
             </div>
         </div>
-    </section>
-    <p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
-        <p-footer>
-            <button type="button" pButton  label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
-            <button type="button" pButton  label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
-        </p-footer>
-    </p-confirmDialog>
+
+        <div class="col-md-12 row myRow alinearTitulo margenInput">
+            <div class="col-md-12">
+                <strong>Solo se reconocerán el pago de horas dentro de predio industrial</strong>
+            </div>
+        </div>
+    </section>   
 </div>
+
+
+<div class="rounded shadow">
+    <section class="container-fluid clearfix">
+        <div class="col-xs-12 col-md-12 title" #headerCompras>
+            <strong>Propuesta Económica</strong>
+        </div>
+        <div class="linea"></div>
+        <br>      
+       
+        <div class="row">
+            <div class="col-md-12">
+            <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="posicionesCompra" dataKey="Id">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>    
+                        
+                        <th class="columna" style="background-color: #4760ac !important;"></th>                   
+                        <th class="columna" style="background-color: #4760ac !important;">Pos.</th>
+                        <th class="columna" style="background-color: #4760ac !important;">Descripción</th>
+                        <th class="columna" style="background-color: #4760ac !important;">Precio Total ARP</th>
+                        <th class="columna" style="background-color: #4760ac !important;">Fecha de entrega</th>
+                        <th class="columna" style="background-color: #4760ac !important;">Plazo de oferta</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded" let-columns="columns">
+                    <tr> 
+                        <td>
+                            <a href="#" [pRowToggler]="posicionCompra">
+                                <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                            </a>
+                        </td>                        
+                        <td class="columna">{{posicionCompra?.Posiciones?.Indice}}</td>                        
+                        <td class="columna">{{posicionCompra?.Posiciones?.Tarea}}</td>
+                        <td class="columna">{{posicionCompra?.Posiciones?.PrecioTotal | number:'1.2-2'}}</td>                     
+                        <td class="columna">{{posicionCompra?.Posiciones?.FechaEntregaServicio | customDateFormat | date :'d/M/yyyy' }}</td>                       
+                        <td class="columna">{{posicionCompra?.Posiciones?.FechaOferta | customDateFormat | date :'d/M/yyyy'}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-posicionCompra let-columns="columns">
+                    <tr>
+                        <td [attr.colspan]="6">
+                            <div class="col-sm-12 col-md-12 col-lg-12" style="font-size:16px;padding:20px">
+                                <p-table [value]="posicionCompra.Posiciones?.SubposicionesCompras">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                           
+                                            <th class="columna" style="background-color: #4760ac !important;">Subposición</th>
+                                            <th class="columna" style="background-color: #4760ac !important;">Código</th>
+                                            <th class="columna" style="background-color: #4760ac !important; width: 100px;">Tarea a <br> subcontratar</th>
+                                            <th class="columna" style="background-color: #4760ac !important;">Ctd. solicitada</th>
+                                            <th class="columna" style="background-color: #4760ac !important;">UM. solicitada</th>
+                                            <th class="columna" style="background-color: #4760ac !important;">Ctd. cotizada</th>
+                                            <th class="columna" style="background-color: #4760ac !important;">UM. cotizada</th>
+                                            <th class="columna" style="background-color: #4760ac !important;">Moneda</th>
+                                            <th class="columna" style="background-color: #4760ac !important;">Precio Unidad</th>
+                                            <th class="columna" style="background-color: #4760ac !important;">Precio Total</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-subposicionesCompras>
+                                        <tr>
+                                            
+                                            <td class="columna">{{subposicionesCompras.Numero}}</td>
+                                            <td class="columna">{{subposicionesCompras.Codigo}}</td>
+                                            <td class="columna">{{subposicionesCompras.Tarea}}</td>
+                                            <td class="columna">{{subposicionesCompras.Cantidad}}</td>
+                                            <td class="columna">{{subposicionesCompras.UnidadDescripcion}}</td>
+                                            <td pEditableColumn style="font-size: 11px !important;">
+                                                <p-cellEditor>
+                                                    <ng-template pTemplate="input">
+                                                        <input type="text" pKeyFilter="int" pattern="[0-9]+"
+                                                            [(ngModel)]="subposicionesCompras.CantidadCotizacion"
+                                                            (ngModelChange)="calcularValorNeto(subposicionesCompras, posicionCompra.Id);validarCambios(subposicionesCompras, posicionCompra.Id); obtenerPrecioTotalPosicionProveedor()"
+                                                            >
+                                                    </ng-template>
+                                                    <ng-template pTemplate="output" >
+                                                        <div [ngClass]="{'invalido': esFinalizado && 
+                                                        (subposicionesCompras.CantidadCotizacion <= 0)} ">
+                                                        {{subposicionesCompras.CantidadCotizacion}}
+                                                    </div>
+                                                    </ng-template>
+                                                </p-cellEditor>
+                                            </td>
+                                            <td pEditableColumn class="columna">
+                                                <div [ngClass]="{'invalido': esFinalizado && 
+                                                (subposicionesCompras.UnidadCotizacionId <= 0)} ">
+                                                    <p-dropdown [options]="unidades" dataKey="Id" optionLabel="Descripcion"
+                                                        [(ngModel)]="subposicionesCompras.UnidadCotizacionDescripcion"
+                                                        placeholder="Unidad" [style]="{'width':'170px'}" [dropdown]="true"
+                                                        (onFocus)=" $event.target.select();" editable="true" filter="true"  appendTo="body"
+                                                        resetFilterOnHide="true"
+                                                        (onChange)="onSelectUnidad(subposicionesCompras, posicionCompra.Id); validarCambios(subposicionesCompras, posicionCompra.Id) ">
+                                                    </p-dropdown>
+                                                </div>
+                                            </td>                                        
+                                            <td pEditableColumn class="columna">
+                                            <div [ngClass]="{'invalido': esFinalizado && 
+                                            (subposicionesCompras.MonedaCotizacionId <= 0)}">
+                                                <p-dropdown #dd [options]="monedaCompras" dataKey="Id" optionLabel="Codigo"
+                                                    [(ngModel)]="subposicionesCompras.MonedaCotizacionCodigo"
+                                                    placeholder="Moneda" editable="true" [dropdown]="true" appendTo="body"
+                                                    [style]="{'width':'200px'}"
+                                                    (onChange)="onSelectMoneda(subposicionesCompras, posicionCompra.Id);obtenerPrecioTotalPosicionProveedor()">
+                                                    <ng-template let-item pTemplate="selectedItem">
+                                                        <span>{{item.value.Codigo}}</span>
+                                                    </ng-template>
+                                                    <ng-template let-item pTemplate="item">
+                                                        <div>
+                                                            <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
+                                                        </div>
+                                                    </ng-template>
+                                                </p-dropdown>                    
+                                            </div>
+                                        </td>  
+                                            <td pEditableColumn class="columna">
+                                                <p-cellEditor>
+                                                    <ng-template pTemplate="input">
+                                                        <input pInputText type="number"
+                                                            [(ngModel)]="subposicionesCompras.PrecioSubPosicion"
+                                                            pKeyFilter="num" pattern="[0-9]+"
+                                                            (ngModelChange)="calcularValorNeto(subposicionesCompras, posicionCompra.Id);obtenerPrecioTotalPosicionProveedor()" />
+                                                    </ng-template>
+                        
+                                                    <ng-template pTemplate="output">
+                                                        <div [ngClass]="{'invalido': (esFinalizado && subposicionesCompras.PrecioSubPosicion != undefined) && 
+                                                    (subposicionesCompras.PrecioSubPosicion <= 0)}">
+                                                            {{ subposicionesCompras?.PrecioSubPosicion | number:'1.2-2'}}
+                                                        </div>
+                                                    </ng-template>
+                                                </p-cellEditor>
+                                            </td>
+                                            
+                                            <td class="columna">{{subposicionesCompras?.PrecioTotalSubPosicion | number:'1.2-2'}}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        </div>
+        <div *ngIf="visualizarMensajeDeModificacion" class="col-md-12" style="text-align: end;">
+            <label>Por favor explique en las observaciones por qué modifico la cantidad y/o unidad de medida</label>
+        </div>
+        <br> 
+        <br> 
+        <div class="inputCompras">
+            <div class="row myRow" style="padding-top: 2px;">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <label class="labelCompras" for="editorTexto"> <strong style="font-size: 14px;">Adjuntar documentación
+                            (opcional)
+                        </strong> </label>
+                    <p-fileUpload [styles]="{'margin-left':'-13px; cursor: pointer;'}" name="fileUploadPeticionDeOferta"
+                        auto="true" multiple="multiple" chooseLabel="Elegir archivo" [showUploadButton]=false
+                        [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandler($event, false)">
+                        <ng-template let-file pTemplate="file">
+                        </ng-template>
+                    </p-fileUpload>
+                </div>
+    
+                <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
+                    <p-panel *ngIf="peticion?.Cotizacion?.ArchivosCotizacion?.length > 0 || archivosEconomico?.length > 0"
+                        header="Anexos agregados" [toggleable]="true" [collapsed]="false">
+                        <div class="row myRow">
+    
+                            <!-- Archivos que ya fueron guardados-->
+                            <div class="col-xs-12 col-md-9" *ngFor="let archivoEconomico of archivosEconomico">
+                                <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                    (click)="eliminarArchivo(true, archivoEconomico, false)" style="width: 26px;" />
+                                <a class="link-archivo pointer" (click)="descargarArchivo(archivoEconomico)">
+                                    {{archivoEconomico.name}}</a>
+                            </div>
+                            <!--Fin Archivos que ya fueron guardados-->
+                            <!--Archivos nuevos-->
+                            <div class="col-xs-12 col-md-9" *ngFor="let archivo of peticion.Cotizacion.ArchivosCotizacion">
+                                <div *ngIf="archivo?.FileKey == 'CotizacionRevisionEconomica'">
+                                    <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                        (click)="eliminarArchivo(false, archivo, false)" style="width: 26px;" />
+                                    <a class="link-archivo pointer" (click)="descargarArchivo(archivo)"
+                                        style="font-weight: lighter;">
+                                        {{archivo.Nombre}}</a>
+                                </div>
+                            </div>
+                            <!--Fin Archivos nuevos -->
+                        </div>
+                    </p-panel>
+                </div>
+                <div class="row myRow">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <label class="labelCompras"><strong style="font-size: 14px;">Observaciones
+                                (opcional)</strong></label>
+                        <textarea name="Observacion" ngDefaultControl [(ngModel)]="this.peticion.ObservacionEconomica"
+                            placeholder="Agregue los comentarios que crea necesarios..." cols="30"
+                            rows="1"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </section>   
+</div>
+
+

@@ -39,6 +39,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
     archivos = new Array<File>()
     archivosEconomico: File[];
     archivosTecnico: File[];
+    cotizacionSubposiciones: any;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -113,6 +114,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         this.esFinalizado = true;
         this.ObtenerCotizacion();
         this.ObtenerCotizacionPosicion();
+        this.ObtenerCotizacionSubposicion();
         this.obtenerArchivosNuevos();
         let mensaje = this.ValidarCotizacionFinalizada();
         if (mensaje != "") {
@@ -123,7 +125,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             header: "¡Ultimo Paso!",
             acceptLabel: "SI, CONFIRMAR",
             rejectLabel: "VOLVER",
-            message: 'Esta a punto de enviar la cotizacion. <b>¿Desea confirmar?</b>',
+            message: 'Está a punto de enviar la cotización, no podrá editarla luego de esta acción. <b>¿Desea continuar?</b>',
             accept: () => {
                 this.finalizarCotizacion();
             },
@@ -149,6 +151,12 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             this.cotizaciones = this.cotizacionMaterial.crearCotizacionPosicion();
         } else {
             this.cotizaciones = this.cotizacionServicio.crearCotizacionPosicion();
+        }
+    }
+
+    public ObtenerCotizacionSubposicion(){
+        if (this.peticion.TipoPosicionCodigo != "MATERIALES") {
+            this.cotizacionSubposiciones =  this.cotizacionServicio.crearCotizacionSubPosicion();
         }
     }
 
@@ -191,7 +199,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             this.archivos = this.cotizacionMaterial.ObtenerArchivos();
         } else {
             this.archivosEconomico = this.cotizacionServicio.ObtenerArchivosEconomicos()
-            this.archivosTecnico = this.cotizacionServicio.ObtenerArchivosEconomicos();
+            this.archivosTecnico = this.cotizacionServicio.ObtenerArchivosTecnicos();
         }
 
     }
@@ -200,7 +208,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         var mensaje = "";
         var breakFor = false;
         if (this.peticion.TipoPosicionCodigo == "MATERIALES") {
-
+            var self = this;
             this.cotizaciones.forEach(function (cotizacion, i) {
                 if (!breakFor) {
                     if (cotizacion.Cantidad == 0 || cotizacion.Cantidad == undefined) {
@@ -228,6 +236,19 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         breakFor = true;
                         return mensaje;
                     }
+                    if (cotizacion.CantidadSubpos != cotizacion.Cantidad ||
+                        cotizacion.UnidadDeMedidaSubpos != cotizacion.UnidadDeMedidaId) {
+                        if (
+                            (self.cotizacion.ObservacionEconomica == "" || ((self.cotizacion.ArchivosNuevos == null
+                                || self.cotizacion.ArchivosNuevos.length == 0) &&
+                                (self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
+                                    || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
+                            mensaje = "Pos. " + cotizacion.Posicion + ": Por favor explique en las observaciones por qué modifico la cantidad y/o unidad de medida, para estos casos debe adjuntar un archivo";
+                            breakFor = true;
+                            return mensaje;
+                        }
+                    }
+
                 }
             });
 
@@ -259,7 +280,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
 
             this.cotizacion.CotizacionesHoras.forEach(function (cotizacionHora, i) {
                 if (!breakFor) {
-
+                    if(cotizacionHora.CantidadPersonas > 0 || cotizacionHora.HorasNormales > 0 || cotizacionHora.HorasNocturnas > 0){
                     if(cotizacionHora.Gremio == "" && cotizacionHora.Categoria == ""){
                         mensaje = "El Gremio y la Categoria son campos obligatorios";
                         breakFor = true;
@@ -296,7 +317,45 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         return mensaje;
                     }
                 }
+                }
             });
+
+            var self = this;
+            this.cotizacionSubposiciones.forEach(function (subposicion, i) {                
+                if (!breakFor) {
+                    if (subposicion.Cantidad == 0 || subposicion.Cantidad == undefined) {
+                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion +  ": La Ctd. cotizada es obligatoria";
+                        breakFor = true;
+                        return mensaje;
+                    }
+                    if (subposicion.UnidadDeMedidaId == 0) {
+                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion +  ": La Um. cotizada es obligatoria";
+                        breakFor = true;
+                        return mensaje;
+                    }
+                    if (subposicion.MonedaId == 0) {
+                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion +  ": La Moneda es obligatoria";
+                        breakFor = true;
+                        return mensaje;
+                    }
+                    if (subposicion.Precio == 0) {
+                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion +  ": El Precio cotizado es obligatorio";
+                        breakFor = true;
+                        return mensaje;
+                    }
+                    
+                    if ((subposicion.CantidadSubpos != subposicion.Cantidad ||
+                        subposicion.UnidadDeMedidaSubpos != subposicion.UnidadDeMedidaId) &&
+                        (self.cotizacion.ObservacionEconomica == "" || (self.archivosEconomico == null
+                            || self.archivosEconomico.length == 0 &&
+                            (self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
+                                || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
+                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": Por favor explique en las observaciones por qué modifico la cantidad y/o unidad de medida, para estos casos debe adjuntar un archivo";
+                        breakFor = true;
+                        return mensaje;
+                    }
+                }
+        });
         }
 
       
