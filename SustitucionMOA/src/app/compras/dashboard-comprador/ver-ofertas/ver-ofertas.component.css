@@ -1,17 +1,28 @@
 .headerth {
-    font-size: 11px !important; 
-    cursor:pointer;
+    font-size: 11px !important;
+    cursor: pointer;
 }
 
-.columna{
-    word-break: break-all; word-wrap:break-word; font-size: 12px;;
+.columna {
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 10px;
+    height: 40px;
+    max-height: 40px;
+    overflow: hidden;
 }
 
-  
-  .wrapper {
+.columnadiv {
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 10px;
+    height: 30px;
+    max-height: 30px;
+    overflow: hidden;
+}
+
+.wrapper {
     min-height: 265px !important;
     position: relative;
     overflow-x: auto;
-  }
-
- 
+}
