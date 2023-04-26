@@ -2486,9 +2486,28 @@ namespace SustitucionMOAUtils.Services
             return res;
         }
 
-        public bool ValidarSisaCuit(string cuit)
+        public bool ValidarSisaCuit(string cuit, string campo)
         {
-            return cuit != "11223344551";
+            var validaSISA = new ValidaSisaCuit(campo);
+            var validaDestinatario = validaSISA.Destinatario;
+            var validaDestino = validaSISA.Destino;
+
+            var controlarCargaReq = new ControlCargaRequest { SoloSisa = true, Material = ObtenerMaterialValidaSisa() };
+
+            if (validaDestinatario)
+                controlarCargaReq.CuitDestinatario = cuit;
+            if (validaDestino)
+                controlarCargaReq.CuitDestino = cuit;
+
+            var responseHandler = consumer.ControlarCarga(controlarCargaReq);
+            var result = false;
+
+            if (validaDestinatario)
+                result = !responseHandler.TieneRespuesta(OrdenCargaControlCarga.DestinatarioInhabilitadoEnSisa);
+            else if (validaDestino)
+                result = !responseHandler.TieneRespuesta(OrdenCargaControlCarga.DestinoInhabilitadoEnSisa);
+
+            return result;
         }
         public ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit)
         {
@@ -2651,6 +2670,12 @@ namespace SustitucionMOAUtils.Services
             }
 
 
+        }
+        private string ObtenerMaterialValidaSisa()
+        {
+            var material = repositorio.Obtener<Material>(m => m.ValidaSisaRuca && m.TablaSeccionMaterial == TablaSeccionMaterial.OrdenDeCarga);
+
+            return material?.CodigoSap;
         }
     }
 }

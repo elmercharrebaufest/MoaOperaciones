@@ -364,9 +364,10 @@ export class OrdenesDeCargaService extends BaseService {
             ('/api/OrdenDeCarga/ValidarCuitExisteScato', { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
-    public validarSisaCuit(cuit: string): Observable<ApiResponse<boolean>> {
+    public validarSisaCuit(cuit: string, campo: string): Observable<ApiResponse<boolean>> {
         let params: HttpParams = new HttpParams()
             .append("cuit", cuit)
+            .append("campo", campo)
 
         return this.http
             .get<ApiResponse<boolean>>(

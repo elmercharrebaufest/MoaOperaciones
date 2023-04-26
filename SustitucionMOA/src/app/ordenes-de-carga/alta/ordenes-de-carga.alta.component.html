@@ -94,7 +94,7 @@
                                 </div>
                                 <div *ngIf="mensajesOrdenDeCarga?.CUITDestinatario || ordenDeCarga.RazonSocialDestinatario"
                                     class="col-xs-12 col-md-12">
-                                    <ng-container *ngIf="ordenDeCarga.RazonSocialDestinatario; else mensaje">
+                                    <ng-container *ngIf="ordenDeCarga.RazonSocialDestinatario">
                                         <div class="formulario-label">
                                             Razon Social Destinatario:
                                         </div>
@@ -103,11 +103,11 @@
                                                 [(ngModel)]="ordenDeCarga.RazonSocialDestinatario">
                                         </div>
                                     </ng-container>
-                                    <ng-template #mensaje>
+                                    <ng-container *ngIf="mensajesOrdenDeCarga?.CUITDestinatario">
                                         <p>
                                             {{mensajesOrdenDeCarga.CUITDestinatario}}
                                         </p>
-                                    </ng-template>
+                                    </ng-container>
                                 </div>
                                 <div class="col-xs-12 col-md-12">
                                     <div class="formulario-label">
@@ -126,7 +126,7 @@
                                 </div>
                                 <div *ngIf="mensajesOrdenDeCarga?.CUITDestino || ordenDeCarga.RazonSocialDestino"
                                     class="col-xs-12 col-md-12">
-                                    <ng-container *ngIf="ordenDeCarga.RazonSocialDestino; else mensaje">
+                                    <ng-container *ngIf="ordenDeCarga.RazonSocialDestino;">
                                         <div class="formulario-label">
                                             Razon Social Destino:
                                         </div>
@@ -135,11 +135,11 @@
                                                 [(ngModel)]="ordenDeCarga.RazonSocialDestino">
                                         </div>
                                     </ng-container>
-                                    <ng-template #mensaje>
+                                    <ng-container *ngIf="mensajesOrdenDeCarga?.CUITDestino">
                                         <p>
                                             {{mensajesOrdenDeCarga.CUITDestino}}
                                         </p>
-                                    </ng-template>
+                                    </ng-container>
                                 </div>
                                 <div class="col-xs-12 col-md-12">
                                     <div class="formulario-label">
