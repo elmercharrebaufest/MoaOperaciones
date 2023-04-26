@@ -22,8 +22,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
         }
         public PeticionDeOfertaDto Ejecutar(DbContext contexto)
         {
-            var hoy = DateTime.Now;
-            var ayer = hoy.AddDays(-1);
+            var cotizacionesHoras = new List<CotizacionHorasDto>();
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
@@ -43,7 +42,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     ObservacionTecnica = cotizacion != null ? cotizacion.ObservacionTecnica : "",
                                     ObservacionEconomica = cotizacion != null ? cotizacion.ObservacionEconomica : "",
                                     RespetaMateriales = cotizacion != null ? cotizacion.RespetaMateriales : false,
-                                    RespetaServicios = cotizacion != null ? cotizacion.RespetaMateriales : false,
+                                    RespetaServicios = cotizacion != null ? cotizacion.RespetaServicios : false,
                                     TipoPosicionCodigo = po.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     CotizacionId = cotizacion != null ? cotizacion.Id : 0,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
@@ -66,6 +65,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         Cantidad = pop.SolpPosicion.Cantidad,
                                                                         UnidadComprasDescripcion = pop.SolpPosicion.Unidad.Descripcion,
                                                                         UnidadId = pop.SolpPosicion.Unidad_Id,
+                                                                        FechaEntregaServicio = pop.SolpPosicion.FechaEntregaServicio,
+                                                                        FechaOferta = pop.SolpPosicion.Solp.Pliego_Id != null ? pop.SolpPosicion.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
                                                                         CotizacionPosicion = new CotizacionPosicionDto()
                                                                         {
                                                                             Cantidad = cotizacion != null && cotizacionPosicion.Cantidad != null ? cotizacionPosicion.Cantidad.Value : 0,
@@ -87,10 +88,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                             }
                                                                         },
 
-                                                                        Subposiciones = (from subposicion in contexto.Set<SolpSubposicion>()
+                                                                        SubposicionesCompras = (from subposicion in contexto.Set<SolpSubposicion>()
                                                                                           join cotizacionSubposicion in contexto.Set<CotizacionSubPosicion>() on subposicion.Id equals cotizacionSubposicion.SolpSubPosicion_Id into subposicionCotizacionSubposicion
                                                                                           from cotizacionSubposicion in subposicionCotizacionSubposicion.DefaultIfEmpty()
-                                                                                          where subposicion.Id == cotizacionSubposicion.SolpSubPosicion_Id
+                                                                                          where subposicion.SolpPosicion_Id == pop.SolpPosicion_Id
                                                                                           select new SolpSubposicionDto
                                                                                           {
                                                                                               Id = subposicion.Id,
@@ -98,8 +99,17 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                               Tarea = subposicion.Tarea,
                                                                                               Cantidad = subposicion.Cantidad,
                                                                                               UnidadDescripcion = subposicion.Unidad.Descripcion,
+                                                                                              UnidadId = subposicion.Unidad_Id,
                                                                                               Numero = subposicion.Numero,
-                                                                                              CantidadCotizacion = cotizacionSubposicion != null ? cotizacionSubposicion.Cantidad : 0
+                                                                                              CotizacionSubPosicionId = cotizacionSubposicion != null ? cotizacionSubposicion.Id : 0,
+                                                                                              CantidadCotizacion = cotizacionSubposicion != null ? cotizacionSubposicion.Cantidad : 0,
+                                                                                              UnidadCotizacionDescripcion = cotizacionSubposicion != null && cotizacionSubposicion.UnidadDeMedida != null ? cotizacionSubposicion.UnidadDeMedida.Descripcion : "",
+                                                                                              UnidadCotizacionId = cotizacionSubposicion != null && cotizacionSubposicion.UnidadDeMedida != null ? cotizacionSubposicion.UnidadDeMedida.Id : 0,
+                                                                                              MonedaCotizacionDescripcion = cotizacionSubposicion != null && cotizacionSubposicion.Moneda != null ? cotizacionSubposicion.Moneda.Descripcion : "",
+                                                                                              MonedaCotizacionId = cotizacionSubposicion != null && cotizacionSubposicion.Moneda != null ? cotizacionSubposicion.Moneda.Id : 0,
+                                                                                              PrecioSubPosicion = cotizacionSubposicion != null ? cotizacionSubposicion.Precio.Value : 0,
+                                                                                              PrecioTotalSubPosicion = cotizacionSubposicion != null && cotizacionSubposicion.Cantidad != null && cotizacionSubposicion.Precio != null ? cotizacionSubposicion.Cantidad.Value * cotizacionSubposicion.Precio.Value : 0,
+                                                                                              MonedaCotizacionCodigo = cotizacionSubposicion != null && cotizacionSubposicion.Moneda != null ? cotizacionSubposicion.Moneda.Codigo : "",
 
                                                                                           }).ToList()
                                                                     },

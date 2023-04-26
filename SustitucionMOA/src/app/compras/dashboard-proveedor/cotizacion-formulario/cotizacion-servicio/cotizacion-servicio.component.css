@@ -1,3 +1,8 @@
+::ng-deep .ui-table .ui-table-thead > .tr > .th {
+  background-color: #4760ac !important;
+  text-transform: none !important;
+}
+
 .columna {
     word-break: break-all; 
     word-wrap:break-word; 
@@ -49,9 +54,7 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-::ng-deep .ui-table .ui-table-thead > .tr > .th {
-    background-color: #4760ac !important;
-  }
+
   
 ::ng-deep .ui-table .ui-table-thead > .tr > .th {
     /* border: none !important; */
@@ -81,5 +84,10 @@ input[type=number] {
   font-size: 13px !important;
 }
 
+::ng-deep #ui-tabpanel-0-label, ::ng-deep #ui-tabpanel-1-label{
+padding: 0px !important;
+}
 
-
+.padding{
+  padding: 8px;
+}

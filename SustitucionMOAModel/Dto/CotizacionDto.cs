@@ -30,6 +30,7 @@ namespace SustitucionMOAModel.Dto
         public decimal TotalGlobal { get; set; }
         public decimal TotalGlobalSubPos { get; set; }
         public int TotalPesos { get; set; }
+        public List<CotizacionHorasDto> CotizacionesHoras { get; set; }
     }
 
     public class CotizacionPosicionDto
@@ -92,6 +93,8 @@ namespace SustitucionMOAModel.Dto
         public int UnidadDeMedidaId { get; set; }
         public int Cantidad { get; set; }
         public DateTime? FechaDeEntrega { get; set; }
+        public decimal PrecioTotal { get; set; }
+        public decimal TotalPesos { get; set; }
     }
 
     public class GuardarCotizacion
@@ -104,10 +107,40 @@ namespace SustitucionMOAModel.Dto
         public List<ArchivoDto> ArchivosGuardados { get; set; } = new List<ArchivoDto>();
         public int CotizacionId { get; set; }
         public bool EsFinalizado { get; set; }
-        public int MonedaId { get; set; }
+
+        public bool? RespetaMateriales { get; set; }
+        public bool? RespetaServicios { get; set; }
+        public List<CotizacionHorasDto> CotizacionesHoras { get; set; } = new List<CotizacionHorasDto>();
+         public int MonedaId { get; set; }
         public int UnidadDeMedidaId { get; set; }
         public int Cantidad { get; set; }
         public DateTime? FechaDeEntrega { get; set; }
+        public List<CotizacionSubposicionesDto> CotizacionSubposiciones { get; set; } = new List<CotizacionSubposicionesDto>();
+    }
+
+
+    public class CotizacionSubposicionesDto
+    {
+        public int CotizacionSubPosicionId { get; set; }
+        public decimal Precio { get; set; }
+        public int MonedaId { get; set; }
+        public int CotizacionPosicionId { get; set; }
+        public int UnidadDeMedidaId { get; set; }
+        public int Cantidad { get; set; }
+        public int SolpSubPosicionId { get; set; }
+        public decimal PrecioTotal { get; set; }
+    }
+
+    public class CotizacionHorasDto
+    {
+        public int Id { get; set; }
+        public int Cotizacion_Id { get; set; }
+        public string Categoria { get; set; }
+        public int CantidadPersonas { get; set; }
+        public int HorasNormales { get; set; }
+        public int HorasNocturnas { get; set; }
+        public int HorasExtras { get; set; }
+        public string Gremio { get; set; }
     }
 
 }
