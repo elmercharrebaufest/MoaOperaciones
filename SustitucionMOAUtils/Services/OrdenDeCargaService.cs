@@ -2566,8 +2566,8 @@ namespace SustitucionMOAUtils.Services
         }
         public bool ValidarCuitRuca(string cuit)
         {
-            var tienePlantas = ObtenerPlantasDestino(cuit).Count() > 0;
-            var tieneDomicilios = ObtenerDomiciliosDestino(cuit).Count() > 0;
+            var tienePlantas = ObtenerPlantasDestino(cuit).Any();
+            var tieneDomicilios = ObtenerDomiciliosDestino(cuit).Any();
             return tienePlantas && tieneDomicilios;
         }
         private Proveedor GetClienteParaCorredor(Usuario usuario, Proveedor corredor, OrdenDeCarga ordenDeCarga)
