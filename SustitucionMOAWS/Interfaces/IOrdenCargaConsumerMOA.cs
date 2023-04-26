@@ -1,15 +1,10 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.Interfaces
 {

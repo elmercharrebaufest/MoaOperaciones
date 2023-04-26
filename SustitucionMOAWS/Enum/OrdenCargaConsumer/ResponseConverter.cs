@@ -17,7 +17,9 @@ namespace SustitucionMOAWS.Enum.OrdenCargaConsumer
             { "CC-06", OrdenCargaControlCarga.CC06IdemCC01 }, // CC-06: 'Considerar como error CC-01'
             { "CC-07", OrdenCargaControlCarga.FaltaCargarKmsEnContrato },
             { "CC-08", OrdenCargaControlCarga.ClienteInhabilitadoEnSisa },
-            { "CC-09", OrdenCargaControlCarga.CorredorInhabilitadoEnSisa }
+            { "CC-09", OrdenCargaControlCarga.CorredorInhabilitadoEnSisa },
+            { "CC-10", OrdenCargaControlCarga.DestinoInhabilitadoEnSisa },
+            { "CC-11", OrdenCargaControlCarga.DestinatarioInhabilitadoEnSisa }
         };
 
         internal static OrdenCargaControlEstado GetOrdenCargaControlEstadoResponse(string response)

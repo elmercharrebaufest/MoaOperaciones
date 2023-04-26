@@ -21,7 +21,6 @@ import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { finalize } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
-import { ValidarSisaCorredorClienteResponse } from '../../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse';
 
 declare var $: any;
 
@@ -803,7 +802,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             })
     }
     validarSisaCuit(cuit: string, campo: CuitValidaSISA) {
-        this.service.validarSisaCuit(cuit).subscribe(result => {
+        this.service.validarSisaCuit(cuit, campo).subscribe(result => {
             if (result.logout) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {

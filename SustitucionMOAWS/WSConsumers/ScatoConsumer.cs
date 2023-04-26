@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
 using SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
 using SustitucionMOAWS.Interfaces;
-using SustitucionMOAModel.Models;
-using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
+using SustitucionMOAWS.Logger;
+using SustitucionMOAFotmatter;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -94,11 +91,31 @@ namespace SustitucionMOAWS.WSConsumers
             return destinos;
         }
 
-        public bool CuilChoferExiste(string cuil)
+        public bool CuilChoferExiste(string cuil, bool logger = true)
         {
-            var result = service.ObtenerChoferPorCuit(cuil);
+            if (logger)
+                Log.Info(string.Format("Validar CUIL Chofer: {0}", cuil));
 
-            return !(result is null);
+            var chofer = service.ObtenerChoferPorCuit(cuil);
+            var result = !(chofer is null);
+
+            if (logger)
+                Log.Info(string.Format("Result Validar CUIL: {0}; Result: {1}", cuil, result ? "Existe" : "No existe"));
+
+            return result;
+        }
+        public ValidarCuitExisteScatoResponse ExisteCuitDestinoDestinatario(string cuit, bool logger = true)
+        {
+            if (logger)
+                Log.Info(string.Format("Validar Existe CUIT en SCATO: {0}", cuit));
+
+            var listaClientes = service.ListarClientesPorCuit(DataFormatter.CuitConGuion(cuit));
+            var result = ValidarCuitExisteScatoResponse.Nuevo(listaClientes.Length > 0, listaClientes.FirstOrDefault()?.Descripcion);
+
+            if (logger)
+                Log.Info(string.Format("Result Existe CUIT en SCATO: {0}; Result: {1}", cuit, result.Existe ? "Existe" : "No existe"));
+
+            return result;
         }
     }
 

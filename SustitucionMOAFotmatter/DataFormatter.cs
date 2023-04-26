@@ -31,5 +31,13 @@ namespace SustitucionMOAFotmatter
             }
 
         }
+        public static string CuitConGuion(string cuit) {
+            string formateado = cuit;
+            if (!cuit.Contains("-"))
+            {
+                formateado = cuit.Insert(2,"-").Insert(11,"-");
+            }
+            return formateado;
+        }
     }
 }

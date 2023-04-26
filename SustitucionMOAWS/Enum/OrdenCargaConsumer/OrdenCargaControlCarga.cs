@@ -11,6 +11,8 @@
         CC06IdemCC01,
         FaltaCargarKmsEnContrato,
         ClienteInhabilitadoEnSisa,
-        CorredorInhabilitadoEnSisa
+        CorredorInhabilitadoEnSisa,
+        DestinoInhabilitadoEnSisa,
+        DestinatarioInhabilitadoEnSisa
     }
 }

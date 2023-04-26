@@ -800,12 +800,12 @@ namespace SustitucionMOA.Controllers
             //return JsonCustom(response);
         }
         [HttpGet]
-        public ActionResult ValidarSisaCuit(string cuit)
+        public ActionResult ValidarSisaCuit(string cuit, string campo)
         {
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                response.Data = ordenDeCargaService.ValidarSisaCuit(cuit);
+                response.Data = ordenDeCargaService.ValidarSisaCuit(cuit, campo);
             }
             catch (InfoCustomException ice)
             {
