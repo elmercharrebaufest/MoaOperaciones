@@ -27,10 +27,10 @@ export interface CotizacionPosicionDto {
     Id: number,
     Cotizacion_Id: number,
     PeticionDeOfertaSolpPosicion_Id: number, 
-    Cantidad: number,
+    Cantidad: any,
     UnidadDeMedida_Id: any, 
     Moneda_Id: any,
-    Precio: number,
+    Precio: any,
     PrecioTotal: number,
     FechaDeEntrega: any,
     FechaOriginal: any,
@@ -55,6 +55,8 @@ export interface CotizacionSubPosicionDto {
 }
 
 export interface GuardarCotizacion{
+    UnidadDeMedidaSubpos?: any
+    CantidadSubpos?: any
     Posicion: string,
     PeticionDeOfertaSolpPosicionId: number
     Precio: number
