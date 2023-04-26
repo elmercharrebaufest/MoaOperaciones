@@ -361,13 +361,27 @@ namespace SustitucionMOAUtils.Services
                 var ordenDeCarga = repositorio.Obtener<OrdenDeCarga>(q => q.Id == request.IdOrdenDeCarga);
                 var mailUsuarioSAP = puedeEnviarASAP ? request.MailUsuarioSAP : _usuarioAutomaticoSAP;
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSAP);
-                var validarKg = "X";
-                var result = consumer.CrearOrdenRequest(
-                    ordenDeCarga.Cliente.CodigoProveedor, ordenDeCarga.ContratoIngresado, ordenDeCarga.CodigoCorredor,
-                    ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, validarKg,
-                    ordenDeCarga.CUITDestino, ordenDeCarga.CUITDestinatario, ordenDeCarga.RazonSocialDestino, ordenDeCarga.RazonSocialDestinatario,
-                    ordenDeCarga.Reventa,
-                    out string numeroPedido);
+                //var validarKg = "X";
+
+                var crearOrdenReq = new CrearOrdenRequest
+                {
+                    Cliente = ordenDeCarga.Cliente.CodigoProveedor,
+                    Contrato = ordenDeCarga.ContratoIngresado,
+                    Corredor = ordenDeCarga.CodigoCorredor,
+                    Kilos = ordenDeCarga.Cantidad,
+                    Material = ordenDeCarga.Producto.CodigoSap,
+                    PedidoInput = ordenDeCarga.NumeroPedidoIngresado,
+                    UsuarioSAP = usuario.UsuarioSap,
+                    ValidaKg = true,
+                    CuitDestino = ordenDeCarga.CUITDestino,
+                    CuitDestinatario = ordenDeCarga.CUITDestinatario,
+                    RazonSocialDestino = ordenDeCarga.RazonSocialDestino,
+                    RazonSocialDestinatario = ordenDeCarga.RazonSocialDestinatario,
+                    Reventa = ordenDeCarga.Reventa
+                };
+
+                var result = consumer.CrearOrden(crearOrdenReq, out string numeroPedido);
+                
                 if (!string.IsNullOrEmpty(result))
                 {
                     if (result == "OV-00" || result == "OV-03")
@@ -427,7 +441,6 @@ namespace SustitucionMOAUtils.Services
             //OV-03   'Pedido creado - Verificar Crédito de pedido'
             //OV-00   'OK'
             Log.Info($"CrearPedidoEnSAP(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, cliente: {cliente?.Id.ToJson()}, validaKg: {validaKg}, puedeEnviarASAP: {puedeEnviarASAP})");
-            var ValidarKg = validaKg ? "X" : "";
             string contrato = null;
             if (ordenDeCarga.ContratoSAP != null)
             {
@@ -435,12 +448,25 @@ namespace SustitucionMOAUtils.Services
             }
             var mailUsuarioSAP = puedeEnviarASAP ? mailUsuario : _usuarioAutomaticoSAP;
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSAP);
-            var result = consumer.CrearOrdenRequest(
-                cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad,
-                ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, ValidarKg,
-                ordenDeCarga.CUITDestino, ordenDeCarga.CUITDestinatario, ordenDeCarga.RazonSocialDestino, ordenDeCarga.RazonSocialDestinatario,
-                ordenDeCarga.Reventa,
-                out string numeroPedido);
+
+            var crearOrdenReq = new CrearOrdenRequest
+            {
+                Cliente = cliente.CodigoProveedor,
+                Contrato = contrato,
+                Corredor = ordenDeCarga.CodigoCorredor,
+                Kilos = ordenDeCarga.Cantidad,
+                Material = ordenDeCarga.Producto.CodigoSap,
+                PedidoInput = ordenDeCarga.NumeroPedidoIngresado,
+                UsuarioSAP = usuario.UsuarioSap,
+                ValidaKg = validaKg,
+                CuitDestino = ordenDeCarga.CUITDestino,
+                CuitDestinatario = ordenDeCarga.CUITDestinatario,
+                RazonSocialDestino = ordenDeCarga.RazonSocialDestino,
+                RazonSocialDestinatario = ordenDeCarga.RazonSocialDestinatario,
+                Reventa = ordenDeCarga.Reventa
+            };
+
+            var result = consumer.CrearOrden(crearOrdenReq, out string numeroPedido);
 
             var resultadoCrearOrden = false;
             ordenDeCarga.ContratoSinCantidadPendiente = false;
@@ -523,8 +549,8 @@ namespace SustitucionMOAUtils.Services
             };
             var responseHandler = consumer.ControlarCarga(controlarCargaReq);
 
-            //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
-            //cual es el contrato correcto que le quiere entregar.
+            //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En ese caso,
+            //un comercial debe seleccionar cual es el contrato correcto que le quiere entregar.
             if (responseHandler.TieneMultiplesContratos)
             {
                 ordenDeCarga.CodigoVerificacionSap = "";

@@ -102,33 +102,33 @@ namespace SustitucionMOAWS.WSConsumers
 
         */
 
-        public string CrearOrdenRequest(string cliente, string contrato, string corredor, decimal kilos, string material, string pedidoInput, string usuarioSAP, string validaKg, string cuitDestino, string cuitDestinatario, string razonSocialDestino, string razonSocialDestinatario, bool reventa, out string pedidoOutput)
+        public string CrearOrden(CrearOrdenRequest req, out string pedidoOutput)
         {
             var service = new SI_MPMF_MOAOP_CREAR_ORDEN_CARGAClient();
-            var indrvta = reventa ? "X" : "";
+            var indrvta = req.Reventa ? "X" : "";
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {new { cliente, contrato, corredor, kilos, material, pedidoInput, usuarioSAP, validaKg, cuitDestino, razonSocialDestino, cuitDestinatario, razonSocialDestinatario, indrvta }}");
+            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {req}");
             var result = service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(
-                cliente,
+                req.Cliente,
                 "",//IM_CODPLANTA
-                contrato,
-                corredor,
-                cuitDestino,
-                cuitDestinatario,
+                req.Contrato,
+                req.Corredor,
+                req.CuitDestino,
+                req.CuitDestinatario,
                 "",//IM_DOMORDEN
                 indrvta,//IM_INDRVTA
-                kilos,
-                material,
-                razonSocialDestino,
-                razonSocialDestinatario,
+                req.Kilos,
+                req.Material,
+                req.RazonSocialDestino,
+                req.RazonSocialDestinatario,
                 "",//IM_ORDENDOM
-                pedidoInput,
+                req.PedidoInput,
                 "",//IM_TIPODOM
-                usuarioSAP,
-                validaKg,
+                req.UsuarioSAP,
+                req.ValidaKg ? "X" : "",
                 out pedidoOutput).Trim();
-            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Response: {new { result, pedidoOutput, cliente, contrato, pedidoInput }}");
+            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Response: {new { result, pedidoOutput }}");
 
             return result;
         }
