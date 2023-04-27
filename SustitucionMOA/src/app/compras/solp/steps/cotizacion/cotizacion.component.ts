@@ -114,6 +114,11 @@ export class CotizacionComponent extends ListBaseComponent {
 
     uploadHandler(filesUpload: any): void {
         this.model.archivosCotizacionesNuevos = filesUpload["files"];
+        var archivoWeb = this.model.archivosCotizacionesNuevos.reduce((sum, file) => sum + file.size, 0);      
+        if(archivoWeb > 10000000){            
+            this.eliminarAdjuntoNuevo(this.model.archivosCotizacionesNuevos[this.model.archivosCotizacionesNuevos.length - 1])
+            this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb");          
+        }
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
