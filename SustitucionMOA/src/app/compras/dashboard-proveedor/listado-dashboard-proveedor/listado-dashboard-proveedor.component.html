@@ -105,7 +105,7 @@
                         {{ rowData.CotizacionEstadoDescripcion}}
                     </td>
                     <td colspan="2" class="columna" style="text-align: center;">
-                        <button *ngIf="rowData.CotizacionEstado_Id != 1" class="publicar btn btn-success" style="font-size: 12px;"(click)="publicarCotizacion(rowData.Id)">  
+                        <button *ngIf="rowData.CotizacionEstado_Id != 1 && rowData.Estado == 'Abierto'" class="publicar btn btn-success" style="font-size: 12px;"(click)="publicarCotizacion(rowData.Id)">  
                             Cotizar
                         </button>
                     </td>
