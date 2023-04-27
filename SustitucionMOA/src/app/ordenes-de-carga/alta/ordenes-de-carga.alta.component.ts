@@ -21,6 +21,7 @@ import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { finalize } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
+import { forkJoin } from 'rxjs';
 
 declare var $: any;
 
@@ -30,7 +31,6 @@ declare var $: any;
     styleUrls: ['./ordenes-de-carga.alta.component.css'],
     providers: [SeleccionarProveedorService],
 })
-
 export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
 
@@ -186,8 +186,21 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de intermediario flete válido.");
             return false;
         }
-        if (this.validaCPEDG)
-            return !Object.keys(this.mensajesOrdenDeCarga).some(key => this.mensajesOrdenDeCarga[key])
+
+        if (this.validaCPEDG) {
+            if (!(this.ordenDeCarga.DomicilioDescr && this.ordenDeCarga.DomicilioTipo && this.ordenDeCarga.DomicilioOrden)) {
+                this.mensajeComponent.setInfoMsg("Seleccione un domicilio.");
+                return false;
+            }
+            if (!this.ordenDeCarga.PlantaCodigo) {
+                this.mensajeComponent.setInfoMsg("Seleccione una planta.");
+                return false;
+            }
+            const tieneMensajes = Object.keys(this.mensajesOrdenDeCarga).some(key => this.mensajesOrdenDeCarga[key])
+            const estaValidando = Object.keys(this.validando).some(key => this.validando[key]);
+
+            return (!tieneMensajes) && (!estaValidando)
+        }
 
         return true;
     }
@@ -806,7 +819,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             })
     }
     validarSisaCuit(cuit: string, campo: CuitValidaSISA) {
-        this.service.validarSisaCuit(cuit, campo).subscribe(result => {
+        this.validando[campo] = true;
+        this.service.validarSisaCuit(cuit, campo).pipe(finalize(() => {
+            this.validando[campo] = false;
+        })).subscribe(result => {
             if (result.logout) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
@@ -831,38 +847,44 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     onDestinoIngresado(cuitDestino: string) {
         if (cuitDestino) {
-            this.service
-                .obtenerPlantasDestino(cuitDestino)
-                .subscribe(resp => {
-                    let plantas: Planta[] | null;
-                    if (plantas = this.manejarErroresApiResponse(resp)) {
-                        if (plantas.length > 0) {
-                            this.listaPlantas = plantas;
-                            this.definirValorPlanta();
-                        } else {
-                            this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
-                        }
-                    }
-                })
-            this.service
-                .obtenerDomiciliosDestino(cuitDestino)
-                .subscribe(resp => {
-                    let domicilios: Domicilio[] | null;
-                    if (domicilios = this.manejarErroresApiResponse(resp)) {
-                        if (domicilios.length > 0) {
-                            this.listaDomicilios = domicilios;
-                            this.definirValorDomicilio();
-                        } else {
-                            this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
-                        }
-                    }
-                })
+            this.validando.CUITDestino = true;
+            forkJoin([
+                this.service
+                    .obtenerPlantasDestino(cuitDestino),
+                this.service
+                    .obtenerDomiciliosDestino(cuitDestino)
+            ]).pipe(finalize(() => this.validando.CUITDestino = false)).subscribe(([respPlantas, respDomicilios]) => {
+                this.manejarRespuestaDomicilio(respDomicilios, cuitDestino)
+                this.manejarRespuestaPlanta(respPlantas, cuitDestino)
+            })
         }
         else {
             this.listaPlantas = [];
             this.listaDomicilios = [];
             this.plantaSeleccionada = undefined;
             this.domicilioSeleccionado = undefined;
+        }
+    }
+    manejarRespuestaDomicilio(resp: ApiResponse<Domicilio[]>, cuitDestino: string) {
+        let domicilios: Domicilio[] | null;
+        if (domicilios = this.manejarErroresApiResponse(resp)) {
+            if (domicilios.length > 0) {
+                this.listaDomicilios = domicilios;
+                this.definirValorDomicilio();
+            } else {
+                this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
+            }
+        }
+    }
+    manejarRespuestaPlanta(resp: ApiResponse<Planta[]>, cuitDestino: string) {
+        let plantas: Planta[] | null;
+        if (plantas = this.manejarErroresApiResponse(resp)) {
+            if (plantas.length > 0) {
+                this.listaPlantas = plantas;
+                this.definirValorPlanta();
+            } else {
+                this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
+            }
         }
     }
     revisarCUITFormatoValido(cuit: string): boolean {
@@ -945,7 +967,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     validarRuca(cuit: string, campo: CuitValidaRUCA) {
-        this.service.validarCuitRuca(cuit).subscribe(result => {
+        this.validando[campo] = true;
+        this.service.validarCuitRuca(cuit).pipe(finalize(() => {
+            this.validando[campo] = false;
+        })).subscribe(result => {
             let data = this.manejarErroresApiResponse(result);
             if (!data) {
                 this.mensajesOrdenDeCarga[campo] = `${campo.replace("CUIT", "")}  no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación`;
