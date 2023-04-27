@@ -149,4 +149,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         return ultimoElemento.Id == posicion.Id;
     }
 
+    verPosicion(peticionPosicion: PeticionDeOfertaSolpPosicionDto) {
+        peticionPosicion.expanded = peticionPosicion.expanded == true ? false : true;
+    }
+
 }
