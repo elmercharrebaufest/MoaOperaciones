@@ -128,7 +128,7 @@
                     <td pEditableColumn class="columna" style="cursor:pointer">
                         <p-cellEditor>
                             <ng-template pTemplate="input" style="width: 100% !important">
-                                <p-calendar [minDate]="hoy" class="calendar" [touchUI]="true" [locale]="es"
+                                <p-calendar [minDate]="hoy" class="calendar" appendTo="body" [locale]="es"
                                     dateFormat="dd-M-yy"
                                     [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.FechaDeEntrega"                                    
                                     (ngModelChange)="calcularPlazo(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)"

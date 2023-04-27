@@ -455,9 +455,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
                         this.floatMsgService.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        console.log(result, "resultado");
-                        console.log(this.posicionesCompra, "compras")
+                    } else {                      
                         result.data.CotizacionPosiciones.forEach(element => {
                             this.posicionesCompra.filter(x => x.Id == element.PeticionDeOfertaSolpPosicionId)[0].Posiciones.PrecioTotal = element.PrecioTotal;      
                         });
