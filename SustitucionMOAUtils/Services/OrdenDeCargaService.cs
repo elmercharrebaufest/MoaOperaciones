@@ -361,13 +361,27 @@ namespace SustitucionMOAUtils.Services
                 var ordenDeCarga = repositorio.Obtener<OrdenDeCarga>(q => q.Id == request.IdOrdenDeCarga);
                 var mailUsuarioSAP = puedeEnviarASAP ? request.MailUsuarioSAP : _usuarioAutomaticoSAP;
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSAP);
-                var validarKg = "X";
-                var result = consumer.CrearOrdenRequest(
-                    ordenDeCarga.Cliente.CodigoProveedor, ordenDeCarga.ContratoIngresado, ordenDeCarga.CodigoCorredor,
-                    ordenDeCarga.Cantidad, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, validarKg,
-                    ordenDeCarga.CUITDestino, ordenDeCarga.CUITDestinatario, ordenDeCarga.RazonSocialDestino, ordenDeCarga.RazonSocialDestinatario,
-                    ordenDeCarga.Reventa,
-                    out string numeroPedido);
+                //var validarKg = "X";
+
+                var crearOrdenReq = new CrearOrdenRequest
+                {
+                    Cliente = ordenDeCarga.Cliente.CodigoProveedor,
+                    Contrato = ordenDeCarga.ContratoIngresado,
+                    Corredor = ordenDeCarga.CodigoCorredor,
+                    Kilos = ordenDeCarga.Cantidad,
+                    Material = ordenDeCarga.Producto.CodigoSap,
+                    PedidoInput = ordenDeCarga.NumeroPedidoIngresado,
+                    UsuarioSAP = usuario.UsuarioSap,
+                    ValidaKg = true,
+                    CuitDestino = ordenDeCarga.CUITDestino,
+                    CuitDestinatario = ordenDeCarga.CUITDestinatario,
+                    RazonSocialDestino = ordenDeCarga.RazonSocialDestino,
+                    RazonSocialDestinatario = ordenDeCarga.RazonSocialDestinatario,
+                    Reventa = ordenDeCarga.Reventa
+                };
+
+                var result = consumer.CrearOrden(crearOrdenReq, out string numeroPedido);
+                
                 if (!string.IsNullOrEmpty(result))
                 {
                     if (result == "OV-00" || result == "OV-03")
@@ -427,7 +441,6 @@ namespace SustitucionMOAUtils.Services
             //OV-03   'Pedido creado - Verificar Crédito de pedido'
             //OV-00   'OK'
             Log.Info($"CrearPedidoEnSAP(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, cliente: {cliente?.Id.ToJson()}, validaKg: {validaKg}, puedeEnviarASAP: {puedeEnviarASAP})");
-            var ValidarKg = validaKg ? "X" : "";
             string contrato = null;
             if (ordenDeCarga.ContratoSAP != null)
             {
@@ -435,16 +448,33 @@ namespace SustitucionMOAUtils.Services
             }
             var mailUsuarioSAP = puedeEnviarASAP ? mailUsuario : _usuarioAutomaticoSAP;
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSAP);
-            var result = consumer.CrearOrdenRequest(
-                cliente.CodigoProveedor, contrato, ordenDeCarga.CodigoCorredor, ordenDeCarga.Cantidad,
-                ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedidoIngresado, usuario.UsuarioSap, ValidarKg,
-                ordenDeCarga.CUITDestino, ordenDeCarga.CUITDestinatario, ordenDeCarga.RazonSocialDestino, ordenDeCarga.RazonSocialDestinatario,
-                ordenDeCarga.Reventa,
-                out string numeroPedido);
+
+            var crearOrdenReq = new CrearOrdenRequest
+            {
+                Cliente = cliente.CodigoProveedor,
+                Contrato = contrato,
+                Corredor = ordenDeCarga.CodigoCorredor,
+                Kilos = ordenDeCarga.Cantidad,
+                Material = ordenDeCarga.Producto.CodigoSap,
+                PedidoInput = ordenDeCarga.NumeroPedidoIngresado,
+                UsuarioSAP = usuario.UsuarioSap,
+                ValidaKg = validaKg,
+                CuitDestino = ordenDeCarga.CUITDestino,
+                CuitDestinatario = ordenDeCarga.CUITDestinatario,
+                RazonSocialDestino = ordenDeCarga.RazonSocialDestino,
+                RazonSocialDestinatario = ordenDeCarga.RazonSocialDestinatario,
+                Reventa = ordenDeCarga.Reventa,
+                PlantaCodigo = ordenDeCarga.PlantaCodigo,
+                DomicilioDescr = ordenDeCarga.DomicilioDescr,
+                DomicilioOrden = ordenDeCarga.DomicilioOrden,
+                DomicilioTipo = ordenDeCarga.DomicilioTipo
+            };
+
+            var result = consumer.CrearOrden(crearOrdenReq, out string numeroPedido);
 
             var resultadoCrearOrden = false;
             ordenDeCarga.ContratoSinCantidadPendiente = false;
-            //var result2 = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, orden.NombreChofer, orden.PatenteAcoplado, orden.ChasisAcoplado, "", "DNI", orden.CUITTransporte, out string mensaje);
+            //var result2 = consumer.CrearEntrega(orden.CUITChofer, orden.Cantidad, orden.NombreChofer, orden.PatenteAcoplado, orden.ChasisAcoplado, "", "DNI", orden.CUITTransporte, out string mensaje);
             if (result == "OV-00" || result == "OV-03")
             {
                 ordenDeCarga.InformadaSAP = true;
@@ -523,8 +553,8 @@ namespace SustitucionMOAUtils.Services
             };
             var responseHandler = consumer.ControlarCarga(controlarCargaReq);
 
-            //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En caso de tener una "," un comercial debe seeccionar
-            //cual es el contrato correcto que le quiere entregar.
+            //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En ese caso,
+            //un comercial debe seleccionar cual es el contrato correcto que le quiere entregar.
             if (responseHandler.TieneMultiplesContratos)
             {
                 ordenDeCarga.CodigoVerificacionSap = "";
@@ -2089,16 +2119,33 @@ namespace SustitucionMOAUtils.Services
         private Resultado GenerarEntregaSAP(OrdenDeCarga orden)
         {
             Log.Info("GenerarEntregaSAP");
-            var conductor = orden.NombreChofer;
-            var tipoDocumento = "CUIL";
-            var result = consumer.OrdenCargaEntregadaRequest(
-                orden.CUITChofer, orden.Cantidad, conductor, orden.PatenteAcoplado,
-                orden.ChasisAcoplado, orden.NumeroPedido, tipoDocumento, orden.CUITTransporte,
-                orden.CUITDestinatario, orden.RazonSocialDestinatario, orden.CUITDestino, orden.CUITDestinatario,
-                orden.Reventa, orden.CUITIntermediarioFlete,
-                out string respuesta);
-            Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Result " + result);
-            Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Respuesta " + respuesta);
+
+            var req = new CrearEntregaRequest
+            {
+                Documento = orden.CUITChofer,
+                Kilos = orden.Cantidad,
+                NombreConductor = orden.NombreChofer,
+                PatenteAcoplado = orden.PatenteAcoplado,
+                PatenteChasis = orden.ChasisAcoplado,
+                Pedido = orden.NumeroPedido,
+                TipoDocumento = "CUIL",
+                Transportista = orden.CUITTransporte,
+                CuitDestinatario = orden.CUITDestinatario,
+                RazonSocialDestinatario = orden.RazonSocialDestinatario,
+                CuitDestino = orden.CUITDestino,
+                RazonSocialDestino = orden.RazonSocialDestino,
+                Reventa = orden.Reventa,
+                TransportistaReal = orden.CUITIntermediarioFlete,
+                PlantaCodigo = orden.PlantaCodigo,
+                DomicilioTipo = orden.DomicilioTipo,
+                DomicilioOrden = orden.DomicilioOrden,
+                DomicilioDescr = orden.DomicilioDescr
+            };
+
+            var result = consumer.CrearEntrega(req, out string respuesta);
+
+            Log.Info("GenerarEntregaSAP CrearEntrega Result " + result);
+            Log.Info("GenerarEntregaSAP CrearEntrega Respuesta " + respuesta);
 
             //OE-00   'OK'
             //OE-01   'No existe tranportista
