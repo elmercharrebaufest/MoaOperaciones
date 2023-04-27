@@ -47,6 +47,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
     displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino'> | null;
     validaCPEDG = false;
+    editando = false;
     mensajeError: string = "";
     mensajeSuccess: string = "";
     clienteCUIT: string = "";
@@ -82,7 +83,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     listaPlantas: Planta[];
     plantaSeleccionada?: Planta;
-    listaDomicilios: Domicilio[];
+    listaDomicilios?: Domicilio[];
     domicilioSeleccionado?: Domicilio;
 
     constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
@@ -107,6 +108,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             }
         }
 
+        this.editando = this.ordenDeCargaId > 0;
         this.obtenerCorredores();
 
         if (this.ordenDeCargaId > 0) {
@@ -184,6 +186,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de intermediario flete válido.");
             return false;
         }
+        if (this.validaCPEDG)
+            return !Object.keys(this.mensajesOrdenDeCarga).some(key => this.mensajesOrdenDeCarga[key])
 
         return true;
     }
@@ -202,9 +206,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         console.info(result.info);
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.obtenerMateriales();
                         this.ordenDeCarga = result.data;
-                        this.CodigoCorredor = result.data.CodigoCorredor;
+                        this.CodigoCorredor = result.data.Corredor || result.data.CodigoCorredor;
                         if (this.esComercial && result.data.ColorSemaforo != "green") {
                             this.puedeEditarContrato = true;
                         }
@@ -220,7 +223,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         }
                         this.getPatentes();
                         this.cargarContratosDisponibles(result.data.CodigoCliente);
-
+                        if (this.ordenDeCarga.CUITDestino)
+                            this.onDestinoIngresado(this.ordenDeCarga.CUITDestino)
                     }
                 },
                 error => {
@@ -706,10 +710,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     } else {
                         this.listaCorredores = this.ordenarYFiltrarCorredores(result.data.vendedores);
                         if (this.CodigoCorredor != "") {
-                            let seleccionado = result.data.vendedores.filter(a => a.idVendedor == this.CodigoCorredor);
-                            if (seleccionado != null && seleccionado.length > 0) {
-                                this.corredorSeleccionado = seleccionado[0];
-                            }
+                            let seleccionado = result.data.vendedores.find(a => a.idVendedor == this.CodigoCorredor);
+                            if (seleccionado)
+                                this.corredorSeleccionado = seleccionado;
+
                         }
                         //this.blockUI.stop();
                     }
@@ -812,7 +816,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
             } else {
                 if (!result.data) {
-                    this.mensajesOrdenDeCarga[campo] = `El ${campo.replace("CUIT", "")} no se encuentra habilitado en SISA`;
+                    this.mensajesOrdenDeCarga[campo] = `El ${campo.replace("CUIT", "")} no se encuentra habilitado en SISA, no podrá cargar la orden hasta regularizar la situación.`;
                 } else {
                     if (campo == "CUITDestino") {
                         this.onDestinoIngresado(cuit);
@@ -834,6 +838,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     if (plantas = this.manejarErroresApiResponse(resp)) {
                         if (plantas.length > 0) {
                             this.listaPlantas = plantas;
+                            this.definirValorPlanta();
                         } else {
                             this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
                         }
@@ -846,6 +851,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     if (domicilios = this.manejarErroresApiResponse(resp)) {
                         if (domicilios.length > 0) {
                             this.listaDomicilios = domicilios;
+                            this.definirValorDomicilio();
                         } else {
                             this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
                         }
@@ -968,6 +974,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg(response.info)
         }
         return response.data;
+    }
+
+    definirValorPlanta() {
+        if (this.editando && this.listaPlantas)
+            this.plantaSeleccionada = this.listaPlantas.find(planta => planta.Codigo.toString() == this.ordenDeCarga.PlantaCodigo);
+    }
+    definirValorDomicilio() {
+        if (this.editando && this.listaDomicilios)
+            this.domicilioSeleccionado = this.listaDomicilios.find(domicilio =>
+                domicilio.Descripcion == this.ordenDeCarga.DomicilioDescr
+                && domicilio.Orden == this.ordenDeCarga.DomicilioOrden
+                && domicilio.Tipo.toString() == this.ordenDeCarga.DomicilioTipo
+            );
     }
 
     descripcionIntermediarioFlete = "Texto descriptivo de lo que representa el campo CUIT Intermediario Flete"

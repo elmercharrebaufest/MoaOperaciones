@@ -96,7 +96,7 @@ namespace SustitucionMOAWS.WSConsumers
             if (logger)
                 Log.Info(string.Format("Validar CUIL Chofer: {0}", cuil));
 
-            var chofer = service.ObtenerChoferPorCuit(cuil);
+            var chofer = service.ObtenerChoferPorCuit(DataFormatter.CuitConGuion(cuil));
             var result = !(chofer is null);
 
             if (logger)

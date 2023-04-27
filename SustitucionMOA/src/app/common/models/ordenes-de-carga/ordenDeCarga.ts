@@ -18,6 +18,7 @@ export class OrdenDeCarga {
     Cantidad: number;
     Observacion: string;
     Estado: EstadoOrdenDeCarga;
+    CodigoCorredor: string;
     ContratoSAP: string;
     PedidoSAP: string;
     Corredor: string;

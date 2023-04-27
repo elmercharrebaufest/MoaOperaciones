@@ -48,7 +48,7 @@
     [PlantaCodigo] VARCHAR(6) NULL, 
     [DomicilioTipo] VARCHAR NULL, 
     [DomicilioOrden] SMALLINT NULL, 
-    [DomicilioDescr] VARCHAR(100) NULL, 
+    [DomicilioDescr] VARCHAR(250) NULL, 
     CONSTRAINT [FK_OrdenDeCarga_Material] FOREIGN KEY (Producto_Id) REFERENCES Material(Id),
     CONSTRAINT [FK_OrdenDeCarga_Corredor] FOREIGN KEY (Corredor_Id) REFERENCES Proveedor(Id), 
     CONSTRAINT [FK_OrdenDeCarga_Usuario] FOREIGN KEY (UsuarioCreacion_Id) REFERENCES Usuario(Id), 
