@@ -260,9 +260,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     }
 
     calcularFechaEntrega(cotizacion: CotizacionPosicionDto, peticionId: number) {
-        let fechaNueva = new Date();
-        if (cotizacion.FechaDeEntrega != null) fechaNueva = new Date(cotizacion.FechaDeEntrega); ;
-
+        let fechaNueva = new Date();   
         if (cotizacion.PlazoDeEntrega > 0) {
             fechaNueva.setDate(fechaNueva.getDate() + cotizacion.PlazoDeEntrega);
             this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.FechaDeEntrega = fechaNueva;
@@ -279,14 +277,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             fechaNueva = cotizacion.FechaDeEntrega;
          }else{
             cotizacion.FechaDeEntrega = fechaOriginal;
-         }
-        if (cotizacion.FechaOriginal != null) {
-            var milliseconds = parseInt(cotizacion.FechaOriginal.substring(6));
-            var date = new Date(milliseconds);
-            fechaOriginal = date
-        }else{
-            cotizacion.FechaOriginal = fechaOriginal;
-         }
+         }        
         // if (cotizacion.PlazoDeEntrega) {
             var dias = fechaNueva > fechaOriginal ? fechaNueva.getDay() - fechaOriginal.getDay() : fechaOriginal.getDay() - fechaNueva.getDay();
             if(dias < 0){
