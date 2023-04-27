@@ -13,7 +13,7 @@ namespace SustitucionMOAWS.Interfaces
         ControlCargaResponseHandler ControlarCarga(ControlCargaRequest datosCarga);
         string CrearOrden(CrearOrdenRequest datosOrden, out string pedidoOutput);
         string OrdenCargaControlEstadoRequest(string entrega, string pedido, string transportista);
-        string OrdenCargaEntregadaRequest(string documento, decimal kilos, string nombreConductor, string patenteAcoplado, string patenteChasis, string pedido, string tipoDocumento, string transportista, string cuitDestinatario, string razonSocialDestinatario, string cuitDestino, string razonSocialDestino, bool reventa, string transportistaReal, out string mensaje);
+        string CrearEntrega(CrearEntregaRequest entregaReq, out string mensaje);
         OrdenCargaVisualizarClienteWSMOAResponse OrdenCargaVisualizarClienteExecute(OrdenCargaVisualizarClienteWSMOARequest request);
         OrdenCargaControlEstado GetOrdenCargaControlEstadoTransportista(string cuitTransportista);
         ResultadoGenerico AnularOrdenCarga(OrdenDeCarga orden);

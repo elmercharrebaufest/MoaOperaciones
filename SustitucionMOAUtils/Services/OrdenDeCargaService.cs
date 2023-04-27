@@ -463,14 +463,18 @@ namespace SustitucionMOAUtils.Services
                 CuitDestinatario = ordenDeCarga.CUITDestinatario,
                 RazonSocialDestino = ordenDeCarga.RazonSocialDestino,
                 RazonSocialDestinatario = ordenDeCarga.RazonSocialDestinatario,
-                Reventa = ordenDeCarga.Reventa
+                Reventa = ordenDeCarga.Reventa,
+                PlantaCodigo = ordenDeCarga.PlantaCodigo,
+                DomicilioDescr = ordenDeCarga.DomicilioDescr,
+                DomicilioOrden = ordenDeCarga.DomicilioOrden,
+                DomicilioTipo = ordenDeCarga.DomicilioTipo
             };
 
             var result = consumer.CrearOrden(crearOrdenReq, out string numeroPedido);
 
             var resultadoCrearOrden = false;
             ordenDeCarga.ContratoSinCantidadPendiente = false;
-            //var result2 = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, orden.NombreChofer, orden.PatenteAcoplado, orden.ChasisAcoplado, "", "DNI", orden.CUITTransporte, out string mensaje);
+            //var result2 = consumer.CrearEntrega(orden.CUITChofer, orden.Cantidad, orden.NombreChofer, orden.PatenteAcoplado, orden.ChasisAcoplado, "", "DNI", orden.CUITTransporte, out string mensaje);
             if (result == "OV-00" || result == "OV-03")
             {
                 ordenDeCarga.InformadaSAP = true;
@@ -2115,16 +2119,33 @@ namespace SustitucionMOAUtils.Services
         private Resultado GenerarEntregaSAP(OrdenDeCarga orden)
         {
             Log.Info("GenerarEntregaSAP");
-            var conductor = orden.NombreChofer;
-            var tipoDocumento = "CUIL";
-            var result = consumer.OrdenCargaEntregadaRequest(
-                orden.CUITChofer, orden.Cantidad, conductor, orden.PatenteAcoplado,
-                orden.ChasisAcoplado, orden.NumeroPedido, tipoDocumento, orden.CUITTransporte,
-                orden.CUITDestinatario, orden.RazonSocialDestinatario, orden.CUITDestino, orden.CUITDestinatario,
-                orden.Reventa, orden.CUITIntermediarioFlete,
-                out string respuesta);
-            Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Result " + result);
-            Log.Info("GenerarEntregaSAP OrdenCargaEntregadaRequest Respuesta " + respuesta);
+
+            var req = new CrearEntregaRequest
+            {
+                Documento = orden.CUITChofer,
+                Kilos = orden.Cantidad,
+                NombreConductor = orden.NombreChofer,
+                PatenteAcoplado = orden.PatenteAcoplado,
+                PatenteChasis = orden.ChasisAcoplado,
+                Pedido = orden.NumeroPedido,
+                TipoDocumento = "CUIL",
+                Transportista = orden.CUITTransporte,
+                CuitDestinatario = orden.CUITDestinatario,
+                RazonSocialDestinatario = orden.RazonSocialDestinatario,
+                CuitDestino = orden.CUITDestino,
+                RazonSocialDestino = orden.RazonSocialDestino,
+                Reventa = orden.Reventa,
+                TransportistaReal = orden.CUITIntermediarioFlete,
+                PlantaCodigo = orden.PlantaCodigo,
+                DomicilioTipo = orden.DomicilioTipo,
+                DomicilioOrden = orden.DomicilioOrden,
+                DomicilioDescr = orden.DomicilioDescr
+            };
+
+            var result = consumer.CrearEntrega(req, out string respuesta);
+
+            Log.Info("GenerarEntregaSAP CrearEntrega Result " + result);
+            Log.Info("GenerarEntregaSAP CrearEntrega Respuesta " + respuesta);
 
             //OE-00   'OK'
             //OE-01   'No existe tranportista
