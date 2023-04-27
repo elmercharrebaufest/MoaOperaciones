@@ -1,17 +1,41 @@
 .headerth {
-    font-size: 11px !important; 
-    cursor:pointer;
+    font-size: 11px !important;
+    cursor: pointer;
+    background-color: blue !important;
+    color: white !important;
+    font-weight: bold !important;
+    height: 33px !important;
 }
 
-.columna{
-    word-break: break-all; word-wrap:break-word; font-size: 12px;;
+.columna {
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 10px;
+    height: 40px;
+    max-height: 40px;
+    overflow: hidden;
+}
+.espacio {
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 4px;
+    height: 4px;
+    max-height: 4px;
+    overflow: hidden;
+    border:none !important;
 }
 
-  
-  .wrapper {
+.columnadiv {
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 10px;
+    height: 30px;
+    max-height: 30px;
+    overflow: hidden;
+}
+
+.wrapper {
     min-height: 265px !important;
     position: relative;
     overflow-x: auto;
-  }
-
- 
+}
