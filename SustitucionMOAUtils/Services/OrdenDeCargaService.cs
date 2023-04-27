@@ -80,6 +80,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(ordenDeCarga);
                 repositorio.GuardarCambios();
                 ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
+                ValidarCuilChoferEnScato(ordenDeCarga.CUITIntermediarioFlete);
                 NotificarContratoSinKm(ordenDeCarga);
                 NotificarTransporte(ordenDeCarga.Id);
 
@@ -194,6 +195,7 @@ namespace SustitucionMOAUtils.Services
                 var listaValoresDiferentes = cargarDatosOCEditar.Item2;
 
                 ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
+                ValidarCuilChoferEnScato(ordenDeCarga.CUITIntermediarioFlete);
                 //Solicitud de edición
                 if (!esInterno)
                 {
