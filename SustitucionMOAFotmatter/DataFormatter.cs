@@ -33,6 +33,8 @@ namespace SustitucionMOAFotmatter
         }
         public static string CuitConGuion(string cuit) {
             string formateado = cuit;
+            if (string.IsNullOrEmpty(cuit))
+                throw new ValidationCustomException("No se puede formatear como CUIT una string vacía");
             if (!cuit.Contains("-"))
             {
                 formateado = cuit.Insert(2,"-").Insert(11,"-");
