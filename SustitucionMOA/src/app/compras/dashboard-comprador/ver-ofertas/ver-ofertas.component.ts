@@ -34,6 +34,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     SolpDto: Solp;
     tablaOfertas: PeticionDeOfertaDto;
 
+    TodasPosicionesSeleccionadas: boolean = false;
+
+
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
@@ -64,6 +67,16 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             };
         }
     }
+
+    seleccionarTodo() {
+        if (this.TodasPosicionesSeleccionadas) {
+            this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => pos.Selected = true);
+        } else {
+            this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => pos.Selected = false);
+        }
+    }
+
+  
 
     verOfertas(peticionOferta_Id) {
         try {
