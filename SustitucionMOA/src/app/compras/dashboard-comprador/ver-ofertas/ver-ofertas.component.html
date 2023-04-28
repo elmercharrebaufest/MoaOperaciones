@@ -211,7 +211,7 @@
 
     <!--servicios nueva-->
     <div class="col-sm-12 col-md-12 col-lg-12 wrapper" style="margin-left: -15px;" *ngIf="tablaOfertas.TipoPosicionCodigo == 'SERVICIO'">
-        <p-table #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" dataKey="Id" [scrollable]="true" frozenWidth="590px">
+        <p-table #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" dataKey="Id" [scrollable]="true" frozenWidth="550px">
             <ng-template pTemplate="frozenheader">
                 <tr style="visibility: collapse !important;">
                     <th class="headerth2" style="width: 40px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
@@ -233,6 +233,14 @@
             </ng-template>
 
             <ng-template pTemplate="frozenbody" let-peticionPosicion>
+                <tr style="visibility: collapse !important;">
+                    <td class="headerth2" style="width: 40px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></td>
+                    <td class="headerth2" style="width: 40px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></td>
+                    <td class="headerth2" style="width: 40px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></td>
+                    <td class="headerth2" style="width: 350px !important; height: 0px !important; background-color: transparent !important;border: none !important;"></td>
+                    <td class="headerth2" style="width: 40px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></td>
+                    <td class="headerth2" style="width: 40px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></td>
+                </tr>
                 <tr>
                     <td class="columna" style="width: 40px !important;"><p-checkbox name="posiciones" [(ngModel)]="peticionPosicion.selected" binary="false"></p-checkbox></td>
                     <td class="columna" style="width: 40px !important;"><a href="javascript:void(0)" (click)="verPosicion(peticionPosicion)"><i [ngClass]="peticionPosicion.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i></a></td>
@@ -243,7 +251,7 @@
 
 
                 <tr *ngIf="peticionPosicion.expanded == true">
-                    <td class="espacio" colspan="6" style="background-color: white; width: 540px !important; ">&nbsp;</td>
+                    <td class="espacio" colspan="6" style="background-color: white; width: 550px !important; ">&nbsp;</td>
                 </tr>
                 <tr *ngIf="peticionPosicion.expanded == true">
                     <td class="headerth" style="width: 40px !important;">Sub Pos</td>
@@ -264,7 +272,7 @@
                 </ng-container>
 
                 <tr *ngIf="peticionPosicion.expanded == true">
-                    <td class="espacio" colspan="6" style="background-color: white; width: 540px !important; ">&nbsp;</td>
+                    <td class="espacio" colspan="6" style="background-color: white; width: 550px !important; ">&nbsp;</td>
                 </tr>
 
 
@@ -274,19 +282,19 @@
 
 
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna" colspan="6" style="width: 540px !important;">Total global</td>
+                    <td class="columna" colspan="6" style="width: 550px !important;">Total global</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna" colspan="6" style="width: 540px !important;">Adjuntos y observaciones</td>
+                    <td class="columna" colspan="6" style="width: 550px !important;">Adjuntos y observaciones</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna" colspan="6" style="width: 540px !important;">Visita técnica obligatoria</td>
+                    <td class="columna" colspan="6" style="width: 550px !important;">Visita técnica obligatoria</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna" colspan="6" style="width: 540px !important;">Propuesta técnica</td>
+                    <td class="columna" colspan="6" style="width: 550px !important;">Propuesta técnica</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna" colspan="6" style="width: 540px !important;"></td>
+                    <td class="columna" colspan="6" style="width: 550px !important;"></td>
                 </tr>
             </ng-template>
 
