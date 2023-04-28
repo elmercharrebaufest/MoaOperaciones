@@ -3,6 +3,8 @@ import { throwError as observableThrowError, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
+import { ApiResponse } from '../common/models/response';
+import { DolarGirasol } from '../common/models/dolarMaterial';
 
 @Injectable()
 export class PesificacionService extends BaseService {
@@ -34,7 +36,11 @@ export class PesificacionService extends BaseService {
             .get('/api/pesificacion/getSoja200')
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
-
+    public getDolarGirasol(): Observable<ApiResponse<DolarGirasol>> {
+        return this.http
+            .get<ApiResponse<DolarGirasol>>('/api/pesificacion/getDolarGirasol')
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+    }
     protected setComprobantePesificacion(contrato: string, fijacion: string, cantidad: number) {
         let payload = new FormData();
         let data = { contrato: contrato, fijacion: fijacion, cantidad: cantidad };
