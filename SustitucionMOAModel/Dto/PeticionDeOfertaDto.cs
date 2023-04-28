@@ -73,7 +73,7 @@ namespace SustitucionMOAModel.Dto
         public string FechaCreacionFormateada { get; set; }
         public DateTime FechaCreacionSolp { get; set; }
         public string FechaCreacionFormateadaSolp { get; set; }
-
+        public IEnumerable<DateTime?> VisitasMasivas { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
