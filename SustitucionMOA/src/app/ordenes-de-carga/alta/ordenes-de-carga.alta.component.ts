@@ -992,6 +992,20 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.Producto = "";
     }
 
+    copiarCuitEnDestinatario() {
+        if (this.ordenDeCarga.CUITDestinatario != this.clienteSeleccionado.CUIT) {
+            this.ordenDeCarga.CUITDestinatario = this.clienteSeleccionado.CUIT;
+            this.validarExisteCUIT('CUITDestinatario')
+        }
+    }
+
+    copiarCuitEnDestino() {
+        if (this.ordenDeCarga.CUITDestino != this.clienteSeleccionado.CUIT) {
+            this.ordenDeCarga.CUITDestino = this.clienteSeleccionado.CUIT;
+            this.validarExisteCUIT('CUITDestino')
+        }
+    }
+
     manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
         if (response.logout) {
             this.sessionDataService.logout();
@@ -1022,6 +1036,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     descripcionIntermediarioFlete = "Texto descriptivo de lo que representa el campo CUIT Intermediario Flete"
     descripcionTransporte = "Texto descriptivo de lo que representa el campo CUIT Transporte"
+    ttCopiarCuit = "Copiar CUIT del Cliente"
 }
 
 
