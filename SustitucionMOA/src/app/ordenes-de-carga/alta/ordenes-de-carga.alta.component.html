@@ -22,7 +22,7 @@
                     <div class="formulario">
                         <div class="col-xs-12 col-md-5 no-padding-left-right" style="margin-left: 3em;">
 
-                            <div class=" col-xs-12 col-md-12" *ngIf="esComercial">
+                            <div class=" col-xs-12 col-md-12" >
                                 <div class="formulario-label" style="margin-bottom: 8px;">
                                     <p-checkbox name="reventa" [binary]="true"
                                         [(ngModel)]="ordenDeCarga.Reventa"></p-checkbox>
@@ -36,7 +36,6 @@
                                 <div class="formulario-label" style="margin-bottom: 8px;">
                                     Corredor:
                                 </div>
-
                                 <div class="styled-select" style="overflow: initial;">
                                     <p-dropdown name="cmbCorredores" [(ngModel)]="corredorSeleccionado"
                                         [options]="listaCorredores" placeholder="Seleccione un Corredor"
@@ -300,7 +299,7 @@
                         </div>
 
                         <div class="containerBotones" style="padding: 3rem;">
-                            <div class="col-xs-12 col-md-12" style="padding-right:0px!important">
+                            <div class="col-xs-12 col-md-12" style="padding-right:0px!important" #messages>
                                 <mensaje></mensaje>
                                 <spinner></spinner>
                             </div>

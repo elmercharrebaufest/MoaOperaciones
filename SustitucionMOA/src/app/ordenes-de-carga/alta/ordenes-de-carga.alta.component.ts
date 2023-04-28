@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { EmpresaGranosService } from '../../alta-proveedores/empresa-granos/empresa-granos.service';
 import { BaseComponent } from '../../common/base-components/base-component';
@@ -21,6 +21,7 @@ import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { finalize } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
+import { forkJoin } from 'rxjs';
 
 declare var $: any;
 
@@ -30,7 +31,6 @@ declare var $: any;
     styleUrls: ['./ordenes-de-carga.alta.component.css'],
     providers: [SeleccionarProveedorService],
 })
-
 export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
 
@@ -39,6 +39,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
+    @ViewChild('messages')
+    private messagesContainer?: ElementRef<HTMLDivElement>;
 
     ordenDeCargaId: number = 0;
 
@@ -47,6 +49,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
     displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino'> | null;
     validaCPEDG = false;
+    editando = false;
     mensajeError: string = "";
     mensajeSuccess: string = "";
     clienteCUIT: string = "";
@@ -82,7 +85,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     listaPlantas: Planta[];
     plantaSeleccionada?: Planta;
-    listaDomicilios: Domicilio[];
+    listaDomicilios?: Domicilio[];
     domicilioSeleccionado?: Domicilio;
 
     constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
@@ -107,6 +110,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             }
         }
 
+        this.editando = this.ordenDeCargaId > 0;
         this.obtenerCorredores();
 
         if (this.ordenDeCargaId > 0) {
@@ -151,7 +155,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             console.error(e);
             this.mensajeComponent.setErrorMsg(e);
         }
-
     }
 
     validar() {
@@ -185,6 +188,27 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             return false;
         }
 
+        if (this.validaCPEDG) {
+            if (!(this.ordenDeCarga.DomicilioDescr && this.ordenDeCarga.DomicilioTipo && this.ordenDeCarga.DomicilioOrden)) {
+                this.mensajeComponent.setInfoMsg("Seleccione un domicilio.");
+                return false;
+            }
+            if (!this.ordenDeCarga.PlantaCodigo) {
+                this.mensajeComponent.setInfoMsg("Seleccione una planta.");
+                return false;
+            }
+            const tieneMensajes = Object.keys(this.mensajesOrdenDeCarga).some(key => this.mensajesOrdenDeCarga[key])
+            if (tieneMensajes) {
+                this.mensajeComponent.setInfoMsg("Hay campos que no son validos.");
+                return false;
+            }
+            const estaValidando = Object.keys(this.validando).some(key => this.validando[key]);
+            if (estaValidando) {
+                this.mensajeComponent.setInfoMsg("Hay campos que todavía se están validando");
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -202,9 +226,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         console.info(result.info);
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.obtenerMateriales();
                         this.ordenDeCarga = result.data;
-                        this.CodigoCorredor = result.data.CodigoCorredor;
+                        this.CodigoCorredor = result.data.Corredor || result.data.CodigoCorredor;
                         if (this.esComercial && result.data.ColorSemaforo != "green") {
                             this.puedeEditarContrato = true;
                         }
@@ -220,7 +243,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         }
                         this.getPatentes();
                         this.cargarContratosDisponibles(result.data.CodigoCliente);
-
+                        if (this.ordenDeCarga.CUITDestino)
+                            this.onDestinoIngresado(this.ordenDeCarga.CUITDestino)
                     }
                 },
                 error => {
@@ -241,6 +265,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         if (!this.validar()) {
             this.spinnerComponent.hideIt();
+            this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
             return;
         }
         this.mensajeComponent.setMsgsEmpty();
@@ -706,10 +731,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     } else {
                         this.listaCorredores = this.ordenarYFiltrarCorredores(result.data.vendedores);
                         if (this.CodigoCorredor != "") {
-                            let seleccionado = result.data.vendedores.filter(a => a.idVendedor == this.CodigoCorredor);
-                            if (seleccionado != null && seleccionado.length > 0) {
-                                this.corredorSeleccionado = seleccionado[0];
-                            }
+                            let seleccionado = result.data.vendedores.find(a => a.idVendedor == this.CodigoCorredor);
+                            if (seleccionado)
+                                this.corredorSeleccionado = seleccionado;
+
                         }
                         //this.blockUI.stop();
                     }
@@ -753,6 +778,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         } else
                             if (resp.Error) {
                                 this.mensajeComponent.setErrorMsg(resp.Error);
+                                this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
                             } else
                                 if (resp.Info) {
                                     this.mensajeComponent.setInfoMsg(resp.Info);
@@ -779,10 +805,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.validando[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
-        this.service.validarExisteCuitScato(cuit).pipe(finalize(() => {
-            this.validando[campo] = false;
-        })).subscribe(
+        this.service.validarExisteCuitScato(cuit).subscribe(
             result => {
+                this.validando[campo] = false;
                 if (result.logout) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -802,7 +827,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             })
     }
     validarSisaCuit(cuit: string, campo: CuitValidaSISA) {
+        this.validando[campo] = true;
         this.service.validarSisaCuit(cuit, campo).subscribe(result => {
+            this.validando[campo] = false;
             if (result.logout) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
@@ -812,7 +839,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
             } else {
                 if (!result.data) {
-                    this.mensajesOrdenDeCarga[campo] = `El ${campo.replace("CUIT", "")} no se encuentra habilitado en SISA`;
+                    this.mensajesOrdenDeCarga[campo] = `El ${campo.replace("CUIT", "")} no se encuentra habilitado en SISA, no podrá cargar la orden hasta regularizar la situación.`;
                 } else {
                     if (campo == "CUITDestino") {
                         this.onDestinoIngresado(cuit);
@@ -827,36 +854,44 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     onDestinoIngresado(cuitDestino: string) {
         if (cuitDestino) {
-            this.service
-                .obtenerPlantasDestino(cuitDestino)
-                .subscribe(resp => {
-                    let plantas: Planta[] | null;
-                    if (plantas = this.manejarErroresApiResponse(resp)) {
-                        if (plantas.length > 0) {
-                            this.listaPlantas = plantas;
-                        } else {
-                            this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
-                        }
-                    }
-                })
-            this.service
-                .obtenerDomiciliosDestino(cuitDestino)
-                .subscribe(resp => {
-                    let domicilios: Domicilio[] | null;
-                    if (domicilios = this.manejarErroresApiResponse(resp)) {
-                        if (domicilios.length > 0) {
-                            this.listaDomicilios = domicilios;
-                        } else {
-                            this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
-                        }
-                    }
-                })
+            this.validando.CUITDestino = true;
+            forkJoin([
+                this.service
+                    .obtenerPlantasDestino(cuitDestino),
+                this.service
+                    .obtenerDomiciliosDestino(cuitDestino)
+            ]).pipe(finalize(() => this.validando.CUITDestino = false)).subscribe(([respPlantas, respDomicilios]) => {
+                this.manejarRespuestaDomicilio(respDomicilios, cuitDestino)
+                this.manejarRespuestaPlanta(respPlantas, cuitDestino)
+            })
         }
         else {
             this.listaPlantas = [];
             this.listaDomicilios = [];
             this.plantaSeleccionada = undefined;
             this.domicilioSeleccionado = undefined;
+        }
+    }
+    manejarRespuestaDomicilio(resp: ApiResponse<Domicilio[]>, cuitDestino: string) {
+        let domicilios: Domicilio[] | null;
+        if (domicilios = this.manejarErroresApiResponse(resp)) {
+            if (domicilios.length > 0) {
+                this.listaDomicilios = domicilios;
+                this.definirValorDomicilio();
+            } else {
+                this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
+            }
+        }
+    }
+    manejarRespuestaPlanta(resp: ApiResponse<Planta[]>, cuitDestino: string) {
+        let plantas: Planta[] | null;
+        if (plantas = this.manejarErroresApiResponse(resp)) {
+            if (plantas.length > 0) {
+                this.listaPlantas = plantas;
+                this.definirValorPlanta();
+            } else {
+                this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
+            }
         }
     }
     revisarCUITFormatoValido(cuit: string): boolean {
@@ -939,7 +974,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     validarRuca(cuit: string, campo: CuitValidaRUCA) {
+        this.validando[campo] = true;
         this.service.validarCuitRuca(cuit).subscribe(result => {
+            this.validando[campo] = false;
             let data = this.manejarErroresApiResponse(result);
             if (!data) {
                 this.mensajesOrdenDeCarga[campo] = `${campo.replace("CUIT", "")}  no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación`;
@@ -968,6 +1005,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg(response.info)
         }
         return response.data;
+    }
+
+    definirValorPlanta() {
+        if (this.editando && this.listaPlantas)
+            this.plantaSeleccionada = this.listaPlantas.find(planta => planta.Codigo.toString() == this.ordenDeCarga.PlantaCodigo);
+    }
+    definirValorDomicilio() {
+        if (this.editando && this.listaDomicilios)
+            this.domicilioSeleccionado = this.listaDomicilios.find(domicilio =>
+                domicilio.Descripcion == this.ordenDeCarga.DomicilioDescr
+                && domicilio.Orden == this.ordenDeCarga.DomicilioOrden
+                && domicilio.Tipo.toString() == this.ordenDeCarga.DomicilioTipo
+            );
     }
 
     descripcionIntermediarioFlete = "Texto descriptivo de lo que representa el campo CUIT Intermediario Flete"
