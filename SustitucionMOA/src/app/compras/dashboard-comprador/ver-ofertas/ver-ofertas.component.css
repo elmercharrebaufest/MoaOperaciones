@@ -39,3 +39,12 @@
     position: relative;
     overflow-x: auto;
 }
+
+
+.border2-right {
+    border-right: 2px solid black !important;
+}
+
+.border2-left {
+    border-left: 2px solid black !important;
+}
