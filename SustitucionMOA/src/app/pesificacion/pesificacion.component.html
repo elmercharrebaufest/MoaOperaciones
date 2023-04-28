@@ -31,23 +31,23 @@
                                 Contrato: *
                                 <div class="styled-select ">
                                     <input type="search" class="fourRounded" placeholder="1234567"
-                                           aria-controls="tableModal" [(ngModel)]="contrato" numeric decimals="0"
-                                           (ngModelChange)="changeContrato($event)">
+                                        aria-controls="tableModal" [(ngModel)]="contrato" numeric decimals="0"
+                                        (ngModelChange)="changeContrato($event)">
                                 </div>
                             </div>
                             <div class="col-xs-12">
                                 Fijacion:
                                 <div class="styled-select ">
                                     <input type="search" class="fourRounded" placeholder="123456789"
-                                           aria-controls="tableModal" [(ngModel)]="fijacion" numeric decimals="0"
-                                           (ngModelChange)="changeFijacion($event)">
+                                        aria-controls="tableModal" [(ngModel)]="fijacion" numeric decimals="0"
+                                        (ngModelChange)="changeFijacion($event)">
                                 </div>
                             </div>
                             <div class="col-xs-12">
                                 Cantidad (Kg): *
                                 <div class="styled-select ">
                                     <input type="number" class="fourRounded" placeholder="" aria-controls="tableModal"
-                                           [(ngModel)]="cantidad" numeric decimals="0">
+                                        [(ngModel)]="cantidad" numeric decimals="0">
 
                                 </div>
                             </div>
@@ -57,15 +57,20 @@
                                 {{fecha.HoraDeCorte}}hs)
                             </div>
                             <div class="col-xs-12" *ngIf="this.visibleSoja200" style="color:red;">
-                                Si el contrato es de Soja el TC de pesificación será de {{soja200.Cotizacion}} ARS desde el {{soja200.DesdeString}} al {{soja200.HastaString}}
+                                Si el contrato es de Soja el TC de pesificación será de {{soja200.Cotizacion}} ARS desde
+                                el {{soja200.DesdeString}} al {{soja200.HastaString}}
+                            </div>
+                            <div class="col-xs-12" *ngIf="dolarGirasol" style="color:red;">
+                                Si el contrato es de Girasol el TC de pesificación será de {{dolarGirasol.Cotizacion}} ARS desde
+                                el {{dolarGirasol.DesdeString}} al {{dolarGirasol.HastaString}}
                             </div>
                             <hr>
                             <div class="row myRow cargaDeDatosBtn">
                                 <div class="col-xs-12 col-sm-6 col-sm-offset-6">
                                     <spinner-small></spinner-small>
                                     <a href="#" style="text-decoration:none!important" id="openModalHiddenButton"
-                                       data-toggle="modal" data-target="#myModalConfirmacion"
-                                       *ngIf="this.visibleEnviar">
+                                        data-toggle="modal" data-target="#myModalConfirmacion"
+                                        *ngIf="this.visibleEnviar">
                                         <div class="btnSection animate">Enviar <span class="fa fa-play "></span></div>
                                     </a>
                                 </div>
