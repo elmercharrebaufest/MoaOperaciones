@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { EmpresaGranosService } from '../../alta-proveedores/empresa-granos/empresa-granos.service';
 import { BaseComponent } from '../../common/base-components/base-component';
@@ -39,6 +39,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
+    @ViewChild('messages')
+    private messagesContainer?: ElementRef<HTMLDivElement>;
 
     ordenDeCargaId: number = 0;
 
@@ -153,7 +155,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             console.error(e);
             this.mensajeComponent.setErrorMsg(e);
         }
-
     }
 
     validar() {
@@ -197,9 +198,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 return false;
             }
             const tieneMensajes = Object.keys(this.mensajesOrdenDeCarga).some(key => this.mensajesOrdenDeCarga[key])
+            if (tieneMensajes) {
+                this.mensajeComponent.setInfoMsg("Hay campos que no son validos.");
+                return false;
+            }
             const estaValidando = Object.keys(this.validando).some(key => this.validando[key]);
-
-            return (!tieneMensajes) && (!estaValidando)
+            if (estaValidando) {
+                this.mensajeComponent.setInfoMsg("Hay campos que todavía se están validando");
+                return false;
+            }
         }
 
         return true;
@@ -258,6 +265,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         if (!this.validar()) {
             this.spinnerComponent.hideIt();
+            this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
             return;
         }
         this.mensajeComponent.setMsgsEmpty();
@@ -770,6 +778,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         } else
                             if (resp.Error) {
                                 this.mensajeComponent.setErrorMsg(resp.Error);
+                                this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
                             } else
                                 if (resp.Info) {
                                     this.mensajeComponent.setInfoMsg(resp.Info);
