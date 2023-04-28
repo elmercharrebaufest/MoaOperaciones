@@ -22,7 +22,7 @@
 
                 </tr>
                 <tr>
-                    <th class="headerth" colspan="8" style="background-color: white; width: 620px !important;">Proveedor</th>
+                    <th class="headerth border2-right" colspan="8" style="background-color: white; width: 620px !important;">Proveedor</th>
                 </tr>
                 <tr>
                     <th class="headerth" rowspan="3" style="width: 40px !important; "><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(tablaOfertas.PeticionDeOfertaPosicion)"></p-checkbox></th>
@@ -32,7 +32,7 @@
                     <th class="headerth" rowspan="3" style="width: 90px !important; ">Texto de suministro</th>
                     <th class="headerth" rowspan="3" style="width: 80px !important; ">Ctd. Pendiente</th>
                     <th class="headerth" rowspan="3" style="width: 60px !important; ">Ctd.</th>
-                    <th class="headerth" rowspan="3" style="width: 60px !important; ">Um</th>
+                    <th class="headerth border2-right" rowspan="3" style="width: 60px !important; ">Um</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="frozenbody" let-peticionPosicion>
@@ -55,16 +55,16 @@
                         </p-cellEditor>
                     </td>
 
-                    <td class="columna" style="width: 60px !important; ">{{peticionPosicion.Posicion.Unidad.Descripcion}}</td>
+                    <td class="columna border2-right" style="width: 60px !important; ">{{peticionPosicion.Posicion.Unidad.Descripcion}}</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna" colspan="8" style="width: 620px !important;">Total global</td>
+                    <td class="columna border2-right" colspan="8" style="width: 620px !important;">Total global</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna" colspan="8" style="width: 620px !important;">Adjuntos y observaciones</td>
+                    <td class="columna border2-right" colspan="8" style="width: 620px !important;">Adjuntos y observaciones</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna" colspan="8" style="width: 620px !important;"> </td>
+                    <td class="columna border2-right" colspan="8" style="width: 620px !important;"> </td>
                 </tr>
             </ng-template>
 
@@ -80,11 +80,11 @@
                     </ng-container>
                 </tr>
                 <tr>
-                    <th class="headerth" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="6" style="width: 570px !important;">{{proveedor.RazonSocial}}</th>
+                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="6" style="width: 570px !important;">{{proveedor.RazonSocial}}</th>
                 </tr>
                 <tr>
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
-                        <th class="headerth" style="width: 80px !important; ">Ctd. Cotizada</th>
+                        <th class="headerth border2-left" style="width: 80px !important; ">Ctd. Cotizada</th>
                         <th class="headerth" style="width: 100px !important;">Um. Cotizada</th>
                         <th class="headerth" style="width: 100px !important;">Precio unidad</th>
                         <th class="headerth" style="width: 100px !important;">Precio total</th>
@@ -99,7 +99,7 @@
                         <ng-container *ngIf="usuario.Cotizacion != null">
                             <ng-container *ngFor="let cotizacionPosicion of usuario.Cotizacion.CotizacionPosiciones">
                                 <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
-                                    <td class="columna" style="width: 80px !important; ">{{cotizacionPosicion.Cantidad | number: '1.0-0'}}</td>
+                                    <td class="columna border2-left" style="width: 80px !important; ">{{cotizacionPosicion.Cantidad | number: '1.0-0'}}</td>
                                     <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.UnidadMedida.Descripcion}}</td>
                                     <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.Precio | number:'1.2-2'}}</td>
                                     <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.PrecioTotal | number:'1.2-2'}}</td>
@@ -109,17 +109,17 @@
                             </ng-container>
                         </ng-container>
                         <ng-container *ngIf="usuario.Cotizacion == null">
-                            <td class="columna" colspan="6" style="width: 570px !important;">Sin cotizar</td>
+                            <td class="columna border2-left" colspan="6" style="width: 570px !important;">Sin cotizar</td>
                         </ng-container>
                     </ng-container>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let usuario of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
-                            <td colspan="6" class="columna" style="width: 570px !important;">ARP {{proveedor.Cotizacion.TotalGlobal | number:'1.2-2'}}</td>
+                            <td colspan="6" class="columna border2-left" style="width: 570px !important;">ARP {{proveedor.Cotizacion.TotalGlobal | number:'1.2-2'}}</td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
-                            <td class="columna" colspan="6" style="width: 570px !important;">Sin Total</td>
+                            <td class="columna border2-left" colspan="6" style="width: 570px !important;">Sin Total</td>
                         </ng-container>
                     </ng-container>
 
@@ -128,7 +128,7 @@
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let usuario of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
-                            <td colspan="6" class="columna" style="width: 570px !important;">
+                            <td colspan="6" class="columna border2-left" style="width: 570px !important;">
                                 <div class="col-md-2" *ngIf="proveedor.Cotizacion.TieneAdjuntos">
                                     <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="descargarAdjuntosCotizacion(proveedor.Cotizacion.Id)" /></span>
                                 </div>
@@ -136,7 +136,7 @@
                             </td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
-                            <td class="columna" colspan="6" style="width: 570px !important;">Sin observaciones</td>
+                            <td class="columna border2-left" colspan="6" style="width: 570px !important;">Sin observaciones</td>
                         </ng-container>
                     </ng-container>
 
@@ -144,7 +144,7 @@
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let usuario of tablaOfertas.Usuarios">
                         <ng-container *ngIf="usuario.Cotizacion == null">
-                            <td class="columna" colspan="6" style="width: 570px !important;">
+                            <td class="columna border2-left" colspan="6" style="width: 570px !important;">
                                 <button class="publicar btn btn-success" style="font-size: 12px;">
                                     Adjudicar
                                 </button>
