@@ -2028,7 +2028,7 @@ namespace SustitucionMOAUtils.Services
 
                         solp.Posiciones.Add(posicionEntity);
 
-                        if (solp.Id == 0 || nuevaSolp)
+                        if (solp.Id == 0)
                             repositorio.Agregar(solp);
                     }
                     catch (Exception e)
