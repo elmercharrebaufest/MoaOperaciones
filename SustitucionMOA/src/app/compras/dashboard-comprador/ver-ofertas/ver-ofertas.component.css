@@ -1,7 +1,7 @@
 .headerth {
     font-size: 11px !important;
     cursor: pointer;
-    background-color: blue !important;
+    background-color: #4760ac !important;
     color: white !important;
     font-weight: bold !important;
     height: 33px !important;
@@ -38,4 +38,13 @@
     min-height: 265px !important;
     position: relative;
     overflow-x: auto;
+}
+
+
+.border2-right {
+    border-right: 2px solid black !important;
+}
+
+.border2-left {
+    border-left: 2px solid black !important;
 }
