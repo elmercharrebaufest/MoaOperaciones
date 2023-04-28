@@ -796,10 +796,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.validando[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
-        this.service.validarExisteCuitScato(cuit).pipe(finalize(() => {
-            this.validando[campo] = false;
-        })).subscribe(
+        this.service.validarExisteCuitScato(cuit).subscribe(
             result => {
+                this.validando[campo] = false;
                 if (result.logout) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -820,9 +819,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
     validarSisaCuit(cuit: string, campo: CuitValidaSISA) {
         this.validando[campo] = true;
-        this.service.validarSisaCuit(cuit, campo).pipe(finalize(() => {
+        this.service.validarSisaCuit(cuit, campo).subscribe(result => {
             this.validando[campo] = false;
-        })).subscribe(result => {
             if (result.logout) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
@@ -968,9 +966,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     validarRuca(cuit: string, campo: CuitValidaRUCA) {
         this.validando[campo] = true;
-        this.service.validarCuitRuca(cuit).pipe(finalize(() => {
+        this.service.validarCuitRuca(cuit).subscribe(result => {
             this.validando[campo] = false;
-        })).subscribe(result => {
             let data = this.manejarErroresApiResponse(result);
             if (!data) {
                 this.mensajesOrdenDeCarga[campo] = `${campo.replace("CUIT", "")}  no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación`;
