@@ -155,7 +155,12 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
 
 
     uploadHandler(filesUpload: any): void {
+        var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);      
         this.archivos = filesUpload["files"];
+        if(archivoWeb > 10000000){
+            this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb");
+            this.eliminarAdjuntoNuevo(this.archivos[this.archivos.length - 1])          
+        }
     }
 
     eliminarArchivo(archivo: any) {
