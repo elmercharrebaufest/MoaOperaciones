@@ -130,7 +130,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             Id = p.Id,
                                                             Cotizacion_Id = p.Cotizacion_Id,
                                                             PeticionDeOfertaSolpPosicion_Id = p.PeticionDeOfertaSolpPosicion_Id,
-                                                            Cantidad = p.Cantidad.Value,
+                                                            Cantidad = p.Cantidad ?? 1,
                                                             UnidadMedida = new TablaSapDto
                                                             {
                                                                 Descripcion = p.UnidadDeMedida.Descripcion
@@ -147,24 +147,23 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             CotizacionSubPosiciones = (from subpos in contexto.Set<CotizacionSubPosicion>()
                                                                                        where p.Id == subpos.CotizacionPosicion_Id
                                                                                        select new CotizacionSubPosicionDto()
-                                                                                       //p.CotizacionSubPosiciones == null ? null : p.CotizacionSubPosiciones.Select(s => new CotizacionSubPosicionDto
                                                                                        {
                                                                                            Id = subpos.Id,
                                                                                            CotizacionPosicion_Id = subpos.CotizacionPosicion_Id,
                                                                                            SolpSubPosicion_Id = subpos.SolpSubPosicion_Id,
-                                                                                           Cantidad = subpos.Cantidad.Value,
-                                                                                           UnidadDeMedida_Id = subpos.UnidadDeMedida_Id.Value,
+                                                                                           Cantidad = subpos.Cantidad ?? 0,
+                                                                                           UnidadDeMedida_Id = subpos.UnidadDeMedida_Id ?? 0,
                                                                                            UnidadMedida = new TablaSapDto
                                                                                            {
                                                                                                Descripcion = subpos.UnidadDeMedida.Descripcion
                                                                                            },
-                                                                                           MonedaDescripcion = cotizacion != null && subpos.Moneda != null ? subpos.Moneda.Codigo : "",
-                                                                                           PrecioUnidad = subpos.Precio.Value,
-                                                                                           PrecioTotalSubPosCotizacion = subpos.Cantidad.Value * subpos.Precio.Value,
+                                                                                           MonedaDescripcion = subpos.Moneda != null ? subpos.Moneda.Codigo : "",
+                                                                                           PrecioUnidad = subpos.Precio ?? 0,
+                                                                                           PrecioTotalSubPosCotizacion = subpos.Cantidad ?? 0 * subpos.Precio ?? 0,
                                                                                            TotalARPSubPosCotizacion = 0,
-                                                                                           Moneda_Id = subpos.Moneda_Id.Value,
+                                                                                           Moneda_Id = subpos.Moneda_Id ?? 0,
                                                                                            TotalPesos = 0,
-                                                                                           PrecioTotalSubPos = subpos.Cantidad.Value * subpos.Precio.Value
+                                                                                           PrecioTotalSubPos = subpos.Cantidad ?? 0 * subpos.Precio ?? 0
                                                                                        }).ToList()
 
                                                         }).ToList(),
