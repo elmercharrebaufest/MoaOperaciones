@@ -29,7 +29,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 var resultado = from po in contexto.Set<PeticionDeOfertaUsuario>()
                                 join cotizacion in contexto.Set<Cotizacion>() on po.Id equals cotizacion.PeticionDeOfertaUsuario.Id into peticionCotizacion
                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
-                                where po.PeticionDeOferta_Id == PeticionOferta_Id
+                                where po.Id == PeticionOferta_Id
                                 select new PeticionDeOfertaDto
                                 {
                                     Id = po.Id,
