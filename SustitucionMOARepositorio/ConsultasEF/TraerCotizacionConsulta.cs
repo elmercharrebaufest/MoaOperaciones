@@ -41,8 +41,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Cotizacion = new CotizacionDto(),
                                     ObservacionTecnica = cotizacion != null ? cotizacion.ObservacionTecnica : "",
                                     ObservacionEconomica = cotizacion != null ? cotizacion.ObservacionEconomica : "",
-                                    RespetaMateriales = cotizacion != null ? cotizacion.RespetaMateriales : false,
-                                    RespetaServicios = cotizacion != null ? cotizacion.RespetaServicios : false,
+                                    RespetaMateriales = cotizacion != null ? cotizacion.RespetaMateriales : null,
+                                    RespetaServicios = cotizacion != null ? cotizacion.RespetaServicios : null,
                                     TipoPosicionCodigo = po.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     CotizacionId = cotizacion != null ? cotizacion.Id : 0,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
