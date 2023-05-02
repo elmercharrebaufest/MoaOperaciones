@@ -347,7 +347,7 @@
                             <th class="columna" style="background-color: #4760ac !important;">Pos.</th>
                             <th class="columna" style="background-color: #4760ac !important;">Descripción</th>
                             <th class="columna" style="background-color: #4760ac !important;">Precio Total ARP</th>
-                            <th class="columna" style="background-color: #4760ac !important;">Fecha de entrega</th>
+                            <th class="columna" style="background-color: #4a1884 !important;">Fecha de entrega</th>
                             <th class="columna" style="background-color: #4760ac !important;">Plazo de oferta</th>
                         </tr>
                     </ng-template>
@@ -367,8 +367,8 @@
                                 <p-cellEditor>
                                     <ng-template pTemplate="input" style="width: 100% !important">
                                         <p-calendar [minDate]="hoy" class="calendar" appendTo="body" [locale]="es"
-                                                                      dateFormat="dd/mm/yy"
-                                                                      [(ngModel)]="posicionCompra.Posiciones.FechaEntregaServicio">
+                                                    dateFormat="dd/mm/yy"
+                                                    [(ngModel)]="posicionCompra.Posiciones.FechaEntregaServicio">
                                         </p-calendar>
                                     </ng-template>
                                     <ng-template pTemplate="output">
@@ -400,10 +400,10 @@
                                                 </th>
                                                 <th class="columna" style="background-color: #4760ac !important;">Ctd. solicitada</th>
                                                 <th class="columna" style="background-color: #4760ac !important;">UM. solicitada</th>
-                                                <th class="columna" style="background-color: #4760ac !important;">Ctd. cotizada</th>
-                                                <th class="columna" style="background-color: #4760ac !important;">UM. cotizada</th>
-                                                <th class="columna" style="background-color: #4760ac !important;">Moneda</th>
-                                                <th class="columna" style="background-color: #4760ac !important;">Precio Unidad</th>
+                                                <th class="columna" style="background-color: #4a1884 !important;">Ctd. cotizada</th>
+                                                <th class="columna" style="background-color: #4a1884!important;">UM. cotizada</th>
+                                                <th class="columna" style="background-color: #4a1884 !important;">Moneda</th>
+                                                <th class="columna" style="background-color: #4a1884 !important;">Precio Unidad</th>
                                                 <th class="columna" style="background-color: #4760ac !important;">Precio Total</th>
                                             </tr>
                                         </ng-template>
