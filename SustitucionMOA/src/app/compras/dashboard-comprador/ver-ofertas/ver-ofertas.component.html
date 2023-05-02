@@ -95,9 +95,9 @@
             </ng-template>
             <ng-template pTemplate="body" let-peticionPosicion>
                 <tr>
-                    <ng-container *ngFor="let usuario of tablaOfertas.Usuarios">
-                        <ng-container *ngIf="usuario.Cotizacion != null">
-                            <ng-container *ngFor="let cotizacionPosicion of usuario.Cotizacion.CotizacionPosiciones">
+                    <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                        <ng-container *ngIf="proveedor.Cotizacion != null">
+                            <ng-container *ngFor="let cotizacionPosicion of proveedor.Cotizacion.CotizacionPosiciones">
                                 <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
                                     <td class="columna border2-left" style="width: 80px !important; ">{{cotizacionPosicion.Cantidad | number: '1.0-0'}}</td>
                                     <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.UnidadMedida.Descripcion}}</td>
@@ -108,25 +108,25 @@
                                 </ng-container>
                             </ng-container>
                         </ng-container>
-                        <ng-container *ngIf="usuario.Cotizacion == null">
+                        <ng-container *ngIf="proveedor.Cotizacion == null">
                             <td class="columna border2-left" colspan="6" style="width: 570px !important;">Sin cotizar</td>
                         </ng-container>
                     </ng-container>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <ng-container *ngFor="let usuario of tablaOfertas.Usuarios">
+                    <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="6" class="columna border2-left" style="width: 570px !important;">ARP {{proveedor.Cotizacion.TotalGlobal | number:'1.2-2'}}</td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
-                            <td class="columna border2-left" colspan="6" style="width: 570px !important;">Sin Total</td>
+                            <td class="columna border2-left" colspan="6" style="width: 570px !important;">Sin cotizar</td>
                         </ng-container>
                     </ng-container>
 
                 </tr>
 
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <ng-container *ngFor="let usuario of tablaOfertas.Usuarios">
+                    <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="6" class="columna border2-left" style="width: 570px !important;">
                                 <div class="col-md-2" *ngIf="proveedor.Cotizacion.TieneAdjuntos">
@@ -136,14 +136,14 @@
                             </td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
-                            <td class="columna border2-left" colspan="6" style="width: 570px !important;">Sin observaciones</td>
+                            <td class="columna border2-left" colspan="6" style="width: 570px !important;">Sin cotizar</td>
                         </ng-container>
                     </ng-container>
 
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <ng-container *ngFor="let usuario of tablaOfertas.Usuarios">
-                        <ng-container *ngIf="usuario.Cotizacion == null">
+                    <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                        <ng-container>                            <!--*ngIf="proveedor.Cotizacion != null"-->
                             <td class="columna border2-left" colspan="6" style="width: 570px !important;">
                                 <button class="publicar btn btn-success" style="font-size: 12px;">
                                     Adjudicar
