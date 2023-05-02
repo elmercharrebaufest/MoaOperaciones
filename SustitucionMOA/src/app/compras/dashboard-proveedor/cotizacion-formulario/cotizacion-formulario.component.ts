@@ -104,6 +104,14 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 var date = new Date(milliseconds);
                 this.posicionesCompra[index].Posiciones.CotizacionPosicion.FechaDeEntrega = date
             }
+
+            if (this.posicionesCompra[index].Posiciones.FechaEntregaServicio != null) {
+                console.log(this.posicionesCompra[index].Posiciones.FechaEntregaServicio)
+                var milliseconds = parseInt(this.posicionesCompra[index].Posiciones.FechaEntregaServicio.substring(6));
+                var date = new Date(milliseconds);
+                this.posicionesCompra[index].Posiciones.FechaEntregaServicio = date
+                console.log(date)
+            }
         }
 
     }

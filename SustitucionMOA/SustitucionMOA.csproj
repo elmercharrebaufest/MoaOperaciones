@@ -19,10 +19,14 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>58280</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>
+    </IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -335,6 +339,8 @@
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.html" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.css" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.css" />
@@ -1142,6 +1148,7 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.spec.ts" />

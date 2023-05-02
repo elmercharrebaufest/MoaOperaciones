@@ -344,8 +344,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
                     cotizacion.Posiciones.CotizacionPosicion.Moneda_Id : 0,
                 UnidadDeMedidaId: cotizacion.Posiciones.CotizacionPosicion.UnidadDeMedida_Id != 0 ?
                     cotizacion.Posiciones.CotizacionPosicion.UnidadDeMedida_Id : 0,
-                FechaDeEntrega: cotizacion.Posiciones.CotizacionPosicion.FechaDeEntrega != undefined ?
-                    cotizacion.Posiciones.CotizacionPosicion.FechaDeEntrega : null,
+                FechaDeEntrega: cotizacion.Posiciones.FechaEntregaServicio,
                 UnidadMedida: cotizacion.Posiciones.CotizacionPosicion.UnidadComprasDescripcion,
                 monedaCompras: cotizacion.Posiciones.CotizacionPosicion.MonedaCodigo,
             };

@@ -22,7 +22,7 @@ export interface PosicionCompra{
     Cantidad: number,
     UnidadComprasDescripcion: string,
     MonedaComprasDescripcion: string,
-    FechaEntregaServicio: Date,
+    FechaEntregaServicio: any,
     FechaOferta: Date,
     PlazoEntrega: Date,
     ProveedoresCompras?: SolpProveedorDto[]
