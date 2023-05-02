@@ -2238,13 +2238,31 @@ namespace SustitucionMOAUtils.Services
 
         public ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp, string username)
         {
-            var userId = repositorio.Obtener<Usuario>(a => a.Mail == username).Id;
-            var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, userId));
-            if (todasLasPO != null && todasLasPO.Count() > 0)
+            try
             {
-                todasLasPO.FirstOrDefault().ItemsTotales = todasLasPO.ItemsTotales;
+                var userId = repositorio.Obtener<Usuario>(a => a.Mail == username).Id;
+                var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, userId));
+                var listId = todasLasPO.ToList().Select(y => y.Id);             
+                if (todasLasPO != null && todasLasPO.Count() > 0)
+                {
+                    var peticionesDeOferta = repositorio.Listar<PeticionDeOferta>(x => listId.Contains(x.Id));
+                    todasLasPO.FirstOrDefault().ItemsTotales = todasLasPO.ItemsTotales;
+                    foreach (var item in todasLasPO)
+                    {
+                        if (peticionesDeOferta.Where(x => x.Id == item.Id).FirstOrDefault().Solp.Pliego != null)
+                        {
+                            item.VisitasMasivas = peticionesDeOferta.Where(x => x.Id == item.Id).FirstOrDefault().Solp.Pliego.VisitasMasivas.Select(x => x.FechaHora.HasValue ? x.FechaHora : (DateTime?)null);
+                            item.TieneVisitaObra = peticionesDeOferta.Where(x => x.Id == item.Id).FirstOrDefault().Solp.Pliego.TieneVisitaObra == null ? "No requiere visita" : "Requiere visita a coordinar";
+                        }
+                    }
+                }
+                return todasLasPO;
             }
-            return todasLasPO;
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
 
         public PeticionDeOfertaDto ListarOfertasComprador(int PeticionOferta_Id)
@@ -3883,7 +3901,7 @@ namespace SustitucionMOAUtils.Services
                     GuardarArchivosCotizacion(cotizacion, adjuntos);
                 }
 
-                if(cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado)
+                if (cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado)
                 {
                     EnviarMailCotizacion(cotizacion);
                 }
@@ -3920,19 +3938,20 @@ namespace SustitucionMOAUtils.Services
                         foreach (var item in cotizacionPosicion.CotizacionSubPosiciones)
                         {
                             var sub = cotizacionDto.CotizacionSubposiciones.Where(x => x.CotizacionSubPosicionId == item.Id).FirstOrDefault();
-                            
-                                item.Cantidad = sub.Cantidad;
-                                item.Moneda_Id = sub.MonedaId > 0 ? sub.MonedaId : (int?)null;
-                                item.Moneda = sub.MonedaId > 0 ? info.Where(moneda => moneda.Id == sub.MonedaId).FirstOrDefault() : null;
-                                item.Precio = sub.Precio;
-                                item.UnidadDeMedida_Id = sub.UnidadDeMedidaId > 0 ? sub.UnidadDeMedidaId : (int?)null;
-                                item.UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == sub.UnidadDeMedidaId).FirstOrDefault() : null;
-                                item.SolpSubPosicion_Id = sub.SolpSubPosicionId;
+
+                            item.Cantidad = sub.Cantidad;
+                            item.Moneda_Id = sub.MonedaId > 0 ? sub.MonedaId : (int?)null;
+                            item.Moneda = sub.MonedaId > 0 ? info.Where(moneda => moneda.Id == sub.MonedaId).FirstOrDefault() : null;
+                            item.Precio = sub.Precio;
+                            item.UnidadDeMedida_Id = sub.UnidadDeMedidaId > 0 ? sub.UnidadDeMedidaId : (int?)null;
+                            item.UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == sub.UnidadDeMedidaId).FirstOrDefault() : null;
+                            item.SolpSubPosicion_Id = sub.SolpSubPosicionId;
                         }
 
                     }
 
-                    if(cotizacionDto.CotizacionSubposiciones.Where(x => x.CotizacionSubPosicionId == 0).Count() > 0) {
+                    if (cotizacionDto.CotizacionSubposiciones.Where(x => x.CotizacionSubPosicionId == 0).Count() > 0)
+                    {
                         foreach (var sub in cotizacionDto.CotizacionSubposiciones.Where(x => x.CotizacionSubPosicionId == 0 && x.CotizacionPosicionId == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id))
                         {
                             cotizacionPosicion.CotizacionSubPosiciones.Add(new CotizacionSubPosicion
@@ -4164,7 +4183,7 @@ namespace SustitucionMOAUtils.Services
                         }
                         posicion.PrecioTotal = subposiciones.Where(x => x.CotizacionPosicionId == posicion.PeticionDeOfertaSolpPosicionId).Sum(x => x.PrecioTotal);
 
-                    }                  
+                    }
                 }
 
             }

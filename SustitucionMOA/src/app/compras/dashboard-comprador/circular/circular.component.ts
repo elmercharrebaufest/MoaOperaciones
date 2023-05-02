@@ -131,7 +131,9 @@ export class CircularComponent implements OnInit, OnChanges {
         this.archivos = filesUpload["files"];
         if(archivoWeb > 10000000){
             this.error = "El archivo adjuntado no debe superar los 10Mb";
+            if(this.archivos.length > 0){
             this.eliminarAdjuntoNuevo(this.archivos[this.archivos.length - 1])
+            }
             return  this.visualizarAlert = true;             
         }
     }

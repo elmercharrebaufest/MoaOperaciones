@@ -202,12 +202,18 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);
             this.archivosTecnico = filesUpload["files"];
             if (archivoWeb > 10000000) {
+                if(this.archivosTecnico.length > 0){
+                    this.eliminarAdjuntoNuevo(this.archivosTecnico[this.archivosTecnico.length - 1], true)
+                }
                 this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb")
             }
         } else {
             var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);
             this.archivosEconomico = filesUpload["files"];
             if (archivoWeb > 10000000) {
+                if(this.archivosEconomico.length > 0){
+                  this.eliminarAdjuntoNuevo(this.archivosEconomico[this.archivosEconomico.length - 1], false)
+                }
                 this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb")
             }
         }
@@ -305,6 +311,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             CotizacionesHoras: this.index == 0 ? this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == 'UOCRA') : this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio != 'UOCRA'),
             CotizacionSubposiciones: this.subposiciones
         }
+        console.log(coti, "cotizacion")
         return coti;
         
     }
