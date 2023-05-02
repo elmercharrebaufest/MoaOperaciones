@@ -60,6 +60,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     }
     ngOnChanges(changes: SimpleChanges): void {
         this.getCombos();
+        this.mostrarMensajeNoRespetaCondiciones();
     }
 
     ngOnInit() {
@@ -82,6 +83,16 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             this.agregarRow();
         }
         this.obtenerPrecioTotalPosicionProveedor();
+        this.mostrarMensajeNoRespetaCondiciones();
+      
+    }
+
+    public mostrarMensajeNoRespetaCondiciones(){
+        this.posicionesCompra.forEach(element => {
+            element.Posiciones.SubposicionesCompras.forEach(subpos => {
+            this.validarCambios(subpos, element.Id);
+        });
+        });
     }
 
     agregarFilaDefault() {
@@ -202,12 +213,18 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);
             this.archivosTecnico = filesUpload["files"];
             if (archivoWeb > 10000000) {
+                if(this.archivosTecnico.length > 0){
+                    this.eliminarAdjuntoNuevo(this.archivosTecnico[this.archivosTecnico.length - 1], true)
+                }
                 this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb")
             }
         } else {
             var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);
             this.archivosEconomico = filesUpload["files"];
             if (archivoWeb > 10000000) {
+                if(this.archivosEconomico.length > 0){
+                  this.eliminarAdjuntoNuevo(this.archivosEconomico[this.archivosEconomico.length - 1], false)
+                }
                 this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb")
             }
         }
@@ -279,7 +296,12 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
            
         }
         if (subposicionCompra.UnidadCotizacionDescripcion != undefined) {
-            this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].UnidadId != subposicionCompra.UnidadCotizacionDescripcion.Id
+            if(subposicionCompra.UnidadCotizacionDescripcion.Id != undefined){
+                this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].UnidadId != subposicionCompra.UnidadCotizacionDescripcion.Id
+            }else{
+                this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].UnidadCotizacionId != subposicionCompra.UnidadId
+
+            }
             
         }
 
@@ -305,6 +327,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             CotizacionesHoras: this.index == 0 ? this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == 'UOCRA') : this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio != 'UOCRA'),
             CotizacionSubposiciones: this.subposiciones
         }
+        console.log(coti, "cotizacion")
         return coti;
         
     }

@@ -127,15 +127,15 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             rejectLabel: "VOLVER",
             message: 'Está a punto de enviar la cotización, no podrá editarla luego de esta acción. <b>¿Desea continuar?</b>',
             accept: () => {
-                this.finalizarCotizacion();
+                this.finalizarCotizacion(true);
             },
             reject: () => {
             }
         });
     }
 
-    public finalizarCotizacion() {
-        this.guardarCotizacion();
+    public finalizarCotizacion(esFinalizado) {
+        this.guardarCotizacion(esFinalizado);
     }
 
     public ObtenerCotizacion() {
@@ -160,13 +160,14 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         }
     }
 
-    public guardarCotizacion() {
+    public guardarCotizacion(esFinalizado) {
+        if(esFinalizado == undefined) this.esFinalizado = false; 
         this.obtenerArchivosNuevos();
         this.ObtenerCotizacion();
         this.blockUI.start("Grabando...");
         try {
 
-            this.subscription = this.service.GrabarCotizacion(this.cotizacion, this.esFinalizado).subscribe(
+            this.subscription = this.service.GrabarCotizacion(this.cotizacion, esFinalizado).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -241,7 +242,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         if (
                             (self.cotizacion.ObservacionEconomica == "" || ((self.cotizacion.ArchivosNuevos == null
                                 || self.cotizacion.ArchivosNuevos.length == 0) &&
-                                (self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
+                                (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
                                     || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
                             mensaje = "Pos. " + cotizacion.Posicion + ": Por favor explique en las observaciones por qué modifico la cantidad y/o unidad de medida, para estos casos debe adjuntar un archivo";
                             breakFor = true;
@@ -251,12 +252,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
 
                 }
             });
-
-            var archivoWeb = this.archivos.reduce((sum, file) => sum + file.size, 0);
-            if (archivoWeb > 10000000) {
-                mensaje = "El archivo economico adjuntado no debe superar los 10Mb";
-                return mensaje;
-            }
         }else{
             if(this.peticion.RespetaMateriales == null || this.peticion.RespetaMateriales == undefined){
                 mensaje = "El campo respeta materiales es obligatorio";
@@ -264,17 +259,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             }
             if(this.peticion.RespetaServicios == null || this.peticion.RespetaServicios == undefined){
                 mensaje = "El campo respeta servicios es obligatorio";
-                return mensaje;
-            }
-            var archivoWeb = this.archivosEconomico.reduce((sum, file) => sum + file.size, 0);
-            if (archivoWeb > 10000000) {
-                mensaje = "El archivo economico adjuntado no debe superar los 10Mb";
-                return mensaje;
-            }
-    
-            var archivoWeb = this.archivosTecnico.reduce((sum, file) => sum + file.size, 0);
-            if (archivoWeb > 10000000) {
-                mensaje = "El archivo tecnico adjuntado no debe superar los 10Mb";
                 return mensaje;
             }
 
@@ -343,12 +327,24 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         breakFor = true;
                         return mensaje;
                     }
+
+                    if(self.peticion.RespetaServicios == false || self.peticion.RespetaMateriales == false){
+                        if(self.peticion.ObservacionTecnica == "" && ((self.archivosTecnico == null
+                            || self.archivosTecnico.length == 0 &&
+                        (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionTecnica") == null
+                                || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionTecnica").length == 0)))){
+                            mensaje = "Propuesta Técnica - Debe adjuntar un archivo o agregar una observación";
+                            breakFor = true;
+                            return mensaje;
+                        }
+                    }
                     
                     if ((subposicion.CantidadSubpos != subposicion.Cantidad ||
                         subposicion.UnidadDeMedidaSubpos != subposicion.UnidadDeMedidaId) &&
-                        (self.cotizacion.ObservacionEconomica == "" || (self.archivosEconomico == null
+                        (self.cotizacion.ObservacionEconomica == "" && (self.archivosEconomico == null
                             || self.archivosEconomico.length == 0 &&
-                            (self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
+                        (self.cotizacion.ArchivosTipo == null || 
+                            self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
                                 || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
                         mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": Por favor explique en las observaciones por qué modifico la cantidad y/o unidad de medida, para estos casos debe adjuntar un archivo";
                         breakFor = true;

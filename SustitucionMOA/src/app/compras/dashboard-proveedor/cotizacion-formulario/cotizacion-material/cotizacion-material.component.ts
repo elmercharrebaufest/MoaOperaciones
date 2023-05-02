@@ -54,6 +54,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     }
     ngOnChanges(changes: SimpleChanges): void {
         this.getCombos();
+        this.mostrarMensajeNoRespetaCondiciones();
     }
 
     ngOnInit() {
@@ -69,7 +70,14 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             today: 'Hoy',
             clear: 'Borrar'
         }
+        this.mostrarMensajeNoRespetaCondiciones()
+    }
 
+    public mostrarMensajeNoRespetaCondiciones(){
+        this.posicionesCompra.forEach(element => {
+            this.validarCambios(element.Posiciones.CotizacionPosicion, element.Id);
+        });
+        
     }
 
     public get esTipoMaterial(): boolean {
@@ -185,6 +193,9 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);
         this.archivos = filesUpload["files"];
         if (archivoWeb > 10000000) {
+            if(this.archivos.length > 0){
+            this.eliminarAdjuntoNuevo(this.archivos[this.archivos.length - 1])
+            }
             this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb")
         }
     }

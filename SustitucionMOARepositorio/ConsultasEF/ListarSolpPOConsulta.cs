@@ -29,6 +29,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
         {
             var hoy = DateTime.Now.Date;
             var ayer = hoy.AddDays(-1);
+            var fechas = new List<DateTime?>();
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
@@ -85,8 +86,6 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                         CircularSinLeer = x.Circulares.Any(a=>a.Leida != true),
                                         CircularesSinLeer = x.Circulares.Where(a=>a.Leida != true).Select(a=>a.Id),
                                     } },
-                                    VisitasMasivas = x.PeticionDeOferta.Solp.Pliego.VisitasMasivas.Select(x => x.FechaHora.HasValue ? x.FechaHora : (DateTime?)null),
-                                    TieneVisitaObra = x.PeticionDeOferta.Solp.Pliego.TieneVisitaObra == null ? "No requiere visita" : "Requiere visita a coordinar",
                                     CotizacionEstadoDescripcion = cotizacion == null ? "Sin Cotizar" : cotizacion.CotizacionEstado.Descripcion,
                                     CotizacionEstado_Id = cotizacion == null ? 0 : cotizacion.CotizacionEstado.Id,
                                     ItemPorPagina = paginacion.ItemsPorPagina,
