@@ -54,6 +54,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     }
     ngOnChanges(changes: SimpleChanges): void {
         this.getCombos();
+        this.mostrarMensajeNoRespetaCondiciones();
     }
 
     ngOnInit() {
@@ -69,7 +70,14 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             today: 'Hoy',
             clear: 'Borrar'
         }
+        this.mostrarMensajeNoRespetaCondiciones()
+    }
 
+    public mostrarMensajeNoRespetaCondiciones(){
+        this.posicionesCompra.forEach(element => {
+            this.validarCambios(element.Posiciones.CotizacionPosicion, element.Id);
+        });
+        
     }
 
     public get esTipoMaterial(): boolean {

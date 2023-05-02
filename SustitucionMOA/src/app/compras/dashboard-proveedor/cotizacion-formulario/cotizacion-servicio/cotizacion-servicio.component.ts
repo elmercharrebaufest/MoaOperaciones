@@ -60,6 +60,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     }
     ngOnChanges(changes: SimpleChanges): void {
         this.getCombos();
+        this.mostrarMensajeNoRespetaCondiciones();
     }
 
     ngOnInit() {
@@ -82,6 +83,16 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             this.agregarRow();
         }
         this.obtenerPrecioTotalPosicionProveedor();
+        this.mostrarMensajeNoRespetaCondiciones();
+      
+    }
+
+    public mostrarMensajeNoRespetaCondiciones(){
+        this.posicionesCompra.forEach(element => {
+            element.Posiciones.SubposicionesCompras.forEach(subpos => {
+            this.validarCambios(subpos, element.Id);
+        });
+        });
     }
 
     agregarFilaDefault() {
@@ -285,7 +296,12 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
            
         }
         if (subposicionCompra.UnidadCotizacionDescripcion != undefined) {
-            this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].UnidadId != subposicionCompra.UnidadCotizacionDescripcion.Id
+            if(subposicionCompra.UnidadCotizacionDescripcion.Id != undefined){
+                this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].UnidadId != subposicionCompra.UnidadCotizacionDescripcion.Id
+            }else{
+                this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].UnidadCotizacionId != subposicionCompra.UnidadId
+
+            }
             
         }
 
