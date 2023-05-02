@@ -2267,58 +2267,68 @@ namespace SustitucionMOAUtils.Services
 
         public PeticionDeOfertaDto ListarOfertasComprador(int PeticionOferta_Id)
         {
-            var todasLasOfertas = repositorio.ObtenerConsultaEscalar(new ComparadorOfertasConsulta(PeticionOferta_Id));
-
-            Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
-
-
-            var destino = repositorio.Obtener<TablaSap>(x => x.Codigo == "ARP" && x.Tabla == TablasSap.Moneda);
-
-            foreach (var item in todasLasOfertas.Usuarios)
+            try
             {
-                if (item.Cotizacion != null && item.Cotizacion.CotizacionPosiciones != null)
+
+                var todasLasOfertas = repositorio.ObtenerConsultaEscalar(new ComparadorOfertasConsulta(PeticionOferta_Id));
+
+                Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
+
+
+                var destino = repositorio.Obtener<TablaSap>(x => x.Codigo == "ARP" && x.Tabla == TablasSap.Moneda);
+
+                foreach (var item in todasLasOfertas.Usuarios)
                 {
-                    foreach (var item2 in item.Cotizacion.CotizacionPosiciones)
+                    if (item.Cotizacion != null && item.Cotizacion.CotizacionPosiciones != null)
                     {
-                        decimal cambio = 0;
-                        if (!tipodecambio.TryGetValue(item2.Moneda_Id, out cambio))
+                        foreach (var item2 in item.Cotizacion.CotizacionPosiciones)
                         {
-                            var tipoCambio = ObtenerTipoCambio(item2.Moneda_Id, destino.Id, DateTime.Now);
-                            tipodecambio.Add(item2.Moneda_Id, tipoCambio.TipoCambio);
-                            cambio = tipoCambio.TipoCambio;
-                        }
-
-                        if (item2.CotizacionSubPosiciones != null)
-                        {
-                            foreach (var subpos in item2.CotizacionSubPosiciones)
+                            decimal cambio = 0;
+                            if (!tipodecambio.TryGetValue(item2.Moneda_Id, out cambio))
                             {
+                                var tipoCambio = ObtenerTipoCambio(item2.Moneda_Id, destino.Id, DateTime.Now);
+                                tipodecambio.Add(item2.Moneda_Id, tipoCambio.TipoCambio);
+                                cambio = tipoCambio.TipoCambio;
+                            }
 
-                                if (!tipodecambio.TryGetValue(item2.Moneda_Id, out cambio))
+                            if (item2.CotizacionSubPosiciones != null)
+                            {
+                                foreach (var subpos in item2.CotizacionSubPosiciones)
                                 {
-                                    var tipoCambio = ObtenerTipoCambio(subpos.Moneda_Id, destino.Id, DateTime.Now);
-                                    tipodecambio.Add(subpos.Moneda_Id, tipoCambio.TipoCambio);
-                                    cambio = tipoCambio.TipoCambio;
+
+                                    if (!tipodecambio.TryGetValue(item2.Moneda_Id, out cambio))
+                                    {
+                                        var tipoCambio = ObtenerTipoCambio(subpos.Moneda_Id, destino.Id, DateTime.Now);
+                                        tipodecambio.Add(subpos.Moneda_Id, tipoCambio.TipoCambio);
+                                        cambio = tipoCambio.TipoCambio;
+
+                                    }
+
+                                    subpos.TotalARPSubPosCotizacion = cambio * subpos.PrecioTotalSubPosCotizacion;
 
                                 }
+                                item2.TotalPosicionCotizacion = item2.CotizacionSubPosiciones.Sum(x => x.PrecioTotalSubPosCotizacion);
 
-                                subpos.TotalARPSubPosCotizacion = cambio * subpos.PrecioTotalSubPosCotizacion;
 
                             }
-                            item2.TotalPosicionCotizacion = item2.CotizacionSubPosiciones.Sum(x => x.PrecioTotalSubPosCotizacion);
-
-
+                            item2.TotalPesos = cambio * item2.PrecioTotal;
+                            item2.TotalARPCotizacionPosicion = item2.CotizacionSubPosiciones.Sum(x => x.TotalARPSubPosCotizacion);
                         }
-                        item2.TotalPesos = cambio * item2.PrecioTotal;
-                        item2.TotalARPCotizacionPosicion = item2.CotizacionSubPosiciones.Sum(x => x.TotalARPSubPosCotizacion);
+                        item.Cotizacion.TotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalPesos);
+                        item.Cotizacion.TotalGlobalSubPos = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalARPCotizacionPosicion);
+
                     }
-                    item.Cotizacion.TotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalPesos);
-                    item.Cotizacion.TotalGlobalSubPos = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalARPCotizacionPosicion);
 
                 }
 
+                return todasLasOfertas;
             }
-
-            return todasLasOfertas;
+            catch (Exception e)
+            {
+                Logger.Log.Info($"ListarOfertasComprador {e.Message}");
+                Log.Error(e);
+                throw;
+            }
         }
 
         private SolpSAPDto ConvertirSOLPSAP(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas)
@@ -3725,6 +3735,8 @@ namespace SustitucionMOAUtils.Services
 
         public PeticionDeOfertaDto TraerCotizacion(int peticionId)
         {
+            try
+            {
 
             var peticionCotizacion = repositorio.ObtenerConsultaEscalar(new TraerCotizacionConsulta(peticionId));
             var listaHoras = new List<CotizacionHorasDto> {
@@ -3803,6 +3815,13 @@ namespace SustitucionMOAUtils.Services
             peticionCotizacion.Cotizacion.CotizacionesHoras = listaHoras;
             return peticionCotizacion;
 
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info($"TraerCotizacion {e.Message}");
+                Log.Error(e);
+                throw;
+            }
         }
 
         public RespuestaGuardarSOLP GrabarCotizacion(GuardarCotizacion cotizacionDto, HttpFileCollectionBase adjuntos, bool esFinalizado, int usuarioActualId)
