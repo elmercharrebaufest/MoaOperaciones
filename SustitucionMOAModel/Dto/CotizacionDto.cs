@@ -72,9 +72,9 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public int CotizacionPosicion_Id { get; set; }
         public int SolpSubPosicion_Id { get; set; }
-        public int Cantidad { get; set; }
-        public int UnidadDeMedida_Id { get; set; }
-        public int Moneda_Id { get; set; }
+        public int? Cantidad { get; set; }
+        public int? UnidadDeMedida_Id { get; set; }
+        public int? Moneda_Id { get; set; }
         public decimal PrecioUnidad { get; set; }
         public decimal PrecioTotalSubPosCotizacion { get; set; }
         public TablaSapDto UnidadMedida { get; set; }
@@ -89,9 +89,9 @@ namespace SustitucionMOAModel.Dto
     {
         public int PeticionDeOfertaSolpPosicionId { get; set; }
         public decimal Precio { get; set; }
-        public int MonedaId { get; set; }
-        public int UnidadDeMedidaId { get; set; }
-        public int Cantidad { get; set; }
+        public int? MonedaId { get; set; }
+        public int? UnidadDeMedidaId { get; set; }
+        public int? Cantidad { get; set; }
         public DateTime? FechaDeEntrega { get; set; }
         public decimal PrecioTotal { get; set; }
         public decimal TotalPesos { get; set; }
@@ -111,9 +111,9 @@ namespace SustitucionMOAModel.Dto
         public bool? RespetaMateriales { get; set; }
         public bool? RespetaServicios { get; set; }
         public List<CotizacionHorasDto> CotizacionesHoras { get; set; } = new List<CotizacionHorasDto>();
-         public int MonedaId { get; set; }
-        public int UnidadDeMedidaId { get; set; }
-        public int Cantidad { get; set; }
+         public int? MonedaId { get; set; }
+        public int? UnidadDeMedidaId { get; set; }
+        public int? Cantidad { get; set; }
         public DateTime? FechaDeEntrega { get; set; }
         public List<CotizacionSubposicionesDto> CotizacionSubposiciones { get; set; } = new List<CotizacionSubposicionesDto>();
     }
@@ -123,9 +123,9 @@ namespace SustitucionMOAModel.Dto
     {
         public int CotizacionSubPosicionId { get; set; }
         public decimal Precio { get; set; }
-        public int MonedaId { get; set; }
+        public int? MonedaId { get; set; }
         public int CotizacionPosicionId { get; set; }
-        public int UnidadDeMedidaId { get; set; }
+        public int? UnidadDeMedidaId { get; set; }
         public int Cantidad { get; set; }
         public int SolpSubPosicionId { get; set; }
         public decimal PrecioTotal { get; set; }

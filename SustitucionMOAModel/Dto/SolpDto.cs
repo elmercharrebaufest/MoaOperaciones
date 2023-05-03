@@ -337,15 +337,15 @@ namespace SustitucionMOAModel.Dto
         public string UnidadDescripcion { get; set; }
         public int? CantidadCotizacion { get; set; }
         public string UnidadCotizacionDescripcion { get; set; }
-        public int UnidadCotizacionId { get; set; }
+        public int? UnidadCotizacionId { get; set; }
         public string MonedaCotizacionDescripcion { get; set; }
-        public int MonedaCotizacionId { get; set; }
+        public int? MonedaCotizacionId { get; set; }
         public decimal PrecioSubPosicion { get; set; }
         public decimal PrecioTotalSubPosicion { get; set; }
         public string MonedaCotizacionCodigo { get; set; }
-        public int CotizacionSubPosicionId { get; set; }
-        public int CodigoSolpServicioSap { get; set; }
-        public int ServicioSolpCodigo { get; set; }
+        public int? CotizacionSubPosicionId { get; set; }
+        public int? CodigoSolpServicioSap { get; set; }
+        public int? ServicioSolpCodigo { get; set; }
 
         public SolpSubposicionDto() { }
 
