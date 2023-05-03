@@ -3831,7 +3831,8 @@ namespace SustitucionMOAUtils.Services
                 var respuestaGuardarSOLP = new RespuestaGuardarSOLP();
                 var usuario = repositorio.Obtener<Usuario>(usuarioActualId);
                 var peticionUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(x => x.Id == cotizacionDto.PeticionOfertaUsuarioId);
-                var cotizacion = cotizacionDto.CotizacionId == 0 ? null : repositorio.Obtener<Cotizacion>(cotizacionDto.CotizacionId);
+                var cotizacion = cotizacionDto.CotizacionId == 0 ? null : 
+                    repositorio.Obtener<Cotizacion>(x => x.Id == cotizacionDto.CotizacionId && x.PeticionDeOfertaUsuario_Id == peticionUsuario.Id);
                 var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
 
                 if (cotizacion == null)
