@@ -140,7 +140,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             FechaDeEntrega = p.FechaDeEntrega,
                                                             FechaDeEntregaFormateada = SqlFunctions.DateName("day", p.FechaDeEntrega) + "/" + SqlFunctions.DatePart("month", p.FechaDeEntrega) + "/" + SqlFunctions.DateName("year", p.FechaDeEntrega),
                                                             Precio = p.Precio ?? 0,
-                                                            PrecioTotal = p.Cantidad ?? 0 * p.Precio ?? 0,
+                                                            PrecioTotal = p.Cantidad != null && p.Precio != null ? p.Cantidad.Value * p.Precio.Value : 0,
                                                             TotalARPCotizacionPosicion = 0,
                                                             TotalPosicionCotizacion = 0,
                                                             TotalPesos = 0,
@@ -159,11 +159,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                            },
                                                                                            MonedaDescripcion = subpos.Moneda != null ? subpos.Moneda.Codigo : "",
                                                                                            PrecioUnidad = subpos.Precio ?? 0,
-                                                                                           PrecioTotalSubPosCotizacion = subpos.Cantidad ?? 0 * subpos.Precio ?? 0,
+                                                                                           PrecioTotalSubPosCotizacion = subpos.Cantidad != null && subpos.Precio != null ? subpos.Cantidad.Value * subpos.Precio.Value : 0,
                                                                                            TotalARPSubPosCotizacion = 0,
                                                                                            Moneda_Id = subpos.Moneda_Id ?? 0,
                                                                                            TotalPesos = 0,
-                                                                                           PrecioTotalSubPos = subpos.Cantidad ?? 0 * subpos.Precio ?? 0
+                                                                                           PrecioTotalSubPos = subpos.Cantidad != null && subpos.Precio != null ? subpos.Cantidad.Value * subpos.Precio.Value : 0,
                                                                                        }).ToList()
 
                                                         }).ToList(),

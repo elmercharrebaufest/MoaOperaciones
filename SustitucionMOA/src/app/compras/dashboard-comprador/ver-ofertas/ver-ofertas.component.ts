@@ -18,7 +18,7 @@ import { Solp } from '../../solp/solp';
 @Component({
     selector: 'app-ver-ofertas',
     templateUrl: './ver-ofertas.component.html',
-    styleUrls: ['../../compras.component.css',
+    styleUrls: [
         './ver-ofertas.component.css']
 })
 export class VerOfertasComponent extends ListBaseComponent implements OnInit {

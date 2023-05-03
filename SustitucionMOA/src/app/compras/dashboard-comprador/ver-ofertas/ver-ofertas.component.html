@@ -22,17 +22,17 @@
 
                 </tr>
                 <tr>
-                    <th class="headerth border2-right" colspan="8" style="background-color: white; width: 620px !important;">Proveedor</th>
+                    <th class="headerth border2-right" colspan="8" style="background-color: #4760ac !important; width: 620px !important;">Proveedor</th>
                 </tr>
                 <tr>
-                    <th class="headerth" rowspan="3" style="width: 40px !important; "><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(tablaOfertas.PeticionDeOfertaPosicion)"></p-checkbox></th>
-                    <th class="headerth" rowspan="3" style="width: 40px !important; ">Pos.</th>
-                    <th class="headerth" rowspan="3" style="width: 100px !important;">Codigo</th>
-                    <th class="headerth" rowspan="3" style="width: 150px !important;">Descripcion </th>
-                    <th class="headerth" rowspan="3" style="width: 90px !important; ">Texto de suministro</th>
-                    <th class="headerth" rowspan="3" style="width: 80px !important; ">Ctd. Pendiente</th>
-                    <th class="headerth" rowspan="3" style="width: 60px !important; ">Ctd.</th>
-                    <th class="headerth border2-right" rowspan="3" style="width: 60px !important; ">Um</th>
+                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 40px !important; "><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(tablaOfertas.PeticionDeOfertaPosicion)"></p-checkbox></th>
+                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 40px !important; ">Pos.</th>
+                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 100px !important;">Codigo</th>
+                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 150px !important;">Descripcion </th>
+                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 90px !important; ">Texto de suministro</th>
+                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 80px !important; ">Ctd. Pendiente</th>
+                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 60px !important; ">Ctd.</th>
+                    <th class="headerth border2-right" rowspan="3" style="background-color: #4760ac !important; width: 60px !important; ">Um</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="frozenbody" let-peticionPosicion>
@@ -80,16 +80,16 @@
                     </ng-container>
                 </tr>
                 <tr>
-                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="6" style="width: 570px !important;">{{proveedor.RazonSocial}}</th>
+                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="6" style="background-color: #4760ac !important; width: 570px !important;">{{proveedor.RazonSocial}}</th>
                 </tr>
                 <tr>
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
-                        <th class="headerth border2-left" style="width: 80px !important; ">Ctd. Cotizada</th>
-                        <th class="headerth" style="width: 100px !important;">Um. Cotizada</th>
-                        <th class="headerth" style="width: 100px !important;">Precio unidad</th>
-                        <th class="headerth" style="width: 100px !important;">Precio total</th>
-                        <th class="headerth" style="width: 100px !important;">Total ARP</th>
-                        <th class="headerth" style="width: 90px !important; ">Fecha de entrega</th>
+                        <th class="headerth border2-left" style="background-color: #4760ac !important; width: 80px !important; ">Ctd. Cotizada</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 100px !important;">Um. Cotizada</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 100px !important;">Precio unidad</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 100px !important;">Precio total</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 100px !important;">Total ARP</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 90px !important; ">Fecha de entrega</th>
                     </ng-container>
                 </tr>
             </ng-template>
@@ -172,13 +172,13 @@
                     <th class="headerth2" style="width: 40px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
                 </tr>
                 <tr>
-                    <th class="headerth border2-right" colspan="6" style="background-color: white; width: 550px !important; ">Proveedor</th>
+                    <th class="headerth border2-right" colspan="6" style="background-color: #4760ac !important; width: 550px !important; ">Proveedor</th>
                 </tr>
                 <tr>
-                    <th class="headerth" style="width: 40px !important;" rowspan="3"><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(tablaOfertas.PeticionDeOfertaPosicion)"></p-checkbox></th>
-                    <th class="headerth" style="width: 40px !important;" rowspan="3"></th>
-                    <th class="headerth" style="width: 40px !important;" rowspan="3">Pos.</th>
-                    <th class="headerth border2-right" style="width: 430px !important;" rowspan="3" colspan="3">Descripcion </th>
+                    <th class="headerth" style="background-color: #4760ac !important; width: 40px !important;" rowspan="3"><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(tablaOfertas.PeticionDeOfertaPosicion)"></p-checkbox></th>
+                    <th class="headerth" style="background-color: #4760ac !important; width: 40px !important;" rowspan="3"></th>
+                    <th class="headerth" style="background-color: #4760ac !important; width: 40px !important;" rowspan="3">Pos.</th>
+                    <th class="headerth border2-right" style="background-color: #4760ac !important; width: 430px !important;" rowspan="3" colspan="3">Descripcion </th>
                 </tr>
             </ng-template>
 
@@ -202,7 +202,7 @@
                     <td class="espacio" colspan="6" style="background-color: white; width: 550px !important; ">&nbsp;</td>
                 </tr>
                 <tr *ngIf="peticionPosicion.expanded == true">
-                    <td class="headerth" style="width: 40px !important;">Sub Pos</td>
+                    <td class="headerth" style="width: 40px !important;">Nro</td>
                     <td class="headerth" style="width: 80px !important;" colspan="2">Codigo</td>
                     <td class="headerth" style="width: 350px !important;">Tarea a subcontratar</td>
                     <td class="headerth" style="width: 40px !important;">Ctd.</td>
@@ -256,14 +256,14 @@
                 </tr>
 
                 <tr>
-                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="9" style="width: 540px !important;">{{proveedor.RazonSocial}}</th>
+                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="9" style="background-color: #4760ac !important; width: 540px !important;">{{proveedor.RazonSocial}}</th>
                 </tr>
 
                 <tr>
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
-                        <th class="headerth border2-left" style="width: 120px !important; height: 33.45px;" colspan="3">Precio total</th>
-                        <th class="headerth" style="width: 120px !important;height: 33.45px;" colspan="3">Total ARP</th>
-                        <th class="headerth" style="width: 300px !important;height: 33.45px;" colspan="3">Fecha de entrega</th>
+                        <th class="headerth border2-left" style="background-color: #4760ac !important; width: 120px !important; height: 33.45px;" colspan="3">Precio total</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 120px !important;height: 33.45px;" colspan="3">Total ARP</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 300px !important;height: 33.45px;" colspan="3">Fecha de entrega</th>
                     </ng-container>
                 </tr>
             </ng-template>
