@@ -7,7 +7,6 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 using SustitucionMOAModel.Util;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
@@ -159,6 +158,9 @@ namespace SustitucionMOAUtils.Services
                     ordenDeCarga.Corredor_Id = null;
                 }
             }
+            var validaCPEDG = producto.ValidaSisaRuca;
+            if (!validaCPEDG)
+                RemoverCamposCPEDG(ordenDeCarga);
             ordenDeCarga.UsuarioCreacion_Id = usuario.Id;
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente = cliente;
@@ -2725,6 +2727,13 @@ namespace SustitucionMOAUtils.Services
             var material = repositorio.Obtener<Material>(m => m.ValidaSisaRuca && m.TablaSeccionMaterial == TablaSeccionMaterial.OrdenDeCarga);
 
             return material?.CodigoSap;
+        }
+        private void RemoverCamposCPEDG(OrdenDeCarga orden)
+        {
+            orden.CUITDestinatario = null;
+            orden.CUITDestino = null;
+            orden.RazonSocialDestinatario = null;
+            orden.RazonSocialDestino = null;
         }
     }
 }
