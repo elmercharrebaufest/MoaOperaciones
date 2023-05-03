@@ -2296,10 +2296,10 @@ namespace SustitucionMOAUtils.Services
                                 foreach (var subpos in item2.CotizacionSubPosiciones)
                                 {
 
-                                    if (!tipodecambio.TryGetValue(subpos.Moneda_Id, out cambio) && subpos.Moneda_Id > 0)
+                                    if (subpos.Moneda_Id != null && !tipodecambio.TryGetValue(subpos.Moneda_Id.Value, out cambio) && subpos.Moneda_Id > 0)
                                     {
-                                        var tipoCambio = ObtenerTipoCambio(subpos.Moneda_Id, destino.Id, DateTime.Now);
-                                        tipodecambio.Add(subpos.Moneda_Id, tipoCambio.TipoCambio);
+                                        var tipoCambio = ObtenerTipoCambio(subpos.Moneda_Id.Value, destino.Id, DateTime.Now);
+                                        tipodecambio.Add(subpos.Moneda_Id.Value, tipoCambio.TipoCambio);
                                         cambio = tipoCambio.TipoCambio;
 
                                     }
@@ -4169,6 +4169,10 @@ namespace SustitucionMOAUtils.Services
 
         public GuardarCotizacion ObtenerPrecioTotalPosicionProveedor(GuardarCotizacion cotizacionDto)
         {
+            try
+            {
+
+           
             var precioTotalPosicion = new List<CotizacionPosicionDto>();
             var subposiciones = cotizacionDto.CotizacionSubposiciones;
             var posiciones = cotizacionDto.CotizacionPosiciones;
@@ -4188,10 +4192,10 @@ namespace SustitucionMOAUtils.Services
                             if (subpos.Precio > 0 && subpos.Cantidad > 0 && subpos.MonedaId > 0)
                             {
 
-                                if (!tipodecambio.TryGetValue(subpos.MonedaId, out cambio))
+                                if ((subpos.MonedaId != null && !tipodecambio.TryGetValue(subpos.MonedaId.Value, out cambio)))
                                 {
-                                    var tipoCambio = ObtenerTipoCambio(subpos.MonedaId, destino.Id, DateTime.Now);
-                                    tipodecambio.Add(subpos.MonedaId, tipoCambio.TipoCambio);
+                                    var tipoCambio = ObtenerTipoCambio(subpos.MonedaId.Value, destino.Id, DateTime.Now);
+                                    tipodecambio.Add(subpos.MonedaId.Value, tipoCambio.TipoCambio);
                                     cambio = tipoCambio.TipoCambio;
 
                                 }
@@ -4212,7 +4216,12 @@ namespace SustitucionMOAUtils.Services
             cotizacionDto.CotizacionPosiciones = posiciones;
 
             return cotizacionDto;
+            }
+            catch (Exception e)
+            {
 
+                throw;
+            }
         }
 
 
