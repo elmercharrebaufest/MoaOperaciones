@@ -62,7 +62,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime? PlazoDeOfertaCircular { get; set; }
         public int CotizacionEstado_Id { get; set; }
         public CircularDto Circular { get; set; }
-        public IQueryable<PeticionDeOfertaSolpPosicionDto> PeticionDeOfertaPosicion { get; set; }
+        public IEnumerable<PeticionDeOfertaSolpPosicionDto> PeticionDeOfertaPosicion { get; set; }
         public int CotizacionId { get; set; }
         public string TipoPosicionCodigo { get; set; }
         public CotizacionDto Cotizacion { get; set; }
