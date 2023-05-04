@@ -128,7 +128,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_TIPODOM: req.DomicilioTipo,
                 IM_USUARIO: req.UsuarioSAP,
                 IM_VALIDA_KG: req.ValidaKg ? "X" : "",
-                out pedidoOutput).Trim();
+                EX_PEDIDO: out pedidoOutput).Trim();
 
             Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Response: {new { result, pedidoOutput }}");
 
@@ -190,7 +190,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_TRANSPORTISTA_REAL: cuit_int_flete,
                 IM_USUARIO: "CACERESN",
                 IM_ZZCODPLANTA: entregaReq.PlantaCodigo,
-                out mensaje).Trim();
+                EX_MENSAJE: out mensaje).Trim();
 
             Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Response: {new { entrega, mensaje }}");
 
