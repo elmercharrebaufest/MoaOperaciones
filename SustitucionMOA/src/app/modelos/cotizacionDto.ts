@@ -38,8 +38,9 @@ export interface CotizacionPosicionDto {
     Descripcion: string,
     TextoSuministro: string,
     CantidadSolp: number,
-    UnidadMedida: number,
+    UnidadMedida: any,
     MonedaCodigo: string,
+    Moneda: any;
     UnidadComprasDescripcion: string,
     CotizacionSubPosiciones?: CotizacionSubPosicionDto[]
 }

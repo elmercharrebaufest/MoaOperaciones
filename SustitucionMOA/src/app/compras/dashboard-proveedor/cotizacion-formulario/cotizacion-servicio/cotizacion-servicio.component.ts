@@ -160,22 +160,26 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         }
     }
 
-    public onSelectMoneda(subposicion: any, peticionId) {
-        var moneda = this.combos.Moneda.filter(x => x.CodigoDescripcion.includes(subposicion.MonedaCotizacionCodigo.Codigo))[0];
-        if (moneda == undefined) {
-            return this.floatMsgService.setErrorMsg("Debe seleccionar una moneda válida");
-        }
-        this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicion.Id)[0].MonedaCotizacionId = moneda.Id;
-        
+    public onSelectMoneda(subposicion: any, peticionId, event) {
+        subposicion.MonedaCotizacionCodigo = event.value.Codigo;
+        subposicion.MonedaCotizacionId = event.value.Id;
+        //var moneda = this.combos.Moneda.filter(x => x.CodigoDescripcion.includes(subposicion.MonedaCotizacionCodigo.Codigo))[0];
+        //if (moneda == undefined) {
+        //    return this.floatMsgService.setErrorMsg("Debe seleccionar una moneda válida");
+        //}
+        //this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicion.Id)[0].MonedaCotizacionId = moneda.Id;
+        this.obtenerPrecioTotalPosicionProveedor();
     }
 
-    public onSelectUnidad(subposicion: any, peticionId) {
-        var unidad = this.combos.Unidades.filter(x => x.Descripcion.includes(subposicion.UnidadCotizacionDescripcion.Descripcion))[0];
-        if (unidad == undefined) {
-            return this.floatMsgService.setErrorMsg("Debe seleccionar una unidad de medida válida");
-        }
-        this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicion.Id)[0].UnidadCotizacionId = unidad.Id;
-       
+    public onSelectUnidad(subposicion: any, peticionId, event) {
+        subposicion.UnidadCotizacionDescripcion = event.value.Descripcion;
+        subposicion.UnidadCotizacionId = event.value.Id;
+        //var unidad = this.combos.Unidades.filter(x => x.Descripcion.includes(subposicion.UnidadCotizacionDescripcion.Descripcion))[0];
+        //if (unidad == undefined) {
+        //    return this.floatMsgService.setErrorMsg("Debe seleccionar una unidad de medida válida");
+        //}
+        //this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicion.Id)[0].UnidadCotizacionId = unidad.Id;
+        this.validarCambios(subposicion, peticionId);
     }
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {

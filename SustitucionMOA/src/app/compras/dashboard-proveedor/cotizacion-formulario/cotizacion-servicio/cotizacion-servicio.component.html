@@ -434,11 +434,11 @@
                                                     <div [ngClass]="{'invalido': esFinalizado &&
                                                          (subposicionesCompras.UnidadCotizacionId <= 0)} ">
                                     <p-dropdown [options]="unidades" dataKey="Id" optionLabel="Descripcion"
-                                        [(ngModel)]="subposicionesCompras.UnidadCotizacionDescripcion"
+                                        [(ngModel)]="subposicionesCompras.UnidadMedidaCotizacion"
                                         placeholder="Unidad" [style]="{'width':'170px'}" [dropdown]="true"
-                                        (onFocus)=" $event.target.select();" editable="true" filter="true"
+                                        (onFocus)=" $event.target.select();"  filter="true"
                                         appendTo="body" resetFilterOnHide="true"
-                                        (onChange)="onSelectUnidad(subposicionesCompras, posicionCompra.Id); validarCambios(subposicionesCompras, posicionCompra.Id) ">
+                                        (onChange)="onSelectUnidad(subposicionesCompras, posicionCompra.Id, $event); ">
                                     </p-dropdown>
                                 </div>
                                                 </td>
@@ -446,9 +446,9 @@
                                                     <div [ngClass]="{'invalido': esFinalizado &&
                                                          (subposicionesCompras.MonedaCotizacionId <= 0)}">
                                     <p-dropdown #dd [options]="monedaCompras" dataKey="Id" optionLabel="Codigo"
-                                        [(ngModel)]="subposicionesCompras.MonedaCotizacionCodigo" placeholder="Moneda"
-                                        editable="true" [dropdown]="true" appendTo="body" [style]="{'width':'200px'}"
-                                        (onChange)="onSelectMoneda(subposicionesCompras, posicionCompra.Id);obtenerPrecioTotalPosicionProveedor()">
+                                        [(ngModel)]="subposicionesCompras.MonedaCotizacion" placeholder="Moneda"
+                                         [dropdown]="true" appendTo="body" [style]="{'width':'200px'}"
+                                        (onChange)="onSelectMoneda(subposicionesCompras, posicionCompra.Id, $event);">
                                         <ng-template let-item pTemplate="selectedItem">
                                             <span>{{item.value.Codigo}}</span>
                                         </ng-template>

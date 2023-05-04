@@ -346,6 +346,8 @@ namespace SustitucionMOAModel.Dto
         public int? CotizacionSubPosicionId { get; set; }
         public int? CodigoSolpServicioSap { get; set; }
         public int? ServicioSolpCodigo { get; set; }
+        public TablaSapDto MonedaCotizacion { get; set; }
+        public TablaSapDto UnidadMedidaCotizacion { get; set; }
 
         public SolpSubposicionDto() { }
 

@@ -77,32 +77,44 @@
                     <td pEditableColumn class="columna">
                         <div [ngClass]="{'invalido': esFinalizado && 
                         (posicionesCompra.Posiciones.CotizacionPosicion.UnidadDeMedida_Id <= 0)} ">
-                            <p-dropdown [options]="unidades" dataKey="Id" optionLabel="Descripcion"
-                                [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.UnidadMedidaDescripcion"
+                            <p-dropdown [options]="unidades" dataKey="Codigo" optionLabel="Descripcion"
+                                [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.UnidadMedida"
                                 placeholder="Unidad" [style]="{'width':'170px'}" [dropdown]="true"
-                                (onFocus)=" $event.target.select();" editable="true" filter="true"  appendTo="body"
+                                (onFocus)=" $event.target.select();" filter="true"  appendTo="body"
                                 resetFilterOnHide="true"
-                                (onChange)="onSelectUnidad(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id);validarCambios(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id) ">
+                                (onChange)="onSelectUnidad(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id, $event);">
                             </p-dropdown>
                         </div>
                     </td>
                     <td class="columna">
-                        <div [ngClass]="{'invalido': esFinalizado && 
-                        (posicionesCompra.Posiciones.CotizacionPosicion.Moneda_Id <= 0)}">
-                            <p-dropdown #dd [options]="monedaCompras" dataKey="Id" optionLabel="Codigo"
-                                [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.MonedaCodigo"
-                                placeholder="Moneda" editable="true" [dropdown]="true" appendTo="body"
-                                [style]="{'width':'200px'}"
-                                (onChange)="onSelectMoneda(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id)">
-                                <ng-template let-item pTemplate="selectedItem">
-                                    <span>{{item.value.Codigo}}</span>
-                                </ng-template>
-                                <ng-template let-item pTemplate="item">
-                                    <div>
-                                        <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
-                                    </div>
-                                </ng-template>
-                            </p-dropdown>
+                        <div [ngClass]="{'invalido': esFinalizado &&
+                             (posicionesCompra.Posiciones.CotizacionPosicion.Moneda_Id <= 0)}">
+                            
+                             <p-dropdown
+                                        dataKey="Codigo"
+                                        [options]="monedaCompras"
+                                        placeholder="Moneda"
+                                        [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Moneda"
+                                        [style]="{'width':'150px'}"
+                                        optionLabel="CodigoDescripcion"
+                                        appendTo="body"
+                                        (onFocus)=" $event.target.select();"                                
+                                        (onChange)="onSelectMoneda(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id,$event)"
+                                        [minLength]="1"
+                                        [dropdown]="true"
+                                        emptyMessage="Ningúna moneda encontrada"
+                                        [autoHighlight]="true"
+                                        [forceSelection]="true">
+
+                                        <ng-template let-item pTemplate="selectedItem">
+                                            <span>{{item.value.Codigo}}</span>
+                                        </ng-template>
+                                        <ng-template let-item pTemplate="item">
+                                            <div>
+                                                <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
+                                            </div>
+                                        </ng-template>
+                                    </p-dropdown>
 
                         </div>
                     </td>
