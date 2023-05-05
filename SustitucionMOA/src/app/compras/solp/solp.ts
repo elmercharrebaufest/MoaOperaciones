@@ -151,7 +151,9 @@ export class Solp extends CommonResponse {
             this.mail = solp.Email || sessionStorage.getItem("username");
             this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
             this.emailLinkToken = solp.EmailLinkToken;
-            this.selectTipoPosicion = this.getSelectedTipoPosicion(solp.Posiciones);
+            this.selectTipoPosicion =  solp.TipoPosicion && solp.TipoPosicion.Codigo || ''
+            ;
+
 
             // Paso 2
             this.supervisorSector = solp.SupervisorSector || '';
