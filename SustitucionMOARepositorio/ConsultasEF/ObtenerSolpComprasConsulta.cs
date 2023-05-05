@@ -28,6 +28,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                      TipoPosicionCodigo = solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                      PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                         where posicion.Solp_Id == solp.Id && posicion.EsConcluido == true && posicion.Estado == true
+                                                        orderby posicion.Indice
                                                         select new SolpPosicionDto()
                                                         {
                                                             Id = posicion.Id,
@@ -56,6 +57,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                   }),
                                                             SubposicionesCompras = (from subPosicion in contexto.Set<SolpSubposicion>()
                                                                                     where subPosicion.SolpPosicion_Id == posicion.Id
+                                                                                    orderby subPosicion.Numero
                                                                                     select new SolpSubposicionDto()
                                                                                     {
                                                                                         Numero = subPosicion.Numero,

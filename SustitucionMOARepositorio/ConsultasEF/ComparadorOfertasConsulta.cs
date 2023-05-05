@@ -90,9 +90,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                             },
                                                                             Numero = s.Numero
 
-                                                                        }).ToList()
+                                                                        }).OrderBy(s => s.Numero).ToList()
                                                                     },
-                                                                }),
+                                                                }).OrderBy(x => x.Posicion.Indice),
                                     Usuarios = (from u in contexto.Set<PeticionDeOfertaUsuario>()
                                                 join cotizacion in contexto.Set<Cotizacion>() on u.Id equals cotizacion.PeticionDeOfertaUsuario_Id into peticionCotizacion
                                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
