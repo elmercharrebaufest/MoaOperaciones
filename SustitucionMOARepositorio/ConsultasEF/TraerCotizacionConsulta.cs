@@ -230,9 +230,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                  ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Cantidad.Value,
 
 
-                                            }).ToList(),
+                                            }).ToList().OrderBy(x => x.Numero),
                                         },
-                                    })
+                                    }).ToList().OrderBy(x => x.Posiciones.Indice)
 
 
 
