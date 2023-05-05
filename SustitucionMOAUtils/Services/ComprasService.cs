@@ -2978,7 +2978,7 @@ namespace SustitucionMOAUtils.Services
             // pdf peticion de oferta materiales
             if (peticion.Solp.Posiciones.Where(a => a.TipoPosicion_Id != null).FirstOrDefault()?.TipoPosicion.Codigo == "MATERIALES")
             {
-                foreach (var peticionUsuario in peticion.Usuarios)
+                foreach (var peticionUsuario in peticion.Usuarios.Where(u => peticiondeOfertaUsuarioId == null || u.Id == peticiondeOfertaUsuarioId))
                 {
                     var pdfPOUsuario = $"PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
                     legajo.Add(new LegajoDto
