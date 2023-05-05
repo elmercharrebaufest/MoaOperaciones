@@ -479,6 +479,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Util\ExtensionesSerializacion.cs" />
     <Compile Include="WebApi\ScatoRepositorioClient.cs" />
     <Compile Include="WSConsumers\AplicacionesConsumerMOA.cs" />
     <Compile Include="WSConsumers\CambioPassConsumerMOA.cs" />

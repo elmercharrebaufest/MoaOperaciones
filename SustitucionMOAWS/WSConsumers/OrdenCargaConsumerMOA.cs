@@ -14,6 +14,7 @@ using SustitucionMOAWS.OrdenCargaCrearSAP;
 using SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP;
 using SustitucionMOAWS.OrdenCargaVisualizarCliente;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
@@ -60,7 +61,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Request: {datosCarga}");
+            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Request: {datosCarga.ToJson()}");
 
             var result = service.SI_MPMF_MOAOP_CONTROL_CARGA(
                 IM_CLIENTE: datosCarga.Cliente,
@@ -73,7 +74,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_PEDIDO: datosCarga.Pedido,
                 IM_SOLO_SISA: datosCarga.SoloSisa ? "X" : "");
 
-            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {result}");
+            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {result.ToJson()}");
             return new ControlCargaResponseHandler(result);
         }
         /*
