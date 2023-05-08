@@ -195,7 +195,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.QUANTITY = esPosicionDeMateriales ? adjudicacionPosicion.Cantidad : 0;
                 IM_POITEM.QUANTITYSpecified = esPosicionDeMateriales ? true : false;
                 IM_POITEM.PO_UNIT = esPosicionDeMateriales ? posicion.Unidad.Descripcion : "001";
-                IM_POITEM.NET_PRICE = esPosicionDeMateriales ? (decimal)posicion.PrecioBruto : CalcularPrecioBrutoServicio(posicion, adjudicacionPosicion);
+                IM_POITEM.NET_PRICE = esPosicionDeMateriales ? (decimal)adjudicacionPosicion.CotizacionPosicion.Precio : CalcularPrecioBrutoServicio(posicion, adjudicacionPosicion);
                 IM_POITEM.NET_PRICESpecified = true;
                 IM_POITEM.PRICE_UNIT = 1;
                 //IM_POITEM.PRICE_UNITSpecified = true;
