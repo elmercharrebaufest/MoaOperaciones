@@ -3422,6 +3422,16 @@ namespace SustitucionMOAUtils.Services
 
                         ArchivoId = archivo.Id,
                         Observacion = archivo.ObtenerNombre(archivo.Ruta),
+                    }).ToList(),
+                    CotizacionesHoras = c.CotizacionesHoras.Select(x => new CotizacionHorasDto { 
+                         CantidadPersonas = x.CantidadPersonas,
+                         Categoria = x.Categoria,
+                         Cotizacion_Id = x.Cotizacion_Id,
+                         Gremio = x.Gremio,
+                         HorasExtras = x.HorasExtras,
+                         HorasNocturnas = x.HorasNocturnas,
+                         HorasNormales = x.HorasNormales,
+                         Id = x.Id
                     }).ToList()
                 }).FirstOrDefault();
                 var usuario = new PeticionDeOfertaUsarioDto()
@@ -3439,7 +3449,7 @@ namespace SustitucionMOAUtils.Services
             }
             peticion.Usuarios = usuarios;
             peticion.Id = peticionEntidad.Id;
-            var fechaEntrega = peticionEntidad.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).FirstOrDefault().FechaEntregaServicio;
+            var fechaEntrega = peticionEntidad.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).FirstOrDefault()?.FechaEntregaServicio;
             peticion.FechaEntregaFormateado = fechaEntrega != null ? fechaEntrega.Value.ToString("yyyy-MM-dd") : "";
             return peticion;
         }

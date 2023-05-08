@@ -1,0 +1,49 @@
+<div class="rounded shadow">
+  <section class="container-fluid clearfix">
+      <div class="col-md-12 row myRow alinearTitulo margenInput">
+          <div class="col-md-12">
+              <strong>Estimación de horas</strong>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-12">
+            <p-table #dt [columns]="cols" [value]="peticion">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th style="background-color: #4760ac !important;
+                    text-transform: none !important;">Categoria</th>
+                    <th style="background-color: #4760ac !important;
+                    text-transform: none !important;">Gremio</th>
+                        <th style="background-color: #4760ac !important;
+                    text-transform: none !important;">Cantidad de personas</th>
+                        <th style="background-color: #4760ac !important;
+                    text-transform: none !important;" pTooltip="Hs en planta" tooltipPosition="top">
+                            Hs
+                            Normales
+                        </th>
+                        <th style="background-color: #4760ac !important;
+                    text-transform: none !important;" pTooltip="Hs en planta" tooltipPosition="top">
+                            Hs
+                            Nocturnas
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <ng-container >
+                        <tr>
+                            <td>{{rowData.Categoria}}</td>
+                            <td>{{rowData.Gremio}}</td>
+                            <td>{{rowData.CantidadPersonas}}</td>
+                            <td>{{rowData.HorasNormales}}</td>
+                            <td>{{rowData.HorasNocturnas}}</td>                       
+                        </tr>
+                    </ng-container>
+                    <ng-container *ngIf="rowData == null">
+                        No tiene cotizacion 
+                    </ng-container>
+                </ng-template>
+            </p-table>
+          </div>
+      </div>
+  </section>
+</div>

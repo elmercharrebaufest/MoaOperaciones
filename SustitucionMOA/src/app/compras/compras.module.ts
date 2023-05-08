@@ -70,6 +70,7 @@ import { CotizacionFormularioComponent } from './dashboard-proveedor/cotizacion-
 import { CotizacionComponent } from './solp/steps/cotizacion/cotizacion.component';
 import { CotizacionMaterialComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-material/cotizacion-material.component';
 import { CotizacionServicioComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-servicio/cotizacion-servicio.component';
+import { PanelHorasComponent } from './panel-horas/panel-horas.component';
 
 
 @NgModule({
@@ -142,7 +143,8 @@ import { CotizacionServicioComponent } from './dashboard-proveedor/cotizacion-fo
         PeticionDeOfertaFormularioComponent,
         CotizacionFormularioComponent,
         CotizacionMaterialComponent,
-        CotizacionServicioComponent
+        CotizacionServicioComponent,
+        PanelHorasComponent
     ],
     providers: [
         ComprasService,

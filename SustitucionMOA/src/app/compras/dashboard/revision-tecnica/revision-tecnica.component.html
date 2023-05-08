@@ -1,5 +1,5 @@
 <p-dialog [(visible)]="displayRevisionTecnica" modal="modal"
-          [width]="650" [draggable]="false" [closable]="true"
+          [width]="950" [draggable]="false" [closable]="true"
           (onHide)="onCerrarPeticion()" appendTo="body" positionTop="30"
           [height]="550"
           [max] [contentStyle]="{
@@ -57,9 +57,10 @@
                                 <div *ngIf="p.Cotizacion.TieneObservacionTecnica == false" class="col-md-5">
                                     No tiene observacion tecnica
                                 </div>
-                                <div>
-                                    <div class="col-md-7">
-                                        <label style="padding-right:20px;">
+                                <div class="col-md-7">
+                                    <div class="col-md-7"></div>
+                                    <div class="col-md-5">
+                                        <label style="padding-right:10px;">
                                             <input type="radio"
                                                    [name]="'PropuestaTecnicaAprobada-' + p.Id"
                                                    [value]="true"
@@ -75,13 +76,18 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-md-2" *ngIf="p.Cotizacion.Archivos.length == 1">
+                                <div class="col-md-1">
+                                    <span style="cursor:pointer;" (click)="mostrarPanelHs(p)">
+                                        <i class="pi pi-clock" style="font-size: 3rem; color: grey;"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-1" *ngIf="p.Cotizacion.Archivos.length == 1">
                                     <span>
                                         <img style="cursor:pointer;" src="./Content/images/icons/descargar.svg" alt="descargar"
                                              (click)="descargarArchivo(p.Cotizacion.Archivos[0].ArchivoId)" />
                                     </span>
                                 </div>
-                                <div class="col-md-2" *ngIf="p.Cotizacion.Archivos.length > 1">
+                                <div class="col-md-1" *ngIf="p.Cotizacion.Archivos.length > 1">
                                     <span>
                                         <img style="cursor:pointer;" src="./Content/images/icons/descargar.svg" alt="descargar"
                                              (click)="descargarAdjuntosCotizacion(p.Cotizacion.Id)" />
@@ -93,6 +99,9 @@
                             </ng-template>
                         </div>
                         <hr>
+                        <div *ngIf="p.MostrarPanel == true">
+                            <app-panel-horas [peticion]="p.Cotizacion.CotizacionesHoras"></app-panel-horas>
+                        </div>
                     </div>
                 </div>
             </div>

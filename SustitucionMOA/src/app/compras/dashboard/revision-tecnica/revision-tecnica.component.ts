@@ -12,6 +12,7 @@ import { SessionDataService } from '../../../common/services/SessionDataService'
 import { CircularDto } from '../../../modelos/circular-model';
 import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
 import { ComprasService } from '../../compras.service';
+import { PanelHorasComponent } from '../../panel-horas/panel-horas.component';
 
 @Component({
     selector: 'app-revision-tecnica',
@@ -45,6 +46,9 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     @Output() descargarArchivoEmitter = new EventEmitter<{ archivoId: number }>();
     @Output() descargarAdjuntosCotizacionEmitter = new EventEmitter<{ cotizacionId: number }>();
     @Output() grabarRevisionTecnicaEmitter = new EventEmitter();
+
+    @ViewChild('panelHoras') panelHoras: PanelHorasComponent;
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
@@ -54,7 +58,7 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() {
-        console.log("init revision tecnica");
+        // console.log("init revision tecnica");
         if (this.peticion == null) {
             this.peticion = {
                 Id: null,
@@ -67,7 +71,7 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
                 Selected: null
             };
         }
-        console.log("peticion", this.peticion);
+        // console.log("peticion", this.peticion);
     }
 
     autocompletarFechaDeEntrega() {
@@ -119,4 +123,13 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     enviar() {
         this.grabarRevisionTecnicaEmitter.next();
     }
+
+    mostrarPanelHs(p){
+        if(!p.MostrarPanel){
+          p.MostrarPanel = true;
+        } else {
+          p.MostrarPanel = false;
+    
+        } 
+      }
 }
