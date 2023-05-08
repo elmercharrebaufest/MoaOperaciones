@@ -109,7 +109,7 @@ namespace SustitucionMOAWS.WSConsumers
             var indrvta = req.Reventa ? "X" : "";
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {req}");
+            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {req.ToJson()}");
 
             var result = service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(
                 IM_CLIENTE: req.Cliente,
@@ -169,7 +169,7 @@ namespace SustitucionMOAWS.WSConsumers
             var cuit_int_flete = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.Transportista : entregaReq.TransportistaReal;
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {entregaReq}");
+            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {entregaReq.ToJson()}");
 
             var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(
                 IM_CUITDESTF: entregaReq.CuitDestino,
