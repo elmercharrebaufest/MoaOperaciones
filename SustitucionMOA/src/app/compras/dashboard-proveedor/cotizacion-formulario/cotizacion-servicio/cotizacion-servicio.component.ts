@@ -331,7 +331,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             CotizacionesHoras: this.index == 0 ? this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == 'UOCRA') : this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio != 'UOCRA'),
             CotizacionSubposiciones: this.subposiciones
         }
-        console.log(coti, "cotizacion")
+        // console.log(coti, "cotizacion")
         return coti;
         
     }
