@@ -325,11 +325,12 @@ export class SolpPosicion {
           this.tabsPosicionValidos.tabDireccionEntrega = false;
           return
         }
-        if (!this.numeroEntrega || this.numeroEntrega == "" || typeof this.numeroEntrega === "undefined")
-        {
-          this.tabsPosicionValidos.tabDireccionEntrega = false;
-          return
-        }
+        //se comentó la validacion de el telefono
+        // if (!this.numeroEntrega || this.numeroEntrega == "" || typeof this.numeroEntrega === "undefined")
+        // {
+        //   this.tabsPosicionValidos.tabDireccionEntrega = false;
+        //   return
+        // }
     }
 
     public validateImputaciones() {
