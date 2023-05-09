@@ -14,7 +14,7 @@ import { Table } from 'primeng/table';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto } from '../../../modelos/peticion-de-oferta-model';
 import { Solp } from '../../solp/solp';
-import { CotizacionHoraDto } from '../../../modelos/cotizacionDto';
+import { CotizacionHoraDto, CotizacionDto } from '../../../modelos/cotizacionDto';
 
 @Component({
     selector: 'app-ver-ofertas',
@@ -34,6 +34,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     peticionOferta: PeticionDeOfertaDto;
     SolpDto: Solp;
     tablaOfertas: PeticionDeOfertaDto;
+    Cotizacion: CotizacionDto;
+
 
     TodasPosicionesSeleccionadas: boolean = false;
 
@@ -69,7 +71,21 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 Mail: null,
                 Usuarios: new Array(),
                 SolpDto: null,
-                Selected: null
+                Selected: null,
+                RespetaMateriales: null,
+                RespetaServicios: null,
+                Solp_Id: null,
+                NroSolp: null,
+                FechaCreacion: null,
+                UsuarioCreador_Id: null,
+                Observaciones: null,
+                TipoPosicionCodigo: null,
+                CotizacionId: null,
+                PeticionDeOfertaPosicion: new Array(),
+                Cotizacion: null,
+                ObservacionTecnica: null,
+                ObservacionEconomica: null,
+                Cantidad: null,       
             };
         }
     }

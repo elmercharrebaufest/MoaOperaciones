@@ -7,7 +7,7 @@
       </div>
       <div class="row">
           <div class="col-md-12">
-            <p-table #dt [columns]="cols" [value]="peticionHs">
+            <p-table #dt [columns]="cols" [value]="cotizacion?.CotizacionesHoras">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th style="background-color: #4760ac !important;
@@ -28,19 +28,21 @@
                         </th>
                     </tr>
                 </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td style="text-align: center;" colspan="5">Sin carga de horas</td>
+                    </tr>
+                </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
-                    <ng-container >
-                        <tr>
+                    <tr>
+                        <ng-container *ngIf="cotizacion != null">
                             <td>{{rowData.Categoria}}</td>
                             <td>{{rowData.Gremio}}</td>
                             <td>{{rowData.CantidadPersonas}}</td>
                             <td>{{rowData.HorasNormales}}</td>
                             <td>{{rowData.HorasNocturnas}}</td>                       
-                        </tr>
-                    </ng-container>
-                    <ng-container *ngIf="rowData == null">
-                        No tiene cotizacion 
-                    </ng-container>
+                        </ng-container>
+                    </tr>
                 </ng-template>
             </p-table>
           </div>

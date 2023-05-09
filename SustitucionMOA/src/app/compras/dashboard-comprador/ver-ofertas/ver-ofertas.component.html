@@ -64,7 +64,7 @@
                     <td class="columna border2-right" colspan="8" style="width: 620px !important;">Adjuntos y observaciones</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="8" style="width: 620px !important;"> </td>
+                    <td class="columna border2-right" colspan="8" style="width: 620px !important;"></td>
                 </tr>
             </ng-template>
 
@@ -415,7 +415,7 @@
                     <div *ngFor="let p of tablaOfertas.Usuarios">
                         <div class="col-md-12">
                             <h3 style="font-size:x-large;font-weight:bold;">{{p.RazonSocial}} ({{p.CUIT}}) - {{p.Mail}}</h3>
-                            <app-panel-horas [peticionHs]="p.Cotizacion.CotizacionesHoras"></app-panel-horas>
+                            <app-panel-horas [peticionHs]="p.Cotizacion?.CotizacionesHoras" [cotizacion]="p.Cotizacion"></app-panel-horas>
                             <hr>
                         </div>
                     </div>
