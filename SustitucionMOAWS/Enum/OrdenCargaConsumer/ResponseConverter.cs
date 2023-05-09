@@ -22,6 +22,16 @@ namespace SustitucionMOAWS.Enum.OrdenCargaConsumer
             { "CC-11", OrdenCargaControlCarga.DestinatarioInhabilitadoEnSisa }
         };
 
+        private static readonly Dictionary<string, OrdenCargaCrearOrden> RespuestasCrearOrdenDict = new Dictionary<string, OrdenCargaCrearOrden>
+        {
+            { "OV-00", OrdenCargaCrearOrden.PedidoCreado },
+            { "OV-01", OrdenCargaCrearOrden.VerificarDatos },
+            { "OV-02", OrdenCargaCrearOrden.VerificarCantidadPendiente },
+            { "OV-03", OrdenCargaCrearOrden.PedidoCreadoVerificarCredito },
+            //{ "OV-04", OrdenCargaCrearOrden.VerificarCreditoDePedido },
+            { "OV-05", OrdenCargaCrearOrden.ContratoSinKg }
+        };
+
         internal static OrdenCargaControlEstado GetOrdenCargaControlEstadoResponse(string response)
         {
             switch (response)
@@ -62,5 +72,31 @@ namespace SustitucionMOAWS.Enum.OrdenCargaConsumer
                 throw new Exception("Código no encontrado para respuesta ControlCarga " + valor.ToString());
             }
         }
+
+        internal static OrdenCargaCrearOrden GetOrdenCargaCrearOrden(string response)
+        {
+            if (RespuestasCrearOrdenDict.TryGetValue(response, out OrdenCargaCrearOrden valor))
+            {
+                return valor;
+            }
+            else
+            {
+                throw new Exception("Respuesta no esperada en OrdenCargaConsumer.CrearOrden: " + response);
+            }
+        }
+
+        internal static string GetCodigoCrearOrden(OrdenCargaCrearOrden valor)
+        {
+            var codigo = RespuestasCrearOrdenDict.FirstOrDefault(x => x.Value == valor).Key;
+            if (codigo != null)
+            {
+                return codigo;
+            }
+            else
+            {
+                throw new Exception("Código no encontrado para respuesta CrearOrden " + valor.ToString());
+            }
+        }
+
     }
 }

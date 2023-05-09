@@ -385,42 +385,35 @@ namespace SustitucionMOAUtils.Services
                 };
 
                 var result = consumer.CrearOrden(crearOrdenReq, out string numeroPedido);
-                
-                if (!string.IsNullOrEmpty(result))
+                ordenDeCarga.CodigoVerificacionSap = OrdenCargaCrearOrdenClass.GetCodigo(result);
+
+                if (result == OrdenCargaCrearOrden.PedidoCreado || result == OrdenCargaCrearOrden.PedidoCreadoVerificarCredito)
                 {
-                    if (result == "OV-00" || result == "OV-03")
-                    {
-                        ordenDeCarga.InformadaSAP = true;
-                        ordenDeCarga.NumeroPedido = numeroPedido;
-                        ordenDeCarga.ContratoSAP = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP) ? ordenDeCarga.ContratoIngresado : ordenDeCarga.ContratoSAP;
-                        ordenDeCarga.DescripcionErrorInterno = "";
-                        ordenDeCarga.DescripcionCodigoVerificacionSap = "";
-                        ordenDeCarga.CodigoVerificacionSap = "";
-                        creadaEnSAP = true;
-                    }
-                    else
-                    {
-                        ordenDeCarga.CodigoVerificacionSap = result;
-                        if (result == "OV-02")
-                        {
-                            ordenDeCarga.ContratoSinCantidadPendiente = true;
-                            ordenDeCarga.CodigoVerificacionSap = "CC-01";
-                            ordenDeCarga.DescripcionErrorInterno = "El contrato ingresado tiene menos de 15 toneladas disponibles. Puede elegir forzar la creación del pedido desde \"Crear pedido\" o anularlo.";
-                        }
-                        else if (result == "OV-01")
-                        {
-                            ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
-                        }
-                        else
-                        {
-                            ordenDeCarga.DescripcionCodigoVerificacionSap = result;
-                        }
-                    }
+                    ordenDeCarga.InformadaSAP = true;
+                    ordenDeCarga.NumeroPedido = numeroPedido;
+                    ordenDeCarga.ContratoSAP = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP) ? ordenDeCarga.ContratoIngresado : ordenDeCarga.ContratoSAP;
+                    ordenDeCarga.DescripcionErrorInterno = "";
+                    ordenDeCarga.DescripcionCodigoVerificacionSap = "";
+                    ordenDeCarga.CodigoVerificacionSap = "";
+                    creadaEnSAP = true;
                 }
-                else
+                if (result == OrdenCargaCrearOrden.VerificarCantidadPendiente)
+                {
+                    ordenDeCarga.CodigoVerificacionSap = "CC-01";
+                    ordenDeCarga.ContratoSinCantidadPendiente = true;
+                    ordenDeCarga.DescripcionErrorInterno = "El contrato ingresado tiene menos de 15 toneladas disponibles. Puede elegir forzar la creación del pedido desde \"Crear pedido\" o anularlo.";
+                }
+                else if (result == OrdenCargaCrearOrden.ContratoSinKg)
+                {
+                    ordenDeCarga.ContratoSinCantidadPendiente = true;
+                    ordenDeCarga.DescripcionErrorInterno = "El contrato ingresado no tiene kilogramos disponibles.";
+
+                }
+                else if (result == OrdenCargaCrearOrden.VerificarDatos)
                 {
                     ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
                 }
+
                 Log.Debug(this.GetType().Name, "CrearOrdenEnSAP", $" actualizarEstado, inicial: " + EstadoOrdenDeCargaExtensions.ToFriendlyString(ordenDeCarga.Estado));
                 ordenDeCarga.ActualizarEstado();
                 Log.Debug(this.GetType().Name, "CrearOrdenEnSAP", $" actualizarEstado, final: " + EstadoOrdenDeCargaExtensions.ToFriendlyString(ordenDeCarga.Estado));
@@ -478,8 +471,9 @@ namespace SustitucionMOAUtils.Services
 
             var resultadoCrearOrden = false;
             ordenDeCarga.ContratoSinCantidadPendiente = false;
-            //var result2 = consumer.CrearEntrega(orden.CUITChofer, orden.Cantidad, orden.NombreChofer, orden.PatenteAcoplado, orden.ChasisAcoplado, "", "DNI", orden.CUITTransporte, out string mensaje);
-            if (result == "OV-00" || result == "OV-03")
+            ordenDeCarga.CodigoVerificacionSap = OrdenCargaCrearOrdenClass.GetCodigo(result);
+
+            if (result == OrdenCargaCrearOrden.PedidoCreado || result == OrdenCargaCrearOrden.PedidoCreadoVerificarCredito)
             {
                 ordenDeCarga.InformadaSAP = true;
                 ordenDeCarga.NumeroPedido = numeroPedido;
@@ -487,31 +481,23 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.DescripcionErrorInterno = "";
                 ordenDeCarga.DescripcionCodigoVerificacionSap = "";
                 ordenDeCarga.CodigoVerificacionSap = "";
-
-                //if (result == "OV-03")
-                //{
-                //    orden.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
-                //}
-
                 resultadoCrearOrden = true;
             }
-            else
+            if (result == OrdenCargaCrearOrden.VerificarCantidadPendiente)
             {
-                ordenDeCarga.CodigoVerificacionSap = result;
-                if (result == "OV-02")
-                {
-                    ordenDeCarga.ContratoSinCantidadPendiente = true;
-                    ordenDeCarga.CodigoVerificacionSap = "CC-01";
-                    ordenDeCarga.DescripcionErrorInterno = "El contrato ingresado tiene menos de 15 toneladas disponibles. Puede elegir forzar la creación del pedido desde \"Crear pedido\" o anularlo.";
-                }
-                else if (result == "OV-01")
-                {
-                    ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
-                }
-                else
-                {
-                    ordenDeCarga.DescripcionCodigoVerificacionSap = result;
-                }
+                ordenDeCarga.CodigoVerificacionSap = "CC-01";
+                ordenDeCarga.ContratoSinCantidadPendiente = true;
+                ordenDeCarga.DescripcionErrorInterno = "El contrato ingresado tiene menos de 15 toneladas disponibles. Puede elegir forzar la creación del pedido desde \"Crear pedido\" o anularlo.";
+            }
+            else if (result == OrdenCargaCrearOrden.ContratoSinKg)
+            {
+                ordenDeCarga.ContratoSinCantidadPendiente = true;
+                ordenDeCarga.DescripcionErrorInterno = "El contrato ingresado no tiene kilogramos disponibles.";
+
+            }
+            else if (result == OrdenCargaCrearOrden.VerificarDatos)
+            {
+                ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
             }
             Log.Debug(this.GetType().Name, "CrearOrdenEnSAP", $" actualizarEstado, inicial: " + EstadoOrdenDeCargaExtensions.ToFriendlyString(ordenDeCarga.Estado));
             ordenDeCarga.ActualizarEstado();

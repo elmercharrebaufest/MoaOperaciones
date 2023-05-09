@@ -14,15 +14,8 @@ using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 
 namespace SustitucionMOATest.Services
