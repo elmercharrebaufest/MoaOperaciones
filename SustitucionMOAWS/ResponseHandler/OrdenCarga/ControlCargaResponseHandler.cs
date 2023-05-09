@@ -22,10 +22,10 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
             {
                 var resp = item.MENSAJE;
                 logResponse += resp + ". ";
-                if (resp.Contains(","))
+                if (resp.Contains("|"))
                 {
                     TieneMultiplesContratos = true;
-                    contratosSap.AddRange(resp.Split(','));
+                    contratosSap.Add(resp);
                 }
                 else
                 {
