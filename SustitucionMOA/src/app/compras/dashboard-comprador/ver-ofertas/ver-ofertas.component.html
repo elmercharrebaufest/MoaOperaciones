@@ -236,7 +236,12 @@
                     <td class="columna border2-right" colspan="6" style="width: 550px !important;">Propuesta técnica</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="6" style="width: 550px !important;"></td>
+                    <td class="columna border2-right" colspan="6" style="width: 550px !important;">  
+                        Panel de horas
+                        <span style="cursor:pointer; vertical-align: middle;" (click)="mostrarPanelHs(p)">
+                            <i class="pi pi-clock" style="font-size: 3rem; color: grey; vertical-align: middle;"></i>
+                        </span>
+                    </td>
                 </tr>
             </ng-template>
 
@@ -391,3 +396,34 @@
         </p-table>
     </div>
 </div>
+
+<p-dialog [(visible)]="displayPanelHs" modal="modal"
+          [width]="950" [draggable]="false" [closable]="true"
+          (onHide)="onCerrarPanel()" appendTo="body" positionTop="30"
+          [height]="550"
+          [max] [contentStyle]="{
+        'max-height':'550px',
+        'min-height':'400px'}">
+
+    <p-header class="headerModal" style="color: #067935; font-size: 24px;">
+        <b>Panel de horas cargadas</b>
+    </p-header>
+    <div class="container-fluid" style="height: 273.75px;">
+        <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="inputCompras">
+                <div class="row myRow" style="padding-top: 2px;" *ngIf="tablaOfertas != null">
+                    <div *ngFor="let p of tablaOfertas.Usuarios">
+                        <div class="col-md-12">
+                            <h3 style="font-size:x-large;font-weight:bold;">{{p.RazonSocial}} ({{p.CUIT}}) - {{p.Mail}}</h3>
+                            <app-panel-horas [peticionHs]="p.Cotizacion.CotizacionesHoras"></app-panel-horas>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <p-footer>
+        <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarPanel()">CANCELAR</button>
+    </p-footer>
+</p-dialog>

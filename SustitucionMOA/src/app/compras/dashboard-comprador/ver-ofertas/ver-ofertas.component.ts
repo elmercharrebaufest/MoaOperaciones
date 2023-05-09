@@ -14,6 +14,7 @@ import { Table } from 'primeng/table';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto } from '../../../modelos/peticion-de-oferta-model';
 import { Solp } from '../../solp/solp';
+import { CotizacionHoraDto } from '../../../modelos/cotizacionDto';
 
 @Component({
     selector: 'app-ver-ofertas',
@@ -35,6 +36,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     tablaOfertas: PeticionDeOfertaDto;
 
     TodasPosicionesSeleccionadas: boolean = false;
+
+    displayPanelHs: boolean = false;
+
+    @Input()
+    public peticionHs: CotizacionHoraDto;
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -91,8 +97,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
-                        console.log("ofertas", this.tablaOfertas)
-
                     }
                     this.blockUI.stop();
                 },
@@ -164,6 +168,14 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     verPosicion(peticionPosicion: PeticionDeOfertaSolpPosicionDto) {
         peticionPosicion.expanded = peticionPosicion.expanded == true ? false : true;
+    }
+
+    mostrarPanelHs(){
+        this.displayPanelHs = true;
+    }
+
+    onCerrarPanel(){
+        this.displayPanelHs = false;
     }
 
 }

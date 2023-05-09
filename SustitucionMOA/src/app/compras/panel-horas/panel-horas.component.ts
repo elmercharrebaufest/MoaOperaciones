@@ -30,10 +30,8 @@ export class PanelHorasComponent extends ListBaseComponent implements OnInit {
   @ViewChild("tabla")
   protected tabla: Table;
 
-  @Input() peticion: CotizacionHoraDto[];
+  @Input() peticionHs: CotizacionHoraDto[];
 
-  ngOnInit() {
-    console.log("peticion en panel", this.peticion)
-  }
+  ngOnInit() {}
 
 }

@@ -103,6 +103,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     UsuarioId = u.Usuario_Id,
                                                     RazonSocial = u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault() != null ?
                                                         u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().RazonSocial : u.Usuario.CUITRegistro,
+                                                    CUIT = u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault() != null ?
+                                                        u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().CUIT : u.Usuario.CUITRegistro,
+                                                    Mail = u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault() != null ?
+                                                        u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().Mail : u.Usuario.CUITRegistro,
                                                     PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
                                                     RealizoVisita = u.RealizoVisita,
                                                     EstadoVisita = u.RealizoVisita == true ? "Realizada" : "Sin realizar",
@@ -124,6 +128,17 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         TotalGlobal = 0,
                                                         TotalPesos = 0,
                                                         TotalGlobalSubPos = 0,
+                                                        CotizacionesHoras = cotizacion.CotizacionesHoras.Select(ch => new CotizacionHorasDto 
+                                                        {
+                                                            CantidadPersonas = ch.CantidadPersonas,
+                                                            Categoria = ch.Categoria,
+                                                            Cotizacion_Id = ch.Cotizacion_Id,
+                                                            Gremio = ch.Gremio,
+                                                            HorasExtras = ch.HorasExtras,
+                                                            HorasNocturnas = ch.HorasNocturnas,
+                                                            HorasNormales = ch.HorasNormales,
+                                                            Id = ch.Id
+                                                        }).ToList(),
 
                                                         CotizacionPosiciones = cotizacion.CotizacionPosiciones.Select(p => new CotizacionPosicionDto
                                                         {

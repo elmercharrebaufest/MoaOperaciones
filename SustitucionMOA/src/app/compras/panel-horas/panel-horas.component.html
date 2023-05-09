@@ -1,13 +1,13 @@
 <div class="rounded shadow">
   <section class="container-fluid clearfix">
-      <div class="col-md-12 row myRow alinearTitulo margenInput">
+      <div class="col-md-12 row myRow alinearTitulo margenInput titleSection" style="margin-bottom: 10px; border-bottom: 1px solid #dbd7d7 !important">
           <div class="col-md-12">
               <strong>Estimación de horas</strong>
           </div>
       </div>
       <div class="row">
           <div class="col-md-12">
-            <p-table #dt [columns]="cols" [value]="peticion">
+            <p-table #dt [columns]="cols" [value]="peticionHs">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th style="background-color: #4760ac !important;
