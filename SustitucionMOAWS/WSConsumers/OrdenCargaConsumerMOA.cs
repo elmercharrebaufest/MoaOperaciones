@@ -103,7 +103,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         */
 
-        public string CrearOrden(CrearOrdenRequest req, out string pedidoOutput)
+        public OrdenCargaCrearOrden CrearOrden(CrearOrdenRequest req, out string pedidoOutput)
         {
             var service = new SI_MPMF_MOAOP_CREAR_ORDEN_CARGAClient();
             var indrvta = req.Reventa ? "X" : "";
@@ -133,7 +133,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Response: {new { result, pedidoOutput }}");
 
-            return result;
+            return ResponseConverter.GetOrdenCargaCrearOrden(result);
         }
 
 
