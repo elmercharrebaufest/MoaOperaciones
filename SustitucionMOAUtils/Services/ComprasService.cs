@@ -1611,21 +1611,35 @@ namespace SustitucionMOAUtils.Services
                 foreach (var servicio in resultSap.Servicios)
                 {
                     int codigoNum = 0;
-                    if (Int32.TryParse(servicio.Codigo, out codigoNum) &&
-                        !listaBase.Any(x => x.CodigoSap == codigoNum && x.Descripcion == servicio.Descripcion))
+                    if (Int32.TryParse(servicio.Codigo, out codigoNum))
                     {
-                        repositorio.Agregar(new ServicioSolp
+                        var serv = listaBase.Where(x => x.CodigoSap == codigoNum).FirstOrDefault();
+                        if (serv == null)
                         {
-                            Codigo = servicio.Codigo,
-                            CodigoSap = codigoNum,
-                            Descripcion = servicio.Descripcion,
-                            GrupoArticulos = Int32.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null,
-                            TipoServicio = servicio.Serv,
-                            AmbitoServicio = servicio.Ser,
-                            Edicion = Int32.TryParse(servicio.Edit, out int edicion) ? edicion : 0,
-                            UnidadMedidaBase = servicio.Bas,
-                            SSCItem = servicio.SSCItem
-                        });
+                            repositorio.Agregar(new ServicioSolp
+                            {
+                                Codigo = servicio.Codigo,
+                                CodigoSap = codigoNum,
+                                Descripcion = servicio.Descripcion,
+                                GrupoArticulos = Int32.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null,
+                                TipoServicio = servicio.Serv,
+                                AmbitoServicio = servicio.Ser,
+                                Edicion = Int32.TryParse(servicio.Edit, out int edicion) ? edicion : 0,
+                                UnidadMedidaBase = servicio.Bas,
+                                SSCItem = servicio.SSCItem
+                            });
+                        }
+                        else
+                        {
+                            serv.Descripcion = servicio.Descripcion;
+                            serv.GrupoArticulos = Int32.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null;
+                            serv.TipoServicio = servicio.Serv;
+                            serv.AmbitoServicio = servicio.Ser;
+                            serv.Edicion = Int32.TryParse(servicio.Edit, out int edicion) ? edicion : 0;
+                            serv.UnidadMedidaBase = servicio.Bas;
+                            serv.SSCItem = servicio.SSCItem;
+                        }
+
                     }
                 }
             }
