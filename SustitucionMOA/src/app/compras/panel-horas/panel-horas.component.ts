@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto } from '../../modelos/peticion-de-oferta-model';
+import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto, PeticionDeOfertaUsarioDto } from '../../modelos/peticion-de-oferta-model';
 import { Table } from 'primeng/table';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { FormBuilder } from '@angular/forms';
@@ -12,7 +12,7 @@ import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { UsuarioService } from '../../usuario/usuario.service';
 import { ComprasService } from '../compras.service';
-import { CotizacionHoraDto } from '../../modelos/cotizacionDto';
+import { CotizacionDto, CotizacionHoraDto } from '../../modelos/cotizacionDto';
 
 @Component({
   selector: 'app-panel-horas',
@@ -30,10 +30,12 @@ export class PanelHorasComponent extends ListBaseComponent implements OnInit {
   @ViewChild("tabla")
   protected tabla: Table;
 
-  @Input() peticion: CotizacionHoraDto[];
+  @Input() peticionHs: CotizacionHoraDto[];
+  @Input() cotizacion: CotizacionDto[];
+
 
   ngOnInit() {
-    console.log("peticion en panel", this.peticion)
+    console.log("cotizacion", this.cotizacion)
   }
 
 }
