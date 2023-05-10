@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAWS.Logger;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -75,13 +76,17 @@ namespace SustitucionMOAWS.Enum.OrdenCargaConsumer
 
         internal static OrdenCargaCrearOrden GetOrdenCargaCrearOrden(string response)
         {
+            if (string.IsNullOrEmpty(response))
+                return OrdenCargaCrearOrden.Vacia;
+
             if (RespuestasCrearOrdenDict.TryGetValue(response, out OrdenCargaCrearOrden valor))
             {
                 return valor;
             }
             else
             {
-                throw new Exception("Respuesta no esperada en OrdenCargaConsumer.CrearOrden: " + response);
+                Log.Info(mensaje: "Respuesta no esperada en OrdenCargaConsumer.CrearOrden: " + response);
+                return OrdenCargaCrearOrden.NoEsperado;
             }
         }
 
@@ -94,7 +99,9 @@ namespace SustitucionMOAWS.Enum.OrdenCargaConsumer
             }
             else
             {
-                throw new Exception("Código no encontrado para respuesta CrearOrden " + valor.ToString());
+
+                Log.Info(mensaje: "Código no encontrado para respuesta CrearOrden  " + valor.ToString());
+                return "";
             }
         }
 
