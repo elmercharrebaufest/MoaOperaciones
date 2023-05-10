@@ -2737,6 +2737,8 @@ namespace SustitucionMOAUtils.Services
             orden.CUITDestino = null;
             orden.RazonSocialDestinatario = null;
             orden.RazonSocialDestino = null;
+            orden.Reventa = false;
+            orden.CUITIntermediarioFlete = null;
         }
     }
 }
