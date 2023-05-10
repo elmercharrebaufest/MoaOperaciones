@@ -3,6 +3,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAWS.Enum.OrdenCargaConsumer;
+using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace SustitucionMOAWS.Interfaces
         OrdenCargaVisualizarClienteWSMOAResponse OrdenCargaVisualizarClienteExecute(OrdenCargaVisualizarClienteWSMOARequest request);
         OrdenCargaControlEstado GetOrdenCargaControlEstadoTransportista(string cuitTransportista);
         ResultadoGenerico AnularOrdenCarga(OrdenDeCarga orden);
-        ResultadoGenerico AnularEntregaOrdenCarga(string nroEntrega);
+        ModEntregaResponseHandler AnularEntregaOrdenCarga(string nroEntrega);
         ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega);
         bool VerificarContratoAbierto(string contrato);
     }
