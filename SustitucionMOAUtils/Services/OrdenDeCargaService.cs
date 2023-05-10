@@ -567,7 +567,8 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.CodigoVerificacionSap = "";
                 ordenDeCarga.DescripcionCodigoVerificacionSap = "";
                 var numerosContratos = responseHandler.ObtenerNumerosContratos();
-                var contratosAbiertos = ObtenerContratosAbiertos(numerosContratos);
+                var materialAFiltrar = ordenDeCarga.Producto.CodigoSap == "50866" ? "50866" : "";
+                var contratosAbiertos = ObtenerContratosAbiertos(numerosContratos, materialAFiltrar);
                 //Pendiente deficinición queda como si siempre tuviera muchos contratos abiertos
 
                 TieneVariosContratosAbiertos(ordenDeCarga, contratosAbiertos);
@@ -2415,12 +2416,15 @@ namespace SustitucionMOAUtils.Services
                     }).ToList();
         }
 
-        public ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req)
+        public ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req, string mailUsuario)
         {
             try
             {
                 var rangoFechas = string.IsNullOrEmpty(req.FechaDesde) || string.IsNullOrEmpty(req.FechaHasta) ? null :
                     CommonService.toDateList(req.FechaDesde, req.FechaHasta);
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+                var material = usuario.TieneRol("ADM") ? "" : "50866";
 
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
                 {
@@ -2428,7 +2432,7 @@ namespace SustitucionMOAUtils.Services
                     Contrato = string.Empty,
                     Corredor = req.CorredorCodigo,
                     Fechas = rangoFechas,
-                    Material = "",
+                    Material = material,
                     Pendiente = "X", // "X" es para Contratos ABIERTOS
                     TipoContrato = "N"
                 };
@@ -2688,9 +2692,9 @@ namespace SustitucionMOAUtils.Services
                 //Pendiente revisión de los mensajes acorde a las verdaderas razones de error
                 throw new InfoCustomException("El pedido está tomado en SAP");
         }
-        private List<string> ObtenerContratosAbiertos(List<string> contratos)
+        private List<string> ObtenerContratosAbiertos(List<string> contratos, string material = "")
         {
-            return contratos.Where(contrato => consumer.VerificarContratoAbierto(contrato)).ToList();
+            return contratos.Where(contrato => consumer.VerificarContratoAbierto(contrato, material)).ToList();
         }
         private void TieneVariosContratosAbiertos(OrdenDeCarga ordenDeCarga, List<string> contratosAbiertos)
         {
