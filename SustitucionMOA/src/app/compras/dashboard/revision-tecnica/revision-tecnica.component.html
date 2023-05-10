@@ -76,7 +76,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1" *ngIf="peticion.TipoPosicionCodigo != 'MATERIALES'">
                                     <span style="cursor:pointer;" (click)="mostrarPanelHs(p)">
                                         <i class="pi pi-clock" style="font-size: 3rem; color: grey;"></i>
                                     </span>
@@ -100,7 +100,7 @@
                         </div>
                         <hr>
                         <div *ngIf="p.MostrarPanel == true">
-                            <app-panel-horas [peticion]="p.Cotizacion.CotizacionesHoras"></app-panel-horas>
+                            <app-panel-horas [peticionHs]="p.Cotizacion.CotizacionesHoras"></app-panel-horas>
                         </div>
                     </div>
                 </div>

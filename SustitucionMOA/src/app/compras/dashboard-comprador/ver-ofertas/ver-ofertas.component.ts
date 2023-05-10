@@ -14,6 +14,7 @@ import { Table } from 'primeng/table';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto } from '../../../modelos/peticion-de-oferta-model';
 import { Solp } from '../../solp/solp';
+import { CotizacionHoraDto, CotizacionDto } from '../../../modelos/cotizacionDto';
 
 @Component({
     selector: 'app-ver-ofertas',
@@ -33,8 +34,15 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     peticionOferta: PeticionDeOfertaDto;
     SolpDto: Solp;
     tablaOfertas: PeticionDeOfertaDto;
+    Cotizacion: CotizacionDto;
+
 
     TodasPosicionesSeleccionadas: boolean = false;
+
+    displayPanelHs: boolean = false;
+
+    @Input()
+    public peticionHs: CotizacionHoraDto;
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -63,7 +71,21 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 Mail: null,
                 Usuarios: new Array(),
                 SolpDto: null,
-                Selected: null
+                Selected: null,
+                RespetaMateriales: null,
+                RespetaServicios: null,
+                Solp_Id: null,
+                NroSolp: null,
+                FechaCreacion: null,
+                UsuarioCreador_Id: null,
+                Observaciones: null,
+                TipoPosicionCodigo: null,
+                CotizacionId: null,
+                PeticionDeOfertaPosicion: new Array(),
+                Cotizacion: null,
+                ObservacionTecnica: null,
+                ObservacionEconomica: null,
+                Cantidad: null,       
             };
         }
     }
@@ -91,8 +113,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
-                        console.log("ofertas", this.tablaOfertas)
-
                     }
                     this.blockUI.stop();
                 },
@@ -164,6 +184,14 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     verPosicion(peticionPosicion: PeticionDeOfertaSolpPosicionDto) {
         peticionPosicion.expanded = peticionPosicion.expanded == true ? false : true;
+    }
+
+    mostrarPanelHs(){
+        this.displayPanelHs = true;
+    }
+
+    onCerrarPanel(){
+        this.displayPanelHs = false;
     }
 
 }
