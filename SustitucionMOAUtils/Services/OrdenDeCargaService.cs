@@ -2448,13 +2448,16 @@ namespace SustitucionMOAUtils.Services
                 CrearRelacionCorredorCliente(corredor, cliente);
             }
         }
+
         private void AnularEntregaEnSap(OrdenDeCarga orden)
         {
-            var resultadoAnularEntrega = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
-            if (resultadoAnularEntrega.HayError)
+            var respHandler = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
+            if (respHandler.EntregaTomadaEnSap)
+            {
                 //Pendiente revisión de los mensajes acorde a las verdaderas razones de error
                 throw new InfoCustomException("La entrega está tomada en SAP");
-            else
+            }
+            if (respHandler.ActualizadoOK || respHandler.EntregaAnulada)
             {
                 orden.Estado = EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion;
                 orden.NumeroEntrega = null;
@@ -2462,7 +2465,12 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
                 Thread.Sleep(5000);
             }
+            else
+            {
+                throw new Exception("No se reconoce respuesta SAP (Anular Entrega)");
+            }
         }
+
         private void AnularPedidoEnSap(OrdenDeCarga orden, bool tieneNumeroEntrega)
         {
             var tieneNumeroPedido = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) || !string.IsNullOrEmpty(orden.NumeroPedido);
