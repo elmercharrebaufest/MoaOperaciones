@@ -418,7 +418,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             return resultado;
         }
-        public bool VerificarContratoAbierto(string contrato)
+        public bool VerificarContratoAbierto(string contrato, string material = "")
         {
             var service = new SI_MPMF_MOAOP_VISUALIZAR_ZFASClient();
 
@@ -427,7 +427,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             var fechas = ObtenerRangoFechas();
 
-            var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS("", contrato, "", fechas, "", "X", "N");
+            var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS("", contrato, "", fechas, material, "X", "N");
             return result.Length > 0;
         }
         private ZMPES4100[] ObtenerRangoFechas()
