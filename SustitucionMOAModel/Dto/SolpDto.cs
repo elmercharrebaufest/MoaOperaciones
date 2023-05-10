@@ -228,6 +228,8 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public DateTime? FechaOferta { get; set; }
         public CotizacionPosicionDto CotizacionPosicion { get; set; }
+        public decimal? CantidadPendiente { get; set; }
+        public int CantidadAdjudicacion { get; set; }
 
         public SolpPosicionDto() { }
 
@@ -316,6 +318,7 @@ namespace SustitucionMOAModel.Dto
 
     public class SolpSubposicionDto
     {
+        public int Indice { get; set; }
         public int Id { get; set; }
         public string Codigo { get; set; }
         public int Numero { get; set; }
@@ -333,6 +336,18 @@ namespace SustitucionMOAModel.Dto
         public string UnidadComprasDescripcion { get; set; }
         public string UnidadDescripcion { get; set; }
         public int? CantidadCotizacion { get; set; }
+        public string UnidadCotizacionDescripcion { get; set; }
+        public int? UnidadCotizacionId { get; set; }
+        public string MonedaCotizacionDescripcion { get; set; }
+        public int? MonedaCotizacionId { get; set; }
+        public decimal PrecioSubPosicion { get; set; }
+        public decimal PrecioTotalSubPosicion { get; set; }
+        public string MonedaCotizacionCodigo { get; set; }
+        public int? CotizacionSubPosicionId { get; set; }
+        public int? CodigoSolpServicioSap { get; set; }
+        public int? ServicioSolpCodigo { get; set; }
+        public TablaSapDto MonedaCotizacion { get; set; }
+        public TablaSapDto UnidadMedidaCotizacion { get; set; }
 
         public SolpSubposicionDto() { }
 

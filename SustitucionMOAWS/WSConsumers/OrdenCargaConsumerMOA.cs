@@ -379,22 +379,18 @@ namespace SustitucionMOAWS.WSConsumers
             return resultado;
         }
 
-        public ResultadoGenerico AnularEntregaOrdenCarga(string nroEntrega)
+        public ModEntregaResponseHandler AnularEntregaOrdenCarga(string nroEntrega)
         {
             var service = new SI_MPMF_MOAOP_MOD_ENTREGAClient();
-
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {nroEntrega}");
 
             var result = service.SI_MPMF_MOAOP_MOD_ENTREGA("", "X", "", "", "", nroEntrega, "");
+            
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result, nroEntrega }}");
 
-            var resultado = new ResultadoGenerico();
-            if (result != "Se actualizaron los datos correctamente")
-                resultado.Error("error", result);
-
-            return resultado;
+            return new ModEntregaResponseHandler(result);
         }
         public ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega)
         {

@@ -80,6 +80,7 @@
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseHandler\OrdenCarga\ControlCargaResponseHandler.cs" />
+    <Compile Include="ResponseHandler\OrdenCarga\ModEntregaResponseHandler.cs" />
     <Compile Include="Service References\AplicacionesWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -300,6 +301,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\ObtenerTipoCambioWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\OrdenCargaControlEstadoSAP\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -499,6 +505,7 @@
     <Compile Include="WSConsumers\EcheqModificarFijacionConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqVisualizarDisponibleChequeConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqVisualizarPendientePagoConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ObtenerTipoCambioConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerContratoSolpConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerFuenteAprovisionamientoConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerMaterialesSolpConsumerMOA.cs" />
@@ -921,6 +928,7 @@
     <None Include="Service References\ObtenerContratoSolpWebServiceMOA\SI_MMRFC_OBTENER_CONTRATO.wsdl" />
     <None Include="Service References\ObtenerFuenteAprovisionamientoWebServiceMOA\SI_MMRFC_OBTENER_FUENTE_APROV.wsdl" />
     <None Include="Service References\ObtenerMaterialesSolpWebServiceMOA\SI_MMRFC_OBTENER_MATERIALES.wsdl" />
+    <None Include="Service References\ObtenerTipoCambioWebServiceMOA\SI_MMRFC_OBTENER_TIPO_CAMBIO.wsdl" />
     <None Include="Service References\OrdenCargaControlEstadoSAP\SI_MPMF_MOAOP_CONTROL_ESTADO.wsdl" />
     <None Include="Service References\OrdenCargaControlSAP\SI_MPMF_MOAOP_CONTROL_CARGA.wsdl" />
     <None Include="Service References\OrdenCargaCrearSAP\SI_MPMF_MOAOP_CREAR_ORDEN_CARGA.wsdl" />
@@ -2317,6 +2325,7 @@
     <WCFMetadataStorage Include="Service References\ObtenerContratoSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerFuenteAprovisionamientoWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerMaterialesSolpWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ObtenerTipoCambioWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\OrdenCargaControlEstadoSAP\" />
     <WCFMetadataStorage Include="Service References\OrdenCargaControlSAP\" />
     <WCFMetadataStorage Include="Service References\OrdenCargaCrearSAP\" />
@@ -3343,7 +3352,18 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Service References\ObtenerTipoCambioWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerTipoCambioWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerTipoCambioWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

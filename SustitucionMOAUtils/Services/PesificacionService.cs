@@ -118,13 +118,21 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 string FechaPesificacion = GetFechaPesificacion("yyyyMMdd").FechaPesificacion;
-                
+
                 if (int.Parse(contratoEncontrado.NroContrato) >= 2500000 && int.Parse(contratoEncontrado.NroContrato) < 2700000)
                 {
                     var soja200 = GetSoja200();
                     if (soja200.Desde <= DateTime.Now.Date && soja200.Hasta >= DateTime.Now.Date)
                     {
                         FechaPesificacion = soja200.FechaCotizacion.ToString("yyyy-MM-dd");
+                    }
+                }
+                else if (int.Parse(contratoEncontrado.NroContrato) >= 2100000 && int.Parse(contratoEncontrado.NroContrato) < 2300000)
+                {
+                    var dolarGirasol = GetDolarGirasol();
+                    if (dolarGirasol != null)
+                    {
+                        FechaPesificacion = dolarGirasol.FechaCotizacion.ToString("yyyy-MM-dd");
                     }
                 }
                 List<ZMPES5480> comprobantes = new List<ZMPES5480>
@@ -143,7 +151,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 };
 
-                try{Logger.Log.Debug("PesificacionService", "SetContrato", comprobantes.ToJson());}catch (Exception e){}
+                try { Logger.Log.Debug("PesificacionService", "SetContrato", comprobantes.ToJson()); } catch (Exception e) { }
                 PesificacionSetContratosWSMOAResponse responseSet = (PesificacionSetContratosWSMOAResponse)new PesificacionGuardarConsumerMOA().request(comprobantes.ToArray());
                 if (responseSet == null)
                 {
@@ -281,11 +289,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public Soja200Dto GetSoja200()
+        public DolarMaterialDto GetSoja200()
         {
             try
             {
-                Soja200Dto soja200 = new Soja200Dto
+                DolarMaterialDto soja200 = new DolarMaterialDto
                 {
                     Desde = DateTime.ParseExact(repositorio.Obtener<Configuracion>(a => a.Code == "Soja200Desde").Value, "yyyy-MM-dd", null),
                     Hasta = DateTime.ParseExact(repositorio.Obtener<Configuracion>(a => a.Code == "Soja200Hasta").Value, "yyyy-MM-dd", null),
@@ -294,6 +302,31 @@ namespace SustitucionMOAUtils.Services
                 };
 
                 return soja200;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+        public DolarMaterialDto GetDolarGirasol()
+        {
+            try
+            {
+                var now = DateTime.Now.Date;
+                var desde = DateTime.ParseExact(repositorio.Obtener<Configuracion>(a => a.Code == "DolarGirasolDesde").Value, "yyyy-MM-dd", null);
+                var hasta = DateTime.ParseExact(repositorio.Obtener<Configuracion>(a => a.Code == "DolarGirasolHasta").Value, "yyyy-MM-dd", null);
+                if (!(desde <= now && hasta >= now))
+                    return null;
+
+                DolarMaterialDto dolarGirasol = new DolarMaterialDto()
+                {
+                    Desde = desde,
+                    Hasta = hasta,
+                    FechaCotizacion = DateTime.ParseExact(repositorio.Obtener<Configuracion>(a => a.Code == "DolarGirasolFechaCotizacion").Value, "yyyy-MM-dd", null),
+                    Cotizacion = double.Parse(repositorio.Obtener<Configuracion>(a => a.Code == "DolarGirasolCotizacion").Value),
+                };
+
+                return dolarGirasol;
             }
             catch (Exception e)
             {

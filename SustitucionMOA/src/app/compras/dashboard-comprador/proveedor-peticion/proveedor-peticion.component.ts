@@ -61,7 +61,7 @@ export class ProveedorPeticionComponent implements OnInit {
 
     grabarProveedor() {
 
-        this.validarProveedor();
+        this.validarProveedor(null);
         if (!this.visualizarAlert) {
             this.blockUI.start("Grabando...");
             try {
@@ -109,12 +109,23 @@ export class ProveedorPeticionComponent implements OnInit {
         this.displayOkProveedor = false;
     }
 
-    validarProveedor() {
-        if (this.proveedoresSeleccionados == null || this.proveedoresSeleccionados.length == 0) {
+    validarProveedor(event) {
+        this.visualizarAlert = false;
+        // if (this.proveedoresSeleccionados == null || this.proveedoresSeleccionados.length == 0) {
+        //     this.error = "Debe seleccionar un proveedor que no este asociado.";
+        //     return this.visualizarAlert = true;
+        // }
+        if(event != null && this.proveedoresSeleccionados.some(e => e.Id === event.Id)){
             this.error = "Debe seleccionar un proveedor que no este asociado.";
-            return this.visualizarAlert = true;
+            this.visualizarAlert = true;
         }
-        if (this.proveedoresSeleccionados != null || this.proveedoresSeleccionados.length > 0 && this.peticion != null) {
+
+        if(!this.visualizarAlert && event != null && this.peticion != null && this.peticion.Usuarios.some(e => e.UsuarioId === event.Id)){
+            this.error = "Debe seleccionar un proveedor que no este asociado.";
+            this.visualizarAlert = true;
+        }
+
+        if (!this.visualizarAlert && (this.proveedoresSeleccionados != null || this.proveedoresSeleccionados.length > 0) && this.peticion != null) {
             let proveedoresSelec = this.proveedoresSeleccionados;
             for (let index = 0; index < this.proveedoresSeleccionados.length; index++) {
                 this.proveedor = this.peticion.Usuarios.filter(x => x.Id == proveedoresSelec[index].Id)[0];
@@ -124,7 +135,7 @@ export class ProveedorPeticionComponent implements OnInit {
                 }
             }
         }
-        return this.visualizarAlert = false;
+        return this.visualizarAlert;
     }
     searchProveedor(event) {
         try {
@@ -151,13 +162,12 @@ export class ProveedorPeticionComponent implements OnInit {
     }
 
     selectProveedor(event) {
-        try {
-            if (!this.proveedoresSeleccionados.some(e => e.Id === event.Id)) {
-                this.validarProveedor();
+        try {          
+                this.validarProveedor(event);
                 if (!this.visualizarAlert) {
                     this.proveedoresSeleccionados.push(event);
                 }
-            }
+          
             this.proveedorSeleccionado = null;
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
@@ -166,7 +176,7 @@ export class ProveedorPeticionComponent implements OnInit {
 
     eliminarProveedor(event, proveedor) {
         this.proveedoresSeleccionados = this.proveedoresSeleccionados.filter(x => x.Id !== proveedor.Id);
-        this.validarProveedor();
+        this.validarProveedor(null);
     }
 
 }

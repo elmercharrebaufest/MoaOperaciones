@@ -648,7 +648,11 @@ export class ComprasService extends BaseService {
             ObservacionTecnica: cotizacion.ObservacionTecnica,
             ArchivosNuevos: cotizacion.ArchivosNuevos,
             ArchivosGuardados: cotizacion.ArchivosGuardados,
-            EsFinalizado: esFinalizado
+            EsFinalizado: esFinalizado,
+            RespetaServicios: cotizacion.RespetaServicios,
+            RespetaMateriales: cotizacion.RespetaMateriales,
+            CotizacionesHoras: cotizacion.CotizacionesHoras,
+            CotizacionSubposiciones: cotizacion.CotizacionSubposiciones
         });
 
         var payload = new FormData();
@@ -665,10 +669,43 @@ export class ComprasService extends BaseService {
             }
         }
 
+        var archiTecnico = cotizacion.ArchivosTecnico;
+
+        if (archiTecnico != null) {
+            for (let i = 0; i < archiTecnico.length; i++) {
+                let fileToUpload = archiTecnico[i];
+                try {
+                    payload.append("fileCotizacionRevisionTecnica", fileToUpload as File, fileToUpload.name);
+                } catch (e) {
+
+                    console.log(e);
+                }
+            }
+        }
+
+
         payload.append('json', json);
 
         return this.http
             .post<any>('/api/compras/GrabarCotizacion', payload, { headers: this.headers });
     }
+
+    public obtenerPrecioTotalPosicionProveedor(cotizacion: any) {
+        let json = JSON.stringify({
+            CotizacionId: cotizacion.CotizacionId,
+            PeticionOfertaUsuarioId: cotizacion.PeticionOfertaUsuarioId,
+            CotizacionPosiciones: cotizacion.CotizacionPosiciones,
+            CotizacionesHoras: cotizacion.CotizacionesHoras,
+            CotizacionSubposiciones: cotizacion.CotizacionSubposiciones
+        });
+
+        var payload = new FormData();       
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/ObtenerPrecioTotalPosicionProveedor', payload, { headers: this.headers });
+    }
+
+
 
 }

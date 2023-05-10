@@ -12,6 +12,7 @@ namespace SustitucionMOAUtils.Services
         List<PesificacionSapDto> GetPesificacionesSAP(string proveedor);
         PesificacionSetContratosWSMOAResponse SetContrato(string proveedor, string contrato, string fijacion, decimal cantidad);
         string SetContratos(string proveedor, HttpPostedFileBase file);
-        Soja200Dto GetSoja200();
+        DolarMaterialDto GetSoja200();
+        DolarMaterialDto GetDolarGirasol();
     }
 }

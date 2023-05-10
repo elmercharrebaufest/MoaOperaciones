@@ -60,8 +60,9 @@
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\AsociarContratoDto.cs" />
-    <Compile Include="Dto\CotizacionDto.cs" />
     <Compile Include="Dto\CircularDto.cs" />
+    <Compile Include="Dto\DolarMaterialDto.cs" />
+    <Compile Include="Dto\CotizacionDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidaSisaCuit.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarCuitExisteScatoResponse.cs" />
     <Compile Include="Dto\OrdenDeCarga\DomicilioDto.cs" />
@@ -101,7 +102,6 @@
     <Compile Include="Dto\ArchivoDescargaDto.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
     <Compile Include="Dto\ResultadoGenerico.cs" />
-    <Compile Include="Dto\Soja200Dto.cs" />
     <Compile Include="Dto\CorredorContratoDto.cs" />
     <Compile Include="Dto\CampoProveedorDto.cs" />
     <Compile Include="Dto\CampoProveedorListadoDto.cs" />
@@ -269,6 +269,7 @@
     <Compile Include="Models\WSMapMOA\Compras\Servicio.cs" />
     <Compile Include="Models\WSMapMOA\Compras\MaterialWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\ServicioWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\TipoDeCambio.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\ConsultaVM.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\EstadoConsultaVM.cs" />
     <Compile Include="Models\ConsultaTicketPesada.cs" />

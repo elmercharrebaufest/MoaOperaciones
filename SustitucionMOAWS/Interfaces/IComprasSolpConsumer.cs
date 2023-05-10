@@ -40,4 +40,9 @@ namespace SustitucionMOAWS.Interfaces
     {
         ContratoSolpWSMOAResponse Request(string numeroContrato, string centro);
     }
+
+    public interface IObtenerTipoCambioConsumerMOA
+    {
+        ObtenerTipoCambioConsumerMOAResponse Request(string fecha, string monedaDestino, string monedaOrigen);
+    }
 }

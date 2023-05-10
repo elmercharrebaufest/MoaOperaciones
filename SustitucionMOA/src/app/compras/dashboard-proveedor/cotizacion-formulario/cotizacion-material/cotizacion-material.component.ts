@@ -54,7 +54,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     }
     ngOnChanges(changes: SimpleChanges): void {
         this.getCombos();
-        console.log(this.peticion, "cotizacion.")
+        this.mostrarMensajeNoRespetaCondiciones();
     }
 
     ngOnInit() {
@@ -70,7 +70,14 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             today: 'Hoy',
             clear: 'Borrar'
         }
+        this.mostrarMensajeNoRespetaCondiciones()
+    }
 
+    public mostrarMensajeNoRespetaCondiciones(){
+        this.posicionesCompra.forEach(element => {
+            this.validarCambios(element.Posiciones.CotizacionPosicion, element.Id);
+        });
+        
     }
 
     public get esTipoMaterial(): boolean {
@@ -135,21 +142,25 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         }
     }
 
-    public onSelectMoneda(cotizacion: any, peticionId) {
-        var moneda = this.combos.Moneda.filter(x => x.CodigoDescripcion.includes(cotizacion.MonedaCodigo.Codigo))[0];
-        if (moneda == undefined) {
-            return this.floatMsgService.setErrorMsg("Debe seleccionar una moneda válida");
-        }
-        this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.Moneda_Id = moneda.Id;
+    public onSelectMoneda(cotizacion: any, peticionId, event) {
+        cotizacion.MonedaCodigo = event.value.Codigo;
+        cotizacion.Moneda_Id = event.value.Id;
+        //var moneda = this.combos.Moneda.filter(x => x.CodigoDescripcion.includes(cotizacion.MonedaCodigo.Codigo))[0];
+        //if (moneda == undefined) {
+        //    return this.floatMsgService.setErrorMsg("Debe seleccionar una moneda válida");
+        //}
+        //this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.Moneda_Id = moneda.Id;
     }
 
-    public onSelectUnidad(cotizacion: any, peticionId) {
-        var unidad = this.combos.Unidades.filter(x => x.Descripcion.includes(cotizacion.UnidadMedidaDescripcion.Descripcion))[0];
-        if (unidad == undefined) {
-            return this.floatMsgService.setErrorMsg("Debe seleccionar una unidad de medida válida");
-        }
-        this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.UnidadDeMedida_Id = unidad.Id;
-
+    public onSelectUnidad(cotizacion: any, peticionId, event) {
+        cotizacion.UnidadComprasDescripcion = event.value.Codigo;
+        cotizacion.UnidadDeMedida_Id = event.value.Id;
+        //var unidad = this.combos.Unidades.filter(x => x.Descripcion.includes(cotizacion.UnidadMedidaDescripcion.Descripcion))[0];
+        //if (unidad == undefined) {
+        //    return this.floatMsgService.setErrorMsg("Debe seleccionar una unidad de medida válida");
+        //}
+        //this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.UnidadDeMedida_Id = unidad.Id;
+        this.validarCambios(cotizacion, peticionId) 
     }
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {
@@ -186,6 +197,9 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);
         this.archivos = filesUpload["files"];
         if (archivoWeb > 10000000) {
+            if(this.archivos.length > 0){
+            this.eliminarAdjuntoNuevo(this.archivos[this.archivos.length - 1])
+            }
             this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb")
         }
     }
@@ -215,9 +229,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.combos = result;
-                        this.setCombos();
-                        console.log(this.combos, "combos")
-                        //this.combos.flagSolpFinalizada = this.flagSolpFinalizada;                       
+                        this.setCombos();                      
                     }
                 },
                 error => {
@@ -263,9 +275,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     }
 
     calcularFechaEntrega(cotizacion: CotizacionPosicionDto, peticionId: number) {
-        let fechaNueva = new Date();
-        if (cotizacion.FechaDeEntrega != null) fechaNueva = new Date(cotizacion.FechaDeEntrega); ;
-
+        let fechaNueva = new Date();   
         if (cotizacion.PlazoDeEntrega > 0) {
             fechaNueva.setDate(fechaNueva.getDate() + cotizacion.PlazoDeEntrega);
             this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.FechaDeEntrega = fechaNueva;
@@ -282,14 +292,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             fechaNueva = cotizacion.FechaDeEntrega;
          }else{
             cotizacion.FechaDeEntrega = fechaOriginal;
-         }
-        if (cotizacion.FechaOriginal != null) {
-            var milliseconds = parseInt(cotizacion.FechaOriginal.substring(6));
-            var date = new Date(milliseconds);
-            fechaOriginal = date
-        }else{
-            cotizacion.FechaOriginal = fechaOriginal;
-         }
+         }        
         // if (cotizacion.PlazoDeEntrega) {
             var dias = fechaNueva > fechaOriginal ? fechaNueva.getDay() - fechaOriginal.getDay() : fechaOriginal.getDay() - fechaNueva.getDay();
             if(dias < 0){
@@ -308,7 +311,8 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             ObservacionEconomica: this.peticion.ObservacionEconomica,
             ObservacionTecnica: "",
             ArchivosNuevos: this.archivos,
-            ArchivosGuardados: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { Id: x.Id } }) : null
+            ArchivosGuardados: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { Id: x.Id } }) : null,
+            ArchivosTipo: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { FileKey: x.FileKey } }) : null,
         }
         return coti;
     }
@@ -319,8 +323,8 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             return {
                 PeticionDeOfertaSolpPosicionId: cotizacion.Posiciones.Id,
                 Posicion: cotizacion.Posiciones.Indice,
-                Cantidad: cotizacion.Posiciones.CotizacionPosicion.Cantidad,
-                Precio: cotizacion.Posiciones.CotizacionPosicion.Precio,
+                Cantidad: cotizacion.Posiciones.CotizacionPosicion.Cantidad != null ? cotizacion.Posiciones.CotizacionPosicion.Cantidad : 0,
+                Precio: cotizacion.Posiciones.CotizacionPosicion.Precio != null ? cotizacion.Posiciones.CotizacionPosicion.Precio : 0,
                 MonedaId: cotizacion.Posiciones.CotizacionPosicion.Moneda_Id != 0 ?
                     cotizacion.Posiciones.CotizacionPosicion.Moneda_Id : 0,
                 UnidadDeMedidaId: cotizacion.Posiciones.CotizacionPosicion.UnidadDeMedida_Id != 0 ?
@@ -329,6 +333,8 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
                     cotizacion.Posiciones.CotizacionPosicion.FechaDeEntrega : null,
                 UnidadMedida: cotizacion.Posiciones.CotizacionPosicion.UnidadComprasDescripcion,
                 monedaCompras: cotizacion.Posiciones.CotizacionPosicion.MonedaCodigo,
+                CantidadSubpos: cotizacion.Posiciones.Cantidad,
+                UnidadDeMedidaSubpos: cotizacion.Posiciones.UnidadId
             };
         });
     }

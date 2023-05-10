@@ -379,7 +379,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
-            )
+            )        
     }
 
     publicarCotizacion(Id: string) {

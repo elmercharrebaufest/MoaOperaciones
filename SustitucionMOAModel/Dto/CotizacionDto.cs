@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -25,6 +26,11 @@ namespace SustitucionMOAModel.Dto
         public List<CotizacionPosicionDto> CotizacionPosiciones { get; set; } = new List<CotizacionPosicionDto>();
         public bool TieneAdjuntos { get; set; }
         public IList<ArchivoDto> ArchivosCotizacion { get; set; }
+        public string FechaCreacionFormateada { get; set; }
+        public decimal TotalGlobal { get; set; }
+        public decimal TotalGlobalSubPos { get; set; }
+        public int TotalPesos { get; set; }
+        public List<CotizacionHorasDto> CotizacionesHoras { get; set; }
     }
 
     public class CotizacionPosicionDto
@@ -37,6 +43,7 @@ namespace SustitucionMOAModel.Dto
         public int Moneda_Id { get; set; }
         public decimal Precio { get; set; }
         public DateTime? FechaDeEntrega { get; set; }
+        public string FechaDeEntregaFormateada { get; set; }
         public int ItemPorPagina { get; set; }
         public int Pagina { get; set; }
         public int ItemsTotales { get; set; }
@@ -45,15 +52,19 @@ namespace SustitucionMOAModel.Dto
         public string TextoSuministro { get; set; }
         public decimal? CantidadSolp { get; set; }
         public TablaSapDto UnidadMedida { get; set; }
+        public TablaSapDto Moneda { get; set; }
+        public string MonedaDescripcion { get; set; }
         public List<CotizacionSubPosicionDto> CotizacionSubPosiciones { get; set; } = new List<CotizacionSubPosicionDto>();
         public string UnidadMedidaDescripcion { get; set; }
-        public string MonedaDescripcion { get; set; }
         public int PlazoDeEntrega { get; set; }
         public decimal PrecioTotal { get; set; }
         public string MonedaCodigo { get; set; }
         public string FechaDeEntregaFormateado { get; set; }
-        public TablaSapDto Moneda { get; set; }
         public DateTime? FechaOriginal { get; set; }
+        public decimal TotalARPCotizacionPosicion { get; set; }
+        public int CantidadPendiente { get; set; }
+        public decimal TotalPesos { get; set; }
+        public decimal TotalPosicionCotizacion { get; set; }
     }
 
     public class CotizacionSubPosicionDto
@@ -61,20 +72,29 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public int CotizacionPosicion_Id { get; set; }
         public int SolpSubPosicion_Id { get; set; }
-        public int Cantidad { get; set; }
-        public int UnidadDeMedida_Id { get; set; }
-        public int Moneda_Id { get; set; }
+        public int? Cantidad { get; set; }
+        public int? UnidadDeMedida_Id { get; set; }
+        public int? Moneda_Id { get; set; }
+        public decimal PrecioUnidad { get; set; }
+        public decimal PrecioTotalSubPosCotizacion { get; set; }
+        public TablaSapDto UnidadMedida { get; set; }
+        public decimal TotalARPSubPosCotizacion { get; set; }
+        public string MonedaDescripcion { get; set; }
         public decimal Precio { get; set; }
+        public decimal PrecioTotalSubPos { get; set; }
+        public int TotalPesos { get; set; }
     }
 
     public class GuardarCotizacionPosicionDto
     {
         public int PeticionDeOfertaSolpPosicionId { get; set; }
         public decimal Precio { get; set; }
-        public int MonedaId { get; set; }
-        public int UnidadDeMedidaId { get; set; }
-        public int Cantidad { get; set; }
+        public int? MonedaId { get; set; }
+        public int? UnidadDeMedidaId { get; set; }
+        public int? Cantidad { get; set; }
         public DateTime? FechaDeEntrega { get; set; }
+        public decimal PrecioTotal { get; set; }
+        public decimal TotalPesos { get; set; }
     }
 
     public class GuardarCotizacion
@@ -87,5 +107,40 @@ namespace SustitucionMOAModel.Dto
         public List<ArchivoDto> ArchivosGuardados { get; set; } = new List<ArchivoDto>();
         public int CotizacionId { get; set; }
         public bool EsFinalizado { get; set; }
+
+        public bool? RespetaMateriales { get; set; }
+        public bool? RespetaServicios { get; set; }
+        public List<CotizacionHorasDto> CotizacionesHoras { get; set; } = new List<CotizacionHorasDto>();
+         public int? MonedaId { get; set; }
+        public int? UnidadDeMedidaId { get; set; }
+        public int? Cantidad { get; set; }
+        public DateTime? FechaDeEntrega { get; set; }
+        public List<CotizacionSubposicionesDto> CotizacionSubposiciones { get; set; } = new List<CotizacionSubposicionesDto>();
     }
+
+
+    public class CotizacionSubposicionesDto
+    {
+        public int CotizacionSubPosicionId { get; set; }
+        public decimal Precio { get; set; }
+        public int? MonedaId { get; set; }
+        public int CotizacionPosicionId { get; set; }
+        public int? UnidadDeMedidaId { get; set; }
+        public int Cantidad { get; set; }
+        public int SolpSubPosicionId { get; set; }
+        public decimal PrecioTotal { get; set; }
+    }
+
+    public class CotizacionHorasDto
+    {
+        public int Id { get; set; }
+        public int Cotizacion_Id { get; set; }
+        public string Categoria { get; set; }
+        public int CantidadPersonas { get; set; }
+        public int HorasNormales { get; set; }
+        public int HorasNocturnas { get; set; }
+        public int HorasExtras { get; set; }
+        public string Gremio { get; set; }
+    }
+
 }

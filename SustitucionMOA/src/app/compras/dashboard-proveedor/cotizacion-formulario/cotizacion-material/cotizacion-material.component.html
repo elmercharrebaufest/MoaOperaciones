@@ -18,20 +18,34 @@
             [value]="peticion.PeticionDeOfertaPosicion" dataKey="Id">
             <ng-template pTemplate="header" let-columns>
                 <tr>
-                    <th class="columna" style="width: 43px;">Pos.</th>
-                    <th class="columna" style="width: 57px;">Código</th>
-                    <th class="columna" style="width: 82px;">Descripción</th>
-                    <th class="columna" style="width: 76px;">Texto de <br /> suministro</th>
-                    <th class="columna" style="width: 62px;">Modelo</th>
-                    <th class="columna" style="width: 72px;">Ctd.<br /> solicitada</th>
-                    <th class="columna" style="width: 72px;">Um.<br /> solicitada</th>
-                    <th class="columna" style="width: 72px;">Ctd.<br /> cotizada</th>
-                    <th class="columna" style="width: 96px;">Um.<br /> cotizada</th>
-                    <th class="columna" style="width: 104px;">Moneda</th>
-                    <th class="columna" style="width: 70px;">Precio<br /> Unidad</th>
-                    <th class="columna" style="width: 80px;">Precio<br /> Total</th>
-                    <th class="columna" style="width: 80px;">Fecha de <br />entrega</th>
-                    <th class="columna" style="width: 66px;">Plazo de <br /> entrega</th>
+                    <th class="columna" style="width: 43px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Pos.</th>
+                    <th class="columna" style="width: 57px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Código</th>
+                    <th class="columna" style="width: 82px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Descripción</th>
+                    <th class="columna" style="width: 76px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Texto de <br /> suministro</th>
+                    <th class="columna" style="width: 62px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Modelo</th>
+                    <th class="columna" style="width: 72px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Ctd.<br /> solicitada</th>
+                    <th class="columna" style="width: 72px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Um.<br /> solicitada</th>
+                    <th class="columna" style="width: 72px; background-color: #4a1884 !important;
+                                    text-transform: none !important;">Ctd.<br /> cotizada</th>
+                    <th class="columna" style="width: 96px; background-color: #4a1884 !important;
+                                    text-transform: none !important;">Um.<br /> cotizada</th>
+                    <th class="columna" style="width: 104px; background-color: #4a1884 !important;
+                                    text-transform: none !important;">Moneda</th>
+                    <th class="columna" style="width: 70px; background-color: #4a1884 !important;
+                                    text-transform: none !important;">Precio<br /> Unidad</th>
+                    <th class="columna" style="width: 80px; background-color: #4760ac !important;
+                                    text-transform: none !important;">Precio<br /> Total</th>
+                    <th class="columna" style="width: 80px; background-color: #4a1884 !important;
+                    text-transform: none !important;">Fecha de <br />entrega</th>
+                    <th class="columna" style="width: 66px; background-color:#4a1884 !important;
+                    text-transform: none !important;">Plazo de <br /> entrega</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-posicionesCompra let-expanded="expanded" let-columns="columns"
@@ -50,8 +64,8 @@
                             <ng-template pTemplate="input">
                                 <input pInputText type="number"
                                     [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Cantidad"
-                                    pattern="[0-9]+"
-                                    (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)" />
+                                    pKeyFilter="int"
+                                    (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); validarCambios(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id)" />
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <div [ngClass]="{'invalido': (esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.Cantidad != undefined) && 
@@ -63,32 +77,44 @@
                     <td pEditableColumn class="columna">
                         <div [ngClass]="{'invalido': esFinalizado && 
                         (posicionesCompra.Posiciones.CotizacionPosicion.UnidadDeMedida_Id <= 0)} ">
-                            <p-dropdown [options]="unidades" dataKey="Id" optionLabel="Descripcion"
-                                [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.UnidadMedidaDescripcion"
+                            <p-dropdown [options]="unidades" dataKey="Codigo" optionLabel="Descripcion"
+                                [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.UnidadMedida"
                                 placeholder="Unidad" [style]="{'width':'170px'}" [dropdown]="true"
-                                (onFocus)=" $event.target.select();" editable="true" filter="true"  appendTo="body"
+                                (onFocus)=" $event.target.select();" filter="true"  appendTo="body"
                                 resetFilterOnHide="true"
-                                (onChange)="onSelectUnidad(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id);validarCambios(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id) ">
+                                (onChange)="onSelectUnidad(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id, $event);">
                             </p-dropdown>
                         </div>
                     </td>
                     <td class="columna">
-                        <div [ngClass]="{'invalido': esFinalizado && 
-                        (posicionesCompra.Posiciones.CotizacionPosicion.Moneda_Id <= 0)}">
-                            <p-dropdown #dd [options]="monedaCompras" dataKey="Id" optionLabel="Codigo"
-                                [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.MonedaCodigo"
-                                placeholder="Moneda" editable="true" [dropdown]="true" appendTo="body"
-                                [style]="{'width':'200px'}"
-                                (onChange)="onSelectMoneda(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id)">
-                                <ng-template let-item pTemplate="selectedItem">
-                                    <span>{{item.value.Codigo}}</span>
-                                </ng-template>
-                                <ng-template let-item pTemplate="item">
-                                    <div>
-                                        <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
-                                    </div>
-                                </ng-template>
-                            </p-dropdown>
+                        <div [ngClass]="{'invalido': esFinalizado &&
+                             (posicionesCompra.Posiciones.CotizacionPosicion.Moneda_Id <= 0)}">
+                            
+                             <p-dropdown
+                                        dataKey="Codigo"
+                                        [options]="monedaCompras"
+                                        placeholder="Moneda"
+                                        [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Moneda"
+                                        [style]="{'width':'150px'}"
+                                        optionLabel="CodigoDescripcion"
+                                        appendTo="body"
+                                        (onFocus)=" $event.target.select();"                                
+                                        (onChange)="onSelectMoneda(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id,$event)"
+                                        [minLength]="1"
+                                        [dropdown]="true"
+                                        emptyMessage="Ningúna moneda encontrada"
+                                        [autoHighlight]="true"
+                                        [forceSelection]="true">
+
+                                        <ng-template let-item pTemplate="selectedItem">
+                                            <span>{{item.value.Codigo}}</span>
+                                        </ng-template>
+                                        <ng-template let-item pTemplate="item">
+                                            <div>
+                                                <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
+                                            </div>
+                                        </ng-template>
+                                    </p-dropdown>
 
                         </div>
                     </td>
@@ -96,25 +122,25 @@
                         <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <input pInputText type="number"
-                                    [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Precio" pattern="[0-9]+"
-                                    
+                                    [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Precio"
+                                    pKeyFilter="num" pattern="[0-9]+"
                                     (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id);validarCambios(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)" />
                             </ng-template>
 
                             <ng-template pTemplate="output">
                                 <div [ngClass]="{'invalido': (esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.Precio != undefined) && 
-                            (posicionesCompra.Posiciones.CotizacionPosicion.Precio <= 0)}">
-                                    {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.Precio | number: '1.1-1'}}
+                            (posicionesCompra.Posiciones.CotizacionPosicion.Precio <= 0)}" pKeyFilter="int" pattern="[0-9]+">
+                                    {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.Precio | number:'1.2-2'}}
                                 </div>
                             </ng-template>
                         </p-cellEditor>
                     </td>
                     <td class="columna">{{posicionesCompra?.Posiciones?.CotizacionPosicion?.PrecioTotal |
-                        number:'1.1-1'}}</td>
+                        number:'1.2-2'}}</td>
                     <td pEditableColumn class="columna" style="cursor:pointer">
                         <p-cellEditor>
                             <ng-template pTemplate="input" style="width: 100% !important">
-                                <p-calendar [minDate]="hoy" class="calendar" [touchUI]="true" [locale]="es"
+                                <p-calendar [minDate]="hoy" class="calendar" appendTo="body" [locale]="es"
                                     dateFormat="dd-M-yy"
                                     [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.FechaDeEntrega"                                    
                                     (ngModelChange)="calcularPlazo(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)"
@@ -135,7 +161,7 @@
                             <ng-template pTemplate="input">
                                 <input pInputText type="number"
                                     [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.PlazoDeEntrega"
-                                    pattern="[0-9]+" 
+                                    pKeyFilter="int"
                                     (ngModelChange)="calcularFechaEntrega(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)"
                                     (onFocus)=" $event.target.select();" />
                                   

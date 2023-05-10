@@ -11,6 +11,10 @@
         <b>Legajo </b> <span *ngIf="legajo != null">Petici&oacute;n de oferta #{{legajo[0].PeticionDeOfertaId}}</span>
     </p-header>
     <div class="col-md-12 row myRow alinearTitulo margenInput" *ngIf="legajo != null">
+        <p>
+            <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert" >
+               <strong>Error! </strong>{{ error }}</ngb-alert>
+        </p>
         <div class="col-md-12 titulosModal" style="margin-right: 1em;">
             <span *ngIf="usuarioProveedor == false">
                 <p-fileUpload #fileUpload

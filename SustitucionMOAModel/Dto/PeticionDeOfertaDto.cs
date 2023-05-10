@@ -62,7 +62,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime? PlazoDeOfertaCircular { get; set; }
         public int CotizacionEstado_Id { get; set; }
         public CircularDto Circular { get; set; }
-        public IQueryable<PeticionDeOfertaSolpPosicionDto> PeticionDeOfertaPosicion { get; set; }
+        public IEnumerable<PeticionDeOfertaSolpPosicionDto> PeticionDeOfertaPosicion { get; set; }
         public int CotizacionId { get; set; }
         public string TipoPosicionCodigo { get; set; }
         public CotizacionDto Cotizacion { get; set; }
@@ -70,7 +70,10 @@ namespace SustitucionMOAModel.Dto
         public string ObservacionTecnica { get; set; }
         public bool? RespetaMateriales { get; set; }
         public bool? RespetaServicios { get; set; }
-
+        public string FechaCreacionFormateada { get; set; }
+        public DateTime FechaCreacionSolp { get; set; }
+        public string FechaCreacionFormateadaSolp { get; set; }
+        public IEnumerable<DateTime?> VisitasMasivas { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
@@ -96,6 +99,11 @@ namespace SustitucionMOAModel.Dto
         public CotizacionDto Cotizacion { get; set; }
         public bool CircularSinLeer { get; set; }
         public IEnumerable<int> CircularesSinLeer { get; set; }
+        public string EstadoVisita { get; set; }
+        public string EstadoVisitaColor { get; set; }
+        public string EstadoPropuestaTecnica { get; set; }
+        public string EstadoPropuestaTecnicaColor { get; set; }
+ 
     }
 
 }

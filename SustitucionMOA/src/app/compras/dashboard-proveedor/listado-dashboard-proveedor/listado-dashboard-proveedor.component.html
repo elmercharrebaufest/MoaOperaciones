@@ -52,12 +52,9 @@
                         </span>
                     </th>
 
-                    <th title="Visita técnica obligatoria" class="headerth" (click)="onOrder('TieneVisitaObra')" style="width: 120px;">
+                    <th title="Visita técnica obligatoria" class="headerth" style="width: 120px;">
                         Visita técnica obligatoria
-                        <span>
-                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'TieneVisitaObra' && orden == 'DESC'  }"></i>
-                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'TieneVisitaObra' && orden == 'ASC' }"></i>
-                        </span>
+                        
                     </th>
                     <th title="Nombre de pedido" class="headerth" (click)="onOrder('CotizacionEstado_Id')" style="width: 90px;">
                         Estado cotización
@@ -99,13 +96,20 @@
                         {{rowData.Estado}}
                     </td>
                     <td class="columna">
+                        <div *ngIf="rowData.VisitasMasivas.length == 0">
                         {{ rowData.TieneVisitaObra}}
+                      </div>
+                      <div *ngIf="rowData.VisitasMasivas.length > 0">
+                        <div *ngFor="let visita of rowData.VisitasMasivas">
+                        {{ visita | customDateFormat | date :'d/M/yyyy hh:mm' }}
+                        </div>
+                        </div>
                     </td>
                     <td class="columna">
                         {{ rowData.CotizacionEstadoDescripcion}}
                     </td>
                     <td colspan="2" class="columna" style="text-align: center;">
-                        <button class="publicar btn btn-success" style="font-size: 12px;"(click)="publicarCotizacion(rowData.Id)">  
+                        <button *ngIf="rowData.CotizacionEstado_Id != 1 && rowData.Estado == 'Abierto'" class="publicar btn btn-success" style="font-size: 12px;"(click)="publicarCotizacion(rowData.Usuarios[0].Id)">  
                             Cotizar
                         </button>
                     </td>

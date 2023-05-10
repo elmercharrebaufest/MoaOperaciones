@@ -62,15 +62,6 @@ input[type=number] {
   } 
 
 
-  ::ng-deep  .ui-datepicker-mask {
-        position: initial !important;
-  }
-  ::ng-deep .ui-datepicker{ overflow: visible; z-index: 1010; }
-
-  ::ng-deep .ui-inputtext {
-    width: 100% !important;
-  }
-
   .invalido{
     border: 1px solid #f58686 !important;
     background: rgba(242, 196, 196, 0.35);

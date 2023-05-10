@@ -29,11 +29,13 @@ namespace SustitucionMOARepositorio.ConsultasEF
         {
             var hoy = DateTime.Now.Date;
             var ayer = hoy.AddDays(-1);
+            var fechas = new List<DateTime?>();
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
                 var resultado = from x in contexto.Set<PeticionDeOfertaUsuario>()
-                                join peticionDeOferta in contexto.Set<PeticionDeOferta>() on x.PeticionDeOferta_Id equals peticionDeOferta.Id into peticionDeOferta
+                                join peticionDeOferta in contexto.Set<PeticionDeOferta>() on x.PeticionDeOferta_Id equals peticionDeOferta.Id into peticion
+                                from peticionDeOferta in peticion.DefaultIfEmpty()
                                 join cotizacion in contexto.Set<Cotizacion>() on x.Id equals cotizacion.PeticionDeOfertaUsuario_Id into peticionCotizacion
                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
                                 where (string.IsNullOrEmpty(NroSolp) || x.PeticionDeOferta.Solp.NroSolp.ToUpper().StartsWith(NroSolp.ToUpper()))
@@ -46,18 +48,35 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     UsuarioCreador_Id = x.PeticionDeOferta.UsuarioCreador_Id,
                                     UsuarioCreador = x.PeticionDeOferta.Usuario.Mail,
                                     CotizacionId = cotizacion != null ? cotizacion.Id : 0,
-                                    PlazoDeOferta = x.Circulares.Any(c => c.Circular.RequiereCambioDeFechas == true) ?
-                                    x.Circulares.Where(c => c.Circular.RequiereCambioDeFechas == true).OrderByDescending(c => c.Circular.Id).FirstOrDefault().Circular.PlazoDeOferta.Value :
-                                    x.PeticionDeOferta.PlazoDeOferta,
-                                    Estado = (x.Circulares.Any(c => c.Circular.RequiereCambioDeFechas == true) ?
-                                    x.Circulares.Where(c => c.Circular.RequiereCambioDeFechas == true).OrderByDescending(c => c.Circular.Id).FirstOrDefault().Circular.PlazoDeOferta.Value :
-                                    x.PeticionDeOferta.PlazoDeOferta) >= hoy ? "Abierto" : "Cerrado",
-                                    EstadoColor = (x.Circulares.Any(c => c.Circular.RequiereCambioDeFechas == true) ?
-                                    x.Circulares.Where(c => c.Circular.RequiereCambioDeFechas == true).OrderByDescending(c => c.Circular.Id).FirstOrDefault().Circular.PlazoDeOferta.Value :
-                                    x.PeticionDeOferta.PlazoDeOferta) >= hoy ? "Green" : "Red",
-                                    Estado_Id = (x.Circulares.Any(c => c.Circular.RequiereCambioDeFechas == true) ?
-                                    x.Circulares.Where(c => c.Circular.RequiereCambioDeFechas == true).OrderByDescending(c => c.Circular.Id).FirstOrDefault().Circular.PlazoDeOferta.Value :
-                                    x.PeticionDeOferta.PlazoDeOferta) >= hoy ? 1 : 2,
+
+                                    PlazoDeOferta = peticionDeOferta.Usuarios.Where(u=>u.Usuario_Id == usuario_id).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                                    .Any(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue) ?
+                                    peticionDeOferta.Usuarios.Where(u => u.Usuario_Id == usuario_id).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                                    .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
+                                    .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
+                                     x.PeticionDeOferta.PlazoDeOferta,
+
+                                    Estado = (peticionDeOferta.Usuarios.Where(u => u.Usuario_Id == usuario_id).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                                    .Any(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue) ?
+                                    peticionDeOferta.Usuarios.Where(u => u.Usuario_Id == usuario_id).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                                    .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
+                                    .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
+                                     x.PeticionDeOferta.PlazoDeOferta) >= hoy ? "Abierto" : "Cerrado",
+
+                                    EstadoColor = (peticionDeOferta.Usuarios.Where(u => u.Usuario_Id == usuario_id).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                                    .Any(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue) ?
+                                    peticionDeOferta.Usuarios.Where(u => u.Usuario_Id == usuario_id).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                                    .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
+                                    .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
+                                     x.PeticionDeOferta.PlazoDeOferta) >= hoy ? "Green" : "Red",
+
+                                    Estado_Id = (peticionDeOferta.Usuarios.Where(u => u.Usuario_Id == usuario_id).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                                    .Any(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue) ?
+                                    peticionDeOferta.Usuarios.Where(u => u.Usuario_Id == usuario_id).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                                    .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
+                                    .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
+                                     x.PeticionDeOferta.PlazoDeOferta) >= hoy ? 1 : 2,
+
                                     Usuarios = new List<PeticionDeOfertaUsarioDto> { new PeticionDeOfertaUsarioDto {
                                         Id = x.Id,
                                         PropuestaTecnicaAprobada = x.PropuestaTecnicaAprobada,
@@ -67,7 +86,6 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                         CircularSinLeer = x.Circulares.Any(a=>a.Leida != true),
                                         CircularesSinLeer = x.Circulares.Where(a=>a.Leida != true).Select(a=>a.Id),
                                     } },
-                                    TieneVisitaObra = x.PeticionDeOferta.Solp.Pliego.TieneVisitaObra == null ? "No requiere visita" : "Requiere visita a coordinar",
                                     CotizacionEstadoDescripcion = cotizacion == null ? "Sin Cotizar" : cotizacion.CotizacionEstado.Descripcion,
                                     CotizacionEstado_Id = cotizacion == null ? 0 : cotizacion.CotizacionEstado.Id,
                                     ItemPorPagina = paginacion.ItemsPorPagina,
