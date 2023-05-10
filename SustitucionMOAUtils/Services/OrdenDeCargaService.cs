@@ -384,7 +384,7 @@ namespace SustitucionMOAUtils.Services
                     Reventa = ordenDeCarga.Reventa
                 };
 
-                var result = consumer.CrearOrden(crearOrdenReq, out string numeroPedido);
+                var result = consumer.CrearOrden(crearOrdenReq, out string numeroPedido, out string rawResult);
                 ordenDeCarga.CodigoVerificacionSap = OrdenCargaCrearOrdenClass.GetCodigo(result);
 
                 if (result == OrdenCargaCrearOrden.PedidoCreado || result == OrdenCargaCrearOrden.PedidoCreadoVerificarCredito)
@@ -412,6 +412,15 @@ namespace SustitucionMOAUtils.Services
                 else if (result == OrdenCargaCrearOrden.VerificarDatos)
                 {
                     ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
+                }
+
+                else if (result == OrdenCargaCrearOrden.Vacia)
+                {
+                    ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
+                }
+                else if (result == OrdenCargaCrearOrden.NoEsperado)
+                {
+                    ordenDeCarga.DescripcionCodigoVerificacionSap = "Respuesta inesperada: " + rawResult;
                 }
 
                 Log.Debug(this.GetType().Name, "CrearOrdenEnSAP", $" actualizarEstado, inicial: " + EstadoOrdenDeCargaExtensions.ToFriendlyString(ordenDeCarga.Estado));
@@ -467,7 +476,7 @@ namespace SustitucionMOAUtils.Services
                 DomicilioTipo = ordenDeCarga.DomicilioTipo
             };
 
-            var result = consumer.CrearOrden(crearOrdenReq, out string numeroPedido);
+            var result = consumer.CrearOrden(crearOrdenReq, out string numeroPedido, out string rawResult);
 
             var resultadoCrearOrden = false;
             ordenDeCarga.ContratoSinCantidadPendiente = false;
@@ -498,6 +507,14 @@ namespace SustitucionMOAUtils.Services
             else if (result == OrdenCargaCrearOrden.VerificarDatos)
             {
                 ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
+            }
+            else if (result == OrdenCargaCrearOrden.Vacia)
+            {
+                ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
+            }
+            else if (result == OrdenCargaCrearOrden.NoEsperado)
+            {
+                ordenDeCarga.DescripcionCodigoVerificacionSap = "Respuesta inesperada: " + rawResult;
             }
             Log.Debug(this.GetType().Name, "CrearOrdenEnSAP", $" actualizarEstado, inicial: " + EstadoOrdenDeCargaExtensions.ToFriendlyString(ordenDeCarga.Estado));
             ordenDeCarga.ActualizarEstado();
