@@ -2523,10 +2523,12 @@ namespace SustitucionMOAUtils.Services
 
         public ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo)
         {
+            var materialCodigo = ObtenerMaterialValidaSisa();
             var controlarCargaReq = new ControlCargaRequest
             {
                 Cliente = clienteCodigo,
                 Corredor = corredorCodigo.StartsWith("C") ? corredorCodigo : "",
+                Material = materialCodigo,
                 SoloSisa = true
             };
 
