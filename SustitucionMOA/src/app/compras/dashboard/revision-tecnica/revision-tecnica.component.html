@@ -100,7 +100,7 @@
                         </div>
                         <hr>
                         <div *ngIf="p.MostrarPanel == true">
-                            <app-panel-horas [peticionHs]="p.Cotizacion.CotizacionesHoras"></app-panel-horas>
+                            <app-panel-horas [peticionHs]="p.Cotizacion.CotizacionesHoras" [cotizacion]="p.Cotizacion"></app-panel-horas>
                         </div>
                     </div>
                 </div>
