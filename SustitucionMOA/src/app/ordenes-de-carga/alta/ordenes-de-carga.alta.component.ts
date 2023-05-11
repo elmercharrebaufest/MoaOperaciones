@@ -942,6 +942,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                     "Cliente no habilitado en SISA, no podrá cargar la orden hasta regularizar la situación");
                         this.mensajeComponent.setErrorMsg(msj);
                         this.reiniciarProducto();
+                        this.scrollAMensaje();
                     } else if (resp) {
                         this.validarRuca(this.ordenDeCarga.CUITCliente.toString(), "CUITCliente");
                     }
