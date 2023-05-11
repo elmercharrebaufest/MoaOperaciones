@@ -131,4 +131,6 @@
 
 	<setParameter name="SI_MMRFC_OBTENER_TIPO_CAMBIO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_TIPO_CAMBIO&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
+	<setParameter name="ScatoRepositorioBaseAddress Config" value="http://gsloscatoapq01.molinosagro.ad/Scato.WebApiCore/" />
+
 </parameters>

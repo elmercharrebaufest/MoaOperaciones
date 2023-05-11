@@ -182,11 +182,11 @@
                            /@value" />
 	</parameter>
 
-	<!--<parameter name="ScatoRepositorioBaseAddress Config">
+	<parameter name="ScatoRepositorioBaseAddress Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/appSettings/add[@key='ScatoRepositorioBaseAddress']
                            /@value" />
-	</parameter>-->
+	</parameter>
 
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
