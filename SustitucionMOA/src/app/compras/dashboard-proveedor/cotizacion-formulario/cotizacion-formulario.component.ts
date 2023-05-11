@@ -170,7 +170,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         if(esFinalizado == undefined) this.esFinalizado = false; 
         this.obtenerArchivosNuevos();
         this.ObtenerCotizacion();
-        this.cotizacionMaterial.validarCampos();
         this.blockUI.start("Grabando...");
         try {
 
