@@ -106,11 +106,9 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             }
 
             if (this.posicionesCompra[index].Posiciones.FechaEntregaServicio != null) {
-                // console.log(this.posicionesCompra[index].Posiciones.FechaEntregaServicio)
                 var milliseconds = parseInt(this.posicionesCompra[index].Posiciones.FechaEntregaServicio.substring(6));
                 var date = new Date(milliseconds);
                 this.posicionesCompra[index].Posiciones.FechaEntregaServicio = date
-                // console.log(date)
             }
         }
 
@@ -172,6 +170,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         if(esFinalizado == undefined) this.esFinalizado = false; 
         this.obtenerArchivosNuevos();
         this.ObtenerCotizacion();
+        this.cotizacionMaterial.validarCampos();
         this.blockUI.start("Grabando...");
         try {
 
@@ -219,7 +218,11 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         if (this.peticion.TipoPosicionCodigo == "MATERIALES") {
             var self = this;
             this.cotizaciones.forEach(function (cotizacion, i) {
-                if (!breakFor) {
+                if (!breakFor && (cotizacion.NoDisponible == false || cotizacion.NoDisponible == undefined)) {
+                    if ((cotizacion.Cantidad == 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio == 0 && cotizacion.FechaDeEntrega == null) {
+                        mensaje = "Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
+                        return mensaje;
+                    }
                     if (cotizacion.Cantidad == 0 || cotizacion.Cantidad == undefined) {
                         mensaje = "Pos. " + cotizacion.Posicion + " - La Ctd. cotizada es obligatoria";
                         breakFor = true;

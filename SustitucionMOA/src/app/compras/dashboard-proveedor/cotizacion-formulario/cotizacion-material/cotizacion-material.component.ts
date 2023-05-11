@@ -17,6 +17,7 @@ import { SelectItem } from 'ng2-select';
 import { ValorTotalPorMoneda } from '../../../solp/solp';
 import { CotizacionPosicionDto, GuardarCotizacion } from '../../../../modelos/cotizacionDto';
 import { Dropdown } from 'primeng/dropdown';
+import { PosicionCompra } from '../../../solp-compra';
 
 
 @Component({
@@ -334,7 +335,8 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
                 UnidadMedida: cotizacion.Posiciones.CotizacionPosicion.UnidadComprasDescripcion,
                 monedaCompras: cotizacion.Posiciones.CotizacionPosicion.MonedaCodigo,
                 CantidadSubpos: cotizacion.Posiciones.Cantidad,
-                UnidadDeMedidaSubpos: cotizacion.Posiciones.UnidadId
+                UnidadDeMedidaSubpos: cotizacion.Posiciones.UnidadId,
+                NoDisponible: cotizacion.Posiciones.CotizacionPosicion.NoDisponible
             };
         });
     }
@@ -398,6 +400,17 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             )
     }
 
-
+    noDisponible(cotizacion: CotizacionPosicionDto){
+        cotizacion.Cantidad = null;
+        cotizacion.Moneda = null;
+        cotizacion.MonedaCodigo = null;
+        cotizacion.Moneda_Id = null;
+        cotizacion.Precio = null;
+        cotizacion.FechaDeEntrega = null;
+        cotizacion.UnidadDeMedida_Id = null;
+        cotizacion.UnidadMedida = null;
+        cotizacion.PlazoDeEntrega = null;
+        cotizacion.PrecioTotal = null;
+    }
 
 }

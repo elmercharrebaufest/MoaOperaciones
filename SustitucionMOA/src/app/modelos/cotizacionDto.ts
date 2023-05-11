@@ -43,6 +43,8 @@ export interface CotizacionPosicionDto {
     Moneda: any;
     UnidadComprasDescripcion: string,
     CotizacionSubPosiciones?: CotizacionSubPosicionDto[]
+    NoDisponible: boolean
+
 }
 
 export interface CotizacionSubPosicionDto {
@@ -65,6 +67,7 @@ export interface GuardarCotizacion{
     UnidadDeMedidaId: number
     Cantidad: number
     FechaDeEntrega: Date    
+    NoDisponible: boolean
 }
 
 export interface CotizacionHoraDto{
