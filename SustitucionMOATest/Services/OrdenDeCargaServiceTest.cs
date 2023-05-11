@@ -1704,7 +1704,7 @@ namespace SustitucionMOATest.Services
             var respuesta = "OE-00";
             ordenDeCarga.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            consumerOrdenCargaMOA.Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), out value)).Returns("OE-00");
+            consumerOrdenCargaMOA.Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), out value, It.IsAny<bool>())).Returns("OE-00");
 
             consumerOrdenCargaMOA.Setup(x => x.OrdenCargaControlEstadoRequest(
               It.IsAny<string>(),
@@ -1730,7 +1730,7 @@ namespace SustitucionMOATest.Services
             string value = "OE-01";
             ordenDeCarga.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            consumerOrdenCargaMOA.Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), out value)).Returns("OE-01");
+            consumerOrdenCargaMOA.Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), out value, It.IsAny<bool>())).Returns("OE-01");
 
             consumerOrdenCargaMOA.Setup(x => x.OrdenCargaControlEstadoRequest(
               It.IsAny<string>(),
