@@ -163,14 +163,16 @@ namespace SustitucionMOAWS.WSConsumers
         Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE 	OE-02	'Entrega Creada - Error al insertar'
 
         */
-        public string CrearEntrega(CrearEntregaRequest entregaReq, out string mensaje)
+        public string CrearEntrega(CrearEntregaRequest entregaReq, out string mensaje, bool pedidoAnticipado = false)
         {
             var service = new SI_MPMF_MOAOP_ORDEN_CARGA_ENTREClient();
             var cuit_tr = entregaReq.TransportistaReal ?? entregaReq.Transportista;
             var cuit_int_flete = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.Transportista : entregaReq.TransportistaReal;
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {entregaReq.ToJson()}");
+            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {entregaReq.ToJson()} , pedidoAnticipado: {pedidoAnticipado}");
+            if (!pedidoAnticipado)
+                entregaReq = LimpiarRequestSinPedidoAnticipado(entregaReq);
 
             var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(
                 IM_CUITDESTF: entregaReq.CuitDestino,
@@ -182,7 +184,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_NAMEDESTF: entregaReq.RazonSocialDestino,
                 IM_NAMEDESTINAT: entregaReq.RazonSocialDestinatario,
                 IM_NOMBRECONDUCTOR: entregaReq.NombreConductor,
-                IM_ORDENDOM: entregaReq.DomicilioOrden.ToString(),
+                IM_ORDENDOM: entregaReq.DomicilioOrden == null ? "" : entregaReq.DomicilioOrden.ToString(),
                 IM_PATENTEACOPLADO: entregaReq.PatenteAcoplado,
                 IM_PATENTECHASIS: entregaReq.PatenteChasis,
                 IM_PEDIDO: entregaReq.Pedido,
@@ -387,7 +389,7 @@ namespace SustitucionMOAWS.WSConsumers
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {nroEntrega}");
 
             var result = service.SI_MPMF_MOAOP_MOD_ENTREGA("", "X", "", "", "", nroEntrega, "");
-            
+
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result, nroEntrega }}");
 
             return new ModEntregaResponseHandler(result);
@@ -437,6 +439,20 @@ namespace SustitucionMOAWS.WSConsumers
                 FECHA_OP = SAPFormatter.PrepararFecha(desde),
                 FECHA_OP_HASTA = SAPFormatter.PrepararFecha(hasta)
             }}.ToArray();
+        }
+        private CrearEntregaRequest LimpiarRequestSinPedidoAnticipado(CrearEntregaRequest entregaReq)
+        {
+            entregaReq.Reventa = false;
+            entregaReq.CuitDestino = "";
+            entregaReq.CuitDestinatario = "";
+            entregaReq.RazonSocialDestinatario = "";
+            entregaReq.RazonSocialDestino = "";
+            entregaReq.DomicilioDescr = "";
+            entregaReq.DomicilioOrden = null;
+            entregaReq.DomicilioTipo = "";
+            entregaReq.PlantaCodigo = "";
+
+            return entregaReq;
         }
     }
 }
