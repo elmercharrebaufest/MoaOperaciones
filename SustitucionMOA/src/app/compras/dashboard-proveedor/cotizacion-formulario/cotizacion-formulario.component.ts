@@ -106,11 +106,9 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             }
 
             if (this.posicionesCompra[index].Posiciones.FechaEntregaServicio != null) {
-                // console.log(this.posicionesCompra[index].Posiciones.FechaEntregaServicio)
                 var milliseconds = parseInt(this.posicionesCompra[index].Posiciones.FechaEntregaServicio.substring(6));
                 var date = new Date(milliseconds);
                 this.posicionesCompra[index].Posiciones.FechaEntregaServicio = date
-                // console.log(date)
             }
         }
 
@@ -221,7 +219,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             var self = this;
             this.cotizaciones.forEach(function (cotizacion, i) {
                 if (!breakFor && (cotizacion.NoDisponible == false || cotizacion.NoDisponible == undefined)) {
-                    console.log("no dispo", cotizacion.NoDisponible)
                     if ((cotizacion.Cantidad == 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio == 0 && cotizacion.FechaDeEntrega == null) {
                         mensaje = "Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
                         return mensaje;

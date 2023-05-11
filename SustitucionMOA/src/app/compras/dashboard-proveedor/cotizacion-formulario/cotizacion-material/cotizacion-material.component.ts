@@ -72,7 +72,6 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             clear: 'Borrar'
         }
         this.mostrarMensajeNoRespetaCondiciones()
-        console.log("No disponible", this.posicionesCompra)
     }
 
     public mostrarMensajeNoRespetaCondiciones(){
@@ -413,20 +412,5 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         cotizacion.PlazoDeEntrega = null;
         cotizacion.PrecioTotal = null;
     }
-
-    // validarCampos(){
-    //     var mensaje = "";
-    //     if (this.peticion.TipoPosicionCodigo == "MATERIALES") {
-    //         this.cotizaciones.forEach(function (cotizacion, i) {
-    //             if (cotizacion.NoDisponible == false) {
-    //                 if ((cotizacion.Cantidad == 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio == 0 && cotizacion.FechaDeEntrega == null) {
-    //                     mensaje = "Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
-    //                     return mensaje;
-    //                 }
-    //             }
-    //         });
-    //     }
-    // }
-
 
 }
