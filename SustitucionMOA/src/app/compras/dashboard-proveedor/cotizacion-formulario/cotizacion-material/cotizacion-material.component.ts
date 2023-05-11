@@ -17,6 +17,7 @@ import { SelectItem } from 'ng2-select';
 import { ValorTotalPorMoneda } from '../../../solp/solp';
 import { CotizacionPosicionDto, GuardarCotizacion } from '../../../../modelos/cotizacionDto';
 import { Dropdown } from 'primeng/dropdown';
+import { PosicionCompra } from '../../../solp-compra';
 
 
 @Component({
@@ -71,6 +72,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             clear: 'Borrar'
         }
         this.mostrarMensajeNoRespetaCondiciones()
+        console.log("No disponible", this.posicionesCompra)
     }
 
     public mostrarMensajeNoRespetaCondiciones(){
@@ -334,7 +336,8 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
                 UnidadMedida: cotizacion.Posiciones.CotizacionPosicion.UnidadComprasDescripcion,
                 monedaCompras: cotizacion.Posiciones.CotizacionPosicion.MonedaCodigo,
                 CantidadSubpos: cotizacion.Posiciones.Cantidad,
-                UnidadDeMedidaSubpos: cotizacion.Posiciones.UnidadId
+                UnidadDeMedidaSubpos: cotizacion.Posiciones.UnidadId,
+                NoDisponible: cotizacion.Posiciones.CotizacionPosicion.NoDisponible
             };
         });
     }
@@ -398,6 +401,32 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             )
     }
 
+    noDisponible(cotizacion: CotizacionPosicionDto){
+        cotizacion.Cantidad = null;
+        cotizacion.Moneda = null;
+        cotizacion.MonedaCodigo = null;
+        cotizacion.Moneda_Id = null;
+        cotizacion.Precio = null;
+        cotizacion.FechaDeEntrega = null;
+        cotizacion.UnidadDeMedida_Id = null;
+        cotizacion.UnidadMedida = null;
+        cotizacion.PlazoDeEntrega = null;
+        cotizacion.PrecioTotal = null;
+    }
+
+    // validarCampos(){
+    //     var mensaje = "";
+    //     if (this.peticion.TipoPosicionCodigo == "MATERIALES") {
+    //         this.cotizaciones.forEach(function (cotizacion, i) {
+    //             if (cotizacion.NoDisponible == false) {
+    //                 if ((cotizacion.Cantidad == 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio == 0 && cotizacion.FechaDeEntrega == null) {
+    //                     mensaje = "Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
+    //                     return mensaje;
+    //                 }
+    //             }
+    //         });
+    //     }
+    // }
 
 
 }

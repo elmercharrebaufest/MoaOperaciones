@@ -50,7 +50,8 @@ export interface PeticionDeOfertaSolpPosicionDto{
     SolpId: number,
     expanded: boolean,
     Selected: boolean,
-    TodasPosicionesSeleccionadas: boolean
+    TodasPosicionesSeleccionadas: boolean,
+    NoDisponible: boolean,
 }
 
 

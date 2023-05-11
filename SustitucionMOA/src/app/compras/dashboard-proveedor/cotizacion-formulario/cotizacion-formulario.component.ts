@@ -172,6 +172,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         if(esFinalizado == undefined) this.esFinalizado = false; 
         this.obtenerArchivosNuevos();
         this.ObtenerCotizacion();
+        this.cotizacionMaterial.validarCampos();
         this.blockUI.start("Grabando...");
         try {
 
@@ -219,7 +220,12 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         if (this.peticion.TipoPosicionCodigo == "MATERIALES") {
             var self = this;
             this.cotizaciones.forEach(function (cotizacion, i) {
-                if (!breakFor) {
+                if (!breakFor && (cotizacion.NoDisponible == false || cotizacion.NoDisponible == undefined)) {
+                    console.log("no dispo", cotizacion.NoDisponible)
+                    if ((cotizacion.Cantidad == 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio == 0 && cotizacion.FechaDeEntrega == null) {
+                        mensaje = "Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
+                        return mensaje;
+                    }
                     if (cotizacion.Cantidad == 0 || cotizacion.Cantidad == undefined) {
                         mensaje = "Pos. " + cotizacion.Posicion + " - La Ctd. cotizada es obligatoria";
                         breakFor = true;
