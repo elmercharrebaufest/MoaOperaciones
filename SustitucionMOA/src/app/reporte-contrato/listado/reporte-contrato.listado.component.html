@@ -134,7 +134,7 @@
                         <tr *ngFor="let cabeceraContrato of cabecera | customFilter : 'Contrato' : filtroContrato  | orderedColumn : {property: (orderedByColumn), direction: orderDirection} ; let odd = odd"
                             role="row" [class.odd]="!odd">
                             <td><a class="animate" style="cursor:pointer;"
-                                    (click)="goToSeccionParam('/reporte-contrato/detalle', cabeceraContrato.Contrato)">{{cabeceraContrato.Contrato}}</a>
+                                    (click)="guardarFiltros();goToSimpleNavigation('/reporte-contrato/detalle', cabeceraContrato.Contrato, {})">{{cabeceraContrato.Contrato}}</a>
                             </td>
                             <td *ngIf="verTipoContrato">{{cabeceraContrato.TipoContrato}}</td>
                             <td *ngIf="verNroPedidoCliente">{{cabeceraContrato.PedidoCliente}}</td>

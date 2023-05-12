@@ -1,10 +1,5 @@
 ﻿using SustitucionMOAModel.Models.ViewModel.ReporteContrato;
 using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Interfaces
 {
@@ -12,6 +7,6 @@ namespace SustitucionMOAUtils.Interfaces
     {
         ReporteContratoViewModel GetContratosReporte(string proveedor, string fechaInicio, string fechaFin, bool mostrarPendientes, ReporteContratoWSMOAResponse dataFiltro);
         ReporteContratoViewModel obtenerAgrupadoProducto(ReporteContratoViewModel view);
-        ReporteContratoViewModel GetContratosDetalle(string contrato, string proveedor);
+        ReporteContratoViewModel GetContratosDetalle(string contrato, string proveedor, string fechaInicio, string fechaFin);
     }
 }
