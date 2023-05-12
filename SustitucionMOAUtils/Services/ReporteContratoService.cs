@@ -11,8 +11,6 @@ using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -59,7 +57,7 @@ namespace SustitucionMOAUtils.Services
                                                                fechaFin = Convert.ToDateTime(fechaFin)}
                     }
             };
-            
+
             ReporteContratoViewModel view = new ReporteContratoViewModel();
             if (dataFiltro == null)
             {
@@ -87,7 +85,7 @@ namespace SustitucionMOAUtils.Services
                             value = x.Key,
                             label = x.Key + " (" + x.Count() + ")"
                         })
-                        .OrderBy(opt=>opt.label)
+                        .OrderBy(opt => opt.label)
                         .ToList());
 
             view.filtroProducto = new DropdownContent(
@@ -166,12 +164,16 @@ namespace SustitucionMOAUtils.Services
             var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
             var request = new ReporteContratoWSMOARequest();
 
+            var dateInicio = DataFormatter.StringToDateTime(fechaInicio, "");
+            var dateFin = DataFormatter.StringToDateTime(fechaFin, "");
+
             request = new ReporteContratoWSMOARequest()
             {
                 //Se envia corredor o Cliente para efectos de mas rapidez en la consulta a la rfc
                 Cliente = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? "" : proveedor,
                 Corredor = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? proveedor : "",
-                Contrato = contrato
+                Contrato = contrato,
+                Fechas = new List<FechaWS> { new FechaWS { fechaInicio = dateInicio,fechaFin = dateFin}}
             };
 
             ReporteContratoViewModel view = new ReporteContratoViewModel();
