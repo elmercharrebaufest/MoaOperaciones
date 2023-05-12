@@ -161,7 +161,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Contratos"));
         }
 
-        public ReporteContratoViewModel GetContratosDetalle(string contrato, string proveedor)
+        public ReporteContratoViewModel GetContratosDetalle(string contrato, string proveedor, string fechaInicio, string fechaFin)
         {
             var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
             var request = new ReporteContratoWSMOARequest();
