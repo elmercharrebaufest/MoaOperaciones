@@ -380,9 +380,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     guardarCambios({mostrarPreview = false, enviarSap = false, guardarPorPaso = false}) {
         this.messageService.clear();
-
+        console.log("SolpActual", this.solpActual)
         try {
+            this.solpActual.posiciones = [];
             this.actualizarPasoCompleto(this.pasoActual);
+            
 
             this.disabledSave = true;
             if (guardarPorPaso == false) {

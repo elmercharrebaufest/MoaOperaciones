@@ -25,6 +25,8 @@ namespace SustitucionMOAModel.Dto
         public bool TieneMedioElevacion { get; set; }
         public bool TieneAndamio { get; set; }
         public bool TieneTecnicoSeguridad { get; set; }
+        public bool TieneGrillaPersonal { get; set; }
+        public bool TieneFabricacionTallerExterno { get; set; }
         public bool TieneDescripcionTecnica { get; set; }
         public bool TieneDocumentacionTecnica { get; set; }
         public DateTime? FechaHoraLimiteConsulta { get; set; }
@@ -98,6 +100,8 @@ namespace SustitucionMOAModel.Dto
             this.TieneMedioElevacion = entity.Pliego.TieneMedioElevacion.HasValue && entity.Pliego.TieneMedioElevacion.Value;
             this.TieneAndamio = entity.Pliego.TieneAndamio.HasValue && entity.Pliego.TieneAndamio.Value;
             this.TieneTecnicoSeguridad = entity.Pliego.TieneTecnicoSeguridad.HasValue && entity.Pliego.TieneTecnicoSeguridad.Value;
+            this.TieneGrillaPersonal = entity.Pliego.TieneGrillaPersonal.HasValue && entity.Pliego.TieneGrillaPersonal.Value;
+            this.TieneFabricacionTallerExterno = entity.Pliego.TieneFabricacionTallerExterno.HasValue && entity.Pliego.TieneFabricacionTallerExterno.Value;
             this.TieneDescripcionTecnica = entity.Pliego.TieneDescripcionTecnica.HasValue && entity.Pliego.TieneDescripcionTecnica.Value;
             this.TieneDocumentacionTecnica = entity.Pliego.TieneDocumentacionTecnica.HasValue && entity.Pliego.TieneDocumentacionTecnica.Value;
             this.FechaHoraLimiteConsulta = entity.Pliego.FechaHoraLimiteConsulta;
