@@ -16,8 +16,6 @@ import { ReporteContrato } from '../ReporteContrato.model';
     selector: 'app-reporte-contrato.listado',
     templateUrl: './reporte-contrato.listado.component.html',
     styleUrls: ['./reporte-contrato.listado.component.css'],
-   
-
 })
 export class ReporteContratoListado extends ListBaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
@@ -114,6 +112,11 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
 
     isVisible() {
         return this.show && this.cabecera.length;
+    }
+
+    guardarFiltros(){
+        const {fecha_inicio, fecha_fin} = this.filtroFechaComponent
+       this.service.setFechas(fecha_inicio,fecha_fin ); 
     }
 
     cargarFiltrosContratos(result: any) {
