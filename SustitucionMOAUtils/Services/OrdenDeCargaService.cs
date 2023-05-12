@@ -567,8 +567,7 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.CodigoVerificacionSap = "";
                 ordenDeCarga.DescripcionCodigoVerificacionSap = "";
                 var numerosContratos = responseHandler.ObtenerNumerosContratos();
-                var materialAFiltrar = ordenDeCarga.Producto.CodigoSap == "50866" ? "50866" : "";
-                var contratosAbiertos = ObtenerContratosAbiertos(numerosContratos, materialAFiltrar);
+                var contratosAbiertos = ObtenerContratosAbiertos(numerosContratos);
                 //Pendiente deficinición queda como si siempre tuviera muchos contratos abiertos
 
                 TieneVariosContratosAbiertos(ordenDeCarga, contratosAbiertos);
@@ -2702,9 +2701,9 @@ namespace SustitucionMOAUtils.Services
                 //Pendiente revisión de los mensajes acorde a las verdaderas razones de error
                 throw new InfoCustomException("El pedido está tomado en SAP");
         }
-        private List<string> ObtenerContratosAbiertos(List<string> contratos, string material = "")
+        private List<string> ObtenerContratosAbiertos(List<string> contratos)
         {
-            return contratos.Where(contrato => consumer.VerificarContratoAbierto(contrato, material)).ToList();
+            return contratos.Where(contrato => consumer.VerificarContratoAbierto(contrato)).ToList();
         }
         private void TieneVariosContratosAbiertos(OrdenDeCarga ordenDeCarga, List<string> contratosAbiertos)
         {
