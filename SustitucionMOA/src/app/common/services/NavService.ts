@@ -34,6 +34,16 @@ export class NavService {
     navegarSeccionParamTres(path: string, param1: string, param2: string, param3: string) {
         this.router.navigate([path, param1, param2, param3]);
     }
+    navegarBasic(path: string, rawParams?: Array<string> | string, queryParams?: {[key: string]: string}){
+        let route = [path]
+        if(rawParams){
+            if(typeof rawParams == 'string')
+                route.push(rawParams)
+            else 
+                route = route.concat(rawParams)
+        }
+        this.router.navigate(route,{queryParams});
+    }
 
     setMenuSeccionTab(menu: string, seccion: string) {
         this.setMenuActive(menu);
