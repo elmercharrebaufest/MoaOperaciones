@@ -2415,12 +2415,15 @@ namespace SustitucionMOAUtils.Services
                     }).ToList();
         }
 
-        public ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req)
+        public ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req, string mailUsuario)
         {
             try
             {
                 var rangoFechas = string.IsNullOrEmpty(req.FechaDesde) || string.IsNullOrEmpty(req.FechaHasta) ? null :
                     CommonService.toDateList(req.FechaDesde, req.FechaHasta);
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+                var material = usuario.TieneRol("ADM") ? "" : "50866";
 
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
                 {
@@ -2428,7 +2431,7 @@ namespace SustitucionMOAUtils.Services
                     Contrato = string.Empty,
                     Corredor = req.CorredorCodigo,
                     Fechas = rangoFechas,
-                    Material = "",
+                    Material = material,
                     Pendiente = "X", // "X" es para Contratos ABIERTOS
                     TipoContrato = "N"
                 };
