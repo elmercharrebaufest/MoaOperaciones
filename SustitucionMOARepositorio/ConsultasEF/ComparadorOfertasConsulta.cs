@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio.Extensiones;
 using System;
 using System.Collections.Generic;
@@ -29,10 +30,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
                 var resultado = from po in contexto.Set<PeticionDeOferta>()
-                                join adjudicacion in contexto.Set<Adjudicacion>() on po.Id equals adjudicacion.Solp_Id into adjudicacionCotizacion
+                                join adjudicacion in contexto.Set<Adjudicacion>() on po.Solp.Id equals adjudicacion.Solp_Id into adjudicacionCotizacion
                                 from adjudicacion in adjudicacionCotizacion.DefaultIfEmpty()
-                                join adjudicacionPosicion in contexto.Set<AdjudicacionPosicion>() on adjudicacion.Id equals adjudicacionPosicion.Adjudicacion_Id into adjudicacionCotizacionPosicion
-                                from adjudicacionPosicion in adjudicacionCotizacionPosicion.DefaultIfEmpty()
+                                //join adjudicacionPosicion in contexto.Set<AdjudicacionPosicion>() on adjudicacion.Id equals adjudicacionPosicion.Adjudicacion_Id into adjudicacionCotizacionPosicion
+                                //from adjudicacionPosicion in adjudicacionCotizacionPosicion.DefaultIfEmpty()
                                 where po.Id == PeticionOferta_Id
                                 select new PeticionDeOfertaDto
                                 {
@@ -68,9 +69,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         Tarea = pop.SolpPosicion.Tarea,
                                                                         TextoSuministro = pop.SolpPosicion.TextoSuministro,
                                                                         Cantidad = pop.SolpPosicion.Cantidad,
-                                                                        CantidadPendiente = pop.SolpPosicion.Cantidad - (adjudicacionPosicion != null ? adjudicacionPosicion.Cantidad : 0),
-                                                                        CantidadAdjudicacion = adjudicacionPosicion != null ? adjudicacionPosicion.Cantidad : 0,
-
+                                                                        Solp_Id = pop.SolpPosicion.Solp_Id,
+                                                                        //CantidadPendiente = pop.SolpPosicion.Cantidad - (adjudicacion != null ? adjudicacion.Posiciones.Where(posicion => posicion.SolpPosicion_Id == pop.SolpPosicion_Id).FirstOrDefault().Cantidad : 0),
+                                                                        //CantidadAdjudicacion = pop.SolpPosicion.Cantidad - (adjudicacion != null ? adjudicacion.Posiciones.Where(posicion => posicion.SolpPosicion_Id == pop.SolpPosicion_Id).FirstOrDefault().Cantidad : 0),
+                                                                        SolpTipo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),                                                                      
+                                                                        
                                                                         Unidad = new TablaSapDto
                                                                         {
                                                                             Descripcion = pop.SolpPosicion.Unidad.Descripcion
@@ -100,6 +103,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                 select new PeticionDeOfertaUsarioDto()
                                                 {
                                                     Id = u.Id,
+                                                    EstaHabilitado = u.Usuario.Habilitado,
                                                     UsuarioId = u.Usuario_Id,
                                                     RazonSocial = u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault() != null ?
                                                         u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().RazonSocial : u.Usuario.CUITRegistro,
@@ -113,6 +117,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     EstadoVisitaColor = u.RealizoVisita == true ? "Green" : "Red",
                                                     EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null ? "Sin analizar" : (u.PropuestaTecnicaAprobada == true ? "Realizada" : "Rechazada"),
                                                     EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null ? "Orange" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),
+                                                    PlazoDeOferta = u.Circulares.Any(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue) ?
+                                                    u.Circulares.Where(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue)
+                                                                    .OrderByDescending(circu => circu.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
+                                                                     po.PlazoDeOferta,   
+                                                    CotizacionEstado = cotizacion.CotizacionEstado.Descripcion,                                                    
                                                     Cotizacion = cotizacion != null ? new CotizacionDto()
                                                     {
                                                         Id = cotizacion.Id,
@@ -120,7 +129,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         FechaCreacion = u.Cotizaciones.FirstOrDefault().FechaCreacion,
                                                         FechaCreacionFormateada = SqlFunctions.DateName("day", u.Cotizaciones.FirstOrDefault().FechaCreacion) + "/" + SqlFunctions.DatePart("month", u.Cotizaciones.FirstOrDefault().FechaCreacion) + "/" + SqlFunctions.DateName("year", u.Cotizaciones.FirstOrDefault().FechaCreacion),
                                                         UsuarioCreador_Id = u.Cotizaciones.FirstOrDefault().UsuarioCreador_Id,
-                                                        CotizacionEstadoDescripcion = u.Cotizaciones.FirstOrDefault().CotizacionEstado.Descripcion,
+                                                        CotizacionEstadoDescripcion = cotizacion.CotizacionEstado.Descripcion,
                                                         RespetaMateriales = u.Cotizaciones.FirstOrDefault().RespetaMateriales,
                                                         RespetaServicios = u.Cotizaciones.FirstOrDefault().RespetaServicios,
                                                         ObservacionEconomica = u.Cotizaciones.FirstOrDefault().ObservacionEconomica,
