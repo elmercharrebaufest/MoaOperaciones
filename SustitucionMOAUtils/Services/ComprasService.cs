@@ -4324,7 +4324,7 @@ namespace SustitucionMOAUtils.Services
                     MontoTotal = 100,
                     Posiciones = adjudicacionDto.AdjudicacionPosiciones.Count > 0 ? adjudicacionDto.AdjudicacionPosiciones.Select(x => new AdjudicacionPosicion
                     {
-                        Cantidad = x.Cantidad ?? 0,
+                        Cantidad = x.Cantidad,
                         CotizacionPosicion_Id = x.CotizacionPosicion_Id,
                         CotizacionPosicion = cotizacion.CotizacionPosiciones.Where(y => y.Id == x.CotizacionPosicion_Id).FirstOrDefault(),
                         Posicion = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones
