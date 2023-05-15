@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    public class ObtenerMaterialesSolpConsumerMOA :  IObtenerMaterialesSolpConsumerMOA
+    public class ObtenerMaterialesSolpConsumerMOA : IObtenerMaterialesSolpConsumerMOA
     {
         SI_MMRFC_OBTENER_MATERIALESClient service;
 
@@ -28,27 +28,25 @@ namespace SustitucionMOAWS.WSConsumers
             try
             {
                 ZMPES5800[] IM_MATERIAL = new ZMPES5800[] { };
-                ZMPES5810[] IM_MATL_DESC = new ZMPES5810[] { }; 
+                ZMPES5810[] IM_MATL_DESC = new ZMPES5810[] { };
                 ZMPES5830[] IM_MATL_GROUP = new ZMPES5830[] { };
 
                 //ZMPES5820[] IM_PLANT = new List<ZMPES5820>{ new ZMPES5820 { SIGN = "I", OPTION = "EQ", LOW = CentroCodigo },  }.ToArray();
 
-                var IM_PlantList = new List<ZMPES5820>();
-
+                byte IM_MAX = Convert.ToByte(0);
+                var result = new MaterialWSMOAResponse();
+                result.Materiales = new List<Material>();
                 foreach (var centros in CentroCodigo)
                 {
+                    var IM_PlantList = new List<ZMPES5820>();
                     IM_PlantList.Add(new ZMPES5820 { SIGN = "I", OPTION = "EQ", LOW = centros });
+                    ZMPES5820[] IM_PLANT = IM_PlantList.ToArray();
+                    string error = service.SI_MMRFC_OBTENER_MATERIALES(IM_MATERIAL, IM_MATL_DESC, IM_MATL_GROUP, IM_MAX, IM_PLANT, out ZMPES5840[] EX_MATERIAL, out BAPIRETURN[] EX_RETURN);
+                    var resultado = map(error, EX_MATERIAL, EX_RETURN);
+                    result.Materiales.AddRange(resultado.Materiales);
                 }
-                ZMPES5820[] IM_PLANT = IM_PlantList.ToArray();
 
-
-                byte IM_MAX = Convert.ToByte(0);
-
-
-
-                string error = service.SI_MMRFC_OBTENER_MATERIALES(IM_MATERIAL, IM_MATL_DESC, IM_MATL_GROUP, IM_MAX, IM_PLANT, out ZMPES5840[] EX_MATERIAL, out BAPIRETURN[] EX_RETURN);
-
-                return map(error, EX_MATERIAL, EX_RETURN);
+                return result;
             }
             catch (Exception e)
             {
@@ -80,9 +78,10 @@ namespace SustitucionMOAWS.WSConsumers
                         PrecioDelMaterial = materialSolp.MATL_PRICE,
                         GrupoCompras = materialSolp.PUR_GROUP,
                         PlazoDeEntregaPrevisto = materialSolp.PLND_DELRY,
-                        CuentaDeMayor = materialSolp.GL_ACCOUNT
-                        //PermiteComprarContraStock = materialSolp.PERMITE_STOCK
-                       
+                        CuentaDeMayor = materialSolp.GL_ACCOUNT,
+                        //PermiteComprarContraStock = materialSolp.PERMITE_STOCK,
+                        TextoAmpliado = materialSolp.TEXTO_COMPRAS,
+
                     });
                 }
             }

@@ -22,5 +22,6 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Compras
         public string GrupoCompras { get; set; }
         public decimal PlazoDeEntregaPrevisto { get; set; }
         public string CuentaDeMayor { get; set; }
+        public string TextoAmpliado { get; set; }
     }
 }
