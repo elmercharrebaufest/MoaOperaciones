@@ -854,8 +854,6 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            OrdenDeCargaDetalleDto ordenDto;
-
             List<OrdenDeCargaCambiosHistorialDto> listado = new List<OrdenDeCargaCambiosHistorialDto>();
             OrdenDeCarga orden;
 
@@ -878,14 +876,14 @@ namespace SustitucionMOAUtils.Services
                 orden = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id) && n.Id == ordenId).FirstOrDefault();
             }
 
-            if (orden == null) throw new InfoCustomException("No se encontro ningún orden de carga");
+            if (orden == null) throw new InfoCustomException("No se encontró ninguna orden de carga");
 
             Proveedor cliente = repositorio.Obtener<Proveedor>(orden.Cliente_Id);
             //  var ordenDeCargaCambiosHistorial = repositorio.Listar<OrdenDeCargaCambiosHistorial>(ordenes => ordenes.OrdenDeCarga_Id == orden.Id);
 
             var ordenDeCargaCambiosHistorial = ObtenerCambiosHistorial(orden);
 
-            ordenDto = OrdenDeCargaDetalleDto.DeOrdenDeCarga(orden, ordenDeCargaCambiosHistorial, cliente);
+            var ordenDto = OrdenDeCargaDetalleDto.DeOrdenDeCarga(orden, ordenDeCargaCambiosHistorial, cliente);
 
             return ordenDto;
         }

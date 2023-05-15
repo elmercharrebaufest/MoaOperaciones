@@ -83,6 +83,11 @@
 
                                 <!-- cliente -->
                                 <div class="col-xs-12 col-md-6">
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Reventa</strong></p>
+                                        <p-checkbox name="reventa" [binary]="true" [(ngModel)]="ordenDeCarga.Reventa" [disabled]="true"></p-checkbox>
+                                    </div>
+
                                     <div class="col-xs-12 col-md-12" *ngIf="esInterno || esCorredor">
                                         <p class="blue"><strong>Raz&oacute;n social cliente</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.RazonSocialCliente}}</p>
@@ -111,6 +116,26 @@
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Contrato seleccionado</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.ContratoSAP}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Destinatario</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.RazonSocialDestinatario}} ({{ordenDeCarga.CUITDestinatario}})</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Destino</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.RazonSocialDestino}} ({{ordenDeCarga.CUITDestino}})</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Planta</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.PlantaCodigo}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Domicilio</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.DomicilioDescr}}</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12" *ngIf="ordenDeCarga.NumeroPedidoIngresado != ''">
@@ -154,6 +179,11 @@
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Transporte</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.Transporte}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>CUIT intermediario flete</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.CUITIntermediarioFlete}}</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">
