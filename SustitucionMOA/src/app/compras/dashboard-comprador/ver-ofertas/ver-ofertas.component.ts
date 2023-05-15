@@ -12,9 +12,10 @@ import { ComprasService } from '../../compras.service';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
 import { Table } from 'primeng/table';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto } from '../../../modelos/peticion-de-oferta-model';
+import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto, PeticionDeOfertaUsarioDto } from '../../../modelos/peticion-de-oferta-model';
 import { Solp } from '../../solp/solp';
 import { CotizacionHoraDto, CotizacionDto } from '../../../modelos/cotizacionDto';
+import { AdjudicacionDto } from '../../../modelos/adjudicacion';
 
 @Component({
     selector: 'app-ver-ofertas',
@@ -34,15 +35,21 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     peticionOferta: PeticionDeOfertaDto;
     SolpDto: Solp;
     tablaOfertas: PeticionDeOfertaDto;
+    adjudicacion: AdjudicacionDto;
     Cotizacion: CotizacionDto;
 
 
     TodasPosicionesSeleccionadas: boolean = false;
+    displayAdjudicacionCreada: boolean;
+    errores: any = [];
+    displayVisualizarErrores: boolean;
+    numeroOrdenDeCompra: any;
 
     displayPanelHs: boolean = false;
 
     @Input()
     public peticionHs: CotizacionHoraDto;
+    error: string;
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -85,7 +92,12 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 Cotizacion: null,
                 ObservacionTecnica: null,
                 ObservacionEconomica: null,
-                Cantidad: null,       
+                Cantidad: null,
+            };
+        }
+        if (this.adjudicacion == null || this.adjudicacion == undefined) {
+            this.adjudicacion = {
+                Id: null
             };
         }
     }
@@ -98,7 +110,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         }
     }
 
-  
+
 
     verOfertas(peticionOferta_Id) {
         try {
@@ -113,6 +125,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
+                        console.log(this.tablaOfertas, "ofertas");
                     }
                     this.blockUI.stop();
                 },
@@ -186,12 +199,143 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         peticionPosicion.expanded = peticionPosicion.expanded == true ? false : true;
     }
 
-    mostrarPanelHs(){
+    mostrarPanelHs() {
         this.displayPanelHs = true;
     }
 
-    onCerrarPanel(){
+    onCerrarPanel() {
         this.displayPanelHs = false;
     }
 
+
+    crearAdjudicacion(usuario: PeticionDeOfertaUsarioDto) {
+        console.log(usuario, "usuario")
+        var lista = []
+        if (this.tablaOfertas.PeticionDeOfertaPosicion.filter(x => x.Selected).length > 0) {
+            this.tablaOfertas.PeticionDeOfertaPosicion.forEach((peticion) => {
+                if (peticion.Selected && !peticion.Posicion.AdjudicacionCompleta) { 
+                    usuario.Cotizacion.CotizacionPosiciones.forEach((cotizacionPos) => {
+                        if (peticion.Id == cotizacionPos.PeticionDeOfertaSolpPosicion_Id)
+                            lista.push({
+                                Posicion: peticion.Posicion.Indice,
+                                CotizacionPosicion_Id: cotizacionPos.Id,
+                                Cantidad: peticion.Posicion.CantidadAdjudicacion,
+                                SolpPosicion_Id: peticion.Posicion.Id,
+                                CantidadCotizada: cotizacionPos.Cantidad,
+                                CantidadSolp: peticion.Posicion.CantidadPendiente,
+                                CantidadAdjudicada: peticion.Posicion.CantidadAdjudicada
+                            })
+                    })
+                } else {
+                    peticion.Selected = false;
+                }
+
+            });
+
+            console.log(lista, "lista");
+            if (lista.length > 0) {
+                this.error = this.validarAdjudicacion(lista);
+                if (this.error != "") {
+                    this.floatMsgService.setErrorMsg(this.error)
+                    return;
+                }
+            } else {
+                this.floatMsgService.setInfoMsg("Debe seleccionar alguna posicion valida para adjudicar");
+                return;
+            }
+            this.adjudicacion.AdjudicacionPosiciones = lista;
+            this.adjudicacion.Cotizacion_Id = usuario.Cotizacion.Id;
+            this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
+            this.confirmacionAdjudicar();
+            console.log(this.adjudicacion, "adjudicacion");
+        } else {
+            this.floatMsgService.setInfoMsg("Debe seleccionar alguna posicion para adjudicar");
+        }
+    }
+
+    validarAdjudicacion(lista): string {
+        var self = this;
+        var breakFor = false;
+        this.error = "";
+        lista.forEach(element => {
+            if (!breakFor) {
+                if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES') {
+                    // if (element.Cantidad > element.CantidadCotizada) {
+                    //     self.error = "Pos " + element.Posicion + " - La cantidad adjudicada no debe ser mayor que la cantidad cotizada";
+                    //     breakFor = true;
+                    //     return self.error;
+                    // }
+
+                    if (element.Cantidad > element.CantidadSolp) {
+                        self.error = "Pos " + element.Posicion + " - La cantidad adjudicada no debe ser mayor que la cantidad pendiente";
+                        breakFor = true;
+                        return self.error;
+                    }
+                }
+            }
+
+        });
+        return this.error;
+    }
+
+    confirmacionAdjudicar() {
+        this.confirmationService.confirm({
+            header: "¡Ultimo Paso!",
+            acceptLabel: "SI, CONFIRMAR",
+            rejectLabel: "VOLVER",
+            message: 'Está a punto de enviar la adjudicacion <b>¿Desea continuar?</b>',
+            accept: () => {
+                this.guardarAdjudicacion()
+            },
+            reject: () => {
+            }
+        });
+    }
+
+    guardarAdjudicacion() {
+        this.blockUI.start("Grabando...");
+        try {
+            this.subscription = this.service.GrabarAdjudicacion(this.adjudicacion).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    }
+                    else if (result.Errores != undefined && result.Errores != null && result.Errores.length > 0) {
+                        this.errores = result.Errores;
+                        this.displayVisualizarErrores = true;
+                    }
+                    else {
+                        this.numeroOrdenDeCompra = result.NumeroPedido;
+                        this.displayAdjudicacionCreada = true;
+                        
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+
+
+    }
+
+    salir() {
+        this.displayAdjudicacionCreada = false;
+        this.verOfertas(this.tablaOfertas.Id.toString())
+    }
+
+    salirVisualizarErrores() {
+        this.displayVisualizarErrores = false;
+    }
 }

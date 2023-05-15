@@ -41,6 +41,8 @@ export interface PeticionDeOfertaUsarioDto {
 }
     
 export interface PeticionDeOfertaSolpPosicionDto{
+    CantidadPendiente: any
+    AdjudicacionCompleta: boolean
     valorTotal: number
     Id: number
     PeticionDeOferta_Id?: number

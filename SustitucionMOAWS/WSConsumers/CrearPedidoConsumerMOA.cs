@@ -208,8 +208,8 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.FINAL_INV = "";
 
 
-
-                switch (posicion.TipoImputacion.Codigo.ToLower())
+                
+                switch (posicion.TipoImputacion?.Codigo.ToLower())
                 {
                     case "centrodecosto":
                         IM_POITEM.ACCTASSCAT = "K";
@@ -314,9 +314,9 @@ namespace SustitucionMOAWS.WSConsumers
                     SUB_NUMBER = "",
                     CO_AREA = "X",
                     COSTOBJECT = "",
-                    COSTCENTER = (posicion.TipoImputacion.Codigo.ToLower() == "centrodecosto") ? "X" : "",
-                    ORDERID = (posicion.TipoImputacion.Codigo.ToLower() == "ordendeot") ? "X" : "",
-                    PROFIT_CTR = (posicion.TipoImputacion.Codigo.ToLower() == "siniestrobeneficio") ? "X" : ""
+                    COSTCENTER = (posicion.TipoImputacion?.Codigo.ToLower() == "centrodecosto") ? "X" : "",
+                    ORDERID = (posicion.TipoImputacion?.Codigo.ToLower() == "ordendeot") ? "X" : "",
+                    PROFIT_CTR = (posicion.TipoImputacion?.Codigo.ToLower() == "siniestrobeneficio") ? "X" : ""
                 });
 
                 //Nombre: ZBAPIMEPOADDREDELIVERY Denominación:	Direcciones de entrega
@@ -391,7 +391,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         private static string ObtenerImputacion(bool esPosicionDeMateriales, SolpPosicion posicion, string tipo)
         {
-            if (posicion.TipoImputacion.Codigo.ToLower() == tipo)
+
+            if (posicion.TipoImputacion?.Codigo.ToLower() == tipo)
             {
                 if (esPosicionDeMateriales)
                 {
