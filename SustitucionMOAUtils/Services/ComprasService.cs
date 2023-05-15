@@ -179,6 +179,8 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.TieneObradores = solp.TieneObradores;
                 pliegoEntity.TieneMedioElevacion = solp.TieneMedioElevacion;
                 pliegoEntity.TieneAndamio = solp.TieneAndamio;
+                pliegoEntity.TieneGrillaPersonal = solp.TieneGrillaPersonal;
+                pliegoEntity.TieneFabricacionTallerExterno = solp.TieneFabricacionTallerExterno;
                 pliegoEntity.TieneTecnicoSeguridad = solp.TieneTecnicoSeguridad;
                 pliegoEntity.TieneDescripcionTecnica = solp.TieneDescripcionTecnica;
                 pliegoEntity.TieneDocumentacionTecnica = solp.TieneDocumentacionTecnica;
@@ -982,6 +984,8 @@ namespace SustitucionMOAUtils.Services
                 TieneMedioElevacion = x.Pliego.TieneMedioElevacion ?? false,
                 TieneAndamio = x.Pliego.TieneAndamio ?? false,
                 TieneTecnicoSeguridad = x.Pliego.TieneTecnicoSeguridad ?? false,
+                TieneGrillaPersonal = x.Pliego.TieneGrillaPersonal ?? false,
+                TieneFabricacionTallerExterno = x.Pliego.TieneFabricacionTallerExterno ?? false,
                 TieneDescripcionTecnica = x.Pliego.TieneDescripcionTecnica ?? false,
                 TieneDocumentacionTecnica = x.Pliego.TieneDocumentacionTecnica ?? false,
                 FechaHoraLimiteConsulta = x.Pliego.FechaHoraLimiteConsulta,
