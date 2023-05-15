@@ -1042,7 +1042,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             );
     }
 
-    descripcionIntermediarioFlete = "Llenar en caso que el transporte lo hace un tercero"
+    descripcionIntermediarioFlete = "Llenar en caso que el transporte lo haga un tercero"
     descripcionTransporte = "CUIT transportista MOA"
     ttCopiarCuit = "Copiar CUIT del Cliente"
 

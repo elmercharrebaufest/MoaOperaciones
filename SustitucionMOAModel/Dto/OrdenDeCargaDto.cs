@@ -189,6 +189,18 @@ namespace SustitucionMOAModel.Dto
         public string NumeroPedidoIngresado { get; set; }
         public bool EsOrdenVencida { get; set; }
 
+        public bool ValidaSisaRuca { get; set; }
+        public string CUITDestino { get; set; }
+        public string CUITDestinatario { get; set; }
+        public string RazonSocialDestino { get; set; }
+        public string RazonSocialDestinatario { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string PlantaCodigo { get; set; }
+        //public string DomicilioTipo { get; set; }
+        //public short DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
+        public bool Reventa { get; set; }
+
         public IEnumerable<OrdenDeCargaCambiosHistorialDto> OrdenDeCargaCambiosHistorial { get; set; }
         public bool FechaVencimientoAmpliada { get; set; }
         public bool EdicionRechazada { get; set; }
@@ -299,7 +311,16 @@ namespace SustitucionMOAModel.Dto
                 OrdenDeCargaCambiosHistorial = ordenDeCargaCambiosHistorial,
                 EsOrdenVencida = orden.FechaVencimiento < DateTime.Now.Date ? true : false,
                 FechaVencimientoAmpliada = orden.FechaVencimientoAmpliada,
-                EdicionRechazada = orden.EdicionRechazada
+                EdicionRechazada = orden.EdicionRechazada,
+                ValidaSisaRuca = orden.Producto.ValidaSisaRuca,
+                Reventa = orden.Reventa,
+                CUITDestino = orden.CUITDestino,
+                CUITDestinatario = orden.CUITDestinatario,
+                RazonSocialDestino = orden.RazonSocialDestino,
+                RazonSocialDestinatario = orden.RazonSocialDestinatario,
+                CUITIntermediarioFlete = orden.CUITIntermediarioFlete,
+                PlantaCodigo = orden.PlantaCodigo,
+                DomicilioDescr = orden.DomicilioDescr
             };
         }
     }

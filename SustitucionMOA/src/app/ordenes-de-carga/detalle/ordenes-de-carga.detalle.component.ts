@@ -49,6 +49,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     corredorContratoList: CorredorContrato[] = [];
     corredorContratoSeleccionado: CorredorContrato;
 
+    validaCPEDG = false;
+
     mostrarBotonContratos: boolean = false;
     mostrarBotonPedidos: boolean = false;
     mostrarBotonCorredores: boolean = false;
@@ -335,6 +337,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCarga = result.data;
+                        this.validaCPEDG = this.ordenDeCarga.ValidaSisaRuca;
                         this.separarCadenas();
                         this.verificarBotones()
                         if (this.ordenDeCarga.MensajeValidacionSAP != "" && this.ordenDeCarga.MensajeValidacionSAP != "OK" && this.esInterno) {
