@@ -62,7 +62,6 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaGuardarSOLP GrabarCircular(CircularDto circularDto, HttpFileCollectionBase adjuntos);
         PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId);
         RespuestaGuardarSOLP GrabarProveedoresEnPeticionDeOferta(List<int> usuariosId, int peticionId);
-        RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(int AdjudicacionId);
         ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp, string username);
         PeticionDeOfertaDto ListarOfertasComprador(int PeticionOferta_Id);
 
@@ -73,6 +72,8 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaGuardarSOLP GrabarCotizacion(GuardarCotizacion cotizacionDto, HttpFileCollectionBase adjuntos, bool esFinalizado, int usuarioActualId);
 
         GuardarCotizacion ObtenerPrecioTotalPosicionProveedor(GuardarCotizacion cotizacionDto);
+
+        RespuestaCrearOrdenDeCompra GrabarAdjudicacion(AdjudicacionDto adjudicacionDto, int usuarioActualId);
 
     }
 }

@@ -108,6 +108,13 @@ export class SolpPosicion {
 
 
     public isNewRow: boolean
+    Cantidad?: any;
+    Id?: any;
+    Indice: any;
+    CantidadPendiente: any;
+    AdjudicacionCompleta: any;
+    CantidadAdjudicacion: any;
+    CantidadAdjudicada: any;
 
     constructor(numeroPosicion, fiscalContrato, fechaEntrega, posicionADuplicar, 
         centroPorDefecto, direccionCentroPorDefecto, monedaPorDefecto, selectTipoPosicion) {

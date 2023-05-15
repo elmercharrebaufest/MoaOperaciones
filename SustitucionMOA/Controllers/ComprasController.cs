@@ -981,14 +981,27 @@ namespace SustitucionMOA.Controllers
         }
 
 
-        [HttpGet]
-        public ActionResult CrearOrdenDeCompra(int AdjudicacionId)
+        [HttpPost]
+        public ActionResult CrearOrdenDeCompra(string json)
         {
             try
             {
-                var result = service.CrearOrdenDeCompra(AdjudicacionId);
-
+                var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
+                var result = service.GrabarAdjudicacion(adjudicacion, ObtenerUsuarioActual().Id);
                 return JsonCustom(result);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

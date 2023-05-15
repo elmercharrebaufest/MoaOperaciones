@@ -8,6 +8,7 @@ import { SolpPosicion } from './solp/solp-posicion';
 import { AltaNuevoProveedor, EnvioSolpCompra, SolpCompraDto } from './solp-compra';
 import { CircularDto } from '../modelos/circular-model';
 import { PeticionDeOfertaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
+import { AdjudicacionDto } from '../modelos/adjudicacion';
 
 @Injectable({
     providedIn: 'root'
@@ -706,6 +707,20 @@ export class ComprasService extends BaseService {
 
         return this.http
             .post<any>('/api/compras/ObtenerPrecioTotalPosicionProveedor', payload, { headers: this.headers });
+    }
+
+    public GrabarAdjudicacion(adjudicacion: AdjudicacionDto) {
+        let json = JSON.stringify({
+            Cotizacion_Id: adjudicacion.Cotizacion_Id,
+            AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
+            Solp_Id: adjudicacion.Solp_Id
+        });
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/CrearOrdenDeCompra', payload, { headers: this.headers });
     }
 
 

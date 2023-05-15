@@ -103,7 +103,10 @@ namespace SustitucionMOAModel.Dto
         public string EstadoVisitaColor { get; set; }
         public string EstadoPropuestaTecnica { get; set; }
         public string EstadoPropuestaTecnicaColor { get; set; }
- 
+        public DateTime PlazoDeOferta { get; set; }
+        public string CotizacionEstado { get; set; }
+        public bool VerAdjudicar { get; set; }
+        public bool EstaHabilitado { get; set; }
     }
 
 }
