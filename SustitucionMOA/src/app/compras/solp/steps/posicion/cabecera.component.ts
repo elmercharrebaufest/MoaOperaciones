@@ -280,9 +280,13 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     validarTabCompleto() {
-        this.model.posiciones.forEach(posicion => {
-            posicion.doValidatePosicion(this.model.tipoSolpSap);
-        });
+        if(this.model.posiciones.length < 0 && this.model.posiciones != undefined || this.model.posiciones != null){
+            this.model.posiciones.forEach(posicion => {
+                posicion.doValidatePosicion(this.model.tipoSolpSap);
+            });
+        } else {
+            this.agregarPosicion();
+        }
     }
 
     validarFinal() {

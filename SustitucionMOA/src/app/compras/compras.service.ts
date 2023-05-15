@@ -123,6 +123,8 @@ export class ComprasService extends BaseService {
             TieneMedioElevacion: solp.modoElevacion,
             TieneAndamio: solp.andamio, // Agregada
             TieneTecnicoSeguridad: solp.tecnicoSeguridad,
+            TieneGrillaPersonal: solp.grillaPersonal,
+            TieneFabricacionTallerExterno: solp.fabricacionTallerExterno,
             TieneDescripcionTecnica: solp.descripcionTecnica,
             TieneDocumentacionTecnica: solp.entregaDocumentacion,
             FechaHoraLimiteConsulta: this.getFechaHora(solp.fechaLimiteFecha, solp.fechaLimiteHora),
