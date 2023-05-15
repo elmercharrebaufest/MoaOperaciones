@@ -57,6 +57,8 @@ export class DashboardComponent extends ListBaseComponent {
     public peticion: PeticionDeOfertaDto;
     displayRevisionTecnica: boolean;
 
+    displayCircular: boolean = false;
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
@@ -523,12 +525,29 @@ export class DashboardComponent extends ListBaseComponent {
                     else {
                         this.peticion = result.data;
                         console.log(this.peticion);
-                        //for (var i = 0; i < this.peticion.Usuarios.length; i++) {
-                        //    //if (this.peticion.Usuarios[i].Cotizacion == null) {
-                        //    //    this.peticion.Usuarios[i].Cotizacion =  null
-                        //    //}
-                        //}
                         this.displayRevisionTecnica = true;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    obtenerPeticionDeOfertaCircular(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerPeticionDeOferta(Id)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.peticion = result.data;
+                        console.log(this.peticion);
+                        this.displayCircular = true;
                         this.blockUI.stop();
                     }
                 },
@@ -640,6 +659,10 @@ export class DashboardComponent extends ListBaseComponent {
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             )
+    }
+
+    cerrarCircular() {
+        this.displayCircular = false;
     }
 }
 

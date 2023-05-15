@@ -201,7 +201,7 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
                 <tr [pSelectableRow]="rowData">
                     <td (dblclick)="onRowDblClick($event, rowData)"> 
-                        <div *ngIf="rowData.TipoPosicionCodigo == 'SERVICIO' && rowData.TienePeticionDeOferta">
+                        <div *ngIf="rowData.TienePeticionDeOferta">
                         <a href="#" [pRowToggler]="rowData">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
@@ -280,7 +280,7 @@
                                                 <th class="columna" style="text-transform: none !important;">Pedido de Cotización</th>
                                                 <th class="columna" style="text-transform: none !important;">Plazo de Oferta</th>
                                                 <th class="columna" style="text-transform: none !important;">Estado Lic.</th>
-                                                <th class="columna" style="width: 200px !important; text-transform: none !important;"></th>
+                                                <th class="columna" style="width: 300px !important; text-transform: none !important;"></th>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-licitacion>
@@ -290,11 +290,15 @@
                                                     {{licitacion.PlazoDeOferta | customDateFormat | date :'d/M/yyyy'}}
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
-                                                <td class="columna" style="text-align: center;">                                                   
-                                                    <button *ngIf="licitacion.Estado == 'Abierto'" class="publicar btn" (click)="obtenerPeticionDeOferta(licitacion.Id)">
+                                                <td class="columna">                                                   
+                                                    <button *ngIf="licitacion.Estado == 'Abierto'" class="publicar btn" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
                                                         Revisión Técnica
                                                     </button>
+                                                    <button class="publicar btn " style="margin-right: 10px;"  (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
+                                                        Circular
+                                                    </button>
                                                 </td>
+                                                
                                             </tr>
                                         </ng-template>
                                     </p-table>
@@ -316,7 +320,15 @@
                 (descargarAdjuntosCotizacionEmitter)="descargarAdjuntosCotizacion($event)"
                 (grabarRevisionTecnicaEmitter)="grabarRevisionTecnica()"
                 [(peticion)]="peticion">
-    </app-revision-tecnica> 
+</app-revision-tecnica> 
+
+<app-circular
+    [(locale)]="es"
+    [(displayCircular)]="displayCircular"
+    (cerrarCircularEmitter)="cerrarCircular()"
+    [(peticion)]="peticion">
+</app-circular>   
+
 
 <!-- Modal eliminacion de SOLP-->
 <p-confirmDialog #dialogo header="Eliminar SOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true"
