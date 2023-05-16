@@ -2666,7 +2666,6 @@ namespace SustitucionMOAUtils.Services
                 CrearRelacionCorredorCliente(corredor, cliente);
             }
         }
-
         private void AnularEntregaEnSap(OrdenDeCarga orden)
         {
             var respHandler = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
@@ -2688,7 +2687,6 @@ namespace SustitucionMOAUtils.Services
                 throw new Exception("No se reconoce respuesta SAP (Anular Entrega)");
             }
         }
-
         private void AnularPedidoEnSap(OrdenDeCarga orden, bool tieneNumeroEntrega)
         {
             var tieneNumeroPedido = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) || !string.IsNullOrEmpty(orden.NumeroPedido);

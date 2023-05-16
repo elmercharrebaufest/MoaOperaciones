@@ -84,7 +84,10 @@
                                         <div class="ui-inputgroup">
                                             <input type="text" pInputText [(ngModel)]="ordenDeCarga.CUITDestinatario"
                                                 mask="00-00000000-0" (change)="validarExisteCUIT('CUITDestinatario')">
-                                            <span *ngIf="ordenDeCarga.CUITDestinatario != ordenDeCarga.CUITCliente.toString()" class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestinatario()" [pTooltip]="ttCopiarCuit" style="font-size: 2.5rem"></span>
+                                            <span
+                                                *ngIf="ordenDeCarga.CUITDestinatario != ordenDeCarga.CUITCliente.toString()"
+                                                class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestinatario()"
+                                                [pTooltip]="ttCopiarCuit" style="font-size: 2.5rem"></span>
                                             <span class="ui-inputgroup-addon" *ngIf="validando.CUITDestinatario">
                                                 <p-progressSpinner
                                                     [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
@@ -92,7 +95,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div *ngIf="mensajesOrdenDeCarga?.CUITDestinatario || ordenDeCarga.RazonSocialDestinatario"
+                                <div *ngIf="mensajesOrdenDeCarga?.CUITDestinatario || ordenDeCarga.RazonSocialDestinatario || mensajesGestionCuit.CUITDestinatario"
                                     class="col-xs-12 col-md-12">
                                     <ng-container *ngIf="ordenDeCarga.RazonSocialDestinatario">
                                         <div class="formulario-label">
@@ -103,9 +106,11 @@
                                                 [(ngModel)]="ordenDeCarga.RazonSocialDestinatario">
                                         </div>
                                     </ng-container>
-                                    <ng-container *ngIf="mensajesOrdenDeCarga?.CUITDestinatario">
+                                    <ng-container
+                                        *ngIf="mensajesOrdenDeCarga?.CUITDestinatario || mensajesGestionCuit.CUITDestinatario">
                                         <p>
-                                            {{mensajesOrdenDeCarga.CUITDestinatario}}
+                                            {{mensajesOrdenDeCarga.CUITDestinatario ||
+                                            mensajesGestionCuit.CUITDestinatario}}
                                         </p>
                                     </ng-container>
                                 </div>
@@ -117,7 +122,10 @@
                                         <div class="ui-inputgroup">
                                             <input type="text" pInputText [(ngModel)]="ordenDeCarga.CUITDestino"
                                                 mask="00-00000000-0" (change)="validarExisteCUIT('CUITDestino')">
-                                            <span *ngIf="ordenDeCarga.CUITDestino != ordenDeCarga.CUITCliente.toString()" class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestino()" [pTooltip]="ttCopiarCuit" style="font-size: 2.5rem"></span>
+                                            <span
+                                                *ngIf="ordenDeCarga.CUITDestino != ordenDeCarga.CUITCliente.toString()"
+                                                class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestino()"
+                                                [pTooltip]="ttCopiarCuit" style="font-size: 2.5rem"></span>
                                             <span class="ui-inputgroup-addon" *ngIf="validando.CUITDestino">
                                                 <p-progressSpinner
                                                     [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
@@ -125,7 +133,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div *ngIf="mensajesOrdenDeCarga?.CUITDestino || ordenDeCarga.RazonSocialDestino"
+                                <div *ngIf="mensajesOrdenDeCarga?.CUITDestino || ordenDeCarga.RazonSocialDestino || mensajesGestionCuit.CUITDestino"
                                     class="col-xs-12 col-md-12">
                                     <ng-container *ngIf="ordenDeCarga.RazonSocialDestino;">
                                         <div class="formulario-label">
@@ -136,9 +144,10 @@
                                                 [(ngModel)]="ordenDeCarga.RazonSocialDestino">
                                         </div>
                                     </ng-container>
-                                    <ng-container *ngIf="mensajesOrdenDeCarga?.CUITDestino">
+                                    <ng-container
+                                        *ngIf="mensajesOrdenDeCarga?.CUITDestino || mensajesGestionCuit.CUITDestino">
                                         <p>
-                                            {{mensajesOrdenDeCarga.CUITDestino}}
+                                            {{mensajesOrdenDeCarga.CUITDestino || mensajesGestionCuit.CUITDestino}}
                                         </p>
                                     </ng-container>
                                 </div>
@@ -274,7 +283,7 @@
                                 </div>
                                 <div class="styled-select">
                                     <input type="text" [(ngModel)]="ordenDeCarga.CUITTransporte" mask="00-00000000-0"
-                                        [placeholder]="descripcionTransporte" >
+                                        [placeholder]="descripcionTransporte">
                                 </div>
                             </div>
                             <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
@@ -283,8 +292,7 @@
                                 </div>
                                 <div class="styled-select">
                                     <input type="text" [(ngModel)]="ordenDeCarga.CUITIntermediarioFlete"
-                                        mask="00-00000000-0" [placeholder]="descripcionIntermediarioFlete"
-                                        >
+                                        mask="00-00000000-0" [placeholder]="descripcionIntermediarioFlete">
                                 </div>
                             </div>
 
@@ -373,8 +381,8 @@
     <p-footer>
         <button [disabled]="razonSocialParaGestion.length < 3" type="button" pButton icon="pi pi-check"
             (click)="gestionarAltaCUIT()" label="Gestionar"></button>
-        <button type="button" pButton icon="pi pi-close" (click)="displayModal = null" label="Cancelar"
-            class="ui-button-secondary"></button>
+        <button type="button" pButton icon="pi pi-close" (click)="displayModal = null; razonSocialParaGestion=''"
+            label="Cancelar" class="ui-button-secondary"></button>
     </p-footer>
 </p-dialog>
 <!-- end modal notificacion -->
