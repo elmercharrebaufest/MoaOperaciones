@@ -24,7 +24,7 @@
                                 <h3 style="font-size:x-large;font-weight:bold;">{{p.RazonSocial}}</h3>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" *ngIf="peticion.TipoPosicionCodigo != 'MATERIALES'">
                             <div class="col-md-3">
                                 <strong style="color: #666666;">Visita técnica</strong>
                             </div>
@@ -50,14 +50,15 @@
                             <div class="col-md-3">
                                 <strong style="color: #666666;">Propuesta técnica</strong>
                             </div>
-                            <div *ngIf="p.Cotizacion; else sinCotizacion">
+                            <div *ngIf="p.Cotizacion else sinCotizacion">
                                 <div *ngIf="p.Cotizacion.TieneObservacionTecnica" class="col-md-7">
                                     {{p.Cotizacion.ObservacionTecnica}}
+                                 
                                 </div>
                                 <div *ngIf="p.Cotizacion.TieneObservacionTecnica == false" class="col-md-5">
                                     No tiene observacion tecnica
                                 </div>
-                                <div class="col-md-7">
+                                <div class="col-md-7"  *ngIf="(p.Cotizacion.RespetaMateriales == false && peticion.TipoPosicionCodigo == 'MATERIALES') || peticion.TipoPosicionCodigo != 'MATERIALES'">
                                     <div class="col-md-7"></div>
                                     <div class="col-md-5">
                                         <label style="padding-right:10px;">

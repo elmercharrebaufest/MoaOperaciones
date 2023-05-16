@@ -3481,6 +3481,7 @@ namespace SustitucionMOAUtils.Services
                     TieneObservacionTecnica = !string.IsNullOrEmpty(c.ObservacionTecnica),
                     ObservacionTecnica = c.ObservacionTecnica,
                     Id = c.Id,
+                    RespetaMateriales = c.RespetaMateriales,
                     Archivos = c.Archivos/*.Where(x => x.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica)*/.Select(archivo => new LegajoDto
                     {
 
@@ -3507,7 +3508,7 @@ namespace SustitucionMOAUtils.Services
                     CUIT = u.Usuario.ObtenerProveedor().CUIT,
                     Mail = u.Usuario.Mail,
                     Cotizacion = cotizacion,
-                    PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
+                    PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,   
                     RealizoVisita = u.RealizoVisita,
                 };
                 usuarios.Add(usuario);
@@ -3956,13 +3957,10 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
-                    //Datos del material
                     cotizacion.ObservacionEconomica = cotizacionDto.ObservacionEconomica;
                     cotizacion.CotizacionEstado_Id = (int)(esFinalizado ? CotizacionEstadoEnum.Cotizado : CotizacionEstadoEnum.Incompleta);
                     cotizacion.Revision = cotizacion.Revision + 1;
                     GuardarCotizacionPosicion(cotizacionDto, cotizacion, info);
-
-                    //Datos del servicio
                     cotizacion.ObservacionTecnica = cotizacionDto.ObservacionTecnica;
                     cotizacion.RespetaMateriales = cotizacionDto.RespetaMateriales;
                     cotizacion.RespetaServicios = cotizacionDto.RespetaServicios;
@@ -4231,9 +4229,12 @@ namespace SustitucionMOAUtils.Services
             var proveedor = cotizacion.UsuarioCreador.ObtenerProveedor();
             string htmlBody = "";
             htmlBody += $"En el presente mail, se informa la cotización realizada para SOLP " +
-                $"{cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.NroSolp} y la PO {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} generada por el proveedor {proveedor.RazonSocial} ({proveedor.CUIT}) <br />";
-
-            htmlBody += "Puede visualizar la cotización en www.moaoperaciones.com.ar " +
+                $"{cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.NroSolp} y la PO {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} generada por el proveedor {proveedor.RazonSocial} ({proveedor.CUIT}) <br /> <br/>";
+            if (cotizacion.RespetaMateriales == false)
+            {
+                htmlBody += $"<strong>Nota:</strong> La propuesta no cumple con las especificaciones técnicas solicitadas, revisar con prioridad. <br/><br/>" ;
+            }
+           htmlBody += "Puede visualizar la cotización en www.moaoperaciones.com.ar " +
                 "<br/><br/>Saludos Cordiales<br/>" +
                 "Molinos Agro S.A. <br/><br/> " +
                  @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
