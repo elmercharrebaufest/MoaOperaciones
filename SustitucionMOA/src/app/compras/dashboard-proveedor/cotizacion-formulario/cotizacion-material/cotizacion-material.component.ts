@@ -310,6 +310,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             PeticionOfertaUsuarioId: this.peticion.Id,
             CotizacionPosiciones: this.cotizaciones,
             ObservacionEconomica: this.peticion.ObservacionEconomica,
+            RespetaMateriales: this.peticion.RespetaMateriales,
             ObservacionTecnica: "",
             ArchivosNuevos: this.archivos,
             ArchivosGuardados: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { Id: x.Id } }) : null,

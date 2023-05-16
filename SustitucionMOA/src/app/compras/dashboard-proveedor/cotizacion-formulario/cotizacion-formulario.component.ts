@@ -216,6 +216,10 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         var breakFor = false;
         if (this.peticion.TipoPosicionCodigo == "MATERIALES") {
             var self = this;
+            if(this.peticion.RespetaMateriales == null || this.peticion.RespetaMateriales == undefined){
+                mensaje = "El campo respeta materiales es obligatorio";
+                return mensaje;
+            }
             this.cotizaciones.forEach(function (cotizacion, i) {
                 if (!breakFor && (cotizacion.NoDisponible == false || cotizacion.NoDisponible == undefined)) {
                     if ((cotizacion.Cantidad == 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio == 0 && cotizacion.FechaDeEntrega == null) {
@@ -246,12 +250,24 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         mensaje = "Pos. " + cotizacion.Posicion + " - La Fecha de entrega cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
+                    }                    
+
+                    if(self.peticion.RespetaMateriales == false){
+                        if(self.peticion.ObservacionEconomica == "" && ((self.cotizacion.ArchivosNuevos == null
+                            || self.cotizacion.ArchivosNuevos.length == 0 &&
+                        (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
+                                || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))){
+                            mensaje = "Debe adjuntar un archivo o agregar una observación";
+                            breakFor = true;
+                            return mensaje;
+                        }
                     }
+
                     if (cotizacion.CantidadSubpos != cotizacion.Cantidad ||
                         cotizacion.UnidadDeMedidaSubpos != cotizacion.UnidadDeMedidaId) {
                         if (
-                            (self.cotizacion.ObservacionEconomica == "" || ((self.cotizacion.ArchivosNuevos == null
-                                || self.cotizacion.ArchivosNuevos.length == 0) &&
+                            self.cotizacion.ObservacionEconomica == "" || ((self.cotizacion.ArchivosNuevos == null
+                                || self.cotizacion.ArchivosNuevos.length == 0 &&
                                 (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
                                     || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
                             mensaje = "Pos. " + cotizacion.Posicion + ": Por favor explique en las observaciones por qué modifico la cantidad y/o unidad de medida, para estos casos debe adjuntar un archivo";
@@ -259,7 +275,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                             return mensaje;
                         }
                     }
-
                 }
             });
         }else{

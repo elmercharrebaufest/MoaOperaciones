@@ -3956,13 +3956,10 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
-                    //Datos del material
                     cotizacion.ObservacionEconomica = cotizacionDto.ObservacionEconomica;
                     cotizacion.CotizacionEstado_Id = (int)(esFinalizado ? CotizacionEstadoEnum.Cotizado : CotizacionEstadoEnum.Incompleta);
                     cotizacion.Revision = cotizacion.Revision + 1;
                     GuardarCotizacionPosicion(cotizacionDto, cotizacion, info);
-
-                    //Datos del servicio
                     cotizacion.ObservacionTecnica = cotizacionDto.ObservacionTecnica;
                     cotizacion.RespetaMateriales = cotizacionDto.RespetaMateriales;
                     cotizacion.RespetaServicios = cotizacionDto.RespetaServicios;

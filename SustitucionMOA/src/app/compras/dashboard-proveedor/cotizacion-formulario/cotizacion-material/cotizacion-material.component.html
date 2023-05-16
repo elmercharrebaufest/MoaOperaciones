@@ -186,6 +186,27 @@
         <strong>Por favor explique en las observaciones por qué modifico la cantidad y/o unidad de medida</strong>
     </div>
     <br>
+    <div class="col-md-12 row myRow alinearTitulo margenInput">
+        <div class="col-md-12 titulosModal">
+            <label>La propuesta técnica de <strong>materiales</strong> respeta las condiciones de pago*</label>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-2" style="width: 10px;">
+            <label>Si</label>
+        </div>
+        <div class="col-md-2">
+            <input type="radio" id="RespetaMateriales1" name="respetaMateriales"
+                   [(ngModel)]="peticion.RespetaMateriales" [value]="true" />
+        </div>
+        <div class="col-md-2" style="width: 10px;">
+            <label>No</label>
+        </div>
+        <div class="col-md-2">
+            <input type="radio" id="RespetaMateriales2" name="respetaMateriales"
+                   [(ngModel)]="peticion.RespetaMateriales" [value]="false" />
+        </div>
+    </div>
     <div class="inputCompras">
         <p>
             <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert">
