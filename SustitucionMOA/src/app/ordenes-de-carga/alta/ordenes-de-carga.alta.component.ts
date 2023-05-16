@@ -801,7 +801,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
     validarExisteCUIT(campo: CuitValidaExistencia) {
         const cuit = this.ordenDeCarga[campo]
-        if (!cuit || !this.revisarCUITFormatoValido(cuit)) return;
+        if (!cuit || !this.revisarCUITFormatoValido(cuit)) {
+            this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = undefined;
+            return;
+        }
         this.validando[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
