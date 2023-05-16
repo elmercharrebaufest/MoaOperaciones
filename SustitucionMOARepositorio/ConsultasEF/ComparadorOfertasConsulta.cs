@@ -130,6 +130,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         FechaCreacionFormateada = SqlFunctions.DateName("day", u.Cotizaciones.FirstOrDefault().FechaCreacion) + "/" + SqlFunctions.DatePart("month", u.Cotizaciones.FirstOrDefault().FechaCreacion) + "/" + SqlFunctions.DateName("year", u.Cotizaciones.FirstOrDefault().FechaCreacion),
                                                         UsuarioCreador_Id = u.Cotizaciones.FirstOrDefault().UsuarioCreador_Id,
                                                         CotizacionEstadoDescripcion = cotizacion.CotizacionEstado.Descripcion,
+                                                        RespetaMaterialesDescripcion = u.Cotizaciones.FirstOrDefault().RespetaMateriales == true ? "Respeta" : "No Respeta",
                                                         RespetaMateriales = u.Cotizaciones.FirstOrDefault().RespetaMateriales,
                                                         RespetaServicios = u.Cotizaciones.FirstOrDefault().RespetaServicios,
                                                         ObservacionEconomica = u.Cotizaciones.FirstOrDefault().ObservacionEconomica,
@@ -137,6 +138,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         TotalGlobal = 0,
                                                         TotalPesos = 0,
                                                         TotalGlobalSubPos = 0,
+                                                        RespetaMaterialesColor = u.Cotizaciones.FirstOrDefault().RespetaMateriales == true ? "Green" : "Red",
                                                         CotizacionesHoras = cotizacion.CotizacionesHoras.Select(ch => new CotizacionHorasDto 
                                                         {
                                                             CantidadPersonas = ch.CantidadPersonas,

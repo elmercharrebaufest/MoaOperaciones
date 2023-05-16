@@ -3481,6 +3481,7 @@ namespace SustitucionMOAUtils.Services
                     TieneObservacionTecnica = !string.IsNullOrEmpty(c.ObservacionTecnica),
                     ObservacionTecnica = c.ObservacionTecnica,
                     Id = c.Id,
+                    RespetaMateriales = c.RespetaMateriales,
                     Archivos = c.Archivos/*.Where(x => x.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica)*/.Select(archivo => new LegajoDto
                     {
 
@@ -3507,7 +3508,7 @@ namespace SustitucionMOAUtils.Services
                     CUIT = u.Usuario.ObtenerProveedor().CUIT,
                     Mail = u.Usuario.Mail,
                     Cotizacion = cotizacion,
-                    PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
+                    PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,   
                     RealizoVisita = u.RealizoVisita,
                 };
                 usuarios.Add(usuario);

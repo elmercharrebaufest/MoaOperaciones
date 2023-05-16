@@ -31,6 +31,8 @@ namespace SustitucionMOAModel.Dto
         public decimal TotalGlobalSubPos { get; set; }
         public int TotalPesos { get; set; }
         public List<CotizacionHorasDto> CotizacionesHoras { get; set; }
+        public string RespetaMaterialesColor { get; set; }
+        public string RespetaMaterialesDescripcion { get; set; }
     }
 
     public class CotizacionPosicionDto
