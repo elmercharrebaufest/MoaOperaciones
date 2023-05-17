@@ -105,12 +105,17 @@
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <ng-container *ngFor="let cotizacionPosicion of proveedor.Cotizacion.CotizacionPosiciones">
                                 <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
-                                    <td class="columna border2-left" style="width: 80px !important; ">{{cotizacionPosicion.Cantidad | number: '1.0-0'}}</td>
-                                    <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.UnidadMedida.Descripcion}}</td>
-                                    <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.Precio | number:'1.2-2'}}</td>
-                                    <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.PrecioTotal | number:'1.2-2'}}</td>
-                                    <td class="columna" style="width: 100px !important;">ARP {{cotizacionPosicion.TotalPesos | number:'1.2-2'}}</td>
-                                    <td class="columna" style="width: 90px !important; ">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>
+                                    <ng-container *ngIf="cotizacionPosicion.NoDisponible == null">
+                                        <td class="columna border2-left" style="width: 80px !important; ">{{cotizacionPosicion.Cantidad | number: '1.0-0'}} {{cotizacionPosicion.NoDisponible}}</td>
+                                        <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.UnidadMedida.Descripcion}}</td>
+                                        <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.Precio | number:'1.2-2'}}</td>
+                                        <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.PrecioTotal | number:'1.2-2'}}</td>
+                                        <td class="columna" style="width: 100px !important;">ARP {{cotizacionPosicion.TotalPesos | number:'1.2-2'}}</td>
+                                        <td class="columna" style="width: 90px !important; ">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>
+                                    </ng-container>
+                                    <ng-container *ngIf="cotizacionPosicion.NoDisponible == true">
+                                        <td class="columna border2-left" colspan="6" style="width: 570px !important;">No disponible</td>
+                                    </ng-container>
                                 </ng-container>
                             </ng-container>
                         </ng-container>

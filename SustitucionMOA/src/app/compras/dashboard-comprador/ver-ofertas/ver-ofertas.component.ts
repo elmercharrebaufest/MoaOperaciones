@@ -125,7 +125,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
-                        console.log(this.tablaOfertas, "ofertas");
+                        console.log("Tabla de ofertas", this.tablaOfertas)
                     }
                     this.blockUI.stop();
                 },
@@ -209,7 +209,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
 
     crearAdjudicacion(usuario: PeticionDeOfertaUsarioDto) {
-        console.log(usuario, "usuario")
         var lista = []
         if (this.tablaOfertas.PeticionDeOfertaPosicion.filter(x => x.Selected).length > 0) {
             this.tablaOfertas.PeticionDeOfertaPosicion.forEach((peticion) => {
@@ -223,7 +222,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                                 SolpPosicion_Id: peticion.Posicion.Id,
                                 CantidadCotizada: cotizacionPos.Cantidad,
                                 CantidadSolp: peticion.Posicion.CantidadPendiente,
-                                CantidadAdjudicada: peticion.Posicion.CantidadAdjudicada
+                                CantidadAdjudicada: peticion.Posicion.CantidadAdjudicada,
+                                NoDisponible: cotizacionPos.NoDisponible
                             })
                     })
                 } else {
@@ -232,7 +232,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
             });
 
-            console.log(lista, "lista");
             if (lista.length > 0) {
                 this.error = this.validarAdjudicacion(lista);
                 if (this.error != "") {
@@ -247,7 +246,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.adjudicacion.Cotizacion_Id = usuario.Cotizacion.Id;
             this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
             this.confirmacionAdjudicar();
-            console.log(this.adjudicacion, "adjudicacion");
         } else {
             this.floatMsgService.setInfoMsg("Debe seleccionar alguna posicion para adjudicar");
         }
@@ -260,17 +258,17 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         lista.forEach(element => {
             if (!breakFor) {
                 if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES') {
-                    // if (element.Cantidad > element.CantidadCotizada) {
-                    //     self.error = "Pos " + element.Posicion + " - La cantidad adjudicada no debe ser mayor que la cantidad cotizada";
-                    //     breakFor = true;
-                    //     return self.error;
-                    // }
-
                     if (element.Cantidad > element.CantidadSolp) {
                         self.error = "Pos " + element.Posicion + " - La cantidad adjudicada no debe ser mayor que la cantidad pendiente";
                         breakFor = true;
                         return self.error;
                     }
+                }
+
+                if(element.NoDisponible == true){
+                    self.error = "Pos " + element.Posicion + " - No se puede adjudicar una posicion no disponible";
+                        breakFor = true;
+                        return self.error;
                 }
             }
 
