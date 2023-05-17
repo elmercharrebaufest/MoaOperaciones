@@ -811,6 +811,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.validando[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
+
+        if(!this.ordenDeCarga.CUITDestinatario && campo==='CUITDestino')
+            this.copiarCuitEnDestinatario();
+
         this.service.validarExisteCuitScato(cuit).subscribe(
             result => {
                 this.validando[campo] = false;
