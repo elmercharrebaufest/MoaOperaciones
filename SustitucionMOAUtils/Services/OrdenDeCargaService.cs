@@ -158,9 +158,6 @@ namespace SustitucionMOAUtils.Services
                     ordenDeCarga.Corredor_Id = null;
                 }
             }
-            var validaCPEDG = producto.ValidaSisaRuca;
-            if (!validaCPEDG)
-                RemoverCamposCPEDG(ordenDeCarga);
             ordenDeCarga.UsuarioCreacion_Id = usuario.Id;
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente = cliente;
@@ -171,6 +168,12 @@ namespace SustitucionMOAUtils.Services
             ordenDeCarga.NumeroPedido = string.IsNullOrEmpty(ordenDeCarga.NumeroPedidoIngresado) ? "" : ordenDeCarga.NumeroPedidoIngresado;
             ordenDeCarga.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
             ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
+            var validaCPEDG = producto.ValidaSisaRuca;
+            if (!validaCPEDG)
+                RemoverCamposCPEDG(ordenDeCarga);
+            else if (string.IsNullOrEmpty(ordenDeCarga.CUITDestinatario))
+                UsarCUITClienteParaDestinatario(ordenDeCarga);
+
             var dayOfWeek = ordenDeCarga.FechaCarga.DayOfWeek;
             ordenDeCarga.FechaVencimiento = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? CalcularFechaVencimiento(4, DateTime.Now) : CalcularFechaVencimiento(2, DateTime.Now);
             return ordenDeCarga;
@@ -292,6 +295,11 @@ namespace SustitucionMOAUtils.Services
             ordenEditar.Producto = product;
             ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
             ordenEditar.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
+
+            var validaCPEDG = product.ValidaSisaRuca;
+            if (validaCPEDG && string.IsNullOrEmpty(ordenDeCarga.CUITDestinatario))
+                UsarCUITClienteParaDestinatario(ordenEditar);
+
             if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
             {
                 var verificarOrden = VerificarOrden(ordenEditar, ordenEditar.Cliente, false, puedeEnviarASAP);
@@ -2575,17 +2583,18 @@ namespace SustitucionMOAUtils.Services
         }
         public bool EmailGestionarAlta(string cuit, string razonSocial)
         {
+            var emailSenderData = new EmailSenderData();
             string mailsGestion = ConfigurationManager.AppSettings["EmailToGestionAltaCuit"];
-
             string mailsCopiaGestion = ConfigurationManager.AppSettings["CopiaEmailToGestionAltaCuit"];
-            var mails = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsGestion });
-            var copias = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsCopiaGestion });
 
-            string asunto = "ALTA TEMPRANA CUIT";
+            emailSenderData.Mails = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsGestion });
+            emailSenderData.Copias = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsCopiaGestion });
 
-            string cuerpo = string.Format("Se solicita el alta temprana del CUIT: {0} , Razón Social: {1}", cuit, razonSocial);
-
-            EmailSender.EnviarMail(mails, asunto, cuerpo, copias, null, null, null);
+            emailSenderData.Asunto = "ALTA TEMPRANA CUIT";
+            emailSenderData.Cuerpo = string.Format("Se solicita el alta temprana del CUIT: {0} , Razón Social: {1}", cuit, razonSocial);
+            
+            Log.Info("Gestión alta mail: " + emailSenderData.ToJson());
+            EmailSender.EnviarMail(emailSenderData);
 
             return true;
         }
@@ -2748,6 +2757,11 @@ namespace SustitucionMOAUtils.Services
             orden.RazonSocialDestino = null;
             orden.Reventa = false;
             orden.CUITIntermediarioFlete = null;
+        }
+        private void UsarCUITClienteParaDestinatario(OrdenDeCarga orden)
+        {
+            orden.CUITDestinatario = orden.CUITCliente;
+            orden.RazonSocialDestinatario = orden.Cliente.RazonSocial;
         }
     }
 }

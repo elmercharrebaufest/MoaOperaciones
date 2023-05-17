@@ -190,6 +190,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
 
         if (this.validaCPEDG) {
+            if (this.ordenDeCarga.CUITDestinatario && !this.revisarCUITFormatoValido(this.ordenDeCarga.CUITDestinatario)) {
+                this.mensajeComponent.setInfoMsg("Ingrese un CUIT de Destinatario válido.");
+                return false;
+            }
+
             if (!(this.ordenDeCarga.DomicilioDescr && this.ordenDeCarga.DomicilioTipo && this.ordenDeCarga.DomicilioOrden)) {
                 this.mensajeComponent.setInfoMsg("Seleccione un domicilio.");
                 return false;
