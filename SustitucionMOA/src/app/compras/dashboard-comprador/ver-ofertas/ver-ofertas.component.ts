@@ -125,7 +125,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
-                        console.log("Tabla de ofertas", this.tablaOfertas)
                     }
                     this.blockUI.stop();
                 },
