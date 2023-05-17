@@ -191,7 +191,7 @@
                                     </p-table>
                                 </p-tabPanel>
                                 <p-tabPanel header="Orden de Compra">
-                                    <p-table [value]="rowData.PeticionesDeOferta">
+                                    <p-table [value]="rowData.OrdenesDeCompra">
                                         <ng-template pTemplate="header">
                                             <tr>
                                                 <th class="columna">Numero</th>
@@ -199,19 +199,19 @@
                                                 <th class="columna">Proveedor</th>
                                                 <th class="columna">Monto total</th>
                                                 <th class="columna">Moneda</th>
-                                                <th class="columna" style="width: 100px !important">Boton</th>
+                                                <th class="columna"></th>
                                             </tr>
                                         </ng-template>
-                                        <ng-template pTemplate="body" let-licitacion>
+                                        <ng-template pTemplate="body" let-ordenCompra>
                                             <tr>
-                                               <td class="columna"></td>                                     
-                                                <td class="columna"></td>
-                                                <td class="columna"></td>
-                                                <td class="columna"></td>
-                                                <td class="columna"></td>
+                                               <td class="columna">{{ordenCompra.NumeroOrdenDeCompra}}</td>                                     
+                                                <td class="columna">{{ordenCompra.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
+                                                <td class="columna">{{ordenCompra.Proveedor}}</td>
+                                                <td class="columna">{{ordenCompra.PrecioFinal}}</td>
+                                                <td class="columna">{{ordenCompra.MonedaDescripcion}}</td>
                                                 <td class="columna">
                                                     <button class="publicar btn btn-success">
-                                                        Mas detalles
+                                                        Ver detalle
                                                     </button>
                                                 </td>
                                             </tr>
