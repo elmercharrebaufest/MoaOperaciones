@@ -83,7 +83,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             FechaCreacion = adjudicacion.FechaCreacion,
                                                             Proveedor = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Proveedores.Count > 0 ?
                                                             adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Proveedores.FirstOrDefault().RazonSocial : "",
-                                                            MonedaDescripcion = adjudicacion.Moneda.Descripcion,
+                                                            MonedaDescripcion = adjudicacion.Moneda.CodigoSap,
                                                             PrecioFinal = adjudicacion.MontoTotal,
                                                             AdjudicacionPosiciones = adjudicacion.Posiciones.Select(posicion => new AdjudicacionPosicionDto
                                                             {
