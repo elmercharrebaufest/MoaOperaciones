@@ -77,7 +77,10 @@ export class ListBaseComponent extends BaseComponent implements OnInit {
     getData() {
         this.data = null;
         this.vaciarFiltros();
-        this.mensajeComponent.setMsgsEmpty();
+        if(this.mensajeComponent == undefined) {
+            this.mensajeComponent.setMsgsEmpty();
+        }
+
         this.spinnerComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.getData(this.filtroFechaComponent.periodo, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
