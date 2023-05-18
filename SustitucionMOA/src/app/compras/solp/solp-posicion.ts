@@ -115,6 +115,7 @@ export class SolpPosicion {
     AdjudicacionCompleta: any;
     CantidadAdjudicacion: any;
     CantidadAdjudicada: any;
+    NoDisponible: any;
 
     constructor(numeroPosicion, fiscalContrato, fechaEntrega, posicionADuplicar, 
         centroPorDefecto, direccionCentroPorDefecto, monedaPorDefecto, selectTipoPosicion) {

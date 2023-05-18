@@ -380,9 +380,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     guardarCambios({mostrarPreview = false, enviarSap = false, guardarPorPaso = false}) {
         this.messageService.clear();
-        console.log("SolpActual", this.solpActual)
         try {
-            this.solpActual.posiciones = [];
+            if(!this.solpActual.posiciones){
+                this.solpActual.posiciones = [];
+            }
+            
             this.actualizarPasoCompleto(this.pasoActual);
             
 
@@ -589,6 +591,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 case EnumPasoSolp.SolpCabecera:
                     paso.Completo = true;
                     if (!paso.Deshabilitado) {
+                        if(!this.solpActual.posiciones){
+                            this.solpActual.posiciones = [];
+                        }
                         this.solpActual.posiciones.forEach(pos => {
                             pos.doValidatePosicion(this.solpActual.tipoSolpSap);
                             if (!pos.tabsPosicionValidos.tabDireccionEntrega ||
