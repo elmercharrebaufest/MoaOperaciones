@@ -114,7 +114,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                             (subpos.Cantidad.Value * subpos.Precio.Value) : 0,
                                                                                         }).ToList(),
                                                             }).ToList(),
-                                                        }),
+                                                        }).OrderBy(fc => fc.FechaCreacion),
                                 };
 
                 var itemsTotales = resultado.Count();

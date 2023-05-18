@@ -297,12 +297,39 @@
                                                     <button class="publicar btn " style="margin-right: 10px;"  (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
                                                         Circular
                                                     </button>
-                                                </td>
-                                                
+                                                </td> 
                                             </tr>
                                         </ng-template>
                                     </p-table>
-                                </p-tabPanel>                                
+                                </p-tabPanel> 
+                                <p-tabPanel header="Orden de Compra">
+                                    <p-table [value]="rowData.OrdenesDeCompraSolicitante">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th class="columna">Numero</th>
+                                                <th class="columna">Fecha de creación</th>
+                                                <th class="columna">Proveedor</th>
+                                                <th class="columna">Monto total</th>
+                                                <th class="columna">Moneda</th>
+                                                <th class="columna"></th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-ordenCompra>
+                                            <tr>
+                                               <td class="columna">{{ordenCompra.NumeroOrdenDeCompra}}</td>                                     
+                                                <td class="columna">{{ordenCompra.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
+                                                <td class="columna">{{ordenCompra.Proveedor}}</td>
+                                                <td class="columna">{{ordenCompra.PrecioFinal}}</td>
+                                                <td class="columna">{{ordenCompra.MonedaDescripcion}}</td>
+                                                <td class="columna">
+                                                    <button class="publicar btn btn-success">
+                                                        Ver detalle
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </p-tabPanel>                               
                             </p-tabView>
                         </div>
                     </td>
