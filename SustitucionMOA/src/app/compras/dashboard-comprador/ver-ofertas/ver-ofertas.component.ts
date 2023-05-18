@@ -217,11 +217,13 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                             lista.push({
                                 Posicion: peticion.Posicion.Indice,
                                 CotizacionPosicion_Id: cotizacionPos.Id,
-                                Cantidad: peticion.Posicion.CantidadAdjudicacion,
+                                Cantidad: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' ?
+                                 peticion.Posicion.CantidadAdjudicacion : 1,
                                 SolpPosicion_Id: peticion.Posicion.Id,
                                 CantidadCotizada: cotizacionPos.Cantidad,
                                 CantidadSolp: peticion.Posicion.CantidadPendiente,
-                                CantidadAdjudicada: peticion.Posicion.CantidadAdjudicada,
+                                CantidadAdjudicada: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' ?
+                                 peticion.Posicion.CantidadAdjudicada : 1,
                                 NoDisponible: cotizacionPos.NoDisponible
                             })
                     })
@@ -256,6 +258,14 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.error = "";
         lista.forEach(element => {
             if (!breakFor) {
+                if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES') {
+                    if (element.Cantidad == null || element.Cantidad == undefined || element.Cantidad == 0) {
+                        self.error = "Pos " + element.Posicion + " - La cantidad adjudicada debe ser mayor a 0";
+                        breakFor = true;
+                        return self.error;
+                    }
+                }
+
                 if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES') {
                     if (element.Cantidad > element.CantidadSolp) {
                         self.error = "Pos " + element.Posicion + " - La cantidad adjudicada no debe ser mayor que la cantidad pendiente";
