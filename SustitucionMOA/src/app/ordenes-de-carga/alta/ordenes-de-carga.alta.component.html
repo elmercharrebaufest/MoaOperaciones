@@ -262,8 +262,20 @@
                                     CUIL chofer:
                                 </div>
                                 <div class="styled-select">
-                                    <input type="text" [(ngModel)]="ordenDeCarga.CUITChofer" mask="00-00000000-0">
+                                    <div class="ui-inputgroup">
+                                        <input type="text" [(ngModel)]="ordenDeCarga.CUITChofer" mask="00-00000000-0"
+                                            (change)="validarCuilChofer()">
+                                        <span class="ui-inputgroup-addon" *ngIf="validando.CUITChofer">
+                                            <p-progressSpinner
+                                                [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
+                                        </span>
+                                    </div>
                                 </div>
+                            </div>
+                            <div *ngIf="mensajesOrdenDeCarga?.CUITChofer" class="col-xs-12 col-md-12">
+                                <p>
+                                    {{mensajesOrdenDeCarga.CUITChofer}}
+                                </p>
                             </div>
 
                             <div class="col-xs-12 col-md-12">
@@ -274,6 +286,7 @@
                                     <input type="text" [(ngModel)]="ordenDeCarga.RazonSocialTransporte"
                                         (ngModelChange)="ordenDeCarga.RazonSocialTransporte = $event.toUpperCase()"
                                         maxlength="50">
+
                                 </div>
                             </div>
 

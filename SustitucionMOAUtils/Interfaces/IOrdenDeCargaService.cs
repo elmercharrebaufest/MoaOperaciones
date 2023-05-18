@@ -52,5 +52,6 @@ namespace SustitucionMOAUtils.Interfaces
         ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit);
         List<PlantaDto> ObtenerPlantasDestino(string destinoCuit);
         List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
+        bool ValidarCuilChoferEnScato(string cuil);
     }
 }
