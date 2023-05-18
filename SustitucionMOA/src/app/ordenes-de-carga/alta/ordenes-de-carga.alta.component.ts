@@ -190,6 +190,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
 
         if (this.validaCPEDG) {
+            if (this.ordenDeCarga.CUITDestinatario && !this.revisarCUITFormatoValido(this.ordenDeCarga.CUITDestinatario)) {
+                this.mensajeComponent.setInfoMsg("Ingrese un CUIT de Destinatario válido.");
+                return false;
+            }
+
             if (!(this.ordenDeCarga.DomicilioDescr && this.ordenDeCarga.DomicilioTipo && this.ordenDeCarga.DomicilioOrden)) {
                 this.mensajeComponent.setInfoMsg("Seleccione un domicilio.");
                 return false;
@@ -806,6 +811,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.validando[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
+
+        if(!this.ordenDeCarga.CUITDestinatario && campo==='CUITDestino')
+            this.copiarCuitEnDestinatario();
+
         this.service.validarExisteCuitScato(cuit).subscribe(
             result => {
                 this.validando[campo] = false;
