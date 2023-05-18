@@ -849,6 +849,17 @@ namespace SustitucionMOAUtils.Services
                                     .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
                                      po.PlazoDeOferta) >= hoy ? "Green" : "Red",
                 });
+                var ordenCompra = repositorio.Listar<Adjudicacion, AdjudicacionDto>(adjudicacion => new AdjudicacionDto
+                {
+                    Id = adjudicacion.Id,
+                    Solp_Id = adjudicacion.Solp_Id,
+                    NumeroOrdenDeCompra = adjudicacion.NumeroOrdenDeCompra,
+                    FechaCreacion = adjudicacion.FechaCreacion,
+                    Proveedor = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Proveedores.FirstOrDefault().RazonSocial,
+                    MonedaDescripcion = adjudicacion.Moneda.CodigoSap,
+                    PrecioFinal = adjudicacion.MontoTotal,
+                });
+
                 UsuarioComprasRelacionConUsuarios usuarioComprasRelacionEntity = null;
                 if (!usuariosComprasRelacion.ToList().Any())
                 {
@@ -909,7 +920,10 @@ namespace SustitucionMOAUtils.Services
 
                         item.PeticionesDeOferta = peticionesDeOferta.Where(peticionDeOferta => peticionDeOferta.Solp_Id == item.Id).ToList();
                         item.TienePeticionDeOferta = peticionesDeOferta.Any(peticionDeOferta => peticionDeOferta.Solp_Id == item.Id);
+                        item.OrdenesDeCompraSolicitante = ordenCompra.Where(oc => oc.Solp_Id == item.Id).OrderBy(x => x.FechaCreacion).ToList();
+
                     }
+
                 }
 
                 return todasLasSolp;
