@@ -55,6 +55,8 @@ export class DashboardComponent extends ListBaseComponent {
     pageIndex: number = 1;
     @ViewChild('paginator') paginator: Paginator
     public peticion: PeticionDeOfertaDto;
+    public ordenCompra: any;
+
     displayRevisionTecnica: boolean;
 
     displayCircular: boolean = false;
@@ -250,22 +252,7 @@ export class DashboardComponent extends ListBaseComponent {
 
 
     ngAfterViewInit(): void {
-
         this.getCombos();
-
-        // this.tabla.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
-
-        //     if (filter[0] != null && filter[1] != null)
-        //         return value >= filter[0] &&
-        //             value <= filter[1];
-        //     else if (filter[0] != null && filter[1] == null)
-        //         return value >= filter[0]
-        //     else if (filter[0] == null && filter[1] != null)
-        //         return value <= filter[1].
-        //             else
-        //     return true;
-        // }
-
     }
 
     getStatusDocumentoSolp(data: any): String {
@@ -293,6 +280,7 @@ export class DashboardComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaSolp = result.data;
+                        console.log("TablaSolp", this.tablaSolp)
                         this.tablaSolp.forEach(x => {
                             x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
                             x.VincularPliego = x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP;
@@ -503,17 +491,6 @@ export class DashboardComponent extends ListBaseComponent {
 
     }
 
-
-    onBuscar() {
-        this.paginator.changePage(0);
-        this.pageIndex = 1;
-        this.getListarSolp();
-    }
-
-    onRowDblClick(a, b) {
-
-    }
-
     obtenerPeticionDeOferta(Id) {
         this.blockUI.start('Cargando...')
         this.service.obtenerPeticionDeOferta(Id)
@@ -524,7 +501,6 @@ export class DashboardComponent extends ListBaseComponent {
                     }
                     else {
                         this.peticion = result.data;
-                        console.log(this.peticion);
                         this.displayRevisionTecnica = true;
                         this.blockUI.stop();
                     }
@@ -546,7 +522,6 @@ export class DashboardComponent extends ListBaseComponent {
                     }
                     else {
                         this.peticion = result.data;
-                        console.log(this.peticion);
                         this.displayCircular = true;
                         this.blockUI.stop();
                     }
@@ -584,7 +559,6 @@ export class DashboardComponent extends ListBaseComponent {
                     this.blockUI.stop();
                 }
             )
-
     }
 
     descargarAdjuntosCotizacion({ cotizacionId }) {
@@ -628,18 +602,10 @@ export class DashboardComponent extends ListBaseComponent {
                     this.blockUI.stop();
                 }
             )
-
     }
 
     grabarRevisionTecnica() {
         this.blockUI.start('Grabando...');
-        //this.peticion;
-        //let peticionDeOfertaUsuario = [];
-        //for (var i = 0; i < length; i++) {
-        //    peticionDeOfertaUsuario.push({
-
-        //    });
-        //}
         this.service.grabarRevisionTecnica(this.peticion.Usuarios)
             .subscribe(
                 (result) => {

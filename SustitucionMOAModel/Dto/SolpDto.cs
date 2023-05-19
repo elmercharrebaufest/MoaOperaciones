@@ -81,6 +81,7 @@ namespace SustitucionMOAModel.Dto
         public string TipoPosicionCodigo { get; set; }
         public bool TienePeticionDeOferta { get; set; }
         public IQueryable<AdjudicacionDto> OrdenesDeCompra { get; set; }
+        public List<AdjudicacionDto> OrdenesDeCompraSolicitante { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
