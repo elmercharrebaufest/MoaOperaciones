@@ -4336,7 +4336,7 @@ namespace SustitucionMOAUtils.Services
                     FechaCreacion = DateTime.Now,
                     Usuario = usuario,
                     UsuarioCreador_Id = usuario.Id,
-                    MontoTotal = 100,
+                    MontoTotal = CalcularMontoTotal(adjudicacionDto, cotizacion, info),
                     Posiciones = adjudicacionDto.AdjudicacionPosiciones.Count > 0 ? adjudicacionDto.AdjudicacionPosiciones.Select(x => new AdjudicacionPosicion
                     {
                         Cantidad = x.Cantidad,

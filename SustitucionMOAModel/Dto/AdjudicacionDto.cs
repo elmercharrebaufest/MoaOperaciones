@@ -26,5 +26,6 @@ namespace SustitucionMOAModel.Dto
         public List<AdjudicacionPosicionDto> AdjudicacionPosiciones { get; set; } = new List<AdjudicacionPosicionDto>();
         public decimal PrecioFinal { get; set; }
         public string Proveedor { get; set; }
+        public string TipoPosicionCodigo { get; set; }
     }
 }
