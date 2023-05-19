@@ -519,6 +519,4 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
   
     }
 
-
-
 }

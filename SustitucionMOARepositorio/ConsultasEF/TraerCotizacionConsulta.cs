@@ -34,6 +34,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 {
                                     Id = po.Id,
                                     Solp_Id = po.PeticionDeOferta.Solp_Id,
+                                    PersonalHoras = po.PeticionDeOferta.Solp.Pliego != null ? po.PeticionDeOferta.Solp.Pliego.TieneGrillaPersonal ?? false : false,
                                     NroSolp = po.PeticionDeOferta.Solp.NroSolp,
                                     FechaCreacion = po.PeticionDeOferta.FechaCreacion,
                                     UsuarioCreador_Id = po.PeticionDeOferta.UsuarioCreador_Id,
