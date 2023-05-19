@@ -119,16 +119,16 @@ namespace SustitucionMOATest.Services
                             It.IsAny<string>(),
                             It.IsAny<DirOrden>(),
                             It.IsAny<IEnumerable<Expression<Func<OrdenDeCargaFason, object>>>>()))
-            .Returns(new List<OrdenDeCargaFason> { new OrdenDeCargaFason { Cantidad = 12312, Cliente = new Proveedor { RazonSocial = "" } , Cliente_Id = 1, Producto = new Material { Nombre = "" } } });
+            .Returns(new List<OrdenDeCargaFason> { new OrdenDeCargaFason { PatenteChasis = "", Cantidad = 12312, Cliente = new Proveedor { RazonSocial = "" }, Cliente_Id = 1, Producto = new Material { Nombre = "" } } });
 
             repositorioMock.Setup(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
                             It.IsAny<int>(),
                             It.IsAny<string>(),
                             It.IsAny<DirOrden>(),
                             It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
-            .Returns(new List<OrdenDeCarga> { new OrdenDeCarga { Cliente_Id = 1, Cantidad = 1232, Producto = new Material { Nombre = "" }, Cliente = new Proveedor { RazonSocial = "" } } });
-
-            var result = target.ObtenerOrdenes();
+            .Returns(new List<OrdenDeCarga> { new OrdenDeCarga { ChasisAcoplado = "", Cliente_Id = 1, Cantidad = 1232, Producto = new Material { Nombre = "" }, Cliente = new Proveedor { RazonSocial = "" } } });
+            var patente = "";
+            var result = target.ObtenerOrdenes(patente);
 
             Assert.AreEqual(2, result.Count);
         }
