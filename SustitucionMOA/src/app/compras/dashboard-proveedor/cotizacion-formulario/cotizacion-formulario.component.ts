@@ -329,6 +329,19 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 }
             });
 
+            if(this.peticion.PersonalHoras == true){
+                var categorias = ['SHyMA', 'Horas taller (referenciales)'];
+
+                var mostrarMensaje = this.peticion.Cotizacion.CotizacionesHoras
+                                    .filter(x => !categorias.includes(x.Categoria))
+                                    .every(x => (Number(x.CantidadPersonas) <= 0));
+       
+                if(mostrarMensaje){
+                    mensaje = "Debe completar al menos una categoria";                    
+                    return mensaje
+                }
+            }
+          
             var self = this;
             this.cotizacionSubposiciones.forEach(function (subposicion, i) {                
                 if (!breakFor) {
