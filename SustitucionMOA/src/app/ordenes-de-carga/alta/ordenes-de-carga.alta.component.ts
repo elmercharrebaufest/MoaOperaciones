@@ -812,7 +812,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
 
-        if (!this.ordenDeCarga.CUITDestinatario && campo === 'CUITDestino')
+        if(!this.ordenDeCarga.CUITDestinatario && campo==='CUITDestino')
             this.copiarCuitEnDestinatario();
 
         this.service.validarExisteCuitScato(cuit).subscribe(
@@ -1053,19 +1053,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     scrollAMensaje() {
         this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
-    }
-    validarCuilChofer() {
-        if (!(this.ordenDeCarga.CUITChofer && this.revisarCUITFormatoValido(this.ordenDeCarga.CUITChofer.toString())))
-            return;
-        this.validando.CUITChofer = true;
-        this.mensajesOrdenDeCarga.CUITChofer = null;
-        this.service.validarCuilChofer(this.ordenDeCarga.CUITChofer)
-            .pipe(finalize(() => this.validando.CUITChofer = false))
-            .subscribe(result => {
-                const data = this.manejarErroresApiResponse(result);
-                if (!data)
-                    this.mensajesOrdenDeCarga.CUITChofer = `Cuil, ${this.ordenDeCarga.CUITChofer}, inválido`
-            })
     }
 }
 
