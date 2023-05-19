@@ -316,6 +316,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     public getCotizacion() {
         this.crearCotizacionPosicion();
         this.crearCotizacionSubPosicion();
+        this.autoCompletarHoras()
         var coti = {
             CotizacionId: this.peticion.CotizacionId,
             PeticionOfertaUsuarioId: this.peticion.Id,
@@ -453,6 +454,21 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         });
         this.peticion.Cotizacion.CotizacionesHoras = this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == "UOCRA");
         this.agregarRow();
+    }
+
+    autoCompletarHoras(){
+        this.peticion.Cotizacion.CotizacionesHoras.forEach(element => {
+            if(!element.CantidadPersonas){
+                element.CantidadPersonas = 0
+            }
+            if(!element.HorasNocturnas){
+                element.HorasNocturnas = 0
+            }
+            if(!element.HorasNormales){
+                element.HorasNormales = 0
+            }
+          
+        });
     }
 
     validarDatosCotizacionHoras(e: MouseEvent, index) {      

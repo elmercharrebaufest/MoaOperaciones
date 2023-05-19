@@ -276,7 +276,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int" pattern="[0-9]+"
+                                                        <input type="text" pKeyFilter="int" min="0" pattern="[0-9]+"
                                                                [(ngModel)]="rowData.CantidadPersonas">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
@@ -287,7 +287,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int" pattern="[0-9]+"
+                                                        <input type="text" pKeyFilter="int" min="0" pattern="[0-9]+"
                                                                [(ngModel)]="rowData.HorasNormales">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
@@ -298,7 +298,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int" pattern="[0-9]+"
+                                                        <input type="text" pKeyFilter="int" min="0" pattern="[0-9]+"
                                                                [(ngModel)]="rowData.HorasNocturnas">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
