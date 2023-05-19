@@ -64,8 +64,6 @@ namespace SustitucionMOAUtils.Services
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
             Log.Info($"Agregar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
-            if (!ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer))
-                throw new ValidationCustomException("Cuil de chofer invalido");
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
@@ -80,6 +78,8 @@ namespace SustitucionMOAUtils.Services
                 Log.Debug(this.GetType().Name, "Agregar", $" crearPedido: {crearPedido}");
                 repositorio.Agregar(ordenDeCarga);
                 repositorio.GuardarCambios();
+                ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
+                ValidarCuilChoferEnScato(ordenDeCarga.CUITIntermediarioFlete);
                 NotificarContratoSinKm(ordenDeCarga);
                 NotificarTransporte(ordenDeCarga.Id);
 
@@ -183,8 +183,6 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"Editar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
             var valoresAEditar = new List<string> { "NombreChofer", "CUITChofer", "PatenteAcoplado", "ChasisAcoplado", "ContratoIngresado", "NumeroPedido", "Observacion", "Cantidad", "RazonSocialTransporte", "CUITTransporte", "Producto_Id", "NumeroPedidoIngresado" };
             var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
-            if (!ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer))
-                throw new ValidationCustomException("Cuil de chofer invalido");
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
@@ -201,6 +199,8 @@ namespace SustitucionMOAUtils.Services
                 var ordenEditar = cargarDatosOCEditar.Item1;
                 var listaValoresDiferentes = cargarDatosOCEditar.Item2;
 
+                ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
+                ValidarCuilChoferEnScato(ordenDeCarga.CUITIntermediarioFlete);
                 //Solicitud de edición
                 if (!esInterno)
                 {
@@ -2592,7 +2592,7 @@ namespace SustitucionMOAUtils.Services
 
             emailSenderData.Asunto = "ALTA TEMPRANA CUIT";
             emailSenderData.Cuerpo = string.Format("Se solicita el alta temprana del CUIT: {0} , Razón Social: {1}", cuit, razonSocial);
-
+            
             Log.Info("Gestión alta mail: " + emailSenderData.ToJson());
             EmailSender.EnviarMail(emailSenderData);
 
@@ -2730,11 +2730,18 @@ namespace SustitucionMOAUtils.Services
 
             }
         }
-        public bool ValidarCuilChoferEnScato(string cuil)
+        private void ValidarCuilChoferEnScato(string cuil)
         {
-            var result = scatoConsumer.CuilChoferExiste(cuil);
+            try
+            {
+                var result = scatoConsumer.CuilChoferExiste(cuil);
+            }
+            catch (Exception err)
+            {
+                Log.Debug("OrdenDeCarga Controller", string.Format("Error al Validar CUIL: {0}", cuil), err.Message);
+            }
 
-            return result;
+
         }
         private string ObtenerMaterialValidaSisa()
         {

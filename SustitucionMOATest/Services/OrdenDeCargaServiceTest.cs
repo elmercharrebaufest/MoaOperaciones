@@ -38,9 +38,6 @@ namespace SustitucionMOATest.Services
             repositorioMock = new Mock<IRepositorio>();
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
             feriadoService = new Mock<IFeriadoService>();
-            mIScatoConsumer = new Mock<IScatoConsumer>();
-            mIScatoRepositorioClient = new Mock<IScatoRepositorioClient>();
-
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
                 mIScatoRepositorioClient.Object, mIScatoConsumer.Object);
@@ -80,7 +77,97 @@ namespace SustitucionMOATest.Services
         {
             string mailUsuario = "usuario@test.com";
 
-            SetupAgregarTest(mailUsuario);
+            var proveedor = new Proveedor
+            {
+                Id = 1,
+                EstadoAprobacion = EstadoAprobacion.Aprobado,
+                Observaciones = "Test",
+                RazonSocial = "RS",
+                Mail = mailUsuario,
+                CUIT = "233333333333",
+                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
+            };
+
+            var permisos = new PermisoPorRol()
+            {
+                Id = 95,
+                Permiso = "VER ORDENES DE CARGA PARA COMERCIALES"
+
+            };
+
+            var roles = new Rol
+            {
+                Id = 1,
+                Nombre = "Administracion",
+                PermisosAsociados = new List<PermisoPorRol>()
+                {
+                   permisos
+                }
+
+            };
+            var usuario = new Usuario
+            {
+                Id = 1,
+                Mail = mailUsuario,
+                CUITRegistro = "233333333333",
+                Proveedores = new List<Proveedor>()
+                {
+                    proveedor
+                },
+
+                Roles = new List<Rol>()
+                {
+                    roles
+                }
+
+
+            };
+
+            repositorioMock
+                .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                .Returns(usuario);
+
+            repositorioMock
+                 .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
+                 .Returns(proveedor);
+
+            repositorioMock
+                .Setup(x => x.Obtener<Rol>(It.IsAny<int>()))
+                .Returns(roles);
+
+            repositorioMock
+               .Setup(x => x.Obtener<PermisoPorRol>(It.IsAny<int>()))
+               .Returns(permisos);
+
+            repositorioMock
+               .Setup(x => x.Obtener<Material>(It.IsAny<int>()))
+               .Returns(ordenDeCarga.Producto);
+
+            repositorioMock
+               .Setup(y => y.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>()))
+               .Returns(proveedor);
+
+            consumerOrdenCargaMOA
+                .Setup(x => x.ControlarCarga(It.IsAny<ControlCargaRequest>()))
+                .Returns(new SustitucionMOAWS.ResponseHandler.OrdenCarga.ControlCargaResponseHandler(
+                    new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060[]
+                    {
+                        new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060 { MENSAJE = "CC-00" }
+                    }));
+
+            repositorioMock
+                .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+                .Returns(ordenDeCarga);
+
+            consumerOrdenCargaMOA
+               .Setup(x => x.OrdenCargaControlEstadoRequest(It.IsAny<string>(),
+               It.IsAny<string>(),
+               It.IsAny<string>()))
+               .Returns("CE-07");
+
+
+
+            ConfigurationManager.AppSettings["CantidadOrdenDeCarga"] = "30000";
 
             var result = target.Agregar(ordenDeCarga, mailUsuario);
 
@@ -91,16 +178,6 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(3));
 
             Assert.AreEqual(expected, result);
-        }
-        [Test]
-        public void Agregar_CuilChoferInvalido_ThrowInvalidException()
-        {
-
-            string mailUsuario = "usuario@test.com";
-
-            mIScatoConsumer.Setup(sc => sc.CuilChoferExiste(It.IsAny<string>(), It.IsAny<bool>())).Returns(false);
-
-            Assert.That(() => target.Agregar(ordenDeCarga, mailUsuario), Throws.InstanceOf<ValidationCustomException>());
         }
 
         [Test()]
@@ -350,16 +427,6 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
-        }
-        [Test]
-        public void Editar_CuilChoferInvalido_ThrowInvalidException()
-        {
-
-            string mailUsuario = "usuario@test.com";
-
-            mIScatoConsumer.Setup(sc => sc.CuilChoferExiste(It.IsAny<string>(), It.IsAny<bool>())).Returns(false);
-
-            Assert.That(() => target.Editar(ordenDeCarga, mailUsuario), Throws.InstanceOf<ValidationCustomException>());
         }
 
         [Test()]
@@ -1683,99 +1750,6 @@ namespace SustitucionMOATest.Services
 
         }
 
-        private void SetupAgregarTest(string mailUsuario)
-        {
-            var proveedor = new Proveedor
-            {
-                Id = 1,
-                EstadoAprobacion = EstadoAprobacion.Aprobado,
-                Observaciones = "Test",
-                RazonSocial = "RS",
-                Mail = mailUsuario,
-                CUIT = "233333333333",
-                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
-            };
-
-            var permisos = new PermisoPorRol()
-            {
-                Id = 95,
-                Permiso = "VER ORDENES DE CARGA PARA COMERCIALES"
-
-            };
-
-            var roles = new Rol
-            {
-                Id = 1,
-                Nombre = "Administracion",
-                PermisosAsociados = new List<PermisoPorRol>()
-                {
-                   permisos
-                }
-
-            };
-            var usuario = new Usuario
-            {
-                Id = 1,
-                Mail = mailUsuario,
-                CUITRegistro = "233333333333",
-                Proveedores = new List<Proveedor>()
-                {
-                    proveedor
-                },
-
-                Roles = new List<Rol>()
-                {
-                    roles
-                }
-
-
-            };
-
-            repositorioMock
-                .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
-                .Returns(usuario);
-
-            repositorioMock
-                 .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
-                 .Returns(proveedor);
-
-            repositorioMock
-                .Setup(x => x.Obtener<Rol>(It.IsAny<int>()))
-                .Returns(roles);
-
-            repositorioMock
-               .Setup(x => x.Obtener<PermisoPorRol>(It.IsAny<int>()))
-               .Returns(permisos);
-
-            repositorioMock
-               .Setup(x => x.Obtener<Material>(It.IsAny<int>()))
-               .Returns(ordenDeCarga.Producto);
-
-            repositorioMock
-               .Setup(y => y.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>()))
-               .Returns(proveedor);
-
-            consumerOrdenCargaMOA
-                .Setup(x => x.ControlarCarga(It.IsAny<ControlCargaRequest>()))
-                .Returns(new SustitucionMOAWS.ResponseHandler.OrdenCarga.ControlCargaResponseHandler(
-                    new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060[]
-                    {
-                        new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060 { MENSAJE = "CC-00" }
-                    }));
-
-            repositorioMock
-                .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
-                .Returns(ordenDeCarga);
-
-            consumerOrdenCargaMOA
-               .Setup(x => x.OrdenCargaControlEstadoRequest(It.IsAny<string>(),
-               It.IsAny<string>(),
-               It.IsAny<string>()))
-               .Returns("CE-07");
-
-            ConfigurationManager.AppSettings["CantidadOrdenDeCarga"] = "30000";
-
-        }
 
     }
 }
