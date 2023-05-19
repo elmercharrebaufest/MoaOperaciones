@@ -198,6 +198,7 @@ namespace SustitucionMOAUtils.Services
                 var esMesaFas = usuario.TienePermiso("VER ORDENES DE CARGA PARA MESA FAS");
                 var esPuerto = usuario.TienePermiso("VER ORDENES DE CARGA PARA PUERTO");
                 var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
+                ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
 
                 Log.Debug(this.GetType().Name, "Editar", $" puedeEnviarASAP: {puedeEnviarASAP}");
                 var cargarDatosOCEditar = CargarDatosOCEditar(ordenDeCarga, usuario);
