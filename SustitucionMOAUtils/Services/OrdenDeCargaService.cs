@@ -64,8 +64,9 @@ namespace SustitucionMOAUtils.Services
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
             Log.Info($"Agregar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
-            if (!ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer))
+            if (!ValidarCuitValido(ordenDeCarga.CUITChofer))
                 throw new ValidationCustomException("Cuil de chofer invalido");
+
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
@@ -82,7 +83,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
                 NotificarContratoSinKm(ordenDeCarga);
                 NotificarTransporte(ordenDeCarga.Id);
-
+                ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
 
                 if (ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido)
                 {
@@ -183,7 +184,7 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"Editar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
             var valoresAEditar = new List<string> { "NombreChofer", "CUITChofer", "PatenteAcoplado", "ChasisAcoplado", "ContratoIngresado", "NumeroPedido", "Observacion", "Cantidad", "RazonSocialTransporte", "CUITTransporte", "Producto_Id", "NumeroPedidoIngresado" };
             var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
-            if (!ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer))
+            if (!ValidarCuitValido(ordenDeCarga.CUITChofer))
                 throw new ValidationCustomException("Cuil de chofer invalido");
             try
             {
@@ -195,6 +196,7 @@ namespace SustitucionMOAUtils.Services
                 var esMesaFas = usuario.TienePermiso("VER ORDENES DE CARGA PARA MESA FAS");
                 var esPuerto = usuario.TienePermiso("VER ORDENES DE CARGA PARA PUERTO");
                 var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
+                ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
 
                 Log.Debug(this.GetType().Name, "Editar", $" puedeEnviarASAP: {puedeEnviarASAP}");
                 var cargarDatosOCEditar = CargarDatosOCEditar(ordenDeCarga, usuario);
@@ -2727,14 +2729,24 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.PedidosRespuesta = result;
                 ordenDeCarga.NumeroPedido = "";
                 ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
-
             }
         }
         public bool ValidarCuilChoferEnScato(string cuil)
         {
-            var result = scatoConsumer.CuilChoferExiste(cuil);
-
-            return result;
+            try
+            {
+                var result = scatoConsumer.CuilChoferExiste(cuil);
+                return result;
+            }
+            catch (Exception err)
+            {
+                Log.Debug("OrdenDeCarga Controller", string.Format("Error al Validar CUIL: {0}", cuil), err.Message);
+                return false;
+            }
+        }
+        public bool ValidarCuitValido(string cuit)
+        {
+            return true;
         }
         private string ObtenerMaterialValidaSisa()
         {

@@ -10,12 +10,12 @@ namespace SustitucionMOATest.Consumers
     [TestFixture]
     public class ScatoConsumerTests
     {
-        private Mock<IServicioRepositorioChannel> _mServicioRepositorioClient;
+        private Mock<IServicioRepositorio> _mServicioRepositorioClient;
         private IScatoConsumer _consumer;
         [SetUp]
         public void Setup()
         {
-            _mServicioRepositorioClient = new Mock<IServicioRepositorioChannel>();
+            _mServicioRepositorioClient = new Mock<IServicioRepositorio>();
             _consumer = new ScatoConsumer(_mServicioRepositorioClient.Object);
         }
 

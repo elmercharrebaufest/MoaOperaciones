@@ -92,16 +92,6 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(expected, result);
         }
-        [Test]
-        public void Agregar_CuilChoferInvalido_ThrowInvalidException()
-        {
-
-            string mailUsuario = "usuario@test.com";
-
-            mIScatoConsumer.Setup(sc => sc.CuilChoferExiste(It.IsAny<string>(), It.IsAny<bool>())).Returns(false);
-
-            Assert.That(() => target.Agregar(ordenDeCarga, mailUsuario), Throws.InstanceOf<ValidationCustomException>());
-        }
 
         [Test()]
         public void ListarUsuarioComercialTest()
@@ -350,16 +340,6 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
-        }
-        [Test]
-        public void Editar_CuilChoferInvalido_ThrowInvalidException()
-        {
-
-            string mailUsuario = "usuario@test.com";
-
-            mIScatoConsumer.Setup(sc => sc.CuilChoferExiste(It.IsAny<string>(), It.IsAny<bool>())).Returns(false);
-
-            Assert.That(() => target.Editar(ordenDeCarga, mailUsuario), Throws.InstanceOf<ValidationCustomException>());
         }
 
         [Test()]

@@ -11,9 +11,9 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class ScatoConsumer : IScatoConsumer
     {
-        private readonly IServicioRepositorioChannel service;
+        private readonly IServicioRepositorio service;
 
-        public ScatoConsumer(IServicioRepositorioChannel service)
+        public ScatoConsumer(IServicioRepositorio service)
         {
             this.service = service;
         }
