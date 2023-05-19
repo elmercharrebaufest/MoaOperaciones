@@ -65,6 +65,9 @@ namespace SustitucionMOAUtils.Services
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
             Log.Info($"Agregar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
+            if (!ValidarCuitValido(ordenDeCarga.CUITChofer))
+                throw new ValidationCustomException("Cuil de chofer invalido");
+
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
@@ -83,7 +86,6 @@ namespace SustitucionMOAUtils.Services
                 ValidarCuilChoferEnScato(ordenDeCarga.CUITIntermediarioFlete);
                 NotificarContratoSinKm(ordenDeCarga);
                 NotificarTransporte(ordenDeCarga.Id);
-
 
                 if (ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido)
                 {
@@ -184,6 +186,8 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"Editar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
             var valoresAEditar = new List<string> { "NombreChofer", "CUITChofer", "PatenteAcoplado", "ChasisAcoplado", "ContratoIngresado", "NumeroPedido", "Observacion", "Cantidad", "RazonSocialTransporte", "CUITTransporte", "Producto_Id", "NumeroPedidoIngresado" };
             var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
+            if (!ValidarCuitValido(ordenDeCarga.CUITChofer))
+                throw new ValidationCustomException("Cuil de chofer invalido");
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
@@ -2722,10 +2726,9 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.PedidosRespuesta = result;
                 ordenDeCarga.NumeroPedido = "";
                 ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
-
             }
         }
-        private void ValidarCuilChoferEnScato(string cuil)
+        public void ValidarCuilChoferEnScato(string cuil)
         {
             try
             {
@@ -2736,8 +2739,10 @@ namespace SustitucionMOAUtils.Services
             {
                 Log.Error("", "", "OrdenDeCarga Service", "ValidarCuilChoferEnScato CUIT: " + cuil, err);
             }
-
-
+        }
+        public bool ValidarCuitValido(string cuit)
+        {
+            return true;
         }
         private string ObtenerMaterialValidaSisa()
         {
