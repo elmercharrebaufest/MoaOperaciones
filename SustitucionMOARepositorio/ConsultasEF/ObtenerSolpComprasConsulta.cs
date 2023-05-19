@@ -32,8 +32,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         select new SolpPosicionDto()
                                                         {
                                                             Id = posicion.Id,
-                                                            MaterialComprasCodigo = posicion.MaterialSolp.Codigo,
                                                             TieneCotizacion = posicion.Peticiones.Any(),
+                                                            Codigo = posicion.MaterialSolp.Codigo,
                                                             Indice = posicion.Indice,
                                                             Tarea = posicion.Tarea,
                                                             CentroComprasDescripcion = posicion.Centro.Descripcion,
@@ -62,7 +62,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                     {
                                                                                         Numero = subPosicion.Numero,
                                                                                         Tarea = subPosicion.Tarea,
-                                                                                        Codigo = subPosicion.Codigo,
+                                                                                        Codigo = subPosicion.ServicioSolp.Codigo,
                                                                                         Cantidad = subPosicion.Cantidad,
                                                                                         UnidadComprasDescripcion = subPosicion.Unidad.Descripcion
                                                                                     }),

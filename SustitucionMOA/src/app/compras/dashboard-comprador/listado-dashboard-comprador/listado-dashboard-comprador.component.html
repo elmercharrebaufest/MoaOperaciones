@@ -207,10 +207,10 @@
                                                <td class="columna">{{ordenCompra.NumeroOrdenDeCompra}}</td>                                     
                                                 <td class="columna">{{ordenCompra.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
                                                 <td class="columna">{{ordenCompra.Proveedor}}</td>
-                                                <td class="columna">{{ordenCompra.PrecioFinal}}</td>
+                                                <td class="columna">{{ordenCompra.PrecioFinal | number:'1.2-2'}}</td>
                                                 <td class="columna">{{ordenCompra.MonedaDescripcion}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn btn-success">
+                                                    <button class="publicar btn btn-success" (click)="verDetalleOrdenDeCompra(ordenCompra)">
                                                         Ver detalle
                                                     </button>
                                                 </td>
@@ -252,4 +252,10 @@
          (cerrarModalProveedorEmitter)="cerrarModalProveedor()"
         [(peticion)]="peticion">
         </app-proveedor-peticion>   
+
+      <app-orden-de-compra-detalle
+       [(displayOrdenDeCompra)]="displayOrdenDeCompra"
+       (cerrarOrdenDeCompraEmitter)="cerrarOrdenDeCompra()"
+       [(ordenDeCompra)]="ordenDeCompra">
+    </app-orden-de-compra-detalle> 
 </div>

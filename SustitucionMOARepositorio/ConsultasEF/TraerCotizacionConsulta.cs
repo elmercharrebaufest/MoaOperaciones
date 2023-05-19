@@ -234,9 +234,6 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                             }).ToList().OrderBy(x => x.Numero),
                                         },
                                     }).ToList().OrderBy(x => x.Posiciones.Indice)
-
-
-
                                 };
 
                 var cc = resultado.First();
