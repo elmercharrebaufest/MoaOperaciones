@@ -182,7 +182,7 @@
                                 </div>
                                 <div class="styled-select">
                                     <input type="text" [(ngModel)]="ordenDeCarga.NumeroPedidoIngresado" maxlength="25"
-                                        [disabled]="noEditarCliente">
+                                        [disabled]="noEditarCliente || !pedidoAnticipado">
                                 </div>
                             </div>
 
