@@ -283,6 +283,11 @@
                                                 <th class="columna" style="width: 300px !important; text-transform: none !important;"></th>
                                             </tr>
                                         </ng-template>
+                                        <ng-template pTemplate="emptymessage">
+                                            <tr>
+                                                <td style="text-align: center;" colspan="4">Sin datos</td>
+                                            </tr>
+                                        </ng-template>
                                         <ng-template pTemplate="body" let-licitacion>
                                             <tr>                                    
                                                 <td class="columna">{{licitacion.Id}}</td>
@@ -312,6 +317,11 @@
                                                 <th class="columna">Monto total</th>
                                                 <th class="columna">Moneda</th>
                                                 <th class="columna"></th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="emptymessage">
+                                            <tr>
+                                                <td style="text-align: center;" colspan="6">Sin datos</td>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-ordenCompra>
