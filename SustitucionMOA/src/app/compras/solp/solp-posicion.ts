@@ -226,7 +226,7 @@ export class SolpPosicion {
         let hasTipoImputacion = typeof this.tipoImputacion != "undefined" && this.tipoImputacion;
 
         let isVisibleImputaciones = this.esTipoPosicionMaterial;
-        let isDisabledImputaciones = this.esTipoPosicionServicio || (hasCodigoServicio && !hasTipoImputacion);
+        let isDisabledImputaciones = this.esTipoPosicionServicio || (hasCodigoServicio && (!hasTipoImputacion || (hasTipoImputacion && hasTipoImputacion.Id == 0)));
 
         this.tabItems = [
             { label: 'Subposiciones', visible: this.esTipoPosicionServicio, disabled: this.esTipoPosicionMaterial },

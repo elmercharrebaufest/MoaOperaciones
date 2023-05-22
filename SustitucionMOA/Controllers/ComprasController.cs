@@ -89,8 +89,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_SOLP)]
-        public ActionResult Combos()
+       public ActionResult Combos()
         {
             try
             {
