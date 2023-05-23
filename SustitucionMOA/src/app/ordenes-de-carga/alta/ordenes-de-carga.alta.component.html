@@ -366,23 +366,27 @@
         </div>
     </div>
 </div>
-<p-dialog [header]="displayModal?.replace('CUIT','')" [(visible)]="displayModal" [modal]="true" [responsive]="true"
-    [style]="{width: '350px', minWidth: '200px'}" [minY]="70" [draggable]="false" [closable]="true" appendTo="body">
+<p-dialog [header]="displayModal ? displayModal.replace('CUIT','') : ''" [(visible)]="displayModal" [modal]="true"
+    [responsive]="true" [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70" [draggable]="false"
+    appendTo="body" (onHide)="focusRazonSocialParaGestion=true; razonSocialParaGestion=''">
     <p>No se encontró la CUIT {{ordenDeCarga[displayModal]}}</p><br>
     <p>¿Desea que se notifique ?</p>
     <div class="col-xs-12 col-md-12">
         <div class="formulario-label">
             Razón social con la que gestionar el alta:
         </div>
-        <div class="styled-select">
-            <input [(ngModel)]="razonSocialParaGestion" type="text">
+        <div class="styled-select mb-2">
+            <input (blur)="focusRazonSocialParaGestion= false" [(ngModel)]="razonSocialParaGestion" type="text">
         </div>
+        <p-message *ngIf="!focusRazonSocialParaGestion && razonSocialParaGestion.length < 1" severity="warn" text="Debe ingresar una razón social de
+            al menos un (1) caracter para gestionar su alta">
+        </p-message>
     </div>
     <p-footer>
-        <button [disabled]="razonSocialParaGestion.length < 3" type="button" pButton icon="pi pi-check"
+        <button [disabled]="razonSocialParaGestion.length < 1" type="button" pButton icon="pi pi-check"
             (click)="gestionarAltaCUIT()" label="Gestionar"></button>
-        <button type="button" pButton icon="pi pi-close" (click)="displayModal = null; razonSocialParaGestion=''"
-            label="Cancelar" class="ui-button-secondary"></button>
+        <button type="button" pButton icon="pi pi-close" (click)="displayModal = null" label="Cancelar"
+            class="ui-button-secondary"></button>
     </p-footer>
 </p-dialog>
 <!-- end modal notificacion -->
