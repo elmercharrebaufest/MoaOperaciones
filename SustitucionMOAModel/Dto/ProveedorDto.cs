@@ -54,7 +54,7 @@ namespace SustitucionMOAModel.Dto
             RazonSocial = proveedor.RazonSocial ?? "";
             FechaSolicitud = proveedor.FechaSolicitud;
             Comercial = proveedor.Comercial;
-
+            IdTipoProveedor = proveedor.TipoProveedor.Id;
             //if (proveedor.UsuariosAsociados.Count() > 0)
             //{
             //    if (proveedor.UsuariosAsociados.First() is UsuarioGranos)

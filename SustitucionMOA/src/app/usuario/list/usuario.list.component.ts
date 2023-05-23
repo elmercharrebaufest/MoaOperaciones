@@ -12,6 +12,7 @@ import { SpinnerComponent } from './../../common/view-child/spinner/spinner.comp
 import { UsuarioService } from './../usuario.service';
 import { Rol } from '../../common/models/rol';
 import { Usuario } from '../usuario';
+import { ModificarDatosComponent } from '../modificar-datos/modificar-datos.component';
 
 
 
@@ -30,6 +31,9 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
     @ViewChild('dropdown_rol')
     protected rolDropdownComponent: DropdownComponent;
+
+    @ViewChild(ModificarDatosComponent)
+    protected modificarDatosComponent: ModificarDatosComponent;
 
     constructor(protected service: UsuarioService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securityService, floatMsgService, modalService);
@@ -90,7 +94,9 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(e);
         }
     }
-
+    modificarDatos(id: number){
+        this.service.UsuarioModificarDatos = id;
+    }
     getUsuario() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
