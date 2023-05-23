@@ -1,4 +1,5 @@
-﻿using SustitucionMOAAssets;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
@@ -55,9 +56,9 @@ namespace SustitucionMOAUtils.Services
                 }
                 return usuariosDto;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -535,5 +536,70 @@ namespace SustitucionMOAUtils.Services
                 Id = solp.UsuarioCreacion.Id
             }).GroupBy(x => x.Id);
         }
+
+        #region Metodos de modificacion de alta usuario
+        public UsuarioDto GetUsuarioPorId(int id)
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Id == id);
+
+                if (usuario == null)
+                {
+                    throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Usuario", id));
+                }
+                var ret = new UsuarioDto(usuario);
+                ret.Permisos = usuario.ObtenerPermisos();
+                ret.NuevoUsuario = usuario.EsNuevoUsuario();
+
+                return ret;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<ProveedorDto> GetProvedoresEmail(string email)
+        {
+            var proveedores = repositorio.Listar<Proveedor>(x => x.Mail == email);
+            List<ProveedorDto> listaProvedores = new List<ProveedorDto>();
+            foreach(var proveedor in proveedores)
+            {
+                listaProvedores.Add(new ProveedorDto(proveedor));
+            }
+            return listaProvedores;
+        }
+
+        public List<TipoUsuarioDto> GetTipoUsuario()
+        {
+            var tipoUsuarios = repositorio.Listar<TipoUsuario>();
+            List<TipoUsuarioDto> listaTipoUsuarios = new List<TipoUsuarioDto>();
+            foreach (var tipoUsuario in tipoUsuarios)
+            {
+                listaTipoUsuarios.Add(new TipoUsuarioDto(tipoUsuario));
+            }
+            return listaTipoUsuarios;
+        }
+
+        public List<string> ValidaModificacionUsuario(UsuarioModificacionDto usuarioModificacionDto)
+        {
+            List<string> listaValidacion = new List<string>();
+            var usuarios = repositorio.Listar<Entidades.Usuario>(x => x.Mail == usuarioModificacionDto.Mail && x.Id != usuarioModificacionDto.Id);
+            if (usuarios.Count > 0) listaValidacion.Add("El correo ya existe para otro usuario");
+            if (usuarioModificacionDto.Cuit.Length < 10) listaValidacion.Add("El CUIT del usuario no tiene el formato correcto.");
+
+            foreach (var proveedor in usuarioModificacionDto.Proveedores)
+            {
+                if (proveedor.Cuit.Length < 10)
+                {
+                    listaValidacion.Add("El CUIT del proveedor no tiene el formato correcto.");
+                    break;
+                }
+            }
+            return listaValidacion;
+        }
+        #endregion
+
     }
 }

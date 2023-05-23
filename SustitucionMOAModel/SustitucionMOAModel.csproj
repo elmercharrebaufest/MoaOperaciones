@@ -148,8 +148,10 @@
     <Compile Include="Dto\TablaEstadoDto.cs" />
     <Compile Include="Dto\TablaGeneralDto.cs" />
     <Compile Include="Dto\TablaSapDto.cs" />
+    <Compile Include="Dto\TipoUsuarioDto.cs" />
     <Compile Include="Dto\UsuarioComprasDto.cs" />
     <Compile Include="Dto\UsuarioComprasRelacionConUsuariosDto.cs" />
+    <Compile Include="Dto\UsuarioModificacionDto.cs" />
     <Compile Include="Entities\AplicacionCartaPorte.cs" />
     <Compile Include="Entities\Adjudicacion.cs" />
     <Compile Include="Entities\AdjudicacionPosicion.cs" />
