@@ -51,6 +51,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino'> | null;
     validaCPEDG = false;
     editando = false;
+    focusRazonSocialParaGestion = true;
     mensajeError: string = "";
     mensajeSuccess: string = "";
     clienteCUIT: string = "";

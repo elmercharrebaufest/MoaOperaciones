@@ -18,6 +18,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DialogModule } from 'primeng/dialog';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TooltipModule } from 'primeng/tooltip';
+import { MessageModule } from 'primeng/message';
 
 @NgModule({
     imports: [
@@ -36,6 +37,7 @@ import { TooltipModule } from 'primeng/tooltip';
         DialogModule,
         CheckboxModule,
         TooltipModule,
+        MessageModule,
     ],
     declarations: [
         OrdenesDeCargaAlta,
