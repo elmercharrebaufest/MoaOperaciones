@@ -30,8 +30,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
                 var resultado = from po in contexto.Set<PeticionDeOferta>()
-                                join adjudicacion in contexto.Set<Adjudicacion>() on po.Solp.Id equals adjudicacion.Solp_Id into adjudicacionCotizacion
-                                from adjudicacion in adjudicacionCotizacion.DefaultIfEmpty()
+                                //join adjudicacion in contexto.Set<Adjudicacion>() on po.Solp.Id equals adjudicacion.Solp_Id into adjudicacionCotizacion
+                                //from adjudicacion in adjudicacionCotizacion.DefaultIfEmpty()
                                 //join adjudicacionPosicion in contexto.Set<AdjudicacionPosicion>() on adjudicacion.Id equals adjudicacionPosicion.Adjudicacion_Id into adjudicacionCotizacionPosicion
                                 //from adjudicacionPosicion in adjudicacionCotizacionPosicion.DefaultIfEmpty()
                                 where po.Id == PeticionOferta_Id
