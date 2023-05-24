@@ -97,6 +97,7 @@ namespace SustitucionMOAModel.Entities
         public string RazonSocialDestino { get; set; }
         public string RazonSocialDestinatario { get; set; }
         public string CUITIntermediarioFlete { get; set; }
+        public string RazonSocialIntermediarioFlete { get; set; }
         public string PlantaCodigo { get; set; }
         public string DomicilioTipo { get; set; }
         public short DomicilioOrden { get; set; }

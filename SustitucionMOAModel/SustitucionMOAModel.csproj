@@ -63,6 +63,7 @@
     <Compile Include="Dto\CircularDto.cs" />
     <Compile Include="Dto\DolarMaterialDto.cs" />
     <Compile Include="Dto\CotizacionDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ValidarIntermediarioFleteResponse.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidaSisaCuit.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarCuitExisteScatoResponse.cs" />
     <Compile Include="Dto\OrdenDeCarga\DomicilioDto.cs" />

@@ -45,6 +45,7 @@
     [RazonSocialDestino] VARCHAR(100) NULL,
     [Reventa] BIT NOT NULL DEFAULT 0, 
     [CUITIntermediarioFlete] VARCHAR(15) NULL, 
+    [RazonSocialIntermediarioFlete] VARCHAR(100) NULL, 
     [PlantaCodigo] VARCHAR(6) NULL, 
     [DomicilioTipo] VARCHAR NULL, 
     [DomicilioOrden] SMALLINT NULL, 

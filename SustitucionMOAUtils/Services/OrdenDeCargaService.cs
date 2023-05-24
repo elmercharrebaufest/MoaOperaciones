@@ -85,6 +85,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(ordenDeCarga);
                 repositorio.GuardarCambios();
                 ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
+                var fasdf = scatoConsumer.ObtenerProveedorPorCuit(ordenDeCarga.CUITIntermediarioFlete);
                 ValidarCuilChoferEnScato(ordenDeCarga.CUITIntermediarioFlete);
                 NotificarContratoSinKm(ordenDeCarga);
                 NotificarTransporte(ordenDeCarga.Id);
@@ -2585,7 +2586,7 @@ namespace SustitucionMOAUtils.Services
 
             return result;
         }
-        public bool EmailGestionarAlta(string cuit, string razonSocial)
+        public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
         {
             var emailSenderData = new EmailSenderData();
             string mailsGestion = ConfigurationManager.AppSettings["EmailToGestionAltaCuit"];
@@ -2594,9 +2595,11 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Mails = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsGestion });
             emailSenderData.Copias = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsCopiaGestion });
 
-            emailSenderData.Asunto = "ALTA TEMPRANA CUIT";
-            emailSenderData.Cuerpo = string.Format("Se solicita el alta temprana del CUIT: {0} , Razón Social: {1}", cuit, razonSocial);
-
+            emailSenderData.Asunto = esIntermediarioFlete ? "ALTA CUIT INTERMEDIARIO FLETE" : "ALTA TEMPRANA CUIT";
+            emailSenderData.Cuerpo = esIntermediarioFlete ?
+                string.Format("Razón social: {0}, CUIT: {1}", razonSocial, cuit) :
+                string.Format("Se solicita el alta temprana del CUIT: {0} , Razón Social: {1}", cuit, razonSocial);
+            
             Log.Info("Gestión alta mail: " + emailSenderData.ToJson());
             EmailSender.EnviarMail(emailSenderData);
 
@@ -2659,6 +2662,20 @@ namespace SustitucionMOAUtils.Services
             var tieneDomicilios = ObtenerDomiciliosDestino(cuit).Any();
             return tienePlantas && tieneDomicilios;
         }
+
+        public ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit)
+        {
+            var proveedor = scatoConsumer.ObtenerProveedorPorCuit(cuit);
+
+            var esValido = true;
+            return new ValidarIntermediarioFleteResponse
+            {
+                EsCuitValido = esValido,
+                ExisteIntermediario = false,
+                RazonSocial = "Guybrush Threepwood"
+            };
+        }
+
         private Proveedor GetClienteParaCorredor(Usuario usuario, Proveedor corredor, OrdenDeCarga ordenDeCarga)
         {
             corredor = usuario.ObtenerCorredor();

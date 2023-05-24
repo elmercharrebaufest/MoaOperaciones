@@ -46,9 +46,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajesOrdenDeCarga: Partial<Record<keyof OrdenDeCarga, string>> = {};
-    mensajesGestionCuit: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino'>, string>> = {};
+    mensajesGestionCuit: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, string>> = {};
     validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
-    displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino'> | null;
+    displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'> | null;
     validaCPEDG = false;
     pedidoAnticipado = false;
     editando = false;
@@ -90,6 +90,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     plantaSeleccionada?: Planta;
     listaDomicilios?: Domicilio[];
     domicilioSeleccionado?: Domicilio;
+
+    intermediarioFleteCuitFormatoValido: boolean = true;
 
     constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
         super(navService, securytiService, floatMsgService, modalService);
@@ -913,7 +915,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.displayModal = null;
         this.razonSocialParaGestion = "";
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = razonSocial;
-        this.service.enviarMailGestionarAltaCuit(cuit, razonSocial).subscribe(result => {
+        let esIntermediarioFlete = campo === 'CUITIntermediarioFlete';
+        this.service.enviarMailGestionarAltaCuit(cuit, razonSocial, esIntermediarioFlete).subscribe(result => {
             if (result.logout) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
@@ -996,6 +999,33 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     this.reiniciarProducto();
 
             }
+        });
+    }
+
+    validarIntermediarioFlete() {
+        this.validando.CUITIntermediarioFlete = true;
+        this.intermediarioFleteCuitFormatoValido = true;
+        this.ordenDeCarga.RazonSocialIntermediarioFlete = undefined;
+        
+        let cuitIF = this.ordenDeCarga.CUITIntermediarioFlete;
+        if (!cuitIF || !this.revisarCUITFormatoValido(cuitIF)) {
+            this.validando.CUITIntermediarioFlete = false;
+            return;
+        }
+        this.service.validarIntermediarioFlete(cuitIF).subscribe(resp => {
+            let data = this.manejarErroresApiResponse(resp);
+            if (data) {
+                if (data.EsCuitValido) {
+                    if (data.ExisteIntermediario) {
+                        this.ordenDeCarga.RazonSocialIntermediarioFlete = data.RazonSocial;
+                    } else {
+                        this.displayModal = 'CUITIntermediarioFlete';
+                    }
+                } else {
+                    this.intermediarioFleteCuitFormatoValido = false;
+                }
+            }
+            this.validando.CUITIntermediarioFlete = false;
         });
     }
 
