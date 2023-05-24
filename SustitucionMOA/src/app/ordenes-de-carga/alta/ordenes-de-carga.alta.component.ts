@@ -50,6 +50,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
     displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino'> | null;
     validaCPEDG = false;
+    pedidoAnticipado = false;
     editando = false;
     focusRazonSocialParaGestion = true;
     mensajeError: string = "";

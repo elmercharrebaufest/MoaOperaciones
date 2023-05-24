@@ -329,8 +329,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     obtenerOrdenDeCarga() {
         try {
             this.unsubscribe();
+            this.blockUI.start('Procesando...');
             this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
                 result => {
+                    this.blockUI.stop();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -514,13 +516,15 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.data.error != undefined && result.data.error != "") {
+                        this.obtenerOrdenDeCarga();
                         this.mensajeComponent.setErrorMsg(result.data.error);
                     } else if (result.data.info != undefined) {
+                        this.obtenerOrdenDeCarga();
                         this.mensajeComponent.setInfoMsg(result.data.info);
                     } else {
                         this.ordenDeCarga.ContratoSAP = this.contratoSeleccionado;
-                        this.mostrarBotonContratos = false;
                         this.obtenerOrdenDeCarga();
+                        this.mostrarBotonContratos = false;
                         this.mensajeComponent.setMsgsEmpty();
                         this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
                     }
