@@ -45,6 +45,7 @@ namespace SustitucionMOAUtils.Services
 
         private readonly string _errorAnulacion = "Error al anular orden de carga, pero la entrega si ha sido anulada";
         private readonly string _entregaEstadoPendiente = "La entrega sigue pendiente.";
+        private readonly string _transporteNoExiste = "El transporte no existe";
 
         public OrdenDeCargaService(
             IRepositorio repositorio,
@@ -1750,7 +1751,18 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
                 return new Resultado { error = "El contrato seleccionado esta vencido" };
             }
-            if (!string.IsNullOrEmpty(orden.ContratoSAP))
+
+            if (!orden.TransporteExiste)
+            {
+                resultado = VerificarTransporte(orden);
+                if(resultado == _transporteNoExiste)
+                {
+                    orden.DescripcionCodigoVerificacionSap = _transporteNoExiste;
+                    EnviarMailTransporteNoExiste(orden);
+                }
+
+            }
+            else if (!string.IsNullOrEmpty(orden.ContratoSAP))
             {
                 var puedeCrear = VerificarOrden(orden, orden.Cliente, false, true);
 
@@ -1763,11 +1775,6 @@ namespace SustitucionMOAUtils.Services
                         return VerificarSituacionCrediticia(orden, true);
                     }
                 }
-
-            }
-            else
-            {
-                resultado = VerificarTransporte(orden);
             }
 
             repositorio.GuardarCambios();
@@ -1866,7 +1873,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                return "El transporte no existe";
+                return _transporteNoExiste;
             }
         }
         public string VerificarEstadoEntrega(OrdenDeCarga orden)
@@ -1902,19 +1909,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (!TransporteExiste(orden))
                 {
-                    string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-                    string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
-
-                    var mails = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsMesaVentaFas, mailsMesaENTSL });
-
-                    string asunto = "ALTA TTE";
-
-                    string cuerpo = string.Format("Razón Social: {0} <br> CUIT: {1}", orden.RazonSocialTransporte, orden.CUITTransporte);
-
-                    //if (!HttpContext.Current.IsDebuggingEnabled)
-                    //{
-                    EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
-                    //}
+                    EnviarMailTransporteNoExiste(orden);
                     mensaje = "Notificación enviada";
                 }
                 else
@@ -2592,7 +2587,7 @@ namespace SustitucionMOAUtils.Services
 
             emailSenderData.Asunto = "ALTA TEMPRANA CUIT";
             emailSenderData.Cuerpo = string.Format("Se solicita el alta temprana del CUIT: {0} , Razón Social: {1}", cuit, razonSocial);
-            
+
             Log.Info("Gestión alta mail: " + emailSenderData.ToJson());
             EmailSender.EnviarMail(emailSenderData);
 
@@ -2762,6 +2757,18 @@ namespace SustitucionMOAUtils.Services
         {
             orden.CUITDestinatario = orden.CUITCliente;
             orden.RazonSocialDestinatario = orden.Cliente.RazonSocial;
+        }
+        private void EnviarMailTransporteNoExiste(OrdenDeCarga orden)
+        {
+            string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+            string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
+
+            var mails = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsMesaVentaFas, mailsMesaENTSL });
+            string asunto = "ALTA TTE";
+
+            string cuerpo = string.Format("Razón Social: {0} <br> CUIT: {1}", orden.RazonSocialTransporte, orden.CUITTransporte);
+
+            EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
         }
     }
 }
