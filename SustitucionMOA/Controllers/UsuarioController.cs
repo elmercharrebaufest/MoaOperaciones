@@ -6,6 +6,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
+using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
@@ -762,14 +763,35 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
         [HttpGet]
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
-        public ActionResult GetProvedoresEmail(string email)
+        public ActionResult GetProveedorAuditoriaPorUsuario(int id)
         {
             try
             {
-                return JsonCustom(new { data = new { proveedores = _usuarioService.GetProvedoresEmail(email) } });
+                return JsonCustom(new { data = new { usuario = _usuarioService.GetProveedorAuditoriaPorUsuario(id) } });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        public ActionResult GetProvedoresEmail(int tipoProveedorId, string email)
+        {
+            try
+            {
+                return JsonCustom(new { data = new { proveedores = _usuarioService.GetProvedoresEmail(tipoProveedorId,email) } });
             }
             catch (InfoCustomException e)
             {
@@ -787,11 +809,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
-        public ActionResult ValidaModificacionUsuario(UsuarioModificacionDto usuarioModificacionDto)
+        public ActionResult ValidarMailUsuario(UsuarioModificacionDto usuarioModificacionDto)
         {
             try
             {
-                return JsonCustom(new { data = new { validaciones = _usuarioService.ValidaModificacionUsuario(usuarioModificacionDto) } });
+                return JsonCustom(new { data = new { validaciones = _usuarioService.ValidarMailUsuario(usuarioModificacionDto) } });
             }
             catch (InfoCustomException e)
             {
@@ -807,7 +829,28 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-        
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        public ActionResult ModificarUsuario(UsuarioModificacionDto usuarioModificacionDto)
+        {
+            try
+            {
+                return JsonCustom(new { data = new { resultado = _usuarioService.ModificarUsuario(usuarioModificacionDto) } });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #endregion
 
     }

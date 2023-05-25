@@ -1,0 +1,47 @@
+<div class="row myRow">
+  <div class="clearfix myTables">
+      <spinner></spinner>
+      <table *ngIf="isVisible()" id="tableModal"
+          class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table"
+          cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+          <thead>
+              <tr role="row">
+                <th tabindex="0" rowspan="1" colspan="1">Código Proveedor</th>
+                <th tabindex="0" rowspan="1" colspan="1">Mail</th>
+                <th tabindex="0" rowspan="1" colspan="1">CUIT</th>
+                <th tabindex="0" rowspan="1" colspan="1">Tipo Proveedor</th>
+                <th tabindex="0" rowspan="1" colspan="1">Razón Social</th>
+                <th tabindex="0" rowspan="1" colspan="1">Fecha Actualización</th>
+                <th tabindex="0" rowspan="1" colspan="1">Usuario Actualización</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let usuario of data | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
+                  role="row" [class.odd]="!odd">
+                  <td>{{usuario.CodigoProveedor}}</td>
+                  <td>{{usuario.Mail}}</td>
+                  <td>{{usuario.Cuit}}</td>
+                  <td>{{usuario.TipoProveedor}}</td>
+                  <td>{{usuario.RazonSocial}}</td>
+                  <td>{{usuario.FechaActualizacion | date: 'dd/MM/yyyy'}}</td>
+                  <td>{{usuario.UsuarioActualizacion}}</td>
+              </tr>
+          </tbody>
+      </table>
+
+      <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisible()">
+          <div class="dataTables_paginate paging_simple_numbers">
+              <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
+                  [class.disabled]="pT.isFirstPage()"> Anterior </a>
+              <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+                  <a class="paginate_button" (click)="pT.setCurrent(page.value)"
+                      *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+                  <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label
+                      }}</a>
+              </span>
+              <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
+                  [class.disabled]="pT.isLastPage()"> Siguiente </a>
+          </div>
+      </pagination-template>
+  </div>
+</div>

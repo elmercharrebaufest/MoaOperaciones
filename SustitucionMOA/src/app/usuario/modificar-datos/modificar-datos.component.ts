@@ -1,23 +1,29 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { UsuarioService } from '../usuario.service';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
+import { MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-modificar-datos',
   templateUrl: './modificar-datos.component.html',
-  styleUrls: ['./modificar-datos.component.css']
+  styleUrls: ['./modificar-datos.component.css'],
+  providers: [MessageService]
 })
 export class ModificarDatosComponent implements OnInit {
 
   tipoUsuario: any = [];
+  existeProveedores: boolean = true;
   modificarDatosForm: FormGroup;
   @ViewChild(SpinnerComponent)
   protected spinnerComponent: SpinnerComponent;
+  @Output() cerrarModal = new EventEmitter();
 
-  constructor(protected service: UsuarioService, private formBuilder: FormBuilder) {
+  constructor(protected service: UsuarioService, 
+              private formBuilder: FormBuilder,
+              private messageService: MessageService) {
     this.spinnerComponent = new SpinnerComponent();
     this.service.UsuarioModificarDatos.subscribe(data => {
       this.modificarDatosForm = this.inicializarFormDatosUsuario();
@@ -53,6 +59,7 @@ export class ModificarDatosComponent implements OnInit {
       id: [0],
       mail: [''],
       cuit: [''],
+      usuarioModificacion: [''],
       idTipoUsuario: [0],
       proveedores: this.formBuilder.array([]),
     });
@@ -61,15 +68,23 @@ export class ModificarDatosComponent implements OnInit {
     return index;
   }
   private cargarFormDatosUsuario(usuario: any) {
-    console.log('usuario--->>',usuario);
+    let usuarioModificacion: string = sessionStorage.getItem("username");
     this.modificarDatosForm.controls['id'].setValue(usuario.Id);
     this.modificarDatosForm.controls['mail'].setValue(usuario.Mail);
     this.modificarDatosForm.controls['cuit'].setValue(usuario.CUIT);
+    this.modificarDatosForm.controls['usuarioModificacion'].setValue(usuarioModificacion);   
     this.modificarDatosForm.controls['idTipoUsuario'].setValue(usuario.TipoUsuario.Id);
-
-    this.service.getProvedoresEmail(usuario.Mail).subscribe(listaProveedores => {
-      this.cargarFormDatoProveedores(listaProveedores.data.proveedores);
-    }, error => { }, () => { this.spinnerComponent.hideIt(); });
+    let listaProveedores = null;
+    this.existeProveedores = true;
+    this.service.getProvedoresEmail(usuario.TipoUsuario.Id,usuario.Mail).subscribe(proveedores => {
+      console.log('listaProveedores 1--->>', listaProveedores);
+      listaProveedores = proveedores.data.proveedores;
+    }, error => { }, () => { 
+      console.log('listaProveedores 2--->>', listaProveedores);
+      if (listaProveedores.length == 0) this.existeProveedores = false;
+      this.spinnerComponent.hideIt(); 
+      this.cargarFormDatoProveedores(listaProveedores);
+    });
 
   }
   private cargarFormDatoProveedores(proveedores: any) {
@@ -79,19 +94,61 @@ export class ModificarDatosComponent implements OnInit {
   }
 
   public onModificarDatos(){
+    let mensaje = this.validarDatosUsuario();
+    if (mensaje != ''){
+      this.messageService.add({ key: 'toastPopupDetalles', severity: 'error', summary: 'Errores encontrados', detail: mensaje });
+      return;
+    }
     this.spinnerComponent.showIt();
     let existeErrores: boolean = false;
-    this.service.validaModificacionUsuario(this.modificarDatosForm.value).subscribe(data=>{
-      if(data.length > 0) existeErrores= true;
+    this.service.validarMailUsuario(this.modificarDatosForm.value).subscribe(response=>{
+      if(response.data.validaciones.length > 0) {
+        for(const data of response.data.validaciones)
+          mensaje += `${data}\n`;
+        existeErrores= true;
+      }
     }, error => { }
      , () => { 
       this.spinnerComponent.hideIt(); 
+      if (!existeErrores){
+        this.guardarDatosUsuario();
+      }else{
+        this.messageService.add({ key: 'toastPopupDetalles', severity: 'error', summary: 'Errores encontrados', detail: mensaje });
+      }
+    });
+  }
+  private guardarDatosUsuario(){
+    this.spinnerComponent.showIt();
+    let datosUsuario = this.modificarDatosForm.value;
+    this.service.modificarUsuario(datosUsuario).subscribe(data=>{
+    }, error=>{}, ()=>{
+      this.spinnerComponent.hideIt(); 
+      this.service.UsuarioRecargarLista = true;
+      this.cerrarModal.emit(true);
+      this.messageService.add({ key: 'toastPopupDetalles', severity: 'success', summary: 'Modificación de Usuario', detail: 'Se guardaron los cambios correctamente.' });
     });
   }
 
+  private validarDatosUsuario(){
+    let mensaje: string = '';
+    let datosUsuario = this.modificarDatosForm.value;
+    if(datosUsuario.mail == '') mensaje += 'Ingrese el mail del usuario.\n'
+    if(datosUsuario.idTipoUsuario == '' || datosUsuario.idTipoUsuario == '0') mensaje += 'Seleccione el tipo de usuario.\n';
+    if(datosUsuario.cuit == '' && datosUsuario.cuit.length < 10) mensaje += 'El cuit del usuario no tiene el formato correcto.\n';
+    if (mensaje ==''){
+      datosUsuario.proveedores.forEach(proveedor=>{
+        if(proveedor.cuit == '' && proveedor.cuit.length < 10) mensaje += 'El cuit del proveedor no tiene el formato correcto.\n';
+        if(proveedor.codigoProveedor == '' && proveedor.codigoProveedor == '0') mensaje += 'No se ha ingresado el codigo del proveedor.\n';
+        if(proveedor.razonSocial == '') mensaje += 'No se ha ingresado la razón social.\n';
+        if(mensaje !='') return;
+      });
+    }
+    return mensaje;
+  }
   public inicializarFormProveedor(proveedor: any): FormGroup {
     if (proveedor != null) {
       return this.formBuilder.group({
+        id: proveedor.Id,
         cuit: proveedor.CUIT,
         razonSocial: proveedor.RazonSocial,
         codigoProveedor: proveedor.CodigoProveedor,
@@ -99,6 +156,7 @@ export class ModificarDatosComponent implements OnInit {
       })
     } else {
       return this.formBuilder.group({
+        id: [0],
         cuit: 0,
         razonSocial: [''],
         codigoProveedor: [0],

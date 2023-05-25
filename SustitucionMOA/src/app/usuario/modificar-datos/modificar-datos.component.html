@@ -1,5 +1,6 @@
 <div class="tab-pane" id="tab2">
   <spinner></spinner>
+  <p-toast key="toastPopupDetalles" [style]="{'white-space': 'pre-line'}"></p-toast>
   <div class="formulario">
     <section class="container-fluid">
       <form [formGroup]="modificarDatosForm">
@@ -25,10 +26,20 @@
             </div>
           </div>
           <div class="col-md-4">
+            <div class="formulario-label">
+              Cuit
+            </div>
+            <div class="styled-select">
+              <input type="search" formControlName="cuit" class="form-control" autocomplete="chrome-off"
+                maxlength="200" />
+            </div>
           </div>
         </div>
         <br />
-        <div class="div-division" formArrayName="proveedores">
+        <div class="div-division" *ngIf="!existeProveedores">
+          <p class="titulo-rojo">No existe proveedores para el usuario.</p>
+        </div>
+        <div class="div-division" formArrayName="proveedores" *ngIf="existeProveedores">
           <div *ngFor="let proveedor of modificarDatosForm.get('proveedores').value; let i = index; trackBy:trackByFn">
             <div class="row" [formGroupName]="i">
               <div class="col-md-4">
