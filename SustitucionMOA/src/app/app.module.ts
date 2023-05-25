@@ -70,6 +70,8 @@ import { ConfirmationService } from 'primeng/api';
 import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
 import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";;
 import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-datos.component'
+import { ToastModule } from "primeng/toast";;
+import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/usuario-auditoria-list.component'
 
 
 
@@ -92,6 +94,7 @@ import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-dat
     ComprasModule,
     ConfirmDialogModule,
     MultiSelectModule,
+    ToastModule
   ],
   declarations: [
     AppComponent,
@@ -120,7 +123,8 @@ import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-dat
     ApikeyComponent,
     PesificacionesGuardadasComponent,
     PesificacionBaseComponent,
-    ModificarDatosComponent
+    ModificarDatosComponent,
+    UsuarioAuditoriaListComponent
     ],
   providers: [
     DatePipe,

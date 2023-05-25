@@ -12,11 +12,13 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public string Cuit { get; set; }
         public string Mail { get; set; }
+        public string UsuarioModificacion { get; set; }
         public int IdTipoUsuario { get; set; }
         public List<ProveedoresModificacionDto> Proveedores { get; set; }
     }
     public class ProveedoresModificacionDto
     {
+        public int Id { get; set; }
         public string Cuit { get; set; }
         public string RazonSocial     {get; set;}
         public string CodigoProveedor {get; set;}

@@ -40,6 +40,10 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
         this.rolDropdownComponent = new DropdownComponent();
+
+        this.service.UsuarioRecargarLista.subscribe(recargar =>{
+            if (recargar!=null && recargar == true) this.getUsuario();
+        });
     }
 
     data: any;
@@ -94,8 +98,17 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(e);
         }
     }
-    modificarDatos(id: number){
+    abrirModalAuditoriaUsuario(id: number){
+        this.service.UsuarioCargarAuditoria = id;
+    }
+    abrirModalModificarDatos(id: number){
         this.service.UsuarioModificarDatos = id;
+    }
+    cerrarModalModificarDatos(event){
+        if(event){
+            let modal = document.getElementById('cerrarModalUsuario');
+            modal.click();
+        }
     }
     getUsuario() {
         this.mensajeComponent.setMsgsEmpty();
