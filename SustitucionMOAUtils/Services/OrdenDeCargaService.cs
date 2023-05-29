@@ -2729,11 +2729,12 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                if (string.IsNullOrEmpty(cuil)) return;
                 var result = scatoConsumer.CuilChoferExiste(cuil);
             }
             catch (Exception err)
             {
-                Log.Debug("OrdenDeCarga Controller", string.Format("Error al Validar CUIL: {0}", cuil), err.Message);
+                Log.Error("", "", "OrdenDeCarga Service", "ValidarCuilChoferEnScato CUIT: " + cuil, err);
             }
 
 
