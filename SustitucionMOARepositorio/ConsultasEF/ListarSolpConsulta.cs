@@ -112,8 +112,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                             Cantidad = subpos.Cantidad,
                                                                                             PrecioBruto = subpos.Precio,
                                                                                             UnidadComprasDescripcion = subpos.UnidadDeMedida.Descripcion,
-                                                                                            MonedaCotizacionDescripcion = !posicion.CotizacionPosicion.CotizacionSubPosiciones.Select(moneda => moneda.Moneda_Id).GroupBy(m => m).Any(g => g.Count() > 1) ? subpos.Moneda.Descripcion : "Error",
-                                                                                            PrecioTotalSubPosicion = !posicion.CotizacionPosicion.CotizacionSubPosiciones.Select(moneda => moneda.Moneda_Id).GroupBy(m => m).Any(g => g.Count() > 1) ?
+                                                                                            MonedaCotizacionDescripcion = posicion.CotizacionPosicion.CotizacionSubPosiciones.Select(moneda => moneda.Moneda_Id).GroupBy(m => m).Count() == 1
+                                                                                            ? subpos.Moneda.Descripcion : "Error",
+                                                                                            PrecioTotalSubPosicion = posicion.CotizacionPosicion.CotizacionSubPosiciones.Select(moneda => moneda.Moneda_Id).GroupBy(m => m).Count() == 1 ?
                                                                                             (subpos.Cantidad.Value * subpos.Precio.Value) : 0,                                                                                            
                                                                                         }).ToList(),
                                                             }).ToList(),
