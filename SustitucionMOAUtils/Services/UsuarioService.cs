@@ -14,6 +14,7 @@ using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Entidades = SustitucionMOAModel.Entities;
@@ -604,7 +605,7 @@ namespace SustitucionMOAUtils.Services
                     TipoProveedor_Id = proveedor.TipoProveedor_Id,
                     TipoProveedor = tipoProveedor.Nombre,
                     RazonSocial = proveedor.RazonSocial,
-                    FechaActualizacion = proveedor.FechaActualizacion,
+                    FechaActualizacion = proveedor.FechaActualizacion.ToString("MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture),
                     UsuarioActualizacion = proveedor.UsuarioActualizacion,
                 });
             }
@@ -621,7 +622,7 @@ namespace SustitucionMOAUtils.Services
                 proveedorAuditoria.Usuario_Id = usuarioModificacionDto.Id;
                 proveedorAuditoria.CodigoProveedor = proveedorModificado.CodigoProveedor;
                 proveedorAuditoria.Mail = usuarioModificacionDto.Mail;
-                proveedorAuditoria.Cuit = proveedorModificado.Cuit;
+                proveedorAuditoria.Cuit = proveedorModificado.Cuit; 
                 proveedorAuditoria.TipoProveedor_Id = proveedorModificado.IdTipoProveedor;
                 proveedorAuditoria.RazonSocial = proveedorModificado.RazonSocial;
                 proveedorAuditoria.FechaActualizacion = DateTime.Now;

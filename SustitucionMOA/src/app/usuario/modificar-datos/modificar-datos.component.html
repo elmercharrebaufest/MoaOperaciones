@@ -19,7 +19,7 @@
               Tipo Usuario
             </div>
             <div class="styled-select">
-              <select formControlName="idTipoUsuario">
+              <select formControlName="idTipoUsuario" (change)="onCambiarProveedor()">
                 <option value="">Seleccione</option>
                 <option *ngFor="let tipo of tipoUsuario" [ngValue]="tipo.Id">{{tipo.Nombre}}</option>
               </select>
@@ -67,7 +67,7 @@
                 <div class="styled-select">
                   <select formControlName="idTipoProveedor">
                     <option value="">Seleccione</option>
-                    <option *ngFor="let tipo of tipoUsuario" [ngValue]="tipo.Id">{{tipo.Nombre}}</option>
+                    <option disabled *ngFor="let tipo of tipoUsuario" [ngValue]="tipo.Id">{{tipo.Nombre}}</option>
                   </select>
                 </div>
               </div>

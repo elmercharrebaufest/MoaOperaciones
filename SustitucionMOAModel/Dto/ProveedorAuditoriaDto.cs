@@ -17,7 +17,7 @@ namespace SustitucionMOAModel.Dto
         public int TipoProveedor_Id { get; set; }
         public string TipoProveedor { get; set; }
         public string RazonSocial { get; set; }
-        public DateTime FechaActualizacion { get; set; }
+        public string FechaActualizacion { get; set; }
         public string UsuarioActualizacion { get; set; }
     }
 }
