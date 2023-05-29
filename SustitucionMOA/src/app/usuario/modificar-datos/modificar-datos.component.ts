@@ -77,10 +77,8 @@ export class ModificarDatosComponent implements OnInit {
     let listaProveedores = null;
     this.existeProveedores = true;
     this.service.getProvedoresEmail(usuario.TipoUsuario.Id,usuario.Mail).subscribe(proveedores => {
-      console.log('listaProveedores 1--->>', listaProveedores);
       listaProveedores = proveedores.data.proveedores;
     }, error => { }, () => { 
-      console.log('listaProveedores 2--->>', listaProveedores);
       if (listaProveedores.length == 0) this.existeProveedores = false;
       this.spinnerComponent.hideIt(); 
       this.cargarFormDatoProveedores(listaProveedores);
@@ -92,7 +90,39 @@ export class ModificarDatosComponent implements OnInit {
       this.proveedoresFormArray.push(this.inicializarFormProveedor(proveedor));
     });
   }
-
+  private crearObjectoModificarUsuario(){
+    let modificarDatos = this.modificarDatosForm;
+    let formProveedores = this.modificarDatosForm.get('proveedores')['controls'];
+    let proveedores = [];
+    for (let index = 0; index < formProveedores.length; index++) {
+      let proveedor = formProveedores[index].controls;
+      console.log('proveedor-->>',proveedor)
+      proveedores.push({
+        codigoProveedor : proveedor.codigoProveedor.value,
+        cuit : proveedor.cuit.value,
+        id : proveedor.id.value,
+        idTipoProveedor : proveedor.idTipoProveedor.value,
+        razonSocial : proveedor.razonSocial.value,
+      });
+    }
+    let modificarUsuario = {
+      id: modificarDatos.controls["id"].value,
+      mail: modificarDatos.controls["mail"].value,
+      cuit: modificarDatos.controls["cuit"].value,
+      usuarioModificacion: modificarDatos.controls["usuarioModificacion"].value,
+      idTipoUsuario: modificarDatos.controls["idTipoUsuario"].value,
+      proveedores: proveedores,
+    }
+    return modificarUsuario;
+  }
+  public onCambiarProveedor(){
+    const idTipoUsuario = this.modificarDatosForm.controls.idTipoUsuario.value;
+    let formProveedores = this.modificarDatosForm.get('proveedores')['controls'];
+    for (let index = 0; index < formProveedores.length; index++) {
+      let proveedores = formProveedores[index].controls;
+      proveedores.idTipoProveedor.setValue(idTipoUsuario);
+    }
+  }
   public onModificarDatos(){
     let mensaje = this.validarDatosUsuario();
     if (mensaje != ''){
@@ -101,7 +131,8 @@ export class ModificarDatosComponent implements OnInit {
     }
     this.spinnerComponent.showIt();
     let existeErrores: boolean = false;
-    this.service.validarMailUsuario(this.modificarDatosForm.value).subscribe(response=>{
+    let modificarUsuario = this.crearObjectoModificarUsuario();
+    this.service.validarMailUsuario(modificarUsuario).subscribe(response=>{
       if(response.data.validaciones.length > 0) {
         for(const data of response.data.validaciones)
           mensaje += `${data}\n`;
@@ -119,7 +150,7 @@ export class ModificarDatosComponent implements OnInit {
   }
   private guardarDatosUsuario(){
     this.spinnerComponent.showIt();
-    let datosUsuario = this.modificarDatosForm.value;
+    let datosUsuario = this.crearObjectoModificarUsuario();
     this.service.modificarUsuario(datosUsuario).subscribe(data=>{
     }, error=>{}, ()=>{
       this.spinnerComponent.hideIt(); 
@@ -152,7 +183,7 @@ export class ModificarDatosComponent implements OnInit {
         cuit: proveedor.CUIT,
         razonSocial: proveedor.RazonSocial,
         codigoProveedor: proveedor.CodigoProveedor,
-        idTipoProveedor: proveedor.IdTipoProveedor
+        idTipoProveedor: {value: proveedor.IdTipoProveedor,disabled: true}
       })
     } else {
       return this.formBuilder.group({

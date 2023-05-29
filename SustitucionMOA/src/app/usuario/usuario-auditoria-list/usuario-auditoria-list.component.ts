@@ -23,9 +23,9 @@ export class UsuarioAuditoriaListComponent implements OnInit {
   }
 
   ngOnInit() {
+
   }
   getAuditoriaUsuario(idUsuario: string) {
-    console.log('idUsuario-->>',idUsuario)
     this.spinnerComponent.showIt();
     try {
         this.service.getProveedorAuditoriaPorUsuario(idUsuario).subscribe(
