@@ -1755,7 +1755,7 @@ namespace SustitucionMOAUtils.Services
             if (!orden.TransporteExiste)
             {
                 resultado = VerificarTransporte(orden);
-                if(resultado == _transporteNoExiste)
+                if (resultado == _transporteNoExiste)
                 {
                     orden.DescripcionCodigoVerificacionSap = _transporteNoExiste;
                     EnviarMailTransporteNoExiste(orden);
@@ -2021,8 +2021,9 @@ namespace SustitucionMOAUtils.Services
         }
         private bool ObtenerSituacionCrediticia(OrdenDeCarga orden)
         {
+            var numeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? orden.NumeroPedidoIngresado : orden.NumeroPedido;
             Log.Info("ObtenerSituacionCrediticia");
-            var result = consumer.OrdenCargaControlEstadoRequest("", orden.NumeroPedido, "");
+            var result = consumer.OrdenCargaControlEstadoRequest("", numeroPedido, "");
 
             return result == "CE-00";
         }
@@ -2766,11 +2767,14 @@ namespace SustitucionMOAUtils.Services
             string mailsMesaENTSL = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
 
             var mails = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsMesaVentaFas, mailsMesaENTSL });
+
             string asunto = "ALTA TTE";
 
             string cuerpo = string.Format("Razón Social: {0} <br> CUIT: {1}", orden.RazonSocialTransporte, orden.CUITTransporte);
 
-            EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
+            var emailData = new EmailSenderData { Asunto = asunto, Cuerpo = cuerpo, Mails = mails };
+
+            EmailSender.EnviarMail(emailData);
         }
     }
 }
