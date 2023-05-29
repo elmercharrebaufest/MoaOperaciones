@@ -198,7 +198,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.NET_PRICE = esPosicionDeMateriales ? (decimal)adjudicacionPosicion.CotizacionPosicion.Precio : CalcularPrecioBrutoServicio(posicion, adjudicacionPosicion);
                 IM_POITEM.NET_PRICESpecified = true;
                 IM_POITEM.PRICE_UNIT = 1;
-                //IM_POITEM.PRICE_UNITSpecified = true;
+                IM_POITEM.PRICE_UNITSpecified = true;
                 IM_POITEM.GR_PR_TIME = 0;
                 //IM_POITEM.GR_PR_TIMESpecified = true; 
                 IM_POITEM.DELETE_IND = "";
