@@ -814,7 +814,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
 
-        if(!this.ordenDeCarga.CUITDestinatario && campo==='CUITDestino')
+        if (!this.ordenDeCarga.CUITDestinatario && campo === 'CUITDestino')
             this.copiarCuitEnDestinatario();
 
         this.service.validarExisteCuitScato(cuit).subscribe(
@@ -1035,7 +1035,21 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
         return response.data;
     }
-
+    validarCuilChofer() {
+        const campo = "CUITChofer";
+        const cuit = this.ordenDeCarga.CUITChofer ? this.ordenDeCarga.CUITChofer.toString() : "";
+        if (!this.revisarCUITFormatoValido(cuit))
+            return;
+        this.validando[campo] = true;
+        this.mensajesOrdenDeCarga[campo] = null;
+        this.service.validarCuilChofer(cuit).subscribe(result => {
+            this.validando[campo] = false;
+            let data = this.manejarErroresApiResponse(result);
+            if (!data) {
+                this.floatMsgService.setInfoMsg("CUIL inválido – Revisar valor ingresado");
+            }
+        });
+    }
     definirValorPlanta() {
         if (this.editando && this.listaPlantas)
             this.plantaSeleccionada = this.listaPlantas.find(planta => planta.Codigo.toString() == this.ordenDeCarga.PlantaCodigo);

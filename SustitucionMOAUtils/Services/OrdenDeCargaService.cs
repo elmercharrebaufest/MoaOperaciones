@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using SustitucionMOAAssets;
+using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
@@ -65,7 +66,7 @@ namespace SustitucionMOAUtils.Services
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
             Log.Info($"Agregar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
-            if (!ValidarCuitValido(ordenDeCarga.CUITChofer))
+            if (!ValidarCuilChoferValido(ordenDeCarga.CUITChofer))
                 throw new ValidationCustomException("Cuil de chofer invalido");
 
             try
@@ -186,7 +187,7 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"Editar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
             var valoresAEditar = new List<string> { "NombreChofer", "CUITChofer", "PatenteAcoplado", "ChasisAcoplado", "ContratoIngresado", "NumeroPedido", "Observacion", "Cantidad", "RazonSocialTransporte", "CUITTransporte", "Producto_Id", "NumeroPedidoIngresado" };
             var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
-            if (!ValidarCuitValido(ordenDeCarga.CUITChofer))
+            if (!ValidarCuilChoferValido(ordenDeCarga.CUITChofer))
                 throw new ValidationCustomException("Cuil de chofer invalido");
             try
             {
@@ -2743,8 +2744,20 @@ namespace SustitucionMOAUtils.Services
                 Log.Error("", "", "OrdenDeCarga Service", "ValidarCuilChoferEnScato CUIT: " + cuil, err);
             }
         }
-        public bool ValidarCuitValido(string cuit)
+        public bool ValidarCuilChoferValido(string cuilChofer)
         {
+            var choferRes = scatoRepositorioClient.ObtenerChoferPorCuil(DataFormatter.CuitConGuion(cuilChofer));
+            if (!choferRes.IsValid)
+            {
+                Log.Info("Error al obtener chofer de Scato " + cuilChofer);
+                foreach (var err in choferRes.Messages)
+                {
+                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
+                }
+
+                if (choferRes.Messages.Any(msg => msg.Message.Contains(" no cumple con el digito verificador.")))
+                    return false;
+            }
             return true;
         }
         private string ObtenerMaterialValidaSisa()

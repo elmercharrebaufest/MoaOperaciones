@@ -53,6 +53,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<PlantaDto> ObtenerPlantasDestino(string destinoCuit);
         List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
         void ValidarCuilChoferEnScato(string cuil);
-        bool ValidarCuitValido(string cuit);
+        bool ValidarCuilChoferValido(string cuilChofer);
     }
 }
