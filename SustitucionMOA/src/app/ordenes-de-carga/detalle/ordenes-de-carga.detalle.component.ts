@@ -343,6 +343,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.separarCadenas();
                         this.verificarBotones()
                         if (this.ordenDeCarga.MensajeValidacionSAP != "" && this.ordenDeCarga.MensajeValidacionSAP != "OK" && this.esInterno) {
+                            this.mensajeComponent.setMsgsEmpty();
                             this.mensajeComponent.setInfoMsg(this.ordenDeCarga.MensajeValidacionSAP)
                         }
                     }
@@ -415,6 +416,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
+                        this.mensajeComponent.setMsgsEmpty();
                         if (result.data != "Orden de carga actualizada correctamente") {
                             this.mensajeComponent.setInfoMsg(result.data);
                         } else {
@@ -423,7 +425,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mostrarBotonNotificarTransporte = false;
                         this.mostrarBotonVerificarTransporte = false;
                         this.obtenerOrdenDeCarga();
-
                     }
                 },
                 error => {
@@ -457,8 +458,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.data.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.data.info);
                     } else {
-                        this.obtenerOrdenDeCarga();
                         this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+                        this.obtenerOrdenDeCarga();
 
                     }
                 },
@@ -523,10 +524,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mensajeComponent.setInfoMsg(result.data.info);
                     } else {
                         this.ordenDeCarga.ContratoSAP = this.contratoSeleccionado;
-                        this.obtenerOrdenDeCarga();
                         this.mostrarBotonContratos = false;
                         this.mensajeComponent.setMsgsEmpty();
                         this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+                        this.obtenerOrdenDeCarga();
                     }
                 },
                 error => {
@@ -636,8 +637,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.ordenDeCarga.NumeroPedido = this.pedidoSeleccionado;
                         this.ordenDeCarga.NumeroPedidoIngresado = this.pedidoSeleccionado;
                         this.mostrarBotonPedidos = false;
-                        this.obtenerOrdenDeCarga();
+                        this.mensajeComponent.setMsgsEmpty();
                         this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+                        this.obtenerOrdenDeCarga();
                     }
                 },
                 error => {
@@ -810,8 +812,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.obtenerOrdenDeCarga();
+                        this.mensajeComponent.setMsgsEmpty();
                         this.mensajeComponent.setSuccessMsg(result.data);
+                        this.obtenerOrdenDeCarga();
                     }
                 },
                 error => {
