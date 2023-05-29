@@ -630,5 +630,11 @@ export class DashboardComponent extends ListBaseComponent {
     cerrarCircular() {
         this.displayCircular = false;
     }
+
+    onBuscar() {
+        this.paginator.changePage(0);
+        this.pageIndex = 1;
+        this.getListarSolp();
+    }
 }
 
