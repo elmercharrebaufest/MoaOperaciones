@@ -927,7 +927,7 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                response.Data = ordenDeCargaService.ValidarCuitValido(cuilChofer);
+                response.Data = ordenDeCargaService.ValidarCuilChoferValido(cuilChofer);
             }
             catch (InfoCustomException ice)
             {
