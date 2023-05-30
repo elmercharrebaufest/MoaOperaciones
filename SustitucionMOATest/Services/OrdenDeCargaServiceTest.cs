@@ -17,6 +17,8 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
+using SustitucionMOAWS.ResponseHandler.OrdenCarga;
+using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 
 namespace SustitucionMOATest.Services
 {
@@ -1700,11 +1702,14 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void GenerarEntregaSAPOkTest()
         {
-            string value = "OE-00";
+            var ordenCargaEntreResponseHandlerMock = new Mock<OrdenCargaEntreResponseHandler>();
             var respuesta = "OE-00";
             ordenDeCarga.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            consumerOrdenCargaMOA.Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), out value, It.IsAny<bool>())).Returns("OE-00");
+            ordenCargaEntreResponseHandlerMock.Setup(x => x.GetResultado()).Returns(OrdenCargaCrearEntrega.OK);
+            consumerOrdenCargaMOA
+                .Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), It.IsAny<bool>()))
+                .Returns(ordenCargaEntreResponseHandlerMock.Object); //"OE-00");
 
             consumerOrdenCargaMOA.Setup(x => x.OrdenCargaControlEstadoRequest(
               It.IsAny<string>(),
@@ -1727,10 +1732,13 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void GenerarEntregaSAPTransporteNoExisteTest()
         {
-            string value = "OE-01";
+            var ordenCargaEntreResponseHandlerMock = new Mock<OrdenCargaEntreResponseHandler>();
             ordenDeCarga.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            consumerOrdenCargaMOA.Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), out value, It.IsAny<bool>())).Returns("OE-01");
+            ordenCargaEntreResponseHandlerMock.Setup(x => x.GetResultado()).Returns(OrdenCargaCrearEntrega.NoExisteTransportista);
+            consumerOrdenCargaMOA
+                .Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), It.IsAny<bool>()))
+                .Returns(ordenCargaEntreResponseHandlerMock.Object); //"OE-01");
 
             consumerOrdenCargaMOA.Setup(x => x.OrdenCargaControlEstadoRequest(
               It.IsAny<string>(),

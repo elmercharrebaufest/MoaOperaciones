@@ -163,7 +163,7 @@ namespace SustitucionMOAWS.WSConsumers
         Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE 	OE-02	'Entrega Creada - Error al insertar'
 
         */
-        public string CrearEntrega(CrearEntregaRequest entregaReq, out string mensaje, bool pedidoAnticipado = false)
+        public OrdenCargaEntreResponseHandler CrearEntrega(CrearEntregaRequest entregaReq, bool pedidoAnticipado = false)
         {
             var service = new SI_MPMF_MOAOP_ORDEN_CARGA_ENTREClient();
             var cuit_tr = entregaReq.TransportistaReal ?? entregaReq.Transportista;
@@ -194,11 +194,11 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_TRANSPORTISTA_REAL: cuit_int_flete,
                 IM_USUARIO: "CACERESN",
                 IM_ZZCODPLANTA: entregaReq.PlantaCodigo,
-                EX_MENSAJE: out mensaje).Trim();
+                EX_MENSAJE: out string mensaje).Trim();
 
             Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Response: {new { entrega, mensaje }}");
 
-            return entrega;
+            return new OrdenCargaEntreResponseHandler(mensaje, entrega);
         }
 
         /* 
