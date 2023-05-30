@@ -56,7 +56,7 @@ namespace SustitucionMOAWS.WebApi
         {
             InicializarCliente();
 
-            var reqUri = $"{ScatoApi}/ObtenerChoferPorCuit/{cuilChofer}";
+            var reqUri = $"{ScatoApi}/ObtenerChoferPorCuil/{cuilChofer}";
             HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {

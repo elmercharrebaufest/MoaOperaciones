@@ -251,6 +251,7 @@
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\CodigoMensajeObtenerChoferPorCuil.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\ConsultaListado.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\Domicilio.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\Planta.cs" />
