@@ -72,19 +72,12 @@ namespace SustitucionMOAWS.WebApi
         {
             cliente.DefaultRequestHeaders.Accept.Clear();
             cliente.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            //cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "U2NhdG9Mb2dpc3RpY2E6U2VydmljaW9FeHRlcm5vUGFzcw==");
-
-            //cliente.DefaultRequestHeaders.Authorization =
-            //  new AuthenticationHeaderValue(
-            //    "Basic", Convert.ToBase64String(
-            //        System.Text.ASCIIEncoding.ASCII.GetBytes(
-            //           $"{yourusername}:{yourpwd}")));
 
             cliente.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue(
                     "Basic",
                     Convert.ToBase64String(
-                        ASCIIEncoding.ASCII.GetBytes($"{Username}:{Password}")));
+                        System.Text.ASCIIEncoding.ASCII.GetBytes($"{Username}:{Password}")));
         }
     }
 }
