@@ -66,7 +66,7 @@ namespace SustitucionMOAUtils.Services
             proveedor.Mail = email;
             proveedor.Telefono = telefono;
             proveedor.RealizarAnalisisNOSIS = realizarAnalisisNOSIS;
-            proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
+            proveedor.EstadoAprobacion = altaInterna? EstadoAprobacion.AprobacionPendiente : EstadoAprobacion.DocumentacionPendiente;
             proveedor.IdRubro = IdRubro;
             proveedor.CondicionDePago = CondicionDePago;
             proveedor.ServicioPrestado = ServicioPrestado;
@@ -92,7 +92,7 @@ namespace SustitucionMOAUtils.Services
                     new ProveedorHistorialAprobacion
                     {
                         Fecha = DateTime.Now,
-                        EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                        EstadoAprobacion = proveedor.EstadoAprobacion,
                         Observacion = observacionInterna,
                         Usuario_Id = usuarioId
                     }
