@@ -13,5 +13,6 @@
     {
         public string Message { get; set; }
         public int MessageType { get; set; }
+        public string MessageCode { get; set; }
     }
 }
