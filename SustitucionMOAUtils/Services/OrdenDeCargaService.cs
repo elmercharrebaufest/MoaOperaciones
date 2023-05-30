@@ -2755,8 +2755,7 @@ namespace SustitucionMOAUtils.Services
                     Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
                 }
 
-                if (choferRes.Messages.Any(msg => msg.Message.Contains(" no cumple con el digito verificador.")))
-                    return false;
+                return choferRes.Messages.Any(msg => msg.Message.Contains(" no cumple con el digito verificador."));
             }
             return true;
         }
