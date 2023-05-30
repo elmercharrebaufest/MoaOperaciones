@@ -4377,12 +4377,12 @@ namespace SustitucionMOAUtils.Services
             var destino = repositorio.Obtener<TablaSap>(x => x.Codigo == "ARP" && x.Tabla == TablasSap.Moneda);
             var precio = new List<decimal>();
             var precioSubposicion = new List<decimal>();
-
+            var cotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(x => adjudicacionDto.AdjudicacionPosiciones.Select(y => y.CotizacionPosicion_Id).Contains(x.Id));
             if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() != "MATERIALES")
             {
-                if (cotizacion.CotizacionPosiciones != null)
+                if (cotizacionPosiciones != null)
                 {
-                    foreach (var posicion in cotizacion.CotizacionPosiciones)
+                 foreach (var posicion in cotizacionPosiciones)                 
                     {
 
                         if (posicion.CotizacionSubPosiciones != null)
@@ -4413,7 +4413,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            var cotizacionAdjudicacionPosicion = cotizacion.CotizacionPosiciones.Join(adjudicacionDto.AdjudicacionPosiciones,
+            var cotizacionAdjudicacionPosicion = cotizacionPosiciones.Join(adjudicacionDto.AdjudicacionPosiciones,
                    posicionCotizacion => posicionCotizacion.Id,
                    posicionAdjudicacion => posicionAdjudicacion.CotizacionPosicion_Id,
                    (posicionCotizacion, posicionAdjudicacion) => new
