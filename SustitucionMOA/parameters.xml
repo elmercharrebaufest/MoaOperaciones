@@ -188,6 +188,18 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="ScatoRepositorioUsername Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ScatoRepositorioUsername']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ScatoRepositorioPassword Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ScatoRepositorioPassword']
+                           /@value" />
+	</parameter>
+
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client

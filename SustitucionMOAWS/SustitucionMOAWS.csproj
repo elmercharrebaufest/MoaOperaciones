@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="CredentialService\DataAgroWSCredential.cs" />
     <Compile Include="CredentialService\SAPCredential.cs" />
+    <Compile Include="Enum\OrdenCargaConsumer\OrdenCargaCrearEntrega.cs" />
     <Compile Include="Enum\OrdenCargaConsumer\OrdenCargaCrearOrden.cs" />
     <Compile Include="Enum\OrdenCargaConsumer\OrdenCargaControlCarga.cs" />
     <Compile Include="Enum\OrdenCargaConsumer\OrdenCargaControlEstado.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseHandler\OrdenCarga\ControlCargaResponseHandler.cs" />
     <Compile Include="ResponseHandler\OrdenCarga\ModEntregaResponseHandler.cs" />
+    <Compile Include="ResponseHandler\OrdenCarga\OrdenCargaEntreResponseHandler.cs" />
     <Compile Include="Service References\AplicacionesWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

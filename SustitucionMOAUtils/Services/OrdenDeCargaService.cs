@@ -2126,7 +2126,7 @@ namespace SustitucionMOAUtils.Services
         }
         private Resultado GenerarEntregaSAP(OrdenDeCarga orden)
         {
-            Log.Info("GenerarEntregaSAP");
+            Log.Info("Ejecuta OrdenDeCargaService.GenerarEntregaSAP");
 
             var req = new CrearEntregaRequest
             {
@@ -2150,34 +2150,25 @@ namespace SustitucionMOAUtils.Services
                 DomicilioDescr = orden.DomicilioDescr
             };
 
-            var result = consumer.CrearEntrega(req, out string respuesta);
+            var respHandler = consumer.CrearEntrega(req);
 
-            Log.Info("GenerarEntregaSAP CrearEntrega Result " + result);
-            Log.Info("GenerarEntregaSAP CrearEntrega Respuesta " + respuesta);
-
-            //OE-00   'OK'
-            //OE-01   'No existe tranportista
-            //OE-02   'Entrega Creada - Error al insertar'
-            //OE-03   'Entrega Creada - Error al insertar'
-            //OE-04   'Falta cargars los Km en el contrato'
-
-            switch (respuesta)
+            switch (respHandler.GetResultado())
             {
-                case "OE-00":
-                case "OE-02":
-                case "OE-03":
+                case OrdenCargaCrearEntrega.OK:
+                case OrdenCargaCrearEntrega.EntregaCreadaErrorAlInsertarOE02:
+                case OrdenCargaCrearEntrega.EntregaCreadaErrorAlInsertarOE03:
+                    var numeroEntrega = respHandler.GetNumeroEntrega();
                     orden.TransporteExiste = true;
                     orden.FechaEntregaGenerada = DateTime.Now;
-                    orden.NumeroEntrega = result;
+                    orden.NumeroEntrega = numeroEntrega;
                     orden.DescripcionCodigoVerificacionSap = "";
                     Log.Info("GenerarEntregaSAP ActualizarEstado " + orden.ToDto().ToJson());
                     orden.ActualizarEstado();
                     Log.Info("GenerarEntregaSAP ActualizarEstado Nuevo " + orden.Estado.ToString());
                     repositorio.GuardarCambios();
-                    return new Resultado { Mensaje = string.Concat("Se ha generado la entrega ", result, ".") };
-                //return string.Concat("Se ha generado la entrega ", result, ".");
+                    return new Resultado { Mensaje = $"Se ha generado la entrega {numeroEntrega}." };
 
-                case "OE-01":
+                case OrdenCargaCrearEntrega.NoExisteTransportista:
                     orden.TransporteExiste = false;
                     orden.DescripcionCodigoVerificacionSap = "No se pudo generar la entrega. No existe el transportista.";
                     Log.Info("GenerarEntregaSAP ActualizarEstado " + orden.ToDto().ToJson());
@@ -2185,10 +2176,20 @@ namespace SustitucionMOAUtils.Services
                     Log.Info("GenerarEntregaSAP ActualizarEstado Nuevo " + orden.Estado.ToString());
                     repositorio.GuardarCambios();
                     return new Resultado { Mensaje = "No se pudo generar la entrega. No existe el transportista." };
-                    //return string.Concat("No se pudo genera la entrega. No existe el transportista.");
+
+                case OrdenCargaCrearEntrega.FaltaCargarKmEnContrato:
+                    orden.DescripcionCodigoVerificacionSap = "Falta cargar los Kms en el contrato";
+                    repositorio.GuardarCambios();
+                    return new Resultado { info = "No se pudo generar la entrega. Falta cargar los Kms en el contrato." };
+
+                case OrdenCargaCrearEntrega.ErrorRespuestaInesperadaDeSap:
+                    orden.DescripcionCodigoVerificacionSap = $"No se pudo generar la entrega. Respuesta inesperada de SAP ({respHandler.GetLogRespuestaSap()})";
+                    repositorio.GuardarCambios();
+                    return new Resultado { info = "No se pudo generar la entrega. Respuesta inesperada de SAP." };
+
+                default:
+                    throw new Exception("Respuesta SAP no manejada");
             }
-            orden.DescripcionCodigoVerificacionSap = respuesta;
-            return new Resultado { info = "Estado no conocido" };
         }
         public string NotificarVariosPedidos(int ordenDeCargaId)
         {
