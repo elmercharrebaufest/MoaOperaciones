@@ -813,7 +813,7 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<CentroDireccion>().Select(x => new CentroDireccionDto(x)).ToList();
         }
 
-        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, List<int> estados = null)
+        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, int? usuarioId, List<int> estados = null)
         {
             try
             {
@@ -907,6 +907,7 @@ namespace SustitucionMOAUtils.Services
                 paginacion,
                 x => x.FechaBorrado == null && (string.IsNullOrEmpty(nroSolp) || x.NroSolp.ToUpper().StartsWith(nroSolp.ToUpper())) &&
                 (!estados.Any() || (x.EstadoSolpSap_Id != null && estados.Contains((int)x.EstadoSolpSap_Id)) || (estados.Any(y => y == -1) && x.NroSolp != null && x.Posiciones.All(p => p.Estado == false))) &&
+                (usuarioId == null || (x.UsuarioCreacion_Id != null && usuarioId == x.UsuarioCreacion_Id)) &&
                 (sap == true && x.TipoSolpSap == 3 ||
                 mantenimiento == true && x.TipoSolpSap == 2 ||
                 (web == true && (x.TipoSolpSap == null || x.TipoSolpSap == 1))
@@ -4444,7 +4445,10 @@ namespace SustitucionMOAUtils.Services
 
             return precio.Sum(x => x);
         }
+
+        
     }
+
 
     public static class SolpTemplateKeys
     {

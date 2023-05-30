@@ -526,5 +526,14 @@ namespace SustitucionMOAUtils.Services
 
             return resultado;
         }
+
+        public IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp() 
+        {
+            return repositorio.Listar<Solp, UsuarioDto>(solp => new UsuarioDto
+            {
+                Mail = solp.UsuarioCreacion.Mail,
+                Id = solp.UsuarioCreacion.Id
+            }).GroupBy(x => x.Id);
+        }
     }
 }

@@ -4,6 +4,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOAUtils.Interfaces
 {
@@ -35,5 +36,6 @@ namespace SustitucionMOAUtils.Interfaces
 
         List<ProveedorDto> ListarProveedores(string filtro);
         ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto);
+        IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp();
     }
 }

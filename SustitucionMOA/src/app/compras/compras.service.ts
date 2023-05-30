@@ -27,7 +27,8 @@ export class ComprasService extends BaseService {
         estados: "",
         sap: true,
         mantenimiento: true,
-        web: true
+        web: true,
+        usuarioId: null
     }
     listaSolp: any;
     observableListaSolp = new Subject<any[]>();
@@ -49,7 +50,8 @@ export class ComprasService extends BaseService {
         sap: boolean = this.filtros.sap,
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
-        estados: any = this.filtros.estados): Observable<any> {
+        estados: any = this.filtros.estados,
+        usuarioId: number | null = this.filtros.usuarioId): Observable<any> {
         let params: HttpParams = new HttpParams();
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -65,6 +67,7 @@ export class ComprasService extends BaseService {
         params = params.set('mantenimiento', mantenimiento.toString());
         params = params.set('web', web.toString());
         params = params.set('estados', estados);
+        params = params.set('usuarioId', (usuarioId != null ? usuarioId.toString() : ""));
         return this.http
             .get('/api/compras/ListarSolp', { params: params, headers: this.headers });
     }
