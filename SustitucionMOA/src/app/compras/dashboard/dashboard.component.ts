@@ -60,7 +60,9 @@ export class DashboardComponent extends ListBaseComponent {
     displayRevisionTecnica: boolean;
 
     displayCircular: boolean = false;
-
+    combos: any;
+    usuariosResult: any;
+    
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
@@ -97,6 +99,10 @@ export class DashboardComponent extends ListBaseComponent {
     display: boolean = false;
     tablaSolp: any[];
     tablaSolpCopy: any[];
+
+    usuarioFiltro: SelectItem[];
+    selectUsuario: number | null;
+
     cols: any[];
     serviciosDashboard: any = "Servicios"
     solp: Solp = new Solp();
@@ -165,7 +171,6 @@ export class DashboardComponent extends ListBaseComponent {
         this.hastaDashboard = new Date();
     }
 
-
     returnToTodaysDate() {
         this.fechaInicio = "";
         this.fechaFin = "";
@@ -173,7 +178,6 @@ export class DashboardComponent extends ListBaseComponent {
             this.mensajeComponent.setMsgsEmpty();
         }
     }
-
 
     onSelect(event: any) {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
@@ -250,7 +254,6 @@ export class DashboardComponent extends ListBaseComponent {
         }
     }
 
-
     ngAfterViewInit(): void {
         this.getCombos();
     }
@@ -268,7 +271,7 @@ export class DashboardComponent extends ListBaseComponent {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
             this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp,
-                this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, multiSelectValues
+                this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, multiSelectValues, this.selectUsuario
             ).subscribe(
                 (result: any) => {
 
@@ -286,7 +289,6 @@ export class DashboardComponent extends ListBaseComponent {
                             x.VincularPliego = x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP;
                             x.PliegoVinculado = (x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP) &&
                                 x.EstadoDocumento.Codigo == "CREADO";
-
                         });
                         this.tablaSolpCopy = this.tablaSolp;
                         this.tabla.first = 0;
@@ -349,10 +351,22 @@ export class DashboardComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
+                        console.log("result", result)
+                        this.usuariosResult = result.Usuarios;
+                        console.log("usuario result", this.usuariosResult )    
+
                         this.estadoSolpItem = [];
+                        this.usuarioFiltro = [];
                         result.EstadosSolpSap.forEach(cd => this.estadoSolpItem.push({
                             label: cd.Descripcion, value: cd.Id
                         }));
+                        result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
+                            label: d.Mail, value: d.Id
+                        })))
+                        console.log("usuario item select la concha de la lora", this.usuarioFiltro )    
+                        // result.Usuarios.forEach(ds => this.usuarioFiltro.push({
+                        //     label: ds.Descripcion, value: ds.Id
+                        // }));
 
                     }
                 },
