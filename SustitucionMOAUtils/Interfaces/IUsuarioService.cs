@@ -38,7 +38,7 @@ namespace SustitucionMOAUtils.Interfaces
         ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto);
 
         UsuarioDto GetUsuarioPorId(int id);
-        List<ProveedorDto> GetProvedoresEmail(int tipoProveedorId, string email);
+        List<ProveedorDto> GetProvedoresEmail(int tipoProveedorId, string email, string cuitUsuario);
         List<TipoUsuarioDto> GetTipoUsuario();
         List<string> ValidarMailUsuario(UsuarioModificacionDto usuarioModificacionDto);
         string ModificarUsuario(UsuarioModificacionDto usuarioModificacionDto);

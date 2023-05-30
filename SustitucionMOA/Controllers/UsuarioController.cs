@@ -787,11 +787,11 @@ namespace SustitucionMOA.Controllers
         }
         [HttpGet]
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
-        public ActionResult GetProvedoresEmail(int tipoProveedorId, string email)
+        public ActionResult GetProvedoresEmail(int tipoProveedorId, string email, string cuitUsuario)
         {
             try
             {
-                return JsonCustom(new { data = new { proveedores = _usuarioService.GetProvedoresEmail(tipoProveedorId,email) } });
+                return JsonCustom(new { data = new { proveedores = _usuarioService.GetProvedoresEmail(tipoProveedorId,email, cuitUsuario) } });
             }
             catch (InfoCustomException e)
             {

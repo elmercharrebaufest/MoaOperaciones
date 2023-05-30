@@ -76,7 +76,7 @@ export class ModificarDatosComponent implements OnInit {
     this.modificarDatosForm.controls['idTipoUsuario'].setValue(usuario.TipoUsuario.Id);
     let listaProveedores = null;
     this.existeProveedores = true;
-    this.service.getProvedoresEmail(usuario.TipoUsuario.Id,usuario.Mail).subscribe(proveedores => {
+    this.service.getProvedoresEmail(usuario.TipoUsuario.Id,usuario.Mail, usuario.CUIT).subscribe(proveedores => {
       listaProveedores = proveedores.data.proveedores;
     }, error => { }, () => { 
       if (listaProveedores.length == 0) this.existeProveedores = false;
@@ -96,7 +96,6 @@ export class ModificarDatosComponent implements OnInit {
     let proveedores = [];
     for (let index = 0; index < formProveedores.length; index++) {
       let proveedor = formProveedores[index].controls;
-      console.log('proveedor-->>',proveedor)
       proveedores.push({
         codigoProveedor : proveedor.codigoProveedor.value,
         cuit : proveedor.cuit.value,
@@ -115,7 +114,15 @@ export class ModificarDatosComponent implements OnInit {
     }
     return modificarUsuario;
   }
-  public onCambiarProveedor(){
+  public onActualizaCuitProveedor(){
+    const cuitUsuario = this.modificarDatosForm.controls.cuit.value;
+    let formProveedores = this.modificarDatosForm.get('proveedores')['controls'];
+    for (let index = 0; index < formProveedores.length; index++) {
+      let proveedores = formProveedores[index].controls;
+      proveedores.cuit.setValue(cuitUsuario);
+    }
+  }
+  public onActualizaTipoProveedor(){
     const idTipoUsuario = this.modificarDatosForm.controls.idTipoUsuario.value;
     let formProveedores = this.modificarDatosForm.get('proveedores')['controls'];
     for (let index = 0; index < formProveedores.length; index++) {
@@ -162,13 +169,13 @@ export class ModificarDatosComponent implements OnInit {
 
   private validarDatosUsuario(){
     let mensaje: string = '';
-    let datosUsuario = this.modificarDatosForm.value;
+    let datosUsuario = this.crearObjectoModificarUsuario();
     if(datosUsuario.mail == '') mensaje += 'Ingrese el mail del usuario.\n'
     if(datosUsuario.idTipoUsuario == '' || datosUsuario.idTipoUsuario == '0') mensaje += 'Seleccione el tipo de usuario.\n';
-    if(datosUsuario.cuit == '' && datosUsuario.cuit.length < 10) mensaje += 'El cuit del usuario no tiene el formato correcto.\n';
+    if(datosUsuario.cuit == '' || datosUsuario.cuit.length < 11) mensaje += 'El cuit del usuario no tiene el formato correcto.\n';
     if (mensaje ==''){
       datosUsuario.proveedores.forEach(proveedor=>{
-        if(proveedor.cuit == '' && proveedor.cuit.length < 10) mensaje += 'El cuit del proveedor no tiene el formato correcto.\n';
+        if(proveedor.cuit == '' || proveedor.cuit.length < 11) mensaje += 'El cuit del proveedor no tiene el formato correcto.\n';
         if(proveedor.codigoProveedor == '' && proveedor.codigoProveedor == '0') mensaje += 'No se ha ingresado el codigo del proveedor.\n';
         if(proveedor.razonSocial == '') mensaje += 'No se ha ingresado la razón social.\n';
         if(mensaje !='') return;
@@ -180,10 +187,10 @@ export class ModificarDatosComponent implements OnInit {
     if (proveedor != null) {
       return this.formBuilder.group({
         id: proveedor.Id,
-        cuit: proveedor.CUIT,
+        cuit: { value: proveedor.CUIT,disabled: true },
         razonSocial: proveedor.RazonSocial,
         codigoProveedor: proveedor.CodigoProveedor,
-        idTipoProveedor: {value: proveedor.IdTipoProveedor,disabled: true}
+        idTipoProveedor: { value: proveedor.IdTipoProveedor,disabled: true }
       })
     } else {
       return this.formBuilder.group({

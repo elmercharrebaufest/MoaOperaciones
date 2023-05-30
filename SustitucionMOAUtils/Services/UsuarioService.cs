@@ -560,9 +560,9 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
-        public List<ProveedorDto> GetProvedoresEmail(int tipoProveedorId, string email)
+        public List<ProveedorDto> GetProvedoresEmail(int tipoProveedorId, string email, string cuitUsuario)
         {
-            var proveedores = repositorio.Listar<Proveedor>(x => x.Mail == email && x.TipoProveedor.Id == tipoProveedorId);
+            var proveedores = repositorio.Listar<Proveedor>(x => x.Mail == email && x.TipoProveedor.Id == tipoProveedorId && x.CUIT == cuitUsuario);
             List<ProveedorDto> listaProvedores = new List<ProveedorDto>();
             foreach(var proveedor in proveedores)
             {
