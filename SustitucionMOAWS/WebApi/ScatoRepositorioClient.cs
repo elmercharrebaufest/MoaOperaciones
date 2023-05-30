@@ -2,6 +2,7 @@
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ScatoComandosWebService;
 using System;
+using System.Text;
 using System.Configuration;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -77,7 +78,7 @@ namespace SustitucionMOAWS.WebApi
                 new AuthenticationHeaderValue(
                     "Basic",
                     Convert.ToBase64String(
-                        System.Text.ASCIIEncoding.ASCII.GetBytes($"{Username}:{Password}")));
+                       ASCIIEncoding.ASCII.GetBytes($"{Username}:{Password}")));
         }
     }
 }

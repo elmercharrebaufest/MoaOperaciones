@@ -7,6 +7,7 @@ using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
+using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAModel.Util;
 using SustitucionMOARepositorio;
@@ -2737,7 +2738,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 if (string.IsNullOrEmpty(cuil)) return;
-                var result = scatoConsumer.CuilChoferExiste(cuil);
+                scatoConsumer.CuilChoferExiste(cuil);
             }
             catch (Exception err)
             {
@@ -2752,10 +2753,10 @@ namespace SustitucionMOAUtils.Services
                 Log.Info("Error al obtener chofer de Scato " + cuilChofer);
                 foreach (var err in choferRes.Messages)
                 {
-                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
+                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
                 }
 
-                return choferRes.Messages.Any(msg => msg.Message.Contains(" no cumple con el digito verificador."));
+                return choferRes.Messages.Any(msg => msg.MessageCode == CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido);
             }
             return true;
         }
