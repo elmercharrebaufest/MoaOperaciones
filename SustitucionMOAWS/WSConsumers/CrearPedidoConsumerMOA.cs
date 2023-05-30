@@ -289,7 +289,8 @@ namespace SustitucionMOAWS.WSConsumers
                     ITM_NUMBER = preqItem,  //el número de ítem al que corresponda la condición
                     COND_TYPE = "ZP01",// siempre va el mismo dato
                     COND_VALUE = IM_POITEM.NET_PRICE, //el importe de la condición
-                    CURRENCY = adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo,//moneda de la adjudicacion
+                    COND_VALUESpecified = true,
+                    CURRENCY = adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo,//moneda de la adjudicacion
                     CHANGE_ID = "U",// siempra va el mismo valor
 
                 });
