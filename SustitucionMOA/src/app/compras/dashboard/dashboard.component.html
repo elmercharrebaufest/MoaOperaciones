@@ -59,11 +59,8 @@
                                 (onClearClick)="returnToTodaysDate()" class="styled-select">
                             </p-calendar>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                            <!-- <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Ver usuario"></p-multiSelect> -->
-                            <p-dropdown [options]="usuarioFiltro" [(ngModel)]="selectUsuario" name="selectUsuario" placeholder="Usuario" filter="true" showClear="true">
-                                
-                            </p-dropdown>                  
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"  style="padding-left: 48px !important;">                      
+                            <p-dropdown [options]="usuarioFiltro" [(ngModel)]="selectUsuario" name="selectUsuario" placeholder="Usuario" filter="true" showClear="true"></p-dropdown>                  
                         </div>
                     </div>
 
@@ -81,7 +78,7 @@
                             <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
                         </span>
                     </div>
-                    <div class="form-group col-md-2 col-lg-1  buttonBuscar">
+                    <div class="form-group col-md-2 col-lg-1  buttonBuscar"  style="padding-left: 48px !important;">
                         <button class="btn buscar" (click)="onBuscar()">Buscar</button>
                     </div>
                 </div>
