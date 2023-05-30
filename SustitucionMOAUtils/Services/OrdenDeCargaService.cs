@@ -2756,7 +2756,7 @@ namespace SustitucionMOAUtils.Services
                     Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
                 }
 
-                return choferRes.Messages.Any(msg => msg.MessageCode == CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido);
+                return choferRes.Messages.All(msg => msg.MessageCode != CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido);
             }
             return true;
         }
