@@ -19,7 +19,7 @@
               Tipo Usuario
             </div>
             <div class="styled-select">
-              <select formControlName="idTipoUsuario" (change)="onCambiarProveedor()">
+              <select formControlName="idTipoUsuario" (change)="onActualizaTipoProveedor()">
                 <option value="">Seleccione</option>
                 <option *ngFor="let tipo of tipoUsuario" [ngValue]="tipo.Id">{{tipo.Nombre}}</option>
               </select>
@@ -30,14 +30,15 @@
               Cuit
             </div>
             <div class="styled-select">
-              <input type="search" formControlName="cuit" class="form-control" autocomplete="chrome-off"
-                maxlength="200" />
+              <input type="search" formControlName="cuit" class="form-control" mask="00-00000000-0" autocomplete="chrome-off" (change)="onActualizaCuitProveedor()"
+                maxlength="13" />
             </div>
           </div>
         </div>
         <br />
         <div class="div-division" *ngIf="!existeProveedores">
-          <p class="titulo-rojo">No existe proveedores para el usuario.</p>
+          <p class="titulo-rojo">El usuario no tiene correctamente configurado un proveedor, no es posible editar codigo ni razon social.<br/>
+            Por favor comunicarse con sistemas.</p>
         </div>
         <div class="div-division" formArrayName="proveedores" *ngIf="existeProveedores">
           <div *ngFor="let proveedor of modificarDatosForm.get('proveedores').value; let i = index; trackBy:trackByFn">
@@ -47,8 +48,8 @@
                   CUIT
                 </div>
                 <div class="styled-select">
-                  <input type="text" formControlName="cuit" class="form-control" autocomplete="chrome-off"
-                    maxlength="100" />
+                  <input type="text" formControlName="cuit" mask="00-00000000-0" class="form-control" autocomplete="chrome-off"
+                    maxlength="13" />
                 </div>
               </div>
               <div class="col-md-4">

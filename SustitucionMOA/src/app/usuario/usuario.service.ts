@@ -216,10 +216,13 @@ export class UsuarioService extends BaseService {
             .get('/api/usuario/GetTipoUsuario', {headers: this.headers });
     }
     
-    public getProvedoresEmail(tipoProveedorId:string, email: string): Observable<any> {
+    public getProvedoresEmail(tipoProveedorId:string, email: string, cuitUsuario: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.append('email', email);
         params = params.append('tipoProveedorId', tipoProveedorId);
+        params = params.append('cuitUsuario', cuitUsuario);
+
+        
 
         return this.http
             .get('/api/usuario/getProvedoresEmail', { params: params, headers: this.headers });
