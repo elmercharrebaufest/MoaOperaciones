@@ -18,7 +18,7 @@ namespace SustitucionMOAWS.WebApi
         private static readonly string ScatoApi = "ScatoApi";
 
 
-        public ConsultaListado<Planta> ObtenerPlantas(string cuitDestino)
+        public RespuestaListado<Planta> ObtenerPlantas(string cuitDestino)
         {
             InicializarCliente();
 
@@ -26,7 +26,7 @@ namespace SustitucionMOAWS.WebApi
             HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
-                var plantasResponse = response.Content.ReadAsAsync<ConsultaListado<Planta>>().GetAwaiter().GetResult();
+                var plantasResponse = response.Content.ReadAsAsync<RespuestaListado<Planta>>().GetAwaiter().GetResult();
                 return plantasResponse;
             }
             else
@@ -35,7 +35,7 @@ namespace SustitucionMOAWS.WebApi
             }
         }
 
-        public ConsultaListado<Domicilio> ObtenerDomicilios(string cuitDestino)
+        public RespuestaListado<Domicilio> ObtenerDomicilios(string cuitDestino)
         {
             InicializarCliente();
 
@@ -43,7 +43,7 @@ namespace SustitucionMOAWS.WebApi
             HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
-                var domiciliosResponse = response.Content.ReadAsAsync<ConsultaListado<Domicilio>>().GetAwaiter().GetResult();
+                var domiciliosResponse = response.Content.ReadAsAsync<RespuestaListado<Domicilio>>().GetAwaiter().GetResult();
                 return domiciliosResponse;
             }
             else
@@ -52,7 +52,7 @@ namespace SustitucionMOAWS.WebApi
             }
         }
 
-        public ConsultaListado<ChoferDto> ObtenerChoferPorCuil(string cuilChofer)
+        public Respuesta<ChoferDto> ObtenerChoferPorCuil(string cuilChofer)
         {
             InicializarCliente();
 
@@ -60,7 +60,7 @@ namespace SustitucionMOAWS.WebApi
             HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
-                var choferResponse = response.Content.ReadAsAsync<ConsultaListado<ChoferDto>>().GetAwaiter().GetResult();
+                var choferResponse = response.Content.ReadAsAsync<Respuesta<ChoferDto>>().GetAwaiter().GetResult();
                 return choferResponse;
             }
             else

@@ -252,9 +252,11 @@
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\CodigoMensajeObtenerChoferPorCuil.cs" />
-    <Compile Include="Models\WebApiMap\ScatoRepositorio\ConsultaListado.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\Domicilio.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\Planta.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\Respuesta.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\RespuestaListado.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\RespuestaScatoBase.cs" />
     <Compile Include="Models\WSMapMOA\Compras\ContratoSolp.cs" />
     <Compile Include="Models\ViewModel\ReporteContrato\ReporteContratoViewModel.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Ceco.cs" />
