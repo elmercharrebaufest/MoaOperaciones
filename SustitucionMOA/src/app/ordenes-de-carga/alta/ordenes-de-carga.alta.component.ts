@@ -839,6 +839,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.mensajesOrdenDeCarga[campo] = null;
         this.service.validarSisaCuit(cuit, campo).subscribe(result => {
             this.validando[campo] = false;
+            const validandoDestino = campo == "CUITDestino";
+            if (validandoDestino)
+                this.resetearPlantasDomicilios()
             if (result.logout) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
@@ -850,7 +853,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 if (!result.data) {
                     this.mensajesOrdenDeCarga[campo] = `El ${campo.replace("CUIT", "")} no se encuentra habilitado en SISA, no podrá cargar la orden hasta regularizar la situación.`;
                 } else {
-                    if (campo == "CUITDestino") {
+                    if (validandoDestino) {
                         this.onDestinoIngresado(cuit);
                     }
                     else if (campo !== "CUITCorredor") {
@@ -1107,6 +1110,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     scrollAMensaje() {
         this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
+    }
+
+    resetearPlantasDomicilios() {
+        this.plantaSeleccionada = null;
+        this.domicilioSeleccionado = null;
+        this.listaPlantas = [];
+        this.listaDomicilios = [];
+        this.onDomicilioSeleccionadoChanged()
+        this.onPlantaSeleccionadaChanged();
     }
 }
 
