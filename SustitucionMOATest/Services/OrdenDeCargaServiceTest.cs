@@ -6,6 +6,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
@@ -34,12 +35,16 @@ namespace SustitucionMOATest.Services
         private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
         private Mock<IScatoConsumer> mIScatoConsumer;
 
+        private ConsultaListado<SustitucionMOAWS.ScatoComandosWebService.ChoferDto> _consultaListado;
+
         [SetUp]
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
             feriadoService = new Mock<IFeriadoService>();
+            mIScatoConsumer = new Mock<IScatoConsumer>();
+            mIScatoRepositorioClient = new Mock<IScatoRepositorioClient>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
                 mIScatoRepositorioClient.Object, mIScatoConsumer.Object);
@@ -70,6 +75,12 @@ namespace SustitucionMOATest.Services
                 },
                 NumeroEntrega = ""
 
+            };
+            _consultaListado = new ConsultaListado<SustitucionMOAWS.ScatoComandosWebService.ChoferDto>
+            {
+                Data = new SustitucionMOAWS.ScatoComandosWebService.ChoferDto[] { },
+                Messages = new MessageItem[] { },
+                IsValid = false
             };
         }
 
@@ -1350,6 +1361,44 @@ namespace SustitucionMOATest.Services
             ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
             var response = target.ConstruirCuerpoEmail(new List<OrdenDeCargaCambiosHistorial>(), "E1020", "25250000");
             Assert.IsNull(response);
+        }
+        [Test]
+        public void ValidarCuilChoferValido_CuilNoExiste_ReturnsTrue()
+        {
+            _consultaListado.Messages = new MessageItem[]
+            {
+                new MessageItem
+                {
+                    MessageCode = CodigoMensajeObtenerChoferPorCuil.ChoferNoEncontrado
+                }
+            };
+            mIScatoRepositorioClient.Setup(src => src.ObtenerChoferPorCuil(It.IsAny<string>())).Returns(
+                _consultaListado
+                );
+
+            var result = target.ValidarCuilChoferValido("11111111111");
+
+            Assert.That(result, Is.True);
+
+        }
+        [Test]
+        public void ValidarCuilChoferValido_CuilDigitoVerificadorNoValido_ReturnsFalse()
+        {
+            _consultaListado.Messages = new MessageItem[]
+            {
+                new MessageItem
+                {
+                    MessageCode = CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido
+                }
+            };
+            mIScatoRepositorioClient.Setup(src => src.ObtenerChoferPorCuil(It.IsAny<string>())).Returns(
+                _consultaListado
+                );
+
+            var result = target.ValidarCuilChoferValido("11111111111");
+
+            Assert.That(result, Is.False);
+
         }
 
         private void AddProvider(int id, EstadoAprobacion estadoAprobacion, string observaciones, string razonSocial, string mail, string cUIT, TipoUsuario tipoProveedor)
