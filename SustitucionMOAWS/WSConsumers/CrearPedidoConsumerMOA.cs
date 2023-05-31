@@ -146,7 +146,7 @@ namespace SustitucionMOAWS.WSConsumers
                 cabeceraDelPedido.VENDOR = proveedorCodigoDeLaAdjudicacion;//VENDOR ELIFN   Número de cuenta del proveedor
                 cabeceraDelPedido.PURCH_ORG = "2029";//PURCH_ORG EKORG   Organización de compras
                 cabeceraDelPedido.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP   BKGRP Grupo de compras
-                cabeceraDelPedido.CURRENCY = posicion.Moneda.Codigo; //CURRENCY WAERS   Clave de moneda
+                cabeceraDelPedido.CURRENCY = adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo; //CURRENCY WAERS   Clave de moneda
                 cabeceraDelPedido.CREATED_BY = usuarioCreadorAdjudicacion;//CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto
                 cabeceraDelPedido.DOC_DATE = SAPFormatter.PrepararFecha(DateTime.Now); //DOC_DATE    EBDAT Fecha del documento de compras
 
@@ -194,11 +194,11 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.INFO_REC = "";
                 IM_POITEM.QUANTITY = esPosicionDeMateriales ? adjudicacionPosicion.Cantidad : 0;
                 IM_POITEM.QUANTITYSpecified = esPosicionDeMateriales ? true : false;
-                IM_POITEM.PO_UNIT = esPosicionDeMateriales ? posicion.Unidad.Descripcion : "001";
+                IM_POITEM.PO_UNIT = esPosicionDeMateriales ? adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.Descripcion : "001";
                 IM_POITEM.NET_PRICE = esPosicionDeMateriales ? (decimal)adjudicacionPosicion.CotizacionPosicion.Precio : CalcularPrecioBrutoServicio(posicion, adjudicacionPosicion);
                 IM_POITEM.NET_PRICESpecified = true;
                 IM_POITEM.PRICE_UNIT = 1;
-                //IM_POITEM.PRICE_UNITSpecified = true;
+                IM_POITEM.PRICE_UNITSpecified = true;
                 IM_POITEM.GR_PR_TIME = 0;
                 //IM_POITEM.GR_PR_TIMESpecified = true; 
                 IM_POITEM.DELETE_IND = "";
@@ -284,6 +284,25 @@ namespace SustitucionMOAWS.WSConsumers
                     PCKG_NO = "X"
                 });
 
+                solpPedidoSAP.IM_POCONDList.Add(new ZMPES6870
+                {
+                    ITM_NUMBER = preqItem,  //el número de ítem al que corresponda la condición
+                    COND_TYPE = "ZP01",// siempre va el mismo dato
+                    COND_VALUE = IM_POITEM.NET_PRICE, //el importe de la condición
+                    COND_VALUESpecified = true,
+                    CURRENCY = adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo,//moneda de la adjudicacion
+                    CHANGE_ID = "U",// siempra va el mismo valor
+
+                });
+                solpPedidoSAP.IM_POCONDXList.Add(new ZMPES6880
+                {
+                    ITM_NUMBER = "X",
+                    COND_TYPE = "X",
+                    COND_VALUE = "X",
+                    CURRENCY = "X",
+                    CHANGE_ID = "X",
+                });
+
                 //Nombre: ZBAPIMEPOACCOUNT IM_POACCOUNT Denominación:	Imputación
                 var imputacion = new ZMPES6830();
                 imputacion.PO_ITEM = preqItem;
@@ -334,8 +353,7 @@ namespace SustitucionMOAWS.WSConsumers
 
 
                 //subposiciones
-                if (!esPosicionDeMateriales)
-                {
+                if (!esPosicionDeMateriales){
 
                     var LINE_NO = 1;
                     //cabecera de subposiciones 

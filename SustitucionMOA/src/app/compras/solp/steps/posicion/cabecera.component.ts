@@ -179,6 +179,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.model.agregarNuevaPosicion(null as SolpPosicion);
         }
         this.listarContratosAsociados();
+        this.model.posicionActual.setTabPosicion();
 
     }
 
@@ -234,6 +235,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.validarTipoPosicion();
         this.validarTabCompleto();
         this.validarNuevaPosicion();
+        this.model.posicionActual.setTabPosicion();
     }
 
     setTabs() {

@@ -813,7 +813,7 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<CentroDireccion>().Select(x => new CentroDireccionDto(x)).ToList();
         }
 
-        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, List<int> estados = null)
+        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, int? usuarioId, List<int> estados = null)
         {
             try
             {
@@ -907,6 +907,7 @@ namespace SustitucionMOAUtils.Services
                 paginacion,
                 x => x.FechaBorrado == null && (string.IsNullOrEmpty(nroSolp) || x.NroSolp.ToUpper().StartsWith(nroSolp.ToUpper())) &&
                 (!estados.Any() || (x.EstadoSolpSap_Id != null && estados.Contains((int)x.EstadoSolpSap_Id)) || (estados.Any(y => y == -1) && x.NroSolp != null && x.Posiciones.All(p => p.Estado == false))) &&
+                (usuarioId == null || (x.UsuarioCreacion_Id != null && usuarioId == x.UsuarioCreacion_Id)) &&
                 (sap == true && x.TipoSolpSap == 3 ||
                 mantenimiento == true && x.TipoSolpSap == 2 ||
                 (web == true && (x.TipoSolpSap == null || x.TipoSolpSap == 1))
@@ -4336,7 +4337,7 @@ namespace SustitucionMOAUtils.Services
                     FechaCreacion = DateTime.Now,
                     Usuario = usuario,
                     UsuarioCreador_Id = usuario.Id,
-                    MontoTotal = 100,
+                    MontoTotal = CalcularMontoTotal(adjudicacionDto, cotizacion, info),
                     Posiciones = adjudicacionDto.AdjudicacionPosiciones.Count > 0 ? adjudicacionDto.AdjudicacionPosiciones.Select(x => new AdjudicacionPosicion
                     {
                         Cantidad = x.Cantidad,
@@ -4376,12 +4377,12 @@ namespace SustitucionMOAUtils.Services
             var destino = repositorio.Obtener<TablaSap>(x => x.Codigo == "ARP" && x.Tabla == TablasSap.Moneda);
             var precio = new List<decimal>();
             var precioSubposicion = new List<decimal>();
-
+            var cotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(x => adjudicacionDto.AdjudicacionPosiciones.Select(y => y.CotizacionPosicion_Id).Contains(x.Id));
             if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() != "MATERIALES")
             {
-                if (cotizacion.CotizacionPosiciones != null)
+                if (cotizacionPosiciones != null)
                 {
-                    foreach (var posicion in cotizacion.CotizacionPosiciones)
+                 foreach (var posicion in cotizacionPosiciones)                 
                     {
 
                         if (posicion.CotizacionSubPosiciones != null)
@@ -4412,7 +4413,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            var cotizacionAdjudicacionPosicion = cotizacion.CotizacionPosiciones.Join(adjudicacionDto.AdjudicacionPosiciones,
+            var cotizacionAdjudicacionPosicion = cotizacionPosiciones.Join(adjudicacionDto.AdjudicacionPosiciones,
                    posicionCotizacion => posicionCotizacion.Id,
                    posicionAdjudicacion => posicionAdjudicacion.CotizacionPosicion_Id,
                    (posicionCotizacion, posicionAdjudicacion) => new
@@ -4444,7 +4445,10 @@ namespace SustitucionMOAUtils.Services
 
             return precio.Sum(x => x);
         }
+
+        
     }
+
 
     public static class SolpTemplateKeys
     {

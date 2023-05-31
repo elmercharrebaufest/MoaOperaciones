@@ -4,6 +4,7 @@ import { SolpPosicion } from "../compras/solp/solp-posicion"
 import { CotizacionDto } from "./cotizacionDto"
 
 export interface PeticionDeOfertaDto{
+    PersonalHoras?: boolean
     RespetaMateriales?: boolean
     RespetaServicios?: boolean
     Id?: number

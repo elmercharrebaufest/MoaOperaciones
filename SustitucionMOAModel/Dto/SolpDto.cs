@@ -359,6 +359,7 @@ namespace SustitucionMOAModel.Dto
         public int? ServicioSolpCodigo { get; set; }
         public TablaSapDto MonedaCotizacion { get; set; }
         public TablaSapDto UnidadMedidaCotizacion { get; set; }
+        public int CodigoSolp { get; set; }
 
         public SolpSubposicionDto() { }
 

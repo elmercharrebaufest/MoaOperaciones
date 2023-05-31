@@ -34,6 +34,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 {
                                     Id = po.Id,
                                     Solp_Id = po.PeticionDeOferta.Solp_Id,
+                                    PersonalHoras = po.PeticionDeOferta.Solp.Pliego != null ? po.PeticionDeOferta.Solp.Pliego.TieneGrillaPersonal ?? false : false,
                                     NroSolp = po.PeticionDeOferta.Solp.NroSolp,
                                     FechaCreacion = po.PeticionDeOferta.FechaCreacion,
                                     UsuarioCreador_Id = po.PeticionDeOferta.UsuarioCreador_Id,
@@ -234,9 +235,6 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                             }).ToList().OrderBy(x => x.Numero),
                                         },
                                     }).ToList().OrderBy(x => x.Posiciones.Indice)
-
-
-
                                 };
 
                 var cc = resultado.First();

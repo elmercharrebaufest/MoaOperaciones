@@ -29,5 +29,7 @@ namespace SustitucionMOAModel.Dto
         public decimal? PrecioUnidad { get; set; }
         public int? MonedaId { get; set; }
         public decimal? PrecioTotal { get; set; }
+        public DateTime? FechaEntregaServicio { get; set; }
+        public int? PlazoDeOferta { get; set; }
     }
 }

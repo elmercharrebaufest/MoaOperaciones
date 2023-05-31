@@ -62,6 +62,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     displayOkCircular: boolean;
     displayProveedor: boolean;
     usuarioProveedor: boolean = false;
+    ordenDeCompra: any;
+    displayOrdenDeCompra: boolean;
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -442,6 +444,15 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     cerrarModalProveedor() {
         this.displayProveedor = false;
+    }
+
+    cerrarOrdenDeCompra() {
+        this.displayOrdenDeCompra = false;
+    }
+
+    verDetalleOrdenDeCompra(orden: any) {
+        this.ordenDeCompra = orden;
+        this.displayOrdenDeCompra = true;
     }
 
 }
