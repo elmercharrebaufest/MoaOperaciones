@@ -14,6 +14,7 @@ using SustitucionMOAUtils.Services;
 using SustitucionMOAUtils.Validadores;
 using SustitucionMOAUtils.Wrappers;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAWS.WebApi;
 using SustitucionMOAWS.WSConsumers;
 using System;
@@ -149,6 +150,7 @@ namespace SustitucionMOA.App_Start
 
             // Scato WebApi
             kernel.Bind<IScatoRepositorioClient>().To(typeof(ScatoRepositorioClient)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IServicioRepositorio>().To(typeof(ServicioRepositorioClient)).InScope(ctx => OperationContext.Current);
 
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();

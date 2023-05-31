@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio
+﻿namespace SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio
 {
     public class ConsultaListado<T>
     {
@@ -19,5 +13,6 @@ namespace SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio
     {
         public string Message { get; set; }
         public int MessageType { get; set; }
+        public string MessageCode { get; set; }
     }
 }

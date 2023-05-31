@@ -342,6 +342,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.validaCPEDG = this.ordenDeCarga.ValidaSisaRuca;
                         this.separarCadenas();
                         this.verificarBotones()
+                        if(this.mensajeError || this.ordenDeCarga.DescripcionErrorInterno)
+                            this.mensajeComponent.setMsgsEmpty();
                         if (this.ordenDeCarga.MensajeValidacionSAP != "" && this.ordenDeCarga.MensajeValidacionSAP != "OK" && this.esInterno) {
                             this.mensajeComponent.setMsgsEmpty();
                             this.mensajeComponent.setInfoMsg(this.ordenDeCarga.MensajeValidacionSAP)
@@ -417,6 +419,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.mensajeComponent.setMsgsEmpty();
+                        this.ordenDeCarga.DescripcionErrorInterno=null;
                         if (result.data != "Orden de carga actualizada correctamente") {
                             this.mensajeComponent.setInfoMsg(result.data);
                         } else {
@@ -458,9 +461,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.data.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.data.info);
                     } else {
+                        this.ordenDeCarga.DescripcionErrorInterno=null;
                         this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
                         this.obtenerOrdenDeCarga();
-
                     }
                 },
                 error => {
@@ -525,6 +528,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else {
                         this.ordenDeCarga.ContratoSAP = this.contratoSeleccionado;
                         this.mostrarBotonContratos = false;
+                        this.ordenDeCarga.DescripcionErrorInterno=null;
                         this.mensajeComponent.setMsgsEmpty();
                         this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
                         this.obtenerOrdenDeCarga();

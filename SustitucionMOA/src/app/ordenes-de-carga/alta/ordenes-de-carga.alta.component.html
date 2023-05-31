@@ -262,7 +262,14 @@
                                     CUIL chofer:
                                 </div>
                                 <div class="styled-select">
-                                    <input type="text" [(ngModel)]="ordenDeCarga.CUITChofer" mask="00-00000000-0">
+                                    <div class="ui-inputgroup">
+                                        <input type="text" [(ngModel)]="ordenDeCarga.CUITChofer" mask="00-00000000-0"
+                                            (change)="validarCuilChofer()">
+                                        <span class="ui-inputgroup-addon" *ngIf="validando.CUITChofer">
+                                            <p-progressSpinner
+                                                [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
 
