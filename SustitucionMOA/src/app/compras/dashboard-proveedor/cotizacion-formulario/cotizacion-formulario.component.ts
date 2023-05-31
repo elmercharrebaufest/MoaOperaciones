@@ -222,11 +222,11 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             }
             this.cotizaciones.forEach(function (cotizacion, i) {
                 if (!breakFor && (cotizacion.NoDisponible == false || cotizacion.NoDisponible == undefined)) {
-                    if ((cotizacion.Cantidad == 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio == 0 && cotizacion.FechaDeEntrega == null) {
+                    if ((cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio <= 0 && cotizacion.FechaDeEntrega == null) {
                         mensaje = "Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
                         return mensaje;
                     }
-                    if (cotizacion.Cantidad == 0 || cotizacion.Cantidad == undefined) {
+                    if (cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) {
                         mensaje = "Pos. " + cotizacion.Posicion + " - La Ctd. cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
@@ -241,7 +241,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         breakFor = true;
                         return mensaje;
                     }
-                    if (cotizacion.Precio == 0) {
+                    if (cotizacion.Precio <= 0) {
                         mensaje = "Pos. " + cotizacion.Posicion + " - El Precio cotizado es obligatorio";
                         breakFor = true;
                         return mensaje;
@@ -308,19 +308,19 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         return mensaje;
                     }
 
-                    if(cotizacionHora.CantidadPersonas == 0 && cotizacionHora.HorasNormales == 0 && cotizacionHora.HorasNocturnas == 0){
+                    if(cotizacionHora.CantidadPersonas <= 0 && cotizacionHora.HorasNormales <= 0 && cotizacionHora.HorasNocturnas <= 0){
                         mensaje = "Para la Categoria " + cotizacionHora.Categoria + ", debe ingresar cantidad de personas y horas";
                         breakFor = true;
                         return mensaje;
                     }
 
-                    if(cotizacionHora.CantidadPersonas > 0 && cotizacionHora.HorasNormales == 0 && cotizacionHora.HorasNocturnas == 0){
+                    if(cotizacionHora.CantidadPersonas > 0 && cotizacionHora.HorasNormales <= 0 && cotizacionHora.HorasNocturnas <= 0){
                         mensaje = "Para la Categoria " + cotizacionHora.Categoria + ", debe ingresar horas";
                         breakFor = true;
                         return mensaje;
                     }
 
-                    if((cotizacionHora.HorasNormales > 0 || cotizacionHora.HorasNocturnas > 0) && cotizacionHora.CantidadPersonas == 0){
+                    if((cotizacionHora.HorasNormales > 0 || cotizacionHora.HorasNocturnas > 0) && cotizacionHora.CantidadPersonas <= 0){
                         mensaje = "Para la Categoria " + cotizacionHora.Categoria +", el campo cantidad de personas es obligatorio";
                         breakFor = true;
                         return mensaje;
@@ -345,7 +345,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             var self = this;
             this.cotizacionSubposiciones.forEach(function (subposicion, i) {                
                 if (!breakFor) {
-                    if (subposicion.Cantidad == 0 || subposicion.Cantidad == undefined) {
+                    if (subposicion.Cantidad <= 0 || subposicion.Cantidad == undefined) {
                         mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion +  ": La Ctd. cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
@@ -360,7 +360,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         breakFor = true;
                         return mensaje;
                     }
-                    if (subposicion.Precio == 0) {
+                    if (subposicion.Precio <= 0) {
                         mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion +  ": El Precio cotizado es obligatorio";
                         breakFor = true;
                         return mensaje;

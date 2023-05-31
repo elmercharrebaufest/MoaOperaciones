@@ -259,7 +259,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         lista.forEach(element => {
             if (!breakFor) {
                 if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES') {
-                    if (element.Cantidad == null || element.Cantidad == undefined || element.Cantidad == 0) {
+                    if (element.Cantidad == null || element.Cantidad == undefined || element.Cantidad <= 0) {
                         self.error = "Pos " + element.Posicion + " - La cantidad adjudicada debe ser mayor a 0";
                         breakFor = true;
                         return self.error;

@@ -283,7 +283,6 @@ export class DashboardComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaSolp = result.data;
-                        console.log("TablaSolp", this.tablaSolp)
                         this.tablaSolp.forEach(x => {
                             x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
                             x.VincularPliego = x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP;
@@ -351,10 +350,7 @@ export class DashboardComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        console.log("result", result)
                         this.usuariosResult = result.Usuarios;
-                        console.log("usuario result", this.usuariosResult )    
-
                         this.estadoSolpItem = [];
                         this.usuarioFiltro = [];
                         result.EstadosSolpSap.forEach(cd => this.estadoSolpItem.push({
@@ -363,11 +359,6 @@ export class DashboardComponent extends ListBaseComponent {
                         result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
                             label: d.Mail, value: d.Id
                         })))
-                        console.log("usuario item select la concha de la lora", this.usuarioFiltro )    
-                        // result.Usuarios.forEach(ds => this.usuarioFiltro.push({
-                        //     label: ds.Descripcion, value: ds.Id
-                        // }));
-
                     }
                 },
                 error => {
