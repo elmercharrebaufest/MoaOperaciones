@@ -123,24 +123,28 @@
 
                         </div>
                     </td>
+
+
                     <td pEditableColumn class="columna">
                         <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <input pInputText type="number"
                                     [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
                                     [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Precio"
-                                    pKeyFilter="num" pattern="[0-9]+"
+                                    pKeyFilter="num"
                                     (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id);validarCambios(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)" />
                             </ng-template>
 
                             <ng-template pTemplate="output">
                                 <div [ngClass]="{'invalido': (esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.Precio != undefined) && 
-                            (posicionesCompra.Posiciones.CotizacionPosicion.Precio <= 0)}" pKeyFilter="int" pattern="[0-9]+">
+                            (posicionesCompra.Posiciones.CotizacionPosicion.Precio <= 0)}" pKeyFilter="int">
                                     {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.Precio | number:'1.2-2'}}
                                 </div>
                             </ng-template>
                         </p-cellEditor>
                     </td>
+
+                    
                     <td class="columna">{{posicionesCompra?.Posiciones?.CotizacionPosicion?.PrecioTotal |
                         number:'1.2-2'}}</td>
                     <td pEditableColumn class="columna" style="cursor:pointer">

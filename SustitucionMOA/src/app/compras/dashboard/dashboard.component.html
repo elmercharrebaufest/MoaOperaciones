@@ -42,8 +42,9 @@
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="row myRow col-xs-12 col-sm-12 col-md-12 col-lg-12 " style="margin-top: 1em; margin-bottom: 15px;">
-                    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8" style="margin-left: -46px;">
+                <div class="row myRow" style="margin-top: 1em; margin-bottom: 15px;">
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-left: -46px;">
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text"
                                 [(ngModel)]="nroSolp" placeholder="Buscar por numero de solp">
@@ -52,34 +53,39 @@
                             <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp"
                                 defaultLabel="Estado SOLP"></p-multiSelect>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                            <p-calendar showButtonBar="true" [showIcon]="true" #myCalendar placeholder="Filtro fechas"
-                                dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
-                                [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
-                                (onClearClick)="returnToTodaysDate()" class="styled-select">
-                            </p-calendar>
+                       
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="margin-top: 10px;">
+                            <span
+                                style="border-left: 1px solid black;margin-top: 1px;padding-left: 9px;padding-right: 1px;margin-left: 8px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap">
+                                </p-checkbox>
+                            </span>
+                            <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
+                                    [(ngModel)]="mantenimiento"></p-checkbox>
+                            </span>
+                            <span class="padding1" style="margin-right: 5px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
+                            </span>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"  style="padding-left: 48px !important;">                      
-                            <p-dropdown [options]="usuarioFiltro" [(ngModel)]="selectUsuario" name="selectUsuario" placeholder="Usuario" filter="true" showClear="true"></p-dropdown>                  
+                        <div class="col-md-1 col-lg-1  buttonBuscar">
+                            <button class="btn buscar" (click)="onBuscar()">Buscar</button>
                         </div>
                     </div>
 
-                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 padding1" style="margin-top: 11px;">
-                        <span
-                            style="border-left: 1px solid black;margin-top: 1px;padding-left: 9px;padding-right: 1px;margin-left: 8px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap">
-                            </p-checkbox>
-                        </span>
-                        <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
-                                [(ngModel)]="mantenimiento"></p-checkbox>
-                        </span>
-                        <span class="padding1" style="margin-right: 5px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
-                        </span>
-                    </div>
-                    <div class="form-group col-md-2 col-lg-1  buttonBuscar"  style="padding-left: 48px !important;">
-                        <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+                    
+                    <div class="row myRow" style="margin-left: -31px;">
+                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 inputAltura" style="width: 24%;">                      
+                            <p-dropdown [options]="usuarioFiltro" [(ngModel)]="selectUsuario" name="selectUsuario" placeholder="Buscar usuario" filter="true" showClear="true"></p-dropdown>                  
+                        </div> 
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                            <p-calendar [inputStyle]="{ 'width': '220px'}" showButtonBar="true" [showIcon]="true"  placeholder="Filtro fechas"
+                                dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
+                                [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                                (onClearClick)="returnToTodaysDate()" >
+                            </p-calendar>
+                        </div>
+
                     </div>
                 </div>
 

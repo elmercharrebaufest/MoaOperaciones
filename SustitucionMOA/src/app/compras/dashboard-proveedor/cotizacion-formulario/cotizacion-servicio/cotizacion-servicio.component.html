@@ -172,7 +172,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int" step="1" pattern="[0-9]+"
+                                                        <input type="text" pKeyFilter="int" step="1" 
                                                                [(ngModel)]="rowData.CantidadPersonas">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
@@ -183,7 +183,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int" pattern="[0-9]+"
+                                                        <input type="text" pKeyFilter="int" 
                                                                [(ngModel)]="rowData.HorasNormales">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
@@ -194,7 +194,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int" pattern="[0-9]+"
+                                                        <input type="text" pKeyFilter="int" 
                                                                [(ngModel)]="rowData.HorasNocturnas">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
@@ -276,7 +276,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int" min="0" pattern="[0-9]+"
+                                                        <input type="text" pKeyFilter="int" min="0" 
                                                                [(ngModel)]="rowData.CantidadPersonas">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
@@ -287,7 +287,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int" min="0" pattern="[0-9]+"
+                                                        <input type="text" pKeyFilter="int" min="0" 
                                                                [(ngModel)]="rowData.HorasNormales">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
@@ -298,7 +298,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int" min="0" pattern="[0-9]+"
+                                                        <input type="text" pKeyFilter="int" min="0" 
                                                                [(ngModel)]="rowData.HorasNocturnas">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
@@ -418,7 +418,7 @@
                                                 <td pEditableColumn style="font-size: 11px !important;">
                                                     <p-cellEditor>
                                                         <ng-template pTemplate="input">
-                                                            <input type="text" pKeyFilter="int" pattern="[0-9]+"
+                                                            <input type="text" pKeyFilter="int" 
                                                                    [(ngModel)]="subposicionesCompras.CantidadCotizacion"
                                                                    (ngModelChange)="calcularValorNeto(subposicionesCompras, posicionCompra.Id);validarCambios(subposicionesCompras, posicionCompra.Id); obtenerPrecioTotalPosicionProveedor()">
                                                         </ng-template>
@@ -465,7 +465,7 @@
                                                         <ng-template pTemplate="input">
                                                             <input pInputText type="number"
                                                                    [(ngModel)]="subposicionesCompras.PrecioSubPosicion" pKeyFilter="num"
-                                                                   pattern="[0-9]+"
+                                                                   
                                                                    (ngModelChange)="calcularValorNeto(subposicionesCompras, posicionCompra.Id);obtenerPrecioTotalPosicionProveedor()" />
                                                         </ng-template>
 
