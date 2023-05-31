@@ -1047,7 +1047,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             let data = this.manejarErroresApiResponse(result);
             if (!data) {
                 this.mensajesOrdenDeCarga[campo] = "CUIL Chofer inválido – Revisar valor ingresado";
-                this.floatMsgService.setInfoMsg("CUIL Chofer inválido – Revisar valor ingresado");
+                if (data != null)
+                    this.floatMsgService.setInfoMsg("CUIL Chofer inválido – Revisar valor ingresado");
             }
         });
     }
