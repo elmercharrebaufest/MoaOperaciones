@@ -35,7 +35,7 @@ namespace SustitucionMOATest.Services
         private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
         private Mock<IScatoConsumer> mIScatoConsumer;
 
-        private ConsultaListado<SustitucionMOAWS.ScatoComandosWebService.ChoferDto> _consultaListado;
+        private Respuesta<SustitucionMOAWS.ScatoComandosWebService.ChoferDto> _consultaListado;
 
         [SetUp]
         public void SetUp()
@@ -76,9 +76,9 @@ namespace SustitucionMOATest.Services
                 NumeroEntrega = ""
 
             };
-            _consultaListado = new ConsultaListado<SustitucionMOAWS.ScatoComandosWebService.ChoferDto>
+            _consultaListado = new Respuesta<SustitucionMOAWS.ScatoComandosWebService.ChoferDto>
             {
-                Data = new SustitucionMOAWS.ScatoComandosWebService.ChoferDto[] { },
+                Data = new SustitucionMOAWS.ScatoComandosWebService.ChoferDto { },
                 Messages = new MessageItem[] { },
                 IsValid = false
             };
