@@ -240,7 +240,7 @@ namespace SustitucionMOAModel.Dto
         public AdjudicacionPosicion AdjudicacionPosicion { get; set; }
         public string SolpTipo { get; set; }
         public int Solp_Id { get; set; }
-        public int CantidadAdjudicada { get; set; }
+        public decimal? CantidadAdjudicada { get; set; }
 
         public SolpPosicionDto() { }
 
