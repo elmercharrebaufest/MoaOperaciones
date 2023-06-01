@@ -2614,7 +2614,7 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Cuerpo = esIntermediarioFlete ?
                 string.Format("Razón social: {0}, CUIT: {1}", razonSocial, cuit) :
                 string.Format("Se solicita el alta temprana del CUIT: {0} , Razón Social: {1}", cuit, razonSocial);
-            
+
             Log.Info("Gestión alta mail: " + emailSenderData.ToJson());
             EmailSender.EnviarMail(emailSenderData);
 
@@ -2785,7 +2785,7 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
             }
         }
-        public (bool, Chofer) ValidarCuilChofer(string cuilChofer)
+        public (bool, ScatoRepo.Chofer) ValidarCuilChofer(string cuilChofer)
         {
             var choferRes = scatoRepositorioClient.ObtenerChoferPorCuil(DataFormatter.CuitConGuion(cuilChofer));
             var chofer = choferRes.Data;
@@ -2797,7 +2797,7 @@ namespace SustitucionMOAUtils.Services
                     Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
                 }
 
-                return (choferRes.Messages.All(msg => msg.MessageCode != CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido), chofer);
+                return (choferRes.Messages.All(msg => msg.MessageCode != ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido), chofer);
             }
             return (true, chofer);
         }
