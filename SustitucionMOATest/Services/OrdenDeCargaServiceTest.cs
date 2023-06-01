@@ -33,6 +33,7 @@ namespace SustitucionMOATest.Services
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
         private Mock<IFeriadoService> feriadoService;
         private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
+        private Mock<IScatoConsumer> mIScatoConsumer;
 
         private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaChofer;
 
@@ -43,9 +44,10 @@ namespace SustitucionMOATest.Services
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
             feriadoService = new Mock<IFeriadoService>();
             mIScatoRepositorioClient = new Mock<IScatoRepositorioClient>();
+            mIScatoConsumer = new Mock<IScatoConsumer>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
-                mIScatoRepositorioClient.Object);
+                mIScatoRepositorioClient.Object, mIScatoConsumer.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,
