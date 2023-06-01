@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOAUtils.Email;
 using System.Collections.Generic;
 
@@ -52,8 +53,8 @@ namespace SustitucionMOAUtils.Interfaces
         ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit);
         List<PlantaDto> ObtenerPlantasDestino(string destinoCuit);
         List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
-        void ValidarCuilChoferEnScato(string cuil);
-        bool ValidarCuilChoferValido(string cuilChofer);
         ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
+        (bool, Chofer) ValidarCuilChofer(string cuilChofer);
+        bool ValidarCuilChoferDigito(string cuilChofer);
     }
 }
