@@ -53,15 +53,16 @@ namespace SustitucionMOAUtils.Services
             IRepositorio repositorio,
             IOrdenCargaConsumerMOA consumer,
             IFeriadoService feriadoService,
-            IScatoRepositorioClient scatoRepositorioClient
+            IScatoRepositorioClient scatoRepositorioClient,
+            IScatoConsumer scatoConsumer
             )
         {
             this.repositorio = repositorio;
             this.consumer = consumer;
             this.feriadoService = feriadoService;
-            this.scatoConsumer = scatoConsumer;
             _usuarioAutomaticoSAP = ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"];
             this.scatoRepositorioClient = scatoRepositorioClient;
+            this.scatoConsumer = scatoConsumer;
         }
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
