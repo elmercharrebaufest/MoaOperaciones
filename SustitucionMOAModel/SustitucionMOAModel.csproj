@@ -254,7 +254,9 @@
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\CodigoMensajeObtenerChoferPorCuil.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\Domicilio.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\ObtenerProveedorPorCuilResponse.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\Planta.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\Proveedor.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\Respuesta.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\RespuestaListado.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\RespuestaScatoBase.cs" />

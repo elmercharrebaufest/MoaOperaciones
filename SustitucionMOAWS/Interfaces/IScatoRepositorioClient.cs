@@ -8,5 +8,6 @@ namespace SustitucionMOAWS.Interfaces
         RespuestaListado<Planta> ObtenerPlantas(string cuitDestino);
         RespuestaListado<Domicilio> ObtenerDomicilios(string cuitDestino);
         Respuesta<ChoferDto> ObtenerChoferPorCuil(string cuilChofer);
+        ObtenerProveedorPorCuilResponse ObtenerProveedorPorCuil(string cuil);
     }
 }
