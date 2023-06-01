@@ -47,12 +47,13 @@ namespace SustitucionMOAUtils.Interfaces
         string EnviarOrdenesASAP(List<int> ordenesIds, string mailUsuario);
         ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
         bool ValidarSisaCuit(string cuit, string campo);
-        bool EmailGestionarAlta(string cuit, string razonSocial);
+        bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete);
         bool ValidarCuitRuca(string cuit);
         ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit);
         List<PlantaDto> ObtenerPlantasDestino(string destinoCuit);
         List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
         void ValidarCuilChoferEnScato(string cuil);
         bool ValidarCuilChoferValido(string cuilChofer);
+        ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
     }
 }

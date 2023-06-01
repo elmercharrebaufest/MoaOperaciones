@@ -11,6 +11,7 @@ import { ValidarSisaCorredorClienteResponse } from '../common/models/ordenes-de-
 import { ValidarCuitExisteScatoResponse } from '../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse copy';
 import { Planta } from '../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../common/models/ordenes-de-carga/domicilio';
+import { ValidarIntermediarioFleteResponse } from '../common/models/ordenes-de-carga/ValidarIntermediarioFleteResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -386,10 +387,11 @@ export class OrdenesDeCargaService extends BaseService {
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
-    public enviarMailGestionarAltaCuit(cuit: string, razonSocial: string): Observable<ApiResponse<boolean>> {
+    public enviarMailGestionarAltaCuit(cuit: string, razonSocial: string, esIntermediarioFlete: boolean): Observable<ApiResponse<boolean>> {
         let params: HttpParams = new HttpParams()
             .append("cuit", cuit)
             .append("razonSocial", razonSocial)
+            .append("esIntermediarioFlete", esIntermediarioFlete.toString());
 
         return this.http
             .get<ApiResponse<boolean>>(
@@ -427,7 +429,17 @@ export class OrdenesDeCargaService extends BaseService {
                 '/api/OrdenDeCarga/ValidarCuitRuca',
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
 
+    public validarIntermediarioFlete(cuit: string): Observable<ApiResponse<ValidarIntermediarioFleteResponse>> {
+        let params: HttpParams = new HttpParams()
+            .append("cuit", cuit);
+
+        return this.http
+            .get<ApiResponse<ValidarIntermediarioFleteResponse>>(
+                '/api/OrdenDeCarga/ValidarIntermediarioFlete',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
     public validarCuilChofer(cuil: string): Observable<ApiResponse<boolean>> {
         let params: HttpParams = new HttpParams()

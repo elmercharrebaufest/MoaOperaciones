@@ -298,9 +298,25 @@
                                     CUIT Intermediario Flete:
                                 </div>
                                 <div class="styled-select">
-                                    <input type="text" [(ngModel)]="ordenDeCarga.CUITIntermediarioFlete"
-                                        mask="00-00000000-0" [placeholder]="descripcionIntermediarioFlete">
+                                    <div class="ui-inputgroup">
+                                        <input type="text" [(ngModel)]="ordenDeCarga.CUITIntermediarioFlete"
+                                            mask="00-00000000-0" [placeholder]="descripcionIntermediarioFlete"
+                                            (change)="validarIntermediarioFlete()">
+                                        <span class="ui-inputgroup-addon" *ngIf="validando.CUITIntermediarioFlete">
+                                            <p-progressSpinner
+                                                [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
+                                        </span>
+                                    </div>
                                 </div>
+                                <div *ngIf="!intermediarioFleteCuitFormatoValido">
+                                    CUIT inválido
+                                </div>
+                                <div class="styled-select" *ngIf="ordenDeCarga.RazonSocialIntermediarioFlete">
+                                    <input [disabled]="true" type="text" [(ngModel)]="ordenDeCarga.RazonSocialIntermediarioFlete">
+                                </div>
+                                <p *ngIf="mensajesGestionCuit.CUITIntermediarioFlete">
+                                    {{ mensajesGestionCuit.CUITIntermediarioFlete }}
+                                </p>
                             </div>
 
                         </div>
@@ -377,7 +393,7 @@
     [responsive]="true" [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70" [draggable]="false"
     appendTo="body" (onHide)="focusRazonSocialParaGestion=true; razonSocialParaGestion=''">
     <p>No se encontró la CUIT {{ordenDeCarga[displayModal]}}</p><br>
-    <p>¿Desea que se notifique ?</p>
+    <p>¿Desea que se notifique?</p>
     <div class="col-xs-12 col-md-12">
         <div class="formulario-label">
             Razón social con la que gestionar el alta:
@@ -392,7 +408,7 @@
     <p-footer>
         <button [disabled]="razonSocialParaGestion.length < 1" type="button" pButton icon="pi pi-check"
             (click)="gestionarAltaCUIT()" label="Gestionar"></button>
-        <button type="button" pButton icon="pi pi-close" (click)="displayModal = null" label="Cancelar"
+        <button type="button" pButton icon="pi pi-close" (click)="cancelarGestionAltaCUIT()" label="Cancelar"
             class="ui-button-secondary"></button>
     </p-footer>
 </p-dialog>

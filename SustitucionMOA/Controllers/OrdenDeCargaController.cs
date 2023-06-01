@@ -771,9 +771,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
-            // Se serializa así para que tome bien los atributos JsonProperty en SustitucionMOAApiResponse
-            return Content(JsonConvert.SerializeObject(response), "application/json");
-            //return JsonCustom(response);
+            return ContentCustom(response);
         }
 
         [HttpGet]
@@ -797,9 +795,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
-            // Se serializa así para que tome bien los atributos JsonProperty en SustitucionMOAApiResponse
-            return Content(JsonConvert.SerializeObject(response), "application/json");
-            //return JsonCustom(response);
+            return ContentCustom(response);
         }
         [HttpGet]
         public ActionResult ValidarSisaCuit(string cuit, string campo)
@@ -822,17 +818,15 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
-            // Se serializa así para que tome bien los atributos JsonProperty en SustitucionMOAApiResponse
-            return Content(JsonConvert.SerializeObject(response), "application/json");
-            //return JsonCustom(response);
+            return ContentCustom(response);
         }
         [HttpGet]
-        public ActionResult GestionarAltaCuit(string cuit, string razonSocial)
+        public ActionResult GestionarAltaCuit(string cuit, string razonSocial, bool esIntermediarioFlete)
         {
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                response.Data = ordenDeCargaService.EmailGestionarAlta(cuit, razonSocial);
+                response.Data = ordenDeCargaService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete);
             }
             catch (InfoCustomException ice)
             {
@@ -847,9 +841,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
-            // Se serializa así para que tome bien los atributos JsonProperty en SustitucionMOAApiResponse
-            return Content(JsonConvert.SerializeObject(response), "application/json");
-            //return JsonCustom(response);
+            return ContentCustom(response);
         }
         [HttpGet]
         public ActionResult ObtenerPlantasDestino(string destinoCuit)
@@ -872,7 +864,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
-            return Content(JsonConvert.SerializeObject(response), "application/json");
+            return ContentCustom(response);
         }
 
         [HttpGet]
@@ -896,7 +888,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
-            return Content(JsonConvert.SerializeObject(response), "application/json");
+            return ContentCustom(response);
         }
 
         [HttpGet]
@@ -920,7 +912,31 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
-            return Content(JsonConvert.SerializeObject(response), "application/json");
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ContentResult ValidarIntermediarioFlete(string cuit)
+        {
+            var response = new SustitucionMOAApiResponse<ValidarIntermediarioFleteResponse>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarIntermediarioFlete(cuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
         }
         public ActionResult ValidarCuilChofer(string cuilChofer)
         {
@@ -942,7 +958,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
-            return Content(JsonConvert.SerializeObject(response), "application/json");
+            return ContentCustom(response);
         }
     }
 }

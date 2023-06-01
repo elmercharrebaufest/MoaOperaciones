@@ -6,7 +6,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
+using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
@@ -35,7 +35,7 @@ namespace SustitucionMOATest.Services
         private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
         private Mock<IScatoConsumer> mIScatoConsumer;
 
-        private Respuesta<SustitucionMOAWS.ScatoComandosWebService.ChoferDto> _consultaListado;
+        private ScatoRepo.Respuesta<SustitucionMOAWS.ScatoComandosWebService.ChoferDto> _consultaListado;
 
         [SetUp]
         public void SetUp()
@@ -76,10 +76,10 @@ namespace SustitucionMOATest.Services
                 NumeroEntrega = ""
 
             };
-            _consultaListado = new Respuesta<SustitucionMOAWS.ScatoComandosWebService.ChoferDto>
+            _consultaListado = new ScatoRepo.Respuesta<SustitucionMOAWS.ScatoComandosWebService.ChoferDto>
             {
                 Data = new SustitucionMOAWS.ScatoComandosWebService.ChoferDto { },
-                Messages = new MessageItem[] { },
+                Messages = new ScatoRepo.MessageItem[] { },
                 IsValid = false
             };
         }
@@ -1365,11 +1365,11 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ValidarCuilChoferValido_CuilNoExiste_ReturnsTrue()
         {
-            _consultaListado.Messages = new MessageItem[]
+            _consultaListado.Messages = new ScatoRepo.MessageItem[]
             {
-                new MessageItem
+                new ScatoRepo.MessageItem
                 {
-                    MessageCode = CodigoMensajeObtenerChoferPorCuil.ChoferNoEncontrado
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.ChoferNoEncontrado
                 }
             };
             mIScatoRepositorioClient.Setup(src => src.ObtenerChoferPorCuil(It.IsAny<string>())).Returns(
@@ -1384,11 +1384,11 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ValidarCuilChoferValido_CuilDigitoVerificadorNoValido_ReturnsFalse()
         {
-            _consultaListado.Messages = new MessageItem[]
+            _consultaListado.Messages = new ScatoRepo.MessageItem[]
             {
-                new MessageItem
+                new ScatoRepo.MessageItem
                 {
-                    MessageCode = CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido
                 }
             };
             mIScatoRepositorioClient.Setup(src => src.ObtenerChoferPorCuil(It.IsAny<string>())).Returns(

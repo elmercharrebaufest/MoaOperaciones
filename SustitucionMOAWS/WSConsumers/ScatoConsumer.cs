@@ -6,6 +6,8 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAFotmatter;
+using System;
+using SustitucionMOAWS.Util;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -121,6 +123,26 @@ namespace SustitucionMOAWS.WSConsumers
                 Log.Info(string.Format("Result Existe CUIT en SCATO: {0}; Result: {1}", cuit, result.Existe ? "Existe" : "No existe"));
 
             return result;
+        }
+
+        public ProveedorDto ObtenerProveedorPorCuit(string cuit)
+        {
+            var cuitGuiones = string.Empty;
+            try
+            {
+                cuitGuiones = DataFormatter.CuitConGuion(cuit);
+                var proveedor = service.ObtenerProveedorPorCuit(cuitGuiones, new TiposProveedor { PR = true });
+
+                Log.Info(string.Format("ScatoConsumer.ObtenerProveedorPorCuit. cuit: {0}, cuitGuiones: {1}, proveedor: {2}",
+                    cuit, cuitGuiones, proveedor.ToJson()));
+                
+                return proveedor;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("", "", "ScatoConsumer", "ObtenerProveedorPorCuit", string.Format("cuit: {0}, cuitGuiones: {1}", cuit, cuitGuiones));
+                throw ex;
+            }
         }
     }
 

@@ -14,6 +14,6 @@ namespace SustitucionMOAWS.Interfaces
         List<KmPorProveedorDto> BuscarDestinos(string cuit);
         bool CuilChoferExiste(string cuil, bool logger = true);
         ValidarCuitExisteScatoResponse ExisteCuitDestinoDestinatario(string cuit, bool logger = true);
-
+        ProveedorDto ObtenerProveedorPorCuit(string cuit);
     }
 }

@@ -45,6 +45,7 @@ export class OrdenDeCarga {
     RazonSocialDestino?: string;
     Reventa: boolean;
     CUITIntermediarioFlete?: string;
+    RazonSocialIntermediarioFlete?: string;
     PlantaCodigo: string;
     DomicilioTipo: string;
     DomicilioOrden: number;
