@@ -8,6 +8,7 @@ using System.Text;
 using System.Configuration;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using SustitucionMOAWS.Logger;
 
 namespace SustitucionMOAWS.WebApi
 {
@@ -19,8 +20,9 @@ namespace SustitucionMOAWS.WebApi
         private static readonly string ScatoRepositorioBaseAddress = ConfigurationManager.AppSettings["ScatoRepositorioBaseAddress"];
         private static readonly string Username = ConfigurationManager.AppSettings["ScatoRepositorioUsername"];
         private static readonly string Password = ConfigurationManager.AppSettings["ScatoRepositorioPassword"];
-        private static HttpClient cliente = new HttpClient { BaseAddress = new Uri(ScatoRepositorioBaseAddress) };
         private static readonly string ScatoApi = "ScatoApi";
+        private static readonly string AfipApi = "AFIPApi";
+        private static HttpClient cliente = new HttpClient { BaseAddress = new Uri(ScatoRepositorioBaseAddress) };
 
         public ScatoRepositorioClient()
         {
@@ -29,7 +31,7 @@ namespace SustitucionMOAWS.WebApi
 
         public RespuestaListado<Planta> ObtenerPlantas(string cuitDestino)
         {
-            var reqUri = $"AFIPApi/ConsultarPlantasDGPorCUIT/{cuitDestino}";
+            var reqUri = $"{AfipApi}/ConsultarPlantasDGPorCUIT/{cuitDestino}";
             HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
@@ -44,7 +46,7 @@ namespace SustitucionMOAWS.WebApi
 
         public RespuestaListado<Domicilio> ObtenerDomicilios(string cuitDestino)
         {
-            var reqUri = $"AFIPApi/ConsultarDomiciliosPorCUIT/{cuitDestino}";
+            var reqUri = $"{AfipApi}/ConsultarDomiciliosPorCUIT/{cuitDestino}";
             HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
@@ -59,8 +61,6 @@ namespace SustitucionMOAWS.WebApi
 
         public Respuesta<ChoferDto> ObtenerChoferPorCuil(string cuilChofer)
         {
-            InicializarCliente();
-
             var reqUri = $"{ScatoApi}/ObtenerChoferPorCuil/{cuilChofer}";
             HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
@@ -78,18 +78,27 @@ namespace SustitucionMOAWS.WebApi
         {
             var tipo = ObtenerProveedorPorCuil_TipoProveedor;
             var cuilGuiones = DataFormatter.CuitConGuion(cuil);
+            var jsonRes = string.Empty;
 
-            var reqUri = $"ScatoApi/ObtenerProveedorPorCuil/{cuilGuiones}/{tipo}";
-            HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var jsonRes = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                var proveedorResponse = JsonConvert.DeserializeObject<ObtenerProveedorPorCuilResponse>(jsonRes);
-                return proveedorResponse;
+                var reqUri = $"{ScatoApi}/ObtenerProveedorPorCuil/{cuilGuiones}/{tipo}";
+                HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
+                if (response.IsSuccessStatusCode)
+                {
+                    jsonRes = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    var proveedorResponse = JsonConvert.DeserializeObject<ObtenerProveedorPorCuilResponse>(jsonRes);
+                    return proveedorResponse;
+                }
+                else
+                {
+                    throw new Exception($"Respuesta API Scato: {response.StatusCode}.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                throw new Exception($"Error en api Scato: {response.StatusCode}. CUIL: {cuil}. CUIL guiones: {cuilGuiones}.");
+                Log.Error(ex, $"Error en API Scato. CUIL: {cuil}. CUIL guiones: {cuilGuiones}. Respuesta: {jsonRes}.");
+                throw new Exception("Error en API Scato ObtenerProveedorPorCuil");
             }
         }
 

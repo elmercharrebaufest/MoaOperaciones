@@ -930,6 +930,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         })
     }
 
+    cancelarGestionAltaCUIT() {
+        if (this.displayModal === 'CUITIntermediarioFlete') {
+            this.ordenDeCarga.CUITIntermediarioFlete = undefined;
+        }
+        this.displayModal = null;
+    }
+
     validarSisaCorredorCliente() {
         if (!this.ordenDeCarga.ContratoSeleccionado || !this.validaCPEDG) {
             this.mensajeComponent.setMsgsEmpty();

@@ -68,15 +68,14 @@ namespace SustitucionMOAUtils.Services
         {
             Log.Info($"Agregar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
             if (!ValidarCuilChoferValido(ordenDeCarga.CUITChofer))
-                throw new ValidationCustomException("Cuil de chofer invalido");
+                throw new ValidationCustomException("Cuil de chofer inválido");
 
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
                 var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
                 var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
-                var llenarOrdenDeCarga = LlenarOrdenDeCarga(ordenDeCarga, usuario, esComercial);
-                ordenDeCarga = llenarOrdenDeCarga;
+                LlenarOrdenDeCarga(ordenDeCarga, usuario, esComercial);
                 Log.Debug(this.GetType().Name, "Agregar", $" esComercial: {esComercial}");
                 Log.Debug(this.GetType().Name, "Agregar", $" puedeEnviarASAP: {puedeEnviarASAP}");
 
@@ -85,8 +84,6 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(ordenDeCarga);
                 repositorio.GuardarCambios();
                 ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
-                var fasdf = scatoConsumer.ObtenerProveedorPorCuit(ordenDeCarga.CUITIntermediarioFlete);
-                ValidarCuilChoferEnScato(ordenDeCarga.CUITIntermediarioFlete);
                 NotificarContratoSinKm(ordenDeCarga);
                 NotificarTransporte(ordenDeCarga.Id);
 
@@ -209,7 +206,6 @@ namespace SustitucionMOAUtils.Services
                 var listaValoresDiferentes = cargarDatosOCEditar.Item2;
 
                 ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
-                ValidarCuilChoferEnScato(ordenDeCarga.CUITIntermediarioFlete);
                 //Solicitud de edición
                 if (!esInterno)
                 {
@@ -523,11 +519,11 @@ namespace SustitucionMOAUtils.Services
             }
             else if (result == OrdenCargaCrearOrden.VerificarDatos)
             {
-                ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
+                ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningún contrato con ese producto.";
             }
             else if (result == OrdenCargaCrearOrden.Vacia)
             {
-                ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningun contrato con ese producto.";
+                ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningún contrato con ese producto.";
             }
             else if (result == OrdenCargaCrearOrden.NoEsperado)
             {
@@ -561,6 +557,13 @@ namespace SustitucionMOAUtils.Services
             {
                 contrato = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP) ? ordenDeCarga.ContratoIngresado : ordenDeCarga.ContratoSAP;
                 contrato = contrato.Split('|').First();
+            }
+
+            if (!ValidarExistenciaIntermediarioFlete(ordenDeCarga))
+            {
+                ordenDeCarga.TransporteExiste = false;
+                ordenDeCarga.DescripcionCodigoVerificacionSap = "Intermediario de flete no dado de alta";
+                return true;
             }
 
             var controlarCargaReq = new ControlCargaRequest
@@ -2137,6 +2140,15 @@ namespace SustitucionMOAUtils.Services
         {
             Log.Info("Ejecuta OrdenDeCargaService.GenerarEntregaSAP");
 
+            if (!ValidarExistenciaIntermediarioFlete(orden))
+            {
+                orden.TransporteExiste = false;
+                orden.DescripcionCodigoVerificacionSap = "No se pudo generar la entrega. No existe el Intermediario de flete.";
+                orden.Estado = EstadoOrdenDeCarga.Pendiente;
+                repositorio.GuardarCambios();
+                return new Resultado { Mensaje = "No se pudo generar la entrega. No existe el Intermediario de flete." };
+            }
+
             var req = new CrearEntregaRequest
             {
                 Documento = orden.CUITChofer,
@@ -2793,7 +2805,7 @@ namespace SustitucionMOAUtils.Services
                     Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
                 }
 
-                return choferRes.Messages.All(msg => msg.MessageCode != CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido);
+                return choferRes.Messages.All(msg => msg.MessageCode != ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido);
             }
             return true;
         }
@@ -2831,6 +2843,34 @@ namespace SustitucionMOAUtils.Services
             var emailData = new EmailSenderData { Asunto = asunto, Cuerpo = cuerpo, Mails = mails };
 
             EmailSender.EnviarMail(emailData);
+        }
+
+        private bool ValidarExistenciaIntermediarioFlete(OrdenDeCarga orden)
+        {
+            var cuilIF = orden.CUITIntermediarioFlete;
+
+            if (string.IsNullOrEmpty(cuilIF))
+            {
+                return true; // No se ingresó Intermediario en la orden
+            }
+
+            var scatoRes = scatoRepositorioClient.ObtenerProveedorPorCuil(cuilIF);
+            if (scatoRes.IsValid)
+            {
+                return true; // Se ingresó Intermediario y existe en Scato
+            }
+            else
+            {
+                // El Intermediario no existe o es inválido el cuil
+                if (scatoRes.TieneError(ScatoRepo.ObtenerProveedorPorCuilError.ProveedorNoEncontrado))
+                {
+                    return false;
+                }
+                else
+                {
+                    throw new Exception("Error al validar existencia Intermediario. Validación inesperada con cuit " + cuilIF);
+                }
+            }
         }
     }
 }

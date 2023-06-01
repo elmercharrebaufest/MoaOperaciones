@@ -958,7 +958,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
-            return Content(JsonConvert.SerializeObject(response), "application/json");
+            return ContentCustom(response);
         }
     }
 }
