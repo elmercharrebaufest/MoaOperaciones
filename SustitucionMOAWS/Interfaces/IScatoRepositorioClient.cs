@@ -1,5 +1,4 @@
 ﻿using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
-using SustitucionMOAWS.ScatoComandosWebService;
 
 namespace SustitucionMOAWS.Interfaces
 {
@@ -7,7 +6,7 @@ namespace SustitucionMOAWS.Interfaces
     {
         RespuestaListado<Planta> ObtenerPlantas(string cuitDestino);
         RespuestaListado<Domicilio> ObtenerDomicilios(string cuitDestino);
-        Respuesta<ChoferDto> ObtenerChoferPorCuil(string cuilChofer);
         ObtenerProveedorPorCuilResponse ObtenerProveedorPorCuil(string cuil);
+        Respuesta<Chofer> ObtenerChoferPorCuil(string cuilChofer);
     }
 }

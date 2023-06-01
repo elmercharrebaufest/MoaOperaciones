@@ -33,9 +33,8 @@ namespace SustitucionMOATest.Services
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
         private Mock<IFeriadoService> feriadoService;
         private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
-        private Mock<IScatoConsumer> mIScatoConsumer;
 
-        private ScatoRepo.Respuesta<SustitucionMOAWS.ScatoComandosWebService.ChoferDto> _consultaListado;
+        private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaChofer;
 
         [SetUp]
         public void SetUp()
@@ -43,11 +42,10 @@ namespace SustitucionMOATest.Services
             repositorioMock = new Mock<IRepositorio>();
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
             feriadoService = new Mock<IFeriadoService>();
-            mIScatoConsumer = new Mock<IScatoConsumer>();
             mIScatoRepositorioClient = new Mock<IScatoRepositorioClient>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
-                mIScatoRepositorioClient.Object, mIScatoConsumer.Object);
+                mIScatoRepositorioClient.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,
@@ -76,9 +74,9 @@ namespace SustitucionMOATest.Services
                 NumeroEntrega = ""
 
             };
-            _consultaListado = new ScatoRepo.Respuesta<SustitucionMOAWS.ScatoComandosWebService.ChoferDto>
+            _respuestaChofer = new ScatoRepo.Respuesta<ScatoRepo.Chofer>
             {
-                Data = new SustitucionMOAWS.ScatoComandosWebService.ChoferDto { },
+                Data = new ScatoRepo.Chofer { },
                 Messages = new ScatoRepo.MessageItem[] { },
                 IsValid = false
             };
@@ -1363,9 +1361,9 @@ namespace SustitucionMOATest.Services
             Assert.IsNull(response);
         }
         [Test]
-        public void ValidarCuilChoferValido_CuilNoExiste_ReturnsTrue()
+        public void ValidarCuilChoferDigito_CuilNoExiste_ReturnsTrue()
         {
-            _consultaListado.Messages = new ScatoRepo.MessageItem[]
+            _respuestaChofer.Messages = new ScatoRepo.MessageItem[]
             {
                 new ScatoRepo.MessageItem
                 {
@@ -1373,18 +1371,18 @@ namespace SustitucionMOATest.Services
                 }
             };
             mIScatoRepositorioClient.Setup(src => src.ObtenerChoferPorCuil(It.IsAny<string>())).Returns(
-                _consultaListado
+                _respuestaChofer
                 );
 
-            var result = target.ValidarCuilChoferValido("11111111111");
+            var result = target.ValidarCuilChoferDigito("11111111111");
 
             Assert.That(result, Is.True);
 
         }
         [Test]
-        public void ValidarCuilChoferValido_CuilDigitoVerificadorNoValido_ReturnsFalse()
+        public void ValidarCuilChoferDigito_CuilDigitoVerificadorNoValido_ReturnsFalse()
         {
-            _consultaListado.Messages = new ScatoRepo.MessageItem[]
+            _respuestaChofer.Messages = new ScatoRepo.MessageItem[]
             {
                 new ScatoRepo.MessageItem
                 {
@@ -1392,10 +1390,10 @@ namespace SustitucionMOATest.Services
                 }
             };
             mIScatoRepositorioClient.Setup(src => src.ObtenerChoferPorCuil(It.IsAny<string>())).Returns(
-                _consultaListado
+                _respuestaChofer
                 );
 
-            var result = target.ValidarCuilChoferValido("11111111111");
+            var result = target.ValidarCuilChoferDigito("11111111111");
 
             Assert.That(result, Is.False);
 

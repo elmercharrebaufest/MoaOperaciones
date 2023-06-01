@@ -59,13 +59,13 @@ namespace SustitucionMOAWS.WebApi
             }
         }
 
-        public Respuesta<ChoferDto> ObtenerChoferPorCuil(string cuilChofer)
+        public Respuesta<Chofer> ObtenerChoferPorCuil(string cuilChofer)
         {
             var reqUri = $"{ScatoApi}/ObtenerChoferPorCuil/{cuilChofer}";
             HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
-                var choferResponse = response.Content.ReadAsAsync<Respuesta<ChoferDto>>().GetAwaiter().GetResult();
+                var choferResponse = response.Content.ReadAsAsync<Respuesta<Chofer>>().GetAwaiter().GetResult();
                 return choferResponse;
             }
             else

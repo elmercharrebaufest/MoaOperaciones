@@ -53,8 +53,8 @@ namespace SustitucionMOAUtils.Services
             IRepositorio repositorio,
             IOrdenCargaConsumerMOA consumer,
             IFeriadoService feriadoService,
-            IScatoRepositorioClient scatoRepositorioClient,
-            IScatoConsumer scatoConsumer)
+            IScatoRepositorioClient scatoRepositorioClient
+            )
         {
             this.repositorio = repositorio;
             this.consumer = consumer;
@@ -67,8 +67,9 @@ namespace SustitucionMOAUtils.Services
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
             Log.Info($"Agregar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
-            if (!ValidarCuilChoferValido(ordenDeCarga.CUITChofer))
-                throw new ValidationCustomException("Cuil de chofer inválido");
+            var (cuilChoferValido, choferEnScato) = ValidarCuilChofer(ordenDeCarga.CUITChofer);
+            if (!cuilChoferValido)
+                throw new ValidationCustomException("Cuil de chofer invalido");
 
             try
             {
@@ -78,12 +79,12 @@ namespace SustitucionMOAUtils.Services
                 LlenarOrdenDeCarga(ordenDeCarga, usuario, esComercial);
                 Log.Debug(this.GetType().Name, "Agregar", $" esComercial: {esComercial}");
                 Log.Debug(this.GetType().Name, "Agregar", $" puedeEnviarASAP: {puedeEnviarASAP}");
+                Log.Debug(this.GetType().Name, "Agregar", $" chofer en Scato: {choferEnScato.ToJson()}");
 
                 var crearPedido = VerificarOrden(ordenDeCarga, ordenDeCarga.Cliente, false, puedeEnviarASAP);
                 Log.Debug(this.GetType().Name, "Agregar", $" crearPedido: {crearPedido}");
                 repositorio.Agregar(ordenDeCarga);
                 repositorio.GuardarCambios();
-                ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
                 NotificarContratoSinKm(ordenDeCarga);
                 NotificarTransporte(ordenDeCarga.Id);
 
@@ -186,8 +187,10 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"Editar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
             var valoresAEditar = new List<string> { "NombreChofer", "CUITChofer", "PatenteAcoplado", "ChasisAcoplado", "ContratoIngresado", "NumeroPedido", "Observacion", "Cantidad", "RazonSocialTransporte", "CUITTransporte", "Producto_Id", "NumeroPedidoIngresado" };
             var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
-            if (!ValidarCuilChoferValido(ordenDeCarga.CUITChofer))
+            var (cuilChoferValido, choferEnScato) = ValidarCuilChofer(ordenDeCarga.CUITChofer);
+            if (!cuilChoferValido)
                 throw new ValidationCustomException("Cuil de chofer invalido");
+
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
@@ -198,14 +201,14 @@ namespace SustitucionMOAUtils.Services
                 var esMesaFas = usuario.TienePermiso("VER ORDENES DE CARGA PARA MESA FAS");
                 var esPuerto = usuario.TienePermiso("VER ORDENES DE CARGA PARA PUERTO");
                 var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
-                ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
 
                 Log.Debug(this.GetType().Name, "Editar", $" puedeEnviarASAP: {puedeEnviarASAP}");
+                Log.Debug(this.GetType().Name, "Editar", $" chofer en Scato: {choferEnScato.ToJson()}");
+
                 var cargarDatosOCEditar = CargarDatosOCEditar(ordenDeCarga, usuario);
                 var ordenEditar = cargarDatosOCEditar.Item1;
                 var listaValoresDiferentes = cargarDatosOCEditar.Item2;
 
-                ValidarCuilChoferEnScato(ordenDeCarga.CUITChofer);
                 //Solicitud de edición
                 if (!esInterno)
                 {
@@ -2611,7 +2614,7 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Cuerpo = esIntermediarioFlete ?
                 string.Format("Razón social: {0}, CUIT: {1}", razonSocial, cuit) :
                 string.Format("Se solicita el alta temprana del CUIT: {0} , Razón Social: {1}", cuit, razonSocial);
-            
+
             Log.Info("Gestión alta mail: " + emailSenderData.ToJson());
             EmailSender.EnviarMail(emailSenderData);
 
@@ -2782,21 +2785,10 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
             }
         }
-        public void ValidarCuilChoferEnScato(string cuil)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(cuil)) return;
-                scatoConsumer.CuilChoferExiste(cuil);
-            }
-            catch (Exception err)
-            {
-                Log.Error("", "", "OrdenDeCarga Service", "ValidarCuilChoferEnScato CUIT: " + cuil, err);
-            }
-        }
-        public bool ValidarCuilChoferValido(string cuilChofer)
+        public (bool, ScatoRepo.Chofer) ValidarCuilChofer(string cuilChofer)
         {
             var choferRes = scatoRepositorioClient.ObtenerChoferPorCuil(DataFormatter.CuitConGuion(cuilChofer));
+            var chofer = choferRes.Data;
             if (!choferRes.IsValid)
             {
                 Log.Info("Error al obtener chofer de Scato " + cuilChofer);
@@ -2805,9 +2797,13 @@ namespace SustitucionMOAUtils.Services
                     Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
                 }
 
-                return choferRes.Messages.All(msg => msg.MessageCode != ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido);
+                return (choferRes.Messages.All(msg => msg.MessageCode != ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido), chofer);
             }
-            return true;
+            return (true, chofer);
+        }
+        public bool ValidarCuilChoferDigito(string cuilChofer)
+        {
+            return ValidarCuilChofer(cuilChofer).Item1;
         }
         private string ObtenerMaterialValidaSisa()
         {
