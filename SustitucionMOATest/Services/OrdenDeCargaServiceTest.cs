@@ -34,7 +34,7 @@ namespace SustitucionMOATest.Services
         private Mock<IFeriadoService> feriadoService;
         private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
 
-        private Respuesta<Chofer> _respuestaChofer;
+        private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaChofer;
 
         [SetUp]
         public void SetUp()
@@ -74,10 +74,10 @@ namespace SustitucionMOATest.Services
                 NumeroEntrega = ""
 
             };
-            _respuestaChofer = new Respuesta<Chofer>
+            _respuestaChofer = new ScatoRepo.Respuesta<ScatoRepo.Chofer>
             {
-                Data = new Chofer { },
-                Messages = new MessageItem[] { },
+                Data = new ScatoRepo.Chofer { },
+                Messages = new ScatoRepo.MessageItem[] { },
                 IsValid = false
             };
         }
@@ -1363,7 +1363,7 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ValidarCuilChoferDigito_CuilNoExiste_ReturnsTrue()
         {
-            _respuestaChofer.Messages = new MessageItem[]
+            _respuestaChofer.Messages = new ScatoRepo.MessageItem[]
             {
                 new ScatoRepo.MessageItem
                 {
@@ -1382,7 +1382,7 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ValidarCuilChoferDigito_CuilDigitoVerificadorNoValido_ReturnsFalse()
         {
-            _respuestaChofer.Messages = new MessageItem[]
+            _respuestaChofer.Messages = new ScatoRepo.MessageItem[]
             {
                 new ScatoRepo.MessageItem
                 {
