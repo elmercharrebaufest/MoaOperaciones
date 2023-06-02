@@ -2383,22 +2383,17 @@ namespace SustitucionMOAUtils.Services
                     //posicion.Posicion.CantidadPendiente = adjudicaciones.Any(x => x.Solp_Id == posicion.Posicion.Solp_Id) ? (posicion.Posicion.Cantidad - adjudicaciones.Where(x => x.Solp_Id == posicion.Posicion.Solp_Id).SelectMany(x => x.Posiciones.Where(pos => pos.SolpPosicion_Id == posicion.Posicion.Id)).Select(x => x.Cantidad).Sum()) : posicion.Posicion.Cantidad;
                     //posicion.Posicion.CantidadAdjudicacion = adjudicaciones.Any(x => x.Solp_Id == posicion.Posicion.Solp_Id) ? (posicion.Posicion.Cantidad - adjudicaciones.Where(x => x.Solp_Id == posicion.Posicion.Solp_Id).SelectMany(x => x.Posiciones.Where(pos => pos.SolpPosicion_Id == posicion.Posicion.Id)).Select(x => x.Cantidad).Sum()) : posicion.Posicion.Cantidad;
                     //posicion.Posicion.CantidadAdjudicada = adjudicaciones.Any(x => x.Solp_Id == posicion.Posicion.Solp_Id) ? (adjudicaciones.Where(x => x.Solp_Id == posicion.Posicion.Solp_Id).SelectMany(x => x.Posiciones.Where(pos => pos.SolpPosicion_Id == posicion.Posicion.Id)).Select(x => x.Cantidad).Sum()) : 0;
-                    if (solp != null && solp.Posiciones.Count > 0)
-                    {
-                        posicion.Posicion.CantidadPendiente = solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
-                            (posicion.Posicion.Cantidad - solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice).FirstOrDefault().Ordered) : posicion.Posicion.Cantidad;
-                        posicion.Posicion.CantidadAdjudicacion = solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
-                            (posicion.Posicion.Cantidad - solp.Posiciones.Where(x=> Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice).FirstOrDefault().Ordered) : posicion.Posicion.Cantidad;
-                        posicion.Posicion.CantidadAdjudicada = solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
-                            (posicion.Posicion.Cantidad - solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice).FirstOrDefault().Ordered) : posicion.Posicion.Cantidad;
-                    }
+
+                    posicion.Posicion.CantidadPendiente = solp != null && solp.Posiciones.Count > 0 && solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
+                        (posicion.Posicion.Cantidad - solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice).FirstOrDefault().Ordered) : posicion.Posicion.Cantidad;
+                    posicion.Posicion.CantidadAdjudicacion = solp != null && solp.Posiciones.Count > 0 && solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
+                        (posicion.Posicion.Cantidad - solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice).FirstOrDefault().Ordered) : posicion.Posicion.Cantidad;
+                    posicion.Posicion.CantidadAdjudicada = solp != null && solp.Posiciones.Count > 0 && solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
+                        (posicion.Posicion.Cantidad - solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice).FirstOrDefault().Ordered) : posicion.Posicion.Cantidad;
+                    
                     if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
                     {
-                        if(adjudicaciones.Any(x => x.Solp_Id == posicion.Posicion.Solp_Id) &&
-                           adjudicaciones.Where(x => x.Solp_Id == posicion.Posicion.Solp_Id)
-                           .SelectMany(x => x.Posiciones.Where(pos => pos.SolpPosicion_Id == posicion.Posicion.Id)) != null &&
-                           (posicion.Posicion.Cantidad - adjudicaciones.Where(x => x.Solp_Id == posicion.Posicion.Solp_Id)
-                           .SelectMany(x => x.Posiciones.Where(pos => pos.SolpPosicion_Id == posicion.SolpPosicion_Id)).Select(x => x.Cantidad).Sum()) <= 0)
+                        if(posicion.Posicion.CantidadPendiente <= 0)
                         {
                             posicion.Posicion.AdjudicacionCompleta = true;
                         }
