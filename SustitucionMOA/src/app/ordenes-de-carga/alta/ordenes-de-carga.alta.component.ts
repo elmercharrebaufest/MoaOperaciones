@@ -569,6 +569,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.ordenDeCarga.CUITCliente = Number(this.clienteCUIT);
         this.getPatentes();
         this.cargarContratosDisponibles(pClienteCodigo);
+        this.setearDefaultEnCPEDG();
     }
 
     onContratoSeleccionadoChanged = () => {
@@ -1115,9 +1116,20 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
     }
 
+    setearDefaultEnCPEDG() {
+        this.ordenDeCarga.Reventa = false;
+        this.ordenDeCarga.CUITDestinatario = undefined;
+        this.validarExisteCUIT('CUITDestinatario');
+        this.ordenDeCarga.CUITDestino = undefined;
+        this.validarExisteCUIT('CUITDestino');
+        this.ordenDeCarga.CUITIntermediarioFlete = undefined;
+        this.validarIntermediarioFlete();
+        this.resetearPlantasDomicilios();
+    }
+
     resetearPlantasDomicilios() {
-        this.plantaSeleccionada = null;
-        this.domicilioSeleccionado = null;
+        this.plantaSeleccionada = undefined;
+        this.domicilioSeleccionado = undefined;
         this.listaPlantas = [];
         this.listaDomicilios = [];
         this.onDomicilioSeleccionadoChanged()
