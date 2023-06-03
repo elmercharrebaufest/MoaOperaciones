@@ -3494,7 +3494,9 @@ namespace SustitucionMOAUtils.Services
                 var cotizacion = cotizaciones.Where(c => c.PeticionDeOfertaUsuario_Id == u.Id).Select(c => new CotizacionDto
                 {
                     TieneObservacionTecnica = !string.IsNullOrEmpty(c.ObservacionTecnica),
+                    TieneObservacionEconomica = !string.IsNullOrEmpty(c.ObservacionEconomica),
                     ObservacionTecnica = c.ObservacionTecnica,
+                    ObservacionEconomica = c.ObservacionEconomica,
                     Id = c.Id,
                     RespetaMateriales = c.RespetaMateriales,
                     Archivos = c.Archivos/*.Where(x => x.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica)*/.Select(archivo => new LegajoDto
