@@ -163,28 +163,28 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     validar() {
-        if (this.ordenDeCarga.NombreChofer.trim().length < 2) {
+        if (!this.ordenDeCarga.NombreChofer || this.ordenDeCarga.NombreChofer.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
             return false;
         }
         /*VER ESTA VALIDACION, ACA VALIDA COMO SI FUERA UN CUIT PERO EN EL FRONT DICE QUE PONGA EL DNI/CUIL*/
-        if (this.ordenDeCarga.CUITChofer.toString().trim().length != 11) {
+        if (!this.ordenDeCarga.CUITChofer || this.ordenDeCarga.CUITChofer.toString().trim().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
         }
-        if (this.ordenDeCarga.PatenteAcoplado.trim().length < 6) {
+        if (!this.ordenDeCarga.PatenteAcoplado || this.ordenDeCarga.PatenteAcoplado.trim().length < 6) {
             this.mensajeComponent.setInfoMsg("Ingrese una patente válida.");
             return false;
         }
-        if (this.ordenDeCarga.ChasisAcoplado.trim().length < 6) {
+        if (!this.ordenDeCarga.ChasisAcoplado || this.ordenDeCarga.ChasisAcoplado.trim().length < 6) {
             this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
             return false;
         }
-        if (this.ordenDeCarga.RazonSocialTransporte.trim().length < 2) {
+        if (!this.ordenDeCarga.RazonSocialTransporte || this.ordenDeCarga.RazonSocialTransporte.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
             return false;
         }
-        if (this.ordenDeCarga.CUITTransporte.toString().trim().length != 11) {
+        if (!this.ordenDeCarga.CUITTransporte || this.ordenDeCarga.CUITTransporte.toString().trim().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
             return false;
         }
@@ -209,7 +209,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             }
             const tieneMensajes = Object.keys(this.mensajesOrdenDeCarga).some(key => this.mensajesOrdenDeCarga[key])
             if (tieneMensajes) {
-                this.mensajeComponent.setInfoMsg("Hay campos que no son validos.");
+                this.mensajeComponent.setInfoMsg("Hay campos que no son válidos.");
                 return false;
             }
             const estaValidando = Object.keys(this.validando).some(key => this.validando[key]);
