@@ -45,6 +45,5 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProveedorAuditoriaDto> GetProveedorAuditoriaPorUsuario(int usuarioId);
         
         IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp();
-        List<string> ValidaModificacionUsuario(UsuarioModificacionDto usuarioModificacionDto);
     }
 }
