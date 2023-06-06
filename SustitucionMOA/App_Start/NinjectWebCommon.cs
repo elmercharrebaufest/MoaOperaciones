@@ -149,7 +149,7 @@ namespace SustitucionMOA.App_Start
             #endregion
 
             // Scato WebApi
-            kernel.Bind<IScatoRepositorioClient>().To(typeof(ScatoRepositorioClient)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IScatoRepositorioClient>().To(typeof(ScatoRepositorioClient)).InSingletonScope();
             kernel.Bind<IServicioRepositorio>().To(typeof(ServicioRepositorioClient)).InScope(ctx => OperationContext.Current);
 
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();

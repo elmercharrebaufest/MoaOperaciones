@@ -22,10 +22,12 @@ namespace SustitucionMOAWS.WebApi
         private static readonly string Password = ConfigurationManager.AppSettings["ScatoRepositorioPassword"];
         private static readonly string ScatoApi = "ScatoApi";
         private static readonly string AfipApi = "AFIPApi";
-        private static HttpClient cliente = new HttpClient { BaseAddress = new Uri(ScatoRepositorioBaseAddress) };
+        private readonly HttpClient cliente;
 
         public ScatoRepositorioClient()
         {
+            Log.Info("Instancia e inicializa cliente API ScatoRepositorio");
+            this.cliente = new HttpClient { BaseAddress = new Uri(ScatoRepositorioBaseAddress) };
             InicializarCliente();
         }
 
