@@ -2380,17 +2380,17 @@ namespace SustitucionMOAUtils.Services
                 }
                 foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
                 {
-                    //posicion.Posicion.CantidadPendiente = adjudicaciones.Any(x => x.Solp_Id == posicion.Posicion.Solp_Id) ? (posicion.Posicion.Cantidad - adjudicaciones.Where(x => x.Solp_Id == posicion.Posicion.Solp_Id).SelectMany(x => x.Posiciones.Where(pos => pos.SolpPosicion_Id == posicion.Posicion.Id)).Select(x => x.Cantidad).Sum()) : posicion.Posicion.Cantidad;
-                    //posicion.Posicion.CantidadAdjudicacion = adjudicaciones.Any(x => x.Solp_Id == posicion.Posicion.Solp_Id) ? (posicion.Posicion.Cantidad - adjudicaciones.Where(x => x.Solp_Id == posicion.Posicion.Solp_Id).SelectMany(x => x.Posiciones.Where(pos => pos.SolpPosicion_Id == posicion.Posicion.Id)).Select(x => x.Cantidad).Sum()) : posicion.Posicion.Cantidad;
-                    //posicion.Posicion.CantidadAdjudicada = adjudicaciones.Any(x => x.Solp_Id == posicion.Posicion.Solp_Id) ? (adjudicaciones.Where(x => x.Solp_Id == posicion.Posicion.Solp_Id).SelectMany(x => x.Posiciones.Where(pos => pos.SolpPosicion_Id == posicion.Posicion.Id)).Select(x => x.Cantidad).Sum()) : 0;
+                   
+                    posicion.Posicion.CantidadAdjudicada = solp != null && solp.Posiciones.Count > 0 && 
+                        solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
+                       (solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice).FirstOrDefault().Ordered) : 0; //Cantidad que ya se adjudico
 
                     posicion.Posicion.CantidadPendiente = solp != null && solp.Posiciones.Count > 0 && solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
-                        (posicion.Posicion.Cantidad - solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice).FirstOrDefault().Ordered) : posicion.Posicion.Cantidad;
-                    posicion.Posicion.CantidadAdjudicacion = solp != null && solp.Posiciones.Count > 0 && solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
-                        (posicion.Posicion.Cantidad - solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice).FirstOrDefault().Ordered) : posicion.Posicion.Cantidad;
-                    posicion.Posicion.CantidadAdjudicada = solp != null && solp.Posiciones.Count > 0 && solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
-                        (posicion.Posicion.Cantidad - solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice).FirstOrDefault().Ordered) : posicion.Posicion.Cantidad;
+                        (posicion.Posicion.Cantidad - posicion.Posicion.CantidadAdjudicada) : posicion.Posicion.Cantidad; //Cantidad Pendiente
+
+                    posicion.Posicion.CantidadAdjudicacion = posicion.Posicion.CantidadPendiente; //Cantidad A Adjudicar 
                     
+
                     if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
                     {
                         if(posicion.Posicion.CantidadPendiente <= 0)
