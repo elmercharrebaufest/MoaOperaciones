@@ -420,7 +420,7 @@
                                                         <ng-template pTemplate="input">
                                                             <input type="text" pKeyFilter="int" 
                                                                    [(ngModel)]="subposicionesCompras.CantidadCotizacion"
-                                                                   (ngModelChange)="calcularValorNeto(subposicionesCompras, posicionCompra.Id);validarCambios(subposicionesCompras, posicionCompra.Id); obtenerPrecioTotalPosicionProveedor()">
+                                                                   (ngModelChange)="calcularValorNeto(subposicionesCompras, posicionCompra.Id);mostrarMensajeNoRespetaCondiciones(); obtenerPrecioTotalPosicionProveedor()">
                                                         </ng-template>
                                                         <ng-template pTemplate="output">
                                                             <div [ngClass]="{'invalido': esFinalizado &&

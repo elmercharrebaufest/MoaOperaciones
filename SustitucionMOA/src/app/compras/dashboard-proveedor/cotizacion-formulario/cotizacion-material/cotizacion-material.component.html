@@ -68,7 +68,7 @@
                                 <input pInputText type="number" [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
                                     [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Cantidad"
                                     pKeyFilter="int"
-                                    (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); validarCambios(posicionesCompra.Posiciones.CotizacionPosicion, posicionesCompra.Id)" />
+                                    (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <div [ngClass]="{'invalido': (esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.Cantidad != undefined) && 
@@ -132,7 +132,7 @@
                                     [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
                                     [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Precio"
                                     pKeyFilter="num"
-                                    (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id);validarCambios(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)" />
+                                    (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id);mostrarMensajeNoRespetaCondiciones()" />
                             </ng-template>
 
                             <ng-template pTemplate="output">

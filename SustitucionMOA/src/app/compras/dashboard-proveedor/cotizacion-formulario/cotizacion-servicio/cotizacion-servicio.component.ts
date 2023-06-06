@@ -17,6 +17,7 @@ import { SelectItem } from 'ng2-select';
 import { ValorTotalPorMoneda } from '../../../solp/solp';
 import { CotizacionHoraDto, CotizacionPosicionDto, GuardarCotizacion } from '../../../../modelos/cotizacionDto';
 import { SolpSubposicionDto } from '../../../solp-compra';
+import { forEach } from '@angular/router/src/utils/collection';
 
 
 @Component({
@@ -46,7 +47,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     cotizaciones: GuardarCotizacion[];
     valorTotalPorMoneda: ValorTotalPorMoneda[];
     displayCotizacionCreada: boolean;
-    visualizarMensajeDeModificacion: boolean;
+    visualizarMensajeDeModificacion: boolean = false;
     hoy: Date = new Date();
     cotizacionHora: CotizacionHoraDto
     index: number = 0;
@@ -87,12 +88,19 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
       
     }
 
-    public mostrarMensajeNoRespetaCondiciones(){
-        this.posicionesCompra.forEach(element => {
-            element.Posiciones.SubposicionesCompras.forEach(subpos => {
-            this.validarCambios(subpos, element.Id);
-        });
-        });
+    public mostrarMensajeNoRespetaCondiciones() {
+        for(var i = 0; i < this.posicionesCompra.length; i++){
+            for(var j = 0; j < this.posicionesCompra[i].Posiciones.SubposicionesCompras.length; j++){
+                this.visualizarMensajeDeModificacion = 
+                this.validarCambios(this.posicionesCompra[i].Posiciones.SubposicionesCompras[j],  this.posicionesCompra[i].Id);  
+                if(this.visualizarMensajeDeModificacion) {
+                 break;
+                }  
+            }
+            if(this.visualizarMensajeDeModificacion) {
+                break;
+            }
+        }
     }
 
     agregarFilaDefault() {
@@ -179,7 +187,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         //    return this.floatMsgService.setErrorMsg("Debe seleccionar una unidad de medida válida");
         //}
         //this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicion.Id)[0].UnidadCotizacionId = unidad.Id;
-        this.validarCambios(subposicion, peticionId);
+        this.mostrarMensajeNoRespetaCondiciones();
     }
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {
@@ -295,21 +303,17 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
 
     public validarCambios(subposicionCompra: any, peticionId: number) {
         this.visualizarMensajeDeModificacion = false;
-        if (subposicionCompra.CantidadCotizacion != 0) {
-            this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].Cantidad != subposicionCompra.CantidadCotizacion;
-           
+        var respuesta = false;
+        if (subposicionCompra.CantidadCotizacion >= 0) {
+             respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].Cantidad != subposicionCompra.CantidadCotizacion;
         }
-        if (subposicionCompra.UnidadCotizacionDescripcion != undefined) {
-            if(subposicionCompra.UnidadCotizacionDescripcion.Id != undefined){
-                this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].UnidadId != subposicionCompra.UnidadCotizacionDescripcion.Id
-            }else{
-                this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].UnidadCotizacionId != subposicionCompra.UnidadId
-
+        if (!respuesta && subposicionCompra.UnidadMedidaCotizacion != undefined) {
+            if(subposicionCompra.UnidadMedidaCotizacion.Id != undefined){
+             respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].UnidadId != subposicionCompra.UnidadMedidaCotizacion.Id          
             }
             
         }
-
-        return this.visualizarMensajeDeModificacion;
+        return respuesta;
     }
 
 
