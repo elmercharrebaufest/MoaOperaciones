@@ -45,7 +45,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     cotizaciones: GuardarCotizacion[];
     valorTotalPorMoneda: ValorTotalPorMoneda[];
     displayCotizacionCreada: boolean;
-    visualizarMensajeDeModificacion: boolean;
+    visualizarMensajeDeModificacion: boolean = false;
     hoy: Date = new Date();
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -75,9 +75,13 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     }
 
     public mostrarMensajeNoRespetaCondiciones(){
-        this.posicionesCompra.forEach(element => {
-            this.validarCambios(element.Posiciones.CotizacionPosicion, element.Id);
-        });
+        for(var i = 0; i < this.posicionesCompra.length; i++){
+            this.visualizarMensajeDeModificacion = 
+            this.validarCambios(this.posicionesCompra[i].Posiciones.CotizacionPosicion, this.posicionesCompra[i].Id);
+            if(this.visualizarMensajeDeModificacion) {
+                break;
+            } 
+        }
         
     }
 
@@ -161,7 +165,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         //    return this.floatMsgService.setErrorMsg("Debe seleccionar una unidad de medida válida");
         //}
         //this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.UnidadDeMedida_Id = unidad.Id;
-        this.validarCambios(cotizacion, peticionId) 
+        this.mostrarMensajeNoRespetaCondiciones();
     }
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {
@@ -265,14 +269,15 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
 
     public validarCambios(cotizacion: any, peticionId: number) {
         this.visualizarMensajeDeModificacion = false;
-        if (cotizacion.Cantidad != 0) {
-            this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.Cantidad != cotizacion.Cantidad;
-            return this.visualizarMensajeDeModificacion;
+        var respuesta = false;
+        if (cotizacion.Cantidad >= 0) {
+            respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.Cantidad != cotizacion.Cantidad;
+            
         }
-        if (cotizacion.UnidadMedidaDescripcion != undefined) {
-            this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.UnidadId != cotizacion.UnidadMedidaDescripcion.Id
-            return this.visualizarMensajeDeModificacion;
+        if (!respuesta && cotizacion.UnidadMedida != undefined) {
+             respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.UnidadId != cotizacion.UnidadMedida.Id            
         }
+        return respuesta;
     }
 
     calcularFechaEntrega(cotizacion: CotizacionPosicionDto, peticionId: number) {
