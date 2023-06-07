@@ -9,28 +9,28 @@ import { AltaNuevoProveedor } from '../compras/solp-compra';
 
 @Injectable()
 export class UsuarioService extends BaseService {
-    private _usuarioModificarDatos: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-    private _usuarioRecargarLista: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-    private _usuarioCargarAuditoria: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+    private _usuarioModificarDatos = new BehaviorSubject<number>(0);
+    private _usuarioRecargarLista = new BehaviorSubject<boolean>(false);
+    private _usuarioCargarAuditoria = new BehaviorSubject<number>(0);
     
-    set UsuarioCargarAuditoria(value: any) {
+    setUsuarioCargarAuditoria(value: number) {
         this._usuarioCargarAuditoria.next(value);
     }
-    get UsuarioCargarAuditoria() {
-        return this._usuarioCargarAuditoria.asObservable();
+    getUsuarioCargarAuditoria() {
+        return this._usuarioCargarAuditoria.asObservable()
     }
-    set UsuarioRecargarLista(value: any) {
+    setUsuarioRecargarLista(value: boolean) {
         this._usuarioRecargarLista.next(value);
     }
-    get UsuarioRecargarLista() {
-        return this._usuarioRecargarLista.asObservable();
+    getUsuarioRecargarLista(){
+        return this._usuarioRecargarLista.asObservable()
     }
 
-    set UsuarioModificarDatos(value: any) {
+    setUsuarioModificarDatos(value: number) {
         this._usuarioModificarDatos.next(value);
     }
-    get UsuarioModificarDatos() {
-        return this._usuarioModificarDatos.asObservable();
+    getUsuarioModificarDatos()  {
+        return this._usuarioModificarDatos.asObservable()
     }
     guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any, usuarioSap: string) {
         let params: HttpParams = new HttpParams();

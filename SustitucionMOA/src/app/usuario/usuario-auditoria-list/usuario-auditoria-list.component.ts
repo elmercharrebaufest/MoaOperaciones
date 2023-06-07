@@ -17,9 +17,10 @@ export class UsuarioAuditoriaListComponent implements OnInit {
   
   constructor(protected service: UsuarioService) { 
     this.spinnerComponent = new SpinnerComponent();
-    this.service.UsuarioCargarAuditoria.subscribe(usuario =>{
-      if (usuario!=null) this.getAuditoriaUsuario(usuario);
-  });
+    this.service.getUsuarioCargarAuditoria().subscribe(usuario =>{
+      this.data = null;
+      if (usuario!=null && usuario >0) this.getAuditoriaUsuario(usuario.toString());
+    });
   }
 
   ngOnInit() {
