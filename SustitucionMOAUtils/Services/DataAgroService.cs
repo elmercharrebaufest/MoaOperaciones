@@ -120,7 +120,18 @@ namespace SustitucionMOAUtils.Services
 
                                 Rol rolUsuario = ObtenerRolPorCodigo(respuesta.ProveedorOperando ? "GRAN" : "NUEG");
 
-                                proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
+                                //proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
+                                proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.AprobacionPendiente : EstadoAprobacion.DocumentacionPendiente;
+                                var observacionEstado = respuesta.ProveedorOperando ? EstadoAprobacion.AprobacionPendiente.ToFriendlyString() : EstadoAprobacion.DocumentacionPendiente.ToFriendlyString();
+                                var hist = new ProveedorHistorialAprobacion
+                                {
+                                    Fecha = DateTime.Now,
+                                    Proveedor_Id = proveedor.Id,
+                                    Usuario_Id = usuario.Id,
+                                    EstadoAprobacion = proveedor.EstadoAprobacion,
+                                    Observacion = observacionEstado
+                                };
+                                repositorio.Agregar(hist);
 
                                 usuario.Roles.Add(rolUsuario);
                             }
