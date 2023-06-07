@@ -22,6 +22,7 @@ using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using SustitucionMOAModel.Util;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
+using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 
 namespace SustitucionMOATest.Services
 {
@@ -38,6 +39,15 @@ namespace SustitucionMOATest.Services
         private Mock<IScatoConsumer> mIScatoConsumer;
 
         private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaChofer;
+
+        private Proveedor _proveedorUsuario;
+        private Usuario _usuario;
+        private string _mailSesionUsuario;
+        private List<Rol> _rolesUsuario;
+
+        private Rol _rolAdministracion;
+        private PermisoPorRol _permisoVerOrdenesComerciales;
+
 
         private Proveedor _proveedorUsuario;
         private Usuario _usuario;
