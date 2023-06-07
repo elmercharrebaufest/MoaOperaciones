@@ -22,16 +22,6 @@
                     <div class="formulario">
                         <div class="col-xs-12 col-md-5 no-padding-left-right" style="margin-left: 3em;">
 
-                            <div class=" col-xs-12 col-md-12" *ngIf="validaCPEDG">
-                                <div class="formulario-label" style="margin-bottom: 8px;">
-                                    <p-checkbox name="reventa" [binary]="true"
-                                        [(ngModel)]="ordenDeCarga.Reventa"></p-checkbox>
-                                    <label class="ml-2 pointer mySearch bold"
-                                        (click)="ordenDeCarga.Reventa = !ordenDeCarga.Reventa">
-                                        Reventa
-                                    </label>
-                                </div>
-                            </div>
                             <div class=" col-xs-12 col-md-12" *ngIf="esComercial">
                                 <div class="formulario-label" style="margin-bottom: 8px;">
                                     Corredor:
@@ -76,6 +66,16 @@
                                 </div>
                             </div>
                             <ng-container *ngIf="validaCPEDG">
+                                <div class=" col-xs-12 col-md-12" *ngIf="modificaReventa">
+                                    <div class="formulario-label" style="margin-bottom: 8px;">
+                                        <p-checkbox name="reventa" [binary]="true"
+                                            [(ngModel)]="ordenDeCarga.Reventa"></p-checkbox>
+                                        <label class="ml-2 pointer mySearch bold"
+                                            (click)="ordenDeCarga.Reventa = !ordenDeCarga.Reventa">
+                                            Reventa
+                                        </label>
+                                    </div>
+                                </div>
                                 <div class="col-xs-12 col-md-12">
                                     <div class="formulario-label">
                                         CUIT Destinatario:
@@ -312,13 +312,13 @@
                                     CUIT inválido
                                 </div>
                                 <div class="styled-select" *ngIf="ordenDeCarga.RazonSocialIntermediarioFlete">
-                                    <input [disabled]="true" type="text" [(ngModel)]="ordenDeCarga.RazonSocialIntermediarioFlete">
+                                    <input [disabled]="true" type="text"
+                                        [(ngModel)]="ordenDeCarga.RazonSocialIntermediarioFlete">
                                 </div>
                                 <p *ngIf="mensajesGestionCuit.CUITIntermediarioFlete">
                                     {{ mensajesGestionCuit.CUITIntermediarioFlete }}
                                 </p>
                             </div>
-
                         </div>
 
                         <div class="col-xs-12 col-md-11" style="margin-left: 3em;">
