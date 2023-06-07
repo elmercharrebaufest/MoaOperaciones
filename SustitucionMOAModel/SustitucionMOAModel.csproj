@@ -482,6 +482,7 @@
     <Compile Include="Models\WSMapMOA\Vincula\Detalle\VinculaDetalleWSMOAResponse.cs" />
     <Compile Include="Consulta\Paginacion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Permisos.cs" />
     <Compile Include="Util\Variance.cs" />
     <Compile Include="Util\Retry.cs" />
   </ItemGroup>
