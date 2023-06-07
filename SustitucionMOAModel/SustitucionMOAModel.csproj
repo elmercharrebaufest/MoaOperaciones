@@ -90,6 +90,7 @@
     <Compile Include="Dto\OrdenDeCarga\CrearOrdenEnSAPRequest.cs" />
     <Compile Include="Dto\OrdenDeCarga\CrearOrdenEnSAPResponse.cs" />
     <Compile Include="Dto\PeticionDeOfertaDto.cs" />
+    <Compile Include="Dto\ProveedorAuditoriaDto.cs" />
     <Compile Include="Dto\ProvinciaDTO.cs" />
     <Compile Include="Dto\AutoCompleteDropdownElement.cs" />
     <Compile Include="Dto\EmailComposeDto.cs" />
@@ -148,8 +149,10 @@
     <Compile Include="Dto\TablaEstadoDto.cs" />
     <Compile Include="Dto\TablaGeneralDto.cs" />
     <Compile Include="Dto\TablaSapDto.cs" />
+    <Compile Include="Dto\TipoUsuarioDto.cs" />
     <Compile Include="Dto\UsuarioComprasDto.cs" />
     <Compile Include="Dto\UsuarioComprasRelacionConUsuariosDto.cs" />
+    <Compile Include="Dto\UsuarioModificacionDto.cs" />
     <Compile Include="Entities\AplicacionCartaPorte.cs" />
     <Compile Include="Entities\Adjudicacion.cs" />
     <Compile Include="Entities\AdjudicacionPosicion.cs" />
@@ -165,6 +168,7 @@
     <Compile Include="Entities\PeticionDeOfertaArchivo.cs" />
     <Compile Include="Entities\PeticionDeOferta.cs" />
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
+    <Compile Include="Entities\ProveedorAuditoria.cs" />
     <Compile Include="Enums\EstadoAplicacionCartaPorte.cs" />
     <Compile Include="Enums\EstadoOrdenDeCargaFason.cs" />
     <Compile Include="Enums\CotizacionEstadoEnum.cs" />

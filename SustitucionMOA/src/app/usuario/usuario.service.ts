@@ -1,7 +1,7 @@
 
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Usuario } from './usuario'
 import { BaseService } from './../common/services/BaseService';
 import { HttpParams } from '@angular/common/http';
@@ -9,7 +9,29 @@ import { AltaNuevoProveedor } from '../compras/solp-compra';
 
 @Injectable()
 export class UsuarioService extends BaseService {
+    private _usuarioModificarDatos = new BehaviorSubject<number>(0);
+    private _usuarioRecargarLista = new BehaviorSubject<boolean>(false);
+    private _usuarioCargarAuditoria = new BehaviorSubject<number>(0);
+    
+    setUsuarioCargarAuditoria(value: number) {
+        this._usuarioCargarAuditoria.next(value);
+    }
+    getUsuarioCargarAuditoria() {
+        return this._usuarioCargarAuditoria.asObservable()
+    }
+    setUsuarioRecargarLista(value: boolean) {
+        this._usuarioRecargarLista.next(value);
+    }
+    getUsuarioRecargarLista(){
+        return this._usuarioRecargarLista.asObservable()
+    }
 
+    setUsuarioModificarDatos(value: number) {
+        this._usuarioModificarDatos.next(value);
+    }
+    getUsuarioModificarDatos()  {
+        return this._usuarioModificarDatos.asObservable()
+    }
     guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any, usuarioSap: string) {
         let params: HttpParams = new HttpParams();
 
@@ -165,5 +187,44 @@ export class UsuarioService extends BaseService {
 
         return this.http
             .post<any>('/api/usuario/GrabarProveedor', payload, { headers: this.headers });
+    }
+
+    
+    public validarMailUsuario(usuarioModificacion: any) {
+        return this.http
+            .post<any>('/api/usuario/ValidarMailUsuario', usuarioModificacion, { headers: this.headers });
+    }
+    public modificarUsuario(usuarioModificacion: any) {
+        return this.http
+            .post<any>('/api/usuario/ModificarUsuario', usuarioModificacion, { headers: this.headers });
+    }
+    public getUsuarioPorId(idUsuario: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.append('id', idUsuario);
+        return this.http
+            .get('/api/usuario/getUsuarioPorId', { params: params, headers: this.headers });
+    }
+    public getProveedorAuditoriaPorUsuario(idUsuario: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.append('id', idUsuario);
+        return this.http
+            .get('/api/usuario/GetProveedorAuditoriaPorUsuario', { params: params, headers: this.headers });
+    }
+    
+    public getTipoUsuario(): Observable<any> {
+        return this.http
+            .get('/api/usuario/GetTipoUsuario', {headers: this.headers });
+    }
+    
+    public getProvedoresEmail(tipoProveedorId:string, email: string, cuitUsuario: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.append('email', email);
+        params = params.append('tipoProveedorId', tipoProveedorId);
+        params = params.append('cuitUsuario', cuitUsuario);
+
+        
+
+        return this.http
+            .get('/api/usuario/getProvedoresEmail', { params: params, headers: this.headers });
     }
 }

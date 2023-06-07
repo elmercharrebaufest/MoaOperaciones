@@ -36,6 +36,14 @@ namespace SustitucionMOAUtils.Interfaces
 
         List<ProveedorDto> ListarProveedores(string filtro);
         ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto);
+
+        UsuarioDto GetUsuarioPorId(int id);
+        List<ProveedorDto> GetProvedoresEmail(int tipoProveedorId, string email, string cuitUsuario);
+        List<TipoUsuarioDto> GetTipoUsuario();
+        List<string> ValidarMailUsuario(UsuarioModificacionDto usuarioModificacionDto);
+        string ModificarUsuario(UsuarioModificacionDto usuarioModificacionDto);
+        List<ProveedorAuditoriaDto> GetProveedorAuditoriaPorUsuario(int usuarioId);
+        
         IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp();
     }
 }

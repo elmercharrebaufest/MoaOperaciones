@@ -1,0 +1,97 @@
+<div class="tab-pane" id="tab2">
+  <spinner></spinner>
+  <p-toast key="toastPopupDetalles" [style]="{'white-space': 'pre-line'}"></p-toast>
+  <div class="formulario">
+    <section class="container-fluid">
+      <form [formGroup]="modificarDatosForm">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="formulario-label">
+              Mail
+            </div>
+            <div class="styled-select">
+              <input type="search" formControlName="mail" class="form-control" autocomplete="chrome-off"
+                maxlength="200" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="formulario-label">
+              Tipo Usuario
+            </div>
+            <div class="styled-select">
+              <select formControlName="idTipoUsuario" (change)="onActualizaTipoProveedor()">
+                <option value="">Seleccione</option>
+                <option *ngFor="let tipo of tipoUsuario" [ngValue]="tipo.Id">{{tipo.Nombre}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="formulario-label">
+              Cuit
+            </div>
+            <div class="styled-select">
+              <input type="search" formControlName="cuit" class="form-control" mask="00-00000000-0" autocomplete="chrome-off" (change)="onActualizaCuitProveedor()"
+                maxlength="13" />
+            </div>
+          </div>
+        </div>
+        <br />
+        <div class="div-division" *ngIf="!existeProveedores">
+          <p class="titulo-rojo">El usuario no tiene correctamente configurado un proveedor, no es posible editar código ni razón social.<br/>
+            Por favor comunicarse con sistemas.</p>
+        </div>
+        <div class="div-division" formArrayName="proveedores" *ngIf="existeProveedores">
+          <div *ngFor="let proveedor of modificarDatosForm.get('proveedores').value; let i = index; trackBy:trackByFn">
+            <div class="row" [formGroupName]="i">
+              <div class="col-md-4">
+                <div class="formulario-label">
+                  CUIT
+                </div>
+                <div class="styled-select">
+                  <input type="text" formControlName="cuit" mask="00-00000000-0" class="form-control" autocomplete="chrome-off"
+                    maxlength="13" />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="formulario-label">
+                  Codigo Proveedor
+                </div>
+                <div class="styled-select">
+                  <input type="text" formControlName="codigoProveedor" class="form-control" autocomplete="chrome-off"
+                    maxlength="100" />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="formulario-label">
+                  Tipo Proveedor
+                </div>
+                <div class="styled-select">
+                  <select formControlName="idTipoProveedor">
+                    <option value="">Seleccione</option>
+                    <option disabled *ngFor="let tipo of tipoUsuario" [ngValue]="tipo.Id">{{tipo.Nombre}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="formulario-label">
+                  Razon Social
+                </div>
+                <div class="styled-select">
+                  <input type="text" formControlName="razonSocial" class="form-control" autocomplete="chrome-off"
+                    maxlength="200" />
+                </div>
+              </div>
+            </div>
+            <hr />
+          </div>
+        </div>
+        <br />
+        <div class="row center">
+          <button type="button" class="btn-custom btn-mediano btn-add animate tamanio-button" (click)="onModificarDatos()">
+            Guardar Cambios <span class="fa  fa-save "></span>
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>

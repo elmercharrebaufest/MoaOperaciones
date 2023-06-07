@@ -24,7 +24,7 @@ namespace SustitucionMOAModel.Dto
         public bool NuevoUsuario{ get; set; }
         public string ApiKey { get; set; }
         public string UsuarioSap { get; set; }
-
+        public TipoUsuarioDto TipoUsuario { get; set; }
         public UsuarioDto() { }
 
         public UsuarioDto(Usuario usuario)
@@ -33,8 +33,8 @@ namespace SustitucionMOAModel.Dto
             Mail = usuario.Mail;
             Habilitado = usuario.Habilitado;
             CUIT = usuario.CUITRegistro;
-            UsuarioSap = string.IsNullOrEmpty(usuario.UsuarioSap) ? "" : usuario.UsuarioSap; 
-
+            UsuarioSap = string.IsNullOrEmpty(usuario.UsuarioSap) ? "" : usuario.UsuarioSap;
+            TipoUsuario = new TipoUsuarioDto(usuario.TipoUsuario);
             switch (usuario.TipoUsuario.NombreCorto)
             {
                 case "G":
