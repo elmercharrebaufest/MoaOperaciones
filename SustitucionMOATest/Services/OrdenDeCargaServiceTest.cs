@@ -77,6 +77,15 @@ namespace SustitucionMOATest.Services
         private PermisoPorRol _permisoVerOrdenesComerciales;
 
 
+        private Proveedor _proveedorUsuario;
+        private Usuario _usuario;
+        private string _mailSesionUsuario;
+        private List<Rol> _rolesUsuario;
+
+        private Rol _rolAdministracion;
+        private PermisoPorRol _permisoVerOrdenesComerciales;
+
+
         [SetUp]
         public void SetUp()
         {
