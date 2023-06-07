@@ -37,7 +37,7 @@
         </div>
         <br />
         <div class="div-division" *ngIf="!existeProveedores">
-          <p class="titulo-rojo">El usuario no tiene correctamente configurado un proveedor, no es posible editar codigo ni razon social.<br/>
+          <p class="titulo-rojo">El usuario no tiene correctamente configurado un proveedor, no es posible editar código ni razón social.<br/>
             Por favor comunicarse con sistemas.</p>
         </div>
         <div class="div-division" formArrayName="proveedores" *ngIf="existeProveedores">
@@ -87,7 +87,7 @@
         </div>
         <br />
         <div class="row center">
-          <button type="button" class="btn-custom btn-mediano btn-add animate" (click)="onModificarDatos()">
+          <button type="button" class="btn-custom btn-mediano btn-add animate tamanio-button" (click)="onModificarDatos()">
             Guardar Cambios <span class="fa  fa-save "></span>
           </button>
         </div>

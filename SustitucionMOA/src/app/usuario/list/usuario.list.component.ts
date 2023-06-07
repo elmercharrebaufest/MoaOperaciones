@@ -41,7 +41,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.spinnerComponent = new SpinnerComponent();
         this.rolDropdownComponent = new DropdownComponent();
 
-        this.service.UsuarioRecargarLista.subscribe(recargar =>{
+        this.service.getUsuarioRecargarLista().subscribe(recargar =>{
             if (recargar!=null && recargar == true) this.getUsuario();
         });
     }
@@ -99,10 +99,10 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         }
     }
     abrirModalAuditoriaUsuario(id: number){
-        this.service.UsuarioCargarAuditoria = id;
+        this.service.setUsuarioCargarAuditoria(id);
     }
     abrirModalModificarDatos(id: number){
-        this.service.UsuarioModificarDatos = id;
+        this.service.setUsuarioModificarDatos(id);
     }
     cerrarModalModificarDatos(event){
         if(event){

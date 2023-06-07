@@ -5,6 +5,7 @@ import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { MessageService} from 'primeng/api';
+import { Proveedor } from '../../common/models/proveedor';
 
 @Component({
   selector: 'app-modificar-datos',
@@ -25,10 +26,10 @@ export class ModificarDatosComponent implements OnInit {
               private formBuilder: FormBuilder,
               private messageService: MessageService) {
     this.spinnerComponent = new SpinnerComponent();
-    this.service.UsuarioModificarDatos.subscribe(data => {
+    this.service.getUsuarioModificarDatos().subscribe(data => {
       this.modificarDatosForm = this.inicializarFormDatosUsuario();
-      if (data != null)
-        this.cargarDatosUsuario(data);
+      if (data != null && data >0)
+        this.cargarDatosUsuario(data.toString());
     });
   }
 
@@ -74,7 +75,7 @@ export class ModificarDatosComponent implements OnInit {
     this.modificarDatosForm.controls['cuit'].setValue(usuario.CUIT);
     this.modificarDatosForm.controls['usuarioModificacion'].setValue(usuarioModificacion);   
     this.modificarDatosForm.controls['idTipoUsuario'].setValue(usuario.TipoUsuario.Id);
-    let listaProveedores = null;
+    let listaProveedores:Proveedor[];
     this.existeProveedores = true;
     this.service.getProvedoresEmail(usuario.TipoUsuario.Id,usuario.Mail, usuario.CUIT).subscribe(proveedores => {
       listaProveedores = proveedores.data.proveedores;
@@ -85,7 +86,7 @@ export class ModificarDatosComponent implements OnInit {
     });
 
   }
-  private cargarFormDatoProveedores(proveedores: any) {
+  private cargarFormDatoProveedores(proveedores: Proveedor[]) {
     proveedores.forEach(proveedor => {
       this.proveedoresFormArray.push(this.inicializarFormProveedor(proveedor));
     });
@@ -161,7 +162,7 @@ export class ModificarDatosComponent implements OnInit {
     this.service.modificarUsuario(datosUsuario).subscribe(data=>{
     }, error=>{}, ()=>{
       this.spinnerComponent.hideIt(); 
-      this.service.UsuarioRecargarLista = true;
+      this.service.setUsuarioRecargarLista(true);
       this.cerrarModal.emit(true);
       this.messageService.add({ key: 'toastPopupDetalles', severity: 'success', summary: 'Modificación de Usuario', detail: 'Se guardaron los cambios correctamente.' });
     });
@@ -176,14 +177,14 @@ export class ModificarDatosComponent implements OnInit {
     if (mensaje ==''){
       datosUsuario.proveedores.forEach(proveedor=>{
         if(proveedor.cuit == '' || proveedor.cuit.length < 11) mensaje += 'El cuit del proveedor no tiene el formato correcto.\n';
-        if(proveedor.codigoProveedor == '' && proveedor.codigoProveedor == '0') mensaje += 'No se ha ingresado el codigo del proveedor.\n';
+        if(proveedor.codigoProveedor == '' && proveedor.codigoProveedor == '0') mensaje += 'No se ha ingresado el código del proveedor.\n';
         if(proveedor.razonSocial == '') mensaje += 'No se ha ingresado la razón social.\n';
         if(mensaje !='') return;
       });
     }
     return mensaje;
   }
-  public inicializarFormProveedor(proveedor: any): FormGroup {
+  public inicializarFormProveedor(proveedor: Proveedor): FormGroup {
     if (proveedor != null) {
       return this.formBuilder.group({
         id: proveedor.Id,
