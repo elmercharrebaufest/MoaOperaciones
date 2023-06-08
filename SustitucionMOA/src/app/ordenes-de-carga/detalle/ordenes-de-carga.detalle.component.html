@@ -33,7 +33,7 @@
         <!--End Title-->
         <!-- Tables-->
         <div class="row myRow">
-            <div class="clearfix myTables">
+            <div class="clearfix myTables" #mainStart>
                 <mensaje></mensaje>
                 <spinner></spinner>
                 <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de solicitud de anulación"
@@ -85,7 +85,8 @@
                                 <div class="col-xs-12 col-md-6">
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
                                         <p class="blue"><strong>Reventa</strong></p>
-                                        <p-checkbox name="reventa" [binary]="true" [(ngModel)]="ordenDeCarga.Reventa" [disabled]="true"></p-checkbox>
+                                        <p-checkbox name="reventa" [binary]="true" [(ngModel)]="ordenDeCarga.Reventa"
+                                            [disabled]="true"></p-checkbox>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12" *ngIf="esInterno || esCorredor">
@@ -120,12 +121,14 @@
 
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
                                         <p class="blue"><strong>Destinatario</strong></p>
-                                        <p style="width:100%">{{ordenDeCarga.RazonSocialDestinatario}} ({{ordenDeCarga.CUITDestinatario}})</p>
+                                        <p style="width:100%">{{ordenDeCarga.RazonSocialDestinatario}}
+                                            ({{ordenDeCarga.CUITDestinatario}})</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
                                         <p class="blue"><strong>Destino</strong></p>
-                                        <p style="width:100%">{{ordenDeCarga.RazonSocialDestino}} ({{ordenDeCarga.CUITDestino}})</p>
+                                        <p style="width:100%">{{ordenDeCarga.RazonSocialDestino}}
+                                            ({{ordenDeCarga.CUITDestino}})</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
@@ -183,7 +186,7 @@
 
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
                                         <p class="blue"><strong>CUIT intermediario flete</strong></p>
-                                        <p style="width:100%">{{ordenDeCarga.CUITIntermediarioFlete}}</p>
+                                        <p style="width:100%">{{ordenDeCarga.CUITIntermediarioFlete || '-'}}</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">
