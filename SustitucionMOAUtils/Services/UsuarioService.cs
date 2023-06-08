@@ -613,7 +613,9 @@ namespace SustitucionMOAUtils.Services
         }
         private void GuardarProveedorAuditoria(Proveedor proveedorActual, ProveedoresModificacionDto proveedorModificado, UsuarioModificacionDto usuarioModificacionDto)
         {
-            if (!proveedorActual.Mail.Equals(usuarioModificacionDto.Mail) || !proveedorActual.CUIT.Equals(proveedorModificado.Cuit) ||
+            if (!proveedorActual.Mail.Equals(usuarioModificacionDto.Mail) || 
+                !proveedorActual.CUIT.Equals(proveedorModificado.Cuit) ||
+                 proveedorActual.TipoProveedor.Id != proveedorModificado.IdTipoProveedor ||
                 !proveedorActual.RazonSocial.Equals(proveedorModificado.RazonSocial) || !proveedorActual.CodigoProveedor.Equals(proveedorModificado.CodigoProveedor) ||
                  proveedorActual.CodigoProveedor != proveedorModificado.CodigoProveedor)
             {
@@ -639,8 +641,10 @@ namespace SustitucionMOAUtils.Services
                 usuario.CUITRegistro = usuarioModificacionDto.Cuit;
                 usuario.Mail = usuarioModificacionDto.Mail;
                 usuario.TipoUsuario = repositorio.Obtener<Entidades.TipoUsuario>(x => x.Id == usuarioModificacionDto.IdTipoUsuario);
+                repositorio.GuardarCambios();
                 if (usuarioModificacionDto.Proveedores != null)
                 {
+                    usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Id == usuarioModificacionDto.Id);
                     foreach (var proveedor in usuario.Proveedores)
                     {
                         var proveedorModificado = usuarioModificacionDto.Proveedores.Where(x => x.Id == proveedor.Id).FirstOrDefault();
@@ -652,11 +656,12 @@ namespace SustitucionMOAUtils.Services
                             proveedor.RazonSocial = proveedorModificado.RazonSocial;
                             proveedor.CodigoProveedor = proveedorModificado.CodigoProveedor;
                             proveedor.TipoProveedor = repositorio.Obtener<Entidades.TipoUsuario>(x => x.Id == proveedorModificado.IdTipoProveedor);
+                            repositorio.GuardarCambios();
                         }
                     }
                 }
                 
-                repositorio.GuardarCambios();
+                
                 resultado = "OK";
             }
             catch (Exception ex)

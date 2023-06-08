@@ -51,7 +51,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     orderDirection: number = 1;
     itemsPerPage = 20;
     filtroUsuarioVendedor: string = "";
-
+    
     rolOptions: Array<Rol> = [];
     rolOptionsAll: Array<Rol> = [];
 
@@ -61,7 +61,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     titulos: Array<string> = ["Externo", "Interno", "Contacto"]
 
     usuarioSap: any;
-
+    usuarioModificacionSel: string = '';
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Listado Usuarios');
     }
@@ -101,7 +101,9 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     abrirModalAuditoriaUsuario(id: number){
         this.service.setUsuarioCargarAuditoria(id);
     }
-    abrirModalModificarDatos(id: number){
+    abrirModalModificarDatos(usuario){
+        const id:number = usuario.Id;
+        this.usuarioModificacionSel = usuario.Mail;
         this.service.setUsuarioModificarDatos(id);
     }
     cerrarModalModificarDatos(event){
