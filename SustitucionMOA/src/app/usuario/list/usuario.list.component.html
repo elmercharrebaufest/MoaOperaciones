@@ -104,7 +104,7 @@
                             </td>
                             <td>
                                 <span title="Modificar Usuario" class="fa fa-edit cursor-pointer" data-toggle="modal"
-                                    data-target="#modalModificarUsuario" (click)="abrirModalModificarDatos(usuario.Id)"
+                                    data-target="#modalModificarUsuario" (click)="abrirModalModificarDatos(usuario)"
                                     style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
                             </td>
                             <td>
@@ -144,7 +144,7 @@
                             aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title" id="cartaDePresentacionLabel">Modificar datos usuario</h4>
+                        <h4 class="modal-title" id="cartaDePresentacionLabel">Modificar datos usuario - {{usuarioModificacionSel}}</h4>
                     </div>
                     <div class="modal-body">
                         <app-modificar-datos (cerrarModal)="cerrarModalModificarDatos($event)"></app-modificar-datos>
