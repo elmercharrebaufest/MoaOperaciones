@@ -7,15 +7,6 @@
         <div class="row">
           <div class="col-md-4">
             <div class="formulario-label">
-              Mail
-            </div>
-            <div class="styled-select">
-              <input type="search" formControlName="mail" class="form-control" autocomplete="chrome-off"
-                maxlength="200" />
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="formulario-label">
               Tipo Usuario
             </div>
             <div class="styled-select">
@@ -45,31 +36,11 @@
             <div class="row" [formGroupName]="i">
               <div class="col-md-4">
                 <div class="formulario-label">
-                  CUIT
-                </div>
-                <div class="styled-select">
-                  <input type="text" formControlName="cuit" mask="00-00000000-0" class="form-control" autocomplete="chrome-off"
-                    maxlength="13" />
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="formulario-label">
                   Codigo Proveedor
                 </div>
                 <div class="styled-select">
                   <input type="text" formControlName="codigoProveedor" class="form-control" autocomplete="chrome-off"
                     maxlength="100" />
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="formulario-label">
-                  Tipo Proveedor
-                </div>
-                <div class="styled-select">
-                  <select formControlName="idTipoProveedor">
-                    <option value="">Seleccione</option>
-                    <option disabled *ngFor="let tipo of tipoUsuario" [ngValue]="tipo.Id">{{tipo.Nombre}}</option>
-                  </select>
                 </div>
               </div>
               <div class="col-md-8">
