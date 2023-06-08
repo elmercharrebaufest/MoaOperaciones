@@ -17,7 +17,7 @@
         public bool Reventa { get; set; }
         public string PlantaCodigo { get; set; }
         public string DomicilioTipo { get; set; }
-        public short DomicilioOrden { get; set; }
+        public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
     }
 }
