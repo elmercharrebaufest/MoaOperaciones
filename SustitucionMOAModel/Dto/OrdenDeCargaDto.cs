@@ -122,7 +122,7 @@ namespace SustitucionMOAModel.Dto
         public string CUITIntermediarioFlete { get; set; }
         public string PlantaCodigo { get; set; }
         public string DomicilioTipo { get; set; }
-        public short DomicilioOrden { get; set; }
+        public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
         public bool Reventa { get; set; }
     }
@@ -271,7 +271,7 @@ namespace SustitucionMOAModel.Dto
         }
         public static OrdenDeCargaDetalleDto DeOrdenDeCarga(Ent.OrdenDeCarga orden, List<OrdenDeCargaCambiosHistorialDto> ordenDeCargaCambiosHistorial, Proveedor cliente)
         {
-            
+
             return new OrdenDeCargaDetalleDto()
             {
                 Id = orden.Id,
