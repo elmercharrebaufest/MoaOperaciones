@@ -1,0 +1,16 @@
+.custom-select{
+    height: 34px !important;
+}
+.div-division {
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 15px;
+}
+.titulo-rojo{
+    color: #ff0000;
+}
+.tamanio-button{
+    width: auto !important;
+}

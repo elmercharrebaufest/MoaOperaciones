@@ -42,84 +42,51 @@
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="row myRow col-xs-12 col-sm-12 col-md-12 col-lg-12 "
-                    style="margin-top: 1em; margin-bottom: 15px;">
+                <div class="row myRow" style="margin-top: 1em; margin-bottom: 15px;">
 
-                    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8" style="margin-left: -46px;">
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-left: -46px;">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text"
                                 [(ngModel)]="nroSolp" placeholder="Buscar por numero de solp">
                         </div>
-
-
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp"
                                 defaultLabel="Estado SOLP"></p-multiSelect>
-
                         </div>
+                       
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="margin-top: 10px;">
+                            <span
+                                style="border-left: 1px solid black;margin-top: 1px;padding-left: 9px;padding-right: 1px;margin-left: 8px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap">
+                                </p-checkbox>
+                            </span>
+                            <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
+                                    [(ngModel)]="mantenimiento"></p-checkbox>
+                            </span>
+                            <span class="padding1" style="margin-right: 5px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
+                            </span>
+                        </div>
+                        <div class="col-md-1 col-lg-1  buttonBuscar">
+                            <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+                        </div>
+                    </div>
 
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 estiloCalendarDashboard">
-                            <p-calendar showButtonBar="true" [showIcon]="true" #myCalendar placeholder="Filtro fechas"
+                    
+                    <div class="row myRow" style="margin-left: -31px;">
+                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 inputAltura" style="width: 24%;">                      
+                            <p-dropdown [options]="usuarioFiltro" [(ngModel)]="selectUsuario" name="selectUsuario" placeholder="Buscar usuario" filter="true" showClear="true"></p-dropdown>                  
+                        </div> 
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                            <p-calendar [inputStyle]="{ 'width': '220px'}" showButtonBar="true" [showIcon]="true"  placeholder="Filtro fechas"
                                 dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
                                 [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
-                                (onClearClick)="returnToTodaysDate()" class="styled-select">
+                                (onClearClick)="returnToTodaysDate()" >
                             </p-calendar>
                         </div>
 
-                        <!-- <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <button class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura botonFechaDashboard " type="text" pButton (click)="op.toggle($event, actualTarget)">
-                                Fecha <span class="pull-right fa fa-calendar-o"></span>
-                            </button>
-                        </div> -->
                     </div>
-
-                    <!-- <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 inputAltura" style="margin-top: 10px;"> -->
-                    <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"> -->
-                    <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="color: rgb(209, 199, 199)">
-                <p-radioButton name="dashboard" value="Materiales" label="Materiales" inputId="materialesDashboard" disabled></p-radioButton>
-            </div> -->
-                    <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <p-radioButton name="dashboard" value="Servicios" label="Servicios" [(ngModel)]="serviciosDashboard" inputId="serviciosDashboard"></p-radioButton>
-            </div>
-        </div> -->
-                    <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="border-left: 1px solid black;"> -->
-                    <!--<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="border-left: 1px solid black; margin-top: 8px;">
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <p-checkbox class="checkboxFechas" binary="true" label="SAP" (onChange)="filtrarPorSap()">
-                            </p-checkbox>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                            <p-checkbox class="checkboxFechas" binary="true" label="Mantenimiento" (onChange)="filtrarPorMantenimiento()"></p-checkbox>
-                        </div>
-                    </div>-->
-                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 padding1" style="margin-top: 11px;">
-                        <!--<span class="padding1">
-                            <p-checkbox class="checkboxFechas" binary="false" name="Materiales" inputId="Materiales" label="Materiales" [(ngModel)]="Materiales"
-                                        (onChange)="filtrarGrilla()">
-                            </p-checkbox>
-                        </span>
-                        <span class="padding1">
-                            <p-checkbox class="checkboxFechas" binary="false" label="Servicios" [(ngModel)]="Servicios"
-                                        (onChange)="filtrarGrilla()"></p-checkbox>
-                        </span>-->
-
-                        <span
-                            style="border-left: 1px solid black;margin-top: 1px;padding-left: 9px;padding-right: 1px;margin-left: 8px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap">
-                            </p-checkbox>
-                        </span>
-                        <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
-                                [(ngModel)]="mantenimiento"></p-checkbox>
-                        </span>
-                        <span class="padding1" style="margin-right: 5px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
-                        </span>
-                    </div>
-                    <div class="form-group col-md-2 col-lg-1  buttonBuscar" style="margin-left: 14px;">
-                        <button class="btn buscar" (click)="onBuscar()">Buscar</button>
-                    </div>
-                    <!-- </div>     -->
                 </div>
 
             </div>
@@ -201,7 +168,7 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
                 <tr [pSelectableRow]="rowData">
                     <td (dblclick)="onRowDblClick($event, rowData)"> 
-                        <div *ngIf="rowData.TipoPosicionCodigo == 'SERVICIO' && rowData.TienePeticionDeOferta">
+                        <div *ngIf="rowData.TienePeticionDeOferta">
                         <a href="#" [pRowToggler]="rowData">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
@@ -280,7 +247,12 @@
                                                 <th class="columna" style="text-transform: none !important;">Pedido de Cotización</th>
                                                 <th class="columna" style="text-transform: none !important;">Plazo de Oferta</th>
                                                 <th class="columna" style="text-transform: none !important;">Estado Lic.</th>
-                                                <th class="columna" style="width: 200px !important; text-transform: none !important;"></th>
+                                                <th class="columna" style="width: 300px !important; text-transform: none !important;"></th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="emptymessage">
+                                            <tr>
+                                                <td style="text-align: center;" colspan="4">Sin datos</td>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-licitacion>
@@ -290,15 +262,51 @@
                                                     {{licitacion.PlazoDeOferta | customDateFormat | date :'d/M/yyyy'}}
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
-                                                <td class="columna" style="text-align: center;">                                                   
-                                                    <button *ngIf="licitacion.Estado == 'Abierto'" class="publicar btn" (click)="obtenerPeticionDeOferta(licitacion.Id)">
+                                                <td class="columna">                                                   
+                                                    <button *ngIf="licitacion.Estado == 'Abierto'" class="publicar btn" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
                                                         Revisión Técnica
+                                                    </button>
+                                                    <button class="publicar btn " style="margin-right: 10px;"  (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
+                                                        Circular
+                                                    </button>
+                                                </td> 
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </p-tabPanel> 
+                                <p-tabPanel header="Orden de Compra">
+                                    <p-table [value]="rowData.OrdenesDeCompraSolicitante">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th class="columna">Numero</th>
+                                                <th class="columna">Fecha de creación</th>
+                                                <th class="columna">Proveedor</th>
+                                                <th class="columna">Monto total</th>
+                                                <th class="columna">Moneda</th>
+                                                <th class="columna"></th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="emptymessage">
+                                            <tr>
+                                                <td style="text-align: center;" colspan="6">Sin datos</td>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-ordenCompra>
+                                            <tr>
+                                               <td class="columna">{{ordenCompra.NumeroOrdenDeCompra}}</td>                                     
+                                                <td class="columna">{{ordenCompra.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
+                                                <td class="columna">{{ordenCompra.Proveedor}}</td>
+                                                <td class="columna">{{ordenCompra.PrecioFinal |number:'1.2-2'}}</td>
+                                                <td class="columna">{{ordenCompra.MonedaDescripcion}}</td>
+                                                <td class="columna">
+                                                    <button class="publicar btn btn-success">
+                                                        Ver detalle
                                                     </button>
                                                 </td>
                                             </tr>
                                         </ng-template>
                                     </p-table>
-                                </p-tabPanel>                                
+                                </p-tabPanel>                               
                             </p-tabView>
                         </div>
                     </td>
@@ -316,7 +324,15 @@
                 (descargarAdjuntosCotizacionEmitter)="descargarAdjuntosCotizacion($event)"
                 (grabarRevisionTecnicaEmitter)="grabarRevisionTecnica()"
                 [(peticion)]="peticion">
-    </app-revision-tecnica> 
+</app-revision-tecnica> 
+
+<app-circular
+    [(locale)]="es"
+    [(displayCircular)]="displayCircular"
+    (cerrarCircularEmitter)="cerrarCircular()"
+    [(peticion)]="peticion">
+</app-circular>   
+
 
 <!-- Modal eliminacion de SOLP-->
 <p-confirmDialog #dialogo header="Eliminar SOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true"

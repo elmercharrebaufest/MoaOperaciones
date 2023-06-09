@@ -4,6 +4,7 @@ import { SolpPosicion } from "../compras/solp/solp-posicion"
 import { CotizacionDto } from "./cotizacionDto"
 
 export interface PeticionDeOfertaDto{
+    PersonalHoras?: boolean
     RespetaMateriales?: boolean
     RespetaServicios?: boolean
     Id?: number
@@ -41,6 +42,8 @@ export interface PeticionDeOfertaUsarioDto {
 }
     
 export interface PeticionDeOfertaSolpPosicionDto{
+    CantidadPendiente: any
+    AdjudicacionCompleta: boolean
     valorTotal: number
     Id: number
     PeticionDeOferta_Id?: number
@@ -50,7 +53,8 @@ export interface PeticionDeOfertaSolpPosicionDto{
     SolpId: number,
     expanded: boolean,
     Selected: boolean,
-    TodasPosicionesSeleccionadas: boolean
+    TodasPosicionesSeleccionadas: boolean,
+    NoDisponible: boolean,
 }
 
 

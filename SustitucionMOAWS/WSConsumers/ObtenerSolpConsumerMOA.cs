@@ -52,6 +52,8 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_DELIVERY_ADDRESS,
                         "",
                         "",
+                        "",
+                        "",
                         IM_PREQ_DATE_F,
                         IM_PREQ_DATE_I,
                         IM_PREQ_NO,
@@ -61,7 +63,9 @@ namespace SustitucionMOAWS.WSConsumers
                         out ZMPES5740[] EX_PRACCOUNT,
                         out ZMPES5750[] EX_PRADDRDELIVERY,
                         out BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS,
+                        out BAPIMEREQHEADTEXT[] EX_PRHEADERTEXT,
                         out ZMPES5670[] EX_PRITEM,
+                        out BAPIMEREQITEMTEXT[] EX_PRIMETEXT,
                         out BAPIRETURN[] EX_RETURN,
                         out ZMPES5770[] EX_SERVICEACCOUNT,
                         out ZMPES5730[] EX_SERVICELINES);
@@ -139,6 +143,9 @@ namespace SustitucionMOAWS.WSConsumers
             //Para ello, se ingresa el nombre de 1 o mas usuarios que han creado solicitudes de pedido.
             ZMPES5640[] IM_USUARIOS = new ZMPES5640[req.CreadoPorUsuarios.Count];
 
+            string IM_HEADER_TEXT = "";
+            string IM_ITEM_TEXT = "";
+
             foreach (var item in req.CreadoPorUsuarios.Select((value, i) => new { i, value }))
             {
                 IM_USUARIOS[item.i] = new ZMPES5640 { ERNAM = item.value };
@@ -151,18 +158,22 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_CREATE_IND,
                         IM_DELETE_IND,
                         IM_DELIVERY_ADDRESS,
+                        IM_HEADER_TEXT,
                         IM_ITEM_CAT,
+                        IM_ITEM_TEXT,
                         IM_PLANT,
                         IM_PREQ_DATE_F,
                         IM_PREQ_DATE_I,
                         IM_PREQ_NO,
                         IM_REL_IND,
                         IM_SERVICES,
-                        IM_USUARIOS,
+                        IM_USUARIOS,                     
                         out ZMPES5740[] EX_PRACCOUNT,
                         out ZMPES5750[] EX_PRADDRDELIVERY,
                         out BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS,
-                        out ZMPES5670[] EX_PRITEM,
+                        out BAPIMEREQHEADTEXT[] EX_PRHEADERTEXT,
+                        out ZMPES5670[] EX_PRITEM, 
+                        out BAPIMEREQITEMTEXT[] EX_PRIMETEXT,
                         out BAPIRETURN[] EX_RETURN,
                         out ZMPES5770[] EX_SERVICEACCOUNT,
                         out ZMPES5730[] EX_SERVICELINES);
@@ -379,6 +390,7 @@ namespace SustitucionMOAWS.WSConsumers
                     EstadoSolpSap = posicion.PROCSTAT,
                     EstadoPosicion = posicion.DELETE_IND,
                     FechaEstimadaLiberacionDate = SAPFormatter.GetDateTime(posicion.REL_DATE),
+                    Ordered = posicion.ORDERED,
                 });
             }
 
@@ -561,6 +573,7 @@ namespace SustitucionMOAWS.WSConsumers
         public string EstadoSolpSap { get; set; }
         public string EstadoPosicion { get; set; }
         public DateTime FechaEstimadaLiberacionDate { get; set; }
+        public decimal Ordered { get; internal set; }
     }
 
     public class DireccionSolpSAP

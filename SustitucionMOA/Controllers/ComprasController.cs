@@ -89,8 +89,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_SOLP)]
-        public ActionResult Combos()
+       public ActionResult Combos()
         {
             try
             {
@@ -110,6 +109,7 @@ namespace SustitucionMOA.Controllers
                     TipoPosicionSolp = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
                     TipoPosicion = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
                     TipoImputacion = service.ObtenerTablaGeneral(TablasGenerales.TipoImputacionSolp),
+                    Usuarios = usuarioService.ListarUsuarioCreadorSolp(),
                     CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
                     {
                         ClaseDocumentoCodigo = x.Padre.Codigo,
@@ -148,7 +148,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, string estados = null)
+        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, string estados = null, int? usuarioId = null)
         {
             try
             {
@@ -157,7 +157,7 @@ namespace SustitucionMOA.Controllers
                 return JsonCustom(new
                 {
                     data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, fechaDesde,
-                    fechaHasta, sap, mantenimiento, web, (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>()))
+                    fechaHasta, sap, mantenimiento, web, usuarioId != null ? usuarioId : null, (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>()))
                 });
             }
             catch (InfoCustomException e)
@@ -981,14 +981,27 @@ namespace SustitucionMOA.Controllers
         }
 
 
-        [HttpGet]
-        public ActionResult CrearOrdenDeCompra(int AdjudicacionId)
+        [HttpPost]
+        public ActionResult CrearOrdenDeCompra(string json)
         {
             try
             {
-                var result = service.CrearOrdenDeCompra(AdjudicacionId);
-
+                var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
+                var result = service.GrabarAdjudicacion(adjudicacion, ObtenerUsuarioActual().Id);
                 return JsonCustom(result);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

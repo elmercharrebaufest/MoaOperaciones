@@ -17,6 +17,7 @@ import { SelectItem } from 'ng2-select';
 import { ValorTotalPorMoneda } from '../../../solp/solp';
 import { CotizacionPosicionDto, GuardarCotizacion } from '../../../../modelos/cotizacionDto';
 import { Dropdown } from 'primeng/dropdown';
+import { PosicionCompra } from '../../../solp-compra';
 
 
 @Component({
@@ -44,7 +45,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     cotizaciones: GuardarCotizacion[];
     valorTotalPorMoneda: ValorTotalPorMoneda[];
     displayCotizacionCreada: boolean;
-    visualizarMensajeDeModificacion: boolean;
+    visualizarMensajeDeModificacion: boolean = false;
     hoy: Date = new Date();
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -74,9 +75,13 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     }
 
     public mostrarMensajeNoRespetaCondiciones(){
-        this.posicionesCompra.forEach(element => {
-            this.validarCambios(element.Posiciones.CotizacionPosicion, element.Id);
-        });
+        for(var i = 0; i < this.posicionesCompra.length; i++){
+            this.visualizarMensajeDeModificacion = 
+            this.validarCambios(this.posicionesCompra[i].Posiciones.CotizacionPosicion, this.posicionesCompra[i].Id);
+            if(this.visualizarMensajeDeModificacion) {
+                break;
+            } 
+        }
         
     }
 
@@ -160,7 +165,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         //    return this.floatMsgService.setErrorMsg("Debe seleccionar una unidad de medida válida");
         //}
         //this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.UnidadDeMedida_Id = unidad.Id;
-        this.validarCambios(cotizacion, peticionId) 
+        this.mostrarMensajeNoRespetaCondiciones();
     }
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {
@@ -264,14 +269,15 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
 
     public validarCambios(cotizacion: any, peticionId: number) {
         this.visualizarMensajeDeModificacion = false;
-        if (cotizacion.Cantidad != 0) {
-            this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.Cantidad != cotizacion.Cantidad;
-            return this.visualizarMensajeDeModificacion;
+        var respuesta = false;
+        if (cotizacion.Cantidad >= 0) {
+            respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.Cantidad != cotizacion.Cantidad;
+            
         }
-        if (cotizacion.UnidadMedidaDescripcion != undefined) {
-            this.visualizarMensajeDeModificacion = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.UnidadId != cotizacion.UnidadMedidaDescripcion.Id
-            return this.visualizarMensajeDeModificacion;
+        if (!respuesta && cotizacion.UnidadMedida != undefined) {
+             respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.UnidadId != cotizacion.UnidadMedida.Id            
         }
+        return respuesta;
     }
 
     calcularFechaEntrega(cotizacion: CotizacionPosicionDto, peticionId: number) {
@@ -309,6 +315,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             PeticionOfertaUsuarioId: this.peticion.Id,
             CotizacionPosiciones: this.cotizaciones,
             ObservacionEconomica: this.peticion.ObservacionEconomica,
+            RespetaMateriales: this.peticion.RespetaMateriales,
             ObservacionTecnica: "",
             ArchivosNuevos: this.archivos,
             ArchivosGuardados: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { Id: x.Id } }) : null,
@@ -334,7 +341,8 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
                 UnidadMedida: cotizacion.Posiciones.CotizacionPosicion.UnidadComprasDescripcion,
                 monedaCompras: cotizacion.Posiciones.CotizacionPosicion.MonedaCodigo,
                 CantidadSubpos: cotizacion.Posiciones.Cantidad,
-                UnidadDeMedidaSubpos: cotizacion.Posiciones.UnidadId
+                UnidadDeMedidaSubpos: cotizacion.Posiciones.UnidadId,
+                NoDisponible: cotizacion.Posiciones.CotizacionPosicion.NoDisponible
             };
         });
     }
@@ -398,6 +406,17 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             )
     }
 
-
+    noDisponible(cotizacion: CotizacionPosicionDto){
+        cotizacion.Cantidad = null;
+        cotizacion.Moneda = null;
+        cotizacion.MonedaCodigo = null;
+        cotizacion.Moneda_Id = null;
+        cotizacion.Precio = null;
+        cotizacion.FechaDeEntrega = null;
+        cotizacion.UnidadDeMedida_Id = null;
+        cotizacion.UnidadMedida = null;
+        cotizacion.PlazoDeEntrega = null;
+        cotizacion.PrecioTotal = null;
+    }
 
 }

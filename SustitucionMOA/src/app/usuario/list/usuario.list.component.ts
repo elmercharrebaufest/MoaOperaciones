@@ -12,6 +12,7 @@ import { SpinnerComponent } from './../../common/view-child/spinner/spinner.comp
 import { UsuarioService } from './../usuario.service';
 import { Rol } from '../../common/models/rol';
 import { Usuario } from '../usuario';
+import { ModificarDatosComponent } from '../modificar-datos/modificar-datos.component';
 
 
 
@@ -31,11 +32,18 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     @ViewChild('dropdown_rol')
     protected rolDropdownComponent: DropdownComponent;
 
+    @ViewChild(ModificarDatosComponent)
+    protected modificarDatosComponent: ModificarDatosComponent;
+
     constructor(protected service: UsuarioService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
         this.rolDropdownComponent = new DropdownComponent();
+
+        this.service.getUsuarioRecargarLista().subscribe(recargar =>{
+            if (recargar!=null && recargar == true) this.getUsuario();
+        });
     }
 
     data: any;
@@ -43,7 +51,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     orderDirection: number = 1;
     itemsPerPage = 20;
     filtroUsuarioVendedor: string = "";
-
+    
     rolOptions: Array<Rol> = [];
     rolOptionsAll: Array<Rol> = [];
 
@@ -53,7 +61,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     titulos: Array<string> = ["Externo", "Interno", "Contacto"]
 
     usuarioSap: any;
-
+    usuarioModificacionSel: string = '';
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Listado Usuarios');
     }
@@ -90,7 +98,20 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(e);
         }
     }
-
+    abrirModalAuditoriaUsuario(id: number){
+        this.service.setUsuarioCargarAuditoria(id);
+    }
+    abrirModalModificarDatos(usuario){
+        const id:number = usuario.Id;
+        this.usuarioModificacionSel = usuario.Mail;
+        this.service.setUsuarioModificarDatos(id);
+    }
+    cerrarModalModificarDatos(event){
+        if(event){
+            let modal = document.getElementById('cerrarModalUsuario');
+            modal.click();
+        }
+    }
     getUsuario() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();

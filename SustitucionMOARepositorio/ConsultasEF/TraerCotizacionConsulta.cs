@@ -29,11 +29,12 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 var resultado = from po in contexto.Set<PeticionDeOfertaUsuario>()
                                 join cotizacion in contexto.Set<Cotizacion>() on po.Id equals cotizacion.PeticionDeOfertaUsuario.Id into peticionCotizacion
                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
-                                where po.Id == PeticionDeOfertaUsuario_Id
+                                where po.Id == PeticionDeOfertaUsuario_Id 
                                 select new PeticionDeOfertaDto
                                 {
                                     Id = po.Id,
                                     Solp_Id = po.PeticionDeOferta.Solp_Id,
+                                    PersonalHoras = po.PeticionDeOferta.Solp.Pliego != null ? po.PeticionDeOferta.Solp.Pliego.TieneGrillaPersonal ?? false : false,
                                     NroSolp = po.PeticionDeOferta.Solp.NroSolp,
                                     FechaCreacion = po.PeticionDeOferta.FechaCreacion,
                                     UsuarioCreador_Id = po.PeticionDeOferta.UsuarioCreador_Id,
@@ -45,7 +46,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     RespetaServicios = cotizacion != null ? cotizacion.RespetaServicios : null,
                                     TipoPosicionCodigo = po.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     CotizacionId = cotizacion != null ? cotizacion.Id : 0,
-                                    PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Select(pop =>
+                                    PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Where(posi => posi.SolpPosicion.EsConcluido == true && posi.SolpPosicion.Estado == true).Select(pop =>
                                     new PeticionDeOfertaSolpPosicionDto()
                                     {
                                         Id = pop.Id,
@@ -55,6 +56,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                         Posiciones = new SolpPosicionDto
                                         {
                                             Indice = pop.SolpPosicion.Indice,
+                                            EsConcluido = pop.SolpPosicion.EsConcluido,
+                                            Estado = pop.SolpPosicion.Estado,
                                             Id = pop.Id, //Pos
                                             Codigo = pop.SolpPosicion.MaterialSolp.CodigoSap, //Codigo
                                             Tarea = pop.SolpPosicion.Tarea,
@@ -87,7 +90,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                 {
                                                     Codigo = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida_Id != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida.Codigo : "",
                                                     Id = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida_Id != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida_Id.Value : 0
-                                                }
+                                                },
+                                                NoDisponible = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().NoDisponible : null,
                                             },
                                             SubposicionesCompras = pop.SolpPosicion.Subposiciones.Select(subposicion => new SolpSubposicionDto
                                             {
@@ -231,11 +235,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
 
 
                                             }).ToList().OrderBy(x => x.Numero),
-                                        },
+                                        }
                                     }).ToList().OrderBy(x => x.Posiciones.Indice)
-
-
-
                                 };
 
                 var cc = resultado.First();

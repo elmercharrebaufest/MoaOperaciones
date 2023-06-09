@@ -55,8 +55,14 @@ export class DashboardComponent extends ListBaseComponent {
     pageIndex: number = 1;
     @ViewChild('paginator') paginator: Paginator
     public peticion: PeticionDeOfertaDto;
+    public ordenCompra: any;
+
     displayRevisionTecnica: boolean;
 
+    displayCircular: boolean = false;
+    combos: any;
+    usuariosResult: any;
+    
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
@@ -93,6 +99,10 @@ export class DashboardComponent extends ListBaseComponent {
     display: boolean = false;
     tablaSolp: any[];
     tablaSolpCopy: any[];
+
+    usuarioFiltro: SelectItem[];
+    selectUsuario: number | null;
+
     cols: any[];
     serviciosDashboard: any = "Servicios"
     solp: Solp = new Solp();
@@ -161,7 +171,6 @@ export class DashboardComponent extends ListBaseComponent {
         this.hastaDashboard = new Date();
     }
 
-
     returnToTodaysDate() {
         this.fechaInicio = "";
         this.fechaFin = "";
@@ -169,7 +178,6 @@ export class DashboardComponent extends ListBaseComponent {
             this.mensajeComponent.setMsgsEmpty();
         }
     }
-
 
     onSelect(event: any) {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
@@ -246,24 +254,8 @@ export class DashboardComponent extends ListBaseComponent {
         }
     }
 
-
     ngAfterViewInit(): void {
-
         this.getCombos();
-
-        // this.tabla.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
-
-        //     if (filter[0] != null && filter[1] != null)
-        //         return value >= filter[0] &&
-        //             value <= filter[1];
-        //     else if (filter[0] != null && filter[1] == null)
-        //         return value >= filter[0]
-        //     else if (filter[0] == null && filter[1] != null)
-        //         return value <= filter[1].
-        //             else
-        //     return true;
-        // }
-
     }
 
     getStatusDocumentoSolp(data: any): String {
@@ -279,7 +271,7 @@ export class DashboardComponent extends ListBaseComponent {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
             this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp,
-                this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, multiSelectValues
+                this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, multiSelectValues, this.selectUsuario
             ).subscribe(
                 (result: any) => {
 
@@ -296,7 +288,6 @@ export class DashboardComponent extends ListBaseComponent {
                             x.VincularPliego = x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP;
                             x.PliegoVinculado = (x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP) &&
                                 x.EstadoDocumento.Codigo == "CREADO";
-
                         });
                         this.tablaSolpCopy = this.tablaSolp;
                         this.tabla.first = 0;
@@ -359,11 +350,15 @@ export class DashboardComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
+                        this.usuariosResult = result.Usuarios;
                         this.estadoSolpItem = [];
+                        this.usuarioFiltro = [];
                         result.EstadosSolpSap.forEach(cd => this.estadoSolpItem.push({
                             label: cd.Descripcion, value: cd.Id
                         }));
-
+                        result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
+                            label: d.Mail, value: d.Id
+                        })))
                     }
                 },
                 error => {
@@ -501,17 +496,6 @@ export class DashboardComponent extends ListBaseComponent {
 
     }
 
-
-    onBuscar() {
-        this.paginator.changePage(0);
-        this.pageIndex = 1;
-        this.getListarSolp();
-    }
-
-    onRowDblClick(a, b) {
-
-    }
-
     obtenerPeticionDeOferta(Id) {
         this.blockUI.start('Cargando...')
         this.service.obtenerPeticionDeOferta(Id)
@@ -522,13 +506,28 @@ export class DashboardComponent extends ListBaseComponent {
                     }
                     else {
                         this.peticion = result.data;
-                        console.log(this.peticion);
-                        //for (var i = 0; i < this.peticion.Usuarios.length; i++) {
-                        //    //if (this.peticion.Usuarios[i].Cotizacion == null) {
-                        //    //    this.peticion.Usuarios[i].Cotizacion =  null
-                        //    //}
-                        //}
                         this.displayRevisionTecnica = true;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    obtenerPeticionDeOfertaCircular(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerPeticionDeOferta(Id)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.peticion = result.data;
+                        this.displayCircular = true;
                         this.blockUI.stop();
                     }
                 },
@@ -565,7 +564,6 @@ export class DashboardComponent extends ListBaseComponent {
                     this.blockUI.stop();
                 }
             )
-
     }
 
     descargarAdjuntosCotizacion({ cotizacionId }) {
@@ -609,18 +607,10 @@ export class DashboardComponent extends ListBaseComponent {
                     this.blockUI.stop();
                 }
             )
-
     }
 
     grabarRevisionTecnica() {
         this.blockUI.start('Grabando...');
-        //this.peticion;
-        //let peticionDeOfertaUsuario = [];
-        //for (var i = 0; i < length; i++) {
-        //    peticionDeOfertaUsuario.push({
-
-        //    });
-        //}
         this.service.grabarRevisionTecnica(this.peticion.Usuarios)
             .subscribe(
                 (result) => {
@@ -640,6 +630,16 @@ export class DashboardComponent extends ListBaseComponent {
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             )
+    }
+
+    cerrarCircular() {
+        this.displayCircular = false;
+    }
+
+    onBuscar() {
+        this.paginator.changePage(0);
+        this.pageIndex = 1;
+        this.getListarSolp();
     }
 }
 

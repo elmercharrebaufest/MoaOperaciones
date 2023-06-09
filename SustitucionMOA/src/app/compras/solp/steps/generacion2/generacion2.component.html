@@ -100,9 +100,19 @@
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
+                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.grillaPersonal" label="Grilla personal/horas" formControlName="grillaPersonal"
+                                            binary="true"></p-checkbox>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.tecnicoSeguridad" label="Técnico de seguridad" formControlName="tecnicoSeguridad"
                                             binary="true"></p-checkbox>
                             </div>
+
+                            <!-- <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
+                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.fabricacionTallerExterno" label="Fabricacion en taller externo" formControlName="fabricacionTallerExterno"
+                                            binary="true"></p-checkbox>
+                            </div> -->
 
                         </div>
 

@@ -106,11 +106,9 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             }
 
             if (this.posicionesCompra[index].Posiciones.FechaEntregaServicio != null) {
-                // console.log(this.posicionesCompra[index].Posiciones.FechaEntregaServicio)
                 var milliseconds = parseInt(this.posicionesCompra[index].Posiciones.FechaEntregaServicio.substring(6));
                 var date = new Date(milliseconds);
                 this.posicionesCompra[index].Posiciones.FechaEntregaServicio = date
-                // console.log(date)
             }
         }
 
@@ -218,9 +216,17 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         var breakFor = false;
         if (this.peticion.TipoPosicionCodigo == "MATERIALES") {
             var self = this;
+            if(this.peticion.RespetaMateriales == null || this.peticion.RespetaMateriales == undefined){
+                mensaje = "El campo respeta materiales es obligatorio";
+                return mensaje;
+            }
             this.cotizaciones.forEach(function (cotizacion, i) {
-                if (!breakFor) {
-                    if (cotizacion.Cantidad == 0 || cotizacion.Cantidad == undefined) {
+                if (!breakFor && (cotizacion.NoDisponible == false || cotizacion.NoDisponible == undefined)) {
+                    if ((cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio <= 0 && cotizacion.FechaDeEntrega == null) {
+                        mensaje = "Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
+                        return mensaje;
+                    }
+                    if (cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) {
                         mensaje = "Pos. " + cotizacion.Posicion + " - La Ctd. cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
@@ -235,7 +241,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         breakFor = true;
                         return mensaje;
                     }
-                    if (cotizacion.Precio == 0) {
+                    if (cotizacion.Precio <= 0) {
                         mensaje = "Pos. " + cotizacion.Posicion + " - El Precio cotizado es obligatorio";
                         breakFor = true;
                         return mensaje;
@@ -244,12 +250,24 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         mensaje = "Pos. " + cotizacion.Posicion + " - La Fecha de entrega cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
+                    }                    
+
+                    if(self.peticion.RespetaMateriales == false){
+                        if(self.peticion.ObservacionEconomica == "" && ((self.cotizacion.ArchivosNuevos == null
+                            || self.cotizacion.ArchivosNuevos.length == 0 &&
+                        (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
+                                || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))){
+                            mensaje = "Debe adjuntar un archivo o agregar una observación";
+                            breakFor = true;
+                            return mensaje;
+                        }
                     }
+
                     if (cotizacion.CantidadSubpos != cotizacion.Cantidad ||
                         cotizacion.UnidadDeMedidaSubpos != cotizacion.UnidadDeMedidaId) {
                         if (
-                            (self.cotizacion.ObservacionEconomica == "" || ((self.cotizacion.ArchivosNuevos == null
-                                || self.cotizacion.ArchivosNuevos.length == 0) &&
+                            self.cotizacion.ObservacionEconomica == "" || ((self.cotizacion.ArchivosNuevos == null
+                                || self.cotizacion.ArchivosNuevos.length == 0 &&
                                 (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
                                     || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
                             mensaje = "Pos. " + cotizacion.Posicion + ": Por favor explique en las observaciones por qué modifico la cantidad y/o unidad de medida, para estos casos debe adjuntar un archivo";
@@ -257,7 +275,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                             return mensaje;
                         }
                     }
-
                 }
             });
         }else{
@@ -291,19 +308,19 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         return mensaje;
                     }
 
-                    if(cotizacionHora.CantidadPersonas == 0 && cotizacionHora.HorasNormales == 0 && cotizacionHora.HorasNocturnas == 0){
+                    if(cotizacionHora.CantidadPersonas <= 0 && cotizacionHora.HorasNormales <= 0 && cotizacionHora.HorasNocturnas <= 0){
                         mensaje = "Para la Categoria " + cotizacionHora.Categoria + ", debe ingresar cantidad de personas y horas";
                         breakFor = true;
                         return mensaje;
                     }
 
-                    if(cotizacionHora.CantidadPersonas > 0 && cotizacionHora.HorasNormales == 0 && cotizacionHora.HorasNocturnas == 0){
+                    if(cotizacionHora.CantidadPersonas > 0 && cotizacionHora.HorasNormales <= 0 && cotizacionHora.HorasNocturnas <= 0){
                         mensaje = "Para la Categoria " + cotizacionHora.Categoria + ", debe ingresar horas";
                         breakFor = true;
                         return mensaje;
                     }
 
-                    if((cotizacionHora.HorasNormales > 0 || cotizacionHora.HorasNocturnas > 0) && cotizacionHora.CantidadPersonas == 0){
+                    if((cotizacionHora.HorasNormales > 0 || cotizacionHora.HorasNocturnas > 0) && cotizacionHora.CantidadPersonas <= 0){
                         mensaje = "Para la Categoria " + cotizacionHora.Categoria +", el campo cantidad de personas es obligatorio";
                         breakFor = true;
                         return mensaje;
@@ -312,10 +329,23 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 }
             });
 
+            if(this.peticion.PersonalHoras == true){
+                var categorias = ['SHyMA', 'Horas taller (referenciales)'];
+
+                var mostrarMensaje = this.peticion.Cotizacion.CotizacionesHoras
+                                    .filter(x => !categorias.includes(x.Categoria))
+                                    .every(x => (Number(x.CantidadPersonas) <= 0));
+       
+                if(mostrarMensaje){
+                    mensaje = "Debe completar al menos una categoria";                    
+                    return mensaje
+                }
+            }
+          
             var self = this;
             this.cotizacionSubposiciones.forEach(function (subposicion, i) {                
                 if (!breakFor) {
-                    if (subposicion.Cantidad == 0 || subposicion.Cantidad == undefined) {
+                    if (subposicion.Cantidad <= 0 || subposicion.Cantidad == undefined) {
                         mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion +  ": La Ctd. cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
@@ -330,7 +360,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         breakFor = true;
                         return mensaje;
                     }
-                    if (subposicion.Precio == 0) {
+                    if (subposicion.Precio <= 0) {
                         mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion +  ": El Precio cotizado es obligatorio";
                         breakFor = true;
                         return mensaje;

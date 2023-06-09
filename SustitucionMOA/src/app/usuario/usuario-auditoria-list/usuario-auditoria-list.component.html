@@ -1,0 +1,37 @@
+<div class="tab-pane" id="tab2">
+  <spinner></spinner>
+  <div class="formulario">
+      <div *ngIf="!isVisible()">
+        <p class="titulo-rojo">No existe historial de cambios para el usuario.</p>
+      </div>
+      <section class="container-fluid">      
+      <table *ngIf="isVisible()" 
+             id="tableModal"
+             style="width:auto"
+             class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table">
+          <thead>
+              <tr role="row">
+                <th tabindex="0" rowspan="1" colspan="1">Código Proveedor</th>
+                <th tabindex="0" rowspan="1" colspan="1">Mail</th>
+                <th tabindex="0" rowspan="1" colspan="1">CUIT</th>
+                <th tabindex="0" rowspan="1" colspan="1">Tipo Proveedor</th>
+                <th tabindex="0" rowspan="1" colspan="1">Razón Social</th>
+                <th tabindex="0" rowspan="1" colspan="1">Fecha Actualización</th>
+                <th tabindex="0" rowspan="1" colspan="1">Usuario Actualización</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let usuario of data" role="row" [class.odd]="!odd">
+                  <td>{{usuario.CodigoProveedor}}</td>
+                  <td>{{usuario.Mail}}</td>
+                  <td>{{usuario.Cuit}}</td>
+                  <td>{{usuario.TipoProveedor}}</td>
+                  <td>{{usuario.RazonSocial}}</td>
+                  <td>{{usuario.FechaActualizacion}}</td>
+                  <td>{{usuario.UsuarioActualizacion}}</td>
+              </tr>
+          </tbody>
+      </table>
+      </section>
+  </div>
+</div>

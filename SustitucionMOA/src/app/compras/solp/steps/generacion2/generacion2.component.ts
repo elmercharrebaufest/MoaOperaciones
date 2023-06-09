@@ -122,6 +122,8 @@ export class Generacion2Component extends ListBaseComponent {
                 modoElevacion: [{ value: true, disabled: true }, [Validators.required]],
                 andamio: [{ value: true, disabled: true }, [Validators.required]],
                 tecnicoSeguridad: [{ value: true, disabled: true }, [Validators.required]],
+                grillaPersonal: [{ value: true, disabled: true }, [Validators.required]],
+                fabricacionTallerExterno: [{ value: true, disabled: true }, [Validators.required]],
                 descripcionTecnica: [{ value: true, disabled: true }, [Validators.required]],
                 entregaDocumentacion: [{ value: true, disabled: true }, [Validators.required]],
                 fechaLimiteFecha: [{ value: true, disabled: true }, [Validators.required]],
@@ -137,10 +139,10 @@ export class Generacion2Component extends ListBaseComponent {
                 modoElevacion: [{ value: true, disabled: false }, []],
                 andamio: [{ value: true, disabled: false }, []],
                 tecnicoSeguridad: [{ value: true, disabled: false }, []],
+                grillaPersonal: [{ value: true, disabled: false }, []],
+                fabricacionTallerExterno: [{ value: true, disabled: false }, []],
                 descripcionTecnica: [{ value: true, disabled: false }, []],
                 entregaDocumentacion: [{ value: true, disabled: false }, []],
-                //fechaLimiteFecha: [{ value: true, disabled: false }, []],
-                //fechaLimiteHora: [{ value: true, disabled: false }, []]
             });
         }
 
@@ -152,10 +154,6 @@ export class Generacion2Component extends ListBaseComponent {
 
         this.model.cargoPasoDos = true;
 
-
-        // if(!this.model.supervisorTrabajo){
-        //     this.model.supervisorTrabajo = this.model.fiscalContrato;
-        // }
         if (this.model.supervisorSector[0] == '') {
             this.model.supervisorSector = [];
         }
@@ -165,7 +163,6 @@ export class Generacion2Component extends ListBaseComponent {
     }
 
     selectionChange(event) {
-
         if (event.range && this.model.observacionesGeneracion) {
             this.posicionDeInicioInsert = this.ObtenerPosicionInsert(event.range.index, this.model.observacionesGeneracion);
         }
@@ -179,7 +176,6 @@ export class Generacion2Component extends ListBaseComponent {
             this.posicionDeInicioInsert = undefined;
         }
         else {
-
             this.model.observacionesGeneracion = '<img src=' + file + '>';
         }
     }
@@ -212,7 +208,6 @@ export class Generacion2Component extends ListBaseComponent {
             return (this.formulario2.controls[nombreCampo].invalid || (this.formulario2.controls[nombreCampo].errors && this.formulario2.controls[nombreCampo].errors.required))
                 && (this.formulario2.controls[nombreCampo].dirty || this.formulario2.controls[nombreCampo].touched)
         }
-
         return false;
     }
 

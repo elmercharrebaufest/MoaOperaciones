@@ -31,6 +31,9 @@ namespace SustitucionMOAModel.Dto
         public decimal TotalGlobalSubPos { get; set; }
         public int TotalPesos { get; set; }
         public List<CotizacionHorasDto> CotizacionesHoras { get; set; }
+        public string RespetaMaterialesColor { get; set; }
+        public string RespetaMaterialesDescripcion { get; set; }
+        public bool TieneObservacionEconomica { get; set; }
     }
 
     public class CotizacionPosicionDto
@@ -65,6 +68,7 @@ namespace SustitucionMOAModel.Dto
         public int CantidadPendiente { get; set; }
         public decimal TotalPesos { get; set; }
         public decimal TotalPosicionCotizacion { get; set; }
+        public bool? NoDisponible { get; set; }
     }
 
     public class CotizacionSubPosicionDto
@@ -95,6 +99,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime? FechaDeEntrega { get; set; }
         public decimal PrecioTotal { get; set; }
         public decimal TotalPesos { get; set; }
+        public bool? NoDisponible { get; set; }
     }
 
     public class GuardarCotizacion

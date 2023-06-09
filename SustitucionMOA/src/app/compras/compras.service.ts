@@ -8,6 +8,7 @@ import { SolpPosicion } from './solp/solp-posicion';
 import { AltaNuevoProveedor, EnvioSolpCompra, SolpCompraDto } from './solp-compra';
 import { CircularDto } from '../modelos/circular-model';
 import { PeticionDeOfertaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
+import { AdjudicacionDto } from '../modelos/adjudicacion';
 
 @Injectable({
     providedIn: 'root'
@@ -26,7 +27,8 @@ export class ComprasService extends BaseService {
         estados: "",
         sap: true,
         mantenimiento: true,
-        web: true
+        web: true,
+        usuarioId: null
     }
     listaSolp: any;
     observableListaSolp = new Subject<any[]>();
@@ -48,7 +50,8 @@ export class ComprasService extends BaseService {
         sap: boolean = this.filtros.sap,
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
-        estados: any = this.filtros.estados): Observable<any> {
+        estados: any = this.filtros.estados,
+        usuarioId: number | null = this.filtros.usuarioId): Observable<any> {
         let params: HttpParams = new HttpParams();
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -64,6 +67,7 @@ export class ComprasService extends BaseService {
         params = params.set('mantenimiento', mantenimiento.toString());
         params = params.set('web', web.toString());
         params = params.set('estados', estados);
+        params = params.set('usuarioId', (usuarioId != null ? usuarioId.toString() : ""));
         return this.http
             .get('/api/compras/ListarSolp', { params: params, headers: this.headers });
     }
@@ -123,6 +127,8 @@ export class ComprasService extends BaseService {
             TieneMedioElevacion: solp.modoElevacion,
             TieneAndamio: solp.andamio, // Agregada
             TieneTecnicoSeguridad: solp.tecnicoSeguridad,
+            TieneGrillaPersonal: solp.grillaPersonal,
+            TieneFabricacionTallerExterno: solp.fabricacionTallerExterno,
             TieneDescripcionTecnica: solp.descripcionTecnica,
             TieneDocumentacionTecnica: solp.entregaDocumentacion,
             FechaHoraLimiteConsulta: this.getFechaHora(solp.fechaLimiteFecha, solp.fechaLimiteHora),
@@ -704,6 +710,20 @@ export class ComprasService extends BaseService {
 
         return this.http
             .post<any>('/api/compras/ObtenerPrecioTotalPosicionProveedor', payload, { headers: this.headers });
+    }
+
+    public GrabarAdjudicacion(adjudicacion: AdjudicacionDto) {
+        let json = JSON.stringify({
+            Cotizacion_Id: adjudicacion.Cotizacion_Id,
+            AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
+            Solp_Id: adjudicacion.Solp_Id
+        });
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/CrearOrdenDeCompra', payload, { headers: this.headers });
     }
 
 

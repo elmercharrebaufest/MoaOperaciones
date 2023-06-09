@@ -1,4 +1,5 @@
-﻿using SustitucionMOAAssets;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
@@ -13,6 +14,7 @@ using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Entidades = SustitucionMOAModel.Entities;
@@ -55,9 +57,9 @@ namespace SustitucionMOAUtils.Services
                 }
                 return usuariosDto;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -526,5 +528,155 @@ namespace SustitucionMOAUtils.Services
 
             return resultado;
         }
+
+        public IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp() 
+        {
+            return repositorio.Listar<Solp, UsuarioDto>(solp => new UsuarioDto
+            {
+                Mail = solp.UsuarioCreacion.Mail,
+                Id = solp.UsuarioCreacion.Id
+            }).GroupBy(x => x.Id);
+        }
+
+        #region Metodos de modificacion de alta usuario
+        public UsuarioDto GetUsuarioPorId(int id)
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Id == id);
+
+                if (usuario == null)
+                {
+                    throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Usuario", id));
+                }
+                var ret = new UsuarioDto(usuario);
+                ret.Permisos = usuario.ObtenerPermisos();
+                ret.NuevoUsuario = usuario.EsNuevoUsuario();
+
+                return ret;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public List<ProveedorDto> GetProvedoresEmail(int tipoProveedorId, string email, string cuitUsuario)
+        {
+            var proveedores = repositorio.Listar<Proveedor>(x => x.Mail == email && x.TipoProveedor.Id == tipoProveedorId && x.CUIT == cuitUsuario);
+            List<ProveedorDto> listaProvedores = new List<ProveedorDto>();
+            foreach(var proveedor in proveedores)
+            {
+                listaProvedores.Add(new ProveedorDto(proveedor));
+            }
+            return listaProvedores;
+        }
+        public List<TipoUsuarioDto> GetTipoUsuario()
+        {
+            var tipoUsuarios = repositorio.Listar<TipoUsuario>();
+            List<TipoUsuarioDto> listaTipoUsuarios = new List<TipoUsuarioDto>();
+            foreach (var tipoUsuario in tipoUsuarios)
+            {
+                listaTipoUsuarios.Add(new TipoUsuarioDto(tipoUsuario));
+            }
+            return listaTipoUsuarios;
+        }
+        public List<string> ValidarMailUsuario(UsuarioModificacionDto usuarioModificacionDto)
+        {
+            List<string> listaValidacion = new List<string>();
+            var usuarios = repositorio.Listar<Entidades.Usuario>(x => x.Mail == usuarioModificacionDto.Mail && x.Id != usuarioModificacionDto.Id);
+            if (usuarios.Count > 0) listaValidacion.Add("El correo ya existe para otro usuario");
+            return listaValidacion;
+        }
+        public List<ProveedorAuditoriaDto> GetProveedorAuditoriaPorUsuario(int usuarioId)
+        {
+            List<ProveedorAuditoriaDto> listaAuditoria = new List<ProveedorAuditoriaDto>();
+            var listaProveedorAuditoria = repositorio.Listar<Entidades.ProveedorAuditoria>(x => x.Usuario_Id == usuarioId);
+            foreach ( var proveedor in listaProveedorAuditoria)
+            {
+                var tipoProveedor = repositorio.Obtener<Entidades.TipoUsuario>(x => x.Id == proveedor.TipoProveedor_Id);
+                listaAuditoria.Add(new ProveedorAuditoriaDto()
+                {
+                    Id = proveedor.Id,
+                    Usuario_Id = proveedor.Usuario_Id,
+                    Proveedor_Id = proveedor.Proveedor_Id,
+                    CodigoProveedor = proveedor.CodigoProveedor,
+                    Mail = proveedor.Mail,
+                    Cuit = proveedor.Cuit,
+                    TipoProveedor_Id = proveedor.TipoProveedor_Id,
+                    TipoProveedor = tipoProveedor.Nombre,
+                    RazonSocial = proveedor.RazonSocial,
+                    FechaActualizacion = proveedor.FechaActualizacion.ToString("MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture),
+                    UsuarioActualizacion = proveedor.UsuarioActualizacion,
+                });
+            }
+            return listaAuditoria;
+        }
+        private void GuardarProveedorAuditoria(Proveedor proveedorActual, ProveedoresModificacionDto proveedorModificado, UsuarioModificacionDto usuarioModificacionDto)
+        {
+            if (!proveedorActual.Mail.Equals(usuarioModificacionDto.Mail) || 
+                !proveedorActual.CUIT.Equals(proveedorModificado.Cuit) ||
+                 proveedorActual.TipoProveedor.Id != proveedorModificado.IdTipoProveedor ||
+                !proveedorActual.RazonSocial.Equals(proveedorModificado.RazonSocial) || !proveedorActual.CodigoProveedor.Equals(proveedorModificado.CodigoProveedor) ||
+                 proveedorActual.CodigoProveedor != proveedorModificado.CodigoProveedor)
+            {
+                ProveedorAuditoria proveedorAuditoria = new ProveedorAuditoria();
+                proveedorAuditoria.Proveedor_Id = proveedorActual.Id;
+                proveedorAuditoria.Usuario_Id = usuarioModificacionDto.Id;
+                proveedorAuditoria.CodigoProveedor = proveedorModificado.CodigoProveedor;
+                proveedorAuditoria.Mail = usuarioModificacionDto.Mail;
+                proveedorAuditoria.Cuit = proveedorModificado.Cuit; 
+                proveedorAuditoria.TipoProveedor_Id = proveedorModificado.IdTipoProveedor;
+                proveedorAuditoria.RazonSocial = proveedorModificado.RazonSocial;
+                proveedorAuditoria.FechaActualizacion = DateTime.Now;
+                proveedorAuditoria.UsuarioActualizacion = usuarioModificacionDto.UsuarioModificacion;
+                repositorio.Agregar(proveedorAuditoria);
+            }
+        }
+        public string ModificarUsuario(UsuarioModificacionDto usuarioModificacionDto)
+        {
+            string resultado = string.Empty;
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Id == usuarioModificacionDto.Id);
+                usuario.CUITRegistro = usuarioModificacionDto.Cuit;
+                usuario.Mail = usuarioModificacionDto.Mail;
+                usuario.TipoUsuario = repositorio.Obtener<Entidades.TipoUsuario>(x => x.Id == usuarioModificacionDto.IdTipoUsuario);
+                repositorio.GuardarCambios();
+                if (usuarioModificacionDto.Proveedores != null)
+                {
+                    usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Id == usuarioModificacionDto.Id);
+                    foreach (var proveedor in usuario.Proveedores)
+                    {
+                        var proveedorModificado = usuarioModificacionDto.Proveedores.Where(x => x.Id == proveedor.Id).FirstOrDefault();
+                        if (proveedorModificado != null)
+                        {
+                            this.GuardarProveedorAuditoria(proveedor, proveedorModificado, usuarioModificacionDto);
+                            proveedor.Mail = usuarioModificacionDto.Mail;
+                            proveedor.CUIT = proveedorModificado.Cuit;
+                            proveedor.RazonSocial = proveedorModificado.RazonSocial;
+                            proveedor.CodigoProveedor = proveedorModificado.CodigoProveedor;
+                            proveedor.TipoProveedor = repositorio.Obtener<Entidades.TipoUsuario>(x => x.Id == proveedorModificado.IdTipoProveedor);
+                            repositorio.GuardarCambios();
+                        }
+                    }
+                }
+                
+                
+                resultado = "OK";
+            }
+            catch (Exception ex)
+            {
+                resultado = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultado;
+        }
+
+
+        #endregion
+
     }
 }

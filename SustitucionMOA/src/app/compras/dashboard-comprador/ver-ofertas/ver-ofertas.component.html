@@ -29,15 +29,15 @@
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 40px !important; ">Pos.</th>
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 100px !important;">Codigo</th>
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 150px !important;">Descripcion </th>
-                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 90px !important; ">Texto de suministro</th>
+                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 90px !important; ">Texto de <br />suministro</th>
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 80px !important; ">Ctd. Pendiente</th>
-                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 60px !important; ">Ctd.</th>
+                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 60px !important; ">Ctd. <br />a Adj</th>
                     <th class="headerth border2-right" rowspan="3" style="background-color: #4760ac !important; width: 60px !important; ">Um</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="frozenbody" let-peticionPosicion>
                 <tr>
-                    <td class="columna" style="width: 40px !important; "><p-checkbox name="posiciones" [(ngModel)]="peticionPosicion.Selected" binary="false"></p-checkbox></td>
+                    <td class="columna" style="width: 40px !important; "><p-checkbox name="posiciones" [(ngModel)]="peticionPosicion.Selected" [disabled]="peticionPosicion.Posicion.AdjudicacionCompleta" binary="false"></p-checkbox></td>
                     <td class="columna" style="width: 40px !important; ">{{peticionPosicion.Posicion.Indice}}</td>
                     <td class="columna" style="width: 100px !important;"><div class="columnadiv">{{peticionPosicion.Posicion.CodigoMaterialSap.Codigo}}</div></td>
                     <td class="columna" style="width: 150px !important;"><div class="columnadiv">{{peticionPosicion.Posicion.CodigoMaterialSap.Descripcion == null ? peticionPosicion.Posicion.Tarea : peticionPosicion.Posicion.CodigoMaterialSap.Descripcion}}</div></td>
@@ -47,10 +47,10 @@
                     <td pEditableColumn class="columna" style="width: 60px !important; ">
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <input type="text" pKeyFilter="int" [(ngModel)]="peticionPosicion.Posicion.Cantidad" (keyup)="validacionCantidad(peticionPosicion.Posicion.Cantidad, peticionPosicion.Posicion.CantidadPendiente)">
+                                <input type="text" pKeyFilter="int" [(ngModel)]="peticionPosicion.Posicion.CantidadAdjudicacion" (keyup)="validacionCantidad(peticionPosicion.Posicion.CantidadAdjudicacion, peticionPosicion.Posicion.CantidadPendiente)">
                             </ng-template>
                             <ng-template pTemplate="output">
-                                {{peticionPosicion.Posicion.Cantidad | number: '1.0-0'}}
+                                {{peticionPosicion.Posicion.CantidadAdjudicacion | number: '1.0-0'}}
                             </ng-template>
                         </p-cellEditor>
                     </td>
@@ -62,6 +62,12 @@
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="8" style="width: 620px !important;">Adjuntos y observaciones</td>
+                </tr>
+                <tr *ngIf="esUltimaPosicion(peticionPosicion)">
+                    <td class="columna border2-right" colspan="8" style="width: 620px !important;">Especificación técnica</td>
+                </tr>
+                <tr *ngIf="esUltimaPosicion(peticionPosicion)">
+                    <td class="columna border2-right" colspan="8" style="width: 620px !important;">Propuesta técnica</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="8" style="width: 620px !important;"></td>
@@ -84,12 +90,12 @@
                 </tr>
                 <tr>
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
-                        <th class="headerth border2-left" style="background-color: #4760ac !important; width: 80px !important; ">Ctd. Cotizada</th>
-                        <th class="headerth" style="background-color: #4760ac !important; width: 100px !important;">Um. Cotizada</th>
-                        <th class="headerth" style="background-color: #4760ac !important; width: 100px !important;">Precio unidad</th>
-                        <th class="headerth" style="background-color: #4760ac !important; width: 100px !important;">Precio total</th>
+                        <th class="headerth border2-left" style="background-color: #4760ac !important; width: 80px !important; ">Ctd. <br />Cotizada</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 100px !important;">Um. <br />Cotizada</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 100px !important;">Precio <br />unidad</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 100px !important;">Precio<br /> total</th>
                         <th class="headerth" style="background-color: #4760ac !important; width: 100px !important;">Total ARP</th>
-                        <th class="headerth" style="background-color: #4760ac !important; width: 90px !important; ">Fecha de entrega</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 90px !important; ">Fecha de <br />entrega</th>
                     </ng-container>
                 </tr>
             </ng-template>
@@ -99,12 +105,17 @@
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <ng-container *ngFor="let cotizacionPosicion of proveedor.Cotizacion.CotizacionPosiciones">
                                 <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
-                                    <td class="columna border2-left" style="width: 80px !important; ">{{cotizacionPosicion.Cantidad | number: '1.0-0'}}</td>
-                                    <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.UnidadMedida.Descripcion}}</td>
-                                    <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.Precio | number:'1.2-2'}}</td>
-                                    <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.PrecioTotal | number:'1.2-2'}}</td>
-                                    <td class="columna" style="width: 100px !important;">ARP {{cotizacionPosicion.TotalPesos | number:'1.2-2'}}</td>
-                                    <td class="columna" style="width: 90px !important; ">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>
+                                    <ng-container *ngIf="cotizacionPosicion.NoDisponible != true">
+                                        <td class="columna border2-left" style="width: 80px !important; ">{{cotizacionPosicion.Cantidad | number: '1.0-0'}}</td>
+                                        <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.UnidadMedida.Descripcion}}</td>
+                                        <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.Precio | number:'1.2-2'}}</td>
+                                        <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.PrecioTotal | number:'1.2-2'}}</td>
+                                        <td class="columna" style="width: 100px !important;">ARP {{cotizacionPosicion.TotalPesos | number:'1.2-2'}}</td>
+                                        <td class="columna" style="width: 90px !important; ">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>
+                                    </ng-container>
+                                    <ng-container *ngIf="cotizacionPosicion.NoDisponible == true">
+                                        <td class="columna border2-left" colspan="6" style="width: 570px !important;">No disponible</td>
+                                    </ng-container>
                                 </ng-container>
                             </ng-container>
                         </ng-container>
@@ -139,19 +150,41 @@
                             <td class="columna border2-left" colspan="6" style="width: 570px !important;">Sin cotizar</td>
                         </ng-container>
                     </ng-container>
-
+                </tr>
+                <tr *ngIf="esUltimaPosicion(peticionPosicion)">
+                    <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                        <ng-container *ngIf="proveedor.Cotizacion != null">
+                            <td colspan="6" style="width: 540px !important;" class="columna border2-left" [style.color]="proveedor.Cotizacion.RespetaMaterialesColor">
+                                {{proveedor.Cotizacion.RespetaMaterialesDescripcion}}
+                            </td>
+                        </ng-container>
+                        <ng-container *ngIf="proveedor.Cotizacion == null">
+                            <td class="columna border2-left" style="width: 540px !important;" colspan="6">Sin observaciones</td>
+                        </ng-container>
+                    </ng-container>
+                </tr>
+                <tr *ngIf="esUltimaPosicion(peticionPosicion)">
+                    <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                        <ng-container *ngIf="proveedor.Cotizacion != null">
+                            <td colspan="6" style="width: 540px !important;" class="columna border2-left" [style.color]="proveedor.EstadoPropuestaTecnicaColor">
+                                {{proveedor.EstadoPropuestaTecnica}}
+                            </td>
+                        </ng-container>
+                        <ng-container *ngIf="proveedor.Cotizacion == null">
+                            <td class="columna border2-left" style="width: 540px !important;" colspan="6">Sin observaciones</td>
+                        </ng-container>
+                    </ng-container>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container>                            <!--*ngIf="proveedor.Cotizacion != null"-->
                             <td class="columna border2-left" colspan="6" style="width: 570px !important;">
-                                <button class="publicar btn btn-success" style="font-size: 12px;">
+                                <button *ngIf="proveedor.VerAdjudicar" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                     Adjudicar
                                 </button>
                             </td>
                         </ng-container>
                     </ng-container>
-
                 </tr>
 
 
@@ -192,7 +225,7 @@
                     <td class="headerth2 border2-right" style="width: 40px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></td>
                 </tr>
                 <tr>
-                    <td class="columna" style="width: 40px !important;"><p-checkbox name="posiciones" [(ngModel)]="peticionPosicion.Selected" binary="false"></p-checkbox></td>
+                    <td class="columna" style="width: 40px !important;"><p-checkbox name="posiciones" [(ngModel)]="peticionPosicion.Selected" [disabled]="peticionPosicion.Posicion.AdjudicacionCompleta" binary="false"></p-checkbox></td>
                     <td class="columna" style="width: 40px !important;"><a href="javascript:void(0)" (click)="verPosicion(peticionPosicion)"><i [ngClass]="peticionPosicion.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i></a></td>
                     <td class="columna" style="width: 40px !important;">{{peticionPosicion.Posicion.Indice}}</td>
                     <td class="columna border2-right" style="width: 430px !important;" colspan="3">{{peticionPosicion.Posicion.CodigoMaterialSap.Descripcion == null ? peticionPosicion.Posicion.Tarea : peticionPosicion.Posicion.CodigoMaterialSap.Descripcion}}</td>
@@ -386,7 +419,7 @@
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <td colspan="9" style="width: 540px !important;" class="columna border2-left" style="text-align: center;">
-                            <button class="publicar btn btn-success" style="font-size: 12px;">
+                            <button *ngIf="proveedor.VerAdjudicar"  class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                 Adjudicar
                             </button>
                         </td>
@@ -427,3 +460,35 @@
         <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarPanel()">CANCELAR</button>
     </p-footer>
 </p-dialog>
+<p-dialog [(visible)]="displayAdjudicacionCreada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Adjudicacion creada!
+    </p-header>
+     <br> La adjudicación con el numero de orden {{numeroOrdenDeCompra}} se creó correctamente. 
+    <br>
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="displayVisualizarErrores" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'scroll', 'max-height':'500px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        Errores
+    </p-header>
+    <strong>A continuacion se listan los errores en SAP: </strong>
+    <br>    
+    <br>  
+    <div *ngFor="let error of errores" >
+        {{ error }}
+    </div>
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salirVisualizarErrores()">Aceptar</button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400"  [responsive]="true" appendTo="body" >
+    <p-footer>
+        <button type="button" pButton  label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+        <button type="button" pButton  label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept(); "></button>
+    </p-footer>
+</p-confirmDialog>
