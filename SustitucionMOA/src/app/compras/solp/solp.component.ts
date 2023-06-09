@@ -594,6 +594,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         if(!this.solpActual.posiciones){
                             this.solpActual.posiciones = [];
                         }
+                        
+                         
                         this.solpActual.posiciones.forEach(pos => {
                             pos.doValidatePosicion(this.solpActual.tipoSolpSap);
                             if (!pos.tabsPosicionValidos.tabDireccionEntrega ||
@@ -602,14 +604,26 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 !pos.tabsPosicionValidos.tabDatosPosicion ||
                                 !pos.tabsPosicionValidos.tabFechas ||
                                 (pos.esTipoPosicionServicio && !pos.tabsPosicionValidos.tabSubposiciones) ||
-                                !pos.tabsPosicionValidos.tabPosiciones) {
-                                return paso.Completo = false;
+                                !pos.tabsPosicionValidos.tabPosiciones) {                                 
+                                    return paso.Completo = false;
+                            } else {
+                                return pos.mensaje = "";
                             }
                         });
                     }
                     break;
             }
         }
+    }
+
+    mostrarMensajeCampos(){
+        this.solpActual.posiciones.forEach(pos => {
+            if (pos.mensaje != "") {
+                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${pos.mensaje}` });
+                console.log("mensaje", pos.mensaje)
+            } 
+        })
+
     }
 
     diasJornadaLaboral(lista: any[]) {
@@ -780,6 +794,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.cabecera.validarTabCompleto();
         this.guardarCambios({mostrarPreview: false, enviarSap: true, guardarPorPaso: false});
         this.displayFinalizar = false;
+        this.mostrarMensajeCampos();
     }
 
     // Abre el modal del boton finalizar
