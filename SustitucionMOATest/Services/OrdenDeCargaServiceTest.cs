@@ -38,6 +38,7 @@ namespace SustitucionMOATest.Services
         private Mock<IScatoConsumer> mIScatoConsumer;
 
         private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaChofer;
+        private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaTransporte;
 
         private Proveedor _proveedorUsuario;
         private Usuario _usuario;
@@ -139,6 +140,12 @@ namespace SustitucionMOATest.Services
                 },
 
                 Roles = _rolesUsuario
+            };
+            _respuestaTransporte = new ScatoRepo.Respuesta<ScatoRepo.Chofer>
+            {
+                Data = new ScatoRepo.Chofer { },
+                Messages = new ScatoRepo.MessageItem[] { },
+                IsValid = false
             };
         }
 
@@ -1371,6 +1378,23 @@ namespace SustitucionMOATest.Services
             Assert.That(result, Is.False);
 
         }
+        [Test]
+        public void ValidarCuitTransporteDigito_CuitDigitoVerificadorNoValido_ReturnsFalse()
+        {
+            _respuestaTransporte.Messages = new ScatoRepo.MessageItem[]
+            {
+                new ScatoRepo.MessageItem
+                {
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido
+                }
+            };
+            mIScatoRepositorioClient.Setup(src => src.ObtenerTransportePorCuit(It.IsAny<string>())).Returns(
+                _respuestaTransporte
+                );
+            var result = target.ValidarCuitTransporteDigito("11111111111");
+
+            Assert.That(result, Is.False);
+        }
 
         [Test]
         public void Agregar_UsuarioNoPuedeModificarReventa_ThrowValidationCustomException()
@@ -1398,6 +1422,40 @@ namespace SustitucionMOATest.Services
             var result = target.Agregar(ordenDeCarga, _mailSesionUsuario);
 
             Assert.That(result.Mensaje, Is.EqualTo(SuccessMsg.OrdenDeCargaAgregada));
+
+        }
+        [Test]
+        public void ValidarCuitTransporteDigito_CuitTransporteNoExiste_ReturnsTrue()
+        {
+            _respuestaTransporte.Messages = new ScatoRepo.MessageItem[]
+            {
+                new ScatoRepo.MessageItem
+                {
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.ChoferNoEncontrado
+                }
+            };
+            mIScatoRepositorioClient.Setup(src => src.ObtenerTransportePorCuit(It.IsAny<string>())).Returns(
+                _respuestaTransporte
+                );
+
+            var result = target.ValidarCuitTransporteDigito("11111111111");
+
+            Assert.That(result, Is.True);
+
+        }
+        [Test]
+        public void ValidarCuitTransporteDigito_CuitTransporteExiste_ReturnsTrue()
+        {
+            _respuestaTransporte.IsValid = true;
+
+            mIScatoRepositorioClient.Setup(src => src.ObtenerTransportePorCuit(It.IsAny<string>())).Returns(
+                _respuestaTransporte
+                );
+
+            var result = target.ValidarCuitTransporteDigito("11111111111");
+
+            Assert.That(result, Is.True);
+
         }
         private void AddProvider(int id, EstadoAprobacion estadoAprobacion, string observaciones, string razonSocial, string mail, string cUIT, TipoUsuario tipoProveedor)
         {
