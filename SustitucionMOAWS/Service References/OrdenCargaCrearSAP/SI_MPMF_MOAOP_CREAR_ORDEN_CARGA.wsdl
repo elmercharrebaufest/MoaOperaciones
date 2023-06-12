@@ -15,6 +15,13 @@
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
+            <xsd:element name="IM_CODPLANTA">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="6" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
             <xsd:element name="IM_CONTRATO">
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
@@ -26,6 +33,34 @@
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="10" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="IM_CUITDESTF">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="16" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="IM_CUITDESTINAT">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="16" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="IM_DOMORDEN">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="250" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="IM_INDRVTA">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="1" />
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
@@ -44,10 +79,38 @@
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
+            <xsd:element name="IM_NAMEDESTF">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="35" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="IM_NAMEDESTINAT">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="35" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="IM_ORDENDOM">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="3" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
             <xsd:element minOccurs="0" name="IM_PEDIDO">
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="10" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="IM_TIPODOM">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="1" />
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>

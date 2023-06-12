@@ -25,6 +25,8 @@ namespace SustitucionMOAModel.Dto
         public bool TieneMedioElevacion { get; set; }
         public bool TieneAndamio { get; set; }
         public bool TieneTecnicoSeguridad { get; set; }
+        public bool TieneGrillaPersonal { get; set; }
+        public bool TieneFabricacionTallerExterno { get; set; }
         public bool TieneDescripcionTecnica { get; set; }
         public bool TieneDocumentacionTecnica { get; set; }
         public DateTime? FechaHoraLimiteConsulta { get; set; }
@@ -75,6 +77,11 @@ namespace SustitucionMOAModel.Dto
         public DateTime? FechaLiberacionSap { get; set; }
         public string FechaLiberacionSapFormateada { get; set; }
         public IEnumerable<PeticionDeOfertaDto> PeticionesDeOferta { get; set; } = new List<PeticionDeOfertaDto>();
+        public List<PeticionDeOfertaDto> Peticiones { get; set; } = new List<PeticionDeOfertaDto>();
+        public string TipoPosicionCodigo { get; set; }
+        public bool TienePeticionDeOferta { get; set; }
+        public IQueryable<AdjudicacionDto> OrdenesDeCompra { get; set; }
+        public List<AdjudicacionDto> OrdenesDeCompraSolicitante { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -95,6 +102,8 @@ namespace SustitucionMOAModel.Dto
             this.TieneMedioElevacion = entity.Pliego.TieneMedioElevacion.HasValue && entity.Pliego.TieneMedioElevacion.Value;
             this.TieneAndamio = entity.Pliego.TieneAndamio.HasValue && entity.Pliego.TieneAndamio.Value;
             this.TieneTecnicoSeguridad = entity.Pliego.TieneTecnicoSeguridad.HasValue && entity.Pliego.TieneTecnicoSeguridad.Value;
+            this.TieneGrillaPersonal = entity.Pliego.TieneGrillaPersonal.HasValue && entity.Pliego.TieneGrillaPersonal.Value;
+            this.TieneFabricacionTallerExterno = entity.Pliego.TieneFabricacionTallerExterno.HasValue && entity.Pliego.TieneFabricacionTallerExterno.Value;
             this.TieneDescripcionTecnica = entity.Pliego.TieneDescripcionTecnica.HasValue && entity.Pliego.TieneDescripcionTecnica.Value;
             this.TieneDocumentacionTecnica = entity.Pliego.TieneDocumentacionTecnica.HasValue && entity.Pliego.TieneDocumentacionTecnica.Value;
             this.FechaHoraLimiteConsulta = entity.Pliego.FechaHoraLimiteConsulta;
@@ -224,6 +233,14 @@ namespace SustitucionMOAModel.Dto
         public string MaterialComprasCodigo { get; set; }
         public int Id { get; set; }
         public DateTime? FechaOferta { get; set; }
+        public CotizacionPosicionDto CotizacionPosicion { get; set; }
+        public decimal? CantidadPendiente { get; set; }
+        public decimal? CantidadAdjudicacion { get; set; }
+        public bool AdjudicacionCompleta { get; set; }
+        public AdjudicacionPosicion AdjudicacionPosicion { get; set; }
+        public string SolpTipo { get; set; }
+        public int Solp_Id { get; set; }
+        public decimal? CantidadAdjudicada { get; set; }
 
         public SolpPosicionDto() { }
 
@@ -312,6 +329,8 @@ namespace SustitucionMOAModel.Dto
 
     public class SolpSubposicionDto
     {
+        public int Indice { get; set; }
+        public int Id { get; set; }
         public string Codigo { get; set; }
         public int Numero { get; set; }
         public int? CodigoServicioSapId { get; set; }
@@ -326,6 +345,21 @@ namespace SustitucionMOAModel.Dto
 
         public TablaSapDto Unidad { get; set; }
         public string UnidadComprasDescripcion { get; set; }
+        public string UnidadDescripcion { get; set; }
+        public int? CantidadCotizacion { get; set; }
+        public string UnidadCotizacionDescripcion { get; set; }
+        public int? UnidadCotizacionId { get; set; }
+        public string MonedaCotizacionDescripcion { get; set; }
+        public int? MonedaCotizacionId { get; set; }
+        public decimal PrecioSubPosicion { get; set; }
+        public decimal PrecioTotalSubPosicion { get; set; }
+        public string MonedaCotizacionCodigo { get; set; }
+        public int? CotizacionSubPosicionId { get; set; }
+        public int? CodigoSolpServicioSap { get; set; }
+        public int? ServicioSolpCodigo { get; set; }
+        public TablaSapDto MonedaCotizacion { get; set; }
+        public TablaSapDto UnidadMedidaCotizacion { get; set; }
+        public int CodigoSolp { get; set; }
 
         public SolpSubposicionDto() { }
 

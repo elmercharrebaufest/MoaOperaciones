@@ -41,6 +41,9 @@ export class Solp extends CommonResponse {
     public andamio: boolean;
     public entregaDocumentacion: boolean;
     public tecnicoSeguridad: boolean;
+    public grillaPersonal: boolean;
+    public fabricacionTallerExterno: boolean;
+
     public fechaLimiteFecha: Date;
     public fechaLimiteHora: Date;
     public visitaDeObraMasiva: boolean;
@@ -151,7 +154,9 @@ export class Solp extends CommonResponse {
             this.mail = solp.Email || sessionStorage.getItem("username");
             this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
             this.emailLinkToken = solp.EmailLinkToken;
-            this.selectTipoPosicion = this.getSelectedTipoPosicion(solp.Posiciones);
+            this.selectTipoPosicion =  solp.TipoPosicion && solp.TipoPosicion.Codigo || ''
+            ;
+
 
             // Paso 2
             this.supervisorSector = solp.SupervisorSector || '';
@@ -169,6 +174,8 @@ export class Solp extends CommonResponse {
             this.modoElevacion = solp.TieneMedioElevacion;
             this.andamio = solp.TieneAndamio;
             this.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
+            this.grillaPersonal = solp.TieneGrillaPersonal;
+            this.fabricacionTallerExterno = solp.TieneFabricacionTallerExterno;
             this.usuarioComprasId = solp.UsuarioCompras.Id || 0;
             this.descripcionTecnica = solp.TieneDescripcionTecnica;
             this.entregaDocumentacion = solp.TieneDocumentacionTecnica;

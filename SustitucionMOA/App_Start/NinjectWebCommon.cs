@@ -14,6 +14,8 @@ using SustitucionMOAUtils.Services;
 using SustitucionMOAUtils.Validadores;
 using SustitucionMOAUtils.Wrappers;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.ScatoWebService;
+using SustitucionMOAWS.WebApi;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Data.Entity;
@@ -142,9 +144,13 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IEcheqModificacionDocumentoChequeConsumerMOA>().To(typeof(EcheqModificacionDocumentoChequeConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEcheqAnularAperturaChequeConsumerMOA>().To(typeof(EcheqAnularAperturaChequeConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEcheqCargaAperturaChequeConsumerMOA>().To(typeof(EcheqCargaAperturaChequeConsumerMOA)).InScope(ctx => OperationContext.Current);
-
+            kernel.Bind<IObtenerTipoCambioConsumerMOA>().To(typeof(ObtenerTipoCambioConsumerMOA)).InScope(ctx => OperationContext.Current);
 
             #endregion
+
+            // Scato WebApi
+            kernel.Bind<IScatoRepositorioClient>().To(typeof(ScatoRepositorioClient)).InSingletonScope();
+            kernel.Bind<IServicioRepositorio>().To(typeof(ServicioRepositorioClient)).InScope(ctx => OperationContext.Current);
 
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();

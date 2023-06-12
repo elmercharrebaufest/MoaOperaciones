@@ -3,6 +3,7 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
@@ -88,8 +89,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_SOLP)]
-        public ActionResult Combos()
+       public ActionResult Combos()
         {
             try
             {
@@ -109,6 +109,7 @@ namespace SustitucionMOA.Controllers
                     TipoPosicionSolp = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
                     TipoPosicion = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
                     TipoImputacion = service.ObtenerTablaGeneral(TablasGenerales.TipoImputacionSolp),
+                    Usuarios = usuarioService.ListarUsuarioCreadorSolp(),
                     CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
                     {
                         ClaseDocumentoCodigo = x.Padre.Codigo,
@@ -147,7 +148,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, string estados = null)
+        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, string estados = null, int? usuarioId = null)
         {
             try
             {
@@ -156,7 +157,7 @@ namespace SustitucionMOA.Controllers
                 return JsonCustom(new
                 {
                     data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, fechaDesde,
-                    fechaHasta, sap, mantenimiento, web, (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>()))
+                    fechaHasta, sap, mantenimiento, web, usuarioId != null ? usuarioId : null, (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>()))
                 });
             }
             catch (InfoCustomException e)
@@ -661,7 +662,7 @@ namespace SustitucionMOA.Controllers
 
                 return JsonCustom(new
                 {
-                    data = service.ListarPOProveedor(paginacion, nroSolp)
+                    data = service.ListarPOProveedor(paginacion, nroSolp, SessionPersister.getUsername())
                 });
             }
             catch (InfoCustomException e)
@@ -683,6 +684,37 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpGet]
+        public ActionResult ListarOfertasComprador(int peticionOferta_Id)
+        {
+            try
+            {
+                return JsonCustom(new
+                {
+                    data = service.ListarOfertasComprador(peticionOferta_Id)
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
 
         [HttpPost]
         public ActionResult ListarAsociarContrato(string solpJson)
@@ -774,11 +806,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? usuarioId)
+        public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario)
         {
             try
             {
-                var result = service.ObtenerLegajo(peticionDeOfertaId, usuarioId);
+                var result = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario);
                 return JsonCustom(new { data = result });
             }
             catch (WSCustomException e)
@@ -822,14 +854,14 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult DescargarLegajo(int idPeticion)
+        public ActionResult DescargarLegajo(int idPeticion,int? idPeticionDeOfertaUsuario)
         {
             try
             {
                 var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
                 Directory.CreateDirectory(path);
 
-                string rutaZip = service.DescargarLegajo(idPeticion, path);
+                string rutaZip = service.DescargarLegajo(idPeticion, path, idPeticionDeOfertaUsuario);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
                 string fileName = Path.GetFileName(rutaZip);
 
@@ -949,27 +981,27 @@ namespace SustitucionMOA.Controllers
         }
 
 
-        [HttpGet]
-        public ActionResult CrearOrdenDeCompra(int AdjudicacionId)
+        [HttpPost]
+        public ActionResult CrearOrdenDeCompra(string json)
         {
             try
             {
-                var result = service.CrearOrdenDeCompra(AdjudicacionId);
-
-                //TODO: hardcodeados o para revisar
-                ///VENDOR Proveedor adjudicado
-                ///PURCH_ORG OrganizacionCompras hardcode 2029
-                ///Usuario que envia la OC es el de la solp tiene que ser el usuari acutal
-                ///posiciones esta enviando todoas tiene que ser otra la logica
-                ///STREET y STREET_NO esta hardcodeado benelli 398 por que no tenemos el campo separado
-                ///DOC_TYPE hardcode
-                ///IM_POITEMList.IM_POITEM.QUANTITY 1 hardcode
-                ///IM_POACCOUNTList.IM_POACCOUNT.QUANTITY 1 hardcode
-                ///SERIAL_NO/serialNumber siempre 1 por que se imputa todo a lo mismo sino son imputaciones multiples
-                ///QUANTITY para materiales es la cantidad que adjudico el comprador para servicios siempre tiene que ser 1
-                ///
-
+                var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
+                var result = service.GrabarAdjudicacion(adjudicacion, ObtenerUsuarioActual().Id);
                 return JsonCustom(result);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -977,5 +1009,140 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpGet]
+        public ActionResult DescargarAdjuntosCotizacion(int cotizacionId)
+        {
+            try
+            {
+                var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+                Directory.CreateDirectory(path);
+
+                string rutaZip = service.DescargarAdjuntosCotizacion(cotizacionId, path);
+                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
+                string fileName = Path.GetFileName(rutaZip);
+
+                //Para evitar sobrecargar el server con zips, una vez cargado lo borro
+                Directory.Delete(path, true);
+
+                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult GrabarRevisionTecnica(string json)
+        {
+            try
+            {
+                var revision = JsonConvert.DeserializeObject<List<PeticionDeOfertaUsarioDto>>(json);
+                var result = service.GrabarRevisionTecnica(revision, ObtenerUsuarioActual().Id);
+                return JsonCustom(new { data = result });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ObtenerCotizacion(int peticionDeOfertaId)
+        {
+            try
+            {
+                var result = service.TraerCotizacion(peticionDeOfertaId);
+                return JsonCustom(new { data = result });
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult GrabarCotizacion(string json)
+        {
+            try
+            {
+                var cotizacion = JsonConvert.DeserializeObject<GuardarCotizacion>(json);
+                var usuarioActual = ObtenerUsuarioActual();
+                var result = service.GrabarCotizacion(cotizacion, Request.Files, cotizacion.EsFinalizado, usuarioActual.Id);
+                return JsonCustom(new { data = result });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult ObtenerPrecioTotalPosicionProveedor(string json)
+        {
+            try
+            {
+                var cotizacion = JsonConvert.DeserializeObject<GuardarCotizacion>(json);               
+                var result = service.ObtenerPrecioTotalPosicionProveedor(cotizacion);
+                return JsonCustom(new { data = result });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
     }
 }

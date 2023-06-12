@@ -77,6 +77,7 @@ namespace SustitucionMOAModel.Entities
         public string PedidoSAP { get; set; }
         public string CodigoVerificacionSap { get; set; }
         public string DescripcionCodigoVerificacionSap { get; set; }
+        public bool Reventa { get; set; }
 
         public int? UsuarioCreacion_Id { get; set; }
         [ForeignKey("UsuarioCreacion_Id")]
@@ -91,10 +92,20 @@ namespace SustitucionMOAModel.Entities
         public bool FechaVencimientoAmpliada { get; set; }
 
         public bool EdicionRechazada { get; set; }
+        public string CUITDestino { get; set; }
+        public string CUITDestinatario { get; set; }
+        public string RazonSocialDestino { get; set; }
+        public string RazonSocialDestinatario { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string RazonSocialIntermediarioFlete { get; set; }
+        public string PlantaCodigo { get; set; }
+        public string DomicilioTipo { get; set; }
+        public short? DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
 
         public void ActualizarEstado()
         {
-			if (Estado != EstadoOrdenDeCarga.Entregada)
+            if (Estado != EstadoOrdenDeCarga.Entregada)
             {
                 if (CodigoVerificacionSap == "CC-01" || CodigoVerificacionSap == "CC-06")
                 {

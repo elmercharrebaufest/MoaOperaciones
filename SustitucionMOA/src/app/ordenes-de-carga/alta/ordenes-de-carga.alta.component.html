@@ -19,23 +19,29 @@
                     <div class="col-xs-12 col-md-12 search-header">
                         <title-caps>Información de la orden de carga</title-caps>
                     </div>
-
                     <div class="formulario">
                         <div class="col-xs-12 col-md-5 no-padding-left-right" style="margin-left: 3em;">
+
+                            <div class=" col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                <div class="formulario-label" style="margin-bottom: 8px;">
+                                    <p-checkbox name="reventa" [binary]="true"
+                                        [(ngModel)]="ordenDeCarga.Reventa"></p-checkbox>
+                                    <label class="ml-2 pointer mySearch bold"
+                                        (click)="ordenDeCarga.Reventa = !ordenDeCarga.Reventa">
+                                        Reventa
+                                    </label>
+                                </div>
+                            </div>
                             <div class=" col-xs-12 col-md-12" *ngIf="esComercial">
                                 <div class="formulario-label" style="margin-bottom: 8px;">
                                     Corredor:
                                 </div>
-
-                                <div class="styled-select" style="overflow: initial;">                 
-                                    <p-dropdown name="cmbCorredores"
-                                                [(ngModel)]="corredorSeleccionado"
-                                                [options]="listaCorredores"
-                                                placeholder="Seleccione un Corredor"
-                                                [disabled]="noEditarCliente"
-                                                optionLabel="descVendedor"
-                                                (ngModelChange)="onCorredorSeleccionado()"
-                                                [filter]="true" filterBy="value.descVendedor">
+                                <div class="styled-select" style="overflow: initial;">
+                                    <p-dropdown name="cmbCorredores" [(ngModel)]="corredorSeleccionado"
+                                        [options]="listaCorredores" placeholder="Seleccione un Corredor"
+                                        [disabled]="noEditarCliente" optionLabel="descVendedor"
+                                        (ngModelChange)="onCorredorSeleccionado()" [filter]="true"
+                                        filterBy="value.descVendedor">
                                     </p-dropdown>
                                 </div>
                             </div>
@@ -45,14 +51,10 @@
                                     Cliente:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="cmbCliente2"
-                                                [(ngModel)]="clienteSeleccionado"
-                                                (ngModelChange)="onClienteSeleccionado()"
-                                                [options]="listaClientes"
-                                                optionLabel="RazonSocial"
-                                                placeholder="Seleccione un Cliente"
-                                                [disabled]="noEditarCliente"
-                                                [filter]="true" filterBy="value.RazonSocial">
+                                    <p-dropdown name="cmbCliente2" [(ngModel)]="clienteSeleccionado"
+                                        (ngModelChange)="onClienteSeleccionado()" [options]="listaClientes"
+                                        optionLabel="RazonSocial" placeholder="Seleccione un Cliente"
+                                        [disabled]="noEditarCliente" [filter]="true" filterBy="value.RazonSocial">
                                     </p-dropdown>
                                 </div>
                             </div>
@@ -65,23 +67,122 @@
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
                                     <p-dropdown name="cmbContratos"
-                                                [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente"
-                                                [(ngModel)]="ordenDeCarga.ContratoSeleccionado"
-                                                [options]="contratosDisponibles"
-                                                optionLabel="NumeroContrato"
-                                                placeholder="Seleccione un Contrato"
-                                                (ngModelChange)="onContratoSeleccionadoChanged()"
-                                                [filter]="true" filterBy="value.NumeroContrato">
+                                        [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente"
+                                        [(ngModel)]="ordenDeCarga.ContratoSeleccionado" [options]="contratosDisponibles"
+                                        optionLabel="NumeroContrato" placeholder="Seleccione un Contrato"
+                                        (ngModelChange)="onContratoSeleccionadoChanged()" [filter]="true"
+                                        filterBy="value.NumeroContrato">
                                     </p-dropdown>
                                 </div>
                             </div>
+                            <ng-container *ngIf="validaCPEDG">
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        CUIT Destinatario:
+                                    </div>
+                                    <div class="styled-select">
+                                        <div class="ui-inputgroup">
+                                            <input type="text" pInputText [(ngModel)]="ordenDeCarga.CUITDestinatario"
+                                                mask="00-00000000-0" (change)="validarExisteCUIT('CUITDestinatario')">
+                                            <span
+                                                *ngIf="ordenDeCarga.CUITDestinatario != ordenDeCarga.CUITCliente.toString()"
+                                                class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestinatario()"
+                                                [pTooltip]="ttCopiarCuit" style="font-size: 2.5rem"></span>
+                                            <span class="ui-inputgroup-addon" *ngIf="validando.CUITDestinatario">
+                                                <p-progressSpinner
+                                                    [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="mensajesOrdenDeCarga?.CUITDestinatario || ordenDeCarga.RazonSocialDestinatario || mensajesGestionCuit.CUITDestinatario"
+                                    class="col-xs-12 col-md-12">
+                                    <ng-container *ngIf="ordenDeCarga.RazonSocialDestinatario">
+                                        <div class="formulario-label">
+                                            Razón Social Destinatario:
+                                        </div>
+                                        <div class="styled-select">
+                                            <input [disabled]="true" type="text"
+                                                [(ngModel)]="ordenDeCarga.RazonSocialDestinatario">
+                                        </div>
+                                    </ng-container>
+                                    <ng-container
+                                        *ngIf="mensajesOrdenDeCarga?.CUITDestinatario || mensajesGestionCuit.CUITDestinatario">
+                                        <p>
+                                            {{mensajesOrdenDeCarga.CUITDestinatario ||
+                                            mensajesGestionCuit.CUITDestinatario}}
+                                        </p>
+                                    </ng-container>
+                                </div>
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        CUIT Destino:
+                                    </div>
+                                    <div class="styled-select">
+                                        <div class="ui-inputgroup">
+                                            <input type="text" pInputText [(ngModel)]="ordenDeCarga.CUITDestino"
+                                                mask="00-00000000-0" (change)="validarExisteCUIT('CUITDestino')">
+                                            <span
+                                                *ngIf="ordenDeCarga.CUITDestino != ordenDeCarga.CUITCliente.toString()"
+                                                class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestino()"
+                                                [pTooltip]="ttCopiarCuit" style="font-size: 2.5rem"></span>
+                                            <span class="ui-inputgroup-addon" *ngIf="validando.CUITDestino">
+                                                <p-progressSpinner
+                                                    [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="mensajesOrdenDeCarga?.CUITDestino || ordenDeCarga.RazonSocialDestino || mensajesGestionCuit.CUITDestino"
+                                    class="col-xs-12 col-md-12">
+                                    <ng-container *ngIf="ordenDeCarga.RazonSocialDestino;">
+                                        <div class="formulario-label">
+                                            Razón Social Destino:
+                                        </div>
+                                        <div class="styled-select">
+                                            <input [disabled]="true" type="text"
+                                                [(ngModel)]="ordenDeCarga.RazonSocialDestino">
+                                        </div>
+                                    </ng-container>
+                                    <ng-container
+                                        *ngIf="mensajesOrdenDeCarga?.CUITDestino || mensajesGestionCuit.CUITDestino">
+                                        <p>
+                                            {{mensajesOrdenDeCarga.CUITDestino || mensajesGestionCuit.CUITDestino}}
+                                        </p>
+                                    </ng-container>
+                                </div>
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        Planta:
+                                    </div>
+                                    <div class="styled-select" style="overflow: initial;">
+                                        <p-dropdown name="cmbPlantas" [(ngModel)]="plantaSeleccionada"
+                                            [options]="listaPlantas" placeholder="Seleccione una planta"
+                                            (ngModelChange)="onPlantaSeleccionadaChanged()" optionLabel="Codigo">
+                                        </p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        Domicilio:
+                                    </div>
+                                    <div class="styled-select" style="overflow: initial;">
+                                        <p-dropdown name="cmbDomicilios" [(ngModel)]="domicilioSeleccionado"
+                                            [options]="listaDomicilios" placeholder="Seleccione un domicilio"
+                                            (ngModelChange)="onDomicilioSeleccionadoChanged()"
+                                            optionLabel="Descripcion">
+                                        </p-dropdown>
+                                    </div>
+                                </div>
 
+                            </ng-container>
                             <div class="col-xs-12 col-md-12">
                                 <div class="formulario-label">
                                     Número de pedido (fact. anticipada):
                                 </div>
                                 <div class="styled-select">
-                                    <input type="text" [(ngModel)]="ordenDeCarga.NumeroPedidoIngresado" maxlength="25" [disabled]="noEditarCliente">
+                                    <input type="text" [(ngModel)]="ordenDeCarga.NumeroPedidoIngresado" maxlength="25"
+                                        [disabled]="noEditarCliente || !pedidoAnticipado">
                                 </div>
                             </div>
 
@@ -94,7 +195,8 @@
                                         <option [value]="selectUndefinedOptionValue">
                                             Elegir Grano
                                         </option>
-                                        <option *ngFor="let material of listaMateriales" value="{{material.MaterialId}}">
+                                        <option *ngFor="let material of listaMateriales"
+                                            value="{{material.MaterialId}}">
                                             {{material.Descripcion}}
                                         </option>
                                     </select>
@@ -119,7 +221,13 @@
                                     Patente chasis:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                    <input auto-complete [(ngModel)]="ordenDeCarga.ChasisAcoplado" (ngModelChange)="ordenDeCarga.ChasisAcoplado = $event.toUpperCase()" maxlength="7" [source]="patentesChasis" (valueChanged)="PatenteChasisSelected($event)" [min-chars]="2" [no-match-found-text]="'No se encontraron resultados'" [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" mask="AAAAAAA" />
+                                    <input auto-complete [(ngModel)]="ordenDeCarga.ChasisAcoplado"
+                                        (ngModelChange)="ordenDeCarga.ChasisAcoplado = $event.toUpperCase()"
+                                        maxlength="7" [source]="patentesChasis"
+                                        (valueChanged)="PatenteChasisSelected($event)" [min-chars]="2"
+                                        [no-match-found-text]="'No se encontraron resultados'"
+                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter"
+                                        mask="AAAAAAA" />
                                 </div>
                             </div>
 
@@ -128,7 +236,13 @@
                                     Patente acoplado:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                    <input auto-complete [(ngModel)]="ordenDeCarga.PatenteAcoplado" (ngModelChange)="ordenDeCarga.PatenteAcoplado= $event.toUpperCase()" maxlength="7" [source]="patentesAcoplados" (valueChanged)="PatenteAcopladoSelected($event)" [min-chars]="2" [no-match-found-text]="'No se encontraron resultados'" [value-formatter]="generalFormatterAcoplado" [list-formatter]="generalFormatterAcoplado" mask="AAAAAAA" />
+                                    <input auto-complete [(ngModel)]="ordenDeCarga.PatenteAcoplado"
+                                        (ngModelChange)="ordenDeCarga.PatenteAcoplado= $event.toUpperCase()"
+                                        maxlength="7" [source]="patentesAcoplados"
+                                        (valueChanged)="PatenteAcopladoSelected($event)" [min-chars]="2"
+                                        [no-match-found-text]="'No se encontraron resultados'"
+                                        [value-formatter]="generalFormatterAcoplado"
+                                        [list-formatter]="generalFormatterAcoplado" mask="AAAAAAA" />
                                 </div>
                             </div>
 
@@ -137,7 +251,9 @@
                                     Nombre y apellido del chofer:
                                 </div>
                                 <div class="styled-select">
-                                    <input type="text" [(ngModel)]="ordenDeCarga.NombreChofer" (ngModelChange)="ordenDeCarga.NombreChofer = $event.toUpperCase()" maxlength="25">
+                                    <input type="text" [(ngModel)]="ordenDeCarga.NombreChofer"
+                                        (ngModelChange)="ordenDeCarga.NombreChofer = $event.toUpperCase()"
+                                        maxlength="25">
                                 </div>
                             </div>
 
@@ -146,7 +262,14 @@
                                     CUIL chofer:
                                 </div>
                                 <div class="styled-select">
-                                    <input type="text" [(ngModel)]="ordenDeCarga.CUITChofer" mask="00-00000000-0">
+                                    <div class="ui-inputgroup">
+                                        <input type="text" [(ngModel)]="ordenDeCarga.CUITChofer" mask="00-00000000-0"
+                                            (change)="validarCuilChofer()">
+                                        <span class="ui-inputgroup-addon" *ngIf="validando.CUITChofer">
+                                            <p-progressSpinner
+                                                [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -156,7 +279,8 @@
                                 </div>
                                 <div class="styled-select">
                                     <input type="text" [(ngModel)]="ordenDeCarga.RazonSocialTransporte"
-                                           (ngModelChange)="ordenDeCarga.RazonSocialTransporte = $event.toUpperCase()" maxlength="50">
+                                        (ngModelChange)="ordenDeCarga.RazonSocialTransporte = $event.toUpperCase()"
+                                        maxlength="50">
                                 </div>
                             </div>
 
@@ -165,9 +289,36 @@
                                     CUIT transporte:
                                 </div>
                                 <div class="styled-select">
-                                    <input type="text" [(ngModel)]="ordenDeCarga.CUITTransporte" mask="00-00000000-0">
+                                    <input type="text" [(ngModel)]="ordenDeCarga.CUITTransporte" mask="00-00000000-0"
+                                        [placeholder]="descripcionTransporte">
                                 </div>
                             </div>
+                            <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                <div class="formulario-label">
+                                    CUIT Intermediario Flete:
+                                </div>
+                                <div class="styled-select">
+                                    <div class="ui-inputgroup">
+                                        <input type="text" [(ngModel)]="ordenDeCarga.CUITIntermediarioFlete"
+                                            mask="00-00000000-0" [placeholder]="descripcionIntermediarioFlete"
+                                            (change)="validarIntermediarioFlete()">
+                                        <span class="ui-inputgroup-addon" *ngIf="validando.CUITIntermediarioFlete">
+                                            <p-progressSpinner
+                                                [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div *ngIf="!intermediarioFleteCuitFormatoValido">
+                                    CUIT inválido
+                                </div>
+                                <div class="styled-select" *ngIf="ordenDeCarga.RazonSocialIntermediarioFlete">
+                                    <input [disabled]="true" type="text" [(ngModel)]="ordenDeCarga.RazonSocialIntermediarioFlete">
+                                </div>
+                                <p *ngIf="mensajesGestionCuit.CUITIntermediarioFlete">
+                                    {{ mensajesGestionCuit.CUITIntermediarioFlete }}
+                                </p>
+                            </div>
+
                         </div>
 
                         <div class="col-xs-12 col-md-11" style="margin-left: 3em;">
@@ -180,27 +331,28 @@
                             </div>
                         </div>
 
-                        <div class="containerBotones">
-                            <div class="col-xs-12 col-md-12">
+                        <div class="containerBotones" style="padding: 3rem;">
+                            <div class="col-xs-12 col-md-12" style="padding-right:0px!important" #messages>
                                 <mensaje></mensaje>
                                 <spinner></spinner>
                             </div>
 
                             <div class="col-xs-5 col-md-2">
-                                <input type="button" (click)="redirigirAListado()" class="btn-custom btn-add btn-mediano"
-                                       value="Volver">
+                                <input type="button" (click)="redirigirAListado()"
+                                    class="btn-custom btn-add btn-mediano" value="Volver">
                             </div>
 
                             <div class="col-xs-2 col-md-1"></div>
 
                             <div class="col-xs-5 col-md-3">
                                 <div class="step-actions enviar">
-                                    <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
-                                            data-target="#modalNotificación" class="btn-custom btn-azul"></button>
-                                    <input type="submit" (click)="submit()" class="btn-custom btn-guardar btn-mediano" value="Enviar">
+                                    <button type="button" id="openModalNotificacion" data-toggle="modal"
+                                        style="display:none" data-target="#modalNotificación"
+                                        class="btn-custom btn-azul"></button>
+                                    <input type="submit" (click)="submit()" class="btn-custom btn-guardar btn-mediano"
+                                        value="Enviar">
                                 </div>
                             </div>
-
                             <div class="col-xs-0 col-md-2"></div>
                         </div>
                     </div>
@@ -216,14 +368,14 @@
 
 <!-- modal notificacion -->
 <button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
-        data-target="#modalNotificación"></button>
+    data-target="#modalNotificación"></button>
 <div class="modal fade fade-complete" id="modalNotificación" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close btn-close" style="display:none" data-dismiss="modal" aria-label="Close"
-                        id="botonCerrarModal">
+                <button type="button" class="close btn-close" style="display:none" data-dismiss="modal"
+                    aria-label="Close" id="botonCerrarModal">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title" id="myModalLabel">Orden de carga guardada correctamente </h4>
@@ -237,4 +389,27 @@
         </div>
     </div>
 </div>
+<p-dialog [header]="displayModal ? displayModal.replace('CUIT','') : ''" [(visible)]="displayModal" [modal]="true"
+    [responsive]="true" [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70" [draggable]="false"
+    appendTo="body" (onHide)="focusRazonSocialParaGestion=true; razonSocialParaGestion=''">
+    <p>No se encontró la CUIT {{ordenDeCarga[displayModal]}}</p><br>
+    <p>¿Desea que se notifique?</p>
+    <div class="col-xs-12 col-md-12">
+        <div class="formulario-label">
+            Razón social con la que gestionar el alta:
+        </div>
+        <div class="styled-select mb-2">
+            <input (blur)="focusRazonSocialParaGestion= false" [(ngModel)]="razonSocialParaGestion" type="text">
+        </div>
+        <p-message *ngIf="!focusRazonSocialParaGestion && razonSocialParaGestion.length < 1" severity="warn" text="Debe ingresar una razón social de
+            al menos un (1) caracter para gestionar su alta">
+        </p-message>
+    </div>
+    <p-footer>
+        <button [disabled]="razonSocialParaGestion.length < 1" type="button" pButton icon="pi pi-check"
+            (click)="gestionarAltaCUIT()" label="Gestionar"></button>
+        <button type="button" pButton icon="pi pi-close" (click)="cancelarGestionAltaCUIT()" label="Cancelar"
+            class="ui-button-secondary"></button>
+    </p-footer>
+</p-dialog>
 <!-- end modal notificacion -->

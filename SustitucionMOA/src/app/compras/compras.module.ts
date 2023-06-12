@@ -34,7 +34,6 @@ import { Generacion1Component } from './solp/steps/generacion1/generacion1.compo
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SolpComponent } from './solp/solp.component';
 import { PliegoPreviewComponent } from './preview/pliego.preview.component';
-import { CotizacionComponent } from './solp/steps/cotizacion/cotizacion.component';
 import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
 import { EspecificacionesComponent } from './solp/steps/especificaciones/especificaciones.component'
 import { CabeceraComponent } from './solp/steps/posicion/cabecera.component';
@@ -53,7 +52,6 @@ import { PaginatorModule } from 'primeng/paginator';
 import { TabViewModule } from 'primeng/tabview';
 import {TooltipModule} from 'primeng/tooltip';
 import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
-import { CotizacionFormularioComponent } from './cotizacion/cotizacion-formulario/cotizacion-formulario.component';
 import { CircularComponent } from './dashboard-comprador/circular/circular.component';
 import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
 import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
@@ -64,6 +62,17 @@ import { ProveedorPeticionComponent } from './dashboard-comprador/proveedor-peti
 import { AltaProveedorComponent } from './dashboard-comprador/alta-proveedor/alta-proveedor.component';
 import { ListadoDashboardProveedorComponent } from './dashboard-proveedor/listado-dashboard-proveedor/listado-dashboard-proveedor.component';
 import { FiltroDashboardProveedorComponent } from './dashboard-proveedor/filtro-dashboard-proveedor/filtro-dashboard-proveedor.component';
+import { VerOfertasComponent } from './dashboard-comprador/ver-ofertas/ver-ofertas.component';
+import { RevisionTecnicaComponent } from './dashboard/revision-tecnica/revision-tecnica.component';
+
+import { PeticionDeOfertaFormularioComponent } from './peticion-de-oferta-formulario/peticion-de-oferta-formulario.component';
+import { CotizacionFormularioComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-formulario.component';
+import { CotizacionComponent } from './solp/steps/cotizacion/cotizacion.component';
+import { CotizacionMaterialComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-material/cotizacion-material.component';
+import { CotizacionServicioComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-servicio/cotizacion-servicio.component';
+import { PanelHorasComponent } from './panel-horas/panel-horas.component';
+import { OrdenDeCompraDetalleComponent } from './dashboard-comprador/orden-de-compra-detalle/ordenDeCompraDetalle.component';
+
 
 
 @NgModule({
@@ -104,12 +113,12 @@ import { FiltroDashboardProveedorComponent } from './dashboard-proveedor/filtro-
     ],
     declarations: [
         SolpComponent,
+        CotizacionComponent,
         DashboardComponent,
         Generacion1Component,
         Generacion2Component,
         PliegoPreviewComponent,
         EspecificacionesComponent,
-        CotizacionComponent,
         DragAndDropDirective,
         CabeceraComponent,
         TabFechasComponent,
@@ -124,13 +133,21 @@ import { FiltroDashboardProveedorComponent } from './dashboard-proveedor/filtro-
         ObtenerContratoMarcoComponent,
         ListadoDashboardCompradorComponent,
         FiltroDashboardCompradorComponent,
-        CotizacionFormularioComponent,
+        PeticionDeOfertaFormularioComponent,
         LegajoComponent,
         CircularComponent,
         AltaProveedorComponent,
         ProveedorPeticionComponent,
         ListadoDashboardProveedorComponent,
-        FiltroDashboardProveedorComponent
+        FiltroDashboardProveedorComponent,
+        VerOfertasComponent,
+        RevisionTecnicaComponent,
+        PeticionDeOfertaFormularioComponent,
+        CotizacionFormularioComponent,
+        CotizacionMaterialComponent,
+        CotizacionServicioComponent,
+        PanelHorasComponent,
+        OrdenDeCompraDetalleComponent
     ],
     providers: [
         ComprasService,

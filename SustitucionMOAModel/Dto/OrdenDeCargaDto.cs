@@ -34,6 +34,16 @@ namespace SustitucionMOAModel.Dto
         public bool EstaSeleccionado { get; set; }
         public List<AutoCompleteDropdownElement> ordenes { get; set; }
         public bool EdicionRechazada { get; set; }
+        public string CUITDestino { get; set; }
+        public string CUITDestinatario { get; set; }
+        public string RazonSocialDestino { get; set; }
+        public string RazonSocialDestinatario { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string PlantaCodigo { get; set; }
+        public string DomicilioTipo { get; set; }
+        public short DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
+        public bool Reventa { get; set; }
 
         public OrdenDeCargaDto()
         {
@@ -71,6 +81,16 @@ namespace SustitucionMOAModel.Dto
             CodigoCliente = orden.Cliente != null ? orden.Cliente.CodigoProveedor : "";
             CodigoCorredor = orden.Corredor != null ? orden.Corredor.CodigoProveedor : "";
             Estado = (int)orden.Estado;
+            CUITDestinatario = orden.CUITDestinatario;
+            RazonSocialDestinatario = orden.RazonSocialDestinatario;
+            CUITDestino = orden.CUITDestino;
+            RazonSocialDestino = orden.RazonSocialDestino;
+            PlantaCodigo = orden.PlantaCodigo;
+            DomicilioTipo = orden.DomicilioTipo;
+            DomicilioOrden = orden.DomicilioOrden;
+            DomicilioDescr = orden.DomicilioDescr;
+            CUITIntermediarioFlete = orden.CUITIntermediarioFlete;
+            Reventa = orden.Reventa;
         }
 
         public int Id { get; set; }
@@ -95,6 +115,16 @@ namespace SustitucionMOAModel.Dto
         public string CodigoCliente { get; set; }
         public string CodigoCorredor { get; set; }
         public int Estado { get; set; }
+        public string CUITDestino { get; set; }
+        public string CUITDestinatario { get; set; }
+        public string RazonSocialDestino { get; set; }
+        public string RazonSocialDestinatario { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string PlantaCodigo { get; set; }
+        public string DomicilioTipo { get; set; }
+        public short? DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
+        public bool Reventa { get; set; }
     }
 
     public class OrdenDeCargaHistorialDto
@@ -158,6 +188,18 @@ namespace SustitucionMOAModel.Dto
         public string DescripcionErrorInterno { get; set; }
         public string NumeroPedidoIngresado { get; set; }
         public bool EsOrdenVencida { get; set; }
+
+        public bool ValidaSisaRuca { get; set; }
+        public string CUITDestino { get; set; }
+        public string CUITDestinatario { get; set; }
+        public string RazonSocialDestino { get; set; }
+        public string RazonSocialDestinatario { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string PlantaCodigo { get; set; }
+        //public string DomicilioTipo { get; set; }
+        //public short DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
+        public bool Reventa { get; set; }
 
         public IEnumerable<OrdenDeCargaCambiosHistorialDto> OrdenDeCargaCambiosHistorial { get; set; }
         public bool FechaVencimientoAmpliada { get; set; }
@@ -229,7 +271,7 @@ namespace SustitucionMOAModel.Dto
         }
         public static OrdenDeCargaDetalleDto DeOrdenDeCarga(Ent.OrdenDeCarga orden, List<OrdenDeCargaCambiosHistorialDto> ordenDeCargaCambiosHistorial, Proveedor cliente)
         {
-            
+
             return new OrdenDeCargaDetalleDto()
             {
                 Id = orden.Id,
@@ -269,7 +311,16 @@ namespace SustitucionMOAModel.Dto
                 OrdenDeCargaCambiosHistorial = ordenDeCargaCambiosHistorial,
                 EsOrdenVencida = orden.FechaVencimiento < DateTime.Now.Date ? true : false,
                 FechaVencimientoAmpliada = orden.FechaVencimientoAmpliada,
-                EdicionRechazada = orden.EdicionRechazada
+                EdicionRechazada = orden.EdicionRechazada,
+                ValidaSisaRuca = orden.Producto.ValidaSisaRuca,
+                Reventa = orden.Reventa,
+                CUITDestino = orden.CUITDestino,
+                CUITDestinatario = orden.CUITDestinatario,
+                RazonSocialDestino = orden.RazonSocialDestino,
+                RazonSocialDestinatario = orden.RazonSocialDestinatario,
+                CUITIntermediarioFlete = orden.CUITIntermediarioFlete,
+                PlantaCodigo = orden.PlantaCodigo,
+                DomicilioDescr = orden.DomicilioDescr
             };
         }
     }

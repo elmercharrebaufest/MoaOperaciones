@@ -36,6 +36,20 @@
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
+            <xsd:element name="IM_CUITDESTF">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="16" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="IM_CUITDESTINAT">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="16" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
             <xsd:element name="IM_MATERIAL">
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
@@ -63,10 +77,30 @@
       <xsd:element name="Z_MPMF_MOAOP_CONTROL_CARGA.Response">
         <xsd:complexType>
           <xsd:all>
-            <xsd:element minOccurs="0" name="EX_MENSAJE" type="xsd:string" />
+            <xsd:element minOccurs="0" name="EX_MENSAJE">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES7060" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
           </xsd:all>
         </xsd:complexType>
       </xsd:element>
+      <xsd:complexType name="ZMPES7060">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="MENSAJE">
+            <xsd:annotation>
+              <xsd:documentation>Comment</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="50" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="rfc.Z_MPMF_MOAOP_CONTROL_CARGA.Input">

@@ -22,7 +22,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerTablaSap(string tabla);
         List<TablaGeneralDto> ObtenerTablaGeneral(string tabla);
         List<CentroDireccionDto> ObtenerCentrosDireccion();
-        ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, List<int> estados = null);
+        ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, int? usuarioId, List<int> estados = null);
         string BorrarSolp(int idSolp);
         SolpDto TraerSolpId(int idSolp);
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
@@ -56,13 +56,24 @@ namespace SustitucionMOAUtils.Interfaces
         SolpCompraDto ObtenerSolpCompras(int id);
 
         RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos);
-        List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? usuarioId);
+        List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario);
         Resultado GuardarAdjuntosPeticionDeOferta(int idPeticion, HttpFileCollectionBase files, UsuarioDto usuarioDto);
-        string DescargarLegajo(int idPeticion, string path);
+        string DescargarLegajo(int idPeticion, string path,int? idPeticionDeOfertaUsuario);
         RespuestaGuardarSOLP GrabarCircular(CircularDto circularDto, HttpFileCollectionBase adjuntos);
         PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId);
         RespuestaGuardarSOLP GrabarProveedoresEnPeticionDeOferta(List<int> usuariosId, int peticionId);
-        RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(int AdjudicacionId);
-        ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp);
+        ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp, string username);
+        PeticionDeOfertaDto ListarOfertasComprador(int PeticionOferta_Id);
+
+        string DescargarAdjuntosCotizacion(int idCotizacion, string pathBase);
+        RespuestaGuardarSOLP GrabarRevisionTecnica(List<PeticionDeOfertaUsarioDto> revision, int usuarioId);
+        PeticionDeOfertaDto TraerCotizacion(int peticionId);
+
+        RespuestaGuardarSOLP GrabarCotizacion(GuardarCotizacion cotizacionDto, HttpFileCollectionBase adjuntos, bool esFinalizado, int usuarioActualId);
+
+        GuardarCotizacion ObtenerPrecioTotalPosicionProveedor(GuardarCotizacion cotizacionDto);
+
+        RespuestaCrearOrdenDeCompra GrabarAdjudicacion(AdjudicacionDto adjudicacionDto, int usuarioActualId);
+
     }
 }

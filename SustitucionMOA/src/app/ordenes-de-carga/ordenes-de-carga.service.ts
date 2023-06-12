@@ -7,6 +7,11 @@ import { timeoutWith } from 'rxjs/operators';
 import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
 import { ObtenerContratosDisponiblesResponse } from '../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { ApiResponse } from '../common/models/response';
+import { ValidarSisaCorredorClienteResponse } from '../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse';
+import { ValidarCuitExisteScatoResponse } from '../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse copy';
+import { Planta } from '../common/models/ordenes-de-carga/planta';
+import { Domicilio } from '../common/models/ordenes-de-carga/domicilio';
+import { ValidarIntermediarioFleteResponse } from '../common/models/ordenes-de-carga/ValidarIntermediarioFleteResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -349,5 +354,102 @@ export class OrdenesDeCargaService extends BaseService {
         return this.http
             .get<ObtenerContratosDisponiblesResponse>('/api/OrdenDeCarga/ObtenerContratosDisponibles', { params: params, headers: this.headers })
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
+    public validarExisteCuitScato(cuit: string): Observable<ApiResponse<ValidarCuitExisteScatoResponse>> {
+        let params: HttpParams = new HttpParams();
+        params = params.append("cuit", cuit);
+
+        return this.http
+            .get
+            <ApiResponse<ValidarCuitExisteScatoResponse>>
+            ('/api/OrdenDeCarga/ValidarCuitExisteScato', { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
+    public validarSisaCuit(cuit: string, campo: string): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append("cuit", cuit)
+            .append("campo", campo)
+
+        return this.http
+            .get<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/ValidarSisaCuit',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
+    public validarSisaCorredorCliente(corredorCodigo: string, clienteCodigo: string): Observable<ApiResponse<ValidarSisaCorredorClienteResponse>> {
+        let params: HttpParams = new HttpParams()
+            .append("corredorCodigo", corredorCodigo)
+            .append("clienteCodigo", clienteCodigo);
+
+        return this.http
+            .get<ApiResponse<ValidarSisaCorredorClienteResponse>>(
+                '/api/OrdenDeCarga/ValidarSisaCorredorCliente',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
+    public enviarMailGestionarAltaCuit(cuit: string, razonSocial: string, esIntermediarioFlete: boolean): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append("cuit", cuit)
+            .append("razonSocial", razonSocial)
+            .append("esIntermediarioFlete", esIntermediarioFlete.toString());
+
+        return this.http
+            .get<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/GestionarAltaCuit',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
+    public obtenerPlantasDestino(destinoCuit: string): Observable<ApiResponse<Planta[]>> {
+        let params: HttpParams = new HttpParams()
+            .append("destinoCuit", destinoCuit);
+
+        return this.http
+            .get<ApiResponse<Planta[]>>(
+                '/api/OrdenDeCarga/ObtenerPlantasDestino',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    public obtenerDomiciliosDestino(destinoCuit: string): Observable<ApiResponse<Domicilio[]>> {
+        let params: HttpParams = new HttpParams()
+            .append("destinoCuit", destinoCuit);
+
+        return this.http
+            .get<ApiResponse<Domicilio[]>>(
+                '/api/OrdenDeCarga/ObtenerDomiciliosDestino',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+    public validarCuitRuca(cuit: string): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append("cuit", cuit);
+
+        return this.http
+            .get<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/ValidarCuitRuca',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    public validarIntermediarioFlete(cuit: string): Observable<ApiResponse<ValidarIntermediarioFleteResponse>> {
+        let params: HttpParams = new HttpParams()
+            .append("cuit", cuit);
+
+        return this.http
+            .get<ApiResponse<ValidarIntermediarioFleteResponse>>(
+                '/api/OrdenDeCarga/ValidarIntermediarioFlete',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+    public validarCuilChofer(cuil: string): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append("cuilChofer", cuil);
+
+        return this.http
+            .get<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/ValidarCuilChofer',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+
     }
 }

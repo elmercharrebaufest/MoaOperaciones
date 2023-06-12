@@ -18,6 +18,7 @@ export class OrdenDeCarga {
     Cantidad: number;
     Observacion: string;
     Estado: EstadoOrdenDeCarga;
+    CodigoCorredor: string;
     ContratoSAP: string;
     PedidoSAP: string;
     Corredor: string;
@@ -37,9 +38,22 @@ export class OrdenDeCarga {
     OrdenDeCargaCambiosHistorial: OrdenDeCargaCambiosHistorial[];
     FechaVencimientoAmpliada: boolean;
     EdicionRechazada: boolean;
+    ValidaSisaRuca: boolean;
+    CUITDestinatario?: string;
+    CUITDestino?: string;
+    RazonSocialDestinatario?: string;
+    RazonSocialDestino?: string;
+    Reventa: boolean;
+    CUITIntermediarioFlete?: string;
+    RazonSocialIntermediarioFlete?: string;
+    PlantaCodigo: string;
+    DomicilioTipo: string;
+    DomicilioOrden: number;
+    DomicilioDescr: string;
     constructor() {
     }
-
-
 }
+export type CuitValidaExistencia = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino">;
+export type CuitValidaSISA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" | "CUITCorredor" | "CUITCliente">;
+export type CuitValidaRUCA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" |  "CUITCliente">;
 

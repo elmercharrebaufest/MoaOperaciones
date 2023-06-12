@@ -126,7 +126,19 @@
 							match="/configuration/appSettings/add[@key='EmailToMesaENTSL']
                            /@value" />
 	</parameter>
+	
+	<parameter name="EmailToGestionAltaCuit Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToGestionAltaCuit']
+                           /@value" />
+	</parameter>
 
+	<parameter name="CopiaEmailToGestionAltaCuit Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='CopiaEmailToGestionAltaCuit']
+                           /@value" />
+	</parameter>
+	
 	<parameter name="EmailToMesaVentaFas Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailToMesaVentaFas']
@@ -167,6 +179,24 @@
 	<parameter name="PasswordSapEnc Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='PasswordSapEnc']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ScatoRepositorioBaseAddress Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ScatoRepositorioBaseAddress']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ScatoRepositorioUsername Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ScatoRepositorioUsername']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ScatoRepositorioPassword Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ScatoRepositorioPassword']
                            /@value" />
 	</parameter>
 
@@ -717,6 +747,13 @@
 								match="/configuration/system.serviceModel/client
                         /endpoint[@name='SI_MPMF_MOAOP_MOD_ORDEN_CARGA']
                         /@address" />
+	</parameter>
+
+	<parameter name="SI_MMRFC_OBTENER_TIPO_CAMBIO Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                    /endpoint[@name='SI_MMRFC_OBTENER_TIPO_CAMBIO']
+                    /@address" />
 	</parameter>
 	
 </parameters>

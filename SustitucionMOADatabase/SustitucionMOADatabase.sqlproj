@@ -197,6 +197,7 @@
     <None Include="scripts\PostDeployment\Estados.sql" />
     <Build Include="DBO\Tables\Adjudicacion.sql" />
     <Build Include="DBO\Tables\AdjudicacionPosicion.sql" />
+    <Build Include="DBO\Tables\ProveedorAuditoria.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

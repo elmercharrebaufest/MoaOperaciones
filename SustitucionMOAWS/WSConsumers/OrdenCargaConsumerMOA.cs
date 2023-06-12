@@ -13,6 +13,9 @@ using SustitucionMOAWS.OrdenCargaControlSAP;
 using SustitucionMOAWS.OrdenCargaCrearSAP;
 using SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP;
 using SustitucionMOAWS.OrdenCargaVisualizarCliente;
+using SustitucionMOAWS.ResponseHandler.OrdenCarga;
+using SustitucionMOAWS.Util;
+using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
 
@@ -52,17 +55,27 @@ namespace SustitucionMOAWS.WSConsumers
         */
 
 
-        public string ControlCargaRequest(string cliente, string contrato, string corredor, string cuit, string material, string pedido, string soloSisa)
+        public ControlCargaResponseHandler ControlarCarga(ControlCargaRequest datosCarga)
         {
             var service = new SI_MPMF_MOAOP_CONTROL_CARGAClient();
 
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Request: {new { cliente, contrato, corredor, cuit, material, pedido }}");
+            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Request: {datosCarga.ToJson()}");
 
-            var result = service.SI_MPMF_MOAOP_CONTROL_CARGA(cliente, contrato, corredor, cuit, material, pedido, soloSisa).Trim();
-            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {new { result, cliente, contrato, cuit }}");
-            return result;
+            var result = service.SI_MPMF_MOAOP_CONTROL_CARGA(
+                IM_CLIENTE: datosCarga.Cliente,
+                IM_CONTRATO: datosCarga.Contrato,
+                IM_CORREDOR: datosCarga.Corredor,
+                IM_CUIT: datosCarga.Cuit,
+                IM_CUITDESTF: datosCarga.CuitDestino,
+                IM_CUITDESTINAT: datosCarga.CuitDestinatario,
+                IM_MATERIAL: datosCarga.Material,
+                IM_PEDIDO: datosCarga.Pedido,
+                IM_SOLO_SISA: datosCarga.SoloSisa ? "X" : "");
+
+            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {result.ToJson()}");
+            return new ControlCargaResponseHandler(result);
         }
         /*
         * RFC Z_MPMF_MOAOP_CREAR_ORDEN_CARGA con:
@@ -90,16 +103,38 @@ namespace SustitucionMOAWS.WSConsumers
 
         */
 
-        public string CrearOrdenRequest(string cliente, string contrato, string corredor, decimal kilos, string material, string pedidoInput, string usuarioSAP, string forzarCreacion, out string pedidoOutput)
+        public OrdenCargaCrearOrden CrearOrden(CrearOrdenRequest req, out string pedidoOutput, out string resultOutput)
         {
             var service = new SI_MPMF_MOAOP_CREAR_ORDEN_CARGAClient();
+            var indrvta = req.Reventa ? "X" : "";
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {new { cliente, contrato, corredor, kilos, material, pedidoInput, usuarioSAP, forzarCreacion }}");
-            var result = service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(cliente, contrato, corredor, kilos, material, pedidoInput, usuarioSAP, forzarCreacion, out pedidoOutput).Trim();
-            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Response: {new { result, pedidoOutput, cliente, contrato, pedidoInput }}");
+            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {req.ToJson()}");
 
-            return result;
+            var result = service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(
+                IM_CLIENTE: req.Cliente,
+                IM_CODPLANTA: req.PlantaCodigo,
+                IM_CONTRATO: req.Contrato,
+                IM_CORREDOR: req.Corredor,
+                IM_CUITDESTF: req.CuitDestino,
+                IM_CUITDESTINAT: req.CuitDestinatario,
+                IM_DOMORDEN: req.DomicilioDescr,
+                IM_INDRVTA: indrvta,//IM_INDRVTA
+                IM_KILOS: req.Kilos,
+                IM_MATERIAL: req.Material,
+                IM_NAMEDESTF: req.RazonSocialDestino,
+                IM_NAMEDESTINAT: req.RazonSocialDestinatario,
+                IM_ORDENDOM: req.DomicilioOrden.ToString(),
+                IM_PEDIDO: req.PedidoInput,
+                IM_TIPODOM: req.DomicilioTipo,
+                IM_USUARIO: req.UsuarioSAP,
+                IM_VALIDA_KG: req.ValidaKg ? "X" : "",
+                EX_PEDIDO: out pedidoOutput).Trim();
+
+            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Response: {new { result, pedidoOutput }}");
+            resultOutput = result;
+
+            return ResponseConverter.GetOrdenCargaCrearOrden(result);
         }
 
 
@@ -128,37 +163,42 @@ namespace SustitucionMOAWS.WSConsumers
         Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE 	OE-02	'Entrega Creada - Error al insertar'
 
         */
-        public string OrdenCargaEntregadaRequest(string documento, decimal kilos, string nombreConductor,
-                                                 string patenteAcoplado, string patenteChasis, string pedido,
-                                                 string tipoDocumento, string transportista, out string mensaje)
+        public OrdenCargaEntreResponseHandler CrearEntrega(CrearEntregaRequest entregaReq, bool pedidoAnticipado = false)
         {
             var service = new SI_MPMF_MOAOP_ORDEN_CARGA_ENTREClient();
-
+            var cuit_tr = entregaReq.TransportistaReal ?? entregaReq.Transportista;
+            var cuit_int_flete = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.Transportista : entregaReq.TransportistaReal;
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {new { documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista }}");
+            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {entregaReq.ToJson()} , pedidoAnticipado: {pedidoAnticipado}");
+            if (!pedidoAnticipado)
+                entregaReq = LimpiarRequestSinPedidoAnticipado(entregaReq);
 
             var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(
-                "", //IM_CUITDESTF
-                documento,
-                "", //IM_DOMORDEN
-                "",//IM_INDRVTA
-                kilos,
-                "",//IM_NAMEDESTF
-                nombreConductor,
-                "",//IM_ORDENDOM
-                patenteAcoplado,
-                patenteChasis,
-                pedido,
-                tipoDocumento,
-                "",//IM_TIPODOM 
-                transportista,
-                "CACERESN",
-                "", //IM_ZZCODPLANTA
-                out mensaje).Trim();
-            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Response: {new { entrega, mensaje, documento }}");
+                IM_CUITDESTF: entregaReq.CuitDestino,
+                IM_CUITDESTINAT: entregaReq.CuitDestinatario,
+                IM_DOCUMENTO: entregaReq.Documento,
+                IM_DOMORDEN: entregaReq.DomicilioDescr,
+                IM_INDRVTA: entregaReq.Reventa ? "X" : "",
+                IM_KILOS: entregaReq.Kilos,
+                IM_NAMEDESTF: entregaReq.RazonSocialDestino,
+                IM_NAMEDESTINAT: entregaReq.RazonSocialDestinatario,
+                IM_NOMBRECONDUCTOR: entregaReq.NombreConductor,
+                IM_ORDENDOM: entregaReq.DomicilioOrden == null ? "" : entregaReq.DomicilioOrden.ToString(),
+                IM_PATENTEACOPLADO: entregaReq.PatenteAcoplado,
+                IM_PATENTECHASIS: entregaReq.PatenteChasis,
+                IM_PEDIDO: entregaReq.Pedido,
+                IM_TIPODOCUMENTO: entregaReq.TipoDocumento,
+                IM_TIPODOM: entregaReq.DomicilioTipo,
+                IM_TRANSPORTISTA: cuit_tr,
+                IM_TRANSPORTISTA_REAL: cuit_int_flete,
+                IM_USUARIO: "CACERESN",
+                IM_ZZCODPLANTA: entregaReq.PlantaCodigo,
+                EX_MENSAJE: out string mensaje).Trim();
 
-            return entrega;
+            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Response: {new { entrega, mensaje }}");
+
+            return new OrdenCargaEntreResponseHandler(mensaje, entrega);
         }
 
         /* 
@@ -341,22 +381,18 @@ namespace SustitucionMOAWS.WSConsumers
             return resultado;
         }
 
-        public ResultadoGenerico AnularEntregaOrdenCarga(string nroEntrega)
+        public ModEntregaResponseHandler AnularEntregaOrdenCarga(string nroEntrega)
         {
             var service = new SI_MPMF_MOAOP_MOD_ENTREGAClient();
-
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {nroEntrega}");
 
             var result = service.SI_MPMF_MOAOP_MOD_ENTREGA("", "X", "", "", "", nroEntrega, "");
+
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result, nroEntrega }}");
 
-            var resultado = new ResultadoGenerico();
-            if (result != "Se actualizaron los datos correctamente")
-                resultado.Error("error", result);
-
-            return resultado;
+            return new ModEntregaResponseHandler(result);
         }
         public ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega)
         {
@@ -403,6 +439,20 @@ namespace SustitucionMOAWS.WSConsumers
                 FECHA_OP = SAPFormatter.PrepararFecha(desde),
                 FECHA_OP_HASTA = SAPFormatter.PrepararFecha(hasta)
             }}.ToArray();
+        }
+        private CrearEntregaRequest LimpiarRequestSinPedidoAnticipado(CrearEntregaRequest entregaReq)
+        {
+            entregaReq.Reventa = false;
+            entregaReq.CuitDestino = "";
+            entregaReq.CuitDestinatario = "";
+            entregaReq.RazonSocialDestinatario = "";
+            entregaReq.RazonSocialDestino = "";
+            entregaReq.DomicilioDescr = "";
+            entregaReq.DomicilioOrden = null;
+            entregaReq.DomicilioTipo = "";
+            entregaReq.PlantaCodigo = "";
+
+            return entregaReq;
         }
     }
 }

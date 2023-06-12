@@ -61,6 +61,10 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     nroCotizacion: any;
     displayOkCircular: boolean;
     displayProveedor: boolean;
+    usuarioProveedor: boolean = false;
+    ordenDeCompra: any;
+    displayOrdenDeCompra: boolean;
+
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -108,7 +112,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-
+                        console.log(result.data, "Compras solp")
                     }
                     this.spinnerComponent.hideIt()
                 },
@@ -316,7 +320,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     descargarLegajo() {
         let idPeticion = this.legajo[0].PeticionDeOfertaId;
         this.blockUI.start('Generando...')
-        this.service.descargarLegajo(idPeticion)
+        this.service.descargarLegajo(idPeticion,null)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {
@@ -358,7 +362,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     adjuntarArchivoLegajo(files) {
-        console.log("adjuntar", files);
         let peticionId = this.legajo[0].PeticionDeOfertaId;
         //todo adjuntar los archivos
 
@@ -378,15 +381,19 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
-            )
+            )        
     }
 
     publicarCotizacion(Id: string) {
-        this.goToSeccionParam('/compras/cotizacion-formulario', Id);
+        this.goToSeccionParam('/compras/peticion-de-oferta-formulario', Id);
     }
 
     onRowDblClick(a, b) {
 
+    }
+
+    verOfertas(Id : string) {
+        this.goToSeccionParam('/compras/ver-ofertas', Id);
     }
     
     obtenerPeticionDeOferta(Id) {
@@ -437,6 +444,15 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     cerrarModalProveedor() {
         this.displayProveedor = false;
+    }
+
+    cerrarOrdenDeCompra() {
+        this.displayOrdenDeCompra = false;
+    }
+
+    verDetalleOrdenDeCompra(orden: any) {
+        this.ordenDeCompra = orden;
+        this.displayOrdenDeCompra = true;
     }
 
 }

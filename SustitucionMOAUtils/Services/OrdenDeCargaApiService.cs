@@ -52,17 +52,19 @@ namespace SustitucionMOAUtils.Services
             return new ResultadoGenerico();
         }
 
-        public List<OrdendesDeCargaApiDto> ObtenerOrdenes()
+        public List<OrdendesDeCargaApiDto> ObtenerOrdenes(string patenteChasis)
         {
             var ordenesFas = _repositorio.Listar<OrdenDeCarga>(x =>
             x.Estado != EstadoOrdenDeCarga.SinEnviarASAP &&
             x.Estado != EstadoOrdenDeCarga.Anulada &&
             x.Estado != EstadoOrdenDeCarga.AnuladaPorVencimiento &&
-            x.Estado != EstadoOrdenDeCarga.Entregada
+            x.Estado != EstadoOrdenDeCarga.Entregada && 
+            (x.ChasisAcoplado == patenteChasis || patenteChasis == "" || patenteChasis == null)
             ).ToList();
             var ordenesFason = _repositorio.Listar<OrdenDeCargaFason>(x =>
             x.Estado != EstadoOrdenDeCargaFason.Entregada &&
-            x.Estado != EstadoOrdenDeCargaFason.SinEstado
+            x.Estado != EstadoOrdenDeCargaFason.SinEstado &&
+            (x.PatenteChasis == patenteChasis || patenteChasis == "" || patenteChasis == null)
             ).ToList();
             List<OrdendesDeCargaApiDto> listaOrdenes = new List<OrdendesDeCargaApiDto>();
 

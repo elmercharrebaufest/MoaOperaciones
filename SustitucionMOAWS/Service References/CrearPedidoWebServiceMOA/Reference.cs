@@ -8,9 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using SustitucionMOAWS.CrearSolpWebServiceMOA;
-
 namespace SustitucionMOAWS.CrearPedidoWebServiceMOA {
     
     
@@ -5634,11 +5631,6 @@ namespace SustitucionMOAWS.CrearPedidoWebServiceMOA {
         
         public System.Threading.Tasks.Task<SustitucionMOAWS.CrearPedidoWebServiceMOA.SI_MMRFC_CREAR_PEDIDOResponse> SI_MMRFC_CREAR_PEDIDOAsync(SustitucionMOAWS.CrearPedidoWebServiceMOA.SI_MMRFC_CREAR_PEDIDORequest request) {
             return base.Channel.SI_MMRFC_CREAR_PEDIDOAsync(request);
-        }
-
-        internal object SI_MMRFC_CREAR_SOLPED(ZMPES5690[] zMPES5690s, ZMPES5680[] zMPES5680s, ZMPES5750[] zMPES5750s, BAPIMEREQHEADTEXT[] bAPIMEREQHEADTEXTs, ZMPES5700[] zMPES5700s, BAPIMEREQITEMTEXT[] bAPIMEREQITEMTEXTs, ZMPES5660[] zMPES5660s, string iM_PR_TYPE, ZMPES5790[] zMPES5790s, BAPI_SRV_ACC_DATAX[] bAPI_SRV_ACC_DATAXes, ZMPES5780[] zMPES5780s, ZMPES5720[] zMPES5720s, out string eX_PREQ_NO, out BAPIRETURN[] eX_RETURN)
-        {
-            throw new NotImplementedException();
         }
     }
 }
