@@ -8,5 +8,6 @@ namespace SustitucionMOAWS.Interfaces
         RespuestaListado<Domicilio> ObtenerDomicilios(string cuitDestino);
         ObtenerProveedorPorCuilResponse ObtenerProveedorPorCuil(string cuil);
         Respuesta<Chofer> ObtenerChoferPorCuil(string cuilChofer);
+        Respuesta<Chofer> ObtenerTransportePorCuit(string cuitTransporte);
     }
 }

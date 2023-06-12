@@ -20,6 +20,8 @@ using System.Linq.Expressions;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using SustitucionMOAWS.Enum.OrdenCargaConsumer;
+using SustitucionMOAModel.Util;
+using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 
 namespace SustitucionMOATest.Services
 {
@@ -36,6 +38,16 @@ namespace SustitucionMOATest.Services
         private Mock<IScatoConsumer> mIScatoConsumer;
 
         private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaChofer;
+        private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaTransporte;
+
+        private Proveedor _proveedorUsuario;
+        private Usuario _usuario;
+        private string _mailSesionUsuario;
+        private List<Rol> _rolesUsuario;
+
+        private Rol _rolAdministracion;
+        private PermisoPorRol _permisoVerOrdenesComerciales;
+
 
         [SetUp]
         public void SetUp()
@@ -45,6 +57,7 @@ namespace SustitucionMOATest.Services
             feriadoService = new Mock<IFeriadoService>();
             mIScatoRepositorioClient = new Mock<IScatoRepositorioClient>();
             mIScatoConsumer = new Mock<IScatoConsumer>();
+            feriadoService.Setup(fs => fs.ObtenerFeriados()).Returns(new List<DateTime>());
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
                 mIScatoRepositorioClient.Object, mIScatoConsumer.Object);
@@ -71,12 +84,64 @@ namespace SustitucionMOATest.Services
                 NumeroPedido = "",
                 Cliente = new Proveedor
                 {
-                    RazonSocial = "ClientePrueba"
+                    RazonSocial = "ClientePrueba",
+                    CodigoProveedor = "498097000"
                 },
                 NumeroEntrega = ""
 
             };
             _respuestaChofer = new ScatoRepo.Respuesta<ScatoRepo.Chofer>
+            {
+                Data = new ScatoRepo.Chofer { },
+                Messages = new ScatoRepo.MessageItem[] { },
+                IsValid = true
+            };
+
+            _mailSesionUsuario = "usuario@test.com";
+
+            _proveedorUsuario = new Proveedor
+            {
+                Id = 1,
+                EstadoAprobacion = EstadoAprobacion.Aprobado,
+                Observaciones = "Test",
+                RazonSocial = "RS",
+                Mail = _mailSesionUsuario,
+                CUIT = "233333333333",
+                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
+            };
+
+            _permisoVerOrdenesComerciales = new PermisoPorRol()
+            {
+                Id = 95,
+                Permiso = "VER ORDENES DE CARGA PARA COMERCIALES"
+
+            };
+
+            _rolAdministracion = new Rol
+            {
+                Id = 1,
+                Nombre = "Administracion",
+                PermisosAsociados = new List<PermisoPorRol>()
+                {
+                   _permisoVerOrdenesComerciales
+                }
+
+            };
+            _rolesUsuario = new List<Rol> { _rolAdministracion };
+
+            _usuario = new Usuario
+            {
+                Id = 1,
+                Mail = _mailSesionUsuario,
+                CUITRegistro = "233333333333",
+                Proveedores = new List<Proveedor>()
+                {
+                    _proveedorUsuario
+                },
+
+                Roles = _rolesUsuario
+            };
+            _respuestaTransporte = new ScatoRepo.Respuesta<ScatoRepo.Chofer>
             {
                 Data = new ScatoRepo.Chofer { },
                 Messages = new ScatoRepo.MessageItem[] { },
@@ -88,101 +153,12 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void AgregarTest()
         {
-            string mailUsuario = "usuario@test.com";
 
-            var proveedor = new Proveedor
-            {
-                Id = 1,
-                EstadoAprobacion = EstadoAprobacion.Aprobado,
-                Observaciones = "Test",
-                RazonSocial = "RS",
-                Mail = mailUsuario,
-                CUIT = "233333333333",
-                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
-            };
+            SetupAgregarTests();
 
-            var permisos = new PermisoPorRol()
-            {
-                Id = 95,
-                Permiso = "VER ORDENES DE CARGA PARA COMERCIALES"
+            SetupAgregarSuccess();
 
-            };
-
-            var roles = new Rol
-            {
-                Id = 1,
-                Nombre = "Administracion",
-                PermisosAsociados = new List<PermisoPorRol>()
-                {
-                   permisos
-                }
-
-            };
-            var usuario = new Usuario
-            {
-                Id = 1,
-                Mail = mailUsuario,
-                CUITRegistro = "233333333333",
-                Proveedores = new List<Proveedor>()
-                {
-                    proveedor
-                },
-
-                Roles = new List<Rol>()
-                {
-                    roles
-                }
-
-
-            };
-
-            repositorioMock
-                .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
-                .Returns(usuario);
-
-            repositorioMock
-                 .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
-                 .Returns(proveedor);
-
-            repositorioMock
-                .Setup(x => x.Obtener<Rol>(It.IsAny<int>()))
-                .Returns(roles);
-
-            repositorioMock
-               .Setup(x => x.Obtener<PermisoPorRol>(It.IsAny<int>()))
-               .Returns(permisos);
-
-            repositorioMock
-               .Setup(x => x.Obtener<Material>(It.IsAny<int>()))
-               .Returns(ordenDeCarga.Producto);
-
-            repositorioMock
-               .Setup(y => y.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>()))
-               .Returns(proveedor);
-
-            consumerOrdenCargaMOA
-                .Setup(x => x.ControlarCarga(It.IsAny<ControlCargaRequest>()))
-                .Returns(new SustitucionMOAWS.ResponseHandler.OrdenCarga.ControlCargaResponseHandler(
-                    new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060[]
-                    {
-                        new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060 { MENSAJE = "CC-00" }
-                    }));
-
-            repositorioMock
-                .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
-                .Returns(ordenDeCarga);
-
-            consumerOrdenCargaMOA
-               .Setup(x => x.OrdenCargaControlEstadoRequest(It.IsAny<string>(),
-               It.IsAny<string>(),
-               It.IsAny<string>()))
-               .Returns("CE-07");
-
-
-
-            ConfigurationManager.AppSettings["CantidadOrdenDeCarga"] = "30000";
-
-            var result = target.Agregar(ordenDeCarga, mailUsuario);
+            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario);
 
             var expected = new Resultado { IdEntidad = 1, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
 
@@ -1365,6 +1341,7 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ValidarCuilChoferDigito_CuilNoExiste_ReturnsTrue()
         {
+            _respuestaChofer.IsValid = false;
             _respuestaChofer.Messages = new ScatoRepo.MessageItem[]
             {
                 new ScatoRepo.MessageItem
@@ -1384,6 +1361,7 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ValidarCuilChoferDigito_CuilDigitoVerificadorNoValido_ReturnsFalse()
         {
+            _respuestaChofer.IsValid = false;
             _respuestaChofer.Messages = new ScatoRepo.MessageItem[]
             {
                 new ScatoRepo.MessageItem
@@ -1400,7 +1378,85 @@ namespace SustitucionMOATest.Services
             Assert.That(result, Is.False);
 
         }
+        [Test]
+        public void ValidarCuitTransporteDigito_CuitDigitoVerificadorNoValido_ReturnsFalse()
+        {
+            _respuestaTransporte.Messages = new ScatoRepo.MessageItem[]
+            {
+                new ScatoRepo.MessageItem
+                {
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido
+                }
+            };
+            mIScatoRepositorioClient.Setup(src => src.ObtenerTransportePorCuit(It.IsAny<string>())).Returns(
+                _respuestaTransporte
+                );
+            var result = target.ValidarCuitTransporteDigito("11111111111");
 
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public void Agregar_UsuarioNoPuedeModificarReventa_ThrowValidationCustomException()
+        {
+            ordenDeCarga.Reventa = true;
+            SetupAgregarTests();
+
+            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario);
+
+            Assert.That(result.error, Is.EqualTo("Usuario sin permiso para modificar campo reventa"));
+        }
+
+        [Test]
+        public void Agregar_UsuarioPuedeModificarReventa_CreaNormalmente()
+        {
+            ordenDeCarga.Reventa = true;
+            var permisoModificarReventa = new PermisoPorRol { Id = 123, Permiso = Permisos.FasModificarCampoReventa };
+            var rolRevendedor = new Rol { Id = 123, Nombre = "Revendedor", PermisosAsociados = new List<PermisoPorRol> { permisoModificarReventa } };
+
+            _usuario.Roles.Add(rolRevendedor);
+
+            SetupAgregarTests();
+            SetupAgregarSuccess();
+
+            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario);
+
+            Assert.That(result.Mensaje, Is.EqualTo(SuccessMsg.OrdenDeCargaAgregada));
+
+        }
+        [Test]
+        public void ValidarCuitTransporteDigito_CuitTransporteNoExiste_ReturnsTrue()
+        {
+            _respuestaTransporte.Messages = new ScatoRepo.MessageItem[]
+            {
+                new ScatoRepo.MessageItem
+                {
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.ChoferNoEncontrado
+                }
+            };
+            mIScatoRepositorioClient.Setup(src => src.ObtenerTransportePorCuit(It.IsAny<string>())).Returns(
+                _respuestaTransporte
+                );
+
+            var result = target.ValidarCuitTransporteDigito("11111111111");
+
+            Assert.That(result, Is.True);
+
+        }
+        [Test]
+        public void ValidarCuitTransporteDigito_CuitTransporteExiste_ReturnsTrue()
+        {
+            _respuestaTransporte.IsValid = true;
+
+            mIScatoRepositorioClient.Setup(src => src.ObtenerTransportePorCuit(It.IsAny<string>())).Returns(
+                _respuestaTransporte
+                );
+
+            var result = target.ValidarCuitTransporteDigito("11111111111");
+
+            Assert.That(result, Is.True);
+
+        }
         private void AddProvider(int id, EstadoAprobacion estadoAprobacion, string observaciones, string razonSocial, string mail, string cUIT, TipoUsuario tipoProveedor)
         {
             var proveedor = new Proveedor
@@ -1747,6 +1803,68 @@ namespace SustitucionMOATest.Services
         {
             Process[] proc = Process.GetProcessesByName("MailHog_windows_amd64");
             proc[0].Kill();
+        }
+        private void SetupAgregarTests()
+        {
+
+            repositorioMock
+                .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                .Returns(_usuario);
+
+            repositorioMock
+                 .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
+                 .Returns(_proveedorUsuario);
+
+            repositorioMock
+                .Setup(x => x.Obtener<Rol>(It.IsAny<int>()))
+                .Returns(_rolAdministracion);
+
+            repositorioMock
+               .Setup(x => x.Obtener<PermisoPorRol>(It.IsAny<int>()))
+               .Returns(_permisoVerOrdenesComerciales);
+
+            repositorioMock
+               .Setup(x => x.Obtener<Material>(It.IsAny<int>()))
+               .Returns(ordenDeCarga.Producto);
+
+            repositorioMock
+               .Setup(y => y.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>()))
+               .Returns(_proveedorUsuario);
+            mIScatoRepositorioClient.Setup(src => src.ObtenerChoferPorCuil(It.IsAny<string>())).Returns(
+               _respuestaChofer
+               );
+        }
+        private void SetupAgregarSuccess()
+        {
+
+            consumerOrdenCargaMOA
+                .Setup(x => x.ControlarCarga(It.IsAny<ControlCargaRequest>()))
+                .Returns(new SustitucionMOAWS.ResponseHandler.OrdenCarga.ControlCargaResponseHandler(
+                    new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060[]
+                    {
+                        new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060 { MENSAJE = "CC-00" }
+                    }));
+
+            repositorioMock
+                .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+                .Returns(ordenDeCarga);
+
+            consumerOrdenCargaMOA
+               .Setup(x => x.OrdenCargaVisualizarClienteExecute(It.IsAny<OrdenCargaVisualizarClienteWSMOARequest>()))
+               .Returns(new OrdenCargaVisualizarClienteWSMOAResponse
+               {
+                   Resultados = new List<Result> {
+               new Result { FechaHasta = DateTime.Now.AddDays(1).ToString()}
+               }
+               });
+
+            consumerOrdenCargaMOA
+               .Setup(x => x.OrdenCargaControlEstadoRequest(It.IsAny<string>(),
+               It.IsAny<string>(),
+               It.IsAny<string>()))
+               .Returns("CE-07");
+
+            ConfigurationManager.AppSettings["CantidadOrdenDeCarga"] = "30000";
         }
         [Test()]
         public void GenerarEntregaSAPOkTest()

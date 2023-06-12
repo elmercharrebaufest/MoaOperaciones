@@ -75,8 +75,13 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
-                var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
+                var esComercial = usuario.TienePermiso(Permisos.FasVerOrdenesComerciales);
+                var puedeModificarReventa = usuario.TienePermiso(Permisos.FasModificarCampoReventa);
+
+                if (!puedeModificarReventa && ordenDeCarga.Reventa)
+                    throw new ValidationCustomException("Usuario sin permiso para modificar campo reventa");
+
+                var puedeEnviarASAP = usuario.TienePermiso(Permisos.EnviarSAP);
                 LlenarOrdenDeCarga(ordenDeCarga, usuario, esComercial);
                 Log.Debug(this.GetType().Name, "Agregar", $" esComercial: {esComercial}");
                 Log.Debug(this.GetType().Name, "Agregar", $" puedeEnviarASAP: {puedeEnviarASAP}");
@@ -2802,9 +2807,29 @@ namespace SustitucionMOAUtils.Services
             }
             return (true, chofer);
         }
+        public (bool, ScatoRepo.Chofer) ValidarCuitTransporte(string cuitTransporte)
+        {
+            var transporteRes = scatoRepositorioClient.ObtenerTransportePorCuit(DataFormatter.CuitConGuion(cuitTransporte));
+            var transporte = transporteRes.Data;
+            if (!transporteRes.IsValid)
+            {
+                Log.Info("Error al obtener transporte de Scato " + cuitTransporte);
+                foreach (var err in transporteRes.Messages)
+                {
+                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
+                }
+
+                return (transporteRes.Messages.All(msg => msg.MessageCode != ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido), transporte);
+            }
+            return (true, transporte);
+        }
         public bool ValidarCuilChoferDigito(string cuilChofer)
         {
             return ValidarCuilChofer(cuilChofer).Item1;
+        }
+        public bool ValidarCuitTransporteDigito(string cuitTransporte)
+        {
+            return ValidarCuitTransporte(cuitTransporte).Item1;
         }
         private string ObtenerMaterialValidaSisa()
         {
