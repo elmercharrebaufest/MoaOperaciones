@@ -168,7 +168,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             return false;
         }
         /*VER ESTA VALIDACION, ACA VALIDA COMO SI FUERA UN CUIT PERO EN EL FRONT DICE QUE PONGA EL DNI/CUIL*/
-        if (!this.ordenDeCarga.CUITChofer || this.ordenDeCarga.CUITChofer.toString().trim().length != 11) {
+        if (!this.ordenDeCarga.CUITChofer || this.ordenDeCarga.CUITChofer.toString().trim().length != 11 || this.mensajesOrdenDeCarga.CUITChofer || this.validando.CUITChofer) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
         }
@@ -184,7 +184,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
             return false;
         }
-        if (!this.ordenDeCarga.CUITTransporte || this.ordenDeCarga.CUITTransporte.toString().trim().length != 11) {
+        if (!this.ordenDeCarga.CUITTransporte || this.ordenDeCarga.CUITTransporte.toString().trim().length != 11 || this.mensajesOrdenDeCarga.CUITTransporte || this.validando.CUITTransporte) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
             return false;
         }
@@ -1092,6 +1092,22 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             if (!data && data != null) {
                 this.mensajesOrdenDeCarga[campo] = "CUIL Chofer inválido – Revisar valor ingresado";
                 this.floatMsgService.setInfoMsg("CUIL Chofer inválido – Revisar valor ingresado");
+            }
+        });
+    }
+    validarCuitTransporte() {
+        const campo = "CUITTransporte";
+        const cuit = this.ordenDeCarga.CUITTransporte ? this.ordenDeCarga.CUITTransporte.toString() : "";
+        if (!this.revisarCUITFormatoValido(cuit))
+            return;
+        this.validando[campo] = true;
+        this.mensajesOrdenDeCarga[campo] = null;
+        this.service.validarCuitTransporte(cuit).subscribe(result => {
+            this.validando[campo] = false;
+            let data = this.manejarErroresApiResponse(result);
+            if (!data && data != null) {
+                this.mensajesOrdenDeCarga[campo] = "CUIT transporte inválido – Revisar valor ingresado";
+                this.floatMsgService.setInfoMsg("CUIT transporte inválido – Revisar valor ingresado");
             }
         });
     }
