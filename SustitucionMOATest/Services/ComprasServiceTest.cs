@@ -8,6 +8,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
@@ -38,20 +39,51 @@ namespace SustitucionMOATest.Services
         private Mock<ICrearSolpConsumerMOA> crearSolpConsumerMOAMock;
         private Mock<IModificarSolpConsumerMOA> modificarSolpConsumerMOAMock;
 
+        private Mock<IObtenerMaterialesSolpConsumerMOA> obtenerMaterialesSolpConsumerMOAMock;
+        private Mock<ICrearPedidoConsumerMOA> crearPedidoConsumerMOAMock;
+        private Mock<IObtenerFuenteAprovisionamientoConsumerMOA> obtenerFuenteAprovisionamientoConsumerMOAMock;
+        private Mock<IObtenerContratoSolpConsumerMOA> obtenerContratoSolpConsumerMOAMock;
+        private Mock<IVendedorService> vendedorServiceMock;
+        private Mock<IObtenerTipoCambioConsumerMOA> obtenerTipoCambioConsumerMOAMock;
+
+
         [SetUp]
-        //public void SetUp()
-        //{
-        //    repositorioMock = new Mock<IRepositorio>();
-        //    cecoConsumerMock = new Mock<IObtenerCecoSolpConsumerMOA>();
-        //    cuentasConsumerMock = new Mock<IObtenerCuentasSolpConsumerMOA>();
-        //    ordenesConsumerMock = new Mock<IObtenerOrdenSolpConsumerMOA>();
-        //    serviciosConsumerMock = new Mock<IObtenerServiciosSolpConsumerMOA>();
-        //    obtenerSolpConsumerMOAMock = new Mock<IObtenerSolpConsumerMOA>();
-        //    crearSolpConsumerMOAMock = new Mock<ICrearSolpConsumerMOA>();
-        //    modificarSolpConsumerMOAMock = new Mock<IModificarSolpConsumerMOA>();
+        public void SetUp()
+        {
+            repositorioMock = new Mock<IRepositorio>();
+            cecoConsumerMock = new Mock<IObtenerCecoSolpConsumerMOA>();
+            cuentasConsumerMock = new Mock<IObtenerCuentasSolpConsumerMOA>();
+            ordenesConsumerMock = new Mock<IObtenerOrdenSolpConsumerMOA>();
+            serviciosConsumerMock = new Mock<IObtenerServiciosSolpConsumerMOA>();
+            obtenerSolpConsumerMOAMock = new Mock<IObtenerSolpConsumerMOA>();
+            crearSolpConsumerMOAMock = new Mock<ICrearSolpConsumerMOA>();
+            modificarSolpConsumerMOAMock = new Mock<IModificarSolpConsumerMOA>();
+
+            obtenerMaterialesSolpConsumerMOAMock = new Mock<IObtenerMaterialesSolpConsumerMOA>();
+            crearPedidoConsumerMOAMock = new Mock<ICrearPedidoConsumerMOA>();
+            obtenerFuenteAprovisionamientoConsumerMOAMock = new Mock<IObtenerFuenteAprovisionamientoConsumerMOA>();
+            obtenerContratoSolpConsumerMOAMock = new Mock<IObtenerContratoSolpConsumerMOA>();
+            vendedorServiceMock = new Mock<IVendedorService>();
+            obtenerTipoCambioConsumerMOAMock = new Mock<IObtenerTipoCambioConsumerMOA>();
+
             
-        //    target = new ComprasService(repositorioMock.Object, cecoConsumerMock.Object, cuentasConsumerMock.Object, ordenesConsumerMock.Object, serviciosConsumerMock.Object, obtenerSolpConsumerMOAMock.Object, crearSolpConsumerMOAMock.Object, modificarSolpConsumerMOAMock.Object);
-        //}
+            target = new ComprasService(
+                repositorioMock.Object,
+                cecoConsumerMock.Object,
+                cuentasConsumerMock.Object,
+                ordenesConsumerMock.Object,
+                serviciosConsumerMock.Object,
+                obtenerSolpConsumerMOAMock.Object,
+                crearSolpConsumerMOAMock.Object,
+                modificarSolpConsumerMOAMock.Object,
+                obtenerMaterialesSolpConsumerMOAMock.Object,
+                crearPedidoConsumerMOAMock.Object,
+                obtenerFuenteAprovisionamientoConsumerMOAMock.Object,
+                obtenerContratoSolpConsumerMOAMock.Object,
+                vendedorServiceMock.Object,
+                obtenerTipoCambioConsumerMOAMock.Object
+                );
+        }
 
 
         /*
@@ -269,7 +301,7 @@ namespace SustitucionMOATest.Services
             target.ActualizarServiciosSolp();
 
             Assert.AreEqual(5, listadoServiciosSolp.Count);
-            
+
             Assert.AreEqual("001", listadoServiciosSolp[3].Codigo);
             Assert.AreEqual(1, listadoServiciosSolp[3].CodigoSap);
             Assert.AreEqual("descripcion1", listadoServiciosSolp[3].Descripcion);
@@ -279,7 +311,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(1, listadoServiciosSolp[3].Edicion);
             Assert.AreEqual("base1", listadoServiciosSolp[3].UnidadMedidaBase);
             Assert.AreEqual("sc1", listadoServiciosSolp[3].SSCItem);
-            
+
             Assert.AreEqual("003", listadoServiciosSolp[4].Codigo);
             Assert.AreEqual(3, listadoServiciosSolp[4].CodigoSap);
             Assert.AreEqual("descripcion3", listadoServiciosSolp[4].Descripcion);
@@ -298,17 +330,18 @@ namespace SustitucionMOATest.Services
 
 
         [Test]
-        public void ObtenerRutaArchivo() {
+        public void ObtenerRutaArchivo()
+        {
             var rutaArchivo = "ruta/archivo";
             var archivoId = 1;
- 
+
             repositorioMock
               .Setup(y => y.Obtener(It.IsAny<Expression<Func<Archivo, bool>>>()))
               .Returns(new Archivo
               {
-                   Id = archivoId,
-                   FileKey = "12323",
-                   Ruta = rutaArchivo
+                  Id = archivoId,
+                  FileKey = "12323",
+                  Ruta = rutaArchivo
               });
 
             var result = target.ObtenerRutaArchivo(archivoId);
