@@ -6,6 +6,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
@@ -14,15 +15,11 @@ using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
+using SustitucionMOAWS.WSRequests.OrdenCarga;
+using SustitucionMOAWS.ResponseHandler.OrdenCarga;
+using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 
 namespace SustitucionMOATest.Services
 {
@@ -35,6 +32,10 @@ namespace SustitucionMOATest.Services
         private OrdenDeCarga ordenDeCarga;
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
         private Mock<IFeriadoService> feriadoService;
+        private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
+        private Mock<IScatoConsumer> mIScatoConsumer;
+
+        private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaChofer;
 
         [SetUp]
         public void SetUp()
@@ -42,8 +43,11 @@ namespace SustitucionMOATest.Services
             repositorioMock = new Mock<IRepositorio>();
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
             feriadoService = new Mock<IFeriadoService>();
+            mIScatoRepositorioClient = new Mock<IScatoRepositorioClient>();
+            mIScatoConsumer = new Mock<IScatoConsumer>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object);
+            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
+                mIScatoRepositorioClient.Object, mIScatoConsumer.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,
@@ -71,6 +75,12 @@ namespace SustitucionMOATest.Services
                 },
                 NumeroEntrega = ""
 
+            };
+            _respuestaChofer = new ScatoRepo.Respuesta<ScatoRepo.Chofer>
+            {
+                Data = new ScatoRepo.Chofer { },
+                Messages = new ScatoRepo.MessageItem[] { },
+                IsValid = false
             };
         }
 
@@ -151,15 +161,12 @@ namespace SustitucionMOATest.Services
                .Returns(proveedor);
 
             consumerOrdenCargaMOA
-                .Setup(x => x.ControlCargaRequest(It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>())
-                )
-                .Returns("CC-00");
+                .Setup(x => x.ControlarCarga(It.IsAny<ControlCargaRequest>()))
+                .Returns(new SustitucionMOAWS.ResponseHandler.OrdenCarga.ControlCargaResponseHandler(
+                    new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060[]
+                    {
+                        new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060 { MENSAJE = "CC-00" }
+                    }));
 
             repositorioMock
                 .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
@@ -1355,6 +1362,44 @@ namespace SustitucionMOATest.Services
             var response = target.ConstruirCuerpoEmail(new List<OrdenDeCargaCambiosHistorial>(), "E1020", "25250000");
             Assert.IsNull(response);
         }
+        [Test]
+        public void ValidarCuilChoferDigito_CuilNoExiste_ReturnsTrue()
+        {
+            _respuestaChofer.Messages = new ScatoRepo.MessageItem[]
+            {
+                new ScatoRepo.MessageItem
+                {
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.ChoferNoEncontrado
+                }
+            };
+            mIScatoRepositorioClient.Setup(src => src.ObtenerChoferPorCuil(It.IsAny<string>())).Returns(
+                _respuestaChofer
+                );
+
+            var result = target.ValidarCuilChoferDigito("11111111111");
+
+            Assert.That(result, Is.True);
+
+        }
+        [Test]
+        public void ValidarCuilChoferDigito_CuilDigitoVerificadorNoValido_ReturnsFalse()
+        {
+            _respuestaChofer.Messages = new ScatoRepo.MessageItem[]
+            {
+                new ScatoRepo.MessageItem
+                {
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido
+                }
+            };
+            mIScatoRepositorioClient.Setup(src => src.ObtenerChoferPorCuil(It.IsAny<string>())).Returns(
+                _respuestaChofer
+                );
+
+            var result = target.ValidarCuilChoferDigito("11111111111");
+
+            Assert.That(result, Is.False);
+
+        }
 
         private void AddProvider(int id, EstadoAprobacion estadoAprobacion, string observaciones, string razonSocial, string mail, string cUIT, TipoUsuario tipoProveedor)
         {
@@ -1706,19 +1751,14 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void GenerarEntregaSAPOkTest()
         {
-            string value = "OE-00";
+            var ordenCargaEntreResponseHandlerMock = new Mock<OrdenCargaEntreResponseHandler>();
             var respuesta = "OE-00";
             ordenDeCarga.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            consumerOrdenCargaMOA.Setup(x => x.OrdenCargaEntregadaRequest(It.IsAny<string>(),
-                It.IsAny<decimal>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                out value)).Returns("OE-00");
+            ordenCargaEntreResponseHandlerMock.Setup(x => x.GetResultado()).Returns(OrdenCargaCrearEntrega.OK);
+            consumerOrdenCargaMOA
+                .Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), It.IsAny<bool>()))
+                .Returns(ordenCargaEntreResponseHandlerMock.Object); //"OE-00");
 
             consumerOrdenCargaMOA.Setup(x => x.OrdenCargaControlEstadoRequest(
               It.IsAny<string>(),
@@ -1741,18 +1781,13 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void GenerarEntregaSAPTransporteNoExisteTest()
         {
-            string value = "OE-01";
+            var ordenCargaEntreResponseHandlerMock = new Mock<OrdenCargaEntreResponseHandler>();
             ordenDeCarga.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            consumerOrdenCargaMOA.Setup(x => x.OrdenCargaEntregadaRequest(It.IsAny<string>(),
-                It.IsAny<decimal>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                out value)).Returns("OE-01");
+            ordenCargaEntreResponseHandlerMock.Setup(x => x.GetResultado()).Returns(OrdenCargaCrearEntrega.NoExisteTransportista);
+            consumerOrdenCargaMOA
+                .Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), It.IsAny<bool>()))
+                .Returns(ordenCargaEntreResponseHandlerMock.Object); //"OE-01");
 
             consumerOrdenCargaMOA.Setup(x => x.OrdenCargaControlEstadoRequest(
               It.IsAny<string>(),

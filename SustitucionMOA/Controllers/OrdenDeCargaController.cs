@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -8,6 +9,7 @@ using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
@@ -721,6 +723,8 @@ namespace SustitucionMOA.Controllers
             var response = new ObtenerContratosDisponiblesResponse();
             try
             {
+
+                var mailUsuario = SessionPersister.getUsername();
                 var req = new ObtenerContratosDisponiblesRequest
                 {
                     ClienteCodigo = clienteCodigo,
@@ -728,7 +732,7 @@ namespace SustitucionMOA.Controllers
                     FechaDesde = fechaDesde,
                     FechaHasta = fechaHasta
                 };
-                response = ordenDeCargaService.ObtenerContratosDisponibles(req);
+                response = ordenDeCargaService.ObtenerContratosDisponibles(req, mailUsuario);
             }
             catch (InfoCustomException ice)
             {
@@ -744,6 +748,217 @@ namespace SustitucionMOA.Controllers
                 response.Error = ErrorMsg.Error;
             }
             return JsonCustom(response);
+        }
+
+        [HttpGet]
+        public ActionResult ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo)
+        {
+            var response = new SustitucionMOAApiResponse<ValidarSisaCorredorClienteResponse>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarSisaCorredorCliente(corredorCodigo, clienteCodigo);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ActionResult ValidarCuitExisteScato(string cuit)
+        {
+            var response = new SustitucionMOAApiResponse<ValidarCuitExisteScatoResponse>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarCuitExisteScato(cuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [HttpGet]
+        public ActionResult ValidarSisaCuit(string cuit, string campo)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarSisaCuit(cuit, campo);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [HttpGet]
+        public ActionResult GestionarAltaCuit(string cuit, string razonSocial, bool esIntermediarioFlete)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [HttpGet]
+        public ActionResult ObtenerPlantasDestino(string destinoCuit)
+        {
+            var response = new SustitucionMOAApiResponse<List<PlantaDto>>();
+            try
+            {
+                response.Data = ordenDeCargaService.ObtenerPlantasDestino(destinoCuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ActionResult ObtenerDomiciliosDestino(string destinoCuit)
+        {
+            var response = new SustitucionMOAApiResponse<List<DomicilioDto>>();
+            try
+            {
+                response.Data = ordenDeCargaService.ObtenerDomiciliosDestino(destinoCuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ActionResult ValidarCuitRuca(string cuit)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarCuitRuca(cuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ContentResult ValidarIntermediarioFlete(string cuit)
+        {
+            var response = new SustitucionMOAApiResponse<ValidarIntermediarioFleteResponse>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarIntermediarioFlete(cuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        public ActionResult ValidarCuilChofer(string cuilChofer)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarCuilChoferDigito(cuilChofer);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
         }
     }
 }

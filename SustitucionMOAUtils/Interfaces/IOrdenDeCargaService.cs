@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOAUtils.Email;
 using System.Collections.Generic;
 
@@ -43,7 +44,17 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega);
         List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden);
         void VerificarSituacionCrediticiaJob();
-        ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req);
+        ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req, string mailUsuario);
         string EnviarOrdenesASAP(List<int> ordenesIds, string mailUsuario);
+        ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
+        bool ValidarSisaCuit(string cuit, string campo);
+        bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete);
+        bool ValidarCuitRuca(string cuit);
+        ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit);
+        List<PlantaDto> ObtenerPlantasDestino(string destinoCuit);
+        List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
+        ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
+        (bool, Chofer) ValidarCuilChofer(string cuilChofer);
+        bool ValidarCuilChoferDigito(string cuilChofer);
     }
 }
