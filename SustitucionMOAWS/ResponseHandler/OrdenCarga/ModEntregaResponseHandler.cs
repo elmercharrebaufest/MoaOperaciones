@@ -17,13 +17,14 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
 
         public ModEntregaResponseHandler(string respuestaSap)
         {
-            if (respuestaSap == RespuestaSAP_ActualizadoOK)
+            var respuestaMayusculas = respuestaSap != null ? respuestaSap.ToUpper() : "";
+            if (respuestaMayusculas == RespuestaSAP_ActualizadoOK.ToUpper())
             {
                 ActualizadoOK = true;
             }
             else
             {
-                if (respuestaSap == RespuestaSAP_EntregaAnulada)
+                if (respuestaMayusculas == RespuestaSAP_EntregaAnulada.ToUpper())
                 {
                     EntregaAnulada = true;
                 }

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { CorredorContrato } from '../../common/models/ordenes-de-carga/corredorContrato';
@@ -24,7 +24,7 @@ import { ConfirmationService } from 'primeng/api';
 })
 export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
-
+    @ViewChild('mainStart') mainDiv?: ElementRef<HTMLDivElement>;
     ordenDeCargaId: number = 0;
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
@@ -48,6 +48,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     corredorContratoList: CorredorContrato[] = [];
     corredorContratoSeleccionado: CorredorContrato;
+
+    validaCPEDG = false;
 
     mostrarBotonContratos: boolean = false;
     mostrarBotonPedidos: boolean = false;
@@ -327,17 +329,23 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     obtenerOrdenDeCarga() {
         try {
             this.unsubscribe();
+            this.blockUI.start('Procesando...');
             this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
                 result => {
+                    this.blockUI.stop();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCarga = result.data;
+                        this.validaCPEDG = this.ordenDeCarga.ValidaSisaRuca;
                         this.separarCadenas();
                         this.verificarBotones()
+                        if (this.mensajeError || this.ordenDeCarga.DescripcionErrorInterno)
+                            this.mensajeComponent.setMsgsEmpty();
                         if (this.ordenDeCarga.MensajeValidacionSAP != "" && this.ordenDeCarga.MensajeValidacionSAP != "OK" && this.esInterno) {
+                            this.mensajeComponent.setMsgsEmpty();
                             this.mensajeComponent.setInfoMsg(this.ordenDeCarga.MensajeValidacionSAP)
                         }
                     }
@@ -410,6 +418,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.ordenDeCarga.DescripcionErrorInterno = null;
                         if (result.data != "Orden de carga actualizada correctamente") {
                             this.mensajeComponent.setInfoMsg(result.data);
                         } else {
@@ -418,7 +428,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mostrarBotonNotificarTransporte = false;
                         this.mostrarBotonVerificarTransporte = false;
                         this.obtenerOrdenDeCarga();
-
                     }
                 },
                 error => {
@@ -452,9 +461,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.data.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.data.info);
                     } else {
-                        this.obtenerOrdenDeCarga();
+                        this.ordenDeCarga.DescripcionErrorInterno = null;
                         this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
-
+                        this.obtenerOrdenDeCarga();
                     }
                 },
                 error => {
@@ -511,15 +520,18 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.data.error != undefined && result.data.error != "") {
+                        this.obtenerOrdenDeCarga();
                         this.mensajeComponent.setErrorMsg(result.data.error);
                     } else if (result.data.info != undefined) {
+                        this.obtenerOrdenDeCarga();
                         this.mensajeComponent.setInfoMsg(result.data.info);
                     } else {
                         this.ordenDeCarga.ContratoSAP = this.contratoSeleccionado;
                         this.mostrarBotonContratos = false;
-                        this.obtenerOrdenDeCarga();
+                        this.ordenDeCarga.DescripcionErrorInterno = null;
                         this.mensajeComponent.setMsgsEmpty();
                         this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+                        this.obtenerOrdenDeCarga();
                     }
                 },
                 error => {
@@ -629,8 +641,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.ordenDeCarga.NumeroPedido = this.pedidoSeleccionado;
                         this.ordenDeCarga.NumeroPedidoIngresado = this.pedidoSeleccionado;
                         this.mostrarBotonPedidos = false;
-                        this.obtenerOrdenDeCarga();
+                        this.mensajeComponent.setMsgsEmpty();
                         this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+                        this.obtenerOrdenDeCarga();
                     }
                 },
                 error => {
@@ -649,18 +662,21 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
+            document.getElementById("closemodalAnularOrden").click();
+            this.mainDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
             this.subscriptionDropDowns = this.service.anular(this.ordenDeCargaId).subscribe(
                 result => {
-                    document.getElementById("closemodalAnularOrden").click();
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
+                        this.obtenerOrdenDeCarga();
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
+                        this.obtenerOrdenDeCarga();
                     } else {
-                        this.mensajeComponent.setSuccessMsg(result.data);
+                        this.floatMsgService.setSuccessMsg(result.data);
 
                         this.navService.navegarSeccion(
                             "/ordenes-de-carga"
@@ -668,11 +684,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     }
                 },
                 error => {
-                    document.getElementById("closemodalAnularOrden").click();
+                    this.spinnerComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
         } catch (e) {
+            this.spinnerComponent.showIt();
             this.mensajeComponent.setErrorMsg(e);
         }
     }
@@ -803,8 +820,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.obtenerOrdenDeCarga();
+                        this.mensajeComponent.setMsgsEmpty();
                         this.mensajeComponent.setSuccessMsg(result.data);
+                        this.obtenerOrdenDeCarga();
                     }
                 },
                 error => {

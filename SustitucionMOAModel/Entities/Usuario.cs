@@ -196,5 +196,11 @@ namespace SustitucionMOAModel.Entities
 
             return permisosUsuario.Contains(permiso);
         }
+
+        public virtual bool TieneRol(string codigo)
+        {
+
+            return Roles.Any(r => r.Codigo == codigo);
+        }
     }
 }

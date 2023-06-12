@@ -1,10 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { EmpresaGranosService } from '../../alta-proveedores/empresa-granos/empresa-granos.service';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { Material } from '../../common/models/material';
-import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { CuitValidaExistencia, CuitValidaRUCA, CuitValidaSISA, OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { SeleccionarProveedorService } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
@@ -17,6 +17,11 @@ import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { ContratoOrdenFas } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
+import { Planta } from '../../common/models/ordenes-de-carga/planta';
+import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
+import { finalize } from 'rxjs/operators';
+import { ApiResponse } from '../../common/models/response';
+import { forkJoin } from 'rxjs';
 
 declare var $: any;
 
@@ -26,7 +31,6 @@ declare var $: any;
     styleUrls: ['./ordenes-de-carga.alta.component.css'],
     providers: [SeleccionarProveedorService],
 })
-
 export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
 
@@ -35,10 +39,20 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
+    @ViewChild('messages')
+    private messagesContainer?: ElementRef<HTMLDivElement>;
 
     ordenDeCargaId: number = 0;
 
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
+    mensajesOrdenDeCarga: Partial<Record<keyof OrdenDeCarga, string>> = {};
+    mensajesGestionCuit: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, string>> = {};
+    validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
+    displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'> | null;
+    validaCPEDG = false;
+    pedidoAnticipado = false;
+    editando = false;
+    focusRazonSocialParaGestion = true;
     mensajeError: string = "";
     mensajeSuccess: string = "";
     clienteCUIT: string = "";
@@ -52,6 +66,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     userEmail: string = "";
     patentesChasis: any;
     patentesAcoplados: any;
+    razonSocialParaGestion = "";
     private selectUndefinedOptionValue: any;
 
     contratosDisponibles: ContratoOrdenFas[] = [];
@@ -70,6 +85,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     listaCorredores: any[];
     corredorSeleccionado: any;
     public patternPatente = { '0': { pattern: new RegExp('\[a-zA-Z0-9\]') } };
+
+    listaPlantas: Planta[];
+    plantaSeleccionada?: Planta;
+    listaDomicilios?: Domicilio[];
+    domicilioSeleccionado?: Domicilio;
+
+    intermediarioFleteCuitFormatoValido: boolean = true;
 
     constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
         super(navService, securytiService, floatMsgService, modalService);
@@ -93,6 +115,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             }
         }
 
+        this.editando = this.ordenDeCargaId > 0;
         this.obtenerCorredores();
 
         if (this.ordenDeCargaId > 0) {
@@ -104,10 +127,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         if (this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS')) {
             this.ordenDeCarga.CUITCliente = 0;
         }
-		if (this.esCliente()) {
+        if (this.esCliente()) {
             this.clienteCodigo = sessionStorage.getItem("proveedor");
-            if (this.ordenDeCargaId == 0) {
-				this.cargarContratosDisponibles(this.clienteCodigo);
+            if (this.ordenDeCargaId == 0 && !(this.esComercial || this.esCorredor)) {
+                this.cargarContratosDisponibles(this.clienteCodigo);
             }
         }
     }
@@ -137,41 +160,65 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             console.error(e);
             this.mensajeComponent.setErrorMsg(e);
         }
-
     }
 
     validar() {
-        if (this.ordenDeCarga.NombreChofer.trim().length < 2) {
+        if (!this.ordenDeCarga.NombreChofer || this.ordenDeCarga.NombreChofer.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
             return false;
         }
         /*VER ESTA VALIDACION, ACA VALIDA COMO SI FUERA UN CUIT PERO EN EL FRONT DICE QUE PONGA EL DNI/CUIL*/
-        if (this.ordenDeCarga.CUITChofer.toString().trim().length != 11) {
+        if (!this.ordenDeCarga.CUITChofer || this.ordenDeCarga.CUITChofer.toString().trim().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
         }
-        if (this.ordenDeCarga.PatenteAcoplado.trim().length < 6) {
+        if (!this.ordenDeCarga.PatenteAcoplado || this.ordenDeCarga.PatenteAcoplado.trim().length < 6) {
             this.mensajeComponent.setInfoMsg("Ingrese una patente válida.");
             return false;
         }
-        if (this.ordenDeCarga.ChasisAcoplado.trim().length < 6) {
+        if (!this.ordenDeCarga.ChasisAcoplado || this.ordenDeCarga.ChasisAcoplado.trim().length < 6) {
             this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
             return false;
         }
-        if (this.ordenDeCarga.RazonSocialTransporte.trim().length < 2) {
+        if (!this.ordenDeCarga.RazonSocialTransporte || this.ordenDeCarga.RazonSocialTransporte.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
             return false;
         }
-        if (this.ordenDeCarga.CUITTransporte.toString().trim().length != 11) {
+        if (!this.ordenDeCarga.CUITTransporte || this.ordenDeCarga.CUITTransporte.toString().trim().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
             return false;
         }
-        // if (this.ordenDeCargaId == 0) {
-        //     if (this.resultadoValidacionCorCliConPro == false) {
-        //         this.mensajeComponent.setErrorMsg(this.mensajeValidacionCorCliConPro);
-        //         return false;
-        //     }
-        // }
+        if (this.ordenDeCarga.CUITIntermediarioFlete && this.ordenDeCarga.CUITIntermediarioFlete.toString().trim().length != 11) {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de intermediario flete válido.");
+            return false;
+        }
+
+        if (this.validaCPEDG) {
+            if (this.ordenDeCarga.CUITDestinatario && !this.revisarCUITFormatoValido(this.ordenDeCarga.CUITDestinatario)) {
+                this.mensajeComponent.setInfoMsg("Ingrese un CUIT de Destinatario válido.");
+                return false;
+            }
+
+            if (!(this.ordenDeCarga.DomicilioDescr && this.ordenDeCarga.DomicilioTipo && this.ordenDeCarga.DomicilioOrden)) {
+                this.mensajeComponent.setInfoMsg("Seleccione un domicilio.");
+                return false;
+            }
+            if (!this.ordenDeCarga.PlantaCodigo) {
+                this.mensajeComponent.setInfoMsg("Seleccione una planta.");
+                return false;
+            }
+            const tieneMensajes = Object.keys(this.mensajesOrdenDeCarga).some(key => this.mensajesOrdenDeCarga[key])
+            if (tieneMensajes) {
+                this.mensajeComponent.setInfoMsg("Hay campos que no son válidos.");
+                return false;
+            }
+            const estaValidando = Object.keys(this.validando).some(key => this.validando[key]);
+            if (estaValidando) {
+                this.mensajeComponent.setInfoMsg("Hay campos que todavía se están validando");
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -189,9 +236,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         console.info(result.info);
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.obtenerMateriales();
                         this.ordenDeCarga = result.data;
-                        this.CodigoCorredor = result.data.CodigoCorredor;
+                        this.CodigoCorredor = result.data.Corredor || result.data.CodigoCorredor;
                         if (this.esComercial && result.data.ColorSemaforo != "green") {
                             this.puedeEditarContrato = true;
                         }
@@ -200,20 +246,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         }
                         this.clienteCUIT = result.data.CUITCliente;
                         this.clienteCodigo = result.data.CodigoCliente;
-                        console.log("obtener orden");
-                        console.log("this.clienteCUIT", this.clienteCUIT);
-                        console.log("this.clienteCodigo", this.clienteCodigo);
-                        console.log("this.CodigoCorredor", this.CodigoCorredor);
                         if (this.CodigoCorredor) {
-                            console.log("obtener orden cargarClientes");
                             this.cargarClientes(this.CodigoCorredor);
                         } else {
-                            console.log("this.onCorredorFocusOut");
                             this.onCorredorFocusOut('', true);
                         }
                         this.getPatentes();
                         this.cargarContratosDisponibles(result.data.CodigoCliente);
-
+                        if (this.ordenDeCarga.CUITDestino)
+                            this.onDestinoIngresado(this.ordenDeCarga.CUITDestino)
                     }
                 },
                 error => {
@@ -234,6 +275,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         if (!this.validar()) {
             this.spinnerComponent.hideIt();
+            this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
             return;
         }
         this.mensajeComponent.setMsgsEmpty();
@@ -441,8 +483,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                             this.floatMsgService.setInfoMsg(result.info);
                         } else {
                             this.listaClientes = this.ordenarYFiltrarClientes(result);
-                            console.log("this.listaClientes", this.listaClientes);
-                            console.log("this.clienteCUIT", this.clienteCUIT);
                             if (this.clienteCUIT != null && this.clienteCUIT.length > 0) {
                                 this.clienteSeleccionado = this.listaClientes.find(x => x.CUIT == this.clienteCUIT);
                             }
@@ -491,8 +531,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                         this.blockUI.stop();
                     } else {
-                        console.log("cargar clientes");
-                        console.log("this.clienteCUIT", this.clienteCUIT);
                         this.listaClientes = this.ordenarYFiltrarClientes(result.Clientes);
                         if (this.clienteCUIT != null && this.clienteCUIT.length > 0) {
                             this.clienteSeleccionado = this.listaClientes.find(x => x.CUIT == this.clienteCUIT);
@@ -517,15 +555,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         let pClienteCodigo: string = "";
         if (this.clienteSeleccionado) {
-            if (this.clienteSeleccionado.Id <= 0)
-            {
+            if (this.clienteSeleccionado.Id <= 0) {
                 // El cliente está relacionado al corredor en SAP, pero no existe en la BD
                 this.mensajeComponent.setErrorMsg("El cliente seleccionado no existe en la web, por favor gestionar su alta");
                 this.clienteCUIT = "";
                 pClienteCodigo = "";
             }
-            else
-            {
+            else {
                 this.clienteCUIT = this.clienteSeleccionado.CUIT;
                 pClienteCodigo = this.clienteSeleccionado.CodigoProveedor;
             }
@@ -533,26 +569,26 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.ordenDeCarga.CUITCliente = Number(this.clienteCUIT);
         this.getPatentes();
         this.cargarContratosDisponibles(pClienteCodigo);
+        this.setearDefaultEnCPEDG();
     }
 
     onContratoSeleccionadoChanged = () => {
-        if (this.ordenDeCarga.ContratoSeleccionado) { //this.contratoSeleccionado) {
-            this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato; //this.contratoSeleccionado.NumeroContrato;
-            this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato; //this.contratoSeleccionado.NumeroContrato;
-            this.ordenDeCarga.Producto_Id = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId; //this.contratoSeleccionado.Producto.MaterialId;
-            this.Producto = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId.toString(); //this.contratoSeleccionado.Producto.MaterialId.toString();
+        if (this.ordenDeCarga.ContratoSeleccionado) {
+            this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
+            this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
+            this.ordenDeCarga.Producto_Id = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId;
+            this.Producto = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId.toString();
+            let materialSeleccionado = this.listaMateriales.find(mat => mat.MaterialId === this.ordenDeCarga.Producto_Id);
+            this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
         }
         else {
             this.Contrato = "";
             this.ordenDeCarga.ContratoIngresado = "";
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
+            this.validaCPEDG = false;
         }
+        this.validarSisaCorredorCliente()
     }
-
-
-
-
-
     validarCorredorClienteContratoProducto = (
         clienteCuit: string,
         clienteCodigo: string,
@@ -706,10 +742,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     } else {
                         this.listaCorredores = this.ordenarYFiltrarCorredores(result.data.vendedores);
                         if (this.CodigoCorredor != "") {
-                            let seleccionado = result.data.vendedores.filter(a => a.idVendedor == this.CodigoCorredor);
-                            if (seleccionado != null && seleccionado.length > 0) {
-                                this.corredorSeleccionado = seleccionado[0];
-                            }
+                            let seleccionado = result.data.vendedores.find(a => a.idVendedor == this.CodigoCorredor);
+                            if (seleccionado)
+                                this.corredorSeleccionado = seleccionado;
+
                         }
                         //this.blockUI.stop();
                     }
@@ -741,9 +777,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             if (pClienteCodigo) { //this.clienteSeleccionado) { //|| this.corredorSeleccionado) {
                 //let pClienteCodigo = this.clienteSeleccionado.CodigoProveedor;
                 this.mensajeComponent.setMsgsEmpty();
-                let pCorredorCodigo =  this.corredorSeleccionado ?
+                let pCorredorCodigo = this.corredorSeleccionado ?
                     this.corredorSeleccionado.idVendedor : "";
-                
+
                 this.blockUI.start('');
                 this.service
                     .obtenerContratosDisponibles(pClienteCodigo, pCorredorCodigo, this.desde, this.hasta)
@@ -753,6 +789,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         } else
                             if (resp.Error) {
                                 this.mensajeComponent.setErrorMsg(resp.Error);
+                                this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
                             } else
                                 if (resp.Info) {
                                     this.mensajeComponent.setInfoMsg(resp.Info);
@@ -773,5 +810,331 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.blockUI.stop();
         }
     }
+    validarExisteCUIT(campo: CuitValidaExistencia) {
+        const cuit = this.ordenDeCarga[campo]
+        if (!cuit || !this.revisarCUITFormatoValido(cuit)) {
+            this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = undefined;
+            return;
+        }
+        this.validando[campo] = true;
+        this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
+        this.mensajesOrdenDeCarga[campo] = null;
+
+        if (!this.ordenDeCarga.CUITDestinatario && campo === 'CUITDestino')
+            this.copiarCuitEnDestinatario();
+
+        this.service.validarExisteCuitScato(cuit).subscribe(
+            result => {
+                this.validando[campo] = false;
+                const data = this.manejarErroresApiResponse(result);
+                if (!data)
+                    return;
+
+                if (!data.Existe)
+                    this.displayModal = campo;
+                else
+                    this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = data.RazonSocial;
+
+                this.validarSisaCuit(cuit, campo)
+            })
+    }
+    validarSisaCuit(cuit: string, campo: CuitValidaSISA) {
+        this.validando[campo] = true;
+        this.mensajesOrdenDeCarga[campo] = null;
+        this.service.validarSisaCuit(cuit, campo).subscribe(result => {
+            this.validando[campo] = false;
+            const validandoDestino = campo == "CUITDestino";
+            if (validandoDestino)
+                this.resetearPlantasDomicilios()
+            if (result.logout) {
+                this.sessionDataService.logout();
+            } else if (result.error != undefined && result.error != "") {
+                this.mensajeComponent.setErrorMsg(result.error);
+            } else if (result.info != undefined) {
+                this.mensajeComponent.setInfoMsg(result.info);
+
+            } else {
+                if (!result.data) {
+                    this.mensajesOrdenDeCarga[campo] = `El ${campo.replace("CUIT", "")} no se encuentra habilitado en SISA, no podrá cargar la orden hasta regularizar la situación.`;
+                } else {
+                    if (validandoDestino) {
+                        this.onDestinoIngresado(cuit);
+                    }
+                    else if (campo !== "CUITCorredor") {
+                        this.validarRuca(cuit, campo)
+                    }
+                }
+            }
+        })
+    }
+
+    onDestinoIngresado(cuitDestino: string) {
+        if (cuitDestino) {
+            this.validando.CUITDestino = true;
+            forkJoin([
+                this.service
+                    .obtenerPlantasDestino(cuitDestino),
+                this.service
+                    .obtenerDomiciliosDestino(cuitDestino)
+            ]).pipe(finalize(() => this.validando.CUITDestino = false)).subscribe(([respPlantas, respDomicilios]) => {
+                this.manejarRespuestaDomicilio(respDomicilios, cuitDestino)
+                this.manejarRespuestaPlanta(respPlantas, cuitDestino)
+            })
+        }
+        else {
+            this.listaPlantas = [];
+            this.listaDomicilios = [];
+            this.plantaSeleccionada = undefined;
+            this.domicilioSeleccionado = undefined;
+        }
+    }
+    manejarRespuestaDomicilio(resp: ApiResponse<Domicilio[]>, cuitDestino: string) {
+        let domicilios: Domicilio[] | null;
+        if (domicilios = this.manejarErroresApiResponse(resp)) {
+            if (domicilios.length > 0) {
+                this.listaDomicilios = domicilios;
+                this.definirValorDomicilio();
+                return;
+            }
+            this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación")
+            this.scrollAMensaje()
+        }
+    }
+    manejarRespuestaPlanta(resp: ApiResponse<Planta[]>, cuitDestino: string) {
+        let plantas: Planta[] | null;
+        if (plantas = this.manejarErroresApiResponse(resp)) {
+            if (plantas.length > 0) {
+                this.listaPlantas = plantas;
+                this.definirValorPlanta();
+                return;
+            }
+            this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación")
+            this.scrollAMensaje()
+        }
+    }
+    revisarCUITFormatoValido(cuit: string): boolean {
+        return cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
+    }
+    gestionarAltaCUIT() {
+        const campo = this.displayModal;
+        const cuit = this.ordenDeCarga[campo];
+        const razonSocial = this.razonSocialParaGestion;
+        this.displayModal = null;
+        this.razonSocialParaGestion = "";
+        this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = razonSocial;
+        let esIntermediarioFlete = campo === 'CUITIntermediarioFlete';
+        this.service.enviarMailGestionarAltaCuit(cuit, razonSocial, esIntermediarioFlete).subscribe(result => {
+            if (result.logout) {
+                this.sessionDataService.logout();
+            } else if (result.error != undefined && result.error != "") {
+                this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar alta CUIT ${campo.replace("CUIT", "")}`);
+            } else if (result.info != undefined) {
+                this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta CUIT ${campo.replace("CUIT", "")}`);
+            } else {
+                this.mensajesGestionCuit[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
+            }
+
+        })
+    }
+
+    cancelarGestionAltaCUIT() {
+        if (this.displayModal === 'CUITIntermediarioFlete') {
+            this.ordenDeCarga.CUITIntermediarioFlete = undefined;
+        }
+        this.displayModal = null;
+    }
+
+    validarSisaCorredorCliente() {
+        if (!this.ordenDeCarga.ContratoSeleccionado || !this.validaCPEDG) {
+            this.mensajeComponent.setMsgsEmpty();
+            return;
+        }
+        let corredorCodigo = this.corredorSeleccionado ? this.corredorSeleccionado.idVendedor : "";
+        let clienteCodigo = this.clienteSeleccionado ? this.clienteSeleccionado.CodigoProveedor : "";
+        try {
+            this.blockUI.start('');
+            this.service
+                .validarSisaCorredorCliente(corredorCodigo, clienteCodigo)
+                .subscribe(svcRes => {
+                    let resp = this.manejarErroresApiResponse(svcRes);
+                    if (resp && (!resp.CorredorHabilitadoEnSisa || !resp.ClienteHabilitadoEnSisa)) {
+                        let msj =
+                            (!resp.CorredorHabilitadoEnSisa && !resp.ClienteHabilitadoEnSisa) ?
+                                "Corredor y Cliente no están habilitados en SISA, no podrá cargar la orden hasta regularizar la situación" :
+                                (!resp.CorredorHabilitadoEnSisa ?
+                                    "Corredor no habilitado en SISA, no podrá cargar la orden hasta regularizar la situación" :
+                                    "Cliente no habilitado en SISA, no podrá cargar la orden hasta regularizar la situación");
+                        this.mensajeComponent.setErrorMsg(msj);
+                        this.reiniciarProducto();
+                        this.scrollAMensaje();
+                    } else if (resp) {
+                        this.validarRuca(this.ordenDeCarga.CUITCliente.toString(), "CUITCliente");
+                    }
+                    this.blockUI.stop();
+                })
+        } catch (err) {
+            console.error('validarSisaCorredorCliente: ', err);
+            this.mensajeComponent.setErrorMsg(err);
+            this.blockUI.stop();
+        }
+    }
+
+    onPlantaSeleccionadaChanged() {
+        if (this.plantaSeleccionada) {
+            this.ordenDeCarga.PlantaCodigo = this.plantaSeleccionada.Codigo.toString();
+        }
+        else {
+            this.ordenDeCarga.PlantaCodigo = "";
+        }
+    }
+
+    onDomicilioSeleccionadoChanged() {
+        if (this.domicilioSeleccionado) {
+            this.ordenDeCarga.DomicilioTipo = this.domicilioSeleccionado.Tipo.toString();
+            this.ordenDeCarga.DomicilioOrden = this.domicilioSeleccionado.Orden
+            this.ordenDeCarga.DomicilioDescr = this.domicilioSeleccionado.Descripcion;
+        }
+        else {
+            this.ordenDeCarga.DomicilioTipo = "";
+            this.ordenDeCarga.DomicilioOrden = 0;
+            this.ordenDeCarga.DomicilioDescr = "";
+        }
+    }
+
+    validarRuca(cuit: string, campo: CuitValidaRUCA) {
+        this.validando[campo] = true;
+        this.mensajesOrdenDeCarga[campo] = null;
+        this.service.validarCuitRuca(cuit).subscribe(result => {
+            this.validando[campo] = false;
+            let data = this.manejarErroresApiResponse(result);
+            if (!data) {
+                this.mensajesOrdenDeCarga[campo] = `${campo.replace("CUIT", "")}  no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación`;
+                if (campo === "CUITCliente")
+                    this.reiniciarProducto();
+
+            }
+        });
+    }
+
+    validarIntermediarioFlete() {
+        this.validando.CUITIntermediarioFlete = true;
+        this.intermediarioFleteCuitFormatoValido = true;
+        this.ordenDeCarga.RazonSocialIntermediarioFlete = undefined;
+        
+        let cuitIF = this.ordenDeCarga.CUITIntermediarioFlete;
+        if (!cuitIF || !this.revisarCUITFormatoValido(cuitIF)) {
+            this.validando.CUITIntermediarioFlete = false;
+            return;
+        }
+        this.service.validarIntermediarioFlete(cuitIF).subscribe(resp => {
+            let data = this.manejarErroresApiResponse(resp);
+            if (data) {
+                if (data.EsCuitValido) {
+                    if (data.ExisteIntermediario) {
+                        this.ordenDeCarga.RazonSocialIntermediarioFlete = data.RazonSocial;
+                    } else {
+                        this.displayModal = 'CUITIntermediarioFlete';
+                    }
+                } else {
+                    this.intermediarioFleteCuitFormatoValido = false;
+                }
+            }
+            this.validando.CUITIntermediarioFlete = false;
+        });
+    }
+
+    reiniciarProducto() {
+        this.ordenDeCarga.ContratoSeleccionado = undefined;
+        this.ordenDeCarga.Producto_Id = 0;
+        this.Producto = "";
+        this.validaCPEDG = false;
+    }
+
+    copiarCuitEnDestinatario() {
+        if (this.ordenDeCarga.CUITDestinatario != this.clienteSeleccionado.CUIT) {
+            this.ordenDeCarga.CUITDestinatario = this.clienteSeleccionado.CUIT;
+            this.validarExisteCUIT('CUITDestinatario')
+        }
+    }
+
+    copiarCuitEnDestino() {
+        if (this.ordenDeCarga.CUITDestino != this.clienteSeleccionado.CUIT) {
+            this.ordenDeCarga.CUITDestino = this.clienteSeleccionado.CUIT;
+            this.validarExisteCUIT('CUITDestino')
+        }
+    }
+
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
+        if (response.logout) {
+            this.sessionDataService.logout();
+            return null;
+        }
+        if (response.error) {
+            this.mensajeComponent.setErrorMsg(response.error);
+            this.scrollAMensaje()
+            return null;
+        }
+        if (response.info) {
+            this.mensajeComponent.setInfoMsg(response.info)
+        }
+        return response.data;
+    }
+    validarCuilChofer() {
+        const campo = "CUITChofer";
+        const cuit = this.ordenDeCarga.CUITChofer ? this.ordenDeCarga.CUITChofer.toString() : "";
+        if (!this.revisarCUITFormatoValido(cuit))
+            return;
+        this.validando[campo] = true;
+        this.mensajesOrdenDeCarga[campo] = null;
+        this.service.validarCuilChofer(cuit).subscribe(result => {
+            this.validando[campo] = false;
+            let data = this.manejarErroresApiResponse(result);
+            if (!data && data != null) {
+                this.mensajesOrdenDeCarga[campo] = "CUIL Chofer inválido – Revisar valor ingresado";
+                this.floatMsgService.setInfoMsg("CUIL Chofer inválido – Revisar valor ingresado");
+            }
+        });
+    }
+    definirValorPlanta() {
+        if (this.editando && this.listaPlantas)
+            this.plantaSeleccionada = this.listaPlantas.find(planta => planta.Codigo.toString() == this.ordenDeCarga.PlantaCodigo);
+    }
+    definirValorDomicilio() {
+        if (this.editando && this.listaDomicilios)
+            this.domicilioSeleccionado = this.listaDomicilios.find(domicilio =>
+                domicilio.Descripcion == this.ordenDeCarga.DomicilioDescr
+                && domicilio.Orden == this.ordenDeCarga.DomicilioOrden
+                && domicilio.Tipo.toString() == this.ordenDeCarga.DomicilioTipo
+            );
+    }
+
+    descripcionIntermediarioFlete = "Llenar en caso que el transporte lo haga un tercero"
+    descripcionTransporte = "CUIT transportista MOA"
+    ttCopiarCuit = "Copiar CUIT del Cliente"
+
+    scrollAMensaje() {
+        this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
+    }
+
+    setearDefaultEnCPEDG() {
+        this.ordenDeCarga.Reventa = false;
+        this.ordenDeCarga.CUITDestinatario = undefined;
+        this.validarExisteCUIT('CUITDestinatario');
+        this.ordenDeCarga.CUITDestino = undefined;
+        this.validarExisteCUIT('CUITDestino');
+        this.ordenDeCarga.CUITIntermediarioFlete = undefined;
+        this.validarIntermediarioFlete();
+        this.resetearPlantasDomicilios();
+    }
+
+    resetearPlantasDomicilios() {
+        this.plantaSeleccionada = undefined;
+        this.domicilioSeleccionado = undefined;
+        this.listaPlantas = [];
+        this.listaDomicilios = [];
+        this.onDomicilioSeleccionadoChanged()
+        this.onPlantaSeleccionadaChanged();
+    }
 }
+
 

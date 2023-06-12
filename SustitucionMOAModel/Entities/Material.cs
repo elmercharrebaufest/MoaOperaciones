@@ -15,5 +15,6 @@ namespace SustitucionMOAModel.Entities
         public string Nombre { get; set; }
         public string CodigoSap { get; set; }
         public TablaSeccionMaterial TablaSeccionMaterial { get; set; }
+        public bool ValidaSisaRuca { get; set; }
     }
 }
