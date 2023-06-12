@@ -219,6 +219,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             }
         }
 
+        if (!this.ordenDeCarga.Producto_Id) {
+            this.mensajeComponent.setInfoMsg("Seleccione un contrato.");
+            return false;
+        }
+
         return true;
     }
 
