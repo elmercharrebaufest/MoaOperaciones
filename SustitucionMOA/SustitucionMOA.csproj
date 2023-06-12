@@ -1112,7 +1112,6 @@
     <TypeScriptCompile Include="src\app\common\models\cartaPresentacion.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonRequest.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonResponse.ts" />
-    <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\ordenDeCargaFason.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\ordenDeCargaFasonDto.ts" />
     <TypeScriptCompile Include="src\app\common\models\precioMoaCompraNet.ts" />
     <TypeScriptCompile Include="src\app\common\models\habilitacionPizarra.ts" />
@@ -1170,9 +1169,7 @@
     <TypeScriptCompile Include="src\app\compras\solp\solp.utils.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\stepper-actions\stepper-actions.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\stepper-actions\stepper-actions.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp\steps\adjuntos-cotizaciones.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\cotizacion\cotizacion.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp\steps\especificaciones\adjuntos-especificaciones.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\especificaciones\especificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\especificaciones\especificacionesViewModel.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\generacion1\generacion1.component.ts" />

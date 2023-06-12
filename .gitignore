@@ -281,3 +281,6 @@ SustitucionMOADatabase/SustitucionMOADatabase.jfm
 /SustitucionMOA/package-lock.json
 /.vscode/launch.json
 /SustitucionMOA/src/app/cars
+/.sonarqube
+/.sonarlint
+/.scannerwork
