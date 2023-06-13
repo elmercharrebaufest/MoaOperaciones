@@ -27,5 +27,10 @@ namespace SustitucionMOAModel.Dto
         public decimal PrecioFinal { get; set; }
         public string Proveedor { get; set; }
         public string TipoPosicionCodigo { get; set; }
+
+        public string TextoDeCabecera { get; set; }
+        public string CondicionesDeEntrega { get; set; }
+        public string CondicionesDePago { get; set; }
+        public string Garantias { get; set; }
     }
 }

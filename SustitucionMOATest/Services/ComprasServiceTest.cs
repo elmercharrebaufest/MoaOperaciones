@@ -350,5 +350,191 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(rutaArchivo, result);
         }
+
+        [Test]
+        public void GrabarAdjudicacionMaterialOk()
+        {
+            var adjudicacionDto = new AdjudicacionDto
+            {
+                AdjudicacionPosiciones = new List<AdjudicacionPosicionDto>
+                {
+                    new AdjudicacionPosicionDto
+                    {
+                        Adjudicacion_Id = 1,
+                        Cantidad = 1000,
+                        CotizacionPosicion_Id = 1,
+                        Id = 1,
+                        SolpPosicion_Id = 1,
+                        PrecioTotal = 1000,
+                        MonedaId = 1,                        
+                    }
+                },
+                Cotizacion_Id = 1,
+                FechaCreacion = DateTime.Now,
+                Moneda_Id = 1,
+                UsuarioCreador_Id = 1,
+                Solp_Id = 1, 
+                CondicionesDeEntrega = "Condiciones"
+            };
+            var cotizacion = new Cotizacion
+            {
+                PeticionDeOfertaUsuario = new PeticionDeOfertaUsuario
+                {
+                    PeticionDeOferta = new PeticionDeOferta
+                    {
+                        Solp = new Solp
+                        {
+                            Id = 1,
+                            Posiciones = new List<SolpPosicion>
+                            {
+                                new SolpPosicion
+                                {
+                                    Id = 1,
+                                    TipoPosicion = new TablaGeneral
+                                    {
+                                        Codigo = "MATERIALES"
+                                    },                                   
+                                }
+                            }
+                        }
+                    }
+                },
+                CotizacionPosiciones = new List<CotizacionPosicion>()
+                {
+                    new CotizacionPosicion
+                    {
+                        Id = 1,
+                        Cantidad = 1000,
+                        Moneda_Id = 1,
+                        Precio = 1000,                       
+                    }
+                }
+            };
+            repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>()))
+               .Returns(new Usuario { Id = 1, CUITRegistro = "32332232", Habilitado = true, Mail = "bmelgarejo@prueba.com.ar" });
+            repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>()))
+               .Returns(cotizacion);
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), 
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
+            repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<int>()))
+                .Returns(new TablaSap { CodigoSap = "ARP", Id = 1 });
+            obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(new ObtenerTipoCambioConsumerMOAResponse
+                {
+                    MonedaDestino = "ARP",
+                    MonedaOrigen = "USD",
+                    TipoCambio = 450
+                });
+            crearPedidoConsumerMOAMock.Setup(y => y.Request(It.IsAny<Adjudicacion>())).Returns(new CrearPedidoConsumerMOAResponse
+            {
+                NumeroPedido = "383383932",
+                Errores = new List<CrearPedidoConsumerMOAError> { },
+                Resultado = "OK"
+            });
+            var result =  target.GrabarAdjudicacion(adjudicacionDto, 1);
+
+            repositorioMock.Verify(x => x.Agregar(It.IsAny<Adjudicacion>()), Times.Once);
+          
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+            Assert.That(result.Errores.Count == 0);
+        }
+
+
+        [Test]
+        public void GrabarAdjudicacionServicioOk()
+        {
+            var adjudicacionDto = new AdjudicacionDto
+            {
+                AdjudicacionPosiciones = new List<AdjudicacionPosicionDto>
+                {
+                    new AdjudicacionPosicionDto
+                    {
+                        Adjudicacion_Id = 1,
+                        Cantidad = 1000,
+                        CotizacionPosicion_Id = 1,
+                        Id = 1,
+                        SolpPosicion_Id = 1,
+                        PrecioTotal = 1000,
+                        MonedaId = 1,
+                    }
+                },
+                Cotizacion_Id = 1,
+                FechaCreacion = DateTime.Now,
+                Moneda_Id = 1,
+                UsuarioCreador_Id = 1,
+                Solp_Id = 1,
+                CondicionesDeEntrega = "Condiciones"
+            };
+            var cotizacion = new Cotizacion
+            {
+                PeticionDeOfertaUsuario = new PeticionDeOfertaUsuario
+                {
+                    PeticionDeOferta = new PeticionDeOferta
+                    {
+                        Solp = new Solp
+                        {
+                            Id = 1,
+                            Posiciones = new List<SolpPosicion>
+                            {
+                                new SolpPosicion
+                                {
+                                    Id = 1,
+                                    TipoPosicion = new TablaGeneral
+                                    {
+                                        Codigo = "SERVICIOS"
+                                    },
+                                }
+                            }
+                        }
+                    }
+                },
+                CotizacionPosiciones = new List<CotizacionPosicion>()
+                {
+                    new CotizacionPosicion
+                    {
+                        Id = 1,
+                        Cantidad = 1000,
+                        Moneda_Id = 1,
+                        Precio = 1000,
+                        CotizacionSubPosiciones = new List<CotizacionSubPosicion>
+                        {
+                            new CotizacionSubPosicion
+                            {
+                                Precio = 1000,
+                                Cantidad = 1000,
+                                Moneda_Id = 1
+                            }
+                        }
+                    }
+                }
+            };
+            repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>()))
+               .Returns(new Usuario { Id = 1, CUITRegistro = "32332232", Habilitado = true, Mail = "bmelgarejo@prueba.com.ar" });
+            repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>()))
+               .Returns(cotizacion);
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
+            repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<int>()))
+                .Returns(new TablaSap { CodigoSap = "ARP", Id = 1 });
+            obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(new ObtenerTipoCambioConsumerMOAResponse
+                {
+                    MonedaDestino = "ARP",
+                    MonedaOrigen = "USD",
+                    TipoCambio = 450
+                });
+            crearPedidoConsumerMOAMock.Setup(y => y.Request(It.IsAny<Adjudicacion>())).Returns(new CrearPedidoConsumerMOAResponse
+            {
+                NumeroPedido = "383383932",
+                Errores = new List<CrearPedidoConsumerMOAError> { },
+                Resultado = "OK"
+            });
+            var result = target.GrabarAdjudicacion(adjudicacionDto, 1);
+
+            repositorioMock.Verify(x => x.Agregar(It.IsAny<Adjudicacion>()), Times.Once);
+
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+            Assert.That(result.Errores.Count == 0);
+        }
     }
 }

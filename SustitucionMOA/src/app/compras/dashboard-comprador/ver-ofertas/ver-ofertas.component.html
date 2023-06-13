@@ -70,7 +70,11 @@
                     <td class="columna border2-right" colspan="8" style="width: 620px !important;">Propuesta técnica</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="8" style="width: 620px !important;"></td>
+                    <td class="columna border2-right" colspan="8" style="width: 620px !important;">
+                        <button class="publicar btn " style="margin-right: 10px; font-size: 12px;" (click)="abrilModalTextos()">
+                            Agregar racional de compra
+                        </button>
+                    </td>
                 </tr>
             </ng-template>
 
@@ -269,11 +273,20 @@
                     <td class="columna border2-right" colspan="6" style="width: 550px !important;">Propuesta técnica</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="6" style="width: 550px !important;">  
-                        Panel de horas
-                        <span style="cursor:pointer; vertical-align: middle;" (click)="mostrarPanelHs(p)">
-                            <i class="pi pi-clock" style="font-size: 3rem; color: grey; vertical-align: middle;"></i>
-                        </span>
+                    <td class="columna border2-right" colspan="6" style="width: 550px !important;">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <button class="publicar btn" style="font-size: 12px;" (click)="abrilModalTextos()">
+                                    Agregar racional de compra
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                Panel de horas
+                                <span style="cursor:pointer; vertical-align: middle;" (click)="mostrarPanelHs(p)">
+                                    <i class="pi pi-clock" style="font-size: 3rem; color: grey; vertical-align: middle;"></i>
+                                </span>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </ng-template>
@@ -492,3 +505,11 @@
         <button type="button" pButton  label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept(); "></button>
     </p-footer>
 </p-confirmDialog>
+
+<app-textos-adjudicar  #textoAdjudicar
+[(displayTextos)]="displayTextos"
+(cerrarModalTextosEmitter)="cerrarModalTextos()"
+(aceptarModalTextosEmitter)="aceptarModalTextos()"
+[(adjudicacion)]="adjudicacion">
+</app-textos-adjudicar>   
+

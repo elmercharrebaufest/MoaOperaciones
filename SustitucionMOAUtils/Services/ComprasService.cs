@@ -2324,7 +2324,6 @@ namespace SustitucionMOAUtils.Services
                 Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
                 var destino = repositorio.Obtener<TablaSap>(x => x.Codigo == "ARP" && x.Tabla == TablasSap.Moneda);
                 var adjudicaciones = repositorio.Listar<Adjudicacion>(x => x.Solp_Id == todasLasOfertas.Solp_Id);
-
                 DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
                 DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
                 var filtros = new ObtenerSolpRequest
@@ -4230,8 +4229,8 @@ namespace SustitucionMOAUtils.Services
 
         private ObtenerTipoCambioConsumerMOAResponse ObtenerTipoCambio(int MonedaOrigen_Id, int MonedaDestino_Id, DateTime Fecha)
         {
-            var origen = repositorio.Obtener<TablaSap>(x => x.Id == MonedaOrigen_Id);
-            var destino = repositorio.Obtener<TablaSap>(x => x.Id == MonedaDestino_Id);
+            var origen = repositorio.Obtener<TablaSap>(MonedaOrigen_Id);
+            var destino = repositorio.Obtener<TablaSap>(MonedaDestino_Id);
             ObtenerTipoCambioConsumerMOAResponse result = obtenerTipoCambioConsumerMOA.Request(Fecha.ToString("yyyy-MM-dd"), destino.Codigo, origen.Codigo);
 
             return result;
@@ -4339,7 +4338,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var respuestaGuardarSOLP = new RespuestaCrearOrdenDeCompra();
                 var usuario = repositorio.Obtener<Usuario>(usuarioActualId);
-                var cotizacion = repositorio.Obtener<Cotizacion>(x => x.Id == adjudicacionDto.Cotizacion_Id);
+                var cotizacion = repositorio.Obtener<Cotizacion>(adjudicacionDto.Cotizacion_Id);
                 var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
 
 
@@ -4354,7 +4353,11 @@ namespace SustitucionMOAUtils.Services
                     FechaCreacion = DateTime.Now,
                     Usuario = usuario,
                     UsuarioCreador_Id = usuario.Id,
-                    MontoTotal = CalcularMontoTotal(adjudicacionDto, cotizacion, info),
+                    MontoTotal = CalcularMontoTotal(adjudicacionDto, cotizacion, info),                   
+                    CondicionesDeEntrega = adjudicacionDto.CondicionesDeEntrega,
+                    CondicionesDePago = adjudicacionDto.CondicionesDePago,
+                    Garantias = adjudicacionDto.Garantias,
+                    TextoDeCabecera = adjudicacionDto.TextoDeCabecera,
                     Posiciones = adjudicacionDto.AdjudicacionPosiciones.Count > 0 ? adjudicacionDto.AdjudicacionPosiciones.Select(x => new AdjudicacionPosicion
                     {
                         Cantidad = x.Cantidad,
@@ -4391,7 +4394,6 @@ namespace SustitucionMOAUtils.Services
         {
             Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
             decimal cambio = 0;
-            var destino = repositorio.Obtener<TablaSap>(x => x.Codigo == "ARP" && x.Tabla == TablasSap.Moneda);
             var precio = new List<decimal>();
             var precioSubposicion = new List<decimal>();
             var cotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(x => adjudicacionDto.AdjudicacionPosiciones.Select(y => y.CotizacionPosicion_Id).Contains(x.Id));
@@ -4411,7 +4413,7 @@ namespace SustitucionMOAUtils.Services
 
                                     if ((subpos.Moneda_Id != null && !tipodecambio.TryGetValue(subpos.Moneda_Id.Value, out cambio)))
                                     {
-                                        var tipoCambio = ObtenerTipoCambio(subpos.Moneda_Id.Value, destino.Id, DateTime.Now);
+                                        var tipoCambio = ObtenerTipoCambio(subpos.Moneda_Id.Value, info.Where(moneda => moneda.CodigoSap == "ARP").FirstOrDefault().Id, DateTime.Now);
                                         tipodecambio.Add(subpos.Moneda_Id.Value, tipoCambio.TipoCambio);
                                         cambio = tipoCambio.TipoCambio;
 
@@ -4449,7 +4451,7 @@ namespace SustitucionMOAUtils.Services
 
                     if ((subpos.MonedaId != null && !tipodecambio.TryGetValue(subpos.MonedaId.Value, out cambio)))
                     {
-                        var tipoCambio = ObtenerTipoCambio(subpos.MonedaId.Value, destino.Id, DateTime.Now);
+                        var tipoCambio = ObtenerTipoCambio(subpos.MonedaId.Value, info.Where(moneda => moneda.CodigoSap == "ARP").FirstOrDefault().Id, DateTime.Now);
                         tipodecambio.Add(subpos.MonedaId.Value, tipoCambio.TipoCambio);
                         cambio = tipoCambio.TipoCambio;
 
