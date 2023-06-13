@@ -99,7 +99,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Usuarios = (from u in contexto.Set<PeticionDeOfertaUsuario>()
                                                 join cotizacion in contexto.Set<Cotizacion>() on u.Id equals cotizacion.PeticionDeOfertaUsuario_Id into peticionCotizacion
                                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
-                                                where po.Id == u.PeticionDeOferta_Id
+                                                where po.Id == u.PeticionDeOferta_Id 
                                                 select new PeticionDeOfertaUsarioDto()
                                                 {
                                                     Id = u.Id,
@@ -151,7 +151,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             Id = ch.Id
                                                         }).ToList(),
 
-                                                        CotizacionPosiciones = cotizacion.CotizacionPosiciones.Select(p => new CotizacionPosicionDto
+                                                        CotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(posic => posic.PeticionDeOfertaSolpPosicion.SolpPosicion.EsConcluido == true && posic.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true)
+                                                        .Select(p => new CotizacionPosicionDto
                                                         {
                                                             Id = p.Id,
                                                             Cotizacion_Id = p.Cotizacion_Id,
