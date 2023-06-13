@@ -50,10 +50,11 @@ export class OrdenDeCarga {
     DomicilioTipo: string;
     DomicilioOrden: number;
     DomicilioDescr: string;
+    NumeroFactura: string;
     constructor() {
     }
 }
 export type CuitValidaExistencia = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino">;
 export type CuitValidaSISA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" | "CUITCorredor" | "CUITCliente">;
-export type CuitValidaRUCA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" |  "CUITCliente">;
+export type CuitValidaRUCA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" | "CUITCliente">;
 
