@@ -17,12 +17,14 @@ namespace SustitucionMOA.Controllers
     public class OrdenDeCargaController : BaseController
     {
         readonly IOrdenDeCargaService ordenDeCargaService;
+        private readonly IFacturaAnticipadaService _facturaAnticipadaService;
         private readonly IConsultaService consultaService;
 
-        public OrdenDeCargaController(IConsultaService consultaService, IOrdenDeCargaService ordenDeCargaService)
+        public OrdenDeCargaController(IConsultaService consultaService, IOrdenDeCargaService ordenDeCargaService, IFacturaAnticipadaService facturaAnticipadaService)
         {
             this.consultaService = consultaService;
             this.ordenDeCargaService = ordenDeCargaService;
+            _facturaAnticipadaService = facturaAnticipadaService;
         }
 
         [HttpPost]
@@ -966,6 +968,28 @@ namespace SustitucionMOA.Controllers
             try
             {
                 response.Data = ordenDeCargaService.ValidarCuilChoferDigito(cuitTransporte);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        public ActionResult FacturasDisponibles(string numeroContrato)
+        {
+            var response = new SustitucionMOAApiResponse<List<string>>();
+            try
+            {
+                response.Data = _facturaAnticipadaService.ObtenerFacturasDeContrato(numeroContrato);
             }
             catch (InfoCustomException ice)
             {
