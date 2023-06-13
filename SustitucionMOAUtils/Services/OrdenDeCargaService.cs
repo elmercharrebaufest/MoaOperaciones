@@ -2377,7 +2377,7 @@ namespace SustitucionMOAUtils.Services
                     Fechas = rangoFechas,
                     Material = material,
                     Pendiente = "X", // "X" es para Contratos ABIERTOS
-                    TipoContrato = "N"
+                    TipoContrato = ""
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();
@@ -2404,6 +2404,7 @@ namespace SustitucionMOAUtils.Services
                     Contratos = consumerRes.Resultados.Select(x => new ContratoOrdenFas
                     {
                         NumeroContrato = x.Contrato,
+                        TipoContrato = x.TipoContrato,
                         Producto = productosBD
                             .Where(p => p.CodigoSap == x.Producto.Trim().TrimStart('0'))
                             .Select(p => new MaterialDto
