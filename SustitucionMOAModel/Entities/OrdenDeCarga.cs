@@ -103,6 +103,7 @@ namespace SustitucionMOAModel.Entities
         public string DomicilioTipo { get; set; }
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
+        public string NumeroFactura { get; set; }
 
         public bool TieneCodigoSap(ControlCargaResEnum controlCargaRes)
         {

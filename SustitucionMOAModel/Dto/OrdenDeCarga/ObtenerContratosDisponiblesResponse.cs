@@ -25,6 +25,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
 
         public MaterialDto Producto { get; set; }
 
+        public string TipoContrato { get; set; }
         //public string ProductoId { get; set; }
 
         //public string ProductoDescripcion { get; set; }
