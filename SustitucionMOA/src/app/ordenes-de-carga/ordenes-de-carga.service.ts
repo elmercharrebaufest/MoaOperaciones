@@ -35,7 +35,7 @@ export class OrdenesDeCargaService extends BaseService {
         "Sin Enviar a SAP",
         "Entrega anulada, pedido pendiente de anulación"
     ]);
-   
+
     setOrdenDeCargaSeleccionado(value: number) {
         this._ordenDeCargaSeleccionado.next(value);
     }
@@ -493,46 +493,6 @@ export class OrdenesDeCargaService extends BaseService {
             .get<ApiResponse<Array<string>>>(
                 '/api/OrdenDeCarga/FacturasDisponibles',
                 { params: params, headers: this.headers })
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
-    }
-    public obtenerFacturasDeContrato(numeroContrato: string): Observable<ApiResponse<Array<string>>> {
-        let params: HttpParams = new HttpParams()
-            .append("numeroContrato", numeroContrato);
-
-        return this.http
-            .get<ApiResponse<Array<string>>>(
-                '/api/OrdenDeCarga/FacturasDisponibles',
-                { params: params, headers: this.headers })
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
-    }
-    public obtenerFacturasDeContrato(numeroContrato: string): Observable<ApiResponse<Array<string>>> {
-        let params: HttpParams = new HttpParams()
-            .append("numeroContrato", numeroContrato);
-
-        return this.http
-            .get<ApiResponse<Array<string>>>(
-                '/api/OrdenDeCarga/FacturasDisponibles',
-                { params: params, headers: this.headers })
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
-    }
-    public obtenerFacturasDeContrato(numeroContrato: string): Observable<ApiResponse<Array<string>>> {
-        let params: HttpParams = new HttpParams()
-            .append("numeroContrato", numeroContrato);
-
-        return this.http
-            .get<ApiResponse<Array<string>>>(
-                '/api/OrdenDeCarga/FacturasDisponibles',
-                { params: params, headers: this.headers })
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
-    }
-    public obtenerFacturasDeContrato(numeroContrato: string): Observable<ApiResponse<Array<string>>> {
-        let params: HttpParams = new HttpParams()
-            .append("numeroContrato", numeroContrato);
-
-        return this.http
-            .get<ApiResponse<Array<string>>>(
-                '/api/OrdenDeCarga/FacturasDisponibles',
-                { params: params, headers: this.headers })
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 }
