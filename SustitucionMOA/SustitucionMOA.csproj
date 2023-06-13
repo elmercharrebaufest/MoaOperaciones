@@ -955,6 +955,7 @@
     <Content Include="Documentacion\GMP MOA.pdf" />
     <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - CORREDOR.pdf" />
     <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - DIRECTO.pdf" />
+    <Content Include="libman.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

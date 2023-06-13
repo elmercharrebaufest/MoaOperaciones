@@ -1,18 +1,15 @@
 ﻿
-using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAWS.CrearPedidoWebServiceMOA;
 using SustitucionMOAWS.CredentialService;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Text;
+using SustitucionMOARepositorio.Extensiones;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -29,7 +26,7 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
         public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion)
-        {            
+        {
             var solpPedidoSAP = ConvertirSOLP(adjudicacion);
 
             var serxml = new System.Xml.Serialization.XmlSerializer(solpPedidoSAP.GetType());
@@ -177,6 +174,7 @@ namespace SustitucionMOAWS.WSConsumers
                     EXCH_RATE = "",
                     EX_RATE_FX = "",
                     DOC_DATE = "X"
+
                 };
 
                 //Nombre: ZBAPIMEPOITEM Denominación:	Posición de PEDIDOS
@@ -208,7 +206,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.FINAL_INV = "";
 
 
-                
+
                 switch (posicion.TipoImputacion?.Codigo.ToLower())
                 {
                     case "centrodecosto":
@@ -353,7 +351,8 @@ namespace SustitucionMOAWS.WSConsumers
 
 
                 //subposiciones
-                if (!esPosicionDeMateriales){
+                if (!esPosicionDeMateriales)
+                {
 
                     var LINE_NO = 1;
                     //cabecera de subposiciones 
@@ -402,7 +401,39 @@ namespace SustitucionMOAWS.WSConsumers
                     PCKG_NO++;
                 }
 
+
+
             }
+
+            var listaVaciaTexto = new string[] {""};
+
+            var textosDiccionario = new Dictionary<string, string[]>() {
+                {"F01", !string.IsNullOrEmpty(adjudicacion.TextoDeCabecera) ?  adjudicacion.TextoDeCabecera.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+                {"F05", !string.IsNullOrEmpty(adjudicacion.CondicionesDeEntrega)? adjudicacion.CondicionesDeEntrega.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+                {"F07", !string.IsNullOrEmpty(adjudicacion.CondicionesDePago) ? adjudicacion.CondicionesDePago.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+                {"F08", !string.IsNullOrEmpty(adjudicacion.Garantias) ? adjudicacion.Garantias.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+            };
+
+            foreach (var grupos in textosDiccionario)
+            {
+                bool todosVacios = grupos.Value.All(string.IsNullOrEmpty);
+                if (!todosVacios)
+                {
+                    foreach (var texto in grupos.Value)
+                    {
+                        solpPedidoSAP.IM_POTEXTHEADERList.Add(new BAPIMEPOTEXTHEADER
+                        {
+                            TEXT_ID = grupos.Key,
+                            PO_NUMBER = "",
+                            PO_ITEM = "0",
+                            TEXT_FORM = "*",
+                            TEXT_LINE = texto
+                        });
+                    }
+                }
+                
+            }
+           
 
             return solpPedidoSAP;
         }
@@ -923,4 +954,7 @@ namespace SustitucionMOAWS.WSConsumers
         CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion);
 
     }
+
+  
+
 }

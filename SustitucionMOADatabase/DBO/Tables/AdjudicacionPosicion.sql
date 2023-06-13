@@ -4,6 +4,7 @@
     [SolpPosicion_Id]          int not   NULL,   
     [CotizacionPosicion_Id]          int not   NULL, 
     [Cantidad] INT            NOT NULL,
+    [Texto]  [nvarchar](max)  NULL,
     CONSTRAINT [PK_AdjudicacionPosicion] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK.AdjudicacionPosicion_Adjudicacion_AdjudicacionId] FOREIGN KEY ([Adjudicacion_Id]) REFERENCES [Adjudicacion]([Id]),
     CONSTRAINT [FK.AdjudicacionPosicion_SolpPosicion_SolpPosicionId] FOREIGN KEY ([SolpPosicion_Id]) REFERENCES [SolpPosicion]([Id]),

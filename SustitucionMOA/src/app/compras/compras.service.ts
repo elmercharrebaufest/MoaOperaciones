@@ -716,7 +716,12 @@ export class ComprasService extends BaseService {
         let json = JSON.stringify({
             Cotizacion_Id: adjudicacion.Cotizacion_Id,
             AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
-            Solp_Id: adjudicacion.Solp_Id
+            Solp_Id: adjudicacion.Solp_Id,
+            TextoDeCabecera: adjudicacion.TextoDeCabecera,
+            CondicionesDeEntrega: adjudicacion.CondicionesDeEntrega,
+            CondicionesDePago: adjudicacion.CondicionesDePago,
+            Garantias: adjudicacion.Garantias
+
         });
 
         var payload = new FormData();

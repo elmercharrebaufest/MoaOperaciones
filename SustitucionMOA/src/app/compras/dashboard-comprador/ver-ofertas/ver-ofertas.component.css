@@ -48,3 +48,11 @@
 .border2-left {
     border-left: 2px solid grey !important;
 }
+
+::ng-deep a *,
+::ng-deep a *:before,
+::ng-deep a *:after {
+    -webkit-box-sizing: content-box !important;
+    -moz-box-sizing: content-box !important;
+    box-sizing: content-box !important;
+}

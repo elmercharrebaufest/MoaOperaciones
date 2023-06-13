@@ -16,6 +16,7 @@ import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto, PeticionDeOfertaU
 import { Solp } from '../../solp/solp';
 import { CotizacionHoraDto, CotizacionDto } from '../../../modelos/cotizacionDto';
 import { AdjudicacionDto } from '../../../modelos/adjudicacion';
+import { TextosAdjudicarComponent } from './textos-adjudicar/textos-adjudicar.component';
 
 @Component({
     selector: 'app-ver-ofertas',
@@ -29,16 +30,20 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     @ViewChild("tabla")
     protected tabla: Table;
 
+    @ViewChild("textoAdjudicar")
+    protected modalTexto: TextosAdjudicarComponent;
+
     @Input()
     public peticion: PeticionDeOfertaDto;
 
     peticionOferta: PeticionDeOfertaDto;
     SolpDto: Solp;
     tablaOfertas: PeticionDeOfertaDto;
+
     adjudicacion: AdjudicacionDto;
     Cotizacion: CotizacionDto;
 
-
+    displayTextos: boolean;
     TodasPosicionesSeleccionadas: boolean = false;
     displayAdjudicacionCreada: boolean;
     errores: any = [];
@@ -97,7 +102,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         }
         if (this.adjudicacion == null || this.adjudicacion == undefined) {
             this.adjudicacion = {
-                Id: null
+                Id: null,
             };
         }
     }
@@ -125,6 +130,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
+                        console.log('ofertas', result.data)
                     }
                     this.blockUI.stop();
                 },
@@ -302,6 +308,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     guardarAdjudicacion() {
         this.blockUI.start("Grabando...");
         try {
+            this.guardarAdjudicacionTextos();
             this.subscription = this.service.GrabarAdjudicacion(this.adjudicacion).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
@@ -344,5 +351,25 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     salirVisualizarErrores() {
         this.displayVisualizarErrores = false;
+    }
+
+    abrilModalTextos(){
+        this.displayTextos = true;
+    }
+
+    cerrarModalTextos(){
+        this.displayTextos = false;
+    }
+
+    aceptarModalTextos(){
+        this.displayTextos = false;
+    }
+
+
+    guardarAdjudicacionTextos(){
+     this.adjudicacion.CondicionesDeEntrega = this.modalTexto.adjudicacion.CondicionesDeEntrega;
+     this.adjudicacion.CondicionesDePago = this.modalTexto.adjudicacion.CondicionesDePago;
+     this.adjudicacion.Garantias = this.modalTexto.adjudicacion.Garantias;
+     this.adjudicacion.TextoDeCabecera = this.modalTexto.adjudicacion.TextoDeCabecera;
     }
 }
