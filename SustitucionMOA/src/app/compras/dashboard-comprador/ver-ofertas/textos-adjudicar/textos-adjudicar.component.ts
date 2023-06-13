@@ -46,16 +46,19 @@ export class TextosAdjudicarComponent implements OnInit {
     
     onCerrarTextos(aceptar:boolean) {     
         if(aceptar){ 
-        this.adjudicacion.CondicionesDeEntrega = "";
-        this.adjudicacion.CondicionesDePago = "";
-        this.adjudicacion.Garantias = "";
-        this.adjudicacion.TextoDeCabecera = "";   
+            this.reestablecerDatos()
         }  
         this.closeAccordion();
         this.cerrarModalTextosEmitter.next();
       
     }
 
+   reestablecerDatos(){
+    this.adjudicacion.CondicionesDeEntrega = "";
+        this.adjudicacion.CondicionesDePago = "";
+        this.adjudicacion.Garantias = "";
+        this.adjudicacion.TextoDeCabecera = "";  
+   }
 
   closeAccordion() {
     this.activeTabs = [false,false,false,false];

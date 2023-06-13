@@ -105,6 +105,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 Id: null,
             };
         }
+
     }
 
     seleccionarTodo() {
@@ -325,7 +326,10 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     else {
                         this.numeroOrdenDeCompra = result.NumeroPedido;
                         this.displayAdjudicacionCreada = true;
-                        
+                        this.adjudicacion.CondicionesDeEntrega = "";
+                        this.adjudicacion.CondicionesDePago = "";
+                        this.adjudicacion.Garantias = "";
+                        this.adjudicacion.TextoDeCabecera = "";  
                     }
                     this.blockUI.stop();
                 },
