@@ -66,7 +66,7 @@ namespace SustitucionMOAUtils.Services
             proveedor.Mail = email;
             proveedor.Telefono = telefono;
             proveedor.RealizarAnalisisNOSIS = realizarAnalisisNOSIS;
-            proveedor.EstadoAprobacion = altaInterna? EstadoAprobacion.AprobacionPendiente : EstadoAprobacion.DocumentacionPendiente;
+            proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
             proveedor.IdRubro = IdRubro;
             proveedor.CondicionDePago = CondicionDePago;
             proveedor.ServicioPrestado = ServicioPrestado;
