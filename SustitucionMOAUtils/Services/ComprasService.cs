@@ -4817,7 +4817,7 @@ namespace SustitucionMOAUtils.Services
                 CondicionesDeEntrega = adjudicacion.CondicionesDeEntrega,
                 CondicionesDePago = adjudicacion.CondicionesDePago,
                 Garantias = adjudicacion.Garantias,
-                AdjudicacionPosiciones = adjudicacion.Posiciones.Where(posic => posic.Posicion.EsConcluido == true && posic.Posicion.Estado == true).Select(posicion => new AdjudicacionPosicionDto
+                AdjudicacionPosiciones = adjudicacion.Posiciones.Select(posicion => new AdjudicacionPosicionDto
                 {
                     SolpPosicion_Id = posicion.SolpPosicion_Id,
                     Id = posicion.Id,
