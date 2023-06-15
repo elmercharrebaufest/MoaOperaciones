@@ -1,6 +1,6 @@
-﻿namespace SustitucionMOAWS.Enum.OrdenCargaConsumer
+﻿namespace SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS
 {
-    public enum OrdenCargaCrearEntrega
+    public enum CrearEntregaResEnum
     {
         OK,
         NoExisteTransportista,

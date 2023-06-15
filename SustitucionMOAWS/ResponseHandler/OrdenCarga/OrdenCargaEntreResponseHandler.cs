@@ -1,5 +1,5 @@
 ﻿using System;
-using SustitucionMOAWS.Enum.OrdenCargaConsumer;
+using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 
 namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
 {
@@ -14,16 +14,16 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
             this.numeroEntrega = numeroEntrega;
         }
 
-        public OrdenCargaCrearEntrega GetResultado()
+        public CrearEntregaResEnum GetResultado()
         {
             switch (respuestaSap)
             {
-                case "OE-00": return OrdenCargaCrearEntrega.OK;
-                case "OE-01": return OrdenCargaCrearEntrega.NoExisteTransportista;
-                case "OE-02": return OrdenCargaCrearEntrega.EntregaCreadaErrorAlInsertarOE02;
-                case "OE-03": return OrdenCargaCrearEntrega.EntregaCreadaErrorAlInsertarOE03;
-                case "OE-04": return OrdenCargaCrearEntrega.FaltaCargarKmEnContrato;
-                default: return OrdenCargaCrearEntrega.ErrorRespuestaInesperadaDeSap;
+                case "OE-00": return CrearEntregaResEnum.OK;
+                case "OE-01": return CrearEntregaResEnum.NoExisteTransportista;
+                case "OE-02": return CrearEntregaResEnum.EntregaCreadaErrorAlInsertarOE02;
+                case "OE-03": return CrearEntregaResEnum.EntregaCreadaErrorAlInsertarOE03;
+                case "OE-04": return CrearEntregaResEnum.FaltaCargarKmEnContrato;
+                default: return CrearEntregaResEnum.ErrorRespuestaInesperadaDeSap;
             }
         }
 

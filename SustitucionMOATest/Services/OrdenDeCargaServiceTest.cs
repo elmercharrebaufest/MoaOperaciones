@@ -19,10 +19,10 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
-using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using SustitucionMOAModel.Util;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
+using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 
 namespace SustitucionMOATest.Services
 {
@@ -1874,7 +1874,7 @@ namespace SustitucionMOATest.Services
             var respuesta = "OE-00";
             ordenDeCarga.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            ordenCargaEntreResponseHandlerMock.Setup(x => x.GetResultado()).Returns(OrdenCargaCrearEntrega.OK);
+            ordenCargaEntreResponseHandlerMock.Setup(x => x.GetResultado()).Returns(CrearEntregaResEnum.OK);
             consumerOrdenCargaMOA
                 .Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), It.IsAny<bool>()))
                 .Returns(ordenCargaEntreResponseHandlerMock.Object); //"OE-00");
@@ -1903,7 +1903,7 @@ namespace SustitucionMOATest.Services
             var ordenCargaEntreResponseHandlerMock = new Mock<OrdenCargaEntreResponseHandler>();
             ordenDeCarga.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            ordenCargaEntreResponseHandlerMock.Setup(x => x.GetResultado()).Returns(OrdenCargaCrearEntrega.NoExisteTransportista);
+            ordenCargaEntreResponseHandlerMock.Setup(x => x.GetResultado()).Returns(CrearEntregaResEnum.NoExisteTransportista);
             consumerOrdenCargaMOA
                 .Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), It.IsAny<bool>()))
                 .Returns(ordenCargaEntreResponseHandlerMock.Object); //"OE-01");

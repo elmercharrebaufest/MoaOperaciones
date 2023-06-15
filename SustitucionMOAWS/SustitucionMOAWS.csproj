@@ -65,11 +65,6 @@
   <ItemGroup>
     <Compile Include="CredentialService\DataAgroWSCredential.cs" />
     <Compile Include="CredentialService\SAPCredential.cs" />
-    <Compile Include="Enum\OrdenCargaConsumer\OrdenCargaCrearEntrega.cs" />
-    <Compile Include="Enum\OrdenCargaConsumer\OrdenCargaCrearOrden.cs" />
-    <Compile Include="Enum\OrdenCargaConsumer\OrdenCargaControlCarga.cs" />
-    <Compile Include="Enum\OrdenCargaConsumer\OrdenCargaControlEstado.cs" />
-    <Compile Include="Enum\OrdenCargaConsumer\ResponseConverter.cs" />
     <Compile Include="Interfaces\IOrdenCargaConsumerMOA.cs" />
     <Compile Include="Interfaces\IComprasSolpConsumer.cs" />
     <Compile Include="Interfaces\IListarPesificacionesConsumer.cs" />
