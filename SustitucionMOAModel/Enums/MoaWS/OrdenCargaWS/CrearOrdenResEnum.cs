@@ -1,6 +1,6 @@
-﻿namespace SustitucionMOAWS.Enum.OrdenCargaConsumer
+﻿namespace SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS
 {
-    public enum OrdenCargaCrearOrden
+    public enum CrearOrdenResEnum
     {
         PedidoCreado,
         VerificarDatos, //'Verificar Contrato, Material, Cliente'
@@ -12,7 +12,7 @@
     }
     public static class OrdenCargaCrearOrdenClass
     {
-        public static string GetCodigo(OrdenCargaCrearOrden result)
+        public static string GetCodigo(CrearOrdenResEnum result)
         {
             return ResponseConverter.GetCodigoCrearOrden(result);
         }

@@ -1,6 +1,6 @@
-﻿namespace SustitucionMOAWS.Enum.OrdenCargaConsumer
+﻿namespace SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS
 {
-    public enum OrdenCargaControlCarga
+    public enum ControlCargaResEnum
     {
         OK,
         MasDeUnContratoVigente,

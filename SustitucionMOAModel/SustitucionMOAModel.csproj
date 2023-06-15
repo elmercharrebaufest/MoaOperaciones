@@ -179,6 +179,12 @@
     <Compile Include="Enums\EstadoAplicacionCartaPorte.cs" />
     <Compile Include="Enums\EstadoOrdenDeCargaFason.cs" />
     <Compile Include="Enums\CotizacionEstadoEnum.cs" />
+    <Compile Include="Enums\MoaWS\OrdenCargaWS\ControlCargaResEnum.cs" />
+    <Compile Include="Enums\MoaWS\OrdenCargaWS\ControlEstadoResEnum.cs" />
+    <Compile Include="Enums\MoaWS\OrdenCargaWS\CrearEntregaResEnum.cs" />
+    <Compile Include="Enums\MoaWS\OrdenCargaWS\CrearOrdenResEnum.cs" />
+    <Compile Include="Enums\MoaWS\OrdenCargaWS\ResponseConverter.cs" />
+    <Compile Include="Enums\PermisoEnum.cs" />
     <Compile Include="Models\EcheqRequestModel.cs" />
     <Compile Include="Entities\Configuracion.cs" />
     <Compile Include="Entities\HabilitacionJob.cs" />

@@ -9,6 +9,8 @@ namespace SustitucionMOAModel.Entities
 {
     public class Usuario
     {
+        private List<PermisoEnum> permisosDelUsuario = null;
+
         [Key]
         public int Id { get; set; }
         public virtual string Mail { get; set; }
@@ -190,6 +192,7 @@ namespace SustitucionMOAModel.Entities
         }
 
 
+        [Obsolete("Reemplazar por método TienePermiso(Permiso permiso)", false)]
         public virtual bool TienePermiso(string permiso)
         {
             var permisosUsuario = ObtenerPermisos();
@@ -197,10 +200,137 @@ namespace SustitucionMOAModel.Entities
             return permisosUsuario.Contains(permiso);
         }
 
+        public bool TienePermiso(PermisoEnum permiso)
+        {
+            if (permisosDelUsuario == null)
+            {
+                CargarPermisosUsuario();
+            }
+            return permisosDelUsuario.Contains(permiso);
+        }
+
         public virtual bool TieneRol(string codigo)
         {
 
             return Roles.Any(r => r.Codigo == codigo);
+        }
+
+        private void CargarPermisosUsuario()
+        {
+            permisosDelUsuario = new List<PermisoEnum>();
+            foreach (var rol in Roles)
+            {
+                rol.ObtenerPermisos().ForEach(r => permisosDelUsuario.Add(ObtenerPermisoEnum(r)));
+            }
+        }
+
+        private static PermisoEnum ObtenerPermisoEnum(string permisoStr)
+        {
+            switch (permisoStr)
+            {
+                case "ABM BALANZAS": return PermisoEnum.AbmBalanzas;
+                case "ABM COMMODITIES": return PermisoEnum.AbmCommodities;
+                case "ABM EXPORTADORES": return PermisoEnum.AbmExportadores;
+                case "ABM USUARIOS": return PermisoEnum.AbmUsuarios;
+                case "CAMBIAR CONTRASENIA": return PermisoEnum.CambiarContrasenia;
+                case "CARGAR FACT PROV": return PermisoEnum.CargarFactProv;
+                case "CONSULTAR CAMARAS CONSOLIDACIO": return PermisoEnum.ConsultarCamarasConsolidacio;
+                case "CONSULTAR CAMARAS MUELLE": return PermisoEnum.ConsultarCamarasMuelle;
+                case "CONSULTAR CARTAS PORTE": return PermisoEnum.ConsultarCartasPorte;
+                case "CONSULTAR CARTAS PORTE DETALLE": return PermisoEnum.ConsultarCartasPorteDetalle;
+                case "CONSULTAR COMPROBANTES": return PermisoEnum.ConsultarComprobantes;
+                case "CONSULTAR CONTRATO DETALLE": return PermisoEnum.ConsultarContratoDetalle;
+                case "CONSULTAR CONTRATOS": return PermisoEnum.ConsultarContratos;
+                case "CONSULTAR CUENTA CORRIENTE": return PermisoEnum.ConsultarCuentaCorriente;
+                case "CONSULTAR DATOS FISCALES": return PermisoEnum.ConsultarDatosFiscales;
+                case "CONSULTAR DOCUMENTACION": return PermisoEnum.ConsultarDocumentacion;
+                case "CONSULTAR FLETE": return PermisoEnum.ConsultarFlete;
+                case "CONSULTAR HOME": return PermisoEnum.ConsultarHome;
+                case "CONSULTAR HOME NG": return PermisoEnum.ConsultarHomeNg;
+                case "CONSULTAR INFORMACION METEOROL": return PermisoEnum.ConsultarInformacionMeteorol;
+                case "CONSULTAR INFORME": return PermisoEnum.ConsultarInforme;
+                case "CONSULTAR LIQUIDACIONES": return PermisoEnum.ConsultarLiquidaciones;
+                case "CONSULTAR LIQUIDACIONES NG": return PermisoEnum.ConsultarLiquidacionesNg;
+                case "CONSULTAR LISTADO PESADAS": return PermisoEnum.ConsultarListadoPesadas;
+                case "CONSULTAR PAGOS": return PermisoEnum.ConsultarPagos;
+                case "CONSULTAR PAGOS DETALLE": return PermisoEnum.ConsultarPagosDetalle;
+                case "CONSULTAR PAGOS NG": return PermisoEnum.ConsultarPagosNg;
+                case "CONSULTAR PESADA DETALLE": return PermisoEnum.ConsultarPesadaDetalle;
+                case "CONSULTAR PESADAS": return PermisoEnum.ConsultarPesadas;
+                case "CONSULTAR VENDEDOR STATUS": return PermisoEnum.ConsultarVendedorStatus;
+                case "CONSULTAR VENDEDORES": return PermisoEnum.ConsultarVendedores;
+                case "CONTACTO MAIL": return PermisoEnum.ContactoMail;
+                case "CREAR FORMULARIO CCPP": return PermisoEnum.CrearFormularioCcpp;
+                case "DATAAGROLOGIN": return PermisoEnum.Dataagrologin;
+                case "DESCARGAR CARTAS PORTE": return PermisoEnum.DescargarCartasPorte;
+                case "DESCARGAR CARTAS PORTE DETALLE": return PermisoEnum.DescargarCartasPorteDetalle;
+                case "DESCARGAR COMPROBANTES": return PermisoEnum.DescargarComprobantes;
+                case "DESCARGAR CONTRATO DETALLE": return PermisoEnum.DescargarContratoDetalle;
+                case "DESCARGAR CONTRATOS": return PermisoEnum.DescargarContratos;
+                case "DESCARGAR CUENTA CORRIENTE": return PermisoEnum.DescargarCuentaCorriente;
+                case "DESCARGAR DOCUMENTO": return PermisoEnum.DescargarDocumento;
+                case "DESCARGAR LIQUIDACIONES": return PermisoEnum.DescargarLiquidaciones;
+                case "DESCARGAR LIQUIDACIONES NG": return PermisoEnum.DescargarLiquidacionesNg;
+                case "DESCARGAR PAGOS": return PermisoEnum.DescargarPagos;
+                case "DESCARGAR PAGOS DETALLE": return PermisoEnum.DescargarPagosDetalle;
+                case "DESCARGAR PAGOS NG": return PermisoEnum.DescargarPagosNg;
+                case "PESIFICACION": return PermisoEnum.Pesificacion;
+                case "REGISTRAR PESADA": return PermisoEnum.RegistrarPesada;
+                case "SELECCIONAR VENDEDOR": return PermisoEnum.SeleccionarVendedor;
+                case "ALTA EMPRESA GRANOS": return PermisoEnum.AltaEmpresaGranos;
+                case "ABM EMPRESAS": return PermisoEnum.AbmEmpresas;
+                case "ABM EMPRESAS OPERADOR": return PermisoEnum.AbmEmpresasOperador;
+                case "ABM EMPRESAS APROBADOR": return PermisoEnum.AbmEmpresasAprobador;
+                case "ESTADO SOLICITUD": return PermisoEnum.EstadoSolicitud;
+                case "CONSULTAR VENDEDOR PENDIENTES": return PermisoEnum.ConsultarVendedorPendientes;
+                case "MENU": return PermisoEnum.Menu;
+                case "NUEVO VENDEDOR": return PermisoEnum.NuevoVendedor;
+                case "ABM NOTIFICACIONES": return PermisoEnum.AbmNotificaciones;
+                case "ALTA EMPRESA NO GRANOS": return PermisoEnum.AltaEmpresaNoGranos;
+                case "VER ALTAS GRANOS": return PermisoEnum.VerAltasGranos;
+                case "VER ALTAS NO GRANOS": return PermisoEnum.VerAltasNoGranos;
+                case "VER PESIFICACIONES": return PermisoEnum.VerPesificaciones;
+                case "ELEGIR TODOS VENDEDORES": return PermisoEnum.ElegirTodosVendedores;
+                case "CARGAR CONSULTA": return PermisoEnum.CargarConsulta;
+                case "INFORMAR LIQUIDACION": return PermisoEnum.InformarLiquidacion;
+                case "GUARDADO Y CONSULTA DE LOG PESIFICACIONES": return PermisoEnum.GuardadoYConsultaDeLogPesificaciones;
+                case "CREAR CONTRATOS": return PermisoEnum.CrearContratos;
+                case "ABM CAMPOS SUSTENTABLE": return PermisoEnum.AbmCamposSustentable;
+                case "VER TODOS CAMPOS SUSTENTABLE": return PermisoEnum.VerTodosCamposSustentable;
+                case "EDICION CAMPOS CREADOS": return PermisoEnum.EdicionCamposCreados;
+                case "APIKEY": return PermisoEnum.Apikey;
+                case "CONSULTA ABM": return PermisoEnum.ConsultaAbm;
+                case "ALTA INTERNA GRANOS": return PermisoEnum.AltaInternaGranos;
+                case "GESTION IMPUESTOS CM05": return PermisoEnum.GestionImpuestosCm05;
+                case "BORRAR CAMPOS CREADOS": return PermisoEnum.BorrarCamposCreados;
+                case "ABM SOLP": return PermisoEnum.AbmSolp;
+                case "VER TODAS SOLPS": return PermisoEnum.VerTodasSolps;
+                case "ACCESO QR": return PermisoEnum.AccesoQr;
+                case "VER ORDENES DE CARGA DE TERCEROS": return PermisoEnum.VerOrdenesDeCargaDeTerceros;
+                case "VER TODAS ORDENES DE CARGA": return PermisoEnum.VerTodasOrdenesDeCarga;
+                case "VER ORDENES DE CARGA PARA COMERCIALES": return PermisoEnum.VerOrdenesDeCargaParaComerciales;
+                case "VER ORDENES DE CARGA PARA MESA FAS": return PermisoEnum.VerOrdenesDeCargaParaMesaFas;
+                case "VER ORDENES DE CARGA PARA PUERTO": return PermisoEnum.VerOrdenesDeCargaParaPuerto;
+                case "MOSTRAR BUSCADOR INTELIGENTE": return PermisoEnum.MostrarBuscadorInteligente;
+                case "CESIÓN Y RECTIFICACIÓN DE CPE": return PermisoEnum.CesiónYRectificaciónDeCpe;
+                case "ALTA INTERNA NO GRANOS": return PermisoEnum.AltaInternaNoGranos;
+                case "ANULAR ORDEN DE CARGA": return PermisoEnum.AnularOrdenDeCarga;
+                case "VER ECHEQ": return PermisoEnum.VerEcheq;
+                case "VER ECHEQ ADMIN": return PermisoEnum.VerEcheqAdmin;
+                case "VER ORDENES DE CARGA FASON": return PermisoEnum.VerOrdenesDeCargaFason;
+                case "VER ORDENES DE CARGA FASON ADMIN": return PermisoEnum.VerOrdenesDeCargaFasonAdmin;
+                case "ENVIAR A SAP": return PermisoEnum.EnviarASap;
+                case "CORREDOR": return PermisoEnum.Corredor;
+                case "ABM APLICACIONES CCPP": return PermisoEnum.AbmAplicacionesCcpp;
+                case "ADMIN APLICACIONES CCPP": return PermisoEnum.AdminAplicacionesCcpp;
+                case "VER SOLPS COMPRADOR": return PermisoEnum.VerSolpsComprador;
+                case "VER SOLAPA COMPRA": return PermisoEnum.VerSolapaCompra;
+                case "COMERCIAL CAMPOS SUSTENTABLES": return PermisoEnum.ComercialCamposSustentables;
+                case "VER SOLPS PROVEEDOR": return PermisoEnum.VerSolpsProveedor;
+                case "FAS - MODIFICAR CAMPO REVENTA": return PermisoEnum.Fas_ModificarCampoReventa;
+
+                default: throw new Exception("Permiso no mapeado: " + permisoStr);
+            }
         }
     }
 }

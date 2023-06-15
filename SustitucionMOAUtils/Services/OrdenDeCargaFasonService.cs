@@ -4,11 +4,11 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -199,7 +199,7 @@ namespace SustitucionMOAUtils.Services
             var estadoTransportista = _consumer.GetOrdenCargaControlEstadoTransportista(CUITTransporte);
             Log.Info("TransporteExiste OrdenCargaControlEstadoRequest Result " + estadoTransportista);
 
-            return estadoTransportista == OrdenCargaControlEstado.TransportistaOK;
+            return estadoTransportista == ControlEstadoResEnum.TransportistaOK;
         }
 
         public string VerificarTransporte(int ordenId)

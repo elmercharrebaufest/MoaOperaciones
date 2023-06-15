@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -103,11 +104,25 @@ namespace SustitucionMOAModel.Entities
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
 
-        public void ActualizarEstado()
+        public ControlCargaResEnum VerificacionSap
         {
+            get { return ResponseConverter.GetOrdenCargaControlCargaResponse(CodigoVerificacionSap); }
+        }
+
+        /// <summary>
+        /// Actualiza la Orden según su estado interno
+        /// </summary>
+        /// <returns>Log del cambio de estado</returns>
+        public string ActualizarEstado()
+        {
+            var logCambioEstado = $"Actualizar estado Orden de carga {Id}. Estado inicial:{EstadoOrdenDeCargaExtensions.ToFriendlyString(Estado)}. " +
+                $"CodigoVerificacionSap:{CodigoVerificacionSap}, ContratoSAP:{ContratoSAP}, ContratoSinCantidadPendiente:{ContratoSinCantidadPendiente}, " +
+                $"NumeroPedido:{NumeroPedido}, InformadaSAP:{InformadaSAP}, TransporteExiste:{TransporteExiste}, AprobadoCredito:{AprobadoCredito}, FechaEntregaGenerada:{FechaEntregaGenerada}.";
+
             if (Estado != EstadoOrdenDeCarga.Entregada)
             {
-                if (CodigoVerificacionSap == "CC-01" || CodigoVerificacionSap == "CC-06")
+                if (VerificacionSap == ControlCargaResEnum.MasDeUnContratoVigente ||
+                    VerificacionSap == ControlCargaResEnum.CC06IdemCC01)
                 {
                     Estado = EstadoOrdenDeCarga.ErrorDeCarga;
                 }
@@ -147,6 +162,8 @@ namespace SustitucionMOAModel.Entities
                     }
                 }
             }
+            logCambioEstado += $" Estado final:{EstadoOrdenDeCargaExtensions.ToFriendlyString(Estado)}";
+            return logCambioEstado;
         }
 
         public override bool Equals(object obj)
