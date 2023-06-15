@@ -2374,13 +2374,13 @@ namespace SustitucionMOAUtils.Services
                         item.Cotizacion.TotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalPesos);
                         item.Cotizacion.TotalGlobalSubPos = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalARPCotizacionPosicion);
 
-                    }                    
+                    }
                     item.VerAdjudicar = item.Cotizacion != null ? item.PlazoDeOferta.Date <= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" && item.EstaHabilitado : false;
                 }
                 foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
                 {
-                   
-                    posicion.Posicion.CantidadAdjudicada = solp != null && solp.Posiciones.Count > 0 && 
+
+                    posicion.Posicion.CantidadAdjudicada = solp != null && solp.Posiciones.Count > 0 &&
                         solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
                        (solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice).FirstOrDefault().Ordered) : 0; //Cantidad que ya se adjudico
 
@@ -2388,11 +2388,11 @@ namespace SustitucionMOAUtils.Services
                         (posicion.Posicion.Cantidad - posicion.Posicion.CantidadAdjudicada) : posicion.Posicion.Cantidad; //Cantidad Pendiente
 
                     posicion.Posicion.CantidadAdjudicacion = posicion.Posicion.CantidadPendiente; //Cantidad A Adjudicar 
-                    
+
 
                     if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
                     {
-                        if(posicion.Posicion.CantidadPendiente <= 0)
+                        if (posicion.Posicion.CantidadPendiente <= 0)
                         {
                             posicion.Posicion.AdjudicacionCompleta = true;
                         }
@@ -2404,7 +2404,7 @@ namespace SustitucionMOAUtils.Services
                     else
                     {
                         if (adjudicaciones.Any(x => x.Solp_Id == posicion.Posicion.Solp_Id) &&
-                            adjudicaciones.Any(x=>x.Posiciones.Any(y=> y.SolpPosicion_Id == posicion.Posicion.Id)))
+                            adjudicaciones.Any(x => x.Posiciones.Any(y => y.SolpPosicion_Id == posicion.Posicion.Id)))
                         {
                             posicion.Posicion.AdjudicacionCompleta = true;
                         }
@@ -2412,7 +2412,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             posicion.Posicion.AdjudicacionCompleta = false;
                         }
-                    }                   
+                    }
                 }
                 return todasLasOfertas;
             }
@@ -3539,7 +3539,7 @@ namespace SustitucionMOAUtils.Services
                     CUIT = u.Usuario.ObtenerProveedor().CUIT,
                     Mail = u.Usuario.Mail,
                     Cotizacion = cotizacion,
-                    PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,   
+                    PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
                     RealizoVisita = u.RealizoVisita,
                 };
                 usuarios.Add(usuario);
@@ -4263,12 +4263,12 @@ namespace SustitucionMOAUtils.Services
                 $"{cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.NroSolp} y la PO {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} generada por el proveedor {proveedor.RazonSocial} ({proveedor.CUIT}) <br /> <br/>";
             if (cotizacion.RespetaMateriales == false)
             {
-                htmlBody += $"<strong>Nota:</strong> La propuesta no cumple con las especificaciones técnicas solicitadas, revisar con prioridad. <br/><br/>" ;
+                htmlBody += $"<strong>Nota:</strong> La propuesta no cumple con las especificaciones técnicas solicitadas, revisar con prioridad. <br/><br/>";
             }
-           htmlBody += "Puede visualizar la cotización en www.moaoperaciones.com.ar " +
-                "<br/><br/>Saludos Cordiales<br/>" +
-                "Molinos Agro S.A. <br/><br/> " +
-                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+            htmlBody += "Puede visualizar la cotización en www.moaoperaciones.com.ar " +
+                 "<br/><br/>Saludos Cordiales<br/>" +
+                 "Molinos Agro S.A. <br/><br/> " +
+                  @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
 
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             alternateView.LinkedResources.Add(res);
@@ -4353,7 +4353,7 @@ namespace SustitucionMOAUtils.Services
                     FechaCreacion = DateTime.Now,
                     Usuario = usuario,
                     UsuarioCreador_Id = usuario.Id,
-                    MontoTotal = CalcularMontoTotal(adjudicacionDto, cotizacion, info),                   
+                    MontoTotal = CalcularMontoTotal(adjudicacionDto, cotizacion, info),
                     CondicionesDeEntrega = adjudicacionDto.CondicionesDeEntrega,
                     CondicionesDePago = adjudicacionDto.CondicionesDePago,
                     Garantias = adjudicacionDto.Garantias,
@@ -4376,7 +4376,7 @@ namespace SustitucionMOAUtils.Services
                 if (respuestaGuardarSOLP.Errores == null || respuestaGuardarSOLP.Errores.Count == 0)
                 {
                     respuestaGuardarSOLP.NumeroPedido = respuestaGuardarSOLP.NumeroPedido;
-                    adjudicacion.NumeroOrdenDeCompra = respuestaGuardarSOLP.NumeroPedido;                    
+                    adjudicacion.NumeroOrdenDeCompra = respuestaGuardarSOLP.NumeroPedido;
                     repositorio.GuardarCambios();
                 }
 
@@ -4401,7 +4401,7 @@ namespace SustitucionMOAUtils.Services
             {
                 if (cotizacionPosiciones != null)
                 {
-                 foreach (var posicion in cotizacionPosiciones)                 
+                    foreach (var posicion in cotizacionPosiciones)
                     {
 
                         if (posicion.CotizacionSubPosiciones != null)
@@ -4465,7 +4465,71 @@ namespace SustitucionMOAUtils.Services
             return precio.Sum(x => x);
         }
 
-        
+        public List<AdjudicacionDto> ListarAdjudicaciones(int solpId)
+        {
+            return repositorio.Listar<Adjudicacion, AdjudicacionDto>(adjudicacion => new AdjudicacionDto()
+            {
+                Id = adjudicacion.Id,
+                TipoPosicionCodigo = adjudicacion.Solp.Posiciones.Select(y => y.TipoPosicion.Codigo).FirstOrDefault(),
+                NumeroOrdenDeCompra = adjudicacion.NumeroOrdenDeCompra,
+                FechaCreacion = adjudicacion.FechaCreacion,
+                Proveedor = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Proveedores.Count > 0 ?
+                                    adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Proveedores.FirstOrDefault().RazonSocial : "",
+                MonedaDescripcion = adjudicacion.Moneda.CodigoSap,
+                PrecioFinal = adjudicacion.MontoTotal
+            }, x => x.Solp_Id == solpId).OrderBy(fc => fc.FechaCreacion).ToList();
+        }
+
+        public AdjudicacionDto ObtenerAdjudicacion(int adjudicacionId)
+        {
+            var adjudicar = repositorio.Obtener<Adjudicacion, AdjudicacionDto>(adjudicacion => adjudicacion.Id == adjudicacionId, adjudicacion => new AdjudicacionDto
+            {
+                Id = adjudicacion.Id,
+                TipoPosicionCodigo = adjudicacion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
+                NumeroOrdenDeCompra = adjudicacion.NumeroOrdenDeCompra,
+                PrecioFinal = adjudicacion.MontoTotal,
+                TextoDeCabecera = adjudicacion.TextoDeCabecera,
+                CondicionesDeEntrega = adjudicacion.CondicionesDeEntrega,
+                CondicionesDePago = adjudicacion.CondicionesDePago,
+                Garantias = adjudicacion.Garantias,
+                AdjudicacionPosiciones = adjudicacion.Posiciones.Where(posic => posic.Posicion.EsConcluido == true && posic.Posicion.Estado == true).Select(posicion => new AdjudicacionPosicionDto
+                {
+                    SolpPosicion_Id = posicion.SolpPosicion_Id,
+                    Id = posicion.Id,
+                    MaterialComprasCodigo = posicion.Posicion.MaterialSolp.Codigo,
+                    Indice = posicion.Posicion.Indice,
+                    Tarea = posicion.Posicion.Tarea,
+                    TextoSuministro = posicion.Posicion.TextoSuministro,
+                    Modelo = posicion.Posicion.Modelo,
+                    Cantidad = posicion.Adjudicacion.Solp.Posiciones.Select(posicionSolp => posicionSolp.TipoPosicion.Codigo).FirstOrDefault() == "MATERIALES" ? posicion.Cantidad : 1,
+                    PrecioUnidad = posicion.CotizacionPosicion.Precio,
+                    MonedaId = posicion.CotizacionPosicion.Moneda_Id,
+                    UnidadDescripcion = posicion.CotizacionPosicion.UnidadDeMedida.Descripcion,
+                    MonedaDescripcion = posicion.CotizacionPosicion.Moneda.CodigoSap,
+                    PrecioTotal = posicion.Cantidad * posicion.CotizacionPosicion.Precio,
+                    FechaEntregaServicio = posicion.Posicion.FechaEntregaServicio,
+                    PlazoDeOferta = posicion.Posicion.PlazoEntrega,
+                    SubposicionesCompras = posicion.CotizacionPosicion.CotizacionSubPosiciones.Select(subpos =>
+                                                new SolpSubposicionDto()
+                                                {
+                                                    Numero = subpos.SolpSubPosicion.Numero,
+                                                    Tarea = subpos.SolpSubPosicion.Tarea,
+                                                    CodigoSolp = subpos.SolpSubPosicion.ServicioSolp.CodigoSap,
+                                                    Cantidad = subpos.Cantidad,
+                                                    PrecioBruto = subpos.Precio,
+                                                    UnidadComprasDescripcion = subpos.UnidadDeMedida.Descripcion,
+                                                    MonedaCotizacionDescripcion = posicion.CotizacionPosicion.CotizacionSubPosiciones.Select(moneda => moneda.Moneda_Id).GroupBy(m => m).Count() == 1
+                                                    ? subpos.Moneda.Descripcion : "Error",
+                                                    PrecioTotalSubPosicion = posicion.CotizacionPosicion.CotizacionSubPosiciones.Select(moneda => moneda.Moneda_Id).GroupBy(m => m).Count() == 1 ?
+                                                    (subpos.Cantidad.Value * subpos.Precio.Value) : 0,
+                                                }).ToList(),
+                }).ToList()
+
+            });
+
+            return adjudicar;
+
+        }
     }
 
 

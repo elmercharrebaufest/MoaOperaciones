@@ -536,5 +536,27 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
             Assert.That(result.Errores.Count == 0);
         }
+
+        [Test]
+        public void ListarAdjudicaciones()
+        {          
+            var adjudicacionId = 1;
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, AdjudicacionDto>>>(), It.IsAny<Expression<Func<Adjudicacion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
+            .Returns(new List<AdjudicacionDto>() { new AdjudicacionDto {  } });
+                        var result = target.ListarAdjudicaciones(adjudicacionId);
+            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, AdjudicacionDto>>>(),
+                It.IsAny<Expression<Func<Adjudicacion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc), Times.Once);
+        }
+
+        [Test]
+        public void ObtenerAdjudicacion()
+        {
+            var adjudicacionId = 1;
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Adjudicacion, bool>>>(), It.IsAny<Expression<Func<Adjudicacion, AdjudicacionDto>>>()))
+            .Returns( new AdjudicacionDto { } );
+            var result = target.ObtenerAdjudicacion(adjudicacionId);
+            repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Adjudicacion, bool>>>(), It.IsAny<Expression<Func<Adjudicacion, AdjudicacionDto>>>()), Times.Once);
+        }
+
     }
 }

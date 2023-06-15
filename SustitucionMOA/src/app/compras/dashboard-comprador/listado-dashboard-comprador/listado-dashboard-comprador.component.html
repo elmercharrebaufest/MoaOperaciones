@@ -154,7 +154,12 @@
                     <td [attr.colspan]="13">
                         <div class="col-sm-12 col-md-12 col-lg-12" style="font-size:16px;padding:20px">
                             <p-tabView>
-                                <p-tabPanel header="Licitaciones" [selected]="true">
+                                <p-tabPanel [selected]="true">
+                                    <ng-template pTemplate="header">
+                                    <div class="padding">
+                                        Licitaciones
+                                    </div>
+                                </ng-template>
                                     <p-table [value]="rowData.PeticionesDeOferta">
                                         <ng-template pTemplate="header">
                                             <tr>
@@ -195,8 +200,13 @@
                                         </ng-template>
                                     </p-table>
                                 </p-tabPanel>
-                                <p-tabPanel header="Orden de Compra">
-                                    <p-table [value]="rowData.OrdenesDeCompra">
+                                <p-tabPanel>
+                                    <ng-template pTemplate="header" >
+                                        <div class="padding" (click)="listarAdjudicaciones(rowData.Id)">
+                                            Orden de compra
+                                        </div>
+                                    </ng-template>
+                                    <p-table [value]="ordenesDeCompra">
                                         <ng-template pTemplate="header">
                                             <tr>
                                                 <th class="columna">Numero</th>
@@ -212,15 +222,15 @@
                                                 <td style="text-align: center;" colspan="6">Sin datos</td>
                                             </tr>
                                         </ng-template>
-                                        <ng-template pTemplate="body" let-ordenCompra>
+                                        <ng-template pTemplate="body" let-orden>
                                             <tr>
-                                               <td class="columna">{{ordenCompra.NumeroOrdenDeCompra}}</td>                                     
-                                                <td class="columna">{{ordenCompra.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
-                                                <td class="columna">{{ordenCompra.Proveedor}}</td>
-                                                <td class="columna">{{ordenCompra.PrecioFinal | number:'1.2-2'}}</td>
-                                                <td class="columna">{{ordenCompra.MonedaDescripcion}}</td>
+                                               <td class="columna">{{orden.NumeroOrdenDeCompra}}</td>                                     
+                                                <td class="columna">{{orden.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
+                                                <td class="columna">{{orden.Proveedor}}</td>
+                                                <td class="columna">{{orden.PrecioFinal | number:'1.2-2'}}</td>
+                                                <td class="columna">{{orden.MonedaDescripcion}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn btn-success" (click)="verDetalleOrdenDeCompra(ordenCompra)">
+                                                    <button class="publicar btn btn-success" (click)="verDetalleOrdenDeCompra(orden.Id)">
                                                         Ver detalle
                                                     </button>
                                                 </td>

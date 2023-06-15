@@ -75,5 +75,8 @@ namespace SustitucionMOAUtils.Interfaces
 
         RespuestaCrearOrdenDeCompra GrabarAdjudicacion(AdjudicacionDto adjudicacionDto, int usuarioActualId);
 
+        List<AdjudicacionDto> ListarAdjudicaciones(int solpId);
+        AdjudicacionDto ObtenerAdjudicacion(int adjudicacionId);
+
     }
 }

@@ -22,6 +22,7 @@ using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using SustitucionMOAModel.Util;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
+using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 
 namespace SustitucionMOATest.Services
 {

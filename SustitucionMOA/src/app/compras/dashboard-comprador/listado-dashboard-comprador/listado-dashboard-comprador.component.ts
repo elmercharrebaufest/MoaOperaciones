@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, ViewChildren } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { Table } from 'primeng/table';
@@ -64,6 +64,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     usuarioProveedor: boolean = false;
     ordenDeCompra: any;
     displayOrdenDeCompra: boolean;
+    ordenDeCompraId: any;
+    ordenesDeCompra: any;
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -85,7 +87,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     checkedFilterWeb = false;
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
     //#endregion
-
 
     ngOnInit() {
         this.getListarSolp();
@@ -450,9 +451,51 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.displayOrdenDeCompra = false;
     }
 
-    verDetalleOrdenDeCompra(orden: any) {
-        this.ordenDeCompra = orden;
+    verDetalleOrdenDeCompra(id: any) {
+        this.obtenerAdjudicacion(id);
         this.displayOrdenDeCompra = true;
+    }
+
+    obtenerAdjudicacion(adjudicacionId){
+        console.log("obtenerAdjudicacion" ,adjudicacionId)
+        this.blockUI.start('Cargando...')
+        this.service.obtenerAdjudicacion(adjudicacionId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.ordenDeCompra = result.data;
+                        console.log("obtenerAdjudicacion" ,result.data)
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    listarAdjudicaciones(solpId){      
+        this.blockUI.start('Cargando...')
+        this.service.listarAdjudicaciones(solpId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.ordenesDeCompra = result.data;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
     }
 
 }

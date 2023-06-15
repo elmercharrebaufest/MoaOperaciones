@@ -731,6 +731,24 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/CrearOrdenDeCompra', payload, { headers: this.headers });
     }
 
+    public listarAdjudicaciones(id: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("solpId", id.toString());       
+        return this.http
+            .get("/api/compras/ListarAdjudicaciones", {
+                params: params,
+                headers: this.headers,
+            });
+    }
 
+    public obtenerAdjudicacion(id: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("adjudicacionId", id.toString());       
+        return this.http
+            .get("/api/compras/ObtenerAdjudicacion", {
+                params: params,
+                headers: this.headers,
+            });
+    }
 
 }

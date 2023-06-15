@@ -26,7 +26,7 @@ export class OrdenDeCompraDetalleComponent implements OnInit, OnChanges {
     @Input()
     public ordenDeCompra: any;       
     @Output() cerrarOrdenDeCompraEmitter = new EventEmitter();
-    
+    activeTabs: boolean[] = [false, false, false, false];
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
@@ -42,7 +42,7 @@ export class OrdenDeCompraDetalleComponent implements OnInit, OnChanges {
     }   
 
     onCerrarOrdenDeCompra() {
-       
+        this.activeTabs = [false,false,false,false];
         this.cerrarOrdenDeCompraEmitter.next();
     }
 }
