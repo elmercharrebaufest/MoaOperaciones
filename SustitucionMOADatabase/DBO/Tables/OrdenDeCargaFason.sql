@@ -22,7 +22,7 @@
     [CantidadEntregada] INT , 
     [UniMedCant] VARCHAR(50) , 
     [NroRemito] VARCHAR(50) ,
-	[KmARecorrer] VARCHAR(50) ,
+	[DistanciaEnKm] INT NOT NULL DEFAULT 0,
     CONSTRAINT [FK_OrdenDeCargaFason_Material] FOREIGN KEY (Producto_Id) REFERENCES Material(Id),
     CONSTRAINT [FK_OrdenDeCargaFason_Cliente] FOREIGN KEY (Cliente_Id) REFERENCES Proveedor(Id), 
     CONSTRAINT [FK_OrdenDeCargaFason_Corredor] FOREIGN KEY (CorredorId) REFERENCES Proveedor(Id), 
