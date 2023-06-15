@@ -210,11 +210,6 @@ namespace SustitucionMOAUtils.Services
                 var ordenEditar = cargarDatosOCEditar.Item1;
                 var listaValoresDiferentes = cargarDatosOCEditar.Item2;
 
-                //Solicitud de edición
-                if (!esInterno)
-                {
-                    SolicitarEdicionOrden(ordenDeCarga.Id, mailUsuario);
-                }
                 foreach (var prop in listaValoresDiferentes)
                 {
                     if (!valoresAEditar.Contains(prop.PropertyName))
@@ -235,9 +230,12 @@ namespace SustitucionMOAUtils.Services
                         historialCambios.Add(registroHistorial);
                     }
                 }
+                //Solicitud de edición
+                if (!esInterno && historialCambios.Count > 0)
+                {
+                    SolicitarEdicionOrden(ordenDeCarga.Id, mailUsuario);
+                }
 
-                // error de base de datos al usar agregar todos
-                //repositorio.AgregarTodos(historialCambios);
                 foreach (var historialCambio in historialCambios)
                 {
                     repositorio.Agregar(historialCambio);
@@ -1242,15 +1240,6 @@ namespace SustitucionMOAUtils.Services
                     Usuario_Id = usuario.Id,
                     OrdenDeCarga_Id = orden.Id
                 };
-
-                var emailSenderData = ConstruirCuerpoEmail(
-                        new List<OrdenDeCargaCambiosHistorial> { ordenHistorial },
-                        orden.NumeroEntrega, orden.NumeroPedido
-                  );
-                if (emailSenderData != null)
-                {
-                    EmailSender.EnviarMail(emailSenderData);
-                }
 
                 repositorio.Agregar(ordenHistorial);
                 orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
