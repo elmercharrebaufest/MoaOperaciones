@@ -1,7 +1,6 @@
-﻿
-namespace SustitucionMOAWS.Enum.OrdenCargaConsumer
+﻿namespace SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS
 {
-    public enum OrdenCargaControlEstado
+    public enum ControlEstadoResEnum
     {
         OK,
         IngreseUnaSeleccion,

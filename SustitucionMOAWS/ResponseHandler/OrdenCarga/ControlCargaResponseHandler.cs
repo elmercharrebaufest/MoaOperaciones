@@ -1,4 +1,4 @@
-﻿using SustitucionMOAWS.Enum.OrdenCargaConsumer;
+﻿using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOAWS.OrdenCargaControlSAP;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
     public class ControlCargaResponseHandler
     {
         private string logResponse = string.Empty;
-        private List<OrdenCargaControlCarga> respuestasSap = new List<OrdenCargaControlCarga>();
+        private List<ControlCargaResEnum> respuestasSap = new List<ControlCargaResEnum>();
         private List<string> contratosSap = new List<string>();
 
         public bool TieneMultiplesContratos { get; private set; } = false;
@@ -51,7 +51,7 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
         /// Obtener la respuesta recibida de SAP, si existe exactamente una. Caso contrario, devuelve excepción.
         /// Usar cuando no se contempla recibir más de una respuesta. Sino, usar método TieneRespuesta
         /// </summary>
-        public OrdenCargaControlCarga ObtenerRespuestaUnica()
+        public ControlCargaResEnum ObtenerRespuestaUnica()
         {
             if (respuestasSap.Count == 0)
             {
@@ -64,12 +64,12 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
             return respuestasSap.First();
         }
 
-        public bool TieneRespuesta(OrdenCargaControlCarga respuestaSap)
+        public bool TieneRespuesta(ControlCargaResEnum respuestaSap)
         {
             return respuestasSap.Contains(respuestaSap);
         }
 
-        public string GetCodigoDeRespuesta(OrdenCargaControlCarga valor)
+        public string GetCodigoDeRespuesta(ControlCargaResEnum valor)
         {
             return ResponseConverter.GetCodigoControlCarga(valor);
         }

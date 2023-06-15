@@ -1,9 +1,9 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAWS.CredentialService;
-using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA;
@@ -103,7 +103,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         */
 
-        public OrdenCargaCrearOrden CrearOrden(CrearOrdenRequest req, out string pedidoOutput, out string resultOutput)
+        public CrearOrdenResEnum CrearOrden(CrearOrdenRequest req, out string pedidoOutput, out string resultOutput)
         {
             var service = new SI_MPMF_MOAOP_CREAR_ORDEN_CARGAClient();
             var indrvta = req.Reventa ? "X" : "";
@@ -355,7 +355,7 @@ namespace SustitucionMOAWS.WSConsumers
             return response;
         }
 
-        public OrdenCargaControlEstado GetOrdenCargaControlEstadoTransportista(string cuitTransportista)
+        public ControlEstadoResEnum GetOrdenCargaControlEstadoTransportista(string cuitTransportista)
         {
             var resp = OrdenCargaControlEstadoRequest("", "", cuitTransportista);
             return ResponseConverter.GetOrdenCargaControlEstadoResponse(resp);
