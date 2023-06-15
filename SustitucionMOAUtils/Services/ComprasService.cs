@@ -4261,14 +4261,34 @@ namespace SustitucionMOAUtils.Services
             string htmlBody = "";
             htmlBody += $"En el presente mail, se informa la cotización realizada para SOLP " +
                 $"{cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.NroSolp} y la PO {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} generada por el proveedor {proveedor.RazonSocial} ({proveedor.CUIT}) <br /> <br/>";
-            if (cotizacion.RespetaMateriales == false)
+
+            var todasLasPosicionesNoDisponibles = cotizacion.CotizacionPosiciones.All(x => x.NoDisponible != null && x.NoDisponible.Value);
+            var algunaPosicionNoDisponible = cotizacion.CotizacionPosiciones.Any(x => x.NoDisponible != null && x.NoDisponible.Value);
+            var noRespetaMateriales = cotizacion.RespetaMateriales == false;
+            if (todasLasPosicionesNoDisponibles || algunaPosicionNoDisponible || noRespetaMateriales)
             {
-                htmlBody += $"<strong>Nota:</strong> La propuesta no cumple con las especificaciones técnicas solicitadas, revisar con prioridad. <br/><br/>";
+                htmlBody += $"<strong>Nota:</strong><br/>";
             }
-            htmlBody += "Puede visualizar la cotización en www.moaoperaciones.com.ar " +
-                 "<br/><br/>Saludos Cordiales<br/>" +
-                 "Molinos Agro S.A. <br/><br/> " +
-                  @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+            if (todasLasPosicionesNoDisponibles)
+            {
+                htmlBody += $"El proveedor no cuenta con el material disponible<br/>";
+
+            }
+            else if(algunaPosicionNoDisponible)
+            {
+                htmlBody += $"El proveedor no cuenta con algún material disponible <br/>";
+
+            }
+            if (noRespetaMateriales)
+            {
+                htmlBody += $"La propuesta no cumple con las especificaciones técnicas solicitadas, revisar con prioridad. <br/>" ;
+            }
+
+
+           htmlBody += " <br/>Puede visualizar la cotización en www.moaoperaciones.com.ar " +
+                "<br/><br/>Saludos Cordiales<br/>" +
+                "Molinos Agro S.A. <br/><br/> " +
+                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
 
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             alternateView.LinkedResources.Add(res);
