@@ -1,8 +1,7 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
-import { isDate } from 'util';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { Material } from '../../common/models/material';
 import { OrdenDeCargaFasonDto } from '../../common/models/ordenes-de-carga-fason/ordenDeCargaFasonDto';
@@ -14,7 +13,7 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { SeleccionarProveedorService } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
-import { setupDaysAndMonths, sumarDias } from '../orden-carga-fason-utils';
+import { DestinoFason, setupDaysAndMonths, sumarDias } from '../orden-carga-fason-utils';
 import { OrdenesDeCargaFasonService } from '../ordenes-de-carga-fason.service';
 
 @Component({
@@ -41,7 +40,7 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
     }
 
     listaProductos: Material[];
-    listaDestinos: any[] = [];
+    listaDestinos: DestinoFason[] = [];
     listaClientes: any[];
     listaCorredores: any[];
 
@@ -351,7 +350,7 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
                             this.obtenerCorredores();
                         } else {
                             this.obtenerCorredores();
-                            this.cargarClientes('');                            
+                            this.cargarClientes('');
                         }
 
 
@@ -374,9 +373,9 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
             (result) => {
                 this.listaDestinos = result.data;
                 if (this.ordenDeCargaFason.LocalidadDescripcion) {
-                    let seleccionado = this.listaDestinos.filter(a => a.LocalidadDescripcion == this.ordenDeCargaFason.LocalidadDescripcion);
-                    if (seleccionado != null && seleccionado.length > 0) {
-                        this.ordenDeCargaFason.Destino = seleccionado[0];
+                    let seleccionado = this.listaDestinos.find(a => a.LocalidadDescripcion == this.ordenDeCargaFason.LocalidadDescripcion);
+                    if (seleccionado) {
+                        this.ordenDeCargaFason.Destino = seleccionado;
                     }
                 }
             },

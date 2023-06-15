@@ -82,7 +82,7 @@
     <Compile Include="Dto\OrdenDeCargaFason\CrearOrdenDeCargaFasonRequest.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\EditarOrdenDeCargaFasonRequest.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\OrdenDeCargaFasonRequest.cs" />
-    <Compile Include="Dto\OrdendesDeCargaApiDto.cs" />
+    <Compile Include="Dto\OrdenesDeCargaApiDto.cs" />
     <Compile Include="Dto\ConfiguracionDto.cs" />
     <Compile Include="Dto\Echeq\EcheqLiquidacionDto.cs" />
     <Compile Include="Dto\Echeq\EcheqAperturaDto.cs" />

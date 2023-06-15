@@ -59,7 +59,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public string ClienteDescripcion { get; set; }
         public int ClienteId { get; set; }
         public int Id { get; set; }
-        public int KmARecorrer { get; set; }
+        public string KmARecorrer { get; set; }
         public string LocalidadDescripcion { get; set; }
         public int LocalidadId { get; set; }
         public string ProvinciaDescripcion { get; set; }

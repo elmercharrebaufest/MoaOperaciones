@@ -320,8 +320,10 @@ namespace SustitucionMOAUtils.Services
                         PatenteChasis = request.PatenteChasis,
                         //Producto =
                         Producto_Id = request.Producto_Id.MaterialId,
+
                         RazonSocialTransporte = request.RazonSocialTransporte,
-                        TransporteExiste = existeTransporte
+                        TransporteExiste = existeTransporte,
+                        KmARecorrer = request.Destino.KmARecorrer,
                     };
                     _repositorio.Agregar(ordenEntity); //TODO: ver metodo agregartodos
                     _repositorio.GuardarCambios();
@@ -363,6 +365,7 @@ namespace SustitucionMOAUtils.Services
                 orden.Producto_Id = request.Producto_Id.MaterialId;
                 orden.RazonSocialTransporte = request.RazonSocialTransporte;
                 orden.TransporteExiste = existeTransporte;
+                orden.KmARecorrer = request.Destino.KmARecorrer;
                 orden.Estado = existeTransporte ? EstadoOrdenDeCargaFason.Generada : EstadoOrdenDeCargaFason.Pendiente;
 
                 _repositorio.GuardarCambios();
