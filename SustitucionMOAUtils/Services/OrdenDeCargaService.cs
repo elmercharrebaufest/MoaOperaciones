@@ -1243,6 +1243,15 @@ namespace SustitucionMOAUtils.Services
                     OrdenDeCarga_Id = orden.Id
                 };
 
+                var emailSenderData = ConstruirCuerpoEmail(
+                        new List<OrdenDeCargaCambiosHistorial> { ordenHistorial },
+                        orden.NumeroEntrega, orden.NumeroPedido
+                  );
+                if (emailSenderData != null)
+                {
+                    EmailSender.EnviarMail(emailSenderData);
+                }
+
                 repositorio.Agregar(ordenHistorial);
                 orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
                 repositorio.GuardarCambios();
