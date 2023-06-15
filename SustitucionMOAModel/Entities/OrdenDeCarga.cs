@@ -104,9 +104,10 @@ namespace SustitucionMOAModel.Entities
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
 
-        public ControlCargaResEnum VerificacionSap
+        public ControlCargaResEnum? VerificacionSap
         {
-            get { return ResponseConverter.GetOrdenCargaControlCargaResponse(CodigoVerificacionSap); }
+            get { return string.IsNullOrEmpty(CodigoVerificacionSap) ? (ControlCargaResEnum?)null :
+                    ResponseConverter.GetOrdenCargaControlCargaResponse(CodigoVerificacionSap); }
         }
 
         /// <summary>
