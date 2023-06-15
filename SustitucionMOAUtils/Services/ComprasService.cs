@@ -3371,8 +3371,8 @@ namespace SustitucionMOAUtils.Services
             var posiciones = "";
             try
             {
-
-                foreach (var peti in peticion.Posiciones)
+                var listaPosiciones = peticion.Posiciones.Where(x => x.SolpPosicion.Estado == true && x.SolpPosicion.EsConcluido == true);
+                foreach (var peti in listaPosiciones)
                 {
                     var item = peti.SolpPosicion;
                     posiciones +=
@@ -3382,12 +3382,12 @@ namespace SustitucionMOAUtils.Services
                     $"<td style='font-size: 8px;'>{item.Cantidad}</td>" +
                     $"<td style='font-size: 8px;'>{item.Unidad.Descripcion}</td>" +
                     $"<td style='font-size: 8px;'>{peticion.PlazoDeOferta.ToString("dd.MM.yyyy")}</td>" +
-                    $"<td style='font-size: 8px;'>{peticion.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td> </tr>";
+                    $"<td style='font-size: 8px;'>{listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td> </tr>";
                     posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{(item.MaterialSolp != null ? item.MaterialSolp.Descripcion : "")}</td></tr>";
 
                 }
 
-                var posicion = peticion.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.Id).FirstOrDefault();
+                var posicion = listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.Id).FirstOrDefault();
                 var localidad = repositorio.Obtener<Localidad>(x => x.ProvinciaId == posicion.ProvinciaId);
                 var centro = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
                 var centroPlanta = repositorio.Obtener<TablaSap>(x => x.CodigoSap == posicion.Centro.CodigoSap);
@@ -3403,7 +3403,7 @@ namespace SustitucionMOAUtils.Services
                     datosProveedor.cabeceras?.FirstOrDefault().provFiscal,
                     "Argentina",
                     peticion.PlazoDeOferta.ToString("dd.MM.yyyy"),
-                    peticion.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy"),
+                    listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy"),
                     lugarEntrega,
                     peticion.FechaCreacion.ToString("dd.MM.yyyy"),
                     "San Lorenzo",
@@ -4817,7 +4817,7 @@ namespace SustitucionMOAUtils.Services
                 CondicionesDeEntrega = adjudicacion.CondicionesDeEntrega,
                 CondicionesDePago = adjudicacion.CondicionesDePago,
                 Garantias = adjudicacion.Garantias,
-                AdjudicacionPosiciones = adjudicacion.Posiciones.Where(posic => posic.Posicion.EsConcluido == true && posic.Posicion.Estado == true).Select(posicion => new AdjudicacionPosicionDto
+                AdjudicacionPosiciones = adjudicacion.Posiciones.Select(posicion => new AdjudicacionPosicionDto
                 {
                     SolpPosicion_Id = posicion.SolpPosicion_Id,
                     Id = posicion.Id,
