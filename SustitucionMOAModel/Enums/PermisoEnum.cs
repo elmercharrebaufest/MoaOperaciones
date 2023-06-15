@@ -102,6 +102,7 @@
         VerSolapaCompra,
         ComercialCamposSustentables,
         VerSolpsProveedor,
-        Fas_ModificarCampoReventa
+        Fas_ModificarCampoReventa,
+        NotificarAltaInternaGranos
     }
 }

@@ -328,6 +328,7 @@ namespace SustitucionMOAModel.Entities
                 case "COMERCIAL CAMPOS SUSTENTABLES": return PermisoEnum.ComercialCamposSustentables;
                 case "VER SOLPS PROVEEDOR": return PermisoEnum.VerSolpsProveedor;
                 case "FAS - MODIFICAR CAMPO REVENTA": return PermisoEnum.Fas_ModificarCampoReventa;
+                case "NOTIFICAR ALTA INTERNA GRANOS": return PermisoEnum.NotificarAltaInternaGranos;
 
                 default: throw new Exception("Permiso no mapeado: " + permisoStr);
             }
