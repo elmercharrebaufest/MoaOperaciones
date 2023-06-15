@@ -3296,10 +3296,8 @@ namespace SustitucionMOAUtils.Services
 
         public byte[] GenerarPDFPeticionDeOferta(PeticionDeOferta peticion, string codigoProveedor)
         {
-
             try
             {
-
                 using (var stream = new MemoryStream())
                 {
                     using (var document = new Document(PageSize.A4, 10f, 10f, 10f, 100f))
@@ -3355,8 +3353,6 @@ namespace SustitucionMOAUtils.Services
                 throw ex;
             }
         }
-
-
         private string CompletarHtml(string xHtml, PeticionDeOferta peticion, string codigoProveedor)
         {
 
@@ -3425,6 +3421,7 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
+
         public void EnviarMailPeticionDeOferta(PeticionDeOferta peticion, List<PeticionDeOfertaUsuario> usuarios)
         {
             var archs = ObtenerArchivosPeticionDeOferta(peticion);
@@ -3488,6 +3485,315 @@ namespace SustitucionMOAUtils.Services
             var po = repositorio.Obtener<PeticionDeOfertaUsuario>(idPeticionDeOfertaUsuario);
             var pdf = GenerarPDFPeticionDeOferta(po.PeticionDeOferta, po.Usuario.ObtenerProveedor().CodigoProveedor);
             return new Pdf { data = pdf, name = "PO" + po.Usuario.ObtenerProveedor().CUIT + ".pdf" };
+        }
+
+
+        //Generar pdf OC
+        public byte[] GenerarPDFOrdenCompra(Adjudicacion adjudicacion, string codigoProveedor)
+        {
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    using (var document = new Document(PageSize.A4, 10f, 10f, 10f, 100f))
+                    {
+                        string templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/OrdenCompraTemplate.html");
+
+                        var templateString = System.IO.File.ReadAllText(templateFilePath);
+
+                        var xHtml = templateString;
+                        xHtml = CompletarHtmlOC(xHtml, adjudicacion, codigoProveedor);
+
+                        var PdfWriter = iTextSharp.text.pdf.PdfWriter.GetInstance(document, stream);
+                        document.Open();
+
+                        PdfFooter PageEventHandler = new PdfFooter();
+                        PdfWriter.PageEvent = PageEventHandler;
+
+                        var tagProcessors = (DefaultTagProcessorFactory)Tags.GetHtmlTagProcessorFactory();
+                        tagProcessors.RemoveProcessor(HTML.Tag.IMG); // remove the default processor
+                        tagProcessors.AddProcessor(HTML.Tag.IMG, new CustomImageTagProcessor()); // use our new processor
+
+                        var tagProcessorFactory = Tags.GetHtmlTagProcessorFactory();
+
+                        var htmlPipelineContext = new HtmlPipelineContext(null);
+                        htmlPipelineContext.SetTagFactory(tagProcessorFactory);
+
+                        var pdfWriterPipeline = new PdfWriterPipeline(document, PdfWriter);
+
+                        // get an ICssResolver and add the custom CSS
+                        var cssResolver = XMLWorkerHelper.GetInstance().GetDefaultCssResolver(true);
+                        var hpc = new HtmlPipelineContext(new CssAppliersImpl(new XMLWorkerFontProvider()));
+                        hpc.SetAcceptUnknown(true).AutoBookmark(true).SetTagFactory(tagProcessors); // inject the tagProcessors
+
+                        var htmlPipeline = new HtmlPipeline(hpc, new PdfWriterPipeline(document, PdfWriter));
+                        var pipeline = new CssResolverPipeline(cssResolver, htmlPipeline);
+
+                        var worker = new XMLWorker(pipeline, true);
+
+                        var charset = Encoding.UTF8;
+
+                        var xmlParser = new XMLParser(true, worker, charset);
+                        xmlParser.Parse(new StringReader(xHtml));
+                        document.Close();
+                        byte[] bytes = stream.ToArray();
+                        stream.Close();
+                        return bytes;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private string CompletarHtmlOC(string xHtml, Adjudicacion adjudicacion, string codigoProveedor)
+        {
+
+            var stylesHtml = @"<style>h1{color:#000;font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-decoration:none;font-size:12px}
+                            .s1{color:#000;font-family:'Times New Roman',serif;font-style:italic;font-weight:400;text-decoration:none;font-size:10px}
+                            .s2{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:700;text-decoration:none;font-size:8px}
+                            .s3{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:9px}
+                            h2{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:700;text-decoration:none;font-size:8px}
+                            p{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:7px;margin:0}
+                            table,tbody{vertical-align:top;overflow:visible}
+                            .peticion{font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-decoration:none;font-size:10px;border:.1px solid #000;border-collapse:collapse}
+                            .s4{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:700;text-decoration:none;font-size:9px}
+                            .s5{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:8px}
+                            .s6{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:700;text-decoration:none;font-size:18px}
+                            .s7{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:9px}
+                            .s8{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:9px}
+                            .s9{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:9px}
+                            table,tbody{vertical-align:top;overflow:visible}.border{border:.1px solid #000;border-collapse:collapse}
+                            .s6{color:#000;font-family:Arial,sans-serif;font-style:italic;text-decoration:none;font-size:7px}
+                            .cls_003{font-family:Arial,serif;font-size:12.1px;color:#fff;font-weight:700;font-style:normal;text-decoration:none;background-color:#000;text-align:center;top:-59px;position:relative;left:-1px;width:102%}
+                            .cls_002{font-family:Arial,serif;font-size:14.1px;color:#000;font-weight:700;font-style:italic;text-decoration:none}
+                            .noborder{border-collapse:collapse;border:1px solid #fff}
+                            .cls_005{font-family:Arial,serif;font-size:8.1px;color:#000;font-weight:700;font-style:normal;text-decoration:none}
+                            .cls_006{font-family:Arial,serif;font-size:8px;color:#000;font-weight:400;font-style:normal;text-decoration:none}
+                            .cls_008{font-family:Arial,serif;font-size:10px;color:#000;font-weight:400;font-style:normal;text-decoration:none}
+                            .cls_009{font-family:Arial,serif;font-size:11.1px;color:#000;font-weight:700;font-style:normal;text-decoration:none;text-align:center}
+                            .cls_011{font-family:Courier New,serif;font-size:10.1px;color:#000;font-weight:400;font-style:normal;text-decoration:none}
+                            .espacio{height:10px;display:block}.w33{width:30%;display:inline-block}.cls_012{font-family:Arial,serif;font-size:6px;text-align:justify}
+                            .ft116{position:absolute;top:699px;white-space:nowrap}
+                            .ft11{position:absolute;top:712px;white-space:nowrap}
+                            .ft15{position:absolute;top:709px;white-space:nowrap}</style>";
+
+
+            
+        
+
+            var datosProveedor = new VendedorDetalleWSMOAResponse() { cabeceras = null };
+            try
+            {
+                datosProveedor = vendedorService.GetDatosFiscales(codigoProveedor, codigoProveedor);
+            }
+            catch (Exception e)
+            {
+
+                Logger.Log.Error(e);
+            }
+
+            var posiciones = "";
+            try
+            {
+                var tipoPosicion = adjudicacion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault();
+
+                if (tipoPosicion == "MATERIALES")
+                {
+                    foreach (var peti in adjudicacion.Posiciones)
+                    {
+                        var item = peti.Posicion;
+
+                        posiciones +=
+                        $"<tr class='border'> <td style='font-size: 8px;'>{item.Indice} </td> " +
+                        $"<td style='font-size: 8px;'> {(item.MaterialSolp != null ? item.MaterialSolp.Codigo : "")} </td>" +
+                        $"<td style='font-size: 8px;'> {(item.MaterialSolp != null ? item.MaterialSolp.Descripcion : "")} </td>" +
+                        $"<td style='font-size: 8px;'>{item.Cantidad}</td>" +
+                        $"<td style='font-size: 8px;'>{item.Unidad.Descripcion}</td>" +
+                        $"<td style='font-size: 8px;'>{adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td>" +
+                        $"<td style='font-size: 8px;'>{adjudicacion.Cotizacion.CotizacionPosiciones.Where(posic => posic.PeticionDeOfertaSolpPosicion.SolpPosicion.EsConcluido == true && posic.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true).Select(x => x.Precio.Value.ToString("N2")).FirstOrDefault()} {item.Moneda.Codigo} / {item.Unidad.Codigo}</td>" +
+                        $"<td style='font-size: 8px;'>{adjudicacion.MontoTotal.ToString("N2")} {item.Moneda.Codigo}</td></tr>";
+                        posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{(item.MaterialSolp != null ? item.MaterialSolp.Descripcion : "")}</td></tr>";
+                    }
+                }
+                else 
+                {
+                    foreach (var item in adjudicacion.Solp.Posiciones)
+                    {
+                       posiciones +=
+                       $"<tr class='border'> <td style='font-size: 8px;'>{item.Indice} </td> " +
+                       $"<td style='font-size: 8px;'> {(item.ServicioSolp != null ? item.ServicioSolp.Codigo : "")} </td>" +
+                       $"<td style='font-size: 8px;'> {(item.Tarea != null ? item.Tarea : "")} </td>" +
+                       $"<td style='font-size: 8px;'> 1 </td>" +
+                       $"<td style='font-size: 8px;'> </td>" +
+                       $"<td style='font-size: 8px;'>{adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td>" +
+                       $"<td style='font-size: 8px;'>{adjudicacion.Cotizacion.CotizacionPosiciones.Where(posic => posic.PeticionDeOfertaSolpPosicion.SolpPosicion.EsConcluido == true && posic.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true).Select(x => x.Precio.Value.ToString("N2")).FirstOrDefault()} {item.Moneda.Codigo} / 001</td>" +
+                       $"<td style='font-size: 8px;'>{adjudicacion.MontoTotal.ToString("N2")} {item.Moneda.Codigo}</td></tr>" +
+                       $"<tr><td colspan='4' style='font-size: 10px; text-align: end'><strong>La posición contiene los siguientes servicios:</strong></td></tr>";
+
+                        
+                        foreach (var pos in adjudicacion.Cotizacion.CotizacionPosiciones)
+                        {
+                            foreach (var subPos in pos.CotizacionSubPosiciones)
+                            {
+                                posiciones +=
+                                $"<tr class='border'>" +
+                                $"<td style='font-size: 8px;'>{subPos.SolpSubPosicion.Numero * 10} </td>" +
+                                $"<td style='font-size: 8px;'>&nbsp;</td>" +
+                                $"<td style='font-size: 8px;'>&nbsp;</td>" +
+                                $"<td colspan='4' style='font-size: 8px;'>{subPos.SolpSubPosicion.Tarea}</td>" +
+                                $"</tr>" +
+                                $"<tr>" +
+                                $"<td style='font-size: 8px;'>&nbsp;</td>" +
+                                $"<td style='font-size: 8px;'>{subPos.Cantidad} {subPos.UnidadDeMedida.Codigo}</td>" +
+                                $"<td style='font-size: 8px;'>{subPos.Precio.Value.ToString("N2")}</td>" +
+                                $"<td style='font-size: 8px;'>{subPos.Precio.Value.ToString("N2")}</td>" +
+                                $"</tr>";                   
+                            }
+
+
+                            
+                        }
+                    }
+                    
+                }
+
+                string textos = "";
+
+                if (!string.IsNullOrEmpty(adjudicacion.TextoDeCabecera) ||
+                    !string.IsNullOrEmpty(adjudicacion.CondicionesDeEntrega) ||
+                    !string.IsNullOrEmpty(adjudicacion.CondicionesDePago) ||
+                    !string.IsNullOrEmpty(adjudicacion.Garantias))
+                {
+                    textos += "<tr class='border'>";
+
+                    if (!string.IsNullOrEmpty(adjudicacion.TextoDeCabecera))
+                    {
+                        textos += $"<td style='font-size: 8px; text-align: justify'><strong>Texto de cabecera</strong><br/><br/> {adjudicacion.TextoDeCabecera}</td></tr>";
+                    }
+
+                    if (!string.IsNullOrEmpty(adjudicacion.CondicionesDeEntrega))
+                    {
+                        textos += $"<tr class='border'><td style='font-size: 8px; text-align: justify'><strong>Condiciones de entrega</strong><br/><br/> {adjudicacion.CondicionesDeEntrega}</td></tr>";
+                    }
+
+                    if (!string.IsNullOrEmpty(adjudicacion.CondicionesDePago))
+                    {
+                        textos += $"<tr class='border'><td style='font-size: 8px; text-align: justify'><strong>Condiciones de pago</strong><br/><br/> {adjudicacion.CondicionesDePago}</td></tr>";
+                    }
+
+                    if (!string.IsNullOrEmpty(adjudicacion.Garantias))
+                    {
+                        textos += $"<tr class='border'><td style='font-size: 8px; text-align: justify'><strong>Garantias</strong><br/><br/> {adjudicacion.Garantias}</td></tr>";
+                    }
+                }
+                else
+                {
+                    textos += $"<tr class='border'><td style='font-size: 8px; text-align: justify'>&nbsp;<br/><br/></td></tr>";
+                }
+
+
+
+                var posicion = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.Id).FirstOrDefault();
+                var localidad = repositorio.Obtener<Localidad>(x => x.ProvinciaId == posicion.ProvinciaId);
+                var centro = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
+                var centroPlanta = repositorio.Obtener<TablaSap>(x => x.CodigoSap == posicion.Centro.CodigoSap);
+                
+
+                var lugarEntrega = $"{posicion.NombreEntrega}, {posicion.CalleEntrega} - ({posicion.CpEntrega}) {localidad?.Nombre ?? ""} - {posicion.Provincia?.Nombre ?? ""}";
+
+                xHtml = string.Format(xHtml, stylesHtml,
+                    adjudicacion.NumeroOrdenDeCompra,
+                    datosProveedor.cabeceras?.FirstOrDefault().cuit.Substring(2, 8),
+                    datosProveedor.cabeceras?.FirstOrDefault().descripcion,
+                    datosProveedor.cabeceras?.FirstOrDefault().calleFiscal,
+                    $"({datosProveedor.cabeceras?.FirstOrDefault().cpFiscal}) {datosProveedor.cabeceras?.FirstOrDefault().locaFiscal}",
+                    datosProveedor.cabeceras?.FirstOrDefault().provFiscal,
+                    "Argentina",
+                    adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.PlazoDeOferta.ToString("dd.MM.yyyy"),
+                    adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy"),
+                    lugarEntrega,
+                    adjudicacion.FechaCreacion.ToString("dd.MM.yyyy"),
+                    "San Lorenzo",
+                    centro.CodigoSap,
+                    adjudicacion.Usuario.UsuarioSap,
+                    posiciones,
+                    adjudicacion.Moneda.Codigo,
+                    adjudicacion.Moneda.Descripcion,
+                    adjudicacion.MontoTotal.ToString("N2"),
+                    textos
+                    );
+
+                return xHtml;
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+
+        //Envio de mail ordenCompra
+        public void EnviarMailOrdenCompra(Adjudicacion adjudicacion)
+        {
+            try
+            {
+                Logger.Log.Info($"EnviarMailOrdenCompra numero{adjudicacion.Id}");
+                Logger.Log.Info($"copia mail comprador {adjudicacion.Usuario.Mail}");
+                Logger.Log.Info($"copia mail solicitante {adjudicacion.Solp.UsuarioCreacion.Mail}");
+                Logger.Log.Info($"mail al proveedor adjudicado { adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail }");
+                Logger.Log.Info($"Nueva OC creada - {adjudicacion.NumeroOrdenDeCompra}");
+                Logger.Log.Info($"fecha { DateTime.Now}");
+
+                var copia = new List<string> { adjudicacion.Usuario.Mail, adjudicacion.Solp.UsuarioCreacion.Mail };
+                var asunto = "";
+                if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
+                {
+                    asunto = "Prueba: ";
+                }
+
+                var enviarA = new List<string> { adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail };
+                asunto += $"Nueva OC creada - {adjudicacion.NumeroOrdenDeCompra} - {adjudicacion.Usuario.ObtenerRazonSocial()}";
+
+                var pdf = GenerarPDFOrdenCompra(adjudicacion, adjudicacion.Usuario.ObtenerCodigoProveedor());
+
+                EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailOrdenCompra(adjudicacion), pdf, "Orden de Compra.pdf");
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info($"Error al enviar mail {adjudicacion.Id}  NumeroOrdenDeCompra {adjudicacion.NumeroOrdenDeCompra}");
+                Logger.Log.Error(e);
+
+            }
+        }
+
+        private AlternateView CuerpoMailOrdenCompra(Adjudicacion adjudicacion)
+        {
+            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+            string htmlBody = "";
+            htmlBody += $"En el presente mail, se informa la nueva OC {adjudicacion.NumeroOrdenDeCompra} generada con Molinos Agro S.A <br />";
+
+            htmlBody += "En caso de tener alguna consulta ingresar www.moaoperaciones.com.ar " +
+                "<br/><br/>Saludos Cordiales<br/>" +
+                "Molinos Agro S.A. <br/><br/> " +
+                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
+        }
+
+        public Pdf GenerarOrdenCompraPdf(Adjudicacion adjudicacion)
+        {
+            var oc = adjudicacion.Cotizacion.PeticionDeOfertaUsuario;
+            var pdf = GenerarPDFOrdenCompra(adjudicacion, oc.Usuario.ObtenerProveedor().CodigoProveedor);
+            return new Pdf { data = pdf, name = "OC" + oc.Usuario.ObtenerProveedor().CUIT + ".pdf" };
         }
 
         public PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId)
@@ -3774,9 +4080,6 @@ namespace SustitucionMOAUtils.Services
 
                 respuesta.Mensaje = "OK";
             }
-
-
-
 
             return respuesta;
         }
@@ -4378,6 +4681,8 @@ namespace SustitucionMOAUtils.Services
                     respuestaGuardarSOLP.NumeroPedido = respuestaGuardarSOLP.NumeroPedido;
                     adjudicacion.NumeroOrdenDeCompra = respuestaGuardarSOLP.NumeroPedido;
                     repositorio.GuardarCambios();
+                    EnviarMailOrdenCompra(adjudicacion);
+
                 }
 
                 return respuestaGuardarSOLP;

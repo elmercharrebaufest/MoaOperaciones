@@ -283,6 +283,9 @@
     <Content Include="Templates\NewPliegoSolpSinCondicionesTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\OrdenCompraTemplate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\PliegoSolpSinCondicionesTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
