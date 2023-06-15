@@ -4,7 +4,7 @@ export function sumarDias(fecha, dias) {
 }
 
 export function setupDaysAndMonths() {
-    return  {
+    return {
         firstDayOfWeek: 0,
         dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
         dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
@@ -14,4 +14,17 @@ export function setupDaysAndMonths() {
         today: 'Hoy',
         clear: 'Borrar'
     };
+}
+
+export interface DestinoFason {
+    CentroDescripcion: string;
+    CentroId: number;
+    ClienteDescripcion: string;
+    ClienteId: number;
+    Id: number;
+    KmARecorrer: string;
+    LocalidadDescripcion: string;
+    LocalidadId: number;
+    ProvinciaDescripcion: string;
+    ProvinciaId: number
 }
