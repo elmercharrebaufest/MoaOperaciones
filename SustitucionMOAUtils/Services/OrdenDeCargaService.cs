@@ -275,7 +275,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
                 NotificarTransporte(ordenEditar.Id);
 
-                if (puedeEnviarASAP && ordenEditar.VerificacionSap != ControlCargaResEnum.FaltaCargarKmsEnContrato)
+                if (puedeEnviarASAP && !ordenEditar.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
                 {
                     if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega) && ordenEditar.AprobadoCredito)
                     {
@@ -332,7 +332,7 @@ namespace SustitucionMOAUtils.Services
             if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
             {
                 var verificarOrden = VerificarOrden(ordenEditar, ordenEditar.Cliente, false, puedeEnviarASAP);
-                if (ordenEditar.VerificacionSap == ControlCargaResEnum.FaltaCargarKmsEnContrato)
+                if (ordenEditar.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
                 {
                     NotificarContratoSinKm(ordenEditar);
                 }
@@ -362,7 +362,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                if (orden.VerificacionSap != ControlCargaResEnum.FaltaCargarKmsEnContrato)
+                if (!orden.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
                     return;
 
                 var emailSenderData = new EmailSenderData();
@@ -1723,7 +1723,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var puedeCrear = VerificarOrden(orden, orden.Cliente, false, true);
 
-                if (orden.VerificacionSap != ControlCargaResEnum.FaltaCargarKmsEnContrato)
+                if (!orden.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
                 {
                     var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
 
