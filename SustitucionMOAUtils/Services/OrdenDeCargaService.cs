@@ -249,6 +249,15 @@ namespace SustitucionMOAUtils.Services
                     if (resultadoSAP.HayError)
                         throw new InfoCustomException(resultadoSAP.Errores[0].Message);
                 }
+                if (historialCambios.Count > 0 && !esAdmin)
+                {
+                    //Aviso de Edición de Orden de Carga
+                    var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega, ordenDeCarga.NumeroPedido);
+                    if (emailSenderData != null)
+                    {
+                        EmailSender.EnviarMail(emailSenderData);
+                    }
+                }
 
                 repositorio.GuardarCambios();
                 NotificarTransporte(ordenEditar.Id);
@@ -260,16 +269,6 @@ namespace SustitucionMOAUtils.Services
                         GenerarEntregaSAP(ordenEditar);
                     }
 
-                }
-
-                if (historialCambios.Count > 0 && !esAdmin)
-                {
-                    //Aviso de Edición de Orden de Carga
-                    var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega, ordenDeCarga.NumeroPedido);
-                    if (emailSenderData != null)
-                    {
-                        EmailSender.EnviarMail(emailSenderData);
-                    }
                 }
 
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
@@ -1243,7 +1242,6 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.Agregar(ordenHistorial);
                 orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
-                repositorio.GuardarCambios();
 
                 return SuccessMsg.OrdenDeCargaActualizada;
             }
