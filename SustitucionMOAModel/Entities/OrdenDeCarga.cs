@@ -104,10 +104,9 @@ namespace SustitucionMOAModel.Entities
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
 
-        public ControlCargaResEnum? VerificacionSap
+        public bool TieneCodigoSap(ControlCargaResEnum controlCargaRes)
         {
-            get { return string.IsNullOrEmpty(CodigoVerificacionSap) ? (ControlCargaResEnum?)null :
-                    ResponseConverter.GetOrdenCargaControlCargaResponse(CodigoVerificacionSap); }
+            return CodigoVerificacionSap == ResponseConverter.GetCodigoControlCarga(controlCargaRes);
         }
 
         /// <summary>
@@ -122,8 +121,8 @@ namespace SustitucionMOAModel.Entities
 
             if (Estado != EstadoOrdenDeCarga.Entregada)
             {
-                if (VerificacionSap == ControlCargaResEnum.MasDeUnContratoVigente ||
-                    VerificacionSap == ControlCargaResEnum.CC06IdemCC01)
+                if (this.TieneCodigoSap(ControlCargaResEnum.MasDeUnContratoVigente) ||
+                    this.TieneCodigoSap(ControlCargaResEnum.CC06IdemCC01))
                 {
                     Estado = EstadoOrdenDeCarga.ErrorDeCarga;
                 }
