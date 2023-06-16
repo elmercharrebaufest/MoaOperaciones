@@ -1,3 +1,4 @@
+import { DestinoFason } from "../../../ordenes-de-carga-fason/orden-carga-fason-utils";
 import { EstadoOrdenDeCargaFason } from "./estadoOrdenDeCargaFason";
 
 export class OrdenDeCargaFasonDto {
@@ -27,7 +28,7 @@ export class OrdenDeCargaFasonDto {
     public RazonSocialTransporte: string;
     public CUITTransporte: string;
     public CantidadDeViajes: number;
-    public Destino: string;
+    public Destino: DestinoFason;
     public TransporteExiste: boolean;
     public Observacion: string;
     public LocalidadDescripcion: string;
