@@ -58,33 +58,33 @@ namespace SustitucionMOAUtils.Services
             return new ResultadoGenerico();
         }
 
-        public List<OrdenesDeCargaApiDto> ObtenerOrdenes(string patenteChasis)
+        public List<OrdenesDeCargaApiDto> ObtenerOrdenes(string patenteChasis, bool fason, bool fas)
         {
-            var ordenesFason = _repositorio.Listar<OrdenDeCargaFason>(x =>
-            !_estadosNoPermitidosFason.Contains(x.Estado) &&
-            (x.PatenteChasis == patenteChasis || patenteChasis == "" || patenteChasis == null)
-            ).ToList();
             List<OrdenesDeCargaApiDto> listaOrdenes = new List<OrdenesDeCargaApiDto>();
-
-
-            var ordenesFas = _repositorio.Listar<OrdenDeCarga>(x =>
-            !_estadosNoPermitidosFas.Contains(x.Estado) &&
-            (x.ChasisAcoplado == patenteChasis || patenteChasis == "" || patenteChasis == null)
-            ).ToList();
-
-            foreach (var ordenFas in ordenesFas)
+            if (fas)
             {
-                var ordenFasDto = new OrdenesDeCargaApiDto(ordenFas);
-                listaOrdenes.Add(ordenFasDto);
 
+                var ordenesFas = _repositorio.Listar<OrdenDeCarga>(
+                    x => !_estadosNoPermitidosFas.Contains(x.Estado) &&
+                    (x.ChasisAcoplado == patenteChasis || patenteChasis == "" || patenteChasis == null)).ToList();
+
+                foreach (var ordenFas in ordenesFas)
+                {
+                    var ordenFasDto = new OrdenesDeCargaApiDto(ordenFas);
+                    listaOrdenes.Add(ordenFasDto);
+                }
             }
-
-            foreach (var ordenFason in ordenesFason)
+            if (fason)
             {
-                var ordenFasonDto = new OrdenesDeCargaApiDto(ordenFason);
+                var ordenesFason = _repositorio.Listar<OrdenDeCargaFason>(
+                    x => !_estadosNoPermitidosFason.Contains(x.Estado) &&
+                    (x.PatenteChasis == patenteChasis || patenteChasis == "" || patenteChasis == null)).ToList();
+                foreach (var ordenFason in ordenesFason)
+                {
+                    var ordenFasonDto = new OrdenesDeCargaApiDto(ordenFason);
 
-                listaOrdenes.Add(ordenFasonDto);
-
+                    listaOrdenes.Add(ordenFasonDto);
+                }
             }
 
             return listaOrdenes;
