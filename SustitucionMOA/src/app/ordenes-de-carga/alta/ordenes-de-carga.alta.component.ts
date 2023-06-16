@@ -594,8 +594,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
             this.validaCPEDG = false;
         }
-        if (this.validaCPEDG && this.modificaReventa && !this.ordenDeCarga.Reventa)
-            this.ordenDeCarga.Reventa = true;
+        this.ordenDeCarga.Reventa = this.validaCPEDG && this.modificaReventa && !this.ordenDeCarga.Reventa;
         this.validarSisaCorredorCliente()
     }
     validarCorredorClienteContratoProducto = (
