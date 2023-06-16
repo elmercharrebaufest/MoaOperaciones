@@ -68,7 +68,7 @@ namespace SustitucionMOAUtils.Services
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
-            Log.Info($"Agregar orden de carga con datos: {ordenDeCarga.ToJson()}. MailUsuario: {mailUsuario}");
+            Log.Info($"Agregar orden de carga con datos: {ordenDeCarga.ToDto().ToJson()}. MailUsuario: {mailUsuario}");
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
@@ -562,7 +562,7 @@ namespace SustitucionMOAUtils.Services
 
         private bool VerificarOrden(OrdenDeCarga ordenDeCarga, Proveedor cliente, bool esJob, bool puedeEnviarASAP = false)
         {
-            Log.Info($"VerificarOrden(ordenDeCarga: {ordenDeCarga.ToJson()}, cliente: {cliente?.Id.ToJson()}, esJob: {esJob}, puedeEnviarASAP: {puedeEnviarASAP})");
+            Log.Info($"VerificarOrden(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, cliente: {cliente?.Id.ToJson()}, esJob: {esJob}, puedeEnviarASAP: {puedeEnviarASAP})");
 
             if (!ValidarExistenciaIntermediarioFlete(ordenDeCarga))
             {
@@ -1853,8 +1853,7 @@ namespace SustitucionMOAUtils.Services
         private bool TransporteExiste(OrdenDeCarga orden)
         {
             var result = consumer.OrdenCargaControlEstadoRequest("", "", orden.CUITTransporte);
-            // TODO: Refactorizar para sacar este string
-            return result == "CE-07";
+            return ResponseConverter.GetOrdenCargaControlEstadoResponse(result) == ControlEstadoResEnum.TransportistaOK;
         }
 
         public string NotificarTransporte(int ordenDeCargaId)
