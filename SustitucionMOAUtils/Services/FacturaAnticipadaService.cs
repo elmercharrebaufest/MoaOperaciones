@@ -25,7 +25,7 @@ namespace SustitucionMOAUtils.Services
                 TipoContrato = TipoContratoFAS.ANTICIPADO,
                 Fechas = ObtenerFechas()
             };
-            var contratoSAP = _consumerOrdenCarga.OrdenCargaVisualizarClienteExecute(request).Resultados.First();
+            var contratoSAP = _consumerOrdenCarga.OrdenCargaVisualizarClienteExecute(request).Resultados.FirstOrDefault();
 
             if (contratoSAP == null)
                 throw new InfoCustomException("No se encontró el contrato");
