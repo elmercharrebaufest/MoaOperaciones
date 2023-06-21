@@ -95,6 +95,35 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 2em;">
+                            <label class="labelCompras" for="checkbox"> Condiciones especiales</label>
+                            <div>
+                                <p-checkbox [ngModelOptions]="{standalone:true}" name="trabajoHecho" [(ngModel)]="model.trabajoHecho" label="Trabajo ya hecho" formControlName="trabajoHecho"
+                                binary="true"></p-checkbox>
+                            </div> 
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.trabajoHecho">
+                            <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
+                                <strong>Selección de proveedores</strong>
+                            </div>
+                            <div class="col-xs-12 col-sm-10 col-md-4" style="font-size: 24px; margin-bottom: 20px;">
+                                <p-autoComplete [(ngModel)]="proveedorSeleccionado"
+                                                [suggestions]="proveedores"
+                                                (completeMethod)="searchProveedor($event)"
+                                                (onSelect)="selectProveedor($event)"
+                                                placeholder="Seleccione un proveedor"
+                                                field="RazonSocial"
+                                                formControlName="proveedorSeleccionado"
+                                                [minLength]="3">
+                                    <ng-template let-proveedor pTemplate="item">
+                                        <div class="ui-helper-clearfix">
+                                            <div style="font-size:12px;margin:10px 10px 0 0">{{proveedor.Mail}}</div>
+                                            <div style="font-size:10px;color:darkgrey;margin:10px 10px 0 0">{{proveedor.CUIT}} - {{proveedor.RazonSocial}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-autoComplete>
+                            </div>
+                        </div>  
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 alinearTitulo">

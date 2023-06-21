@@ -13,6 +13,7 @@ import { ComprasService } from '../../../compras.service'
 import { Solp } from '../../solp';
 import { ValidadorPasoSolpService } from '../../../validadorPasoSolpService';
 import { EnumPasoSolp } from '../../../enum-paso-solp';
+import { AltaNuevoProveedor } from '../../../solp-compra';
 
 declare var $: any;
 
@@ -36,7 +37,11 @@ export class CotizacionComponent extends ListBaseComponent {
         { campo: 'dias', esObligatorio: true}
     ];
 
+    proveedorSeleccionado: any;
+    proveedores: any[] = new Array();
+
     @Output() onEstCompleto = new EventEmitter<any>();
+    mostrar: boolean;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
@@ -93,8 +98,12 @@ export class CotizacionComponent extends ListBaseComponent {
             //ejecucion: new FormControl('', [Validators.required]),
             comienzoJornadaLaboral: new FormControl('', Validators.required),
             terminoJornadaLaboral: new FormControl('', Validators.required),
-            dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required, this.validatorDias])
+            dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required, this.validatorDias]),
+            trabajoHecho: new FormControl('', Validators.required),
+            proveedorSeleccionado: new FormControl('', Validators.required)
+            
         });
+        console.log("trabajo", this.model.trabajoHecho)
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
         if (this.model.cargoPasoCuatro) {
@@ -196,4 +205,39 @@ export class CotizacionComponent extends ListBaseComponent {
         });
 
     }
+
+    searchProveedor(event) {
+        try {
+            this.subscription = this.service.listarProveedores(event.query).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.proveedores = result.data;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+    
+    selectProveedor(event) {
+        try {
+            console.log("proveedor ", this.proveedorSeleccionado)
+            this.model.proveedorAsignado_Id = event.Id;
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+        }
+    }
+
+
 }
