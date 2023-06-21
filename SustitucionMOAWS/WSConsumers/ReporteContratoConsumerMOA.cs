@@ -75,7 +75,7 @@ namespace SustitucionMOAWS.WSConsumers
                     KilosTotalesStr = SAPFormatter.FormatearCantidad(item.KILOS_TOTALES, "KG"),
                     KilosEntregadosStr = SAPFormatter.FormatearCantidad(item.KILOS_ENTREGADOS, "KG"),
                     KilosPendienteEntregaStr = SAPFormatter.FormatearCantidad(item.KILOS_PEND_ENTREGA, "KG"),
-                    FechaDesde = SAPFormatter.FormatearFecha(item.FECHA_DESDE),
+                    FechaDesde = item.FECHA_DESDE,
                     FechaHasta = item.FECHA_HASTA,
                     Precio = item.PRECIO,
                     Moneda = item.MONEDA,

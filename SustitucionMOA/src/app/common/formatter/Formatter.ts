@@ -1,9 +1,24 @@
 ﻿export class Formatter {
 
+    static reformatDate(dateStr: string, esFormatGB: boolean = false){
+        const dArr = esFormatGB? dateStr.split("/"): dateStr.split("-");
+        let reformatDateString = '';
+        reformatDateString = dateStr;
+
+        if(dArr!=null && dArr.length > 2){
+            if (esFormatGB)
+            reformatDateString = dArr[2]+ "-" +dArr[1]+ "-" +dArr[0];
+            else
+            reformatDateString = dArr[2]+ "/" +dArr[1]+ "/" +dArr[0];
+        }
+        return reformatDateString;
+      }
     static DateToSting(fecha: Date): string {
         return fecha.toISOString().slice(0, 10);
     }
-
+    static DateToStringCustom(fecha: Date): string {
+        return fecha.toLocaleDateString('en-GB');
+    }
     static parseFecha(fechaCompletaRaw: string) {
         if (fechaCompletaRaw != undefined) {
             var fecha, hora;

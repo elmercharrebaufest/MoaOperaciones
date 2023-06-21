@@ -42,7 +42,8 @@ import { HighlightDirective } from './directive/clickOutside.directive';
 import { BuscadorSmallComponent } from './shared-components/buscador/buscador-small/buscadorSmall.component';
 import { EmailComposeComponent } from './email-compose/email-compose.component'
 import { EmailComposeService } from './email-compose/email-compose.service';
-import { CustomDateFormat } from './pipes/jsonDate.pipe';
+import { CustomDateFormat } from './pipes/jsonDate.pipe';;
+import { FiltroFechaCustomComponent } from './view-child/filtro-fecha-custom/filtro-fecha-custom.component'
 
 const declaredAndExported = [
     FiltroFechaComponent,
@@ -71,7 +72,8 @@ const declaredAndExported = [
     CustomFilterBoolean, 
     BuscadorComponent,
     EmailComposeComponent,
-    CustomDateFormat
+    CustomDateFormat,
+    FiltroFechaCustomComponent,
 ];
 @NgModule({
     imports: [CommonModule, 

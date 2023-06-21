@@ -17,6 +17,7 @@ import { ValidarIntermediarioFleteResponse } from '../common/models/ordenes-de-c
     providedIn: 'root'
 })
 export class OrdenesDeCargaService extends BaseService {
+    private _ordenDeCargaSeleccionado = new BehaviorSubject<number>(0);
     private estadosFiltro = new BehaviorSubject<Array<string>>([
         "Pendiente",
         "Confirmado",
@@ -34,6 +35,14 @@ export class OrdenesDeCargaService extends BaseService {
         "Sin Enviar a SAP",
         "Entrega anulada, pedido pendiente de anulación"
     ]);
+   
+    setOrdenDeCargaSeleccionado(value: number) {
+        this._ordenDeCargaSeleccionado.next(value);
+    }
+    getOrdenDeCargaSeleccionado() {
+        return this._ordenDeCargaSeleccionado.asObservable()
+    }
+
     get estadosFiltrosSeleccionados(): Array<string> {
         return this.estadosFiltro.value;
     }

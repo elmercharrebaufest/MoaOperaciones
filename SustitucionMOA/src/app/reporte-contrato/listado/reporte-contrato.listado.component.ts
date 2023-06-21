@@ -27,7 +27,8 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.filtroFechaComponent = new FiltroFechaComponent();
     }
-
+    
+    contratoSeleccionadoId: string = '';
     detalle: any[];
     cabecera: ReporteContrato[];
     filtroCliente: any = null;
@@ -46,7 +47,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     TipoContrato: string = "";
     show: boolean = false;
     disabled: boolean = false;
-    mostrarPendientes: boolean = false;
+    mostrarPendientes: boolean = true;
     columnaCliente: string = "NombreClienteCUIT";
     columnaProducto: string = "DescripcionMaterial";
     ColumnaTipoContrato: string = "TipoContrato";
@@ -93,6 +94,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
                         this.varciarFiltrosReporte();
                     } else {
                         this.cabecera = result.data.Resultados;
+                        console.log('this.cabecera--->>', this.cabecera);
                         this.cargarFiltrosContratos(result);
                         this.getTotalKilogramos();
                         this.data = result.data.Resultados;
@@ -126,10 +128,15 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     }
 
     guardarFiltros(){
-        const {fecha_inicio, fecha_fin} = this.filtroFechaComponent
+        const {fecha_inicio, fecha_fin} = this.filtroFechaCustomComponent
        this.service.setFechas(fecha_inicio,fecha_fin ); 
     }
 
+    verDetalleContrato(numeroContrato: string){
+        this.contratoSeleccionadoId = numeroContrato;
+        this.service.setContratoSeleccionado(numeroContrato);
+    }
+    
     cargarFiltrosContratos(result: any) {
         if (result.filtroCliente != undefined) this.filtroCliente = result.filtroCliente.options;
         if (result.filtroProducto != undefined) this.filtroProducto = result.filtroProducto.options;
@@ -230,8 +237,8 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
 
     ObtenerContratosFiltro() {
         if (this.filtroContrato == "") this.blockUI.start(''); 
-        this.subscription = this.service.obtenerContratosFiltro(this.filtroFechaComponent.fecha_inicio,
-            this.filtroFechaComponent.fecha_fin, this.mostrarPendientes, this.cabecera).subscribe(
+        this.subscription = this.service.obtenerContratosFiltro(this.filtroFechaCustomComponent.fecha_inicio,
+            this.filtroFechaCustomComponent.fecha_fin, this.mostrarPendientes, this.cabecera).subscribe(
                 (result: any) => {
                     this.mensajeComponent.setMsgsEmpty();
                     this.blockUI.stop();
