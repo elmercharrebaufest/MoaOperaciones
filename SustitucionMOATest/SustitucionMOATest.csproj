@@ -118,6 +118,7 @@
     <Compile Include="Services\PesificacionServiceTests.cs" />
     <Compile Include="Services\OrdenDeCargaServiceTest.cs" />
     <Compile Include="Services\TicketPesadaServiceTest.cs" />
+    <Compile Include="Services\FacturaAnticipadaServiceTest.cs" />
     <Compile Include="Services\UsuarioServiceTest.cs" />
     <Compile Include="Services\VendedorServiceTest.cs" />
   </ItemGroup>

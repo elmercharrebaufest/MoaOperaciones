@@ -16,7 +16,7 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
-import { ContratoOrdenFas } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
+import { ContratoOrdenFas, TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { finalize } from 'rxjs/operators';
@@ -71,7 +71,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     private selectUndefinedOptionValue: any;
 
     contratosDisponibles: ContratoOrdenFas[] = [];
+    facturasDisponibles: { numeroFactura: string }[] = [];
+    numeroFacturaSeleccionado: { numeroFactura: string } = {} as { numeroFactura: string };
     contratoSeleccionado: ContratoOrdenFas;
+    tipoContrato = TipoContrato;
     listaMateriales: Material[];
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
@@ -226,6 +229,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             return false;
         }
 
+        if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada && !this.ordenDeCarga.NumeroFactura) {
+            this.mensajeComponent.setInfoMsg("Debe seleccionar un número de factura para este tipo de contrato.");
+            return false;
+        }
+
         return true;
     }
 
@@ -262,6 +270,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.cargarContratosDisponibles(result.data.CodigoCliente);
                         if (this.ordenDeCarga.CUITDestino)
                             this.onDestinoIngresado(this.ordenDeCarga.CUITDestino)
+                        if (this.ordenDeCarga.NumeroFactura)
+                            this.numeroFacturaSeleccionado = { numeroFactura: this.ordenDeCarga.NumeroFactura }
                     }
                 },
                 error => {
@@ -587,11 +597,16 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.Producto = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId.toString();
             let materialSeleccionado = this.listaMateriales.find(mat => mat.MaterialId === this.ordenDeCarga.Producto_Id);
             this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
+            if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada)
+                this.obtenerFacturas()
         }
         else {
             this.Contrato = "";
             this.ordenDeCarga.ContratoIngresado = "";
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
+            this.facturasDisponibles = [];
+            this.ordenDeCarga.NumeroFactura = null;
+            this.numeroFacturaSeleccionado = null;
             this.validaCPEDG = false;
         }
         this.ordenDeCarga.Reventa = this.validaCPEDG && this.modificaReventa && !this.ordenDeCarga.Reventa;
@@ -1158,6 +1173,20 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.listaDomicilios = [];
         this.onDomicilioSeleccionadoChanged()
         this.onPlantaSeleccionadaChanged();
+    }
+
+    obtenerFacturas() {
+        const numeroContrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
+
+        this.service.obtenerFacturasDeContrato(numeroContrato).subscribe(result => {
+            let data = this.manejarErroresApiResponse(result);
+            if (data instanceof Array) {
+                if (!data.length) {
+                    //this.floatMsgService.setInfoMsg("")
+                }
+                this.facturasDisponibles = data.map(numeroFactura => ({ numeroFactura }))
+            }
+        });
     }
 }
 
