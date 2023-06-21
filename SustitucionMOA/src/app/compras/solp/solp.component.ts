@@ -231,7 +231,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             case "SIN_PLIEGO":
                 this.pasos[0].Deshabilitado = true;
                 this.pasos[2].Deshabilitado = true;
-                this.pasos[3].Deshabilitado = true;
+                this.pasos[3].Deshabilitado = false;
                 this.pasos[0].Iniciado = true;
                 this.pasos[2].Iniciado = true;
                 this.pasos[3].Iniciado = true;

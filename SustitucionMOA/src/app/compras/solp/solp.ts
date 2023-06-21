@@ -61,6 +61,8 @@ export class Solp extends CommonResponse {
     public comienzoJornadaLaboral: Date;
     public terminoJornadaLaboral: Date;
     public observacionesCotizacion: string;
+    public trabajoHecho: boolean;
+    public proveedorAsignado_Id: number;
 
     public archivosCotizacionesNuevos: Array<File>;
     public archivosCotizaciones: Array<ArchivoModel>
@@ -215,6 +217,8 @@ export class Solp extends CommonResponse {
             this.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
             this.ejecucion = solp.DiasEjecucion || '';
             this.observacionesCotizacion = solp.ObservacionesCotizacion;
+            this.proveedorAsignado_Id = solp.ProveedorAsignadoId;
+            this.trabajoHecho = solp.TrabajoYaHecho;
 
             //pop up finalizar
             this.revisadoPor = solp.RevisadoPor || '';

@@ -147,6 +147,8 @@ namespace SustitucionMOAUtils.Services
 
                 solpEntity.Pliego = new Pliego();
                 solpEntity.Posiciones = new List<SolpPosicion>();
+                solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
+                solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignadoId;
                 pliegoEntity = solpEntity.Pliego;
 
                 solpEntity.NroSolp = solp.NroSolp;
@@ -168,6 +170,8 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.EstadoPasos = solp.EstadoPasos;
                 solpEntity.TipoSolpSap = solp.TipoSolpSap;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
+                //solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
+                //solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignadoId;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
                 pliegoEntity.Email = solp.Email;
@@ -1013,6 +1017,8 @@ namespace SustitucionMOAUtils.Services
                 JornadaLaboralDesde = x.Pliego.JornadaLaboralHorasDesde,
                 JornadaLaboralHasta = x.Pliego.JornadaLaboralHorasHasta,
                 ClaseDocumento = x.ClaseDocumento != null ? new TablaSapDto(x.ClaseDocumento) : new TablaSapDto(),
+                ProveedorAsignadoId = x.ProveedorAsignado_Id,
+                TrabajoYaHecho = x.TrabajoYaHecho,
 
 
                 Adjuntos = x.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto

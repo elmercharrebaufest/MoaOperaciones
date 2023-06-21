@@ -27,6 +27,11 @@ namespace SustitucionMOAModel.Entities
         public int? UsuarioCompras_Id { get; set; }
         public int? TipoSolpSap { get; set; }
         public Guid? EmailLinkToken { get; set; }
+        public bool? TrabajoYaHecho { get; set; }
+        public int? ProveedorAsignado_Id { get; set; }
+
+        [ForeignKey("ProveedorAsignado_Id")]
+        public virtual Usuario ProveedorAsignado { get; set; }
 
         [ForeignKey("UsuarioCreacion_Id")]
         public virtual Usuario UsuarioCreacion { get; set; }
