@@ -76,7 +76,7 @@ namespace SustitucionMOAUtils.Services
                 LlenarOrdenAlta(ordenDeCarga, usuario);
 
                 var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
-                
+
                 var crearPedido = VerificarOrden(ordenDeCarga, ordenDeCarga.Cliente, false, puedeEnviarASAP);
                 Log.Debug(this.GetType().Name, "Agregar", $" crearPedido: {crearPedido}");
                 repositorio.Agregar(ordenDeCarga);
