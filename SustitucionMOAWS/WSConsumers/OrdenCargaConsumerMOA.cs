@@ -360,7 +360,7 @@ namespace SustitucionMOAWS.WSConsumers
             var resp = OrdenCargaControlEstadoRequest("", "", cuitTransportista);
             return ResponseConverter.GetOrdenCargaControlEstadoResponse(resp);
         }
-        public ResultadoGenerico AnularOrdenCarga(OrdenDeCarga orden)
+        public ModOrdenCargaResponseHandler AnularOrdenCarga(OrdenDeCarga orden)
         {
             var service = new SI_MPMF_MOAOP_MOD_ORDEN_CARGAClient();
 
@@ -374,11 +374,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Result: {new { result, identificador }}");
 
-            var resultado = new ResultadoGenerico();
-            if (result != "Se actualizaron los datos correctamente")
-                resultado.Error("error", result);
-
-            return resultado;
+            return new ModOrdenCargaResponseHandler(result);
         }
 
         public ModEntregaResponseHandler AnularEntregaOrdenCarga(string nroEntrega)

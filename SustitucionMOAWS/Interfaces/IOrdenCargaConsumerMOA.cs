@@ -16,7 +16,7 @@ namespace SustitucionMOAWS.Interfaces
         OrdenCargaEntreResponseHandler CrearEntrega(CrearEntregaRequest entregaReq, bool pedidoAnticipado = false);
         OrdenCargaVisualizarClienteWSMOAResponse OrdenCargaVisualizarClienteExecute(OrdenCargaVisualizarClienteWSMOARequest request);
         OrdenCargaControlEstado GetOrdenCargaControlEstadoTransportista(string cuitTransportista);
-        ResultadoGenerico AnularOrdenCarga(OrdenDeCarga orden);
+        ModOrdenCargaResponseHandler AnularOrdenCarga(OrdenDeCarga orden);
         ModEntregaResponseHandler AnularEntregaOrdenCarga(string nroEntrega);
         ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega);
         bool VerificarContratoAbierto(string contrato);

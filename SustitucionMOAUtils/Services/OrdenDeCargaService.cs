@@ -2758,10 +2758,13 @@ namespace SustitucionMOAUtils.Services
             var tieneNumeroPedido = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) || !string.IsNullOrEmpty(orden.NumeroPedido);
             if (!tieneNumeroPedido)
                 return;
-            var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
-            if (resultadoAnularOrden.HayError)
-                //Pendiente revisión de los mensajes acorde a las verdaderas razones de error
+            var respHandler = consumer.AnularOrdenCarga(orden);
+            if (respHandler.PedidoTomadoEnSap)
                 throw new InfoCustomException("El pedido está tomado en SAP");
+            else if (!(respHandler.ActualizadoOK || respHandler.PedidoAnulado))
+            {
+                throw new Exception("No se reconoce respuesta SAP (Anular Orden Carga)");
+            }
         }
         private List<string> ObtenerContratosAbiertos(List<string> contratos)
         {
