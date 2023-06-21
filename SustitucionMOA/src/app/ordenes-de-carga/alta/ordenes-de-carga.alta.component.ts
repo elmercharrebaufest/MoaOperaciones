@@ -1180,9 +1180,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.service.obtenerFacturasDeContrato(numeroContrato).subscribe(result => {
             let data = this.manejarErroresApiResponse(result);
             if (data instanceof Array) {
-                debugger
-                if (!data.length)
-                    return;
+                if (!data.length) {
+                    //this.floatMsgService.setInfoMsg("")
+                }
                 this.facturasDisponibles = data.map(numeroFactura => ({ numeroFactura }))
             }
         });
