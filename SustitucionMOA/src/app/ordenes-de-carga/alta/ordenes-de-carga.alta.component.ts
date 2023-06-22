@@ -101,7 +101,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.userEmail = sessionStorage.getItem("username");
         this.desde = this.getFecha(12);
         this.hasta = this.getFecha(0);
-        this.ordenDeCarga.Cantidad = 30000;
+        this.ordenDeCarga.Cantidad = 0;
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
         });
@@ -580,6 +580,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.Producto = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId.toString();
             let materialSeleccionado = this.listaMateriales.find(mat => mat.MaterialId === this.ordenDeCarga.Producto_Id);
             this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
+            this.cambioProducto();
         }
         else {
             this.Contrato = "";
@@ -945,6 +946,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     validarSisaCorredorCliente() {
+        
         if (!this.ordenDeCarga.ContratoSeleccionado || !this.validaCPEDG) {
             this.mensajeComponent.setMsgsEmpty();
             return;
@@ -973,6 +975,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     this.blockUI.stop();
                 })
         } catch (err) {
+            this.ordenDeCarga.Cantidad = 0;
             console.error('validarSisaCorredorCliente: ', err);
             this.mensajeComponent.setErrorMsg(err);
             this.blockUI.stop();
