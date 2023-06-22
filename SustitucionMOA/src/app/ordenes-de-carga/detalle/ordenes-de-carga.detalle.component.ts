@@ -16,6 +16,7 @@ import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
+import { TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 
 @Component({
     selector: 'app-ordenes-de-carga.detalle',
@@ -42,7 +43,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     corredorSeleccionado: number;
 
     contratos: string[] = [];
+    facturas: string[] = [];
     contratoSeleccionado: string;
+    facturaSeleccionada: string;
 
     pedidos: string[] = [];
     pedidoSeleccionado: string;
@@ -64,6 +67,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonActivarOC: boolean = false;
     mostrarBotonForzarCreacionPedido: boolean = false;
     mostrarBotonEditar: boolean = false;
+    mostrarBotonSeleccionarFactura: boolean = false;
 
     mostrarListadoInterno: boolean = false;
     mostrarListadoTercero: boolean = false;
@@ -246,6 +250,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mostrarBotonPedidos = false;
         this.mostrarBotonEditar = false;
         this.mostrarBotonEdicionFinalizada = false;
+        this.mostrarBotonSeleccionarFactura = false;
+
+        if (this.ordenDeCarga.TipoContrato === TipoContrato.FacturaAnticipada && !this.ordenDeCarga.NumeroFacturaSeleccionada) {
+            this.mostrarBotonSeleccionarFactura = true;
+        }
 
         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada) {
             this.mostrarBotonVerHistorial = true;
@@ -550,6 +559,42 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mensajeComponent.setErrorMsg(e);
         }
     }
+    seleccionarFactura() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        this.blockUI.start('Grabando...');
+        try {
+            this.subscriptionDropDowns = this.service.seleccionarFactura(this.ordenDeCargaId, this.facturaSeleccionada).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
+                    document.getElementById("closemodalSeleccionarFactura").click();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.data.error != undefined && result.data.error != "") {
+                        this.obtenerOrdenDeCarga();
+                        this.mensajeComponent.setErrorMsg(result.data.error);
+                    } else if (result.data.info != undefined) {
+                        this.obtenerOrdenDeCarga();
+                        this.mensajeComponent.setInfoMsg(result.data.info);
+                    } else {
+                        this.ordenDeCarga.DescripcionErrorInterno = null;
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+                        this.obtenerOrdenDeCarga();
+                    }
+                },
+                error => {
+                    this.blockUI.stop();
+                    document.getElementById("closemodalSeleccionarFactura").click();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
 
     abrirModalContratos() {
         this.mensajeComponent.setMsgsEmpty();
@@ -569,6 +614,35 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else {
                         this.contratos = result.data;
                         document.getElementById("openSeleccionarContrato").click();
+
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+    abrirModalSeleccionarFactura() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        const contrato = this.ordenDeCarga.ContratoSAP || this.ordenDeCarga.ContratoIngresado;
+        try {
+            this.subscriptionDropDowns = this.service.obtenerFacturasDeContrato(contrato).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.facturas = result.data;
+                        document.getElementById("openSeleccionarFactura").click();
 
                     }
                 },

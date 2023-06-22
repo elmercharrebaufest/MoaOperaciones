@@ -1,6 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
@@ -20,5 +20,7 @@ namespace SustitucionMOAWS.Interfaces
         ModEntregaResponseHandler AnularEntregaOrdenCarga(string nroEntrega);
         ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega);
         bool VerificarContratoAbierto(string contrato);
+        Result ObtenerContratoSAP(string numeroContrato, TipoContratoFAS tipoContrato = TipoContratoFAS.NORMAL);
+        Result ObtenerContratoSAP(OrdenDeCarga orden, TipoContratoFAS tipoContrato = TipoContratoFAS.NORMAL);
     }
 }

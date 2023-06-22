@@ -1,7 +1,9 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
@@ -12,22 +14,27 @@ namespace SustitucionMOATest.Services
     [TestFixture]
     public class FacturaAnticipadaServiceTest
     {
-        private Mock<IOrdenCargaConsumerMOA> _consumerOrdenCargaFAS;
+        private Mock<IRepositorio> _repositorio;
+        private Mock<IOrdenCargaConsumerMOA> _consumerOrdenCarga;
+        private Mock<IOrdenDeCargaEstadoService> _ordenDeCargaEstadoService;
         private IFacturaAnticipadaService _facturaAnticipadaService;
         [SetUp]
         public void Setup()
         {
-            _consumerOrdenCargaFAS = new Mock<IOrdenCargaConsumerMOA>();
-            _facturaAnticipadaService = new FacturaAnticipadaService(_consumerOrdenCargaFAS.Object);
+            _consumerOrdenCarga = new Mock<IOrdenCargaConsumerMOA>();
+            _repositorio = new Mock<IRepositorio>();
+            _ordenDeCargaEstadoService = new Mock<IOrdenDeCargaEstadoService>();
+            _facturaAnticipadaService =
+                new FacturaAnticipadaService(_consumerOrdenCarga.Object, _repositorio.Object, _ordenDeCargaEstadoService.Object);
 
         }
 
         [Test]
         public void ObtenerFacturasDeContrato_NoEncuentraContrato_ThrowInfoCustomException()
         {
-            _consumerOrdenCargaFAS
-                .Setup(c => c.OrdenCargaVisualizarClienteExecute(It.IsAny<OrdenCargaVisualizarClienteWSMOARequest>()))
-                .Returns(new OrdenCargaVisualizarClienteWSMOAResponse { Resultados = new List<Result>() });
+            _consumerOrdenCarga
+                .Setup(c => c.ObtenerContratoSAP(It.IsAny<string>(), It.IsAny<TipoContratoFAS>()))
+                .Returns(null as Result);
 
             Assert.That(
                 () => _facturaAnticipadaService.ObtenerFacturasDeContrato(It.IsAny<string>()),
@@ -36,11 +43,9 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ObtenerFacturasDeContrato_ListaFacturasVacias_DebeFiltrarlas()
         {
-            _consumerOrdenCargaFAS
-                .Setup(c => c.OrdenCargaVisualizarClienteExecute(It.IsAny<OrdenCargaVisualizarClienteWSMOARequest>()))
-                .Returns(new OrdenCargaVisualizarClienteWSMOAResponse
-                {
-                    Resultados = new List<Result> {
+            _consumerOrdenCarga
+                .Setup(c => c.ObtenerContratoSAP(It.IsAny<string>(), It.IsAny<TipoContratoFAS>()))
+                .Returns(
                     new Result
                     {
                         Detalles = new List<Detail>
@@ -53,9 +58,7 @@ namespace SustitucionMOATest.Services
                             new Detail {FacturaLegal= "001746592"},
                             new Detail {FacturaLegal= string.Empty},
                         }
-                    }
-                }
-                });
+                    });
 
             var result = _facturaAnticipadaService.ObtenerFacturasDeContrato(It.IsAny<string>());
 

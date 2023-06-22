@@ -1,0 +1,32 @@
+﻿using System;
+
+namespace SustitucionMOAModel.Enums
+{
+    public enum TipoContratoFAS
+    {
+        NORMAL,
+        ANTICIPADO,
+        DESCONOCIDO,
+    }
+
+    public static class TipoContratoFASParser
+    {
+
+        public static TipoContratoFAS Parse(string tipoContrato)
+        {
+            if (Enum.TryParse(tipoContrato, true, out TipoContratoFAS result))
+            {
+                return result;
+            }
+            else
+            {
+                return TipoContratoFAS.DESCONOCIDO;
+            }
+        }
+        public static string IntoString(TipoContratoFAS tipoContrato)
+        {
+            return Enum.GetName(typeof(TipoContratoFAS), tipoContrato) ?? "";
+        }
+    }
+
+}
