@@ -42,6 +42,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IFeriadoService feriadoService;
         protected readonly IEmailFasService emailFasService;
         protected readonly IScatoRepositorioClient scatoRepositorioClient;
+        protected readonly IFacturaAnticipadaService _facturaAnticipadaService;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
         private static readonly string EMAIL_TEMPLATE_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
@@ -58,6 +59,7 @@ namespace SustitucionMOAUtils.Services
             IScatoRepositorioClient scatoRepositorioClient,
             IScatoConsumer scatoConsumer,
             IEmailFasService emailFasService
+            IFacturaAnticipadaService facturaAnticipadaService
             )
         {
             this.repositorio = repositorio;
@@ -67,6 +69,7 @@ namespace SustitucionMOAUtils.Services
             this.scatoRepositorioClient = scatoRepositorioClient;
             this.scatoConsumer = scatoConsumer;
             this.emailFasService = emailFasService;
+            _facturaAnticipadaService = facturaAnticipadaService;
         }
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
@@ -138,7 +141,13 @@ namespace SustitucionMOAUtils.Services
 
             var producto = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
             ordenDeCarga.Producto = producto;
+            var contrato = consumer.ObtenerContratoSAP(ordenDeCarga);
+            ordenDeCarga.TipoContrato = TipoContratoFASParser.Parse(contrato.TipoContrato);
             var validaCPEDG = producto.ValidaSisaRuca;
+            if (ordenDeCarga.TipoContrato == TipoContratoFAS.ANTICIPADO && !_facturaAnticipadaService.OrdenConMultiplesFacturas(contrato))
+            {
+                ordenDeCarga.NumeroFacturaSeleccionada = ordenDeCarga.NumeroFactura;
+            }
             if (!validaCPEDG)
             {
                 RemoverCamposCPEDG(ordenDeCarga);
@@ -2863,5 +2872,6 @@ namespace SustitucionMOAUtils.Services
                 return null;
             }
         }
+
     }
 }
