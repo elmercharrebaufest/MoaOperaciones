@@ -450,6 +450,11 @@
                                     class="btn-custom btn-add btn-mediano" value="Contratos">
                             </div>
 
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonSeleccionarFactura">
+                                <input type="button" (click)="abrirModalSeleccionarFactura()"
+                                    class="btn-custom btn-add btn-mediano" value="Facturas">
+                            </div>
+
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonPedidos">
                                 <input type="button" (click)="abrirModalPedidos()"
                                     class="btn-custom btn-add btn-mediano" value="Pedidos">
@@ -561,6 +566,50 @@
             </div>
         </div>
     </div>
+
+    <button type="button" style="display:none" id="openSeleccionarFactura" data-toggle="modal"
+        data-target="#modalSeleccionarFactura"></button>
+    <!-- Modal -->
+    <div class="modal fade" id="modalSeleccionarFactura" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="modalSeleccionarFacturaLabel">Seleccionar Factura Legal</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" *ngIf="facturas.length > 0">
+                        <span *ngFor="let factura of facturas" class="col-xs-12 col-sm-12 col-md-12">
+                            <input type="radio" name="corredorContrato" id="factura_legal_{{factura}}" [value]="factura"
+                                [(ngModel)]="facturaSeleccionada">
+                            &nbsp;
+                            <label for="factura_legal_{{factura}}">
+                                {{factura}}
+                            </label>
+                        </span>
+                    </div>
+                    <div class="row" class="col-xs-12 col-sm-12 col-md-12" *ngIf="contratos.length == 0">
+                        No se encontraron facturas
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
+                        id="closemodalSeleccionarFactura" style="display: inline-flex;">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarFactura()"
+                        style="display: inline-flex;">
+                        Confirmar
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <button type="button" style="display:none" id="openModalDetalleHistorial" data-toggle="modal"
         data-target="#ModalDetalleHistorial"></button>
