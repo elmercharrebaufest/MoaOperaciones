@@ -11,6 +11,7 @@ using SustitucionMOAUtils.Interfaces.Helpers;
 using SustitucionMOAUtils.Interfaces.Validadores;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAUtils.Services.Email;
 using SustitucionMOAUtils.Validadores;
 using SustitucionMOAUtils.Wrappers;
 using SustitucionMOAWS.Interfaces;
@@ -121,6 +122,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IReporteLoginsJob>().To(typeof(ReporteLoginsJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEcheqService>().To(typeof(EcheqService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVerificarSituacionCrediticiaJob>().To(typeof(VerificarSituacionCrediticiaJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IEmailFasService>().To(typeof(EmailFasService)).InScope(ctx => OperationContext.Current);
 
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);

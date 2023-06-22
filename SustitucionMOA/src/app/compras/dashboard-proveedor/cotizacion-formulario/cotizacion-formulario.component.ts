@@ -337,7 +337,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                                     .every(x => (Number(x.CantidadPersonas) <= 0));
        
                 if(mostrarMensaje){
-                    mensaje = "Debe completar al menos una categoria";                    
+                    mensaje = "En el panel de horas debe completar las categorías que aplican a esta propuesta.";                    
                     return mensaje
                 }
             }

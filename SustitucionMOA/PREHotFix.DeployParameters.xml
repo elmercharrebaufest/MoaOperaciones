@@ -36,6 +36,7 @@
 	<setParameter name="EmailToReporteLogins Config" value="moaoperaciones@baufest.com" />
 	<setParameter name="EmailToGestionAltaCuit Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar" />
 	<setParameter name="CopiaEmailToGestionAltaCuit Config" value="moaoperaciones@baufest.com" />
+	<setParameter name="EmailAsuntoPrefijo Config" value="[PREHOTFIX] " />
 
 	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />

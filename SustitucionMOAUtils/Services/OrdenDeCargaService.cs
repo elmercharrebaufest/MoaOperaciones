@@ -40,6 +40,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IScatoConsumer scatoConsumer;
         readonly FeriadoService _feriadoService = new FeriadoService();
         protected readonly IFeriadoService feriadoService;
+        protected readonly IEmailFasService emailFasService;
         protected readonly IScatoRepositorioClient scatoRepositorioClient;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
@@ -55,7 +56,8 @@ namespace SustitucionMOAUtils.Services
             IOrdenCargaConsumerMOA consumer,
             IFeriadoService feriadoService,
             IScatoRepositorioClient scatoRepositorioClient,
-            IScatoConsumer scatoConsumer
+            IScatoConsumer scatoConsumer,
+            IEmailFasService emailFasService
             )
         {
             this.repositorio = repositorio;
@@ -64,6 +66,7 @@ namespace SustitucionMOAUtils.Services
             _usuarioAutomaticoSAP = ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"];
             this.scatoRepositorioClient = scatoRepositorioClient;
             this.scatoConsumer = scatoConsumer;
+            this.emailFasService = emailFasService;
         }
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
@@ -87,7 +90,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido)
                 {
-                    NotificacionContratoVencido(ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga));
+                    emailFasService.EnviarMailContratoVencido(ordenDeCarga);
                 }
                 if (crearPedido && puedeEnviarASAP)
                 {
@@ -1699,14 +1702,14 @@ namespace SustitucionMOAUtils.Services
 
             orden.ContratoSAP = contratoSAP;
             orden.DescripcionErrorInterno = "";
-            Log.Info("SeleccionarContrato ActualizarEstado " + orden.ToDto().ToJson());
-            orden.ActualizarEstado();
-            Log.Info("SeleccionarContrato ActualizarEstado Nuevo " + orden.Estado.ToString());
+            var logCambioEstado = orden.ActualizarEstado();
+            Log.Info("SeleccionarContrato. " + logCambioEstado);
             if (!ValidarVencimientoContrato(contratoSAP, orden.Cliente))
             {
                 orden.Estado = EstadoOrdenDeCarga.ContratoVencido;
                 repositorio.GuardarCambios();
-                return new Resultado { error = "El contrato seleccionado esta vencido" };
+                emailFasService.EnviarMailContratoVencido(orden);
+                return new Resultado { error = "El contrato seleccionado está vencido" };
             }
 
             if (!orden.TransporteExiste)
@@ -2233,34 +2236,7 @@ namespace SustitucionMOAUtils.Services
             return emailSenderData;
         }
 
-
-        public string NotificacionContratoVencido(EmailSenderData emailSenderData)
-        {
-            if (emailSenderData != null)
-            {
-                EmailSender.EnviarMail(emailSenderData);
-            }
-
-            return "Notificación enviada";
-        }
-
-        public EmailSenderData ConstruirCuerpoMailNotificacionContratoVencido(OrdenDeCarga ordenDeCarga)
-        {
-            var emailSenderData = new EmailSenderData();
-            var ordenVencidas = new StringBuilder();
-            var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
-            string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-            string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
-            emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mailsComerciales, mailsMesaVentaFas });
-            string titulo = "Contrato vencido Nro :" + ordenDeCarga.ContratoIngresado;
-            var cabecera = "Orden :";
-            ordenVencidas.Append($"<tr><td>{ordenDeCarga.Id}</td><td>{ordenDeCarga.ContratoIngresado}</td><td>{ordenDeCarga.Cliente.RazonSocial}</td><td>{ordenDeCarga.CodigoCorredor}</td><td>{ordenDeCarga.NombreChofer}</td><td>{ordenDeCarga.ChasisAcoplado}</td><td>{ordenDeCarga.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(ordenDeCarga.PedidoSAP) ? ordenDeCarga.NumeroPedido : ordenDeCarga.PedidoSAP)}</td><td>{ordenDeCarga.NumeroEntrega}</td><td>{ordenDeCarga.FechaCarga}</td><td>{ordenDeCarga.FechaVencimiento}</td></tr>");
-            emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCarga.Id, ordenVencidas, titulo, cabecera);
-            emailSenderData.Asunto = $"Contrato Vencido - {ordenDeCarga.Cliente.RazonSocial}";
-            return emailSenderData;
-        }
-
-        public bool ValidarVencimientoContrato(string contrato, Proveedor cliente)
+        private bool ValidarVencimientoContrato(string contrato, Proveedor cliente)
         {
 
             var request = new OrdenCargaVisualizarClienteWSMOARequest()
