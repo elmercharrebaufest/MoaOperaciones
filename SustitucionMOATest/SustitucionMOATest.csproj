@@ -92,6 +92,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ComprasControllerTest.cs" />
     <Compile Include="Controllers\AltaEmpresaControllerTest.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosControllerTest.cs" />
     <Compile Include="Controllers\CampoSustentableControllerTest.cs" />
