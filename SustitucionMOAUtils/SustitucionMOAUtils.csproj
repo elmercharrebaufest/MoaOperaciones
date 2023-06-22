@@ -152,6 +152,7 @@
     <Compile Include="Interfaces\ICrearContratoService.cs" />
     <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteService.cs" />
+    <Compile Include="Interfaces\IEmailFasService.cs" />
     <Compile Include="Interfaces\IOrdenesCargaApi.cs" />
     <Compile Include="Interfaces\IEcheqService.cs" />
     <Compile Include="Interfaces\IFeriadoService.cs" />
@@ -189,6 +190,8 @@
     <Compile Include="Services\CampoSustentableService.cs" />
     <Compile Include="Services\CrearContratoService.cs" />
     <Compile Include="Services\EcheqService.cs" />
+    <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\Email\EmailFasService.cs" />
     <Compile Include="Services\FeriadoService.cs" />
     <Compile Include="Services\AltaEmpresaService.cs" />
     <Compile Include="Services\AltaEmpresaGranosService.cs" />
