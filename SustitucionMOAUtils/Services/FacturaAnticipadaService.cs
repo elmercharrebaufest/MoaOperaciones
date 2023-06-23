@@ -25,7 +25,8 @@ namespace SustitucionMOAUtils.Services
         }
         public List<string> ObtenerFacturasDeContrato(OrdenDeCarga orden)
         {
-            return ObtenerFacturasDeContrato(string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP);
+            var contrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
+            return ObtenerFacturasDeContrato(contrato);
         }
         public List<string> ObtenerFacturasDeContrato(string numeroContrato)
         {
@@ -54,6 +55,8 @@ namespace SustitucionMOAUtils.Services
         public void SeleccionarFactura(int ordenId, string facturaSeleccionada)
         {
             Log.Info($"Seleccionar factura para orden = {ordenId}; facturaSeleccionada = {facturaSeleccionada}");
+            if (facturaSeleccionada == null || facturaSeleccionada == "undefined")
+                throw new InfoCustomException("No se selecciono una factura.");
             var orden = _repositorio.Obtener<OrdenDeCarga>(ordenId);
             if (orden == null)
                 throw new InfoCustomException("No se encuentra la orden.");
