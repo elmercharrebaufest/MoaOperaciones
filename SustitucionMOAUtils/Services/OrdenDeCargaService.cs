@@ -142,9 +142,9 @@ namespace SustitucionMOAUtils.Services
             var producto = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
             ordenDeCarga.Producto = producto;
             var contrato = consumer.ObtenerContratoSAP(ordenDeCarga);
-            ordenDeCarga.TipoContrato = TipoContratoFASParser.Parse(contrato.TipoContrato);
+            ordenDeCarga.TipoContrato = contrato.TipoContrato;
             var validaCPEDG = producto.ValidaSisaRuca;
-            if (ordenDeCarga.TipoContrato == TipoContratoFAS.ANTICIPADO && !_facturaAnticipadaService.OrdenConMultiplesFacturas(contrato))
+            if (ordenDeCarga.TipoContratoFAS() == TipoContratoFAS.ANTICIPADO && !_facturaAnticipadaService.OrdenConMultiplesFacturas(contrato))
             {
                 ordenDeCarga.NumeroFacturaSeleccionada = ordenDeCarga.NumeroFactura;
             }
