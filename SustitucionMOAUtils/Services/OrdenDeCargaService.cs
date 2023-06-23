@@ -58,7 +58,7 @@ namespace SustitucionMOAUtils.Services
             IFeriadoService feriadoService,
             IScatoRepositorioClient scatoRepositorioClient,
             IScatoConsumer scatoConsumer,
-            IEmailFasService emailFasService
+            IEmailFasService emailFasService,
             IFacturaAnticipadaService facturaAnticipadaService
             )
         {

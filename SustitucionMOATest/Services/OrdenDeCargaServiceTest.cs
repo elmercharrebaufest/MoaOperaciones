@@ -65,8 +65,7 @@ namespace SustitucionMOATest.Services
             mIEmailFasService = new Mock<IEmailFasService>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
-                mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object);
-                mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIFacturaAnticipadaService.Object);
+                mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object, mIFacturaAnticipadaService.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,
