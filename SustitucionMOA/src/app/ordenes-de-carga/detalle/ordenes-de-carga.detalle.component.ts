@@ -562,6 +562,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     seleccionarFactura() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
+        if (!this.facturaSeleccionada) {
+            this.floatMsgService.setInfoMsg("Por favor seleccione un número de factura.");
+            return;
+        }
         this.unsubscribe();
         this.blockUI.start('Grabando...');
         try {

@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAUtils.Interfaces;
+using System;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class OrdenDeCargaEstadoService
+    public class OrdenDeCargaEstadoService : IOrdenDeCargaEstadoService
     {
+        public void AccionesARealizar(OrdenDeCarga orden)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ActualizarEstado(OrdenDeCarga orden)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -52,7 +52,7 @@
     [DomicilioDescr] VARCHAR(250) NULL,
     [NumeroFactura] VARCHAR(50) NULL,
     [NumeroFacturaSeleccionada] VARCHAR(50) NULL,
-    [TipoContrato] int NULL DEFAULT 0, 
+    [TipoContrato] VARCHAR(25) NULL, 
     CONSTRAINT [FK_OrdenDeCarga_Material] FOREIGN KEY (Producto_Id) REFERENCES Material(Id),
     CONSTRAINT [FK_OrdenDeCarga_Corredor] FOREIGN KEY (Corredor_Id) REFERENCES Proveedor(Id), 
     CONSTRAINT [FK_OrdenDeCarga_Usuario] FOREIGN KEY (UsuarioCreacion_Id) REFERENCES Usuario(Id), 
