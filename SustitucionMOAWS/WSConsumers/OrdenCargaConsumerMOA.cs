@@ -1,8 +1,11 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
+using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
+using SustitucionMOAModel.Util;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
@@ -18,6 +21,7 @@ using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -430,10 +434,38 @@ namespace SustitucionMOAWS.WSConsumers
             var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS("", contrato, "", fechas, "", "X", "N");
             return result.Length > 0;
         }
+
+        public Result ObtenerContratoSAP(OrdenDeCarga orden, TipoContratoFAS tipoContrato = TipoContratoFAS.NORMAL)
+        {
+            return ObtenerContratoSAP(string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP);
+        }
+        public Result ObtenerContratoSAP(string numeroContrato, TipoContratoFAS tipoContrato = TipoContratoFAS.NORMAL)
+        {
+            var request = new OrdenCargaVisualizarClienteWSMOARequest
+            {
+                Contrato = numeroContrato,
+                TipoContrato = TipoContratoFASParser.IntoString(tipoContrato),
+                Fechas = ObtenerFechas()
+            };
+
+            var contratoSAP = OrdenCargaVisualizarClienteExecute(request).Resultados.FirstOrDefault();
+            return contratoSAP;
+        }
+        private List<FechaWS> ObtenerFechas()
+        {
+            return new List<FechaWS>
+                {
+                    new FechaWS
+                    {
+                        fechaFin = DateTime.Now,
+                        fechaInicio = DateTime.Parse(Constante.FECHA_BASICA)
+                    }
+                };
+        }
         private ZMPES4100[] ObtenerRangoFechas()
         {
             var hasta = DateTime.Now;
-            var desde = hasta.AddMonths(-12);
+            var desde = hasta.AddMonths(-Constante.MESES_ATRAS_FAS);
             return new List<ZMPES4100>{ new ZMPES4100()
             {
                 FECHA_OP = SAPFormatter.PrepararFecha(desde),

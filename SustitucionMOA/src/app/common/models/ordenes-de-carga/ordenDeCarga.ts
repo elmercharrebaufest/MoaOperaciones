@@ -1,5 +1,5 @@
 import { EstadoOrdenDeCarga } from "./estadoOrdenDeCarga";
-import { ContratoOrdenFas } from "./obtenerContratosDisponiblesResponse";
+import { ContratoOrdenFas, TipoContrato } from './obtenerContratosDisponiblesResponse';
 import { OrdenDeCargaCambiosHistorial } from "./ordenDeCargaCambiosHistorial";
 
 export class OrdenDeCarga {
@@ -51,6 +51,8 @@ export class OrdenDeCarga {
     DomicilioOrden: number;
     DomicilioDescr: string;
     NumeroFactura: string;
+    NumeroFacturaSeleccionada: string;
+    TipoContrato: TipoContrato;
     constructor() {
     }
 }
