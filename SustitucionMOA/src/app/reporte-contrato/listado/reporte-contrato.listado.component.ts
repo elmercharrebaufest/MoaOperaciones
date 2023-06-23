@@ -27,7 +27,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.filtroFechaComponent = new FiltroFechaComponent();
     }
-    
+    CLIENTE_DIRECTO
     contratoSeleccionadoId: string = '';
     detalle: any[];
     cabecera: ReporteContrato[];
@@ -101,7 +101,13 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
                         this.ejecutarFiltro();
                         this.show = true;
                         this.disabled = false;
-                    
+                        
+                        // VALIDA EL CASO CUANDO UN USUARIO ES DIRECTO
+                        const listaUsuariosDirectos = this.cabecera.filter(x=> x.Corredor == '0050005000');
+                        if (listaUsuariosDirectos!=null && listaUsuariosDirectos.length >0){
+                            this.esCliente = true;
+                            this.esCorredor = true;
+                        }
                     }
 
                 },
