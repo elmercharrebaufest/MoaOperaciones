@@ -18,7 +18,8 @@
         EdicionRechazada,
         SinEnviarASAP,
         SinEstado,
-        EntregaAnuladaPedidoPendienteAnulacion
+        EntregaAnuladaPedidoPendienteAnulacion,
+        PendienteCompensacion
     }
 
     public static class EstadoOrdenDeCargaExtensions
