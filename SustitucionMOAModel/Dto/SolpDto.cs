@@ -84,6 +84,7 @@ namespace SustitucionMOAModel.Dto
         public List<AdjudicacionDto> OrdenesDeCompraSolicitante { get; set; }
         public bool? TrabajoYaHecho { get; set; }
         public int? ProveedorAsignadoId { get; set; }
+        public bool VerPublicar { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)

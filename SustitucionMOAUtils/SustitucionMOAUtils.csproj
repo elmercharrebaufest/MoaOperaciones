@@ -153,6 +153,7 @@
     <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteService.cs" />
     <Compile Include="Interfaces\IEmailFasService.cs" />
+    <Compile Include="Interfaces\IHttpContextService.cs" />
     <Compile Include="Interfaces\IOrdenesCargaApi.cs" />
     <Compile Include="Interfaces\IEcheqService.cs" />
     <Compile Include="Interfaces\IFeriadoService.cs" />
@@ -208,6 +209,7 @@
     <Compile Include="Services\HomeService.cs" />
     <Compile Include="Interfaces\ICartaPorteService.cs" />
     <Compile Include="Interfaces\IPesificacionService.cs" />
+    <Compile Include="Services\HttpContextService.cs" />
     <Compile Include="Services\LiquidacionService.cs" />
     <Compile Include="Services\LocalidadService.cs" />
     <Compile Include="Services\LoginService.cs" />
