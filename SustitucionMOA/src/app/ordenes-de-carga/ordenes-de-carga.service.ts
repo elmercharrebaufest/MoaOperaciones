@@ -223,6 +223,21 @@ export class OrdenesDeCargaService extends BaseService {
             .post('/api/OrdenDeCarga/SeleccionarContrato', payload)
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
+    public seleccionarFactura(ordenId: Number, facturaSeleccionada: string): Observable<ApiResponse<any>> {
+        let payload = new FormData();
+        payload.append(
+            "facturaSeleccionada",
+            facturaSeleccionada
+        );
+        payload.append(
+            "ordenId",
+            ordenId.toString()
+        );
+
+        return this.http
+            .post<ApiResponse<any>>('/api/OrdenDeCarga/SeleccionarFactura', payload)
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
 
     public seleccionarPedido(ordenId: Number, pedido: string): Observable<any> {
         let payload = new FormData();

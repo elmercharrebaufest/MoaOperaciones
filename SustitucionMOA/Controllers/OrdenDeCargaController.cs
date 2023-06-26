@@ -940,6 +940,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        [HttpGet]
         public ActionResult ValidarCuilChofer(string cuilChofer)
         {
             var response = new SustitucionMOAApiResponse<bool>();
@@ -962,6 +963,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        [HttpGet]
         public ActionResult ValidarCuitTransporte(string cuitTransporte)
         {
             var response = new SustitucionMOAApiResponse<bool>();
@@ -984,12 +986,37 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        [HttpGet]
         public ActionResult FacturasDisponibles(string numeroContrato)
         {
             var response = new SustitucionMOAApiResponse<List<string>>();
             try
             {
                 response.Data = _facturaAnticipadaService.ObtenerFacturasDeContrato(numeroContrato);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [HttpPost]
+        public ActionResult SeleccionarFactura(int ordenId, string facturaSeleccionada)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                _facturaAnticipadaService.SeleccionarFactura(ordenId, facturaSeleccionada);
+                response.Data = true;
             }
             catch (InfoCustomException ice)
             {
