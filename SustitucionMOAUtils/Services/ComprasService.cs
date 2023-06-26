@@ -3442,6 +3442,10 @@ namespace SustitucionMOAUtils.Services
         {
             var archs = ObtenerArchivosPeticionDeOferta(peticion);
             var copia = new List<string> { peticion.Usuario.Mail };
+            if (!string.IsNullOrEmpty(peticion.Solp?.UsuarioCreacion?.Mail))
+            {
+                copia.Add(peticion.Solp.UsuarioCreacion.Mail);
+            }
             var asunto = "";
             if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
             {
@@ -3598,8 +3602,8 @@ namespace SustitucionMOAUtils.Services
                             .ft15{position:absolute;top:709px;white-space:nowrap}</style>";
 
 
-            
-        
+
+
 
             var datosProveedor = new VendedorDetalleWSMOAResponse() { cabeceras = null };
             try
@@ -3635,22 +3639,22 @@ namespace SustitucionMOAUtils.Services
                         posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{(item.MaterialSolp != null ? item.MaterialSolp.Descripcion : "")}</td></tr>";
                     }
                 }
-                else 
+                else
                 {
                     foreach (var item in adjudicacion.Solp.Posiciones)
                     {
-                       posiciones +=
-                       $"<tr class='border'> <td style='font-size: 8px;'>{item.Indice} </td> " +
-                       $"<td style='font-size: 8px;'> {(item.ServicioSolp != null ? item.ServicioSolp.Codigo : "")} </td>" +
-                       $"<td style='font-size: 8px;'> {(item.Tarea != null ? item.Tarea : "")} </td>" +
-                       $"<td style='font-size: 8px;'> 1 </td>" +
-                       $"<td style='font-size: 8px;'> </td>" +
-                       $"<td style='font-size: 8px;'>{adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td>" +
-                       $"<td style='font-size: 8px;'>{adjudicacion.Cotizacion.CotizacionPosiciones.Where(posic => posic.PeticionDeOfertaSolpPosicion.SolpPosicion.EsConcluido == true && posic.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true).Select(x => x.Precio.Value.ToString("N2")).FirstOrDefault()} {item.Moneda.Codigo} / 001</td>" +
-                       $"<td style='font-size: 8px;'>{adjudicacion.MontoTotal.ToString("N2")} {item.Moneda.Codigo}</td></tr>" +
-                       $"<tr><td colspan='4' style='font-size: 10px; text-align: end'><strong>La posición contiene los siguientes servicios:</strong></td></tr>";
+                        posiciones +=
+                        $"<tr class='border'> <td style='font-size: 8px;'>{item.Indice} </td> " +
+                        $"<td style='font-size: 8px;'> {(item.ServicioSolp != null ? item.ServicioSolp.Codigo : "")} </td>" +
+                        $"<td style='font-size: 8px;'> {(item.Tarea != null ? item.Tarea : "")} </td>" +
+                        $"<td style='font-size: 8px;'> 1 </td>" +
+                        $"<td style='font-size: 8px;'> </td>" +
+                        $"<td style='font-size: 8px;'>{adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td>" +
+                        $"<td style='font-size: 8px;'>{adjudicacion.Cotizacion.CotizacionPosiciones.Where(posic => posic.PeticionDeOfertaSolpPosicion.SolpPosicion.EsConcluido == true && posic.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true).Select(x => x.Precio.Value.ToString("N2")).FirstOrDefault()} {item.Moneda.Codigo} / 001</td>" +
+                        $"<td style='font-size: 8px;'>{adjudicacion.MontoTotal.ToString("N2")} {item.Moneda.Codigo}</td></tr>" +
+                        $"<tr><td colspan='4' style='font-size: 10px; text-align: end'><strong>La posición contiene los siguientes servicios:</strong></td></tr>";
 
-                        
+
                         foreach (var pos in adjudicacion.Cotizacion.CotizacionPosiciones)
                         {
                             foreach (var subPos in pos.CotizacionSubPosiciones)
@@ -3667,14 +3671,14 @@ namespace SustitucionMOAUtils.Services
                                 $"<td style='font-size: 8px;'>{subPos.Cantidad} {subPos.UnidadDeMedida.Codigo}</td>" +
                                 $"<td style='font-size: 8px;'>{subPos.Precio.Value.ToString("N2")}</td>" +
                                 $"<td style='font-size: 8px;'>{subPos.Precio.Value.ToString("N2")}</td>" +
-                                $"</tr>";                   
+                                $"</tr>";
                             }
 
 
-                            
+
                         }
                     }
-                    
+
                 }
 
                 string textos = "";
@@ -3717,7 +3721,7 @@ namespace SustitucionMOAUtils.Services
                 var localidad = repositorio.Obtener<Localidad>(x => x.ProvinciaId == posicion.ProvinciaId);
                 var centro = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
                 var centroPlanta = repositorio.Obtener<TablaSap>(x => x.CodigoSap == posicion.Centro.CodigoSap);
-                
+
 
                 var lugarEntrega = $"{posicion.NombreEntrega}, {posicion.CalleEntrega} - ({posicion.CpEntrega}) {localidad?.Nombre ?? ""} - {posicion.Provincia?.Nombre ?? ""}";
 
@@ -3761,9 +3765,9 @@ namespace SustitucionMOAUtils.Services
                 Logger.Log.Info($"EnviarMailOrdenCompra numero{adjudicacion.Id}");
                 Logger.Log.Info($"copia mail comprador {adjudicacion.Usuario.Mail}");
                 Logger.Log.Info($"copia mail solicitante {adjudicacion.Solp.UsuarioCreacion.Mail}");
-                Logger.Log.Info($"mail al proveedor adjudicado { adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail }");
+                Logger.Log.Info($"mail al proveedor adjudicado {adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail}");
                 Logger.Log.Info($"Nueva OC creada - {adjudicacion.NumeroOrdenDeCompra}");
-                Logger.Log.Info($"fecha { DateTime.Now}");
+                Logger.Log.Info($"fecha {DateTime.Now}");
 
                 var copia = new List<string> { adjudicacion.Usuario.Mail, adjudicacion.Solp.UsuarioCreacion.Mail };
                 var asunto = "";
@@ -4593,21 +4597,21 @@ namespace SustitucionMOAUtils.Services
                 htmlBody += $"El proveedor no cuenta con el material disponible<br/>";
 
             }
-            else if(algunaPosicionNoDisponible)
+            else if (algunaPosicionNoDisponible)
             {
                 htmlBody += $"El proveedor no cuenta con algún material disponible <br/>";
 
             }
             if (noRespetaMateriales)
             {
-                htmlBody += $"La propuesta no cumple con las especificaciones técnicas solicitadas, revisar con prioridad. <br/>" ;
+                htmlBody += $"La propuesta no cumple con las especificaciones técnicas solicitadas, revisar con prioridad. <br/>";
             }
 
 
-           htmlBody += " <br/>Puede visualizar la cotización en www.moaoperaciones.com.ar " +
-                "<br/><br/>Saludos Cordiales<br/>" +
-                "Molinos Agro S.A. <br/><br/> " +
-                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+            htmlBody += " <br/>Puede visualizar la cotización en www.moaoperaciones.com.ar " +
+                 "<br/><br/>Saludos Cordiales<br/>" +
+                 "Molinos Agro S.A. <br/><br/> " +
+                  @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
 
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             alternateView.LinkedResources.Add(res);
