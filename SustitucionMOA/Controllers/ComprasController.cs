@@ -762,7 +762,7 @@ namespace SustitucionMOA.Controllers
             {
                 var peticion = JsonConvert.DeserializeObject<GuardarPeticionDeOfertaDto>(json);
                 peticion.UsuarioActual = ObtenerUsuarioActual();
-                var result = service.GrabarPeticionDeOferta(peticion, Request.Files);
+                var result = service.GrabarPeticionDeOferta(peticion, Request.Files, true);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)

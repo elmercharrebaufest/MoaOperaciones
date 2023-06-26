@@ -76,6 +76,7 @@ namespace SustitucionMOAModel.Dto
         public IEnumerable<DateTime?> VisitasMasivas { get; set; }
         public bool PersonalHoras { get; set; }
         public string Texto { get; set; }
+        public bool EstaLiberado { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
@@ -109,6 +110,7 @@ namespace SustitucionMOAModel.Dto
         public string CotizacionEstado { get; set; }
         public bool VerAdjudicar { get; set; }
         public bool EstaHabilitado { get; set; }
+        public string MensajeAdjudicar { get; set; }
     }
 
 }
