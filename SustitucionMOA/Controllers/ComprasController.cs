@@ -1090,7 +1090,7 @@ namespace SustitucionMOA.Controllers
             {
                 var cotizacion = JsonConvert.DeserializeObject<GuardarCotizacion>(json);
                 var usuarioActual = ObtenerUsuarioActual();
-                var result = service.GrabarCotizacion(cotizacion, Request.Files, cotizacion.EsFinalizado, usuarioActual.Id);
+                var result = service.GrabarCotizacion(cotizacion, Request.Files, cotizacion.EsFinalizado, usuarioActual.Id, true);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)
