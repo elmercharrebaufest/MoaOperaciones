@@ -1132,5 +1132,409 @@ namespace SustitucionMOATest.Services
 
 
 
+        [Test]
+        public void GrabarPeticionDeOfertaOk()
+        {
+
+            var posicion = new SolpPosicion
+            {
+                Id = 1,
+                FechaEntregaServicio = DateTime.Now,
+                Solp = new Solp
+                {
+                    TrabajoYaHecho = true,
+                    Pliego = new Pliego
+                    {
+                        FechaHoraEntrega = DateTime.Now
+                    }
+                }
+            };
+            var peticionDeOferta = new GuardarPeticionDeOfertaDto
+            {
+                Id = 1,
+                Adjuntos = null,
+                Observacion = "",
+                PosIds = new List<int> { 1 },
+                SolpId = 1,
+                UsuarioIds = new List<int> { 1 },
+                UsuarioActual = new UsuarioDto
+                {
+                    Id = 1
+                }
+            };
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(),
+              It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<SolpPosicion>() { posicion });
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Usuario, bool>>>(),
+             It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<Usuario>() { new Usuario {  Id = 1 } });
+
+            repositorioMock.Setup(y => y.Agregar(It.IsAny<PeticionDeOferta>())).Returns(new PeticionDeOferta { Id = 1 });
+
+
+            var result = target.GrabarPeticionDeOferta(peticionDeOferta, null, false);
+
+            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<Usuario, bool>>>(),
+             It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
+
+            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(),
+             It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
+
+            repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOferta>()), Times.Once);
+
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
+            Assert.That(result.Errores.Count == 0);
+        }
+
+
+        [Test]
+        public void GrabarCotizacionOk()
+        {
+
+            var cotizacion = new GuardarCotizacion
+            {
+                Cantidad = 1000,
+                CotizacionPosiciones = new List<GuardarCotizacionPosicionDto>
+                {
+                    new GuardarCotizacionPosicionDto
+                    {
+                        Cantidad = 1,
+                        FechaDeEntrega = DateTime.Now,
+                        MonedaId = 1, 
+                        NoDisponible = true,
+                        PeticionDeOfertaSolpPosicionId = 1,
+                        Precio = 1000,
+                        PrecioTotal = 1000,
+                        TotalPesos = 1000,
+                        UnidadDeMedidaId = 1
+                    },
+                    new GuardarCotizacionPosicionDto
+                    {
+                        Cantidad = 1,
+                        FechaDeEntrega = DateTime.Now,
+                        MonedaId = 1,
+                        NoDisponible = false,
+                        PeticionDeOfertaSolpPosicionId = 1,
+                        Precio = 1000,
+                        PrecioTotal = 1000,
+                        TotalPesos = 1000,
+                        UnidadDeMedidaId = 1
+                    },
+                },
+                EsFinalizado = false,
+                MonedaId = 1,
+                ObservacionEconomica = "",
+                ObservacionTecnica = "",
+                FechaDeEntrega = DateTime.Now,
+                CotizacionSubposiciones = new List<CotizacionSubposicionesDto>
+                {
+                    new CotizacionSubposicionesDto
+                    {
+                        Cantidad = 1,
+                        MonedaId = 1,
+                        Precio = 1000,
+                        PrecioTotal = 1000,
+                        UnidadDeMedidaId = 1
+                    }
+                }
+            };
+
+            repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>()))
+                 .Returns(new Usuario {  Id = 1 });
+
+            repositorioMock.Setup(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()))
+               .Returns(new PeticionDeOfertaUsuario { Id = 1 });
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
+
+
+            repositorioMock.Setup(y => y.Agregar(It.IsAny<Cotizacion>())).Returns(new Cotizacion { Id = 1, CotizacionEstado_Id = 1 });
+
+
+            var result = target.GrabarCotizacion(cotizacion, null, false, 1);
+
+            repositorioMock.Verify(y => y.Obtener<Usuario>(It.IsAny<int>()), Times.Once);
+            repositorioMock.Verify(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
+            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
+            repositorioMock.Verify(x => x.Agregar(It.IsAny<Cotizacion>()), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
+            Assert.That(result.Errores.Count == 0);
+        }
+
+        [Test]
+        public void GrabarCotizacionEditarOk()
+        {
+
+            var cotizacion = new GuardarCotizacion
+            {
+                Cantidad = 1000,
+                CotizacionId = 1,
+                CotizacionPosiciones = new List<GuardarCotizacionPosicionDto>
+                {
+                    new GuardarCotizacionPosicionDto
+                    {
+                        Cantidad = 1,
+                        FechaDeEntrega = DateTime.Now,
+                        MonedaId = 1,
+                        NoDisponible = true,
+                        PeticionDeOfertaSolpPosicionId = 1,
+                        Precio = 1000,
+                        PrecioTotal = 1000,
+                        TotalPesos = 1000,
+                        UnidadDeMedidaId = 1
+                    },
+                    new GuardarCotizacionPosicionDto
+                    {
+                        Cantidad = 1,
+                        FechaDeEntrega = DateTime.Now,
+                        MonedaId = 1,
+                        NoDisponible = false,
+                        PeticionDeOfertaSolpPosicionId = 1,
+                        Precio = 1000,
+                        PrecioTotal = 1000,
+                        TotalPesos = 1000,
+                        UnidadDeMedidaId = 1
+                    },
+                },
+                EsFinalizado = false,
+                MonedaId = 1,
+                ObservacionEconomica = "",
+                ObservacionTecnica = "",
+                FechaDeEntrega = DateTime.Now,
+                CotizacionSubposiciones = new List<CotizacionSubposicionesDto>
+                {
+                    new CotizacionSubposicionesDto
+                    {
+                        Cantidad = 1,
+                        MonedaId = 1,
+                        Precio = 1000,
+                        PrecioTotal = 1000,
+                        UnidadDeMedidaId = 1
+                    }
+                }
+            };
+            var cotizacionEntidad = new Cotizacion
+            {
+                PeticionDeOfertaUsuario = new PeticionDeOfertaUsuario
+                {
+                    PeticionDeOferta = new PeticionDeOferta
+                    {
+                        Solp = new Solp
+                        {
+                            Id = 1,
+                            Posiciones = new List<SolpPosicion>
+                            {
+                                new SolpPosicion
+                                {
+                                    Id = 1,
+                                    TipoPosicion = new TablaGeneral
+                                    {
+                                        Codigo = "MATERIALES"
+                                    },
+                                }
+                            }
+                        }
+                    }
+                },
+                CotizacionPosiciones = new List<CotizacionPosicion>()
+                {
+                    new CotizacionPosicion
+                    {
+                        Id = 1,
+                        Cantidad = 1000,
+                        Moneda_Id = 1,
+                        Precio = 1000,
+                        PeticionDeOfertaSolpPosicion_Id = 1,
+                        CotizacionSubPosiciones = new List<CotizacionSubPosicion>
+                        {
+                            new CotizacionSubPosicion
+                            {
+                                Cantidad = 1000,
+                                Moneda_Id = 1,
+                                Moneda = new TablaSap{ Codigo = "ARP", Id = 1},
+                                Precio = 10000,
+                                UnidadDeMedida_Id = 1,
+                                UnidadDeMedida = new TablaSap{ Codigo = "ARP", Id = 1},
+                                CotizacionPosicion_Id = 0,
+                                SolpSubPosicion_Id = 1,
+                                
+                            },
+                             new CotizacionSubPosicion
+                            {
+                                Cantidad = 1000,
+                                Moneda_Id = 1,
+                                Moneda = new TablaSap{ Codigo = "ARP", Id = 1},
+                                Precio = 10000,
+                                UnidadDeMedida_Id = 1,
+                                UnidadDeMedida = new TablaSap{ Codigo = "ARP", Id = 1},
+                                CotizacionPosicion_Id = 1,
+                                SolpSubPosicion_Id = 1,
+
+                            }
+                        }
+                    }
+                }
+            };
+            repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>()))
+                 .Returns(new Usuario { Id = 1 });
+
+            repositorioMock.Setup(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()))
+               .Returns(new PeticionDeOfertaUsuario { Id = 1 });
+
+            repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>()))
+             .Returns(cotizacionEntidad);
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
+
+            var result = target.GrabarCotizacion(cotizacion, null, false, 1);
+
+            repositorioMock.Verify(y => y.Obtener<Usuario>(It.IsAny<int>()), Times.Once);
+            repositorioMock.Verify(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
+            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
+         
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
+            Assert.That(result.Errores.Count == 0);
+        }
+
+        [Test]
+        public void CrearCotizacionAutomaticaOk()
+        {
+
+            var cotizacion = new GuardarCotizacion
+            {
+                Cantidad = 1000,
+                CotizacionId = 1,
+                CotizacionPosiciones = new List<GuardarCotizacionPosicionDto>
+                {
+                    new GuardarCotizacionPosicionDto
+                    {
+                        Cantidad = 1,
+                        FechaDeEntrega = DateTime.Now,
+                        MonedaId = 1,
+                        NoDisponible = true,
+                        PeticionDeOfertaSolpPosicionId = 1,
+                        Precio = 1000,
+                        PrecioTotal = 1000,
+                        TotalPesos = 1000,
+                        UnidadDeMedidaId = 1
+                    },
+                    new GuardarCotizacionPosicionDto
+                    {
+                        Cantidad = 1,
+                        FechaDeEntrega = DateTime.Now,
+                        MonedaId = 1,
+                        NoDisponible = false,
+                        PeticionDeOfertaSolpPosicionId = 1,
+                        Precio = 1000,
+                        PrecioTotal = 1000,
+                        TotalPesos = 1000,
+                        UnidadDeMedidaId = 1
+                    },
+                },
+                EsFinalizado = false,
+                MonedaId = 1,
+                ObservacionEconomica = "",
+                ObservacionTecnica = "",
+                FechaDeEntrega = DateTime.Now,
+                CotizacionSubposiciones = new List<CotizacionSubposicionesDto>
+                {
+                    new CotizacionSubposicionesDto
+                    {
+                        Cantidad = 1,
+                        MonedaId = 1,
+                        Precio = 1000,
+                        PrecioTotal = 1000,
+                        UnidadDeMedidaId = 1
+                    }
+                }
+            };
+            var cotizacionEntidad = new Cotizacion
+            {
+                PeticionDeOfertaUsuario = new PeticionDeOfertaUsuario
+                {
+                    PeticionDeOferta = new PeticionDeOferta
+                    {
+                        Solp = new Solp
+                        {
+                            Id = 1,
+                            Posiciones = new List<SolpPosicion>
+                            {
+                                new SolpPosicion
+                                {
+                                    Id = 1,
+                                    TipoPosicion = new TablaGeneral
+                                    {
+                                        Codigo = "MATERIALES"
+                                    },
+                                }
+                            }
+                        }
+                    }
+                },
+                CotizacionPosiciones = new List<CotizacionPosicion>()
+                {
+                    new CotizacionPosicion
+                    {
+                        Id = 1,
+                        Cantidad = 1000,
+                        Moneda_Id = 1,
+                        Precio = 1000,
+                        PeticionDeOfertaSolpPosicion_Id = 1,
+                        CotizacionSubPosiciones = new List<CotizacionSubPosicion>
+                        {
+                            new CotizacionSubPosicion
+                            {
+                                Cantidad = 1000,
+                                Moneda_Id = 1,
+                                Moneda = new TablaSap{ Codigo = "ARP", Id = 1},
+                                Precio = 10000,
+                                UnidadDeMedida_Id = 1,
+                                UnidadDeMedida = new TablaSap{ Codigo = "ARP", Id = 1},
+                                CotizacionPosicion_Id = 0,
+                                SolpSubPosicion_Id = 1,
+
+                            },
+                             new CotizacionSubPosicion
+                            {
+                                Cantidad = 1000,
+                                Moneda_Id = 1,
+                                Moneda = new TablaSap{ Codigo = "ARP", Id = 1},
+                                Precio = 10000,
+                                UnidadDeMedida_Id = 1,
+                                UnidadDeMedida = new TablaSap{ Codigo = "ARP", Id = 1},
+                                CotizacionPosicion_Id = 1,
+                                SolpSubPosicion_Id = 1,
+
+                            }
+                        }
+                    }
+                }
+            };
+            repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>()))
+                 .Returns(new Usuario { Id = 1 });
+
+            repositorioMock.Setup(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()))
+               .Returns(new PeticionDeOfertaUsuario { Id = 1 });
+
+            repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>()))
+             .Returns(cotizacionEntidad);
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
+
+            var result = target.GrabarCotizacion(cotizacion, null, false, 1);
+
+            repositorioMock.Verify(y => y.Obtener<Usuario>(It.IsAny<int>()), Times.Once);
+            repositorioMock.Verify(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
+            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
+
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
+            Assert.That(result.Errores.Count == 0);
+        }
+
+
+
+
     }
 }
