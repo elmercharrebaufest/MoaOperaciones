@@ -59,6 +59,8 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA;
         private readonly IVendedorService vendedorService;
         private readonly IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA;
+        private readonly IHttpContextService httpContextService;
+        
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
@@ -74,7 +76,7 @@ namespace SustitucionMOAUtils.Services
             ICrearPedidoConsumerMOA crearPedidoConsumerMOA,
             IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
             IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA, IVendedorService vendedorService,
-            IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA)
+            IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA, IHttpContextService httpContextService)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -90,7 +92,7 @@ namespace SustitucionMOAUtils.Services
             this.obtenerContratoSolpConsumerMOA = obtenerContratoSolpConsumerMOA;
             this.vendedorService = vendedorService;
             this.obtenerTipoCambioConsumerMOA = obtenerTipoCambioConsumerMOA;
-
+            this.httpContextService = httpContextService;
 
 
         }
@@ -4253,7 +4255,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public RespuestaGuardarSOLP GrabarCotizacion(GuardarCotizacion cotizacionDto, HttpFileCollectionBase adjuntos, bool esFinalizado, int usuarioActualId)
+        public RespuestaGuardarSOLP GrabarCotizacion(GuardarCotizacion cotizacionDto, HttpFileCollectionBase adjuntos, bool esFinalizado, int usuarioActualId, bool enviarMail = true)
         {
             try
             {
@@ -4348,7 +4350,7 @@ namespace SustitucionMOAUtils.Services
                     GuardarArchivosCotizacion(cotizacion, adjuntos);
                 }
 
-                if (cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado)
+                if (cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado && enviarMail)
                 {
                     EnviarMailCotizacion(cotizacion);
                 }
@@ -4579,7 +4581,7 @@ namespace SustitucionMOAUtils.Services
 
         private AlternateView CuerpoMailCotizacion(Cotizacion cotizacion)
         {
-            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            var filePath = httpContextService.ObtenerPathLogoMail();
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             var proveedor = cotizacion.UsuarioCreador.ObtenerProveedor();
@@ -4878,7 +4880,7 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public void CrearCotizacionAutomatica(Solp solp)
+        public void CrearCotizacionAutomatica(Solp solp, bool enviarMail = true)
         {
             //Crear Peticion 
             var usuariosIds = new List<int> { solp.ProveedorAsignado_Id.Value };
@@ -4894,9 +4896,9 @@ namespace SustitucionMOAUtils.Services
                 Adjuntos = null                
             };
 
-            GrabarPeticionDeOferta(peticion, null, false);
+            var resultado = GrabarPeticionDeOferta(peticion, null, false);
 
-            var peticionEntidad = repositorio.Listar<PeticionDeOferta>().LastOrDefault();
+            var peticionEntidad = repositorio.Obtener<PeticionDeOferta>(resultado.IdEntidad);
 
             var cotizacion = new GuardarCotizacion
             {
@@ -4915,21 +4917,26 @@ namespace SustitucionMOAUtils.Services
                 }).ToList(),
 
             };
+
+
             foreach (var posicion in solp.Posiciones)
             {
-                foreach (var subposicion in posicion.Subposiciones)
+                if (posicion.Subposiciones != null && posicion.Subposiciones.Count > 0)
                 {
-                    var subpos = new CotizacionSubposicionesDto
+                    foreach (var subposicion in posicion.Subposiciones)
                     {
-                        Precio = (decimal)subposicion.PrecioBruto,
-                        Cantidad = (int)subposicion.Cantidad,
-                        UnidadDeMedidaId = subposicion.Unidad_Id,
-                        SolpSubPosicionId = subposicion.Id
-                    };
-                    cotizacion.CotizacionSubposiciones.Add(subpos);
+                        var subpos = new CotizacionSubposicionesDto
+                        {
+                            Precio = (decimal)subposicion.PrecioBruto,
+                            Cantidad = (int)subposicion.Cantidad,
+                            UnidadDeMedidaId = subposicion.Unidad_Id,
+                            SolpSubPosicionId = subposicion.Id
+                        };
+                        cotizacion.CotizacionSubposiciones.Add(subpos);
+                    }
                 }
             }
-            GrabarCotizacion(cotizacion, null, true, solp.UsuarioCreacion_Id.Value);
+            GrabarCotizacion(cotizacion, null, true, solp.UsuarioCreacion_Id.Value, enviarMail);
 
         }
     }
