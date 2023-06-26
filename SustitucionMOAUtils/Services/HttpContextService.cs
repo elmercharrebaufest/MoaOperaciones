@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAUtils.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class HttpContextService
+    public class HttpContextService : IHttpContextService
     {
         public HttpContextService()
         {
