@@ -23,6 +23,7 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
                 case "OE-02": return CrearEntregaResEnum.EntregaCreadaErrorAlInsertarOE02;
                 case "OE-03": return CrearEntregaResEnum.EntregaCreadaErrorAlInsertarOE03;
                 case "OE-04": return CrearEntregaResEnum.FaltaCargarKmEnContrato;
+                case "OE-05": return CrearEntregaResEnum.FacturaNoCompensada;
                 default: return CrearEntregaResEnum.ErrorRespuestaInesperadaDeSap;
             }
         }

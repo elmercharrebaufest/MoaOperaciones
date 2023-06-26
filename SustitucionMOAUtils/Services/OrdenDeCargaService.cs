@@ -2137,18 +2137,16 @@ namespace SustitucionMOAUtils.Services
                     orden.FechaEntregaGenerada = DateTime.Now;
                     orden.NumeroEntrega = numeroEntrega;
                     orden.DescripcionCodigoVerificacionSap = "";
-                    Log.Info("GenerarEntregaSAP ActualizarEstado " + orden.ToDto().ToJson());
-                    orden.ActualizarEstado();
-                    Log.Info("GenerarEntregaSAP ActualizarEstado Nuevo " + orden.Estado.ToString());
+                    var logEstadoEntGen = orden.ActualizarEstado();
+                    Log.Info(logEstadoEntGen);
                     repositorio.GuardarCambios();
                     return new Resultado { Mensaje = $"Se ha generado la entrega {numeroEntrega}." };
 
                 case CrearEntregaResEnum.NoExisteTransportista:
                     orden.TransporteExiste = false;
                     orden.DescripcionCodigoVerificacionSap = "No se pudo generar la entrega. No existe el transportista.";
-                    Log.Info("GenerarEntregaSAP ActualizarEstado " + orden.ToDto().ToJson());
-                    orden.ActualizarEstado();
-                    Log.Info("GenerarEntregaSAP ActualizarEstado Nuevo " + orden.Estado.ToString());
+                    var logEstadoNoTransp = orden.ActualizarEstado();
+                    Log.Info(logEstadoNoTransp);
                     repositorio.GuardarCambios();
                     return new Resultado { Mensaje = "No se pudo generar la entrega. No existe el transportista." };
 
@@ -2156,6 +2154,13 @@ namespace SustitucionMOAUtils.Services
                     orden.DescripcionCodigoVerificacionSap = "Falta cargar los Kms en el contrato";
                     repositorio.GuardarCambios();
                     return new Resultado { info = "No se pudo generar la entrega. Falta cargar los Kms en el contrato." };
+
+                case CrearEntregaResEnum.FacturaNoCompensada:
+                    orden.TransporteExiste = true;
+                    orden.DescripcionCodigoVerificacionSap = "No se pudo generar la entrega. Factura no compensada.";
+                    orden.Estado = EstadoOrdenDeCarga.PendienteCompensacion;
+                    repositorio.GuardarCambios();
+                    return new Resultado { Mensaje = "No se pudo generar la entrega. Factura no compensada." };
 
                 case CrearEntregaResEnum.ErrorRespuestaInesperadaDeSap:
                     orden.DescripcionCodigoVerificacionSap = $"No se pudo generar la entrega. Respuesta inesperada de SAP ({respHandler.GetLogRespuestaSap()})";
