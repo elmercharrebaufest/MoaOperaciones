@@ -4015,6 +4015,14 @@ namespace SustitucionMOAUtils.Services
                 asunto = "Prueba - ";
             }
             var copia = new List<string> { circular.Usuario.Mail };
+            if (!string.IsNullOrEmpty(circular.PeticionDeOfertaUsuarios?.First().PeticionDeOfertaUsuario?.PeticionDeOferta?.Solp?.UsuarioCreacion?.Mail))
+            {
+                copia.Add(circular.PeticionDeOfertaUsuarios?.First().PeticionDeOfertaUsuario?.PeticionDeOferta?.Solp?.UsuarioCreacion?.Mail);
+            }
+            if (!string.IsNullOrEmpty(circular.PeticionDeOfertaUsuarios?.First().PeticionDeOfertaUsuario?.PeticionDeOferta?.Usuario?.Mail))
+            {
+                copia.Add(circular.PeticionDeOfertaUsuarios?.First().PeticionDeOfertaUsuario?.PeticionDeOferta?.Usuario?.Mail);
+            }
             foreach (var prov in circular.PeticionDeOfertaUsuarios)
             {
                 var enviarA = new List<string> { prov.PeticionDeOfertaUsuario.Usuario.Mail };
