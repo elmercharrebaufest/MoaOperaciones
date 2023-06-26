@@ -3,19 +3,15 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using SustitucionMOA.Controllers;
 using SustitucionMOA.Utils;
-using SustitucionMOAAssets;
 using SustitucionMOAModel.Dto;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
@@ -39,7 +35,7 @@ namespace SustitucionMOATest.Controllers
             comprasServiceMock = new Mock<IComprasService>();
             usuarioServiceMock = new Mock<IUsuarioService>();
             repositorioMock = new Mock<IRepositorio>();
-            
+
             this.serializer = new JavaScriptSerializer();
 
             var fakeIdentity = new GenericIdentity("User");
@@ -64,14 +60,23 @@ namespace SustitucionMOATest.Controllers
 
         //    usuarioServiceMock.Setup(u => u.GetUsuario(It.IsAny<string>())).Returns(new UsuarioDto { Id = 1 });
         //    comprasServiceMock.Setup(s => s.GrabarCotizacion(expected, null, true, 1)).Returns(new RespuestaGuardarSOLP());
+        //    Mock<ControllerContext> cc = new Mock<ControllerContext>();
+        //    System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding();
+ 
+        //   // string filePath = Path.GetFileName("/20362736251/15560/constanciaCUIT/AFIP - Administración Federal de Ingresos Públicos.pdf");
+        //    FileStream fileStream = new FileStream(filePath, FileMode.Open);
+        //    Mock<HttpPostedFileBase> file1 = new Mock<HttpPostedFileBase>();
+        //    file1.Setup(d => d.FileName).Returns("Cotizacion.xlsx");
+        //    file1.Setup(d => d.InputStream).Returns(fileStream);
+        //    file1.Setup(d => d.ContentLength).Returns(Convert.ToInt32(fileStream.Length));
 
-        //    var files = new HttpFileCollectionBase(); // Agrega los archivos que deseas simular
-        //    files.Add(new HttpPostedFileBaseMock("file1", "Archivo1.pdf", "/archivos/archivo1.pdf")); 
-        //    files.Add(new HttpPostedFileBaseMock("file2", "Archivo2.pdf", "/archivos/archivo2.pdf")); // Establece el valor del Request.Files del controlador como el mock creado
+        //    cc.Setup(d => d.HttpContext.Request.Files.Count).Returns(1);
+        //    cc.Setup(d => d.HttpContext.Request.Files[0]).Returns(file1.Object);
+        //    target.ControllerContext = cc.Object;
 
-
-
-        //    var result = target.GrabarCotizacion(json) as JsonResult;
+        //    var result = target.GrabarCotizacion(json) as JsonResult;    
+        //    var a = serializer.Serialize(result);          
+        //    Assert.AreEqual(1, 1);
         //    Assert.IsNotNull(result);
         //    Assert.AreEqual(JsonRequestBehavior.AllowGet, result.JsonRequestBehavior);
         //}
@@ -93,7 +98,7 @@ namespace SustitucionMOATest.Controllers
         public void ObtenerAdjudicacionTest()
         {
             var expected = new AdjudicacionDto();
-         
+
             comprasServiceMock.Setup(s => s.ObtenerAdjudicacion(It.IsAny<int>())).Returns(expected);
 
             var result = target.ObtenerAdjudicacion(1);
@@ -125,25 +130,4 @@ namespace SustitucionMOATest.Controllers
         }
 
     }
-}
-
-public class HttpPostedFileBaseMock : HttpPostedFileBase
-{
-    private readonly string _fileKey;
-    private readonly string _nombre;
-    private readonly string _ruta;
-    public HttpPostedFileBaseMock(string fileKey, string nombre, string ruta)
-    {
-        _fileKey = fileKey;
-        _nombre = nombre; _ruta = ruta;
-    }
-
-    public override string ContentType => throw new NotImplementedException();
-    public override int ContentLength => throw new NotImplementedException();
-    public override string FileName => _nombre;
-    public override Stream InputStream => throw new NotImplementedException();
-    public override void SaveAs(string filename) { throw new NotImplementedException(); }
-    //public override string Key => _fileKey;
-    //public override string Nombre => _nombre;
-    //public override string Ruta => _ruta;
 }

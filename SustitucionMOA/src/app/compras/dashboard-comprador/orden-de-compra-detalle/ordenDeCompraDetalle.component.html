@@ -157,7 +157,7 @@
             <p-accordion >
                 <p-accordionTab  header="Texto de Cabecera" 
                  style="box-sizing: inherit !important;"   [(selected)]="activeTabs[0]">
-                   <div *ngIf="ordenDeCompra.TextoDeCabecera; else sinTexto" >
+                   <div *ngIf="ordenDeCompra?.TextoDeCabecera; else sinTexto" >
                           {{ordenDeCompra?.TextoDeCabecera}}
                    </div>
                    <ng-template #sinTexto>
@@ -166,7 +166,7 @@
                 </p-accordionTab>
                 <p-accordionTab header="Condiciones de Entrega"
                  style="box-sizing: inherit !important;"  [(selected)]="activeTabs[1]">
-                 <div *ngIf="ordenDeCompra.CondicionesDeEntrega; else sinTextoCondicionesEntrega" >
+                 <div *ngIf="ordenDeCompra?.CondicionesDeEntrega; else sinTextoCondicionesEntrega" >
                         {{ordenDeCompra?.CondicionesDeEntrega}}
                     </div>
                         <ng-template #sinTextoCondicionesEntrega>
@@ -175,7 +175,7 @@
                 </p-accordionTab>
                 <p-accordionTab  header="Condiciones de Pago" 
                 style="box-sizing: inherit !important;"  [(selected)]="activeTabs[2]">
-               <div *ngIf="ordenDeCompra.CondicionesDePago; else sinTextoCondicionesPago" >
+               <div *ngIf="ordenDeCompra?.CondicionesDePago; else sinTextoCondicionesPago" >
                         {{ordenDeCompra?.CondicionesDePago}}
                     </div>
                         <ng-template #sinTextoCondicionesPago>
@@ -184,7 +184,7 @@
                 </p-accordionTab>
                 <p-accordionTab header="Garantía" 
                 style="box-sizing: inherit !important;"  [(selected)]="activeTabs[3]">
-                <div *ngIf="ordenDeCompra.Garantias; else sinTextoGarantia" >
+                <div *ngIf="ordenDeCompra?.Garantias; else sinTextoGarantia" >
                         {{ordenDeCompra?.Garantias}}
                     </div> 
                         <ng-template #sinTextoGarantia>
