@@ -237,7 +237,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         return true;
     }
 
-
     obtenerOrdenDeCarga() {
         try {
             this.subscriptionDropDowns = this.service.getEditarOrdenDeCarga(this.ordenDeCargaId).subscribe(
