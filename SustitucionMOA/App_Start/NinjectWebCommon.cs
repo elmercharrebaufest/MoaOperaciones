@@ -89,6 +89,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<INotificacionService>().To(typeof(NotificacionService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IOrdenDeCargaService>().To(typeof(OrdenDeCargaService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IFacturaAnticipadaService>().To(typeof(FacturaAnticipadaService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IOrdenDeCargaEstadoService>().To(typeof(OrdenDeCargaEstadoService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAplicacionCartaPorteService>().To(typeof(AplicacionCartaPorteService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IFeriadoService>().To(typeof(FeriadoService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAzureService>().To(typeof(AzureService)).InScope(ctx => OperationContext.Current);
