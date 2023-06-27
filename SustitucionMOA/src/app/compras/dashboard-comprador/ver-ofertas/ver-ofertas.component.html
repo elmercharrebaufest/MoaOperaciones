@@ -1,7 +1,14 @@
 <section class="container-fluid clearfix">
     <div class="row titleSection">
-        <div class="col-xs-12 col-sm-10 "> <strong>Ver Ofertas</strong></div>
-    </div>
+        <div class="col-xs-12 col-sm-10 "> <strong>Ver ofertas {{tablaOfertas.TipoPosicionCodigo}} | SOLP #{{tablaOfertas.NroSolp}} 
+                                               <b *ngIf="tablaOfertas.Id">
+                                                   | PO # {{tablaOfertas.Id}}
+                                               </b>         
+                </strong>
+       </div>
+      
+   
+   </div>
     <br>
 </section>
 <div class="content-wraper" style="padding-top: 0px !important;">
