@@ -122,7 +122,6 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                 else if(res.info){
                     this.floatMsgService.setInfoMsg(res.info)
                 }else{
-                    console.log('data-- navegar Deta..e --->>', res.data);
                     this.ordenesDeCargaService.setOrdenDeCargaSeleccionado(res.data.Id);
                     this.ordenDeCargaId = res.data.Id.toString();
                 }

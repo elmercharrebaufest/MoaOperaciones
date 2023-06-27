@@ -2340,11 +2340,11 @@ namespace SustitucionMOAUtils.Services
 
         public OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega)
         {
-            //var orden = repositorio.Obtener<OrdenDeCarga>(oc => oc.NumeroEntrega == nroEntrega);
-            var orden = repositorio.Listar<OrdenDeCarga>(x=> x.Id > 0);
-            var ordenSel = orden.FirstOrDefault();
-            if (ordenSel == null) throw new InfoCustomException("No se ha encontrado ningún orden de carga");
-            return Obtener(mailUsuario, ordenSel.Id);
+            var orden = repositorio.Obtener<OrdenDeCarga>(oc => oc.NumeroEntrega == nroEntrega);
+            //var orden = repositorio.Listar<OrdenDeCarga>(x=> x.Id > 0);
+            //var ordenSel = orden.FirstOrDefault();
+            if (orden == null) throw new InfoCustomException("No se ha encontrado ningún orden de carga");
+            return Obtener(mailUsuario, orden.Id);
         }
 
         public List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden)

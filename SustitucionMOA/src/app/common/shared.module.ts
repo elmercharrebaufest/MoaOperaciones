@@ -43,7 +43,6 @@ import { BuscadorSmallComponent } from './shared-components/buscador/buscador-sm
 import { EmailComposeComponent } from './email-compose/email-compose.component'
 import { EmailComposeService } from './email-compose/email-compose.service';
 import { CustomDateFormat } from './pipes/jsonDate.pipe';;
-import { FiltroFechaCustomComponent } from './view-child/filtro-fecha-custom/filtro-fecha-custom.component'
 
 const declaredAndExported = [
     FiltroFechaComponent,
@@ -73,7 +72,6 @@ const declaredAndExported = [
     BuscadorComponent,
     EmailComposeComponent,
     CustomDateFormat,
-    FiltroFechaCustomComponent,
 ];
 @NgModule({
     imports: [CommonModule, 

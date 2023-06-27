@@ -101,8 +101,6 @@ export class ReporteContratoService extends BaseService {
     public getOrdenDeCarga(det: DetalleReporteContrato): Observable<ApiResponse<OrdenDeCarga>> {
         let params: HttpParams = new HttpParams()
             .append('nroEntrega', det.Entrega);
-
-
         return this.http
             .get<ApiResponse<OrdenDeCarga>>('/api/ReporteContrato/ObtenerOrdenDeCarga', { params: params });
     }
