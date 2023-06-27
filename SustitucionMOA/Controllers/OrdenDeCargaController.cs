@@ -1015,7 +1015,8 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                _facturaAnticipadaService.SeleccionarFactura(ordenId, facturaSeleccionada);
+                var mailUsuario = SessionPersister.getUsername();
+                ordenDeCargaService.SeleccionarFactura(ordenId, facturaSeleccionada, mailUsuario);
                 response.Data = true;
             }
             catch (InfoCustomException ice)

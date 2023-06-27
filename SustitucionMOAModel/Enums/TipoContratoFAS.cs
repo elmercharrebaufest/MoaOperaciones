@@ -25,7 +25,8 @@ namespace SustitucionMOAModel.Enums
         }
         public static string IntoString(TipoContratoFAS tipoContrato)
         {
-            return Enum.GetName(typeof(TipoContratoFAS), tipoContrato) ?? "";
+            var nombre = Enum.GetName(typeof(TipoContratoFAS), tipoContrato) ?? "";
+            return nombre == "DESCONOCIDO" ? "" : nombre;
         }
     }
 

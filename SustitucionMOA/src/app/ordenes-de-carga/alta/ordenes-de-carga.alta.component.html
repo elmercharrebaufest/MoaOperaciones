@@ -195,7 +195,7 @@
                                     <p-dropdown name="cmbFacturas" [disabled]="noEditarCliente"
                                         [(ngModel)]="numeroFacturaSeleccionado" [options]="facturasDisponibles"
                                         placeholder="Seleccione un número de factura" [optionLabel]="'numeroFactura'"
-                                        [filter]="true" (onChange)="ordenDeCarga.NumeroFactura= $event.numeroFactura"
+                                        [filter]="true" (onChange)="ordenDeCarga.NumeroFactura= $event.value.numeroFactura"
                                         filterBy="value.numeroFactura">
                                     </p-dropdown>
                                 </div>
