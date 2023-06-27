@@ -1714,7 +1714,18 @@ namespace SustitucionMOAUtils.Services
                 orden.Estado = EstadoOrdenDeCarga.ContratoVencido;
                 repositorio.GuardarCambios();
                 emailFasService.EnviarMailContratoVencido(orden);
-                return new Resultado { error = "El contrato seleccionado está vencido" };
+                return new Resultado { error = "El contrato seleccionado está vencido." };
+            }
+
+            if (
+                orden.TipoContratoFAS() == TipoContratoFAS.ANTICIPADO &&
+                string.IsNullOrEmpty(orden.NumeroFacturaSeleccionada))
+            {
+                orden.Estado = EstadoOrdenDeCarga.Pendiente;
+                orden.DescripcionErrorInterno = "Hay más de una factura para seleccionar.";
+                repositorio.GuardarCambios();
+                //emailFasService.EnviarMailContratoVencido(orden);
+                return new Resultado { error = "El contrato tiene más de una factura para seleccionar" };
             }
 
             if (!orden.TransporteExiste)
@@ -1739,6 +1750,55 @@ namespace SustitucionMOAUtils.Services
                     {
                         return VerificarSituacionCrediticia(orden, true);
                     }
+                }
+            }
+
+            repositorio.GuardarCambios();
+
+            return new Resultado { Mensaje = resultado };
+        }
+        public Resultado SeleccionarFactura(int ordenId, string numeroFacturaSeleccionada, string mailUsuario)
+        {
+            string resultado = SuccessMsg.OrdenDeCargaActualizada;
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            _facturaAnticipadaService.SeleccionarFactura(ordenId, numeroFacturaSeleccionada);
+
+            var logCambioEstado = orden.ActualizarEstado();
+            Log.Info("SeleccionarFactura. " + logCambioEstado);
+            var contrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
+            if (!ValidarVencimientoContrato(contrato, orden.Cliente))
+            {
+                orden.Estado = EstadoOrdenDeCarga.ContratoVencido;
+                repositorio.GuardarCambios();
+                emailFasService.EnviarMailContratoVencido(orden);
+                return new Resultado { error = "El contrato seleccionado está vencido" };
+            }
+
+            if (!orden.TransporteExiste)
+            {
+                resultado = VerificarTransporte(orden);
+                if (resultado == _transporteNoExiste)
+                {
+                    orden.DescripcionCodigoVerificacionSap = _transporteNoExiste;
+                    EnviarMailTransporteNoExiste(orden);
+                }
+
+            }
+            else if (string.IsNullOrEmpty(orden.ContratoSAP))
+            {
+                orden.Estado = EstadoOrdenDeCarga.Pendiente;
+                orden.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
+                repositorio.GuardarCambios();
+                return new Resultado { error = "Se encontraron varios contratos pendientes para el mismo cliente." };
+            }
+            else
+            {
+                VerificarOrden(orden, orden.Cliente, false, true);
+
+                if (!orden.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
+                {
+                    return VerificarSituacionCrediticia(orden, true);
                 }
             }
 

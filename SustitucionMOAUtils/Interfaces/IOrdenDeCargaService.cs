@@ -58,5 +58,6 @@ namespace SustitucionMOAUtils.Interfaces
         (bool, Chofer) ValidarCuilChofer(string cuilChofer);
         bool ValidarCuilChoferDigito(string cuilChofer);
         bool ValidarCuitTransporteDigito(string cuitTransporte);
+        Resultado SeleccionarFactura(int ordenId, string numeroFacturaSeleccionada, string mailUsuario);
     }
 }

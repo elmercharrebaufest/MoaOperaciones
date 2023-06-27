@@ -67,7 +67,7 @@ namespace SustitucionMOAUtils.Services
 
             orden.NumeroFacturaSeleccionada = facturaSeleccionada;
             _ordenDeCargaEstadoService.ActualizarEstado(orden);
-            _repositorio.GuardarCambios();
+            //_repositorio.GuardarCambios();
 
         }
         public bool OrdenConMultiplesFacturas(OrdenDeCarga orden)
