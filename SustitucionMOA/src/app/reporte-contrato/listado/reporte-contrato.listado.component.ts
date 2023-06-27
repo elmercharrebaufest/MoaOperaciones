@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -10,6 +10,8 @@ import { ReporteContratoService } from '../reporte-contrato.service';
 import * as XLSX from 'xlsx';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ReporteContrato } from '../ReporteContrato.model';
+import { Formatter } from '../../common/formatter/Formatter';
+import { FiltroFechaComponent } from '../../common/view-child/filtro-fecha/filtro-fecha.component';
 
 
 @Component({
@@ -19,9 +21,11 @@ import { ReporteContrato } from '../ReporteContrato.model';
 })
 export class ReporteContratoListado extends ListBaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
-
+    @ViewChild(FiltroFechaComponent)
+    protected filtroFechaComponent: FiltroFechaComponent;
     constructor(protected service: ReporteContratoService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+        this.filtroFechaComponent = new FiltroFechaComponent();
     }
 
     detalle: any[];
@@ -56,6 +60,11 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
 
     ngOnInit() {
         this.navService.setSeccionList([]);
+        this.filtroFechaComponent.setPeriodo('4');
+        this.filtroFechaComponent.setFechaIncio(Formatter.DateToSting(new Date(new Date().setDate(new Date().getDate() - 180))));
+        this.filtroFechaComponent.setFechaFin(Formatter.DateToSting(new Date()));
+        this.mostrarPendientes = true;
+        this.getListado();
     }
 
  
@@ -68,8 +77,10 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
         this.disabled = true;
         this.cabecera = null;
         this.data = null;
-        this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio,
-            this.filtroFechaComponent.fecha_fin, /*this.mostrarPendientes*/false).subscribe(
+        this.subscription = this.service.getListado(
+            this.filtroFechaComponent.fecha_inicio,
+            this.filtroFechaComponent.fecha_fin, 
+            this.mostrarPendientes).subscribe(
                 (result: any) => {
                     this.mensajeComponent.setMsgsEmpty();
                     this.blockUI.stop();

@@ -40,7 +40,7 @@ export class ReporteContratoService extends BaseService {
 
         return this.http
             .get('/api/ReporteContrato/GetContratos', { params: params }).pipe(
-                timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
+                timeoutWith(300000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
 
     }
 
@@ -54,7 +54,7 @@ export class ReporteContratoService extends BaseService {
 
         return this.http
             .get('/api/ReporteContrato/getTotalFormatter', { params: params })
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+            .pipe(timeoutWith(300000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
     public obtenerContratosFiltro(fechaInicio, fechaFin, mostrarPendientes, data: ReporteContrato[]) {
