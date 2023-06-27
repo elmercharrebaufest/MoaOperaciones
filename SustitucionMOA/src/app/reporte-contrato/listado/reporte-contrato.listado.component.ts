@@ -134,7 +134,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     }
 
     guardarFiltros(){
-        const {fecha_inicio, fecha_fin} = this.filtroFechaCustomComponent
+        const {fecha_inicio, fecha_fin} = this.filtroFechaComponent
        this.service.setFechas(fecha_inicio,fecha_fin ); 
     }
 
@@ -243,8 +243,8 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
 
     ObtenerContratosFiltro() {
         if (this.filtroContrato == "") this.blockUI.start(''); 
-        this.subscription = this.service.obtenerContratosFiltro(this.filtroFechaCustomComponent.fecha_inicio,
-            this.filtroFechaCustomComponent.fecha_fin, this.mostrarPendientes, this.cabecera).subscribe(
+        this.subscription = this.service.obtenerContratosFiltro(this.filtroFechaComponent.fecha_inicio,
+            this.filtroFechaComponent.fecha_fin, this.mostrarPendientes, this.cabecera).subscribe(
                 (result: any) => {
                     this.mensajeComponent.setMsgsEmpty();
                     this.blockUI.stop();
