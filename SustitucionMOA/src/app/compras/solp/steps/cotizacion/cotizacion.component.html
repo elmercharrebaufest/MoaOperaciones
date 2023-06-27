@@ -12,7 +12,7 @@
                             d&iacute;as corridos *
 
                             <div *ngIf="mostrarError('ejecucion')">
-                                <p class="text-danger">campo obligatorio</p>
+                                <p class="text-danger">Campo obligatorio</p>
                             </div>
                         </div>
 
@@ -29,7 +29,7 @@
                                 </div>
                             </ng-template>
                             <ng-template let-file pTemplate="file">
-                            </ng-template>
+                            </ng-template>                     
                         </p-fileUpload>
                     </div>
                     <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
@@ -53,11 +53,17 @@
                                 </div>
                             </div>
                         </p-panel>
+                        <div *ngIf="this.model.validarTrabajoHecho == false && ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0));">
+                            <p class="text-danger">Campo obligatorio</p>
+                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         Observaciones
                         <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacion"
-                                    name="observaciones" id="observaciones" cols="30" rows="5"></textarea>
+                                    name="observaciones" id="observaciones" cols="30" rows="5" placeholder="Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros"></textarea>
+                        <div *ngIf="this.model.validarTrabajoHecho == false && (this.model.observacionesCotizacion == ''  || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null)">
+                            <p class="text-danger">Campo obligatorio</p>
+                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         <div class="inline-flex">
@@ -67,7 +73,7 @@
                                                 [(model)]="model.jornadaLaboralDias"></weekday-select>
 
                                 <div *ngIf="mostrarValidacion('dias')">
-                                    <p class="text-danger">campo obligatorio</p>
+                                    <p class="text-danger">Campo obligatorio</p>
                                 </div>
                             </div>
                             <div class="col-flex">
@@ -79,7 +85,7 @@
                                                 icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
 
                                     <div *ngIf="mostrarError('comienzoJornadaLaboral')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger">Campo obligatorio</p>
                                     </div>
                                 </div>
                                 <div>
@@ -90,7 +96,7 @@
                                                 icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
 
                                     <div *ngIf="mostrarError('terminoJornadaLaboral')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger">Campo obligatorio</p>
                                     </div>
                                 </div>
                             </div>
@@ -99,7 +105,7 @@
                             <label class="labelCompras" for="checkbox"> Condiciones especiales</label>
                             <div>
                                 <p-checkbox [ngModelOptions]="{standalone:true}" name="trabajoHecho" [(ngModel)]="model.trabajoHecho" label="Trabajo ya hecho" formControlName="trabajoHecho"
-                                binary="true"></p-checkbox>
+                                binary="true" (click)="validacionTrabajoHecho(); limpiarCheck()" [disabled]="estaFinalizada"></p-checkbox>
                             </div> 
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.trabajoHecho">
@@ -114,7 +120,9 @@
                                                 placeholder="Seleccione un proveedor"
                                                 field="RazonSocial"
                                                 formControlName="proveedorSeleccionado"
-                                                [minLength]="3">
+                                                [minLength]="3"
+                                                [forceSelection]="true"
+                                                [disabled]="estaFinalizada">
                                     <ng-template let-proveedor pTemplate="item">
                                         <div class="ui-helper-clearfix">
                                             <div style="font-size:12px;margin:10px 10px 0 0">{{proveedor.Mail}}</div>
@@ -122,6 +130,9 @@
                                         </div>
                                     </ng-template>
                                 </p-autoComplete>
+                                <div *ngIf="this.model.validarTrabajoHecho == false && (!this.proveedorSeleccionado || this.proveedorSeleccionado == '' || this.proveedorSeleccionado === undefined);">
+                                    <p class="text-danger" style="font-size: 16px; margin-top: 2em;">Campo obligatorio</p>
+                                </div>
                             </div>
                         </div>  
                     </div>

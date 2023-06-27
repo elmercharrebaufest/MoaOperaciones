@@ -63,6 +63,9 @@ export class Solp extends CommonResponse {
     public observacionesCotizacion: string;
     public trabajoHecho: boolean;
     public proveedorAsignado_Id: number;
+    public proveedorAsignado: string;
+    public validarTrabajoHecho: boolean;
+    public mensajeCotizacion: string;
 
     public archivosCotizacionesNuevos: Array<File>;
     public archivosCotizaciones: Array<ArchivoModel>
@@ -136,7 +139,7 @@ export class Solp extends CommonResponse {
         this.comienzoJornadaLaboral = new Date(1, 1, 1, 7, 0, 0, 0);
         this.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
         this.ejecucion = "30";
-        this.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
+        // this.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
 
         this.archivosCotizacionesNuevos = new Array<File>();
         this.archivosCotizaciones = new Array<ArchivoModel>();
@@ -218,7 +221,10 @@ export class Solp extends CommonResponse {
             this.ejecucion = solp.DiasEjecucion || '';
             this.observacionesCotizacion = solp.ObservacionesCotizacion;
             this.proveedorAsignado_Id = solp.ProveedorAsignadoId;
+            this.proveedorAsignado = solp.ProveedorAsignado;
             this.trabajoHecho = solp.TrabajoYaHecho;
+
+            
 
             //pop up finalizar
             this.revisadoPor = solp.RevisadoPor || '';

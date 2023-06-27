@@ -170,8 +170,8 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.EstadoPasos = solp.EstadoPasos;
                 solpEntity.TipoSolpSap = solp.TipoSolpSap;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
-                //solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
-                //solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignadoId;
+                solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
+                solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignadoId;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
                 pliegoEntity.Email = solp.Email;
@@ -975,7 +975,7 @@ namespace SustitucionMOAUtils.Services
 
             //    x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
             //}
-
+            
             var solpDevuelta = new SolpDto()
             {
 
@@ -1017,7 +1017,9 @@ namespace SustitucionMOAUtils.Services
                 JornadaLaboralDesde = x.Pliego.JornadaLaboralHorasDesde,
                 JornadaLaboralHasta = x.Pliego.JornadaLaboralHorasHasta,
                 ClaseDocumento = x.ClaseDocumento != null ? new TablaSapDto(x.ClaseDocumento) : new TablaSapDto(),
+
                 ProveedorAsignadoId = x.ProveedorAsignado_Id,
+
                 TrabajoYaHecho = x.TrabajoYaHecho,
 
 
@@ -1057,6 +1059,14 @@ namespace SustitucionMOAUtils.Services
                 if (solpDevuelta.JornadaLaboralHasta == null)
                     solpDevuelta.JornadaLaboralHasta = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 16, 0, 0).ToLocalTime();
             }
+
+            if (solpDevuelta.ProveedorAsignadoId != null) 
+            {
+                var usuario = repositorio.Obtener<Usuario>(solpDevuelta.ProveedorAsignadoId);
+                solpDevuelta.ProveedorAsignado = usuario.ObtenerRazonSocial();
+            }
+            
+
             return solpDevuelta;
 
 
