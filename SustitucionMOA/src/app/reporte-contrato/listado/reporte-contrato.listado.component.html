@@ -24,6 +24,12 @@
                     <spinner-small></spinner-small>
                     <title-caps>Refinar resultados</title-caps>
                 </div>
+
+                <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Fecha operacion</p>
+                    <filtro-fecha leyenda="Rango máximo de 8 meses" (ClickEvent)="getListadoFechas()"></filtro-fecha>
+                </div>
+
                 <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Producto:</p>
                     <div class="styled-select">
@@ -54,10 +60,6 @@
                         <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroTipoContrato"
                             (select)="setFiltroTipoContrato($event)"></dropdown>
                     </div>
-                </div>
-                <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
-                    <p>Fecha operacion</p>
-                    <filtro-fecha leyenda="Rango máximo de 6 meses" (ClickEvent)="getListadoFechas()"></filtro-fecha>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 margenInput mt-4">
                     <p-checkbox [ngModelOptions]="{standalone:true}" label="Mostrar solo contrato con entrega pendiente"
