@@ -7,6 +7,7 @@
         EntregaCreadaErrorAlInsertarOE02,
         EntregaCreadaErrorAlInsertarOE03,
         FaltaCargarKmEnContrato,
+        FacturaNoCompensada,
         ErrorRespuestaInesperadaDeSap
     }
 }
