@@ -174,9 +174,15 @@ namespace SustitucionMOAWS.WSConsumers
             var cuit_int_flete = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.Transportista : entregaReq.TransportistaReal;
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {entregaReq.ToJson()} , pedidoAnticipado: {pedidoAnticipado}");
+            
             if (!pedidoAnticipado)
                 entregaReq = LimpiarRequestSinPedidoAnticipado(entregaReq);
+
+            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE " +
+                $"Request: {entregaReq.ToJson()}, " +
+                $"pedidoAnticipado: {pedidoAnticipado}, " +
+                $"cuit_tr: {cuit_tr}, " +
+                $"cuit_int_flete: {cuit_int_flete}.");
 
             var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(
                 IM_CUITDESTF: entregaReq.CuitDestino,
