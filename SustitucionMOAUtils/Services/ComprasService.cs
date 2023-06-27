@@ -273,7 +273,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     respuestaGuardarSOLP = FinalizarSolp(solp, solpEntity, postEntitySubPosicionesEliminadas, respuestaGuardarSOLP);
                     GuardarUsuarioComprasRelacionado(solp);
-                    if (/*!string.IsNullOrEmpty(solpEntity.NroSolp) && */solp.TrabajoYaHecho == true)
+                    if (!string.IsNullOrEmpty(solpEntity.NroSolp) && solp.TrabajoYaHecho == true)
                     {
                         CrearCotizacionAutomatica(solpEntity);
                     }
@@ -2388,9 +2388,9 @@ namespace SustitucionMOAUtils.Services
                         item.Cotizacion.TotalGlobalSubPos = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalARPCotizacionPosicion);
 
                     }
-                    item.VerAdjudicar = item.Cotizacion != null ? item.PlazoDeOferta.Date <= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" && item.EstaHabilitado : !todasLasOfertas.EstaLiberado;
-                    item.MensajeAdjudicar = item.Cotizacion != null && item.PlazoDeOferta.Date <= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" && item.EstaHabilitado ? "Cotización sin finalizar"
-                                            : !todasLasOfertas.EstaLiberado ? "SOLP Sin liberar" : "Adjudicar";
+                    item.VerAdjudicar = item.Cotizacion != null && item.PlazoDeOferta.Date >= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? false : !item.EstaHabilitado ? false : !todasLasOfertas.EstaLiberado ? false: true;
+                    item.MensajeAdjudicar = item.Cotizacion != null && item.PlazoDeOferta.Date >= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? "Cotización sin finalizar"
+                                            : !todasLasOfertas.EstaLiberado ? "SOLP Sin liberar" : !item.EstaHabilitado ? "Proveedor desahabilitado" : "Adjudicar";
                 }
                 foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
                 {

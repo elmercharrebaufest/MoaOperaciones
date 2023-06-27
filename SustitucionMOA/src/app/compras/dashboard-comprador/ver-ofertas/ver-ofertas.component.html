@@ -183,7 +183,7 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container>                            <!--*ngIf="proveedor.Cotizacion != null"-->
                             <td class="columna border2-left" colspan="6" style="width: 570px !important;">
-                                <button *ngIf="proveedor.VerAdjudicar" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
+                                <button [disabled]="!proveedor.VerAdjudicar" [pTooltip]="proveedor.MensajeAdjudicar" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                     Adjudicar
                                 </button>
                             </td>
@@ -432,7 +432,7 @@
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <td colspan="9" style="width: 540px !important;" class="columna border2-left" style="text-align: center;">
-                            <button *ngIf="proveedor.VerAdjudicar"  class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
+                            <button  [disabled]="!proveedor.VerAdjudicar" [pTooltip]="proveedor.MensajeAdjudicar"  class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                 Adjudicar
                             </button>
                         </td>
