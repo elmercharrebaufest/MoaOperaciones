@@ -111,6 +111,12 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {req.ToJson()}");
 
+            if (req.CuitDestino == req.CuitDestinatario)
+            {
+                req.CuitDestinatario = string.Empty;
+                req.RazonSocialDestinatario = string.Empty;
+            }
+
             var result = service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(
                 IM_CLIENTE: req.Cliente,
                 IM_CODPLANTA: req.PlantaCodigo,

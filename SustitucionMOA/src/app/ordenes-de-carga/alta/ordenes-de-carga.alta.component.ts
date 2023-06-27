@@ -1020,7 +1020,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.validando.CUITIntermediarioFlete = true;
         this.intermediarioFleteCuitFormatoValido = true;
         this.ordenDeCarga.RazonSocialIntermediarioFlete = undefined;
-        
+
         let cuitIF = this.ordenDeCarga.CUITIntermediarioFlete;
         if (!cuitIF || !this.revisarCUITFormatoValido(cuitIF)) {
             this.validando.CUITIntermediarioFlete = false;
