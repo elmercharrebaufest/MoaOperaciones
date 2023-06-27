@@ -128,6 +128,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.ReporteContrato
         public string Destinatario { get; set; }
 
         public string NombreDestinatario { get; set; }
+
+        public string CPE { get; set; }
     }
 
     public class Totales
