@@ -1794,12 +1794,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (!orden.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
                 {
-                    var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
-
-                    if (creadaEnSaP)
-                    {
-                        return VerificarSituacionCrediticia(orden, true);
-                    }
+                    return VerificarSituacionCrediticia(orden, true);
                 }
             }
 
