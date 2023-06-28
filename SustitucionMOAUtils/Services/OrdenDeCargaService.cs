@@ -1794,12 +1794,8 @@ namespace SustitucionMOAUtils.Services
 
                 if (!orden.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
                 {
-                    var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
 
-                    if (creadaEnSaP)
-                    {
-                        return VerificarSituacionCrediticia(orden, true);
-                    }
+                    return GenerarEntregaSAP(orden);
                 }
             }
 
@@ -2048,6 +2044,10 @@ namespace SustitucionMOAUtils.Services
         private bool ObtenerSituacionCrediticia(OrdenDeCarga orden)
         {
             var numeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? orden.NumeroPedidoIngresado : orden.NumeroPedido;
+            if (string.IsNullOrEmpty(numeroPedido))
+            {
+                numeroPedido = string.IsNullOrEmpty(orden.NumeroFacturaSeleccionada) ? orden.NumeroFactura : orden.NumeroFacturaSeleccionada;
+            }
             Log.Info("ObtenerSituacionCrediticia");
             var result = consumer.OrdenCargaControlEstadoRequest("", numeroPedido, "");
 
@@ -2187,7 +2187,7 @@ namespace SustitucionMOAUtils.Services
                 DomicilioDescr = orden.DomicilioDescr
             };
 
-            var respHandler = consumer.CrearEntrega(req, numeroFactura != null);
+            var respHandler = consumer.CrearEntrega(req, !string.IsNullOrEmpty(numeroFactura));
 
             switch (respHandler.GetResultado())
             {
@@ -2755,16 +2755,16 @@ namespace SustitucionMOAUtils.Services
         private void SetTieneVariosContratosAbiertos(OrdenDeCarga ordenDeCarga, List<string> contratosAbiertos)
         {
             var result = string.Join(",", contratosAbiertos);
-            if (string.IsNullOrEmpty(ordenDeCarga.NumeroPedido))
+            var facturaAnticipada = ordenDeCarga.TipoContrato == TipoContratoFAS.Anticipado;
+            var noTieneContratoSeleccionado = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP);
+            var noTienePedidoNiContrato = string.IsNullOrEmpty(ordenDeCarga.NumeroPedido) || noTieneContratoSeleccionado;
+            if ( noTienePedidoNiContrato  || (facturaAnticipada && noTieneContratoSeleccionado) )
             {
-                if (string.IsNullOrEmpty(ordenDeCarga.ContratoSAP))
-                {
-                    ordenDeCarga.ContratosRespuesta = result;
-                    ordenDeCarga.ContratoSAP = "";
-                    ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
-                }
+                 ordenDeCarga.ContratosRespuesta = result;
+                 ordenDeCarga.ContratoSAP = "";
+                 ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
             }
-            else
+            else if (!facturaAnticipada)
             {
                 ordenDeCarga.PedidosRespuesta = result;
                 ordenDeCarga.NumeroPedido = "";
