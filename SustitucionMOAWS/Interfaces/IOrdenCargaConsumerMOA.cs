@@ -20,7 +20,7 @@ namespace SustitucionMOAWS.Interfaces
         ModEntregaResponseHandler AnularEntregaOrdenCarga(string nroEntrega);
         ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega);
         bool VerificarContratoAbierto(string contrato);
-        Result ObtenerContratoSAP(string numeroContrato, TipoContratoFAS tipoContrato = TipoContratoFAS.DESCONOCIDO);
-        Result ObtenerContratoSAP(OrdenDeCarga orden, TipoContratoFAS tipoContrato = TipoContratoFAS.DESCONOCIDO);
+        Result ObtenerContratoSAP(string numeroContrato, TipoContratoFAS? tipoContrato);
+        Result ObtenerContratoSAP(OrdenDeCarga orden, TipoContratoFAS? tipoContrato);
     }
 }

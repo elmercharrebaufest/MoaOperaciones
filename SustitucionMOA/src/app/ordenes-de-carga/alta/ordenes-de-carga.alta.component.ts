@@ -594,6 +594,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
             this.ordenDeCarga.Producto_Id = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId;
             this.Producto = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId.toString();
+            this.ordenDeCarga.TipoContrato = this.ordenDeCarga.ContratoSeleccionado.TipoContrato;
             let materialSeleccionado = this.listaMateriales.find(mat => mat.MaterialId === this.ordenDeCarga.Producto_Id);
             this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
             this.cambioProducto();
