@@ -50,7 +50,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     NroSolp = po.Solp.NroSolp,
                                     EstaLiberado = po.Solp.Posiciones.All(pop => pop.EsConcluido == true && pop.Estado == true),
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
-                                                                where po.Id == pop.PeticionDeOferta_Id && pop.SolpPosicion.EsConcluido == true && pop.SolpPosicion.Estado == true
+                                                                where po.Id == pop.PeticionDeOferta_Id /*&& pop.SolpPosicion.EsConcluido == true && pop.SolpPosicion.Estado == true*/
                                                                 select new PeticionDeOfertaSolpPosicionDto()
                                                                 {
                                                                     Id = pop.Id,
@@ -152,7 +152,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             Id = ch.Id
                                                         }).ToList(),
 
-                                                        CotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(posic => posic.PeticionDeOfertaSolpPosicion.SolpPosicion.EsConcluido == true && posic.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true)
+                                                        CotizacionPosiciones = cotizacion.CotizacionPosiciones/*.Where(posic => posic.PeticionDeOfertaSolpPosicion.SolpPosicion.EsConcluido == true && posic.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true)*/
                                                         .Select(p => new CotizacionPosicionDto
                                                         {
                                                             Id = p.Id,

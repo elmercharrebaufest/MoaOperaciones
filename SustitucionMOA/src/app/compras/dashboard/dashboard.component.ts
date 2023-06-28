@@ -62,6 +62,9 @@ export class DashboardComponent extends ListBaseComponent {
     displayCircular: boolean = false;
     combos: any;
     usuariosResult: any;
+    ordenesDeCompra: any;
+    ordenDeCompra: any;
+    displayOrdenDeCompra: boolean;
     
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -641,5 +644,57 @@ export class DashboardComponent extends ListBaseComponent {
         this.pageIndex = 1;
         this.getListarSolp();
     }
+
+    cerrarOrdenDeCompra() {
+        this.displayOrdenDeCompra = false;
+    }
+
+    verDetalleOrdenDeCompra(id: any) {
+        this.obtenerAdjudicacion(id);
+        this.displayOrdenDeCompra = true;
+    }
+
+    obtenerAdjudicacion(adjudicacionId){
+        console.log("obtenerAdjudicacion" ,adjudicacionId)
+        this.blockUI.start('Cargando...')
+        this.service.obtenerAdjudicacion(adjudicacionId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.ordenDeCompra = result.data;
+                        console.log("obtenerAdjudicacion" ,result.data)
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    listarAdjudicaciones(solpId){      
+        this.blockUI.start('Cargando...')
+        this.service.listarAdjudicaciones(solpId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.ordenesDeCompra = result.data;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
 }
 
