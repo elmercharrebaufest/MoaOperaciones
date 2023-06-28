@@ -441,7 +441,11 @@ namespace SustitucionMOAWS.WSConsumers
 
             var fechas = ObtenerRangoFechas();
 
-            var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS("", contrato, "", fechas, "", "X", "N");
+            var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(
+                "", contrato, "", fechas, "",
+                Constante.FAS_FILTRO_DEFAULT_PENDIENTE,
+                Constante.FAS_FILTRO_DEFAULT_TIPO_CONTRATO);
+
             return result.Length > 0;
         }
 

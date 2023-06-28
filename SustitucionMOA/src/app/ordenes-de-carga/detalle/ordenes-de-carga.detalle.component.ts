@@ -633,6 +633,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
+        this.mainDiv.nativeElement.scrollIntoView({ behavior: "smooth", block: "start" });
         const contrato = this.ordenDeCarga.ContratoSAP || this.ordenDeCarga.ContratoIngresado;
         try {
             this.subscriptionDropDowns = this.service.obtenerFacturasDeContrato(contrato).subscribe(
