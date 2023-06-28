@@ -1,8 +1,8 @@
-<div class="content-wraper">
+<div  [ngClass]="{'content-wraper' : !esModalOrdenesCarga, 'content-wraper-ordenes-modal' : esModalOrdenesCarga}">
     <!-- CONTENT-->
     <section class="container-fluid clearfix">
         <!--Title-->
-        <div class="row titleSection">
+        <div class="row titleSection" *ngIf="!esModalOrdenesCarga && esCargoOrdenesCarga">
             <div class="col-xs-12 col-sm-10 ">
                 <strong *ngIf="ordenDeCargaId == 0"> Nueva orden de carga</strong>
                 <strong *ngIf="ordenDeCargaId > 0"> Editar orden de carga #{{ordenDeCargaId}}</strong>
@@ -15,8 +15,8 @@
         <div class="mySearch">
 
             <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
-                <div class="formulario-campo">
-                    <div class="col-xs-12 col-md-12 search-header">
+                <div class="formulario-campo" [ngClass]="{'content-formulario-ordenes-modal' : esModalOrdenesCarga}">
+                    <div class="col-xs-12 col-md-12 search-header" *ngIf="!esModalOrdenesCarga && esCargoOrdenesCarga">
                         <title-caps>Información de la orden de carga</title-caps>
                     </div>
                     <div class="formulario">

@@ -27,7 +27,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.filtroFechaComponent = new FiltroFechaComponent();
     }
-
+    contratoSeleccionadoId: string = '';
     detalle: any[];
     cabecera: ReporteContrato[];
     filtroCliente: any = null;
@@ -46,7 +46,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     TipoContrato: string = "";
     show: boolean = false;
     disabled: boolean = false;
-    mostrarPendientes: boolean = false;
+    mostrarPendientes: boolean = true;
     columnaCliente: string = "NombreClienteCUIT";
     columnaProducto: string = "DescripcionMaterial";
     ColumnaTipoContrato: string = "TipoContrato";
@@ -93,13 +93,20 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
                         this.varciarFiltrosReporte();
                     } else {
                         this.cabecera = result.data.Resultados;
+                        console.log('this.cabecera--->>', this.cabecera);
                         this.cargarFiltrosContratos(result);
                         this.getTotalKilogramos();
                         this.data = result.data.Resultados;
                         this.ejecutarFiltro();
                         this.show = true;
                         this.disabled = false;
-                    
+                        
+                        // VALIDA EL CASO CUANDO UN USUARIO ES DIRECTO
+                        const listaUsuariosDirectos = this.cabecera.filter(x=> x.Corredor == '0050005000');
+                        if (listaUsuariosDirectos!=null && listaUsuariosDirectos.length >0){
+                            this.esCliente = true;
+                            this.esCorredor = true;
+                        }
                     }
 
                 },
@@ -130,6 +137,11 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
        this.service.setFechas(fecha_inicio,fecha_fin ); 
     }
 
+    verDetalleContrato(numeroContrato: string){
+        this.contratoSeleccionadoId = numeroContrato;
+        this.service.setContratoSeleccionado(numeroContrato);
+    }
+    
     cargarFiltrosContratos(result: any) {
         if (result.filtroCliente != undefined) this.filtroCliente = result.filtroCliente.options;
         if (result.filtroProducto != undefined) this.filtroProducto = result.filtroProducto.options;
