@@ -2172,7 +2172,7 @@ namespace SustitucionMOAUtils.Services
                 NombreConductor = orden.NombreChofer,
                 PatenteAcoplado = orden.PatenteAcoplado,
                 PatenteChasis = orden.ChasisAcoplado,
-                Pedido = numeroFactura != null ? numeroFactura : orden.NumeroPedido,
+                Pedido =  orden.NumeroPedido,
                 TipoDocumento = "CUIL",
                 Transportista = orden.CUITTransporte,
                 CuitDestinatario = orden.CUITDestinatario,

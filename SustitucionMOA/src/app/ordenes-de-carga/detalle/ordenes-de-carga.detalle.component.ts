@@ -36,6 +36,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajeError: string = "";
     mensajeSeleccionarContrato?: string;
+    mensajeSeleccionarFactura?: string;
 
     ordenDeCargaHistorial: any = {};
 
@@ -562,8 +563,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     seleccionarFactura() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
+        this.mensajeSeleccionarFactura = null;
         if (!this.facturaSeleccionada) {
-            this.floatMsgService.setInfoMsg("Por favor seleccione un número de factura.");
+            this.mensajeSeleccionarFactura = "Por favor seleccione un número de factura.";
             return;
         }
         this.unsubscribe();
