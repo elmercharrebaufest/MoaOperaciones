@@ -141,7 +141,6 @@ namespace SustitucionMOAUtils.Services
 
             var producto = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
             ordenDeCarga.Producto = producto;
-
             if (ordenDeCarga.TipoContrato == TipoContratoFAS.Anticipado)
             {
                 var contrato = consumer.ObtenerContratoSAP(ordenDeCarga, TipoContratoFAS.Anticipado);
