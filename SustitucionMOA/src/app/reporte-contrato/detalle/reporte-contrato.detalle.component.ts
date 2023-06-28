@@ -20,7 +20,7 @@ import { OrdenesDeCargaService } from '../../ordenes-de-carga/ordenes-de-carga.s
 })
 export class DetalleComponent extends ListBaseComponent implements OnInit {
     contratoId: string;
-    ordenDeCargaId: string;
+    ordenDeCargaId: string=null;
     detalles: DetalleReporteContrato[] = null;
     KilosFacturados = 0;
     KilosEntregados = 0;
@@ -122,8 +122,7 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                 else if(res.info){
                     this.floatMsgService.setInfoMsg(res.info)
                 }else{
-                    this.ordenesDeCargaService.setOrdenDeCargaSeleccionado(res.data.Id);
-                    this.ordenDeCargaId = res.data.Id.toString();
+                    this.goToSeccionParam('/ordenes-de-carga/detalle', res.data.Id.toString());
                 }
             }
             ,
