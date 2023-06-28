@@ -66,6 +66,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("No se selecciono una factura válida.");
 
             orden.NumeroFacturaSeleccionada = facturaSeleccionada;
+            orden.DescripcionErrorInterno = null;
             _ordenDeCargaEstadoService.ActualizarEstado(orden);
             //_repositorio.GuardarCambios();
 
