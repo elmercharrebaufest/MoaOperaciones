@@ -247,6 +247,21 @@ export class OrdenesDeCargaService extends BaseService {
             .post<ApiResponse<any>>('/api/OrdenDeCarga/SeleccionarFactura', payload)
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
+    public seleccionarFactura(ordenId: Number, facturaSeleccionada: string): Observable<ApiResponse<any>> {
+        let payload = new FormData();
+        payload.append(
+            "facturaSeleccionada",
+            facturaSeleccionada
+        );
+        payload.append(
+            "ordenId",
+            ordenId.toString()
+        );
+
+        return this.http
+            .post<ApiResponse<any>>('/api/OrdenDeCarga/SeleccionarFactura', payload)
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
 
     public seleccionarPedido(ordenId: Number, pedido: string): Observable<any> {
         let payload = new FormData();
@@ -484,6 +499,16 @@ export class OrdenesDeCargaService extends BaseService {
                 '/api/OrdenDeCarga/ValidarCuitTransporte',
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+    public obtenerFacturasDeContrato(numeroContrato: string): Observable<ApiResponse<Array<string>>> {
+        let params: HttpParams = new HttpParams()
+            .append("numeroContrato", numeroContrato);
+
+        return this.http
+            .get<ApiResponse<Array<string>>>(
+                '/api/OrdenDeCarga/FacturasDisponibles',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
     public obtenerFacturasDeContrato(numeroContrato: string): Observable<ApiResponse<Array<string>>> {
         let params: HttpParams = new HttpParams()
