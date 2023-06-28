@@ -374,7 +374,7 @@ namespace SustitucionMOAWS.WSConsumers
                         subposicionSap.PCKG_NO = $"{PCKG_NO:0000000000}";
                         subposicionSap.LINE_NO = $"{LINE_NO:0000000000}";
                         subposicionSap.EXT_LINE = $"{LINE_NO * 10:0000000000}";
-                        subposicionSap.SERVICE = subposicion.ServicioSolp.Codigo;
+                        subposicionSap.SERVICE = subposicion.ServicioSolp?.Codigo;
                         subposicionSap.SHORT_TEXT = subposicion.Tarea;
                         subposicionSap.QUANTITY = cotizacionSubPosicion.Cantidad.Value;
                         subposicionSap.QUANTITYSpecified = true;
