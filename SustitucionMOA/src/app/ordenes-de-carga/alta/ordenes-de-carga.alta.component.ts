@@ -27,15 +27,13 @@ import { Permiso } from '../../common/enums/Permisos';
 declare var $: any;
 
 @Component({
-    selector: 'app-ordenes-de-carga-alta',
+    selector: 'app-ordenes-de-carga.alta',
     templateUrl: './ordenes-de-carga.alta.component.html',
     styleUrls: ['./ordenes-de-carga.alta.component.css'],
     providers: [SeleccionarProveedorService],
 })
 export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
-    esModalOrdenesCarga: boolean;
-    esCargoOrdenesCarga: boolean = false;
 
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
@@ -99,48 +97,30 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
         super(navService, securytiService, floatMsgService, modalService);
-        console.log('Orden de carga constructor');
-        this.service.getOrdenDeCargaSeleccionado().subscribe(data => {
-            console.log('Orden de carga', data);
-            if (data != null && data >0){
-                this.esCargoOrdenesCarga = true;
-                this.esModalOrdenesCarga = true;
-                this.ordenDeCargaId =  data;
-                this.obtenerOrdenDeCargaSeleccionado(data);
-            }
-        });
     }
 
     ngOnInit() {
-        if(!this.esModalOrdenesCarga){
-            this.route.params.forEach((params: Params) => {
-                if (params["id"] > 0){
-                    this.esCargoOrdenesCarga = true;
-                    this.ordenDeCargaId = params["id"];
-                    this.obtenerOrdenDeCargaSeleccionado(this.ordenDeCargaId)
-                } 
-            });
-        }
-    }
-    obtenerOrdenDeCargaSeleccionado(ordenDeCargaId: number){
         this.userEmail = sessionStorage.getItem("username");
         this.desde = this.getFecha(12);
         this.hasta = this.getFecha(0);
-        this.ordenDeCarga.Cantidad = 30000;
+        this.ordenDeCarga.Cantidad = 0;
+        this.route.params.forEach((params: Params) => {
+            if (params["id"] > 0) this.ordenDeCargaId = params["id"];
+        });
         this.navService.setSeccionList([]);
         this.onCorredorFocusOut('', false);
         this.obtenerMateriales();
         if (this.esCorredor) {
             this.CodigoCorredor = sessionStorage.getItem("proveedor");
-            if (ordenDeCargaId == 0) {
+            if (this.ordenDeCargaId == 0) {
                 this.cargarClientes(this.CodigoCorredor);
             }
         }
 
-        this.editando = ordenDeCargaId > 0;
+        this.editando = this.ordenDeCargaId > 0;
         this.obtenerCorredores();
 
-        if (ordenDeCargaId > 0) {
+        if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
             this.noEditarCliente = true;
         } else {
@@ -151,11 +131,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
         if (this.esCliente()) {
             this.clienteCodigo = sessionStorage.getItem("proveedor");
-            if (ordenDeCargaId == 0 && !(this.esComercial || this.esCorredor)) {
+            if (this.ordenDeCargaId == 0 && !(this.esComercial || this.esCorredor)) {
                 this.cargarContratosDisponibles(this.clienteCodigo);
             }
         }
     }
+
     cambioProducto() {
         let productoActual = this.listaMateriales.find(x => x.MaterialId == this.ordenDeCarga.Producto_Id).CodigoSap;
         if (productoActual == "99709") {
@@ -250,7 +231,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
 
     obtenerOrdenDeCarga() {
-        this.esCargoOrdenesCarga = false;
         try {
             this.subscriptionDropDowns = this.service.getEditarOrdenDeCarga(this.ordenDeCargaId).subscribe(
                 result => {
@@ -287,8 +267,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 error => {
                     console.error(error);
                     this.mensajeComponent.setErrorMsg(error.message);
-                }, ()=>{
-                    this.esCargoOrdenesCarga = true;
                 }
             );
         } catch (e) {
@@ -407,7 +385,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     getPatentes() {
-        this.esCargoOrdenesCarga = false;
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         try {
@@ -450,9 +427,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 error => {
                     console.error(' getPatentes: ', error.message);
                     this.floatMsgService.setErrorMsg(error.message);
-                },
-                ()=>{
-                    this.esCargoOrdenesCarga = true;
                 }
 
             );
@@ -613,6 +587,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.Producto = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId.toString();
             let materialSeleccionado = this.listaMateriales.find(mat => mat.MaterialId === this.ordenDeCarga.Producto_Id);
             this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
+            this.cambioProducto();
         }
         else {
             this.Contrato = "";
@@ -1007,6 +982,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     this.blockUI.stop();
                 })
         } catch (err) {
+            this.ordenDeCarga.Cantidad = 0;
             console.error('validarSisaCorredorCliente: ', err);
             this.mensajeComponent.setErrorMsg(err);
             this.blockUI.stop();
