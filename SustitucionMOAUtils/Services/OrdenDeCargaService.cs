@@ -2042,6 +2042,7 @@ namespace SustitucionMOAUtils.Services
         private bool ObtenerSituacionCrediticia(OrdenDeCarga orden)
         {
             var numeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? orden.NumeroPedidoIngresado : orden.NumeroPedido;
+
             Log.Info("ObtenerSituacionCrediticia");
             var result = consumer.OrdenCargaControlEstadoRequest("", numeroPedido, "");
 
@@ -2166,7 +2167,7 @@ namespace SustitucionMOAUtils.Services
                 NombreConductor = orden.NombreChofer,
                 PatenteAcoplado = orden.PatenteAcoplado,
                 PatenteChasis = orden.ChasisAcoplado,
-                Pedido = orden.NumeroPedido,
+                Pedido = numeroFactura != null ? numeroFactura : orden.NumeroPedido,
                 TipoDocumento = "CUIL",
                 Transportista = orden.CUITTransporte,
                 CuitDestinatario = orden.CUITDestinatario,
