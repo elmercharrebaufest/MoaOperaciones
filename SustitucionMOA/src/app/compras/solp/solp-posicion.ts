@@ -359,7 +359,7 @@ export class SolpPosicion {
 
     public validateImputaciones() {
         let hasTipoImputacion = typeof this.tipoImputacion != "undefined" && this.tipoImputacion;
-        if (hasTipoImputacion)
+        if (hasTipoImputacion && hasTipoImputacion.id > 0)
         {        
             if (!this.valorImputacion || typeof this.valorImputacion === "undefined" || typeof this.valorImputacion === undefined)
             {
