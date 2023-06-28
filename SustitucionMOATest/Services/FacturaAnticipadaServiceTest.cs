@@ -34,7 +34,7 @@ namespace SustitucionMOATest.Services
         public void ObtenerFacturasDeContrato_NoEncuentraContrato_ThrowInfoCustomException()
         {
             _consumerOrdenCarga
-                .Setup(c => c.ObtenerContratoSAP(It.IsAny<string>(), TipoContratoFAS.ANTICIPADO))
+                .Setup(c => c.ObtenerContratoSAP(It.IsAny<string>(), TipoContratoFAS.Anticipado))
                 .Returns(null as Result);
 
             Assert.That(
@@ -183,7 +183,7 @@ namespace SustitucionMOATest.Services
         private void SetupRespuestaResult(List<Detail> detalles, string numeroContrato = null)
         {
             _consumerOrdenCarga
-              .Setup(c => c.ObtenerContratoSAP(numeroContrato ?? It.IsAny<string>(), TipoContratoFAS.ANTICIPADO))
+              .Setup(c => c.ObtenerContratoSAP(numeroContrato ?? It.IsAny<string>(), TipoContratoFAS.Anticipado))
               .Returns(
                   new Result
                   {

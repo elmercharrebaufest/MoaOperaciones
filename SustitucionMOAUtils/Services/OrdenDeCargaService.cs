@@ -141,13 +141,16 @@ namespace SustitucionMOAUtils.Services
 
             var producto = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
             ordenDeCarga.Producto = producto;
-            var contrato = consumer.ObtenerContratoSAP(ordenDeCarga);
-            ordenDeCarga.TipoContrato = contrato.TipoContrato;
-            var validaCPEDG = producto.ValidaSisaRuca;
-            if (ordenDeCarga.TipoContratoFAS() == TipoContratoFAS.ANTICIPADO && !_facturaAnticipadaService.OrdenConMultiplesFacturas(contrato))
+            
+            if (ordenDeCarga.TipoContrato == TipoContratoFAS.Anticipado)
             {
-                ordenDeCarga.NumeroFacturaSeleccionada = ordenDeCarga.NumeroFactura;
+                var contrato = consumer.ObtenerContratoSAP(ordenDeCarga, TipoContratoFAS.Anticipado);
+                if (!_facturaAnticipadaService.OrdenConMultiplesFacturas(contrato))
+                {
+                    ordenDeCarga.NumeroFacturaSeleccionada = ordenDeCarga.NumeroFactura;
+                }
             }
+            var validaCPEDG = producto.ValidaSisaRuca;
             if (!validaCPEDG)
             {
                 RemoverCamposCPEDG(ordenDeCarga);
@@ -784,12 +787,6 @@ namespace SustitucionMOAUtils.Services
                     && o.FechaCarga >= fechaIncioDateTime
                     && filtrosEstados.Contains(o.Estado);
                 var listadoConFiltro = repositorio.Listar<OrdenDeCarga>(filtro);
-
-
-                //foreach (var item in listadoConFiltro)
-                //{
-                //    Log.Debug(this.GetType().Name, "Listar", $" item:[Id: {item.Id}, Cliente: {item.Cliente.CodigoProveedor}, RazonSocialCliente: {item.Cliente.RazonSocial}, Fecha: {item.FechaCarga}, CUITCliente: {item.CUITCliente}, Corredor: {item.CodigoCorredor}, RazonSocialCorredor: {item.Corredor?.RazonSocial}], ContratoSAP: {item.ContratoSAP}, ContratoIngresado: {item.ContratoIngresado}");
-                //}
 
                 listado = listadoConFiltro
                     .Select(x => new OrdenDeCargaDto
@@ -1718,13 +1715,12 @@ namespace SustitucionMOAUtils.Services
             }
 
             if (
-                orden.TipoContratoFAS() == TipoContratoFAS.ANTICIPADO &&
+                orden.TipoContrato == TipoContratoFAS.Anticipado &&
                 string.IsNullOrEmpty(orden.NumeroFacturaSeleccionada))
             {
                 orden.Estado = EstadoOrdenDeCarga.Pendiente;
                 orden.DescripcionErrorInterno = "Hay más de una factura para seleccionar.";
                 repositorio.GuardarCambios();
-                //emailFasService.EnviarMailContratoVencido(orden);
                 return new Resultado { error = "El contrato tiene más de una factura para seleccionar" };
             }
 

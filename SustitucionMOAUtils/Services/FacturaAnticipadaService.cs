@@ -32,7 +32,7 @@ namespace SustitucionMOAUtils.Services
         {
 
             Log.Info($"Obtener facturas de contrato: {numeroContrato}");
-            var contratoSAP = _consumerOrdenCarga.ObtenerContratoSAP(numeroContrato, TipoContratoFAS.ANTICIPADO);
+            var contratoSAP = _consumerOrdenCarga.ObtenerContratoSAP(numeroContrato, TipoContratoFAS.Anticipado);
             Log.Info($"Obtener facturas de contrato Result: {numeroContrato}, {contratoSAP.ToJson()}");
 
             return ObtenerFacturasDeContrato(contratoSAP, false);
@@ -73,11 +73,11 @@ namespace SustitucionMOAUtils.Services
         public bool OrdenConMultiplesFacturas(OrdenDeCarga orden)
         {
             var contrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
-            return ObtenerFacturasDeContrato(contrato).Count != 1;
+            return ObtenerFacturasDeContrato(contrato).Count > 1;
         }
         public bool OrdenConMultiplesFacturas(Result contrato)
         {
-            return ObtenerFacturasDeContrato(contrato).Count != 1;
+            return ObtenerFacturasDeContrato(contrato).Count > 1;
         }
     }
 }

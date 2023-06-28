@@ -8,8 +8,8 @@ export interface ObtenerContratosDisponiblesResponse {
 }
 
 export enum TipoContrato {
-    Normal = "NORMAL",
-    FacturaAnticipada = "ANTICIPADO",
+    Normal = 0,
+    FacturaAnticipada = 1,
 }
 
 export interface ContratoOrdenFas {
