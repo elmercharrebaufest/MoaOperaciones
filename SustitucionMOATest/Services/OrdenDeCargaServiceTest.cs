@@ -1356,6 +1356,77 @@ namespace SustitucionMOATest.Services
 
             Assert.That(result, Is.False);
         }
+        [Test]
+        public void AnularPedidoEnSap_RespuestaSinMapear_ThrowInfoCustomException()
+        {
+            var usuario = new Usuario
+            {
+                Roles = new List<Rol>
+                {
+                    new Rol {
+                        PermisosAsociados= new List<PermisoPorRol>
+                        {
+                           new PermisoPorRol{ Permiso="ENVIAR A SAP" }
+                        }
+                    }
+                }
+            };
+            repositorioMock
+            .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+            .Returns(usuario);
+            repositorioMock
+            .Setup(y => y.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+            .Returns(new OrdenDeCarga
+            {
+                NumeroPedido = "001243898"
+            });
+            var handler = new ModOrdenCargaResponseHandler("Pedido tomado en SAP");
+
+            consumerOrdenCargaMOA.Setup(c => c.AnularOrdenCarga(It.IsAny<OrdenDeCarga>())).Returns(handler);
+
+            Assert.That(() => target.AnularOrden(3, ""), Throws.TypeOf<InfoCustomException>());
+        }
+        [Test]
+        public void AnularPedidoEnSap_PedidoEntregaYaAnulados_OrdenEstadoAnulada()
+        {
+            var orden = new OrdenDeCarga
+            {
+                NumeroPedido = "001243898",
+                NumeroEntrega = "001243898",
+                Estado = EstadoOrdenDeCarga.EntregaGenerada
+            };
+            var usuario = new Usuario
+            {
+                Roles = new List<Rol>
+                {
+                    new Rol {
+                        PermisosAsociados= new List<PermisoPorRol>
+                        {
+                           new PermisoPorRol{ Permiso="ENVIAR A SAP" }
+                        }
+                    }
+                }
+            };
+            repositorioMock
+            .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+            .Returns(usuario);
+            repositorioMock
+            .Setup(y => y.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+            .Returns(orden);
+            var handlerPedido = new ModOrdenCargaResponseHandler("Pedido ya anulado");
+            var handlerEntrega = new ModEntregaResponseHandler("Entrega anulada en SAP");
+
+            consumerOrdenCargaMOA.Setup(c => c.AnularOrdenCarga(It.IsAny<OrdenDeCarga>())).Returns(handlerPedido);
+            consumerOrdenCargaMOA.Setup(c => c.AnularEntregaOrdenCarga(It.IsAny<string>())).Returns(handlerEntrega);
+
+            target.AnularOrden(1, "");
+
+            Assert.That(orden.Estado, Is.EqualTo(EstadoOrdenDeCarga.Anulada));
+
+        }
+
+            Assert.That(result, Is.False);
+        }
 
         [Test]
         public void Agregar_UsuarioNoPuedeModificarReventa_ThrowValidationCustomException()

@@ -233,11 +233,6 @@ namespace SustitucionMOAUtils.Services
                 var ordenEditar = cargarDatosOCEditar.Item1;
                 var listaValoresDiferentes = cargarDatosOCEditar.Item2;
 
-                //Solicitud de edición
-                if (!esInterno)
-                {
-                    SolicitarEdicionOrden(ordenDeCarga.Id, mailUsuario);
-                }
                 foreach (var prop in listaValoresDiferentes)
                 {
                     if (!valoresAEditar.Contains(prop.PropertyName))
@@ -258,9 +253,12 @@ namespace SustitucionMOAUtils.Services
                         historialCambios.Add(registroHistorial);
                     }
                 }
+                //Solicitud de edición
+                if (!esInterno && historialCambios.Count > 0)
+                {
+                    SolicitarEdicionOrden(ordenDeCarga.Id, mailUsuario);
+                }
 
-                // error de base de datos al usar agregar todos
-                //repositorio.AgregarTodos(historialCambios);
                 foreach (var historialCambio in historialCambios)
                 {
                     repositorio.Agregar(historialCambio);
@@ -274,6 +272,15 @@ namespace SustitucionMOAUtils.Services
                     if (resultadoSAP.HayError)
                         throw new InfoCustomException(resultadoSAP.Errores[0].Message);
                 }
+                if (historialCambios.Count > 0 && !esAdmin)
+                {
+                    //Aviso de Edición de Orden de Carga
+                    var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega, ordenDeCarga.NumeroPedido);
+                    if (emailSenderData != null)
+                    {
+                        EmailSender.EnviarMail(emailSenderData);
+                    }
+                }
 
                 repositorio.GuardarCambios();
                 NotificarTransporte(ordenEditar.Id);
@@ -285,16 +292,6 @@ namespace SustitucionMOAUtils.Services
                         GenerarEntregaSAP(ordenEditar);
                     }
 
-                }
-
-                if (historialCambios.Count > 0 && !esAdmin)
-                {
-                    //Aviso de Edición de Orden de Carga
-                    var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega, ordenDeCarga.NumeroPedido);
-                    if (emailSenderData != null)
-                    {
-                        EmailSender.EnviarMail(emailSenderData);
-                    }
                 }
 
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
@@ -1232,7 +1229,6 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.Agregar(ordenHistorial);
                 orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
-                repositorio.GuardarCambios();
 
                 return SuccessMsg.OrdenDeCargaActualizada;
             }
@@ -2666,10 +2662,13 @@ namespace SustitucionMOAUtils.Services
             var tieneNumeroPedido = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) || !string.IsNullOrEmpty(orden.NumeroPedido);
             if (!tieneNumeroPedido)
                 return;
-            var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
-            if (resultadoAnularOrden.HayError)
-                //Pendiente revisión de los mensajes acorde a las verdaderas razones de error
+            var respHandler = consumer.AnularOrdenCarga(orden);
+            if (respHandler.PedidoTomadoEnSap)
                 throw new InfoCustomException("El pedido está tomado en SAP");
+            else if (!(respHandler.ActualizadoOK || respHandler.PedidoAnulado))
+            {
+                throw new Exception("No se reconoce respuesta SAP (Anular Orden Carga)");
+            }
         }
         private List<string> ObtenerContratosAbiertos(List<string> contratos)
         {
