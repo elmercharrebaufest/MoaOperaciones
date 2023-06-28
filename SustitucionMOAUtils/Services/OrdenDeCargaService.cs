@@ -141,7 +141,7 @@ namespace SustitucionMOAUtils.Services
 
             var producto = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
             ordenDeCarga.Producto = producto;
-            
+
             if (ordenDeCarga.TipoContrato == TipoContratoFAS.Anticipado)
             {
                 var contrato = consumer.ObtenerContratoSAP(ordenDeCarga, TipoContratoFAS.Anticipado);
@@ -2043,6 +2043,10 @@ namespace SustitucionMOAUtils.Services
         private bool ObtenerSituacionCrediticia(OrdenDeCarga orden)
         {
             var numeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? orden.NumeroPedidoIngresado : orden.NumeroPedido;
+            if (string.IsNullOrEmpty(numeroPedido))
+            {
+                numeroPedido = string.IsNullOrEmpty(orden.NumeroFacturaSeleccionada) ? orden.NumeroFactura : orden.NumeroFacturaSeleccionada;
+            }
             Log.Info("ObtenerSituacionCrediticia");
             var result = consumer.OrdenCargaControlEstadoRequest("", numeroPedido, "");
 
@@ -2158,7 +2162,8 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
                 return new Resultado { Mensaje = "No se pudo generar la entrega. No existe el Intermediario de flete." };
             }
-
+            var numeroFactura = string.IsNullOrEmpty(orden.NumeroFacturaSeleccionada) ? orden.NumeroFactura : orden.NumeroFacturaSeleccionada;
+            Log.Info("GenerarEntregaSAP: numeroFactura " + numeroFactura);
             var req = new CrearEntregaRequest
             {
                 Documento = orden.CUITChofer,
@@ -2166,7 +2171,7 @@ namespace SustitucionMOAUtils.Services
                 NombreConductor = orden.NombreChofer,
                 PatenteAcoplado = orden.PatenteAcoplado,
                 PatenteChasis = orden.ChasisAcoplado,
-                Pedido = orden.NumeroPedido,
+                Pedido = numeroFactura != null ? numeroFactura : orden.NumeroPedido,
                 TipoDocumento = "CUIL",
                 Transportista = orden.CUITTransporte,
                 CuitDestinatario = orden.CUITDestinatario,
@@ -2181,7 +2186,7 @@ namespace SustitucionMOAUtils.Services
                 DomicilioDescr = orden.DomicilioDescr
             };
 
-            var respHandler = consumer.CrearEntrega(req);
+            var respHandler = consumer.CrearEntrega(req, numeroFactura != null);
 
             switch (respHandler.GetResultado())
             {
@@ -2446,8 +2451,8 @@ namespace SustitucionMOAUtils.Services
                     Corredor = req.CorredorCodigo,
                     Fechas = rangoFechas,
                     Material = material,
-                    Pendiente = "X", // "X" es para Contratos ABIERTOS
-                    TipoContrato = ""
+                    Pendiente = Constante.FAS_FILTRO_DEFAULT_PENDIENTE, // "X" es para Contratos ABIERTOS
+                    TipoContrato = Constante.FAS_FILTRO_DEFAULT_TIPO_CONTRATO
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();

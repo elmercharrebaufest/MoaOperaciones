@@ -198,7 +198,7 @@ namespace SustitucionMOAModel.Dto
         public string PlantaCodigo { get; set; }
         public string NumeroFactura { get; set; }
         public string NumeroFacturaSeleccionada { get; set; }
-        public string TipoContrato { get; set; }
+        public TipoContratoFAS TipoContrato { get; set; }
         //public string DomicilioTipo { get; set; }
         //public short DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
