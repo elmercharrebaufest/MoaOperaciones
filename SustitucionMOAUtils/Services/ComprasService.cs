@@ -273,7 +273,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     respuestaGuardarSOLP = FinalizarSolp(solp, solpEntity, postEntitySubPosicionesEliminadas, respuestaGuardarSOLP);
                     GuardarUsuarioComprasRelacionado(solp);
-                    if (!string.IsNullOrEmpty(solpEntity.NroSolp) && solp.TrabajoYaHecho == true)
+                    if (string.IsNullOrEmpty(solpEntity.NroSolp) && solp.TrabajoYaHecho == true)
                     {
                         CrearCotizacionAutomatica(solpEntity);
                     }
