@@ -589,6 +589,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     onContratoSeleccionadoChanged = () => {
+        this.facturasDisponibles = [];
+        this.ordenDeCarga.NumeroFactura = null;
+        this.numeroFacturaSeleccionado = null;
+
         if (this.ordenDeCarga.ContratoSeleccionado) {
             this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
             this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
@@ -604,9 +608,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.Contrato = "";
             this.ordenDeCarga.ContratoIngresado = "";
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
-            this.facturasDisponibles = [];
-            this.ordenDeCarga.NumeroFactura = null;
-            this.numeroFacturaSeleccionado = null;
             this.validaCPEDG = false;
         }
         this.ordenDeCarga.Reventa = this.validaCPEDG && this.modificaReventa && !this.ordenDeCarga.Reventa;
@@ -1182,7 +1183,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             let data = this.manejarErroresApiResponse(result);
             if (data instanceof Array) {
                 if (!data.length) {
-                    //this.floatMsgService.setInfoMsg("")
+                    this.floatMsgService.setInfoMsg("No hay ninguna factura generada para este contrato.");
+                    this.contratoSeleccionado = null;
+                    this.ordenDeCarga.ContratoSeleccionado = null;
+                    this.Contrato = "";
+                    this.ordenDeCarga.ContratoIngresado = "";
+                    this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
+                    this.validaCPEDG = false;
                 }
                 this.facturasDisponibles = data.map(numeroFactura => ({ numeroFactura }))
             }

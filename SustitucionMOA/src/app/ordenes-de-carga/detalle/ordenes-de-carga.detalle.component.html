@@ -146,6 +146,11 @@
                                         <p style="width:100%">{{ordenDeCarga.NumeroFactura}}</p>
                                     </div>
 
+                                    <div class="col-xs-12 col-md-12" *ngIf="ordenDeCarga.NumeroFacturaSeleccionada">
+                                        <p class="blue"><strong>Número de Factura seleccionado</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.NumeroFacturaSeleccionada}}</p>
+                                    </div>
+
                                     <div class="col-xs-12 col-md-12" *ngIf="ordenDeCarga.NumeroPedidoIngresado != ''">
                                         <p class="blue"><strong>Pedido</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.NumeroPedidoIngresado}}</p>
