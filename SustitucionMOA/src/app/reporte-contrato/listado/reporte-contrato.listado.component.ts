@@ -27,7 +27,6 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.filtroFechaComponent = new FiltroFechaComponent();
     }
-    CLIENTE_DIRECTO
     contratoSeleccionadoId: string = '';
     detalle: any[];
     cabecera: ReporteContrato[];
