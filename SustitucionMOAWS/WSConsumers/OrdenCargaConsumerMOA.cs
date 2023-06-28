@@ -58,6 +58,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         */
 
+        private const string TipoContratoFas_Normal = "NORMAL";
+        private const string TipoContratoFas_Anticipado = "ANTICIPADO";
 
         public ControlCargaResponseHandler ControlarCarga(ControlCargaRequest datosCarga)
         {
@@ -321,7 +323,7 @@ namespace SustitucionMOAWS.WSConsumers
                     CondicionEntrega = item.CONDICION_ENTREGA,
                     Producto = item.PRODUCTO,
                     PuntoExpedicion = item.PTO_EXPEDICION,
-                    TipoContrato = item.TIPO_CONTRATO
+                    TipoContrato = ConvertirDeTipoContratoFasSAP(item.TIPO_CONTRATO)
                 };
                 var detalles = new List<Detail>();
                 foreach (var detalle in item.DETALLE)
@@ -441,16 +443,16 @@ namespace SustitucionMOAWS.WSConsumers
             return result.Length > 0;
         }
 
-        public Result ObtenerContratoSAP(OrdenDeCarga orden, TipoContratoFAS tipoContrato = TipoContratoFAS.DESCONOCIDO)
+        public Result ObtenerContratoSAP(OrdenDeCarga orden, TipoContratoFAS? tipoContrato)
         {
             return ObtenerContratoSAP(string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP, tipoContrato);
         }
-        public Result ObtenerContratoSAP(string numeroContrato, TipoContratoFAS tipoContrato = TipoContratoFAS.DESCONOCIDO)
+        public Result ObtenerContratoSAP(string numeroContrato, TipoContratoFAS? tipoContrato)
         {
             var request = new OrdenCargaVisualizarClienteWSMOARequest
             {
                 Contrato = numeroContrato,
-                TipoContrato = TipoContratoFASParser.IntoString(tipoContrato),
+                TipoContrato = ConvertirATipoContratoFasSAP(tipoContrato),
                 Fechas = ObtenerFechas()
             };
 
@@ -491,6 +493,30 @@ namespace SustitucionMOAWS.WSConsumers
             entregaReq.PlantaCodigo = "";
 
             return entregaReq;
+        }
+
+        private string ConvertirATipoContratoFasSAP(TipoContratoFAS? tipoContrato)
+        {
+            if (!tipoContrato.HasValue)
+            {
+                return "";
+            }
+            switch (tipoContrato)
+            {
+                case TipoContratoFAS.Normal: return TipoContratoFas_Normal;
+                case TipoContratoFAS.Anticipado: return TipoContratoFas_Anticipado;
+                default: throw new Exception("Tipo de contrato no mapeado");
+            }
+        }
+
+        private TipoContratoFAS ConvertirDeTipoContratoFasSAP(string tipoContrato)
+        {
+            switch (tipoContrato)
+            {
+                case TipoContratoFas_Normal: return TipoContratoFAS.Normal;
+                case TipoContratoFas_Anticipado: return TipoContratoFAS.Anticipado;
+                default: throw new Exception("No se reconoce tipo de contrato " + tipoContrato);
+            }
         }
     }
 }
