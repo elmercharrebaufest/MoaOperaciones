@@ -34,6 +34,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajeError: string = "";
+    mensajeSeleccionarContrato?: string;
 
     ordenDeCargaHistorial: any = {};
 
@@ -508,7 +509,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     seleccionarContrato() {
         this.mensajeComponent.setMsgsEmpty();
+        this.mensajeSeleccionarContrato = null;
         this.spinnerComponent.showIt();
+        if (!this.contratoSeleccionado) {
+            this.mensajeSeleccionarContrato = "Por favor seleccione un contrato para confirmar.";
+            return;
+        }
         this.unsubscribe();
         this.blockUI.start('Grabando...');
         try {

@@ -541,10 +541,13 @@
                     <div class="row" class="col-xs-12 col-sm-12 col-md-12" *ngIf="contratos.length == 0">
                         No se encontraron contratos
                     </div>
+                    <p-message *ngIf="mensajeSeleccionarContrato" severity="warn"
+                        [text]="mensajeSeleccionarContrato"></p-message>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
-                        id="closemodalSeleccionarContrato" style="display: inline-flex;">
+                        id="closemodalSeleccionarContrato" (click)="mensajeSeleccionarContrato=null"
+                        style="display: inline-flex;">
                         Cancelar
                     </button>
                     <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarContrato()"
@@ -636,7 +639,6 @@
                 </div>
 
                 <div class="modal-body">
-
                     <div class="row" *ngIf="pedidos.length > 0">
 
                         <span *ngFor="let corredorPedido of pedidos" class="col-xs-12 col-sm-12 col-md-12">
