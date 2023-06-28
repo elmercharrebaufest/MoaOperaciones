@@ -8,12 +8,12 @@ namespace SustitucionMOAUtils.Services
     {
         public void AccionesARealizar(OrdenDeCarga orden)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public void ActualizarEstado(OrdenDeCarga orden)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }
