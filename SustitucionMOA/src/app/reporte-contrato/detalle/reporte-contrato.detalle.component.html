@@ -71,6 +71,7 @@
                             <td style="text-align :center" tabindex="0">TOTAL</td>
                             <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados | number}}</td>
                             <td ></td>
+                            <td ></td>
                             <td [ngStyle]="{'font-weight':'bold'}">{{KilosFacturados | number}}</td>
                             <td ></td>
                             <td ></td>
@@ -85,24 +86,4 @@
         <!--Fin botones mobile-->
     </section>
     <!--End CONTENT-->
-
-    <div class="modal fade" id="modalOrdenesCompra" tabindex="-1" role="dialog"
-         aria-labelledby="cartaDePresentacionLabel" data-backdrop="false"
-         style="background-color: rgba(0, 0, 0, 0.5); width: fit-content;">
-        <div class="modal-dialog modal-lg" role="document" style="margin-right: 10px;">
-            <div class="modal-content" >
-                <div class="modal-header">
-                    <button id="cerrarModalUsuario" type="button" class="close btn-close" data-dismiss="modal"
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="cartaDePresentacionLabel">Orden Carga {{ordenDeCargaId}}</h4>
-                </div>
-                <div class="modal-body">
-                    <app-ordenes-de-carga-alta></app-ordenes-de-carga-alta>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
