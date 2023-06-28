@@ -56,7 +56,7 @@ export class DashboardComponent extends ListBaseComponent {
     @ViewChild('paginator') paginator: Paginator
     public peticion: PeticionDeOfertaDto;
     public ordenCompra: any;
-
+    public solicitante: boolean = true;
     displayRevisionTecnica: boolean;
 
     displayCircular: boolean = false;
