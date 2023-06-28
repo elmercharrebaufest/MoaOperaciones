@@ -2043,7 +2043,6 @@ namespace SustitucionMOAUtils.Services
         private bool ObtenerSituacionCrediticia(OrdenDeCarga orden)
         {
             var numeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? orden.NumeroPedidoIngresado : orden.NumeroPedido;
-
             Log.Info("ObtenerSituacionCrediticia");
             var result = consumer.OrdenCargaControlEstadoRequest("", numeroPedido, "");
 
