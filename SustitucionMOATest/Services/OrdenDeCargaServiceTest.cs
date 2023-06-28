@@ -1422,10 +1422,6 @@ namespace SustitucionMOATest.Services
             target.AnularOrden(1, "");
 
             Assert.That(orden.Estado, Is.EqualTo(EstadoOrdenDeCarga.Anulada));
-
-        }
-
-            Assert.That(result, Is.False);
         }
 
         [Test]
