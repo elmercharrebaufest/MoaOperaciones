@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
@@ -44,56 +45,61 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ObtenerFacturasDeContrato_ListaFacturas_DebeFiltrarLasVacias()
         {
+            var factura1 = "001246892";
+            var factura2 = "00124091232";
+            var detail1 = new Detail { FacturaLegal = factura1 };
+            var detail2 = new Detail { FacturaLegal = factura2 };
             SetupRespuestaResult(new List<Detail>
             {
                 new Detail {FacturaLegal= string.Empty},
                 new Detail {FacturaLegal= string.Empty},
                 new Detail {FacturaLegal= string.Empty},
-                new Detail {FacturaLegal= "001246892"},
+                detail1,
                 new Detail {FacturaLegal= string.Empty},
-                new Detail {FacturaLegal= "001746592"},
+                detail2,
                 new Detail {FacturaLegal= string.Empty},
             });
 
             var result = _facturaAnticipadaService.ObtenerFacturasDeContrato(It.IsAny<string>());
 
-            var expected = new List<string> { "001246892", "001746592" };
-            Assert.That(result, Is.EqualTo(expected));
+            Assert.That(result[0].NumeroFactura, Is.EqualTo(factura1));
+            Assert.That(result[1].NumeroFactura, Is.EqualTo(factura2));
         }
         [Test]
         public void ObtenerFacturasDeContrato_OrdenSinContratoSAP_DebeLlamarObtenerFacturasConContratoIngresado()
         {
             var numeroContrato = "12345678910";
+            var factura1 = "001246892";
             var orden = new OrdenDeCarga { ContratoSAP = "", ContratoIngresado = numeroContrato };
+            var detail = new Detail { FacturaLegal = factura1 };
             SetupRespuestaResult(new List<Detail>
             {
                 new Detail {FacturaLegal= string.Empty},
-                new Detail {FacturaLegal= "001246892"},
+                detail,
                 new Detail {FacturaLegal= string.Empty},
             }, numeroContrato);
 
             var result = _facturaAnticipadaService.ObtenerFacturasDeContrato(orden);
 
-            var expected = new List<string> { "001246892" };
-            Assert.That(result, Is.EqualTo(expected));
+            Assert.That(result[0].NumeroFactura, Is.EqualTo(factura1));
         }
         [Test]
         public void ObtenerFacturasDeContrato_OrdenConContratoSAP_DebeLlamarObtenerFacturasConContratoSAP()
         {
             var numeroContrato = "12345678910";
             var contratoSAP = "345682943";
+            var factura1 = "001246892";
             SetupRespuestaResult(new List<Detail>
             {
                 new Detail {FacturaLegal= string.Empty},
-                new Detail {FacturaLegal= "001246892"},
+                new Detail {FacturaLegal= factura1},
                 new Detail {FacturaLegal= string.Empty},
             }, contratoSAP);
             var orden = new OrdenDeCarga { ContratoSAP = contratoSAP, ContratoIngresado = numeroContrato };
 
             var result = _facturaAnticipadaService.ObtenerFacturasDeContrato(orden);
 
-            var expected = new List<string> { "001246892" };
-            Assert.That(result, Is.EqualTo(expected));
+            Assert.That(result[0].NumeroFactura, Is.EqualTo(factura1));
         }
         [Test]
         public void OrdenConMultiplesFacturas_ListaUnaSolaFactura_RetursFalse()
@@ -137,34 +143,30 @@ namespace SustitucionMOATest.Services
                 Throws.TypeOf<InfoCustomException>());
         }
         [Test]
-        public void SeleccionarFactura_NumeroFacturaUndefined_ThrowInvalidCustomException()
-        {
-            Assert.That(
-                () => _facturaAnticipadaService.SeleccionarFactura(It.IsAny<int>(), null),
-                Throws.TypeOf<InfoCustomException>());
-        }
-        [Test]
         public void SeleccionarFactura_OrdenNoExiste_ThrowInvalidCustomException()
         {
             _repositorio.Setup(r => r.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(null as OrdenDeCarga);
             Assert.That(
-                () => _facturaAnticipadaService.SeleccionarFactura(It.IsAny<int>(), "1234"),
+                () => _facturaAnticipadaService.SeleccionarFactura(It.IsAny<int>(), It.IsAny<string>()),
                 Throws.TypeOf<InfoCustomException>());
         }
         [Test]
-        [TestCase("1234")]
-        [TestCase("56789")]
-        public void SeleccionarFactura_OrdenExisteYNumeroFacturaValido_CambiarNumeroFacturaYLlamaActualizarEstado(string numeroFacturaSeleccionada)
+        [TestCase("1234", "0012314153")]
+        [TestCase("56789", "001231412")]
+        public void SeleccionarFactura_OrdenExisteYNumeroFacturaValido_CambiarNumeroFacturaYLlamaActualizarEstado(string numeroFacturaSeleccionada, string pedido)
         {
             var contratoSAP = "123";
             var orden = new OrdenDeCarga { ContratoSAP = contratoSAP };
             _repositorio.Setup(r => r.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(orden);
-            SetupRespuestaResult(new List<Detail> { new Detail { FacturaLegal = numeroFacturaSeleccionada } }, contratoSAP);
+            SetupRespuestaResult(new List<Detail> { new Detail { FacturaLegal = numeroFacturaSeleccionada, Pedido = pedido } }, contratoSAP);
 
             _facturaAnticipadaService.SeleccionarFactura(0, numeroFacturaSeleccionada);
             Assert.That(
                 orden.NumeroFacturaSeleccionada,
                 Is.EqualTo(numeroFacturaSeleccionada));
+            Assert.That(
+                orden.NumeroPedido,
+                Is.EqualTo(pedido));
             _ordenDeCargaEstadoService.Verify(es => es.ActualizarEstado(orden), Times.Once());
         }
         [Test]

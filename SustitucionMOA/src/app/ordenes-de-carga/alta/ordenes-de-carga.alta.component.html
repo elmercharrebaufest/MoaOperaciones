@@ -176,15 +176,6 @@
                                 </div>
 
                             </ng-container>
-                            <div class="col-xs-12 col-md-12">
-                                <div class="formulario-label">
-                                    Número de pedido (fact. anticipada):
-                                </div>
-                                <div class="styled-select">
-                                    <input type="text" [(ngModel)]="ordenDeCarga.NumeroPedidoIngresado" maxlength="25"
-                                        [disabled]="noEditarCliente || !(ordenDeCarga.ContratoSeleccionado?.TipoContrato === tipoContrato.FacturaAnticipada )">
-                                </div>
-                            </div>
 
                             <div class="col-xs-12 col-md-12"
                                 *ngIf="ordenDeCarga.ContratoSeleccionado?.TipoContrato === tipoContrato.FacturaAnticipada ">
@@ -193,10 +184,10 @@
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
                                     <p-dropdown name="cmbFacturas" [disabled]="noEditarCliente"
-                                        [(ngModel)]="numeroFacturaSeleccionado" [options]="facturasDisponibles"
-                                        placeholder="Seleccione un número de factura" [optionLabel]="'numeroFactura'"
-                                        [filter]="true" (onChange)="ordenDeCarga.NumeroFactura= $event.value.numeroFactura"
-                                        filterBy="value.numeroFactura">
+                                        [(ngModel)]="facturaSeleccionada" [options]="facturasDisponibles"
+                                        placeholder="Seleccione un número de factura" [optionLabel]="'NumeroFactura'"
+                                        [filter]="true" (onChange)="setNumeroFactura($event.value)"
+                                        filterBy="value.NumeroFactura">
                                     </p-dropdown>
                                 </div>
                             </div>
