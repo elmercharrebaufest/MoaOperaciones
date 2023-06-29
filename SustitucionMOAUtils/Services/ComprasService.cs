@@ -2398,9 +2398,32 @@ namespace SustitucionMOAUtils.Services
                         item.Cotizacion.TotalGlobalSubPos = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalARPCotizacionPosicion);
 
                     }
-                    item.VerAdjudicar = item.Cotizacion == null ? false : item.Cotizacion != null && item.PlazoDeOferta.Date >= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? false : !item.EstaHabilitado ? false : !todasLasOfertas.EstaLiberado ? false: true;
-                    item.MensajeAdjudicar = item.Cotizacion == null ? "Sin Cotizar" : item.Cotizacion != null && item.PlazoDeOferta.Date >= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? "Cotización sin finalizar"
-                                            : !todasLasOfertas.EstaLiberado ? "SOLP Sin liberar" : !item.EstaHabilitado ? "Proveedor desahabilitado" : "Adjudicar";
+                  //  item.VerAdjudicar = item.Cotizacion == null ? false : item.Cotizacion != null && item.PlazoDeOferta.Date <= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? false : item.EstaHabilitado ? false : todasLasOfertas.EstaLiberado ? false: true;
+
+                    var mensaje = "Adjudicar";
+                    var verAdjudicar = true;
+                    if(item.Cotizacion == null)
+                    {
+                        mensaje = "Sin Cotizar";
+                        verAdjudicar = false;
+                    }
+                    if(item.Cotizacion != null && item.PlazoDeOferta.Date > hoy && item.Cotizacion.CotizacionEstadoDescripcion != "Cotizado")
+                    {
+                        mensaje = "Cotización sin finalizar";
+                        verAdjudicar = false;
+                    }
+                    if (!todasLasOfertas.EstaLiberado)
+                    {
+                        mensaje = "SOLP Sin liberar";
+                        verAdjudicar = false;
+                    }
+                    if (!item.EstaHabilitado)
+                    {
+                        mensaje = "Proveedor desahabilitado";
+                        verAdjudicar = false;
+                    }
+                    item.MensajeAdjudicar = mensaje;
+                    item.VerAdjudicar = verAdjudicar;
                 }
                 foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
                 {
