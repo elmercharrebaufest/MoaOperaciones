@@ -23,6 +23,7 @@ import { finalize } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
 import { forkJoin } from 'rxjs';
 import { Permiso } from '../../common/enums/Permisos';
+import { Factura } from '../../common/models/ordenes-de-carga/Factura';
 
 declare var $: any;
 
@@ -70,8 +71,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     private selectUndefinedOptionValue: any;
 
     contratosDisponibles: ContratoOrdenFas[] = [];
-    facturasDisponibles: { numeroFactura: string }[] = [];
-    numeroFacturaSeleccionado: { numeroFactura: string } = {} as { numeroFactura: string };
+    facturasDisponibles: Factura[] = [];
+    facturaSeleccionada: Factura = {} as Factura;
     contratoSeleccionado: ContratoOrdenFas;
     tipoContrato = TipoContrato;
     listaMateriales: Material[];
@@ -269,7 +270,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         if (this.ordenDeCarga.CUITDestino)
                             this.onDestinoIngresado(this.ordenDeCarga.CUITDestino)
                         if (this.ordenDeCarga.NumeroFactura)
-                            this.numeroFacturaSeleccionado = { numeroFactura: this.ordenDeCarga.NumeroFactura }
+                            this.facturaSeleccionada = {
+                                NumeroFactura: this.ordenDeCarga.NumeroFacturaSeleccionada || this.ordenDeCarga.NumeroFactura,
+                                NumeroPedido: this.ordenDeCarga.NumeroPedidoIngresado || this.ordenDeCarga.NumeroPedido
+                            }
                     }
                 },
                 error => {
@@ -590,7 +594,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     onContratoSeleccionadoChanged = () => {
         this.facturasDisponibles = [];
         this.ordenDeCarga.NumeroFactura = null;
-        this.numeroFacturaSeleccionado = null;
+        this.facturaSeleccionada = null;
 
         if (this.ordenDeCarga.ContratoSeleccionado) {
             this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
@@ -1192,10 +1196,14 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
                     this.validaCPEDG = false;
                 }
-                this.facturasDisponibles = data.map(numeroFactura => ({ numeroFactura }))
+                this.facturasDisponibles = data
             }
         });
     }
+    setNumeroFactura(value: Factura) {
+        const { NumeroFactura, NumeroPedido } = value;
+        this.ordenDeCarga.NumeroFactura = NumeroFactura;
+        this.ordenDeCarga.NumeroPedidoIngresado = NumeroPedido;
+    }
 }
-
 

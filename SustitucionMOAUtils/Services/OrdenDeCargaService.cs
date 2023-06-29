@@ -98,11 +98,20 @@ namespace SustitucionMOAUtils.Services
                 if (crearPedido && puedeEnviarASAP)
                 {
                     ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
-                    var creadaEnSAP = CrearPedidoEnSAP(ordenDeCarga, ordenDeCarga.Cliente, true, puedeEnviarASAP, mailUsuario);
-                    if (creadaEnSAP)
+                    if (ordenDeCarga.TipoContrato == TipoContratoFAS.Anticipado)
                     {
-                        VerificarSituacionCrediticia(ordenDeCarga, true);
+                        if (!string.IsNullOrEmpty(ordenDeCarga.NumeroFacturaSeleccionada))
+                            GenerarEntregaSAP(ordenDeCarga);
                     }
+                    else
+                    {
+                        var creadaEnSAP = CrearPedidoEnSAP(ordenDeCarga, ordenDeCarga.Cliente, true, puedeEnviarASAP, mailUsuario);
+                        if (creadaEnSAP)
+                        {
+                            VerificarSituacionCrediticia(ordenDeCarga, true);
+                        }
+                    }
+
                 }
                 if (!string.IsNullOrEmpty(ordenDeCarga.PedidosRespuesta))
                 {
@@ -146,6 +155,7 @@ namespace SustitucionMOAUtils.Services
             if (ordenDeCarga.TipoContrato == TipoContratoFAS.Anticipado)
             {
                 var contrato = consumer.ObtenerContratoSAP(ordenDeCarga, TipoContratoFAS.Anticipado);
+                ordenDeCarga.AprobadoCredito = true;
                 if (!_facturaAnticipadaService.OrdenConMultiplesFacturas(contrato))
                 {
                     ordenDeCarga.NumeroFacturaSeleccionada = ordenDeCarga.NumeroFactura;
@@ -1743,8 +1753,10 @@ namespace SustitucionMOAUtils.Services
 
                 if (!orden.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
                 {
-                    var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
+                    if (orden.TipoContrato == TipoContratoFAS.Anticipado)
+                        return GenerarEntregaSAP(orden);
 
+                    var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
                     if (creadaEnSaP)
                     {
                         return VerificarSituacionCrediticia(orden, true);
@@ -1797,8 +1809,8 @@ namespace SustitucionMOAUtils.Services
 
                 if (!orden.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
                 {
-
-                    return GenerarEntregaSAP(orden);
+                    var result = GenerarEntregaSAP(orden);
+                    return result;
                 }
             }
 
@@ -2167,7 +2179,8 @@ namespace SustitucionMOAUtils.Services
                 return new Resultado { Mensaje = "No se pudo generar la entrega. No existe el Intermediario de flete." };
             }
             var numeroFactura = string.IsNullOrEmpty(orden.NumeroFacturaSeleccionada) ? orden.NumeroFactura : orden.NumeroFacturaSeleccionada;
-            Log.Info("GenerarEntregaSAP: numeroFactura " + numeroFactura);
+            Log.Info($"GenerarEntregaSAP: numeroFactura -> {numeroFactura}");
+
             var req = new CrearEntregaRequest
             {
                 Documento = orden.CUITChofer,
@@ -2175,7 +2188,7 @@ namespace SustitucionMOAUtils.Services
                 NombreConductor = orden.NombreChofer,
                 PatenteAcoplado = orden.PatenteAcoplado,
                 PatenteChasis = orden.ChasisAcoplado,
-                Pedido =  orden.NumeroPedido,
+                Pedido = orden.NumeroPedido,
                 TipoDocumento = "CUIL",
                 Transportista = orden.CUITTransporte,
                 CuitDestinatario = orden.CUITDestinatario,
@@ -2408,7 +2421,6 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.OrdenDeCargaActualizada;
 
         }
-
         public void VerificarSituacionCrediticiaJob()
         {
             if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarSituacionCrediticiaJob").Habilitado)
@@ -2524,7 +2536,8 @@ namespace SustitucionMOAUtils.Services
             var tieneNumeroEntrega = !string.IsNullOrEmpty(orden.NumeroEntrega);
             if (tieneNumeroEntrega)
                 AnularEntregaEnSap(orden);
-
+            if (orden.TipoContrato == TipoContratoFAS.Anticipado)
+                return;
             AnularPedidoEnSap(orden, tieneNumeroEntrega);
         }
         public string EnviarOrdenesASAP(List<int> ordenesId, string mailUsuario)
@@ -2769,17 +2782,11 @@ namespace SustitucionMOAUtils.Services
             var facturaAnticipada = ordenDeCarga.TipoContrato == TipoContratoFAS.Anticipado;
             var noTieneContratoSeleccionado = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP);
             var noTienePedidoNiContrato = string.IsNullOrEmpty(ordenDeCarga.NumeroPedido) || noTieneContratoSeleccionado;
-            if ( noTienePedidoNiContrato  || (facturaAnticipada && noTieneContratoSeleccionado) )
+            if (noTienePedidoNiContrato || (facturaAnticipada && noTieneContratoSeleccionado))
             {
-                 ordenDeCarga.ContratosRespuesta = result;
-                 ordenDeCarga.ContratoSAP = "";
-                 ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
-            }
-            else if (!facturaAnticipada)
-            {
-                ordenDeCarga.PedidosRespuesta = result;
-                ordenDeCarga.NumeroPedido = "";
-                ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
+                ordenDeCarga.ContratosRespuesta = result;
+                ordenDeCarga.ContratoSAP = "";
+                ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
             }
         }
 
@@ -2837,6 +2844,7 @@ namespace SustitucionMOAUtils.Services
             orden.RazonSocialDestino = null;
             orden.Reventa = false;
             orden.CUITIntermediarioFlete = null;
+            orden.DomicilioOrden = null;
         }
         private void UsarCUITClienteParaDestinatario(OrdenDeCarga orden)
         {
