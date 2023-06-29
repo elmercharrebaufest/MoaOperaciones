@@ -860,6 +860,7 @@ namespace SustitucionMOAUtils.Services
                                     .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
                                      po.PlazoDeOferta) >= hoy ? "Green" : "Red",
                 });
+
                 var ordenCompra = repositorio.Listar<Adjudicacion, AdjudicacionDto>(adjudicacion => new AdjudicacionDto
                 {
                     Id = adjudicacion.Id,
@@ -2306,6 +2307,8 @@ namespace SustitucionMOAUtils.Services
                 item.CentroFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.CentroId).GroupBy(x => x.CentroId).Select(x => x.Key)) : "";
                 item.GrupoCompraFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.GrupoComprasId).GroupBy(x => x.GrupoComprasId).Select(x => x.Key)) : "";
             }
+            
+
             return todasLasSolp;
         }
 
@@ -3879,6 +3882,7 @@ namespace SustitucionMOAUtils.Services
                     ObservacionTecnica = c.ObservacionTecnica,
                     ObservacionEconomica = c.ObservacionEconomica,
                     Id = c.Id,
+                    CotizacionEstado_Id = c.CotizacionEstado_Id,
                     RespetaMateriales = c.RespetaMateriales,
                     Archivos = c.Archivos/*.Where(x => x.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica)*/.Select(archivo => new LegajoDto
                     {
@@ -3908,13 +3912,16 @@ namespace SustitucionMOAUtils.Services
                     Cotizacion = cotizacion,
                     PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
                     RealizoVisita = u.RealizoVisita,
-                    EstaHabilitado = u.Usuario.Habilitado
+                    EstaHabilitado = u.Usuario.Habilitado,
+                    ValidacionCircularSolicitante = u.Usuario.Habilitado == true && u.RealizoVisita == true && u.PropuestaTecnicaAprobada == true && cotizacion != null && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado,
                 };
                 usuarios.Add(usuario);
             }
             peticion.Usuarios = usuarios;
             peticion.TipoPosicionCodigo = peticionEntidad.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault();
             peticion.Id = peticionEntidad.Id;
+            peticion.PlazoDeOfertaEstado = peticionEntidad.PlazoDeOferta > DateTime.Now.Date ? "Abierto" : "Cerrado";
+            
             var fechaEntrega = peticionEntidad.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).FirstOrDefault()?.FechaEntregaServicio;
             peticion.FechaEntregaFormateado = fechaEntrega != null ? fechaEntrega.Value.ToString("yyyy-MM-dd") : "";
             return peticion;

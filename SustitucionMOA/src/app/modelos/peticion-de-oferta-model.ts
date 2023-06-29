@@ -26,7 +26,8 @@ export interface PeticionDeOfertaDto{
     ObservacionEconomica?: string,
     SolpDto?: any,
     Selected?: boolean,
-    Cantidad?: number
+    Cantidad?: number,
+    PlazoDeOfertaEstado?: string
 }
 
 export interface PeticionDeOfertaUsarioDto {
@@ -38,8 +39,8 @@ export interface PeticionDeOfertaUsarioDto {
     Cotizacion?: CotizacionDto,
     PropuestaTecnicaAprobada?: boolean,
     RealizoVisita?: boolean,
-    EstaHabilitado: boolean
-
+    EstaHabilitado: boolean,
+    ValidacionCircularSolicitante?: boolean
 }
     
 export interface PeticionDeOfertaSolpPosicionDto{

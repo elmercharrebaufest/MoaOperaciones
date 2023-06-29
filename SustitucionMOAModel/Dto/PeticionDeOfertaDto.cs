@@ -77,6 +77,7 @@ namespace SustitucionMOAModel.Dto
         public bool PersonalHoras { get; set; }
         public string Texto { get; set; }
         public bool EstaLiberado { get; set; }
+        public string PlazoDeOfertaEstado { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
@@ -111,6 +112,7 @@ namespace SustitucionMOAModel.Dto
         public bool VerAdjudicar { get; set; }
         public bool EstaHabilitado { get; set; }
         public string MensajeAdjudicar { get; set; }
+        public bool ValidacionCircularSolicitante { get; set; }
     }
 
 }
