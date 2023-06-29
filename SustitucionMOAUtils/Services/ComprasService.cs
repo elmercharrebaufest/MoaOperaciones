@@ -2407,7 +2407,7 @@ namespace SustitucionMOAUtils.Services
                         mensaje = "Sin Cotizar";
                         verAdjudicar = false;
                     }
-                    if(item.Cotizacion != null && item.PlazoDeOferta.Date > hoy && item.Cotizacion.CotizacionEstadoDescripcion != "Cotizado")
+                    if(item.Cotizacion != null && item.PlazoDeOferta.Date > hoy.Date && item.Cotizacion.CotizacionEstadoDescripcion != "Cotizado")
                     {
                         mensaje = "Cotización sin finalizar";
                         verAdjudicar = false;
