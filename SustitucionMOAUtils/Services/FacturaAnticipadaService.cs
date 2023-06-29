@@ -38,7 +38,21 @@ namespace SustitucionMOAUtils.Services
 
             return ObtenerFacturasDeContrato(contratoSAP, false);
         }
-        
+        public List<FacturaOrdenCarga> ObtenerFacturasDeContrato(Result contrato, bool logger = true)
+        {
+            if (logger)
+                Log.Info($"Obtener facturas de contrato: {contrato.ToJson()}");
+            if (contrato == null)
+                throw new InfoCustomException("No se encontró el contrato");
+            var listaFacturas = contrato.Detalles
+               .Where(det => !string.IsNullOrEmpty(det.FacturaLegal))
+               .Select(det => new FacturaOrdenCarga(det))
+               .ToList();
+            if (logger)
+                Log.Info($"Obtener facturas de contrato result: {listaFacturas.ToJson()}");
+
+            return listaFacturas;
+        }
         public void SeleccionarFactura(int ordenId, string facturaSeleccionada)
         {
             Log.Info($"Seleccionar factura para orden = {ordenId}; facturaSeleccionada = {facturaSeleccionada}");
