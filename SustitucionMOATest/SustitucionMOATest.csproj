@@ -92,6 +92,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ComprasControllerTest.cs" />
     <Compile Include="Controllers\AltaEmpresaControllerTest.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosControllerTest.cs" />
     <Compile Include="Controllers\CampoSustentableControllerTest.cs" />
@@ -161,9 +162,13 @@
   <ItemGroup>
     <Content Include="bin\Debug\Template\AvisoEdicionOrdenDeCarga.html" />
     <Content Include="bin\Debug\Template\NotificacionOrdenesDeCarga.html" />
+    <Content Include="Util\LogoBaufest.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Debug\Templates\" />
+    <Folder Include="Mock\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

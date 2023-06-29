@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
@@ -10,6 +10,7 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { ReporteContratoService } from '../reporte-contrato.service';
 import * as XLSX from 'xlsx';
 import { DetalleReporteContrato } from '../ReporteContrato.model';
+import { OrdenesDeCargaService } from '../../ordenes-de-carga/ordenes-de-carga.service';
 
 
 @Component({
@@ -18,29 +19,39 @@ import { DetalleReporteContrato } from '../ReporteContrato.model';
     styleUrls: ['./reporte-contrato.detalle.component.css']
 })
 export class DetalleComponent extends ListBaseComponent implements OnInit {
-
-    constructor(private route: ActivatedRoute, protected service: ReporteContratoService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-      
-    }
-  
-    contratoId: string = "";
+    contratoId: string;
+    ordenDeCargaId: string=null;
     detalles: DetalleReporteContrato[] = null;
     KilosFacturados = 0;
     KilosEntregados = 0;
 
+    constructor(private route: ActivatedRoute, 
+                protected service: ReporteContratoService, 
+                protected ordenesDeCargaService: OrdenesDeCargaService, 
+                protected navService: NavService, 
+                protected sessionDataService: SessionDataService, 
+                protected securityService: SecurityService, 
+                protected floatMsgService: FloatMsgService, 
+                protected modalService: ModalService, 
+                private confirmationService: ConfirmationService) {
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+        this.service.getContratoSeleccionado().subscribe(data => {
+            if (data != null && data >'0'){
+                this.getDetalleContrato(data);
+                this.contratoId = data;
+            }
+        });
+    }
     ngOnInit() {
-        this.getDetalleContrato();
+        
     }
 
-    getDetalleContrato() {
+    getDetalleContrato(contratoId:string) {
         this.data = null;
         this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.route.params.subscribe(params => {
-            this.contratoId = params['id'];
+        this.spinnerComponent.showIt();        
             this.unsubscribe();
-            this.subscription = this.service.getDetalleContrato2(this.contratoId).subscribe(
+            this.subscription = this.service.getDetalleContrato2(contratoId).subscribe(
                 (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -60,7 +71,7 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                 }
             );
 
-        });
+        
     }
 
     exportExcelReporteContratoDetalle() {
@@ -111,7 +122,7 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                 else if(res.info){
                     this.floatMsgService.setInfoMsg(res.info)
                 }else{
-                    this.goToSeccionParam('/ordenes-de-carga/detalle', res.data.Id.toString())
+                    this.goToSeccionParam('/ordenes-de-carga/detalle', res.data.Id.toString());
                 }
             }
             ,

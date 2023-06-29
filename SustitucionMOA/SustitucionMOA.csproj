@@ -302,6 +302,7 @@
     <Content Include="dist\glyphicons-halflings-regular.*.svg" />
     <Content Include="dist\*.js" />
     <Content Include="dist\styles.*.css" />
+    <Content Include="Libs\Kendo.DynamicLinq.dll" />
     <Content Include="NOTUSE_UPDATE.DeployParameters.Debug.xml" />
     <Content Include="PRE.DeployParameters.Debug.xml">
       <DependentUpon>PRE.DeployParameters.xml</DependentUpon>

@@ -82,6 +82,10 @@ namespace SustitucionMOAModel.Dto
         public bool TienePeticionDeOferta { get; set; }
         public IQueryable<AdjudicacionDto> OrdenesDeCompra { get; set; }
         public List<AdjudicacionDto> OrdenesDeCompraSolicitante { get; set; }
+        public bool? TrabajoYaHecho { get; set; }
+        public int? ProveedorAsignadoId { get; set; }
+        public string ProveedorAsignado { get; set; }
+        public bool VerPublicar { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -129,6 +133,8 @@ namespace SustitucionMOAModel.Dto
             this.RevisadoPor = entity.Pliego.RevisadoPor;
             this.UsuarioCompras = new UsuarioComprasDto(entity.UsuarioCompras);
             this.TipoSolpSap = entity.TipoSolpSap;
+            this.ProveedorAsignadoId = entity.ProveedorAsignado_Id;
+            this.TrabajoYaHecho = entity.TrabajoYaHecho;
         }
     }
 

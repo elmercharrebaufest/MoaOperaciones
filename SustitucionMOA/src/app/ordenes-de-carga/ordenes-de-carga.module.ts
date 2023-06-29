@@ -47,6 +47,11 @@ import { MessageModule } from 'primeng/message';
     providers: [
         OrdenesDeCargaService
     ],
+    exports:[
+        OrdenesDeCargaAlta,
+        OrdenesDeCargaListado,
+        OrdenesDeCargaDetalleComponent
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class OrdenesDeCargaModule { }

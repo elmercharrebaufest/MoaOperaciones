@@ -284,3 +284,4 @@ SustitucionMOADatabase/SustitucionMOADatabase.jfm
 /.sonarqube
 /.sonarlint
 /.scannerwork
+/SustitucionMOA/src/.vscode/settings.json

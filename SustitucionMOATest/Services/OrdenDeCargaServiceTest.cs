@@ -35,6 +35,7 @@ namespace SustitucionMOATest.Services
         private OrdenDeCarga ordenDeCarga;
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
         private Mock<IFeriadoService> feriadoService;
+        private Mock<IEmailFasService> mIEmailFasService;
         private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
         private Mock<IScatoConsumer> mIScatoConsumer;
 
@@ -59,9 +60,10 @@ namespace SustitucionMOATest.Services
             mIScatoRepositorioClient = new Mock<IScatoRepositorioClient>();
             mIScatoConsumer = new Mock<IScatoConsumer>();
             feriadoService.Setup(fs => fs.ObtenerFeriados()).Returns(new List<DateTime>());
+            mIEmailFasService = new Mock<IEmailFasService>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
-                mIScatoRepositorioClient.Object, mIScatoConsumer.Object);
+                mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,
@@ -1193,48 +1195,6 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(expected, response);
         }
         [Test()]
-        public void ConstruirCuerpoMailNotificacionContratoVencidoTest()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            var response = target.ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga);
-            var result = new EmailSenderData()
-            {
-                Asunto = "Contrato Vencido",
-                Cuerpo = CrearAsuntoNotificacionContratoVencido()
-            };
-            Assert.AreEqual(result.Asunto, response.Asunto);
-            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
-        }
-        [Test()]
-        public void NotificarContratoVencidoTest()
-        {
-            EjecutarServidoMail();
-            var expected = "Notificación enviada";
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["HostEmail"] = "127.0.0.1";
-            ConfigurationManager.AppSettings["PortEmail"] = "1025";
-            ConfigurationManager.AppSettings["EmailFrom"] = "moaoperaciones@molinosagro.com.ar";
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            var emailSenderData = target.ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga);
-            var response = target.NotificacionContratoVencido(emailSenderData);
-            Assert.AreEqual(expected, response);
-        }
-        [Test()]
         public void ConstruirCuerpoEmailOrdenDeCargaTestAppSettingsNull()
         {
             var response = target.ConstruirCuerpoEmail(ordenDeCarga);
@@ -1395,6 +1355,73 @@ namespace SustitucionMOATest.Services
             var result = target.ValidarCuitTransporteDigito("11111111111");
 
             Assert.That(result, Is.False);
+        }
+        [Test]
+        public void AnularPedidoEnSap_RespuestaSinMapear_ThrowInfoCustomException()
+        {
+            var usuario = new Usuario
+            {
+                Roles = new List<Rol>
+                {
+                    new Rol {
+                        PermisosAsociados= new List<PermisoPorRol>
+                        {
+                           new PermisoPorRol{ Permiso="ENVIAR A SAP" }
+                        }
+                    }
+                }
+            };
+            repositorioMock
+            .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+            .Returns(usuario);
+            repositorioMock
+            .Setup(y => y.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+            .Returns(new OrdenDeCarga
+            {
+                NumeroPedido = "001243898"
+            });
+            var handler = new ModOrdenCargaResponseHandler("Pedido tomado en SAP");
+
+            consumerOrdenCargaMOA.Setup(c => c.AnularOrdenCarga(It.IsAny<OrdenDeCarga>())).Returns(handler);
+
+            Assert.That(() => target.AnularOrden(3, ""), Throws.TypeOf<InfoCustomException>());
+        }
+        [Test]
+        public void AnularPedidoEnSap_PedidoEntregaYaAnulados_OrdenEstadoAnulada()
+        {
+            var orden = new OrdenDeCarga
+            {
+                NumeroPedido = "001243898",
+                NumeroEntrega = "001243898",
+                Estado = EstadoOrdenDeCarga.EntregaGenerada
+            };
+            var usuario = new Usuario
+            {
+                Roles = new List<Rol>
+                {
+                    new Rol {
+                        PermisosAsociados= new List<PermisoPorRol>
+                        {
+                           new PermisoPorRol{ Permiso="ENVIAR A SAP" }
+                        }
+                    }
+                }
+            };
+            repositorioMock
+            .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+            .Returns(usuario);
+            repositorioMock
+            .Setup(y => y.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+            .Returns(orden);
+            var handlerPedido = new ModOrdenCargaResponseHandler("Pedido ya anulado");
+            var handlerEntrega = new ModEntregaResponseHandler("Entrega anulada en SAP");
+
+            consumerOrdenCargaMOA.Setup(c => c.AnularOrdenCarga(It.IsAny<OrdenDeCarga>())).Returns(handlerPedido);
+            consumerOrdenCargaMOA.Setup(c => c.AnularEntregaOrdenCarga(It.IsAny<string>())).Returns(handlerEntrega);
+
+            target.AnularOrden(1, "");
+
+            Assert.That(orden.Estado, Is.EqualTo(EstadoOrdenDeCarga.Anulada));
         }
 
         [Test]

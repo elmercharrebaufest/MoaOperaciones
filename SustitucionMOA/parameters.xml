@@ -138,6 +138,12 @@
 							match="/configuration/appSettings/add[@key='CopiaEmailToGestionAltaCuit']
                            /@value" />
 	</parameter>
+
+	<parameter name="EmailAsuntoPrefijo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAsuntoPrefijo']
+                           /@value" />
+	</parameter>
 	
 	<parameter name="EmailToMesaVentaFas Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"

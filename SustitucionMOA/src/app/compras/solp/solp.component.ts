@@ -1,4 +1,4 @@
-import { Component,OnInit, ViewChild } from '@angular/core';
+import { Component,Input,OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 
@@ -32,6 +32,7 @@ import { Solp } from './solp';
 import { SolpPosicion } from './solp-posicion';
 import { EmailComposeModel } from '../../common/email-compose/email-compose.model';
 import { EmailComposeService } from '../../common/email-compose/email-compose.service';
+import { CotizacionComponent } from './steps/cotizacion/cotizacion.component';
 
 @Component({
     selector: 'app-solp',
@@ -99,6 +100,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
     listadoErrores: string[] = new Array<string>();
     displaySAPEditar: boolean;
     flagSolpFinalizada: boolean = false;
+
+    tieneContratoMarco: boolean = false;
+
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -231,7 +235,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             case "SIN_PLIEGO":
                 this.pasos[0].Deshabilitado = true;
                 this.pasos[2].Deshabilitado = true;
-                this.pasos[3].Deshabilitado = true;
+                this.pasos[3].Deshabilitado = false;
                 this.pasos[0].Iniciado = true;
                 this.pasos[2].Iniciado = true;
                 this.pasos[3].Iniciado = true;
@@ -583,10 +587,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         //this.solpActual.ejecucion,
                         this.solpActual.jornadaLaboralDias,
                         this.solpActual.comienzoJornadaLaboral,
-                        this.solpActual.terminoJornadaLaboral
+                        this.solpActual.terminoJornadaLaboral, 
+                        this.solpActual.validarTrabajoHecho
                     ])) {
                         return paso.Completo = false;
+                    } else {
+                        return this.solpActual.mensajeCotizacion = "";
                     }
+                    
                     break;
                 case EnumPasoSolp.SolpCabecera:
                     paso.Completo = true;
@@ -594,8 +602,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         if(!this.solpActual.posiciones){
                             this.solpActual.posiciones = [];
                         }
-                        
-                         
                         this.solpActual.posiciones.forEach(pos => {
                             pos.doValidatePosicion(this.solpActual.tipoSolpSap);
                             if (!pos.tabsPosicionValidos.tabDireccionEntrega ||
@@ -620,9 +626,24 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.posiciones.forEach(pos => {
             if (pos.mensaje != "") {
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${pos.mensaje}` });
-                console.log("mensaje", pos.mensaje)
             } 
+
+            if(pos.numeroContratoSuperior != undefined && pos.numeroContratoSuperior != ""){
+                this.tieneContratoMarco = true;
+            }
         })
+
+        if(this.tieneContratoMarco == true && this.solpActual.trabajoHecho == true){
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las solp con contrato marco cargado no pueden tener el tilde en el check de trabajo hecho en el paso #4" });
+        }
+
+    }
+
+    mostrarMensajeCotizacion(){
+            if (this.solpActual.mensajeCotizacion != "" && this.solpActual.mensajeCotizacion != undefined) {
+                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.solpActual.mensajeCotizacion}` });
+                console.log("mensaje", this.solpActual.mensajeCotizacion)
+            } 
 
     }
 
@@ -795,6 +816,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.guardarCambios({mostrarPreview: false, enviarSap: true, guardarPorPaso: false});
         this.displayFinalizar = false;
         this.mostrarMensajeCampos();
+        this.mostrarMensajeCotizacion();
     }
 
     // Abre el modal del boton finalizar

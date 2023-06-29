@@ -1,7 +1,14 @@
 <section class="container-fluid clearfix">
     <div class="row titleSection">
-        <div class="col-xs-12 col-sm-10 "> <strong>Ver Ofertas</strong></div>
-    </div>
+        <div class="col-xs-12 col-sm-10 "> <strong>Ver ofertas {{tablaOfertas.TipoPosicionCodigo}} | SOLP #{{tablaOfertas.NroSolp}} 
+                                               <b *ngIf="tablaOfertas.Id">
+                                                   | PO # {{tablaOfertas.Id}}
+                                               </b>         
+                </strong>
+       </div>
+      
+   
+   </div>
     <br>
 </section>
 <div class="content-wraper" style="padding-top: 0px !important;">
@@ -183,7 +190,7 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container>                            <!--*ngIf="proveedor.Cotizacion != null"-->
                             <td class="columna border2-left" colspan="6" style="width: 570px !important;">
-                                <button *ngIf="proveedor.VerAdjudicar" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
+                                <button [disabled]="!proveedor.VerAdjudicar" [pTooltip]="proveedor.MensajeAdjudicar" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                     Adjudicar
                                 </button>
                             </td>
@@ -432,7 +439,7 @@
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <td colspan="9" style="width: 540px !important;" class="columna border2-left" style="text-align: center;">
-                            <button *ngIf="proveedor.VerAdjudicar"  class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
+                            <button  [disabled]="!proveedor.VerAdjudicar" [pTooltip]="proveedor.MensajeAdjudicar"  class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                 Adjudicar
                             </button>
                         </td>
