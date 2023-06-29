@@ -3885,6 +3885,7 @@ namespace SustitucionMOAUtils.Services
                     Cotizacion = cotizacion,
                     PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
                     RealizoVisita = u.RealizoVisita,
+                    EstaHabilitado = u.Usuario.Habilitado
                 };
                 usuarios.Add(usuario);
             }

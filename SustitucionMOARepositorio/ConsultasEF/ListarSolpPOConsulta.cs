@@ -85,6 +85,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                         CUIT = x.Usuario.CUITRegistro,
                                         CircularSinLeer = x.Circulares.Any(a=>a.Leida != true),
                                         CircularesSinLeer = x.Circulares.Where(a=>a.Leida != true).Select(a=>a.Id),
+                                        EstaHabilitado = x.Usuario.Habilitado
                                     } },
                                     CotizacionEstadoDescripcion = cotizacion == null ? "Sin Cotizar" : cotizacion.CotizacionEstado.Descripcion,
                                     CotizacionEstado_Id = cotizacion == null ? 0 : cotizacion.CotizacionEstado.Id,
