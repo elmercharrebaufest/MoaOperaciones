@@ -291,7 +291,7 @@ export class SolpPosicion {
 
         this.listadoSubPosiciones.forEach(pos => {
             let hasNotUnidadSeleccionada = typeof pos.unidadSeleccionada === "undefined" || !pos.unidadSeleccionada;
-            let hasNotTareaSubcontratarObj = typeof pos.tareaSubcontratarObj === "undefined" || !pos.tareaSubcontratarObj;
+            let hasNotTareaSubcontratarObj = typeof pos.tareaSubcontratarObj === "undefined" || !pos.tareaSubcontratarObj || pos.tareaSubcontratarObj.Descripcion == "";
             let hasNotCuentaTd = typeof pos.cuentaTd === "undefined" || !pos.cuentaTd;
             let hasNotCuentaMayor = typeof pos.cuentaMayor === "undefined" || !pos.cuentaMayor;
             let hasNotTipoImputacion = typeof pos.tipoImputacion === "undefined" || !pos.tipoImputacion;
@@ -471,11 +471,11 @@ export class SolpPosicion {
 
         
 
-        if (!this.tareaSubcontratarObj || typeof this.tareaSubcontratarObj === "undefined" || typeof this.tareaSubcontratarObj === undefined)
+        if (!this.tareaSubcontratarObj || typeof this.tareaSubcontratarObj === "undefined" || this.tareaSubcontratarObj == "")
         {
             this.tabsPosicionValidos.tabPosiciones = false;
             this.mensaje = "Pos. " + this.numeroPosicion + " - El campo descripcion es obligatorio";
-  
+            console.log("descaripcion", this.tareaSubcontratarObj)
             return this.mensaje;
         }
 

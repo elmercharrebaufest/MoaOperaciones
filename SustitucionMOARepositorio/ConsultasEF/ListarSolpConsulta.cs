@@ -73,6 +73,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
                                                                .OrderByDescending(p => p.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
                                                                 po.PlazoDeOferta,
+
                                                               Observaciones = po.Observaciones,
                                                           })                                
                                 };

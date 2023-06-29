@@ -62,9 +62,16 @@ export class CircularComponent implements OnInit, OnChanges {
         }    
         else {
             if(this.peticion != null){
-                this.selectedProv = this.peticion.Usuarios
+                if(this.peticion.PlazoDeOfertaEstado == "Abierto"){
+                    this.selectedProv = this.peticion.Usuarios
                     .filter(x => x.EstaHabilitado) // Filtra solo los proveedores habilitados
                     .map(x => x.UsuarioId);
+                } else {
+                    this.selectedProv = this.peticion.Usuarios
+                    .filter(x => x.ValidacionCircularSolicitante) // Filtra solo los proveedores habilitados
+                    .map(x => x.UsuarioId);
+                }
+                    
             }
         }
         
