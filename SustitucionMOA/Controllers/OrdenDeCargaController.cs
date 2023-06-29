@@ -989,7 +989,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult FacturasDisponibles(string numeroContrato)
         {
-            var response = new SustitucionMOAApiResponse<List<string>>();
+            var response = new SustitucionMOAApiResponse<List<FacturaOrdenCarga>>();
             try
             {
                 response.Data = _facturaAnticipadaService.ObtenerFacturasDeContrato(numeroContrato);
