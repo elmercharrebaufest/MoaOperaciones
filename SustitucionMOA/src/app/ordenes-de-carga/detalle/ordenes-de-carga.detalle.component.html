@@ -597,10 +597,14 @@
                     <div class="row" class="col-xs-12 col-sm-12 col-md-12" *ngIf="facturas.length == 0">
                         No se encontraron facturas
                     </div>
+                    <p-message *ngIf="mensajeSeleccionarFactura" severity="warn"
+                        [text]="mensajeSeleccionarFactura"></p-message>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
-                        id="closemodalSeleccionarFactura" style="display: inline-flex;">
+                        id="closemodalSeleccionarFactura" style="display: inline-flex;"
+                        (click)="mensajeSeleccionarFactura=null">
                         Cancelar
                     </button>
                     <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarFactura()"

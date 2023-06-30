@@ -3,7 +3,6 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using System.Collections.Generic;
 
-
 namespace SustitucionMOAUtils.Interfaces
 {
     public interface IFacturaAnticipadaService
