@@ -10,7 +10,6 @@ namespace SustitucionMOAUtils.Interfaces
     {
         List<FacturaOrdenCarga> ObtenerFacturasDeContrato(OrdenDeCarga orden);
         List<FacturaOrdenCarga> ObtenerFacturasDeContrato(string numeroContrato);
-        List<FacturaOrdenCarga> ObtenerFacturasDeContrato(Result contrato, bool logger = true);
         void SeleccionarFactura(int ordenId, string facturaSeleccionada);
         bool OrdenConMultiplesFacturas(OrdenDeCarga orden);
         bool OrdenConMultiplesFacturas(Result contrato);

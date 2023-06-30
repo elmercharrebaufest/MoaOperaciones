@@ -98,9 +98,9 @@ namespace SustitucionMOAUtils.Services
                 if (crearPedido && puedeEnviarASAP)
                 {
                     ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
-                    if (ordenDeCarga.TipoContrato == TipoContratoFAS.Anticipado)
+                    if (ordenDeCarga.EsFacturaAnticipada)
                     {
-                        if (!string.IsNullOrEmpty(ordenDeCarga.NumeroFacturaSeleccionada))
+                        if (!ordenDeCarga.SinSeleccionarFactura)
                             GenerarEntregaSAP(ordenDeCarga);
                     }
                     else
@@ -112,10 +112,6 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
 
-                }
-                if (!string.IsNullOrEmpty(ordenDeCarga.PedidosRespuesta))
-                {
-                    NotificarVariosPedidos(ordenDeCarga.Id);
                 }
                 if (!string.IsNullOrEmpty(ordenDeCarga.ContratosRespuesta))
                 {
@@ -151,13 +147,14 @@ namespace SustitucionMOAUtils.Services
 
             var producto = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
             ordenDeCarga.Producto = producto;
-            if (ordenDeCarga.TipoContrato == TipoContratoFAS.Anticipado)
+
+            if (ordenDeCarga.EsFacturaAnticipada)
             {
-                var contrato = consumer.ObtenerContratoSAP(ordenDeCarga, TipoContratoFAS.Anticipado);
                 ordenDeCarga.AprobadoCredito = true;
-                if (!_facturaAnticipadaService.OrdenConMultiplesFacturas(contrato))
+                if (!_facturaAnticipadaService.OrdenConMultiplesFacturas(ordenDeCarga))
                 {
                     ordenDeCarga.NumeroFacturaSeleccionada = ordenDeCarga.NumeroFactura;
+                    ordenDeCarga.NumeroPedido = ordenDeCarga.NumeroPedidoIngresado;
                 }
             }
             var validaCPEDG = producto.ValidaSisaRuca;
@@ -309,7 +306,10 @@ namespace SustitucionMOAUtils.Services
 
                 if (puedeEnviarASAP && !ordenEditar.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
                 {
-                    if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega) && ordenEditar.AprobadoCredito)
+                    if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega) 
+                        && ordenEditar.AprobadoCredito && 
+                        (!ordenEditar.SinSeleccionarFactura || !ordenEditar.EsFacturaAnticipada)
+                        )
                     {
                         GenerarEntregaSAP(ordenEditar);
                     }
@@ -1897,7 +1897,7 @@ namespace SustitucionMOAUtils.Services
             if (orden.TransporteExiste)
             {
                 Log.Info("VerificarTransporte ActualizarEstado " + orden.ToDto().ToJson());
-                var aprobadoCredito = ObtenerSituacionCrediticia(orden);
+                var aprobadoCredito = orden.AprobadoCredito ? orden.AprobadoCredito : ObtenerSituacionCrediticia(orden);
                 if (aprobadoCredito && string.IsNullOrEmpty(orden.NumeroEntrega))
                 {
                     GenerarEntregaSAP(orden);
@@ -2057,7 +2057,10 @@ namespace SustitucionMOAUtils.Services
         }
         private bool ObtenerSituacionCrediticia(OrdenDeCarga orden)
         {
-            var numeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? orden.NumeroPedidoIngresado : orden.NumeroPedido;
+            if (orden.EsFacturaAnticipada)
+                return true;
+            var numeroPedido = orden.NumeroPedido;
+
             Log.Info("ObtenerSituacionCrediticia");
             var result = consumer.OrdenCargaControlEstadoRequest("", numeroPedido, "");
 
@@ -2321,7 +2324,7 @@ namespace SustitucionMOAUtils.Services
 
         private void NotificarVariasFacturas(OrdenDeCarga ordenDeCarga)
         {
-            if (_facturaAnticipadaService.OrdenConMultiplesFacturas(ordenDeCarga))
+            if (ordenDeCarga.EsFacturaAnticipada && _facturaAnticipadaService.OrdenConMultiplesFacturas(ordenDeCarga))
             {
                 emailFasService.EnviarMailVariasFacturasPendientes(ordenDeCarga);
             }
@@ -2534,7 +2537,7 @@ namespace SustitucionMOAUtils.Services
             var tieneNumeroEntrega = !string.IsNullOrEmpty(orden.NumeroEntrega);
             if (tieneNumeroEntrega)
                 AnularEntregaEnSap(orden);
-            if (orden.TipoContrato == TipoContratoFAS.Anticipado)
+            if (orden.EsFacturaAnticipada)
                 return;
             AnularPedidoEnSap(orden, tieneNumeroEntrega);
         }
@@ -2777,10 +2780,9 @@ namespace SustitucionMOAUtils.Services
         private void SetTieneVariosContratosAbiertos(OrdenDeCarga ordenDeCarga, List<string> contratosAbiertos)
         {
             var result = string.Join(",", contratosAbiertos);
-            var facturaAnticipada = ordenDeCarga.TipoContrato == TipoContratoFAS.Anticipado;
             var noTieneContratoSeleccionado = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP);
             var noTienePedidoNiContrato = string.IsNullOrEmpty(ordenDeCarga.NumeroPedido) || noTieneContratoSeleccionado;
-            if (noTienePedidoNiContrato || (facturaAnticipada && noTieneContratoSeleccionado))
+            if (noTienePedidoNiContrato || (ordenDeCarga.EsFacturaAnticipada && noTieneContratoSeleccionado))
             {
                 ordenDeCarga.ContratosRespuesta = result;
                 ordenDeCarga.ContratoSAP = "";

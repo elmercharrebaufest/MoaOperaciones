@@ -111,6 +111,20 @@ namespace SustitucionMOAModel.Entities
         {
             return CodigoVerificacionSap == ResponseConverter.GetCodigoControlCarga(controlCargaRes);
         }
+        public bool EsFacturaAnticipada
+        {
+            get
+            {
+                return TipoContrato == TipoContratoFAS.Anticipado;
+            }
+        }
+        public bool SinSeleccionarFactura
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(NumeroFactura) && string.IsNullOrEmpty(NumeroFacturaSeleccionada);
+            }
+        }
 
         /// <summary>
         /// Actualiza la Orden según su estado interno
@@ -131,7 +145,12 @@ namespace SustitucionMOAModel.Entities
                 }
                 else
                 {
-                    if (((string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido)) && Estado != EstadoOrdenDeCarga.SinEnviarASAP) || CodigoVerificacionSap == "CC-07")
+                    if (
+                        ((string.IsNullOrEmpty(ContratoSAP) ||
+                        ContratoSinCantidadPendiente ||
+                        string.IsNullOrEmpty(NumeroPedido)) && Estado != EstadoOrdenDeCarga.SinEnviarASAP) ||
+                        CodigoVerificacionSap == "CC-07"
+                        )
                     {
                         Estado = EstadoOrdenDeCarga.Pendiente;
                     }
@@ -142,7 +161,7 @@ namespace SustitucionMOAModel.Entities
                             Estado = EstadoOrdenDeCarga.Confirmado;
                         }
 
-                        if (!TransporteExiste)
+                        if (!TransporteExiste || (EsFacturaAnticipada && SinSeleccionarFactura) )
                         {
                             Estado = EstadoOrdenDeCarga.Pendiente;
                         }
