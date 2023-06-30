@@ -35,6 +35,27 @@ namespace SustitucionMOAUtils.Services.Email
             EnviarMail(emailSenderData);
         }
 
+        public void EnviarMailVariasFacturasPendientes(OrdenDeCarga ordenDeCarga)
+        {
+            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
+            var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+            //TODO: Pendiente de consultar la diferencia entre estos comerciales y los otros (para ponerle un buen nombre a EmailToComercialesFFAA)
+            var mailsComercialesFFAA = ConfigurationManager.AppSettings["EmailToComercialesFFAA"];
+
+            var descripcion = "Hay más de una factura para seleccionar.";
+            var cabecera = "Orden: " + ordenDeCarga.Id;
+            var tablaOrdenes = GenerarTablaOrdenesANotificar(new OrdenDeCarga[] { ordenDeCarga });
+            var cuerpo = string.Format(cuerpoTemplate, "", "", tablaOrdenes, descripcion, cabecera);
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = ObtenerListaDestinatarios(new string[] { mailsComercialesFFAA, mailsMesaVentaFas }),
+                Asunto = GenerarAsunto($"Varias facturas pendientes - {ordenDeCarga.Cliente.RazonSocial}"),
+                Cuerpo = cuerpo
+            };
+            EnviarMail(emailSenderData);
+        }
+
         private StringBuilder GenerarTablaOrdenesANotificar(IEnumerable<OrdenDeCarga> ordenes)
         {
             var ordenesStrBuilder = new StringBuilder();

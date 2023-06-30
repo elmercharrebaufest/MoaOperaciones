@@ -139,6 +139,7 @@
 	<setParameter name="EmailAsuntoPrefijo Config" value="" />
 	<setParameter name="EmailToCobranzas Config" value="cobranzasfas@molinosagro.com.ar" />
 	<setParameter name="EmailToComerciales Config" value="comerciolocal@molinosagro.com.ar" />
+	<setParameter name="EmailToComercialesFFAA Config" value="alimentacion.animal@molinosagro.com.ar" />
 	<setParameter name="EmailToAuditoriaOrdenesVencidas Config" value="noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar;franco.berardi@molinosagro.com.ar"/>
 
 
