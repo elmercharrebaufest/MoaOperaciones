@@ -376,4 +376,5 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
      this.adjudicacion.Garantias = this.modalTexto.adjudicacion.Garantias;
      this.adjudicacion.TextoDeCabecera = this.modalTexto.adjudicacion.TextoDeCabecera;
     }
+
 }
