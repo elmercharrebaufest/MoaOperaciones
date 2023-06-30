@@ -705,6 +705,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
+            document.getElementById("closemodalAnularOrdenOrVencimiento").click();
+            this.mainDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
             this.subscriptionDropDowns = this.service.anularPorVencimiento(this.ordenDeCargaId).subscribe(
                 result => {
                     document.getElementById("closemodalAnularOrdenVencimiento").click();
@@ -713,8 +715,10 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
+                        this.obtenerOrdenDeCarga();
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
+                        this.obtenerOrdenDeCarga();
                     } else {
                         this.mensajeComponent.setSuccessMsg(result.data);
 
