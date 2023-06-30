@@ -705,16 +705,19 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
+            document.getElementById("closemodalAnularOrdenVencimiento").click();
+            this.mainDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
             this.subscriptionDropDowns = this.service.anularPorVencimiento(this.ordenDeCargaId).subscribe(
                 result => {
-                    document.getElementById("closemodalAnularOrdenVencimiento").click();
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
+                        this.obtenerOrdenDeCarga();
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
+                        this.obtenerOrdenDeCarga();
                     } else {
                         this.mensajeComponent.setSuccessMsg(result.data);
 
@@ -724,12 +727,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     }
                 },
                 error => {
-                    document.getElementById("closemodalAnularOrdenVencimiento").click();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
         } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
+            document.getElementById("closemodalAnularOrdenVencimiento").click();
         }
     }
     edicionFinalizada(Tipo) {
