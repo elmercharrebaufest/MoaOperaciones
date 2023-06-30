@@ -273,7 +273,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     respuestaGuardarSOLP = FinalizarSolp(solp, solpEntity, postEntitySubPosicionesEliminadas, respuestaGuardarSOLP);
                     GuardarUsuarioComprasRelacionado(solp);
-                    if (!string.IsNullOrEmpty(solpEntity.NroSolp) && solp.TrabajoYaHecho == true)
+                    if (string.IsNullOrEmpty(solpEntity.NroSolp) && solp.TrabajoYaHecho == true)
                     {
                         CrearCotizacionAutomatica(solpEntity);
                     }
@@ -860,6 +860,7 @@ namespace SustitucionMOAUtils.Services
                                     .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
                                      po.PlazoDeOferta) >= hoy ? "Green" : "Red",
                 });
+
                 var ordenCompra = repositorio.Listar<Adjudicacion, AdjudicacionDto>(adjudicacion => new AdjudicacionDto
                 {
                     Id = adjudicacion.Id,
@@ -2306,6 +2307,8 @@ namespace SustitucionMOAUtils.Services
                 item.CentroFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.CentroId).GroupBy(x => x.CentroId).Select(x => x.Key)) : "";
                 item.GrupoCompraFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.GrupoComprasId).GroupBy(x => x.GrupoComprasId).Select(x => x.Key)) : "";
             }
+            
+
             return todasLasSolp;
         }
 
@@ -2398,9 +2401,32 @@ namespace SustitucionMOAUtils.Services
                         item.Cotizacion.TotalGlobalSubPos = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalARPCotizacionPosicion);
 
                     }
-                    item.VerAdjudicar = item.Cotizacion != null && item.PlazoDeOferta.Date >= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? false : !item.EstaHabilitado ? false : !todasLasOfertas.EstaLiberado ? false: true;
-                    item.MensajeAdjudicar = item.Cotizacion != null && item.PlazoDeOferta.Date >= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? "Cotización sin finalizar"
-                                            : !todasLasOfertas.EstaLiberado ? "SOLP Sin liberar" : !item.EstaHabilitado ? "Proveedor desahabilitado" : "Adjudicar";
+                  //  item.VerAdjudicar = item.Cotizacion == null ? false : item.Cotizacion != null && item.PlazoDeOferta.Date <= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? false : item.EstaHabilitado ? false : todasLasOfertas.EstaLiberado ? false: true;
+
+                    var mensaje = "Adjudicar";
+                    var verAdjudicar = true;
+                    if(item.Cotizacion == null)
+                    {
+                        mensaje = "Sin Cotizar";
+                        verAdjudicar = false;
+                    }
+                    if(item.Cotizacion != null && item.PlazoDeOferta.Date > hoy.Date && item.Cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
+                    {
+                        mensaje = "Cotización sin finalizar";
+                        verAdjudicar = false;
+                    }
+                    if (!todasLasOfertas.EstaLiberado)
+                    {
+                        mensaje = "SOLP Sin liberar";
+                        verAdjudicar = false;
+                    }
+                    if (!item.EstaHabilitado)
+                    {
+                        mensaje = "Proveedor desahabilitado";
+                        verAdjudicar = false;
+                    }
+                    item.MensajeAdjudicar = mensaje;
+                    item.VerAdjudicar = verAdjudicar;
                 }
                 foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
                 {
@@ -3856,6 +3882,7 @@ namespace SustitucionMOAUtils.Services
                     ObservacionTecnica = c.ObservacionTecnica,
                     ObservacionEconomica = c.ObservacionEconomica,
                     Id = c.Id,
+                    CotizacionEstado_Id = c.CotizacionEstado_Id,
                     RespetaMateriales = c.RespetaMateriales,
                     Archivos = c.Archivos/*.Where(x => x.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica)*/.Select(archivo => new LegajoDto
                     {
@@ -3885,12 +3912,16 @@ namespace SustitucionMOAUtils.Services
                     Cotizacion = cotizacion,
                     PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
                     RealizoVisita = u.RealizoVisita,
+                    EstaHabilitado = u.Usuario.Habilitado,
+                    ValidacionCircularSolicitante = u.Usuario.Habilitado == true && u.RealizoVisita == true && u.PropuestaTecnicaAprobada == true && cotizacion != null && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado,
                 };
                 usuarios.Add(usuario);
             }
             peticion.Usuarios = usuarios;
             peticion.TipoPosicionCodigo = peticionEntidad.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault();
             peticion.Id = peticionEntidad.Id;
+            peticion.PlazoDeOfertaEstado = peticionEntidad.PlazoDeOferta > DateTime.Now.Date ? "Abierto" : "Cerrado";
+            
             var fechaEntrega = peticionEntidad.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).FirstOrDefault()?.FechaEntregaServicio;
             peticion.FechaEntregaFormateado = fechaEntrega != null ? fechaEntrega.Value.ToString("yyyy-MM-dd") : "";
             return peticion;
@@ -4766,7 +4797,7 @@ namespace SustitucionMOAUtils.Services
             Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
             decimal cambio = 0;
             var precio = new List<decimal>();
-            var precioSubposicion = new List<decimal>();
+            
             var cotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(x => adjudicacionDto.AdjudicacionPosiciones.Select(y => y.CotizacionPosicion_Id).Contains(x.Id));
             if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() != "MATERIALES")
             {
@@ -4774,11 +4805,13 @@ namespace SustitucionMOAUtils.Services
                 {
                     foreach (var posicion in cotizacionPosiciones)
                     {
-
+                        var precioSubposicion = new List<decimal>();
                         if (posicion.CotizacionSubPosiciones != null)
                         {
                             foreach (var subpos in posicion.CotizacionSubPosiciones)
                             {
+                                var totalSub = (decimal)0;
+                               
                                 if (subpos.Precio > 0 && subpos.Cantidad > 0 && subpos.Moneda_Id.Value > 0)
                                 {
 
@@ -4789,7 +4822,7 @@ namespace SustitucionMOAUtils.Services
                                         cambio = tipoCambio.TipoCambio;
 
                                     }
-                                    var totalSub = (decimal)(subpos.Cantidad * subpos.Precio);
+                                    totalSub = (decimal)(subpos.Cantidad * subpos.Precio);
                                     precioSubposicion.Add(cambio * totalSub);
                                 }
 
@@ -4817,6 +4850,7 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var subpos in cotizacionAdjudicacionPosicion)
             {
+                var total = (decimal)0;
                 if (subpos.Cantidad > 0 && subpos.Cantidad > 0 && subpos.MonedaId > 0)
                 {
 
@@ -4827,7 +4861,7 @@ namespace SustitucionMOAUtils.Services
                         cambio = tipoCambio.TipoCambio;
 
                     }
-                    var total = (decimal)(subpos.Cantidad * subpos.Precio);
+                   total = (decimal)(subpos.Cantidad * subpos.Precio);
                     precio.Add(cambio * total);
                 }
 

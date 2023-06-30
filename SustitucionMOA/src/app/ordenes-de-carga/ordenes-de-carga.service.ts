@@ -496,6 +496,6 @@ export class OrdenesDeCargaService extends BaseService {
             .get<ApiResponse<Array<Factura>>>(
                 '/api/OrdenDeCarga/FacturasDisponibles',
                 { params: params, headers: this.headers })
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 }

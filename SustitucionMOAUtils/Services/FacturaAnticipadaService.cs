@@ -38,7 +38,6 @@ namespace SustitucionMOAUtils.Services
 
             return ObtenerFacturasDeContrato(contratoSAP, false);
         }
-
         public void SeleccionarFactura(int ordenId, string facturaSeleccionada)
         {
             Log.Info($"Seleccionar factura para orden = {ordenId}; facturaSeleccionada = {facturaSeleccionada}");

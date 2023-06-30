@@ -2460,8 +2460,11 @@ namespace SustitucionMOAUtils.Services
                 var rangoFechas = string.IsNullOrEmpty(req.FechaDesde) || string.IsNullOrEmpty(req.FechaHasta) ? null :
                     CommonService.toDateList(req.FechaDesde, req.FechaHasta);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-
-                var material = usuario.TieneRol("ADM") ? "" : "50866";
+                string material = string.Empty;
+                if (usuario.TieneRol("ADM") || usuario.TieneRol("APLCLICPEDG"))
+                    material = string.Empty;
+                else
+                    material = "50866";
 
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
                 {

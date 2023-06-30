@@ -104,12 +104,12 @@
                     <strong>Elegir los proveedores a los que se le enviará la circular*</strong>
                 </div>                
             </div>
-            <div class="row myRow alinearTitulo margenInput" *ngIf="peticion != null">
-              <div class="col-md-12" *ngFor="let p of peticion.Usuarios"  >
-                  <p-checkbox name="group1" [value]="p.UsuarioId"
-                        [label]="p.RazonSocial" [(ngModel)]="selectedProv" inputId="{{p.UsuarioId}}"></p-checkbox>
-                        <br/>
-               </div>
+            <div class="row myRow alinearTitulo margenInput" *ngIf="peticion != null">  
+                <div class="col-md-12" *ngFor="let p of peticion.Usuarios"  >
+                    <p-checkbox name="group1" [value]="p.UsuarioId"
+                            [label]="p.RazonSocial" [disabled]="solicitante" [(ngModel)]="selectedProv" inputId="{{p.UsuarioId}}"></p-checkbox>
+                            <br/>
+                </div>
             </div>
         </section>
     </div>
