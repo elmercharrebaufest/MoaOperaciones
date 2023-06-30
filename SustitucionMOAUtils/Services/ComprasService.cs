@@ -4797,7 +4797,7 @@ namespace SustitucionMOAUtils.Services
             Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
             decimal cambio = 0;
             var precio = new List<decimal>();
-            var precioSubposicion = new List<decimal>();
+            
             var cotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(x => adjudicacionDto.AdjudicacionPosiciones.Select(y => y.CotizacionPosicion_Id).Contains(x.Id));
             if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() != "MATERIALES")
             {
@@ -4805,11 +4805,13 @@ namespace SustitucionMOAUtils.Services
                 {
                     foreach (var posicion in cotizacionPosiciones)
                     {
-
+                        var precioSubposicion = new List<decimal>();
                         if (posicion.CotizacionSubPosiciones != null)
                         {
                             foreach (var subpos in posicion.CotizacionSubPosiciones)
                             {
+                                var totalSub = (decimal)0;
+                               
                                 if (subpos.Precio > 0 && subpos.Cantidad > 0 && subpos.Moneda_Id.Value > 0)
                                 {
 
@@ -4820,7 +4822,7 @@ namespace SustitucionMOAUtils.Services
                                         cambio = tipoCambio.TipoCambio;
 
                                     }
-                                    var totalSub = (decimal)(subpos.Cantidad * subpos.Precio);
+                                    totalSub = (decimal)(subpos.Cantidad * subpos.Precio);
                                     precioSubposicion.Add(cambio * totalSub);
                                 }
 
@@ -4848,6 +4850,7 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var subpos in cotizacionAdjudicacionPosicion)
             {
+                var total = (decimal)0;
                 if (subpos.Cantidad > 0 && subpos.Cantidad > 0 && subpos.MonedaId > 0)
                 {
 
@@ -4858,7 +4861,7 @@ namespace SustitucionMOAUtils.Services
                         cambio = tipoCambio.TipoCambio;
 
                     }
-                    var total = (decimal)(subpos.Cantidad * subpos.Precio);
+                   total = (decimal)(subpos.Cantidad * subpos.Precio);
                     precio.Add(cambio * total);
                 }
 
