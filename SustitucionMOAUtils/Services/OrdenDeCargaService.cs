@@ -112,6 +112,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     NotificarVariosContratos(ConstruirCuerpoMailNotificacionVariosContratos(ordenDeCarga.Id));
                 }
+                NotificarVariasFacturas(ordenDeCarga);
 
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
                 Log.Info($"Result: {resultado.ToJson()}");
@@ -1714,6 +1715,8 @@ namespace SustitucionMOAUtils.Services
                 return new Resultado { error = "El contrato seleccionado está vencido." };
             }
 
+            NotificarVariasFacturas(orden);
+            
             if (
                 orden.TipoContrato == TipoContratoFAS.Anticipado &&
                 string.IsNullOrEmpty(orden.NumeroFacturaSeleccionada))
@@ -2306,6 +2309,14 @@ namespace SustitucionMOAUtils.Services
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
             emailSenderData.Asunto = $"Varios ctto pendientes - {orden.Cliente.RazonSocial}";
             return emailSenderData;
+        }
+
+        private void NotificarVariasFacturas(OrdenDeCarga ordenDeCarga)
+        {
+            if (_facturaAnticipadaService.OrdenConMultiplesFacturas(ordenDeCarga))
+            {
+                emailFasService.EnviarMailVariasFacturasPendientes(ordenDeCarga);
+            }
         }
 
         private bool ValidarVencimientoContrato(string contrato, Proveedor cliente)
