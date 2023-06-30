@@ -460,11 +460,6 @@
                                     class="btn-custom btn-add btn-mediano" value="Facturas">
                             </div>
 
-                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonPedidos">
-                                <input type="button" (click)="abrirModalPedidos()"
-                                    class="btn-custom btn-add btn-mediano" value="Pedidos">
-                            </div>
-
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonNotificarTransporte">
                                 <input type="button" (click)="notificarTransporte()"
                                     class="btn-custom btn-add btn-grande" value="Notificar Transporte">
@@ -591,11 +586,11 @@
                 <div class="modal-body">
                     <div class="row" *ngIf="facturas.length > 0">
                         <span *ngFor="let factura of facturas" class="col-xs-12 col-sm-12 col-md-12">
-                            <input type="radio" name="corredorContrato" id="factura_legal_{{factura}}" [value]="factura"
-                                [(ngModel)]="facturaSeleccionada">
+                            <input type="radio" name="corredorContrato" id="factura_legal_{{factura.NumeroFactura}}"
+                                [value]="factura" [(ngModel)]="facturaSeleccionada">
                             &nbsp;
-                            <label for="factura_legal_{{factura}}">
-                                {{factura}}
+                            <label for="factura_legal_{{factura.NumeroFactura}}">
+                                {{factura.NumeroFactura}} - ({{factura.NumeroPedido}})
                             </label>
                         </span>
                     </div>
@@ -678,75 +673,6 @@
             </div>
         </div>
     </div>
-
-    <button type="button" style="display:none" id="openSeleccionarPedido" data-toggle="modal"
-        data-target="#modalSeleccionarPedido"></button>
-    <!-- Modal -->
-    <div class="modal fade" id="modalSeleccionarPedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-
-        <div class="modal-dialog" role="document">
-
-            <div class="modal-content">
-
-                <div class="modal-header">
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-
-                        <span aria-hidden="true">&times;</span>
-
-                    </button>
-
-                    <h4 class="modal-title" id="modalSeleccionarPedidoLabel">Seleccionar pedido</h4>
-
-                </div>
-
-                <div class="modal-body">
-                    <div class="row" *ngIf="pedidos.length > 0">
-
-                        <span *ngFor="let corredorPedido of pedidos" class="col-xs-12 col-sm-12 col-md-12">
-
-                            <input type="radio" name="corredorPedido" id="corredor_{{corredorPedido}}"
-                                [value]="corredorPedido" [(ngModel)]="pedidoSeleccionado">
-
-                            &nbsp;
-
-                            <label for="corredor_{{corredorPedido}}">
-
-                                {{corredorPedido}}
-
-                            </label>
-
-                        </span>
-
-                    </div>
-
-                    <div class="row" class="col-xs-12 col-sm-12 col-md-12" *ngIf="pedidos.length == 0">
-
-                        No se encontraron contratos
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-
-                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
-                        id="closemodalSeleccionarPedido" style="display: inline-flex;">
-                        Cancelar
-                    </button>
-
-                    <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarPedido()"
-                        style="display: inline-flex;">
-
-                        Confirmar
-
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <button type="button" style="display:none" id="openAnularOrden" data-toggle="modal"
         data-target="#modalAnularOrden"></button>

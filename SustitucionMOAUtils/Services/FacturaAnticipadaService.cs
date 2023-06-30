@@ -9,6 +9,7 @@ using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -23,12 +24,12 @@ namespace SustitucionMOAUtils.Services
             _repositorio = repositorio;
             _ordenDeCargaEstadoService = ordenDeCargaEstadoService;
         }
-        public List<string> ObtenerFacturasDeContrato(OrdenDeCarga orden)
+        public List<FacturaOrdenCarga> ObtenerFacturasDeContrato(OrdenDeCarga orden)
         {
             var contrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
             return ObtenerFacturasDeContrato(contrato);
         }
-        public List<string> ObtenerFacturasDeContrato(string numeroContrato)
+        public List<FacturaOrdenCarga> ObtenerFacturasDeContrato(string numeroContrato)
         {
 
             Log.Info($"Obtener facturas de contrato: {numeroContrato}");
@@ -37,25 +38,28 @@ namespace SustitucionMOAUtils.Services
 
             return ObtenerFacturasDeContrato(contratoSAP, false);
         }
-        
+
         public void SeleccionarFactura(int ordenId, string facturaSeleccionada)
         {
             Log.Info($"Seleccionar factura para orden = {ordenId}; facturaSeleccionada = {facturaSeleccionada}");
             if (facturaSeleccionada == null || facturaSeleccionada == "undefined")
-                throw new InfoCustomException("No se seleccionó una factura.");
+                throw new InfoCustomException("No se selecciono una factura.");
+
             var orden = _repositorio.Obtener<OrdenDeCarga>(ordenId);
             if (orden == null)
                 throw new InfoCustomException("No se encuentra la orden.");
-            var facturasDisponibles = ObtenerFacturasDeContrato(orden);
 
-            if (!facturasDisponibles.Contains(facturaSeleccionada))
-                throw new InfoCustomException("No se seleccionó una factura válida.");
+            var facturaSeleccionadaSAP = ObtenerFacturasDeContrato(orden)
+                .Find(factura => factura.NumeroFactura == facturaSeleccionada);
+            if (facturaSeleccionadaSAP == null)
+                throw new InfoCustomException("No se selecciono una factura válida.");
 
             orden.NumeroFacturaSeleccionada = facturaSeleccionada;
+            orden.NumeroPedido = facturaSeleccionadaSAP.NumeroPedido;
             orden.DescripcionErrorInterno = null;
             _ordenDeCargaEstadoService.ActualizarEstado(orden);
-            _repositorio.GuardarCambios();
 
+            _repositorio.GuardarCambios();
         }
         public bool OrdenConMultiplesFacturas(OrdenDeCarga orden)
         {
@@ -67,7 +71,7 @@ namespace SustitucionMOAUtils.Services
             return ObtenerFacturasDeContrato(contrato).Count > 1;
         }
 
-        private List<string> ObtenerFacturasDeContrato(Result contrato, bool logger = true)
+        private List<FacturaOrdenCarga> ObtenerFacturasDeContrato(Result contrato, bool logger = true)
         {
             if (logger)
                 Log.Info($"Obtener facturas de contrato: {contrato.ToJson()}");
@@ -75,7 +79,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("No se encontró el contrato");
             var listaFacturas = contrato.Detalles
                .Where(det => !string.IsNullOrEmpty(det.FacturaLegal))
-               .Select(det => det.FacturaLegal)
+               .Select(det => new FacturaOrdenCarga(det))
                .Distinct()
                .ToList();
             if (logger)
