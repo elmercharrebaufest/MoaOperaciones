@@ -75,6 +75,20 @@ namespace SustitucionMOAWS.WebApi
                 throw new Exception("Error en api Scato " + response.StatusCode);
             }
         }
+        public Respuesta<Chofer> ObtenerTransportePorCuit(string cuitTransporte)
+        {
+            var reqUri = $"{ScatoApi}/ObtenerChoferPorCuil/{cuitTransporte}";
+            HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
+            if (response.IsSuccessStatusCode)
+            {
+                var choferResponse = response.Content.ReadAsAsync<Respuesta<Chofer>>().GetAwaiter().GetResult();
+                return choferResponse;
+            }
+            else
+            {
+                throw new Exception("Error en api Scato " + response.StatusCode);
+            }
+        }
 
         public ObtenerProveedorPorCuilResponse ObtenerProveedorPorCuil(string cuil)
         {

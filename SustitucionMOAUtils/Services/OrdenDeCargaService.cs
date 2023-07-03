@@ -2801,9 +2801,29 @@ namespace SustitucionMOAUtils.Services
             }
             return (true, chofer);
         }
+        public (bool, ScatoRepo.Chofer) ValidarCuitTransporte(string cuitTransporte)
+        {
+            var transporteRes = scatoRepositorioClient.ObtenerTransportePorCuit(DataFormatter.CuitConGuion(cuitTransporte));
+            var transporte = transporteRes.Data;
+            if (!transporteRes.IsValid)
+            {
+                Log.Info("Error al obtener transporte de Scato " + cuitTransporte);
+                foreach (var err in transporteRes.Messages)
+                {
+                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
+                }
+
+                return (transporteRes.Messages.All(msg => msg.MessageCode != ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido), transporte);
+            }
+            return (true, transporte);
+        }
         public bool ValidarCuilChoferDigito(string cuilChofer)
         {
             return ValidarCuilChofer(cuilChofer).Item1;
+        }
+        public bool ValidarCuitTransporteDigito(string cuitTransporte)
+        {
+            return ValidarCuitTransporte(cuitTransporte).Item1;
         }
         private string ObtenerMaterialValidaSisa()
         {

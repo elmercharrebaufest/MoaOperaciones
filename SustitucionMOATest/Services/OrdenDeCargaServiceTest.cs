@@ -36,6 +36,7 @@ namespace SustitucionMOATest.Services
         private Mock<IScatoConsumer> mIScatoConsumer;
 
         private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaChofer;
+        private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaTransporte;
 
         [SetUp]
         public void SetUp()
@@ -77,6 +78,12 @@ namespace SustitucionMOATest.Services
 
             };
             _respuestaChofer = new ScatoRepo.Respuesta<ScatoRepo.Chofer>
+            {
+                Data = new ScatoRepo.Chofer { },
+                Messages = new ScatoRepo.MessageItem[] { },
+                IsValid = false
+            };
+            _respuestaTransporte = new ScatoRepo.Respuesta<ScatoRepo.Chofer>
             {
                 Data = new ScatoRepo.Chofer { },
                 Messages = new ScatoRepo.MessageItem[] { },
@@ -1401,6 +1408,24 @@ namespace SustitucionMOATest.Services
 
         }
         [Test]
+        public void ValidarCuitTransporteDigito_CuitDigitoVerificadorNoValido_ReturnsFalse()
+        {
+            _respuestaTransporte.Messages = new ScatoRepo.MessageItem[]
+            {
+                new ScatoRepo.MessageItem
+                {
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido
+                }
+            };
+            mIScatoRepositorioClient.Setup(src => src.ObtenerTransportePorCuit(It.IsAny<string>())).Returns(
+                _respuestaTransporte
+                );
+            var result = target.ValidarCuitTransporteDigito("11111111111");
+
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
         public void AnularPedidoEnSap_RespuestaSinMapear_ThrowInfoCustomException()
         {
             var usuario = new Usuario
@@ -1469,6 +1494,56 @@ namespace SustitucionMOATest.Services
 
         }
 
+        [Test]
+        public void Agregar_UsuarioPuedeModificarReventa_CreaNormalmente()
+        {
+            ordenDeCarga.Reventa = true;
+            var permisoModificarReventa = new PermisoPorRol { Id = 123, Permiso = Permisos.FasModificarCampoReventa };
+            var rolRevendedor = new Rol { Id = 123, Nombre = "Revendedor", PermisosAsociados = new List<PermisoPorRol> { permisoModificarReventa } };
+
+            _usuario.Roles.Add(rolRevendedor);
+
+            SetupAgregarTests();
+            SetupAgregarSuccess();
+
+            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario);
+
+            Assert.That(result.Mensaje, Is.EqualTo(SuccessMsg.OrdenDeCargaAgregada));
+
+        }
+        [Test]
+        public void ValidarCuitTransporteDigito_CuitTransporteNoExiste_ReturnsTrue()
+        {
+            _respuestaTransporte.Messages = new ScatoRepo.MessageItem[]
+            {
+                new ScatoRepo.MessageItem
+                {
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.ChoferNoEncontrado
+                }
+            };
+            mIScatoRepositorioClient.Setup(src => src.ObtenerTransportePorCuit(It.IsAny<string>())).Returns(
+                _respuestaTransporte
+                );
+
+            var result = target.ValidarCuitTransporteDigito("11111111111");
+
+            Assert.That(result, Is.True);
+
+        }
+        [Test]
+        public void ValidarCuitTransporteDigito_CuitTransporteExiste_ReturnsTrue()
+        {
+            _respuestaTransporte.IsValid = true;
+
+            mIScatoRepositorioClient.Setup(src => src.ObtenerTransportePorCuit(It.IsAny<string>())).Returns(
+                _respuestaTransporte
+                );
+
+            var result = target.ValidarCuitTransporteDigito("11111111111");
+
+            Assert.That(result, Is.True);
+
+        }
         private void AddProvider(int id, EstadoAprobacion estadoAprobacion, string observaciones, string razonSocial, string mail, string cUIT, TipoUsuario tipoProveedor)
         {
             var proveedor = new Proveedor
