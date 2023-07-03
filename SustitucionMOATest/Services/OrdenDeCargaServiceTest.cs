@@ -22,7 +22,6 @@ using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using SustitucionMOAModel.Util;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 
 namespace SustitucionMOATest.Services
 {
@@ -48,43 +47,6 @@ namespace SustitucionMOATest.Services
 
         private Rol _rolAdministracion;
         private PermisoPorRol _permisoVerOrdenesComerciales;
-
-
-        private Proveedor _proveedorUsuario;
-        private Usuario _usuario;
-        private string _mailSesionUsuario;
-        private List<Rol> _rolesUsuario;
-
-        private Rol _rolAdministracion;
-        private PermisoPorRol _permisoVerOrdenesComerciales;
-
-
-        private Proveedor _proveedorUsuario;
-        private Usuario _usuario;
-        private string _mailSesionUsuario;
-        private List<Rol> _rolesUsuario;
-
-        private Rol _rolAdministracion;
-        private PermisoPorRol _permisoVerOrdenesComerciales;
-
-
-        private Proveedor _proveedorUsuario;
-        private Usuario _usuario;
-        private string _mailSesionUsuario;
-        private List<Rol> _rolesUsuario;
-
-        private Rol _rolAdministracion;
-        private PermisoPorRol _permisoVerOrdenesComerciales;
-
-
-        private Proveedor _proveedorUsuario;
-        private Usuario _usuario;
-        private string _mailSesionUsuario;
-        private List<Rol> _rolesUsuario;
-
-        private Rol _rolAdministracion;
-        private PermisoPorRol _permisoVerOrdenesComerciales;
-
 
         [SetUp]
         public void SetUp()
@@ -1458,6 +1420,11 @@ namespace SustitucionMOATest.Services
                 NumeroPedido = "001243898"
             });
             var handler = new ModOrdenCargaResponseHandler("Pedido tomado en SAP");
+
+            consumerOrdenCargaMOA.Setup(c => c.AnularOrdenCarga(It.IsAny<OrdenDeCarga>())).Returns(handler);
+
+            Assert.That(() => target.AnularOrden(3, ""), Throws.TypeOf<InfoCustomException>());
+        }
 
         [Test]
         public void Agregar_UsuarioNoPuedeModificarReventa_ThrowValidationCustomException()
