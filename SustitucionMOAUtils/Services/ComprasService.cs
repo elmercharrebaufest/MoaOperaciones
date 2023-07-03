@@ -2410,7 +2410,7 @@ namespace SustitucionMOAUtils.Services
                         mensaje = "Sin Cotizar";
                         verAdjudicar = false;
                     }
-                    if(item.Cotizacion != null && item.PlazoDeOferta.Date > hoy.Date && item.Cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
+                    if(item.Cotizacion != null && (item.PlazoDeOferta.Date >= hoy.Date || item.Cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta))
                     {
                         mensaje = "Cotización sin finalizar";
                         verAdjudicar = false;
