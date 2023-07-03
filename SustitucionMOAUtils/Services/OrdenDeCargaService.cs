@@ -75,8 +75,13 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
-                var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
+                var esComercial = usuario.TienePermiso(Permisos.FasVerOrdenesComerciales);
+                var puedeModificarReventa = usuario.TienePermiso(Permisos.FasModificarCampoReventa);
+
+                if (!puedeModificarReventa && ordenDeCarga.Reventa)
+                    throw new ValidationCustomException("Usuario sin permiso para modificar campo reventa");
+
+                var puedeEnviarASAP = usuario.TienePermiso(Permisos.EnviarSAP);
                 LlenarOrdenDeCarga(ordenDeCarga, usuario, esComercial);
                 Log.Debug(this.GetType().Name, "Agregar", $" esComercial: {esComercial}");
                 Log.Debug(this.GetType().Name, "Agregar", $" puedeEnviarASAP: {puedeEnviarASAP}");

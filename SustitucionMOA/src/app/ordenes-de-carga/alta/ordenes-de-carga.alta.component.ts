@@ -22,6 +22,7 @@ import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { finalize } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
 import { forkJoin } from 'rxjs';
+import { Permiso } from '../../common/enums/Permisos';
 
 declare var $: any;
 
@@ -75,6 +76,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
     esAdmin: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+    modificaReventa = this.isAuthorized(Permiso.FasModificarCampoReventa);
     listaClientes: any[];
     noEditarCliente: boolean = false;
 
@@ -592,6 +594,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
             this.validaCPEDG = false;
         }
+        this.ordenDeCarga.Reventa = this.validaCPEDG && this.modificaReventa && !this.ordenDeCarga.Reventa;
         this.validarSisaCorredorCliente()
     }
     validarCorredorClienteContratoProducto = (
