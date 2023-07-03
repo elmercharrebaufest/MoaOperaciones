@@ -182,7 +182,6 @@ namespace SustitucionMOAWS.WSConsumers
             var cuit_int_flete = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.Transportista : entregaReq.TransportistaReal;
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-
             if (!pedidoAnticipado)
                 entregaReq = LimpiarRequestSinPedidoAnticipado(entregaReq);
 

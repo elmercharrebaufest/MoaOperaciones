@@ -1,4 +1,3 @@
-﻿
 namespace SustitucionMOAModel.Util
 {
     public struct Constante
