@@ -271,9 +271,11 @@ namespace SustitucionMOAUtils.Services
             {
                 try
                 {
+                    var finalizoPrimeraVez = string.IsNullOrEmpty(solpEntity.NroSolp);
                     respuestaGuardarSOLP = FinalizarSolp(solp, solpEntity, postEntitySubPosicionesEliminadas, respuestaGuardarSOLP);
                     GuardarUsuarioComprasRelacionado(solp);
-                    if (string.IsNullOrEmpty(solpEntity.NroSolp) && solp.TrabajoYaHecho == true)
+
+                    if (respuestaGuardarSOLP.Mensaje == "OK" && finalizoPrimeraVez && solp.TrabajoYaHecho == true)
                     {
                         CrearCotizacionAutomatica(solpEntity);
                     }
