@@ -75,8 +75,13 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
-                var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
+                var esComercial = usuario.TienePermiso(Permisos.FasVerOrdenesComerciales);
+                var puedeModificarReventa = usuario.TienePermiso(Permisos.FasModificarCampoReventa);
+
+                if (!puedeModificarReventa && ordenDeCarga.Reventa)
+                    throw new ValidationCustomException("Usuario sin permiso para modificar campo reventa");
+
+                var puedeEnviarASAP = usuario.TienePermiso(Permisos.EnviarSAP);
                 LlenarOrdenDeCarga(ordenDeCarga, usuario, esComercial);
                 Log.Debug(this.GetType().Name, "Agregar", $" esComercial: {esComercial}");
                 Log.Debug(this.GetType().Name, "Agregar", $" puedeEnviarASAP: {puedeEnviarASAP}");
@@ -210,11 +215,6 @@ namespace SustitucionMOAUtils.Services
                 var ordenEditar = cargarDatosOCEditar.Item1;
                 var listaValoresDiferentes = cargarDatosOCEditar.Item2;
 
-                //Solicitud de edición
-                if (!esInterno)
-                {
-                    SolicitarEdicionOrden(ordenDeCarga.Id, mailUsuario);
-                }
                 foreach (var prop in listaValoresDiferentes)
                 {
                     if (!valoresAEditar.Contains(prop.PropertyName))
@@ -235,9 +235,12 @@ namespace SustitucionMOAUtils.Services
                         historialCambios.Add(registroHistorial);
                     }
                 }
+                //Solicitud de edición
+                if (!esInterno && historialCambios.Count > 0)
+                {
+                    SolicitarEdicionOrden(ordenDeCarga.Id, mailUsuario);
+                }
 
-                // error de base de datos al usar agregar todos
-                //repositorio.AgregarTodos(historialCambios);
                 foreach (var historialCambio in historialCambios)
                 {
                     repositorio.Agregar(historialCambio);
@@ -251,6 +254,15 @@ namespace SustitucionMOAUtils.Services
                     if (resultadoSAP.HayError)
                         throw new InfoCustomException(resultadoSAP.Errores[0].Message);
                 }
+                if (historialCambios.Count > 0 && !esAdmin)
+                {
+                    //Aviso de Edición de Orden de Carga
+                    var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega, ordenDeCarga.NumeroPedido);
+                    if (emailSenderData != null)
+                    {
+                        EmailSender.EnviarMail(emailSenderData);
+                    }
+                }
 
                 repositorio.GuardarCambios();
                 NotificarTransporte(ordenEditar.Id);
@@ -262,16 +274,6 @@ namespace SustitucionMOAUtils.Services
                         GenerarEntregaSAP(ordenEditar);
                     }
 
-                }
-
-                if (historialCambios.Count > 0 && !esAdmin)
-                {
-                    //Aviso de Edición de Orden de Carga
-                    var emailSenderData = ConstruirCuerpoEmail(historialCambios, ordenDeCarga.NumeroEntrega, ordenDeCarga.NumeroPedido);
-                    if (emailSenderData != null)
-                    {
-                        EmailSender.EnviarMail(emailSenderData);
-                    }
                 }
 
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
@@ -1245,7 +1247,6 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.Agregar(ordenHistorial);
                 orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
-                repositorio.GuardarCambios();
 
                 return SuccessMsg.OrdenDeCargaActualizada;
             }
@@ -2449,8 +2450,11 @@ namespace SustitucionMOAUtils.Services
                 var rangoFechas = string.IsNullOrEmpty(req.FechaDesde) || string.IsNullOrEmpty(req.FechaHasta) ? null :
                     CommonService.toDateList(req.FechaDesde, req.FechaHasta);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-
-                var material = usuario.TieneRol("ADM") ? "" : "50866";
+                string material = string.Empty;
+                if (usuario.TieneRol("ADM") || usuario.TieneRol("APLCLICPEDG"))
+                    material = string.Empty;
+                else
+                    material = "50866";
 
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
                 {
@@ -2758,10 +2762,13 @@ namespace SustitucionMOAUtils.Services
             var tieneNumeroPedido = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) || !string.IsNullOrEmpty(orden.NumeroPedido);
             if (!tieneNumeroPedido)
                 return;
-            var resultadoAnularOrden = consumer.AnularOrdenCarga(orden);
-            if (resultadoAnularOrden.HayError)
-                //Pendiente revisión de los mensajes acorde a las verdaderas razones de error
+            var respHandler = consumer.AnularOrdenCarga(orden);
+            if (respHandler.PedidoTomadoEnSap)
                 throw new InfoCustomException("El pedido está tomado en SAP");
+            else if (!(respHandler.ActualizadoOK || respHandler.PedidoAnulado))
+            {
+                throw new Exception("No se reconoce respuesta SAP (Anular Orden Carga)");
+            }
         }
         private List<string> ObtenerContratosAbiertos(List<string> contratos)
         {
@@ -2802,9 +2809,29 @@ namespace SustitucionMOAUtils.Services
             }
             return (true, chofer);
         }
+        public (bool, ScatoRepo.Chofer) ValidarCuitTransporte(string cuitTransporte)
+        {
+            var transporteRes = scatoRepositorioClient.ObtenerTransportePorCuit(DataFormatter.CuitConGuion(cuitTransporte));
+            var transporte = transporteRes.Data;
+            if (!transporteRes.IsValid)
+            {
+                Log.Info("Error al obtener transporte de Scato " + cuitTransporte);
+                foreach (var err in transporteRes.Messages)
+                {
+                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
+                }
+
+                return (transporteRes.Messages.All(msg => msg.MessageCode != ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido), transporte);
+            }
+            return (true, transporte);
+        }
         public bool ValidarCuilChoferDigito(string cuilChofer)
         {
             return ValidarCuilChofer(cuilChofer).Item1;
+        }
+        public bool ValidarCuitTransporteDigito(string cuitTransporte)
+        {
+            return ValidarCuitTransporte(cuitTransporte).Item1;
         }
         private string ObtenerMaterialValidaSisa()
         {

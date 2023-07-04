@@ -56,5 +56,6 @@ namespace SustitucionMOAUtils.Interfaces
         ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
         (bool, Chofer) ValidarCuilChofer(string cuilChofer);
         bool ValidarCuilChoferDigito(string cuilChofer);
+        bool ValidarCuitTransporteDigito(string cuitTransporte);
     }
 }
