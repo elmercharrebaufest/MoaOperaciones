@@ -54,7 +54,9 @@
                                     (completeMethod)="autocompleteServicioSolp($event)" 
                                     (onFocus)="$event.target.select()" 
                                     (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio,rowIndex,dt)" 
-                                    (onSelect)="onSelectServicio(posicion, dt)">
+                                    (onSelect)="onSelectServicio(posicion, dt)"
+                                    (onBlur)="checkCode(posicion)"
+                                    (ngModelChange)="clearCode2(posicion)">
                                 </p-autoComplete>
                             </ng-template>
                             <ng-template pTemplate="output">
@@ -79,7 +81,8 @@
                                     (onFocus)="$event.target.select()" 
                                     (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)" 
                                     (onSelect)="onSelectTarea(posicion, dt)" 
-                                    (onBlur)="onBlurTarea($event, posicion)">
+                                    (onBlur)="onBlurTarea($event, posicion)"
+                                    (ngModelChange)="clearCode(posicion)">
                                 </p-autoComplete>
                             </ng-template>
                             <ng-template pTemplate="output" style="text-align: left;">
