@@ -10,7 +10,7 @@ export class SubPosicionViewModel {
       this.tareaSubcontratar = "";
       this.tareaSubcontratarObj = {};
       this.cuentaMayor = {};
-      this.cuentaTd = "";
+      this.cuentaTd = 0;
       this.unidadMedida = "";
       this.precioBruto = 0;
       this.monedaSeleccionada = this.monedaSeleccionada;
@@ -25,16 +25,19 @@ export class SubPosicionViewModel {
    tareaSubcontratar: string;
    tareaSubcontratarObj: any;
    cuentaMayor: any;
-   cuentaTd: any;
+   cuentaTd: number;
    unidadMedida: string;
    precioBruto: number;
    tipoImputacion: any = {};
    unidadSeleccionada : any = {};
    monedaSeleccionada: any;
-   valorNeto: any;
+   valorNeto: number;
 
    public calcularValorNeto(): void
    {
-      this.valorNeto = (this.precioBruto || 0) * (parseInt(this.cuentaTd) || 0); 
+      this.valorNeto = (this.precioBruto || 0) * (this.cuentaTd || 0);
+      this.valorNeto = parseFloat(this.valorNeto.toFixed(2));
    }
+
+   
 }
