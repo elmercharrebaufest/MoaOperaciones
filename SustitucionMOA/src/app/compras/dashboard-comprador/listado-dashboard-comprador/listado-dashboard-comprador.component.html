@@ -189,7 +189,7 @@
                                                     <button class="publicar btn " style="margin-right: 10px;"   (click)="verLegajo(licitacion.Id)">
                                                         Legajo
                                                     </button>
-                                                    <button class="publicar btn " style="margin-right: 10px;"  (click)="obtenerPeticionDeOferta(licitacion.Id)">
+                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true"  style="margin-right: 10px;"   (click)="obtenerPeticionDeOferta(licitacion.Id)">
                                                         Circular
                                                     </button>
                                                     <button class="publicar btn btn-success" (click)="verOfertas(licitacion.Id)">
