@@ -2997,6 +2997,7 @@ namespace SustitucionMOAUtils.Services
 
                 var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
                 var posicionesPeticion = posiciones.Select(x => new PeticionDeOfertaSolpPosicion { SolpPosicion_Id = x.Id }).ToList();
+              
                 var fechaOferta = posiciones.First().Solp.TrabajoYaHecho == true ? DateTime.Today.AddDays(-1) : posiciones.First().Solp.Pliego?.FechaHoraEntrega;
                 var usuarios = repositorio.Listar<Usuario>();
                 var peticion = new PeticionDeOferta()
@@ -3006,7 +3007,7 @@ namespace SustitucionMOAUtils.Services
                     FechaCreacion = DateTime.Now,
                     Solp_Id = peticionDeOferta.SolpId,
                     Observaciones = peticionDeOferta.Observacion ?? "",
-                    Posiciones = posicionesPeticion,
+                    Posiciones = posicionesPeticion,                    
                     PlazoDeOferta = fechaOferta ?? posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
                     Usuarios = usuarios.Where(x => peticionDeOferta.UsuarioIds.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList()
                 };
@@ -4942,6 +4943,9 @@ namespace SustitucionMOAUtils.Services
 
         public void CrearCotizacionAutomatica(Solp solp, bool enviarMail = true)
         {
+            try
+            {
+
             //Crear Peticion 
             var usuariosIds = new List<int> { solp.ProveedorAsignado_Id.Value };
             var peticion = new GuardarPeticionDeOfertaDto()
@@ -4967,14 +4971,14 @@ namespace SustitucionMOAUtils.Services
                 RespetaServicios = true,
                 FechaDeEntrega = DateTime.Today.AddDays(-1),
                 PeticionOfertaUsuarioId = peticionEntidad.Usuarios.Select(x => x.Id).FirstOrDefault(),
-                CotizacionPosiciones = peticionEntidad.Posiciones.Select(x => new GuardarCotizacionPosicionDto
+                CotizacionPosiciones = solp.Posiciones.Select(x => new GuardarCotizacionPosicionDto
                 {
-                    PeticionDeOfertaSolpPosicionId = x.Id,
-                    Cantidad = (int)x.SolpPosicion.Cantidad,
-                    MonedaId = x.SolpPosicion.Moneda_Id,
-                    UnidadDeMedidaId = x.SolpPosicion.Unidad_Id,
+                    PeticionDeOfertaSolpPosicionId = peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().Id,
+                    Cantidad = x.Cantidad != null ? x.Cantidad : 1,
+                    MonedaId = x.Moneda_Id,
+                    UnidadDeMedidaId = x.Unidad_Id,
                     FechaDeEntrega = DateTime.Today.AddDays(-1),
-                    Precio = (decimal)x.SolpPosicion.PrecioBruto,
+                    Precio = x.PrecioBruto != null ? (decimal)x.PrecioBruto : 0,                    
                 }).ToList(),
 
             };
@@ -4991,7 +4995,9 @@ namespace SustitucionMOAUtils.Services
                             Precio = (decimal)subposicion.PrecioBruto,
                             Cantidad = (int)subposicion.Cantidad,
                             UnidadDeMedidaId = subposicion.Unidad_Id,
-                            SolpSubPosicionId = subposicion.Id
+                            SolpSubPosicionId = subposicion.Id,
+                            CotizacionPosicionId = peticionEntidad.Posiciones.Where(pos=> pos.SolpPosicion_Id == posicion.Id).FirstOrDefault().Id,
+                            MonedaId = posicion.Moneda_Id
                         };
                         cotizacion.CotizacionSubposiciones.Add(subpos);
                     }
@@ -4999,6 +5005,12 @@ namespace SustitucionMOAUtils.Services
             }
             GrabarCotizacion(cotizacion, null, true, solp.UsuarioCreacion_Id.Value, enviarMail);
 
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
     }
 
