@@ -144,6 +144,7 @@ export class CotizacionComponent extends ListBaseComponent {
             }
             this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb");          
         }
+        this.validacionTrabajoHecho();
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
@@ -200,11 +201,13 @@ export class CotizacionComponent extends ListBaseComponent {
     eliminarAdjuntoNuevo(archivo): void {
         var indice = this.model.archivosCotizacionesNuevos.indexOf(archivo)
         this.model.archivosCotizacionesNuevos.splice(indice, 1)
+        this.validacionTrabajoHecho();
     }
 
     eliminarAdjuntoGuardado(archivo): void {
         var indice = this.model.archivosCotizaciones.indexOf(archivo)
         this.model.archivosCotizaciones.splice(indice, 1)
+        this.validacionTrabajoHecho();
     }
 
     eliminarArchivo(esAdjuntoNuevo: boolean, archivo: any) {
@@ -217,6 +220,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
             }
         });
+        this.validacionTrabajoHecho();
 
     }
 
@@ -266,7 +270,6 @@ export class CotizacionComponent extends ListBaseComponent {
             } 
                 
             if((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)){
-                console.log("pongo una consola")
                 this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
                 this.model.validarTrabajoHecho = false;
@@ -283,6 +286,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
             
         }   
+        console.log("validarTrabajoHecho", this.model.validarTrabajoHecho)
         return this.model.validarTrabajoHecho;
     }
 
