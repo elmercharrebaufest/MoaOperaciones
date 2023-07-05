@@ -592,4 +592,25 @@ export class TabSubposicionComponent extends ListBaseComponent {
 
     }
 
+    clearCode(posicion: SubPosicionViewModel) {
+        if (posicion.tareaSubcontratar != null) {
+            posicion.codigoServicio = null;
+        }
+    }
+
+    clearCode2(posicion: SubPosicionViewModel) {
+        if (posicion.codigoServicio != null) {
+            posicion.tareaSubcontratarObj = null;
+            posicion.tareaSubcontratar = null;
+
+        }
+    }
+
+    checkCode(posicion: SubPosicionViewModel) {
+        if (posicion.codigoServicio == '' || posicion.codigoServicio == null) {
+            posicion.tareaSubcontratarObj = null;
+
+        }
+    }
+
 }
