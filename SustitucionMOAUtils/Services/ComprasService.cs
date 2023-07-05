@@ -837,7 +837,7 @@ namespace SustitucionMOAUtils.Services
                 var peticionesDeOferta = repositorio.Listar<PeticionDeOferta, PeticionDeOfertaDto>(po => new PeticionDeOfertaDto
                 {
                     Id = po.Id,
-                    Solp_Id = po.Solp_Id,
+                    Solp_Id = po.Solp_Id,                  
                     FechaCreacion = po.FechaCreacion,
                     UsuarioCreador_Id = po.UsuarioCreador_Id,
                     Observaciones = po.Observaciones,
@@ -901,6 +901,7 @@ namespace SustitucionMOAUtils.Services
                     UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
                     Id = x.Id,
                     NroSolp = x.NroSolp,
+                    VerCircular = x.TrabajoYaHecho == null || x.TrabajoYaHecho == false,
                     NombreDeObra = x.Pliego == null ? "" : x.Pliego.NombreObra,
                     FechaCreacion = x.FechaCreacion,
                     EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Descripcion, Color = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Color, Codigo = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Codigo },
