@@ -97,12 +97,12 @@
                         <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <input class="inputGrillaSub" type="text" pKeyFilter="num" 
-                                [(ngModel)]="posicion.cuentaTd" 
+                                [(ngModel)]="posicion.cuentaTd"
                                 (paste)="onPaste($event,enumColumnaSubPosicion.CuentaTd,rowIndex,dt)" 
                                 (ngModelChange)="calcularValorNeto(posicion)">
                             </ng-template>
                             <ng-template pTemplate="output">
-                                {{posicion.cuentaTd}}
+                                {{posicion.cuentaTd | number:'1.2-2'}}
                                 <span class="text-danger" *ngIf="validarConNoNulo(posicion, posicion.cuentaTd, 'cuentaTd')" style="display: inline-block;">
                                     *
                                 </span>
