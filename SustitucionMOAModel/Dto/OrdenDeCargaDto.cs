@@ -66,11 +66,7 @@ namespace SustitucionMOAModel.Dto
             Producto_Id = orden.Producto_Id;
             Observacion = orden.Observacion;
             ContratoIngresado = orden.ContratoIngresado;
-            ContratoSeleccionado = new ContratoOrdenFas
-            {
-                NumeroContrato = orden.ContratoIngresado,
-                Producto = new Models.DataAgro.MaterialDto { MaterialId = orden.Producto_Id }
-            };
+            ContratoSeleccionado = new ContratoOrdenFas(orden);
             Cantidad = orden.Cantidad;
             NumeroEntrega = orden.NumeroEntrega;
             NumeroPedidoIngresado = string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedido : orden.NumeroPedidoIngresado;
