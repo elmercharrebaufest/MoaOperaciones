@@ -154,17 +154,8 @@ export class DetalleConsultaComponent extends BaseComponent {
         ],
         customClasses: [
             {
-                name: "quote",
+                name: "Quitar enlace",
                 class: "quote",
-            },
-            {
-                name: "redText",
-                class: "redText",
-            },
-            {
-                name: "titleText",
-                class: "titleText",
-                tag: "h1",
             },
         ],
         uploadUrl: "v1/image",
@@ -770,7 +761,6 @@ export class DetalleConsultaComponent extends BaseComponent {
     }
 
     eliminarBotonesExtra() {
-        return;
 
         let divToolBar = document.getElementsByClassName(
             "angular-editor-toolbar"
@@ -800,7 +790,6 @@ export class DetalleConsultaComponent extends BaseComponent {
             divToolBar.removeChild(toolBar9);
             divToolBar.removeChild(toolBar10);
             divToolBar.removeChild(toolBar13);
-
         }
 
         $("#subscript-").hide();
