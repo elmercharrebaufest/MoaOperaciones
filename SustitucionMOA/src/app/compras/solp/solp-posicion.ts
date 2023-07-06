@@ -33,6 +33,7 @@ export class SolpPosicion {
 
     // direccion de entrega
     public selectCentroEntrega: any;
+    public selectComboAlmacenes: any;
     public selectAlmacenEntrega: any;
     public centroPorDefecto: any;
     public monedaPorDefecto: any;
@@ -209,7 +210,7 @@ export class SolpPosicion {
     }
 
     private setupValoresPorDefecto(centroPorDefecto, direccionCentroPorDefecto, monedaPorDefecto, selectTipoPosicion) {
-        this.selectCentroEntrega = centroPorDefecto;
+        this.selectCentroEntrega = centroPorDefecto;        
         if (direccionCentroPorDefecto) {
             this.codigoPostalEntrega = direccionCentroPorDefecto.Cp;
             this.calleEntrega = direccionCentroPorDefecto.Direccion;

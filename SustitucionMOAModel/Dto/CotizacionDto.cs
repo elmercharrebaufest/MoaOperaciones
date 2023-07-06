@@ -41,7 +41,7 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public int Cotizacion_Id { get; set; }
         public int PeticionDeOfertaSolpPosicion_Id { get; set; }
-        public int Cantidad { get; set; }
+        public decimal Cantidad { get; set; }
         public int UnidadDeMedida_Id { get; set; }
         public int Moneda_Id { get; set; }
         public decimal Precio { get; set; }
@@ -92,10 +92,10 @@ namespace SustitucionMOAModel.Dto
     public class GuardarCotizacionPosicionDto
     {
         public int PeticionDeOfertaSolpPosicionId { get; set; }
-        public decimal Precio { get; set; }
+        public decimal? Precio { get; set; }
         public int? MonedaId { get; set; }
         public int? UnidadDeMedidaId { get; set; }
-        public int? Cantidad { get; set; }
+        public decimal? Cantidad { get; set; }
         public DateTime? FechaDeEntrega { get; set; }
         public decimal PrecioTotal { get; set; }
         public decimal TotalPesos { get; set; }

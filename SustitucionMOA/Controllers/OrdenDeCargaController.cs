@@ -969,7 +969,7 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                response.Data = ordenDeCargaService.ValidarCuilChoferDigito(cuitTransporte);
+                response.Data = ordenDeCargaService.ValidarCuitTransporteDigito(cuitTransporte);
             }
             catch (InfoCustomException ice)
             {

@@ -29,7 +29,7 @@
     [Modelo] NVARCHAR(MAX) NULL, 
     [ServicioSolp_Id] INT NULL, 
     [Tarea] NVARCHAR(MAX) NULL, 
-    [Cantidad] DECIMAL NULL, 
+    [Cantidad] DECIMAL(18, 2) NULL, 
     [Unidad_Id] INT NULL, 
     [PrecioBruto] DECIMAL(18, 6) NULL, 
     [CuentaMayor_Id] INT NULL, 

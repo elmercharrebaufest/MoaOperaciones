@@ -3,7 +3,7 @@
     [Adjudicacion_Id]   int not NULL,
     [SolpPosicion_Id]          int not   NULL,   
     [CotizacionPosicion_Id]          int not   NULL, 
-    [Cantidad] INT            NOT NULL,
+    [Cantidad] DECIMAL(18, 2)            NOT NULL,
     [Texto]  [nvarchar](max)  NULL,
     CONSTRAINT [PK_AdjudicacionPosicion] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK.AdjudicacionPosicion_Adjudicacion_AdjudicacionId] FOREIGN KEY ([Adjudicacion_Id]) REFERENCES [Adjudicacion]([Id]),

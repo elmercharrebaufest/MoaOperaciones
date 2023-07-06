@@ -178,7 +178,7 @@ namespace SustitucionMOAWS.WSConsumers
         public OrdenCargaEntreResponseHandler CrearEntrega(CrearEntregaRequest entregaReq, bool pedidoAnticipado = false)
         {
             var service = new SI_MPMF_MOAOP_ORDEN_CARGA_ENTREClient();
-            var cuit_tr = entregaReq.TransportistaReal ?? entregaReq.Transportista;
+            var cuit_tr = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.TransportistaReal : entregaReq.Transportista;
             var cuit_int_flete = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.Transportista : entregaReq.TransportistaReal;
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();

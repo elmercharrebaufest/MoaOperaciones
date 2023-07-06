@@ -180,7 +180,7 @@
                                         (onFocus)=" $event.target.select();" 
                                         (onClear)="posicion.selectAlmacenEntrega = undefined"
                                         (completeMethod)="buscarCombo($event, 'CENTRO')"
-                                        (onChange)="centroSeleccionado(); listarContratosAsociados(); eliminarContratoAsociar(posicion)"    
+                                        (onChange)="centroSeleccionado(posicion); listarContratosAsociados(); eliminarContratoAsociar(posicion)"    
                                         [disabled] = "posicion.concluido"
                                         emptyMessage="Ningún centro encontrado" 
                                         [minLength]="1" 
@@ -200,7 +200,7 @@
                                     <p-dropdown 
                                         filter="true"
                                         [(ngModel)]="posicion.selectAlmacenEntrega"                                
-                                        [options]="almacenEntrega"
+                                        [options]="posicion.selectComboAlmacenes"
                                         optionLabel="CodigoDescripcion" 
                                         dataKey="Id"
                                         appendTo="body"                                     
