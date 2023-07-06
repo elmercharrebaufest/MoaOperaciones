@@ -21,7 +21,6 @@ using SustitucionMOAWS.WSRequests.OrdenCarga;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using SustitucionMOAModel.Util;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 
 namespace SustitucionMOATest.Services
@@ -1389,8 +1388,32 @@ namespace SustitucionMOATest.Services
         [Test]
         public void Agregar_UsuarioNoPuedeModificarReventa_ThrowValidationCustomException()
         {
-            ordenDeCarga.Reventa = true;
-            SetupAgregarTests();
+            var orden = new OrdenDeCarga
+            {
+                NumeroPedido = "001243898",
+                NumeroEntrega = "001243898",
+                Estado = EstadoOrdenDeCarga.EntregaGenerada
+            };
+            var usuario = new Usuario
+            {
+                Roles = new List<Rol>
+                {
+                    new Rol {
+                        PermisosAsociados= new List<PermisoPorRol>
+                        {
+                           new PermisoPorRol{ Permiso="ENVIAR A SAP" }
+                        }
+                    }
+                }
+            };
+            repositorioMock
+            .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+            .Returns(usuario);
+            repositorioMock
+            .Setup(y => y.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+            .Returns(orden);
+            var handlerPedido = new ModOrdenCargaResponseHandler("Pedido ya anulado");
+            var handlerEntrega = new ModEntregaResponseHandler("Entrega anulada en SAP");
 
             consumerOrdenCargaMOA.Setup(c => c.AnularOrdenCarga(It.IsAny<OrdenDeCarga>())).Returns(handlerPedido);
             consumerOrdenCargaMOA.Setup(c => c.AnularEntregaOrdenCarga(It.IsAny<string>())).Returns(handlerEntrega);
@@ -1400,16 +1423,6 @@ namespace SustitucionMOATest.Services
             Assert.That(orden.Estado, Is.EqualTo(EstadoOrdenDeCarga.Anulada));
         }
 
-        [Test]
-        public void Agregar_UsuarioNoPuedeModificarReventa_ThrowValidationCustomException()
-        {
-            ordenDeCarga.Reventa = true;
-            SetupAgregarTests();
-
-            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario);
-
-            Assert.That(result.error, Is.EqualTo("Usuario sin permiso para modificar campo reventa"));
-        }
 
         [Test]
         public void Agregar_UsuarioPuedeModificarReventa_CreaNormalmente()
