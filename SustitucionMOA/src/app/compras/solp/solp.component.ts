@@ -610,7 +610,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 !pos.tabsPosicionValidos.tabDatosPosicion ||
                                 !pos.tabsPosicionValidos.tabFechas ||
                                 (pos.esTipoPosicionServicio && !pos.tabsPosicionValidos.tabSubposiciones) ||
-                                !pos.tabsPosicionValidos.tabPosiciones) {                                 
+                                !pos.tabsPosicionValidos.tabPosiciones || this.validarContratoMarco()) {                                     
                                     return paso.Completo = false;
                             } else {
                                 return pos.mensaje = "";
@@ -621,22 +621,25 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
         }
     }
+    validarContratoMarco(){
+        var validacionContratoTrabajo = false;
+
+        if(this.solpActual.posiciones.some(x => x.numeroContratoSuperior != "") && this.solpActual.trabajoHecho == true){
+            return validacionContratoTrabajo = true;
+        }
+        return validacionContratoTrabajo;
+    }
 
     mostrarMensajeCampos(){
         this.solpActual.posiciones.forEach(pos => {
             if (pos.mensaje != "") {
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${pos.mensaje}` });
-            } 
-
-            if(pos.numeroContratoSuperior != undefined && pos.numeroContratoSuperior != ""){
-                this.tieneContratoMarco = true;
             }
         })
 
-        if(this.tieneContratoMarco == true && this.solpActual.trabajoHecho == true){
+        if(this.validarContratoMarco()){
             this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las solp con contrato marco cargado no pueden tener el tilde en el check de trabajo hecho en el paso #4" });
         }
-
     }
 
     mostrarMensajeCotizacion(){
