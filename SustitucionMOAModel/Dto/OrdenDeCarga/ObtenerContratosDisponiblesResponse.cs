@@ -26,12 +26,13 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         public string NumeroContrato { get; set; }
 
         public MaterialDto Producto { get; set; }
-        public decimal KgDisponiblesTn { get; set; }
+        public decimal? KgDisponiblesTn { get; set; }
         public string Label
         {
             get
             {
-                return $"{NumeroContrato} - {NombreProducto} - {KgDisponiblesTn}";
+                var kg = KgDisponiblesTn == null ? "" : " - " + KgDisponiblesTn;
+                return $"{NumeroContrato} - {NombreProducto}{kg}";
             }
         }
         public string NombreProducto
@@ -61,7 +62,10 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         public ContratoOrdenFas(Entities.OrdenDeCarga orden)
         {
             NumeroContrato = orden.ContratoIngresado;
-            Producto = new Models.DataAgro.MaterialDto { MaterialId = orden.Producto_Id };
+            Producto = new Models.DataAgro.MaterialDto { 
+                MaterialId = orden.Producto_Id, 
+                Descripcion = orden.Producto.Nombre
+            };
         }
 
         public decimal ObtenerKgDisponiblesTn(Result contratoSAP)
