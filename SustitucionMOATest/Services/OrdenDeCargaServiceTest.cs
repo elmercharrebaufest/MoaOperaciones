@@ -1386,7 +1386,7 @@ namespace SustitucionMOATest.Services
         }
 
         [Test]
-        public void Agregar_UsuarioNoPuedeModificarReventa_ThrowValidationCustomException()
+        public void AnularPedidoEnSap_PedidoEntregaYaAnulados_OrdenEstadoAnulada()
         {
             var orden = new OrdenDeCarga
             {
@@ -1424,6 +1424,14 @@ namespace SustitucionMOATest.Services
         }
 
 
+        [Test]
+        public void Agregar_UsuarioNoPuedeModificarReventa_ThrowValidationCustomException()
+        {
+            ordenDeCarga.Reventa = true;
+            SetupAgregarTests();
+            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario);
+            Assert.That(result.error, Is.EqualTo("Usuario sin permiso para modificar campo reventa"));
+        }
         [Test]
         public void Agregar_UsuarioPuedeModificarReventa_CreaNormalmente()
         {
