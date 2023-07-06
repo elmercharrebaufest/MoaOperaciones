@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
 using System.Collections.Generic;
 
@@ -25,6 +26,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
 
         public MaterialDto Producto { get; set; }
 
+        public TipoContratoFAS TipoContrato { get; set; }
         //public string ProductoId { get; set; }
 
         //public string ProductoDescripcion { get; set; }

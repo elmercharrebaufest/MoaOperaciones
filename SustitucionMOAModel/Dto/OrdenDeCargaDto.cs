@@ -196,6 +196,9 @@ namespace SustitucionMOAModel.Dto
         public string RazonSocialDestinatario { get; set; }
         public string CUITIntermediarioFlete { get; set; }
         public string PlantaCodigo { get; set; }
+        public string NumeroFactura { get; set; }
+        public string NumeroFacturaSeleccionada { get; set; }
+        public TipoContratoFAS TipoContrato { get; set; }
         //public string DomicilioTipo { get; set; }
         //public short DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
@@ -320,7 +323,10 @@ namespace SustitucionMOAModel.Dto
                 RazonSocialDestinatario = orden.RazonSocialDestinatario,
                 CUITIntermediarioFlete = orden.CUITIntermediarioFlete,
                 PlantaCodigo = orden.PlantaCodigo,
-                DomicilioDescr = orden.DomicilioDescr
+                DomicilioDescr = orden.DomicilioDescr,
+                NumeroFactura = orden.NumeroFactura,
+                NumeroFacturaSeleccionada = orden.NumeroFacturaSeleccionada,
+                TipoContrato = orden.TipoContrato
             };
         }
     }

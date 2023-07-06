@@ -169,6 +169,12 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="EmailToComercialesFFAA Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToComercialesFFAA']
+                           /@value" />
+	</parameter>
+
 	<parameter name="EmailToAuditoriaOrdenesVencidas Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailToAuditoriaOrdenesVencidas']

@@ -139,6 +139,7 @@
 	<setParameter name="EmailAsuntoPrefijo Config" value="" />
 	<setParameter name="EmailToCobranzas Config" value="cobranzasfas@molinosagro.com.ar" />
 	<setParameter name="EmailToComerciales Config" value="comerciolocal@molinosagro.com.ar" />
+	<setParameter name="EmailToComercialesFFAA Config" value="alimentacion.animal@molinosagro.com.ar" />
 	<setParameter name="EmailToAuditoriaOrdenesVencidas Config" value="noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar;franco.berardi@molinosagro.com.ar"/>
 
 
@@ -171,7 +172,7 @@
 
 	<setParameter name="SI_MMRFC_OBTENER_TIPO_CAMBIO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_TIPO_CAMBIO&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
-	<setParameter name="ScatoRepositorioBaseAddress Config" value="https://scato.molinosagro.com.ar/Scato.WebApiCore/" />
+	<setParameter name="ScatoRepositorioBaseAddress Config" value="http://scato.molinosagro.com.ar/Scato.WebApiCore/" />
 	<setParameter name="ScatoRepositorioUsername Config" value="ScatoLogistica" />
 	<setParameter name="ScatoRepositorioPassword Config" value="ServicioExternoPass" />
 

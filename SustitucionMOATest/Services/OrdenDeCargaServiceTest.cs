@@ -21,7 +21,6 @@ using SustitucionMOAWS.WSRequests.OrdenCarga;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using SustitucionMOAModel.Util;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 
 namespace SustitucionMOATest.Services
@@ -36,6 +35,7 @@ namespace SustitucionMOATest.Services
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
         private Mock<IFeriadoService> feriadoService;
         private Mock<IEmailFasService> mIEmailFasService;
+        private Mock<IFacturaAnticipadaService> mIFacturaAnticipadaService;
         private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
         private Mock<IScatoConsumer> mIScatoConsumer;
 
@@ -50,12 +50,12 @@ namespace SustitucionMOATest.Services
         private Rol _rolAdministracion;
         private PermisoPorRol _permisoVerOrdenesComerciales;
 
-
         [SetUp]
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
+            mIFacturaAnticipadaService = new Mock<IFacturaAnticipadaService>();
             feriadoService = new Mock<IFeriadoService>();
             mIScatoRepositorioClient = new Mock<IScatoRepositorioClient>();
             mIScatoConsumer = new Mock<IScatoConsumer>();
@@ -63,7 +63,7 @@ namespace SustitucionMOATest.Services
             mIEmailFasService = new Mock<IEmailFasService>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
-                mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object);
+                mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object, mIFacturaAnticipadaService.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,
@@ -1386,6 +1386,7 @@ namespace SustitucionMOATest.Services
 
             Assert.That(() => target.AnularOrden(3, ""), Throws.TypeOf<InfoCustomException>());
         }
+
         [Test]
         public void AnularPedidoEnSap_PedidoEntregaYaAnulados_OrdenEstadoAnulada()
         {
@@ -1424,17 +1425,15 @@ namespace SustitucionMOATest.Services
             Assert.That(orden.Estado, Is.EqualTo(EstadoOrdenDeCarga.Anulada));
         }
 
+
         [Test]
         public void Agregar_UsuarioNoPuedeModificarReventa_ThrowValidationCustomException()
         {
             ordenDeCarga.Reventa = true;
             SetupAgregarTests();
-
             var result = target.Agregar(ordenDeCarga, _mailSesionUsuario);
-
             Assert.That(result.error, Is.EqualTo("Usuario sin permiso para modificar campo reventa"));
         }
-
         [Test]
         public void Agregar_UsuarioPuedeModificarReventa_CreaNormalmente()
         {

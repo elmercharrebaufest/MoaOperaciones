@@ -1,5 +1,5 @@
 import { EstadoOrdenDeCarga } from "./estadoOrdenDeCarga";
-import { ContratoOrdenFas } from "./obtenerContratosDisponiblesResponse";
+import { ContratoOrdenFas, TipoContrato } from './obtenerContratosDisponiblesResponse';
 import { OrdenDeCargaCambiosHistorial } from "./ordenDeCargaCambiosHistorial";
 
 export class OrdenDeCarga {
@@ -50,10 +50,13 @@ export class OrdenDeCarga {
     DomicilioTipo: string;
     DomicilioOrden: number;
     DomicilioDescr: string;
+    NumeroFactura: string;
+    NumeroFacturaSeleccionada: string;
+    TipoContrato: TipoContrato;
     constructor() {
     }
 }
 export type CuitValidaExistencia = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino">;
 export type CuitValidaSISA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" | "CUITCorredor" | "CUITCliente">;
-export type CuitValidaRUCA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" |  "CUITCliente">;
+export type CuitValidaRUCA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" | "CUITCliente">;
 

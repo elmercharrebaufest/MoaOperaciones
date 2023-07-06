@@ -165,16 +165,12 @@ const appRoutes: Routes = [
             { path: "logPesificacion", loadChildren: "./log-pesificacion/log-pesificacion.module#LogPesificacionModule" },
             { path: "compras", loadChildren: "./compras/compras.module#ComprasModule" },
             { path: "apikey", component: ApikeyComponent },
+            //            {
+            //                path: "echeq",
+            //                loadChildren: "./echeq/echeq.module#EcheqModule",
+            //            },
             {
-                path: "echeq",
-                loadChildren: "./echeq/echeq.module#EcheqModule",
-            },
-            {
-                path: "ordenes-de-carga-fason",
-                loadChildren: "./ordenes-de-carga-fason/ordenes-de-carga-fason.module#OrdenesDeCargaFasonModule",
-            },
-            {
-                path:"aplicaciones-ccpp",
+                path: "aplicaciones-ccpp",
                 loadChildren: "./aplicacion-ccpp/aplicacion-ccpp.module#AplicacionCcppModule"
             }
 

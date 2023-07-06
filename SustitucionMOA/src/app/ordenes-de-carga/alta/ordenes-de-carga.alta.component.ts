@@ -16,13 +16,14 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
-import { ContratoOrdenFas } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
+import { ContratoOrdenFas, TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { finalize } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
 import { forkJoin } from 'rxjs';
 import { Permiso } from '../../common/enums/Permisos';
+import { Factura } from '../../common/models/ordenes-de-carga/Factura';
 
 declare var $: any;
 
@@ -51,7 +52,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
     displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'> | null;
     validaCPEDG = false;
-    pedidoAnticipado = false;
     editando = false;
     focusRazonSocialParaGestion = true;
     mensajeError: string = "";
@@ -71,7 +71,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     private selectUndefinedOptionValue: any;
 
     contratosDisponibles: ContratoOrdenFas[] = [];
+    facturasDisponibles: Factura[] = [];
+    facturaSeleccionada: Factura = {} as Factura;
     contratoSeleccionado: ContratoOrdenFas;
+    tipoContrato = TipoContrato;
     listaMateriales: Material[];
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
@@ -131,6 +134,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
         if (this.esCliente()) {
             this.clienteCodigo = sessionStorage.getItem("proveedor");
+            this.ordenDeCarga.CUITCliente = Number.parseInt(this.clienteCodigo);
             if (this.ordenDeCargaId == 0 && !(this.esComercial || this.esCorredor)) {
                 this.cargarContratosDisponibles(this.clienteCodigo);
             }
@@ -226,9 +230,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             return false;
         }
 
+        if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada && !this.ordenDeCarga.NumeroFactura) {
+            this.mensajeComponent.setInfoMsg("Debe seleccionar un número de factura para este tipo de contrato.");
+            return false;
+        }
+
         return true;
     }
-
 
     obtenerOrdenDeCarga() {
         try {
@@ -262,6 +270,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.cargarContratosDisponibles(result.data.CodigoCliente);
                         if (this.ordenDeCarga.CUITDestino)
                             this.onDestinoIngresado(this.ordenDeCarga.CUITDestino)
+                        if (this.ordenDeCarga.NumeroFactura)
+                            this.facturaSeleccionada = {
+                                NumeroFactura: this.ordenDeCarga.NumeroFacturaSeleccionada || this.ordenDeCarga.NumeroFactura,
+                                NumeroPedido: this.ordenDeCarga.NumeroPedidoIngresado || this.ordenDeCarga.NumeroPedido
+                            }
                     }
                 },
                 error => {
@@ -580,14 +593,22 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     onContratoSeleccionadoChanged = () => {
+        this.facturasDisponibles = [];
+        this.ordenDeCarga.NumeroFactura = null;
+        this.facturaSeleccionada = null;
+
         if (this.ordenDeCarga.ContratoSeleccionado) {
             this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
             this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
             this.ordenDeCarga.Producto_Id = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId;
             this.Producto = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId.toString();
+            this.ordenDeCarga.TipoContrato = this.ordenDeCarga.ContratoSeleccionado.TipoContrato;
             let materialSeleccionado = this.listaMateriales.find(mat => mat.MaterialId === this.ordenDeCarga.Producto_Id);
+            this.cambioProducto();
             this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
             this.cambioProducto();
+            if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada)
+                this.obtenerFacturas()
         }
         else {
             this.Contrato = "";
@@ -1162,6 +1183,30 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.onDomicilioSeleccionadoChanged()
         this.onPlantaSeleccionadaChanged();
     }
-}
 
+    obtenerFacturas() {
+        const numeroContrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
+
+        this.service.obtenerFacturasDeContrato(numeroContrato).subscribe(result => {
+            let data = this.manejarErroresApiResponse(result);
+            if (data instanceof Array) {
+                if (!data.length) {
+                    this.floatMsgService.setInfoMsg("No hay ninguna factura generada para este contrato.");
+                    this.contratoSeleccionado = null;
+                    this.ordenDeCarga.ContratoSeleccionado = null;
+                    this.Contrato = "";
+                    this.ordenDeCarga.ContratoIngresado = "";
+                    this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
+                    this.validaCPEDG = false;
+                }
+                this.facturasDisponibles = data
+            }
+        });
+    }
+    setNumeroFactura(value: Factura) {
+        const { NumeroFactura, NumeroPedido } = value;
+        this.ordenDeCarga.NumeroFactura = NumeroFactura;
+        this.ordenDeCarga.NumeroPedidoIngresado = NumeroPedido;
+    }
+}
 

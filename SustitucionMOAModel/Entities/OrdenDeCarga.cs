@@ -103,10 +103,27 @@ namespace SustitucionMOAModel.Entities
         public string DomicilioTipo { get; set; }
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
+        public string NumeroFactura { get; set; }
+        public string NumeroFacturaSeleccionada { get; set; }
+        public TipoContratoFAS TipoContrato { get; set; }
 
         public bool TieneCodigoSap(ControlCargaResEnum controlCargaRes)
         {
             return CodigoVerificacionSap == ResponseConverter.GetCodigoControlCarga(controlCargaRes);
+        }
+        public bool EsFacturaAnticipada
+        {
+            get
+            {
+                return TipoContrato == TipoContratoFAS.Anticipado;
+            }
+        }
+        public bool SinSeleccionarFactura
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(NumeroFactura) && string.IsNullOrEmpty(NumeroFacturaSeleccionada);
+            }
         }
 
         /// <summary>
@@ -128,7 +145,12 @@ namespace SustitucionMOAModel.Entities
                 }
                 else
                 {
-                    if (((string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido)) && Estado != EstadoOrdenDeCarga.SinEnviarASAP) || CodigoVerificacionSap == "CC-07")
+                    if (
+                        ((string.IsNullOrEmpty(ContratoSAP) ||
+                        ContratoSinCantidadPendiente ||
+                        string.IsNullOrEmpty(NumeroPedido)) && Estado != EstadoOrdenDeCarga.SinEnviarASAP) ||
+                        CodigoVerificacionSap == "CC-07"
+                        )
                     {
                         Estado = EstadoOrdenDeCarga.Pendiente;
                     }
@@ -139,7 +161,7 @@ namespace SustitucionMOAModel.Entities
                             Estado = EstadoOrdenDeCarga.Confirmado;
                         }
 
-                        if (!TransporteExiste)
+                        if (!TransporteExiste || (EsFacturaAnticipada && SinSeleccionarFactura) )
                         {
                             Estado = EstadoOrdenDeCarga.Pendiente;
                         }
@@ -255,5 +277,9 @@ namespace SustitucionMOAModel.Entities
         {
             return new OrdenDeCargaEditarDto(this);
         }
+        //public TipoContratoFAS TipoContratoFAS()
+        //{
+        //    return TipoContratoFASParser.Parse(TipoContrato);
+        //}
     }
 }

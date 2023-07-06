@@ -1,8 +1,11 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
+using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
+using SustitucionMOAModel.Util;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
@@ -18,6 +21,7 @@ using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -54,6 +58,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         */
 
+        private const string TipoContratoFas_Normal = "NORMAL";
+        private const string TipoContratoFas_Anticipado = "ANTICIPADO";
 
         public ControlCargaResponseHandler ControlarCarga(ControlCargaRequest datosCarga)
         {
@@ -172,13 +178,18 @@ namespace SustitucionMOAWS.WSConsumers
         public OrdenCargaEntreResponseHandler CrearEntrega(CrearEntregaRequest entregaReq, bool pedidoAnticipado = false)
         {
             var service = new SI_MPMF_MOAOP_ORDEN_CARGA_ENTREClient();
-            var cuit_tr = entregaReq.TransportistaReal ?? entregaReq.Transportista;
+            var cuit_tr = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.TransportistaReal : entregaReq.Transportista;
             var cuit_int_flete = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.Transportista : entregaReq.TransportistaReal;
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Request: {entregaReq.ToJson()} , pedidoAnticipado: {pedidoAnticipado}");
             if (!pedidoAnticipado)
                 entregaReq = LimpiarRequestSinPedidoAnticipado(entregaReq);
+
+            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE " +
+                $"Request: {entregaReq.ToJson()}, " +
+                $"pedidoAnticipado: {pedidoAnticipado}, " +
+                $"cuit_tr: {cuit_tr}, " +
+                $"cuit_int_flete: {cuit_int_flete}.");
 
             var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(
                 IM_CUITDESTF: entregaReq.CuitDestino,
@@ -317,7 +328,7 @@ namespace SustitucionMOAWS.WSConsumers
                     CondicionEntrega = item.CONDICION_ENTREGA,
                     Producto = item.PRODUCTO,
                     PuntoExpedicion = item.PTO_EXPEDICION,
-                    TipoContrato = item.TIPO_CONTRATO
+                    TipoContrato = ConvertirDeTipoContratoFasSAP(item.TIPO_CONTRATO)
                 };
                 var detalles = new List<Detail>();
                 foreach (var detalle in item.DETALLE)
@@ -429,13 +440,45 @@ namespace SustitucionMOAWS.WSConsumers
 
             var fechas = ObtenerRangoFechas();
 
-            var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS("", contrato, "", fechas, "", "X", "N");
+            var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(
+                "", contrato, "", fechas, "",
+                Constante.FAS_FILTRO_DEFAULT_PENDIENTE,
+                Constante.FAS_FILTRO_DEFAULT_TIPO_CONTRATO);
+
             return result.Length > 0;
+        }
+
+        public Result ObtenerContratoSAP(OrdenDeCarga orden, TipoContratoFAS? tipoContrato)
+        {
+            return ObtenerContratoSAP(string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP, tipoContrato);
+        }
+        public Result ObtenerContratoSAP(string numeroContrato, TipoContratoFAS? tipoContrato)
+        {
+            var request = new OrdenCargaVisualizarClienteWSMOARequest
+            {
+                Contrato = numeroContrato,
+                TipoContrato = ConvertirATipoContratoFasSAP(tipoContrato),
+                Fechas = ObtenerFechas()
+            };
+
+            var contratoSAP = OrdenCargaVisualizarClienteExecute(request).Resultados.FirstOrDefault();
+            return contratoSAP;
+        }
+        private List<FechaWS> ObtenerFechas()
+        {
+            return new List<FechaWS>
+                {
+                    new FechaWS
+                    {
+                        fechaFin = DateTime.Now,
+                        fechaInicio = DateTime.Parse(Constante.FECHA_BASICA)
+                    }
+                };
         }
         private ZMPES4100[] ObtenerRangoFechas()
         {
             var hasta = DateTime.Now;
-            var desde = hasta.AddMonths(-12);
+            var desde = hasta.AddMonths(-Constante.MESES_ATRAS_FAS);
             return new List<ZMPES4100>{ new ZMPES4100()
             {
                 FECHA_OP = SAPFormatter.PrepararFecha(desde),
@@ -455,6 +498,30 @@ namespace SustitucionMOAWS.WSConsumers
             entregaReq.PlantaCodigo = "";
 
             return entregaReq;
+        }
+
+        private string ConvertirATipoContratoFasSAP(TipoContratoFAS? tipoContrato)
+        {
+            if (!tipoContrato.HasValue)
+            {
+                return "";
+            }
+            switch (tipoContrato)
+            {
+                case TipoContratoFAS.Normal: return TipoContratoFas_Normal;
+                case TipoContratoFAS.Anticipado: return TipoContratoFas_Anticipado;
+                default: throw new Exception("Tipo de contrato no mapeado");
+            }
+        }
+
+        private TipoContratoFAS ConvertirDeTipoContratoFasSAP(string tipoContrato)
+        {
+            switch (tipoContrato)
+            {
+                case TipoContratoFas_Normal: return TipoContratoFAS.Normal;
+                case TipoContratoFas_Anticipado: return TipoContratoFAS.Anticipado;
+                default: throw new Exception("No se reconoce tipo de contrato " + tipoContrato);
+            }
         }
     }
 }

@@ -266,7 +266,7 @@
                                                     <button *ngIf="licitacion.Estado == 'Abierto'" class="publicar btn" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
                                                         Revisión Técnica
                                                     </button>
-                                                    <button class="publicar btn " style="margin-right: 10px;"  (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
+                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true" style="margin-right: 10px;"  (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
                                                         Circular
                                                     </button>
                                                 </td> 

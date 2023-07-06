@@ -40,10 +40,18 @@ export class StepperActionsComponent implements OnInit {
         return { paso: null, descripcion: 'VOLVER' };
     } else {
         if (this.tipoSolp === 'SIN_PLIEGO' && this.pasoActual.Numero == 5) {
-            var prev = this.pasos.find(x => x.Numero == 2);
+            var prev = this.pasos.find(x => x.Numero == 4);
             return { paso: prev, descripcion: `PASO ${prev.Numero}` }
         }
+        if (this.tipoSolp === 'SIN_PLIEGO' && this.pasoActual.Numero == 4) {
+          var prev = this.pasos.find(x => x.Numero == 2);
+          return { paso: prev, descripcion: `PASO ${prev.Numero}` }
+        }  
 
+        if (this.tipoSolp === 'SIN_PLIEGO' && this.pasoActual.Numero == 2) {
+          var prev = this.pasos.find(x => x.Numero == 2);
+          return { paso: null, descripcion: 'VOLVER' };
+        }  
         var prev = this.pasos.find(x => x.Numero == this.pasoActual.Numero - 1);
 
         return { paso: prev, descripcion: `PASO ${prev.Numero}` }
@@ -55,7 +63,7 @@ export class StepperActionsComponent implements OnInit {
         return { paso: null, descripcion: 'FINALIZAR' };
     } else {
         if (this.tipoSolp === 'SIN_PLIEGO' && this.pasoActual.Numero == 2) {
-            var next = this.pasos.find(x => x.Numero == 5);
+            var next = this.pasos.find(x => x.Numero == 4);
             return { paso: next, descripcion: `PASO ${next.Numero}` }
         }
 

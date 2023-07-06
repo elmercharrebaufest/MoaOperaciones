@@ -77,7 +77,7 @@
                     <td class="columna border2-right" colspan="8" style="width: 620px !important;">Propuesta técnica</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="8" style="width: 620px !important;">
+                    <td class="columna border2-right" colspan="8" style="width: 620px !important; height: 60px;">
                         <button class="publicar btn " style="margin-right: 10px; font-size: 12px;" (click)="abrilModalTextos()">
                             Agregar racional de compra
                         </button>
@@ -190,9 +190,11 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container>                            <!--*ngIf="proveedor.Cotizacion != null"-->
                             <td class="columna border2-left" colspan="6" style="width: 570px !important;">
-                                <button [disabled]="!proveedor.VerAdjudicar" [pTooltip]="proveedor.MensajeAdjudicar" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
+                                <button [disabled]="!proveedor.VerAdjudicar" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                     Adjudicar
                                 </button>
+                                <br/>
+                                <label for="Mensaje" [ngStyle]="{'color': (proveedor.MensajeAdjudicar == 'Adjudicar') ? 'green' : 'red'}">{{proveedor.MensajeAdjudicar}}</label>
                             </td>
                         </ng-container>
                     </ng-container>
@@ -280,7 +282,7 @@
                     <td class="columna border2-right" colspan="6" style="width: 550px !important;">Propuesta técnica</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="6" style="width: 550px !important;">
+                    <td class="columna border2-right" colspan="6" style="width: 550px !important; height: 60px;">
                         <div class="row">
                             <div class="col-md-4">
                                 <button class="publicar btn" style="font-size: 12px;" (click)="abrilModalTextos()">
@@ -438,10 +440,12 @@
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
-                        <td colspan="9" style="width: 540px !important;" class="columna border2-left" style="text-align: center;">
-                            <button  [disabled]="!proveedor.VerAdjudicar" [pTooltip]="proveedor.MensajeAdjudicar"  class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
+                        <td colspan="9" style="width: 540px !important;" class="columna border2-left">
+                            <button  [disabled]="!proveedor.VerAdjudicar" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                 Adjudicar
                             </button>
+                            <br/>
+                            <label for="Mensaje" [ngStyle]="{'color': (proveedor.MensajeAdjudicar == 'Adjudicar') ? 'green' : 'red'}">{{proveedor.MensajeAdjudicar}}</label>
                         </td>
                     </ng-container>
                 </tr>
