@@ -281,6 +281,7 @@ export class SolpPosicion {
         if (this.esTipoPosicionMaterial){
             this.validateImputaciones();
         }        
+        
     }
 
     public validateSubposiciones() {
@@ -387,7 +388,7 @@ export class SolpPosicion {
     }
 
     public validateDatosPosicion() {
-        this.tabsPosicionValidos.tabDatosPosicion = true;       
+        this.tabsPosicionValidos.tabDatosPosicion = true;  
         if (typeof this.selectGrupoCompras === "undefined" || this.selectGrupoCompras.Id == 0)
         {
           this.tabsPosicionValidos.tabDatosPosicion = false;
@@ -423,7 +424,9 @@ export class SolpPosicion {
 
               return this.mensaje;
             }
+
             let hasCodigoServicio = typeof this.codigoServicio != "undefined" && this.codigoServicio;
+
             if(!hasCodigoServicio)
             {
                 if (!this.modelo || this.modelo == "" || this.modelo == undefined)
@@ -470,8 +473,6 @@ export class SolpPosicion {
             return this.mensaje;
         }
 
-        
-
         if (!this.tareaSubcontratarObj || typeof this.tareaSubcontratarObj === "undefined" || this.tareaSubcontratarObj == "")
         {
             this.tabsPosicionValidos.tabPosiciones = false;
@@ -481,14 +482,14 @@ export class SolpPosicion {
         }
 
         if (tipoSolpSap != EnumTipoSolpSap.Mantenimiento) {
+            this.mensaje = "";
             if (!this.selectAlmacenEntrega || typeof this.selectAlmacenEntrega === "undefined" || typeof this.selectAlmacenEntrega === undefined) {
                 this.tabsPosicionValidos.tabPosiciones = false;
                 this.mensaje = "Pos. " + this.numeroPosicion + " - El campo almacen de entrega es obligatorio";
-      
                 return this.mensaje;
             }
         }
-
+        
         if (this.esTipoPosicionServicio) {
             if (!this.tipoImputacion || typeof this.tipoImputacion === "undefined" || this.tipoImputacion === undefined )
             {
