@@ -131,6 +131,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
         if (this.esCliente()) {
             this.clienteCodigo = sessionStorage.getItem("proveedor");
+            this.ordenDeCarga.CUITCliente = Number.parseInt(this.clienteCodigo);
             if (this.ordenDeCargaId == 0 && !(this.esComercial || this.esCorredor)) {
                 this.cargarContratosDisponibles(this.clienteCodigo);
             }
@@ -586,6 +587,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.ordenDeCarga.Producto_Id = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId;
             this.Producto = this.ordenDeCarga.ContratoSeleccionado.Producto.MaterialId.toString();
             let materialSeleccionado = this.listaMateriales.find(mat => mat.MaterialId === this.ordenDeCarga.Producto_Id);
+            this.cambioProducto();
             this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
             this.cambioProducto();
         }

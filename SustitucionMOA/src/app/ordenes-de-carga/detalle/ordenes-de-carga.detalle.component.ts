@@ -731,6 +731,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 }
             );
         } catch (e) {
+            document.getElementById("closemodalAnularOrdenVencimiento").click();
             this.mensajeComponent.setErrorMsg(e);
             document.getElementById("closemodalAnularOrdenVencimiento").click();
         }
