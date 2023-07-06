@@ -328,8 +328,6 @@ export class DetalleConsultaComponent extends BaseComponent {
             Recordado: false,
             FechaRecordado: new Date(),
         };
-        debugger;
-        return;
         this.subscription = this.service
             .agregarComentario(this.consultaId, comentario, this.listaArchivos)
             .subscribe(
