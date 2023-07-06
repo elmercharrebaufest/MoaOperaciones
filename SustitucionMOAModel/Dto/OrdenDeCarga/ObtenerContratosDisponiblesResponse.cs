@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.DataAgro;
+using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOAModel.Dto.OrdenDeCarga
 {
@@ -24,9 +26,47 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         public string NumeroContrato { get; set; }
 
         public MaterialDto Producto { get; set; }
+        public decimal KgDisponiblesTn { get; set; }
+        public string Label
+        {
+            get
+            {
+                return $"{NumeroContrato} - {NombreProducto} - {KgDisponiblesTn}";
+            }
+        }
+        public string NombreProducto
+        {
+            get
+            {
+                return Producto.NombreProducto;
+            }
+        }
 
-        //public string ProductoId { get; set; }
+        public ContratoOrdenFas(Result contratoSAP, List<Material> productosBD)
+        {
+            var producto = productosBD
+                            .Where(p => p.CodigoSap == contratoSAP.Producto.Trim().TrimStart('0'))
+                            .Select(p => new MaterialDto
+                            {
+                                MaterialId = p.Id,
+                                Descripcion = p.Nombre,
+                                CodigoSap = p.CodigoSap
+                            })
+                            .Single();
+            NumeroContrato = contratoSAP.Contrato;
+            KgDisponiblesTn = ObtenerKgDisponiblesTn(contratoSAP);
+            Producto = producto;
+        }
 
-        //public string ProductoDescripcion { get; set; }
+        public ContratoOrdenFas(Entities.OrdenDeCarga orden)
+        {
+            NumeroContrato = orden.ContratoIngresado;
+            Producto = new Models.DataAgro.MaterialDto { MaterialId = orden.Producto_Id };
+        }
+
+        public decimal ObtenerKgDisponiblesTn(Result contratoSAP)
+        {
+            return contratoSAP.KilosPendienteEntrega / 1000;
+        }
     }
 }

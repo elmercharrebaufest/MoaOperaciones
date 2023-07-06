@@ -79,7 +79,7 @@ namespace SustitucionMOAUtils.Services
                 LlenarOrdenAlta(ordenDeCarga, usuario);
 
                 var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
-                
+
                 var crearPedido = VerificarOrden(ordenDeCarga, ordenDeCarga.Cliente, false, puedeEnviarASAP);
                 Log.Debug(this.GetType().Name, "Agregar", $" crearPedido: {crearPedido}");
                 repositorio.Agregar(ordenDeCarga);
@@ -2401,19 +2401,8 @@ namespace SustitucionMOAUtils.Services
 
                 var contratosDisponiblesResp = new ObtenerContratosDisponiblesResponse
                 {
-                    Contratos = consumerRes.Resultados.Select(x => new ContratoOrdenFas
-                    {
-                        NumeroContrato = x.Contrato,
-                        Producto = productosBD
-                            .Where(p => p.CodigoSap == x.Producto.Trim().TrimStart('0'))
-                            .Select(p => new MaterialDto
-                            {
-                                MaterialId = p.Id,
-                                Descripcion = p.Nombre,
-                                CodigoSap = p.CodigoSap
-                            })
-                            .Single()
-                    }).ToList()
+                    Contratos = consumerRes.Resultados.Select(x => new ContratoOrdenFas(x, productosBD)
+                    ).OrderBy(contrato => contrato.NombreProducto).ToList()
                 };
 
                 return contratosDisponiblesResp;

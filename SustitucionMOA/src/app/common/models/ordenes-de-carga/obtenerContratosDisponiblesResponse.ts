@@ -1,9 +1,9 @@
 import { Material } from "../material";
 
 export interface ObtenerContratosDisponiblesResponse {
-    
+
     Contratos: ContratoOrdenFas[];
-    
+
     Info: string;
     Error: string;
     Logout: boolean;
@@ -11,5 +11,8 @@ export interface ObtenerContratosDisponiblesResponse {
 
 export interface ContratoOrdenFas {
     NumeroContrato: string;
-    Producto: Material
+    Producto: Material;
+    KgDisponiblesTn: number;
+    NombreProducto: string;
+    Label: string;
 }

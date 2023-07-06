@@ -59,9 +59,9 @@
                                     <p-dropdown name="cmbContratos"
                                         [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente"
                                         [(ngModel)]="ordenDeCarga.ContratoSeleccionado" [options]="contratosDisponibles"
-                                        optionLabel="NumeroContrato" placeholder="Seleccione un Contrato"
-                                        (ngModelChange)="onContratoSeleccionadoChanged()" [filter]="true"
-                                        filterBy="value.NumeroContrato">
+                                        optionLabel="Label"
+                                        placeholder="Seleccione un Contrato - Producto - Kg Disponibles"
+                                        (ngModelChange)="onContratoSeleccionadoChanged()" [filter]="true">
                                     </p-dropdown>
                                 </div>
                             </div>

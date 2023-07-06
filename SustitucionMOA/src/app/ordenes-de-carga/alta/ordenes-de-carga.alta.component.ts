@@ -1096,6 +1096,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         const cuit = this.ordenDeCarga.CUITChofer ? this.ordenDeCarga.CUITChofer.toString() : "";
         if (!this.revisarCUITFormatoValido(cuit))
             return;
+        if (this.mensajesOrdenDeCarga[campo])
+            this.floatMsgService.setMsgsEmpty();
         this.validando[campo] = true;
         this.mensajesOrdenDeCarga[campo] = null;
         this.service.validarCuilChofer(cuit).subscribe(result => {
@@ -1112,6 +1114,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         const cuit = this.ordenDeCarga.CUITTransporte ? this.ordenDeCarga.CUITTransporte.toString() : "";
         if (!this.revisarCUITFormatoValido(cuit))
             return;
+        if (this.mensajesOrdenDeCarga[campo])
+            this.floatMsgService.setMsgsEmpty();
         this.validando[campo] = true;
         this.mensajesOrdenDeCarga[campo] = null;
         this.service.validarCuitTransporte(cuit).subscribe(result => {

@@ -18,6 +18,24 @@ namespace SustitucionMOAModel.Models.DataAgro
         public string CodigoSap { get; set; }
         public bool ValidaSisaRuca { get; set; }
 
-        public MaterialDto () { }
+        public MaterialDto() { }
+
+        public string NombreProducto
+        {
+            get
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(Descripcion))
+                        return "";
+                    var splited = Descripcion.Split('-');
+                    return splited.LastOrDefault();
+                }
+                catch
+                {
+                    return "";
+                }
+            }
+        }
     }
 }
