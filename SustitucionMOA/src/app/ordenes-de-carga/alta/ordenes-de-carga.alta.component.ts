@@ -130,9 +130,18 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.ordenDeCarga.CUITCliente = 0;
         }
         if (this.esCliente()) {
-            this.clienteCodigo = sessionStorage.getItem("proveedor");
-            this.ordenDeCarga.CUITCliente = Number.parseInt(this.clienteCodigo);
-            if (this.ordenDeCargaId == 0 && !(this.esComercial || this.esCorredor)) {
+            const esInterno = this.esComercial || this.esCorredor;
+            if (!esInterno) {
+                this.clienteSeleccionado = {
+                    id: sessionStorage.getItem("proveedorId"),
+                    CUIT: sessionStorage.getItem("cuit"),
+                    CodigoProveedor: sessionStorage.getItem("proveedor")
+                }
+                this.clienteCodigo = this.clienteSeleccionado.CodigoProveedor;
+                this.ordenDeCarga.CUITCliente = this.clienteSeleccionado.CUIT;
+            }
+
+            if (this.ordenDeCargaId == 0 && !esInterno) {
                 this.cargarContratosDisponibles(this.clienteCodigo);
             }
         }
