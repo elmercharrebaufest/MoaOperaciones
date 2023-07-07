@@ -89,5 +89,11 @@
                     /endpoint[@name='SI_MMRFC_OBTENER_TIPO_CAMBIO']
                     /@address" />
   </parameter>
+  <parameter name="BAPI_PO_CHANGEPortType Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                    /endpoint[@name='BAPI_PO_CHANGEPortType']
+                    /@address" />
+  </parameter>
 </parameters>
 
