@@ -169,9 +169,9 @@
                            /@value" />
 	</parameter>
 
-	<parameter name="EmailToComercialesFFAA Config">
+	<parameter name="EmailToComercialesAlimAnimal Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/appSettings/add[@key='EmailToComercialesFFAA']
+							match="/configuration/appSettings/add[@key='EmailToComercialesAlimAnimal']
                            /@value" />
 	</parameter>
 

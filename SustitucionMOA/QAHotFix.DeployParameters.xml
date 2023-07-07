@@ -36,7 +36,7 @@
 	<setParameter name="EmailAsuntoPrefijo Config" value="[QAHOTFIX] " />
 	<setParameter name="EmailToCobranzas Config" value="moaoperaciones@baufest.com;Ivan.Curtis@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar" />
 	<setParameter name="EmailToComerciales Config" value="moaoperaciones@baufest.com;Ivan.Curtis@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
-	<setParameter name="EmailToComercialesFFAA Config" value="moaoperaciones@baufest.com;Ivan.Curtis@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
+	<setParameter name="EmailToComercialesAlimAnimal Config" value="moaoperaciones@baufest.com;Ivan.Curtis@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
 	<setParameter name="EmailToReporteLogins Config" value="moaoperaciones@baufest.com" />
 
 
