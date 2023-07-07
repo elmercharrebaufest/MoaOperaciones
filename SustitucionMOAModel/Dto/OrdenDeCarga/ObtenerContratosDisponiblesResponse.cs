@@ -72,7 +72,17 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                 Abreviacion = producto?.Abreviacion
             };
         }
-
+        public ContratoOrdenFas(Entities.OrdenDeCarga orden, Result contratoSAP)
+        {
+            NumeroContrato = orden.ContratoIngresado;
+            var descripcion = orden.Producto != null ? orden.Producto.Nombre : null;
+            Producto = new Models.DataAgro.MaterialDto
+            {
+                MaterialId = orden.Producto_Id,
+                Descripcion = descripcion
+            };
+            KgDisponiblesTn = ObtenerKgDisponiblesTn(contratoSAP);
+        }
         public decimal ObtenerKgDisponiblesTn(Result contratoSAP)
         {
             return contratoSAP.KilosPendienteEntrega;
