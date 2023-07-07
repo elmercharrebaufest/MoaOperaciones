@@ -2795,6 +2795,7 @@ namespace SustitucionMOAUtils.Services
         {
             ValidarCuilChofer(orden);
             ValidarReventa(orden, usuario);
+            ValidarKgDisponibles(orden, usuario);
         }
 
         private void ValidarCuilChofer(OrdenDeCarga orden)
@@ -2825,6 +2826,33 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        /// <summary>
+        /// Validar la cantidad de kgs disponibles es la adecuada
+        /// </summary>
+        /// <param name="orden"></param>
+        /// <param name="usuario"></param>
+        private void ValidarKgDisponibles(OrdenDeCarga orden, Usuario usuario)
+        {
+
+            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodasOrdenesDeCarga);
+            var esComercial = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaComerciales);
+            var esMesaFas = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaMesaFas);
+            var esPuerto = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaPuerto);
+
+            var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
+            if (!esInterno)
+            {
+                var contratoSAP = consumer.ObtenerContratoSAP(orden);
+                if (contratoSAP == null)
+                    throw new InfoCustomException("No se encontro el contrato en SAP");
+
+                var contratoFAS = new ContratoOrdenFas(orden, contratoSAP);
+
+                if (contratoFAS.KgDisponiblesTn == 0)
+                    throw new InfoCustomException("El contrato seleccionado no tiene kg disponibles");
+            }
+
+        }
         private ControlCargaResponseHandler ControlarCarga(OrdenDeCarga ordenDeCarga, string codigoProveedor, bool soloSisa)
         {
             var controlarCargaReq = new ControlCargaRequest

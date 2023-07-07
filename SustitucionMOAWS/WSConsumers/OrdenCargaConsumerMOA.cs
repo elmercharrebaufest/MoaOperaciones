@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
+using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
@@ -18,6 +19,7 @@ using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -446,6 +448,30 @@ namespace SustitucionMOAWS.WSConsumers
                 FECHA_OP = SAPFormatter.PrepararFecha(desde),
                 FECHA_OP_HASTA = SAPFormatter.PrepararFecha(hasta)
             }}.ToArray();
+        }
+        public Result ObtenerContratoSAP(OrdenDeCarga orden)
+        {
+            var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
+            var request = new OrdenCargaVisualizarClienteWSMOARequest
+            {
+                Contrato = numeroContrato,
+                TipoContrato = "",
+                Fechas = ObtenerFechas()
+            };
+
+            var contratoSAP = OrdenCargaVisualizarClienteExecute(request).Resultados.FirstOrDefault();
+            return contratoSAP;
+        }
+        private List<FechaWS> ObtenerFechas()
+        {
+            return new List<FechaWS>
+                {
+                    new FechaWS
+                    {
+                        fechaFin = DateTime.Now,
+                        fechaInicio = DateTime.Parse("2015-01-01")
+                    }
+                };
         }
         private CrearEntregaRequest LimpiarRequestSinPedidoAnticipado(CrearEntregaRequest entregaReq)
         {
