@@ -963,52 +963,6 @@ namespace SustitucionMOATest.Services
         }
 
         [Test()]
-        public void ConstruirCuerpoMailNotificacionVariosContratosTest()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            var response = target.ConstruirCuerpoMailNotificacionVariosContratos(ordenDeCarga.Id);
-            var result = new EmailSenderData()
-            {
-                Asunto = "Varios ctto pendientes",
-                Cuerpo = CrearAsuntoNotificacionVariosContratos()
-            };
-            Assert.AreEqual(result.Asunto, response.Asunto);
-            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
-        }
-
-        [Test()]
-        public void NotificarVariosContratosTest()
-        {
-            EjecutarServidoMail();
-            var expected = "Notificación enviada";
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["HostEmail"] = "127.0.0.1";
-            ConfigurationManager.AppSettings["PortEmail"] = "1025";
-            ConfigurationManager.AppSettings["EmailFrom"] = "moaoperaciones@molinosagro.com.ar";
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            var emailSender = target.ConstruirCuerpoMailNotificacionVariosContratos(ordenDeCarga.Id);
-            var response = target.NotificarVariosContratos(emailSender);
-            Assert.AreEqual(expected, response);
-        }
-
-        [Test()]
         public void ConstruirCuerpoMailNotificacionVariosPedidosTest()
         {
             ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";

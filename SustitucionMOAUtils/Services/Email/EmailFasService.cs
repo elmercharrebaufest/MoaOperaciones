@@ -16,6 +16,7 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string TEMPLATE_NOTIFICACION_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
         
         private static readonly string DireccionMailAlimentacionAnimal = ConfigurationManager.AppSettings["EmailToComercialesAlimAnimal"];
+        private static readonly string DireccionMailAuditoriaOrdenesVencidas = ConfigurationManager.AppSettings["EmailToAuditoriaOrdenesVencidas"];
         private static readonly string DireccionMailCobranzas = ConfigurationManager.AppSettings["EmailToCobranzas"];
         private static readonly string DireccionMailComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
         private static readonly string DireccionMailMesaEntrSanLorenzo = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
@@ -105,7 +106,53 @@ namespace SustitucionMOAUtils.Services.Email
             };
             EnviarMail(emailSenderData);
         }
-        
+
+        public void EnviarMailVariosContratos(OrdenDeCarga ordenDeCarga)
+        {
+            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
+
+            var descripcion = "Se encontraron varios contratos para el mismo cliente";
+            var cabecera = "Orden: ";
+            var tablaOrdenes = GenerarTablaOrdenesANotificar(new OrdenDeCarga[] { ordenDeCarga });
+            var cuerpo = string.Format(cuerpoTemplate, "", "", tablaOrdenes, descripcion, cabecera);
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailComerciales }),
+                Asunto = GenerarAsunto($"Varios ctto pendientes - {ordenDeCarga.Cliente.RazonSocial}"),
+                Cuerpo = cuerpo
+            };
+            EnviarMail(emailSenderData);
+        }
+
+        public void EnviarMailVencieronOrdenesDeCarga(List<OrdenDeCarga> ordenesDeCarga)
+        {
+            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
+            string descripcion;
+            var tablaOrdenes = new StringBuilder(string.Empty);
+            var cabecera = string.Empty;
+
+            if (ordenesDeCarga.Count > 0)
+            {
+                descripcion = $"Se informa que el día {DateTime.Now} se han vencido las siguientes órdenes de carga:";
+                cabecera = "Órdenes: ";
+                tablaOrdenes = GenerarTablaOrdenesANotificar(ordenesDeCarga);
+            }
+            else
+            {
+                descripcion = $"Se informa que para el día {DateTime.Now} no hay órdenes de carga vencidas";
+            }
+            var cuerpo = string.Format(cuerpoTemplate, "", "", tablaOrdenes, descripcion, cabecera);
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailAuditoriaOrdenesVencidas }),
+                Asunto = GenerarAsunto($"Molinos Agro - Notificación de órdenes vencidas"),
+                Cuerpo = cuerpo
+            };
+            EnviarMail(emailSenderData);
+        }
+
 
         private StringBuilder GenerarTablaOrdenesANotificar(IEnumerable<OrdenDeCarga> ordenes)
         {

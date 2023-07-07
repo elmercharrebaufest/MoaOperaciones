@@ -115,7 +115,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 if (!string.IsNullOrEmpty(ordenDeCarga.ContratosRespuesta))
                 {
-                    NotificarVariosContratos(ConstruirCuerpoMailNotificacionVariosContratos(ordenDeCarga.Id));
+                    emailFasService.EnviarMailVariosContratos(ordenDeCarga);
                 }
                 NotificarVariasFacturas(ordenDeCarga);
 
@@ -959,24 +959,9 @@ namespace SustitucionMOAUtils.Services
                 }
             }
             repositorio.GuardarCambios();
-            NotificarVencimientoOrdenCarga(ordenes);
+            emailFasService.EnviarMailVencieronOrdenesDeCarga(ordenes);
 
             return ordenes;
-        }
-
-        public void NotificarVencimientoOrdenCarga(List<OrdenDeCarga> ordenes)
-        {
-
-            var emailSenderData = ConstruirCuerpoOrdenesVencidas(ordenes);
-
-            if (emailSenderData != null)
-            {
-                //if (!HttpContext.Current.IsDebuggingEnabled)
-                //{
-                EmailSender.EnviarMail(emailSenderData);
-                //}
-            }
-
         }
 
         public string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario)
@@ -1013,48 +998,6 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return SuccessMsg.OrdenDeCargaAnulada;
-        }
-        public EmailSenderData ConstruirCuerpoOrdenesVencidas(List<OrdenDeCarga> ordenes)
-        {
-            var emailSenderData = new EmailSenderData();
-            var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
-            var mailsAuditoriaOrdenesVencidas = ConfigurationManager.AppSettings["EmailToAuditoriaOrdenesVencidas"];
-            var titulo = $"Se informa que el día {DateTime.Now.ToString()} se han vencido las siguientes ordenes de carga:";
-            var cabecera = "Ordenes:";
-            try
-            {
-                if (string.IsNullOrEmpty(mailsComerciales))
-                {
-                    return null;
-                }
-                emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mailsComerciales, mailsAuditoriaOrdenesVencidas });
-                if (emailSenderData.Mails.Count == 0)
-                {
-                    return null;
-                }
-                var ordenVencidas = new StringBuilder();
-                foreach (var orden in ordenes)
-                {
-                    ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
-                }
-                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
-                emailSenderData.Asunto = $"Molinos Agro - Notificación de ordenes Vencidas";
-                if (ordenes.Count == 0)
-                {
-                    emailSenderData.Cuerpo = $"Se informa que para el dia {DateTime.Now} no hay ordenes de carga vencidas";
-                }
-                else
-                {
-                    emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenes[0].Id, ordenVencidas, titulo, cabecera);
-                }
-
-                return emailSenderData;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-                return null;
-            }
         }
 
         public OrdenDeCargaEditarDto ObtenerEditar(string mailUsuario, int ordenId)
@@ -2205,41 +2148,6 @@ namespace SustitucionMOAUtils.Services
             ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
             emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
             emailSenderData.Asunto = "Varios pedidos pendientes";
-            return emailSenderData;
-        }
-        public string NotificarVariosContratos(EmailSenderData emailSenderData)
-        {
-            string mensaje = "";
-            try
-            {
-                if (emailSenderData != null)
-                {
-                    EmailSender.EnviarMail(emailSenderData);
-                }
-                mensaje = "Notificación enviada";
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-
-            return mensaje;
-        }
-
-        public EmailSenderData ConstruirCuerpoMailNotificacionVariosContratos(int ordenDeCargaId)
-        {
-            var emailSenderData = new EmailSenderData();
-            var ordenVencidas = new StringBuilder();
-            string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-            string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
-            var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
-            var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
-            emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mailsComerciales, mailsMesaVentaFas });
-            string titulo = "Se encontraron varios contratos para el mismo cliente";
-            var cabecera = "Orden :";
-            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
-            emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
-            emailSenderData.Asunto = $"Varios ctto pendientes - {orden.Cliente.RazonSocial}";
             return emailSenderData;
         }
 

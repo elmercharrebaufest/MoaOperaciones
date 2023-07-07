@@ -18,5 +18,9 @@ namespace SustitucionMOAUtils.Interfaces
         void EnviarMailValidacionesCrediticias(OrdenDeCarga ordenDeCarga);
         
         void EnviarMailVariasFacturasPendientes(OrdenDeCarga ordenDeCarga);
+
+        void EnviarMailVariosContratos(OrdenDeCarga ordenDeCarga);
+
+        void EnviarMailVencieronOrdenesDeCarga(List<OrdenDeCarga> ordenesDeCarga);
     }
 }
