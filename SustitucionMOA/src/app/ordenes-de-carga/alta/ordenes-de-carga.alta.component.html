@@ -156,9 +156,11 @@
                                         Planta:
                                     </div>
                                     <div class="styled-select" style="overflow: initial;">
-                                        <p-dropdown name="cmbPlantas" [(ngModel)]="plantaSeleccionada"
-                                            [options]="listaPlantas" placeholder="Seleccione una planta"
-                                            (ngModelChange)="onPlantaSeleccionadaChanged()" optionLabel="Codigo">
+                                        <p-dropdown name="cmbPlantas"
+                                            [(ngModel)]="plantaSeleccionada" [options]="listaPlantas"
+                                            optionLabel="Codigo" placeholder="Seleccione una planta"
+                                            (ngModelChange)="onPlantaSeleccionadaChanged()" [filter]="true"
+                                            filterBy="value.Codigo">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -167,10 +169,11 @@
                                         Domicilio:
                                     </div>
                                     <div class="styled-select" style="overflow: initial;">
-                                        <p-dropdown name="cmbDomicilios" [(ngModel)]="domicilioSeleccionado"
-                                            [options]="listaDomicilios" placeholder="Seleccione un domicilio"
-                                            (ngModelChange)="onDomicilioSeleccionadoChanged()"
-                                            optionLabel="Descripcion">
+                                        <p-dropdown name="cmbDomicilios"
+                                            [(ngModel)]="domicilioSeleccionado" [options]="listaDomicilios"
+                                            optionLabel="Descripcion" placeholder="Seleccione un domicilio"
+                                            (ngModelChange)="onDomicilioSeleccionadoChanged()" [filter]="true"
+                                            filterBy="value.Descripcion">
                                         </p-dropdown>
                                     </div>
                                 </div>
