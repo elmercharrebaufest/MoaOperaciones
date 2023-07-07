@@ -39,7 +39,6 @@ namespace SustitucionMOAUtils.Interfaces
         VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request);
         ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request);
         string NotificarVariosPedidos(int ordenDeCargaId);
-        string NotificarVariosContratos(EmailSenderData emailSenderData);
         string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario);
         string ActivarOC(int ordenId, string mailUsuario);
         OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega);

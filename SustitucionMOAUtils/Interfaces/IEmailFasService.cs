@@ -9,8 +9,18 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IEmailFasService
     {
+        void EnviarMailContratoSinKm(OrdenDeCarga ordenDeCarga);
+        
         void EnviarMailContratoVencido(OrdenDeCarga ordenDeCarga);
 
+        void EnviarMailTransporteNoExiste(OrdenDeCarga ordenDeCarga);
+        
+        void EnviarMailValidacionesCrediticias(OrdenDeCarga ordenDeCarga);
+        
         void EnviarMailVariasFacturasPendientes(OrdenDeCarga ordenDeCarga);
+
+        void EnviarMailVariosContratos(OrdenDeCarga ordenDeCarga);
+
+        void EnviarMailVencieronOrdenesDeCarga(List<OrdenDeCarga> ordenesDeCarga);
     }
 }
