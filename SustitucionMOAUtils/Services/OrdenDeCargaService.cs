@@ -324,7 +324,7 @@ namespace SustitucionMOAUtils.Services
             ordenEditar.Producto = product;
             ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
             ordenEditar.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
-
+            ordenEditar.Escalable = ordenDeCarga.Escalable;
             var validaCPEDG = product.ValidaSisaRuca;
             if (validaCPEDG && string.IsNullOrEmpty(ordenDeCarga.CUITDestinatario))
                 UsarCUITClienteParaDestinatario(ordenEditar);
@@ -803,7 +803,8 @@ namespace SustitucionMOAUtils.Services
                         PatenteChasis = x.ChasisAcoplado,
                         NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Sin Enviar a SAP"),
                         EstaSeleccionado = false,
-                        EdicionRechazada = x.EdicionRechazada
+                        EdicionRechazada = x.EdicionRechazada,
+                        Escalable = x.Escalable
                     }).OrderByDescending(y => y.Id).ToList();
             }
             else
