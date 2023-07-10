@@ -50,6 +50,7 @@ export class OrdenDeCarga {
     DomicilioTipo: string;
     DomicilioOrden: number;
     DomicilioDescr: string;
+    Escalable: boolean;
     constructor() {
     }
 }

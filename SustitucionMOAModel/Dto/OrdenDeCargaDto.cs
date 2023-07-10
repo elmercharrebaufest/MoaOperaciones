@@ -44,6 +44,7 @@ namespace SustitucionMOAModel.Dto
         public short DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
         public bool Reventa { get; set; }
+        public bool Escalable { get; set; }
 
         public OrdenDeCargaDto()
         {
@@ -87,6 +88,7 @@ namespace SustitucionMOAModel.Dto
             DomicilioDescr = orden.DomicilioDescr;
             CUITIntermediarioFlete = orden.CUITIntermediarioFlete;
             Reventa = orden.Reventa;
+            Escalable = orden.Escalable;
         }
 
         public int Id { get; set; }
@@ -121,6 +123,7 @@ namespace SustitucionMOAModel.Dto
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
         public bool Reventa { get; set; }
+        public bool Escalable { get; set; }
     }
 
     public class OrdenDeCargaHistorialDto
@@ -200,7 +203,8 @@ namespace SustitucionMOAModel.Dto
         public IEnumerable<OrdenDeCargaCambiosHistorialDto> OrdenDeCargaCambiosHistorial { get; set; }
         public bool FechaVencimientoAmpliada { get; set; }
         public bool EdicionRechazada { get; set; }
-
+        public bool Escalable { get; set; }
+        
         public override bool Equals(object obj)
         {
             return obj is OrdenDeCargaDetalleDto dto &&
@@ -316,7 +320,8 @@ namespace SustitucionMOAModel.Dto
                 RazonSocialDestinatario = orden.RazonSocialDestinatario,
                 CUITIntermediarioFlete = orden.CUITIntermediarioFlete,
                 PlantaCodigo = orden.PlantaCodigo,
-                DomicilioDescr = orden.DomicilioDescr
+                DomicilioDescr = orden.DomicilioDescr,
+                Escalable = orden.Escalable
             };
         }
     }
