@@ -2402,7 +2402,7 @@ namespace SustitucionMOAUtils.Services
                 var contratosDisponiblesResp = new ObtenerContratosDisponiblesResponse
                 {
                     Contratos = consumerRes.Resultados.Select(x => new ContratoOrdenFas(x, productosBD)
-                    ).OrderBy(contrato => contrato.NombreProducto).ToList()
+                    ).OrderBy(contrato => contrato.DescripcionProducto).ToList()
                 };
 
                 return contratosDisponiblesResp;
