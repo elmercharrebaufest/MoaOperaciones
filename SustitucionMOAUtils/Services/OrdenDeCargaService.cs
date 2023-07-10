@@ -92,7 +92,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     emailFasService.EnviarMailContratoVencido(ordenDeCarga);
                 }
-                if (crearPedido && (enviaDirectamenteASAP|| puedeEnviarASAP))
+                if (crearPedido && (enviaDirectamenteASAP || puedeEnviarASAP))
                 {
                     ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
                     var creadaEnSAP = CrearPedidoEnSAP(ordenDeCarga, ordenDeCarga.Cliente, true, puedeEnviarASAP, mailUsuario);
@@ -2853,7 +2853,7 @@ namespace SustitucionMOAUtils.Services
 
                 var contratoFAS = new ContratoOrdenFas(orden, contratoSAP);
 
-                if (contratoFAS.KgDisponiblesTn == 0)
+                if (contratoFAS.KgDisponiblesTn <= 0)
                     throw new InfoCustomException("El contrato seleccionado no tiene kg disponibles");
                 if (contratoFAS.KgDisponiblesTn < 15000)
                     return false;

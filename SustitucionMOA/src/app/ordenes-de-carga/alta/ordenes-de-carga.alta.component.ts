@@ -236,6 +236,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             return false;
         }
 
+        if (this.mensajesOrdenDeCarga.ContratoSeleccionado) {
+            this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCarga.ContratoSeleccionado)
+            return false;
+        }
+
         return true;
     }
 
@@ -1181,6 +1186,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         const esInterno = (this.esComercial || this.esCorredor || this.esAdmin);
 
         if (this.ordenDeCargaId == 0 && !esInterno) {
+            this.floatMsgService.setMsgsEmpty();
             if (this.ordenDeCarga.ContratoSeleccionado) {
                 const { KgDisponiblesTn } = this.ordenDeCarga.ContratoSeleccionado;
                 if (KgDisponiblesTn >= KILOS_DISPONIBLES_APROBADO)
@@ -1188,7 +1194,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
                 const mensaje = "Contrato sin Kilos disponibles.";
 
-                if (KgDisponiblesTn == SIN_KILOS_DISPONIBLES)
+                if (KgDisponiblesTn <= SIN_KILOS_DISPONIBLES)
                     this.mensajesOrdenDeCarga.ContratoSeleccionado = mensaje;
 
                 this.floatMsgService.setInfoMsg(mensaje)

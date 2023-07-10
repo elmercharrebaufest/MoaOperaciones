@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -64,7 +65,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         {
             NumeroContrato = orden.ContratoIngresado;
             var producto = orden.Producto != null ? orden.Producto : null;
-            
+
             Producto = new Models.DataAgro.MaterialDto
             {
                 MaterialId = orden.Producto_Id,
@@ -87,7 +88,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         }
         public decimal ObtenerKgDisponiblesTn(Result contratoSAP)
         {
-            return contratoSAP.KilosPendienteEntrega;
+            return Math.Round(contratoSAP.KilosTotales - contratoSAP.KilosEntregados - contratoSAP.KilosPendienteEntrega, 2);
         }
     }
 }
