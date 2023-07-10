@@ -31,15 +31,15 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         {
             get
             {
-                var kg = KgDisponiblesTn == null ? "" : " - " + KgDisponiblesTn;
-                return $"{NumeroContrato} - {NombreProducto}{kg}";
+                var kg = KgDisponiblesTn == null ? "" : " - " + KgDisponiblesTn + " kg Disp.";
+                return $"{NumeroContrato} - {DescripcionProducto}{kg}";
             }
         }
-        public string NombreProducto
+        public string DescripcionProducto
         {
             get
             {
-                return Producto.NombreProducto;
+                return !string.IsNullOrEmpty(Producto.Abreviacion) ? Producto.Abreviacion : Producto.NombreProducto;
             }
         }
 
@@ -51,7 +51,8 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                             {
                                 MaterialId = p.Id,
                                 Descripcion = p.Nombre,
-                                CodigoSap = p.CodigoSap
+                                CodigoSap = p.CodigoSap,
+                                Abreviacion = p.Abreviacion,
                             })
                             .Single();
             NumeroContrato = contratoSAP.Contrato;
@@ -62,16 +63,19 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         public ContratoOrdenFas(Entities.OrdenDeCarga orden)
         {
             NumeroContrato = orden.ContratoIngresado;
-            var descripcion = orden.Producto != null ? orden.Producto.Nombre : null;
-            Producto = new Models.DataAgro.MaterialDto { 
-                MaterialId = orden.Producto_Id, 
-                Descripcion = descripcion
+            var producto = orden.Producto != null ? orden.Producto : null;
+            
+            Producto = new Models.DataAgro.MaterialDto
+            {
+                MaterialId = orden.Producto_Id,
+                Descripcion = producto?.Nombre,
+                Abreviacion = producto?.Abreviacion
             };
         }
 
         public decimal ObtenerKgDisponiblesTn(Result contratoSAP)
         {
-            return contratoSAP.KilosPendienteEntrega / 1000;
+            return contratoSAP.KilosPendienteEntrega;
         }
     }
 }

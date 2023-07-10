@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace SustitucionMOAModel.Models.DataAgro
 {
@@ -17,6 +13,7 @@ namespace SustitucionMOAModel.Models.DataAgro
         public string Codigo { get; set; }
         public string CodigoSap { get; set; }
         public bool ValidaSisaRuca { get; set; }
+        public string Abreviacion { get; set; }
 
         public MaterialDto() { }
 
