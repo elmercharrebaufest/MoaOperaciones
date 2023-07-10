@@ -4702,8 +4702,6 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-
-
                 var precioTotalPosicion = new List<CotizacionPosicionDto>();
                 var subposiciones = cotizacionDto.CotizacionSubposiciones;
                 var posiciones = cotizacionDto.CotizacionPosiciones;
