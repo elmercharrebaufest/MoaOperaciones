@@ -92,7 +92,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     emailFasService.EnviarMailContratoVencido(ordenDeCarga);
                 }
-                if (crearPedido && enviaDirectamenteASAP)
+                if (crearPedido && (enviaDirectamenteASAP|| puedeEnviarASAP))
                 {
                     ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
                     var creadaEnSAP = CrearPedidoEnSAP(ordenDeCarga, ordenDeCarga.Cliente, true, puedeEnviarASAP, mailUsuario);
@@ -340,7 +340,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     var enviaDirectamenteASAP = ValidarKgDisponiblesEnviaDirectamenteASAP(ordenDeCarga, usuario);
                     var crearPedido = !string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP) || verificarOrden;
-                    if (puedeEnviarASAP && crearPedido && enviaDirectamenteASAP)
+                    if (crearPedido && (enviaDirectamenteASAP || puedeEnviarASAP))
                     {
                         if (string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP))
                         {
