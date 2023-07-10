@@ -62,6 +62,7 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.detalles = result.data;
+                        console.log('this.detalles--->>', this.detalles);
                         this.obtenerKilos();
                     }
                 },
