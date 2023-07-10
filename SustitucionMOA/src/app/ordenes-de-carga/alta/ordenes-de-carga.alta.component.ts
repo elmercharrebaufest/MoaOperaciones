@@ -1169,20 +1169,21 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
     validarKilosDisponibles() {
         this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
+        const esInterno = (this.esComercial || this.esCorredor || this.esAdmin);
 
-        if (this.ordenDeCarga.ContratoSeleccionado) {
-            const { KgDisponiblesTn } = this.ordenDeCarga.ContratoSeleccionado;
-            if (KgDisponiblesTn >= KILOS_DISPONIBLES_APROBADO)
-                return;
+        if (this.ordenDeCargaId == 0 && !esInterno) {
+            if (this.ordenDeCarga.ContratoSeleccionado) {
+                const { KgDisponiblesTn } = this.ordenDeCarga.ContratoSeleccionado;
+                if (KgDisponiblesTn >= KILOS_DISPONIBLES_APROBADO)
+                    return;
 
-            const mensaje = "Contrato sin Kilos disponibles.";
+                const mensaje = "Contrato sin Kilos disponibles.";
 
-            if (KgDisponiblesTn == SIN_KILOS_DISPONIBLES)
-                this.mensajesOrdenDeCarga.ContratoSeleccionado = mensaje;
+                if (KgDisponiblesTn == SIN_KILOS_DISPONIBLES)
+                    this.mensajesOrdenDeCarga.ContratoSeleccionado = mensaje;
 
-            this.floatMsgService.setInfoMsg(mensaje)
+                this.floatMsgService.setInfoMsg(mensaje)
+            }
         }
     }
 }
-
-
