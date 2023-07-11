@@ -118,9 +118,6 @@ namespace SustitucionMOA.Controllers
                             {
                                 item.OrdenCargaId= string.Empty;
                             }
-                            finally {
-                                item.OrdenCargaId = string.Empty;
-                            }
                         }
                     }
                 }
