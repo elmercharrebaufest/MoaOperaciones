@@ -1978,6 +1978,7 @@ namespace SustitucionMOAUtils.Services
                         posicionEntity.GrupoArticulo_Id = grupoArticulo?.Id;
                         posicionEntity.Moneda_Id = moneda?.Id;
                         posicionEntity.Estado = posicion.EstadoPosicion != "X";
+                        Logger.Log.Info($"ObtenerSolpesDesdeSAPJob numero{obtenerSolpRequest.NumeroSolp}, pos: {posicion.NumeroPosicion}, estado:{posicion.EstadoPosicion}.");
 
                         posicionEntity.Tarea = posicion.TextoPosicion;
                         posicionEntity.NroNecesidad = posicion.NumeroRequerimientoInterno;

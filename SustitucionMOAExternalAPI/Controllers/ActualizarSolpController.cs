@@ -25,12 +25,12 @@ namespace SustitucionMOAExternalAPI.Controllers
             try
             {
                 Log.ExternalAPIInfo(string.Format("Se informaron cambios para la SOLP: {0}", nrosolp));
-                //comprasService.ObtenerSolpesDesdeSAPJob(new SustitucionMOAWS.WSConsumers.ObtenerSolpRequest
-                //{
-                //    NumeroSolp = nrosolp.TrimStart('0').PadLeft(10, '0'),
-                //    FechaDesde = new DateTime(2010, 01, 01),
-                //    FechaHasta = DateTime.Now.Date.AddDays(1)
-                //});
+                comprasService.ObtenerSolpesDesdeSAPJob(new SustitucionMOAWS.WSConsumers.ObtenerSolpRequest
+                {
+                    NumeroSolp = nrosolp.TrimStart('0').PadLeft(10, '0'),
+                    FechaDesde = new DateTime(2010, 01, 01),
+                    FechaHasta = DateTime.Now.Date.AddDays(1)
+                });
             }
             catch(Exception ex)
             {
