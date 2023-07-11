@@ -136,6 +136,38 @@
                                 </div>
                             </div>
                         </div>  
+                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
+                            <p-checkbox [ngModelOptions]="{standalone:true}" name="adicional" [(ngModel)]="model.adicional" label="Adicional / Mano de obra administrada / Ajuste" formControlName="adicional"
+                            binary="true" (click)="validacionTrabajoHecho(); limpiarCheck()" [disabled]="estaFinalizada"></p-checkbox>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.adicional">
+                            <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
+                                <strong>Ingrese Nro. de orden de compra</strong>
+                            </div>
+                            <div class="col-xs-12 col-sm-10 col-md-4" style="font-size: 24px; margin-bottom: 20px;">
+                                <p-autoComplete [(ngModel)]="OCSeleccionada"
+                                                [suggestions]="ordenesDeCompra"
+                                                (completeMethod)="searchOrdenDeCompra($event)"
+                                                (onSelect)="selectOC($event)"
+                                                placeholder="Nro de orden de compra"
+                                                field="nroOC"
+                                                formControlName="OCSeleccionada"
+                                                [minLength]="10"
+                                                [forceSelection]="true"
+                                                [disabled]="estaFinalizada"
+                                                (ngModelChange)="validacionTrabajoHecho()">
+                                    <ng-template let-ordenDeCompra pTemplate="item">
+                                        <div class="ui-helper-clearfix">
+                                            <div style="font-size:12px;margin:10px 10px 0 0">{{ordenDeCompra.Mail}}</div>
+                                            <div style="font-size:10px;color:darkgrey;margin:10px 10px 0 0">{{ordenDeCompra.CUIT}} - {{ordenDeCompra.RazonSocial}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-autoComplete>
+                                <div *ngIf="this.model.validarTrabajoHecho == false && (!this.OCSeleccionada || this.OCSeleccionada == '' || this.OCSeleccionada === undefined);">
+                                    <p class="text-danger" style="font-size: 16px; margin-top: 1em;">Campo obligatorio</p>
+                                </div>
+                            </div>
+                        </div>  
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 alinearTitulo">

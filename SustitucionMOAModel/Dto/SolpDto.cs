@@ -87,6 +87,10 @@ namespace SustitucionMOAModel.Dto
         public string ProveedorAsignado { get; set; }
         public bool VerPublicar { get; set; }
         public bool VerCircular { get; set; }
+        public bool? Adicional { get; set; }
+        public string NroOrdenDeCompraAdicional { get; set; }
+
+
 
         public SolpDto() { }
         public SolpDto(Solp entity)

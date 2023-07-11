@@ -39,7 +39,11 @@ export class CotizacionComponent extends ListBaseComponent {
     ];
 
     proveedorSeleccionado: any;
+    OCSeleccionada: any;
+
     proveedores: any[] = new Array();
+    ordenesDeCompra: any[] = new Array();
+
     estaFinalizada = false;
 
     @Output() onEstCompleto = new EventEmitter<any>();
@@ -104,6 +108,8 @@ export class CotizacionComponent extends ListBaseComponent {
             dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required, this.validatorDias]),
             trabajoHecho: new FormControl('', Validators.required),
             proveedorSeleccionado: new FormControl('', Validators.required),    
+            adicional: new FormControl('', Validators.required),
+            OCSeleccionada: new FormControl('', Validators.required)
         });
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
@@ -257,10 +263,20 @@ export class CotizacionComponent extends ListBaseComponent {
         }
     }
 
+    // selectOC(event) {
+    //     try {
+    //         this.model.proveedorAsignado_Id = event.Id;
+    //         this.model.proveedorAsignado = event.RazonSocial;
+    //     } catch (e) {
+    //         this.floatMsgService.setErrorMsg(e);
+    //     }
+    // }
+
+
     validacionTrabajoHecho(){
         this.model.validarTrabajoHecho = true;
 
-        if(this.model.trabajoHecho == true){
+        if(this.model.trabajoHecho == true || this.model.adicional == true){
 
             if(this.model.observacionesCotizacion == ""  || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null){
                 this.model.mensajeCotizacion = "Debe agregar una observación en el paso #4";
@@ -276,22 +292,40 @@ export class CotizacionComponent extends ListBaseComponent {
                 
             }
 
-            if (!this.proveedorSeleccionado || this.proveedorSeleccionado == "" || typeof this.proveedorSeleccionado === "undefined")
-            {
-                this.model.mensajeCotizacion = "Debe agregar un proveedor en el paso #4";
-                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
-                this.model.validarTrabajoHecho = false;
-                
+            if(this.model.trabajoHecho == true){
+                if (!this.proveedorSeleccionado || this.proveedorSeleccionado == "" || typeof this.proveedorSeleccionado === "undefined")
+                {
+                    this.model.mensajeCotizacion = "Debe agregar un proveedor en el paso #4";
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                    this.model.validarTrabajoHecho = false;
+                    
+                }
             }
 
+            if(this.model.adicional == true){
+                if (!this.OCSeleccionada || this.OCSeleccionada == "" || typeof this.OCSeleccionada === "undefined")
+                {
+                    this.model.mensajeCotizacion = "Debe agregar un numero de OC en el paso #4";
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                    this.model.validarTrabajoHecho = false;
+                    
+                }
+            }
             
         }   
-        console.log("validarTrabajoHecho", this.model.validarTrabajoHecho)
         return this.model.validarTrabajoHecho;
     }
 
     limpiarCheck(){
         if(this.model.trabajoHecho == undefined || this.model.trabajoHecho == false){
+            if(!this.estaFinalizada){
+                this.model.proveedorAsignado = "";
+                this.model.proveedorAsignado_Id = null;
+                this.proveedorSeleccionado = null;
+            }
+        }
+
+        if(this.model.adicional == undefined || this.model.adicional == false){
             if(!this.estaFinalizada){
                 this.model.proveedorAsignado = "";
                 this.model.proveedorAsignado_Id = null;
