@@ -60,6 +60,8 @@ namespace SustitucionMOAUtils.Services
         private readonly IVendedorService vendedorService;
         private readonly IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA;
         private readonly IHttpContextService httpContextService;
+        private readonly IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA;
+
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
@@ -76,7 +78,8 @@ namespace SustitucionMOAUtils.Services
             ICrearPedidoConsumerMOA crearPedidoConsumerMOA,
             IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
             IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA, IVendedorService vendedorService,
-            IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA, IHttpContextService httpContextService)
+            IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA, IHttpContextService httpContextService,
+            IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -93,6 +96,7 @@ namespace SustitucionMOAUtils.Services
             this.vendedorService = vendedorService;
             this.obtenerTipoCambioConsumerMOA = obtenerTipoCambioConsumerMOA;
             this.httpContextService = httpContextService;
+            this.obtenerOrdenDeCompraConsumerMOA = obtenerOrdenDeCompraConsumerMOA;
 
 
         }
@@ -5027,6 +5031,11 @@ namespace SustitucionMOAUtils.Services
 
                 throw;
             }
+        }
+
+        public OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC) {
+            var result = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra(nroOC);
+            return result;
         }
     }
 

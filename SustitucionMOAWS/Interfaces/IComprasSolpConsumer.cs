@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.WSConsumers;
 
@@ -44,5 +46,10 @@ namespace SustitucionMOAWS.Interfaces
     public interface IObtenerTipoCambioConsumerMOA
     {
         ObtenerTipoCambioConsumerMOAResponse Request(string fecha, string monedaDestino, string monedaOrigen);
+    }
+
+    public interface IObtenerOrdenDeCompraConsumerMOA
+    {
+        OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
     }
 }

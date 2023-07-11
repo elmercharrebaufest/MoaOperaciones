@@ -38,7 +38,8 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerContratoSolpConsumerMOA> obtenerContratoSolpConsumerMOAMock;
         private Mock<IVendedorService> vendedorServiceMock;
         private Mock<IObtenerTipoCambioConsumerMOA> obtenerTipoCambioConsumerMOAMock;
-
+        private Mock<IObtenerOrdenDeCompraConsumerMOA> obtenerOrdenDeCompraConsumerMOA;
+         
         private Mock<IHttpContextService> httpContextServiceMock;
         private string filePath = "";
 
@@ -64,6 +65,7 @@ namespace SustitucionMOATest.Services
             // httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
 
             filePath = Path.GetFullPath(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
+            obtenerOrdenDeCompraConsumerMOA = new Mock<IObtenerOrdenDeCompraConsumerMOA>();
 
             target = new ComprasService(
                 repositorioMock.Object,
@@ -80,7 +82,8 @@ namespace SustitucionMOATest.Services
                 obtenerContratoSolpConsumerMOAMock.Object,
                 vendedorServiceMock.Object,
                 obtenerTipoCambioConsumerMOAMock.Object,
-                httpContextServiceMock.Object
+                httpContextServiceMock.Object,
+                obtenerOrdenDeCompraConsumerMOA.Object
                 );
         }
 

@@ -610,7 +610,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 !pos.tabsPosicionValidos.tabDatosPosicion ||
                                 !pos.tabsPosicionValidos.tabFechas ||
                                 (pos.esTipoPosicionServicio && !pos.tabsPosicionValidos.tabSubposiciones) ||
-                                !pos.tabsPosicionValidos.tabPosiciones || this.validarContratoMarco()) {                                     
+                                !pos.tabsPosicionValidos.tabPosiciones || this.validarContratoMarco() || this.validarAdicional() || this.validarCondicionesEspeciales()) {                                     
                                     return paso.Completo = false;
                             } else {
                                 return pos.mensaje = "";
@@ -621,6 +621,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
         }
     }
+
     validarContratoMarco(){
         var validacionContratoTrabajo = false;
 
@@ -628,6 +629,24 @@ export class SolpComponent extends BaseComponent implements OnInit {
             return validacionContratoTrabajo = true;
         }
         return validacionContratoTrabajo;
+    }
+
+    validarAdicional(){
+        var validacionAdicional = false;
+
+        if(this.solpActual.posiciones.some(x => x.numeroContratoSuperior != "") && this.solpActual.adicional == true){
+            return validacionAdicional = true;
+        }
+        return validacionAdicional;
+    }
+    
+    validarCondicionesEspeciales(){
+        var validacionCheck = false;
+
+        if(this.solpActual.trabajoHecho == true && this.solpActual.adicional == true){
+            return validacionCheck = true;
+        }
+        return validacionCheck;
     }
 
     mostrarMensajeCampos(){
@@ -639,6 +658,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         if(this.validarContratoMarco()){
             this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las solp con contrato marco cargado no pueden tener el tilde en el check de trabajo hecho en el paso #4" });
+        }
+
+        if(this.validarAdicional()){
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las solp con contrato marco cargado no pueden tener el tilde en el check de adicional en el paso #4" });
+        }
+
+        if(this.validarCondicionesEspeciales()){
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las solp no pueden tener el tilde en el check de adicional y el check de trabajo hecho en el paso #4" });
         }
     }
 

@@ -29,6 +29,8 @@ namespace SustitucionMOAModel.Entities
         public Guid? EmailLinkToken { get; set; }
         public bool? TrabajoYaHecho { get; set; }
         public int? ProveedorAsignado_Id { get; set; }
+        public bool? Adicional { get; set; }
+        public string NroOrdenDeCompraAdicional { get; set; }
 
         [ForeignKey("ProveedorAsignado_Id")]
         public virtual Usuario ProveedorAsignado { get; set; }
