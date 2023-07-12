@@ -95,6 +95,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.ReporteContrato
 
     public class Detail
     {
+        public string OrdenCargaId { get; set; }
+
         public string Pedido { get; set; }
 
         public string Entrega { get; set; }
