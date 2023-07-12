@@ -99,11 +99,29 @@ namespace SustitucionMOA.Controllers
             {
                 var mailUsuario = SessionPersister.getUsername();
                 var detalleContrato = reporteContratoService.GetContratosDetalle(contrato, SessionPersister.Proveedor, fechaInicio, fechaFin);
+                
                 Result result = new Result();
                 foreach (var det in detalleContrato.data.Resultados)
                 {
                     result.Detalles = det.Detalles;
+
+                    foreach(var item in result.Detalles)
+                    {
+                        if (!item.Entrega.Equals(string.Empty))
+                        {
+                            try
+                            {
+                                var orden = ordenDeCargaService.ObtenerPorNroEntrega(mailUsuario, item.Entrega);
+                                item.OrdenCargaId = orden.Id.ToString();
+                            }
+                            catch(Exception ex)
+                            {
+                                item.OrdenCargaId= string.Empty;
+                            }
+                        }
+                    }
                 }
+   
                 return JsonCustom(new { data = result.Detalles });
             }
             catch (InfoCustomException e)

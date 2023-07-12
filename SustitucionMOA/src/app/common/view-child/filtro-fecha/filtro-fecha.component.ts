@@ -33,7 +33,7 @@ export class FiltroFechaComponent implements OnInit {
 
         $(document).on("mouseover", '.form_datetime1', function () {
             $(".form_datetime1").datetimepicker({
-                format: 'yyyy/mm/dd',
+                format: 'yyyy-mm-dd',
                 language: 'es',
                 weekStart: 1,
                 todayBtn: 1,
