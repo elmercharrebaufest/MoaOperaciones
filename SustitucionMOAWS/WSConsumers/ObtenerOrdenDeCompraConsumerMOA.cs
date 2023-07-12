@@ -68,7 +68,7 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIESKLC[] POSRVACCESSVALUES = new BAPIESKLC[] { };
                 BAPIMEPOSERIALNO[] SERIALNUMBER = new BAPIMEPOSERIALNO[] { };
 
-                var algo = service.BAPI_PO_GETDETAIL1(ACCOUNT_ASSIGNMENT,
+                var result = service.BAPI_PO_GETDETAIL1(ACCOUNT_ASSIGNMENT,
                     DELIVERY_ADDRESS,
                     HEADER_TEXT,
                     INVOICEPLAN,
