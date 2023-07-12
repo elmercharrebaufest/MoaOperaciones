@@ -32,7 +32,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         {
             get
             {
-                var kg = KgDisponiblesTn == null ? "" : " - " + KgDisponiblesTn + " kg Disp.";
+                var kg = KgDisponiblesTn == null ? "" : $" {KgDisponiblesTn} kg Disp.";
                 return $"{NumeroContrato} - {DescripcionProducto}{kg}";
             }
         }
@@ -88,7 +88,10 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         }
         public decimal ObtenerKgDisponiblesTn(Result contratoSAP)
         {
-            return Math.Round(contratoSAP.KilosTotales - contratoSAP.KilosEntregados - contratoSAP.KilosPendienteEntrega, 2);
+            var pedidosPendientesCargar = contratoSAP.Detalles.Where(det =>
+                det.CantidadEntregada == 0 && string.IsNullOrEmpty(det.Entrega)).Count();
+            var kgEstandar = contratoSAP.Producto.TrimStart('0') == "99709" ? 20000 : 30000;
+            return Math.Round(contratoSAP.KilosPendienteEntrega - (pedidosPendientesCargar * kgEstandar), 2);
         }
     }
 }
