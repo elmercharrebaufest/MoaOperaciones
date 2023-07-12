@@ -52,6 +52,24 @@ namespace SustitucionMOAUtils.Services
         private readonly string _entregaEstadoPendiente = "La entrega sigue pendiente.";
         private readonly string _transporteNoExiste = "El transporte no existe";
 
+        private readonly List<EstadoOrdenDeCarga> _estadosListarNoInternos = new List<EstadoOrdenDeCarga>
+        {
+            EstadoOrdenDeCarga.Vencida,
+            EstadoOrdenDeCarga.ErrorDeCarga,
+            EstadoOrdenDeCarga.Pendiente,
+            EstadoOrdenDeCarga.Confirmado,
+            EstadoOrdenDeCarga.PendienteAprobacionCredito,
+            EstadoOrdenDeCarga.EntregaPendiente,
+            EstadoOrdenDeCarga.EntregaGenerada,
+            EstadoOrdenDeCarga.EdicionSolicitada,
+            EstadoOrdenDeCarga.AnulacionSolicitada,
+            EstadoOrdenDeCarga.ContratoVencido,
+            EstadoOrdenDeCarga.EdicionRechazada,
+            EstadoOrdenDeCarga.SinEnviarASAP,
+            EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion,
+            EstadoOrdenDeCarga.PendienteCompensacion,
+        };
+
         public OrdenDeCargaService(
             IRepositorio repositorio,
             IOrdenCargaConsumerMOA consumer,
@@ -306,8 +324,8 @@ namespace SustitucionMOAUtils.Services
 
                 if (puedeEnviarASAP && !ordenEditar.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
                 {
-                    if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega) 
-                        && ordenEditar.AprobadoCredito && 
+                    if (ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega)
+                        && ordenEditar.AprobadoCredito &&
                         (!ordenEditar.SinSeleccionarFactura || !ordenEditar.EsFacturaAnticipada)
                         )
                     {
@@ -735,6 +753,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.ContratoVencido);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Vencida);
                     filtrosEstados.Add(EstadoOrdenDeCarga.SinEnviarASAP);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.PendienteCompensacion);
                 }
                 if (esComercial)
                 {
@@ -750,12 +769,12 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.SinEnviarASAP);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.PendienteCompensacion);
                 }
                 if (esPuerto)
                 {
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.Entregada);
-                    filtrosEstados.Add(EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion);
                 }
                 if (esAdmin)
                 {
@@ -775,6 +794,7 @@ namespace SustitucionMOAUtils.Services
                     filtrosEstados.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     filtrosEstados.Add(EstadoOrdenDeCarga.SinEnviarASAP);
                     filtrosEstados.Add(EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion);
+                    filtrosEstados.Add(EstadoOrdenDeCarga.PendienteCompensacion);
                 }
                 Expression<Func<OrdenDeCarga, bool>> filtro = o => o.FechaCarga <= fechaFinDateTime
                     && o.FechaCarga >= fechaIncioDateTime
@@ -810,20 +830,7 @@ namespace SustitucionMOAUtils.Services
                 var clientes = usuario.Proveedores.Select(c => c.Id);
                 var listadoSinFiltro = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id) && n.FechaCarga <= fechaFinDateTime
                     && n.FechaCarga >= fechaIncioDateTime
-                    && (n.Estado == EstadoOrdenDeCarga.Vencida
-                        || n.Estado == EstadoOrdenDeCarga.ErrorDeCarga
-                        || n.Estado == EstadoOrdenDeCarga.Pendiente
-                        || n.Estado == EstadoOrdenDeCarga.Confirmado
-                        || n.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito
-                        || n.Estado == EstadoOrdenDeCarga.EntregaPendiente
-                        || n.Estado == EstadoOrdenDeCarga.EntregaGenerada
-                        || n.Estado == EstadoOrdenDeCarga.EdicionSolicitada
-                        || n.Estado == EstadoOrdenDeCarga.AnulacionSolicitada
-                        || n.Estado == EstadoOrdenDeCarga.ContratoVencido
-                        || n.Estado == EstadoOrdenDeCarga.EdicionRechazada
-                        || n.Estado == EstadoOrdenDeCarga.SinEnviarASAP
-                        || n.Estado == EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion
-                        )
+                    && (_estadosListarNoInternos.Contains(n.Estado))
                     );
                 //Log.Debug(this.GetType().Name, "Listar", $" listadoSinFiltro: {listadoSinFiltro.ToJson()}");
                 listado = listadoSinFiltro
@@ -1651,7 +1658,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             NotificarVariasFacturas(orden);
-            
+
             if (
                 orden.TipoContrato == TipoContratoFAS.Anticipado &&
                 string.IsNullOrEmpty(orden.NumeroFacturaSeleccionada))
@@ -2027,7 +2034,7 @@ namespace SustitucionMOAUtils.Services
                 return null;
             }
         }
-        
+
         private Resultado GenerarEntregaSAP(OrdenDeCarga orden)
         {
             Log.Info("Ejecuta OrdenDeCargaService.GenerarEntregaSAP");
