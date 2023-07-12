@@ -2669,6 +2669,15 @@ namespace SustitucionMOAUtils.Services
         public void VerificarCompensacion(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+            Log.Info($"Verificar Compensacion: orden: {ordenId}");
+
+            if (orden == null)
+                throw new InfoCustomException("No se encontró la orden");
+
+            Log.Info($"Verificar Compensacion: orden: {orden.ToJson()}");
+            if (orden.Estado != EstadoOrdenDeCarga.PendienteCompensacion)
+                return;
+
             GenerarEntregaSAP(orden);
         }
         private string ObtenerMaterialValidaSisa()

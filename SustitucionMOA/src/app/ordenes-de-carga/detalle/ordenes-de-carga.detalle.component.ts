@@ -886,7 +886,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
-            document.getElementById("closemodalActivarOC").click();
             this.service.verificarCompensacion(this.ordenDeCargaId).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
