@@ -1683,7 +1683,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var puedeCrear = VerificarOrden(orden, orden.Cliente, false, true);
 
-                if (!orden.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
+               if (!orden.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
                 {
                     if (orden.TipoContrato == TipoContratoFAS.Anticipado)
                         return GenerarEntregaSAP(orden);
@@ -2617,7 +2617,7 @@ namespace SustitucionMOAUtils.Services
         {
             var result = string.Join(",", contratosAbiertos);
             var noTieneContratoSeleccionado = string.IsNullOrEmpty(ordenDeCarga.ContratoSAP);
-            var noTienePedidoNiContrato = string.IsNullOrEmpty(ordenDeCarga.NumeroPedido) || noTieneContratoSeleccionado;
+            var noTienePedidoNiContrato = string.IsNullOrEmpty(ordenDeCarga.NumeroPedido) && noTieneContratoSeleccionado;
             if (noTienePedidoNiContrato || (ordenDeCarga.EsFacturaAnticipada && noTieneContratoSeleccionado))
             {
                 ordenDeCarga.ContratosRespuesta = result;
