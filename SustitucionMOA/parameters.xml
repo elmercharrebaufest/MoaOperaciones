@@ -768,11 +768,11 @@
                     /@address" />
   </parameter>
 
-	<parameter name="BAPI_PO_GETDETAIL1PortType Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
+  <parameter name="BAPI_PO_GETDETAIL1PortType Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
 								match="/configuration/system.serviceModel/client
-                    /endpoint[@name='BAPI_PO_GETDETAIL1PortType']
-                    /@address" />
-	</parameter>
+					/endpoint[@name='BAPI_PO_GETDETAIL1PortType']
+					/@address" />
+  </parameter>
 </parameters>
 
