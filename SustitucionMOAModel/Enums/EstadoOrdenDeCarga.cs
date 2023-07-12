@@ -172,6 +172,8 @@
                 case "Anulación en proceso":
                 case "Entrega anulada, pedido pendiente de anulación":
                     return EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion;
+                case "Pendiente de compensación":
+                    return EstadoOrdenDeCarga.PendienteCompensacion;
                 default:
                     return EstadoOrdenDeCarga.SinEstado;
             }

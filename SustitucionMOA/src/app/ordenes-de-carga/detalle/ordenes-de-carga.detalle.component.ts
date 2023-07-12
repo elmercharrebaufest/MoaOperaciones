@@ -316,7 +316,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (this.ordenDeCarga.TipoContrato === TipoContrato.FacturaAnticipada && !this.ordenDeCarga.NumeroFacturaSeleccionada) {
                 this.mostrarBotonSeleccionarFactura = true;
             }
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteCompensacion) {
                 this.mostrarBotonVerificarCompensacion = true;
             }
         }
@@ -882,6 +882,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
     verificarCompensacion() {
         this.mensajeComponent.setMsgsEmpty();
+        this.mainDiv.nativeElement.scrollIntoView({ behavior: "smooth", block: "center" });
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
@@ -896,8 +897,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.mensajeComponent.setSuccessMsg(result.data);
                     }
                     this.obtenerOrdenDeCarga()
                 },

@@ -34,7 +34,8 @@ export class OrdenesDeCargaService extends BaseService {
         "Contrato vencido",
         "Edición rechazada",
         "Sin Enviar a SAP",
-        "Entrega anulada, pedido pendiente de anulación"
+        "Entrega anulada, pedido pendiente de anulación",
+        "Pendiente de compensación",
     ]);
 
     setOrdenDeCargaSeleccionado(value: number) {
