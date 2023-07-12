@@ -81,6 +81,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonSolicitarAnulacion: boolean = false;
     mostrarBotonAprobarRechazarAnulacion: boolean = false;
     mostrarBotonEdicionFinalizada: boolean = false;
+    mostrarBotonVerificarCompensacion: boolean = false;
 
     // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -253,6 +254,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mostrarBotonEditar = false;
         this.mostrarBotonEdicionFinalizada = false;
         this.mostrarBotonSeleccionarFactura = false;
+        this.mostrarBotonVerificarCompensacion = false;
 
 
         if (this.estadosVerHistorial.indexOf(this.ordenDeCarga.Estado) >= 0) {
@@ -313,6 +315,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
             if (this.ordenDeCarga.TipoContrato === TipoContrato.FacturaAnticipada && !this.ordenDeCarga.NumeroFacturaSeleccionada) {
                 this.mostrarBotonSeleccionarFactura = true;
+            }
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
+                this.mostrarBotonVerificarCompensacion = true;
             }
         }
 
@@ -872,6 +877,37 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 }
             );
         } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+    verificarCompensacion() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            document.getElementById("closemodalActivarOC").click();
+            this.service.verificarCompensacion(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                        return;
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+                    this.obtenerOrdenDeCarga()
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
         }
     }

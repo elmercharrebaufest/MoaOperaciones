@@ -498,4 +498,14 @@ export class OrdenesDeCargaService extends BaseService {
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
+    public verificarCompensacion(ordenId: number): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append("ordenId", ordenId.toString());
+
+        return this.http
+            .get<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/VerificarCompensacion',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
 }

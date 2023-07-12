@@ -2666,6 +2666,11 @@ namespace SustitucionMOAUtils.Services
         {
             return ValidarCuitTransporte(cuitTransporte).Item1;
         }
+        public void VerificarCompensacion(int ordenId)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+            GenerarEntregaSAP(orden);
+        }
         private string ObtenerMaterialValidaSisa()
         {
             var material = repositorio.Obtener<Material>(m => m.ValidaSisaRuca && m.TablaSeccionMaterial == TablaSeccionMaterial.OrdenDeCarga);
