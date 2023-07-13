@@ -27,8 +27,8 @@ import {
     FileSystemFileEntry,
     FileSystemDirectoryEntry,
 } from "ngx-file-drop";
-import { AngularEditorComponent, AngularEditorConfig } from "@kolkov/angular-editor";
 import { DomSanitizer } from '@angular/platform-browser';
+import { QuillEditorComponent, QuillModule } from "ngx-quill";
 
 declare var $: any;
 
@@ -59,7 +59,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     @ViewChild("detalleConsulta")
     protected detalleConsulta: ElementRef;
 
-    @ViewChild("angularEditor") editor: AngularEditorComponent;
+    @ViewChild("quillEditor") editor: QuillEditorComponent;
 
     @HostListener('document:click', ['$event'])
     public onDocumentClick(event: MouseEvent): void {
@@ -103,7 +103,6 @@ export class DetalleConsultaComponent extends BaseComponent {
     categorias: Categoria[];
     subcategorias: Subcategoria[];
     causasConsulta: any;
-
     causaConsulta: any;
     causaConsultaId: number = 0;
 
@@ -132,36 +131,37 @@ export class DetalleConsultaComponent extends BaseComponent {
     datosExtra = [];
 
     htmlContent: string;
-    config: AngularEditorConfig = {
-        editable: true,
-        spellcheck: true,
+
+    /** Configuraciones para editor de texto Quill-Editor: */
+    editorModules = {
+        toolbar: [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['clean'],
+        ],
+    }
+
+    defaultFormats = {
+        font: 'Arial',
+      };
+    
+    commentStyles = {
         height: "auto",
+        width: "auto",
         minHeight: "100px",
         maxHeight: "200px",
-        width: "530px",
-        minWidth: "530px",
+        minWidth: "500px",
+        fontSize: "15px",   
+        font: "Arial",
+        overflow:"hidden",
+        overflowY: "auto"
+    }
+
+    commentContent = {
+        editable: true,
+        spellcheck: true,
         translate: "yes",
-        enableToolbar: true,
-        showToolbar: true,
-        defaultParagraphSeparator: "",
-        defaultFontName: "Arial",
-        defaultFontSize: "5",
-        fonts: [
-            { class: "arial", name: "Arial" },
-            { class: "times-new-roman", name: "Times New Roman" },
-            { class: "calibri", name: "Calibri" },
-            { class: "comic-sans-ms", name: "Comic Sans MS" },
-        ],
-        customClasses: [
-            {
-                name: "Quitar enlace",
-                class: "quote",
-            },
-        ],
-        uploadUrl: "v1/image",
-        sanitize: true,
-        toolbarPosition: "top",
-    };
+    }
+    /** Finaliza la configuracion de editor */
 
     checkPermisos() {
         this.securityService.tienePermisoRedirect("CONTACTO MAIL");
@@ -181,7 +181,6 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     ngAfterViewInit(): void {
         this.scrollBottom();
-        this.eliminarBotonesExtra();
     }
 
     scrollBottom() {
@@ -758,45 +757,6 @@ export class DetalleConsultaComponent extends BaseComponent {
             divComentario.innerHTML = divComentario.innerHTML.replace(borderAnterior, borderNuevo);
 
         }, 200);
-    }
-
-    eliminarBotonesExtra() {
-
-        let divToolBar = document.getElementsByClassName(
-            "angular-editor-toolbar"
-        )[0];
-        let toolBars = divToolBar.childNodes;
-
-        if (toolBars.length == 14) {
-            let toolBar0 = toolBars[0];
-            let toolBar2 = toolBars[2];
-            let toolBar3 = toolBars[3];
-            let toolBar4 = toolBars[4];
-            let toolBar5 = toolBars[5];
-            let toolBar6 = toolBars[6];
-            let toolBar7 = toolBars[7];
-            let toolBar9 = toolBars[9];
-            let toolBar10 = toolBars[10];
-            let toolBar11 = toolBars[11];
-            let toolBar13 = toolBars[13];
-
-            divToolBar.removeChild(toolBar0);
-            divToolBar.removeChild(toolBar2);
-            divToolBar.removeChild(toolBar3);
-            divToolBar.removeChild(toolBar4);
-            divToolBar.removeChild(toolBar5);
-            divToolBar.removeChild(toolBar6);
-            divToolBar.removeChild(toolBar7);
-            divToolBar.removeChild(toolBar9);
-            divToolBar.removeChild(toolBar10);
-            divToolBar.removeChild(toolBar13);
-        }
-
-        $("#subscript-").hide();
-        $("#superscript-").hide();
-
-        $(".angular-editor-textarea").css("font-size", "large");
-        $(".angular-editor-button").css("font-size", "large");
     }
 
     subcategoriasInicial() {

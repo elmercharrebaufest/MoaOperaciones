@@ -24,6 +24,7 @@ import { ConfirmationService } from 'primeng/api';
 import { FileDropModule } from 'ngx-file-drop';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   imports: [
@@ -46,7 +47,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     ConfirmDialogModule,
     FileDropModule,
     AngularEditorModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    QuillModule.forRoot()
   ],
   declarations: [
     MisConsultasComponent,
