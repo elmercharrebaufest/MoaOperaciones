@@ -1,4 +1,5 @@
-﻿using SustitucionMOAAssets;
+﻿using DocumentFormat.OpenXml.Presentation;
+using SustitucionMOAAssets;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
@@ -66,12 +67,10 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 view.data = dataFiltro;
-
             }
-
             validarRespuesta(dataFiltro == null ? view.data : dataFiltro);
             var obtenerAgrupado = obtenerAgrupadoProducto(view);
-            view.data.Resultados = obtenerAgrupado.data.Resultados.OrderByDescending(x => x.FechaDesde).OrderByDescending(y => y.DescripcionMaterial).ToList();
+            view.data.Resultados = obtenerAgrupado.data.Resultados.OrderBy(o => o.DescripcionMaterial).ThenBy(o => o.FechaDesde).ToList();
             return view;
         }
 

@@ -96,8 +96,6 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
                         this.varciarFiltrosReporte();
                     } else {
                         this.cabecera = result.data.Resultados;
-                        this.cabecera.sort((a, b) => new Date(a.FechaDesde).getTime() - new Date(b.FechaDesde).getTime())
-
                         this.cargarFiltrosContratos(result);
                         this.getTotalKilogramos();
                         this.data = result.data.Resultados;
