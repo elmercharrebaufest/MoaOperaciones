@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Presentation;
-using SustitucionMOAAssets;
+﻿using SustitucionMOAAssets;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
