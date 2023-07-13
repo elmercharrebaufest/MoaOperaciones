@@ -18,6 +18,7 @@ import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
 import { TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { Factura } from '../../common/models/ordenes-de-carga/Factura';
+import { finalize } from 'rxjs/operators';
 
 @Component({
     selector: 'app-ordenes-de-carga.detalle',
@@ -883,12 +884,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     verificarCompensacion() {
         this.mensajeComponent.setMsgsEmpty();
         this.mainDiv.nativeElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        this.blockUI.start('Procesando ...');
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
-            this.service.verificarCompensacion(this.ordenDeCargaId).subscribe(
+            this.service.verificarCompensacion(this.ordenDeCargaId).pipe(
+                finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt() })
+            ).subscribe(
                 result => {
-                    this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                         return;
@@ -900,12 +903,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     this.obtenerOrdenDeCarga()
                 },
                 error => {
-                    this.spinnerComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
         } catch (e) {
             this.spinnerComponent.hideIt();
+            this.blockUI.stop();
             this.mensajeComponent.setErrorMsg(e);
         }
     }
