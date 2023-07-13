@@ -1728,13 +1728,14 @@ namespace SustitucionMOAUtils.Services
             };
 
                 var tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
+                List<int> idsActualizados  = new List<int>();
 
                 List<TablaSap> centro = tablaSap.Where(x => x.Tabla == TablasSap.Centro).ToList();
                 List<TablaSap> grupoArticulo = tablaSap.Where(x => x.Tabla == TablasSap.GrupoArticulo).ToList();
                 List<TablaSap> unidad = tablaSap.Where(x => x.Tabla == TablasSap.Unidad).ToList();
                 List<TablaSap> grupoCompras = tablaSap.Where(x => x.Tabla == TablasSap.GrupoCompras).ToList();
                 List<TablaSap> cuentas = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
-
+                
                 var contador = 0;
                 foreach (var material in Materiales)
                 {
@@ -1769,6 +1770,7 @@ namespace SustitucionMOAUtils.Services
                         }
                         else
                         {
+                            idsActualizados.Add(item.Id);
                             item.Centro_Id = centroId;
                             item.Codigo = material.NroMaterial;
                             item.CodigoSap = material.NroMaterial;
@@ -1799,6 +1801,8 @@ namespace SustitucionMOAUtils.Services
                     }
 
                 }
+
+                listaBase.Where(a=>!idsActualizados.Contains(a.Id)).ToList().ForEach(a => a.Estado = false);
             }
             repositorio.GuardarCambios();
         }
