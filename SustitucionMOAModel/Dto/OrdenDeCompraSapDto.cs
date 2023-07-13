@@ -16,6 +16,15 @@ namespace SustitucionMOAModel.Dto
     {
         public string OrdenDeCompra { get; set; } //nro orden de compra
         public string CodigoProveedor { get; set; } //codigo de proveedor, con otra rfc buscar el vendedor
+        public string RazonSocialProveedor { get; set; }
+        public string CUITProveedor { get; set; }
+        public string Moneda { get; set; }
+        public decimal MontoTotal { get; set; }
+        public string CreadoPor { get; set; }
+        public string ClaseDocumento { get; set; }
+        public string Tipo { get; set; }
+        public DateTime FechaCreacion { get; set; }
+        public string TipoDocCompras { get; set; }
 
         //        <COMP_CODE>MOA</COMP_CODE>// fijo
         //        <DOC_TYPE>ZPE1</DOC_TYPE>//tipo de documento
