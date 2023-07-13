@@ -774,5 +774,13 @@
 					/endpoint[@name='BAPI_PO_GETDETAIL1PortType']
 					/@address" />
   </parameter>
+
+  <parameter name="Z_MMRFC_OC_PARA_SOLPPortType Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                    /endpoint[@name='Z_MMRFC_OC_PARA_SOLPPortType']
+                    /@address" />
+  </parameter>
+  
 </parameters>
 
