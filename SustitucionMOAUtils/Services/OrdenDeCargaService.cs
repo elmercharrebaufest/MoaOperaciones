@@ -75,7 +75,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                ValidarOrdenDeCargaAlta(ordenDeCarga, usuario);
+                var enviaDirectamenteASAP = ValidarOrdenDeCargaAlta(ordenDeCarga, usuario);
                 LlenarOrdenAlta(ordenDeCarga, usuario);
 
                 var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
@@ -92,7 +92,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     emailFasService.EnviarMailContratoVencido(ordenDeCarga);
                 }
-                if (crearPedido && puedeEnviarASAP)
+                if (crearPedido && (enviaDirectamenteASAP || puedeEnviarASAP))
                 {
                     ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
                     var creadaEnSAP = CrearPedidoEnSAP(ordenDeCarga, ordenDeCarga.Cliente, true, puedeEnviarASAP, mailUsuario);
@@ -338,8 +338,9 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
+                    var enviaDirectamenteASAP = ValidarKgDisponiblesEnviaDirectamenteASAP(ordenDeCarga, usuario);
                     var crearPedido = !string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP) || verificarOrden;
-                    if (puedeEnviarASAP && crearPedido)
+                    if (crearPedido && (enviaDirectamenteASAP || puedeEnviarASAP))
                     {
                         if (string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP))
                         {
@@ -588,7 +589,7 @@ namespace SustitucionMOAUtils.Services
                 var logCambio = ordenDeCarga.ActualizarEstado();
                 Log.Info(logCambio);
 
-                return false;
+                return true;
             }
             else
             {
@@ -2792,10 +2793,12 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void ValidarOrdenDeCargaAlta(OrdenDeCarga orden, Usuario usuario)
+        private bool ValidarOrdenDeCargaAlta(OrdenDeCarga orden, Usuario usuario)
         {
             ValidarCuilChofer(orden);
             ValidarReventa(orden, usuario);
+            var enviaDirectamenteASAP = ValidarKgDisponiblesEnviaDirectamenteASAP(orden, usuario);
+            return enviaDirectamenteASAP;
         }
 
         private void ValidarCuilChofer(OrdenDeCarga orden)
@@ -2826,6 +2829,37 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        /// <summary>
+        /// Validar la cantidad de kgs disponibles es la adecuada
+        /// </summary>
+        /// <param name="orden"></param>
+        /// <param name="usuario"></param>
+        private bool ValidarKgDisponiblesEnviaDirectamenteASAP(OrdenDeCarga orden, Usuario usuario)
+        {
+            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodasOrdenesDeCarga);
+            var esComercial = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaComerciales);
+            var esMesaFas = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaMesaFas);
+            var esPuerto = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaPuerto);
+
+            var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
+            if (!esInterno)
+            {
+                Log.Info($"Validar kg orden: {orden.ToJson()}");
+                var contratoSAP = consumer.ObtenerContratoSAP(orden);
+                Log.Info($"Validar kg contrato: {contratoSAP.ToJson()}");
+
+                if (contratoSAP == null)
+                    throw new InfoCustomException("No se encontro el contrato en SAP");
+
+                var contratoFAS = new ContratoOrdenFas(orden, contratoSAP);
+
+                if (contratoFAS.KgDisponiblesTn <= 0)
+                    throw new InfoCustomException("El contrato seleccionado no tiene kg disponibles");
+                if (contratoFAS.KgDisponiblesTn < 15000)
+                    return false;
+            }
+            return true;
+        }
         private ControlCargaResponseHandler ControlarCarga(OrdenDeCarga ordenDeCarga, string codigoProveedor, bool soloSisa)
         {
             var controlarCargaReq = new ControlCargaRequest

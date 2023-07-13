@@ -56,5 +56,8 @@ export class OrdenDeCarga {
 }
 export type CuitValidaExistencia = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino">;
 export type CuitValidaSISA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" | "CUITCorredor" | "CUITCliente">;
-export type CuitValidaRUCA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" |  "CUITCliente">;
+export type CuitValidaRUCA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" | "CUITCliente">;
+
+export const KILOS_DISPONIBLES_APROBADO = 150000
+export const SIN_KILOS_DISPONIBLES = 0
 

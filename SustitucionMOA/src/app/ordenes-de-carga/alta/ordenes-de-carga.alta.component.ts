@@ -4,7 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { EmpresaGranosService } from '../../alta-proveedores/empresa-granos/empresa-granos.service';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { Material } from '../../common/models/material';
-import { CuitValidaExistencia, CuitValidaRUCA, CuitValidaSISA, OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { CuitValidaExistencia, CuitValidaRUCA, CuitValidaSISA, KILOS_DISPONIBLES_APROBADO, OrdenDeCarga, SIN_KILOS_DISPONIBLES } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { SeleccionarProveedorService } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
@@ -233,6 +233,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         if (!this.ordenDeCarga.Producto_Id) {
             this.mensajeComponent.setInfoMsg("Seleccione un contrato.");
+            return false;
+        }
+
+        if (this.mensajesOrdenDeCarga.ContratoSeleccionado) {
+            this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCarga.ContratoSeleccionado)
             return false;
         }
 
@@ -598,7 +603,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             let materialSeleccionado = this.listaMateriales.find(mat => mat.MaterialId === this.ordenDeCarga.Producto_Id);
             this.cambioProducto();
             this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
-            this.cambioProducto();
+            this.validarKilosDisponibles()
         }
         else {
             this.Contrato = "";
@@ -1176,6 +1181,24 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.onDomicilioSeleccionadoChanged()
         this.onPlantaSeleccionadaChanged();
     }
+    validarKilosDisponibles() {
+        this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
+        const esInterno = (this.esComercial || this.esCorredor || this.esAdmin);
+
+        if (this.ordenDeCargaId == 0 && !esInterno) {
+            this.floatMsgService.setMsgsEmpty();
+            if (this.ordenDeCarga.ContratoSeleccionado) {
+                const { KgDisponiblesTn } = this.ordenDeCarga.ContratoSeleccionado;
+                if (KgDisponiblesTn >= KILOS_DISPONIBLES_APROBADO)
+                    return;
+
+                const mensaje = "Contrato sin Kilos disponibles.";
+
+                if (KgDisponiblesTn <= SIN_KILOS_DISPONIBLES)
+                    this.mensajesOrdenDeCarga.ContratoSeleccionado = mensaje;
+
+                this.floatMsgService.setInfoMsg(mensaje)
+            }
+        }
+    }
 }
-
-

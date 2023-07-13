@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,7 +32,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         {
             get
             {
-                var kg = KgDisponiblesTn == null ? "" : " - " + KgDisponiblesTn + " kg Disp.";
+                var kg = KgDisponiblesTn == null ? "" : $" {KgDisponiblesTn} kg Disp.";
                 return $"{NumeroContrato} - {DescripcionProducto}{kg}";
             }
         }
@@ -64,7 +65,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         {
             NumeroContrato = orden.ContratoIngresado;
             var producto = orden.Producto != null ? orden.Producto : null;
-            
+
             Producto = new Models.DataAgro.MaterialDto
             {
                 MaterialId = orden.Producto_Id,
@@ -72,10 +73,25 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                 Abreviacion = producto?.Abreviacion
             };
         }
+        public ContratoOrdenFas(Entities.OrdenDeCarga orden, Result contratoSAP)
+        {
+            NumeroContrato = orden.ContratoIngresado;
+            var producto = orden.Producto != null ? orden.Producto : null;
 
+            Producto = new Models.DataAgro.MaterialDto
+            {
+                MaterialId = orden.Producto_Id,
+                Descripcion = producto?.Nombre,
+                Abreviacion = producto?.Abreviacion
+            };
+            KgDisponiblesTn = ObtenerKgDisponiblesTn(contratoSAP);
+        }
         public decimal ObtenerKgDisponiblesTn(Result contratoSAP)
         {
-            return contratoSAP.KilosPendienteEntrega;
+            var pedidosPendientesCargar = contratoSAP.Detalles.Where(det =>
+                det.CantidadEntregada == 0 && string.IsNullOrEmpty(det.Entrega)).Count();
+            var kgEstandar = contratoSAP.Producto.TrimStart('0') == "99709" ? 20000 : 30000;
+            return Math.Round(contratoSAP.KilosPendienteEntrega - (pedidosPendientesCargar * kgEstandar), 2);
         }
     }
 }
