@@ -464,7 +464,6 @@
                                 <input type="button" (click)="notificarTransporte()"
                                     class="btn-custom btn-add btn-grande" value="Notificar Transporte">
                             </div>
-
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerificarTransporte">
                                 <input type="button" (click)="verificarTransporte()"
                                     class="btn-custom btn-add btn-grande" value="Verificar Transporte">
@@ -473,7 +472,10 @@
                                 <input type="button" (click)="verificarSituacionCrediticia()"
                                     class="btn-custom btn-add btn-grande" value="Verificar credito">
                             </div>
-
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerificarCompensacion">
+                                <input type="button" (click)="verificarCompensacion()"
+                                    class="btn-custom btn-add btn-grande" value="Verificar compensación">
+                            </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerHistorial">
                                 <input type="button" (click)="abrirModalDetalleHistorialCompras()"
                                     class="btn-custom btn-add btn-grande" value="Ver Historial">
@@ -492,6 +494,7 @@
                                 <input type="button" (click)="abrirModalAnularVencimiento()"
                                     class="btn-custom btn-remove btn-lg" value="Anular por vencimiento">
                             </div>
+
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonActivarOC">
                                 <input type="button" (click)="abrirModalActivarOC()"
                                     class="btn-custom btn-add btn-grande" value="Activar OC">

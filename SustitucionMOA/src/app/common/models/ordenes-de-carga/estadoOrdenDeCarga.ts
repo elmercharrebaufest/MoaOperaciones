@@ -13,5 +13,6 @@ export enum EstadoOrdenDeCarga {
     AnulacionSolicitada,
     ContratoVencido,
     EdicionRechazada,
-    EntregaAnuladaPedidoPendienteAnulacion=16
+    EntregaAnuladaPedidoPendienteAnulacion = 16,
+    PendienteCompensacion = 17
 }

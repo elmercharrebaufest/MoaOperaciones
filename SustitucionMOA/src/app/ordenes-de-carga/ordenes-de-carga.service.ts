@@ -34,7 +34,8 @@ export class OrdenesDeCargaService extends BaseService {
         "Contrato vencido",
         "Edición rechazada",
         "Sin Enviar a SAP",
-        "Entrega anulada, pedido pendiente de anulación"
+        "Entrega anulada, pedido pendiente de anulación",
+        "Pendiente de compensación",
     ]);
 
     setOrdenDeCargaSeleccionado(value: number) {
@@ -495,6 +496,16 @@ export class OrdenesDeCargaService extends BaseService {
         return this.http
             .get<ApiResponse<Array<Factura>>>(
                 '/api/OrdenDeCarga/FacturasDisponibles',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+    public verificarCompensacion(ordenId: number): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append("ordenId", ordenId.toString());
+
+        return this.http
+            .get<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/VerificarCompensacion',
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }

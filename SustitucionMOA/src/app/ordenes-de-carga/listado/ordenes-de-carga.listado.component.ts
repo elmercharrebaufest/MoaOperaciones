@@ -85,6 +85,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
                 { label: "Edición rechazada", value: "Edición rechazada" },
                 { label: "Sin Enviar a SAP", value: "Sin Enviar a SAP" },
                 { label: "Entrega anulada, pedido pendiente de anulación", value: "Entrega anulada, pedido pendiente de anulación" },
+                { label: "Pendiente de compensación", value: "Pendiente de compensación" },
             ]
         } else {
             this.descripcionEstadoOrdenCarga = [];
