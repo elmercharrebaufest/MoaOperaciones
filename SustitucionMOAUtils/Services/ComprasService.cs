@@ -61,7 +61,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA;
         private readonly IHttpContextService httpContextService;
         private readonly IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA;
-
+        private readonly IObtenerOrdenesDeCompraParaSOLPConsumerMOA obtenerOrdenesDeCompraParaSOLPConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
@@ -79,7 +79,8 @@ namespace SustitucionMOAUtils.Services
             IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
             IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA, IVendedorService vendedorService,
             IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA, IHttpContextService httpContextService,
-            IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA)
+            IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA,
+            IObtenerOrdenesDeCompraParaSOLPConsumerMOA obtenerOrdenesDeCompraParaSOLPConsumerMOA)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -97,6 +98,7 @@ namespace SustitucionMOAUtils.Services
             this.obtenerTipoCambioConsumerMOA = obtenerTipoCambioConsumerMOA;
             this.httpContextService = httpContextService;
             this.obtenerOrdenDeCompraConsumerMOA = obtenerOrdenDeCompraConsumerMOA;
+            this.obtenerOrdenesDeCompraParaSOLPConsumerMOA = obtenerOrdenesDeCompraParaSOLPConsumerMOA;
 
 
         }
@@ -1728,14 +1730,14 @@ namespace SustitucionMOAUtils.Services
             };
 
                 var tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
-                List<int> idsActualizados  = new List<int>();
+                List<int> idsActualizados = new List<int>();
 
                 List<TablaSap> centro = tablaSap.Where(x => x.Tabla == TablasSap.Centro).ToList();
                 List<TablaSap> grupoArticulo = tablaSap.Where(x => x.Tabla == TablasSap.GrupoArticulo).ToList();
                 List<TablaSap> unidad = tablaSap.Where(x => x.Tabla == TablasSap.Unidad).ToList();
                 List<TablaSap> grupoCompras = tablaSap.Where(x => x.Tabla == TablasSap.GrupoCompras).ToList();
                 List<TablaSap> cuentas = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
-                
+
                 var contador = 0;
                 foreach (var material in Materiales)
                 {
@@ -1802,7 +1804,7 @@ namespace SustitucionMOAUtils.Services
 
                 }
 
-                listaBase.Where(a=>!idsActualizados.Contains(a.Id)).ToList().ForEach(a => a.Estado = false);
+                listaBase.Where(a => !idsActualizados.Contains(a.Id)).ToList().ForEach(a => a.Estado = false);
             }
             repositorio.GuardarCambios();
         }
@@ -5037,10 +5039,12 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC) {
+        public OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC)
+        {
             var result = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra(nroOC);
             return result;
         }
+      
     }
 
 
