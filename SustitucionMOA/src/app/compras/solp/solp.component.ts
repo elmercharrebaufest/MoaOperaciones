@@ -625,7 +625,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     validarContratoMarco(){
         var validacionContratoTrabajo = false;
 
-        if(this.solpActual.posiciones.some(x => x.numeroContratoSuperior != "") && this.solpActual.trabajoHecho == true){
+        if(this.solpActual.posiciones.some(x => x.numeroContratoSuperior != undefined) && this.solpActual.trabajoHecho == true){
             return validacionContratoTrabajo = true;
         }
         return validacionContratoTrabajo;
@@ -634,7 +634,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     validarAdicional(){
         var validacionAdicional = false;
 
-        if(this.solpActual.posiciones.some(x => x.numeroContratoSuperior != "") && this.solpActual.adicional == true){
+        if(this.solpActual.posiciones.some(x => x.numeroContratoSuperior != undefined) && this.solpActual.adicional == true){
             return validacionAdicional = true;
         }
         return validacionAdicional;
@@ -672,7 +672,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     mostrarMensajeCotizacion(){
             if (this.solpActual.mensajeCotizacion != "" && this.solpActual.mensajeCotizacion != undefined) {
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.solpActual.mensajeCotizacion}` });
-                console.log("mensaje", this.solpActual.mensajeCotizacion)
             } 
 
     }

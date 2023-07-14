@@ -156,6 +156,8 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.Pliego = new Pliego();
                 solpEntity.Posiciones = new List<SolpPosicion>();
                 solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
+                solpEntity.Adicional = solp.Adicional;
+                solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
                 solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignadoId;
                 pliegoEntity = solpEntity.Pliego;
 
@@ -179,6 +181,8 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.TipoSolpSap = solp.TipoSolpSap;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
+                solpEntity.Adicional = solp.Adicional;
+                solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
                 solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignadoId;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
@@ -1038,6 +1042,8 @@ namespace SustitucionMOAUtils.Services
                 ProveedorAsignadoId = x.ProveedorAsignado_Id,
 
                 TrabajoYaHecho = x.TrabajoYaHecho,
+                Adicional = x.Adicional,
+                NroOrdenDeCompraAdicional = x.NroOrdenDeCompraAdicional,
 
 
                 Adjuntos = x.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
@@ -4971,23 +4977,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-
-                //Crear Peticion 
-                var usuariosIds = new List<int> { solp.ProveedorAsignado_Id.Value };
-                var peticion = new GuardarPeticionDeOfertaDto()
-                {
-                    Observacion = "",
-                    PosIds = solp.Posiciones.Select(x => x.Id).ToList(),
-                    SolpId = solp.Id,
-                    UsuarioIds = usuariosIds,
-                    UsuarioActual = new UsuarioDto
-                    {
-                        Id = solp.UsuarioCreacion.Id
-                    },
-                    Adjuntos = null
-                };
-
-                var resultado = GrabarPeticionDeOferta(peticion, null, false);
+                RespuestaGuardarSOLP resultado = CrearPeticionDeOfertaAutomatica(solp, false);
 
                 var peticionEntidad = repositorio.Obtener<PeticionDeOferta>(resultado.IdEntidad);
 
@@ -5039,9 +5029,33 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        //Dentro del metodo donde finaliza. si tiene el check de adicional deberia llamar a este metodo
+        private RespuestaGuardarSOLP CrearPeticionDeOfertaAutomatica(Solp solp, bool enviarMail)
+        {
+            //Crear Peticion 
+            var usuariosIds = new List<int> { solp.ProveedorAsignado_Id.Value };
+            var peticion = new GuardarPeticionDeOfertaDto()
+            {
+                Observacion = "",
+                PosIds = solp.Posiciones.Select(x => x.Id).ToList(),
+                SolpId = solp.Id,
+                UsuarioIds = usuariosIds,
+                UsuarioActual = new UsuarioDto
+                {
+                    Id = solp.UsuarioCreacion.Id
+                },
+                Adjuntos = null
+            };
+
+            var resultado = GrabarPeticionDeOferta(peticion, null, enviarMail);
+            return resultado;
+        }
+
         public OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC)
         {
             var result = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra(nroOC);
+
+            result.Cabecera.RazonSocialProveedor = "Pochoclo Inc.";
             return result;
         }
       

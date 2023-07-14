@@ -67,6 +67,11 @@ export class Solp extends CommonResponse {
     public proveedorAsignado_Id: number;
     public proveedorAsignado: string;
 
+    public ordenDeCompra: string;
+    public codigoProveedorSap: string;
+    public RazonSocialSap: string;
+
+
     public validarTrabajoHecho: boolean;
     public validarAdicional: boolean;
 
@@ -83,6 +88,7 @@ export class Solp extends CommonResponse {
     public pasoCompletado: number;
     public estadoPasos: string;
     public tableHide: boolean;
+
 
     public get ultimaPosicion(): SolpPosicion {
         //comentar linea de abajo si se quiere que no se ordene por Fecha (Mas actual primero)
@@ -228,6 +234,8 @@ export class Solp extends CommonResponse {
             this.proveedorAsignado_Id = solp.ProveedorAsignadoId;
             this.proveedorAsignado = solp.ProveedorAsignado;
             this.trabajoHecho = solp.TrabajoYaHecho;
+            this.adicional = solp.Adicional;
+            this.ordenDeCompra = solp.NroOrdenDeCompraAdicional;
 
             
 
