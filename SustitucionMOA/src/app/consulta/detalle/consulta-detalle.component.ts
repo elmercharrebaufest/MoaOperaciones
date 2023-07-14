@@ -1,19 +1,16 @@
-﻿import { Component, OnInit, ViewChild, ElementRef, Input, HostListener } from "@angular/core";
-import { Router, ActivatedRoute, Params } from "@angular/router";
+﻿import { Component, ViewChild, ElementRef, Input, HostListener } from "@angular/core";
+import { ActivatedRoute, } from "@angular/router";
 import { MensajeComponent } from "./../../common/view-child/mensaje/mensaje.component";
 import { SpinnerComponent } from "./../../common/view-child/spinner/spinner.component";
 import { SessionDataService } from "./../../common/services/SessionDataService";
 import { SecurityService } from "./../../common/services/SecurityService";
 import {
     DropdownComponent,
-    DropdownOption,
 } from "./../../common/view-child/dropdown/dropdown.component";
 import { SpinnerSmallComponent } from "./../../common/view-child/spinner-small/spinner-small.component";
 import { NavService } from "./../../common/services/NavService";
 import { FloatMsgService } from "./../../common/services/FloatMsgService";
 import { ModalService } from "./../../common/services/ModalService";
-import { element } from "@angular/core/src/render3/instructions";
-import { Seccion } from "../../common/models/seccion";
 import { ConsultaService } from "../consulta.service";
 import { BaseComponent } from "../../common/base-components/base-component";
 import {
@@ -22,25 +19,23 @@ import {
     EstadoConsulta,
     Subcategoria,
     Consulta,
-    Causa,
 } from "../consulta";
 import { SelectItem } from "primeng/components/common/selectitem";
 import { BlockUI, NgBlockUI } from "ng-block-ui";
 import {
     UploadEvent,
-    UploadFile,
     FileSystemFileEntry,
     FileSystemDirectoryEntry,
 } from "ngx-file-drop";
-import { empty } from "rxjs";
-import { AngularEditorConfig } from "@kolkov/angular-editor";
 import { DomSanitizer } from '@angular/platform-browser';
+import { QuillEditorComponent, QuillModule } from "ngx-quill";
 
 declare var $: any;
 
 @Component({
     selector: "consulta-detalle",
     templateUrl: `consulta-detalle.component.html`,
+    styleUrls: ['consulta-detalle.component.css'],
     providers: [{ provide: ConsultaService, useClass: ConsultaService }],
 })
 export class DetalleConsultaComponent extends BaseComponent {
@@ -64,6 +59,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     @ViewChild("detalleConsulta")
     protected detalleConsulta: ElementRef;
 
+    @ViewChild("quillEditor") editor: QuillEditorComponent;
 
     @HostListener('document:click', ['$event'])
     public onDocumentClick(event: MouseEvent): void {
@@ -80,7 +76,12 @@ export class DetalleConsultaComponent extends BaseComponent {
             $('#myModal2').modal('hide');
         }
     }
-
+    //    @HostListener('document:paste', ['$event'])
+    //    public onPaste(e: any): void {
+    //        e.preventDefault();
+    //        const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+    //        window.document.execCommand('insertText', false, text);
+    //    }
     constructor(
         private route: ActivatedRoute,
         protected service: ConsultaService,
@@ -89,7 +90,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         protected sessionDataService: SessionDataService,
         protected floatMsgService: FloatMsgService,
         protected modalService: ModalService,
-        protected html_sanitizer: DomSanitizer
+        protected html_sanitizer: DomSanitizer,
     ) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
@@ -102,7 +103,6 @@ export class DetalleConsultaComponent extends BaseComponent {
     categorias: Categoria[];
     subcategorias: Subcategoria[];
     causasConsulta: any;
-
     causaConsulta: any;
     causaConsultaId: number = 0;
 
@@ -118,7 +118,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     listaArchivos: Array<File> = new Array<File>();
 
     tieneSubcategorias: boolean = false;
-    consulta: Consulta;
+    consulta: Consulta = {} as Consulta;
     comentariosList: any;
     estadoConsulta: number;
     file: any;
@@ -131,45 +131,33 @@ export class DetalleConsultaComponent extends BaseComponent {
     datosExtra = [];
 
     htmlContent: string;
-    config: AngularEditorConfig = {
-        editable: true,
-        spellcheck: true,
+
+    /** Configuraciones para editor de texto Quill-Editor: */
+    editorModules = {
+        toolbar: [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['clean'],
+        ],
+    }
+    
+    commentStyles = {
         height: "auto",
+        width: "auto",
         minHeight: "100px",
         maxHeight: "200px",
-        width: "530px",
-        minWidth: "530px",
+        minWidth: "500px",
+        fontSize: "large",   
+        fontFamily: "Roboto Condensed",
+        overflow:"hidden",
+        overflowY: "auto",
+    }
+
+    commentContent = {
+        editable: true,
+        spellcheck: true,
         translate: "yes",
-        enableToolbar: true,
-        showToolbar: true,
-        defaultParagraphSeparator: "",
-        defaultFontName: "Arial",
-        defaultFontSize: "5",
-        fonts: [
-            { class: "arial", name: "Arial" },
-            { class: "times-new-roman", name: "Times New Roman" },
-            { class: "calibri", name: "Calibri" },
-            { class: "comic-sans-ms", name: "Comic Sans MS" },
-        ],
-        customClasses: [
-            {
-                name: "quote",
-                class: "quote",
-            },
-            {
-                name: "redText",
-                class: "redText",
-            },
-            {
-                name: "titleText",
-                class: "titleText",
-                tag: "h1",
-            },
-        ],
-        uploadUrl: "v1/image",
-        sanitize: true,
-        toolbarPosition: "top",
-    };
+    }
+    /** Finaliza la configuracion de editor */
 
     checkPermisos() {
         this.securityService.tienePermisoRedirect("CONTACTO MAIL");
@@ -189,19 +177,6 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     ngAfterViewInit(): void {
         this.scrollBottom();
-        setTimeout(() => {
-            this.subcategoriasInicial();
-            if (this.consulta.EstadoConsulta.Code == "INI" && this.esInterno) {
-                this.cambiarEstadoPorCode("GES");
-            }
-            if (
-                this.consulta.EstadoConsulta.Code == "GESRTA" &&
-                this.esInterno
-            ) {
-                this.cambiarEstadoPorCode("GES");
-            }
-        }, 500);
-        this.setDatosExtra();
     }
 
     scrollBottom() {
@@ -535,6 +510,8 @@ export class DetalleConsultaComponent extends BaseComponent {
     }
 
     disable() {
+        if (!this.consulta.EstadoConsulta)
+            return true;
         if (
             this.consulta.EstadoConsulta.Code != "GES" &&
             this.consulta.EstadoConsulta.Code != "DOC" &&
@@ -690,8 +667,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.consulta = result;
-                        this.consulta.Comentarios.forEach((x) => {
+                        result.Comentarios = result.Comentarios.map((x) => {
                             x.Fecha = new Date(
                                 this.getDateFromAspNetFormat(x.Fecha)
                             );
@@ -704,7 +680,20 @@ export class DetalleConsultaComponent extends BaseComponent {
                                     );
                                 });
                             }
+                            return x;
                         });
+                        this.consulta = result;
+                        this.subcategoriasInicial();
+                        this.setDatosExtra();
+                        if (this.consulta.EstadoConsulta.Code == "INI" && this.esInterno) {
+                            this.cambiarEstadoPorCode("GES");
+                        }
+                        if (
+                            this.consulta.EstadoConsulta.Code == "GESRTA" &&
+                            this.esInterno
+                        ) {
+                            this.cambiarEstadoPorCode("GES");
+                        }
                         this.consulta.FechaCreacion = new Date(
                             this.getDateFromAspNetFormat(
                                 this.consulta.FechaCreacion
@@ -719,44 +708,6 @@ export class DetalleConsultaComponent extends BaseComponent {
                         try {
                             setTimeout(() => {
                                 this.scrollBottom();
-
-                                // //Editar DIV editable para igual a text area
-                                // let divComentario =
-                                //     document.getElementById("divComentario");
-                                // let editable = this.disable()
-                                //     ? "false"
-                                //     : "true";
-                                // divComentario.setAttribute(
-                                //     "contenteditable",
-                                //     editable
-                                // );
-
-                                this.eliminarBotonesExtra();
-
-                                //// Get the modal
-                                //var modal = document.getElementById("myModal");
-
-                                //// Get the image and insert it inside the modal - use its "alt" text as a caption
-                                //var img = document.getElementsByClassName("galeryimg");
-                                //var modalImg = document.getElementById("img01");
-                                //var captionText = document.getElementById("caption");
-                                //for (let i = 0; i < img.length; i++) {
-                                //    $(img[i]).click(function () {
-                                //        modal.style.display = "block";
-                                //        $(modalImg).attr("src", $(img[i]).attr("src"));
-                                //        captionText.innerHTML = "";
-                                //    });
-                                //}
-
-
-                                //// Get the <span> element that closes the modal
-                                //var span = document.getElementsByClassName("close")[0];
-
-                                //// When the user clicks on <span> (x), close the modal
-                                //$(span).click(function () {
-                                //    modal.style.display = "none";
-                                //});
-
                             }, 200);
                         } catch { }
                     }
@@ -783,7 +734,6 @@ export class DetalleConsultaComponent extends BaseComponent {
     }
 
     Paste(e) {
-        console.log("paste");
         setTimeout(() => {
             let divComentario = document.getElementsByClassName(
                 "angular-editor-textarea"
@@ -803,52 +753,6 @@ export class DetalleConsultaComponent extends BaseComponent {
             divComentario.innerHTML = divComentario.innerHTML.replace(borderAnterior, borderNuevo);
 
         }, 200);
-    }
-
-    eliminarBotonesExtra() {
-        let divToolBar = document.getElementsByClassName(
-            "angular-editor-toolbar"
-        )[0];
-        let divComentario = document.getElementsByClassName(
-            "angular-editor-textarea"
-        )[0];
-        //divComentario.addEventListener("paste", this.Paste.bind(this));
-
-        let toolBars = divToolBar.childNodes;
-
-        if (toolBars.length == 14) {
-            let toolBar0 = toolBars[0];
-            let toolBar2 = toolBars[2];
-            let toolBar3 = toolBars[3];
-            let toolBar4 = toolBars[4];
-            let toolBar5 = toolBars[5];
-            let toolBar6 = toolBars[6];
-            let toolBar7 = toolBars[7];
-            let toolBar8 = toolBars[8];
-            let toolBar9 = toolBars[9];
-            let toolBar10 = toolBars[10];
-            let toolBar11 = toolBars[11];
-            let toolBar13 = toolBars[13];
-
-            divToolBar.removeChild(toolBar0);
-            divToolBar.removeChild(toolBar2);
-            divToolBar.removeChild(toolBar3);
-            divToolBar.removeChild(toolBar4);
-            divToolBar.removeChild(toolBar5);
-            divToolBar.removeChild(toolBar6);
-            divToolBar.removeChild(toolBar7);
-            divToolBar.removeChild(toolBar8);
-            divToolBar.removeChild(toolBar9);
-            divToolBar.removeChild(toolBar10);
-            divToolBar.removeChild(toolBar11);
-            divToolBar.removeChild(toolBar13);
-        }
-        
-        $("#subscript-").hide();
-        $("#superscript-").hide();
-
-        $(".angular-editor-textarea").css("font-size", "large");
-        $(".angular-editor-button").css("font-size", "large");
     }
 
     subcategoriasInicial() {
