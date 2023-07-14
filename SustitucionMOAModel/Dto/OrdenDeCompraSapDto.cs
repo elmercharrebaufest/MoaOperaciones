@@ -10,6 +10,7 @@ namespace SustitucionMOAModel.Dto
     {
         public OrdenDeCompraSAPCabecera Cabecera { get; set; }
         public List<OrdenDeCompraSAPPosicion> Posiciones { get; set; }
+        public ErrorOC Error { get; set; }
     }
 
     public class OrdenDeCompraSAPCabecera
@@ -50,5 +51,11 @@ namespace SustitucionMOAModel.Dto
     public class OrdenDeCompraSAPPosicionDireccionDeEntrega
     {
         //POADDRDELIVERY
+    }
+
+    public class ErrorOC
+    {
+        public string Mensaje { get; set; }
+        public string Tipo { get; set; }
     }
 }

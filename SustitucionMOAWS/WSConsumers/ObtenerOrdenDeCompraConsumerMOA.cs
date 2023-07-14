@@ -28,17 +28,25 @@ namespace SustitucionMOAWS.WSConsumers
 
         public OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC)
         {
+            //OrdenDeCompraSAPDto resultado = new OrdenDeCompraSAPDto();
+            //resultado.Cabecera = new OrdenDeCompraSAPCabecera
+            //{
+            //    OrdenDeCompra = nroOC,
+            //    CodigoProveedor = "0057984261"
+            //};
+            //return resultado;
+
             try
             {
-                string ACCOUNT_ASSIGNMENT = "";
-                string DELIVERY_ADDRESS = "";
-                string HEADER_TEXT = "";
-                string INVOICEPLAN = ""; 
-                string ITEM_TEXT = ""; 
-                string PURCHASEORDER = ""; 
-                string SERIALNUMBERS = "";
-                string SERVICES = "";
-                string VERSION = "";
+                string ACCOUNT_ASSIGNMENT = "X";
+                string DELIVERY_ADDRESS = "X";
+                string HEADER_TEXT = "X";
+                string INVOICEPLAN = "X"; 
+                string ITEM_TEXT = "X"; 
+                string PURCHASEORDER = nroOC; 
+                string SERIALNUMBERS = "X";
+                string SERVICES = "X";
+                string VERSION = "X";
 
                 BAPIMEPOACCOUNT[] POACCOUNT = new BAPIMEPOACCOUNT[] { };
                 BAPIMEPOADDRDELIVERY[] POADDRDELIVERY = new BAPIMEPOADDRDELIVERY[] { };
@@ -105,7 +113,7 @@ namespace SustitucionMOAWS.WSConsumers
                     ref SERIALNUMBER,
                     out POHEADER);
 
-                return map(POHEADER, RETURN);
+                return map(result, POHEADER, RETURN);
 
             }
             catch (Exception e)
@@ -114,14 +122,29 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-        protected virtual OrdenDeCompraSAPDto map(BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN)
+        private OrdenDeCompraSAPDto map(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN)
         {
-            OrdenDeCompraSAPDto result = new OrdenDeCompraSAPDto();
-            result.Cabecera = new OrdenDeCompraSAPCabecera { 
+            OrdenDeCompraSAPDto resultado = new OrdenDeCompraSAPDto();
+
+            if (RETURN != null)
+            {
+                if (RETURN.Length > 0)
+                {
+                    resultado.Error = new ErrorOC
+                    {
+                        Mensaje = RETURN[0].MESSAGE,
+                        Tipo = RETURN[0].TYPE
+                    };
+                }
+            }
+
+            resultado.Cabecera = new OrdenDeCompraSAPCabecera
+            {
                 OrdenDeCompra = POHEADER.PO_NUMBER,
                 CodigoProveedor = POHEADER.VENDOR
+                
             };
-            return result;
+            return resultado;
         }
     }
 

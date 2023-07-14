@@ -14,6 +14,7 @@ import { Solp } from '../../solp';
 import { ValidadorPasoSolpService } from '../../../validadorPasoSolpService';
 import { EnumPasoSolp } from '../../../enum-paso-solp';
 import { AltaNuevoProveedor } from '../../../solp-compra';
+import { OrdenDeCompraSap } from '../../../../modelos/ordenDeCompraSap';
 
 declare var $: any;
 
@@ -39,12 +40,11 @@ export class CotizacionComponent extends ListBaseComponent {
     ];
 
     proveedorSeleccionado: any;
-    OCSeleccionada: any;
 
     proveedores: any[] = new Array();
-    ordenesDeCompra: any[] = new Array();
 
     estaFinalizada = false;
+    ordenDeCompraSap: OrdenDeCompraSap = null;
 
     @Output() onEstCompleto = new EventEmitter<any>();
     mostrar: boolean;
@@ -109,7 +109,7 @@ export class CotizacionComponent extends ListBaseComponent {
             trabajoHecho: new FormControl('', Validators.required),
             proveedorSeleccionado: new FormControl('', Validators.required),    
             adicional: new FormControl('', Validators.required),
-            OCSeleccionada: new FormControl('', Validators.required)
+            ordenDeCompra: new FormControl('', Validators.required)
         });
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
@@ -125,6 +125,11 @@ export class CotizacionComponent extends ListBaseComponent {
                 RazonSocial: this.model.proveedorAsignado
             }
         }
+
+        if(this.model.ordenDeCompra){
+            this.obtenerOrdenDeCompra();
+        }
+
 
         if(this.model.nroSolp ){
             this.estaFinalizada = true
@@ -263,14 +268,14 @@ export class CotizacionComponent extends ListBaseComponent {
         }
     }
 
-    // selectOC(event) {
-    //     try {
-    //         this.model.proveedorAsignado_Id = event.Id;
-    //         this.model.proveedorAsignado = event.RazonSocial;
-    //     } catch (e) {
-    //         this.floatMsgService.setErrorMsg(e);
-    //     }
-    // }
+    selectOC(event) {
+        try {
+            this.model.ordenDeCompra = event.Cabecera.OrdenDeCompra;
+            this.model.proveedorAsignado = event.Cabecera.RazonSocialProveedor;
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+        }
+    }
 
 
     validacionTrabajoHecho(){
@@ -303,7 +308,7 @@ export class CotizacionComponent extends ListBaseComponent {
             }
 
             if(this.model.adicional == true){
-                if (!this.OCSeleccionada || this.OCSeleccionada == "" || typeof this.OCSeleccionada === "undefined")
+                if (!this.model.ordenDeCompra || this.model.ordenDeCompra == "" || typeof this.model.ordenDeCompra === "undefined")
                 {
                     this.model.mensajeCotizacion = "Debe agregar un numero de OC en el paso #4";
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
@@ -312,7 +317,7 @@ export class CotizacionComponent extends ListBaseComponent {
                 }
             }
             
-        }   
+        }  
         return this.model.validarTrabajoHecho;
     }
 
@@ -327,10 +332,56 @@ export class CotizacionComponent extends ListBaseComponent {
 
         if(this.model.adicional == undefined || this.model.adicional == false){
             if(!this.estaFinalizada){
-                this.model.proveedorAsignado = "";
-                this.model.proveedorAsignado_Id = null;
-                this.proveedorSeleccionado = null;
+                this.model.ordenDeCompra = null;
+                this.ordenDeCompraSap.Cabecera.OrdenDeCompra = null;
+                this.ordenDeCompraSap.Cabecera.CodigoProveedor = null;
+                this.ordenDeCompraSap.Cabecera.RazonSocialProveedor = null;
             }
         }
+    }
+
+    obtenerOrdenDeCompra() {
+        try {
+            console.log("me llamaron", this.model.ordenDeCompra.length)
+            if(this.model.ordenDeCompra.length == 10){
+                this.subscription = this.service.obtenerOrdenDeCompra(this.model.ordenDeCompra).subscribe(
+                    (result: any) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            this.ordenDeCompraSap = result.data;
+                            console.log("me llamaron")
+                        }
+                    },
+                    error => {
+                        this.floatMsgService.setErrorMsg(error.message);
+                    });
+            }
+            this.limpiarCheck();
+           
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+
+    validarCondiciones(campoCheck){
+        if(this.estaFinalizada){
+            return true;
+        }
+        if(this.model.adicional == true && campoCheck == 'trabajoHecho'){
+            return true; 
+        } 
+
+        if(this.model.trabajoHecho == true && campoCheck == 'adicional'){
+            return true;
+        }
+        return false
     }
 }

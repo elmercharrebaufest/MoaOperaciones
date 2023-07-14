@@ -9,6 +9,7 @@ import { AltaNuevoProveedor, EnvioSolpCompra, SolpCompraDto } from './solp-compr
 import { CircularDto } from '../modelos/circular-model';
 import { PeticionDeOfertaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
 import { AdjudicacionDto } from '../modelos/adjudicacion';
+import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
 
 @Injectable({
     providedIn: 'root'
@@ -150,6 +151,8 @@ export class ComprasService extends BaseService {
             ObservacionesCotizacion: solp.observacionesCotizacion,
             ProveedorAsignadoId: solp.proveedorAsignado_Id,
             TrabajoYaHecho: solp.trabajoHecho,
+            Adicional: solp.adicional,
+            NroOrdenDeCompraAdicional: solp.ordenDeCompra,
             RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
             Finalizar: solp.Finalizar,
@@ -752,5 +755,24 @@ export class ComprasService extends BaseService {
                 headers: this.headers,
             });
     }
+
+    public obtenerOrdenDeCompra(nroOC: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroOC", nroOC.toString());       
+        return this.http
+            .get("/api/compras/ObtenerOrdenDeCompra", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    // public obtenerOrdenDeCompra(filtro: string) {
+    //     let params: HttpParams = new HttpParams()
+    //     params = params.set('filtro', filtro);
+    //     return this.http
+    //         .get<OrdenDeCompraSap>('/api/compras/ObtenerOrdenDeCompra', { params: params, headers: this.headers })
+    // }
+
+
 
 }
