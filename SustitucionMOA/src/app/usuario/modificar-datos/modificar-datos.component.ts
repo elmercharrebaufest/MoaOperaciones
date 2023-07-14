@@ -43,7 +43,7 @@ export class ModificarDatosComponent implements OnInit {
 
   private cargarTipoUsuario() {
     this.service.getTipoUsuario().subscribe(response => {
-      this.tipoUsuario = response.data.tipoUsuario;
+      this.tipoUsuario = response.data.tipoUsuario.filter( u => u.NombreCorto !== "A");
     });
   }
   private cargarDatosUsuario(id: string) {
