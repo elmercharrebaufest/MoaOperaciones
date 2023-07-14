@@ -139,10 +139,6 @@ export class DetalleConsultaComponent extends BaseComponent {
             ['clean'],
         ],
     }
-
-    defaultFormats = {
-        font: 'Arial',
-      };
     
     commentStyles = {
         height: "auto",
@@ -150,10 +146,10 @@ export class DetalleConsultaComponent extends BaseComponent {
         minHeight: "100px",
         maxHeight: "200px",
         minWidth: "500px",
-        fontSize: "15px",   
-        font: "Arial",
+        fontSize: "large",   
+        fontFamily: "Roboto Condensed",
         overflow:"hidden",
-        overflowY: "auto"
+        overflowY: "auto",
     }
 
     commentContent = {
