@@ -38,10 +38,12 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerContratoSolpConsumerMOA> obtenerContratoSolpConsumerMOAMock;
         private Mock<IVendedorService> vendedorServiceMock;
         private Mock<IObtenerTipoCambioConsumerMOA> obtenerTipoCambioConsumerMOAMock;
-        private Mock<IObtenerOrdenDeCompraConsumerMOA> obtenerOrdenDeCompraConsumerMOA;
-        private Mock<IObtenerOrdenesDeCompraParaSOLPConsumerMOA> obtenerOrdenesDeCompraParaSOLPConsumerMOA;
+        private Mock<IObtenerOrdenDeCompraConsumerMOA> obtenerOrdenDeCompraConsumerMOAMock;
+        private Mock<IObtenerOrdenesDeCompraParaSOLPConsumerMOA> obtenerOrdenesDeCompraParaSOLPConsumerMOAMock;
 
         private Mock<IHttpContextService> httpContextServiceMock;
+        private Mock<IObtenerRegistroInfoConsumerMOA> obtenerRegistroInfoConsumerMOAMock;
+        private Mock<IUsuarioService> usuarioServiceMock;
         private string filePath = "";
 
         [SetUp]
@@ -63,11 +65,14 @@ namespace SustitucionMOATest.Services
             vendedorServiceMock = new Mock<IVendedorService>();
             obtenerTipoCambioConsumerMOAMock = new Mock<IObtenerTipoCambioConsumerMOA>();
             httpContextServiceMock = new Mock<IHttpContextService>();
+            obtenerRegistroInfoConsumerMOAMock = new Mock<IObtenerRegistroInfoConsumerMOA>();
             // httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
 
             filePath = Path.GetFullPath(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
-            obtenerOrdenDeCompraConsumerMOA = new Mock<IObtenerOrdenDeCompraConsumerMOA>();
-            obtenerOrdenesDeCompraParaSOLPConsumerMOA = new Mock<IObtenerOrdenesDeCompraParaSOLPConsumerMOA>();
+            obtenerOrdenDeCompraConsumerMOAMock = new Mock<IObtenerOrdenDeCompraConsumerMOA>();
+            obtenerOrdenesDeCompraParaSOLPConsumerMOAMock = new Mock<IObtenerOrdenesDeCompraParaSOLPConsumerMOA>();
+
+            usuarioServiceMock = new Mock<IUsuarioService>();
 
             target = new ComprasService(
                 repositorioMock.Object,
@@ -85,8 +90,10 @@ namespace SustitucionMOATest.Services
                 vendedorServiceMock.Object,
                 obtenerTipoCambioConsumerMOAMock.Object,
                 httpContextServiceMock.Object,
-                obtenerOrdenDeCompraConsumerMOA.Object,
-                obtenerOrdenesDeCompraParaSOLPConsumerMOA.Object
+                obtenerRegistroInfoConsumerMOAMock.Object,
+                obtenerOrdenDeCompraConsumerMOAMock.Object,
+                obtenerOrdenesDeCompraParaSOLPConsumerMOAMock.Object,
+                usuarioServiceMock.Object
                 );
         }
 
@@ -1123,7 +1130,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
 
-            target.CrearCotizacionAutomatica(solp, false);
+            target.CrearCotizacionConTrabajoYaHecho(solp, false);
 
             repositorioMock.Verify(y => y.Obtener<Usuario>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);

@@ -13,5 +13,6 @@ namespace SustitucionMOAModel.Dto
         public string NroSolp { get; set; }
         public IQueryable<SolpPosicionDto> PosicionCompras { get; set; }
         public string TipoPosicionCodigo { get; set; }
+        public List<RegistroInfoDto> RegistrosInfo { get; set; }
     }
 }

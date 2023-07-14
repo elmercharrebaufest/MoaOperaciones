@@ -304,7 +304,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Service References\ObtenerOrdenDeCompraWebServiceMOA\Reference.cs">
+    <Compile Include="Service References\ObtenerRegistroInfoConsumerMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+     <Compile Include="Service References\ObtenerOrdenDeCompraWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -518,6 +523,7 @@
     <Compile Include="WSConsumers\EcheqModificarFijacionConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqVisualizarDisponibleChequeConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqVisualizarPendientePagoConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ObtenerRegistroInfoConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerOrdenDeCompraConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerTipoCambioConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerContratoSolpConsumerMOA.cs" />
@@ -944,6 +950,7 @@
     <None Include="Service References\ObtenerContratoSolpWebServiceMOA\SI_MMRFC_OBTENER_CONTRATO.wsdl" />
     <None Include="Service References\ObtenerFuenteAprovisionamientoWebServiceMOA\SI_MMRFC_OBTENER_FUENTE_APROV.wsdl" />
     <None Include="Service References\ObtenerMaterialesSolpWebServiceMOA\SI_MMRFC_OBTENER_MATERIALES.wsdl" />
+    <None Include="Service References\ObtenerRegistroInfoConsumerMOA\BAPI_INFORECORD_GETLIST.wsdl" />
     <None Include="Service References\ObtenerOrdenDeCompraWebServiceMOA\BAPI_PO_GETDETAIL1.wsdl" />
     <None Include="Service References\ObtenerTipoCambioWebServiceMOA\SI_MMRFC_OBTENER_TIPO_CAMBIO.wsdl" />
     <None Include="Service References\OrdenCargaControlEstadoSAP\SI_MPMF_MOAOP_CONTROL_ESTADO.wsdl" />
@@ -2344,6 +2351,7 @@
     <WCFMetadataStorage Include="Service References\ObtenerContratoSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerFuenteAprovisionamientoWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerMaterialesSolpWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ObtenerRegistroInfoConsumerMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerOrdenDeCompraWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerTipoCambioWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\OrdenCargaControlEstadoSAP\" />
@@ -3393,6 +3401,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ModificarOrdenDeCompraWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerRegistroInfoConsumerMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerRegistroInfoConsumerMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerRegistroInfoConsumerMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

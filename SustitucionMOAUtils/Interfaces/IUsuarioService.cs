@@ -45,5 +45,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProveedorAuditoriaDto> GetProveedorAuditoriaPorUsuario(int usuarioId);
         
         IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp();
+
+        ProveedorDto TraerProveedorEnSAP(string codigoProveedor, string codigoCorredor);
     }
 }

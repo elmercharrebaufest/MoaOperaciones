@@ -103,6 +103,12 @@
                     /@address" />
 	</parameter>
 
+  <parameter name="BAPI_INFORECORD_GETLISTPortType Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                    /endpoint[@name='BAPI_INFORECORD_GETLISTPortType']
+                    /@address" />
+  </parameter>
   <parameter name="Z_MMRFC_OC_PARA_SOLPPortType Service Endpoint Address">
     <parameterEntry kind="XmlFile" scope="Web.config"
 								match="/configuration/system.serviceModel/client

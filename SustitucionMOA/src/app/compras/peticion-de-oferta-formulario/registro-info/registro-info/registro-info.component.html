@@ -1,0 +1,130 @@
+<p-dialog [(visible)]="displayRegistroInfo" modal="modal" [width]="1300" [draggable]="false" [closable]="true"
+	(onHide)="onHideRegistroDialog(dd)" appendTo="body" positionTop="30"
+	[contentStyle]="{ 'max-height':'1000px', 'min-height':'300px'}">
+	<p-header class="headerModal">
+		<div class="col-xs-12 col-sm-10 "> <strong>Registro Info SOLP #{{solpCompraDto.NroSolp}}</strong></div>
+	</p-header>
+
+	 <div class="row myRow">
+		<div class="col-md-12">
+			<strong>Posici&oacute;n</strong>
+			<div>
+				<p-dropdown #dd [options]="options"  optionLabel="label"
+					optionValue="value" (onChange)="filtrarPorPosicion(dd)">
+				</p-dropdown>
+			</div>
+		</div>
+	</div> 
+	<div class="row myRow">
+		<div class="col-md-12">
+			<strong>Registro info</strong>
+			<p-table #dt class="tabla-registro-info" [value]="registrosInfo" [rows]="10" [scrollable]="true" scrollHeight="300px">
+				<!-- (onEditInit)="nuevaPosicion($event)"> -->
+				<ng-template pTemplate="header">   
+					<tr>
+						<th></th>
+						<th data-toggle="tooltip" class="columna" title="no de proveedor">N<sup>o</sup> de proveedor</th>
+						<th data-toggle="tooltip" class="columna"  title="nombre de proveedor">
+							Razon Social
+						</th>
+						<th data-toggle="tooltip" class="columna"  title="unidad de Medida">Fecha última orden de compra</th>
+						<th data-toggle="tooltip" class="columna"  title="unidad">Um</th>
+						<th data-toggle="tooltip" class="columna"  title="cantidad">Ctd</th>
+						<th data-toggle="tooltip" class="columna"  title="cantidadAdjudicar">Ctd a Adjudicar</th>
+						<th data-toggle="tooltip" class="columna"  title="moneda">Moneda</th>
+						<th data-toggle="tooltip" class="columna"  title="precio">
+							Precio
+						</th>
+						<th data-toggle="tooltip" class="columna" title="centro">
+							Centro
+						</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-registro let-rowIndex="rowIndex">
+					<tr>
+						<td class="columna">
+							<input type="radio" id="registroInfoId" [(ngModel)]="registro.Confirmado" name="registroInfoId"
+								[value]="registro" />
+						</td >
+						<td class="columna">
+							{{registro.Codigo}}
+
+						</td>
+						<td class="columna">
+							{{registro.NombreProveedor}}
+
+						</td>
+						<td class="columna">
+							{{registro.Fecha}}
+						</td>
+						<td class="columna">
+							{{registro.Unidad}}
+						</td>
+						<td class="columna"> 
+							{{registro.Cantidad}}
+						</td>
+						<td pEditableColumn class="columna">
+							<p-cellEditor>
+								<ng-template pTemplate="input">
+									<input type="text" pKeyFilter="int" [(ngModel)]="registro.CantidadAdjudicacion">
+								</ng-template>
+								<ng-template pTemplate="output">
+									{{registro.CantidadAdjudicacion | number: '1.0-0'}}
+								</ng-template>
+							</p-cellEditor>
+						</td>
+						<td class="columna">
+							{{registro.Moneda}}
+						</td>
+						<td class="columna">
+							{{registro.Precio}}
+						</td>
+						<td class="columna">
+							{{registro.Centro}}
+						</td>
+						
+					</tr>
+				</ng-template>
+			</p-table>
+		</div>
+	</div>
+	<p-footer>
+		<div class="row">			
+			<div class="col-md-4"></div>
+			<div class="col-md-8">
+				<button type="button" class="btn btn-danger botonesComprasColor"
+					(click)="onCancelarRegistroInfo()">CANCELAR</button>
+
+				<button type="button" class="btn btn-primary botonesComprasColor" 
+					(click)="abrirModalConfirmacion()">Generar Orden de Compra</button>
+			</div>
+		</div>
+	</p-footer> 
+
+</p-dialog>
+
+<p-dialog>
+	<p-dialog [(visible)]="displayConfirmacion" modal="modal" [width]="500" [draggable]="false" [closable]="true"
+	(onHide)="cerrarModalConfirmacion()" appendTo="body" positionTop="30"
+	[contentStyle]="{ 'max-height':'400px', 'min-height':'300px'}">
+	<p-header class="headerModal">
+		<div class="col-xs-12 col-sm-10 "> <strong>Confirmación</strong></div>
+	</p-header>
+	<div>
+		<strong>Se va a generar una OC para cada proveedor con las siguientes posiciones, puede cancelar si es necesario realizar más cambios.</strong>
+	</div>
+	<div id="output" *ngFor="let item of resultado | keyvalue">		
+		<ul *ngIf="item.value.detalle.length > 0">
+			<div *ngFor="let detalle of item.value.detalle">
+				<li >
+					Proveedor {{ detalle.nombre }} 
+				  </li>
+				  <li *ngFor="let detalle of item.value.detalle">
+				    Posicion  {{ detalle.nombre }} - {{ detalle.descripcion }}
+				  </li>
+			</div>
+		
+		</ul>
+		<p *ngIf="item.value.detalle.length === 0">No hay detalles disponibles</p>
+	  </div>
+</p-dialog>

@@ -675,6 +675,27 @@ namespace SustitucionMOAUtils.Services
             return resultado;
         }
 
+        public ProveedorDto TraerProveedorEnSAP(string codigoProveedor, string codigoCorredor)
+        {
+            //tengo que preguntar si es corredor o proveedor?
+            var proveedorSAP = new VendedorDetalleConsumerMOA().request(codigoProveedor, codigoCorredor);
+            var tipoProveedorGranos = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "G");
+
+            ProveedorDto proveedor = new ProveedorDto
+            {
+                //IdProveedorCorredor = corredor.Id,
+                Mail = "",
+                Observaciones = "Proveedor agregado automaticamente por MOA Operaciones",
+                CodigoProveedor = codigoProveedor,
+                CUIT = proveedorSAP.cabeceras.FirstOrDefault().cuit,
+                RazonSocial = proveedorSAP.cabeceras.FirstOrDefault().descripcion,
+                EstadoAprobacion = EstadoAprobacion.Aprobado,
+                IdTipoUsuario = tipoProveedorGranos.Id
+            };
+
+            return proveedor;
+        }
+
 
         #endregion
 

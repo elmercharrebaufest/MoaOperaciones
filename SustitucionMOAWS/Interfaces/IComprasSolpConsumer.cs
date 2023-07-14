@@ -48,6 +48,10 @@ namespace SustitucionMOAWS.Interfaces
         ObtenerTipoCambioConsumerMOAResponse Request(string fecha, string monedaDestino, string monedaOrigen);
     }
 
+    public interface IObtenerRegistroInfoConsumerMOA
+    {
+        List<RegistroInfoDto> ObtenerRegistroInfoConsumer(string material, string centro, string grupoDeCompras);
+    }
     public interface IObtenerOrdenDeCompraConsumerMOA
     {
         OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
