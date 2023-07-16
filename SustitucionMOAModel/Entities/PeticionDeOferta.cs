@@ -18,6 +18,8 @@ namespace SustitucionMOAModel.Entities
         public DateTime PlazoDeOferta { get; set; }
         public string Observaciones { get; set; }
 
+        public bool? RegistroInfo { get; set; }
+
         [ForeignKey("UsuarioCreador_Id")]
         public virtual Usuario Usuario { get; set; }
         [ForeignKey("Solp_Id")]

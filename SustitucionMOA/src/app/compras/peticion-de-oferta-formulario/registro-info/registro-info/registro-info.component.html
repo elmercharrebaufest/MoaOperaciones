@@ -42,10 +42,9 @@
 				</ng-template>
 				<ng-template pTemplate="body" let-registro let-rowIndex="rowIndex">
 					<tr>
-						<td class="columna">
-							<input type="radio" id="registroInfoId" [(ngModel)]="registro.Confirmado" name="registroInfoId"
-								[value]="registro" />
-						</td >
+						<td class="columna" style="width: 40px !important; ">
+							<p-checkbox name="posiciones" [(ngModel)]="registro.Confirmado"
+							  binary="false"></p-checkbox></td>
 						<td class="columna">
 							{{registro.Codigo}}
 
@@ -113,18 +112,57 @@
 	<div>
 		<strong>Se va a generar una OC para cada proveedor con las siguientes posiciones, puede cancelar si es necesario realizar más cambios.</strong>
 	</div>
-	<div id="output" *ngFor="let item of resultado | keyvalue">		
-		<ul *ngIf="item.value.detalle.length > 0">
-			<div *ngFor="let detalle of item.value.detalle">
-				<li >
-					Proveedor {{ detalle.nombre }} 
-				  </li>
-				  <li *ngFor="let detalle of item.value.detalle">
-				    Posicion  {{ detalle.nombre }} - {{ detalle.descripcion }}
-				  </li>
-			</div>
-		
-		</ul>
+	<br>
+	<div id="output" *ngFor="let item of resultado | keyvalue">
+		<div *ngIf="item.value.detalle.length > 0">
+		  <ul class="detalle-list">
+			<li style="list-style-type: none; padding-left: 0;">
+			  <strong class="proveedor-nombre">Proveedor {{ detalle.nombre }}</strong>
+			</li>
+			<li *ngFor="let detalle of item.value.detalle">
+			  Posición {{ detalle.descripcion }}
+			</li>
+		  </ul>
+		</div>
+		<div class="linea"></div>
 		<p *ngIf="item.value.detalle.length === 0">No hay detalles disponibles</p>
 	  </div>
+	  <p-footer>
+		<div class="row">			
+			<div class="col-md-4"></div>
+			<div class="col-md-8">
+				<button type="button" class="btn btn-danger botonesComprasColor"
+					(click)="cerrarModalConfirmacion()">CANCELAR</button>
+				<button type="button" class="btn btn-primary botonesComprasColor" 
+					(click)="guardarAdjudicacion()">Generar Orden de Compra</button>
+			</div>
+		</div>
+	</p-footer> 
 </p-dialog>
+
+<p-dialog>
+	<p-dialog [(visible)]="displayAdjudicacionCreada" modal="modal" [width]="300" [draggable]="false" [closable]="true"
+	(onHide)="cerrarModalConfirmacion()" appendTo="body" positionTop="30"
+	[contentStyle]="{ 'max-height':'300px', 'min-height':'300px'}">
+	<p-header class="headerModal">
+		<div class="col-xs-12 col-sm-10 "> <strong>Adjudicaciones creadas</strong></div>
+	</p-header>
+	<br>
+	<div>	
+		Aca va los numeros de adjudicacion o los errores...
+	</div>
+	  <p-footer>
+		<div class="row">			
+			<div class="col-md-4"></div>
+			<div class="col-md-8">
+				<button type="button" class="btn btn-danger botonesComprasColor"
+					(click)="cerrarModalConfirmacionAdjudicacion()">Volver a la home</button>
+				<button type="button" class="btn btn-primary botonesComprasColor" 
+					>Confirmar</button>
+			</div>
+		</div>
+	</p-footer> 
+</p-dialog>
+
+
+

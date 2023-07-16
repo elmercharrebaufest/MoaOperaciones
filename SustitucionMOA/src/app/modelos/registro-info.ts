@@ -1,4 +1,5 @@
-export interface RegistroInfoDto{  
+export interface RegistroInfoDto{
+    Numero?: number  
     Confirmado?: boolean
     PosicionId?: number  
     DescripcionPosicion?: string

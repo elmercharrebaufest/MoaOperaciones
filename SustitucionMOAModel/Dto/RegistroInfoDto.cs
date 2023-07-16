@@ -29,5 +29,6 @@ namespace SustitucionMOAModel.Dto
         public string Cuit { get; set; }
         public int? Indice { get; set; }
         public int ProveedorId { get; set; }
+        public int Numero { get; set; }
     }
 }

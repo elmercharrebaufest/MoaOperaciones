@@ -3012,8 +3012,10 @@ namespace SustitucionMOAUtils.Services
                     {
                         foreach (var registroInfo in registros)
                         {
+                             var i = 0;
                             registrosInfo.Add(new RegistroInfoDto
                             {
+                                Numero = i + 1,
                                 PosicionId = posicion.Id,
                                 Indice = posicion.Indice,
                                 DescripcionPosicion = posicion.Tarea,
@@ -3055,9 +3057,12 @@ namespace SustitucionMOAUtils.Services
             foreach (var codigo in codigos)
             {
                 if(!proveedores.Any(x => x.CodigoProveedor == codigo))
-                {             
-                    //De donde obtengo el mail?
-                   var proveedor = usuarioService.TraerProveedorEnSAP(codigo, codigo);
+                {
+                   //Aca habria que crear el nuevo proveedor con la rfc que falta importar
+                    var proveedor = new ProveedorDto
+                    {
+
+                    };
                     usuarioService.GrabarProveedor(proveedor);
                 }
             }
@@ -3103,7 +3108,8 @@ namespace SustitucionMOAUtils.Services
                     Observaciones = peticionDeOferta.Observacion ?? "",
                     Posiciones = posicionesPeticion,
                     PlazoDeOferta = fechaOferta ?? posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
-                    Usuarios = usuarios.Where(x => peticionDeOferta.UsuarioIds.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList()
+                    Usuarios = usuarios.Where(x => peticionDeOferta.UsuarioIds.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList(),
+                    RegistroInfo = peticionDeOferta.RegistroInfo
                 };
 
                 peticion = repositorio.Agregar(peticion);
@@ -5071,10 +5077,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public void CrearOrdenDeCompraAutomatica(Solp solp = null, bool enviarMail = true, List<RegistroInfoDto> registroInfo = null, bool crearAdjudicacion = false, int usuarioActual = 0, SolpPosicion posicion = null)
+        public RespuestaCrearOrdenDeCompra CrearOrdenDeCompraAutomatica(Solp solp = null, bool enviarMail = true, List<RegistroInfoDto> registroInfo = null, bool crearAdjudicacion = false, int usuarioActual = 0, SolpPosicion posicion = null)
         {
             try
             {
+                var respuestaGuardarSOLP = new RespuestaCrearOrdenDeCompra();
                 RespuestaGuardarSOLP respuestaCotizacion;
                 Cotizacion cotizacionNueva;
                 var posiciones = new List<SolpPosicion> { posicion };
@@ -5082,7 +5089,7 @@ namespace SustitucionMOAUtils.Services
                 var usuariosIds = new List<int>();
                 var proveedorId = registroInfo.Where(registroPos => registroPos.PosicionId == posicion.Id).Select(x => x.ProveedorId).FirstOrDefault();
                 usuariosIds.Add(proveedorId);        
-                PeticionDeOferta peticionEntidad = CrearPeticionAutomatica(solp, usuariosIds);
+                PeticionDeOferta peticionEntidad = CrearPeticionAutomatica(solp, usuariosIds, posiciones, true);
                 //CrearCotizacion
                 CrearCotizacionAutomatica(solp, enviarMail, peticionEntidad, out respuestaCotizacion, out cotizacionNueva, posiciones);
                 //Crear Adjudicacion
@@ -5102,9 +5109,10 @@ namespace SustitucionMOAUtils.Services
                         Garantias = "",
 
                     };
-                    GrabarAdjudicacion(adjudicacion, usuarioActual);
+                  var resultado = GrabarAdjudicacion(adjudicacion, usuarioActual);
+                  return resultado;
                 }
-
+                return respuestaGuardarSOLP;
             }
             catch (Exception e)
             {
@@ -5158,7 +5166,7 @@ namespace SustitucionMOAUtils.Services
             cotizacionNueva = repositorio.Obtener<Cotizacion>(respuestaCotizacion.IdEntidad);
         }
 
-        private PeticionDeOferta CrearPeticionAutomatica(Solp solp, List<int> usuariosIds, List<SolpPosicion> solpPosicions = null)
+        private PeticionDeOferta CrearPeticionAutomatica(Solp solp, List<int> usuariosIds, List<SolpPosicion> solpPosicions = null, bool registroInfo = false)
         {
             var peticion = new GuardarPeticionDeOfertaDto()
             {
@@ -5170,7 +5178,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     Id = solp.UsuarioCreacion.Id
                 },
-                Adjuntos = null
+                Adjuntos = null,
+                RegistroInfo = registroInfo
             };
 
             var resultado = GrabarPeticionDeOferta(peticion, null, false);
@@ -5186,12 +5195,23 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        public void CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId)
+        public List<string> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId)
         {
-            var posiciones = repositorio.Listar<SolpPosicion>(x => registros.Select(registro => registro.Id).Contains(x.Id));
-            foreach (var item in posiciones)
+            try
             {
-                CrearOrdenDeCompraAutomatica(null, false, registros, true, usuarioActualId, item);
+                var resultado = new List<string>();
+                var posiciones = repositorio.Listar<SolpPosicion>(x => registros.Select(registro => registro.Id).Contains(x.Id));
+                foreach (var item in posiciones)
+                {
+                    var r = CrearOrdenDeCompraAutomatica(null, false, registros, true, usuarioActualId, item);
+                    resultado.Add(r.NumeroPedido);
+                }
+                return resultado;
+            }
+            catch (Exception e)
+            {
+
+                throw;
             }
         }
 

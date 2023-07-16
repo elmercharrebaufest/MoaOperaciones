@@ -10,6 +10,7 @@ import { CircularDto } from '../modelos/circular-model';
 import { PeticionDeOfertaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
 import { AdjudicacionDto } from '../modelos/adjudicacion';
 import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
+import { RegistroInfoDto } from '../modelos/registro-info';
 
 @Injectable({
     providedIn: 'root'
@@ -773,6 +774,14 @@ export class ComprasService extends BaseService {
     //         .get<OrdenDeCompraSap>('/api/compras/ObtenerOrdenDeCompra', { params: params, headers: this.headers })
     // }
 
+    public guardarAdjudicacionAutomatica(registrosInfo: RegistroInfoDto[]) {
+        let json = JSON.stringify(registrosInfo);
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/GuardarAdjudicacionAutomatica', payload, { headers: this.headers });
+    } 
 
 
 }

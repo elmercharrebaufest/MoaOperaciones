@@ -21,6 +21,12 @@
     background-color: red;
 }
 
+.linea{  
+    border-bottom:solid 1px #C8C8C8 !important; 
+    width:100% !important;
+    height:5px !important;
+  }
+
 .headerModal {
     top: 106px;
     left: 381px;
@@ -31,4 +37,14 @@
     letter-spacing: 0px;
     color: #5CB85C;
     opacity: 1;
+  }
+
+  .detalle-list {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .proveedor-nombre {
+    font-size: 14px;
+    font-weight: bold;
   }
