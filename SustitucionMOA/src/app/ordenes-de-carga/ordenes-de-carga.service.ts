@@ -314,7 +314,6 @@ export class OrdenesDeCargaService extends BaseService {
         params = params.append("corredor", codigoCorredor);
         params = params.append("fechaInicio", fechaInicio);
         params = params.append("fechaFin", fechaFin);
-        params = params.append("pendiente", 'x');
 
         return this.http
             .get('/api/OrdenDeCarga/VisualizarCliente', { params: params, headers: this.headers })
@@ -327,7 +326,6 @@ export class OrdenesDeCargaService extends BaseService {
         params = params.append("contrato", contrato);
         params = params.append("fechaInicio", fechaInicio);
         params = params.append("fechaFin", fechaFin);
-        params = params.append("pendiente", 'x');
 
         return this.http
             .get('/api/OrdenDeCarga/VisualizarProducto', { params: params, headers: this.headers })
@@ -344,7 +342,6 @@ export class OrdenesDeCargaService extends BaseService {
         params = params.append("fechaInicio", fechaInicio);
         params = params.append("fechaFin", fechaFin);
         params = params.append("productoId", productoId);
-        params = params.append("pendiente", 'x');
 
         return this.http
             .get('/api/OrdenDeCarga/validarCorredorClienteContratoProducto', { params: params, headers: this.headers })

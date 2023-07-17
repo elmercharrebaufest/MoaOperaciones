@@ -10,7 +10,6 @@ namespace SustitucionMOAUtils.Validadores.OrdenDeCarga
 		public VisualizarClienteRequestValidator()
 		{
 			RuleFor(dto => dto.Corredor).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Corredor")));
-			RuleFor(dto => dto.Pendiente).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Pendiente")));
 		}
 	}
 }

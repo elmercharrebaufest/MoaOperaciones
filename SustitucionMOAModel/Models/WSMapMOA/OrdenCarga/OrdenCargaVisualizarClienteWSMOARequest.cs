@@ -2,6 +2,13 @@
 
 namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
 {
+    public enum TipoContratoClienteEnum
+    {
+		Anticipado,
+		Normal,
+		Todos
+    }
+
 	public class OrdenCargaVisualizarClienteWSMOARequest
 	{
 		public string Cliente { get; set; }
@@ -9,8 +16,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
 		public string Corredor { get; set; }
 		public List<FechaWS> Fechas { get; set; }
 		public string Material { get; set; }
-		public string Pendiente { get; set; }
-		public string TipoContrato { get; set; }
+		public bool Pendiente { get; set; }
+		public TipoContratoClienteEnum TipoContrato { get; set; }
 
 		public OrdenCargaVisualizarClienteWSMOARequest()
 		{
@@ -18,8 +25,6 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
 			Contrato = string.Empty;
 			Corredor = string.Empty;
 			Material = string.Empty;
-			Pendiente = string.Empty;
-			TipoContrato = string.Empty;
 		}
 	}
 }

@@ -795,12 +795,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.onContratoSeleccionadoChanged();
             return;
         }
-        // this.mensajeComponent.setMsgsEmpty();
         this.contratosDisponibles = [];
         this.contratoSeleccionado = null as any;
         try {
-            if (pClienteCodigo) { //this.clienteSeleccionado) { //|| this.corredorSeleccionado) {
-                //let pClienteCodigo = this.clienteSeleccionado.CodigoProveedor;
+            if (pClienteCodigo) {
                 this.mensajeComponent.setMsgsEmpty();
                 let pCorredorCodigo = this.corredorSeleccionado ?
                     this.corredorSeleccionado.idVendedor : "";

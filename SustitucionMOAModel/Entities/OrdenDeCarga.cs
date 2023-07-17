@@ -106,6 +106,11 @@ namespace SustitucionMOAModel.Entities
         public bool Escalable { get; set; }
 
 
+        public bool TieneMultiplesContratos
+        {
+            get { return !string.IsNullOrEmpty(ContratosRespuesta); }
+        }
+
         public bool TieneCodigoSap(ControlCargaResEnum controlCargaRes)
         {
             return CodigoVerificacionSap == ResponseConverter.GetCodigoControlCarga(controlCargaRes);
