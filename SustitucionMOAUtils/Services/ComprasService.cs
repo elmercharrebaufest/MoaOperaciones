@@ -279,7 +279,7 @@ namespace SustitucionMOAUtils.Services
 
             pliegoEntity = GuardarEspecificacionesTecnicasPliego(solp, solpEntity, pliegoEntity);
             solp = GuardarAdjuntosSolp(solp, adjuntos, pliegoEntity);
-
+            solp.EmailLinkToken = solpEntity.EmailLinkToken;
             var respuestaGuardarSOLP = new RespuestaGuardarSOLP
             {
                 Solp = solp
