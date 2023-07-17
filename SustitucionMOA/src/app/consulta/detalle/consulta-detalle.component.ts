@@ -177,6 +177,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     ngAfterViewInit(): void {
         this.scrollBottom();
+        this.configToolbar();
     }
 
     scrollBottom() {
@@ -810,5 +811,16 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     borrarArchivo(i: number) {
         this.listaArchivos.splice(i, 1);
+    }
+
+    configToolbar() {
+        const toolbar = document.querySelector('.ql-formats');
+        toolbar.children[0].setAttribute('title', 'Negrita');
+        toolbar.children[1].setAttribute('title', 'Cursiva');
+        toolbar.children[2].setAttribute('title', 'Subrayado');
+        toolbar.children[3].setAttribute('title', 'Tachado');
+
+        const cleanFormat = document.querySelector('.ql-clean');
+        cleanFormat.setAttribute('title', 'Limpiar formato');
     }
 }
