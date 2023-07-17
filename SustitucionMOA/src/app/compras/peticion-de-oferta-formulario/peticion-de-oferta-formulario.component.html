@@ -8,9 +8,17 @@
         <section class="container-fluid clearfix">
             <div>
                 <div>
-                    <div class="col-xs-12 col-md-12 headerCompras" style="margin-left: 8px;" #headerCompras>
-                        <strong>Posiciones</strong>
-                    </div>
+                    <div class="row">
+                        <div class="col-md-9 headerCompras" style="margin-left: 8px;" #headerCompras>
+                            <strong>Posiciones</strong>
+                        </div>
+                        <div class="col-md-2" style="text-align: end; padding-top: 20px;">
+                            <button class="btn  botonesComprasColor"  (click)="mostrarRegistroInfo()">
+                                Registro Info
+                            </button>
+                        </div>
+                    </div>                   
+                   
                    
                     <div class="row1">
                         <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="solpCompraDto.PosicionCompras" dataKey="Id">
@@ -325,3 +333,9 @@
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>
     </p-footer>
 </p-dialog>
+
+<registro-info
+    [(displayRegistroInfo)]="displayRegistroInfo"
+    (cancelarRegistroEmitter)="salirPopupRegistroInfo()"
+    [(solpCompraDto)]="solpCompraDto">
+</registro-info>

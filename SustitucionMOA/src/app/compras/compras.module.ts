@@ -75,6 +75,7 @@ import { OrdenDeCompraDetalleComponent } from './dashboard-comprador/orden-de-co
 import { TextosAdjudicarComponent } from './dashboard-comprador/ver-ofertas/textos-adjudicar/textos-adjudicar.component';
 
 import {AccordionModule} from 'primeng/accordion';
+import { RegistroInfoComponent } from './peticion-de-oferta-formulario/registro-info/registro-info/registro-info.component';
 
 @NgModule({
     imports: [
@@ -150,7 +151,8 @@ import {AccordionModule} from 'primeng/accordion';
         CotizacionServicioComponent,
         PanelHorasComponent,
         OrdenDeCompraDetalleComponent,
-        TextosAdjudicarComponent
+        TextosAdjudicarComponent,
+        RegistroInfoComponent
     ],
     providers: [
         ComprasService,

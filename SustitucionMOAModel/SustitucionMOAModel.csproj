@@ -59,6 +59,7 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\RegistroInfoDto.cs" />
     <Compile Include="Dto\AdjudicacionDto.cs" />
     <Compile Include="Dto\AdjudicacionPosicionDto.cs" />
     <Compile Include="Dto\AsociarContratoDto.cs" />

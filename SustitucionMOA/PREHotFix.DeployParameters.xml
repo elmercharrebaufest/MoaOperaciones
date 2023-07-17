@@ -142,4 +142,7 @@
 	<setParameter name="ScatoRepositorioUsername Config" value="ScatoLogistica" />
 	<setParameter name="ScatoRepositorioPassword Config" value="ServicioExternoPass" />
 
+  <setParameter name="BAPI_INFORECORD_GETLISTPortType Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_INFORECORD_GETLIST&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions"  />
+
+
 </parameters>
