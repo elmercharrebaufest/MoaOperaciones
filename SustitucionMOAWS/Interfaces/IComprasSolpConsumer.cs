@@ -56,4 +56,9 @@ namespace SustitucionMOAWS.Interfaces
     {
         OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
     }
+    public interface IObtenerProveedorConsumerMOA
+    {
+        ObtenerProveedorWSMOAResponse ObtenerProveedor(string codigoProveedor);
+    }
+    
 }
