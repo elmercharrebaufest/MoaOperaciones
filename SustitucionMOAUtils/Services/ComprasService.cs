@@ -2007,18 +2007,18 @@ namespace SustitucionMOAUtils.Services
                         if (posicionEntity.TipoPosicion_Id == 10)
                         {
                             posicionEntity.Cantidad = posicion.Cantidad;
-                            TablaSap unidadMedidapos = unidadesDeMedida.SingleOrDefault(um => um.Codigo == posicion.UnidadMedida);
+                            TablaSap unidadMedidapos = unidadesDeMedida.FirstOrDefault(um => um.Codigo == posicion.UnidadMedida);
                             posicionEntity.Unidad_Id = unidadMedidapos?.Id;
                             posicionEntity.PrecioBruto = posicion.PrecioSolp;
                             if (tipoImputacion != null)
                             {
-                                var cuentamayor = cuentasSolpesSap.Where(a => a.Codigo == tipoImputacion.CuentaContableImputada).SingleOrDefault();
+                                var cuentamayor = cuentasSolpesSap.Where(a => a.Codigo == tipoImputacion.CuentaContableImputada).FirstOrDefault();
                                 posicionEntity.CuentaMayor_Id = cuentamayor?.Id;
 
-                                var centrodecosto = centrosDeCosto.Where(a => a.Codigo == tipoImputacion.CentroDeCosto).SingleOrDefault();
+                                var centrodecosto = centrosDeCosto.Where(a => a.Codigo == tipoImputacion.CentroDeCosto).FirstOrDefault();
                                 posicionEntity.ValorTipoImputacion_Id = centrodecosto?.Id;
                             }
-                            var material = materialesSap.Where(a => a.CodigoSap == posicion.Material && a.Centro_Id == posicionEntity.Centro_Id).SingleOrDefault();
+                            var material = materialesSap.Where(a => a.CodigoSap == posicion.Material && a.Centro_Id == posicionEntity.Centro_Id).FirstOrDefault();
                             posicionEntity.MaterialSolp_Id = material?.Id;
 
                             //posicionEntity.FechaLiberacion = posicion.FechaEstimadaLiberacionDate; es lo mismo estimada que no estimada??
@@ -2080,7 +2080,7 @@ namespace SustitucionMOAUtils.Services
                                                       ti.NumeroPosicion == subPosicion.NumeroPosicion &&
                                                       ti.NumeroDeSerie == imputacionSubposicion.NumeroActualImputacion);
 
-                            TablaSap unidadMedida = unidadesDeMedida.SingleOrDefault(um => um.Codigo == subPosicion.UnidadDeMedida);
+                            TablaSap unidadMedida = unidadesDeMedida.FirstOrDefault(um => um.Codigo == subPosicion.UnidadDeMedida);
 
                             TablaSap tipoImputacionSubposicion =
                                 tipoImputacionPosicion == null || imputacionSubposicion == null || tipoImputacionSAP == null ? null :
@@ -2091,10 +2091,10 @@ namespace SustitucionMOAUtils.Services
 
                             TablaSap cuentaSolpSap =
                                 tipoImputacionPosicion == null || imputacionSubposicion == null || tipoImputacionSAP == null ? null :
-                                cuentasSolpesSap.SingleOrDefault(c => Int32.Parse(c.Codigo) == Int32.Parse(tipoImputacionSAP.CuentaContableImputada));
+                                cuentasSolpesSap.FirstOrDefault(c => Int32.Parse(c.Codigo) == Int32.Parse(tipoImputacionSAP.CuentaContableImputada));
 
                             int codigoServicio = 0;
-                            ServicioSolp servicioSolp = Int32.TryParse(subPosicion.CodigoServicio, out codigoServicio) ? listaServicioSolp.Where(x => x.CodigoSap == codigoServicio).SingleOrDefault() : null;
+                            ServicioSolp servicioSolp = Int32.TryParse(subPosicion.CodigoServicio, out codigoServicio) ? listaServicioSolp.Where(x => x.CodigoSap == codigoServicio).FirstOrDefault() : null;
 
                             subPosicionEntity.Numero = indiceSubPosicion;
                             //subPosicionEntity.Codigo = subPosicion.CodigoServicio;
@@ -2112,14 +2112,14 @@ namespace SustitucionMOAUtils.Services
                                 subPosicionEntity.Codigo = Guid.NewGuid().ToString();
                             }
 
-                            //TablaSap unidadMedidapos = unidadesDeMedida.SingleOrDefault(um => um.Codigo == subPosicion.UnidadDeMedida);
+                            //TablaSap unidadMedidapos = unidadesDeMedida.FirstOrDefault(um => um.Codigo == subPosicion.UnidadDeMedida);
                             //subPosicionEntity.Unidad_Id = unidadMedidapos?.Id;
                             //subPosicionEntity.PrecioBruto = subPosicion.PrecioUnitario;
-                            //var cuentamayor = cuentasSolpesSap.Where(a => a.Codigo == tipoImputacionSubposicion.Codigo).SingleOrDefault();
+                            //var cuentamayor = cuentasSolpesSap.Where(a => a.Codigo == tipoImputacionSubposicion.Codigo).FirstOrDefault();
                             //subPosicionEntity.CuentaMayor_Id = cuentamayor?.Id;
-                            //var centrodecosto = centrosDeCosto.Where(a => a.Codigo == tipoImputacionSubposicion.Codigo).SingleOrDefault();
+                            //var centrodecosto = centrosDeCosto.Where(a => a.Codigo == tipoImputacionSubposicion.Codigo).FirstOrDefault();
                             //subPosicionEntity.TipoImputacion_Id = centrodecosto?.Id;
-                            //var centroDeBeneficio = centrosDeBeneficio.Where(a => a.Codigo == tipoImputacionSubposicion.Codigo).SingleOrDefault();
+                            //var centroDeBeneficio = centrosDeBeneficio.Where(a => a.Codigo == tipoImputacionSubposicion.Codigo).FirstOrDefault();
                             //subPosicionEntity.TipoImputacion_Id = centroDeBeneficio?.Id;
                         }
 
