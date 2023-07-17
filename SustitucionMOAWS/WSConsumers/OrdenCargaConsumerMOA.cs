@@ -280,8 +280,27 @@ namespace SustitucionMOAWS.WSConsumers
                         });
                     }
                 }
+                string tipoContrato;
+                switch (request.TipoContrato)
+                {
+                    case TipoContratoClienteEnum.Normal:
+                        tipoContrato = "N";
+                        break;
+                    case TipoContratoClienteEnum.Todos:
+                        tipoContrato = "";
+                        break;
+                    default:
+                        throw new Exception("Tipo de contrato no mapeado");
+                }
                 ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
-                var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(request.Cliente, request.Contrato, request.Corredor, fechasSAPArray, request.Material, request.Pendiente?.ToUpper(), request.TipoContrato);
+                var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(
+                    request.Cliente,
+                    request.Contrato,
+                    request.Corredor,
+                    fechasSAPArray,
+                    request.Material,
+                    request.Pendiente ? "X" : "",
+                    tipoContrato);
                 var response = MapOrdenCargaVisualizarCliente(result);
                 return response;
             }
@@ -449,13 +468,12 @@ namespace SustitucionMOAWS.WSConsumers
                 FECHA_OP_HASTA = SAPFormatter.PrepararFecha(hasta)
             }}.ToArray();
         }
-        public Result ObtenerContratoSAP(OrdenDeCarga orden)
+        public Result ObtenerContratoSAP(string numeroContrato)
         {
-            var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
             var request = new OrdenCargaVisualizarClienteWSMOARequest
             {
                 Contrato = numeroContrato,
-                TipoContrato = "",
+                TipoContrato = TipoContratoClienteEnum.Todos,
                 Fechas = ObtenerFechas()
             };
 
