@@ -149,17 +149,20 @@
                                     class="styled-select inputAltura"
                                     pInputText
                                     [(ngModel)]="model.ordenDeCompra" 
-                                    disabled="estaFinalizada" 
-                                    (change)="obtenerOrdenDeCompra()" 
+                                    [disabled]="true"
+                                    (keyup)="obtenerOrdenDeCompra()" 
                                     placeholder="Nro de orden de compra"
-                                    formControlName="ordenDeCompra">
+                                    formControlName="ordenDeCompra"
+                                    maxlength="10">
                             </div>
-                            <div *ngIf="ordenDeCompraSap != null && ordenDeCompraSap.Error == null, else elseBlock">
-                                <label for="ordenDeCompra">{{ordenDeCompraSap?.Cabecera?.OrdenDeCompra}} {{ordenDeCompraSap?.Cabecera?.CodigoProveedor}} {{ordenDeCompraSap?.Cabecera?.RazonSocialProveedor}}</label>
+                            <div class="col-xs-12 col-sm-10 col-md-4" *ngIf="ordenDeCompraSap != null && ordenDeCompraSap.Error == null, else elseBlock">
+                                <label for="ordenDeCompra"><strong>Razon social: {{ordenDeCompraSap?.Cabecera?.RazonSocialProveedor}}</strong></label>
 
                             </div>
                             <ng-template #elseBlock>
-                                {{ordenDeCompra?.Error[0].Mensaje}}
+                                <div  class="col-xs-12 col-sm-10 col-md-4">
+                                    {{ordenDeCompraSap?.Error.Mensaje}}
+                                </div>
                             </ng-template>
                         </div>  
                     </div>
