@@ -363,7 +363,8 @@ namespace SustitucionMOAWS.WSConsumers
                         Acoplado = detalle.ACOPLADO,
                         Chofer = detalle.CHOFER,
                         Destinatario = detalle.DESTINATARIO,
-                        NombreDestinatario = detalle.NOMBRE_DESTINATARIO
+                        NombreDestinatario = detalle.NOMBRE_DESTINATARIO,
+                        KilosEntrega = detalle.KILOS_ENTREGA,
                     });
                 }
                 if (detalles != null)
