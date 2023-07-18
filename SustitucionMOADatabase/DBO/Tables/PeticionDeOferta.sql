@@ -6,6 +6,7 @@
     [PlazoDeOferta]          DATETIME2 (7)  NOT NULL,
     [Observaciones]              NVARCHAR(MAX)            NOT NULL
     CONSTRAINT [PK_PeticionDeOferta] PRIMARY KEY CLUSTERED ([Id] ASC),
+    [RegistroInfo] BIT NULL, 
     CONSTRAINT [FK.PeticionDeOferta_Usuario_UsuarioCreadorId] FOREIGN KEY ([UsuarioCreador_Id]) REFERENCES [Usuario]([Id]),
     CONSTRAINT [FK.UsuarioCreador_Solp_Solp_Id] FOREIGN KEY ([Solp_Id]) REFERENCES [Solp]([Id]),
 

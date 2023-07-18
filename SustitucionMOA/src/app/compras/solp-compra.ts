@@ -1,10 +1,12 @@
 import { CotizacionPosicionDto } from "../modelos/cotizacionDto"
+import { RegistroInfoDto } from "../modelos/registro-info"
 
 export interface SolpCompraDto{
     Id: number,
     NroSolp: string,   
     PosicionCompras: PosicionCompra[],
     TipoPosicionCodigo: string,
+    RegistrosInfo?: RegistroInfoDto[]
 }
 
 export interface PosicionCompra{

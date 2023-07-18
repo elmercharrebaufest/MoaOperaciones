@@ -4,7 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { CorredorContrato } from '../../common/models/ordenes-de-carga/corredorContrato';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
-import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { KILOS_DISPONIBLES_APROBADO, OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -286,8 +286,16 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonEdicionFinalizada = true;
             }
 
-            if (this.ordenDeCarga.ContratoSAP === "-" && this.ordenDeCarga.ContratosRespuesta != "-") {
-                this.mostrarBotonContratos = true;
+            //if (this.ordenDeCarga.ContratoSAP === "-" && this.ordenDeCarga.ContratosRespuesta != "-") {
+            if (this.ordenDeCarga.ContratoSeleccionado) {
+                if (this.ordenDeCarga.ContratoSeleccionado.KgDisponiblesTn < KILOS_DISPONIBLES_APROBADO &&
+                    this.ordenDeCarga.ContratoSAP === "-")
+                {
+                    this.mostrarBotonContratos = true;
+                }
+            }
+            else {
+                console.error("Falta cargar contrato seleccionado");
             }
 
             if (!this.ordenDeCarga.TransporteExiste) {

@@ -5,7 +5,8 @@ namespace SustitucionMOAModel.Enums
     public enum TipoContratoFAS
     {
         Normal,
-        Anticipado
+        Anticipado,
+        Todos
     }
 
     //public static class TipoContratoFASParser

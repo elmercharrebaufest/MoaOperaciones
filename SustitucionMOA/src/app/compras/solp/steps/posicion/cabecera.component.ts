@@ -290,9 +290,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             var _this = this;
             posicionChequeadas.forEach(function (item1: any) {
                 _this.model.agregarNuevaPosicion(item1 as SolpPosicion);
+                _this.setupAlmacenEntregaByCentro();
             });
             //  el.scrollIntoView();
             this.validarNuevaPosicion();
+
         }
     }
 

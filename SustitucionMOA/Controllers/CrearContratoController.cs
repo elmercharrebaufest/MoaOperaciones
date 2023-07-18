@@ -93,7 +93,7 @@ namespace SustitucionMOA.Controllers
                 if (idProveedorDataAgro.HasValue)
                 {
                     return JsonCustom(crearContratoService.ObtenerDatosCompraNet(idProveedorDataAgro.Value));
-                }               
+                }
                 var proveedor = ObtenerProveedor();
                 return JsonCustom(crearContratoService.ObtenerDatosCompraNet(proveedor.IdDataAgro.Value));
             }
@@ -126,7 +126,7 @@ namespace SustitucionMOA.Controllers
                 contrato = contrato.Replace("nia", "ña");
                 var contratoAPrecio = JsonConvert.DeserializeObject<ContratoAPrecio>(contrato);
 
-               
+
                 var proveedor = ObtenerProveedor();
 
                 if (contratoAPrecio.CorredorId == null)
@@ -882,8 +882,9 @@ namespace SustitucionMOA.Controllers
                             {
                                 if (item.HayError)
                                 {
+                                    var tipo = item.ListaErrores.Any(a => a.Source == "Fatal") ? ExcelValidationErrorType.Fatal : ExcelValidationErrorType.Error;
                                     //item.ContratoId estoy usando ese campo para devolver el numero de row
-                                    resultValidation.RowsResult[item.ContratoId ?? 0].ItemsResult.Add(new ExcelValidatorItemResult { Errors = item.Errores.Select(a => a.Message).ToList(), Item = new ExcelValidatorItem { ErrorType = ExcelValidationErrorType.Error, Name = "", Options = null, Position = 1, Required = true, Type = ExcelValidationColumnType.String } });
+                                    resultValidation.RowsResult[item.ContratoId ?? 0].ItemsResult.Add(new ExcelValidatorItemResult { Errors = item.Errores.Select(a => a.Message).ToList(), Item = new ExcelValidatorItem { ErrorType = tipo, Name = "", Options = null, Position = 1, Required = true, Type = ExcelValidationColumnType.String } });
                                 }
                             }
                             return Json(new { Resume = resultValidation.Resume }, JsonRequestBehavior.AllowGet);

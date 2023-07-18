@@ -11,8 +11,7 @@ using System.Threading.Tasks;
 namespace SustitucionMOAModel.Dto
 {
     public class AdjudicacionDto
-    {
-        [Key]
+    {    
         public int Id { get; set; }
         public int Cotizacion_Id { get; set; }
         public int Solp_Id { get; set; }

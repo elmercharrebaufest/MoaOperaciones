@@ -44,6 +44,7 @@ namespace SustitucionMOAModel.Dto
         public short DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
         public bool Reventa { get; set; }
+        public bool Escalable { get; set; }
 
         public OrdenDeCargaDto()
         {
@@ -66,11 +67,7 @@ namespace SustitucionMOAModel.Dto
             Producto_Id = orden.Producto_Id;
             Observacion = orden.Observacion;
             ContratoIngresado = orden.ContratoIngresado;
-            ContratoSeleccionado = new ContratoOrdenFas
-            {
-                NumeroContrato = orden.ContratoIngresado,
-                Producto = new Models.DataAgro.MaterialDto { MaterialId = orden.Producto_Id }
-            };
+            ContratoSeleccionado = new ContratoOrdenFas(orden);
             Cantidad = orden.Cantidad;
             NumeroEntrega = orden.NumeroEntrega;
             NumeroPedidoIngresado = string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedido : orden.NumeroPedidoIngresado;
@@ -91,6 +88,7 @@ namespace SustitucionMOAModel.Dto
             DomicilioDescr = orden.DomicilioDescr;
             CUITIntermediarioFlete = orden.CUITIntermediarioFlete;
             Reventa = orden.Reventa;
+            Escalable = orden.Escalable;
         }
 
         public int Id { get; set; }
@@ -125,6 +123,7 @@ namespace SustitucionMOAModel.Dto
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
         public bool Reventa { get; set; }
+        public bool Escalable { get; set; }
     }
 
     public class OrdenDeCargaHistorialDto
@@ -207,6 +206,7 @@ namespace SustitucionMOAModel.Dto
         public IEnumerable<OrdenDeCargaCambiosHistorialDto> OrdenDeCargaCambiosHistorial { get; set; }
         public bool FechaVencimientoAmpliada { get; set; }
         public bool EdicionRechazada { get; set; }
+        public bool Escalable { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -326,7 +326,8 @@ namespace SustitucionMOAModel.Dto
                 DomicilioDescr = orden.DomicilioDescr,
                 NumeroFactura = orden.NumeroFactura,
                 NumeroFacturaSeleccionada = orden.NumeroFacturaSeleccionada,
-                TipoContrato = orden.TipoContrato
+                TipoContrato = orden.TipoContrato,
+                Escalable = orden.Escalable
             };
         }
     }

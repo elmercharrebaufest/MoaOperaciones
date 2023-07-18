@@ -59,9 +59,9 @@
                                     <p-dropdown name="cmbContratos"
                                         [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente"
                                         [(ngModel)]="ordenDeCarga.ContratoSeleccionado" [options]="contratosDisponibles"
-                                        optionLabel="NumeroContrato" placeholder="Seleccione un Contrato"
-                                        (ngModelChange)="onContratoSeleccionadoChanged()" [filter]="true"
-                                        filterBy="value.NumeroContrato">
+                                        optionLabel="Label"
+                                        placeholder="Seleccione un Contrato - Producto - Kg Disponibles"
+                                        (ngModelChange)="onContratoSeleccionadoChanged()" [filter]="true">
                                     </p-dropdown>
                                 </div>
                             </div>
@@ -156,9 +156,11 @@
                                         Planta:
                                     </div>
                                     <div class="styled-select" style="overflow: initial;">
-                                        <p-dropdown name="cmbPlantas" [(ngModel)]="plantaSeleccionada"
-                                            [options]="listaPlantas" placeholder="Seleccione una planta"
-                                            (ngModelChange)="onPlantaSeleccionadaChanged()" optionLabel="Codigo">
+                                        <p-dropdown name="cmbPlantas"
+                                            [(ngModel)]="plantaSeleccionada" [options]="listaPlantas"
+                                            optionLabel="Codigo" placeholder="Seleccione una planta"
+                                            (ngModelChange)="onPlantaSeleccionadaChanged()" [filter]="true"
+                                            filterBy="value.Codigo">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -167,10 +169,11 @@
                                         Domicilio:
                                     </div>
                                     <div class="styled-select" style="overflow: initial;">
-                                        <p-dropdown name="cmbDomicilios" [(ngModel)]="domicilioSeleccionado"
-                                            [options]="listaDomicilios" placeholder="Seleccione un domicilio"
-                                            (ngModelChange)="onDomicilioSeleccionadoChanged()"
-                                            optionLabel="Descripcion">
+                                        <p-dropdown name="cmbDomicilios"
+                                            [(ngModel)]="domicilioSeleccionado" [options]="listaDomicilios"
+                                            optionLabel="Descripcion" placeholder="Seleccione un domicilio"
+                                            (ngModelChange)="onDomicilioSeleccionadoChanged()" [filter]="true"
+                                            filterBy="value.Descripcion">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -217,6 +220,13 @@
                                 <div class="styled-select">
                                     <input type="text" [(ngModel)]="ordenDeCarga.Cantidad">
                                 </div>
+                            </div>
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Camión escalable:
+                                </div>
+                                <p-checkbox name="escalable" [binary]="true" [(ngModel)]="ordenDeCarga.Escalable">
+                                </p-checkbox>
                             </div>
                         </div>
 

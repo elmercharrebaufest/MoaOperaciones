@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions name="Z_MMRFC_OC_PARA_SOLP" targetNamespace="urn:sap-com:document:sap:rfc:functions" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema xmlns="urn:sap-com:document:sap:rfc:functions" targetNamespace="urn:sap-com:document:sap:rfc:functions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:element name="Z_MMRFC_OC_PARA_SOLP">
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element name="IM_POSICION">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="5" />
+                  <xsd:pattern value="\d+" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="IM_SOLPED">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="10" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Z_MMRFC_OC_PARA_SOLP.Response">
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element minOccurs="0" name="EX_DATOS">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="ZMMES0027" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="EX_EXITO">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="3" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="EX_RETURN" type="xsd:string" />
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:simpleType name="date">
+        <xsd:union memberTypes="xsd:date genericDate" />
+      </xsd:simpleType>
+      <xsd:simpleType name="genericDate">
+        <xsd:restriction base="xsd:string">
+          <xsd:pattern value="....-..-.." />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="ZMMES0027">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="BANFN">
+            <xsd:annotation>
+              <xsd:documentation>Purchase Requisition Number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="BNFPO">
+            <xsd:annotation>
+              <xsd:documentation>Item number of purchase requisition</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="5" />
+                <xsd:pattern value="\d+" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="EBELN">
+            <xsd:annotation>
+              <xsd:documentation>Purchasing Document Number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="EBELP">
+            <xsd:annotation>
+              <xsd:documentation>Item Number of Purchasing Document</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="5" />
+                <xsd:pattern value="\d+" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="ETENR">
+            <xsd:annotation>
+              <xsd:documentation>Delivery Schedule Line Counter</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="4" />
+                <xsd:pattern value="\d+" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="BSTYP">
+            <xsd:annotation>
+              <xsd:documentation>Purchasing Document Category</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="1" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="BSART">
+            <xsd:annotation>
+              <xsd:documentation>Purchasing Document Type</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="4" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="AEDAT" type="date">
+            <xsd:annotation>
+              <xsd:documentation>Date on Which Record Was Created</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="ERNAM">
+            <xsd:annotation>
+              <xsd:documentation>Name of Person Who Created the Object</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="12" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="BEDAT" type="date">
+            <xsd:annotation>
+              <xsd:documentation>Purchasing Document Date</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="LIFNR">
+            <xsd:annotation>
+              <xsd:documentation>Vendor's account number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="NAME1">
+            <xsd:annotation>
+              <xsd:documentation>Name 1</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="35" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="STCD1">
+            <xsd:annotation>
+              <xsd:documentation>Tax Number 1</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="16" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="WAERS">
+            <xsd:annotation>
+              <xsd:documentation>Currency Key</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="5" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="NETWR">
+            <xsd:annotation>
+              <xsd:documentation>Net Order Value in PO Currency</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:decimal">
+                <xsd:totalDigits value="13" />
+                <xsd:fractionDigits value="2" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="PSTYP">
+            <xsd:annotation>
+              <xsd:documentation>Item category in purchasing document</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="1" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="Z_MMRFC_OC_PARA_SOLP.Input">
+    <wsdl:part xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="parameters" element="rfc:Z_MMRFC_OC_PARA_SOLP" />
+  </wsdl:message>
+  <wsdl:message name="Z_MMRFC_OC_PARA_SOLP.Output">
+    <wsdl:part xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="parameters" element="rfc:Z_MMRFC_OC_PARA_SOLP.Response" />
+  </wsdl:message>
+  <wsdl:portType name="Z_MMRFC_OC_PARA_SOLP.PortType">
+    <wsdl:operation name="Z_MMRFC_OC_PARA_SOLP">
+      <wsdl:input xmlns:rfc="urn:sap-com:document:sap:rfc:functions" message="rfc:Z_MMRFC_OC_PARA_SOLP.Input" />
+      <wsdl:output xmlns:rfc="urn:sap-com:document:sap:rfc:functions" message="rfc:Z_MMRFC_OC_PARA_SOLP.Output" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="Z_MMRFC_OC_PARA_SOLP.PortTypeBinding" type="rfc:Z_MMRFC_OC_PARA_SOLP.PortType">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <wsdl:operation name="Z_MMRFC_OC_PARA_SOLP">
+      <operation soapAction="http://sap.com/xi/WebService/soap1.1" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <wsdl:input>
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </wsdl:input>
+      <wsdl:output>
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Z_MMRFC_OC_PARA_SOLPService">
+    <wsdl:port xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="HTTP_Port" binding="rfc:Z_MMRFC_OC_PARA_SOLP.PortTypeBinding">
+      <address location="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=Z_MMRFC_OC_PARA_SOLP&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </wsdl:port>
+    <wsdl:port xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="HTTPS_Port" binding="rfc:Z_MMRFC_OC_PARA_SOLP.PortTypeBinding">
+      <address location="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=Z_MMRFC_OC_PARA_SOLP&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

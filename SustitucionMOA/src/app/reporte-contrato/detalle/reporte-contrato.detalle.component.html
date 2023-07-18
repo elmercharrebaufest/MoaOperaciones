@@ -50,7 +50,7 @@
                                     data-toggle="modal"
                                     data-target="#modalOrdenesCompra" 
                                     (click)="navegarDetalleOrdenCarga(det)">
-                                    {{det.Entrega}}
+                                    {{det.OrdenCargaId}}
                                 </a>
                             </td>
                             <td>{{det.FechaCarga == '0000-00-00' ?  '' : det.FechaCarga | date: 'dd/MM/yyyy'}}</td>

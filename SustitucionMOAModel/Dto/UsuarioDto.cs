@@ -1,9 +1,5 @@
 ﻿using SustitucionMOAModel.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -53,24 +49,30 @@ namespace SustitucionMOAModel.Dto
                     break;
             }
 
-            CodigoProveedor = FormatearCodigo();
+            CodigoProveedor = ObtenerCodigoProveedor();
             Permisos = new List<string>();
         }
 
-        private string FormatearCodigo()
+        private string ObtenerCodigoProveedor()
         {
+            try {
+                //
+                if (string.IsNullOrEmpty(CUIT))
+                    return "";
 
-            if (string.IsNullOrEmpty(CUIT))
-                return "";
-
-            if (Tipo == "Corredor")
-            {
-                return string.Concat("C", CUIT.Substring(2, 8));
+                if (Tipo == "Corredor")
+                {
+                    return string.Concat("C", CUIT.Substring(2, 8));
+                }
+                else
+                {
+                    return string.Concat("00", CUIT.Substring(2, 8));
+                }
             }
-            else
-            {
-                return string.Concat("00", CUIT.Substring(2, 8));
+            catch {
+                return "CUIT INVALIDO";
             }
+            
         }
     }
 }

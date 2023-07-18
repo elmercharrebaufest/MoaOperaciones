@@ -17,5 +17,6 @@ namespace SustitucionMOAModel.Dto
         public UsuarioDto UsuarioActual { get; set; }
 
         public int Id { get; set; }
+        public bool RegistroInfo { get; set; }
     }
 }

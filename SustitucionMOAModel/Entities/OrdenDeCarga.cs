@@ -106,6 +106,13 @@ namespace SustitucionMOAModel.Entities
         public string NumeroFactura { get; set; }
         public string NumeroFacturaSeleccionada { get; set; }
         public TipoContratoFAS TipoContrato { get; set; }
+        public bool Escalable { get; set; }
+
+
+        public bool TieneMultiplesContratos
+        {
+            get { return !string.IsNullOrEmpty(ContratosRespuesta); }
+        }
 
         public bool TieneCodigoSap(ControlCargaResEnum controlCargaRes)
         {

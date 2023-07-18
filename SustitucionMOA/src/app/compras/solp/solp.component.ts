@@ -491,7 +491,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         }
 
                         if (enviarSap) {
-
+                            this.solpActual.emailLinkToken = result.Solp.EmailLinkToken;
                             if (result.Mensaje == "OK") {
                                 this.finalizarOk = true;
 
@@ -610,7 +610,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 !pos.tabsPosicionValidos.tabDatosPosicion ||
                                 !pos.tabsPosicionValidos.tabFechas ||
                                 (pos.esTipoPosicionServicio && !pos.tabsPosicionValidos.tabSubposiciones) ||
-                                !pos.tabsPosicionValidos.tabPosiciones) {                                 
+                                !pos.tabsPosicionValidos.tabPosiciones || this.validarContratoMarco() || this.validarAdicional() || this.validarCondicionesEspeciales()) {                                     
                                     return paso.Completo = false;
                             } else {
                                 return pos.mensaje = "";
@@ -622,27 +622,56 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
+    validarContratoMarco(){
+        var validacionContratoTrabajo = false;
+
+        if(this.solpActual.posiciones.some(x => x.numeroContratoSuperior != undefined) && this.solpActual.trabajoHecho == true){
+            return validacionContratoTrabajo = true;
+        }
+        return validacionContratoTrabajo;
+    }
+
+    validarAdicional(){
+        var validacionAdicional = false;
+
+        if(this.solpActual.posiciones.some(x => x.numeroContratoSuperior != undefined) && this.solpActual.adicional == true){
+            return validacionAdicional = true;
+        }
+        return validacionAdicional;
+    }
+    
+    validarCondicionesEspeciales(){
+        var validacionCheck = false;
+
+        if(this.solpActual.trabajoHecho == true && this.solpActual.adicional == true){
+            return validacionCheck = true;
+        }
+        return validacionCheck;
+    }
+
     mostrarMensajeCampos(){
         this.solpActual.posiciones.forEach(pos => {
             if (pos.mensaje != "") {
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${pos.mensaje}` });
-            } 
-
-            if(pos.numeroContratoSuperior != undefined && pos.numeroContratoSuperior != ""){
-                this.tieneContratoMarco = true;
             }
         })
 
-        if(this.tieneContratoMarco == true && this.solpActual.trabajoHecho == true){
+        if(this.validarContratoMarco()){
             this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las solp con contrato marco cargado no pueden tener el tilde en el check de trabajo hecho en el paso #4" });
         }
 
+        if(this.validarAdicional()){
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las solp con contrato marco cargado no pueden tener el tilde en el check de adicional en el paso #4" });
+        }
+
+        if(this.validarCondicionesEspeciales()){
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las solp no pueden tener el tilde en el check de adicional y el check de trabajo hecho en el paso #4" });
+        }
     }
 
     mostrarMensajeCotizacion(){
             if (this.solpActual.mensajeCotizacion != "" && this.solpActual.mensajeCotizacion != undefined) {
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.solpActual.mensajeCotizacion}` });
-                console.log("mensaje", this.solpActual.mensajeCotizacion)
             } 
 
     }
