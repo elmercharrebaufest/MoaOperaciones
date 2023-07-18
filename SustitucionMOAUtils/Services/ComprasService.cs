@@ -23,6 +23,7 @@ using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.CrearPedidoWebServiceMOA;
 using SustitucionMOAWS.CrearSolpWebServiceMOA;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
@@ -3010,38 +3011,46 @@ namespace SustitucionMOAUtils.Services
                 var adjudicacionSap = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
                 var posiciones = solp.PosicionCompras.ToList();
                 var consultaRegistro = posiciones.GroupBy(x => new { Centro = x.Centro.CodigoSap, Material = x.MaterialComprasCodigo, GrupoDeCompras = x.GrupoCompras.CodigoSap });
-                var proveedores = repositorio.Listar<Proveedor>();
+                //var proveedores = repositorio.Listar<SustitucionMOAModel.Entities.Proveedor>();
                 foreach (var posicionAgrupada in consultaRegistro)
                 {
-                    var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(/*posicionAgrupada.Key.Material*/"000000000050224373", /*posicionAgrupada.Key.Centro*/ "", "" /*posicionAgrupada.Key.GrupoDeCompras*/);
+                    var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras);
                     if (registros != null)
                     {
-                        // CrearProveedor(registros.Select(x => x.Vendedor).ToList(), proveedores);
+                        CrearProveedor(registros.Select(x => x.Vendedor).ToList());
                         foreach (var posicion in posicionAgrupada)
                         {
                             foreach (var registroInfo in registros)
                             {
                                 var i = 0;
-                                registrosInfo.Add(new RegistroInfoDto
+                                var proveedor = repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(x => x.CodigoProveedor == registroInfo.Vendedor);
+                                if (proveedor != null)
                                 {
-                                    Numero = i + 1,
-                                    PosicionId = posicion.Id,
-                                    Indice = posicion.Indice,
-                                    DescripcionPosicion = posicion.Tarea,
-                                    Cantidad = registroInfo.Cantidad,
-                                    Centro = registroInfo.Centro,
-                                    Fecha = registroInfo.Fecha,
-                                    Moneda = registroInfo.Moneda,
-                                    NombreProveedor = proveedores.Where(x => x.CodigoProveedor == registroInfo.Vendedor).FirstOrDefault().RazonSocial,
-                                    Codigo = registroInfo.Vendedor,
-                                    Precio = registroInfo.Precio,
-                                    Unidad = registroInfo.Unidad,
-                                    ProveedorId = proveedores.Where(x => x.CodigoProveedor == registroInfo.Vendedor).FirstOrDefault().Id,
-                                    Cuit = proveedores.Where(x => x.CodigoProveedor == registroInfo.Vendedor).FirstOrDefault().CUIT,
-                                    CantidadAdjudicacion = adjudicacionSap != null && adjudicacionSap.Posiciones.Count > 0 &&
-                                   adjudicacionSap.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Indice) ?
-                                  (adjudicacionSap.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Indice).FirstOrDefault().Ordered) : 0
-                                });
+                                    registrosInfo.Add(new RegistroInfoDto
+                                    {
+                                        Numero = i + 1,
+                                        PosicionId = posicion.Id,
+                                        Indice = posicion.Indice,
+                                        DescripcionPosicion = posicion.Tarea,
+                                        Cantidad = registroInfo.Cantidad,
+                                        Centro = registroInfo.Centro,
+                                        Fecha = registroInfo.Fecha,
+                                        Moneda = registroInfo.Moneda,
+                                        NombreProveedor = proveedor?.RazonSocial,
+                                        Codigo = registroInfo.Vendedor,
+                                        Precio = registroInfo.Precio,
+                                        Unidad = registroInfo.Unidad,
+                                        ProveedorId = proveedor.Id,
+                                        Cuit = proveedor?.CUIT,
+                                        CantidadAdjudicacion = adjudicacionSap != null && adjudicacionSap.Posiciones.Count > 0 &&
+                                       adjudicacionSap.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Indice) ?
+                                      (adjudicacionSap.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Indice).FirstOrDefault().Ordered) : 0
+                                    });
+                                }
+                                else
+                                {
+                                    //nose
+                                }
                             }
                         }
 
@@ -3061,18 +3070,19 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public void CrearProveedor(List<String> codigos, List<Proveedor> proveedores)
+        public void CrearProveedor(List<string> codigos)
         {
             foreach (var codigo in codigos)
             {
-                if (!proveedores.Any(x => x.CodigoProveedor == codigo))
+                if (!repositorio.Existe<Proveedor>(x => x.CodigoProveedor == codigo))
                 {
-                    //Aca habria que crear el nuevo proveedor con la rfc que falta importar
-                    var proveedor = new ProveedorDto
+                    try
                     {
-
-                    };
-                    usuarioService.GrabarProveedor(proveedor);
+                        var newProveedor = ObtenerProveedorCompras(codigo);
+                    }
+                    catch (Exception e)
+                    {
+                    }
                 }
             }
         }
@@ -5297,6 +5307,9 @@ namespace SustitucionMOAUtils.Services
 
         public List<string> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId)
         {
+            if (registros.Count == 0)
+                throw new ValidationCustomException("Tiene que seleccionar al menos un registro");
+
             try
             {
                 var resultado = new List<string>();
