@@ -4,7 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { EmpresaGranosService } from '../../alta-proveedores/empresa-granos/empresa-granos.service';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { Material } from '../../common/models/material';
-import { CuitValidaExistencia, CuitValidaRUCA, CuitValidaSISA, OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { CuitValidaExistencia, CuitValidaRUCA, CuitValidaSISA, KILOS_DISPONIBLES_APROBADO, OrdenDeCarga, SIN_KILOS_DISPONIBLES } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { SeleccionarProveedorService } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
@@ -133,9 +133,18 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.ordenDeCarga.CUITCliente = 0;
         }
         if (this.esCliente()) {
-            this.clienteCodigo = sessionStorage.getItem("proveedor");
-            this.ordenDeCarga.CUITCliente = Number.parseInt(this.clienteCodigo);
-            if (this.ordenDeCargaId == 0 && !(this.esComercial || this.esCorredor)) {
+            const esInterno = this.esComercial || this.esCorredor;
+            if (!esInterno) {
+                this.clienteSeleccionado = {
+                    id: sessionStorage.getItem("proveedorId"),
+                    CUIT: sessionStorage.getItem("cuit"),
+                    CodigoProveedor: sessionStorage.getItem("proveedor")
+                }
+                this.clienteCodigo = this.clienteSeleccionado.CodigoProveedor;
+                this.ordenDeCarga.CUITCliente = this.clienteSeleccionado.CUIT;
+            }
+
+            if (this.ordenDeCargaId == 0 && !esInterno) {
                 this.cargarContratosDisponibles(this.clienteCodigo);
             }
         }
@@ -232,6 +241,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada && !this.ordenDeCarga.NumeroFactura) {
             this.mensajeComponent.setInfoMsg("Debe seleccionar un número de factura para este tipo de contrato.");
+            return false;
+        }
+
+        if (this.mensajesOrdenDeCarga.ContratoSeleccionado) {
+            this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCarga.ContratoSeleccionado)
             return false;
         }
 
@@ -606,7 +620,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             let materialSeleccionado = this.listaMateriales.find(mat => mat.MaterialId === this.ordenDeCarga.Producto_Id);
             this.cambioProducto();
             this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
-            this.cambioProducto();
+            this.validarKilosDisponibles()
             if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada)
                 this.obtenerFacturas()
         }
@@ -800,12 +814,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.onContratoSeleccionadoChanged();
             return;
         }
-        // this.mensajeComponent.setMsgsEmpty();
         this.contratosDisponibles = [];
         this.contratoSeleccionado = null as any;
         try {
-            if (pClienteCodigo) { //this.clienteSeleccionado) { //|| this.corredorSeleccionado) {
-                //let pClienteCodigo = this.clienteSeleccionado.CodigoProveedor;
+            if (pClienteCodigo) {
                 this.mensajeComponent.setMsgsEmpty();
                 let pCorredorCodigo = this.corredorSeleccionado ?
                     this.corredorSeleccionado.idVendedor : "";
@@ -1115,6 +1127,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         const cuit = this.ordenDeCarga.CUITChofer ? this.ordenDeCarga.CUITChofer.toString() : "";
         if (!this.revisarCUITFormatoValido(cuit))
             return;
+        if (this.mensajesOrdenDeCarga[campo])
+            this.floatMsgService.setMsgsEmpty();
         this.validando[campo] = true;
         this.mensajesOrdenDeCarga[campo] = null;
         this.service.validarCuilChofer(cuit).subscribe(result => {
@@ -1131,6 +1145,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         const cuit = this.ordenDeCarga.CUITTransporte ? this.ordenDeCarga.CUITTransporte.toString() : "";
         if (!this.revisarCUITFormatoValido(cuit))
             return;
+        if (this.mensajesOrdenDeCarga[campo])
+            this.floatMsgService.setMsgsEmpty();
         this.validando[campo] = true;
         this.mensajesOrdenDeCarga[campo] = null;
         this.service.validarCuitTransporte(cuit).subscribe(result => {
@@ -1207,5 +1223,24 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.ordenDeCarga.NumeroFactura = NumeroFactura;
         this.ordenDeCarga.NumeroPedidoIngresado = NumeroPedido;
     }
-}
+    validarKilosDisponibles() {
+        this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
+        const esInterno = (this.esComercial || this.esCorredor || this.esAdmin);
 
+        if (this.ordenDeCargaId == 0 && !esInterno) {
+            this.floatMsgService.setMsgsEmpty();
+            if (this.ordenDeCarga.ContratoSeleccionado) {
+                const { KgDisponiblesTn } = this.ordenDeCarga.ContratoSeleccionado;
+                if (KgDisponiblesTn >= KILOS_DISPONIBLES_APROBADO)
+                    return;
+
+                const mensaje = "Contrato sin Kilos disponibles.";
+
+                if (KgDisponiblesTn <= SIN_KILOS_DISPONIBLES)
+                    this.mensajesOrdenDeCarga.ContratoSeleccionado = mensaje;
+
+                this.floatMsgService.setInfoMsg(mensaje)
+            }
+        }
+    }
+}

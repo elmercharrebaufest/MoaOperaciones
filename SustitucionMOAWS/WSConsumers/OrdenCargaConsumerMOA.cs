@@ -284,8 +284,16 @@ namespace SustitucionMOAWS.WSConsumers
                         });
                     }
                 }
+                string tipoContrato = ConvertirATipoContratoFasSAP(request.TipoContrato);
                 ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
-                var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(request.Cliente, request.Contrato, request.Corredor, fechasSAPArray, request.Material, request.Pendiente?.ToUpper(), request.TipoContrato);
+                var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(
+                    request.Cliente,
+                    request.Contrato,
+                    request.Corredor,
+                    fechasSAPArray,
+                    request.Material,
+                    request.Pendiente ? "X" : "",
+                    tipoContrato);
                 var response = MapOrdenCargaVisualizarCliente(result);
                 return response;
             }
@@ -348,7 +356,8 @@ namespace SustitucionMOAWS.WSConsumers
                         Acoplado = detalle.ACOPLADO,
                         Chofer = detalle.CHOFER,
                         Destinatario = detalle.DESTINATARIO,
-                        NombreDestinatario = detalle.NOMBRE_DESTINATARIO
+                        NombreDestinatario = detalle.NOMBRE_DESTINATARIO,
+                        KilosEntrega = detalle.KILOS_ENTREGA,
                     });
                 }
                 if (detalles != null)
@@ -442,8 +451,8 @@ namespace SustitucionMOAWS.WSConsumers
 
             var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(
                 "", contrato, "", fechas, "",
-                Constante.FAS_FILTRO_DEFAULT_PENDIENTE,
-                Constante.FAS_FILTRO_DEFAULT_TIPO_CONTRATO);
+                Constante.FAS_FILTRO_DEFAULT_PENDIENTE ? "X" : "",
+                ConvertirATipoContratoFasSAP(Constante.FAS_FILTRO_DEFAULT_TIPO_CONTRATO));
 
             return result.Length > 0;
         }
@@ -457,7 +466,7 @@ namespace SustitucionMOAWS.WSConsumers
             var request = new OrdenCargaVisualizarClienteWSMOARequest
             {
                 Contrato = numeroContrato,
-                TipoContrato = ConvertirATipoContratoFasSAP(tipoContrato),
+                TipoContrato = tipoContrato ?? TipoContratoFAS.Todos,
                 Fechas = ObtenerFechas()
             };
 

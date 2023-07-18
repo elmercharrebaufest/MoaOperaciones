@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 namespace SustitucionMOAModel.Dto
 {
     public class AdjudicacionPosicionDto
-    {
-        [Key]
+    {   
         public int Id { get; set; }
         public int Adjudicacion_Id { get; set; }
         public int CotizacionPosicion_Id { get; set; }

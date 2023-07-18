@@ -16,4 +16,7 @@ export interface ContratoOrdenFas {
     NumeroContrato: string;
     Producto: Material;
     TipoContrato: TipoContrato;
+    KgDisponiblesTn: number;
+    NombreProducto: string;
+    Label: string;
 }

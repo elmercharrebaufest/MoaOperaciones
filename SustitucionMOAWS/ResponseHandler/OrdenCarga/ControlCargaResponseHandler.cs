@@ -10,11 +10,11 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
 {
     public class ControlCargaResponseHandler
     {
-        private string logResponse = string.Empty;
-        private List<ControlCargaResEnum> respuestasSap = new List<ControlCargaResEnum>();
-        private List<string> contratosSap = new List<string>();
+        private readonly string logResponse = string.Empty;
+        private readonly List<ControlCargaResEnum> respuestasSap = new List<ControlCargaResEnum>();
+        //private List<string> contratosSap = new List<string>();
 
-        public bool TieneMultiplesContratos { get; private set; } = false;
+        //public bool TieneMultiplesContratos { get; private set; } = false;
 
         public ControlCargaResponseHandler(ZMPES7060[] mensajesSap)
         {
@@ -22,15 +22,16 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
             {
                 var resp = item.MENSAJE;
                 logResponse += resp + ". ";
-                if (resp.Contains("|"))
-                {
-                    TieneMultiplesContratos = true;
-                    contratosSap.Add(resp);
-                }
-                else
-                {
-                    respuestasSap.Add(ResponseConverter.GetOrdenCargaControlCargaResponse(resp));
-                }
+                //if (resp.Contains("|"))
+                //{
+                //    TieneMultiplesContratos = true;
+                //    contratosSap.Add(resp);
+                //}
+                //else
+                //{
+                //    respuestasSap.Add(ResponseConverter.GetOrdenCargaControlCargaResponse(resp));
+                //}
+                respuestasSap.Add(ResponseConverter.GetOrdenCargaControlCargaResponse(resp));
             }
         }
 
@@ -38,14 +39,14 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
         /// Si el cliente tiene varios contratos, devuelve los números. Sino, dispara excepción
         /// </summary>
         /// <returns>Lista de números de contratos</returns>
-        public List<string> ObtenerNumerosContratos()
-        {
-            if (contratosSap.Count <= 1)
-            {
-                throw new Exception("La respuesta de OrdenCarga no tiene múltiples contratos - " + logResponse);
-            }
-            return contratosSap.Select(c => c.Split('|')[0]).ToList();
-        }
+        //public List<string> ObtenerNumerosContratos()
+        //{
+        //    if (contratosSap.Count <= 1)
+        //    {
+        //        throw new Exception("La respuesta de OrdenCarga no tiene múltiples contratos - " + logResponse);
+        //    }
+        //    return contratosSap.Select(c => c.Split('|')[0]).ToList();
+        //}
 
         /// <summary>
         /// Obtener la respuesta recibida de SAP, si existe exactamente una. Caso contrario, devuelve excepción.

@@ -14,6 +14,7 @@ import { NavService } from '../../common/services/NavService';
 import { ModalService } from '../../common/services/ModalService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { AltaNuevoProveedor, EnvioSolpCompra, PosicionCompra, SolpCompraDto, SolpProveedorDto, SolpSubposicionDto } from '../solp-compra';
+import { RegistroInfoDto } from '../../modelos/registro-info';
 
 @Component({
     selector: 'app-peticion-de-oferta-formulario',
@@ -59,7 +60,8 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
     displayAltaProveedor: boolean = false;
     displayProvCreado: boolean = false;
     datoProveedor: string;
-    
+
+    displayRegistroInfo: boolean = false;
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -105,7 +107,6 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.solpCompraDto = result.data;
-
                         //verificar tipo de pos y si es serv setear selected en true
                         if (this.esTipoServicio) {
                             this.solpCompraDto.PosicionCompras.forEach(x => x.Selected = true);
@@ -323,6 +324,14 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
 
     agregarProveedor(event){
         this.selectProveedor(event.proveedorDto);
+    }
+
+    mostrarRegistroInfo(){
+        this.displayRegistroInfo = true;
+    }
+
+    salirPopupRegistroInfo(){
+        this.displayRegistroInfo = false;
     }
 
 }

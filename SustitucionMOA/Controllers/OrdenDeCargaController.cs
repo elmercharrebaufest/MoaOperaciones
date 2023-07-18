@@ -576,7 +576,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult VisualizarCliente(string corredor, string fechaInicio, string fechaFin, string pendiente)
+        public ActionResult VisualizarCliente(string corredor, string fechaInicio, string fechaFin)
         {
             try
             {
@@ -586,7 +586,7 @@ namespace SustitucionMOA.Controllers
                     Corredor = corredor,
                     FechaInicio = fechaInicio,
                     FechaFin = fechaFin,
-                    Pendiente = pendiente
+                    Pendiente = true
                 };
                 var response = ordenDeCargaService.VisualizarCliente(request);
                 return JsonCustom(response);
@@ -607,7 +607,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult VisualizarProducto(string contrato, string fechaInicio, string fechaFin, string pendiente)
+        public ActionResult VisualizarProducto(string contrato, string fechaInicio, string fechaFin)
         {
             try
             {
@@ -617,7 +617,7 @@ namespace SustitucionMOA.Controllers
                     Contrato = contrato,
                     FechaInicio = fechaInicio,
                     FechaFin = fechaFin,
-                    Pendiente = pendiente
+                    Pendiente = true
                 };
                 var response = ordenDeCargaService.VisualizarProducto(request);
                 return JsonCustom(response);
@@ -638,7 +638,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string usuarioEmail, string fechaInicio, string fechaFin, string productoId, string pendiente)
+        public ActionResult ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string usuarioEmail, string fechaInicio, string fechaFin, string productoId)
         {
             try
             {
@@ -652,7 +652,7 @@ namespace SustitucionMOA.Controllers
                     FechaInicio = fechaInicio,
                     FechaFin = fechaFin,
                     ProductoId = productoId,
-                    Pendiente = pendiente
+                    Pendiente = true
                 };
                 var response = ordenDeCargaService.ValidarCorredorClienteContratoProducto(request);
                 return JsonCustom(response);
