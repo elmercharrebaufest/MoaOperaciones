@@ -3,17 +3,17 @@
 namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
 {
     public class OrdenCargaVisualizarClienteWSMOAResponse
-	{
+    {
         public List<Result> Resultados { get; set; }
 
         public OrdenCargaVisualizarClienteWSMOAResponse()
-		{
+        {
             Resultados = new List<Result>();
-		}
+        }
     }
 
     public class Result
-	{
+    {
         public string Contrato { get; set; }
 
         public string PedidoCliente { get; set; }
@@ -78,13 +78,13 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
         public List<Detail> Detalles { get; set; }
 
         public Result()
-		{
+        {
             Detalles = new List<Detail>();
-		}
+        }
     }
 
     public class Detail
-	{
+    {
         public string Pedido { get; set; }
 
         public string Entrega { get; set; }
@@ -116,5 +116,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
         public string Destinatario { get; set; }
 
         public string NombreDestinatario { get; set; }
+
+        public decimal KilosEntrega { get; set; }
     }
 }
