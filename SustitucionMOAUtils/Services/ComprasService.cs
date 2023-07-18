@@ -298,6 +298,12 @@ namespace SustitucionMOAUtils.Services
                         CrearCotizacionConTrabajoYaHecho(solpEntity);
                     }
 
+
+                    if (respuestaGuardarSOLP.Mensaje == "OK" && finalizoPrimeraVez && solp.Adicional == true)
+                    {
+                        CrearPeticionAutomatica(solpEntity, new List<int> { solp.ProveedorAsignadoId.Value }, null, false);
+                    }
+
                 }
                 catch (Exception e)
                 {
@@ -4896,7 +4902,19 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.Agregar(adjudicacion);
 
-                respuestaGuardarSOLP = CrearOrdenDeCompra(adjudicacion);
+                //TODO condicion para que cuando tenga adicional entre por la otra rfc
+                if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Adicional == true)
+                {
+                    //rfc nueva
+                }
+                else 
+                {
+                    respuestaGuardarSOLP = CrearOrdenDeCompra(adjudicacion);
+                }
+
+                
+
+
                 if (respuestaGuardarSOLP.Errores == null || respuestaGuardarSOLP.Errores.Count == 0)
                 {
                     adjudicacion.NumeroOrdenDeCompra = respuestaGuardarSOLP.NumeroPedido;
@@ -5185,7 +5203,8 @@ namespace SustitucionMOAUtils.Services
                 RegistroInfo = registroInfo
             };
 
-            var resultado = GrabarPeticionDeOferta(peticion, null, false);
+            
+            var resultado = GrabarPeticionDeOferta(peticion, null, solp.Adicional == true);
 
             var peticionEntidad = repositorio.Obtener<PeticionDeOferta>(resultado.IdEntidad);
             return peticionEntidad;
@@ -5194,11 +5213,32 @@ namespace SustitucionMOAUtils.Services
         public OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC)
         {
             var result = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra(nroOC);
-            ProveedorComprasDto proveedor = ObtenerProveedorCompras(result.Cabecera.CodigoProveedor);
+            if (result.Error == null || string.IsNullOrEmpty(result.Error.Mensaje)) 
+            {
+                try
+                {
+                    ProveedorComprasDto proveedor = ObtenerProveedorCompras(result.Cabecera.CodigoProveedor);
 
-            result.Cabecera.RazonSocialProveedor = proveedor.RazonSocial;
-            result.Cabecera.CUITProveedor = proveedor.CUIT;
-            result.Cabecera.CodigoProveedor = proveedor.CodigoProveedor;
+                    result.Cabecera.RazonSocialProveedor = proveedor.RazonSocial;
+                    result.Cabecera.CUITProveedor = proveedor.CUIT;
+                    result.Cabecera.CodigoProveedor = proveedor.CodigoProveedor;
+                    result.Cabecera.Usuario_Id = proveedor.Usuario_Id;
+                }
+                catch (Exception e)
+                {
+                    result.Error = new ErrorOC();
+                    result.Error.Mensaje = e.Message;
+                    result.Error.Tipo = "E";
+                    result.Cabecera = new OrdenDeCompraSAPCabecera();
+                    result.Cabecera.OrdenDeCompra = "";
+                    result.Cabecera.CodigoProveedor = "";
+
+
+                }
+
+
+            }
+            
 
             return result;
         }

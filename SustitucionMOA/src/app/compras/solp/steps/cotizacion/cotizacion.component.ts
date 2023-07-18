@@ -43,8 +43,8 @@ export class CotizacionComponent extends ListBaseComponent {
 
     proveedores: any[] = new Array();
 
-    estaFinalizada = false;
-    ordenDeCompraSap: OrdenDeCompraSap = null;
+    estaFinalizada: boolean;
+    ordenDeCompraSap: OrdenDeCompraSap;
 
     @Output() onEstCompleto = new EventEmitter<any>();
     mostrar: boolean;
@@ -109,7 +109,7 @@ export class CotizacionComponent extends ListBaseComponent {
             trabajoHecho: new FormControl('', Validators.required),
             proveedorSeleccionado: new FormControl('', Validators.required),    
             adicional: new FormControl('', Validators.required),
-            ordenDeCompra: new FormControl('', Validators.required)
+            ordenDeCompra: new FormControl({value: '', disabled: this.estaFinalizada}, Validators.required)
         });
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
@@ -129,7 +129,6 @@ export class CotizacionComponent extends ListBaseComponent {
         if(this.model.ordenDeCompra){
             this.obtenerOrdenDeCompra();
         }
-
 
         if(this.model.nroSolp ){
             this.estaFinalizada = true
@@ -268,16 +267,6 @@ export class CotizacionComponent extends ListBaseComponent {
         }
     }
 
-    selectOC(event) {
-        try {
-            this.model.ordenDeCompra = event.Cabecera.OrdenDeCompra;
-            this.model.proveedorAsignado = event.Cabecera.RazonSocialProveedor;
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-        }
-    }
-
-
     validacionTrabajoHecho(){
         this.model.validarTrabajoHecho = true;
 
@@ -329,21 +318,11 @@ export class CotizacionComponent extends ListBaseComponent {
                 this.proveedorSeleccionado = null;
             }
         }
-
-        if(this.model.adicional == undefined || this.model.adicional == false){
-            if(!this.estaFinalizada){
-                this.model.ordenDeCompra = null;
-                this.ordenDeCompraSap.Cabecera.OrdenDeCompra = null;
-                this.ordenDeCompraSap.Cabecera.CodigoProveedor = null;
-                this.ordenDeCompraSap.Cabecera.RazonSocialProveedor = null;
-            }
-        }
     }
 
     obtenerOrdenDeCompra() {
         try {
-            console.log("me llamaron", this.model.ordenDeCompra.length)
-            if(this.model.ordenDeCompra.length == 10){
+            if(this.model.ordenDeCompra.length >= 10){
                 this.subscription = this.service.obtenerOrdenDeCompra(this.model.ordenDeCompra).subscribe(
                     (result: any) => {
                         if (result.logout == true) {
@@ -354,7 +333,9 @@ export class CotizacionComponent extends ListBaseComponent {
                             this.floatMsgService.setInfoMsg(result.info);
                         } else {
                             this.ordenDeCompraSap = result.data;
-                            console.log("me llamaron")
+                            this.model.proveedorAsignado_Id = this.ordenDeCompraSap.Cabecera.Usuario_Id;
+                            this.model.ordenDeCompra = this.ordenDeCompraSap.Cabecera.OrdenDeCompra;
+                            this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
                         }
                     },
                     error => {
@@ -372,7 +353,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
 
     validarCondiciones(campoCheck){
-        if(this.estaFinalizada){
+        if(this.estaFinalizada == true){
             return true;
         }
         if(this.model.adicional == true && campoCheck == 'trabajoHecho'){
