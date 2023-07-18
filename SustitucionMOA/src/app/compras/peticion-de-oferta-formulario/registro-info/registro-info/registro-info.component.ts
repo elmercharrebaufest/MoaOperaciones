@@ -15,135 +15,162 @@ import { RegistroInfoDto } from '../../../../modelos/registro-info';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
-  selector: 'registro-info',
-  templateUrl: './registro-info.component.html',
-  styleUrls: ['./registro-info.component.css']
+    selector: 'registro-info',
+    templateUrl: './registro-info.component.html',
+    styleUrls: ['./registro-info.component.css'],
+
 })
 
 export class RegistroInfoComponent extends ListBaseComponent implements OnInit, OnChanges {
 
-  @Input() solpCompraDto: SolpCompraDto;
-  @Input() displayRegistroInfo: SolpCompraDto;
+    @Input() solpCompraDto: SolpCompraDto;
+    @Input() displayRegistroInfo: SolpCompraDto;
 
-  @Output() cancelarRegistroEmitter = new EventEmitter();
-  @BlockUI() blockUI: NgBlockUI;
-  options: any[] = new Array()
+    @Output() cancelarRegistroEmitter = new EventEmitter();
+    @BlockUI() blockUI: NgBlockUI;
+    options: any[] = new Array()
 
-  registrosInfo: RegistroInfoDto[] = new Array()
-  displayConfirmacion: boolean;
-  resultado: any;
-  descripcion: {};
-  registros: RegistroInfoDto[];
-  displayAdjudicacionCreada: boolean;
+    registrosInfo: RegistroInfoDto[] = new Array()
+    displayConfirmacion: boolean;
+    resultado: any;
+    descripcion: {};
+    registros: RegistroInfoDto[];
+    displayAdjudicacionCreada: boolean;
 
 
 
-  constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
-    protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-    protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
-    super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+    constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    this.inicializarDatos();
-  }
-
-  ngOnInit() {
-    this.inicializarDatos();
-  }
-
-  inicializarDatos() {
-    this.registrosInfo = this.solpCompraDto.RegistrosInfo;
-    if (this.solpCompraDto != undefined && this.solpCompraDto.PosicionCompras != null) {
-      this.options = this.solpCompraDto.PosicionCompras.map(x => ({
-        label: x.Indice + " - " + x.Tarea,
-        value: x.Id
-      }));
+    }
+    ngOnChanges(changes: SimpleChanges): void {
+        this.inicializarDatos();
     }
 
-  }
-  onCancelarRegistroInfo() {
-    this.cancelarRegistroEmitter.next();
-  }
+    ngOnInit() {
+        this.inicializarDatos();
+    }
 
-
-  onHideRegistroDialog(dd) {
-    this.cancelarRegistroEmitter.next();
-
-  }
-
-  filtrarPorPosicion(dd) {
-    this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.PosicionId == dd.value.value);
-  }
-
-  abrirModalConfirmacion() {
-    this.displayConfirmacion = true;
-    console.log(this.solpCompraDto.RegistrosInfo, "registros")
-    this.registros = this.solpCompraDto.RegistrosInfo.filter(x => x.Confirmado == true);
-    this.resultado = [];
-    this.descripcion = {}
-    
-    console.log(this.registros, "registrosfiltrados")
-
-    this.registros.forEach(x => {
-      if (!this.descripcion.hasOwnProperty(x.Codigo)) {
-        this.descripcion[x.Codigo] = {
-          detalle: []
+    inicializarDatos() {
+        this.registrosInfo = this.solpCompraDto.RegistrosInfo;
+        if (this.solpCompraDto != undefined && this.solpCompraDto.PosicionCompras != null) {
+            this.options = this.solpCompraDto.PosicionCompras.map(x => ({
+                label: x.Indice + " - " + x.Tarea,
+                value: x.Id
+            }));
         }
-      }
-
-      this.descripcion[x.Codigo].detalle.push({
-        nombre: x.NombreProveedor + " - " + x.Cuit,
-        descripcion: "Indice: " + x.Indice + " Tarea" + x.DescripcionPosicion +
-         " Cantidad a Adjudicar: " + x.CantidadAdjudicacion + " Moneda: " + x.Moneda + 
-         " Unidad: " + x.Unidad + " Precio: " + x.Precio
-      })
-    })
-
-    this.resultado = this.descripcion;
-    console.log(this.resultado, "resultado");
-    console.log(this.resultado.detalle, "resultado");
-  }
-
-  cerrarModalConfirmacion() {
-    this.displayConfirmacion = false;
-  }
-  cerrarModalConfirmacionAdjudicacion(){
-    this.displayAdjudicacionCreada = false;
-  }
-
-  guardarAdjudicacion() {
-    this.blockUI.start("Grabando...");
-    try {
-       
-        this.subscription = this.service.guardarAdjudicacionAutomatica(this.solpCompraDto.RegistrosInfo.filter(x => x.Confirmado == true)).subscribe(
-            (result: any) => {
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    this.floatMsgService.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.floatMsgService.setInfoMsg(result.info);
-                }                
-                else {
-                  
-                    this.displayAdjudicacionCreada = true;
-                      
-                }
-                this.blockUI.stop();
-            },
-            error => {
-                this.floatMsgService.setErrorMsg(error.message);
-                this.blockUI.stop();
-
-            });
-    } catch (e) {
-        this.floatMsgService.setErrorMsg(e);
-        this.blockUI.stop();
-        return false; //<-- Prevent Refresh
+        this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.Indice == this.registrosInfo[0].Indice);
     }
-    return false; //<-- Prevent Refresh
+    onCancelarRegistroInfo() {
+        this.cancelarRegistroEmitter.next();
+    }
 
 
-}
+    onHideRegistroDialog(dd) {
+        this.cancelarRegistroEmitter.next();
+
+    }
+
+    filtrarPorPosicion(dd) {
+        this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.PosicionId == dd.value.value);
+    }
+
+    abrirModalConfirmacion() {
+        this.registros = this.solpCompraDto.RegistrosInfo.filter(x => x.Confirmado == true);
+        this.resultado = [];
+        this.descripcion = {}
+
+        if (this.registros.length == 0) {
+            this.confirmationService.confirm({
+                header: "Falta seleccionar registros",
+                key:"avisoV",
+                message: 'Debe seleccionar algun registro info para poder continuar.',
+                accept: () => {
+                    return;
+                },                
+            });
+            return;
+        }
+
+        if (this.registros.some(item => item.CantidadAdjudicacion <= 0)) {
+            this.confirmationService.confirm({
+                header: "Falta seleccionar la cantidad",
+                key: "avisoV",
+                message: 'No ingreso la cantidad en todos los registros info seleccinados.',
+                accept: () => {
+                    return;
+                },
+            });
+            return;
+        }
+
+
+        this.registros.forEach(x => {
+            if (!this.descripcion.hasOwnProperty(x.Codigo)) {
+                this.descripcion[x.Codigo] = {
+                    detalle: [],
+                    proveedor: x.NombreProveedor + " - " + x.Cuit
+                }
+            }
+
+            this.descripcion[x.Codigo].detalle.push({
+                nombre: x.NombreProveedor + " - " + x.Cuit,
+                descripcion: "Posicion: " + x.Indice + " Tarea: " + x.DescripcionPosicion + " Cantidad a Adjudicar: " + x.CantidadAdjudicacion + " Moneda: " + x.Moneda + " Unidad: " + x.Unidad + " Precio: " + x.Precio,
+                Posicion: x.Indice,
+                Tarea: x.DescripcionPosicion,
+                CantidadAdjudicar: x.CantidadAdjudicacion,
+                Moneda: x.Moneda,
+                Unidad: x.Unidad,
+                Precio: x.Precio
+            })
+        })
+
+        this.resultado = this.descripcion;
+        this.displayConfirmacion = true;
+
+    }
+
+    cerrarModalConfirmacion() {
+        this.displayConfirmacion = false;
+    }
+    cerrarModalConfirmacionAdjudicacion() {
+        this.displayAdjudicacionCreada = false;
+    }
+
+    guardarAdjudicacion() {
+        this.blockUI.start("Grabando...");
+        try {
+
+            this.subscription = this.service.guardarAdjudicacionAutomatica(this.solpCompraDto.RegistrosInfo.filter(x => x.Confirmado == true)).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    }
+                    else {
+
+                        this.displayAdjudicacionCreada = true;
+
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+
+
+    }
 }
