@@ -12,7 +12,7 @@ namespace SustitucionMOAModel.Dto
 {
     public class RegistroInfoDto
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public decimal Precio { get; set; }
         public decimal Cantidad { get; set; }
         public string Vendedor { get; set; }

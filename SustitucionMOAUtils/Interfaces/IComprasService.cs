@@ -79,7 +79,7 @@ namespace SustitucionMOAUtils.Interfaces
         AdjudicacionDto ObtenerAdjudicacion(int adjudicacionId);
         OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
 
-        List<string> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId);
+        List<RespuestaCrearOrdenDeCompra> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId);
 
 
     }

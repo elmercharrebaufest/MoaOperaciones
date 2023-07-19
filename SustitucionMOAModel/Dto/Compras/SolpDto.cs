@@ -428,5 +428,6 @@ namespace SustitucionMOAModel.Dto
         public int IdEntidad { get; set; }
         public string NumeroPedido { get; set; }
         public string NumeroSolp { get; set; }
+        public string Proveedor { get; set; }
     }
 }

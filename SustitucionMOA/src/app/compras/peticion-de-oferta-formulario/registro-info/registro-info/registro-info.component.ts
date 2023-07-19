@@ -148,9 +148,23 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
+                        this.confirmationService.confirm({
+                            header: "Error",
+                            key: "avisoV",
+                            message: result.error,
+                            accept: () => {
+                                this.blockUI.stop();
+                            },
+                        });
                     } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
+                        this.confirmationService.confirm({
+                            header: "Error",
+                            key: "avisoV",
+                            message: result.info,
+                            accept: () => {
+                                this.blockUI.stop();
+                            },
+                        });
                     }
                     else {
 
