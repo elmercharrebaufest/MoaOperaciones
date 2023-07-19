@@ -3011,7 +3011,7 @@ namespace SustitucionMOAUtils.Services
                 };
                 var solpSAPResponse = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
                 var posiciones = solp.PosicionCompras.ToList();
-                var consultaRegistro = posiciones.GroupBy(x => new { Centro = x.Centro.CodigoSap, Material = x.MaterialComprasCodigo, GrupoDeCompras = x.GrupoCompras.CodigoSap });
+                var consultaRegistro = posiciones.Where(a => a.MaterialComprasCodigo != null).GroupBy(x => new { Centro = x.Centro.CodigoSap, Material = x.MaterialComprasCodigo, GrupoDeCompras = x.GrupoCompras.CodigoSap });
 
                 foreach (var posicionAgrupada in consultaRegistro)
                 {
