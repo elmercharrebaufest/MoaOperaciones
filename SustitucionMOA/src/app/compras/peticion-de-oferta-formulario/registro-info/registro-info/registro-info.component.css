@@ -16,9 +16,16 @@
     font-size: 16px !important;
 
 }
-
+/*
 .ui-button {
     background-color: red;
+}*/
+
+.botonConfirm {    
+    background-color: transparent !important;
+    border-color: white !important;
+    color: #3f4845 !important;
+    border-style: solid !important;
 }
 
 .linea{  
@@ -47,4 +54,5 @@
   .proveedor-nombre {
     font-size: 14px;
     font-weight: bold;
+    color:blue;
   }

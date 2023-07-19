@@ -361,13 +361,12 @@ export class SolpPosicion {
 
     public validateImputaciones() {
         let hasTipoImputacion = typeof this.tipoImputacion != "undefined" && this.tipoImputacion;
-        if (hasTipoImputacion && hasTipoImputacion.id > 0)
+        if (hasTipoImputacion && hasTipoImputacion.Id > 0)
         {        
             if (!this.valorImputacion || typeof this.valorImputacion === "undefined" || typeof this.valorImputacion === undefined)
             {
                 this.tabsPosicionValidos.tabImputacion = false;
                 this.mensaje = "Pos. " + this.numeroPosicion + " - El campo imputacion es obligatorio";
-
                 return this.mensaje;
             }
 
@@ -375,7 +374,6 @@ export class SolpPosicion {
             {
                 this.tabsPosicionValidos.tabImputacion = false;
                 this.mensaje = "Pos. " + this.numeroPosicion + " - El campo cuenta mayor es obligatorio";
-
                 return this.mensaje;
             }
         }

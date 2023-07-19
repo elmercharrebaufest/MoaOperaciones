@@ -26,6 +26,7 @@ namespace SustitucionMOAModel.Dto
         public string Tipo { get; set; }
         public DateTime FechaCreacion { get; set; }
         public string TipoDocCompras { get; set; }
+        public int? Usuario_Id { get; set; }
 
         //        <COMP_CODE>MOA</COMP_CODE>// fijo
         //        <DOC_TYPE>ZPE1</DOC_TYPE>//tipo de documento

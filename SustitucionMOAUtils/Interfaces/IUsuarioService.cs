@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
@@ -35,7 +36,7 @@ namespace SustitucionMOAUtils.Interfaces
         string ObtenerNuevoApiKey(string usuario);
 
         List<ProveedorDto> ListarProveedores(string filtro);
-        ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto);
+        ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto, EstadoAprobacion estadoAprobacion = EstadoAprobacion.DocumentacionPendiente);
 
         UsuarioDto GetUsuarioPorId(int id);
         List<ProveedorDto> GetProvedoresEmail(int tipoProveedorId, string email, string cuitUsuario);

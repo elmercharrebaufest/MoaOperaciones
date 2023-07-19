@@ -45,7 +45,7 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerRegistroInfoConsumerMOA> obtenerRegistroInfoConsumerMOAMock;
         private Mock<IUsuarioService> usuarioServiceMock;
         private string filePath = "";
-
+        private Mock<IObtenerProveedorConsumerMOA> obtenerProveedorConsumerMOA;
         [SetUp]
         public void SetUp()
         {
@@ -73,7 +73,8 @@ namespace SustitucionMOATest.Services
             obtenerOrdenesDeCompraParaSOLPConsumerMOAMock = new Mock<IObtenerOrdenesDeCompraParaSOLPConsumerMOA>();
 
             usuarioServiceMock = new Mock<IUsuarioService>();
-
+            obtenerProveedorConsumerMOA = new Mock<IObtenerProveedorConsumerMOA>();
+            
             target = new ComprasService(
                 repositorioMock.Object,
                 cecoConsumerMock.Object,
@@ -93,7 +94,8 @@ namespace SustitucionMOATest.Services
                 obtenerRegistroInfoConsumerMOAMock.Object,
                 obtenerOrdenDeCompraConsumerMOAMock.Object,
                 obtenerOrdenesDeCompraParaSOLPConsumerMOAMock.Object,
-                usuarioServiceMock.Object
+                usuarioServiceMock.Object,
+                obtenerProveedorConsumerMOA.Object
                 );
         }
 

@@ -491,7 +491,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         }
 
                         if (enviarSap) {
-
+                            this.solpActual.emailLinkToken = result.Solp.EmailLinkToken;
                             if (result.Mensaje == "OK") {
                                 this.finalizarOk = true;
 
