@@ -29,7 +29,7 @@
                         </th>
                         <th data-toggle="tooltip" class="columna" title="unidad de Medida">Fecha última orden de compra</th>
                         <th data-toggle="tooltip" class="columna" title="unidad">Um</th>
-                        <th data-toggle="tooltip" class="columna" title="cantidad">Ctd</th>
+                        <th data-toggle="tooltip" class="columna" title="cantidad">Ctd Pendiente</th>
                         <th data-toggle="tooltip" class="columna" title="cantidadAdjudicar">Ctd a Adjudicar</th>
                         <th data-toggle="tooltip" class="columna" title="moneda">Moneda</th>
                         <th data-toggle="tooltip" class="columna" title="precio">
@@ -37,6 +37,9 @@
                         </th>
                         <th data-toggle="tooltip" class="columna" title="centro">
                             Centro
+                        </th>
+                        <th data-toggle="tooltip" class="columna" title="numero">
+                            Numero
                         </th>
                     </tr>
                 </ng-template>
@@ -81,6 +84,9 @@
                         </td>
                         <td class="columna">
                             {{registro.Centro}}
+                        </td>
+                        <td class="columna">
+                            {{registro.Id}}
                         </td>
 
                     </tr>

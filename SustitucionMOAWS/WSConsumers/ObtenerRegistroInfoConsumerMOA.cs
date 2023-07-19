@@ -61,7 +61,8 @@ namespace SustitucionMOAWS.WSConsumers
                         Unidad = info.PO_UNIT,
                         Moneda = purch.CURRENCY,
                         Vendedor = info.VENDOR,
-                        Fecha = purch.PRICE_DATE
+                        Fecha = purch.PRICE_DATE,
+                        Id = info.INFO_REC
                     };
 
                     registros.Add(registroInfo);

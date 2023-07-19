@@ -8,6 +8,7 @@ using iTextSharp.tool.xml.parser;
 using iTextSharp.tool.xml.pipeline.css;
 using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
+using Microsoft.Win32;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
@@ -3008,10 +3009,10 @@ namespace SustitucionMOAUtils.Services
                     FechaHasta = fechaHasta,
                     NumeroSolp = solp.NroSolp,
                 };
-                var adjudicacionSap = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+                var solpSAPResponse = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
                 var posiciones = solp.PosicionCompras.ToList();
-                var consultaRegistro = posiciones.GroupBy(x => new { Centro = x.Centro.CodigoSap, Material = x.MaterialComprasCodigo, GrupoDeCompras = x.GrupoCompras.CodigoSap });
-                //var proveedores = repositorio.Listar<SustitucionMOAModel.Entities.Proveedor>();
+                var consultaRegistro = posiciones.Where(a => a.MaterialComprasCodigo != null).GroupBy(x => new { Centro = x.Centro.CodigoSap, Material = x.MaterialComprasCodigo, GrupoDeCompras = x.GrupoCompras.CodigoSap });
+
                 foreach (var posicionAgrupada in consultaRegistro)
                 {
                     var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras);
@@ -3023,28 +3024,36 @@ namespace SustitucionMOAUtils.Services
                             foreach (var registroInfo in registros)
                             {
                                 var i = 0;
-                                var proveedor = repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(x => x.CodigoProveedor == registroInfo.Vendedor);
-                                if (proveedor != null)
+                                var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == registroInfo.Vendedor && x.TipoProveedor.Id == (int)TipoUsuarioEnum.NoGranos);
+                                var usuario = proveedor?.UsuariosAsociados.Where(a => a.Mail == proveedor.Mail && a.CUITRegistro == proveedor.CUIT && a.TipoUsuario.Id == proveedor.TipoProveedor.Id).FirstOrDefault();
+                                if (proveedor != null && usuario != null)
                                 {
+                                    decimal pendienteAdjudicar = 0;
+
+                                    var solpSAPPosicion = solpSAPResponse?.Posiciones.FirstOrDefault(x => Int32.Parse(x.NumeroPosicion) == posicion.Indice);
+                                    if (solpSAPPosicion != null)
+                                    {
+                                        pendienteAdjudicar = solpSAPPosicion.Cantidad - solpSAPPosicion.Ordered;
+                                    }
+
                                     registrosInfo.Add(new RegistroInfoDto
                                     {
+                                        Id = registroInfo.Id,
                                         Numero = i + 1,
                                         PosicionId = posicion.Id,
                                         Indice = posicion.Indice,
                                         DescripcionPosicion = posicion.Tarea,
-                                        Cantidad = registroInfo.Cantidad,
-                                        Centro = registroInfo.Centro,
+                                        Cantidad = pendienteAdjudicar,
+                                        Centro = posicion.Centro.Descripcion,
                                         Fecha = registroInfo.Fecha,
                                         Moneda = registroInfo.Moneda,
                                         NombreProveedor = proveedor?.RazonSocial,
                                         Codigo = registroInfo.Vendedor,
                                         Precio = registroInfo.Precio,
                                         Unidad = registroInfo.Unidad,
-                                        ProveedorId = proveedor.Id,
+                                        ProveedorId = usuario.Id,
                                         Cuit = proveedor?.CUIT,
-                                        CantidadAdjudicacion = adjudicacionSap != null && adjudicacionSap.Posiciones.Count > 0 &&
-                                       adjudicacionSap.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Indice) ?
-                                      (adjudicacionSap.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Indice).FirstOrDefault().Ordered) : 0
+                                        CantidadAdjudicacion = 0
                                     });
                                 }
                                 else
@@ -4898,7 +4907,7 @@ namespace SustitucionMOAUtils.Services
                     CondicionesDePago = adjudicacionDto.CondicionesDePago,
                     Garantias = adjudicacionDto.Garantias,
                     TextoDeCabecera = adjudicacionDto.TextoDeCabecera,
-                    Posiciones = adjudicacionDto.AdjudicacionPosiciones.Count > 0 ? adjudicacionDto.AdjudicacionPosiciones.Select(x => new AdjudicacionPosicion
+                    Posiciones = adjudicacionDto.AdjudicacionPosiciones.Select(x => new AdjudicacionPosicion
                     {
                         Cantidad = x.Cantidad,
                         CotizacionPosicion_Id = x.CotizacionPosicion_Id,
@@ -4907,7 +4916,7 @@ namespace SustitucionMOAUtils.Services
                           .Where(y => y.Id == x.SolpPosicion_Id).FirstOrDefault(),
                         SolpPosicion_Id = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones
                           .Where(y => y.Id == x.SolpPosicion_Id).FirstOrDefault().Id
-                    }).ToList() : null,
+                    }).ToList(),
                 };
 
                 repositorio.Agregar(adjudicacion);
@@ -4917,12 +4926,12 @@ namespace SustitucionMOAUtils.Services
                 {
                     //rfc nueva
                 }
-                else 
+                else
                 {
                     respuestaGuardarSOLP = CrearOrdenDeCompra(adjudicacion);
                 }
 
-                
+
 
 
                 if (respuestaGuardarSOLP.Errores == null || respuestaGuardarSOLP.Errores.Count == 0)
@@ -5108,17 +5117,19 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public RespuestaCrearOrdenDeCompra CrearOrdenDeCompraAutomatica(Solp solp = null, bool enviarMail = true, List<RegistroInfoDto> registroInfo = null, bool crearAdjudicacion = false, int usuarioActual = 0, SolpPosicion posicion = null)
+        public RespuestaCrearOrdenDeCompra CrearOrdenDeCompraAutomatica(Solp solp, bool enviarMail, List<RegistroInfoDto> registroInfo, bool crearAdjudicacion, int usuarioActual)
         {
             try
             {
                 var respuestaGuardarSOLP = new RespuestaCrearOrdenDeCompra();
                 RespuestaGuardarSOLP respuestaCotizacion;
                 Cotizacion cotizacionNueva;
-                var posiciones = new List<SolpPosicion> { posicion };
+                var solpPosicionIds = registroInfo.Select(registro => registro.PosicionId).ToList();
+
+                List<SolpPosicion> posiciones = solp.Posiciones.Where(a => solpPosicionIds.Contains(a.Id)).ToList();
                 //Crear Peticion 
                 var usuariosIds = new List<int>();
-                var proveedorId = registroInfo.Where(registroPos => registroPos.PosicionId == posicion.Id).Select(x => x.ProveedorId).FirstOrDefault();
+                int proveedorId = registroInfo.Select(x => x.ProveedorId).First();
                 usuariosIds.Add(proveedorId);
                 PeticionDeOferta peticionEntidad = CrearPeticionAutomatica(solp, usuariosIds, posiciones, true);
                 //CrearCotizacion
@@ -5126,14 +5137,22 @@ namespace SustitucionMOAUtils.Services
                 //Crear Adjudicacion
                 if (crearAdjudicacion)
                 {
+                    List<AdjudicacionPosicionDto> adjudicacionPosiciones =
+                        cotizacionNueva.CotizacionPosiciones.Select(x => new AdjudicacionPosicionDto
+                        {
+                            CotizacionPosicion_Id = x.Id,
+                            Cantidad = x.Cantidad ?? 1,
+                            SolpPosicion_Id = x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id
+                        }).ToList();
+
                     var adjudicacion = new AdjudicacionDto()
                     {
                         Cotizacion_Id = respuestaCotizacion.IdEntidad,
-                        AdjudicacionPosiciones = solp.Posiciones.Select(x => new AdjudicacionPosicionDto
-                        {
-                            Cantidad = registroInfo.Where(registro => registro.Id == x.Id).FirstOrDefault().CantidadAdjudicacion,
-                            CotizacionPosicion_Id = cotizacionNueva.CotizacionPosiciones.Where(cotPos => cotPos.Id == x.Id).Select(pos => pos.Id).FirstOrDefault()
-                        }).ToList(),
+                        AdjudicacionPosiciones = adjudicacionPosiciones,//solp.Posiciones.Where(a=>a.Id == ).Select(x => new AdjudicacionPosicionDto
+                        //{
+                        //    Cantidad = registroInfo.Where(registro => registro.PosicionId == x.Id).FirstOrDefault().CantidadAdjudicacion,
+                        //    CotizacionPosicion_Id = cotizacionNueva.CotizacionPosiciones.Where(cotPos => cotPos.Id == x.Id).Select(pos => pos.Id).FirstOrDefault()
+                        //}).ToList(),
                         TextoDeCabecera = "",
                         CondicionesDePago = "",
                         CondicionesDeEntrega = "",
@@ -5213,7 +5232,7 @@ namespace SustitucionMOAUtils.Services
                 RegistroInfo = registroInfo
             };
 
-            
+
             var resultado = GrabarPeticionDeOferta(peticion, null, solp.Adicional == true);
 
             var peticionEntidad = repositorio.Obtener<PeticionDeOferta>(resultado.IdEntidad);
@@ -5223,7 +5242,7 @@ namespace SustitucionMOAUtils.Services
         public OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC)
         {
             var result = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra(nroOC);
-            if (result.Error == null || string.IsNullOrEmpty(result.Error.Mensaje)) 
+            if (result.Error == null || string.IsNullOrEmpty(result.Error.Mensaje))
             {
                 try
                 {
@@ -5248,7 +5267,7 @@ namespace SustitucionMOAUtils.Services
 
 
             }
-            
+
 
             return result;
         }
@@ -5305,20 +5324,29 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<string> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId)
+        public List<RespuestaCrearOrdenDeCompra> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId)
         {
             if (registros.Count == 0)
                 throw new ValidationCustomException("Tiene que seleccionar al menos un registro");
+            if (registros.Any(x => x.CantidadAdjudicacion == 0))
+                throw new ValidationCustomException("Todos los registros seleccionados tienen que tener la cantidad ingresada.");
 
             try
             {
-                var resultado = new List<string>();
-                var posiciones = repositorio.Listar<SolpPosicion>(x => registros.Select(registro => registro.Id).Contains(x.Id));
-                foreach (var item in posiciones)
+                var resultado = new List<RespuestaCrearOrdenDeCompra>();
+                var solpPosicionIds = registros.Select(registro => registro.PosicionId).ToList();
+                var posicionesSolp = repositorio.Listar<SolpPosicion>(x => solpPosicionIds.Contains(x.Id));
+                foreach (var item in registros.GroupBy(a => new { a.ProveedorId, a.Moneda }))
                 {
-                    var r = CrearOrdenDeCompraAutomatica(null, false, registros, true, usuarioActualId, item);
-                    resultado.Add(r.NumeroPedido);
+                    RespuestaCrearOrdenDeCompra r = CrearOrdenDeCompraAutomatica(posicionesSolp.First().Solp, false, item.ToList(), true, usuarioActualId);
+                    r.Proveedor = registros.First().NombreProveedor;
+                    resultado.Add(r);
                 }
+                //foreach (var item in posiciones)
+                //{
+                //    var r = CrearOrdenDeCompraAutomatica(item.Solp, false, registros, true, usuarioActualId, item);
+                //    resultado.Add(r.NumeroPedido);
+                //}
                 return resultado;
             }
             catch (Exception e)
@@ -5327,7 +5355,6 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
-
     }
 
 

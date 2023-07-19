@@ -39,7 +39,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             CentroComprasDescripcion = posicion.Centro.Descripcion,
                                                             Centro = new TablaSapDto
                                                             {
-                                                                CodigoSap = posicion.Centro.CodigoSap
+                                                                CodigoSap = posicion.Centro.CodigoSap,
+                                                                Descripcion = posicion.Centro.Descripcion,
                                                             },
                                                             AlmacenComprasDescripcion = posicion.Almacen.Descripcion,
                                                             TextoSuministro = posicion.TextoSuministro,
@@ -47,7 +48,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             GrupoComprasDescripcion = posicion.GrupoCompras.Codigo + " " + posicion.GrupoCompras.Descripcion,
                                                             GrupoCompras = new TablaSapDto
                                                             {
-                                                                CodigoSap = posicion.GrupoCompras.CodigoSap
+                                                                CodigoSap = posicion.GrupoCompras.CodigoSap,
+                                                                Descripcion = posicion.GrupoCompras.Descripcion,
                                                             },
                                                             MaterialComprasCodigo = posicion.MaterialSolp.CodigoSap,
                                                             Cantidad = posicion.Cantidad,
