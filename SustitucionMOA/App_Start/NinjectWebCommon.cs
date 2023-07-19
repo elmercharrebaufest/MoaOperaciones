@@ -88,6 +88,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<ILiquidacionService>().To(typeof(LiquidacionService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<INotificacionService>().To(typeof(NotificacionService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IOrdenDeCargaService>().To(typeof(OrdenDeCargaService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IKgDisponiblesFasService>().To(typeof(KgDisponiblesFasService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IFacturaAnticipadaService>().To(typeof(FacturaAnticipadaService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IOrdenDeCargaEstadoService>().To(typeof(OrdenDeCargaEstadoService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAplicacionCartaPorteService>().To(typeof(AplicacionCartaPorteService)).InScope(ctx => OperationContext.Current);
@@ -154,7 +155,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IObtenerOrdenDeCompraConsumerMOA>().To(typeof(ObtenerOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerOrdenesDeCompraParaSOLPConsumerMOA>().To(typeof(ObtenerOrdenesDeCompraParaSOLPConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerProveedorConsumerMOA>().To(typeof(ObtenerProveedorConsumerMOA)).InScope(ctx => OperationContext.Current);
-            
+
             #endregion
 
             // Scato WebApi

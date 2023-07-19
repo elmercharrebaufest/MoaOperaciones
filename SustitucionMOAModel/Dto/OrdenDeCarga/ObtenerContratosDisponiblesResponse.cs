@@ -1,12 +1,9 @@
-using Newtonsoft.Json;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using SustitucionMOAModel.Util;
 
 namespace SustitucionMOAModel.Dto.OrdenDeCarga
 {
@@ -61,7 +58,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                             })
                             .Single();
             NumeroContrato = contratoSAP.Contrato;
-            KgDisponibles = ObtenerKgDisponibles(contratoSAP);
             Producto = producto;
             TipoContrato = contratoSAP.TipoContrato;
         }
@@ -77,74 +73,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                 Descripcion = producto?.Nombre,
                 Abreviacion = producto?.Abreviacion
             };
-        }
-        public ContratoOrdenFas(Entities.OrdenDeCarga orden, Result contratoSAP)
-        {
-            NumeroContrato = orden.ContratoIngresado;
-            var producto = orden.Producto != null ? orden.Producto : null;
-
-            Producto = new Models.DataAgro.MaterialDto
-            {
-                MaterialId = orden.Producto_Id,
-                Descripcion = producto?.Nombre,
-                Abreviacion = producto?.Abreviacion
-            };
-            KgDisponibles = ObtenerKgDisponibles(contratoSAP);
-        }
-        public decimal ObtenerKgDisponibles(Result contratoSAP)
-        {
-            decimal kilosDisponibles = 0;
-            switch (contratoSAP.TipoContrato)
-            {
-                case TipoContratoFAS.Anticipado:
-                    kilosDisponibles = KgDisponiblesContratoAnticipado(contratoSAP);
-                    break;
-                default:
-                    kilosDisponibles = KgDisponiblesContratoNormal(contratoSAP);
-                    break;
-            }
-            return Math.Round(kilosDisponibles, 2);
-        }
-
-        private decimal KgDisponiblesContratoNormal(Result contratoSAP)
-        {
-            var kgEntregadosYPendientesEntrega = contratoSAP.Detalles.Select(det =>
-                det.KilosEntrega == 0 ? ObtenerKgEstandar(contratoSAP) : det.KilosEntrega).Sum();
-
-            return contratoSAP.KilosTotales - kgEntregadosYPendientesEntrega;
-        }
-        private decimal KgDisponiblesContratoAnticipado(Result contratoSAP)
-        {
-            var kilosDisponibles = contratoSAP.KilosTotales;
-            contratoSAP.Detalles.GroupBy(det => det.Pedido).ToList().ForEach(grupoPedidos =>
-            {
-                var pedidoPrincipal = grupoPedidos.FirstOrDefault(det =>
-                        det.CantidadFactura > 0 && !string.IsNullOrEmpty(det.FacturaLegal)
-                    );
-                if (pedidoPrincipal is null)
-                    return;
-                if (PedidoEstaCargado(pedidoPrincipal))
-                {
-                    kilosDisponibles -= pedidoPrincipal.CantidadFactura;
-                    return;
-                }
-                grupoPedidos.ToList().ForEach(det => kilosDisponibles -= det.KilosEntrega);
-            });
-
-            return kilosDisponibles;
-        }
-        private decimal ObtenerKgEstandar(Result contratoSAP)
-        {
-            return contratoSAP.Producto.TrimStart('0') == Constante.CODIGO_PELLET_GIRASOL ?
-                Constante.KG_STANDARD_PELLET_GIRASOL : Constante.KG_STANDARD;
-        }
-        private bool PedidoEstaCargado(Detail pedido)
-        {
-            return !string.IsNullOrEmpty(pedido.Chasis) &&
-                !string.IsNullOrEmpty(pedido.Acoplado) &&
-                !string.IsNullOrEmpty(pedido.Chofer) &&
-                !string.IsNullOrEmpty(pedido.Destinatario) &&
-                !string.IsNullOrEmpty(pedido.NombreDestinatario);
         }
     }
 }

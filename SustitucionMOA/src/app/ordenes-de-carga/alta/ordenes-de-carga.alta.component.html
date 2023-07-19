@@ -156,9 +156,9 @@
                                         Planta:
                                     </div>
                                     <div class="styled-select" style="overflow: initial;">
-                                        <p-dropdown name="cmbPlantas"
-                                            [(ngModel)]="plantaSeleccionada" [options]="listaPlantas"
-                                            optionLabel="Codigo" placeholder="Seleccione una planta"
+                                        <p-dropdown name="cmbPlantas" [(ngModel)]="plantaSeleccionada"
+                                            [options]="listaPlantas" optionLabel="Codigo"
+                                            placeholder="Seleccione una planta"
                                             (ngModelChange)="onPlantaSeleccionadaChanged()" [filter]="true"
                                             filterBy="value.Codigo">
                                         </p-dropdown>
@@ -169,9 +169,9 @@
                                         Domicilio:
                                     </div>
                                     <div class="styled-select" style="overflow: initial;">
-                                        <p-dropdown name="cmbDomicilios"
-                                            [(ngModel)]="domicilioSeleccionado" [options]="listaDomicilios"
-                                            optionLabel="Descripcion" placeholder="Seleccione un domicilio"
+                                        <p-dropdown name="cmbDomicilios" [(ngModel)]="domicilioSeleccionado"
+                                            [options]="listaDomicilios" optionLabel="Descripcion"
+                                            placeholder="Seleccione un domicilio"
                                             (ngModelChange)="onDomicilioSeleccionadoChanged()" [filter]="true"
                                             filterBy="value.Descripcion">
                                         </p-dropdown>
@@ -188,9 +188,8 @@
                                 <div class="styled-select" style="overflow: initial;">
                                     <p-dropdown name="cmbFacturas" [disabled]="noEditarCliente"
                                         [(ngModel)]="facturaSeleccionada" [options]="facturasDisponibles"
-                                        placeholder="Seleccione un número de factura" [optionLabel]="'NumeroFactura'"
-                                        [filter]="true" (onChange)="setNumeroFactura($event.value)"
-                                        filterBy="value.NumeroFactura">
+                                        placeholder="Seleccione un número de factura" [optionLabel]="'Label'"
+                                        [filter]="true" (onChange)="setNumeroFactura($event.value)" filterBy="">
                                     </p-dropdown>
                                 </div>
                             </div>

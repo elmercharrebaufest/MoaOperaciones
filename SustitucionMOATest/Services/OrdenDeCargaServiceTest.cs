@@ -38,6 +38,7 @@ namespace SustitucionMOATest.Services
         private Mock<IFacturaAnticipadaService> mIFacturaAnticipadaService;
         private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
         private Mock<IScatoConsumer> mIScatoConsumer;
+        private Mock<IKgDisponiblesFasService> mIKgDisponiblesFasService;
 
         private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaChofer;
         private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaTransporte;
@@ -61,9 +62,10 @@ namespace SustitucionMOATest.Services
             mIScatoConsumer = new Mock<IScatoConsumer>();
             feriadoService.Setup(fs => fs.ObtenerFeriados()).Returns(new List<DateTime>());
             mIEmailFasService = new Mock<IEmailFasService>();
+            mIKgDisponiblesFasService = new Mock<IKgDisponiblesFasService>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
-                mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object, mIFacturaAnticipadaService.Object);
+                mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object, mIFacturaAnticipadaService.Object, mIKgDisponiblesFasService.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,

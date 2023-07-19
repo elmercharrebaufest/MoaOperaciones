@@ -287,7 +287,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         if (this.ordenDeCarga.NumeroFactura)
                             this.facturaSeleccionada = {
                                 NumeroFactura: this.ordenDeCarga.NumeroFacturaSeleccionada || this.ordenDeCarga.NumeroFactura,
-                                NumeroPedido: this.ordenDeCarga.NumeroPedidoIngresado || this.ordenDeCarga.NumeroPedido
+                                NumeroPedido: this.ordenDeCarga.NumeroPedidoIngresado || this.ordenDeCarga.NumeroPedido,
+                                Label: this.ordenDeCarga.NumeroFacturaSeleccionada
                             }
                     }
                 },

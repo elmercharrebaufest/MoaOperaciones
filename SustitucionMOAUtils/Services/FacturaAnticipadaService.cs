@@ -18,11 +18,18 @@ namespace SustitucionMOAUtils.Services
         private readonly IOrdenCargaConsumerMOA _consumerOrdenCarga;
         private readonly IOrdenDeCargaEstadoService _ordenDeCargaEstadoService;
         protected readonly IRepositorio _repositorio;
-        public FacturaAnticipadaService(IOrdenCargaConsumerMOA ordenDeCargaService, IRepositorio repositorio, IOrdenDeCargaEstadoService ordenDeCargaEstadoService)
+        protected readonly IKgDisponiblesFasService _kgDisponiblesFasService;
+        public FacturaAnticipadaService(
+            IOrdenCargaConsumerMOA ordenDeCargaService,
+            IRepositorio repositorio,
+            IOrdenDeCargaEstadoService ordenDeCargaEstadoService,
+            IKgDisponiblesFasService kgDisponiblesFasService
+            )
         {
             _consumerOrdenCarga = ordenDeCargaService;
             _repositorio = repositorio;
             _ordenDeCargaEstadoService = ordenDeCargaEstadoService;
+            _kgDisponiblesFasService = kgDisponiblesFasService;
         }
         public List<FacturaOrdenCarga> ObtenerFacturasDeContrato(OrdenDeCarga orden)
         {
@@ -77,9 +84,18 @@ namespace SustitucionMOAUtils.Services
             if (contrato == null)
                 throw new InfoCustomException("No se encontró el contrato");
             var listaFacturas = contrato.Detalles
-               .Where(det => !string.IsNullOrEmpty(det.FacturaLegal))
-               .Select(det => new FacturaOrdenCarga(det))
-               .Distinct()
+               .GroupBy(det => det.Pedido)
+               .Select(grupoPedidos =>
+               {
+                   var listPedidos = grupoPedidos.ToList();
+                   var pedidoPrincipal = _kgDisponiblesFasService.AuxObtenerDetallePedidoPrincipal(listPedidos);
+                   if (pedidoPrincipal == null)
+                       return null;
+
+                   var kilosDisponiblesPedido = _kgDisponiblesFasService.ObtenerKgDisponiblesPedido(listPedidos, pedidoPrincipal);
+                   return new FacturaOrdenCarga(pedidoPrincipal, kilosDisponiblesPedido);
+               })
+               .Where(factura=>factura!=null)
                .ToList();
             if (logger)
                 Log.Info($"Obtener facturas de contrato result: {listaFacturas.ToJson()}");
