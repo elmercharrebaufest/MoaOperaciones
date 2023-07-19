@@ -106,7 +106,6 @@ namespace SustitucionMOAUtils.Services
                 {
                     NotificarVariosPedidos(ordenDeCarga.Id);
                 }
-                //if (ordenDeCarga.TieneMultiplesContratos)
                 if (!ordenPuedeEnviarseDirectoSap)
                 {
                     NotificarVariosContratos(ConstruirCuerpoMailNotificacionVariosContratos(ordenDeCarga.Id));
@@ -565,16 +564,7 @@ namespace SustitucionMOAUtils.Services
         private bool VerificarOrden(OrdenDeCarga ordenDeCarga, Proveedor cliente, bool esJob)
         {
             Log.Info($"VerificarOrden(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, cliente: {cliente?.Id.ToJson()}, esJob: {esJob})");
-
-            if (!ValidarExistenciaIntermediarioFlete(ordenDeCarga))
-            {
-                ordenDeCarga.TransporteExiste = false;
-                ordenDeCarga.DescripcionCodigoVerificacionSap = "Intermediario de flete no dado de alta";
-                return true;
-            }
-
-            var controlCargaResponse = ControlarCarga(ordenDeCarga, cliente.CodigoProveedor, false);
-
+            
             //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En ese caso,
             //un comercial debe seleccionar cual es el contrato correcto que le quiere entregar.
             //if (controlCargaResponse.TieneMultiplesContratos)
@@ -595,6 +585,15 @@ namespace SustitucionMOAUtils.Services
             //else
             //{   
             //}
+
+            if (!ValidarExistenciaIntermediarioFlete(ordenDeCarga))
+            {
+                ordenDeCarga.TransporteExiste = false;
+                ordenDeCarga.DescripcionCodigoVerificacionSap = "Intermediario de flete no dado de alta";
+                return true;
+            }
+
+            var controlCargaResponse = ControlarCarga(ordenDeCarga, cliente.CodigoProveedor, false);
 
             var respuestaCC = controlCargaResponse.ObtenerRespuestaUnica();
             //solo en el caso que el response de ok para crear la orden tiene que verificar el vencimiento
@@ -2885,6 +2884,7 @@ namespace SustitucionMOAUtils.Services
             }
             return true;
         }
+
         private ControlCargaResponseHandler ControlarCarga(OrdenDeCarga ordenDeCarga, string codigoProveedor, bool soloSisa)
         {
             var controlarCargaReq = new ControlCargaRequest

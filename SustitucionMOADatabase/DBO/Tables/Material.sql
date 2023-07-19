@@ -9,6 +9,6 @@
     [CodigoSap] NVARCHAR(20) NULL, 
     [TablaSeccionMaterial] INT NULL, 
     [ValidaSisaRuca] BIT NOT NULL DEFAULT 0, 
-    [Abreviacion] NCHAR(50) NULL
+    [Abreviacion] VARCHAR(50) NULL
 ) ON [PRIMARY]
 GO

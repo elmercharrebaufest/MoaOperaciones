@@ -28,14 +28,14 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
 
         public MaterialDto Producto { get; set; }
         public decimal? KgDisponiblesTn { get; set; }
-        public string Label
-        {
-            get
-            {
-                var kg = KgDisponiblesTn == null ? "" : $" {KgDisponiblesTn} kg Disp.";
-                return $"{NumeroContrato} - {DescripcionProducto}{kg}";
-            }
-        }
+        //public string Label
+        //{
+        //    get
+        //    {
+        //        var kg = KgDisponiblesTn == null ? "" : $" {KgDisponiblesTn} kg Disp.";
+        //        return $"{NumeroContrato} - {DescripcionProducto}{kg}";
+        //    }
+        //}
         public string DescripcionProducto
         {
             get

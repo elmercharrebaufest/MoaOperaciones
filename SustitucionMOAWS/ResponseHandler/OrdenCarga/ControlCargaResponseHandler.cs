@@ -12,7 +12,7 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
     {
         private readonly string logResponse = string.Empty;
         private readonly List<ControlCargaResEnum> respuestasSap = new List<ControlCargaResEnum>();
-        //private List<string> contratosSap = new List<string>();
+        private readonly List<string> contratosSap = new List<string>();
 
         //public bool TieneMultiplesContratos { get; private set; } = false;
 
@@ -22,16 +22,15 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
             {
                 var resp = item.MENSAJE;
                 logResponse += resp + ". ";
-                //if (resp.Contains("|"))
-                //{
-                //    TieneMultiplesContratos = true;
-                //    contratosSap.Add(resp);
-                //}
-                //else
-                //{
-                //    respuestasSap.Add(ResponseConverter.GetOrdenCargaControlCargaResponse(resp));
-                //}
-                respuestasSap.Add(ResponseConverter.GetOrdenCargaControlCargaResponse(resp));
+                if (resp.Contains("|"))
+                {
+                    //TieneMultiplesContratos = true;
+                    contratosSap.Add(resp);
+                }
+                else
+                {
+                    respuestasSap.Add(ResponseConverter.GetOrdenCargaControlCargaResponse(resp));
+                }
             }
         }
 
