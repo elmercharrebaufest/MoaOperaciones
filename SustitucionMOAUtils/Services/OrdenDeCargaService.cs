@@ -2323,7 +2323,7 @@ namespace SustitucionMOAUtils.Services
                 if (usuario.TieneRol("ADM") || usuario.TieneRol("APLCLICPEDG"))
                     material = string.Empty;
                 else
-                    material = "50866";
+                    material = Constante.CODIGO_SOJA_HIPRO;
 
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
                 {

@@ -6,6 +6,7 @@ using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SustitucionMOAModel.Util;
 
 namespace SustitucionMOAModel.Dto.OrdenDeCarga
 {
@@ -47,7 +48,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         }
 
         public TipoContratoFAS TipoContrato { get; set; }
-        //public string ProductoId { get; set; }
         public ContratoOrdenFas(Result contratoSAP, List<Material> productosBD)
         {
             var producto = productosBD
@@ -61,7 +61,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                             })
                             .Single();
             NumeroContrato = contratoSAP.Contrato;
-            KgDisponibles = ObtenerKgDisponiblesTn(contratoSAP);
+            KgDisponibles = ObtenerKgDisponibles(contratoSAP);
             Producto = producto;
             TipoContrato = contratoSAP.TipoContrato;
         }
@@ -89,17 +89,62 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                 Descripcion = producto?.Nombre,
                 Abreviacion = producto?.Abreviacion
             };
-            KgDisponibles = ObtenerKgDisponiblesTn(contratoSAP);
+            KgDisponibles = ObtenerKgDisponibles(contratoSAP);
         }
-        public decimal ObtenerKgDisponiblesTn(Result contratoSAP)
+        public decimal ObtenerKgDisponibles(Result contratoSAP)
+        {
+            decimal kilosDisponibles = 0;
+            switch (contratoSAP.TipoContrato)
+            {
+                case TipoContratoFAS.Anticipado:
+                    kilosDisponibles = KgDisponiblesContratoAnticipado(contratoSAP);
+                    break;
+                default:
+                    kilosDisponibles = KgDisponiblesContratoNormal(contratoSAP);
+                    break;
+            }
+            return Math.Round(kilosDisponibles, 2);
+        }
+
+        private decimal KgDisponiblesContratoNormal(Result contratoSAP)
         {
             var kgEntregadosYPendientesEntrega = contratoSAP.Detalles.Select(det =>
-                det.KilosEntrega== 0 ? ObtenerKgEstandar(contratoSAP) : det.KilosEntrega).Sum();
-            
-            return Math.Round(contratoSAP.KilosTotales - kgEntregadosYPendientesEntrega, 2);
+                det.KilosEntrega == 0 ? ObtenerKgEstandar(contratoSAP) : det.KilosEntrega).Sum();
+
+            return contratoSAP.KilosTotales - kgEntregadosYPendientesEntrega;
         }
-        private decimal ObtenerKgEstandar(Result contratoSAP) {
-            return contratoSAP.Producto.TrimStart('0') == "99709" ? 20000 : 30000;
+        private decimal KgDisponiblesContratoAnticipado(Result contratoSAP)
+        {
+            var kilosDisponibles = contratoSAP.KilosTotales;
+            contratoSAP.Detalles.GroupBy(det => det.Pedido).ToList().ForEach(grupoPedidos =>
+            {
+                var pedidoPrincipal = grupoPedidos.FirstOrDefault(det =>
+                        det.CantidadFactura > 0 && !string.IsNullOrEmpty(det.FacturaLegal)
+                    );
+                if (pedidoPrincipal is null)
+                    return;
+                if (PedidoEstaCargado(pedidoPrincipal))
+                {
+                    kilosDisponibles -= pedidoPrincipal.CantidadFactura;
+                    return;
+                }
+                grupoPedidos.ToList().ForEach(det => kilosDisponibles -= det.KilosEntrega);
+            });
+
+            return kilosDisponibles;
+        }
+        private decimal ObtenerKgEstandar(Result contratoSAP)
+        {
+            return contratoSAP.Producto.TrimStart('0') == Constante.CODIGO_PELLET_GIRASOL ?
+                Constante.KG_STANDARD_PELLET_GIRASOL : Constante.KG_STANDARD;
+        }
+        private bool PedidoEstaCargado(Detail pedido)
+        {
+            return !string.IsNullOrEmpty(pedido.Chasis) &&
+                !string.IsNullOrEmpty(pedido.Acoplado) &&
+                !string.IsNullOrEmpty(pedido.Chofer) &&
+                !string.IsNullOrEmpty(pedido.Destinatario) &&
+                !string.IsNullOrEmpty(pedido.NombreDestinatario);
         }
     }
 }
