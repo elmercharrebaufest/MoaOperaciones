@@ -564,7 +564,7 @@ namespace SustitucionMOAUtils.Services
         private bool VerificarOrden(OrdenDeCarga ordenDeCarga, Proveedor cliente, bool esJob)
         {
             Log.Info($"VerificarOrden(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, cliente: {cliente?.Id.ToJson()}, esJob: {esJob})");
-            
+
             //Existe la posibilidad de que el cliente tenga varios contratos abiertos con molinos. En ese caso,
             //un comercial debe seleccionar cual es el contrato correcto que le quiere entregar.
             //if (controlCargaResponse.TieneMultiplesContratos)
@@ -586,77 +586,94 @@ namespace SustitucionMOAUtils.Services
             //{   
             //}
 
+            var puedeCrearPedido = true;
+            var existeTransporte = true;
+            var codigoVerificacionSap = string.Empty;
+            var descripcionCodigoVerificacionSap = string.Empty;
+
             if (!ValidarExistenciaIntermediarioFlete(ordenDeCarga))
             {
-                ordenDeCarga.TransporteExiste = false;
-                ordenDeCarga.DescripcionCodigoVerificacionSap = "Intermediario de flete no dado de alta";
-                return true;
+                existeTransporte = false;
+                descripcionCodigoVerificacionSap = "Intermediario de flete no dado de alta";
             }
 
             var controlCargaResponse = ControlarCarga(ordenDeCarga, cliente.CodigoProveedor, false);
 
-            var respuestaCC = controlCargaResponse.ObtenerRespuestaUnica();
-            //solo en el caso que el response de ok para crear la orden tiene que verificar el vencimiento
-            if (!esJob &&
-                (respuestaCC == ControlCargaResEnum.OK || respuestaCC == ControlCargaResEnum.TransportistaNoDadoDeAlta))
+            if (controlCargaResponse.TieneRespuesta(ControlCargaResEnum.OK))
+            {
+                ordenDeCarga.CorredorSeleccionado = true;
+                descripcionCodigoVerificacionSap = "OK";
+                codigoVerificacionSap = controlCargaResponse.GetCodigoDeRespuesta(ControlCargaResEnum.OK);
+            }
+            if (controlCargaResponse.TieneRespuesta(ControlCargaResEnum.MasDeUnContratoVigente))
+            {
+                descripcionCodigoVerificacionSap = "No se encontró ningún contrato con ese producto.";
+                codigoVerificacionSap = controlCargaResponse.GetCodigoDeRespuesta(ControlCargaResEnum.MasDeUnContratoVigente);
+                puedeCrearPedido = false;
+            }
+            if (controlCargaResponse.TieneRespuesta(ControlCargaResEnum.TransportistaNoDadoDeAlta))
+            {
+                existeTransporte = false;
+                descripcionCodigoVerificacionSap = "Transportista no dado de alta";
+                codigoVerificacionSap = controlCargaResponse.GetCodigoDeRespuesta(ControlCargaResEnum.TransportistaNoDadoDeAlta);
+            }
+            if (controlCargaResponse.TieneRespuesta(ControlCargaResEnum.VerificarPedido))
+            {
+                descripcionCodigoVerificacionSap = "El pedido informado no existe.";
+                codigoVerificacionSap = controlCargaResponse.GetCodigoDeRespuesta(ControlCargaResEnum.VerificarPedido);
+                puedeCrearPedido = false;
+            }
+            if (controlCargaResponse.TieneRespuesta(ControlCargaResEnum.VerificarCreditoDePedido))
+            {
+                ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
+                descripcionCodigoVerificacionSap = "Verificar crédito de pedido";
+                codigoVerificacionSap = controlCargaResponse.GetCodigoDeRespuesta(ControlCargaResEnum.VerificarCreditoDePedido);
+                puedeCrearPedido = false;
+            }
+            if (controlCargaResponse.TieneRespuesta(ControlCargaResEnum.PedidoEntregadoCompletamente))
+            {
+                descripcionCodigoVerificacionSap = "El pedido ingresado ya fue entregado completamente.";
+                codigoVerificacionSap = controlCargaResponse.GetCodigoDeRespuesta(ControlCargaResEnum.PedidoEntregadoCompletamente);
+                puedeCrearPedido = false;
+            }
+            if (controlCargaResponse.TieneRespuesta(ControlCargaResEnum.CC06IdemCC01))
+            {
+                descripcionCodigoVerificacionSap = "Error de carga.";
+                codigoVerificacionSap = controlCargaResponse.GetCodigoDeRespuesta(ControlCargaResEnum.CC06IdemCC01);
+                puedeCrearPedido = false;
+            }
+            if (controlCargaResponse.TieneRespuesta(ControlCargaResEnum.FaltaCargarKmsEnContrato))
+            {
+                descripcionCodigoVerificacionSap = "Faltan cargar los Km en el contrato.";
+                codigoVerificacionSap = controlCargaResponse.GetCodigoDeRespuesta(ControlCargaResEnum.FaltaCargarKmsEnContrato);
+                puedeCrearPedido = false;
+            }
+
+            // Solo en el caso que el response dé ok para crear la orden tiene que verificar el vencimiento
+            if (!esJob && puedeCrearPedido )
             {
                 if (!ValidarVencimientoContrato(ordenDeCarga.ContratoIngresado, cliente))
                 {
-                    ordenDeCarga.DescripcionCodigoVerificacionSap = "";
+                    descripcionCodigoVerificacionSap = "";
                     ordenDeCarga.Estado = EstadoOrdenDeCarga.ContratoVencido;
-                    return false;
+                    puedeCrearPedido = false;
                 }
                 else
                 {
                     ordenDeCarga.Estado = EstadoOrdenDeCarga.SinEnviarASAP;
                 }
             }
-            ordenDeCarga.CodigoVerificacionSap = controlCargaResponse.GetCodigoDeRespuesta(respuestaCC);
-            switch (respuestaCC)
+
+            ordenDeCarga.TransporteExiste = existeTransporte;
+            ordenDeCarga.CodigoVerificacionSap = codigoVerificacionSap;
+            ordenDeCarga.DescripcionCodigoVerificacionSap = descripcionCodigoVerificacionSap;
+
+            if (!puedeCrearPedido)
             {
-                case ControlCargaResEnum.OK:
-                    ordenDeCarga.TransporteExiste = true;
-                    ordenDeCarga.CorredorSeleccionado = true;
-                    //ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
-
-                    ordenDeCarga.DescripcionCodigoVerificacionSap = "OK";
-                    return true;
-
-                case ControlCargaResEnum.MasDeUnContratoVigente:
-                    ordenDeCarga.DescripcionCodigoVerificacionSap = "No se encontró ningún contrato con ese producto.";
-                    break;
-
-                case ControlCargaResEnum.TransportistaNoDadoDeAlta:
-                    ordenDeCarga.TransporteExiste = false;
-                    ordenDeCarga.DescripcionCodigoVerificacionSap = "Transportista no dado de alta";
-                    return true;
-
-                case ControlCargaResEnum.VerificarPedido:
-                    ordenDeCarga.DescripcionCodigoVerificacionSap = "El pedido informado no existe.";
-                    break;
-
-                case ControlCargaResEnum.VerificarCreditoDePedido:
-                    ordenDeCarga.TransporteExiste = true;
-                    ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
-                    ordenDeCarga.DescripcionCodigoVerificacionSap = "Verificar Crédito de pedido";
-                    break;
-
-                case ControlCargaResEnum.PedidoEntregadoCompletamente:
-                    ordenDeCarga.DescripcionCodigoVerificacionSap = "El pedido ingresado ya fue entregado completamente.";
-                    break;
-
-                case ControlCargaResEnum.CC06IdemCC01:
-                    ordenDeCarga.DescripcionCodigoVerificacionSap = "Error de carga.";
-                    break;
-
-                case ControlCargaResEnum.FaltaCargarKmsEnContrato:
-                    ordenDeCarga.DescripcionCodigoVerificacionSap = "Faltan cargar los Km en el contrato.";
-                    break;
+                var logCambioEstado = ordenDeCarga.ActualizarEstado();
+                Log.Info(logCambioEstado);
             }
-
-            var logCambioEstado = ordenDeCarga.ActualizarEstado();
-            Log.Info(logCambioEstado);
-            return false;
+            return puedeCrearPedido;
         }
 
         public List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin)
@@ -895,7 +912,12 @@ namespace SustitucionMOAUtils.Services
 
             var ordenDeCargaCambiosHistorial = ObtenerCambiosHistorial(orden);
 
-            var ordenDto = OrdenDeCargaDetalleDto.DeOrdenDeCarga(orden, ordenDeCargaCambiosHistorial, cliente);
+            var contratoSAP = consumer.ObtenerContratoSAP(orden.ContratoIngresado);
+
+            var ordenDto = new OrdenDeCargaDetalleDto(orden, ordenDeCargaCambiosHistorial, cliente)
+            {
+                ContratoSeleccionado = new ContratoOrdenFas(orden, contratoSAP)
+            };
 
             return ordenDto;
         }
@@ -2265,7 +2287,8 @@ namespace SustitucionMOAUtils.Services
             var request = new OrdenCargaVisualizarClienteWSMOARequest()
             {
                 Cliente = cliente.CodigoProveedor,
-                Contrato = contrato
+                Contrato = contrato,
+                TipoContrato = TipoContratoClienteEnum.Todos
             };
             Log.Info($"ValidarVencimientoContrato request: {request.ToJson()}");
             var result = consumer.OrdenCargaVisualizarClienteExecute(request);

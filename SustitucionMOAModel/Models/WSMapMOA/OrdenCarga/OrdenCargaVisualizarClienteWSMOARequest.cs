@@ -4,9 +4,9 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
 {
     public enum TipoContratoClienteEnum
     {
+		Todos,
 		Anticipado,
-		Normal,
-		Todos
+		Normal
     }
 
 	public class OrdenCargaVisualizarClienteWSMOARequest
