@@ -2,6 +2,7 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -85,7 +86,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                 Descripcion = producto?.Nombre,
                 Abreviacion = producto?.Abreviacion
             };
-            KgDisponiblesTn = ObtenerKgDisponiblesTn(contratoSAP);
+            KgDisponibles = ObtenerKgDisponiblesTn(contratoSAP);
         }
         public decimal ObtenerKgDisponiblesTn(Result contratoSAP)
         {

@@ -23,13 +23,13 @@ export class ContratoOrdenFas {
     constructor(
         numeroContrato?: string,
         producto?: Material,
-        kgDisponiblesTn?: number) {
+        kgDisponibles?: number) {
         
             this.NumeroContrato = numeroContrato || this.NumeroContrato;
-            this.KgDisponiblesTn = kgDisponiblesTn || this.KgDisponiblesTn;
+            this.KgDisponibles = kgDisponibles || this.KgDisponibles;
             this.Producto = producto || this.Producto;
             const prod = this.Producto.Abreviacion || this.Producto.Descripcion;
-            const kgs = this.KgDisponiblesTn ? " " + Math.trunc(this.KgDisponiblesTn) + " kg. Disp." : "";
+            const kgs = this.KgDisponibles ? " " + Math.trunc(this.KgDisponibles) + " kg. Disp." : "";
             this.Label = this.NumeroContrato + " - " + prod + " " + kgs;
     }
 }

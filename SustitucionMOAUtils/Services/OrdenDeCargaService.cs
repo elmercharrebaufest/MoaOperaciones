@@ -922,7 +922,7 @@ namespace SustitucionMOAUtils.Services
 
             var ordenDeCargaCambiosHistorial = ObtenerCambiosHistorial(orden);
 
-            var contratoSAP = consumer.ObtenerContratoSAP(orden.ContratoIngresado);
+            var contratoSAP = consumer.ObtenerContratoSAP(orden.ContratoIngresado, TipoContratoFAS.Todos);
 
             var ordenDto = new OrdenDeCargaDetalleDto(orden, ordenDeCargaCambiosHistorial, cliente)
             {
@@ -2220,7 +2220,7 @@ namespace SustitucionMOAUtils.Services
             {
                 Cliente = cliente.CodigoProveedor,
                 Contrato = contrato,
-                TipoContrato = TipoContratoClienteEnum.Todos
+                TipoContrato = TipoContratoFAS.Todos
             };
             Log.Info($"ValidarVencimientoContrato request: {request.ToJson()}");
             var result = consumer.OrdenCargaVisualizarClienteExecute(request);
