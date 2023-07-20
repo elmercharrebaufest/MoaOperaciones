@@ -284,12 +284,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.cargarContratosDisponibles(result.data.CodigoCliente);
                         if (this.ordenDeCarga.CUITDestino)
                             this.onDestinoIngresado(this.ordenDeCarga.CUITDestino)
-                        if (this.ordenDeCarga.NumeroFactura)
-                            this.facturaSeleccionada = {
-                                NumeroFactura: this.ordenDeCarga.NumeroFacturaSeleccionada || this.ordenDeCarga.NumeroFactura,
-                                NumeroPedido: this.ordenDeCarga.NumeroPedidoIngresado || this.ordenDeCarga.NumeroPedido,
-                                Label: this.ordenDeCarga.NumeroFacturaSeleccionada
-                            }
                     }
                 },
                 error => {
@@ -1216,6 +1210,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     this.validaCPEDG = false;
                 }
                 this.facturasDisponibles = data
+                if (this.ordenDeCargaId) {
+                    const numeroFacturaOrden = this.ordenDeCarga.NumeroFacturaSeleccionada || this.ordenDeCarga.NumeroFactura;
+                    this.facturaSeleccionada = this.facturasDisponibles.find(factura => factura.NumeroFactura == numeroFacturaOrden)
+                }
             }
         });
     }
@@ -1223,6 +1221,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         const { NumeroFactura, NumeroPedido } = value;
         this.ordenDeCarga.NumeroFactura = NumeroFactura;
         this.ordenDeCarga.NumeroPedidoIngresado = NumeroPedido;
+        this.validarKilosDisponiblesPedido();
     }
     validarKilosDisponibles() {
         this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
@@ -1231,14 +1230,35 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         if (this.ordenDeCargaId == 0 && !esInterno) {
             this.floatMsgService.setMsgsEmpty();
             if (this.ordenDeCarga.ContratoSeleccionado) {
-                const { KgDisponiblesTn } = this.ordenDeCarga.ContratoSeleccionado;
-                if (KgDisponiblesTn >= KILOS_DISPONIBLES_APROBADO)
+                const { KgDisponibles } = this.ordenDeCarga.ContratoSeleccionado;
+                if (KgDisponibles >= KILOS_DISPONIBLES_APROBADO)
                     return;
 
                 const mensaje = "Contrato sin Kilos disponibles.";
 
-                if (KgDisponiblesTn <= SIN_KILOS_DISPONIBLES)
+                if (KgDisponibles <= SIN_KILOS_DISPONIBLES)
                     this.mensajesOrdenDeCarga.ContratoSeleccionado = mensaje;
+
+                this.floatMsgService.setInfoMsg(mensaje)
+            }
+        }
+    }
+    validarKilosDisponiblesPedido() {
+        this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
+        const esInterno = (this.esComercial || this.esCorredor || this.esAdmin);
+
+        if (this.ordenDeCargaId == 0 && !esInterno) {
+            this.floatMsgService.setMsgsEmpty();
+            if (this.facturaSeleccionada) {
+                const { KgDisponibles } = this.facturaSeleccionada;
+                if (KgDisponibles >= KILOS_DISPONIBLES_APROBADO)
+                    return;
+                console.log(KILOS_DISPONIBLES_APROBADO)
+                debugger
+                const mensaje = "Factura sin Kilos disponibles.";
+
+                if (KgDisponibles <= SIN_KILOS_DISPONIBLES)
+                    this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada = mensaje;
 
                 this.floatMsgService.setInfoMsg(mensaje)
             }
