@@ -4926,6 +4926,7 @@ namespace SustitucionMOAUtils.Services
                 if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Adicional == true)
                 {
                     //rfc nueva
+                    throw new WSCustomException("Todavia no esta el flujo finalizado. Falta RFC");
                 }
                 else
                 {

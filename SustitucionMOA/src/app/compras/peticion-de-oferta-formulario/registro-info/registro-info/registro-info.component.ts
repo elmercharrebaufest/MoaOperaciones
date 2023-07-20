@@ -54,16 +54,17 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
     }
 
     inicializarDatos() {
-        this.registrosInfo = this.solpCompraDto.RegistrosInfo;
-        if (this.solpCompraDto != undefined && this.solpCompraDto.PosicionCompras != null) {
-            this.options = this.solpCompraDto.PosicionCompras.map(x => ({
-                label: x.Indice + " - " + x.Tarea,
-                value: x.Id
-            }));
-        }
-        if (this.solpCompraDto.RegistrosInfo) {
+        if(this.solpCompraDto.RegistrosInfo && this.solpCompraDto.RegistrosInfo != undefined){
+            this.registrosInfo = this.solpCompraDto.RegistrosInfo;
+            if (this.solpCompraDto != undefined && this.solpCompraDto.PosicionCompras != null) {
+                this.options = this.solpCompraDto.PosicionCompras.map(x => ({
+                    label: x.Indice + " - " + x.Tarea,
+                    value: x.Id
+                }));
+            }
             this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.Indice == this.registrosInfo[0].Indice);
         }
+      
     }
     onCancelarRegistroInfo() {
         this.cancelarRegistroEmitter.next();

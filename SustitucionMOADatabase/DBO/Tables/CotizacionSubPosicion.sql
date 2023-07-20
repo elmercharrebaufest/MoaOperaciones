@@ -2,7 +2,7 @@
     [Id]                     INT            IDENTITY (1, 1) NOT NULL,
     [CotizacionPosicion_Id] INT            NOT NULL,
     [SolpSubPosicion_Id] INT            NOT NULL,
-    [Cantidad] INT            NULL DEFAULT 0,
+    [Cantidad] DECIMAL(18, 2)            NULL DEFAULT 0,
     [UnidadDeMedida_Id] INT            NULL,   
     [Moneda_Id] INT            NULL,
     [Precio] DECIMAL(18, 6) NULL DEFAULT 0, 
