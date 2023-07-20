@@ -161,15 +161,27 @@
     </p-dialog>
 
     <p-dialog>
-        <p-dialog [(visible)]="displayAdjudicacionCreada" modal="modal" [width]="300" [draggable]="false" [closable]="true"
+        <p-dialog [(visible)]="displayAdjudicacionCreada" modal="modal" [width]="600" [draggable]="false" [closable]="true"
                   (onHide)="cerrarModalConfirmacion()" appendTo="body" positionTop="30"
-                  [contentStyle]="{ 'max-height':'300px', 'min-height':'300px'}">
+                  [contentStyle]="{ 'max-height':'500px', 'min-height':'300px'}">
             <p-header class="headerModal">
                 <div class="col-xs-12 col-sm-10 "> <strong>Adjudicaciones creadas</strong></div>
             </p-header>
             <br>
             <div>
-                Aca va los numeros de adjudicacion o los errores...
+                <div id="output" *ngFor="let item of resultadoAdjudicacion">
+                        <ul class="detalle-list">
+                            <li style="list-style-type: none; padding-left: 0;">
+                                <strong class="proveedor-nombre">{{ item.Proveedor }}</strong>
+                            </li>
+                            <li>
+                                <b *ngIf="item.NumeroPedido.length > 0">NumeroPedido: </b>{{ item.NumeroPedido }}
+                                <b *ngIf="item.Errores.length > 0">Error: </b>{{ item.Errores }}
+                            </li>
+                        </ul>
+                    <div class="linea"></div>
+                </div>
+
             </div>
             <p-footer>
                 <div class="row">

@@ -60,7 +60,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     FechaLiberacionSapFormateada = x.FechaLiberacionSap == null ? "" : SqlFunctions.DateName("day", x.FechaLiberacionSap) + "/" + SqlFunctions.DatePart("month", x.FechaLiberacionSap) + "/" + SqlFunctions.DateName("year", x.FechaLiberacionSap),
                                     FechaLiberacionSap = x.FechaLiberacionSap,
                                     PeticionesDeOferta = (from po in contexto.Set<PeticionDeOferta>()
-                                                          where po.Solp_Id == x.Id
+                                                          where po.Solp_Id == x.Id && po.RegistroInfo != true
                                                           select new PeticionDeOfertaDto()
                                                           {
                                                               Id = po.Id,

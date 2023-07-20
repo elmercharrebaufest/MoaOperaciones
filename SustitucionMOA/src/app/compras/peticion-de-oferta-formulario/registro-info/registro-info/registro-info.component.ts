@@ -36,7 +36,7 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
     descripcion: {};
     registros: RegistroInfoDto[];
     displayAdjudicacionCreada: boolean;
-
+    resultadoAdjudicacion: any = new Array();
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -61,7 +61,9 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
                 value: x.Id
             }));
         }
-        this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.Indice == this.registrosInfo[0].Indice);
+        if (this.solpCompraDto.RegistrosInfo) {
+            this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.Indice == this.registrosInfo[0].Indice);
+        }
     }
     onCancelarRegistroInfo() {
         this.cancelarRegistroEmitter.next();
@@ -142,6 +144,45 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
     guardarAdjudicacion() {
         this.blockUI.start("Grabando...");
         try {
+            this.resultadoAdjudicacion = new Array();
+            var result = {
+                data: [
+                    {
+                        "Errores": [],
+                        "Mensaje": "OK",
+                        "IdEntidad": 0,
+                        "NumeroPedido": "4123001779",
+                        "NumeroSolp": "0212302931",
+                        "Proveedor": "VAZQUEZ HNOS S.R.L."
+                    },
+                    {
+                        "Errores": [],
+                        "Mensaje": "OK",
+                        "IdEntidad": 0,
+                        "NumeroPedido": "4123001780",
+                        "NumeroSolp": "0212302931",
+                        "Proveedor": "LARRAYA BULONES S.R.L."
+                    },
+                    {
+                        "Errores": [],
+                        "Mensaje": "OK",
+                        "IdEntidad": 0,
+                        "NumeroPedido": "4123001781",
+                        "NumeroSolp": "0212302931",
+                        "Proveedor": "MR. FIERRO SA"
+                    }
+                ]
+            };
+            
+            this.displayAdjudicacionCreada = true;
+
+            this.resultadoAdjudicacion = result.data;
+            console.log(this.resultadoAdjudicacion);
+            this.blockUI.stop();
+
+            return;
+
+
 
             this.subscription = this.service.guardarAdjudicacionAutomatica(this.solpCompraDto.RegistrosInfo.filter(x => x.Confirmado == true)).subscribe(
                 (result: any) => {
@@ -167,9 +208,8 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
                         });
                     }
                     else {
-
                         this.displayAdjudicacionCreada = true;
-
+                        this.resultadoAdjudicacion = result.data;
                     }
                     this.blockUI.stop();
                 },

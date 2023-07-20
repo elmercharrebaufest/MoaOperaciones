@@ -863,6 +863,7 @@ namespace SustitucionMOAUtils.Services
                 var peticionesDeOferta = repositorio.Listar<PeticionDeOferta, PeticionDeOfertaDto>(po => new PeticionDeOfertaDto
                 {
                     Id = po.Id,
+                    RegistroInfo = po.RegistroInfo,
                     Solp_Id = po.Solp_Id,
                     FechaCreacion = po.FechaCreacion,
                     UsuarioCreador_Id = po.UsuarioCreador_Id,
@@ -960,8 +961,8 @@ namespace SustitucionMOAUtils.Services
                     foreach (var item in todasLasSolp)
                     {
 
-                        item.PeticionesDeOferta = peticionesDeOferta.Where(peticionDeOferta => peticionDeOferta.Solp_Id == item.Id).ToList();
-                        item.TienePeticionDeOferta = peticionesDeOferta.Any(peticionDeOferta => peticionDeOferta.Solp_Id == item.Id);
+                        item.PeticionesDeOferta = peticionesDeOferta.Where(peticionDeOferta => peticionDeOferta.RegistroInfo != true && peticionDeOferta.Solp_Id == item.Id).ToList();
+                        item.TienePeticionDeOferta = peticionesDeOferta.Any(peticionDeOferta => peticionDeOferta.RegistroInfo != true && peticionDeOferta.Solp_Id == item.Id);
                         item.OrdenesDeCompraSolicitante = ordenCompra.Where(oc => oc.Solp_Id == item.Id).OrderBy(x => x.FechaCreacion).ToList();
 
                     }
@@ -5141,7 +5142,7 @@ namespace SustitucionMOAUtils.Services
                         cotizacionNueva.CotizacionPosiciones.Select(x => new AdjudicacionPosicionDto
                         {
                             CotizacionPosicion_Id = x.Id,
-                            Cantidad = x.Cantidad ?? 1,
+                            Cantidad = registroInfo.FirstOrDefault(a => a.PosicionId == x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id)?.CantidadAdjudicacion ?? 1,
                             SolpPosicion_Id = x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id
                         }).ToList();
 
@@ -5183,7 +5184,7 @@ namespace SustitucionMOAUtils.Services
                 CotizacionPosiciones = posiciones.Select(x => new GuardarCotizacionPosicionDto
                 {
                     PeticionDeOfertaSolpPosicionId = peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().Id,
-                    Cantidad = x.Cantidad != null ? x.Cantidad : 1,
+                    Cantidad = x.Cantidad ?? 1,
                     MonedaId = x.Moneda_Id,
                     UnidadDeMedidaId = x.Unidad_Id,
                     FechaDeEntrega = DateTime.Today.AddDays(-1),
@@ -5339,7 +5340,7 @@ namespace SustitucionMOAUtils.Services
                 foreach (var item in registros.GroupBy(a => new { a.ProveedorId, a.Moneda }))
                 {
                     RespuestaCrearOrdenDeCompra r = CrearOrdenDeCompraAutomatica(posicionesSolp.First().Solp, false, item.ToList(), true, usuarioActualId);
-                    r.Proveedor = registros.First().NombreProveedor;
+                    r.Proveedor = item.First().NombreProveedor;
                     resultado.Add(r);
                 }
                 //foreach (var item in posiciones)
