@@ -90,7 +90,7 @@ export class SolpPosicion {
     //Posicion 
     public codigoServicio: any;
     public tareaSubcontratar: any;
-    public cuentaTd: any;
+    public cuentaTd: number;
     public precioBruto: any;
     public unidadSeleccionada: any;
     public tipoImputacion: any;
@@ -258,14 +258,15 @@ export class SolpPosicion {
         if (this.esTipoPosicionServicio){
             if (this.listadoSubPosiciones && this.listadoSubPosiciones.length > 0) {
                 this.listadoSubPosiciones.forEach(x => {
-                    total += (x.precioBruto || 0) * (parseInt(x.cuentaTd) || 0);
+                    total += (x.precioBruto || 0) * (x.cuentaTd || 0);
                 });
             }
         }
         else{
-            total = (this.precioBruto || 0) * (parseInt(this.cuentaTd) || 0);  
+            total = (this.precioBruto || 0) * (this.cuentaTd || 0);  
         }
         this.valorTotal = total;
+        this.valorTotal = parseFloat(this.valorTotal.toFixed(2));
     }
 
     public doValidatePosicion(tipoSolpSap: EnumTipoSolpSap) {
@@ -516,7 +517,7 @@ export class SolpPosicion {
       
                 return this.mensaje;
             }
-            if (!this.cuentaTd || this.cuentaTd == "" || typeof this.cuentaTd === "undefined" || typeof this.cuentaTd === undefined)
+            if (!this.cuentaTd || this.cuentaTd == 0 || typeof this.cuentaTd === "undefined" || typeof this.cuentaTd === undefined)
             {
                 this.mensaje = "";
                 this.tabsPosicionValidos.tabPosiciones = false;

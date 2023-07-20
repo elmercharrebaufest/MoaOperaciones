@@ -21,7 +21,7 @@
     [TrabajoYaHecho] BIT NULL, 
     [ProveedorAsignado_Id] INT NULL, 
     [Adicional] BIT NULL, 
-    [NroOrdenDeCompraAdicional] NCHAR(10) NULL, 
+    [NroOrdenDeCompraAdicional] VARCHAR(10) NULL, 
     CONSTRAINT [PK_dbo.Solp] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.Solp_dbo.UsuarioCompras_Id] FOREIGN KEY ([UsuarioCompras_Id]) REFERENCES [dbo].[UsuarioCompras] ([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_Solp_Pliego] FOREIGN KEY ([Pliego_Id]) REFERENCES [dbo].[Pliego] ([Id]),

@@ -413,19 +413,19 @@
                                                 <td class="columna">{{subposicionesCompras.Numero}}</td>
                                                 <td class="columna">{{subposicionesCompras.Codigo}}</td>
                                                 <td class="columna">{{subposicionesCompras.Tarea}}</td>
-                                                <td class="columna">{{subposicionesCompras.Cantidad}}</td>
+                                                <td class="columna">{{subposicionesCompras.Cantidad | number:'1.2-2'}}</td>
                                                 <td class="columna">{{subposicionesCompras.UnidadDescripcion}}</td>
                                                 <td pEditableColumn style="font-size: 11px !important;">
                                                     <p-cellEditor>
                                                         <ng-template pTemplate="input">
-                                                            <input type="text" pKeyFilter="int" 
+                                                            <input type="text" pKeyFilter="num" 
                                                                    [(ngModel)]="subposicionesCompras.CantidadCotizacion"
                                                                    (ngModelChange)="calcularValorNeto(subposicionesCompras, posicionCompra.Id);mostrarMensajeNoRespetaCondiciones(); obtenerPrecioTotalPosicionProveedor()">
                                                         </ng-template>
                                                         <ng-template pTemplate="output">
                                                             <div [ngClass]="{'invalido': esFinalizado &&
                                                                  (subposicionesCompras.CantidadCotizacion <= 0)} ">
-                                            {{subposicionesCompras.CantidadCotizacion}}
+                                            {{subposicionesCompras.CantidadCotizacion | number:'1.2-2'}}
                                         </div>
                                                         </ng-template>
                                                     </p-cellEditor>

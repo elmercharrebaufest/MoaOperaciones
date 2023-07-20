@@ -64,7 +64,7 @@
                             {{registro.Unidad}}
                         </td>
                         <td class="columna">
-                            {{registro.Cantidad}}
+                            {{registro.Cantidad | number:'1.2-2'}}
                         </td>
                         <td pEditableColumn class="columna">
                             <p-cellEditor>
@@ -72,7 +72,7 @@
                                     <input type="text" pKeyFilter="int" [(ngModel)]="registro.CantidadAdjudicacion">
                                 </ng-template>
                                 <ng-template pTemplate="output">
-                                    {{registro.CantidadAdjudicacion | number: '1.0-0'}}
+                                    {{registro.CantidadAdjudicacion | number: '1.2-2'}}
                                 </ng-template>
                             </p-cellEditor>
                         </td>
@@ -80,7 +80,7 @@
                             {{registro.Moneda}}
                         </td>
                         <td class="columna">
-                            {{registro.Precio}}
+                            {{registro.Precio | number:'1.2-2'}}
                         </td>
                         <td class="columna">
                             {{registro.Centro}}
@@ -133,10 +133,10 @@
                     <li *ngFor="let detalle of item.value.detalle">
                         <b>Posicion: </b>{{ detalle.Posicion }}
                         <b>Tarea: </b>{{ detalle.Tarea }}
-                        <b>Cantidad a adjudicar: </b>{{ detalle.CantidadAdjudicar }}
+                        <b>Cantidad a adjudicar: </b>{{ detalle.CantidadAdjudicar | number:'1.2-2'}}
                         <b>Moneda: </b>{{ detalle.Moneda }}
                         <b>Unidad: </b>{{ detalle.Unidad }}
-                        <b>Precio: </b>{{ detalle.Precio }}
+                        <b>Precio: </b>{{ detalle.Precio | number:'1.2-2'}}
                     </li>
                 </ul>
             </div>

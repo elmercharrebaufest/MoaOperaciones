@@ -346,8 +346,8 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             return {
                 PeticionDeOfertaSolpPosicionId: cotizacion.Posiciones.Id,
                 Posicion: cotizacion.Posiciones.Indice,
-                Cantidad: cotizacion.Posiciones.CotizacionPosicion.Cantidad != null && cotizacion.Posiciones.CotizacionPosicion.Cantidad != "" ? cotizacion.Posiciones.CotizacionPosicion.Cantidad : 0,
-                Precio: cotizacion.Posiciones.CotizacionPosicion.Precio != null && cotizacion.Posiciones.CotizacionPosicion.Precio != "" ? cotizacion.Posiciones.CotizacionPosicion.Precio : 0,
+                Cantidad: cotizacion.Posiciones.CotizacionPosicion.Cantidad != null && cotizacion.Posiciones.CotizacionPosicion.Cantidad != 0 ? cotizacion.Posiciones.CotizacionPosicion.Cantidad : 0,
+                Precio: cotizacion.Posiciones.CotizacionPosicion.Precio != null && cotizacion.Posiciones.CotizacionPosicion.Precio != 0 ? cotizacion.Posiciones.CotizacionPosicion.Precio : 0,
                 MonedaId: cotizacion.Posiciones.CotizacionPosicion.Moneda_Id != 0 ?
                     cotizacion.Posiciones.CotizacionPosicion.Moneda_Id : 0,
                 UnidadDeMedidaId: cotizacion.Posiciones.CotizacionPosicion.UnidadDeMedida_Id != 0 ?
@@ -370,8 +370,8 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
                 Posicion: posiciones.Posiciones.Indice,
                 CotizacionPosicionId: posiciones.Id,
                 SolpSubPosicionId: subposiciones.Id,
-                Cantidad: subposiciones.CantidadCotizacion != null && subposiciones.CantidadCotizacion != ""  ? subposiciones.CantidadCotizacion : 0,
-                Precio: subposiciones.PrecioSubPosicion != null && subposiciones.PrecioSubPosicion != "" ? subposiciones.PrecioSubPosicion : 0,
+                Cantidad: subposiciones.CantidadCotizacion != null && subposiciones.CantidadCotizacion != 0  ? subposiciones.CantidadCotizacion : 0,
+                Precio: subposiciones.PrecioSubPosicion != null && subposiciones.PrecioSubPosicion != 0 ? subposiciones.PrecioSubPosicion : 0,
                 MonedaId: subposiciones.MonedaCotizacionId != 0 ?
                     subposiciones.MonedaCotizacionId : 0,
                 UnidadDeMedidaId: subposiciones.UnidadCotizacionId != 0 ?

@@ -10,7 +10,7 @@ export interface SolpCompraDto{
 }
 
 export interface PosicionCompra{
-    PrecioTotal: any
+    PrecioTotal: number
     UnidadId: string
     Id: number,
     Indice: string,
@@ -45,13 +45,13 @@ export interface SolpSubposicionDto{
     Cantidad?: number,
     UnidadComprasDescripcion?: string
     Id?: number,    
-    CantidadCotizacion?: any
+    CantidadCotizacion?: number
     UnidadCotizacionDescripcion: string
     UnidadCotizacionId: number
     MonedaCotizacionDescripcion: string,
     MonedaCotizacionCodigo: string
     MonedaCotizacionId: number
-    PrecioSubPosicion: any
+    PrecioSubPosicion: number
     PrecioTotalSubPosicion: number
 
 
