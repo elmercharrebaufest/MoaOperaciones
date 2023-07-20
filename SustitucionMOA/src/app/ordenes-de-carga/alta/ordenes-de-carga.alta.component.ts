@@ -831,7 +831,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                 if (resp.Info) {
                                     this.mensajeComponent.setInfoMsg(resp.Info);
                                 } else {
-                                    this.contratosDisponibles = resp.Contratos;
+                                    this.contratosDisponibles = resp.Contratos.map(c => {
+                                        return new ContratoOrdenFas(c.NumeroContrato, c.Producto, c.KgDisponiblesTn);
+                                    });
                                     this.ordenDeCarga.ContratoSeleccionado =
                                         this.ordenDeCarga.ContratoIngresado ?
                                             this.contratosDisponibles.find(c => c.NumeroContrato == this.ordenDeCarga.ContratoIngresado)

@@ -357,7 +357,7 @@ namespace SustitucionMOAModel.Dto
         public TablaSapDto Unidad { get; set; }
         public string UnidadComprasDescripcion { get; set; }
         public string UnidadDescripcion { get; set; }
-        public int? CantidadCotizacion { get; set; }
+        public decimal? CantidadCotizacion { get; set; }
         public string UnidadCotizacionDescripcion { get; set; }
         public int? UnidadCotizacionId { get; set; }
         public string MonedaCotizacionDescripcion { get; set; }
@@ -428,5 +428,6 @@ namespace SustitucionMOAModel.Dto
         public int IdEntidad { get; set; }
         public string NumeroPedido { get; set; }
         public string NumeroSolp { get; set; }
+        public string Proveedor { get; set; }
     }
 }

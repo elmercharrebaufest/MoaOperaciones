@@ -12,7 +12,7 @@
                         <div class="col-md-9 headerCompras" style="margin-left: 8px;" #headerCompras>
                             <strong>Posiciones</strong>
                         </div>
-                        <div class="col-md-2" style="text-align: end; padding-top: 20px;">
+                        <div class="col-md-2" style="text-align: end; padding-top: 20px;" *ngIf="this.solpCompraDto.RegistrosInfo != null">
                             <button class="btn  botonesComprasColor"  (click)="mostrarRegistroInfo()">
                                 Registro Info
                             </button>
@@ -61,7 +61,7 @@
                                     <td *ngIf="esTipoMaterial" class="columna">{{posicionCompra.TextoSuministro}}</td>
                                     <td *ngIf="esTipoMaterial" class="columna">{{posicionCompra.Modelo}}</td>
                                     <td class="columna">{{posicionCompra.GrupoComprasDescripcion}}</td>
-                                    <td *ngIf="esTipoMaterial" class="columna">{{posicionCompra.Cantidad}}</td>
+                                    <td *ngIf="esTipoMaterial" class="columna">{{posicionCompra.Cantidad | number:'1.2-2'}}</td>
                                     <td *ngIf="esTipoMaterial" class="columna">{{posicionCompra.UnidadComprasDescripcion}}</td>
                                     <td class="columna">{{posicionCompra.MonedaComprasDescripcion}}</td>
                                     <td class="columna">{{posicionCompra.FechaEntregaServicio | customDateFormat | date :'d/M/yyyy' }}</td>
@@ -89,7 +89,7 @@
                                                         <td class="columna">{{subposicionesCompras.Numero}}</td>
                                                         <td class="columna">{{subposicionesCompras.Codigo}}</td>
                                                         <td class="columna">{{subposicionesCompras.Tarea}}</td>
-                                                        <td class="columna">{{subposicionesCompras.Cantidad}}</td>
+                                                        <td class="columna">{{subposicionesCompras.Cantidad | number:'1.2-2'}}</td>
                                                         <td class="columna">{{subposicionesCompras.UnidadComprasDescripcion}}</td>
                                                     </tr>
                                                 </ng-template>

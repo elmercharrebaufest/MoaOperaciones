@@ -288,7 +288,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
             //if (this.ordenDeCarga.ContratoSAP === "-" && this.ordenDeCarga.ContratosRespuesta != "-") {
             if (this.ordenDeCarga.ContratoSeleccionado) {
-                if (this.ordenDeCarga.ContratoSeleccionado.KgDisponibles < KILOS_DISPONIBLES_APROBADO &&
+                // if (this.ordenDeCarga.ContratoSeleccionado.KgDisponiblesTn < KILOS_DISPONIBLES_APROBADO &&
+                if (this.ordenDeCarga.ContratoSeleccionado.KgDisponibles < 15000 &&
                     this.ordenDeCarga.ContratoSAP === "-")
                 {
                     this.mostrarBotonContratos = true;

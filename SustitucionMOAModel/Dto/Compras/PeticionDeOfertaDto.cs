@@ -78,6 +78,8 @@ namespace SustitucionMOAModel.Dto
         public string Texto { get; set; }
         public bool EstaLiberado { get; set; }
         public string PlazoDeOfertaEstado { get; set; }
+        public bool? RegistroInfo { get; set; }
+
     }
 
     public class PeticionDeOfertaSolpPosicionDto
