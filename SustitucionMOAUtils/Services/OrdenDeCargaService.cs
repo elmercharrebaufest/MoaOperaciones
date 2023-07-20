@@ -43,6 +43,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IEmailFasService emailFasService;
         protected readonly IScatoRepositorioClient scatoRepositorioClient;
         protected readonly IFacturaAnticipadaService _facturaAnticipadaService;
+        protected readonly IKgDisponiblesFasService _kgDisponiblesFasService;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
         private static readonly string EMAIL_TEMPLATE_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
@@ -77,7 +78,8 @@ namespace SustitucionMOAUtils.Services
             IScatoRepositorioClient scatoRepositorioClient,
             IScatoConsumer scatoConsumer,
             IEmailFasService emailFasService,
-            IFacturaAnticipadaService facturaAnticipadaService
+            IFacturaAnticipadaService facturaAnticipadaService,
+            IKgDisponiblesFasService kgDisponiblesFasService
             )
         {
             this.repositorio = repositorio;
@@ -88,6 +90,7 @@ namespace SustitucionMOAUtils.Services
             this.scatoConsumer = scatoConsumer;
             this.emailFasService = emailFasService;
             _facturaAnticipadaService = facturaAnticipadaService;
+            _kgDisponiblesFasService = kgDisponiblesFasService;
         }
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
@@ -2323,7 +2326,7 @@ namespace SustitucionMOAUtils.Services
                 if (usuario.TieneRol("ADM") || usuario.TieneRol("APLCLICPEDG"))
                     material = string.Empty;
                 else
-                    material = "50866";
+                    material = Constante.CODIGO_SOJA_HIPRO;
 
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
                 {
@@ -2357,8 +2360,12 @@ namespace SustitucionMOAUtils.Services
 
                 var contratosDisponiblesResp = new ObtenerContratosDisponiblesResponse
                 {
-                    Contratos = consumerRes.Resultados.Select(x => new ContratoOrdenFas(x, productosBD)
-                    ).OrderBy(contrato => contrato.DescripcionProducto).ToList()
+                    Contratos = consumerRes.Resultados.Select(x =>
+                    {
+                        var contrato = new ContratoOrdenFas(x, productosBD);
+                        contrato.KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(x);
+                        return contrato;
+                    }).OrderBy(contrato => contrato.DescripcionProducto).ToList()
                 };
 
                 return contratosDisponiblesResp;
@@ -2805,11 +2812,10 @@ namespace SustitucionMOAUtils.Services
                 if (contratoSAP == null)
                     throw new InfoCustomException("No se encontró el contrato en SAP");
 
-                var contratoFAS = new ContratoOrdenFas(orden, contratoSAP);
-
-                if (contratoFAS.KgDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
+                var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP);
+                if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
                     throw new InfoCustomException("El contrato seleccionado no tiene kg disponibles");
-                if (contratoFAS.KgDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
+                if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
                     return false;
             }
             return true;

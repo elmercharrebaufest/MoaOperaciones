@@ -2,8 +2,6 @@
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
-using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using SustitucionMOAUtils.Email;
 using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces

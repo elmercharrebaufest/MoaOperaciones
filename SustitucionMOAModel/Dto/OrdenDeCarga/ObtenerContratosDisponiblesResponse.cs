@@ -1,9 +1,7 @@
-using Newtonsoft.Json;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -47,7 +45,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         }
 
         public TipoContratoFAS TipoContrato { get; set; }
-        //public string ProductoId { get; set; }
         public ContratoOrdenFas(Result contratoSAP, List<Material> productosBD)
         {
             var producto = productosBD
@@ -61,7 +58,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                             })
                             .Single();
             NumeroContrato = contratoSAP.Contrato;
-            KgDisponibles = ObtenerKgDisponiblesTn(contratoSAP);
             Producto = producto;
             TipoContrato = contratoSAP.TipoContrato;
         }
@@ -77,29 +73,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                 Descripcion = producto?.Nombre,
                 Abreviacion = producto?.Abreviacion
             };
-        }
-        public ContratoOrdenFas(Entities.OrdenDeCarga orden, Result contratoSAP)
-        {
-            NumeroContrato = orden.ContratoIngresado;
-            var producto = orden.Producto != null ? orden.Producto : null;
-
-            Producto = new Models.DataAgro.MaterialDto
-            {
-                MaterialId = orden.Producto_Id,
-                Descripcion = producto?.Nombre,
-                Abreviacion = producto?.Abreviacion
-            };
-            KgDisponibles = ObtenerKgDisponiblesTn(contratoSAP);
-        }
-        public decimal ObtenerKgDisponiblesTn(Result contratoSAP)
-        {
-            var kgEntregadosYPendientesEntrega = contratoSAP.Detalles.Select(det =>
-                det.KilosEntrega== 0 ? ObtenerKgEstandar(contratoSAP) : det.KilosEntrega).Sum();
-            
-            return Math.Round(contratoSAP.KilosTotales - kgEntregadosYPendientesEntrega, 2);
-        }
-        private decimal ObtenerKgEstandar(Result contratoSAP) {
-            return contratoSAP.Producto.TrimStart('0') == "99709" ? 20000 : 30000;
         }
     }
 }

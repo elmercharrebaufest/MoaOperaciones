@@ -1,9 +1,4 @@
 ﻿using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto.OrdenDeCarga
 {
@@ -11,11 +6,21 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
     {
         public string NumeroFactura { get; set; }
         public string NumeroPedido { get; set; }
+        public decimal? KgDisponibles { get; set; }
+        public string Label
+        {
+            get
+            {
+                var kgLabel = KgDisponibles != null ? $" - {KgDisponibles} kg Disp." : "";
+                return $"{NumeroFactura}{kgLabel}";
+            }
+        }
 
-        public FacturaOrdenCarga(Detail detail)
+        public FacturaOrdenCarga(Detail detail, decimal? kgDisponibles=null)
         {
             NumeroFactura = detail.FacturaLegal;
             NumeroPedido = detail.Pedido;
+            KgDisponibles = kgDisponibles;
         }
     }
 }
