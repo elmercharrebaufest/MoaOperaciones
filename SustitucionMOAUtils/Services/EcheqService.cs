@@ -497,6 +497,7 @@ namespace SustitucionMOAUtils.Services
 
         public string AgregarApertura(EcheqRequestModel request)
         {
+            bool esAperturaConError = false;
             EcheqLiquidacion liquidacion = repositorio.Obtener<EcheqLiquidacion>(x =>
             x.Documento == request.Documento &&
             x.EcheqNegocio.Contrato == request.Contrato &&
@@ -509,25 +510,37 @@ namespace SustitucionMOAUtils.Services
             }
 
             //ANULAR APERTURAS ANTERIORES
-            foreach (var apertura in liquidacion.Aperturas.Where(ap=>ap.Estado))
+            foreach (var apertura in liquidacion.Aperturas.Where(ap => ap.Estado))
             {
                 apertura.Estado = false;
                 apertura.UsuarioModificacionId = request.UsuarioCreacionId;
                 apertura.FechaModificacion = DateTime.Now;
 
-                if (apertura.OrdenCheque > 0) echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
-                
+                if (apertura.OrdenCheque > 0)
+                {
+                    var resultadoAnularAperturaCheque = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
+                    if (resultadoAnularAperturaCheque.HayError)
+                        throw new ValidationCustomException(string.Join(", ", resultadoAnularAperturaCheque.Errores.Select(x => x.Message).ToList()));
+
+                }
             }
 
             //Agregar Aperturas Nuevas
+            string erroresApertura = string.Empty;
             foreach (var apertura in request.Apertura)
             {
                 //string cuit = liquidacion.EcheqNegocio.Proveedor != null ? liquidacion.EcheqNegocio.Proveedor.CUIT : 
                 //    repositorio.Obtener<Proveedor>(x => x.Id == liquidacion.EcheqNegocio.ProveedorId).CUIT;
 
-                if (apertura.OrdenCheque > 0) echeqCargaAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.EcheqNegocio.Contrato,
-                    liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"),
-                    apertura.ImporteCheque, "ARP  ", liquidacion.EcheqNegocio.Pedido, request.CodigoProveedor, liquidacion.NumeroCOE, "MOA", "");
+                if (apertura.OrdenCheque > 0)
+                {
+                    var resultadoCargaAperturaCheque = echeqCargaAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.EcheqNegocio.Contrato,
+                                                                                liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"),
+                                                                                apertura.ImporteCheque, "ARP  ", liquidacion.EcheqNegocio.Pedido, request.CodigoProveedor, liquidacion.NumeroCOE, "MOA", "");
+                    if (resultadoCargaAperturaCheque.HayError)
+                        throw new ValidationCustomException(string.Join(", ", resultadoCargaAperturaCheque.Errores.Select(x => x.Message).ToList()));
+                }
+
 
                 liquidacion.Aperturas.Add(new EcheqApertura
                 {

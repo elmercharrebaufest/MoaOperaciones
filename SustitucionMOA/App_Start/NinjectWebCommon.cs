@@ -88,9 +88,12 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<ILiquidacionService>().To(typeof(LiquidacionService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<INotificacionService>().To(typeof(NotificacionService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IOrdenDeCargaService>().To(typeof(OrdenDeCargaService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IKgDisponiblesFasService>().To(typeof(KgDisponiblesFasService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IFacturaAnticipadaService>().To(typeof(FacturaAnticipadaService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IOrdenDeCargaEstadoService>().To(typeof(OrdenDeCargaEstadoService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAplicacionCartaPorteService>().To(typeof(AplicacionCartaPorteService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IFeriadoService>().To(typeof(FeriadoService)).InScope(ctx => OperationContext.Current);
-			kernel.Bind<IAzureService>().To(typeof(AzureService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IAzureService>().To(typeof(AzureService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReportesService>().To(typeof(ReportesService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteContratoService>().To(typeof(ReporteContratoService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IScatoConsumer>().To(typeof(ScatoConsumer)).InScope(ctx => OperationContext.Current);
@@ -138,7 +141,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<ICrearSolpConsumerMOA>().To(typeof(CrearSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IModificarSolpConsumerMOA>().To(typeof(ModificarSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteContratoConsumerMOA>().To(typeof(ReporteContratoConsumerMOA)).InScope(ctx => OperationContext.Current);
-            
+
             kernel.Bind<ICrearPedidoConsumerMOA>().To(typeof(CrearPedidoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerFuenteAprovisionamientoConsumerMOA>().To(typeof(ObtenerFuenteAprovisionamientoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerContratoSolpConsumerMOA>().To(typeof(ObtenerContratoSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
@@ -152,7 +155,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IObtenerOrdenDeCompraConsumerMOA>().To(typeof(ObtenerOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerOrdenesDeCompraParaSOLPConsumerMOA>().To(typeof(ObtenerOrdenesDeCompraParaSOLPConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerProveedorConsumerMOA>().To(typeof(ObtenerProveedorConsumerMOA)).InScope(ctx => OperationContext.Current);
-            
+
             #endregion
 
             // Scato WebApi
@@ -161,7 +164,7 @@ namespace SustitucionMOA.App_Start
 
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
-			kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
+            kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
             //Activador Ninject Hangfire
             GlobalConfiguration.Configuration.UseNinjectActivator(kernel);
         }

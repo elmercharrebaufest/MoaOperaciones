@@ -66,6 +66,7 @@
     <Compile Include="Dto\Compras\CircularDto.cs" />
     <Compile Include="Dto\Compras\ProveedorComprasDto.cs" />
     <Compile Include="Dto\DolarMaterialDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\FacturaOrdenCarga.cs" />
     <Compile Include="Dto\Compras\CotizacionDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarIntermediarioFleteResponse.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidaSisaCuit.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="Entities\PeticionDeOferta.cs" />
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
     <Compile Include="Entities\ProveedorAuditoria.cs" />
+    <Compile Include="Enums\TipoContratoFAS.cs" />
     <Compile Include="Enums\EstadoAplicacionCartaPorte.cs" />
     <Compile Include="Enums\EstadoOrdenDeCargaFason.cs" />
     <Compile Include="Enums\CotizacionEstadoEnum.cs" />
@@ -492,6 +494,7 @@
     <Compile Include="Models\WSMapMOA\Vincula\Detalle\VinculaDetalleWSMOAResponse.cs" />
     <Compile Include="Consulta\Paginacion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Constante.cs" />
     <Compile Include="Util\Permisos.cs" />
     <Compile Include="Util\Variance.cs" />
     <Compile Include="Util\Retry.cs" />

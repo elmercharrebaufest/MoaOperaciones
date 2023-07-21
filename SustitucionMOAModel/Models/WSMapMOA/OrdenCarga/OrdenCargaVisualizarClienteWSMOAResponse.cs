@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SustitucionMOAModel.Enums;
+using System.Collections.Generic;
 
 namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
 {
@@ -73,7 +74,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
 
         public string PuntoExpedicion { get; set; }
 
-        public string TipoContrato { get; set; }
+        public TipoContratoFAS TipoContrato { get; set; }
 
         public List<Detail> Detalles { get; set; }
 

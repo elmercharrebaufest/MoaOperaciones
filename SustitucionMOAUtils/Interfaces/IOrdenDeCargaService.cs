@@ -2,7 +2,6 @@
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
-using SustitucionMOAUtils.Email;
 using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -38,7 +37,6 @@ namespace SustitucionMOAUtils.Interfaces
         VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request);
         ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request);
         string NotificarVariosPedidos(int ordenDeCargaId);
-        string NotificarVariosContratos(EmailSenderData emailSenderData);
         string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario);
         string ActivarOC(int ordenId, string mailUsuario);
         OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega);
@@ -57,5 +55,7 @@ namespace SustitucionMOAUtils.Interfaces
         (bool, Chofer) ValidarCuilChofer(string cuilChofer);
         bool ValidarCuilChoferDigito(string cuilChofer);
         bool ValidarCuitTransporteDigito(string cuitTransporte);
+        Resultado SeleccionarFactura(int ordenId, string numeroFacturaSeleccionada, string mailUsuario);
+        void VerificarCompensacion(int ordenId);
     }
 }

@@ -141,6 +141,16 @@
                                         <p style="width:100%">{{ordenDeCarga.DomicilioDescr}}</p>
                                     </div>
 
+                                    <div class="col-xs-12 col-md-12" *ngIf="ordenDeCarga.NumeroFactura">
+                                        <p class="blue"><strong>Número de Factura</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.NumeroFactura}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="ordenDeCarga.NumeroFacturaSeleccionada">
+                                        <p class="blue"><strong>Número de Factura seleccionado</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.NumeroFacturaSeleccionada}}</p>
+                                    </div>
+
                                     <div class="col-xs-12 col-md-12" *ngIf="ordenDeCarga.NumeroPedidoIngresado != ''">
                                         <p class="blue"><strong>Pedido</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.NumeroPedidoIngresado}}</p>
@@ -451,16 +461,15 @@
                                     class="btn-custom btn-add btn-mediano" value="Contratos">
                             </div>
 
-                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonPedidos">
-                                <input type="button" (click)="abrirModalPedidos()"
-                                    class="btn-custom btn-add btn-mediano" value="Pedidos">
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonSeleccionarFactura">
+                                <input type="button" (click)="abrirModalSeleccionarFactura()"
+                                    class="btn-custom btn-add btn-mediano" value="Facturas">
                             </div>
 
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonNotificarTransporte">
                                 <input type="button" (click)="notificarTransporte()"
                                     class="btn-custom btn-add btn-grande" value="Notificar Transporte">
                             </div>
-
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerificarTransporte">
                                 <input type="button" (click)="verificarTransporte()"
                                     class="btn-custom btn-add btn-grande" value="Verificar Transporte">
@@ -469,7 +478,10 @@
                                 <input type="button" (click)="verificarSituacionCrediticia()"
                                     class="btn-custom btn-add btn-grande" value="Verificar credito">
                             </div>
-
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerificarCompensacion">
+                                <input type="button" (click)="verificarCompensacion()"
+                                    class="btn-custom btn-add btn-grande" value="Verificar compensación">
+                            </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerHistorial">
                                 <input type="button" (click)="abrirModalDetalleHistorialCompras()"
                                     class="btn-custom btn-add btn-grande" value="Ver Historial">
@@ -488,6 +500,7 @@
                                 <input type="button" (click)="abrirModalAnularVencimiento()"
                                     class="btn-custom btn-remove btn-lg" value="Anular por vencimiento">
                             </div>
+
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonActivarOC">
                                 <input type="button" (click)="abrirModalActivarOC()"
                                     class="btn-custom btn-add btn-grande" value="Activar OC">
@@ -566,6 +579,54 @@
         </div>
     </div>
 
+    <button type="button" style="display:none" id="openSeleccionarFactura" data-toggle="modal"
+        data-target="#modalSeleccionarFactura"></button>
+    <!-- Modal -->
+    <div class="modal fade" id="modalSeleccionarFactura" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="modalSeleccionarFacturaLabel">Seleccionar Factura Legal</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" *ngIf="facturas.length > 0">
+                        <span *ngFor="let factura of facturas" class="col-xs-12 col-sm-12 col-md-12">
+                            <input type="radio" name="corredorContrato" id="factura_legal_{{factura.NumeroFactura}}"
+                                [value]="factura" [(ngModel)]="facturaSeleccionada">
+                            &nbsp;
+                            <label for="factura_legal_{{factura.NumeroFactura}}">
+                                {{factura.NumeroFactura}} - ({{factura.NumeroPedido}})
+                            </label>
+                        </span>
+                    </div>
+                    <div class="row" class="col-xs-12 col-sm-12 col-md-12" *ngIf="facturas.length == 0">
+                        No se encontraron facturas
+                    </div>
+                    <p-message *ngIf="mensajeSeleccionarFactura" severity="warn"
+                        [text]="mensajeSeleccionarFactura"></p-message>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
+                        id="closemodalSeleccionarFactura" style="display: inline-flex;"
+                        (click)="mensajeSeleccionarFactura=null">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarFactura()"
+                        style="display: inline-flex;">
+                        Confirmar
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <button type="button" style="display:none" id="openModalDetalleHistorial" data-toggle="modal"
         data-target="#ModalDetalleHistorial"></button>
     <!-- Modal -->
@@ -621,75 +682,6 @@
             </div>
         </div>
     </div>
-
-    <button type="button" style="display:none" id="openSeleccionarPedido" data-toggle="modal"
-        data-target="#modalSeleccionarPedido"></button>
-    <!-- Modal -->
-    <div class="modal fade" id="modalSeleccionarPedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-
-        <div class="modal-dialog" role="document">
-
-            <div class="modal-content">
-
-                <div class="modal-header">
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-
-                        <span aria-hidden="true">&times;</span>
-
-                    </button>
-
-                    <h4 class="modal-title" id="modalSeleccionarPedidoLabel">Seleccionar pedido</h4>
-
-                </div>
-
-                <div class="modal-body">
-                    <div class="row" *ngIf="pedidos.length > 0">
-
-                        <span *ngFor="let corredorPedido of pedidos" class="col-xs-12 col-sm-12 col-md-12">
-
-                            <input type="radio" name="corredorPedido" id="corredor_{{corredorPedido}}"
-                                [value]="corredorPedido" [(ngModel)]="pedidoSeleccionado">
-
-                            &nbsp;
-
-                            <label for="corredor_{{corredorPedido}}">
-
-                                {{corredorPedido}}
-
-                            </label>
-
-                        </span>
-
-                    </div>
-
-                    <div class="row" class="col-xs-12 col-sm-12 col-md-12" *ngIf="pedidos.length == 0">
-
-                        No se encontraron contratos
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-
-                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
-                        id="closemodalSeleccionarPedido" style="display: inline-flex;">
-                        Cancelar
-                    </button>
-
-                    <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarPedido()"
-                        style="display: inline-flex;">
-
-                        Confirmar
-
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <button type="button" style="display:none" id="openAnularOrden" data-toggle="modal"
         data-target="#modalAnularOrden"></button>

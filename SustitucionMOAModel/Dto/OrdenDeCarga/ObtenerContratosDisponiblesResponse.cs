@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using System;
@@ -27,7 +28,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         public string NumeroContrato { get; set; }
 
         public MaterialDto Producto { get; set; }
-        public decimal? KgDisponiblesTn { get; set; }
+        public decimal? KgDisponibles { get; set; }
         //public string Label
         //{
         //    get
@@ -44,6 +45,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
             }
         }
 
+        public TipoContratoFAS TipoContrato { get; set; }
         public ContratoOrdenFas(Result contratoSAP, List<Material> productosBD)
         {
             var producto = productosBD
@@ -57,8 +59,8 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                             })
                             .Single();
             NumeroContrato = contratoSAP.Contrato;
-            KgDisponiblesTn = ObtenerKgDisponiblesTn(contratoSAP);
             Producto = producto;
+            TipoContrato = contratoSAP.TipoContrato;
         }
 
         public ContratoOrdenFas(Entities.OrdenDeCarga orden)
@@ -84,7 +86,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                 Descripcion = producto?.Nombre,
                 Abreviacion = producto?.Abreviacion
             };
-            KgDisponiblesTn = ObtenerKgDisponiblesTn(contratoSAP);
+            KgDisponibles = ObtenerKgDisponiblesTn(contratoSAP);
         }
         public decimal ObtenerKgDisponiblesTn(Result contratoSAP)
         {
