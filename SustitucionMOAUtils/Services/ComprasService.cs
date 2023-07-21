@@ -68,7 +68,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerOrdenesDeCompraParaSOLPConsumerMOA obtenerOrdenesDeCompraParaSOLPConsumerMOA;
         private readonly IUsuarioService usuarioService;
         private readonly IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA;
-
+        private readonly IModificarOrdenDeCompraConsumerMOA modificarOrdenDeCompraConsumerMOA;
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
@@ -88,7 +88,8 @@ namespace SustitucionMOAUtils.Services
             IObtenerRegistroInfoConsumerMOA obtenerRegistroInfoConsumerMOA,
             IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA,
             IObtenerOrdenesDeCompraParaSOLPConsumerMOA obtenerOrdenesDeCompraParaSOLPConsumerMOA,
-            IUsuarioService usuarioService, IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA
+            IUsuarioService usuarioService, IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA,
+            IModificarOrdenDeCompraConsumerMOA modificarOrdenDeCompraConsumerMOA
             )
         {
             this.repositorio = repositorio;
@@ -111,6 +112,7 @@ namespace SustitucionMOAUtils.Services
             this.obtenerOrdenesDeCompraParaSOLPConsumerMOA = obtenerOrdenesDeCompraParaSOLPConsumerMOA;
             this.usuarioService = usuarioService;
             this.obtenerProveedorConsumerMOA = obtenerProveedorConsumerMOA;
+            this.modificarOrdenDeCompraConsumerMOA = modificarOrdenDeCompraConsumerMOA;
         }
 
 
@@ -4288,9 +4290,16 @@ namespace SustitucionMOAUtils.Services
 
         public RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(Adjudicacion AdjudicacionEntity)
         {
-
             var respuesta = new RespuestaCrearOrdenDeCompra();
-            var resultadoCrearPedido = crearPedidoConsumerMOA.Request(AdjudicacionEntity);
+            CrearPedidoConsumerMOAResponse resultadoCrearPedido = new CrearPedidoConsumerMOAResponse();
+            if (AdjudicacionEntity.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Adicional == true)
+            {
+                resultadoCrearPedido = modificarOrdenDeCompraConsumerMOA.Request(AdjudicacionEntity);
+            }
+            else
+            {
+                resultadoCrearPedido = crearPedidoConsumerMOA.Request(AdjudicacionEntity);
+            }
 
             respuesta.Errores = new List<string>();
             respuesta.NumeroPedido = resultadoCrearPedido.NumeroPedido;
@@ -4300,12 +4309,8 @@ namespace SustitucionMOAUtils.Services
                 var mensaje = error.Mensaje.Trim();
                 respuesta.Errores.Add(mensaje);
             }
-
             if (respuesta.Errores.Count == 0)
             {
-                //proveedorConPosiciones.Value.ForEach(posicion => posicion.NumeroPedido = resultadoCrearPedido.NumeroPedido);
-                //repositorio.GuardarCambios();
-
                 respuesta.Mensaje = "OK";
             }
 
@@ -4922,19 +4927,7 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.Agregar(adjudicacion);
 
-                //TODO condicion para que cuando tenga adicional entre por la otra rfc
-                if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Adicional == true)
-                {
-                    //rfc nueva
-                    throw new WSCustomException("Todavia no esta el flujo finalizado. Falta RFC");
-                }
-                else
-                {
-                    respuestaGuardarSOLP = CrearOrdenDeCompra(adjudicacion);
-                }
-
-
-
+                respuestaGuardarSOLP = CrearOrdenDeCompra(adjudicacion);
 
                 if (respuestaGuardarSOLP.Errores == null || respuestaGuardarSOLP.Errores.Count == 0)
                 {

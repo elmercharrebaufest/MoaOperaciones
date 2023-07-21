@@ -152,7 +152,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IObtenerOrdenDeCompraConsumerMOA>().To(typeof(ObtenerOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerOrdenesDeCompraParaSOLPConsumerMOA>().To(typeof(ObtenerOrdenesDeCompraParaSOLPConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerProveedorConsumerMOA>().To(typeof(ObtenerProveedorConsumerMOA)).InScope(ctx => OperationContext.Current);
-            
+            kernel.Bind<IModificarOrdenDeCompraConsumerMOA>().To(typeof(ModificarOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
+
             #endregion
 
             // Scato WebApi
