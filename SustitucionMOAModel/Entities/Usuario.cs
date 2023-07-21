@@ -10,6 +10,7 @@ namespace SustitucionMOAModel.Entities
     public class Usuario
     {
         private List<PermisoEnum> permisosDelUsuario = null;
+        private List<RolEnum> rolesDelUsuario = null;
 
         [Key]
         public int Id { get; set; }
@@ -223,10 +224,19 @@ namespace SustitucionMOAModel.Entities
             return permisosDelUsuario.Contains(permiso);
         }
 
+        [Obsolete("Reemplazar por método TieneRol(RolEnum rol)", false)]
         public virtual bool TieneRol(string codigo)
         {
-
             return Roles.Any(r => r.Codigo == codigo);
+        }
+
+        public bool TieneRol(RolEnum rol)
+        {
+            if (rolesDelUsuario == null)
+            {
+                CargarRolesUsuario();
+            }
+            return rolesDelUsuario.Contains(rol);
         }
 
         private void CargarPermisosUsuario()
@@ -235,6 +245,15 @@ namespace SustitucionMOAModel.Entities
             foreach (var rol in Roles)
             {
                 rol.ObtenerPermisos().ForEach(r => permisosDelUsuario.Add(ObtenerPermisoEnum(r)));
+            }
+        }
+
+        private void CargarRolesUsuario()
+        {
+            rolesDelUsuario = new List<RolEnum>();
+            foreach (var codigoRol in Roles.Select(r => r.Codigo))
+            {
+                rolesDelUsuario.Add(ObtenerRolEnum(codigoRol));
             }
         }
 
@@ -345,6 +364,82 @@ namespace SustitucionMOAModel.Entities
                 case "NOTIFICAR ALTA INTERNA GRANOS": return PermisoEnum.NotificarAltaInternaGranos;
 
                 default: throw new Exception("Permiso no mapeado: " + permisoStr);
+            }
+        }
+
+        private static RolEnum ObtenerRolEnum(string codigoRol)
+        {
+            switch (codigoRol)
+            {
+                case "ACCESO QR": return RolEnum.AccesoQr;
+                case "ACT": return RolEnum.Actualizacion;
+                case "ADMINCCSS": return RolEnum.AdminCampoSustentable;
+                case "ADMINPLATCOMPRAS": return RolEnum.AdminPlataformaCompras;
+                case "ADM": return RolEnum.Administracion;
+                case "ADU": return RolEnum.Aduana;
+                case "AIGRAN": return RolEnum.AltaInternaGranos;
+                case "AINOGRAN": return RolEnum.AltaInternaNoGranos;
+                case "ANUL": return RolEnum.Anulador;
+                case "APIKEY": return RolEnum.Apikey;
+                case "APLCCPP": return RolEnum.AplicacionCcpp;
+                case "APLCCPP ADMIN": return RolEnum.AplicacionCcppAdmin;
+                case "APP": return RolEnum.Aplicaciones;
+                case "APRO": return RolEnum.Aprobador;
+                case "BOL": return RolEnum.Boletos;
+                case "CAL": return RolEnum.Calidades;
+                case "CRDECPE": return RolEnum.CesionYRectificacionDeCpe;
+                case "APLCLICPEDG": return RolEnum.ClienteConCpedg;
+                case "CLIENTE FASON": return RolEnum.ClienteFason;
+                case "COMERCIAL": return RolEnum.Comercial;
+                case "COM": return RolEnum.Comisiones;
+                case "COMPRADOR": return RolEnum.Comprador;
+                case "COMPRAS": return RolEnum.Compras;
+                case "COMP": return RolEnum.Comprobantes;
+                case "CORR": return RolEnum.Corredor;
+                case "DES": return RolEnum.Deshabilitado;
+                case "DDAG": return RolEnum.DeshabilitadoEnDataagro;
+                case "FASON": return RolEnum.Fason;
+                case "FASON ADMIN": return RolEnum.FasonAdmin;
+                case "FINCOR": return RolEnum.FinalCorredor;
+                case "FINDIR": return RolEnum.FinalDirecto;
+                case "FLETE": return RolEnum.Fletes;
+                case "FLECONSULTA": return RolEnum.FletesConsulta;
+                case "FWEB": return RolEnum.FuncionamientoWeb;
+                case "ADMCM05": return RolEnum.GestionCm05;
+                case "ECHEQ": return RolEnum.GestionEcheq;
+                case "ECHEQ ADMIN": return RolEnum.GestionEcheqAdmin;
+                case "GRAN": return RolEnum.Granos;
+                case "GRANDA": return RolEnum.GranosMasDataagro;
+                case "GYNG": return RolEnum.GranosYNoGranos;
+                case "GYNGDA": return RolEnum.GranosYNoGranosMasDataagro;
+                case "GYNGF": return RolEnum.GranosYNoGranosMasFlete;
+                case "GYNGP": return RolEnum.GranosYNoGranosMasPesifTest;
+                case "MESAFAS": return RolEnum.MesaFas;
+                case "MF": return RolEnum.Multifirma;
+                case "NOGRAN": return RolEnum.NoGranos;
+                case "NUECLI": return RolEnum.NuevoCliente;
+                case "NUECORR": return RolEnum.NuevoCorredor;
+                case "NUEG": return RolEnum.NuevoUsuarioGranos;
+                case "NUENOGRAN": return RolEnum.NuevoUsuarioNoGranos;
+                case "MATBA": return RolEnum.OperacionesMatba;
+                case "OPE": return RolEnum.Operador;
+                case "OTRO": return RolEnum.Otros;
+                case "PAG": return RolEnum.Pagos;
+                case "PARCOR": return RolEnum.ParcialCorredor;
+                case "PARDIR": return RolEnum.ParcialDirecto;
+                case "PES": return RolEnum.Pesificaciones;
+                case "PROVGC": return RolEnum.ProveedorGeneralConsulta;
+                case "PUERTO": return RolEnum.Puerto;
+                case "REI": return RolEnum.ReclamoImpositivo;
+                case "REVENDEDOR": return RolEnum.Revendedor;
+                case "RYDA": return RolEnum.RydAdministracion;
+                case "RYDU": return RolEnum.RydUsuario;
+                case "CLIENT": return RolEnum.SoloClientes;
+                case "SOLP": return RolEnum.Solp;
+                case "TODOS": return RolEnum.Todos;
+                case "NOIMP": return RolEnum.UsuarioNoImplementado;
+
+                default: throw new Exception("Rol no mapeado: " + codigoRol);
             }
         }
     }

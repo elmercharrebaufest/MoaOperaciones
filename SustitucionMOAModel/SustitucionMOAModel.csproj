@@ -180,6 +180,7 @@
     <Compile Include="Entities\PeticionDeOferta.cs" />
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
     <Compile Include="Entities\ProveedorAuditoria.cs" />
+    <Compile Include="Enums\RolEnum.cs" />
     <Compile Include="Enums\TipoContratoFAS.cs" />
     <Compile Include="Enums\EstadoAplicacionCartaPorte.cs" />
     <Compile Include="Enums\EstadoOrdenDeCargaFason.cs" />

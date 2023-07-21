@@ -2344,11 +2344,11 @@ namespace SustitucionMOAUtils.Services
                 var rangoFechas = string.IsNullOrEmpty(req.FechaDesde) || string.IsNullOrEmpty(req.FechaHasta) ? null :
                     CommonService.toDateList(req.FechaDesde, req.FechaHasta);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                string material = string.Empty;
-                if (usuario.TieneRol("ADM") || usuario.TieneRol("APLCLICPEDG"))
-                    material = string.Empty;
-                else
-                    material = Constante.CODIGO_SOJA_HIPRO;
+                
+                var material =
+                    usuario.TieneRol(RolEnum.Administracion) || usuario.TieneRol(RolEnum.ClienteConCpedg)
+                        ? string.Empty
+                        : Constante.CODIGO_SOJA_HIPRO;
 
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
                 {
@@ -2357,8 +2357,8 @@ namespace SustitucionMOAUtils.Services
                     Corredor = req.CorredorCodigo,
                     Fechas = rangoFechas,
                     Material = material,
-                    Pendiente = Constante.FAS_FILTRO_DEFAULT_PENDIENTE, // "X" es para Contratos ABIERTOS
-                    TipoContrato = Constante.FAS_FILTRO_DEFAULT_TIPO_CONTRATO
+                    Pendiente = true, // Contratos ABIERTOS
+                    TipoContrato = TipoContratoFAS.Normal
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();
@@ -2399,6 +2399,7 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, ex);
             }
         }
+
         private List<string> CargarYObtenerMailsDestino(List<string> lista, List<string> mails)
         {
             foreach (string mail in mails)
