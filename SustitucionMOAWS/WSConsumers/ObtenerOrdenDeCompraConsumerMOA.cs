@@ -41,9 +41,9 @@ namespace SustitucionMOAWS.WSConsumers
                 string ACCOUNT_ASSIGNMENT = "X";
                 string DELIVERY_ADDRESS = "X";
                 string HEADER_TEXT = "X";
-                string INVOICEPLAN = "X"; 
-                string ITEM_TEXT = "X"; 
-                string PURCHASEORDER = nroOC; 
+                string INVOICEPLAN = "X";
+                string ITEM_TEXT = "X";
+                string PURCHASEORDER = nroOC;
                 string SERIALNUMBERS = "X";
                 string SERVICES = "X";
                 string VERSION = "X";
@@ -51,7 +51,7 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIMEPOACCOUNT[] POACCOUNT = new BAPIMEPOACCOUNT[] { };
                 BAPIMEPOADDRDELIVERY[] POADDRDELIVERY = new BAPIMEPOADDRDELIVERY[] { };
                 BAPIMEPOCOND[] POCOND = new BAPIMEPOCOND[] { };
-                BAPIMEPOITEM[] POITEM = new BAPIMEPOITEM[] { }; 
+                BAPIMEPOITEM[] POITEM = new BAPIMEPOITEM[] { };
                 BAPIMEPOTEXTHEADER[] POTEXTHEADER = new BAPIMEPOTEXTHEADER[] { };
                 BAPIMEPOTEXT[] POTEXTITEM = new BAPIMEPOTEXT[] { };
                 BAPIRET2[] RETURN = new BAPIRET2[] { };
@@ -113,7 +113,7 @@ namespace SustitucionMOAWS.WSConsumers
                     ref SERIALNUMBER,
                     out POHEADER);
 
-                return map(result, POHEADER, RETURN);
+                return map(result, POHEADER, RETURN, POITEM);
 
             }
             catch (Exception e)
@@ -122,7 +122,7 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-        private OrdenDeCompraSAPDto map(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN)
+        private OrdenDeCompraSAPDto map(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM)
         {
             OrdenDeCompraSAPDto resultado = new OrdenDeCompraSAPDto();
 
@@ -142,11 +142,18 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 OrdenDeCompra = POHEADER.PO_NUMBER,
                 CodigoProveedor = POHEADER.VENDOR
-                
+
             };
+
+            foreach (var pos in POITEM.ToList())
+            {
+                resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion { 
+                    Indice = pos.PO_ITEM
+                });
+            }
             return resultado;
         }
     }
 
-   
+
 }

@@ -625,7 +625,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     validarContratoMarco(){
         var validacionContratoTrabajo = false;
 
-        if(this.solpActual.posiciones.some(x => x.numeroContratoSuperior != undefined) && this.solpActual.trabajoHecho == true){
+        if(this.solpActual.trabajoHecho == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)){
             return validacionContratoTrabajo = true;
         }
         return validacionContratoTrabajo;
@@ -634,7 +634,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     validarAdicional(){
         var validacionAdicional = false;
 
-        if(this.solpActual.posiciones.some(x => x.numeroContratoSuperior != undefined) && this.solpActual.adicional == true){
+        if(this.solpActual.adicional == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)){
             return validacionAdicional = true;
         }
         return validacionAdicional;
